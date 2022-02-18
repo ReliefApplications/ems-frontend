@@ -78,12 +78,6 @@ export class SafeGridWidgetComponent implements OnInit {
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
-  @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
-
-  @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
-
-  @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
-
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 

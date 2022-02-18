@@ -317,7 +317,7 @@
         },
         "grid": {
             "save": "Save Layout as default",
-            "reset": "Reset default Layout",
+            "reset": "Reset layout",
             "invalid": "Invalid grid configuration",
             "noRecord": "No record detected",
             "selectDataset": "Select a dataset in settings",
