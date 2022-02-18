@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddLayoutModule } from '../add-layout/add-layout.module';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [LayoutsParametersComponent],
@@ -16,6 +17,7 @@ import { AddLayoutModule } from '../add-layout/add-layout.module';
     MatTableModule,
     MatMenuModule,
     MatIconModule,
+    DragDropModule,
     SafeButtonModule,
     AddLayoutModule,
   ],

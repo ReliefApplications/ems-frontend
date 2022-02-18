@@ -34,6 +34,7 @@
 <ng-template #layoutsTemplate>
   <ng-container *ngIf="layouts.length > 1">
     <kendo-dropdownlist
+      class="grid-layout-dropdown"
       [data]="layouts"
       textField="name"
       valueField="id"

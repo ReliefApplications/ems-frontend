@@ -233,7 +233,7 @@ export class QueryBuilderService {
    */
   public buildQuery(settings: any): any {
     const builtQuery = settings.query;
-    if (builtQuery && builtQuery.fields.length > 0) {
+    if (builtQuery?.fields?.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(
         this.buildFields(builtQuery.fields)
       );

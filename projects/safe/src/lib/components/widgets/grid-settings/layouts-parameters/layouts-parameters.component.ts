@@ -12,6 +12,7 @@ import { Form } from '../../../../models/form.model';
 import { Resource } from '../../../../models/resource.model';
 import { AddLayoutComponent } from '../add-layout/add-layout.component';
 import { FormControl } from '@angular/forms';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 /**
  * Layouts list configuration for grid widgets
@@ -98,5 +99,18 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
     this.selectedLayouts?.setValue(
       this.selectedLayouts?.value.filter((x: string) => x !== layout.id)
     );
+  }
+
+  /**
+   * Reorders the layout list.
+   *
+   * @param event drop event
+   */
+  public drop(event: any): void {
+    const layouts = [...this.selectedLayouts?.value];
+    console.log(layouts);
+    moveItemInArray(layouts, event.previousIndex, event.currentIndex);
+    console.log(layouts);
+    this.selectedLayouts?.setValue(layouts);
   }
 }
