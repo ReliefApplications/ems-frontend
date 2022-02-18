@@ -179,8 +179,6 @@ export class SafeGridService {
     for (const fieldName of Object.keys(metaFields)) {
       const meta = metaFields[fieldName];
       if (meta.choicesByUrl) {
-        console.log('FIELDNAME', fieldName);
-        console.log('meta', meta);
         const url: string = meta.choicesByUrl.url;
         const localRes = localStorage.getItem(url);
         if (localRes) {
