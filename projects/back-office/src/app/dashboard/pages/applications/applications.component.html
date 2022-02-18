@@ -1,12 +1,12 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
+<ng-container *ngIf="!loading; else skeleton_template">
   <!-- FILTERING -->
   <app-filter (filter)="onFilter($event)"></app-filter>
 
   <!-- NEW APPLICATIONS -->
   <h2>{{'apps.recent' | translate}}</h2>
   <safe-applications-summary [canCreate]="canAdd" (add)="onAdd()" [applications]="newApplications"
-    (openApplication)="onOpenApplication($event)" (delete)="onDelete($event)" (preview)="onPreview($event)" (clone)="onClone($event)"></safe-applications-summary>
+    (openApplication)="onOpenApplication($event)" (delete)="onDelete($event)" (preview)="onPreview($event)"
+    (clone)="onClone($event)"></safe-applications-summary>
 
   <!-- APPLICATIONS TABLE -->
   <ng-container>
@@ -91,8 +91,44 @@
       <tr class="clickable" mat-row *matRowDef="let row; columns: displayedColumns"
         [routerLink]="['/applications', row.id]"></tr>
     </table>
-    <mat-paginator [pageSize]="pageInfo.pageSize" [pageSizeOptions]="[10, 25, 50]" [length]="pageInfo.length" aria-label="Select page of applications"
-      (page)="onPage($event)">
+    <mat-paginator [pageSize]="pageInfo.pageSize" [pageSizeOptions]="[10, 25, 50]" [length]="pageInfo.length"
+      aria-label="Select page of applications" (page)="onPage($event)">
     </mat-paginator>
   </ng-container>
 </ng-container>
+
+
+<!-- SKELETON TEMPLATE -->
+<ng-template #skeleton_template>
+  <div style="display: flex;">
+    <kendo-skeleton shape="rectangle" height="36px" width="220px"></kendo-skeleton>
+    <kendo-skeleton style="margin-left: 16px;" shape="rectangle" height="36px" width="120px"></kendo-skeleton>
+  </div>
+
+  <h2 style="margin-top: 16px;">
+    <kendo-skeleton shape="text" width="240px"></kendo-skeleton>
+  </h2>
+
+  <div style="display: flex; gap: 32px;">
+    <kendo-skeleton *ngFor="let item of [1,2,3,4]" shape="rectangle" animation="wave" width="192px" height="192px">
+    </kendo-skeleton>
+  </div>
+
+  <h2 style="margin-top: 64px;">
+    <kendo-skeleton shape="text" width="240px"></kendo-skeleton>
+  </h2>
+
+  <table *ngIf="loading" mat-table [dataSource]="skeletonDataSource">
+    <ng-container *ngFor="let key of skeletonDisplayedColumns" matColumnDef="{{key}}">
+      <th mat-header-cell *matHeaderCellDef>
+        <kendo-skeleton shape="text" width="25%"></kendo-skeleton>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <kendo-skeleton shape="text" width="25%"></kendo-skeleton>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="skeletonDisplayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: skeletonDisplayedColumns;"></tr>
+  </table>
+</ng-template>
