@@ -48,7 +48,7 @@
   "action": {
     "edit": "Edit",
     "editAs": "Edit as",
-    "view": "View",
+    "view": "View records",
     "delete": "Delete",
     "deletePerm": "Delete premanently",
     "close": "Close",
