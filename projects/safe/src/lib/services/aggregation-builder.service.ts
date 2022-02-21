@@ -105,7 +105,7 @@ export class AggregationBuilderService {
               newField.type = { ...field.type, kind: 'SCALAR', name: 'String' };
               return newField;
             } else if (stage.form.field.includes('.')) {
-              const fieldArray = stage.form.groupBy.split('.');
+              const fieldArray = stage.form.field.split('.');
               const parent = fieldArray.shift();
               if (field.name === parent) {
                 const sub = fieldArray.pop();
