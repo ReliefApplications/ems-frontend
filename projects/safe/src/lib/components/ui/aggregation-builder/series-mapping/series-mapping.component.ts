@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { merge, Observable } from 'rxjs';
+import { startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'safe-series-mapping',
@@ -11,32 +12,62 @@ export class SafeSeriesMappingComponent implements OnInit {
   // === DATA ===
   @Input() fields$!: Observable<any[]>;
   public availableFields: any[] = [];
+  public fieldsByControl: any = {};
   // === REACTIVE FORM ===
   @Input() mappingForm!: AbstractControl;
   public controlNames: string[] = [];
 
-  get mappingGroup() {
-    return this.mappingForm as FormGroup;
-  }
-
   constructor() {}
 
   ngOnInit(): void {
-    this.controlNames = Object.keys(this.mappingGroup.controls);
+    this.controlNames = Object.keys((this.mappingForm as FormGroup).controls);
     this.fields$.subscribe((fields: any[]) => {
       this.availableFields = [...fields];
     });
-  }
-
-  public fieldsFor(controlName: string): any[] {
-    const excludedFields: string[] = [];
-    for (const control of this.controlNames) {
-      if (control !== controlName && this.mappingForm.get(control)?.valid) {
-        excludedFields.push(this.mappingForm.get(control)?.value);
-      }
-    }
-    return this.availableFields.filter(
-      (field) => !excludedFields.includes(field.name)
-    );
+    // Remove fields from other controls list when selected
+    merge(
+      ...this.controlNames.map(
+        (controlName) => this.mappingForm.get(controlName)?.valueChanges || 0
+      )
+    )
+      .pipe(startWith(null))
+      .subscribe(() => {
+        for (const controlName of this.controlNames) {
+          const excludedFields: string[] = [];
+          for (const control of this.controlNames) {
+            if (
+              control !== controlName &&
+              this.mappingForm.get(control)?.valid
+            ) {
+              excludedFields.push(this.mappingForm.get(control)?.value);
+            }
+          }
+          // Filter fields AND subfields
+          this.fieldsByControl[controlName] = this.availableFields.reduce(
+            (fields, field) => {
+              if (excludedFields.includes(field.name)) {
+                return fields;
+              }
+              if (field.fields && field.fields.length) {
+                for (const subField of field.fields) {
+                  if (
+                    excludedFields.includes(`${field.name}.${subField.name}`)
+                  ) {
+                    const newField = { ...field };
+                    newField.fields = field.fields.filter(
+                      (x: any) => x.name !== subField.name
+                    );
+                    fields.push(newField);
+                    return fields;
+                  }
+                }
+              }
+              fields.push(field);
+              return fields;
+            },
+            []
+          );
+        }
+      });
   }
 }

@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { GET_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
 import { Form } from '../../../models/form.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
+import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { isMongoId } from '../../../utils/is-mongo-id';
 import { addNewField } from '../../query-builder/query-builder-forms';
@@ -57,7 +58,8 @@ export class SafeAggregationBuilderComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService,
-    private aggregationBuilder: AggregationBuilderService
+    private aggregationBuilder: AggregationBuilderService,
+    private gridService: SafeGridService
   ) {}
 
   ngOnInit(): void {
@@ -117,6 +119,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
       ?.valueChanges.pipe(debounceTime(1000))
       .subscribe((fieldsNames: string[]) => {
         this.updateSelectedAndMetaFields(fieldsNames);
+        this.initGrid(this.aggregationForm.value.pipeline);
       });
 
     // Preview grid and mapping fields
@@ -156,7 +159,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
         ? this.queryBuilder.getQueryNameFromResourceName(formName)
         : '';
       const fields = this.queryBuilder.getFields(this.queryName);
-      this.fields.next(fields.filter((x) => x.type.kind === 'SCALAR'));
+      this.fields.next(fields);
     }
   }
 
@@ -168,9 +171,15 @@ export class SafeAggregationBuilderComponent implements OnInit {
   private updateSelectedAndMetaFields(fieldsNames: string[]): void {
     if (fieldsNames && fieldsNames.length) {
       const currentFields = this.fields.value;
-      const selectedFields = fieldsNames.map((x: string) =>
-        currentFields.find((y) => x === y.name)
-      );
+      const selectedFields = fieldsNames.map((x: string) => {
+        const field = { ...currentFields.find((y) => x === y.name) };
+        if (field.type.kind !== 'SCALAR') {
+          field.fields = this.queryBuilder
+            .getFieldsFromType(field.type.name)
+            .filter((y) => y.type.name !== 'ID');
+        }
+        return field;
+      });
       const formattedFields = this.formatFields(selectedFields);
       this.selectedFields.next(selectedFields);
       this.queryBuilder
@@ -206,11 +215,15 @@ export class SafeAggregationBuilderComponent implements OnInit {
     if (this.aggregationForm.get('pipeline')?.valid) {
       if (pipeline.length) {
         this.loadingGrid = true;
-        this.gridFields = this.formatFields(
-          this.aggregationBuilder.fieldsAfter(
-            this.selectedFields.value,
-            pipeline
-          )
+        this.gridFields = this.gridService.getFields(
+          this.formatFields(
+            this.aggregationBuilder.fieldsAfter(
+              this.selectedFields.value,
+              pipeline
+            )
+          ),
+          this.metaFields.value,
+          {}
         );
         this.aggregationBuilder
           .buildAggregation(this.aggregationForm.value, false)
@@ -243,7 +256,11 @@ export class SafeAggregationBuilderComponent implements OnInit {
     return fields.map((field: any) => {
       const formattedForm = addNewField(field, true);
       formattedForm.enable();
-      return formattedForm.value;
+      const formattedField = formattedForm.value;
+      if (formattedField.kind !== 'SCALAR') {
+        formattedField.fields = this.formatFields(field.fields);
+      }
+      return formattedField;
     });
   }
 

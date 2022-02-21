@@ -63,11 +63,29 @@ export class AggregationBuilderService {
       switch (stage.type) {
         case PipelineStage.GROUP: {
           if (stage.form.groupBy) {
-            const groupByField = fields.find(
+            let groupByField = fields.find(
               (x) => x.name === stage.form.groupBy
             );
+            if (!groupByField && stage.form.groupBy.includes('.')) {
+              const fieldArray = stage.form.groupBy.split('.');
+              const parent = fieldArray.shift();
+              const sub = fieldArray.pop();
+              groupByField = fields.reduce((o, field) => {
+                if (
+                  field.name === parent &&
+                  field.fields.some((x: any) => x.name === sub)
+                ) {
+                  const newField = { ...field };
+                  newField.fields = field.fields.filter(
+                    (x: any) => x.name === sub
+                  );
+                  return newField;
+                }
+                return o;
+              }, null);
+            }
+            fields = [];
             if (groupByField) {
-              fields = [];
               fields.push(groupByField);
             }
           }
@@ -86,6 +104,21 @@ export class AggregationBuilderService {
               const newField = Object.assign({}, field);
               newField.type = { ...field.type, kind: 'SCALAR', name: 'String' };
               return newField;
+            } else if (stage.form.field.includes('.')) {
+              const fieldArray = stage.form.groupBy.split('.');
+              const parent = fieldArray.shift();
+              if (field.name === parent) {
+                const sub = fieldArray.pop();
+                const newField = Object.assign({}, field);
+                newField.fields = field.fields.map((x: any) =>
+                  x.name === sub
+                    ? {
+                        ...x,
+                        type: { ...x.type, kind: 'SCALAR', name: 'String' },
+                      }
+                    : x
+                );
+              }
             }
             return field;
           });
