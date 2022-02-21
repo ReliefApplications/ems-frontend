@@ -2,6 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { addFieldsForm } from '../../aggregation-builder-forms';
 
+/**
+ * Add Fields aggregation pipeline stage.
+ */
 @Component({
   selector: 'safe-add-field-stage',
   templateUrl: './add-field-stage.component.html',
@@ -16,10 +19,18 @@ export class SafeAddFieldStageComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  /**
+   * Adds new addField configuration to the pipeline.
+   */
   public addField() {
     this.form.push(addFieldsForm(null));
   }
 
+  /**
+   * Deletes addField configuration.
+   *
+   * @param index index of configuration to remove.
+   */
   public deleteField(index: number) {
     this.form.removeAt(index);
   }

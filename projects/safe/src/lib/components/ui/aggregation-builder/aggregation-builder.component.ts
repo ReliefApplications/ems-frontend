@@ -12,6 +12,10 @@ import { addNewField } from '../../query-builder/query-builder-forms';
 
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Main component of Aggregation builder.
+ * Aggregation are used to generate charts.
+ */
 @Component({
   selector: 'safe-aggregation-builder',
   templateUrl: './aggregation-builder.component.html',

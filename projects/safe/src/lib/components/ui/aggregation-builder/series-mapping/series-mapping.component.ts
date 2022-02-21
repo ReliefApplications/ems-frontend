@@ -2,6 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 
+/**
+ * Mapping of series parameters ( category / field ).
+ */
 @Component({
   selector: 'safe-series-mapping',
   templateUrl: './series-mapping.component.html',
@@ -21,6 +24,10 @@ export class SafeSeriesMappingComponent implements OnInit {
 
   constructor() {}
 
+  /**
+   * Gets the control names from the inputs.
+   * Sets the available fields.
+   */
   ngOnInit(): void {
     this.controlNames = Object.keys(this.mappingGroup.controls);
     this.fields$.subscribe((fields: any[]) => {
@@ -28,6 +35,12 @@ export class SafeSeriesMappingComponent implements OnInit {
     });
   }
 
+  /**
+   * Gets list of available fields from control name.
+   *
+   * @param controlName form control name
+   * @returns List of available fields.
+   */
   public fieldsFor(controlName: string): any[] {
     const excludedFields: string[] = [];
     for (const control of this.controlNames) {

@@ -6,6 +6,9 @@ import { PipelineStage } from './pipeline-stage.enum';
 import { addStage } from '../aggregation-builder-forms';
 import { debounceTime } from 'rxjs/operators';
 
+/**
+ * Aggregation pipeline component.
+ */
 @Component({
   selector: 'safe-pipeline',
   templateUrl: './pipeline.component.html',
@@ -46,7 +49,12 @@ export class SafePipelineComponent implements OnInit {
       });
   }
 
-  private updateFieldsPerStage(pipeline: any[]) {
+  /**
+   * Updates fields for the stage.
+   *
+   * @param pipeline list of pipeline stages.
+   */
+  private updateFieldsPerStage(pipeline: any[]): void {
     for (let index = 0; index <= pipeline.length; index++) {
       this.fieldsPerStage[index] = this.aggregationBuilder.fieldsAfter(
         this.initialFields,
