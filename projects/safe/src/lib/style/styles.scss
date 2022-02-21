@@ -1,32 +1,44 @@
-@use '~@angular/material' as mat;
+@use "~@angular/material" as mat;
+@import "variables.scss";
 @include mat.core();
 
+.sv_main {
+  --primary-color: #{$primary_500};
+  --secondary-color: #{$primary_500};
+  // --primary-text-color: #676a6c;
+  // --secondary-text-color: #a7a7a7;
+  // --inverted-text-color: #ffffff;
+  --primary-hover-color: #{$primary_500};
+  --selection-border-color: #{$primary_500};
+  // --primary-icon-color: #3d4d5d;
+  // --primary-bg-color: #fff;
+  // --secondary-bg-color: #f4f4f4;
+  // --primary-border-color: #e7eaec;
+  // --secondary-border-color: #ddd;
+  // --error-color: #ed5565;
+}
+
 $safe-palette: (
-  50 : #e0f1f9,
-  100 : #b3ddef,
-  200 : #80c6e4,
-  300 : #4dafd9,
-  400 : #269ed1,
-  500 : #008dc9,
-  600 : #0085c3,
-  700 : #007abc,
-  800 : #0070b5,
-  900 : #005da9,
-  Blue500 : #eaf4f8,
-  Blue600 : #d8e5ea,
-  Blue700 : #bccdd4,
-  Blue800 : #a4b6bd,
-  Blue900 : #7694a0,
-  A100 : #d3e8ff,
-  A200 : #a0ceff,
-  A400 : #6db4ff,
-  A700 : #53a7ff,
+  50: $primary_50,
+  100: $primary_100,
+  200: $primary_200,
+  300: $primary_300,
+  400: $primary_400,
+  500: $primary_500,
+  600: $primary_600,
+  700: $primary_700,
+  800: $primary_800,
+  900: $primary_900,
+  A100: $primary_A100,
+  A200: $primary_A200,
+  A400: $primary_A400,
+  A700: $primary_A700,
   contrast: (
     50: #000000,
     100: #000000,
     200: #000000,
     300: #000000,
-    400: #000000,
+    400: #ffffff,
     500: #ffffff,
     600: #ffffff,
     700: #ffffff,
@@ -34,18 +46,18 @@ $safe-palette: (
     900: #ffffff,
     A100: #000000,
     A200: #000000,
-    A400: #000000,
-    A700: #000000,
+    A400: #ffffff,
+    A700: #ffffff,
   ),
 );
 
 $safe-palette-accent: (
-  main: #efc530,
-  lighter: #fff865,
-  darker: #b89500,
-  200: #f7e298,
+  main: $secondary_main,
+  lighter: $secondary_lighter,
+  darker: $secondary_darker,
+  200: $secondary_200,
   // For slide toggle,
-    contrast:
+  contrast:
     (
       main: white,
       lighter: rgba(black, 0.87),
@@ -54,17 +66,19 @@ $safe-palette-accent: (
 );
 
 $safe-palette-warn: (
-  main: #d34444, // 500
+  main: #d34444,
+  // 500
   lighter: #ff766f,
   darker: #9b001d,
-  200: #e9a2a2, // 200
+  200: #e9a2a2,
+  // 200
   // For slide toggle,
   contrast:
-  (
-    main: white,
-    lighter: rgba(black, 0.87),
-    darker: white,
-  ),
+    (
+      main: white,
+      lighter: rgba(black, 0.87),
+      darker: white,
+    ),
 );
 
 $safe-primary: mat.define-palette($safe-palette);
@@ -110,6 +124,14 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   .warn {
     color: mat.get-color-from-palette($warn);
   }
+
+  .safe-add-application {
+    background-color:  mat.get-color-from-palette($primary, 50);
+
+    span {
+      color: mat.get-color-from-palette($primary);
+    }
+  }
 }
 
 @mixin chip($theme) {
@@ -117,7 +139,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
 
-  .warn-chip{
+  .warn-chip {
     background-color: mat.get-color-from-palette($warn, lighter) !important;
     color: mat.get-color-from-palette($warn) !important;
   }
@@ -155,13 +177,14 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     }
   }
 
-  .mat-button:disabled, .mat-stroked-button:disabled {
+  .mat-button:disabled,
+  .mat-stroked-button:disabled {
     color: #adadad !important;
   }
 
   .mat-flat-button:disabled {
     color: #adadad !important;
-    background-color: #d8d8d8!important;
+    background-color: #d8d8d8 !important;
   }
 }
 
@@ -169,7 +192,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 // img-selected
 
 // === GLOBAL STYLES ==
-.mat-table{
+.mat-table {
   box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
   font-size: 14px;
   opacity: 0.87;
@@ -179,7 +202,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 
 .success-button {
   &:not(:disabled) {
-    background-color: #63D168 !important;
+    background-color: #63d168 !important;
     color: white !important;
   }
 }
@@ -188,17 +211,17 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   background: mat.get-color-from-palette($safe-warn) !important;
 }
 
-.mat-header-cell{
+.mat-header-cell {
   border-bottom: 1px solid #d8d8d8 !important;
   color: #767373;
 }
 
-.mat-row{
+.mat-row {
   .mat-cell {
     border-bottom: 1px solid #f2f3f5 !important;
     color: #3f3c3c;
   }
-  .mat-cell:first-child{
+  .mat-cell:first-child {
     color: #000000;
     font-weight: 500;
   }
@@ -236,13 +259,14 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-.clickable{
+.clickable {
   &:hover {
-    cursor:pointer;
+    cursor: pointer;
   }
 }
 
-.mat-column-_actions, .mat-column-actions {
+.mat-column-_actions,
+.mat-column-actions {
   width: 64px;
 }
 
@@ -310,7 +334,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 
 .mat-tab-group {
   .mat-tab-header {
-      margin-bottom: 12px;
+    margin-bottom: 12px;
   }
 }
 
@@ -319,8 +343,15 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 @include button($safe-theme);
 @include custom-theme($safe-theme);
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; overflow: hidden; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow: hidden;
+}
 
 .widget-container {
   width: 100%;
@@ -370,7 +401,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; overflow: h
   }
 }
 
-.widget-content{
+.widget-content {
   flex: 1;
   height: auto;
 }
@@ -395,7 +426,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; overflow: h
   }
 }
 
-.tile-settings-dialog, .expanded-widget-dialog {
+.tile-settings-dialog,
+.expanded-widget-dialog {
   max-width: unset !important;
   width: 100%;
   height: calc(100% - 72px);

@@ -11,6 +11,7 @@ import { Subscription } from '../models/subscription.model';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
 import { Step } from '../models/step.model';
 import { Dashboard } from '../models/dashboard.model';
+import { Layout } from '../models/layout.model';
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
@@ -810,4 +811,58 @@ export const EDIT_DASHBOARD = gql`
 export interface EditDashboardMutationResponse {
   loading: boolean;
   editDashboard: Dashboard;
+}
+
+export const ADD_LAYOUT = gql`
+  mutation addLayout($resource: ID, $form: ID, $layout: LayoutInputType!) {
+    addLayout(resource: $resource, form: $form, layout: $layout) {
+      id
+      name
+      createdAt
+      query
+      display
+    }
+  }
+`;
+
+export interface AddLayoutMutationResponse {
+  loading: boolean;
+  addLayout: Layout;
+}
+
+export const EDIT_LAYOUT = gql`
+  mutation editLayout(
+    $resource: ID
+    $form: ID
+    $layout: LayoutInputType!
+    $id: ID!
+  ) {
+    editLayout(resource: $resource, form: $form, layout: $layout, id: $id) {
+      id
+      name
+      createdAt
+      query
+      display
+    }
+  }
+`;
+
+export interface EditLayoutMutationResponse {
+  loading: boolean;
+  editLayout: Layout;
+}
+
+export const DELETE_LAYOUT = gql`
+  mutation deleteLayout($resource: ID, $form: ID, $id: ID!) {
+    deleteLayout(resource: $resource, form: $form, id: $id) {
+      id
+      name
+      createdAt
+    }
+  }
+`;
+
+export interface deleteLayoutMutationResponse {
+  loading: boolean;
+  deleteLayout: Layout;
 }

@@ -142,7 +142,7 @@ const AVAILABLE_TYPES = [
 export class SafeTabFilterComponent implements OnInit {
   @Input() form: FormGroup = new FormGroup({});
   @Input() fields: any[] = [];
-  @Input() settings: any;
+  @Input() query: any;
   @Input() metaFields: any = {};
   @Input() canDelete = false;
   @Output() delete: EventEmitter<any> = new EventEmitter();
@@ -168,8 +168,8 @@ export class SafeTabFilterComponent implements OnInit {
 
   ngOnInit(): void {
     // TODO: move somewhere else
-    if (this.settings) {
-      this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
+    if (this.query) {
+      this.metaQuery = this.queryBuilder.buildMetaQuery(this.query);
       if (this.metaQuery) {
         this.metaQuery.subscribe((res: any) => {
           for (const field in res.data) {

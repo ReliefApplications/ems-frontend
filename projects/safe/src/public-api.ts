@@ -14,6 +14,7 @@ export * from './lib/services/form.service';
 export * from './lib/services/layout.service';
 export * from './lib/services/api-proxy.service';
 export * from './lib/services/dashboard.service';
+export * from './lib/services/grid-layout.service';
 
 // === CONST ===
 export * from './lib/const/notifications';
@@ -38,6 +39,7 @@ export * from './lib/models/position-attribute-category.model';
 export * from './lib/models/position-attribute.model';
 export * from './lib/models/apiConfiguration.model';
 export * from './lib/models/pullJob.model';
+export * from './lib/models/layout.model';
 
 // === COMPONENTS ===
 export * from './lib/components/layout/public-api';
@@ -70,6 +72,8 @@ export * from './lib/components/config-display-grid-fields-modal/public-api';
 export * from './lib/components/content-choice/public-api';
 export * from './lib/components/workflow-stepper/public-api';
 export * from './lib/components/applications-summary/public-api';
+/** Grid Layouts */
+export * from './lib/components/layout-modal/public-api';
 
 // === UI ===
 export * from './lib/components/ui/button/public-api';
