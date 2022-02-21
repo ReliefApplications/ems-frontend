@@ -1,4 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { createAggregationForm } from '../../../ui/aggregation-builder/aggregation-builder-forms';
 
 export class Chart {
   public form: FormGroup;
@@ -8,13 +9,15 @@ export class Chart {
     this.fb = new FormBuilder();
     const legend = settings ? settings.legend : null;
     const title = settings ? settings.title : null;
-    const pipeline = settings ? settings.pipeline : null;
     this.form = this.fb.group({
       type: [
         settings && settings.type ? settings.type : null,
         Validators.required,
       ],
-      pipeline: [pipeline, Validators.required],
+      aggregation: createAggregationForm(
+        settings ? settings.aggregation : null,
+        settings ? `${settings.type}-chart` : ''
+      ),
       legend: this.fb.group({
         visible: [legend ? legend.visible : true],
         position: [legend ? legend.position : 'bottom'],

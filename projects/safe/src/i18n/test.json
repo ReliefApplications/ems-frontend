@@ -40,7 +40,9 @@
         "legend": "******",
         "orientation": "******",
         "aggregation": "******",
-        "id": "******"
+        "id": "******",
+        "none": "******",
+        "raw": "******"
     },
     "action": {
         "edit": "******",
@@ -215,7 +217,6 @@
         "schedulePlaceholder": "******",
         "mapping": "******",
         "switch": "******",
-        "raw": "******",
         "identifier": "******",
         "delete": "******",
         "deleteDesc": "******"
@@ -400,5 +401,41 @@
         "changeAccess": "******",
         "clearCache": "******",
         "filterVisibility": "******"
-    }
+    },
+    "aggregation": {
+        "dataSource": "******",
+        "sourceFields": "******",
+        "addStage":  "******",
+        "stages": {
+            "filter": "******",
+            "sort": "******",
+            "group": "******",
+            "addFields": "******",
+            "unwind": "******",
+            "custom": "******"
+        },
+        "mapping": {
+            "xAxis": "******",
+            "yAxis": "******"
+        },
+        "groupBy": "******",
+        "addField": "******",
+        "fieldName": "******",
+        "operator": "******",
+        "operators": {
+          "sum": "******",
+          "avg": "******",
+          "count": "******",
+          "max": "******",
+          "min": "******",
+          "first": "******",
+          "last": "******",
+          "year": "******",
+          "month": "******",
+          "week": "******",
+          "day": "******",
+          "add": "******",
+          "multiply": "******"
+        }
+    } 
 }

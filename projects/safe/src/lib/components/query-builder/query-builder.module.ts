@@ -54,6 +54,11 @@ import { SafeRuleListComponent } from './tab-style/rule-list/rule-list.component
     InputsModule,
     LabelModule,
   ],
-  exports: [SafeQueryBuilderComponent, SafeTabFieldsComponent],
+  exports: [
+    SafeQueryBuilderComponent,
+    SafeTabFieldsComponent,
+    SafeTabFilterComponent,
+    SafeTabSortComponent,
+  ],
 })
 export class SafeQueryBuilderModule {}

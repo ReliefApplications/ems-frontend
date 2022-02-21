@@ -276,7 +276,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-first',
     });
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
     if (this.metaQuery) {
       this.loading = true;
       this.metaQuery.subscribe(
@@ -288,6 +288,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               await this.gridService.populateMetaFields(this.metaFields);
               const fields = this.settings?.query?.fields || [];
               const defaultLayoutFields = this.defaultLayout.fields || {};
+              console.log(this.defaultLayout);
               this.fields = this.gridService.getFields(
                 fields,
                 this.metaFields,
@@ -295,6 +296,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
                 '',
                 { filter: true }
               );
+              console.log(this.fields);
             }
           }
           this.getRecords();
@@ -328,12 +330,22 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   private convertDateFields(items: any[]): void {
     const dateFields = this.fields
-      .filter((x) => ['Date', 'DateTime', 'Time'].includes(x.type))
+      .filter((x) => ['Date', 'DateTime'].includes(x.type))
+      .map((x) => x.name);
+    const timeFields = this.fields
+      .filter((x) => ['Time'].includes(x.type))
       .map((x) => x.name);
     items.map((x) => {
       for (const [key, value] of Object.entries(x)) {
-        if (dateFields.includes(key)) {
+        if (dateFields.includes(key) || timeFields.includes(key)) {
           x[key] = x[key] && new Date(x[key]);
+          if (timeFields.includes(key)) {
+            x[key] =
+              x[key] &&
+              new Date(
+                x[key].getTime() + x[key].getTimezoneOffset() * 60 * 1000
+              );
+          }
         }
       }
     });
@@ -390,6 +402,20 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     for (const item of this.updatedItems) {
       const data = Object.assign({}, item);
       delete data.id;
+      for (const field of this.fields) {
+        if (field.type === 'Time') {
+          const time = data[field.name]
+            .toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+            .split(/:| /);
+          if (
+            (time[2] === 'PM' && time[0] !== '12') ||
+            (time[2] === 'AM' && time[0] === '12')
+          ) {
+            time[0] = (parseInt(time[0], 10) + 12).toString();
+          }
+          data[field.name] = time[0] + ':' + time[1];
+        }
+      }
       promises.push(
         this.apollo
           .mutate<EditRecordMutationResponse>({
@@ -577,10 +603,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         if (event.items && event.items.length > 0) {
           this.onDelete(event.items);
         }
-        break;
-      }
-      case 'saveLayout': {
-        this.saveDefaultLayout();
         break;
       }
       case 'resetLayout': {
@@ -869,6 +891,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Builds the request body with all the useful data
+    const fileName = `${
+      this.settings.title ? this.settings.title : 'records'
+    }.${e.format}`;
     const currentLayout = this.layout;
     const body = {
       ids,
@@ -879,6 +904,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               filters: [{ operator: 'eq', field: 'ids', value: ids }],
             }
           : this.queryFilter,
+      query: this.settings.query,
+      sortField: this.sortField,
+      sortOrder: this.sortOrder,
       format: e.format,
       // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
@@ -896,9 +924,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     };
 
     // Builds and make the request
-    const fileName = `${
-      this.settings.title ? this.settings.title : 'records'
-    }.${e.format}`;
     this.downloadService.getRecordsExport(
       `${this.apiUrl}/download/records`,
       `text/${e.format};charset=utf-8;`,

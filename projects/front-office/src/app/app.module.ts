@@ -186,9 +186,5 @@ const imports: any[] = [];
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(private apollo: Apollo) {
-    // REFRESH.asObservable().subscribe((res) => {
-    //   console.log('Schema generated without cache reloading.');
-    // });
-  }
+  constructor(private apollo: Apollo) {}
 }

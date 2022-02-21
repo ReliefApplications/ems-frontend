@@ -116,6 +116,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     history: false,
     convert: false,
   };
+  @Input() hasDetails = true;
   @Output() action = new EventEmitter();
   get hasEnabledActions(): boolean {
     return Object.values(this.actions).includes(true);
@@ -144,6 +145,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   @Input() filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
   @Output() filterChange = new EventEmitter();
   @Output() showFilterChange = new EventEmitter();
+  @Input() searchable = true;
   public search = new FormControl('');
   @Output() searchChange = new EventEmitter();
 

@@ -59,8 +59,7 @@ export class SafeRecordModalComponent implements OnInit {
   public containerId: string;
   public containerNextId = '';
 
-  // === SURVEY COLORS
-  primaryColor = '#008DC9';
+  environment: any;
 
   public get pages$(): Observable<any[]> {
     return this.pages.asObservable();
@@ -69,6 +68,7 @@ export class SafeRecordModalComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<SafeRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
@@ -80,13 +80,15 @@ export class SafeRecordModalComponent implements OnInit {
     if (this.data.compareTo) {
       this.containerNextId = uuidv4();
     }
+    this.environment = environment;
   }
 
   async ngOnInit(): Promise<void> {
     this.canEdit = this.data.canUpdate;
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
-    defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
+    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
+    defaultThemeColorsSurvey['$main-hover-color'] =
+      this.environment.theme.primary;
 
     Survey.StylesManager.applyTheme();
     const promises: Promise<
