@@ -12,7 +12,7 @@
     "compodoc:elem": "npx compodoc -p tsconfig.json projects/web-element/src -d documentation/web-element",
     "test": "ng test",
     "test:ci": "ng test",
-    "lint": "ng lint",
+    "lint": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng lint",
     "e2e": "ng e2e",
     "docs:json": "NODE_OPTIONS=--max-old-space-size=4096 npx compodoc -p ./tsconfig.json -e json -d .",
     "storybook": "npm run docs:json && start-storybook -p 6006",
