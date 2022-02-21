@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddLayoutComponent } from './add-layout.component';
+import { SafeGroupStageComponent } from './group-stage.component';
 
-describe('AddLayoutComponent', () => {
-  let component: AddLayoutComponent;
-  let fixture: ComponentFixture<AddLayoutComponent>;
+describe('SafeGroupStageComponent', () => {
+  let component: SafeGroupStageComponent;
+  let fixture: ComponentFixture<SafeGroupStageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AddLayoutComponent],
+      declarations: [SafeGroupStageComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddLayoutComponent);
+    fixture = TestBed.createComponent(SafeGroupStageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

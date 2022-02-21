@@ -41,7 +41,8 @@
         "orientation": "******",
         "aggregation": "******",
         "id": "******",
-        "none": "******"
+        "none": "******",
+        "raw": "******"
     },
     "action": {
         "edit": "******",
@@ -216,7 +217,6 @@
         "schedulePlaceholder": "******",
         "mapping": "******",
         "switch": "******",
-        "raw": "******",
         "identifier": "******",
         "delete": "******",
         "deleteDesc": "******"
@@ -417,6 +417,25 @@
         "mapping": {
             "xAxis": "******",
             "yAxis": "******"
+        },
+        "groupBy": "******",
+        "addField": "******",
+        "fieldName": "******",
+        "operator": "******",
+        "operators": {
+          "sum": "******",
+          "avg": "******",
+          "count": "******",
+          "max": "******",
+          "min": "******",
+          "first": "******",
+          "last": "******",
+          "year": "******",
+          "month": "******",
+          "week": "******",
+          "day": "******",
+          "add": "******",
+          "multiply": "******"
         }
     } 
 }

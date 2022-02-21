@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddLayoutComponent } from './add-layout.component';
+import { SafeAddFieldStageComponent } from './add-field-stage.component';
 
-describe('AddLayoutComponent', () => {
-  let component: AddLayoutComponent;
-  let fixture: ComponentFixture<AddLayoutComponent>;
+describe('SafeAddFieldStageComponent', () => {
+  let component: SafeAddFieldStageComponent;
+  let fixture: ComponentFixture<SafeAddFieldStageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AddLayoutComponent],
+      declarations: [SafeAddFieldStageComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddLayoutComponent);
+    fixture = TestBed.createComponent(SafeAddFieldStageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -34,7 +34,7 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline">
                             <mat-label>{{'global.value' | translate}}</mat-label>
-                            <ng-container *ngIf="selectedFields[i].type === 'Int'">
+                            <ng-container *ngIf="['Int', 'Float'].includes(selectedFields[i].type)">
                                 <input matInput formControlName="value" type="number" />
                             </ng-container>
                             <ng-container *ngIf="selectedFields[i].type === 'Boolean'">

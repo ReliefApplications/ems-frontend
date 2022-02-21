@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddLayoutComponent } from './add-layout.component';
+import { SafeFieldDropdownComponent } from './field-dropdown.component';
 
-describe('AddLayoutComponent', () => {
-  let component: AddLayoutComponent;
-  let fixture: ComponentFixture<AddLayoutComponent>;
+describe('SafeFieldDropdownComponent', () => {
+  let component: SafeFieldDropdownComponent;
+  let fixture: ComponentFixture<SafeFieldDropdownComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AddLayoutComponent],
+      declarations: [SafeFieldDropdownComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddLayoutComponent);
+    fixture = TestBed.createComponent(SafeFieldDropdownComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

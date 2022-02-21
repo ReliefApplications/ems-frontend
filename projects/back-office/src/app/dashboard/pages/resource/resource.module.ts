@@ -12,7 +12,7 @@ import {
   SafeAccessModule,
   SafePreviousButtonModule,
   SafeButtonModule,
-  SafeLayoutModalModule
+  SafeLayoutModalModule,
 } from '@safe/builder';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
