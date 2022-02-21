@@ -75,6 +75,19 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     endCursor: '',
   };
 
+  // === SKELETON DATA ===
+  public skeletonDataSource: any[] = [
+    { sk1: 'sk', sk2: 'sk', sk3: 'sk', sk4: 'sk', sk5: 'sk', sk6: 'sk', sk7: 'sk', sk8: 'sk' },
+    { sk1: 'sk', sk2: 'sk', sk3: 'sk', sk4: 'sk', sk5: 'sk', sk6: 'sk', sk7: 'sk', sk8: 'sk' },
+    { sk1: 'sk', sk2: 'sk', sk3: 'sk', sk4: 'sk', sk5: 'sk', sk6: 'sk', sk7: 'sk', sk8: 'sk' },
+    { sk1: 'sk', sk2: 'sk', sk3: 'sk', sk4: 'sk', sk5: 'sk', sk6: 'sk', sk7: 'sk', sk8: 'sk' },
+    { sk1: 'sk', sk2: 'sk', sk3: 'sk', sk4: 'sk', sk5: 'sk', sk6: 'sk', sk7: 'sk', sk8: 'sk' },
+    { sk1: 'sk', sk2: 'sk', sk3: 'sk', sk4: 'sk', sk5: 'sk', sk6: 'sk', sk7: 'sk', sk8: 'sk' },
+    { sk1: 'sk', sk2: 'sk', sk3: 'sk', sk4: 'sk', sk5: 'sk', sk6: 'sk', sk7: 'sk', sk8: 'sk' },
+    { sk1: 'sk', sk2: 'sk', sk3: 'sk', sk4: 'sk', sk5: 'sk', sk6: 'sk', sk7: 'sk', sk8: 'sk' },
+  ];
+  public skeletonDisplayedColumns: string[] = Object.keys(this.skeletonDataSource[0]);
+
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,

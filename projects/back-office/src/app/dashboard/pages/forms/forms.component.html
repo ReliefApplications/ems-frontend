@@ -1,5 +1,4 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
+<ng-container *ngIf="!loading; else skeleton_template" >
   <div class="forms-header">
     <!-- FILTERING -->
     <app-filter (filter)="onFilter($event)"></app-filter>
@@ -133,3 +132,27 @@
     (page)="onPage($event)">
   </mat-paginator>
 </ng-container>
+
+
+<!-- SKELETON TEMPLATE -->
+<ng-template #skeleton_template>
+  <div style="display: flex; margin-bottom: 18px">
+    <kendo-skeleton shape="rectangle" height="36px" width="230px"></kendo-skeleton>
+    <kendo-skeleton style="margin-left: 16px;" shape="rectangle" height="36px" width="125px"></kendo-skeleton>
+    <kendo-skeleton style="margin-left: auto;" shape="rectangle" height="36px" width="150px"></kendo-skeleton>
+  </div>
+
+  <table *ngIf="loading" mat-table [dataSource]="skeletonDataSource">
+    <ng-container *ngFor="let key of skeletonDisplayedColumns" matColumnDef="{{key}}">
+      <th mat-header-cell *matHeaderCellDef>
+        <kendo-skeleton shape="text" width="25%"></kendo-skeleton>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <kendo-skeleton shape="text" width="25%"></kendo-skeleton>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="skeletonDisplayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: skeletonDisplayedColumns;"></tr>
+  </table>
+</ng-template>
