@@ -28,7 +28,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { IndicatorsModule } from "@progress/kendo-angular-indicators";
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
 @NgModule({
   declarations: [ApplicationsComponent, ChoseRoleComponent, FilterComponent],

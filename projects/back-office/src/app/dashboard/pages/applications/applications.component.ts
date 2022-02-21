@@ -71,8 +71,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     { sk1: 'sk1', sk2: 'sk2', sk3: 'sk3', sk4: 'sk4' },
     { sk1: 'sk1', sk2: 'sk2', sk3: 'sk3', sk4: 'sk4' },
   ];
-  public skeletonDisplayedColumns: string[] = Object.keys(this.skeletonDataSource[0]);
-
+  public skeletonDisplayedColumns: string[] = Object.keys(
+    this.skeletonDataSource[0]
+  );
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -99,7 +100,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     private previewService: PreviewService
-  ) { }
+  ) {}
 
   /**
    * Creates the application query and subscribes to the query changes.
