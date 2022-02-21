@@ -18,11 +18,14 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatRadioModule } from '@angular/material/radio';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeRuleComponent } from './tab-style/rule/rule.component';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { SafeRuleListComponent } from './tab-style/rule-list/rule-list.component';
+import { SafeQueryStyleListComponent } from './tab-style/query-style-list/query-style-list.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatMenuModule } from '@angular/material/menu';
+import { SafeQueryStyleComponent } from './tab-style/query-style/query-style.component';
+import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/query-style-preview.component';
 
 @NgModule({
   declarations: [
@@ -31,8 +34,9 @@ import { SafeRuleListComponent } from './tab-style/rule-list/rule-list.component
     SafeTabSortComponent,
     SafeTabFilterComponent,
     SafeTabStyleComponent,
-    SafeRuleComponent,
-    SafeRuleListComponent,
+    SafeQueryStyleListComponent,
+    SafeQueryStyleComponent,
+    SafeQueryStylePreviewComponent,
   ],
   imports: [
     CommonModule,
@@ -42,6 +46,8 @@ import { SafeRuleListComponent } from './tab-style/rule-list/rule-list.component
     MatInputModule,
     MatRadioModule,
     MatTabsModule,
+    MatMenuModule,
+    MatTableModule,
     DragDropModule,
     MatButtonModule,
     MatIconModule,

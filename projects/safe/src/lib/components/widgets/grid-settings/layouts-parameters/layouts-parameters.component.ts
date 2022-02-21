@@ -27,10 +27,6 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
   @Input() form: Form | null = null;
   @Input() selectedLayouts: FormControl | null = null;
 
-  @Output() add = new EventEmitter();
-  @Output() delete = new EventEmitter();
-  @Output() edit = new EventEmitter();
-
   layouts: Layout[] = [];
   allLayouts: Layout[] = [];
   columns: string[] = ['name', 'createdAt', '_actions'];

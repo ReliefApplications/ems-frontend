@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeRuleComponent } from './rule.component';
+import { SafeQueryStyleComponent } from './query-style.component';
 
-describe('SafeRuleComponent', () => {
-  let component: SafeRuleComponent;
-  let fixture: ComponentFixture<SafeRuleComponent>;
+describe('SafeQueryStyleComponent', () => {
+  let component: SafeQueryStyleComponent;
+  let fixture: ComponentFixture<SafeQueryStyleComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeRuleComponent],
+      declarations: [SafeQueryStyleComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeRuleComponent);
+    fixture = TestBed.createComponent(SafeQueryStyleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

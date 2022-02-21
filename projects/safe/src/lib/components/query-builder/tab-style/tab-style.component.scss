@@ -1,6 +1,9 @@
-.add-button {
-  padding: 8px 0;
-  safe-button:first-child {
-      margin-right: 8px;
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  safe-button {
+      max-width: 300px;
+      flex: 1;
   }
 }

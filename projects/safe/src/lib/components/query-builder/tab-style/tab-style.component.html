@@ -1,15 +1,27 @@
-<div class="info-text">{{'widgets.query.style.description' | translate}}</div>
-<form [formGroup]="form">
-    <div class="add-button">
-        <safe-button icon="add" (click)="onAddStyle()" 
-        [disabled]="isEdited" category="tertiary">{{'widgets.query.style.new' | translate}}</safe-button>
+<div class="info-text">{{ 'widgets.query.style.description' | translate }}</div>
+<ng-container *ngIf="!fieldForm">
+  <!-- LIST OF STYLES -->
+  <safe-query-style-list
+    [form]="form"
+    (delete)="onDelete($event)"
+  ></safe-query-style-list>
+  <div class="actions">
+      <safe-button
+        icon="add"
+        (click)="onAdd()"
+        category="tertiary"
+        variant="primary"
+        [block]="true"
+        >{{ 'widgets.query.style.new' | translate }}</safe-button
+      >
     </div>
-
-    <safe-rule-list *ngIf="!fieldForm" [stylesList]="stylesList"
-    (editRule)="onEditStyle($event)" (deleteRule)="onDeleteStyle($event)"></safe-rule-list>
-    
-    <safe-rule *ngIf="fieldForm" [stylesList]="stylesList" [styleForm]="fieldForm" [styleIndex]="styleIndex" 
-    [scalarFields]="scalarFields" [settings]="settings" [availableFields]="availableFields" [factory]="factory"
-     (closeRule)="onCloseField()" (changeApplyTo)="onApplyTo($event)"></safe-rule>
-
-</form>
+</ng-container>
+<ng-container *ngIf="fieldForm">
+  TBD
+  <!-- STYLE EDITION -->
+  <!-- <safe-query-style
+      [form]="styleForm"
+      (closeRule)="onClose()"
+      [scalarFields]="scalarFields"
+    ></safe-query-style> -->
+</ng-container>

@@ -64,7 +64,7 @@
                     <!-- DISPLAY ( disabled fields ) -->
                     <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                         *ngIf="!field.meta.type">
-                        <div class="translate textbox-container" [style]="dataItem._fields.length > 0 ? dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style">
+                        <div class="translate textbox-container">
                             <div #refSpan class="textbox">
                                 {{getPropertyValue(dataItem, field.name)}}
                             </div>
@@ -76,7 +76,7 @@
                     <!-- DISPLAY ( text / comment ) -->
                     <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                         *ngIf="field.meta.type === 'text'">
-                        <div class="translate textbox-container" [style]="dataItem._fields.length > 0 ? dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style">
+                        <div class="translate textbox-container">
                             <div #refSpan class="textbox">
                                 {{getPropertyValue(dataItem, field.name)}}
                             </div>
@@ -88,7 +88,7 @@
                     <!-- DISPLAY ( url ) -->
                     <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                         *ngIf="field.meta.type === 'url'">
-                        <div class="textbox-container" [style]="dataItem._fields.length > 0 ? dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style">
+                        <div class="textbox-container">
                             <a class="url-container textbox" href="{{getPropertyValue(dataItem, field.name)}}"
                                 target="_blank" rel="noopener noreferrer">
                                 <div #refSpan>
@@ -102,7 +102,7 @@
                     </ng-template>
                     <!-- DISPLAY ( boolean ) -->
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'boolean'">
-                        <input type="checkbox" kendoCheckBox [style]="dataItem._fields.length > 0 ? dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style"
+                        <input type="checkbox" kendoCheckBox 
                          [(ngModel)]="dataItem[field.name]" disabled />
                     </ng-template>
                     <!-- DISPLAY ( color ) -->
@@ -112,7 +112,7 @@
                     </ng-template>
                     <!-- DISPLAY ( records / TODO ) -->
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'records'">
-                        <div *ngIf="dataItem[field.name]" class="textbox-container" [style]="dataItem._fields.length > 0 ? dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style">
+                        <div *ngIf="dataItem[field.name]" class="textbox-container">
                             <div #refSpan class="textbox external-link" *ngIf="dataItem[field.name].length > 0"
                                 matTooltip="Open detail"
                                 (click)="action.emit({ action: 'details', items: dataItem[field.name], field: field })">
@@ -124,7 +124,7 @@
                     </ng-template>
                     <!-- DISPLAY ( dropdown / radiogroup ) -->
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem"
-                        *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'" [style]="dataItem._fields.length > 0 ? dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style">
+                        *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
                         {{ getPropertyValue(dataItem, field.name) }}
                     </ng-template>
                 </ng-container>
@@ -188,7 +188,7 @@
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
                     <kendo-multiselect [data]="field.meta.choices" textField="text" valueField="value"
                         [valuePrimitive]="true" [formControl]="formGroup.get(field.name)" [autoClose]="false"
-                        [style]="dataItem._fields.length > 0 ? dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style">
+                       >
                     </kendo-multiselect>
                 </ng-template>
             </kendo-grid-column>
@@ -198,7 +198,7 @@
                 [minResizableWidth]="50">
                 <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                     <button kendoButton icon="file-data" *ngFor="let file of dataItem[field.name]" [look]="'flat'"
-                        [matTooltip]="file.name" (click)="onDownload(file)" [style]="dataItem._fields.length > 0 ? dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style"></button>
+                        [matTooltip]="file.name" (click)="onDownload(file)"></button>
                 </ng-template>
             </kendo-grid-column>
             <!-- COMPLEX QUESTION TYPES ( matrix / matrixdropdown / matrixdynamic / multipletext ) -->
@@ -209,7 +209,7 @@
                     <kendo-grid-column [columnMenu]="false" [width]="field.width" [hidden]="field.hidden"
                         [minResizableWidth]="50" [editable]="!field.disabled">
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-                            <ul class="matrix-cell" [style]="dataItem._fields.length > 0 ? dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style">
+                            <ul class="matrix-cell">
                                 <li *ngFor="let row of field.meta.rows">
                                     {{ row.label }}
                                 </li>
@@ -223,7 +223,7 @@
                         [hidden]="field.hidden" [minResizableWidth]="50" [editable]="!field.disabled">
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                             <!-- DISPLAY ( matrix / matrixdropdown / matrixdynamic ) -->
-                            <ng-container *ngIf="field.meta.type !== 'multipletext'" [style]="dataItem._fields.length > 0 ? dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style">
+                            <ng-container *ngIf="field.meta.type !== 'multipletext'">
                                 <ul class="matrix-cell">
                                     <ng-container *ngIf="field.meta.type === 'matrix'">
                                         <li *ngFor="let row of field.meta.rows">
@@ -251,8 +251,7 @@
                             </ng-container>
                             <!-- DISPLAY ( multipletext ) -->
                             <ng-container *ngIf="field.meta.type === 'multipletext' && dataItem[field.name]">
-                                <span class="translate" [style]="dataItem._fields.length > 0 ?
-                                     dataItem._fields.includes(field.name) ? dataItem._meta.style : '' :  dataItem._meta.style">
+                                <span class="translate">
                                     {{ dataItem[field.name][column.name] }}
                                 </span>
                             </ng-container>

@@ -144,6 +144,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       : this.settings.query?.sort?.order || '';
   }
 
+  get style(): any {
+    return this.settings.query?.style || null;
+  }
+
   // === FILTERING ===
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
   public showFilter = false;
@@ -271,7 +275,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder,
-        styles: this.settings.query.style,
+        styles: this.style,
       },
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-first',
@@ -288,7 +292,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               await this.gridService.populateMetaFields(this.metaFields);
               const fields = this.settings?.query?.fields || [];
               const defaultLayoutFields = this.defaultLayout.fields || {};
-              console.log(this.defaultLayout);
               this.fields = this.gridService.getFields(
                 fields,
                 this.metaFields,
@@ -296,7 +299,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
                 '',
                 { filter: true }
               );
-              console.log(this.fields);
             }
           }
           this.getRecords();
@@ -447,14 +449,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           this.error = false;
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              const nodes =
-                res.data[field].edges.map((x: any) => ({
-                  ...x.node,
-                  _meta: {
-                    style: x.meta.style[0],
-                  },
-                  _fields: x.meta.style[1],
-                })) || [];
+              const nodes = res.data[field].edges.map((x: any) => x.node) || [];
               this.totalCount = res.data[field].totalCount;
               this.items = cloneData(nodes);
               this.convertDateFields(this.items);
@@ -949,7 +944,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder,
-        styles: this.settings.query.style,
+        styles: this.style,
       },
       updateQuery: (prev: any, { fetchMoreResult }: any) => {
         // this.loading = false;
