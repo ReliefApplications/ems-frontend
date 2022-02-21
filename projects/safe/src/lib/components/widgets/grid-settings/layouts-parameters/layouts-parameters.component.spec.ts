@@ -8,9 +8,8 @@ describe('LayoutsParametersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LayoutsParametersComponent ]
-    })
-    .compileComponents();
+      declarations: [LayoutsParametersComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
