@@ -34,7 +34,9 @@ export class SafePipelineComponent implements OnInit {
       this.initialFields = [...fields];
       this.fieldsPerStage = [];
       this.updateFieldsPerStage(
-        this.pipelineForm.valid ? this.pipelineForm.value : []
+        this.pipelineForm.valid || this.pipelineForm.value.length === 1
+          ? this.pipelineForm.value
+          : []
       );
     });
     this.metaFields$.subscribe((meta: any) => {
@@ -43,7 +45,10 @@ export class SafePipelineComponent implements OnInit {
     this.pipelineForm.valueChanges
       .pipe(debounceTime(500))
       .subscribe((pipeline: any[]) => {
-        if (this.pipelineForm.valid) {
+        if (
+          this.pipelineForm.valid ||
+          (pipeline.length === 1 && this.fieldsPerStage.length === 0)
+        ) {
           this.updateFieldsPerStage(pipeline);
         }
       });
@@ -55,7 +60,7 @@ export class SafePipelineComponent implements OnInit {
    * @param pipeline list of pipeline stages.
    */
   private updateFieldsPerStage(pipeline: any[]): void {
-    for (let index = 0; index <= pipeline.length; index++) {
+    for (let index = 0; index < pipeline.length; index++) {
       this.fieldsPerStage[index] = this.aggregationBuilder.fieldsAfter(
         this.initialFields,
         pipeline.slice(0, index)
