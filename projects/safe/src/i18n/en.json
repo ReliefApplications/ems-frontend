@@ -325,6 +325,18 @@
       }
     },
     "grid": {
+      "style": {
+        "name": "Rule name",
+        "criteria": "Rule criteria",
+        "background": {
+          "color": "Background color"
+        },
+        "text": {
+          "color": "Text color",
+          "style": "Text style"
+        },
+        "fields": "Fields"
+      },
       "save": "Save Layout as default",
       "reset": "Reset default Layout",
       "invalid": "Invalid grid configuration",

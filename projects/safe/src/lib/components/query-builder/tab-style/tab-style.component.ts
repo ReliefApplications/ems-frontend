@@ -20,7 +20,7 @@ export class SafeTabStyleComponent implements OnInit {
   @Input() factory?: ComponentFactory<any>;
   @Input() form!: FormArray;
   @Input() editedStyleForm: FormGroup | null = null;
-  @Input() availableFields: any[] = [];
+  @Input() fields: any[] = [];
   @Input() scalarFields: any[] = [];
   @Input() metaFields: any = {};
   @Input() canDelete = false;

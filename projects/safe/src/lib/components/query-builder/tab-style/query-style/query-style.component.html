@@ -9,14 +9,14 @@
       </safe-button>
 
       <div class="field-form">
-        <span class="field-name">{{ 'grid.style.name' | translate }}</span>
+        <span class="field-name">{{ 'widgets.grid.style.name' | translate }}</span>
         <mat-form-field appearance="outline">
           <input matInput formControlName="name" type="text" />
         </mat-form-field>
       </div>
 
       <div class="field-form">
-        <span class="field-name">{{ 'grid.style.criteria' | translate }}</span>
+        <span class="field-name">{{ 'widgets.grid.style.criteria' | translate }}</span>
         <safe-tab-filter
           [form]="$any(form?.controls?.filter)"
           [fields]="scalarFields"
@@ -27,7 +27,7 @@
       <ng-container formGroupName="background">
         <div class="field-form">
           <span class="field-name">{{
-            'grid.style.background.color' | translate
+            'widgets.grid.style.background.color' | translate
           }}</span>
           <kendo-colorpicker formControlName="color"></kendo-colorpicker>
         </div>
@@ -35,13 +35,13 @@
       <ng-container formGroupName="text">
         <div class="field-form">
           <span class="field-name">{{
-            'grid.style.text.color' | translate
+            'widgets.grid.style.text.color' | translate
           }}</span>
           <kendo-colorpicker formControlName="color"></kendo-colorpicker>
         </div>
         <div class="field-form">
           <span class="field-name">{{
-            'grid.style.text.style' | translate
+            'widgets.grid.style.text.style' | translate
           }}</span>
           <div class="text-style">
             <safe-button
@@ -83,22 +83,16 @@
         </mat-radio-group>
       </div> -->
 
-      <!-- <div
-        class="field-form"
-        *ngIf="
-          styles[styleIndex].styleAppliedTo === 'selected-columns' ||
-          selectedColumns
-        "
-      >
-        <span class="field-name"></span>
+      <div class="field-form">
+        <span class="field-name">{{'widgets.grid.style.fields' | translate }}</span>
         <safe-tab-fields
-          *ngIf="availableFields.length > 0"
-          [form]="$any(form?.controls?.fields)"
-          [fields]="availableFields"
+          *ngIf="fields.length > 0"
+          [form]="fieldsFormControl"
+          [fields]="fields"
           [factory]="factory"
         >
         </safe-tab-fields>
-      </div> -->
+      </div>
     </form>
   </ng-container>
 </div>

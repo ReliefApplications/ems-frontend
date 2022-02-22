@@ -154,9 +154,6 @@ export const createStyleForm = (value: any): FormGroup =>
       underline: [value?.text?.underline || false],
       italic: [value?.text?.italic || false],
     }),
-    fields: formBuilder.array(
-      value && value.fields ? value.fields.map((x: any) => addNewField(x)) : [],
-      null
-    ),
+    fields: [value?.fields || []],
     filter: createFilterGroup(value?.filter || {}, null),
   });
