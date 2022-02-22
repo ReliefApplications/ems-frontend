@@ -173,7 +173,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
-    private downloadService: SafeDownloadService,
+    private downloadService: SafeDownloadService
   ) {}
 
   ngOnInit(): void {
@@ -217,6 +217,19 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     } else {
       return value;
     }
+  }
+
+  /**
+   * Returns field style from path.
+   *
+   * @param item Item to get style of.
+   * @param path Path of the property.
+   * @returns Style fo the property.
+   */
+  public getStyle(item: any, path: string): any {
+    const fieldStyle = get(item, `_meta.style.${path}`);
+    const rowStyle = get(item, '_meta.style._row');
+    return fieldStyle ? fieldStyle : rowStyle;
   }
 
   // === FILTER ===

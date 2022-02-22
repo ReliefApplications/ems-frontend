@@ -1,9 +1,10 @@
 <div class="info-text">{{ 'widgets.query.style.description' | translate }}</div>
-<ng-container *ngIf="!fieldForm">
+<ng-container *ngIf="!editedStyleForm">
   <!-- LIST OF STYLES -->
   <safe-query-style-list
     [form]="form"
     (delete)="onDelete($event)"
+    (edit)="onEdit($event)"
   ></safe-query-style-list>
   <div class="actions">
       <safe-button
@@ -16,12 +17,11 @@
       >
     </div>
 </ng-container>
-<ng-container *ngIf="fieldForm">
-  TBD
+<ng-container *ngIf="editedStyleForm">
   <!-- STYLE EDITION -->
-  <!-- <safe-query-style
-      [form]="styleForm"
-      (closeRule)="onClose()"
+  <safe-query-style
+      [form]="editedStyleForm"
+      (closeEdition)="onClose()"
       [scalarFields]="scalarFields"
-    ></safe-query-style> -->
+    ></safe-query-style>
 </ng-container>

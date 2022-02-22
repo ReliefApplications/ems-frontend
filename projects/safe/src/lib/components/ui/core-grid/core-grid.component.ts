@@ -449,7 +449,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           this.error = false;
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              const nodes = res.data[field].edges.map((x: any) => x.node) || [];
+              const nodes =
+                res.data[field].edges.map((x: any) => ({
+                  ...x.node,
+                  _meta: {
+                    style: x.meta.style,
+                  },
+                })) || [];
               this.totalCount = res.data[field].totalCount;
               this.items = cloneData(nodes);
               this.convertDateFields(this.items);

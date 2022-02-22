@@ -14,14 +14,11 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./query-style.component.scss'],
 })
 export class SafeQueryStyleComponent implements OnInit {
-  @Input() factory?: ComponentFactory<any>;
-  @Input() availableFields: any[] = [];
-  @Input() styleIndex?: any | null = null;
+  // @Input() factory?: ComponentFactory<any>;
+  // @Input() availableFields: any[] = [];
   @Input() form!: FormGroup;
-  @Input() fields: any[] = [];
+  // @Input() fields: any[] = [];
   @Input() scalarFields: any[] = [];
-
-  public selectedColumns = false;
 
   @Output() closeEdition = new EventEmitter<any>();
 
@@ -29,7 +26,15 @@ export class SafeQueryStyleComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  onStyleAppliedTo(value: boolean) {
-    this.selectedColumns = value;
+  /**
+   * Toggles boolean controls.
+   *
+   * @param controlName name of form control.
+   */
+  onToggle(controlName: string): void {
+    const control = this.form.get(controlName);
+    if (control) {
+      control.setValue(!control.value);
+    }
   }
 }

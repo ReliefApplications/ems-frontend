@@ -64,7 +64,7 @@
                     <!-- DISPLAY ( disabled fields ) -->
                     <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                         *ngIf="!field.meta.type">
-                        <div class="translate textbox-container">
+                        <div class="translate textbox-container" [style]="getStyle(dataItem, field.name)">
                             <div #refSpan class="textbox">
                                 {{getPropertyValue(dataItem, field.name)}}
                             </div>
@@ -76,7 +76,7 @@
                     <!-- DISPLAY ( text / comment ) -->
                     <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                         *ngIf="field.meta.type === 'text'">
-                        <div class="translate textbox-container">
+                        <div class="translate textbox-container" [style]="getStyle(dataItem, field.name)">
                             <div #refSpan class="textbox">
                                 {{getPropertyValue(dataItem, field.name)}}
                             </div>
@@ -88,7 +88,7 @@
                     <!-- DISPLAY ( url ) -->
                     <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                         *ngIf="field.meta.type === 'url'">
-                        <div class="textbox-container">
+                        <div class="textbox-container" [style]="getStyle(dataItem, field.name)">
                             <a class="url-container textbox" href="{{getPropertyValue(dataItem, field.name)}}"
                                 target="_blank" rel="noopener noreferrer">
                                 <div #refSpan>
@@ -125,7 +125,9 @@
                     <!-- DISPLAY ( dropdown / radiogroup ) -->
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem"
                         *ngIf="field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'">
-                        {{ getPropertyValue(dataItem, field.name) }}
+                        <div class="textbox-container" [style]="getStyle(dataItem, field.name)">
+                            {{ getPropertyValue(dataItem, field.name) }}
+                        </div>
                     </ng-template>
                 </ng-container>
                 <!-- EDITION ( text / color / comment - resource - dropdown ) -->
@@ -183,7 +185,9 @@
                     </safe-array-filter>
                 </ng-template>
                 <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-                    {{ getPropertyValue(dataItem, field.name) }}
+                    <div class="textbox-container" [style]="getStyle(dataItem, field.name)">
+                        {{ getPropertyValue(dataItem, field.name) }}
+                    </div>
                 </ng-template>
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
                     <kendo-multiselect [data]="field.meta.choices" textField="text" valueField="value"

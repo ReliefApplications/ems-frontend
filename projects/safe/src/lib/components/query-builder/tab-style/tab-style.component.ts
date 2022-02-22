@@ -19,7 +19,7 @@ import { createStyleForm } from '../query-builder-forms';
 export class SafeTabStyleComponent implements OnInit {
   @Input() factory?: ComponentFactory<any>;
   @Input() form!: FormArray;
-  // @Input() styleForm: FormGroup = new FormGroup({});
+  @Input() editedStyleForm: FormGroup | null = null;
   @Input() availableFields: any[] = [];
   @Input() scalarFields: any[] = [];
   @Input() metaFields: any = {};
@@ -45,9 +45,18 @@ export class SafeTabStyleComponent implements OnInit {
   }
 
   /**
+   * Opens form edition for element at index.
+   *
+   * @param index index of style to edit.
+   */
+  public onEdit(index: number): void {
+    this.editedStyleForm = this.form.at(index) as FormGroup;
+  }
+
+  /**
    * Deletes a style at index.
    *
-   * @param index index of style to delete
+   * @param index index of style to delete.
    */
   public onDelete(index: number): void {
     this.form.removeAt(index);
@@ -57,7 +66,7 @@ export class SafeTabStyleComponent implements OnInit {
    * Closes edition of current style.
    */
   public onClose(): void {
-    this.fieldForm = null;
+    this.editedStyleForm = null;
   }
 
   public onApplyTo(value: boolean): void {
