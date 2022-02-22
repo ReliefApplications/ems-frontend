@@ -274,8 +274,8 @@
     "map": {
       "new": "New Map",
       "data": "Data set selection",
-      "lat": "Latitude",
-      "long": "Longitude",
+      "lat": "Map center: latitude",
+      "long": "Map center: longitude",
       "default": "Default display",
       "zoom": "Zoom"
     },
