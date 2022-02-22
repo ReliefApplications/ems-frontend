@@ -162,7 +162,8 @@
   "resources": {
     "create": "Create a resource",
     "delete": "Delete resource",
-    "deleteDesc": "Do you confirm the deletion of the resource {{name}}?"
+    "deleteDesc": "Do you confirm the deletion of the resource {{name}}?",
+    "layouts": "Layouts"
   },
   "users": {
     "export": "Export users",
@@ -455,6 +456,7 @@
     "add": "Add a layout",
     "preview": {
       "description": "Reorder, sort, filter and hide columns to edit default display of the layout"
-    }
+    },
+    "select": "Select a layout"
   }
 }

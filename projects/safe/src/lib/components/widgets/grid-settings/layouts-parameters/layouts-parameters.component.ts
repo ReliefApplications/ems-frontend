@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Layout } from '../../../../models/layout.model';
 import { Form } from '../../../../models/form.model';
@@ -76,7 +69,7 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Adds a new widget to the list.
+   * Adds a new layout to the list.
    */
   public onAdd(): void {
     const dialogRef = this.dialog.open(AddLayoutComponent, {
@@ -88,10 +81,16 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.allLayouts.push(value);
-        this.selectedLayouts?.setValue(
-          this.selectedLayouts?.value.concat(value.id)
-        );
+        if (typeof value === 'string') {
+          this.selectedLayouts?.setValue(
+            this.selectedLayouts?.value.concat(value)
+          );
+        } else {
+          this.allLayouts.push(value);
+          this.selectedLayouts?.setValue(
+            this.selectedLayouts?.value.concat(value.id)
+          );
+        }
       }
     });
   }

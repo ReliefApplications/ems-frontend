@@ -41,7 +41,7 @@
             <kendo-grid-column *ngIf="field.type !== 'JSON'" [field]="field.name" [title]="field.title"
                 [format]="field.format" [editor]="field.editor" [editable]="field.editor && !field.disabled"
                 [filter]="field.filter" [filterable]="field.filter" [width]="field.width" [hidden]="field.hidden"
-                [minResizableWidth]="50">
+                [minResizableWidth]="50" class="no-padding">
                 <!-- FILTER -->
                 <ng-container *ngIf="field.meta">
                     <!-- FILTER ( dropdown / radiogroup ) -->
@@ -61,9 +61,9 @@
                 </ng-container>
                 <!-- DISPLAY -->
                 <ng-container *ngIf="field.meta">
-                    <!-- DISPLAY ( disabled fields ) -->
+                    <!-- DISPLAY ( text / comment / disabled fields ) -->
                     <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
-                        *ngIf="!field.meta.type">
+                        *ngIf="['text'].includes(field.meta.type) || !field.meta.type">
                         <div class="translate textbox-container" [style]="getStyle(dataItem, field.name)">
                             <div #refSpan class="textbox">
                                 {{getPropertyValue(dataItem, field.name)}}
@@ -73,16 +73,13 @@
                                 matTooltip="Open in full width"></button>
                         </div>
                     </ng-template>
-                    <!-- DISPLAY ( text / comment ) -->
+                    <!-- DISPLAY ( date / datetime / time ) -->
                     <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
-                        *ngIf="field.meta.type === 'text'">
+                        *ngIf="['datetime', 'date', 'time'].includes(field.meta.type)">
                         <div class="translate textbox-container" [style]="getStyle(dataItem, field.name)">
                             <div #refSpan class="textbox">
-                                {{getPropertyValue(dataItem, field.name)}}
+                                {{getPropertyValue(dataItem, field.name) | date}}
                             </div>
-                            <button kendoButton *ngIf="isEllipsisActive(refSpan)" icon="hyperlink-open-sm"
-                                (click)="onExpandText(dataItem, field.name)" [look]="'flat'"
-                                matTooltip="Open in full width"></button>
                         </div>
                     </ng-template>
                     <!-- DISPLAY ( url ) -->
@@ -172,7 +169,7 @@
             <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->
             <kendo-grid-column *ngIf="field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)"
                 [field]="field.name" [filterable]="true" [title]="field.title" [editor]="field.editor"
-                [editable]="!field.disabled" [width]="field.width" [hidden]="field.hidden" [minResizableWidth]="50">
+                [editable]="!field.disabled" [width]="field.width" [hidden]="field.hidden" [minResizableWidth]="50" class="no-padding">
                 <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
                     let-filterService="filterService">
                     <safe-array-filter-menu [filter]="filter" [filterService]="filterService"
@@ -199,7 +196,7 @@
             <!-- FILE -->
             <kendo-grid-column [title]="field.title" *ngIf="field.type === 'JSON' && field.meta.type === 'file'"
                 [columnMenu]="false" [editable]="false" [width]="field.width" [hidden]="field.hidden"
-                [minResizableWidth]="50">
+                [minResizableWidth]="50" class="no-padding">
                 <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                     <button kendoButton icon="file-data" *ngFor="let file of dataItem[field.name]" [look]="'flat'"
                         [matTooltip]="file.name" (click)="onDownload(file)"></button>
@@ -211,7 +208,7 @@
                 <ng-container *ngIf="!['multipletext', 'matrixdynamic'].includes(field.meta.type)">
                     <!-- QUESTION ROWS ( matrix / matrixdropdown ) -->
                     <kendo-grid-column [columnMenu]="false" [width]="field.width" [hidden]="field.hidden"
-                        [minResizableWidth]="50" [editable]="!field.disabled">
+                        [minResizableWidth]="50" [editable]="!field.disabled" class="no-padding">
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                             <ul class="matrix-cell">
                                 <li *ngFor="let row of field.meta.rows">
