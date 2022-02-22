@@ -3,6 +3,9 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { merge, Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 
+/**
+ * Mapping of series parameters ( category / field ).
+ */
 @Component({
   selector: 'safe-series-mapping',
   templateUrl: './series-mapping.component.html',
@@ -19,6 +22,10 @@ export class SafeSeriesMappingComponent implements OnInit {
 
   constructor() {}
 
+  /**
+   * Gets the control names from the inputs.
+   * Sets the available fields.
+   */
   ngOnInit(): void {
     this.controlNames = Object.keys((this.mappingForm as FormGroup).controls);
     this.fields$.subscribe((fields: any[]) => {

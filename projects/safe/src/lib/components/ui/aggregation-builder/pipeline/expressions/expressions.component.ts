@@ -8,6 +8,9 @@ import {
 import { FormGroup, Validators } from '@angular/forms';
 import { DefaultOperators, NO_FIELD_OPERATORS } from './operators';
 
+/**
+ * Aggregation pipeline expression component.
+ */
 @Component({
   selector: 'safe-expressions',
   templateUrl: './expressions.component.html',

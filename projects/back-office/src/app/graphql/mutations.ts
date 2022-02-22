@@ -13,6 +13,7 @@ import {
   Step,
   ApiConfiguration,
   PullJob,
+  Layout,
 } from '@safe/builder';
 
 // === EDIT USER ===

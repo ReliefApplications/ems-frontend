@@ -22,10 +22,6 @@
         <!-- ADMIN FEATURES -->
         <ng-container *ngIf="admin">
             <span kendotooltip>
-                <button title="This will save this layout as the default one for all users" class='k-button'
-                    (click)="action.emit({ action: 'saveLayout' })">{{'widgets.grid.save' | translate}}</button>
-            </span>
-            <span kendotooltip>
                 <button title="This will erase current layout with default layout" class='k-button'
                     (click)="action.emit({ action: 'resetLayout' })">{{'widgets.grid.reset' | translate}}</button>
             </span>

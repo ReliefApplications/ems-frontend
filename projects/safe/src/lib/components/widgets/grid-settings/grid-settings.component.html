@@ -1,5 +1,6 @@
 <ng-container *ngIf="tileForm">
   <form [formGroup]="tileForm">
+    <!-- MAIN PARAMETERS -->
     <div class="form-group">
       <div class="form-group-title">{{'global.general' | translate}}</div>
       <mat-form-field appearance="outline">
@@ -7,9 +8,30 @@
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
     </div>
-    <div class="form-group">
-      <safe-query-builder [form]="$any(tileForm.controls.query)" [templates]="templates" [settings]="tile.settings"></safe-query-builder>
+    <ng-container formGroupName="query">
+      <mat-form-field appearance="outline">
+        <mat-label>{{'widgets.query.select' | translate}}</mat-label>
+        <input type="text" [placeholder]="'widgets.query.select' | translate" matInput formControlName="name" [matAutocomplete]="auto">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-option *ngFor="let option of filteredQueries" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{'global.template' | translate}}</mat-label>
+        <mat-select formControlName="template">
+          <mat-option>-</mat-option>
+          <mat-option *ngFor="let template of templates" [value]="template.id">{{template.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+    <!-- SELECTION OF LAYOUTS -->
+    <div class="form-group" *ngIf="queryName">
+      <div class="form-group-title">{{'layouts.title' | translate}}</div>
+      <safe-layouts-parameters [form]="form" [resource]="resource" [selectedLayouts]="$any(tileForm).get('layouts')"></safe-layouts-parameters>
     </div>
+    <!-- AVAILABLE ACTIONS -->
     <div formGroupName="actions" class="form-group">
       <div class="form-group-title">{{'widgets.grid.enabled' | translate}}</div>
       <mat-slide-toggle formControlName="delete">
@@ -31,6 +53,7 @@
         {{'widgets.grid.actions.add' | translate}}
       </mat-slide-toggle>
     </div>
+    <!-- BUTTONS -->
     <div class="form-group">
       <div class="form-group-title">{{'widgets.grid.quickBtn' | translate}}</div>
       <div class="info-text">{{'widgets.grid.quickBtnDesc' | translate}}</div>

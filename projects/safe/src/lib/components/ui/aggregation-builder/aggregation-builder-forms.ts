@@ -4,6 +4,12 @@ import { PipelineStage } from './pipeline/pipeline-stage.enum';
 
 const formBuilder = new FormBuilder();
 
+/**
+ * Creates a addFields stage form.
+ *
+ * @param value initial value
+ * @returns Stage form group.
+ */
 export const addFieldsForm = (value: any): FormGroup =>
   formBuilder.group({
     name: [value && value.name ? value.name : '', Validators.required],

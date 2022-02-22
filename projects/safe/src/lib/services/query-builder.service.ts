@@ -233,7 +233,7 @@ export class QueryBuilderService {
    */
   public buildQuery(settings: any): any {
     const builtQuery = settings.query;
-    if (builtQuery && builtQuery.fields.length > 0) {
+    if (builtQuery?.fields?.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(
         this.buildFields(builtQuery.fields)
       );
@@ -275,24 +275,21 @@ export class QueryBuilderService {
   /**
    * Builds a GraphQL meta query of a form / resource from widget settings.
    *
-   * @param settings Widget settings.
+   * @param query Widget query.
    * @returns GraphQL meta query.
    */
-  public buildMetaQuery(
-    settings: any
-  ): Observable<ApolloQueryResult<any>> | null {
-    const builtQuery = settings.query;
-    if (builtQuery && builtQuery.fields.length > 0) {
-      const metaFields = this.buildMetaFields(builtQuery.fields);
-      const query = gql`
+  public buildMetaQuery(query: any): Observable<ApolloQueryResult<any>> | null {
+    if (query && query.fields.length > 0) {
+      const metaFields = this.buildMetaFields(query.fields);
+      const metaQuery = gql`
         query GetCustomMetaQuery {
-          _${builtQuery.name}Meta {
+          _${query.name}Meta {
             ${metaFields}
           }
         }
       `;
       return this.apollo.query<any>({
-        query,
+        query: metaQuery,
         variables: {},
         fetchPolicy: 'cache-first',
       });

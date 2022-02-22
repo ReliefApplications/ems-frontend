@@ -42,7 +42,8 @@
     "aggregation": "Aggregation",
     "id": "Id",
     "none": "-- None --",
-    "raw": "Raw JSON"
+    "raw": "Raw JSON",
+    "preview": "Preview"
   },
   "action": {
     "edit": "Edit",
@@ -436,6 +437,15 @@
       "day": "Day",
       "add": "Add",
       "multiply": "Multiply"
+    }
+  },
+  "layouts": {
+    "title": "Grid layouts",
+    "load": "Load existing layout",
+    "create": "Create a new layout",
+    "add": "Add a layout",
+    "preview": {
+      "description": "Reorder, sort, filter and hide columns to edit default display of the layout"
     }
   }
 }

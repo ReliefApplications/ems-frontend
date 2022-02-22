@@ -11,9 +11,11 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import {
   GetChannelsQueryResponse,
-  GetRelatedFormsQueryResponse,
   GET_CHANNELS,
-  GET_RELATED_FORMS,
+  GET_GRID_FORM_META,
+  GetFormByIdQueryResponse,
+  GET_GRID_RESOURCE_META,
+  GetResourceByIdQueryResponse,
 } from '../../../graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
@@ -23,14 +25,28 @@ import {
   addNewField,
   createQueryForm,
 } from '../../query-builder/query-builder-forms';
+import { Observable } from 'rxjs';
+import { Overlay } from '@angular/cdk/overlay';
+import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
+import { scrollFactory } from '../../../utils/scroll-factory';
+import { Layout } from '../../../models/layout.model';
+import { Resource } from '../../../models/resource.model';
 
+/**
+ * Modal content for the settings of the grid widgets.
+ */
 @Component({
   selector: 'safe-grid-settings',
   templateUrl: './grid-settings.component.html',
   styleUrls: ['./grid-settings.component.scss'],
+  providers: [
+    {
+      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+  ],
 })
-/*  Modal content for the settings of the grid widgets.
- */
 export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
@@ -51,8 +67,13 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public relatedForms: Form[] = [];
   public tabIndex = 0;
 
-  // === TEMPLATE USED FOR EDITION AND DETAILS VIEW ===
+  // === DATASET AND TEMPLATES ===
   public templates: Form[] = [];
+  public availableQueries?: Observable<any[]>;
+  public allQueries: any[] = [];
+  public filteredQueries: any[] = [];
+  public form: Form | null = null;
+  public resource: Resource | null = null;
 
   get floatingButtons(): FormArray {
     return (this.tileForm?.controls.floatingButtons as FormArray) || null;
@@ -76,7 +97,14 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         tileSettings && tileSettings.title ? tileSettings.title : '',
         Validators.required,
       ],
-      query: createQueryForm(tileSettings.query),
+      query: this.formBuilder.group({
+        name: [
+          tileSettings.query ? tileSettings.query.name : '',
+          Validators.required,
+        ],
+        template: [tileSettings.query ? tileSettings.query.template : '', null],
+      }),
+      layouts: [tileSettings?.layouts || [], Validators.required],
       resource: [
         tileSettings && tileSettings.resource ? tileSettings.resource : null,
       ],
@@ -96,13 +124,30 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
           : [this.createFloatingButtonForm(null)]
       ),
     });
-    this.queryName = this.tileForm.get('query')?.value.name;
+    this.availableQueries = this.queryBuilder.availableQueries$;
+    this.availableQueries.subscribe((res) => {
+      if (res && res.length > 0) {
+        this.allQueries = res.map((x) => x.name);
+        this.filteredQueries = this.filterQueries(
+          this.tileForm?.value.query.name
+        );
+      }
+    });
+    this.tileForm?.get('query.name')?.valueChanges.subscribe((res) => {
+      this.filteredQueries = this.filterQueries(res);
+    });
 
-    this.tileForm.get('query')?.valueChanges.subscribe((res) => {
-      if (res.name) {
+    this.queryName = this.tileForm.get('query')?.value.name;
+    this.getQueryMetaData();
+
+    this.tileForm.get('query.name')?.valueChanges.subscribe((name) => {
+      if (name) {
         // Check if the query changed to clean modifications and fields for email in floating button
-        if (res.name !== this.queryName) {
-          this.queryName = res.name;
+        if (name !== this.queryName) {
+          this.queryName = name;
+          this.tileForm?.get('layouts')?.setValue([]);
+          this.tileForm?.get('query.template')?.setValue(null);
+          this.tileForm?.get('query.template')?.enable();
           const floatingButtons = this.tileForm?.get(
             'floatingButtons'
           ) as FormArray;
@@ -118,36 +163,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
             bodyFields.clear();
           }
         }
-        this.fields = this.queryBuilder.getFields(res.name);
-        const query = this.queryBuilder.sourceQuery(this.queryName);
-        if (query) {
-          query.subscribe((res1: { data: any }) => {
-            // eslint-disable-next-line no-underscore-dangle
-            const source = res1.data[`_${this.queryName}Meta`]._source;
-            this.tileForm?.get('resource')?.setValue(source);
-            if (source) {
-              this.apollo
-                .query<GetRelatedFormsQueryResponse>({
-                  query: GET_RELATED_FORMS,
-                  variables: {
-                    resource: source,
-                  },
-                })
-                .subscribe((res2) => {
-                  if (res2.errors) {
-                    this.relatedForms = [];
-                    this.templates = [];
-                  } else {
-                    this.relatedForms = res2.data.resource.relatedForms || [];
-                    this.templates = res2.data.resource.forms || [];
-                  }
-                });
-            }
-          });
-        } else {
-          this.relatedForms = [];
-          this.templates = [];
-        }
+        this.getQueryMetaData();
       } else {
         this.fields = [];
       }
@@ -187,6 +203,12 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Floating button form factory.
+   *
+   * @param value default value ( if any )
+   * @returns new form group for the floating button.
+   */
   private createFloatingButtonForm(value: any): FormGroup {
     const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
@@ -265,14 +287,92 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     return buttonForm;
   }
 
+  /**
+   * Adds a floating button configuration.
+   */
   public addFloatingButton(): void {
     const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
     floatingButtons.push(this.createFloatingButtonForm({ show: true }));
   }
 
+  /**
+   * Deletes a floating button configuration.
+   */
   public deleteFloatingButton(): void {
     const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
     floatingButtons.removeAt(this.tabIndex);
     this.tabIndex = 0;
+  }
+
+  /**
+   * Gets query metadata for grid settings, from the query name
+   */
+  private getQueryMetaData(): void {
+    this.fields = this.queryBuilder.getFields(this.queryName);
+    const query = this.queryBuilder.sourceQuery(this.queryName);
+    if (query) {
+      query.subscribe((res1: { data: any }) => {
+        // eslint-disable-next-line no-underscore-dangle
+        const source = res1.data[`_${this.queryName}Meta`]._source;
+        this.tileForm?.get('resource')?.setValue(source);
+        if (source) {
+          this.apollo
+            .query<GetResourceByIdQueryResponse>({
+              query: GET_GRID_RESOURCE_META,
+              variables: {
+                resource: source,
+              },
+            })
+            .subscribe((res2) => {
+              if (res2.errors) {
+                this.apollo
+                  .query<GetFormByIdQueryResponse>({
+                    query: GET_GRID_FORM_META,
+                    variables: {
+                      id: source,
+                    },
+                  })
+                  .subscribe((res3) => {
+                    if (res3.errors) {
+                      this.relatedForms = [];
+                      this.templates = [];
+                      this.form = null;
+                      this.resource = null;
+                    } else {
+                      this.form = res3.data.form;
+                      this.resource = null;
+                      this.templates = [res3.data.form] || [];
+                      this.tileForm
+                        ?.get('query.template')
+                        ?.setValue(res3.data.form.id);
+                      this.tileForm?.get('query.template')?.disable();
+                    }
+                  });
+              } else {
+                this.resource = res2.data.resource;
+                this.form = null;
+                this.relatedForms = res2.data.resource.relatedForms || [];
+                this.templates = res2.data.resource.forms || [];
+              }
+            });
+        }
+      });
+    } else {
+      this.relatedForms = [];
+      this.templates = [];
+      this.form = null;
+      this.resource = null;
+    }
+  }
+
+  /**
+   * Filters the queries using text value.
+   *
+   * @param value search value
+   * @returns filtered list of queries.
+   */
+  private filterQueries(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allQueries.filter((x) => x.toLowerCase().includes(filterValue));
   }
 }

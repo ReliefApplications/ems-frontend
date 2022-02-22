@@ -2,6 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { Accumulators } from '../expressions/operators';
 
+/**
+ * Group Stage pipeline component.
+ */
 @Component({
   selector: 'safe-group-stage',
   templateUrl: './group-stage.component.html',
