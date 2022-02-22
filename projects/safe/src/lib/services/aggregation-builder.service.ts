@@ -99,17 +99,14 @@ export class AggregationBuilderService {
           break;
         }
         case PipelineStage.UNWIND: {
-          fields = fields.map((field) => {
-            if (field.name === stage.form.field) {
-              const newField = Object.assign({}, field);
-              newField.type = { ...field.type, kind: 'SCALAR', name: 'String' };
-              return newField;
-            } else if (stage.form.field.includes('.')) {
-              const fieldArray = stage.form.field.split('.');
-              const parent = fieldArray.shift();
+          if (stage.form.field.includes('.')) {
+            const fieldArray = stage.form.field.split('.');
+            const parent = fieldArray.shift();
+            const sub = fieldArray.pop();
+            fields = fields.map((field) => {
               if (field.name === parent) {
-                const sub = fieldArray.pop();
                 const newField = Object.assign({}, field);
+                newField.type = { ...field.type, kind: 'OBJECT' };
                 newField.fields = field.fields.map((x: any) =>
                   x.name === sub
                     ? {
@@ -118,10 +115,24 @@ export class AggregationBuilderService {
                       }
                     : x
                 );
+                return newField;
               }
-            }
-            return field;
-          });
+              return field;
+            });
+          } else {
+            fields = fields.map((field) => {
+              if (field.name === stage.form.field) {
+                const newField = Object.assign({}, field);
+                newField.type = {
+                  ...field.type,
+                  kind: 'SCALAR',
+                  name: 'String',
+                };
+                return newField;
+              }
+              return field;
+            });
+          }
           break;
         }
         default: {
