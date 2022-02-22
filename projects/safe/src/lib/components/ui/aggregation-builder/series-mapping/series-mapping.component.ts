@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { merge, Observable } from 'rxjs';
-import { startWith } from 'rxjs/operators';
+import { startWith, delay } from 'rxjs/operators';
 
 /**
  * Mapping of series parameters ( category / field ).
@@ -35,9 +35,10 @@ export class SafeSeriesMappingComponent implements OnInit {
     merge(
       ...this.controlNames.map(
         (controlName) => this.mappingForm.get(controlName)?.valueChanges || 0
-      )
+      ),
+      this.fields$
     )
-      .pipe(startWith(null))
+      .pipe(startWith(null), delay(100))
       .subscribe(() => {
         for (const controlName of this.controlNames) {
           const excludedFields: string[] = [];
