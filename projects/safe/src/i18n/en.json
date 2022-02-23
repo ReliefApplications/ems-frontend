@@ -274,10 +274,14 @@
     "map": {
       "new": "New Map",
       "data": "Data set selection",
-      "lat": "Map center: latitude",
-      "long": "Map center: longitude",
-      "default": "Default display",
-      "zoom": "Zoom"
+      "lat": "Latitude",
+      "long": "Longitude",
+      "zoom": "Zoom",
+      "default": {
+        "title": "Default display",
+        "lat": "Map center latitude",
+        "long": "Map center longitude"
+      }
     },
     "scheduler": {
       "new": "New scheduler",
