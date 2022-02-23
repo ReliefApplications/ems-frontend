@@ -162,7 +162,16 @@ export class SafeAggregationBuilderComponent implements OnInit {
       this.queryName = formName
         ? this.queryBuilder.getQueryNameFromResourceName(formName)
         : '';
-      const fields = this.queryBuilder.getFields(this.queryName);
+      const fields = this.queryBuilder
+        .getFields(this.queryName)
+        .filter(
+          (field: any) =>
+            !(
+              field.name.includes('_id') &&
+              (field.type.name === 'ID' ||
+                (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+            )
+        );
       console.log('FIELDS', fields);
       this.fields.next(fields);
     }
@@ -179,16 +188,13 @@ export class SafeAggregationBuilderComponent implements OnInit {
       const selectedFields = fieldsNames.map((x: string) => {
         const field = { ...currentFields.find((y) => x === y.name) };
         if (field.type.kind !== 'SCALAR') {
-          field.fields =
-            field.type.kind === 'OBJECT'
-              ? this.queryBuilder
-                  .getFieldsFromType(field.type.name)
-                  .filter(
-                    (y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'
-                  )
-              : field.type.ofType?.fields?.filter(
-                  (y: any) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'
-                ) || [];
+          field.fields = this.queryBuilder
+            .getFieldsFromType(
+              field.type.kind === 'OBJECT'
+                ? field.type.name
+                : field.type.ofType.name
+            )
+            .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR');
         }
         return field;
       });
