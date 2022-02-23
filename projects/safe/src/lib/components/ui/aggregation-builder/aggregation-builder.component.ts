@@ -172,7 +172,6 @@ export class SafeAggregationBuilderComponent implements OnInit {
                 (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
             )
         );
-      console.log('FIELDS', fields);
       this.fields.next(fields);
     }
   }
@@ -198,7 +197,6 @@ export class SafeAggregationBuilderComponent implements OnInit {
         }
         return field;
       });
-      console.log('SELECTED', selectedFields);
       const formattedFields = this.formatFields(selectedFields);
       this.selectedFields.next(selectedFields);
       this.queryBuilder
