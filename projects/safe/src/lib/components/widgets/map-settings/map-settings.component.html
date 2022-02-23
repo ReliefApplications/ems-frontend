@@ -31,10 +31,9 @@
         </div>
         <div class="form-group">
             <div class="form-group-title">{{'widgets.map.default' | translate}}</div>
-            <mat-form-field appearance="outline">
-                <mat-label>{{'widgets.map.zoom' | translate}}</mat-label>
-                <input type="number" matInput formControlName="zoom">
-            </mat-form-field>
+            <mat-label>{{'widgets.map.zoom' | translate}}</mat-label>
+            <mat-slider thumbLabel tickInterval="1" formControlName="centerLat"
+             [min]="0" [max]="10"></mat-slider>
             <mat-form-field appearance="outline">
                 <mat-label>
                     {{'widgets.map.lat' | translate}}

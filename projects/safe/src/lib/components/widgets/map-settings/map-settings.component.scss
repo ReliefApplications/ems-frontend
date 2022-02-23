@@ -4,3 +4,15 @@
     align-items: center;
     justify-content: space-between;
 }
+
+::ng-deep .mat-slider {
+    .mat-slider-thumb,
+    .mat-slider-thumb-label,
+    .mat-slider-bar,
+    .mat-slider-track-fill {
+      background-color: #008dc9;
+    }
+    .mat-slider-wrapper {
+        background-color: #b2c9eb;
+    }
+  }
