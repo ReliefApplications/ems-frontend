@@ -1,5 +1,8 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 import { DashboardComponent } from './dashboard.component';
 
@@ -9,7 +12,12 @@ describe('DashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [
+        RouterTestingModule,
+        HttpClientModule,
+        OAuthModule.forRoot(),
+        MatDialogModule,
+      ],
       declarations: [DashboardComponent],
     }).compileComponents();
   });
