@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.2-alpha.0...v1.1.2) (2022-02-23)
+
+
+### Features
+
+* single deploy file ([b99f0fd](https://github.com/ReliefApplications/emrs-safe-frontend/commits/b99f0fd72ae7decd98d9fdc6a6cc564a18e61744))
+
+
+### Bug Fixes
+
+* display other choice in inline edition ([ebd9d27](https://github.com/ReliefApplications/emrs-safe-frontend/commits/ebd9d27d28adb5c1be094c2556f84d22b2860677))
+* edit the logic of grid export, to get available fields from the grid only [#21939](https://github.com/ReliefApplications/oort-frontend/issues/21939) ([ce2e7bb](https://github.com/ReliefApplications/emrs-safe-frontend/commits/ce2e7bbfc037b97b3b7cf3d79b6c363a02a50b37))
+* use display=true to fetch data for email [#21951](https://github.com/ReliefApplications/oort-frontend/issues/21951) ([17710e5](https://github.com/ReliefApplications/emrs-safe-frontend/commits/17710e5fa6a73371c10873d74c53e624419a3377))
+
 ### [1.1.2-alpha.0](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.1...v1.1.2-alpha.0) (2022-01-12)
 
 ### [1.1.1](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.1-alpha.0...v1.1.1) (2022-01-12)
