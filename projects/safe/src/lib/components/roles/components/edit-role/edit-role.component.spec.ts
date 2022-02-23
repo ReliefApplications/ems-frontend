@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditRoleComponent } from './edit-role.component';
+import { SafeEditRoleComponent } from './edit-role.component';
 
-describe('EditRoleComponent', () => {
-  let component: EditRoleComponent;
-  let fixture: ComponentFixture<EditRoleComponent>;
+describe('SafeEditRoleComponent', () => {
+  let component: SafeEditRoleComponent;
+  let fixture: ComponentFixture<SafeEditRoleComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditRoleComponent],
+      declarations: [SafeEditRoleComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EditRoleComponent);
+    fixture = TestBed.createComponent(SafeEditRoleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
