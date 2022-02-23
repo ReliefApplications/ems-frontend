@@ -466,6 +466,24 @@ export class SafeFormModalComponent implements OnInit {
    * Closes the modal without sending any data.
    */
   onClose(): void {
+    // TODO: we should compare the data with init data to display a confirm modal
+    // if (!isEqual(this.survey?.data, this.initData)) {
+    //   const closeDialogRef = this.dialog.open(SafeConfirmModalComponent, {
+    //     data: {
+    //       title: 'Confirm',
+    //       content: 'Record has been modified. You can cancel to continue editing, or discard you changes.',
+    //       confirmText: 'Discard changes',
+    //       confirmColor: 'primary'
+    //     }
+    //   });
+    //   closeDialogRef.afterClosed().subscribe((value) => {
+    //     if(value){
+    //       this.dialogRef.close();
+    //     }
+    //   });
+    // } else {
+    //   this.dialogRef.close();
+    // }
     this.dialogRef.close();
   }
 

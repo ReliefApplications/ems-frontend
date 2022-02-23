@@ -169,7 +169,8 @@ export class SafeGridWidgetComponent implements OnInit {
       };
       const sortField = this.grid.sortField || '';
       const sortOrder = this.grid.sortOrder || '';
-      this.emailService.sendMail(options.distributionList, options.subject, options.bodyText, emailSettings,
+      const body = this.grid.selectedRows.length > 0 ? options.bodyText : options.bodyTextAlternate;
+      this.emailService.sendMail(options.distributionList, options.subject, body, emailSettings,
         this.grid.selectedRows, sortField, sortOrder);
       if (options.export && this.grid.selectedRows.length > 0) {
         this.grid.onExport({ records: 'all', format: 'xlsx', fields: 'visible' });
@@ -192,6 +193,7 @@ export class SafeGridWidgetComponent implements OnInit {
 
       // Opens a modal containing the prefilled form.
       this.dialog.open(SafeFormModalComponent, {
+        disableClose: true,
         data: {
           template: options.prefillTargetForm,
           locale: 'en',
@@ -330,6 +332,7 @@ export class SafeGridWidgetComponent implements OnInit {
             if (record) {
               this.snackBar.openSnackBar(NOTIFICATIONS.addRowsToRecord(selectedRecords.length, key, record.data[targetFormField]));
               this.dialog.open(SafeFormModalComponent, {
+                disableClose: true,
                 data: {
                   recordId: record.id,
                   locale: 'en'

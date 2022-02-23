@@ -204,8 +204,11 @@ export class SafeGridService {
    * @param choicesByUrl Choices By Url property.
    * @returns list of choices.
    */
-  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string }): { value: string, text: string }[] {
+  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string, hasOther?: boolean }): { value: string, text: string }[] {
     const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    if (choicesByUrl.hasOther) {
+      choices.push({ [choicesByUrl.value || 'value']: 'other', [choicesByUrl.text || 'text']: 'Other' });
+    }
     return choices ? choices.map((x: any) => ({
       value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
       text: choicesByUrl.text ? x[choicesByUrl.text] : choicesByUrl.value ? x[choicesByUrl.value] : x

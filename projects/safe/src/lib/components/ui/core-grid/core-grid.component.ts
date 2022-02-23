@@ -523,6 +523,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private onAdd(): void {
     if (this.settings.query.template) {
       const dialogRef = this.dialog.open(SafeFormModalComponent, {
+        disableClose: true,
         data: {
           template: this.settings.query.template,
           locale: 'en',
@@ -589,6 +590,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public onUpdate(items: any[]): void {
     const ids: string[] = items.map(x => x.id ? x.id : x);
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
+      disableClose: true,
       data: {
         recordId: ids.length > 1 ? ids : ids[0],
         locale: 'en',
@@ -749,19 +751,25 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Builds the request body with all the useful data
+    const fileName = `${this.settings.title ? this.settings.title : 'records'}.${e.format}`;
     const currentLayout = this.layout;
     const body = {
-      exportOptions: e,
       ids,
       filter: e.records === 'selected' ?
         { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: ids }] } : this.queryFilter,
+      query: this.settings.query,
+      sortField: this.sortField,
+      sortOrder: this.sortOrder,
       format: e.format,
+      // we only export visible fields ( not hidden )
       ...e.fields === 'visible' && { fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
+        .sort((a: any, b: any) => a.order - b.order).map((x: any) => ( { name: x.field, title: x.title } )) },
+      // we export ALL fields of the grid ( including hidden columns )
+      ...e.fields === 'all' && { fields: Object.values(currentLayout.fields)
         .sort((a: any, b: any) => a.order - b.order).map((x: any) => ( { name: x.field, title: x.title } )) }
     };
 
     // Builds and make the request
-    const fileName = `${this.settings.title ? this.settings.title : 'records'}.${e.format}`;
     this.downloadService.getRecordsExport(
       `${this.apiUrl}/download/records`,
       `text/${e.format};charset=utf-8;`,
