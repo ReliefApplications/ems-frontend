@@ -33,25 +33,14 @@ export class SafePipelineComponent implements OnInit {
     this.fields$.subscribe((fields: any[]) => {
       this.initialFields = [...fields];
       this.fieldsPerStage = [];
-      this.updateFieldsPerStage(
-        this.pipelineForm.valid || this.pipelineForm.value.length === 1
-          ? this.pipelineForm.value
-          : []
-      );
+      this.updateFieldsPerStage(this.pipelineForm.value);
     });
     this.metaFields$.subscribe((meta: any) => {
       this.metaFields = Object.assign({}, meta);
     });
     this.pipelineForm.valueChanges
       .pipe(debounceTime(500))
-      .subscribe((pipeline: any[]) => {
-        if (
-          this.pipelineForm.valid ||
-          (pipeline.length === 1 && this.fieldsPerStage.length === 0)
-        ) {
-          this.updateFieldsPerStage(pipeline);
-        }
-      });
+      .subscribe((pipeline: any[]) => this.updateFieldsPerStage(pipeline));
   }
 
   /**
