@@ -1,5 +1,11 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   SafeDownloadService,
@@ -84,7 +90,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
   @ViewChild('xlsxFile') xlsxFile: any;
 
   // === SNACKBAR LOADING FINISHED ICON ===
-  @ViewChild('loadingCompleteIconRef') public loadingCompleteIconRef!: TemplateRef<any>;
+  @ViewChild('loadingCompleteIconRef')
+  public loadingCompleteIconRef!: TemplateRef<any>;
 
   constructor(
     private apollo: Apollo,
@@ -94,8 +101,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
     private downloadService: SafeDownloadService,
     private dialog: MatDialog,
     private translate: TranslateService,
-    private gridLayoutService: SafeGridLayoutService,
-  ) { }
+    private gridLayoutService: SafeGridLayoutService
+  ) {}
 
   /*  Load data from the id of the resource passed as a parameter.
    */
@@ -387,7 +394,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
       (res) => {
         this.xlsxFile.nativeElement.value = '';
         if (res.status === 'OK') {
-          this.snackBar.openTemplateSnackBar(this.loadingCompleteIconRef, { duration: 1000 });
+          this.snackBar.openTemplateSnackBar(this.loadingCompleteIconRef, {
+            duration: 1000,
+          });
           this.getResourceData();
         }
       },
