@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
+
+interface SnackBarData {
+  loading: boolean;
+  error?: boolean;
+}
 
 @Component({
   selector: 'safe-snackbar-spinner',
@@ -6,9 +12,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./snackbar-spinner.component.scss'],
 })
 export class SafeSnackbarSpinnerComponent implements OnInit {
-  message = 'File ongoing';
+  message = 'Preparing file';
 
-  constructor() {}
+  constructor(
+    @Inject(MAT_SNACK_BAR_DATA)
+    public data: SnackBarData
+  ) {}
 
   ngOnInit(): void {}
 }

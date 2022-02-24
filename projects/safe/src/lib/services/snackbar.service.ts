@@ -2,6 +2,7 @@ import { ComponentType } from '@angular/cdk/portal';
 import { EmbeddedViewRef, Injectable, TemplateRef } from '@angular/core';
 import {
   MatSnackBar,
+  MatSnackBarConfig,
   MatSnackBarRef,
   TextOnlySnackBar,
 } from '@angular/material/snack-bar';
@@ -11,6 +12,7 @@ const DEFAULT_SNACKBAR = {
   error: false,
   duration: 5000,
   action: 'Dismiss',
+  data: null,
 };
 
 /** Snackbar interface */
@@ -18,6 +20,7 @@ interface SnackBar {
   duration?: number;
   error?: boolean;
   action?: string;
+  data?: any;
 }
 
 /**
@@ -74,8 +77,8 @@ export class SafeSnackBarService {
       horizontalPosition: 'center',
       verticalPosition: 'top',
       panelClass: config && config.error ? 'snack-error' : '',
+      data: config?.data,
     });
-    console.log(snackBarRef);
     return snackBarRef;
   }
 

@@ -39,6 +39,11 @@ export class SafeDownloadService {
    * @param options (optional) request options
    */
   getFile(path: string, type: string, fileName: string, options?: any): void {
+    // Opens a loader in a snackar
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SafeSnackbarSpinnerComponent,
+      { duration: 0, data: { loading: true } }
+    );
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
@@ -47,12 +52,23 @@ export class SafeDownloadService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Authorization: `Bearer ${token}`,
     });
-    this.http
-      .get(url, { ...options, responseType: 'blob', headers })
-      .subscribe((res) => {
+    this.http.get(url, { ...options, responseType: 'blob', headers }).subscribe(
+      (res) => {
         const blob = new Blob([res], { type });
         this.saveFile(fileName, blob);
-      });
+        snackBarRef.instance.data = {
+          loading: false,
+        };
+        setTimeout(() => snackBarRef.dismiss(), 1000);
+      },
+      () => {
+        snackBarRef.instance.data = {
+          loading: false,
+          error: true,
+        };
+        setTimeout(() => snackBarRef.dismiss(), 1000);
+      }
+    );
   }
 
   /**
@@ -72,7 +88,7 @@ export class SafeDownloadService {
     // Opens a loader in a snackar
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SafeSnackbarSpinnerComponent,
-      { duration: 0 }
+      { duration: 0, data: { loading: true } }
     );
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('idtoken');
@@ -86,9 +102,18 @@ export class SafeDownloadService {
       (res) => {
         const blob = new Blob([res], { type });
         this.saveFile(fileName, blob);
-        // snackBarRef.dismiss();
+        snackBarRef.instance.data = {
+          loading: false,
+        };
+        setTimeout(() => snackBarRef.dismiss(), 1000);
       },
-      () => snackBarRef.dismiss()
+      () => {
+        snackBarRef.instance.data = {
+          loading: false,
+          error: true,
+        };
+        setTimeout(() => snackBarRef.dismiss(), 1000);
+      }
     );
   }
 
