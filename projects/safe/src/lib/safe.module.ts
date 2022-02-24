@@ -33,6 +33,7 @@ import { SafeSearchMenuModule } from './components/search-menu/search-menu.modul
 import { SafeAggregationBuilderModule } from './components/ui/aggregation-builder/aggregation-builder.module';
 import { SafeTagboxModule } from './components/ui/tagbox/tagbox.module';
 import { SafeLayoutModalModule } from './components/layout-modal/layout-modal.module';
+import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackbar-spinner.module';
 
 @NgModule({
   exports: [
@@ -70,6 +71,7 @@ import { SafeLayoutModalModule } from './components/layout-modal/layout-modal.mo
     SafeAggregationBuilderModule,
     SafeTagboxModule,
     SafeLayoutModalModule,
+    SafeSnackbarSpinnerModule,
   ],
   declarations: [],
 })

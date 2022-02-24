@@ -1,6 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { SafeSnackbarSpinnerComponent } from '../components/snackbar-spinner/snackbar-spinner.component';
+import { SafeSnackBarService } from './snackbar.service';
 
 /**
  * Shared download service. Handles export and upload events.
@@ -22,7 +24,8 @@ export class SafeDownloadService {
    */
   constructor(
     @Inject('environment') environment: any,
-    private http: HttpClient
+    private http: HttpClient,
+    private snackBar: SafeSnackBarService
   ) {
     this.baseUrl = environment.apiUrl;
   }
@@ -36,6 +39,11 @@ export class SafeDownloadService {
    * @param options (optional) request options
    */
   getFile(path: string, type: string, fileName: string, options?: any): void {
+    // Opens a loader in a snackar
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SafeSnackbarSpinnerComponent,
+      { duration: 0, data: { loading: true } }
+    );
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
@@ -44,12 +52,23 @@ export class SafeDownloadService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Authorization: `Bearer ${token}`,
     });
-    this.http
-      .get(url, { ...options, responseType: 'blob', headers })
-      .subscribe((res) => {
+    this.http.get(url, { ...options, responseType: 'blob', headers }).subscribe(
+      (res) => {
         const blob = new Blob([res], { type });
         this.saveFile(fileName, blob);
-      });
+        snackBarRef.instance.data = {
+          loading: false,
+        };
+        setTimeout(() => snackBarRef.dismiss(), 1000);
+      },
+      () => {
+        snackBarRef.instance.data = {
+          loading: false,
+          error: true,
+        };
+        setTimeout(() => snackBarRef.dismiss(), 1000);
+      }
+    );
   }
 
   /**
@@ -66,6 +85,11 @@ export class SafeDownloadService {
     fileName: string,
     body?: any
   ): void {
+    // Opens a loader in a snackar
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SafeSnackbarSpinnerComponent,
+      { duration: 0, data: { loading: true } }
+    );
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
@@ -74,12 +98,23 @@ export class SafeDownloadService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Authorization: `Bearer ${token}`,
     });
-    this.http
-      .post(url, body, { responseType: 'blob', headers })
-      .subscribe((res) => {
+    this.http.post(url, body, { responseType: 'blob', headers }).subscribe(
+      (res) => {
         const blob = new Blob([res], { type });
         this.saveFile(fileName, blob);
-      });
+        snackBarRef.instance.data = {
+          loading: false,
+        };
+        setTimeout(() => snackBarRef.dismiss(), 1000);
+      },
+      () => {
+        snackBarRef.instance.data = {
+          loading: false,
+          error: true,
+        };
+        setTimeout(() => snackBarRef.dismiss(), 1000);
+      }
+    );
   }
 
   /**
