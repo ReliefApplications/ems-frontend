@@ -43,18 +43,18 @@ export class SafeSnackBarService {
    * @param config additional configuration of the message ( duration / color / error ).
    * @returns snackbar message reference.
    */
-  openSnackBar(
+  public openSnackBar(
     message: string,
     config?: SnackBar
   ): MatSnackBarRef<TextOnlySnackBar> {
     config = { ...DEFAULT_SNACKBAR, ...config };
-    const snackBar = this.snackBar.open(message, config.action, {
+    const snackBarRef = this.snackBar.open(message, config.action, {
       duration: config.duration ? config.duration : undefined,
       horizontalPosition: 'center',
       verticalPosition: 'top',
       panelClass: config && config.error ? 'snack-error' : '',
     });
-    return snackBar;
+    return snackBarRef;
   }
 
   /**
@@ -64,18 +64,19 @@ export class SafeSnackBarService {
    * @param config additional configuration of the message ( duration / color / error ).
    * @returns snackbar message reference.
    */
-  openComponentSnackBar(
-    component: ComponentType<any>, //TODO check type
+  public openComponentSnackBar(
+    component: ComponentType<any>,
     config?: SnackBar
   ): MatSnackBarRef<any> {
     config = { ...DEFAULT_SNACKBAR, ...config };
-    const snackBar = this.snackBar.openFromComponent(component, {
+    const snackBarRef = this.snackBar.openFromComponent(component, {
       duration: config.duration ? config.duration : undefined,
       horizontalPosition: 'center',
       verticalPosition: 'top',
       panelClass: config && config.error ? 'snack-error' : '',
     });
-    return snackBar;
+    console.log(snackBarRef);
+    return snackBarRef;
   }
 
   /**
@@ -85,17 +86,17 @@ export class SafeSnackBarService {
    * @param config additional configuration of the message ( duration / color / error ).
    * @returns snackbar message reference.
    */
-  openTemplateSnackBar(
-    template: TemplateRef<any>, //TODO check type
+  public openTemplateSnackBar(
+    template: TemplateRef<any>,
     config?: SnackBar
   ): MatSnackBarRef<EmbeddedViewRef<any>> {
     config = { ...DEFAULT_SNACKBAR, ...config };
-    const snackBar = this.snackBar.openFromTemplate(template, {
+    const snackBarRef = this.snackBar.openFromTemplate(template, {
       duration: config.duration ? config.duration : undefined,
       horizontalPosition: 'center',
       verticalPosition: 'top',
       panelClass: config && config.error ? 'snack-error' : '',
     });
-    return snackBar;
+    return snackBarRef;
   }
 }
