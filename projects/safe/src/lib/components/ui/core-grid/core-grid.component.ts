@@ -751,7 +751,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Builds the request body with all the useful data
-    const fileName = `${this.settings.title ? this.settings.title : 'records'}.${e.format}`;
+    const dt = new Date();
+    const month = dt.toLocaleString('en-us', { month: 'short' });
+    const date = month + " " + dt.getDate() + " " + dt.getFullYear();
+    const fileName = `${this.settings.title ? this.settings.title : 'records'} ${date}.${e.format}`;
     const currentLayout = this.layout;
     const body = {
       ids,
