@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { ComponentType } from '@angular/cdk/portal';
+import { EmbeddedViewRef, Injectable, TemplateRef } from '@angular/core';
 import {
   MatSnackBar,
   MatSnackBarRef,
@@ -48,6 +49,48 @@ export class SafeSnackBarService {
   ): MatSnackBarRef<TextOnlySnackBar> {
     config = { ...DEFAULT_SNACKBAR, ...config };
     const snackBar = this.snackBar.open(message, config.action, {
+      duration: config.duration ? config.duration : undefined,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: config && config.error ? 'snack-error' : '',
+    });
+    return snackBar;
+  }
+
+  /**
+   * Creates a snackbar including a component on top of the layout.
+   *
+   * @param component component to show inside the snackbar.
+   * @param config additional configuration of the message ( duration / color / error ).
+   * @returns snackbar message reference.
+   */
+  openComponentSnackBar(
+    component: ComponentType<any>, //TODO check type
+    config?: SnackBar
+  ): MatSnackBarRef<any> {
+    config = { ...DEFAULT_SNACKBAR, ...config };
+    const snackBar = this.snackBar.openFromComponent(component, {
+      duration: config.duration ? config.duration : undefined,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: config && config.error ? 'snack-error' : '',
+    });
+    return snackBar;
+  }
+
+  /**
+   * Creates a snackbar including a component on top of the layout.
+   *
+   * @param component component to show inside the snackbar.
+   * @param config additional configuration of the message ( duration / color / error ).
+   * @returns snackbar message reference.
+   */
+  openTemplateSnackBar(
+    template: TemplateRef<any>, //TODO check type
+    config?: SnackBar
+  ): MatSnackBarRef<EmbeddedViewRef<any>> {
+    config = { ...DEFAULT_SNACKBAR, ...config };
+    const snackBar = this.snackBar.openFromTemplate(template, {
       duration: config.duration ? config.duration : undefined,
       horizontalPosition: 'center',
       verticalPosition: 'top',

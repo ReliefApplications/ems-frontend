@@ -17,6 +17,7 @@ import {
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeSpinnerModule } from 'projects/safe/src/lib/components/ui/spinner/spinner.module';
 
 @NgModule({
   declarations: [ResourceComponent],
@@ -36,6 +37,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatPaginatorModule,
     TranslateModule,
     SafeLayoutModalModule,
+    SafeSpinnerModule,
   ],
   exports: [ResourceComponent],
 })

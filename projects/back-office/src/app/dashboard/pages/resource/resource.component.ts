@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   SafeDownloadService,
@@ -31,6 +31,7 @@ import {
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { SafeSpinnerComponent } from 'projects/safe/src/lib/components/ui/spinner/spinner.component';
 
 const ITEMS_PER_PAGE = 10;
 const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
@@ -82,6 +83,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   @ViewChild('xlsxFile') xlsxFile: any;
 
+  // === SNACKBAR LOADING FINISHED ICON ===
+  @ViewChild('loadingCompleteIconRef') public loadingCompleteIconRef!: TemplateRef<any>;
+
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -90,8 +94,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
     private downloadService: SafeDownloadService,
     private dialog: MatDialog,
     private translate: TranslateService,
-    private gridLayoutService: SafeGridLayoutService
-  ) {}
+    private gridLayoutService: SafeGridLayoutService,
+  ) { }
 
   /*  Load data from the id of the resource passed as a parameter.
    */
@@ -377,12 +381,13 @@ export class ResourceComponent implements OnInit, OnDestroy {
    * @param file File to upload.
    */
   uploadFileData(file: any): void {
+    this.snackBar.openComponentSnackBar(SafeSpinnerComponent);
     const path = `upload/resource/records/${this.id}`;
     this.downloadService.uploadFile(path, file).subscribe(
       (res) => {
         this.xlsxFile.nativeElement.value = '';
         if (res.status === 'OK') {
-          this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
+          this.snackBar.openTemplateSnackBar(this.loadingCompleteIconRef, { duration: 1000 });
           this.getResourceData();
         }
       },
