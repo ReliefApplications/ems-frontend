@@ -235,13 +235,15 @@ export class SafeGridWidgetComponent implements OnInit {
         await this.emailService.sendMail(
           options.distributionList,
           options.subject,
-          options.bodyText,
+          this.grid.selectedRows.length > 0
+            ? options.bodyText
+            : options.bodyTextAlternate,
           emailSettings,
           this.grid.selectedRows,
           sortField,
           sortOrder
         );
-        if (options.export) {
+        if (options.export && this.grid.selectedRows.length > 0) {
           this.grid.onExport({
             records: 'all',
             format: 'xlsx',
