@@ -276,8 +276,12 @@
       "data": "Data set selection",
       "lat": "Latitude",
       "long": "Longitude",
-      "default": "Default display",
-      "zoom": "Zoom"
+      "zoom": "Zoom",
+      "default": {
+        "title": "Default display",
+        "lat": "Map center latitude",
+        "long": "Map center longitude"
+      }
     },
     "scheduler": {
       "new": "New scheduler",
@@ -446,6 +450,18 @@
     "add": "Add a layout",
     "preview": {
       "description": "Reorder, sort, filter and hide columns to edit default display of the layout"
+    }
+  },
+  "file": {
+    "download": {
+      "processing": "Downloading file...",
+      "ready": "Your file is ready",
+      "error": "Something went wrong during the download"
+    },
+    "upload": {
+      "processing": "Uploading file...",
+      "ready": "File uploaded",
+      "error": "Something went wrong during the upload"
     }
   }
 }

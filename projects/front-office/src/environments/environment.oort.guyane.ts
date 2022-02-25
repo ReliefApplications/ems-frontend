@@ -4,7 +4,7 @@ import { theme } from '../themes/oort';
 const authConfig: AuthConfig = {
   issuer: 'https://id.oortcloud.tech/auth/realms/oort',
   redirectUri: 'https://aide-alimentaire-guyane.oortcloud.tech/',
-  postLogoutRedirectUri: 'https://aide-alimentaire-guyane.oortcloud.tech/auth',
+  postLogoutRedirectUri: 'https://aide-alimentaire-guyane.oortcloud.tech/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',

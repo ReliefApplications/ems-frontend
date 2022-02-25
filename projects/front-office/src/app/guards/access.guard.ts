@@ -41,17 +41,22 @@ export class AccessGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
+      console.log('access ?');
     return this.authService.getProfile().pipe(
       map((res) => {
         if (res.data.me) {
+          console.log('c');
           this.authService.user.next(res.data.me);
           return true;
         } else {
           if (this.authService.account) {
+            console.log('d');
             this.authService.logout();
           } else {
+            console.log('there no access, I navigate');
             this.router.navigate(['/auth']);
           }
+          console.log('f');
           return false;
         }
       })
