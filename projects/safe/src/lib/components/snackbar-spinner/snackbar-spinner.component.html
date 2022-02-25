@@ -1,4 +1,4 @@
-<span>{{message}}</span>
+<span>{{data.message}}</span>
 <safe-spinner *ngIf="data.loading"></safe-spinner>
 <ng-container *ngIf="!data.loading">
     <safe-icon *ngIf="!data.error" icon="check" variant="success"></safe-icon>

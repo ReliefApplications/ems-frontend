@@ -109,11 +109,8 @@ export class SafeInviteUsersComponent implements OnInit {
         (res) => {
           this.gridData.data = this.gridData.data.concat(res);
         },
-        (err) => {
-          if (err.status === 400) {
-            this.snackBar.openSnackBar(err.error, { error: true });
-            this.resetFileInput();
-          }
+        () => {
+          this.resetFileInput();
         }
       );
     } else {
