@@ -35,7 +35,7 @@ import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
 
-const DEFAULT_FILE_NAME = 'grid.xlsx';
+const DEFAULT_FILE_NAME = 'Records';
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
@@ -166,8 +166,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public editionActive = false;
 
   // === DOWNLOAD ===
-  public excelFileName = '';
   private apiUrl = '';
+  /** Builds filename from the date and widget title */
+  get fileName(): string {
+    const today = new Date();
+    const month = today.toLocaleString('en-us', { month: 'short' });
+    const date = month + ' ' + today.getDate() + ' ' + today.getFullYear();
+    return `${this.settings.title ? this.settings.title : DEFAULT_FILE_NAME} ${date}`;
+  }
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -231,7 +237,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.defaultLayout.sort;
     }
     this.showFilter = !!this.defaultLayout?.showFilter;
-    this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     this.dataQuery = this.apollo.watchQuery<any>({
@@ -751,7 +756,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Builds the request body with all the useful data
-    const fileName = `${this.settings.title ? this.settings.title : 'records'}.${e.format}`;
     const currentLayout = this.layout;
     const body = {
       ids,
@@ -773,7 +777,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.downloadService.getRecordsExport(
       `${this.apiUrl}/download/records`,
       `text/${e.format};charset=utf-8;`,
-      fileName,
+      `${this.fileName}.${e.format}`,
       body
     );
   }
