@@ -43,7 +43,9 @@
       </ng-container>
     </div>
     <div class="form-group">
-      <div class="form-group-title">{{ 'widgets.map.layers.title' | translate }}</div>
+      <div class="form-group-title">
+        {{ 'widgets.map.layers.title' | translate }}
+      </div>
       <mat-form-field appearance="outline">
         <mat-label>{{ 'widgets.map.layers.add' | translate }}</mat-label>
         <input
@@ -62,9 +64,7 @@
             (click)="addOnlineLayer(layer)"
           >
             {{ layer.title }}
-            <safe-badge *ngFor="let tag of layer.tags">{{
-              tag
-            }}</safe-badge>
+            <safe-badge *ngFor="let tag of layer.tags">{{ tag }}</safe-badge>
           </button>
         </div>
       </mat-form-field>
@@ -87,10 +87,10 @@
     </div>
     <div class="form-group">
       <div class="form-group-title">
-        {{ 'widgets.map.default' | translate }}
+        {{ 'widgets.map.default.title' | translate }}
       </div>
       <mat-form-field appearance="outline">
-        <mat-label>{{ 'widgets.map.basemap' | translate }}</mat-label>
+        <mat-label>{{ 'widgets.map.default.basemap' | translate }}</mat-label>
         <mat-select formControlName="basemap" placeholder="OSM">
           <mat-option *ngFor="let map of basemaps" [value]="map">
             {{ map }}
@@ -98,18 +98,18 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>{{ 'widgets.map.zoom' | translate }}</mat-label>
+        <mat-label>{{ 'widgets.map.default.zoom' | translate }}</mat-label>
         <input type="number" matInput formControlName="zoom" />
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>
-          {{ 'widgets.map.lat' | translate }}
+          {{ 'widgets.map.default.lat' | translate }}
         </mat-label>
         <input type="string" matInput formControlName="centerLat" />
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>
-          {{ 'widgets.map.long' | translate }}
+          {{ 'widgets.map.default.long' | translate }}
         </mat-label>
         <input type="string" matInput formControlName="centerLong" />
       </mat-form-field>

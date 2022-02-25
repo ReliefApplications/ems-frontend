@@ -275,7 +275,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-first',
     });
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
     if (this.metaQuery) {
       this.loading = true;
       this.metaQuery.subscribe(
@@ -287,6 +287,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               await this.gridService.populateMetaFields(this.metaFields);
               const fields = this.settings?.query?.fields || [];
               const defaultLayoutFields = this.defaultLayout.fields || {};
+              console.log(this.defaultLayout);
               this.fields = this.gridService.getFields(
                 fields,
                 this.metaFields,
@@ -294,6 +295,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
                 '',
                 { filter: true }
               );
+              console.log(this.fields);
             }
           }
           this.getRecords();
@@ -593,10 +595,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         if (event.items && event.items.length > 0) {
           this.onDelete(event.items);
         }
-        break;
-      }
-      case 'saveLayout': {
-        this.saveDefaultLayout();
         break;
       }
       case 'resetLayout': {

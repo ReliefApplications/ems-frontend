@@ -1,6 +1,7 @@
 import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { PipelineStage } from '../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
+import { Accumulators } from '../components/ui/aggregation-builder/pipeline/expressions/operators';
 
 /**
  * Shared aggregation service.
@@ -57,23 +58,37 @@ export class AggregationBuilderService {
    * @returns Fields remaining at the end of the pipeline.
    */
   public fieldsAfter(initialFields: any[], pipeline: any[]): any[] {
-    const fields = [...initialFields];
+    let fields = [...initialFields];
     for (const stage of pipeline) {
       switch (stage.type) {
         case PipelineStage.GROUP: {
-          // TO DO
+          if (stage.form.groupBy) {
+            const groupByField = fields.find(
+              (x) => x.name === stage.form.groupBy
+            );
+            if (groupByField) {
+              fields = [];
+              fields.push(groupByField);
+            }
+          }
+          if (stage.form.addFields) {
+            this.addFields(fields, stage.form.addFields, initialFields);
+          }
           break;
         }
         case PipelineStage.ADD_FIELDS: {
-          // TO DO
+          this.addFields(fields, stage.form, initialFields);
           break;
         }
         case PipelineStage.UNWIND: {
-          // TO DO
-          break;
-        }
-        case PipelineStage.CUSTOM: {
-          // TO DO
+          fields = fields.map((field) => {
+            if (field.name === stage.form.field) {
+              const newField = Object.assign({}, field);
+              newField.type = { ...field.type, kind: 'SCALAR', name: 'String' };
+              return newField;
+            }
+            return field;
+          });
           break;
         }
         default: {
@@ -82,5 +97,24 @@ export class AggregationBuilderService {
       }
     }
     return fields.sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
+  }
+
+  private addFields(fields: any[], form: any, initialFields: any[]): void {
+    for (const addField of form) {
+      fields.push({
+        name: addField.name,
+        type: {
+          name:
+            addField.expression.operator === Accumulators.AVG
+              ? 'Float'
+              : addField.expression.operator === Accumulators.COUNT
+              ? 'Int'
+              : initialFields.find(
+                  (x: any) => x.name === addField.expression.field
+                )?.type.name || 'String',
+          kind: 'SCALAR',
+        },
+      });
+    }
   }
 }

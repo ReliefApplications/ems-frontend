@@ -5,6 +5,30 @@ import { PipelineStage } from './pipeline/pipeline-stage.enum';
 const formBuilder = new FormBuilder();
 
 /**
+ * Creates a addFields stage form.
+ *
+ * @param value initial value
+ * @returns Stage form group.
+ */
+export const addFieldsForm = (value: any): FormGroup =>
+  formBuilder.group({
+    name: [value && value.name ? value.name : '', Validators.required],
+    expression: formBuilder.group({
+      operator: [
+        value && value.expression && value.expression.operator
+          ? value.expression.operator
+          : '',
+        Validators.required,
+      ],
+      field: [
+        value && value.expression && value.expression.field
+          ? value.expression.field
+          : '',
+      ],
+    }),
+  });
+
+/**
  * Builds a stage form from its initial value.
  *
  * @param value Initial value of the form.
@@ -36,26 +60,61 @@ export const addStage = (value: any): FormGroup => {
     case PipelineStage.GROUP: {
       return formBuilder.group({
         type: [PipelineStage.GROUP],
+        form: formBuilder.group({
+          groupBy: [
+            value.form && value.form.groupBy ? value.form.groupBy : '',
+            Validators.required,
+          ],
+          addFields: formBuilder.array(
+            value.form && value.form.addFields
+              ? value.form.addFields.map((x: any) => addFieldsForm(x))
+              : []
+          ),
+        }),
       });
     }
     case PipelineStage.ADD_FIELDS: {
       return formBuilder.group({
         type: [PipelineStage.ADD_FIELDS],
+        form: formBuilder.array(
+          value.form
+            ? value.form.map((x: any) => addFieldsForm(x))
+            : [addFieldsForm(null)],
+          Validators.required
+        ),
       });
     }
     case PipelineStage.UNWIND: {
       return formBuilder.group({
         type: [PipelineStage.UNWIND],
+        form: formBuilder.group({
+          field: [
+            value.form && value.form.field ? value.form.field : '',
+            Validators.required,
+          ],
+        }),
       });
     }
     case PipelineStage.CUSTOM: {
       return formBuilder.group({
         type: [PipelineStage.CUSTOM],
+        form: formBuilder.group({
+          raw: [
+            value.form && value.form.raw ? value.form.raw : '',
+            Validators.required,
+          ],
+        }),
       });
     }
     default: {
       return formBuilder.group({
-        type: [PipelineStage.FILTER],
+        type: [PipelineStage.CUSTOM],
+        form: formBuilder.group({
+          raw: [
+            value.form && value.form.raw ? value.form.raw : '',
+            Validators.required,
+          ],
+        }),
       });
     }
   }
