@@ -135,7 +135,7 @@ export class SafeAuthService {
       .then(() => this.isDoneLoading.next(true))
       .catch(() => {
         console.error('issue when loading file');
-        this.isDoneLoading.next(true);
+        this.isDoneLoading.next(false);
       });
   }
 
