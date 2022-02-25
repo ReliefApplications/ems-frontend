@@ -52,7 +52,7 @@ export class AccessGuard implements CanActivate {
             console.log('d');
             this.authService.logout();
           } else {
-            console.log('e');
+            console.log('there no access, I navigate');
             this.router.navigate(['/auth']);
           }
           console.log('f');
