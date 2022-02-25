@@ -67,6 +67,20 @@ export class SafeAuthService {
       });
     this.oauthService.setupAutomaticSilentRefresh();
     this.checkAccount();
+    this.isAuthenticated.subscribe((res) => {
+      if (res) {
+        console.log('authenticated');
+      } else {
+        console.log('no auth');
+      }
+    });
+    this.isDoneLoading.subscribe((res) => {
+      if (res) {
+        console.log('loading done');
+      } else {
+        console.log('no loading');
+      }
+    });
   }
 
   /**
@@ -115,6 +129,7 @@ export class SafeAuthService {
   }
 
   public initLoginSequence(): Promise<void> {
+    console.log('init launched');
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
       .then(() => this.isDoneLoading.next(true))
