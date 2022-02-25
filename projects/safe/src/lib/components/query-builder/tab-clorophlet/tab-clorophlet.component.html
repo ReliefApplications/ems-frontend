@@ -45,7 +45,7 @@
                         <safe-button icon="delete" category="primary" variant="danger" (click)="removeDivision(item, f)"></safe-button>
                     </div>
                     <safe-tab-filter [form]="$any(form.controls[i]).controls.divisions.controls[f].controls.filter"
-                    [fields]="selectableFields" [settings]="settings"></safe-tab-filter>
+                    [fields]="selectableFields"></safe-tab-filter>
                 </div>
             </div>
             <div>
