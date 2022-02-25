@@ -67,20 +67,6 @@ export class SafeAuthService {
       });
     this.oauthService.setupAutomaticSilentRefresh();
     this.checkAccount();
-    this.isAuthenticated.subscribe((res) => {
-      if (res) {
-        console.log('authenticated');
-      } else {
-        console.log('no auth');
-      }
-    });
-    this.isDoneLoading.subscribe((res) => {
-      if (res) {
-        console.log('loading done');
-      } else {
-        console.log('no loading');
-      }
-    });
   }
 
   /**
