@@ -39,6 +39,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * Configuration of the Authentication behavior
    */
   ngOnInit(): void {
+    console.log('init');
     this.authService.initLoginSequence();
   }
 
