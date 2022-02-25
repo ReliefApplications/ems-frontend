@@ -66,11 +66,11 @@ export enum PermissionType {
 export class PermissionsManagement {
     public static mappedPermissions = {
         resources: {
-            access: Permissions.canSeeResources,
+            access: [Permissions.canSeeResources, Permissions.canCreateResources],
             create: [Permissions.canCreateResources, Permissions.canManageResources]
         },
         forms: {
-            access: Permissions.canSeeForms,
+            access: [Permissions.canSeeForms, Permissions.canCreateForms],
             create: [Permissions.canCreateForms, Permissions.canManageForms]
         },
         settings: {
