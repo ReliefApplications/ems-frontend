@@ -147,7 +147,7 @@ export const init = (
       // Display of tooltip
       if (question.tooltip) {
         const header = el.parentElement.parentElement.querySelector(
-          '.sv-title-actions__title'
+          '.sv_q_title'
         );
         if (header) {
           header.title = question.tooltip;
