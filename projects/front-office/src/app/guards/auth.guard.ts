@@ -30,8 +30,10 @@ export class AuthGuard implements CanActivate {
     return this.authService.canActivateProtectedRoutes$.pipe(
       tap((x) => {
         if (x) {
+          console.log('a');
           return true;
         } else {
+          console.log('b');
           this.router.navigate(['/auth']);
           return false;
         }
