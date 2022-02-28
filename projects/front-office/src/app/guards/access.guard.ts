@@ -41,7 +41,7 @@ export class AccessGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-      console.log('access ?');
+    console.log('access ?');
     return this.authService.getProfile().pipe(
       map((res) => {
         if (res.data.me) {
