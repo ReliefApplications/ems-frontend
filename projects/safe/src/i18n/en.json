@@ -277,6 +277,7 @@
       "lat": "Latitude",
       "long": "Longitude",
       "zoom": "Zoom",
+      "markers": "Markers info field selection",
       "default": {
         "title": "Default display",
         "lat": "Map center latitude",
@@ -297,6 +298,7 @@
       "select": "Select a dataset",
       "field": {
         "title": "Fields",
+        "tooltip": "Selection of fields",
         "description": "Select data points below and drag them to 'selected fields' on the right",
         "available": "Available fields",
         "selected": "Selected fields"

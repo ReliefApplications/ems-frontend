@@ -12,6 +12,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [SafeMapSettingsComponent],
@@ -29,6 +30,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TextFieldModule,
     SafeQueryBuilderModule,
     TranslateModule,
+    MatExpansionModule,
   ],
   exports: [SafeMapSettingsComponent],
 })

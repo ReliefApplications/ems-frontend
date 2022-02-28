@@ -4,3 +4,15 @@
     align-items: center;
     justify-content: space-between;
 }
+
+mat-expansion-panel:not([class*='mat-elevation-z']) {
+    box-shadow: none;
+}
+
+mat-expansion-panel {
+    border: solid 1px rgba(0, 0, 0, 0.1);
+
+    mat-form-field {
+        width: 100%;
+    }
+}

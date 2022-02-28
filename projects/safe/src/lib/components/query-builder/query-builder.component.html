@@ -35,7 +35,10 @@
       <mat-icon>error</mat-icon>
     </button>
     <mat-tab-group mat-align-tabs="start" animationDuration="0ms" *ngIf="form.getRawValue().name">
-      <mat-tab [label]="'widgets.query.field.title' | translate">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <label [matTooltip]="'widgets.query.field.tooltip' | translate">{{'widgets.query.field.title' | translate}}</label>
+        </ng-template>
         <ng-template matTabContent>
           <safe-tab-fields *ngIf="availableFields.length > 0" [form]="$any(form.controls.fields)"
             [fields]="availableFields" [factory]="factory"></safe-tab-fields>
