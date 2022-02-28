@@ -451,5 +451,17 @@
     "preview": {
       "description": "Reorder, sort, filter and hide columns to edit default display of the layout"
     }
+  },
+  "file": {
+    "download": {
+      "processing": "Downloading file...",
+      "ready": "Your file is ready",
+      "error": "Something went wrong during the download"
+    },
+    "upload": {
+      "processing": "Uploading file...",
+      "ready": "File uploaded",
+      "error": "Something went wrong during the upload"
+    }
   }
 }

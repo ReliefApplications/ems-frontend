@@ -27,11 +27,14 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
+    console.log(route.toString());
     return this.authService.canActivateProtectedRoutes$.pipe(
       tap((x) => {
         if (x) {
+          console.log('a');
           return true;
         } else {
+          console.log('No auth, I navigate');
           this.router.navigate(['/auth']);
           return false;
         }

@@ -115,10 +115,14 @@ export class SafeAuthService {
   }
 
   public initLoginSequence(): Promise<void> {
+    console.log('init launched');
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
       .then(() => this.isDoneLoading.next(true))
-      .catch(() => this.isDoneLoading.next(true));
+      .catch(() => {
+        console.error('issue when loading file');
+        this.isDoneLoading.next(false);
+      });
   }
 
   /**
