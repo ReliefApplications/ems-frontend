@@ -8,6 +8,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { SafeBadgeModule } from '../../ui/badge/badge.module';
@@ -25,6 +26,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatRadioModule,
     MatSelectModule,
     MatButtonModule,
+    MatSliderModule,
     MatIconModule,
     TextFieldModule,
     SafeQueryBuilderModule,

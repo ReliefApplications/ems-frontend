@@ -382,7 +382,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
       (res) => {
         this.xlsxFile.nativeElement.value = '';
         if (res.status === 'OK') {
-          this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
           this.getResourceData();
         }
       },

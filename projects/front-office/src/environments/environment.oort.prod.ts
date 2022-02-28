@@ -2,15 +2,13 @@ import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/oort';
 
 const authConfig: AuthConfig = {
-  issuer:
-    'https://login.microsoftonline.com/fbacd48d-ccf4-480d-baf0-31048368055f/v2.0',
+  issuer: 'https://id.oortcloud.tech/auth/realms/oort',
   redirectUri: 'https://dms.oortcloud.tech/',
-  postLogoutRedirectUri: 'https://dms.oortcloud.tech/auth',
-  clientId: 'a85e101e-e193-4a3f-8911-c6e89bc973e6',
+  postLogoutRedirectUri: 'https://dms.oortcloud.tech/auth/',
+  clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
   showDebugInformation: true,
-  strictDiscoveryDocumentValidation: false,
 };
 
 /**
