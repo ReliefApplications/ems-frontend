@@ -3,7 +3,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { AccessGuard } from './guards/access.guard';
 import { AuthGuard } from './guards/auth.guard';
 
+/**
+ * List of top level routes of the Back-Office.
+ */
 const routes: Routes = [
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
+  },
   {
     path: '',
     children: [
@@ -41,10 +48,6 @@ const routes: Routes = [
       },
     ],
     canActivate: [AuthGuard],
-  },
-  {
-    path: 'auth',
-    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
   {
     path: '**',

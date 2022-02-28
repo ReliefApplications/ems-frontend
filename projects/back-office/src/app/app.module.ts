@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Apollo
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
+import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
 import { getMainDefinition } from '@apollo/client/utilities';
@@ -135,8 +135,6 @@ const initializeAuth =
 export const httpTranslateLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http);
 
-const imports: any[] = [];
-
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -157,12 +155,7 @@ const imports: any[] = [];
         deps: [HttpClient],
       },
     }),
-    OAuthModule.forRoot({
-      resourceServer: {
-        allowedUrls: ['http://localhost:9090/api'],
-        sendAccessToken: true,
-      },
-    }),
+    OAuthModule.forRoot(),
   ],
   providers: [
     {
@@ -185,5 +178,5 @@ const imports: any[] = [];
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(private apollo: Apollo) {}
+  constructor() {}
 }

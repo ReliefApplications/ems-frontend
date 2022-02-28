@@ -115,7 +115,6 @@ export class SafeAuthService {
   }
 
   public initLoginSequence(): Promise<void> {
-    console.log('init launched');
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
       .then(() => this.isDoneLoading.next(true))

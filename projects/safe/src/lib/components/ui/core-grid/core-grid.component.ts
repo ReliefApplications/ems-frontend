@@ -287,7 +287,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               await this.gridService.populateMetaFields(this.metaFields);
               const fields = this.settings?.query?.fields || [];
               const defaultLayoutFields = this.defaultLayout.fields || {};
-              console.log(this.defaultLayout);
               this.fields = this.gridService.getFields(
                 fields,
                 this.metaFields,
@@ -295,7 +294,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
                 '',
                 { filter: true }
               );
-              console.log(this.fields);
             }
           }
           this.getRecords();
