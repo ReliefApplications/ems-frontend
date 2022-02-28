@@ -24,3 +24,15 @@
         }
     }
 }
+
+.info-text {
+    margin-top: -10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    p {
+        padding-left: 4px;
+        margin: 0;
+    }
+}

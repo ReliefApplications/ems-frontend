@@ -37,10 +37,13 @@
             <mat-option *ngFor="let field of selectedFields" [value]="field">
               {{ field }}
             </mat-option>
-            <mat-option>none</mat-option>
           </mat-select>
         </mat-form-field>
       </ng-container>
+      <div class="info-text">
+        <p>{{ 'widgets.map.categoryTooltip' | translate }}</p>
+        <mat-icon>layers</mat-icon>
+      </div>
     </div>
     <div class="form-group">
       <div class="form-group-title">

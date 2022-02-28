@@ -284,7 +284,8 @@
         "basemap": "Base map"
       },
       "zoom": "Zoom",
-      "category": "Category",
+      "category": "Map quick layers",
+      "categoryTooltip": "It allows to separate your markers in different layers, which will be accessible on the top right corner of the map",
       "basemap": "Base map",
       "layers": {
         "add": "Select a layer",
