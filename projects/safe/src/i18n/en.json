@@ -48,7 +48,7 @@
   "action": {
     "edit": "Edit",
     "editAs": "Edit as",
-    "view": "View",
+    "view": "View records",
     "delete": "Delete",
     "deletePerm": "Delete premanently",
     "close": "Close",
@@ -277,8 +277,12 @@
       "data": "Data set selection",
       "lat": "Latitude",
       "long": "Longitude",
-      "default": "Default display",
-      "zoom": "Zoom"
+      "zoom": "Zoom",
+      "default": {
+        "title": "Default display",
+        "lat": "Map center latitude",
+        "long": "Map center longitude"
+      }
     },
     "scheduler": {
       "new": "New scheduler",

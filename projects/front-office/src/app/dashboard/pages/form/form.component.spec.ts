@@ -1,4 +1,8 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { RouterTestingModule } from '@angular/router/testing';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 import { FormComponent } from './form.component';
 
@@ -8,6 +12,12 @@ describe('FormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule,
+        HttpClientModule,
+        OAuthModule.forRoot(),
+        MatSnackBarModule,
+      ],
       declarations: [FormComponent],
     }).compileComponents();
   });
