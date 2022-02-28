@@ -46,6 +46,7 @@ export class QueryBuilderService {
         query: GET_QUERY_TYPES,
       })
       .subscribe((res) => {
+        console.log('there');
         this.availableQueries.next(
           // eslint-disable-next-line no-underscore-dangle
           res.data.__schema.queryType.fields.filter((x: any) =>

@@ -339,7 +339,10 @@
           "color": "Text color",
           "style": "Text style"
         },
-        "fields": "Fields"
+        "fields": "Fields",
+        "appliesTo": "Apply style to",
+        "wholeRow": "Whole row",
+        "selectedColumns": "Only selected columns"
       },
       "save": "Save Layout as default",
       "reset": "Reset default Layout",

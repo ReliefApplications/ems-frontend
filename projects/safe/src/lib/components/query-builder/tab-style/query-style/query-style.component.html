@@ -66,24 +66,15 @@
         </div>
       </ng-container>
 
-      <!-- <div class="field-form">
-        <span class="field-name">Apply style to</span>
-        <mat-radio-group
-          formControlName="styleAppliedTo"
-          aria-label="Apply style to"
-        >
-          <mat-radio-button (click)="onStyleAppliedTo(false)" value="whole-row"
-            >whole row</mat-radio-button
-          >
-          <mat-radio-button
-            (click)="onStyleAppliedTo(true)"
-            value="selected-columns"
-            >selected columns</mat-radio-button
-          >
-        </mat-radio-group>
-      </div> -->
-
       <div class="field-form">
+        <span class="field-name">{{ 'widgets.grid.style.appliesTo' | translate }}</span>
+        <mat-radio-group [formControl]="wholeRow">
+          <mat-radio-button [value]="true">{{ 'widgets.grid.style.wholeRow' | translate }}</mat-radio-button>
+          <mat-radio-button [value]="false">{{ 'widgets.grid.style.selectedColumns' | translate }}</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <div class="field-form" *ngIf="!wholeRow.value">
         <span class="field-name">{{'widgets.grid.style.fields' | translate }}</span>
         <safe-tab-fields
           *ngIf="fields.length > 0"

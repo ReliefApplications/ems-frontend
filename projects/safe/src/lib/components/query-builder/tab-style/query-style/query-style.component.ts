@@ -6,7 +6,7 @@ import {
   OnInit,
   ComponentFactory,
 } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'safe-query-style',
@@ -19,6 +19,7 @@ export class SafeQueryStyleComponent implements OnInit {
   public selectedFields: any[] = [];
   @Input() form!: FormGroup;
   @Input() scalarFields: any[] = [];
+  public wholeRow!: FormControl;
 
   @Output() closeEdition = new EventEmitter<any>();
 
@@ -27,10 +28,20 @@ export class SafeQueryStyleComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.fieldsFormControl.valueChanges.subscribe(() => {
+    const fields = this.form.get('fields')?.value || [];
+    if (fields.length > 0) {
+      this.wholeRow = new FormControl(false);
+    } else {
+      this.wholeRow = new FormControl(true);
+    }
+    this.wholeRow.valueChanges.subscribe((value) => {
+      if (value) {
+        this.fieldsFormControl.clear();
+      }
+    });
+    this.fieldsFormControl.valueChanges.subscribe((res) => {
       const rawValue = this.fieldsFormControl.getRawValue();
       const value = this.getFieldsValue(rawValue);
-      console.log(value);
       this.form.get('fields')?.setValue(value);
     });
   }
@@ -43,7 +54,6 @@ export class SafeQueryStyleComponent implements OnInit {
   }
 
   private getFieldsValue(fields: any[], prefix?: string): string[] {
-    const flatFields = this.flatDeep(fields);
     return this.flatDeep(
       fields.map((f) => {
         switch (f.kind) {
@@ -57,6 +67,8 @@ export class SafeQueryStyleComponent implements OnInit {
       })
     );
   }
+
+  private setFieldsValue(fields: any[])
 
   /**
    * Toggles boolean controls.
