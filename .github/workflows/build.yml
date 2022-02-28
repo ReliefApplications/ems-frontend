@@ -6,6 +6,7 @@ on:
       - 'main'
       - 'release-*'
       - 'hotfix-*'
+      - 'feature-*'
 
 jobs:
   build:

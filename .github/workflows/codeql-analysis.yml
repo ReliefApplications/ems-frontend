@@ -17,11 +17,13 @@ on:
       - 'main'
       - 'release-*'
       - 'hotfix-*'
+      - 'feature-*'
   pull_request:
     # The branches below must be a subset of the branches above
     branches:
       - 'release-*'
       - 'hotfix-*'
+      - 'feature-*'
   schedule:
     - cron: '20 18 * * 5'
 
