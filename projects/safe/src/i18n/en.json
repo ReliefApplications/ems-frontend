@@ -281,6 +281,10 @@
         "title": "Default display",
         "lat": "Map center latitude",
         "long": "Map center longitude"
+      },
+      "error": {
+        "lat": "Invalid latitude",
+        "long": "Invalid longitude"
       }
     },
     "scheduler": {
