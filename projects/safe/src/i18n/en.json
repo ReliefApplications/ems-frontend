@@ -277,10 +277,13 @@
       "lat": "Latitude",
       "long": "Longitude",
       "zoom": "Zoom",
+      "zoom-tooltip": "Select a default zoom for the map display",
       "default": {
         "title": "Default display",
         "lat": "Map center latitude",
-        "long": "Map center longitude"
+        "lat-tooltip": "Select a default latitude where the map will be centered around",
+        "long": "Map center longitude",
+        "long-tooltip": "Select a default longitude where the map will be centered around"
       }
     },
     "scheduler": {

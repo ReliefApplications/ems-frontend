@@ -36,7 +36,10 @@
       <div class="form-group-title">
         {{ 'widgets.map.default.title' | translate }}
       </div>
-      <mat-label>{{ 'widgets.map.zoom' | translate }}</mat-label>
+      <mat-label class="single-label" [matTooltip]="'widgets.map.zoom-tooltip' | translate"
+      matTooltipPosition="right">
+        {{ 'widgets.map.zoom' | translate }}
+      </mat-label>
       <mat-slider
         thumbLabel
         tickInterval="1"
@@ -44,18 +47,32 @@
         [min]="0"
         [max]="10"
       ></mat-slider>
-      <mat-form-field appearance="outline">
-        <mat-label>
-          {{ 'widgets.map.default.lat' | translate }}
-        </mat-label>
-        <input type="string" matInput formControlName="centerLat" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>
-          {{ 'widgets.map.default.long' | translate }}
-        </mat-label>
-        <input type="string" matInput formControlName="centerLong" />
-      </mat-form-field>
+      <div class="input-plus-tooltip">
+        <mat-form-field appearance="outline">
+          <mat-label>
+            {{ 'widgets.map.default.lat' | translate }}
+          </mat-label>
+          <input type="string" matInput formControlName="centerLat">
+        </mat-form-field>
+        <div class="custom-tooltip">
+          <p>
+            {{'widgets.map.default.lat-tooltip' | translate}}
+          </p>
+        </div>
+      </div>
+      <div class="input-plus-tooltip">
+        <mat-form-field appearance="outline">
+          <mat-label>
+            {{ 'widgets.map.default.long' | translate }}
+          </mat-label>
+          <input type="string" matInput formControlName="centerLong">
+        </mat-form-field>
+        <div class="custom-tooltip">
+          <p>
+            {{'widgets.map.default.long-tooltip' | translate}}
+          </p>
+        </div>
+      </div>
     </div>
   </form>
 </ng-container>
