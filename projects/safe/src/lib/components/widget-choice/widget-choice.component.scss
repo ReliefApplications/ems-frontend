@@ -31,35 +31,56 @@
     }
 }
 
-.safe-floating-widget-choice {
-    padding: 0 24px;
-    display: grid;
-    grid-gap: 16px;
-    grid-auto-flow: column;
-    background: white;
-    box-shadow: 0px 4px 4px rgba(47, 56, 62, 0.15);
-    border-radius: 8px;
-    height: 64px;
+.floating-container {
+    position: relative;
     max-width: 568px;
     margin: auto;
     pointer-events: auto;
     cursor: move;
 
-    .safe-widget-type {
-        height: 36px;
-        margin: auto;
-        cursor: pointer;
-        position: relative;
-
-        .safe-widget-hovered {
-            height: 2px;
-            width: 100%;
-            position: absolute;
-            bottom: -6px;
-        }
-
-        img {
+    .safe-floating-widget-choice {
+        padding: 0 24px;
+        height: 64px;
+        display: grid;
+        grid-gap: 16px;
+        grid-auto-flow: column;
+        background: white;
+        box-shadow: 0px 4px 4px rgba(47, 56, 62, 0.15);
+        border-radius: 8px;
+    
+        .safe-widget-type {
             height: 36px;
+            margin: auto;
+            cursor: pointer;
+            position: relative;
+    
+            .safe-widget-hovered {
+                height: 2px;
+                width: 100%;
+                position: absolute;
+                bottom: -6px;
+            }
+    
+            img {
+                height: 36px;
+            }
+        }
+    }
+
+    .close-btn {
+        position: absolute;
+        right: -18px;
+        top: -18px;
+    }
+
+    .closed {
+        float: right;
+        width: max-content;
+
+        .mat-icon {
+            height: 36px;
+            width: 36px;
+            font-size:36px;
         }
     }
 }

@@ -269,6 +269,7 @@
   },
   "widgets": {
     "add": "Add a widget",
+    "open-toolbar": "Open widgets selection",
     "cols": "Cols",
     "rows": "Rows",
     "map": {

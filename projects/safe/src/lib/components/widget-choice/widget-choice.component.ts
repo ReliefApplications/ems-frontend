@@ -8,6 +8,7 @@ import { IWidgetType } from '../../models/dashboard.model';
 })
 export class SafeWidgetChoiceComponent implements OnInit {
   public hovered = '';
+  public floatingIsClosed = false;
 
   @Input() floating = false;
 

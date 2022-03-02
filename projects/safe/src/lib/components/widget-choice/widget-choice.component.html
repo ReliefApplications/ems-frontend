@@ -12,12 +12,27 @@
 </ng-template>
 
 <ng-template #floatingTemplate>
-    <div class="safe-floating-widget-choice" cdkDrag>
-        <div class="safe-widget-type" *ngFor="let type of widgetTypes" (click)="onSelect(type)"
-            [matTooltip]="type.name" matTooltipPosition="above" (mouseover)="hovered = type.id"
-            (mouseout)="hovered = ''">
-            <img [src]="type.icon">
-            <div *ngIf="hovered === type.id" [style.background]="type.color" class="safe-widget-hovered"></div>
+    <div class="floating-container" cdkDrag>
+        <div *ngIf="!floatingIsClosed" class="safe-floating-widget-choice">
+            <div class="safe-widget-type" *ngFor="let type of widgetTypes" (click)="onSelect(type)"
+                [matTooltip]="type.name" matTooltipPosition="above" (mouseover)="hovered = type.id"
+                (mouseout)="hovered = ''">
+                <img [src]="type.icon">
+                <div *ngIf="hovered === type.id" [style.background]="type.color" class="safe-widget-hovered"></div>
+            </div>
+        </div>
+        <div *ngIf="floatingIsClosed" class="safe-floating-widget-choice closed">
+            <div class="safe-widget-type" (click)="floatingIsClosed = false"
+                [matTooltip]="'widgets.open-toolbar' | translate" matTooltipPosition="above" (mouseover)="hovered = 'widgetSelection'"
+                (mouseout)="hovered = ''">
+                <mat-icon>dashboard</mat-icon>
+                <div *ngIf="hovered === 'widgetSelection'" [style.background]="'black'" class="safe-widget-hovered"></div>
+            </div>
+        </div>
+        <div *ngIf="!floatingIsClosed" class="close-btn" (click)="floatingIsClosed = true">
+            <button mat-mini-fab color="primary" [matTooltip]="'action.close' | translate" matTooltipPosition="above">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
     </div>
 </ng-template>
