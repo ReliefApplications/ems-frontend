@@ -168,15 +168,36 @@
             <mat-label>{{'widgets.grid.subject' | translate}}</mat-label>
             <input matInput formControlName="subject" type="string">
           </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>{{'widgets.grid.body' | translate}}</mat-label>
-            <textarea matInput formControlName="bodyText" placeholder="Please enter a body template for the email"
-              [matTextareaAutosize]="true" [matAutosizeMinRows]="5"></textarea>
-          </mat-form-field>
-          <mat-checkbox formControlName="export">{{'widgets.grid.export' | translate}}</mat-checkbox>
-          <h2>{{'widgets.grid.selectFields' | translate}}</h2>
-          <safe-tab-fields *ngIf="fields.length > 0" [form]="$any(buttonForm.controls.bodyFields)" [fields]="fields"
-            [factory]="factory"></safe-tab-fields>
+          <mat-tab-group mat-align-tabs="start" animationDuration="0ms" dynamicHeight style="min-height: 100px">
+            <mat-tab>
+              <ng-template mat-tab-label>
+                Default
+              </ng-template>
+              <ng-template matTabContent>
+                <mat-form-field appearance="outline" style="width: 100%;">
+                  <mat-label>Body</mat-label>
+                  <textarea matInput formControlName="bodyText" placeholder="Please enter a body template for the email"
+                    [matTextareaAutosize]="true" [matAutosizeMinRows]="5"></textarea>
+                </mat-form-field>
+                <mat-checkbox formControlName="export">{{'widgets.grid.export' | translate}}</mat-checkbox>
+                <h2>{{'widgets.grid.selectFields' | translate}}</h2>
+                <safe-tab-fields *ngIf="fields.length > 0" [form]="$any(buttonForm.controls.bodyFields)" [fields]="fields"
+                  [factory]="factory"></safe-tab-fields>
+              </ng-template>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                Without record
+              </ng-template>
+              <ng-template matTabContent>
+                <mat-form-field appearance="outline" style="width: 100%;">
+                  <mat-label>Body</mat-label>
+                  <textarea matInput formControlName="bodyTextAlternate" placeholder="Please enter a body template for the email"
+                    [matTextareaAutosize]="true" [matAutosizeMinRows]="5"></textarea>
+                </mat-form-field>
+              </ng-template>
+            </mat-tab>
+          </mat-tab-group>
         </div>
       </ng-container>
     </div>

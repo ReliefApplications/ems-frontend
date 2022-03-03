@@ -18,6 +18,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { LayoutsParametersModule } from './layouts-parameters/layouts-parameters.module';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -43,6 +45,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatChipsModule,
     SafeButtonModule,
     TranslateModule,
+    LayoutsParametersModule,
+    MatAutocompleteModule,
   ],
   exports: [SafeGridSettingsComponent],
 })
