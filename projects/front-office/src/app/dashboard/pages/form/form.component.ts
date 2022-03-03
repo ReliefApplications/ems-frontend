@@ -11,8 +11,9 @@ import {
   GET_STEP_BY_ID,
 } from './graphql/queries';
 import { Subscription } from 'rxjs';
-import { SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
+import { SafeSnackBarService } from '@safe/builder';
 import { switchMap } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Form page.
@@ -61,7 +62,8 @@ export class FormComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -105,7 +107,12 @@ export class FormComponent implements OnInit, OnDestroy {
               !this.form.canCreateRecords
             ) {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectAccessDenied('form'),
+                // NOTIFICATIONS.objectAccessDenied('form'),
+                this.translate.instant('notification.objectAccessDenied', {
+                  type: this.translate
+                    .instant('notification.term.form')
+                    .toLowerCase(),
+                }),
                 { error: true }
               );
             } else {
@@ -142,7 +149,12 @@ export class FormComponent implements OnInit, OnDestroy {
               !this.form.canCreateRecords
             ) {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectAccessDenied('form'),
+                // NOTIFICATIONS.objectAccessDenied('form'),
+                this.translate.instant('notification.objectAccessDenied', {
+                  type: this.translate
+                    .instant('notification.term.form')
+                    .toLowerCase(),
+                }),
                 { error: true }
               );
             } else {

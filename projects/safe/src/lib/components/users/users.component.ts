@@ -23,7 +23,6 @@ import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SelectionModel } from '@angular/cdk/collections';
-import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeDownloadService } from '../../services/download.service';
@@ -128,17 +127,34 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
           .subscribe((res) => {
             if (!res.errors) {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.usersActions(
-                  'invited',
-                  res?.data?.addUsers.length
-                )
+                // NOTIFICATIONS.usersActions(
+                //   'invited',
+                //   res?.data?.addUsers.length
+                // )
+                res?.data?.addUsers.length
+                  ? this.translate.instant('notification.usersActions', {
+                      action: this.translate
+                        .instant('notification.term.invited')
+                        .toLowerCase(),
+                      length: res?.data?.addUsers.length,
+                    })
+                  : this.translate.instant('notification.userActions', {
+                      action: this.translate
+                        .instant('notification.term.invited')
+                        .toLowerCase(),
+                    })
               );
               this.users.data = this.users.data.concat(
                 res?.data?.addUsers || []
               );
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.userInvalidActions('invited'),
+                // NOTIFICATIONS.userInvalidActions('invited'),
+                this.translate.instant('notification.userInvalidActions', {
+                  action: this.translate
+                    .instant('notification.term.invited')
+                    .toLowerCase(),
+                }),
                 { error: true }
               );
             }
@@ -173,7 +189,10 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
             .subscribe((res) => {
               if (res.data) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.userRolesUpdated(user.username)
+                  // NOTIFICATIONS.userRolesUpdated(user.username)
+                  this.translate.instant('notification.userRolesUpdated', {
+                    username: user.username,
+                  })
                 );
                 this.users.data = this.users.data.map((x) => {
                   if (x.id === user.id) {
@@ -232,14 +251,31 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               this.loading = false;
               if (res.data?.deleteUsers) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.usersActions('deleted', res.data.deleteUsers)
+                  // NOTIFICATIONS.usersActions('deleted', res.data.deleteUsers)
+                  res.data.deleteUsers > 1
+                    ? this.translate.instant('notification.usersActions', {
+                        action: this.translate
+                          .instant('notification.term.deleted')
+                          .toLowerCase(),
+                        length: res.data.deleteUsers,
+                      })
+                    : this.translate.instant('notification.userActions', {
+                        action: this.translate
+                          .instant('notification.term.deleted')
+                          .toLowerCase(),
+                      })
                 );
                 this.users.data = this.users.data.filter(
                   (u) => !ids.includes(u.id)
                 );
               } else {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.userInvalidActions('deleted'),
+                  // NOTIFICATIONS.userInvalidActions('deleted')
+                  this.translate.instant('notification.userInvalidActions', {
+                    action: this.translate
+                      .instant('notification.term.deleted')
+                      .toLowerCase(),
+                  }),
                   { error: true }
                 );
               }

@@ -76,7 +76,8 @@
     "restore": "Restore",
     "confirm": "Confirm",
     "attach": "Attach",
-    "expand": "Expand"
+    "expand": "Expand",
+    "deleted": "Deleted"
   },
   "status": {
     "active": "Active",
@@ -85,8 +86,8 @@
   },
   "date": {
     "loadFromCache": "Loaded from cache {{date}}",
-    "created": "Created by {{name}} at {{date}}",
-    "modified": "Last modified by {{name}} on {{date}}"
+    "created": "Created by {{value}} at {{date}}",
+    "modified": "Last modified by {{value}} on {{date}}"
   },
   "table": {
     "date": "Created on",
@@ -144,7 +145,7 @@
   "forms": {
     "create": "Create a form",
     "delete": "Delete form",
-    "deleteDesc": "Do you confirm the deletion of the form {{name}}?",
+    "deleteDesc": "Do you confirm the deletion of the form {{value}}?",
     "exit": "Exit without saving changes",
     "exitDesc": "There are unsaved changes on your form. Are you sure you want to exit?",
     "title": "Available forms",
@@ -162,7 +163,7 @@
   "resources": {
     "create": "Create a resource",
     "delete": "Delete resource",
-    "deleteDesc": "Do you confirm the deletion of the resource {{name}}?"
+    "deleteDesc": "Do you confirm the deletion of the resource {{value}}?"
   },
   "users": {
     "export": "Export users",
@@ -174,7 +175,7 @@
     "roleDescription": "Select the role to assign",
     "edit": "Update user roles",
     "delete": "Delete user",
-    "deleteDesc": "Do you confirm the deletion of the user {{name}}?",
+    "deleteDesc": "Do you confirm the deletion of the user {{value}}?",
     "deleteSelected": "Delete selected users",
     "deleteSelectedDesc": "Do you confirm the deletion of the selected users"
   },
@@ -185,7 +186,7 @@
     "add": "New role",
     "choose": "Choose role to simulate",
     "delete": "Delete role",
-    "deleteDesc": "Do you confirm the deletion of the role {{name}}?"
+    "deleteDesc": "Do you confirm the deletion of the role {{value}}?"
   },
   "APIConf": {
     "create": "Create an API Configuration",
@@ -209,7 +210,7 @@
     "token": "Token",
     "tokenPlaceholder": "Enter token for authentication",
     "delete": "Delete API configuration",
-    "deleteDesc": "Do you confirm the deletion of the API Configuration {{name}}?"
+    "deleteDesc": "Do you confirm the deletion of the API Configuration {{value}}?"
   },
   "pullJobs": {
     "create": "Create a pull job",
@@ -220,7 +221,7 @@
     "switch": "Switch mode",
     "identifier": "Unique identifiers",
     "delete": "Delete pull job",
-    "deleteDesc": "Do you confirm the deletion of the pull job {{name}}?"
+    "deleteDesc": "Do you confirm the deletion of the pull job {{value}}?"
   },
   "appSummary": {
     "new": "New Application",
@@ -241,14 +242,14 @@
     "new": "New position category",
     "edit": "Edit position category",
     "delete": "Delete position attribute",
-    "deleteDesc": "Do you confirm the deletion of the position attribute {{name}}?"
+    "deleteDesc": "Do you confirm the deletion of the position attribute {{value}}?"
   },
   "channels": {
     "create": "Create a channel",
     "new": "New channel",
     "edit": "Edit channel",
     "delete": "Delete channel",
-    "deleteDesc": "Do you confirm the deletion of the channel {{name}}?"
+    "deleteDesc": "Do you confirm the deletion of the channel {{value}}?"
   },
   "subscriptions": {
     "create": "Create a subscription",
@@ -381,8 +382,8 @@
     "currentVersion": "Current version",
     "fromResource": "From resource",
     "delete": "Delete record",
-    "deleteDesc": "Do you confirm the deletion of the reord {{name}}?",
-    "select": "Select {{name}} target",
+    "deleteDesc": "Do you confirm the deletion of the reord {{value}}?",
+    "select": "Select {{value}} target",
     "placeholder": "Select record"
   },
   "export": {
@@ -462,6 +463,67 @@
       "processing": "Uploading file...",
       "ready": "File uploaded",
       "error": "Something went wrong during the upload"
+    }
+  },
+  "notification": {
+    "appPublished": "Application {{value}} published.",
+    "userInvalidActions": "User could not be {{action}}.",
+    "accessNotProvided": "No access provided to this {{type}}. {{error}}",
+    "userRolesUpdated": "{{username}} roles updated.",
+    "usersActions": "{{length}} users were {{action}}.",
+    "userActions": "User was {{action}}.",
+    "objectNotUpdated": "{{type}} is locked for edition. {{error}}",
+    "objectEdited": "{{value}} {{type}} edited.",
+    "objectNotEdited": "{{type}} not edited. {{error}}",
+    "objectDuplicated": "The {{type}} {{value}} was successfully duplicated.",
+    "objectNotDuplicated": "The {{type}} was not duplicated. {{error}}",
+    "objectAlreadyExists": "The {{type}} {{value}} already exists on this application.",
+    "objectCreated": "{{value}} {{type}} created.",
+    "objectNotCreated": "The {{type}} was not created. {{error}}",
+    "objectDeleted": "{{value}} deleted.",
+    "objectNotDeleted": "The {{value}} was not deleted. {{error}}",
+    "objectReordered": "{{type}} reordered.",
+    "objectLoadedFromCache": "{{type}} loaded from cache.",
+    "objectIsLocked": "{{value}} edition is locked by another user.",
+    "objectUnlocked": "{{value}} edition has been unlocked by another user.",
+    "objectAccessDenied": "You don't have permission to see the {{type}}.",
+    "goToStep": "Back to {{step}} step.",
+    "statusUpdated": "Status updated to {{value}}.",
+    "noObjectOpened": "No opened {{value}}.",
+    "addRowsToRecord": "Added {{length}} row(s) to the field {{field}} in the record {{value}}.",
+    "formatInvalid": "Please upload a valid .{{format}} file.",
+    "cannotGoToNextStep": "Cannot go to next step.",
+    "copied": "Copied!",
+    "recordDoesNotMatch": "Selected record(s) do not match with some fields from this form.",
+    "recordUploadSuccess": "Records upload successful.",
+    "emailRegistered": "Some emails are already part of the application and will not be invited.",
+    "emailTooLong": "Failed to open your email client with selected records in the body. Either your browser or your email client does not support such long mailto command. {{error}}",
+    "emailClientNotResponding": "Failed to open your email client even without body. {{error}}",
+    "emailBodyCopiedToClipboard": "Email body copied to clipboard, you can now past it to the opened email.",
+    "dataRecovered": "The data has been recovered",
+    "profileSaved": "Preferences saved.",
+    "appEdited": "This application has been updated by someone else.",
+    "pingResponseAuthToken": "Authentication token fetched, ping again to get the actual response.",
+    "pingResponseReceived": "Received positive response from ping request.",
+    "pingResponseError": "ERROR during the PING request.",
+    "term": {
+      "deleted": "Deleted",
+      "application": "Application",
+      "page": "Page",
+      "paged": "Pages",
+      "invited": "Invited",
+      "positionCategory": "Position category",
+      "subscription": "Subscription",
+      "dashboard": "Dashboard",
+      "workflow": "Workflow",
+      "form": "Form",
+      "step": "Step",
+      "app": "App",
+      "resource": "Resource",
+      "status": "Status",
+      "pullJob": "Pull job",
+      "record": "Record",
+      "platform": "Platform"
     }
   }
 }

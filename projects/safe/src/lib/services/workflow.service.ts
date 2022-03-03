@@ -11,8 +11,8 @@ import { Workflow } from '../models/workflow.model';
 import { SafeSnackBarService } from './snackbar.service';
 import { ContentType } from '../models/page.model';
 import { Step } from '../models/step.model';
-import { NOTIFICATIONS } from '../const/notifications';
 import { SafeApplicationService } from './application.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
@@ -40,7 +40,8 @@ export class SafeWorkflowService {
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private router: Router,
-    private applicationService: SafeApplicationService
+    private applicationService: SafeApplicationService,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -82,7 +83,13 @@ export class SafeWorkflowService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated('step', res.data.addStep.name)
+              // NOTIFICATIONS.objectCreated('step', res.data.addStep.name)
+              this.translate.instant('notification.objectCreated', {
+                type: this.translate
+                  .instant('notification.term.step')
+                  .toLowerCase(),
+                value: res.data.addStep.name,
+              })
             );
             this.loadWorkflow(workflow.id);
             if (step.type === ContentType.form) {
@@ -98,18 +105,28 @@ export class SafeWorkflowService {
             }
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectNotEdited(
-                'Workflow',
-                res.errors ? res.errors[0].message : ''
-              ),
+              // NOTIFICATIONS.objectNotEdited(
+              //   'Workflow',
+              //   res.errors ? res.errors[0].message : ''
+              // ),
+              this.translate.instant('notification.objectNotEdited', {
+                type: this.translate.instant('notification.term.workflow'),
+                error: res.errors ? res.errors[0].message : '',
+              }),
               { error: true }
             );
           }
         });
     } else {
-      this.snackBar.openSnackBar(NOTIFICATIONS.noObjectOpened('workflow'), {
-        error: true,
-      });
+      this.snackBar.openSnackBar(
+        // NOTIFICATIONS.noObjectOpened('workflow'),
+        this.translate.instant('notification.noObjectOpened', {
+          value: this.translate
+            .instant('notification.term.workflow')
+            .toLowerCase(),
+        }),
+        { error: true }
+      );
       this.router.navigate(['../'], { relativeTo: route });
     }
   }
@@ -131,7 +148,13 @@ export class SafeWorkflowService {
           return x;
         }),
       };
-      this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('step', step.name));
+      this.snackBar.openSnackBar(
+        // NOTIFICATIONS.objectEdited('step', step.name)
+        this.translate.instant('notification.objectEdited', {
+          type: this.translate.instant('notification.term.step').toLowerCase(),
+          value: step.name,
+        })
+      );
       this.workflow.next(newWorkflow);
     }
   }

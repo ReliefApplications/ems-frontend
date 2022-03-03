@@ -19,7 +19,6 @@ import {
   PermissionsManagement,
   PermissionType,
   SafeConfirmModalComponent,
-  NOTIFICATIONS,
   Form,
 } from '@safe/builder';
 import {
@@ -242,13 +241,26 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
           })
           .subscribe((res: any) => {
             if (!res.errors) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('form'));
+              this.snackBar.openSnackBar(
+                // NOTIFICATIONS.objectDeleted('form')
+                this.translate.instant('notification.objectDeleted', {
+                  value: this.translate
+                    .instant('notification.term.form')
+                    .toLowerCase(),
+                })
+              );
               this.forms.data = this.forms.data.filter(
                 (x) => x.id !== form.id && form.id !== x.resource?.coreForm?.id
               );
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectNotDeleted('form', res.errors[0].message),
+                // NOTIFICATIONS.objectNotDeleted('form', res.errors[0].message),
+                this.translate.instant('notification.objectNotDeleted', {
+                  value: this.translate
+                    .instant('notification.term.form')
+                    .toLowerCase(),
+                  error: res.errors[0].message,
+                }),
                 { error: true }
               );
             }
@@ -285,7 +297,13 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
+                  // NOTIFICATIONS.objectNotCreated('form', res.errors[0].message)
+                  this.translate.instant('notification.objectNotCreated', {
+                    type: this.translate
+                      .instant('notification.term.form')
+                      .toLowerCase(),
+                    error: res.errors[0].message,
+                  }),
                   { error: true }
                 );
               } else {

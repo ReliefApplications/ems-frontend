@@ -6,10 +6,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import {
   ApiConfiguration,
   authType,
-  NOTIFICATIONS,
   SafeSnackBarService,
   SafeApiProxyService,
   status,
@@ -52,7 +52,8 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private apiProxy: SafeApiProxyService
+    private apiProxy: SafeApiProxyService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -96,7 +97,16 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
               this.loading = res.data.loading;
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.accessNotProvided('resource'),
+                // NOTIFICATIONS.accessNotProvided('resource'),
+                this.translateService.instant(
+                  'notification.accessNotProvided',
+                  {
+                    type: this.translateService
+                      .instant('notification.term.resource')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
               this.router.navigate(['/settings/apiconfigurations']);
@@ -226,10 +236,14 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotUpdated(
-              'ApiConfiguration',
-              res.errors[0].message
-            ),
+            // NOTIFICATIONS.objectNotUpdated(
+            //   'ApiConfiguration',
+            //   res.errors[0].message
+            // ),
+            this.translateService.instant('notification.objectNotUpdated', {
+              type: this.translateService.instant('table.APIConf'),
+              error: res.errors[0].message,
+            }),
             { error: true }
           );
           this.loading = false;
@@ -252,14 +266,24 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       ?.subscribe((res: any) => {
         if (res) {
           if (res.access_token) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseAuthToken);
+            this.snackBar.openSnackBar(
+              // NOTIFICATIONS.pingResponseAuthToken
+              this.translateService.instant(
+                'notification.pingResponseAuthToken'
+              )
+            );
           } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseReceived);
+            this.snackBar.openSnackBar(
+              // NOTIFICATIONS.pingResponseReceived
+              this.translateService.instant('notification.pingResponseReceived')
+            );
           }
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseError, {
-            error: true,
-          });
+          this.snackBar.openSnackBar(
+            // NOTIFICATIONS.pingResponseError,
+            this.translateService.instant('notification.pingResponseError'),
+            { error: true }
+          );
         }
       });
   }

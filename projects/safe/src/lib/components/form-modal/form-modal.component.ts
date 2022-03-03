@@ -34,10 +34,10 @@ import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NOTIFICATIONS } from '../../const/notifications';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Interface of Dialog data.
@@ -90,7 +90,8 @@ export class SafeFormModalComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
-    private formBuilderService: SafeFormBuilderService
+    private formBuilderService: SafeFormBuilderService,
+    private translate: TranslateService
   ) {
     this.containerId = uuidv4();
     this.environment = environment;
@@ -162,9 +163,11 @@ export class SafeFormModalComponent implements OnInit {
                 this.storedMergedData[resourcesField.name] =
                   this.data.prefillRecords.map((x) => x.id);
               } else {
-                this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, {
-                  error: true,
-                });
+                this.snackBar.openSnackBar(
+                  // NOTIFICATIONS.recordDoesNotMatch,
+                  this.translate.instant('notification.recordDoesNotMatch'),
+                  { error: true }
+                );
               }
             }
           })
@@ -648,7 +651,10 @@ export class SafeFormModalComponent implements OnInit {
             },
           })
           .subscribe((res) => {
-            this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+            this.snackBar.openSnackBar(
+              // NOTIFICATIONS.dataRecovered
+              this.translate.instant('notification.dataRecovered')
+            );
             this.dialog.closeAll();
           });
       }

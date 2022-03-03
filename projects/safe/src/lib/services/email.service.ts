@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SafeSnackBarService } from './snackbar.service';
-import { NOTIFICATIONS } from '../const/notifications';
 import { SafePreprocessorService } from './preprocessor.service';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Shared email service.
@@ -23,7 +23,8 @@ export class SafeEmailService {
   constructor(
     private snackBar: SafeSnackBarService,
     private preprocessor: SafePreprocessorService,
-    private clipboard: Clipboard
+    private clipboard: Clipboard,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -53,9 +54,11 @@ export class SafeEmailService {
       sortOrder,
     });
     this.clipboard.copy(body);
-    this.snackBar.openSnackBar(NOTIFICATIONS.emailBodyCopiedToClipboard, {
-      duration: 3000,
-    });
+    this.snackBar.openSnackBar(
+      // NOTIFICATIONS.emailBodyCopiedToClipboard,
+      this.translate.instant('notification.emailBodyCopiedToClipboard'),
+      { duration: 3000 }
+    );
 
     subject = await this.preprocessor.preprocess(subject);
 
@@ -63,14 +66,19 @@ export class SafeEmailService {
     try {
       window.location.href = `mailto:${recipient.join(';')}?subject=${subject}`;
     } catch (error) {
-      this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), {
-        error: true,
-      });
+      this.snackBar.openSnackBar(
+        // NOTIFICATIONS.emailTooLong(error),
+        this.translate.instant('notification.emailTooLong', { error }),
+        { error: true }
+      );
       try {
         window.location.href = `mailto:${recipient}?subject=${subject}`;
       } catch (error2) {
         this.snackBar.openSnackBar(
-          NOTIFICATIONS.emailClientNotResponding(error2),
+          // NOTIFICATIONS.emailClientNotResponding(error2),
+          this.translate.instant('notification.emailClientNotResponding', {
+            error: error2,
+          }),
           { error: true }
         );
       }

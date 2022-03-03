@@ -14,7 +14,6 @@ import {
   Resource,
   SafeConfirmModalComponent,
   SafeSnackBarService,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -199,14 +198,25 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
                 (x) => x.id !== resource.id
               );
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectDeleted('resource')
+                // NOTIFICATIONS.objectDeleted('resource')
+                this.translate.instant('notification.objectDeleted', {
+                  value: this.translate
+                    .instant('notification.term.resource')
+                    .toLowerCase(),
+                })
               );
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectNotDeleted(
-                  'resource',
-                  res.errors[0].message
-                ),
+                // NOTIFICATIONS.objectNotDeleted(
+                //   'resource',
+                //   res.errors[0].message
+                // ),
+                this.translate.instant('notification.objectNotDeleted', {
+                  value: this.translate
+                    .instant('notification.term.resource')
+                    .toLowerCase(),
+                  error: res.errors[0].message,
+                }),
                 { error: true }
               );
             }
@@ -239,7 +249,13 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
+                  // NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
+                  this.translate.instant('notification.objectNotCreated', {
+                    type: this.translate
+                      .instant('notification.term.form')
+                      .toLowerCase(),
+                    error: res.errors[0].message,
+                  }),
                   { error: true }
                 );
               } else {

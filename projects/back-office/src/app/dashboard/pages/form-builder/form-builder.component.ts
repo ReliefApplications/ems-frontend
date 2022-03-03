@@ -22,7 +22,7 @@ import {
 } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SafeStatusModalComponent, NOTIFICATIONS } from '@safe/builder';
+import { SafeStatusModalComponent } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -136,7 +136,13 @@ export class FormBuilderComponent implements OnInit {
               }
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.accessNotProvided('form'),
+                // NOTIFICATIONS.accessNotProvided('form'),
+                this.translate.instant('notification.accessNotProvided', {
+                  type: this.translate
+                    .instant('notification.term.form')
+                    .toLowerCase(),
+                  error: '',
+                }),
                 { error: true }
               );
               // redirect to default screen if error
@@ -193,7 +199,9 @@ export class FormBuilderComponent implements OnInit {
             } else {
               // SCHEMA_UPDATE.asObservable().subscribe(refresh => {
               //   if (refresh) {
-              //     this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
+              //     this.snackBar.openSnackBar(
+              //       NOTIFICATIONS.objectEdited('form', this.form?.name)
+              //     );
               //     this.form = { ...res.data?.editForm, structure };
               //     this.structure = structure;
               //     localStorage.removeItem(`form:${this.id}`);
@@ -204,7 +212,13 @@ export class FormBuilderComponent implements OnInit {
               // });
               // TODO: should be waiting for the BACK to be ready
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectEdited('form', this.form?.name)
+                // NOTIFICATIONS.objectEdited('form', this.form?.name)
+                this.translate.instant('notification.objectEdited', {
+                  type: this.translate
+                    .instant('notification.term.form')
+                    .toLowerCase(),
+                  value: this.form?.name,
+                })
               );
               this.form = { ...res.data?.editForm, structure };
               this.structure = structure;
@@ -243,12 +257,21 @@ export class FormBuilderComponent implements OnInit {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message),
+            // NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message),
+            this.translate.instant('notification.objectNotUpdated', {
+              type: this.translate.instant('notification.term.status'),
+              error: res.errors[0].message,
+            }),
             { error: true }
           );
           statusModal.close();
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.statusUpdated(e.value));
+          this.snackBar.openSnackBar(
+            // NOTIFICATIONS.statusUpdated(e.value)
+            this.translate.instant('notification.statusUpdated', {
+              value: e.value,
+            })
+          );
           this.form = { ...this.form, status: res.data?.editForm.status };
           statusModal.close();
         }
@@ -311,13 +334,25 @@ export class FormBuilderComponent implements OnInit {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message),
+            // NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message),
+            this.translate.instant('notification.objectNotUpdated', {
+              type: this.translate
+                .instant('notification.term.form')
+                .toLowerCase(),
+              error: res.errors[0].message,
+            }),
             { error: true }
           );
           statusModal.close();
         } else {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectEdited('form', formName)
+            // NOTIFICATIONS.objectEdited('form', formName)
+            this.translate.instant('notification.objectEdited', {
+              type: this.translate
+                .instant('notification.term.form')
+                .toLowerCase(),
+              value: formName,
+            })
           );
           this.form = { ...this.form, name: res.data?.editForm.name };
           statusModal.close();
@@ -346,12 +381,22 @@ export class FormBuilderComponent implements OnInit {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message),
+            // NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message),
+            this.translate.instant('notification.objectNotUpdated', {
+              type: this.translate.instant('action.access').toLowerCase(),
+              error: res.errors[0].message,
+            }),
             { error: true }
           );
           statusModal.close();
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', ''));
+          this.snackBar.openSnackBar(
+            // NOTIFICATIONS.objectEdited('access', '')
+            this.translate.instant('notification.objectEdited', {
+              type: this.translate.instant('action.access').toLowerCase(),
+              value: '',
+            })
+          );
           this.form = { ...res.data?.editForm, structure: this.structure };
           statusModal.close();
         }
