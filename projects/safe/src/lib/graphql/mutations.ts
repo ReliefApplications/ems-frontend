@@ -866,3 +866,14 @@ export interface deleteLayoutMutationResponse {
   loading: boolean;
   deleteLayout: Layout;
 }
+
+export const SEND_EMAIL = gql`
+  mutation sendEmail($recipient: [String]!, $subject: String!, $body: String!) {
+    sendEmail(to: $recipient, subject: $subject, body: $body)
+  }
+`;
+
+export interface sendEmailMutationResponse {
+  loading: boolean;
+  sendEmail: boolean;
+}

@@ -3,6 +3,8 @@ import { SafeSnackBarService } from './snackbar.service';
 import { NOTIFICATIONS } from '../const/notifications';
 import { SafePreprocessorService } from './preprocessor.service';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { Apollo } from 'apollo-angular';
+import { sendEmailMutationResponse, SEND_EMAIL } from '../graphql/mutations';
 
 /**
  * Shared email service.
@@ -23,7 +25,8 @@ export class SafeEmailService {
   constructor(
     private snackBar: SafeSnackBarService,
     private preprocessor: SafePreprocessorService,
-    private clipboard: Clipboard
+    private clipboard: Clipboard,
+    private apollo: Apollo
   ) {}
 
   /**
@@ -60,20 +63,43 @@ export class SafeEmailService {
     subject = await this.preprocessor.preprocess(subject);
 
     // === SEND THE EMAIL ===
-    try {
-      window.location.href = `mailto:${recipient.join(';')}?subject=${subject}`;
-    } catch (error) {
-      this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), {
-        error: true,
+    this.apollo
+      .mutate<sendEmailMutationResponse>({
+        mutation: SEND_EMAIL,
+        variables: {
+          recipient,
+          subject,
+          body,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          this.snackBar.openSnackBar(
+            NOTIFICATIONS.emailClientNotResponding(res.errors[0]),
+            {
+              error: true,
+            }
+          );
+        } else {
+          this.snackBar.openSnackBar('Email sent.', {
+            duration: 3000,
+          });
+        }
       });
-      try {
-        window.location.href = `mailto:${recipient}?subject=${subject}`;
-      } catch (error2) {
-        this.snackBar.openSnackBar(
-          NOTIFICATIONS.emailClientNotResponding(error2),
-          { error: true }
-        );
-      }
-    }
+    // try {
+    //   window.location.href = `mailto:${recipient.join(';')}?subject=${subject}`;
+    // } catch (error) {
+    //   this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), {
+    //     error: true,
+    //   });
+    //   try {
+    //     window.location.href = `mailto:${recipient}?subject=${subject}`;
+    //   } catch (error2) {
+    //     this.snackBar.openSnackBar(
+    //       NOTIFICATIONS.emailClientNotResponding(error2),
+    //       { error: true }
+    //     );
+    //   }
+    // }
   }
 }
