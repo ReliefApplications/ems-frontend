@@ -9,13 +9,18 @@
     </div>
     <div class="title">{{ application.name }}</div>
     <div class="bottom">
-        <span>{{'appSummary.created' | translate}}: {{ application.createdAt | date: 'mediumDate' }}</span>
+        <span>{{'appSummary.modified' | translate}}: {{ application.modifiedAt ?? application.createdAt | date: 'mediumDate' }}</span>
+        <!-- <span>{{'appSummary.modified' | translate}}: {{ application.createdAt ?? application.createdAt | date: 'mediumDate' }}</span> -->
         <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
         </safe-button>
         <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="preview.emit()">
                 <mat-icon>preview</mat-icon>
                 {{'action.preview' | translate}}
+            </button>
+            <button mat-menu-item (click)="access.emit()">
+                <mat-icon>open_in_browser</mat-icon>
+                {{'action.access' | translate}}
             </button>
             <button mat-menu-item (click)="clone.emit()" *ngIf="application.canUpdate">
                 <mat-icon>file_copy</mat-icon>

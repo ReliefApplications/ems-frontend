@@ -225,6 +225,7 @@
   "appSummary": {
     "new": "New Application",
     "created": "Created",
+    "modified": "Modified",
     "description": "Please enter a name for the application"
   },
   "profile": {

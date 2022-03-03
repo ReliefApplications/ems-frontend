@@ -17,6 +17,7 @@ interface IStatus {
 export class SafeApplicationSummaryComponent implements OnInit {
   @Input() application!: Application;
   @Output() preview = new EventEmitter();
+  @Output() access = new EventEmitter();
   @Output() delete = new EventEmitter();
   @Output() clone = new EventEmitter();
   @Output() editAccess = new EventEmitter();
