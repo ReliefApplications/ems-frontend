@@ -282,6 +282,13 @@
         "title": "Default display",
         "lat": "Map center latitude",
         "long": "Map center longitude"
+      },
+      "tooltip": {
+        "default": {
+          "lat": "Select a default latitude to center the map around",
+          "long": "Select a default longitude to center the map around",
+          "zoom": "Select a default zoom for the map display"
+        }
       }
     },
     "scheduler": {
