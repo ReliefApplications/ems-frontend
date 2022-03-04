@@ -5,38 +5,12 @@
     justify-content: space-between;
 }
 
-
-.single-label {
-    max-width: max-content;
-}
-
-.input-plus-tooltip {
-    position: relative;
+.map-default-settings {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
 
     mat-form-field {
-        width: 100%
-    }
-
-    .custom-tooltip {
-        display: none;
-        position: absolute;
-        border-radius: 4px;
-        background-color: black;
-        opacity: 60%;
-        width: max-content;
-        margin-top: -16px;
-        
-        p {
-            font-size: 10px;
-            color: white;
-            padding: 6px 8px;
-            margin: 0;
-        }
-      }
-}
-
-.input-plus-tooltip:hover {
-    .custom-tooltip {
-        display: block;
+        flex: 1;
     }
 }

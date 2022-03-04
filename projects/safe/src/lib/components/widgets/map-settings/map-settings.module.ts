@@ -9,10 +9,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
-import { MatIconModule } from '@angular/material/icon';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SafeIconModule } from '../../ui/icon/icon.module';
 
 @NgModule({
   declarations: [SafeMapSettingsComponent],
@@ -26,7 +26,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatSelectModule,
     MatButtonModule,
     MatSliderModule,
-    MatIconModule,
+    SafeIconModule,
     TextFieldModule,
     SafeQueryBuilderModule,
     TranslateModule,
