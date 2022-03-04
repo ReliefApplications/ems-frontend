@@ -260,7 +260,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             await this.gridService.populateMetaFields(this.metaFields);
             const fields = this.settings?.query?.fields || [];
             const defaultLayoutFields = this.defaultLayout.fields || {};
-            this.fields = this.gridService.getFields(fields, this.metaFields, defaultLayoutFields, '', { filter: true });
+            this.fields = this.gridService.getFields(fields, this.metaFields, defaultLayoutFields, '');
           }
         }
         this.getRecords();

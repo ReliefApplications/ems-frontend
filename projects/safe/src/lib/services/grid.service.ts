@@ -35,7 +35,7 @@ export class SafeGridService {
    */
   public getFields(
     fields: any[], metaFields: any, layoutFields: any, prefix?: string,
-    options?: { disabled?: boolean, filter?: boolean }): any[] {
+    options: { disabled?: boolean, filter: boolean } = { disabled: false, filter: true }): any[] {
     return flatDeep(fields.map(f => {
       const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
       switch (f.kind) {
@@ -77,9 +77,9 @@ export class SafeGridService {
             type: f.type,
             format: this.getFieldFormat(f.type),
             editor: this.getFieldEditor(f.type),
-            filter: ((prefix && !options?.filter) || !options?.filter) ? '' : this.getFieldFilter(f.type),
+            filter: !options.filter ? '' : this.getFieldFilter(f.type),
             meta: metaData,
-            disabled: options?.disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
+            disabled: options.disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
             hidden: cachedField?.hidden || false,
             width: cachedField?.width || title.length * 7 + 50,
             order: cachedField?.order,
