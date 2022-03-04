@@ -25,14 +25,12 @@
     }
 }
 
-.info-text {
-    margin-top: -10px;
+.map-default-settings {
     display: flex;
-    align-items: center;
-    gap: 4px;
+    gap: 8px;
+    flex-wrap: wrap;
 
-    p {
-        padding-left: 4px;
-        margin: 0;
+    mat-form-field {
+        flex: 1;
     }
 }

@@ -38,12 +38,12 @@
               {{ field }}
             </mat-option>
           </mat-select>
+          <mat-hint
+            >{{ 'widgets.map.tooltip.category' | translate
+            }}<safe-icon icon="layers" [inline]="true" [size]="14"></safe-icon
+          ></mat-hint>
         </mat-form-field>
       </ng-container>
-      <div class="info-text">
-        <p>{{ 'widgets.map.categoryTooltip' | translate }}</p>
-        <mat-icon>layers</mat-icon>
-      </div>
     </div>
     <div class="form-group">
       <div class="form-group-title">
@@ -100,7 +100,16 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-label>{{ 'widgets.map.zoom' | translate }}</mat-label>
+      <mat-label>
+        {{ 'widgets.map.zoom' | translate }}
+        <safe-icon
+          icon="info"
+          [matTooltip]="'widgets.map.tooltip.default.zoom' | translate"
+          [inline]="true"
+          [size]="16"
+          variant="grey"
+        ></safe-icon>
+      </mat-label>
       <mat-slider
         thumbLabel
         tickInterval="1"
@@ -108,18 +117,38 @@
         [min]="0"
         [max]="10"
       ></mat-slider>
-      <mat-form-field appearance="outline">
-        <mat-label>
-          {{ 'widgets.map.default.lat' | translate }}
-        </mat-label>
-        <input type="string" matInput formControlName="centerLat" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>
-          {{ 'widgets.map.default.long' | translate }}
-        </mat-label>
-        <input type="string" matInput formControlName="centerLong" />
-      </mat-form-field>
+      <div class="map-default-settings">
+        <mat-form-field appearance="outline">
+          <mat-label>
+            {{ 'widgets.map.default.lat' | translate }}
+          </mat-label>
+          <input type="number" matInput formControlName="centerLat" />
+          <safe-icon
+            matSuffix
+            icon="info"
+            variant="grey"
+            [matTooltip]="'widgets.map.tooltip.default.lat' | translate"
+          ></safe-icon>
+          <mat-error *ngIf="tileForm.controls.centerLat.errors">
+            {{ 'widgets.map.error.lat' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>
+            {{ 'widgets.map.default.long' | translate }}
+          </mat-label>
+          <input type="number" matInput formControlName="centerLong" />
+          <safe-icon
+            matSuffix
+            icon="info"
+            variant="grey"
+            [matTooltip]="'widgets.map.tooltip.default.long' | translate"
+          ></safe-icon>
+          <mat-error *ngIf="tileForm.controls.centerLat.errors">
+            {{ 'widgets.map.error.long' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
     </div>
   </form>
 </ng-container>
