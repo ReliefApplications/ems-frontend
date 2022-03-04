@@ -115,7 +115,6 @@ export class SafeInviteUsersComponent implements OnInit {
     } else {
       if (files.length > 0) {
         this.snackBar.openSnackBar(
-          // NOTIFICATIONS.formatInvalid('xlsx')
           this.translate.instant('notification.formatInvalid', {
             format: 'xlsx',
           }),

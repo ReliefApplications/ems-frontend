@@ -75,7 +75,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               }
             } else {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.accessNotProvided('workflow'),
                 this.translateService.instant(
                   'notification.accessNotProvided',
                   {
@@ -120,14 +119,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else if (this.activeStep + 1 === this.steps.length) {
       this.onOpenStep(0);
       this.snackBar.openSnackBar(
-        // NOTIFICATIONS.goToStep(this.steps[0].name)
         this.translateService.instant('notification.goToStep', {
           step: this.steps[0].name,
         })
       );
     } else {
       this.snackBar.openSnackBar(
-        // NOTIFICATIONS.cannotGoToNextStep
         this.translateService.instant('notification.cannotGoToNextStep'),
         { error: true }
       );

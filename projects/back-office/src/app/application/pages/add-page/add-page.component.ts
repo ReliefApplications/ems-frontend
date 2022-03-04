@@ -164,7 +164,6 @@ export class AddPageComponent implements OnInit, OnDestroy {
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  // NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
                   this.translateService.instant(
                     'notification.objectNotCreated',
                     {
@@ -180,7 +179,6 @@ export class AddPageComponent implements OnInit, OnDestroy {
                 const id = res.data?.addForm.id || '';
                 this.pageForm.controls.content.setValue(id);
                 this.snackBar.openSnackBar(
-                  // NOTIFICATIONS.objectCreated('page', value.name)
                   this.translateService.instant('notification.objectCreated', {
                     type: this.translateService
                       .instant('notification.term.page')

@@ -242,7 +242,6 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
           .subscribe((res: any) => {
             if (!res.errors) {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.objectDeleted('form')
                 this.translate.instant('notification.objectDeleted', {
                   value: this.translate
                     .instant('notification.term.form')
@@ -254,7 +253,6 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
               );
             } else {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.objectNotDeleted('form', res.errors[0].message),
                 this.translate.instant('notification.objectNotDeleted', {
                   value: this.translate
                     .instant('notification.term.form')
@@ -297,7 +295,6 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  // NOTIFICATIONS.objectNotCreated('form', res.errors[0].message)
                   this.translate.instant('notification.objectNotCreated', {
                     type: this.translate
                       .instant('notification.term.form')

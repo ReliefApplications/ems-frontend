@@ -55,7 +55,6 @@ export class SafeEmailService {
     });
     this.clipboard.copy(body);
     this.snackBar.openSnackBar(
-      // NOTIFICATIONS.emailBodyCopiedToClipboard,
       this.translate.instant('notification.emailBodyCopiedToClipboard'),
       { duration: 3000 }
     );
@@ -67,7 +66,6 @@ export class SafeEmailService {
       window.location.href = `mailto:${recipient.join(';')}?subject=${subject}`;
     } catch (error) {
       this.snackBar.openSnackBar(
-        // NOTIFICATIONS.emailTooLong(error),
         this.translate.instant('notification.emailTooLong', { error }),
         { error: true }
       );
@@ -75,7 +73,6 @@ export class SafeEmailService {
         window.location.href = `mailto:${recipient}?subject=${subject}`;
       } catch (error2) {
         this.snackBar.openSnackBar(
-          // NOTIFICATIONS.emailClientNotResponding(error2),
           this.translate.instant('notification.emailClientNotResponding', {
             error: error2,
           }),

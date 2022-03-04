@@ -97,7 +97,6 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
               this.loading = res.data.loading;
             } else {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.accessNotProvided('resource'),
                 this.translateService.instant(
                   'notification.accessNotProvided',
                   {
@@ -236,10 +235,6 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            // NOTIFICATIONS.objectNotUpdated(
-            //   'ApiConfiguration',
-            //   res.errors[0].message
-            // ),
             this.translateService.instant('notification.objectNotUpdated', {
               type: this.translateService.instant('table.APIConf'),
               error: res.errors[0].message,
@@ -267,20 +262,17 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
         if (res) {
           if (res.access_token) {
             this.snackBar.openSnackBar(
-              // NOTIFICATIONS.pingResponseAuthToken
               this.translateService.instant(
                 'notification.pingResponseAuthToken'
               )
             );
           } else {
             this.snackBar.openSnackBar(
-              // NOTIFICATIONS.pingResponseReceived
               this.translateService.instant('notification.pingResponseReceived')
             );
           }
         } else {
           this.snackBar.openSnackBar(
-            // NOTIFICATIONS.pingResponseError,
             this.translateService.instant('notification.pingResponseError'),
             { error: true }
           );

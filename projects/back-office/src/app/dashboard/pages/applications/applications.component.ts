@@ -254,7 +254,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              // NOTIFICATIONS.objectDeleted('Application')
               this.translateService.instant('notification.objectDeleted', {
                 value: this.translateService.instant(
                   'notification.term.application'
@@ -284,7 +283,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors?.length) {
           this.snackBar.openSnackBar(
-            // NOTIFICATIONS.objectNotCreated('App', res.errors[0].message),
             this.translateService.instant('notification.objectNotCreated', {
               type: this.translateService.instant('notification.term.app'),
               error: res.errors[0].message,
@@ -294,10 +292,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           if (res.data) {
             this.snackBar.openSnackBar(
-              // NOTIFICATIONS.objectCreated(
-              //   res.data.addApplication.name,
-              //   'application'
-              // )
               this.translateService.instant('notification.objectCreated', {
                 type: this.translateService
                   .instant('notification.term.application')
@@ -330,7 +324,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            // NOTIFICATIONS.objectEdited('access', element.name)
             this.translateService.instant('notification.objectEdited', {
               type: this.translateService
                 .instant('action.access')

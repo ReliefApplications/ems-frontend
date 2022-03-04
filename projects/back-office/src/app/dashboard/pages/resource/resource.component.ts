@@ -157,7 +157,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
             this.loading = res.loading;
           } else {
             this.snackBar.openSnackBar(
-              // NOTIFICATIONS.accessNotProvided('resource')
               this.translate.instant('notification.accessNotProvided', {
                 type: this.translate
                   .instant('notification.term.resource')
@@ -290,7 +289,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         this.snackBar.openSnackBar(
-          // NOTIFICATIONS.objectDeleted('Record')
           this.translate.instant('notification.objectDeleted', {
             value: this.translate.instant('notification.term.record'),
           })
@@ -314,7 +312,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         this.snackBar.openSnackBar(
-          // NOTIFICATIONS.objectDeleted('Form')
           this.translate.instant('notification.objectDeleted', {
             value: this.translate
               .instant('notification.term.form')

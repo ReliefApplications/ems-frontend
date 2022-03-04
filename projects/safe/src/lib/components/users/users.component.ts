@@ -127,10 +127,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
           .subscribe((res) => {
             if (!res.errors) {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.usersActions(
-                //   'invited',
-                //   res?.data?.addUsers.length
-                // )
                 res?.data?.addUsers.length
                   ? this.translate.instant('notification.usersActions', {
                       action: this.translate
@@ -149,7 +145,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               );
             } else {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.userInvalidActions('invited'),
                 this.translate.instant('notification.userInvalidActions', {
                   action: this.translate
                     .instant('notification.term.invited')
@@ -189,7 +184,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
             .subscribe((res) => {
               if (res.data) {
                 this.snackBar.openSnackBar(
-                  // NOTIFICATIONS.userRolesUpdated(user.username)
                   this.translate.instant('notification.userRolesUpdated', {
                     username: user.username,
                   })
@@ -251,7 +245,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               this.loading = false;
               if (res.data?.deleteUsers) {
                 this.snackBar.openSnackBar(
-                  // NOTIFICATIONS.usersActions('deleted', res.data.deleteUsers)
                   res.data.deleteUsers > 1
                     ? this.translate.instant('notification.usersActions', {
                         action: this.translate
@@ -270,7 +263,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
                 );
               } else {
                 this.snackBar.openSnackBar(
-                  // NOTIFICATIONS.userInvalidActions('deleted')
                   this.translate.instant('notification.userInvalidActions', {
                     action: this.translate
                       .instant('notification.term.deleted')

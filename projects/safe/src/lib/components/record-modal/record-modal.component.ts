@@ -277,7 +277,6 @@ export class SafeRecordModalComponent implements OnInit {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              // NOTIFICATIONS.dataRecovered
               this.translate.instant('notification.dataRecovered')
             );
             this.dialogRef.close();

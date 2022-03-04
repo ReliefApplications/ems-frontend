@@ -107,7 +107,6 @@ export class FormComponent implements OnInit, OnDestroy {
               !this.form.canCreateRecords
             ) {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.objectAccessDenied('form'),
                 this.translate.instant('notification.objectAccessDenied', {
                   type: this.translate
                     .instant('notification.term.form')
@@ -149,7 +148,6 @@ export class FormComponent implements OnInit, OnDestroy {
               !this.form.canCreateRecords
             ) {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.objectAccessDenied('form'),
                 this.translate.instant('notification.objectAccessDenied', {
                   type: this.translate
                     .instant('notification.term.form')

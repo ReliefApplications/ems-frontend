@@ -177,7 +177,6 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               .subscribe((res) => {
                 if (res.data?.addPullJob) {
                   this.snackBar.openSnackBar(
-                    // NOTIFICATIONS.objectCreated('pull job', value.name)
                     this.translate.instant('notification.objectCreated', {
                       type: this.translate
                         .instant('notification.term.pullJob')
@@ -232,7 +231,6 @@ export class PullJobsComponent implements OnInit, OnDestroy {
             .subscribe((res) => {
               if (res.data?.deletePullJob) {
                 this.snackBar.openSnackBar(
-                  // NOTIFICATIONS.objectDeleted('Pull job')
                   this.translate.instant('notification.objectDeleted', {
                     value: this.translate.instant('notification.term.pullJob'),
                   })
@@ -306,7 +304,6 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               .subscribe((res) => {
                 if (res.data?.editPullJob) {
                   this.snackBar.openSnackBar(
-                    // NOTIFICATIONS.objectEdited('pull job', value.name)
                     this.translate.instant('notification.objectEdited', {
                       type: this.translate
                         .instant('notification.term.pullJob')

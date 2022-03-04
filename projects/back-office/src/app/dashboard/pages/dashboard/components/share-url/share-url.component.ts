@@ -25,12 +25,12 @@ export class ShareUrlComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  /*  Copy in clipboard the value displayed.
+  /**
+   * Copies in clipboard the displayed value.
    */
   onCopy(): void {
     this.clipboard.copy(this.data.url);
     this.snackBar.openSnackBar(
-      // NOTIFICATIONS.copied
       this.translateService.instant('notification.copied')
     );
     this.dialogRef.close();

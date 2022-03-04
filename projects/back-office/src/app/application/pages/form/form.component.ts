@@ -159,7 +159,6 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              // NOTIFICATIONS.objectNotUpdated('step', res.errors[0].message),
               this.translateService.instant('notification.objectNotUpdated', {
                 type: this.translateService
                   .instant('notification.term.step')
@@ -171,7 +170,6 @@ export class FormComponent implements OnInit, OnDestroy {
           } else {
             if (res.data) {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.objectEdited('step', tabName)
                 this.translateService.instant('notification.objectEdited', {
                   type: this.translateService
                     .instant('notification.term.step')
@@ -196,7 +194,6 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              // NOTIFICATIONS.objectNotUpdated('page', res.errors[0].message),
               this.translateService.instant('notification.objectNotUpdated', {
                 type: this.translateService
                   .instant('notification.term.page')
@@ -208,7 +205,6 @@ export class FormComponent implements OnInit, OnDestroy {
           } else {
             if (res.data) {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.objectEdited('page', tabName)
                 this.translateService.instant('notification.objectEdited', {
                   type: this.translateService
                     .instant('notification.term.page')

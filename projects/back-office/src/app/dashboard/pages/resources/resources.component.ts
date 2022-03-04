@@ -198,7 +198,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
                 (x) => x.id !== resource.id
               );
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.objectDeleted('resource')
                 this.translate.instant('notification.objectDeleted', {
                   value: this.translate
                     .instant('notification.term.resource')
@@ -207,10 +206,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
               );
             } else {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.objectNotDeleted(
-                //   'resource',
-                //   res.errors[0].message
-                // ),
                 this.translate.instant('notification.objectNotDeleted', {
                   value: this.translate
                     .instant('notification.term.resource')
@@ -249,7 +244,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  // NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
                   this.translate.instant('notification.objectNotCreated', {
                     type: this.translate
                       .instant('notification.term.form')

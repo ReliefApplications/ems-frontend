@@ -41,7 +41,6 @@ export class AccessGuard implements CanActivate {
             return true;
           } else {
             this.snackBar.openSnackBar(
-              // NOTIFICATIONS.accessNotProvided('platform')
               this.translate.instant('notification.accessNotProvided', {
                 type: this.translate
                   .instant('notification.term.platform')

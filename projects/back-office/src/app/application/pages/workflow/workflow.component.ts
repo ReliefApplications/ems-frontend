@@ -196,7 +196,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             .subscribe((res) => {
               if (res.data) {
                 this.snackBar.openSnackBar(
-                  // NOTIFICATIONS.objectDeleted('Step')
                   this.translateService.instant('notification.objectDeleted', {
                     value: this.translateService.instant(
                       'notification.term.step'
@@ -260,7 +259,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            // NOTIFICATIONS.objectReordered('Step')
             this.translateService.instant('notification.objectReordered', {
               type: this.translateService.instant('notification.term.step'),
             })
@@ -272,10 +270,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.steps = steps;
         } else {
           this.snackBar.openSnackBar(
-            // NOTIFICATIONS.objectNotEdited(
-            //   'Workflow',
-            //   res.errors ? res.errors[0].message : ''
-            // )
             this.translateService.instant('notification.objectNotEdited', {
               type: this.translateService.instant('notification.term.workflow'),
               error: res.errors ? res.errors[0].message : '',
@@ -294,14 +288,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else if (this.activeStep + 1 === this.steps.length) {
       this.onOpenStep(0);
       this.snackBar.openSnackBar(
-        // NOTIFICATIONS.goToStep(this.steps[0].name)
         this.translateService.instant('notification.goToStep', {
           step: this.steps[0].name,
         })
       );
     } else {
       this.snackBar.openSnackBar(
-        // NOTIFICATIONS.cannotGoToNextStep,
         this.translateService.instant('notification.cannotGoToNextStep'),
         { error: true }
       );

@@ -47,7 +47,6 @@ export class DuplicateApplicationComponent implements OnInit {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            // NOTIFICATIONS.objectNotDuplicated('App', res.errors[0].message)
             this.translateService.instant('notification.objectNotDuplicated', {
               type: this.translateService.instant('notification.term.app'),
               error: res.errors[0].message,
@@ -55,7 +54,6 @@ export class DuplicateApplicationComponent implements OnInit {
           );
         } else {
           this.snackBar.openSnackBar(
-            // NOTIFICATIONS.objectDuplicated('App', this.currentApp.name)
             this.translateService.instant('notification.objectDuplicated', {
               type: this.translateService.instant('notification.term.app'),
               value: this.currentApp.name,

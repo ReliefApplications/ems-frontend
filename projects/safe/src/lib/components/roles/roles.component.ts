@@ -131,7 +131,6 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             .subscribe(
               (res) => {
                 this.snackBar.openSnackBar(
-                  // NOTIFICATIONS.objectCreated('role', value.title)
                   this.translate.instant('notification.objectCreated', {
                     type: this.translate.instant('global.role').toLowerCase(),
                     value: value.title,
@@ -175,7 +174,6 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             })
             .subscribe((res) => {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.objectEdited('role', role.title)
                 this.translate.instant('notification.objectEdited', {
                   type: this.translate.instant('global.role').toLowerCase(),
                   value: role.title,
@@ -217,7 +215,6 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             })
             .subscribe((res) => {
               this.snackBar.openSnackBar(
-                // NOTIFICATIONS.objectDeleted(item.title)
                 this.translate.instant('notification.objectDeleted', {
                   value: item.title,
                 })

@@ -83,7 +83,6 @@ export class SafeWorkflowService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              // NOTIFICATIONS.objectCreated('step', res.data.addStep.name)
               this.translate.instant('notification.objectCreated', {
                 type: this.translate
                   .instant('notification.term.step')
@@ -105,10 +104,6 @@ export class SafeWorkflowService {
             }
           } else {
             this.snackBar.openSnackBar(
-              // NOTIFICATIONS.objectNotEdited(
-              //   'Workflow',
-              //   res.errors ? res.errors[0].message : ''
-              // ),
               this.translate.instant('notification.objectNotEdited', {
                 type: this.translate.instant('notification.term.workflow'),
                 error: res.errors ? res.errors[0].message : '',
@@ -119,7 +114,6 @@ export class SafeWorkflowService {
         });
     } else {
       this.snackBar.openSnackBar(
-        // NOTIFICATIONS.noObjectOpened('workflow'),
         this.translate.instant('notification.noObjectOpened', {
           value: this.translate
             .instant('notification.term.workflow')
@@ -149,7 +143,6 @@ export class SafeWorkflowService {
         }),
       };
       this.snackBar.openSnackBar(
-        // NOTIFICATIONS.objectEdited('step', step.name)
         this.translate.instant('notification.objectEdited', {
           type: this.translate.instant('notification.term.step').toLowerCase(),
           value: step.name,
