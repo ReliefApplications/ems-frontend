@@ -29,7 +29,6 @@ import { LANGUAGES } from '../../utils/languages';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
-import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeAuthService } from '../../services/auth.service';
 import {
   GET_RECORD_DETAILS,
@@ -39,6 +38,7 @@ import { SafeLayoutService } from '../../services/layout.service';
 import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'safe-form',
@@ -93,7 +93,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private resolver: ComponentFactoryResolver,
-    private formBuilderService: SafeFormBuilderService
+    private formBuilderService: SafeFormBuilderService,
+    private translate: TranslateService
   ) {
     this.containerId = uuidv4();
     this.environment = environment;
@@ -148,7 +149,11 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       : undefined;
     this.isFromCacheData = !!cachedData;
     if (this.isFromCacheData) {
-      this.snackBar.openSnackBar(NOTIFICATIONS.objectLoadedFromCache('Record'));
+      this.snackBar.openSnackBar(
+        this.translate.instant('notification.objectLoadedFromCache', {
+          type: this.translate.instant('notification.term.record'),
+        })
+      );
     }
 
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
@@ -491,7 +496,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
           })
           .subscribe((res) => {
             this.layoutService.setRightSidenav(null);
-            this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+            this.snackBar.openSnackBar(
+              this.translate.instant('notification.dataRecovered')
+            );
           });
       }
     });
