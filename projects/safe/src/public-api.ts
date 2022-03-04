@@ -16,9 +16,6 @@ export * from './lib/services/api-proxy.service';
 export * from './lib/services/dashboard.service';
 export * from './lib/services/grid-layout.service';
 
-// === CONST ===
-export * from './lib/const/notifications';
-
 // === GUARDS ===
 export * from './lib/guards/permission.guard';
 

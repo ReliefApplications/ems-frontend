@@ -24,3 +24,13 @@
         }
     }
 }
+
+.map-default-settings {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    mat-form-field {
+        flex: 1;
+    }
+}
