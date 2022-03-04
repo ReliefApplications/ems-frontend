@@ -1,11 +1,13 @@
+name: CodeSee Map
+
 on:
   push:
     branches:
-      - dev
-  pull_request_target:
-    types: [opened, synchronize, reopened]
-
-name: CodeSee Map
+      - 'main'
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches:
+      - 'main'
 
 jobs:
   test_map_action:
