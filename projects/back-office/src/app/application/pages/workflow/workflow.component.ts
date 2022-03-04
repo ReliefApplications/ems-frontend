@@ -11,7 +11,6 @@ import {
   ContentType,
   SafeApplicationService,
   SafeWorkflowService,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import {
@@ -22,6 +21,7 @@ import {
   EditWorkflowMutationResponse,
   EDIT_WORKFLOW,
 } from '../../../graphql/mutations';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-workflow',
@@ -56,7 +56,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -194,7 +195,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             })
             .subscribe((res) => {
               if (res.data) {
-                this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Step'));
+                this.snackBar.openSnackBar(
+                  this.translateService.instant('notification.objectDeleted', {
+                    value: this.translateService.instant(
+                      'notification.term.step'
+                    ),
+                  })
+                );
                 this.steps = this.steps.filter(
                   (x) => x.id !== res.data?.deleteStep.id
                 );
@@ -251,7 +258,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Step'));
+          this.snackBar.openSnackBar(
+            this.translateService.instant('notification.objectReordered', {
+              type: this.translateService.instant('notification.term.step'),
+            })
+          );
           if (currentStep) {
             const index = steps.findIndex((x) => x.id === currentStep.id);
             this.activeStep = index;
@@ -259,10 +270,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.steps = steps;
         } else {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotEdited(
-              'Workflow',
-              res.errors ? res.errors[0].message : ''
-            )
+            this.translateService.instant('notification.objectNotEdited', {
+              type: this.translateService.instant('notification.term.workflow'),
+              error: res.errors ? res.errors[0].message : '',
+            })
           );
         }
       });
@@ -276,11 +287,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.onOpenStep(this.activeStep + 1);
     } else if (this.activeStep + 1 === this.steps.length) {
       this.onOpenStep(0);
-      this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
+      this.snackBar.openSnackBar(
+        this.translateService.instant('notification.goToStep', {
+          step: this.steps[0].name,
+        })
+      );
     } else {
-      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, {
-        error: true,
-      });
+      this.snackBar.openSnackBar(
+        this.translateService.instant('notification.cannotGoToNextStep'),
+        { error: true }
+      );
     }
   }
 

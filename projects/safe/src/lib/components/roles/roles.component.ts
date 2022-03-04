@@ -28,7 +28,6 @@ import {
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { NOTIFICATIONS } from '../../const/notifications';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -132,7 +131,10 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             .subscribe(
               (res) => {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectCreated('role', value.title)
+                  this.translate.instant('notification.objectCreated', {
+                    type: this.translate.instant('global.role').toLowerCase(),
+                    value: value.title,
+                  })
                 );
                 this.getRoles();
               },
@@ -172,7 +174,10 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             })
             .subscribe((res) => {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectEdited('role', role.title)
+                this.translate.instant('notification.objectEdited', {
+                  type: this.translate.instant('global.role').toLowerCase(),
+                  value: role.title,
+                })
               );
               this.getRoles();
             });
@@ -210,7 +215,9 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             })
             .subscribe((res) => {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectDeleted(item.title)
+                this.translate.instant('notification.objectDeleted', {
+                  value: item.title,
+                })
               );
               this.getRoles();
             });

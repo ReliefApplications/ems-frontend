@@ -52,7 +52,6 @@ import {
   GET_APPLICATION_BY_ID,
 } from '../graphql/queries';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
-import { NOTIFICATIONS } from '../const/notifications';
 import {
   ApplicationEditedSubscriptionResponse,
   ApplicationUnlockedSubscriptionResponse,
@@ -60,6 +59,7 @@ import {
   APPLICATION_UNLOCKED_SUBSCRIPTION,
 } from '../graphql/subscriptions';
 import { SafeAuthService } from './auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -98,7 +98,9 @@ export class SafeApplicationService {
     if (application) {
       if (application?.locked && !application.lockedByUser) {
         this.snackBar.openSnackBar(
-          NOTIFICATIONS.objectIsLocked(application.name)
+          this.translateService.instant('notification.objectIsLocked', {
+            value: application.name,
+          })
         );
         return false;
       }
@@ -120,7 +122,8 @@ export class SafeApplicationService {
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private router: Router
+    private router: Router,
+    private translateService: TranslateService
   ) {
     this.environment = environment;
   }
@@ -146,7 +149,9 @@ export class SafeApplicationService {
         if (res.data.application.locked) {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectIsLocked(res.data.application.name)
+              this.translateService.instant('notification.objectIsLocked', {
+                value: res.data.application.name,
+              })
             );
           }
         }
@@ -159,10 +164,13 @@ export class SafeApplicationService {
         },
       })
       .subscribe(() => {
-        const snackBar = this.snackBar.openSnackBar(NOTIFICATIONS.appEdited, {
-          action: 'Reload',
-          duration: 0,
-        });
+        const snackBar = this.snackBar.openSnackBar(
+          this.translateService.instant('notification.appEdited'),
+          {
+            action: 'Reload',
+            duration: 0,
+          }
+        );
         snackBar.onAction().subscribe(() => window.location.reload());
       });
     this.lockSubscription = this.apollo
@@ -245,7 +253,7 @@ export class SafeApplicationService {
           mutation: EDIT_APPLICATION,
           variables: {
             id: application?.id,
-            name: value.name,
+            value: value.name,
             description: value.description,
             status: value.status,
           },
@@ -253,19 +261,26 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectNotUpdated(
-                'Application',
-                res.errors[0].message
-              )
+              this.translateService.instant('notification.objectNotUpdated', {
+                type: this.translateService.instant(
+                  'notification.term.application'
+                ),
+                error: res.errors[0].message,
+              })
             );
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectEdited('application', value.name)
+              this.translateService.instant('notification.objectEdited', {
+                type: this.translateService
+                  .instant('notification.term.application')
+                  .toLowerCase(),
+                value: value.name,
+              })
             );
             if (res.data?.editApplication) {
               const newApplication = {
                 ...application,
-                name: res.data.editApplication.name,
+                value: res.data.editApplication.name,
                 description: res.data.editApplication.description,
                 status: res.data.editApplication.status,
               };
@@ -293,7 +308,9 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.appPublished(res.data.editApplication.name)
+              this.translateService.instant('notification.appPublished', {
+                value: res.data.editApplication.name,
+              })
             );
             this.router.navigate(['/applications']);
           }
@@ -318,7 +335,11 @@ export class SafeApplicationService {
         })
         .subscribe((res) => {
           if (res.data) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Page'));
+            this.snackBar.openSnackBar(
+              this.translateService.instant('notification.objectDeleted', {
+                value: this.translateService.instant('notification.term.page'),
+              })
+            );
             const app = this.application.getValue();
             if (app) {
               const newApplication = {
@@ -332,10 +353,12 @@ export class SafeApplicationService {
             }
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectNotDeleted(
-                'page',
-                res.errors ? res.errors[0].message : ''
-              ),
+              this.translateService.instant('notification.objectNotDeleted', {
+                value: this.translateService
+                  .instant('notification.term.page')
+                  .toLowerCase(),
+                error: res.errors ? res.errors[0].message : '',
+              }),
               { error: true }
             );
           }
@@ -360,7 +383,13 @@ export class SafeApplicationService {
           },
         })
         .subscribe((res) => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Pages'));
+          this.snackBar.openSnackBar(
+            this.translateService.instant('notification.objectReordered', {
+              type: this.translateService
+                .instant('notification.term.pages')
+                .toLowerCase(),
+            })
+          );
           this.application.next({
             ...application,
             ...{ pages: res.data?.editApplication.pages },
@@ -410,7 +439,12 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data?.addPage) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated('page', res.data.addPage.name)
+              this.translateService.instant('notification.objectCreated', {
+                type: this.translateService
+                  .instant('notification.term.page')
+                  .toLowerCase(),
+                value: res.data.addPage.name,
+              })
             );
             const content = res.data.addPage.content;
             const newApplication = {
@@ -425,10 +459,12 @@ export class SafeApplicationService {
             ]);
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectNotCreated(
-                'page',
-                res.errors ? res.errors[0].message : ''
-              ),
+              this.translateService.instant('notification.objectNotCreated', {
+                type: this.translateService
+                  .instant('notification.term.page')
+                  .toLowerCase(),
+                error: res.errors ? res.errors[0].message : '',
+              }),
               { error: true }
             );
           }
@@ -455,7 +491,12 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated(role.title, 'role')
+              this.translateService.instant('notification.objectCreated', {
+                type: this.translateService
+                  .instant('global.role')
+                  .toLowerCase(),
+                value: role.title,
+              })
             );
             const newApplication = {
               ...application,
@@ -489,7 +530,12 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectEdited('role', role.title)
+              this.translateService.instant('notification.objectEdited', {
+                type: this.translateService
+                  .instant('global.role')
+                  .toLowerCase(),
+                value: role.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -544,7 +590,11 @@ export class SafeApplicationService {
           },
         })
         .subscribe((res) => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(role.title));
+          this.snackBar.openSnackBar(
+            this.translateService.instant('notification.objectDeleted', {
+              value: role.title,
+            })
+          );
           const newApplication = {
             ...application,
             roles: application.roles?.filter((x) => x.id !== role.id),
@@ -577,7 +627,18 @@ export class SafeApplicationService {
               (x) => x.id
             );
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.usersActions('deleted', deletedUsers.length)
+              deletedUsers.length > 1
+                ? this.translateService.instant('notification.usersActions', {
+                    length: deletedUsers.length,
+                    action: this.translateService
+                      .instant('notification.term.deleted')
+                      .toLowerCase(),
+                  })
+                : this.translateService.instant('notification.userActions', {
+                    action: this.translateService
+                      .instant('notification.term.deleted')
+                      .toLowerCase(),
+                  })
             );
             const newApplication = {
               ...application,
@@ -588,7 +649,11 @@ export class SafeApplicationService {
             this.application.next(newApplication);
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.userInvalidActions('deleted'),
+              this.translateService.instant('notification.userInvalidActions', {
+                action: this.translateService
+                  .instant('notification.term.deleted')
+                  .toLowerCase(),
+              }),
               { error: true }
             );
           }
@@ -621,10 +686,18 @@ export class SafeApplicationService {
         .subscribe((res: any) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.usersActions(
-                'invited',
-                res.data.addRoleToUsers.length
-              )
+              res.data.addRoleToUsers.length > 1
+                ? this.translateService.instant('notification.usersActions', {
+                    action: this.translateService
+                      .instant('notification.term.invited')
+                      .toLowerCase(),
+                    length: res.data.addRoleToUsers.length,
+                  })
+                : this.translateService.instant('notification.userActions', {
+                    action: this.translateService
+                      .instant('notification.term.invited')
+                      .toLowerCase(),
+                  })
             );
             const newApplication = {
               ...application,
@@ -633,7 +706,11 @@ export class SafeApplicationService {
             this.application.next(newApplication);
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.userInvalidActions('invited'),
+              this.translateService.instant('notification.userInvalidActions', {
+                action: this.translateService
+                  .instant('notification.term.invited')
+                  .toLowerCase(),
+              }),
               { error: true }
             );
           }
@@ -666,7 +743,12 @@ export class SafeApplicationService {
           if (res.data) {
             const newUser = res.data.editUser;
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectEdited('roles', user.username)
+              this.translateService.instant('notification.objectEdited', {
+                type: this.translateService
+                  .instant('global.roles')
+                  .toLowerCase(),
+                value: user.username,
+              })
             );
             const index = application?.users?.indexOf(user);
             if (application?.users && index) {
@@ -704,7 +786,12 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated(category.title, 'position category')
+              this.translateService.instant('notification.objectCreated', {
+                type: this.translateService
+                  .instant('notification.term.positionCategory')
+                  .toLowerCase(),
+                value: category.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -738,7 +825,9 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectDeleted(category.title)
+              this.translateService.instant('notification.objectDeleted', {
+                value: category.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -777,15 +866,25 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectAlreadyExists(
-                'position category',
-                value.title
+              this.translateService.instant(
+                'notification.objectAlreadyExists',
+                {
+                  type: this.translateService
+                    .instant('notification.term.positionCategory')
+                    .toLowerCase(),
+                  value: value.title,
+                }
               ),
               { error: true }
             );
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectEdited('position category', value.title)
+              this.translateService.instant('notification.objectEdited', {
+                type: this.translateService.instant(
+                  'notification.term.positionCategory'
+                ),
+                value: value.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -825,7 +924,12 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated('channel', channel.title)
+              this.translateService.instant('notification.objectCreated', {
+                type: this.translateService
+                  .instant('global.channel')
+                  .toLowerCase(),
+                value: channel.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -856,7 +960,10 @@ export class SafeApplicationService {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectEdited('Channel', title)
+            this.translateService.instant('notification.objectEdited', {
+              type: this.translateService.instant('global.channel'),
+              value: title,
+            })
           );
           const newApplication: Application = {
             ...application,
@@ -890,7 +997,9 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectDeleted(channel.title)
+              this.translateService.instant('notification.objectDeleted', {
+                value: channel.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -931,7 +1040,12 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated('subscription', subscription.title)
+              this.translateService.instant('notification.objectCreated', {
+                type: this.translateService
+                  .instant('notification.term.subscription')
+                  .toLowerCase(),
+                value: subscription.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -963,7 +1077,11 @@ export class SafeApplicationService {
         })
         .subscribe((res) => {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectDeleted('Subscription')
+            this.translateService.instant('notification.objectDeleted', {
+              value: this.translateService.instant(
+                'notification.term.subscription'
+              ),
+            })
           );
           const newApplication = {
             ...application,
@@ -1001,7 +1119,12 @@ export class SafeApplicationService {
           if (res.data) {
             const subscription = res.data.editSubscription;
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectEdited('subscription', value.title)
+              this.translateService.instant('notification.objectEdited', {
+                type: this.translateService
+                  .instant('notification.term.subscription')
+                  .toLowerCase(),
+                value: value.title,
+              })
             );
             const newApplication = {
               ...application,

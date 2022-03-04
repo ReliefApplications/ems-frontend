@@ -48,13 +48,13 @@ import { SafeRecordModalComponent } from '../../record-modal/record-modal.compon
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
-import { NOTIFICATIONS } from '../../../const/notifications';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
 import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
+import { TranslateService } from '@ngx-translate/core';
 
 const DEFAULT_FILE_NAME = 'Records';
 
@@ -195,7 +195,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     const today = new Date();
     const month = today.toLocaleString('en-us', { month: 'short' });
     const date = month + ' ' + today.getDate() + ' ' + today.getFullYear();
-    return `${this.settings.title ? this.settings.title : DEFAULT_FILE_NAME} ${date}`;
+    return `${
+      this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
+    } ${date}`;
   }
 
   get hasChanges(): boolean {
@@ -223,7 +225,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private safeAuthService: SafeAuthService,
-    private gridService: SafeGridService
+    private gridService: SafeGridService,
+    private translate: TranslateService
   ) {
     this.apiUrl = environment.apiUrl;
     this.isAdmin =
@@ -848,7 +851,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           .subscribe((res) => {
             this.reloadData();
             this.layoutService.setRightSidenav(null);
-            this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+            this.snackBar.openSnackBar(
+              this.translate.instant('notification.dataRecovered')
+            );
           });
       }
     });
