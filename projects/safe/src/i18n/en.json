@@ -285,7 +285,7 @@
         "basemap": "Base map"
       },
       "zoom": "Zoom",
-      "category": "Category",
+      "category": "Map quick layers",
       "basemap": "Base map",
       "layers": {
         "add": "Select a layer",
@@ -302,7 +302,8 @@
           "lat": "Select a default latitude to center the map around",
           "long": "Select a default longitude to center the map around",
           "zoom": "Select a default zoom for the map display"
-        }
+        },
+        "category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map"
       }
     },
     "scheduler": {
