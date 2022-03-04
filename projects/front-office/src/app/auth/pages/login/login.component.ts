@@ -7,9 +7,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  constructor(private oauthService: OAuthService) {
-    console.log('there');
-  }
+  constructor(private oauthService: OAuthService) {}
 
   /**
    * Redirects to Azure authentication page.

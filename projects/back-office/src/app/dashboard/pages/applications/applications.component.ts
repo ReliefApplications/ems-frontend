@@ -16,7 +16,6 @@ import {
   SafeAuthService,
   SafeConfirmModalComponent,
   SafeSnackBarService,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import {
   GetApplicationsQueryResponse,
@@ -36,6 +35,7 @@ import { MatSort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
+import { TranslateService } from '@ngx-translate/core';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -85,7 +85,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private previewService: PreviewService
+    private previewService: PreviewService,
+    private translateService: TranslateService
   ) {}
 
   /**
@@ -267,7 +268,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectDeleted('Application')
+              this.translateService.instant('notification.objectDeleted', {
+                value: this.translateService.instant(
+                  'notification.term.application'
+                ),
+              })
             );
             this.applications.data = this.applications.data.filter(
               (x) => x.id !== res.data?.deleteApplication.id
@@ -292,16 +297,21 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors?.length) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotCreated('App', res.errors[0].message),
+            this.translateService.instant('notification.objectNotCreated', {
+              type: this.translateService.instant('notification.term.app'),
+              error: res.errors[0].message,
+            }),
             { error: true }
           );
         } else {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated(
-                res.data.addApplication.name,
-                'application'
-              )
+              this.translateService.instant('notification.objectCreated', {
+                type: this.translateService
+                  .instant('notification.term.application')
+                  .toLowerCase(),
+                value: res.data.addApplication.name,
+              })
             );
             const id = res.data.addApplication.id;
             this.router.navigate(['/applications', id]);
@@ -328,7 +338,12 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectEdited('access', element.name)
+            this.translateService.instant('notification.objectEdited', {
+              type: this.translateService
+                .instant('action.access')
+                .toLowerCase(),
+              value: element.name,
+            })
           );
           const index = this.applications.data.findIndex(
             (x) => x.id === element.id

@@ -34,7 +34,6 @@ import {
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeWorkflowService } from '../../../services/workflow.service';
 import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
-import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeAuthService } from '../../../services/auth.service';
 import { SafeEmailService } from '../../../services/email.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -42,6 +41,7 @@ import { GridLayout } from '../../ui/core-grid/models/grid-layout.model';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
+import { TranslateService } from '@ngx-translate/core';
 
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
 
@@ -91,7 +91,8 @@ export class SafeGridWidgetComponent implements OnInit {
     private safeAuthService: SafeAuthService,
     private emailService: SafeEmailService,
     private queryBuilder: QueryBuilderService,
-    private gridLayoutService: SafeGridLayoutService
+    private gridLayoutService: SafeGridLayoutService,
+    private translate: TranslateService
   ) {
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -428,11 +429,11 @@ export class SafeGridWidgetComponent implements OnInit {
                 const record = res2.data.editRecord;
                 if (record) {
                   this.snackBar.openSnackBar(
-                    NOTIFICATIONS.addRowsToRecord(
-                      selectedRecords.length,
-                      key,
-                      record.data[targetFormField]
-                    )
+                    this.translate.instant('notification.addRowsToRecord', {
+                      field: record.data[targetFormField],
+                      length: selectedRecords.length,
+                      value: key,
+                    })
                   );
                   this.dialog.open(SafeFormModalComponent, {
                     disableClose: true,

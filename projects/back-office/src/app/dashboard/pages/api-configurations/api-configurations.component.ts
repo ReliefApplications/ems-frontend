@@ -11,7 +11,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ApiConfiguration,
-  NOTIFICATIONS,
   PermissionsManagement,
   PermissionType,
   SafeAuthService,
@@ -222,10 +221,10 @@ export class ApiConfigurationsComponent
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectNotCreated(
-                    'apiConfiguration',
-                    res.errors[0].message
-                  ),
+                  this.translate.instant('notification.objectNotCreated', {
+                    type: this.translate.instant('table.APIConf'),
+                    error: res.errors[0].message,
+                  }),
                   { error: true }
                 );
               } else {
@@ -276,7 +275,9 @@ export class ApiConfigurationsComponent
           .subscribe((res) => {
             if (res && !res.errors) {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectDeleted('API Configuration')
+                this.translate.instant('notification.objectDeleted', {
+                  value: this.translate.instant('table.APIConf'),
+                })
               );
               this.dataSource.data = this.dataSource.data.filter(
                 (x) => x.id !== element.id
