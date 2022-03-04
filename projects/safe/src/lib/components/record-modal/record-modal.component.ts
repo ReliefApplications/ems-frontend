@@ -25,11 +25,11 @@ import {
   EDIT_RECORD,
   EditRecordMutationResponse,
 } from '../../graphql/mutations';
-import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 interface DialogData {
   recordId: string;
@@ -74,7 +74,8 @@ export class SafeRecordModalComponent implements OnInit {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
-    private formBuilderService: SafeFormBuilderService
+    private formBuilderService: SafeFormBuilderService,
+    private translate: TranslateService
   ) {
     this.containerId = uuidv4();
     if (this.data.compareTo) {
@@ -275,7 +276,9 @@ export class SafeRecordModalComponent implements OnInit {
             },
           })
           .subscribe((res) => {
-            this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+            this.snackBar.openSnackBar(
+              this.translate.instant('notification.dataRecovered')
+            );
             this.dialogRef.close();
           });
       }

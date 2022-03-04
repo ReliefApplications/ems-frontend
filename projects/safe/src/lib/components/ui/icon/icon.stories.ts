@@ -25,6 +25,7 @@ export default {
         IconVariant.SUCCESS,
         IconVariant.DANGER,
         IconVariant.LIGHT,
+        IconVariant.GREY,
       ],
       control: { type: 'select' },
     },
