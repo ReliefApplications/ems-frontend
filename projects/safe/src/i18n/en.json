@@ -283,6 +283,10 @@
         "lat": "Map center latitude",
         "long": "Map center longitude"
       },
+      "error": {
+        "lat": "Invalid latitude, please select a number between -90 and 90",
+        "long": "Invalid longitude, please select a number between -180 and 180"
+      },
       "tooltip": {
         "default": {
           "lat": "Select a default latitude to center the map around",
