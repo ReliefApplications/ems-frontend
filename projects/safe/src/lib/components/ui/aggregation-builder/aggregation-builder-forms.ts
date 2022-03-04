@@ -1,6 +1,7 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 const formBuilder = new FormBuilder();
 
@@ -96,7 +97,7 @@ export const addStage = (value: any): FormGroup => {
       });
     }
     case PipelineStage.CUSTOM: {
-      return formBuilder.group({
+      const temp = formBuilder.group({
         type: [PipelineStage.CUSTOM],
         form: formBuilder.group({
           raw: [
@@ -105,6 +106,11 @@ export const addStage = (value: any): FormGroup => {
           ],
         }),
       });
+      temp
+        .get('form')
+        ?.get('raw')
+        ?.setValidators([Validators.required, jsonValidator]);
+      return temp;
     }
     default: {
       return formBuilder.group({
@@ -167,3 +173,13 @@ export const createAggregationForm = (
       )
     ),
   });
+
+const jsonValidator = (control: AbstractControl): ValidationErrors | null => {
+  try {
+    JSON.parse(control.value);
+  } catch (e) {
+    return { jsonInvalid: true };
+  }
+
+  return null;
+};

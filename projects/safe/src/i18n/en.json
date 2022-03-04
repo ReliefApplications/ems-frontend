@@ -420,6 +420,14 @@
       "unwind": "Unwind",
       "custom": "Custom"
     },
+    "placeholder": {
+      "filter": "This is a filter",
+      "sort": "This is a sort",
+      "group": "This is a group",
+      "addFields": "This is an add fields",
+      "unwind": "This is an unwind",
+      "custom": "this is a custom"
+    },
     "mapping": {
       "xAxis": "X Axis",
       "yAxis": "Y Axis"

@@ -86,8 +86,10 @@
                     </mat-accordion>
                 </mat-tab>
                 <mat-tab [label]="'action.preview' | translate">
-                    <safe-chart class="widget-content" [header]="false" [export]="false" [settings]="settings">
-                    </safe-chart>
+                    <div style="display: flex;">
+                        <safe-chart class="widget-content" [header]="false" [export]="false" [settings]="settings">
+                        </safe-chart>
+                    </div>
                 </mat-tab>
             </mat-tab-group>
         </div>

@@ -1,8 +1,11 @@
-<mat-accordion>
-  <mat-expansion-panel *ngFor="let stageForm of pipelineForm.controls; let index = index ">
+<mat-accordion cdkDropList (cdkDropListDropped)="drop($event)">
+  <mat-expansion-panel *ngFor="let stageForm of pipelineForm.controls; let index = index " cdkDrag>
     <mat-expansion-panel-header>
       <mat-panel-title>
         {{'aggregation.stages.' + stageForm.value.type | translate}}
+        <mat-icon class="info"
+        [matTooltip]="'aggregation.placeholder.' + stageForm.value.type | translate"
+        matTooltipPosition="right">info</mat-icon>
       </mat-panel-title>
     </mat-expansion-panel-header>
     <ng-container [ngSwitch]="stageForm.value.type">

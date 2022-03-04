@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { PipelineStage } from './pipeline-stage.enum';
 import { addStage } from '../aggregation-builder-forms';
 import { debounceTime } from 'rxjs/operators';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 /**
  * Aggregation pipeline component.
@@ -79,5 +80,17 @@ export class SafePipelineComponent implements OnInit {
    */
   public deleteStage(index: number) {
     this.pipelineForm.removeAt(index);
+  }
+
+  /**
+   * Moves an element in array.
+   *
+   * @param event positions to move.
+   */
+  drop(event: CdkDragDrop<string[]>) {
+    const temp = this.pipelineForm.at(event.previousIndex);
+
+    this.pipelineForm.removeAt(event.previousIndex);
+    this.pipelineForm.insert(event.currentIndex, temp);
   }
 }
