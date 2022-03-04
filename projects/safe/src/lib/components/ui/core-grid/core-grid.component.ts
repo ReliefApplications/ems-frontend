@@ -114,7 +114,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   get sortField(): string | null {
     return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-    (this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+      (this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
   }
 
   get sortOrder(): string {
@@ -260,7 +260,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             await this.gridService.populateMetaFields(this.metaFields);
             const fields = this.settings?.query?.fields || [];
             const defaultLayoutFields = this.defaultLayout.fields || {};
-            this.fields = this.gridService.getFields(fields, this.metaFields, defaultLayoutFields, '', { filter: true });
+            this.fields = this.gridService.getFields(fields, this.metaFields, defaultLayoutFields, '');
           }
         }
         this.getRecords();
@@ -574,7 +574,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           recordId: isArray ? items[0].id : items.id,
           locale: 'en',
           canUpdate: this.settings.actions && this.settings.actions.update && items.canUpdate,
-          ...!isArray && { template: this.settings.query.template }
+          ...!isArray && { template: this.settings.query.template }
         },
         height: '98%',
         width: '100vw',
@@ -766,11 +766,15 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       sortOrder: this.sortOrder,
       format: e.format,
       // we only export visible fields ( not hidden )
-      ...e.fields === 'visible' && { fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
-        .sort((a: any, b: any) => a.order - b.order).map((x: any) => ( { name: x.field, title: x.title } )) },
+      ...e.fields === 'visible' && {
+        fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
+          .sort((a: any, b: any) => a.order - b.order).map((x: any) => ({ name: x.field, title: x.title }))
+      },
       // we export ALL fields of the grid ( including hidden columns )
-      ...e.fields === 'all' && { fields: Object.values(currentLayout.fields)
-        .sort((a: any, b: any) => a.order - b.order).map((x: any) => ( { name: x.field, title: x.title } )) }
+      ...e.fields === 'all' && {
+        fields: Object.values(currentLayout.fields)
+          .sort((a: any, b: any) => a.order - b.order).map((x: any) => ({ name: x.field, title: x.title }))
+      }
     };
 
     // Builds and make the request

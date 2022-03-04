@@ -35,12 +35,12 @@ export class SafeGridService {
    */
   public getFields(
     fields: any[], metaFields: any, layoutFields: any, prefix?: string,
-    options?: { disabled?: boolean, filter?: boolean }): any[] {
+    options: { disabled?: boolean, filter: boolean } = { disabled: false, filter: true }): any[] {
     return flatDeep(fields.map(f => {
       const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
       switch (f.kind) {
         case 'OBJECT': {
-          return this.getFields(f.fields, metaFields, layoutFields, fullName, { disabled: true });
+          return this.getFields(f.fields, metaFields, layoutFields, fullName, { disabled: true, filter: (f.type === 'User') });
         }
         case 'LIST': {
           let metaData = get(metaFields, fullName);
@@ -77,9 +77,9 @@ export class SafeGridService {
             type: f.type,
             format: this.getFieldFormat(f.type),
             editor: this.getFieldEditor(f.type),
-            filter: (!options?.filter || prefix) ? '' : this.getFieldFilter(f.type),
+            filter: !options.filter ? '' : this.getFieldFilter(f.type),
             meta: metaData,
-            disabled: options?.disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
+            disabled: options.disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
             hidden: cachedField?.hidden || false,
             width: cachedField?.width || title.length * 7 + 50,
             order: cachedField?.order,
@@ -204,7 +204,8 @@ export class SafeGridService {
    * @param choicesByUrl Choices By Url property.
    * @returns list of choices.
    */
-  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string, hasOther?: boolean }): { value: string, text: string }[] {
+  private extractChoices(res: any, choicesByUrl: { path?: string, value?: string, text?: string, hasOther?: boolean })
+    : { value: string, text: string }[] {
     const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
     if (choicesByUrl.hasOther) {
       choices.push({ [choicesByUrl.value || 'value']: 'other', [choicesByUrl.text || 'text']: 'Other' });
