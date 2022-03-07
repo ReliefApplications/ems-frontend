@@ -252,7 +252,7 @@ export class QueryBuilderService {
    */
   public graphqlQuery(name: string, fields: any) {
     return gql`
-    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean) {
+    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON) {
       ${name}(
       first: $first,
       skip: $skip,
@@ -260,11 +260,13 @@ export class QueryBuilderService {
       sortOrder: $sortOrder,
       filter: $filter,
       display: $display
+      styles: $styles
       ) {
         edges {
           node {
             ${fields}
           }
+          meta
         }
         totalCount
       }

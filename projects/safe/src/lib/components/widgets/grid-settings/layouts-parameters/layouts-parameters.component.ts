@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Layout } from '../../../../models/layout.model';
 import { Form } from '../../../../models/form.model';
@@ -26,10 +19,6 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
   @Input() selectedLayouts: FormControl | null = null;
-
-  @Output() add = new EventEmitter();
-  @Output() delete = new EventEmitter();
-  @Output() edit = new EventEmitter();
 
   layouts: Layout[] = [];
   allLayouts: Layout[] = [];
@@ -80,7 +69,7 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Adds a new widget to the list.
+   * Adds a new layout to the list.
    */
   public onAdd(): void {
     const dialogRef = this.dialog.open(AddLayoutComponent, {
