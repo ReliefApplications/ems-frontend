@@ -9,7 +9,6 @@ import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SafeAddUserComponent } from '../add-user/add-user.component';
-import { NOTIFICATIONS } from '../../../../const/notifications';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { SafeDownloadService } from '../../../../services/download.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -109,18 +108,18 @@ export class SafeInviteUsersComponent implements OnInit {
         (res) => {
           this.gridData.data = this.gridData.data.concat(res);
         },
-        (err) => {
-          if (err.status === 400) {
-            this.snackBar.openSnackBar(err.error, { error: true });
-            this.resetFileInput();
-          }
+        () => {
+          this.resetFileInput();
         }
       );
     } else {
       if (files.length > 0) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {
-          error: true,
-        });
+        this.snackBar.openSnackBar(
+          this.translate.instant('notification.formatInvalid', {
+            format: 'xlsx',
+          }),
+          { error: true }
+        );
         this.resetFileInput();
       }
     }

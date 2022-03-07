@@ -1,6 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { SafeSnackbarSpinnerComponent } from '../components/snackbar-spinner/snackbar-spinner.component';
+import { SafeSnackBarService } from './snackbar.service';
 
 /**
  * Shared download service. Handles export and upload events.
@@ -22,7 +26,9 @@ export class SafeDownloadService {
    */
   constructor(
     @Inject('environment') environment: any,
-    private http: HttpClient
+    private http: HttpClient,
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) {
     this.baseUrl = environment.apiUrl;
   }
@@ -36,6 +42,17 @@ export class SafeDownloadService {
    * @param options (optional) request options
    */
   getFile(path: string, type: string, fileName: string, options?: any): void {
+    // Opens a loader in a snackar
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SafeSnackbarSpinnerComponent,
+      {
+        duration: 0,
+        data: {
+          message: this.translate.instant('file.download.processing'),
+          loading: true,
+        },
+      }
+    );
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
@@ -44,12 +61,25 @@ export class SafeDownloadService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Authorization: `Bearer ${token}`,
     });
-    this.http
-      .get(url, { ...options, responseType: 'blob', headers })
-      .subscribe((res) => {
+    this.http.get(url, { ...options, responseType: 'blob', headers }).subscribe(
+      (res) => {
         const blob = new Blob([res], { type });
         this.saveFile(fileName, blob);
-      });
+        snackBarRef.instance.data = {
+          message: this.translate.instant('file.download.ready'),
+          loading: false,
+        };
+        setTimeout(() => snackBarRef.dismiss(), 1000);
+      },
+      () => {
+        snackBarRef.instance.data = {
+          message: this.translate.instant('file.download.error'),
+          loading: false,
+          error: true,
+        };
+        setTimeout(() => snackBarRef.dismiss(), 1000);
+      }
+    );
   }
 
   /**
@@ -66,6 +96,17 @@ export class SafeDownloadService {
     fileName: string,
     body?: any
   ): void {
+    // Opens a loader in a snackar
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SafeSnackbarSpinnerComponent,
+      {
+        duration: 0,
+        data: {
+          message: this.translate.instant('file.download.processing'),
+          loading: true,
+        },
+      }
+    );
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
@@ -74,12 +115,25 @@ export class SafeDownloadService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Authorization: `Bearer ${token}`,
     });
-    this.http
-      .post(url, body, { responseType: 'blob', headers })
-      .subscribe((res) => {
+    this.http.post(url, body, { responseType: 'blob', headers }).subscribe(
+      (res) => {
         const blob = new Blob([res], { type });
         this.saveFile(fileName, blob);
-      });
+        snackBarRef.instance.data = {
+          message: this.translate.instant('file.download.ready'),
+          loading: false,
+        };
+        setTimeout(() => snackBarRef.dismiss(), 1000);
+      },
+      () => {
+        snackBarRef.instance.data = {
+          message: this.translate.instant('file.download.error'),
+          loading: false,
+          error: true,
+        };
+        setTimeout(() => snackBarRef.dismiss(), 1000);
+      }
+    );
   }
 
   /**
@@ -105,6 +159,16 @@ export class SafeDownloadService {
    * @returns http upload request
    */
   uploadFile(path: string, file: any): Observable<any> {
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SafeSnackbarSpinnerComponent,
+      {
+        duration: 0,
+        data: {
+          message: this.translate.instant('file.upload.processing'),
+          loading: true,
+        },
+      }
+    );
     const url = this.buildURL(path);
     const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
@@ -115,7 +179,25 @@ export class SafeDownloadService {
     });
     const formData = new FormData();
     formData.append('excelFile', file, file.name);
-    return this.http.post(url, formData, { headers });
+    return this.http.post(url, formData, { headers }).pipe(
+      tap(
+        () => {
+          snackBarRef.instance.data = {
+            message: this.translate.instant('file.upload.ready'),
+            loading: false,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
+        },
+        () => {
+          snackBarRef.instance.data = {
+            message: this.translate.instant('file.upload.error'),
+            loading: false,
+            error: true,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
+        }
+      )
+    );
   }
 
   /**

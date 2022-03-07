@@ -6,9 +6,23 @@ import { SafeButtonModule } from '../../button/button.module';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { SafeGroupStageComponent } from './group-stage/group-stage.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { SafeAddFieldStageComponent } from './add-field-stage/add-field-stage.component';
+import { SafeExpressionsComponent } from './expressions/expressions.component';
+import { SafeFieldDropdownComponent } from './field-dropdown/field-dropdown.component';
 
 @NgModule({
-  declarations: [SafePipelineComponent],
+  declarations: [
+    SafePipelineComponent,
+    SafeGroupStageComponent,
+    SafeAddFieldStageComponent,
+    SafeExpressionsComponent,
+    SafeFieldDropdownComponent,
+  ],
   imports: [
     CommonModule,
     SafeQueryBuilderModule,
@@ -16,7 +30,18 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatMenuModule,
     TranslateModule,
     MatExpansionModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
   ],
-  exports: [SafePipelineComponent],
+  exports: [
+    SafePipelineComponent,
+    SafeGroupStageComponent,
+    SafeAddFieldStageComponent,
+    SafeExpressionsComponent,
+    SafeFieldDropdownComponent,
+  ],
 })
 export class SafePipelineModule {}

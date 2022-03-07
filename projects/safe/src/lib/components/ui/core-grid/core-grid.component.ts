@@ -48,15 +48,15 @@ import { SafeRecordModalComponent } from '../../record-modal/record-modal.compon
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
-import { NOTIFICATIONS } from '../../../const/notifications';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
 import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
+import { TranslateService } from '@ngx-translate/core';
 
-const DEFAULT_FILE_NAME = 'grid.xlsx';
+const DEFAULT_FILE_NAME = 'Records';
 
 const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
 
@@ -189,8 +189,16 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public editionActive = false;
 
   // === DOWNLOAD ===
-  public excelFileName = '';
   private apiUrl = '';
+  /** Builds filename from the date and widget title */
+  get fileName(): string {
+    const today = new Date();
+    const month = today.toLocaleString('en-us', { month: 'short' });
+    const date = month + ' ' + today.getDate() + ' ' + today.getFullYear();
+    return `${
+      this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
+    } ${date}`;
+  }
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -217,7 +225,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private safeAuthService: SafeAuthService,
-    private gridService: SafeGridService
+    private gridService: SafeGridService,
+    private translate: TranslateService
   ) {
     this.apiUrl = environment.apiUrl;
     this.isAdmin =
@@ -259,9 +268,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.defaultLayout.sort;
     }
     this.showFilter = !!this.defaultLayout?.showFilter;
-    this.excelFileName = this.settings.title
-      ? `${this.settings.title}.xlsx`
-      : DEFAULT_FILE_NAME;
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     this.dataQuery = this.apollo.watchQuery<any>({
@@ -275,7 +281,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-first',
     });
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings);
+    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
     if (this.metaQuery) {
       this.loading = true;
       this.metaQuery.subscribe(
@@ -595,10 +601,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         }
         break;
       }
-      case 'saveLayout': {
-        this.saveDefaultLayout();
-        break;
-      }
       case 'resetLayout': {
         this.resetDefaultLayout();
         break;
@@ -849,7 +851,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           .subscribe((res) => {
             this.reloadData();
             this.layoutService.setRightSidenav(null);
-            this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+            this.snackBar.openSnackBar(
+              this.translate.instant('notification.dataRecovered')
+            );
           });
       }
     });
@@ -885,9 +889,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Builds the request body with all the useful data
-    const fileName = `${
-      this.settings.title ? this.settings.title : 'records'
-    }.${e.format}`;
     const currentLayout = this.layout;
     const body = {
       ids,
@@ -921,7 +922,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.downloadService.getRecordsExport(
       `${this.apiUrl}/download/records`,
       `text/${e.format};charset=utf-8;`,
-      fileName,
+      `${this.fileName}.${e.format}`,
       body
     );
   }

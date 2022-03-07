@@ -16,12 +16,8 @@
   <safe-grid-widget
     class="widget-content"
     [header]="header"
-    [layout]="layout"
     [settings]="widget.settings"
     (goToNextStep)="goToNextStep.emit($event)"
-    (defaultLayoutChanged)="onDefaultLayoutChanged($event)"
-    (layoutChanged)="onLayoutChanged($event)"
-    (defaultLayoutReset)="onDefaultLayoutReset($event)"
   ></safe-grid-widget>
 </ng-container>
 <ng-container *ngIf="widget.component === 'map'">

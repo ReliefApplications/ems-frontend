@@ -6,7 +6,6 @@ import {
   Step,
   SafeSnackBarService,
   Workflow,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import {
@@ -14,6 +13,7 @@ import {
   GET_WORKFLOW_BY_ID,
 } from '../../../graphql/queries';
 import { PreviewService } from '../../../services/preview.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-workflow',
@@ -43,7 +43,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router,
-    private previewService: PreviewService
+    private previewService: PreviewService,
+    private translateService: TranslateService
   ) {}
 
   /**
@@ -74,7 +75,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               }
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.accessNotProvided('workflow'),
+                this.translateService.instant(
+                  'notification.accessNotProvided',
+                  {
+                    type: this.translateService
+                      .instant('notification.term.workflow')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
             }
@@ -109,11 +118,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.onOpenStep(this.activeStep + 1);
     } else if (this.activeStep + 1 === this.steps.length) {
       this.onOpenStep(0);
-      this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
+      this.snackBar.openSnackBar(
+        this.translateService.instant('notification.goToStep', {
+          step: this.steps[0].name,
+        })
+      );
     } else {
-      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, {
-        error: true,
-      });
+      this.snackBar.openSnackBar(
+        this.translateService.instant('notification.cannotGoToNextStep'),
+        { error: true }
+      );
     }
   }
 

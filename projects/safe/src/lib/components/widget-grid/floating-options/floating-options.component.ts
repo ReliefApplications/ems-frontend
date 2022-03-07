@@ -1,18 +1,18 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SafeTileDisplayComponent } from './menu/tile-display/tile-display.component';
 import { SafeTileDataComponent } from './menu/tile-data/tile-data.component';
 import { SafeDashboardService } from '../../../services/dashboard.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Button on top left of each widget, if user can see it, with menu of possible actions for that widget.
+ */
 @Component({
   selector: 'safe-floating-options',
   templateUrl: './floating-options.component.html',
   styleUrls: ['./floating-options.component.scss'],
 })
-/*  Button on top left of each widget, if user can see it, with menu of possible actions for that widget.
- */
 export class SafeFloatingOptionsComponent implements OnInit {
   // === WIDGET ===
   @Input() widget: any;
@@ -31,7 +31,8 @@ export class SafeFloatingOptionsComponent implements OnInit {
     private translate: TranslateService
   ) {}
 
-  /*  Set the list of available actions.
+  /**
+   * Sets the list of available actions.
    */
   ngOnInit(): void {
     this.items = [
@@ -54,11 +55,15 @@ export class SafeFloatingOptionsComponent implements OnInit {
     ];
   }
 
-  /*  Open a modal, or emit an event depending on the action clicked.
+  /**
+   * Opens a modal, or emit an event depending on the action clicked.
+   *
+   * @param item action
    */
   onClick(item: any): void {
     if (item.name === 'Settings') {
       const dialogRef = this.dialog.open(SafeTileDataComponent, {
+        disableClose: true,
         data: {
           tile: this.widget,
           template: this.dashboardService.findSettingsTemplate(this.widget),

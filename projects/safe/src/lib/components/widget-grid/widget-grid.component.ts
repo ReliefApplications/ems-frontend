@@ -7,12 +7,11 @@ import {
   Output,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
+import { WIDGET_TYPES } from '../../models/dashboard.model';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
-  TileLayoutItemComponent,
 } from '@progress/kendo-angular-layout';
 
 const MAX_ROW_SPAN = 4;

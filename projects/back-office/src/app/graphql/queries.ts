@@ -299,6 +299,13 @@ export const GET_RESOURCE_BY_ID = gql`
       name
       createdAt
       fields
+      layouts {
+        id
+        name
+        createdAt
+        query
+        display
+      }
       forms {
         id
         name
@@ -537,8 +544,20 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-  query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
-    applications(first: $first, afterCursor: $afterCursor, filter: $filter) {
+  query GetApplications(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sortField: String
+    $sortOrder: String
+  ) {
+    applications(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
       edges {
         node {
           id

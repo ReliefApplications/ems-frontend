@@ -34,12 +34,14 @@ import {
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeWorkflowService } from '../../../services/workflow.service';
 import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
-import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeAuthService } from '../../../services/auth.service';
 import { SafeEmailService } from '../../../services/email.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { GridLayout } from '../../ui/core-grid/models/grid-layout.model';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
+import { SafeGridLayoutService } from '../../../services/grid-layout.service';
+import { Layout } from '../../../models/layout.model';
+import { TranslateService } from '@ngx-translate/core';
 
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
 
@@ -61,7 +63,8 @@ export class SafeGridWidgetComponent implements OnInit {
   public loading = true;
 
   // === CACHED CONFIGURATION ===
-  @Input() layout: GridLayout = {};
+  public layout: Layout | null = null;
+  public layouts: Layout[] = [];
 
   // === VERIFICATION IF USER IS ADMIN ===
   public isAdmin: boolean;
@@ -70,15 +73,10 @@ export class SafeGridWidgetComponent implements OnInit {
   @Input() header = true;
   @Input() settings: any = null;
   @Input() id = '';
+  public gridSettings: any = null;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
-
-  @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
-
-  @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
-
-  @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -92,16 +90,28 @@ export class SafeGridWidgetComponent implements OnInit {
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
     private emailService: SafeEmailService,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private gridLayoutService: SafeGridLayoutService,
+    private translate: TranslateService
   ) {
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
   ngOnInit(): void {
+    this.gridSettings = { ...this.settings };
     this.factory = this.resolver.resolveComponentFactory(
       SafeRecordHistoryComponent
     );
+    if (this.settings.resource) {
+      this.gridLayoutService
+        .getLayouts(this.settings.resource, this.settings.layouts)
+        .then((res) => {
+          this.layouts = res;
+          this.layout = this.layouts[0] || null;
+          this.gridSettings = { ...this.settings, ...this.layout };
+        });
+    }
   }
 
   private promisedChanges(items: any[]): Promise<any>[] {
@@ -226,13 +236,15 @@ export class SafeGridWidgetComponent implements OnInit {
         await this.emailService.sendMail(
           options.distributionList,
           options.subject,
-          options.bodyText,
+          this.grid.selectedRows.length > 0
+            ? options.bodyText
+            : options.bodyTextAlternate,
           emailSettings,
           this.grid.selectedRows,
           sortField,
           sortOrder
         );
-        if (options.export) {
+        if (options.export && this.grid.selectedRows.length > 0) {
           this.grid.onExport({
             records: 'all',
             format: 'xlsx',
@@ -436,11 +448,11 @@ export class SafeGridWidgetComponent implements OnInit {
                 const record = res2.data.editRecord;
                 if (record) {
                   this.snackBar.openSnackBar(
-                    NOTIFICATIONS.addRowsToRecord(
-                      selectedRecords.length,
-                      key,
-                      record.data[targetFormField]
-                    )
+                    this.translate.instant('notification.addRowsToRecord', {
+                      field: record.data[targetFormField],
+                      length: selectedRecords.length,
+                      value: key,
+                    })
                   );
                   this.dialog.open(SafeFormModalComponent, {
                     disableClose: true,
@@ -461,16 +473,19 @@ export class SafeGridWidgetComponent implements OnInit {
   }
 
   /**
-   * Save the current layout of the grid as default layout
+   * Updates current layout.
+   *
+   * @param layout new layout.
    */
-  onDefaultLayout(): void {
-    this.defaultLayoutChanged.emit(this.layout);
+  onLayoutChange(layout: Layout): void {
+    this.layout = layout;
+    this.gridSettings = { ...this.settings, ...this.layout };
   }
 
   /**
-   * Reset the currently cached layout to the default one
+   * Resets the current layout.
    */
-  onResetDefaultLayout(): void {
-    this.defaultLayoutReset.emit();
+  onResetLayout(): void {
+    this.onLayoutChange(this.layout || {});
   }
 }
