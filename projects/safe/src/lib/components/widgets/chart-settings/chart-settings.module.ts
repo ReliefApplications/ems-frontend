@@ -21,7 +21,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeGridModule } from '../../../components/ui/core-grid/grid/grid.module';
 
-
 @NgModule({
   declarations: [SafeChartSettingsComponent],
   imports: [

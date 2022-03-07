@@ -13,7 +13,6 @@ import { Observable, Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class AggregationBuilderService {
-
   private gridSubject = new Subject<any>();
 
   setPreviewGrid(data: any) {
@@ -56,11 +55,11 @@ export class AggregationBuilderService {
           aggregation,
           withMapping,
         },
-      })
+      });
       // const dataSubscription = result.valueChanges.subscribe((res) => {
       //   dataSubscription?.unsubscribe();
       // })
-      return (result);
+      return result;
     } else {
       return null;
     }
