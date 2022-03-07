@@ -214,17 +214,24 @@ export class SafeAggregationBuilderComponent implements OnInit {
             pipeline
           )
         );
-        this.aggregationBuilder
+        const temp = this.aggregationBuilder
           .buildAggregation(this.aggregationForm.value, false)
           .valueChanges.subscribe((res: any) => {
             if (res.data.recordsAggregation) {
+              console.log(res);
               this.gridData = {
                 data: res.data.recordsAggregation,
                 total: res.data.recordsAggregation.length,
               };
             }
             this.loadingGrid = res.loading;
+            this.aggregationBuilder.setPreviewGrid({
+              fields: this.gridFields,
+              data: this.gridData,
+              loading: this.loadingGrid
+            })
           });
+          console.log(temp);
       } else {
         this.gridFields = [];
         this.gridData = {
@@ -233,6 +240,11 @@ export class SafeAggregationBuilderComponent implements OnInit {
         };
       }
     }
+    this.aggregationBuilder.setPreviewGrid({
+      fields: this.gridFields,
+      data: this.gridData,
+      loading: this.loadingGrid
+    })
   }
 
   /**

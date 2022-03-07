@@ -1,14 +1,14 @@
 <mat-form-field appearance="outline">
   <mat-label>{{label}}</mat-label>
   <mat-chip-list #chipList>
-    <mat-chip
+    <mat-basic-chip
       *ngFor="let choice of selectedChoices"
       (removed)="remove(choice)" [value]="choice">
       <div class="chip-text">{{choice[displayKey]}}</div>
-      <button matChipRemove>
-        <safe-icon icon="cancel" variant="danger" [size]="14" [inline]="true"></safe-icon>
-      </button>
-    </mat-chip>
+      <!-- <button matChipRemove>
+      </button> -->
+      <safe-icon matChipRemove icon="close" [size]="16" [inline]="true"></safe-icon>
+    </mat-basic-chip>
     <input
       type="text"
       [placeholder]="label"
@@ -22,6 +22,7 @@
       [disabled]="choicesEmpty"
       *ngIf="showInput">
   </mat-chip-list>
+  
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)" [displayWith]="displayName">
     <mat-option *ngFor="let choice of filteredChoices | async" [value]="choice">
       {{choice[displayKey]}}

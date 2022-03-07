@@ -8,21 +8,9 @@
   }
 }
 
-.aggregation-builder {
+.aggregation-builder-form {
+  flex: 1;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 8px;
-
-  .aggregation-builder-form {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .aggregation-preview {
-    flex: 1;
-    height: 300px;
-  }
+  flex-direction: column;
+  gap: 24px;
 }

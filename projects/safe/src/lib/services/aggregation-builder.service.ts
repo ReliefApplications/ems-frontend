@@ -2,6 +2,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { PipelineStage } from '../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
 import { Accumulators } from '../components/ui/aggregation-builder/pipeline/expressions/operators';
+import { Observable, Subject } from 'rxjs';
 
 /**
  * Shared aggregation service.
@@ -12,6 +13,17 @@ import { Accumulators } from '../components/ui/aggregation-builder/pipeline/expr
   providedIn: 'root',
 })
 export class AggregationBuilderService {
+
+  private gridSubject = new Subject<any>();
+
+  setPreviewGrid(data: any) {
+    this.gridSubject.next(data);
+  }
+
+  getPreviewGrid(): Observable<any> {
+    return this.gridSubject.asObservable();
+  }
+
   /**
    * Shared aggregation service.
    * Aggregation are used by chart widgets, to get the data.
@@ -38,13 +50,18 @@ export class AggregationBuilderService {
           )
         }
       `;
-      return this.apollo.watchQuery<any>({
+      const result = this.apollo.watchQuery<any>({
         query,
         variables: {
           aggregation,
           withMapping,
         },
-      });
+      })
+      const dataSubscription = result.valueChanges.subscribe((res) => {
+        console.log(res);
+        dataSubscription?.unsubscribe();
+      })
+      return (result);
     } else {
       return null;
     }
