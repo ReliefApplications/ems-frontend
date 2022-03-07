@@ -377,6 +377,12 @@ export class SafeGridWidgetComponent implements OnInit {
     return date;
   }
 
+  /**
+   * Gets from input time value a time value display.
+   *
+   * @param value record value
+   * @returns calculated time
+   */
   private getTimeForFilter(value: any): string {
     if (value === 'now()') {
       const time = new Date()
