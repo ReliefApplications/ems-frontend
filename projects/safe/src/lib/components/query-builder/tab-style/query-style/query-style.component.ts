@@ -6,8 +6,11 @@ import {
   OnInit,
   ComponentFactory,
 } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { ChecklistDatabase } from '../../../checkbox-tree/checkbox-tree.component';
+import { FormControl, FormGroup } from '@angular/forms';
+import {
+  ChecklistDatabase,
+  TreeItemFlatNode,
+} from '../../../checkbox-tree/checkbox-tree.component';
 
 /**
  * Query style component.
@@ -28,8 +31,6 @@ export class SafeQueryStyleComponent implements OnInit {
 
   @Output() closeEdition = new EventEmitter<any>();
 
-  public fieldsFormControl: FormArray = new FormArray([]);
-
   checklist!: ChecklistDatabase;
 
   constructor() {}
@@ -46,38 +47,17 @@ export class SafeQueryStyleComponent implements OnInit {
     }
     this.wholeRow.valueChanges.subscribe((value) => {
       if (value) {
-        this.fieldsFormControl.clear();
+        this.form.get('fields')?.setValue([]);
       }
     });
-    this.fieldsFormControl.valueChanges.subscribe((res) => {
-      const rawValue = this.fieldsFormControl.getRawValue();
-      const value = this.getFieldsValue(rawValue);
-      this.form.get('fields')?.setValue(value);
-    });
   }
 
-  private flatDeep(arr: any[]): any[] {
-    return arr.reduce(
-      (acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val),
-      []
-    );
-  }
-
-  private getFieldsValue(fields: any[], prefix?: string): string[] {
-    return this.flatDeep(
-      fields.map((f) => {
-        switch (f.kind) {
-          case 'OBJECT': {
-            return this.getFieldsValue(f.fields, f.name);
-          }
-          default: {
-            return prefix ? `${prefix}.${f.name}` : f.name;
-          }
-        }
-      })
-    );
-  }
-
+  /**
+   * Builds the checklist from list of fields.
+   *
+   * @param fields List of fields
+   * @returns Checklist database as object.
+   */
   private getChecklist(fields: any[]): any {
     return fields.reduce((o, field) => {
       if (field.fields) {
@@ -87,8 +67,6 @@ export class SafeQueryStyleComponent implements OnInit {
       }
     }, {});
   }
-
-  // private setFieldsValue(fields: any[])
 
   /**
    * Toggles boolean controls.
@@ -100,5 +78,14 @@ export class SafeQueryStyleComponent implements OnInit {
     if (control) {
       control.setValue(!control.value);
     }
+  }
+
+  /**
+   * Updates fields value.
+   *
+   * @param items list of selected tree items.
+   */
+  onChange(items: TreeItemFlatNode[]) {
+    this.form.get('fields')?.setValue(items.map((x) => x.path));
   }
 }

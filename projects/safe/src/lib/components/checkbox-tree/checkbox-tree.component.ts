@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { Component, Injectable, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   MatTreeFlatDataSource,
   MatTreeFlattener,
@@ -13,6 +13,7 @@ import { BehaviorSubject } from 'rxjs';
 export class TreeItemNode {
   children: TreeItemNode[] = [];
   item = '';
+  path = '';
 }
 
 /** Flat tree item node with expandable and level information */
@@ -20,6 +21,7 @@ export class TreeItemFlatNode {
   item = '';
   level = 0;
   expandable = false;
+  path = '';
 }
 
 /**
@@ -49,15 +51,20 @@ export class ChecklistDatabase {
    * Build the file structure tree. The `value` is the Json object, or a sub-tree of a Json object.
    * The return value is the list of `TodoItemNode`.
    */
-  buildFileTree(obj: { [key: string]: any }, level: number): TreeItemNode[] {
+  buildFileTree(
+    obj: { [key: string]: any },
+    level: number,
+    prefix?: string
+  ): TreeItemNode[] {
     return Object.keys(obj).reduce<TreeItemNode[]>((accumulator, key) => {
       const value = obj[key];
       const node = new TreeItemNode();
       node.item = key;
+      node.path = prefix ? `${prefix}.${key}` : key;
 
       if (value != null) {
         if (typeof value === 'object') {
-          node.children = this.buildFileTree(value, level + 1);
+          node.children = this.buildFileTree(value, level + 1, node.path);
         } else {
           node.item = value;
         }
@@ -112,6 +119,8 @@ export class SafeCheckboxTreeComponent implements OnInit {
 
   @Input() checklist!: ChecklistDatabase;
 
+  @Output() valueChange = new EventEmitter<TreeItemFlatNode[]>();
+
   constructor() {
     this.treeFlattener = new MatTreeFlattener(
       this.transformer,
@@ -131,7 +140,6 @@ export class SafeCheckboxTreeComponent implements OnInit {
 
   ngOnInit(): void {
     this.checklist.dataChange.subscribe((data) => {
-      console.log(data);
       this.dataSource.data = data;
     });
   }
@@ -157,6 +165,7 @@ export class SafeCheckboxTreeComponent implements OnInit {
         ? existingNode
         : new TreeItemFlatNode();
     flatNode.item = node.item;
+    flatNode.path = node.path;
     flatNode.level = level;
     flatNode.expandable = !!node.children?.length;
     this.flatNodeMap.set(flatNode, node);
@@ -201,6 +210,7 @@ export class SafeCheckboxTreeComponent implements OnInit {
   todoLeafItemSelectionToggle(node: TreeItemFlatNode): void {
     this.checklistSelection.toggle(node);
     this.checkAllParentsSelection(node);
+    this.valueChange.emit(this.checklistSelection.selected);
   }
 
   /* Checks all the parents when a leaf node is selected/unselected */
