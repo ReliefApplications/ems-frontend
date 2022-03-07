@@ -54,9 +54,6 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     this.loading = true;
     this.dataQuery = this.aggregationBuilder.buildAggregation(
-      {}//this.settings.chart.aggregation
-    );
-    this.dataQuery = this.aggregationBuilder.buildAggregation(
       this.settings.chart.aggregation
     );
     if (this.dataQuery) {

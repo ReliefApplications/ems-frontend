@@ -57,10 +57,9 @@ export class AggregationBuilderService {
           withMapping,
         },
       })
-      const dataSubscription = result.valueChanges.subscribe((res) => {
-        console.log(res);
-        dataSubscription?.unsubscribe();
-      })
+      // const dataSubscription = result.valueChanges.subscribe((res) => {
+      //   dataSubscription?.unsubscribe();
+      // })
       return (result);
     } else {
       return null;
