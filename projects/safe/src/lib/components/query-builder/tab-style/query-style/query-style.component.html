@@ -76,7 +76,7 @@
 
       <div class="field-form" *ngIf="!wholeRow.value">
         <span class="field-name">{{'widgets.grid.style.fields' | translate }}</span>
-        <safe-checkbox-tree></safe-checkbox-tree>
+        <safe-checkbox-tree [checklist]="checklist"></safe-checkbox-tree>
       </div>
     </form>
   </ng-container>

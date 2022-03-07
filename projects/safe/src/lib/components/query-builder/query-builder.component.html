@@ -100,7 +100,7 @@
         <ng-template matTabContent>
           <safe-tab-style
             [form]="$any(form.controls.style)"
-            [fields]="availableFields"
+            [fields]="form.getRawValue().fields"
             [factory]="factory"
             [scalarFields]="availableScalarFields"
           >

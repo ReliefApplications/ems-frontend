@@ -1,10 +1,8 @@
 import {
   Component,
   ComponentFactory,
-  EventEmitter,
   Input,
   OnInit,
-  Output,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';

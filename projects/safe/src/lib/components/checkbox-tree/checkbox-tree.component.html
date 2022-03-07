@@ -13,7 +13,7 @@
     >
   </mat-tree-node>
 
-  <mat-tree-node
+  <!-- <mat-tree-node
     *matTreeNodeDef="let node; when: hasNoContent"
     matTreeNodePadding
   >
@@ -23,7 +23,7 @@
       <input matInput #itemValue placeholder="Ex. Lettuce" />
     </mat-form-field>
     <button mat-button (click)="saveNode(node, itemValue.value)">Save</button>
-  </mat-tree-node>
+  </mat-tree-node> -->
 
   <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
     <button

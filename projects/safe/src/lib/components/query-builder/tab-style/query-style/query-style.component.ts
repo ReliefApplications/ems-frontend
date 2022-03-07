@@ -7,6 +7,7 @@ import {
   ComponentFactory,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { ChecklistDatabase } from '../../../checkbox-tree/checkbox-tree.component';
 
 /**
  * Query style component.
@@ -29,9 +30,14 @@ export class SafeQueryStyleComponent implements OnInit {
 
   public fieldsFormControl: FormArray = new FormArray([]);
 
+  checklist!: ChecklistDatabase;
+
   constructor() {}
 
   ngOnInit(): void {
+    this.checklist = new ChecklistDatabase(this.getChecklist(this.fields));
+    console.log(this.fields);
+    console.log(this.checklist.data);
     const fields = this.form.get('fields')?.value || [];
     if (fields.length > 0) {
       this.wholeRow = new FormControl(false);
@@ -70,6 +76,16 @@ export class SafeQueryStyleComponent implements OnInit {
         }
       })
     );
+  }
+
+  private getChecklist(fields: any[]): any {
+    return fields.reduce((o, field) => {
+      if (field.fields) {
+        return { ...o, [field.name]: this.getChecklist(field.fields) };
+      } else {
+        return { ...o, [field.name]: null };
+      }
+    }, {});
   }
 
   // private setFieldsValue(fields: any[])

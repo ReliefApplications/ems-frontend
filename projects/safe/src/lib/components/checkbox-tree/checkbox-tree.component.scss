@@ -1,5 +1,6 @@
-safe-checkbox-tree {
-    max-height: 300px;
+mat-tree {
+    border: 1px solid #dfe1e5;
+    border-radius: 4px;
     overflow: auto;
-    flex: 1;
+    max-height: 300px;
 }
