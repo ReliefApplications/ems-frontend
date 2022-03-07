@@ -26,6 +26,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeQueryStyleComponent } from './tab-style/query-style/query-style.component';
 import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/query-style-preview.component';
+import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/
     TranslateModule,
     InputsModule,
     LabelModule,
+    SafeCheckboxTreeModule,
   ],
   exports: [
     SafeQueryBuilderComponent,
