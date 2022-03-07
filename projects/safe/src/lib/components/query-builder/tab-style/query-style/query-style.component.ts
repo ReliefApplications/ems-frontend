@@ -8,6 +8,10 @@ import {
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
+/**
+ * Query style component.
+ * Used by Grid Layout Settings.
+ */
 @Component({
   selector: 'safe-query-style',
   templateUrl: './query-style.component.html',
@@ -68,7 +72,7 @@ export class SafeQueryStyleComponent implements OnInit {
     );
   }
 
-  private setFieldsValue(fields: any[])
+  // private setFieldsValue(fields: any[])
 
   /**
    * Toggles boolean controls.

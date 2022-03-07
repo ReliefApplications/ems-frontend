@@ -26,7 +26,7 @@
       >
       </safe-button>
       <mat-menu #resMenu="matMenu">
-        <button mat-menu-item (click)="onEditLayout(element)">
+        <button mat-menu-item (click)="onEditLayout(element)" disabled>
           <mat-icon>edit</mat-icon>
           {{ 'action.edit' | translate }}
         </button>
