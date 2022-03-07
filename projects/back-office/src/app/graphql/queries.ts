@@ -548,13 +548,15 @@ export const GET_APPLICATIONS = gql`
     $first: Int
     $afterCursor: ID
     $filter: JSON
-    $sort: JSON
+    $sortField: String
+    $sortOrder: String
   ) {
     applications(
       first: $first
       afterCursor: $afterCursor
       filter: $filter
-      sort: $sort
+      sortField: $sortField
+      sortOrder: $sortOrder
     ) {
       edges {
         node {

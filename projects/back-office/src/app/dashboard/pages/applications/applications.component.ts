@@ -107,7 +107,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         query: GET_APPLICATIONS,
         variables: {
           first: DEFAULT_PAGE_SIZE,
-          sort: { modifiedAt: -1 },
+          sortField: 'modifiedAt',
+          sortOrder: 'desc',
         },
       });
     this.applicationsQuery.valueChanges.subscribe((res) => {
