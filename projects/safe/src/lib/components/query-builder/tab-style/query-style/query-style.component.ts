@@ -37,8 +37,6 @@ export class SafeQueryStyleComponent implements OnInit {
 
   ngOnInit(): void {
     this.checklist = new ChecklistDatabase(this.getChecklist(this.fields));
-    console.log(this.fields);
-    console.log(this.checklist.data);
     const fields = this.form.get('fields')?.value || [];
     if (fields.length > 0) {
       this.wholeRow = new FormControl(false);

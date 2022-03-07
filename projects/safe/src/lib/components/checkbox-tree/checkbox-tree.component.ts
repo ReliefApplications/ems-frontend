@@ -118,6 +118,7 @@ export class SafeCheckboxTreeComponent implements OnInit {
   );
 
   @Input() checklist!: ChecklistDatabase;
+  @Input() value: string[] = [];
 
   @Output() valueChange = new EventEmitter<TreeItemFlatNode[]>();
 
@@ -142,6 +143,10 @@ export class SafeCheckboxTreeComponent implements OnInit {
     this.checklist.dataChange.subscribe((data) => {
       this.dataSource.data = data;
     });
+    const values: TreeItemFlatNode[] = this.treeControl.dataNodes.filter((x) =>
+      this.value.includes(x.path)
+    );
+    this.checklistSelection.select(...values);
   }
 
   getLevel = (node: TreeItemFlatNode) => node.level;
@@ -203,7 +208,6 @@ export class SafeCheckboxTreeComponent implements OnInit {
     // Force update for the parent
     descendants.forEach((child) => this.checklistSelection.isSelected(child));
     this.checkAllParentsSelection(node);
-    console.log(this.checklistSelection);
   }
 
   /** Toggle a leaf to-do item selection. Check all the parents to see if they changed */
