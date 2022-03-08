@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { PipelineStage } from '../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
 import { Accumulators } from '../components/ui/aggregation-builder/pipeline/expressions/operators';
 import { Observable, Subject } from 'rxjs';
+import { addNewField } from '../components/query-builder/query-builder-forms';
 
 /**
  * Shared aggregation service.
@@ -15,12 +16,79 @@ import { Observable, Subject } from 'rxjs';
 export class AggregationBuilderService {
   private gridSubject = new Subject<any>();
 
-  setPreviewGrid(data: any) {
-    this.gridSubject.next(data);
+  /**
+   * Returns an observable with all the data needed for the preview grid.
+   */
+  public getPreviewGrid(): Observable<any> {
+    return this.gridSubject.asObservable();
   }
 
-  getPreviewGrid(): Observable<any> {
-    return this.gridSubject.asObservable();
+  /**
+   * Initializes preview grid using pipeline parameters.
+   *
+   * @param aggregation form.
+   * @param pipeline Array of stages.
+   * @param selected fields before aggregation.
+   */
+  public initGrid(aggregationForm: any, pipeline: any[], selectedFields: any): void {
+    let loadingGrid = true;
+    let gridData: any = {
+      data: [],
+      total: 0,
+    };
+    let gridFields: any[] = [];
+
+    if (aggregationForm.get('pipeline')?.valid) {
+      if (pipeline.length) {
+        loadingGrid = true;
+        gridFields = this.formatFields(
+          this.fieldsAfter(
+            selectedFields.value,
+            pipeline
+          )
+        );
+        this.buildAggregation(aggregationForm.value, false)
+          .valueChanges.subscribe((res: any) => {
+            if (res.data.recordsAggregation) {
+              gridData = {
+                data: res.data.recordsAggregation,
+                total: res.data.recordsAggregation.length,
+              };
+            }
+            loadingGrid = res.loading;
+            this.gridSubject.next({
+              fields: gridFields,
+              data: gridData,
+              loading: loadingGrid
+            })
+          });
+      } else {
+        gridFields = [];
+        gridData = {
+          data: [],
+          total: 0,
+        };
+      }
+    }
+    this.gridSubject.next({
+      fields: gridFields,
+      data: gridData,
+      loading: loadingGrid
+    })
+  }
+
+  /**
+   * Formats fields so they are aligned with the queryBuilder format.
+   *
+   * @param fields Raw fields to format.
+   * @return formatted fields.
+   */
+   public formatFields(fields: any[]): any[] {
+    return fields.map((field: any) => {
+      const formattedForm = addNewField(field, true);
+      formattedForm.enable();
+      return formattedForm.value;
+    });
   }
 
   /**
@@ -49,17 +117,13 @@ export class AggregationBuilderService {
           )
         }
       `;
-      const result = this.apollo.watchQuery<any>({
+      return this.apollo.watchQuery<any>({
         query,
         variables: {
           aggregation,
           withMapping,
         },
       });
-      // const dataSubscription = result.valueChanges.subscribe((res) => {
-      //   dataSubscription?.unsubscribe();
-      // })
-      return result;
     } else {
       return null;
     }

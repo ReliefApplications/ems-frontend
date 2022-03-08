@@ -110,9 +110,12 @@ export class SafeChartSettingsComponent implements OnInit {
       .subscribe((value) => {
         this.settings = this.tileForm?.value;
       });
+    
 
     this.aggregationBuilder.getPreviewGrid().subscribe((value) => {
       this.grid = value;
-    });
+    })
+
   }
+
 }
