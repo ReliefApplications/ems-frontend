@@ -66,4 +66,5 @@ export const NOTIFICATIONS = {
     'Authentication token fetched, ping again to get the actual response.',
   pingResponseReceived: 'Received positive response from ping request.',
   pingResponseError: 'ERROR during the PING request.',
+  aggregationError: 'Aggregation failed to load.',
 };
