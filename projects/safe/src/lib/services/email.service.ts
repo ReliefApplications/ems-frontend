@@ -44,17 +44,23 @@ export class SafeEmailService {
     recipient: string[],
     subject: string,
     body: string = '{dataset}',
-    settings: any,
-    ids: string[],
-    sortField?: string,
-    sortOrder?: string
+    gridSettings: {
+      query: {
+        name: string;
+        fields: any[];
+      };
+      ids: string[];
+      sortField?: string;
+      sortOrder?: string;
+    },
+    attachment?: boolean
   ): Promise<void> {
-    body = await this.preprocessor.preprocess(body, {
-      settings,
-      ids,
-      sortField,
-      sortOrder,
-    });
+    // body = await this.preprocessor.preprocess(body, {
+    //   settings,
+    //   ids,
+    //   sortField,
+    //   sortOrder,
+    // });
     this.clipboard.copy(body);
     this.snackBar.openSnackBar(NOTIFICATIONS.emailBodyCopiedToClipboard, {
       duration: 3000,
@@ -70,6 +76,8 @@ export class SafeEmailService {
           recipient,
           subject,
           body,
+          gridSettings,
+          attachment,
         },
       })
       .subscribe((res) => {
