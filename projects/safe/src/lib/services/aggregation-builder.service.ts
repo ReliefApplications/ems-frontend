@@ -17,9 +17,18 @@ export class AggregationBuilderService {
   private gridSubject = new Subject<any>();
 
   /**
+   * Shared aggregation service.
+   * Aggregation are used by chart widgets, to get the data.
+   * The aggregation is flexible.
+   *
+   * @param apollo Apollo client
+   */
+  constructor(private apollo: Apollo) {}
+
+  /**
    * Returns an observable with all the data needed for the preview grid.
    */
-  public getPreviewGrid(): Observable<any> {
+   public getPreviewGrid(): Observable<any> {
     return this.gridSubject.asObservable();
   }
 
@@ -93,15 +102,6 @@ export class AggregationBuilderService {
       return formattedForm.value;
     });
   }
-
-  /**
-   * Shared aggregation service.
-   * Aggregation are used by chart widgets, to get the data.
-   * The aggregation is flexible.
-   *
-   * @param apollo Apollo client
-   */
-  constructor(private apollo: Apollo) {}
 
   /**
    * Builds the aggregation query from aggregation definition
