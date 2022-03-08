@@ -129,7 +129,11 @@ export class SafeAggregationBuilderComponent implements OnInit {
       .get('pipeline')
       ?.valueChanges.pipe(debounceTime(1000))
       .subscribe((pipeline) => {
-        this.aggregationBuilder.initGrid(this.aggregationForm, pipeline, this.selectedFields);
+        this.aggregationBuilder.initGrid(
+          this.aggregationForm,
+          pipeline,
+          this.selectedFields
+        );
         this.mappingFields.next(
           this.aggregationBuilder.fieldsAfter(
             this.selectedFields.value,
@@ -145,7 +149,11 @@ export class SafeAggregationBuilderComponent implements OnInit {
   private initFields(): void {
     this.updateFields(this.aggregationForm.value.dataSource);
     this.updateSelectedAndMetaFields(this.aggregationForm.value.sourceFields);
-    this.aggregationBuilder.initGrid(this.aggregationForm, this.aggregationForm.value.pipeline, this.selectedFields);
+    this.aggregationBuilder.initGrid(
+      this.aggregationForm,
+      this.aggregationForm.value.pipeline,
+      this.selectedFields
+    );
   }
 
   /**
@@ -175,7 +183,8 @@ export class SafeAggregationBuilderComponent implements OnInit {
       const selectedFields = fieldsNames.map((x: string) =>
         currentFields.find((y) => x === y.name)
       );
-      const formattedFields = this.aggregationBuilder.formatFields(selectedFields);
+      const formattedFields =
+        this.aggregationBuilder.formatFields(selectedFields);
       this.selectedFields.next(selectedFields);
       this.queryBuilder
         .buildMetaQuery({ name: this.queryName, fields: formattedFields })
@@ -198,7 +207,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
       this.mappingFields.next([]);
     }
   }
-  
+
   /**
    * Filters data sources by names.
    *

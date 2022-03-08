@@ -30,7 +30,11 @@ export class AggregationBuilderService {
    * @param pipeline Array of stages.
    * @param selected fields before aggregation.
    */
-  public initGrid(aggregationForm: any, pipeline: any[], selectedFields: any): void {
+  public initGrid(
+    aggregationForm: any,
+    pipeline: any[],
+    selectedFields: any
+  ): void {
     let loadingGrid = true;
     let gridData: any = {
       data: [],
@@ -42,26 +46,25 @@ export class AggregationBuilderService {
       if (pipeline.length) {
         loadingGrid = true;
         gridFields = this.formatFields(
-          this.fieldsAfter(
-            selectedFields.value,
-            pipeline
-          )
+          this.fieldsAfter(selectedFields.value, pipeline)
         );
-        this.buildAggregation(aggregationForm.value, false)
-          .valueChanges.subscribe((res: any) => {
-            if (res.data.recordsAggregation) {
-              gridData = {
-                data: res.data.recordsAggregation,
-                total: res.data.recordsAggregation.length,
-              };
-            }
-            loadingGrid = res.loading;
-            this.gridSubject.next({
-              fields: gridFields,
-              data: gridData,
-              loading: loadingGrid
-            })
+        this.buildAggregation(
+          aggregationForm.value,
+          false
+        ).valueChanges.subscribe((res: any) => {
+          if (res.data.recordsAggregation) {
+            gridData = {
+              data: res.data.recordsAggregation,
+              total: res.data.recordsAggregation.length,
+            };
+          }
+          loadingGrid = res.loading;
+          this.gridSubject.next({
+            fields: gridFields,
+            data: gridData,
+            loading: loadingGrid,
           });
+        });
       } else {
         gridFields = [];
         gridData = {
@@ -73,8 +76,8 @@ export class AggregationBuilderService {
     this.gridSubject.next({
       fields: gridFields,
       data: gridData,
-      loading: loadingGrid
-    })
+      loading: loadingGrid,
+    });
   }
 
   /**
@@ -83,7 +86,7 @@ export class AggregationBuilderService {
    * @param fields Raw fields to format.
    * @return formatted fields.
    */
-   public formatFields(fields: any[]): any[] {
+  public formatFields(fields: any[]): any[] {
     return fields.map((field: any) => {
       const formattedForm = addNewField(field, true);
       formattedForm.enable();
