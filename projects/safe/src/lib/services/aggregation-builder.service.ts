@@ -28,7 +28,7 @@ export class AggregationBuilderService {
   /**
    * Returns an observable with all the data needed for the preview grid.
    */
-   public getPreviewGrid(): Observable<any> {
+  public getPreviewGrid(): Observable<any> {
     return this.gridSubject.asObservable();
   }
 
