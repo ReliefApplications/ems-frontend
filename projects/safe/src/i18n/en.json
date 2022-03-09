@@ -276,6 +276,7 @@
       "data": "Data set selection",
       "lat": "Latitude",
       "long": "Longitude",
+      "noNumberField": "No number fields selected",
       "default": {
         "title": "Default display",
         "zoom": "Default zoom",

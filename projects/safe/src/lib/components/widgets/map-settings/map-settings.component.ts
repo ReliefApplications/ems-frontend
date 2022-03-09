@@ -25,6 +25,8 @@ export class SafeMapSettingsComponent implements OnInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   public selectedFields: any[] = [];
+  private selectedFieldsRaw: any[] = [];
+  public noNumberInSelectedFields = true;
 
   public basemaps: any[] = [
     'Sreets',
@@ -100,7 +102,9 @@ export class SafeMapSettingsComponent implements OnInit {
     });
 
     if (this.tileForm?.value.query.name) {
-      this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
+      this.selectedFieldsRaw = this.tileForm?.value.query.fields;
+      this.selectedFields = this.getFields(this.selectedFieldsRaw);
+      this.noNumberInSelectedFields = this.noNumber();
     }
 
     const queryForm = this.tileForm.get('query') as FormGroup;
@@ -111,7 +115,9 @@ export class SafeMapSettingsComponent implements OnInit {
       this.tileForm?.controls.category.setValue('');
     });
     queryForm.valueChanges.subscribe((res) => {
-      this.selectedFields = this.getFields(queryForm.getRawValue().fields);
+      this.selectedFieldsRaw = queryForm.getRawValue().fields;
+      this.selectedFields = this.getFields(this.selectedFieldsRaw);
+      this.noNumberInSelectedFields = this.noNumber();
     });
 
     this.arcGisService.clearSelectedLayer();
@@ -210,5 +216,29 @@ export class SafeMapSettingsComponent implements OnInit {
       }
     });
     this.tileForm?.controls.onlineLayers.setValue(temp);
+  }
+
+  /**
+   * Returns true if the passed argument is a number.
+   *
+   * @param value checked argument
+   */
+  public isNumber(value: any): boolean {
+    const type = this.selectedFieldsRaw
+      .find((val) => val.name === value)
+      .type.toLowerCase();
+    return type === 'float' || type === 'int';
+  }
+
+  /**
+   * Returns true if there are no number values inside the selected fields.
+   *
+   */
+  private noNumber(): boolean {
+    const field = this.selectedFieldsRaw.find(
+      (val) =>
+        val.type.toLowerCase() === 'int' || val.type.toLowerCase() === 'float'
+    );
+    return field === undefined;
   }
 }

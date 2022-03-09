@@ -195,7 +195,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     const today = new Date();
     const month = today.toLocaleString('en-us', { month: 'short' });
     const date = month + ' ' + today.getDate() + ' ' + today.getFullYear();
-    return `${this.settings.title ? this.settings.title : DEFAULT_FILE_NAME} ${date}`;
+    return `${
+      this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
+    } ${date}`;
   }
 
   get hasChanges(): boolean {

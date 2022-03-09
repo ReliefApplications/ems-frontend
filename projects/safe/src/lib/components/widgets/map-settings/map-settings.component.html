@@ -17,18 +17,30 @@
         <mat-form-field appearance="outline">
           <mat-label>{{ 'widgets.map.lat' | translate }}</mat-label>
           <mat-select formControlName="latitude">
-            <mat-option *ngFor="let field of selectedFields" [value]="field">
-              {{ field }}
-            </mat-option>
+            <mat-option [value]="" *ngIf="!this.noNumberInSelectedFields">{{ 'global.none' | translate }}</mat-option>
+            <ng-container *ngFor="let field of selectedFields">
+              <mat-option *ngIf='isNumber(field)' [value]="field">
+                {{ field }}
+              </mat-option>
+            </ng-container>
           </mat-select>
+          <mat-hint *ngIf="this.noNumberInSelectedFields">
+            {{ 'widgets.map.noNumberField' | translate }}
+          </mat-hint>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>{{ 'widgets.map.long' | translate }}</mat-label>
           <mat-select formControlName="longitude">
-            <mat-option *ngFor="let field of selectedFields" [value]="field">
-              {{ field }}
-            </mat-option>
+            <mat-option [value]="" *ngIf="!this.noNumberInSelectedFields">{{ 'global.none' | translate }}</mat-option>
+            <ng-container *ngFor="let field of selectedFields">
+              <mat-option *ngIf='isNumber(field)' [value]="field">
+                {{ field }}
+              </mat-option>
+            </ng-container>
           </mat-select>
+          <mat-hint *ngIf="this.noNumberInSelectedFields">
+            {{ 'widgets.map.noNumberField' | translate }}
+          </mat-hint>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>{{ 'widgets.map.category' | translate }}</mat-label>
@@ -37,7 +49,6 @@
             <mat-option *ngFor="let field of selectedFields" [value]="field">
               {{ field }}
             </mat-option>
-            <mat-option>none</mat-option>
           </mat-select>
         </mat-form-field>
       </ng-container>
