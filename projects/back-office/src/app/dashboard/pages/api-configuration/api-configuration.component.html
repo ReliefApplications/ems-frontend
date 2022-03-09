@@ -119,6 +119,17 @@
             </div>
           </ng-container>
         </div>
+
+        <h1>{{'APIConf.graphQL' | translate}}</h1>
+        <div formGroupName="graphQL" class="form-group">
+          <mat-form-field appearance="outline" style="flex: 2;">
+            <mat-label>
+              {{'APIConf.graphQLEndpoint' | translate}}
+            </mat-label>
+            <input matInput formControlName="graphQLEndpoint" type='text' [placeholder]="'global.endpoint' | translate" />
+          </mat-form-field>
+        </div>
+
         <safe-button category="secondary" variant="primary" (click)="onSave()" [disabled]="apiForm.invalid || !apiForm.dirty">
           {{'action.save' | translate}}
         </safe-button>

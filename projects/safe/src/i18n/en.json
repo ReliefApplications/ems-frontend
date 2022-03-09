@@ -43,7 +43,8 @@
     "id": "Id",
     "none": "-- None --",
     "raw": "Raw JSON",
-    "preview": "Preview"
+    "preview": "Preview",
+    "endpoint": "GraphQL Endpoint URL"
   },
   "action": {
     "edit": "Edit",
@@ -212,11 +213,7 @@
     "delete": "Delete API configuration",
     "deleteDesc": "Do you confirm the deletion of the API Configuration {{value}}?",
     "graphQL": "GraphQL settings",
-    "typesQuery": "Types query",
-    "fieldsQuery": "Fields query",
-    "path": "Path",
-    "displayField": "Display field",
-    "typeIdField": "Type id field"
+    "graphQLEndpoint": "GraphlQL endpoint"
 
   },
   "pullJobs": {
