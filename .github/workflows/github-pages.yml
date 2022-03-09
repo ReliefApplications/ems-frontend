@@ -60,7 +60,7 @@ jobs:
           path: documentation/front-office
       # WEB WIDGETS
       - name: Build doc Web-widgets
-        run: npm run compodoc:elem
+        run: npm run compodoc:widgets
       - name: Archive build Front-office
         if: success()
         uses: actions/upload-artifact@v2
