@@ -1,6 +1,7 @@
 import {
   APP_INITIALIZER,
   DoBootstrap,
+  ElementRef,
   Injector,
   NgModule,
 } from '@angular/core';
@@ -36,6 +37,7 @@ import {
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 
 localStorage.setItem('loaded', 'false');
 
@@ -59,7 +61,7 @@ export const provideApollo = (httpLink: HttpLink): any => {
     // Get the authentication token from local storage if it exists
     // const token = localStorage.getItem('idtoken');
     const token =
-      'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJxcVFRZElCNzFxaFpWbDBiSXo5OFd2R1VqaHk3TlR5Q1g1U3ZPRVhya29jIn0.eyJleHAiOjE2NDY4NDAzOTIsImlhdCI6MTY0Njg0MDA5MiwiYXV0aF90aW1lIjoxNjQ2ODM2MDAwLCJqdGkiOiI2ZjY0ZGVkZS0yZmE2LTQ1YjMtOWM0Ni02MTg4ODdhYTkwOGIiLCJpc3MiOiJodHRwczovL2lkLWRldi5vb3J0Y2xvdWQudGVjaC9hdXRoL3JlYWxtcy9vb3J0IiwiYXVkIjoib29ydC1jbGllbnQiLCJzdWIiOiJjMmY3MDlkMy1iNzMwLTQ0N2EtYWExZi05M2I3MjU4MmQwNWMiLCJ0eXAiOiJJRCIsImF6cCI6Im9vcnQtY2xpZW50Iiwibm9uY2UiOiJkRFoxU21GemJXVjRTSFpoUVMxaFVIbDNTWEkwTjJSRmVrVmlSV3RmVWpOSmNHZGllVEYtYkRKNFozbDEiLCJzZXNzaW9uX3N0YXRlIjoiOWM4ODA5YmUtYTM2Ny00Y2U4LWI2NGYtMDg1YjRkYjY1OTc5IiwiYXRfaGFzaCI6InVNZ1ZPelMtZXdGTjUxb2JpeDZzX0EiLCJhY3IiOiIxIiwic2lkIjoiOWM4ODA5YmUtYTM2Ny00Y2U4LWI2NGYtMDg1YjRkYjY1OTc5IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiQW50b2luZSBIdXJhcmQiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhbnRvaW5lQHJlbGllZmFwcGxpY2F0aW9ucy5vcmciLCJnaXZlbl9uYW1lIjoiQW50b2luZSIsImZhbWlseV9uYW1lIjoiSHVyYXJkIiwiZW1haWwiOiJhbnRvaW5lQHJlbGllZmFwcGxpY2F0aW9ucy5vcmcifQ.PSy4N4g9R-mEa8PHKE8zTT2W9Lh2LE5IBLRn-977teRc1RANjhIVLaMyECOFTLQrOOnXAAPqTf5myYt6gNEbmub1t1pfID3NVpBg1sbNiBxjcim2_rCLpnl0zpwoU6TXd5zNFXl1mFyzY7sVU4ukmodUGz5YjGcgxN8MHcwRwRRJ5WU1oix-JQkiElKBflC5RtJidbE2HeMDLqzmFn7fwKx2-g8FYWDBjC-Y5U184SDjYmD9TOZR9K6rT5_GcuulDOR8_OGQzbd_NAToUZ5igf4WbO_tzVacFbAXgBtEFFPOVm90ra1LrEYcl28WCm_lTCcLqC-_CQNuWGroS4_8gA';
+      'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJxcVFRZElCNzFxaFpWbDBiSXo5OFd2R1VqaHk3TlR5Q1g1U3ZPRVhya29jIn0.eyJleHAiOjE2NDY4NDEzMDEsImlhdCI6MTY0Njg0MTAwMSwiYXV0aF90aW1lIjoxNjQ2ODM2MDAwLCJqdGkiOiIzODU4ZmQ4YS02YWE3LTQ4NmYtYWQwMC1iODgxMTBkZjI3M2IiLCJpc3MiOiJodHRwczovL2lkLWRldi5vb3J0Y2xvdWQudGVjaC9hdXRoL3JlYWxtcy9vb3J0IiwiYXVkIjoib29ydC1jbGllbnQiLCJzdWIiOiJjMmY3MDlkMy1iNzMwLTQ0N2EtYWExZi05M2I3MjU4MmQwNWMiLCJ0eXAiOiJJRCIsImF6cCI6Im9vcnQtY2xpZW50Iiwibm9uY2UiOiJkRFoxU21GemJXVjRTSFpoUVMxaFVIbDNTWEkwTjJSRmVrVmlSV3RmVWpOSmNHZGllVEYtYkRKNFozbDEiLCJzZXNzaW9uX3N0YXRlIjoiOWM4ODA5YmUtYTM2Ny00Y2U4LWI2NGYtMDg1YjRkYjY1OTc5IiwiYXRfaGFzaCI6InpFWTV0LUdzWHZIWXRrdHRzbS12RUEiLCJhY3IiOiIxIiwic2lkIjoiOWM4ODA5YmUtYTM2Ny00Y2U4LWI2NGYtMDg1YjRkYjY1OTc5IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiQW50b2luZSBIdXJhcmQiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhbnRvaW5lQHJlbGllZmFwcGxpY2F0aW9ucy5vcmciLCJnaXZlbl9uYW1lIjoiQW50b2luZSIsImZhbWlseV9uYW1lIjoiSHVyYXJkIiwiZW1haWwiOiJhbnRvaW5lQHJlbGllZmFwcGxpY2F0aW9ucy5vcmcifQ.g0jY0eYPiPUeRUFwp5kj9U37hLLpMKVFrznno8CinRtRRlkTW_T9Ew37n4LlKw0URLr1woNn7I7sqjqc7ekmsvkUotyFlm-Kq8-NdxKcNAeTEZQw1jr3Ro-ALmv1nKnDCV5Xlm3diB_6e0t_hXmKw3m8W01zEAtd7-Pj151HHreXxPEDny0ivzNpnjxjHPEYt1uqS8jC-tSHz8C_PPadIlWztGyDMscyIUOlHJA7H9EPNWjPuVf-dXTRcbYJCOSowT3NU42mKHoGzXdGbFLHn9YzgR8xo0NVPVwBZEN7-n5bua7YwDpkhquojCelGgMmyix-89LilEDsDGwZIPolsg';
     return {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -182,6 +184,12 @@ export const httpTranslateLoader = (http: HttpClient) =>
       useFactory: initializeAuth,
       multi: true,
       deps: [OAuthService],
+    },
+    {
+      provide: POPUP_CONTAINER,
+      useFactory: () =>
+        // return the container ElementRef, where the popup will be injected
+        ({ nativeElement: document.body } as ElementRef),
     },
   ],
 })
