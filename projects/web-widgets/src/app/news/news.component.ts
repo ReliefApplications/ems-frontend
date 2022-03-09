@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 interface Article {
   title: string;
@@ -14,9 +15,9 @@ interface Article {
 export class NewsComponent implements OnInit {
   public articles: Article[] = [
     {
-      title: 'test',
+      title: environment.module,
       description: 'test',
-      url: 'myurl.org',
+      url: environment.apiUrl,
     },
   ];
 

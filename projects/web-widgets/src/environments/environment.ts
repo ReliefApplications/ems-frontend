@@ -1,16 +1,29 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
+import { AuthConfig } from 'angular-oauth2-oidc';
+import { theme } from '../themes/default';
 
-export const environment = {
-  production: false
+const authConfig: AuthConfig = {
+  issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
+  redirectUri: 'http://localhost:4200/',
+  postLogoutRedirectUri: 'http://localhost:4200/auth/',
+  clientId: 'oort-client',
+  scope: 'openid profile email offline_access',
+  responseType: 'code',
+  showDebugInformation: true,
 };
 
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
+/**
+ * Environment file for local development.
  */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+ export const environment = {
+  production: false,
+  apiUrl: 'https://oort-dev.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://oort-dev.oortcloud.tech/api',
+  // apiUrl: 'http://localhost:3000',
+  // subscriptionApiUrl: 'ws://localhost:3000',
+  frontOfficeUri: 'http://localhost:4200/',
+  backOfficeUri: 'http://localhost:4200/',
+  module: 'webwidgets',
+  availableLanguages: ['en', 'test'],
+  authConfig,
+  theme,
+};
