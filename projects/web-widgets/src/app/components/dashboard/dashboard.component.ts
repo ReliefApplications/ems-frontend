@@ -1,14 +1,24 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Dashboard } from '@safe/builder';
-import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from './graphql/queries';
+import {
+  GetDashboardByIdQueryResponse,
+  GET_DASHBOARD_BY_ID,
+} from './graphql/queries';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnChanges {
   @Input() id = '618a343dd1fcfa386278f147';
 
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();

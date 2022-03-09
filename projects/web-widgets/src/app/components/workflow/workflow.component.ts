@@ -1,7 +1,10 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { Workflow, Step } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
-import { GetWorkflowByIdQueryResponse, GET_WORKFLOW_BY_ID } from './graphql/queries';
+import {
+  GetWorkflowByIdQueryResponse,
+  GET_WORKFLOW_BY_ID,
+} from './graphql/queries';
 
 @Component({
   selector: 'app-workflow',

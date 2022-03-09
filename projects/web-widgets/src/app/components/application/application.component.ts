@@ -9,14 +9,17 @@ import {
 } from '@angular/core';
 import { Application, Page, ContentType } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
-import { GetApplicationByIdQueryResponse, GET_APPLICATION_BY_ID } from './graphql/queries';
+import {
+  GetApplicationByIdQueryResponse,
+  GET_APPLICATION_BY_ID,
+} from './graphql/queries';
 
 @Component({
   selector: 'app-application',
   templateUrl: './application.component.html',
   styleUrls: ['./application.component.scss'],
 })
-export class ApplicationComponent implements OnInit {
+export class ApplicationComponent implements OnInit, OnChanges {
   @Input() id = '618274079eb6019bfc301540';
   @Input()
   set pageId(id: string) {

@@ -9,10 +9,12 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <dashboard-widget></dashboard-widget>
-    <form-widget></form-widget>
-    <workflow-widget></workflow-widget>
-    <application-widget></app-widget>
+    <div style="display: flex; flex-direction: column; overflow: auto; height: 100%;">
+      <dashboard-widget></dashboard-widget>
+      <form-widget></form-widget>
+      <workflow-widget></workflow-widget>
+      <application-widget></app-widget>
+    </div>
     <script type="text/javascript" src="app-builder.js"></script>
   </body>
 </html>

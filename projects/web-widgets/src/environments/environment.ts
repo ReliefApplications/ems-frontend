@@ -14,7 +14,7 @@ const authConfig: AuthConfig = {
 /**
  * Environment file for local development.
  */
- export const environment = {
+export const environment = {
   production: false,
   apiUrl: 'https://oort-dev.oortcloud.tech/api',
   subscriptionApiUrl: 'wss://oort-dev.oortcloud.tech/api',

@@ -8,9 +8,8 @@ describe('ApplicationWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ApplicationWidgetComponent ]
-    })
-    .compileComponents();
+      declarations: [ApplicationWidgetComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

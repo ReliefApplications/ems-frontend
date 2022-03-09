@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { SafeFormComponent, Form } from '@safe/builder';
 import {
@@ -11,7 +11,7 @@ import {
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent implements OnInit {
+export class FormComponent implements OnInit, OnChanges {
   @Input() id = '6184e4573d5386dc4a68c83e';
 
   @ViewChild(SafeFormComponent)
