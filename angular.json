@@ -1027,11 +1027,17 @@
             "tsConfig": "projects/web-widgets/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/web-widgets/src/favicon.ico",
               "projects/web-widgets/src/assets"
             ],
             "styles": [
-              "projects/web-widgets/src/styles.scss"
+              "projects/web-widgets/src/styles.scss",
+              "projects/safe/src/lib/style/styles.scss"
             ],
             "scripts": []
           },
@@ -1040,15 +1046,20 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
                 }
               ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              },
               "fileReplacements": [
                 {
                   "replace": "projects/web-widgets/src/environments/environment.ts",
@@ -1063,7 +1074,12 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
             }
           },
           "defaultConfiguration": "production"

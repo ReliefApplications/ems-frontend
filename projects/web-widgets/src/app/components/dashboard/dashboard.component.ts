@@ -1,15 +1,59 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import { Dashboard } from '@safe/builder';
+import { GetDashboardByIdQueryResponse, GET_DASHBOARD_BY_ID } from './graphql/queries';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
+  @Input() id = '618a343dd1fcfa386278f147';
 
-  constructor() { }
+  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+
+  public loading = true;
+  public tiles = [];
+  public dashboard?: Dashboard;
+
+  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
+    this.apollo
+      .query<GetDashboardByIdQueryResponse>({
+        query: GET_DASHBOARD_BY_ID,
+        variables: {
+          id: this.id,
+        },
+      })
+      .subscribe((res) => {
+        if (res.data.dashboard) {
+          this.dashboard = res.data.dashboard;
+          this.tiles = res.data.dashboard.structure
+            ? res.data.dashboard.structure
+            : [];
+          this.loading = res.loading;
+        }
+      });
   }
 
+  ngOnChanges(): void {
+    this.apollo
+      .query<GetDashboardByIdQueryResponse>({
+        query: GET_DASHBOARD_BY_ID,
+        variables: {
+          id: this.id,
+        },
+      })
+      .subscribe((res) => {
+        if (res.data.dashboard) {
+          this.dashboard = res.data.dashboard;
+          this.tiles = res.data.dashboard.structure
+            ? res.data.dashboard.structure
+            : [];
+          this.loading = res.loading;
+        }
+      });
+  }
 }
