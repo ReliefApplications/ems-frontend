@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import {
   EDIT_RECORD,
   EditRecordMutationResponse,
+  EDIT_RECORDS,
+  EditRecordsMutationResponse,
   PUBLISH,
   PUBLISH_NOTIFICATION,
   PublishMutationResponse,
@@ -35,8 +37,11 @@ import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose
 import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeAuthService } from '../../../services/auth.service';
 import { SafeEmailService } from '../../../services/email.service';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 import { GridLayout } from '../../ui/core-grid/models/grid-layout.model';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
+import { SafeGridLayoutService } from '../../../services/grid-layout.service';
+import { Layout } from '../../../models/layout.model';
 
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
 
@@ -58,7 +63,8 @@ export class SafeGridWidgetComponent implements OnInit {
   public loading = true;
 
   // === CACHED CONFIGURATION ===
-  @Input() layout: GridLayout = {};
+  public layout: Layout | null = null;
+  public layouts: Layout[] = [];
 
   // === VERIFICATION IF USER IS ADMIN ===
   public isAdmin: boolean;
@@ -67,15 +73,10 @@ export class SafeGridWidgetComponent implements OnInit {
   @Input() header = true;
   @Input() settings: any = null;
   @Input() id = '';
+  public gridSettings: any = null;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
-
-  @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
-
-  @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
-
-  @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
 
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
@@ -88,16 +89,32 @@ export class SafeGridWidgetComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
-    private emailService: SafeEmailService
+    private emailService: SafeEmailService,
+    private queryBuilder: QueryBuilderService,
+    private gridLayoutService: SafeGridLayoutService
   ) {
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
   ngOnInit(): void {
+    this.gridSettings = { ...this.settings };
     this.factory = this.resolver.resolveComponentFactory(
       SafeRecordHistoryComponent
     );
+    if (this.settings.resource) {
+      this.gridLayoutService
+        .getLayouts(this.settings.resource, this.settings.layouts)
+        .then((res) => {
+          this.layouts = res;
+          this.layout = this.layouts[0] || null;
+          this.gridSettings = {
+            ...this.settings,
+            ...this.layout,
+            ...{ template: this.settings.query?.template },
+          };
+        });
+    }
   }
 
   private promisedChanges(items: any[]): Promise<any>[] {
@@ -112,7 +129,7 @@ export class SafeGridWidgetComponent implements OnInit {
             variables: {
               id: item.id,
               data,
-              template: this.settings.query.template,
+              template: this.settings.template,
             },
           })
           .toPromise()
@@ -128,19 +145,29 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   public async onQuickAction(options: any): Promise<void> {
     this.loading = true;
-    // Select all the records in the core grid
+    // Select all the records in the grid
     if (options.selectAll) {
+      const query = this.queryBuilder.graphqlQuery(
+        this.grid.settings.query.name,
+        'id\n'
+      );
+      const records = await this.apollo
+        .query<any>({
+          query,
+          variables: {
+            first: this.grid.gridData.total,
+            filter: this.grid.queryFilter,
+          },
+        })
+        .toPromise();
+      this.grid.selectedRows = records.data[
+        this.grid.settings.query.name
+      ].edges.map((x: any) => x.node.id);
+    }
+    // Select all the records in the active page
+    if (options.selectPage) {
       this.grid.selectedRows = this.grid.gridData.data.map((x) => x.id);
     }
-    // let rowsIndexToModify = [...this.selectedRowsIndex];
-    // if (options.autoSave && options.modifySelectedRows) {
-    //   const unionRows = this.selectedRowsIndex.filter(index => this.updatedItems.some(item => item.id === this.gridData.data[index].id));
-    //   if (unionRows.length > 0) {
-    //     await Promise.all(this.promisedRowsModifications(options.modifications, unionRows));
-    //     this.updatedItems = this.updatedItems.filter(x => !unionRows.some(y => x.id === this.gridData.data[y].id));
-    //     rowsIndexToModify = rowsIndexToModify.filter(x => !unionRows.includes(x));
-    //   }
-    // }
 
     // Auto save all records
     if (options.autoSave) {
@@ -148,119 +175,121 @@ export class SafeGridWidgetComponent implements OnInit {
     }
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
-      await Promise.all(
-        this.promisedRowsModifications(
-          options.modifications,
-          this.grid.selectedItems
-        )
+      await this.promisedRowsModifications(
+        options.modifications,
+        this.grid.selectedRows
       );
     }
 
-    // Attaches the records to another one.
-    if (options.attachToRecord && this.grid.selectedRows.length > 0) {
-      await this.promisedAttachToRecord(
-        this.grid.selectedItems,
-        options.targetForm,
-        options.targetFormField,
-        options.targetFormQuery
-      );
-    }
-    const promises: Promise<any>[] = [];
-    // Notifies on a channel.
-    if (options.notify && this.grid.selectedRows.length > 0) {
-      promises.push(
-        this.apollo
-          .mutate<PublishNotificationMutationResponse>({
-            mutation: PUBLISH_NOTIFICATION,
-            variables: {
-              action: options.notificationMessage
-                ? options.notificationMessage
-                : 'Records update',
-              content: this.grid.selectedItems,
-              channel: options.notificationChannel,
-            },
-          })
-          .toPromise()
-      );
-    }
-    // Publishes on a channel.
-    if (options.publish && this.grid.selectedRows.length > 0) {
-      promises.push(
-        this.apollo
-          .mutate<PublishMutationResponse>({
-            mutation: PUBLISH,
-            variables: {
-              ids: this.grid.selectedRows,
-              channel: options.publicationChannel,
-            },
-          })
-          .toPromise()
-      );
-    }
-    if (promises.length > 0) {
-      await Promise.all(promises);
-    }
-    // Opens email client of user.
-    if (options.sendMail) {
-      const emailSettings = {
-        query: {
-          name: this.settings.query.name,
-          fields: options.bodyFields,
-        },
-      };
-      const sortField = this.grid.sortField || '';
-      const sortOrder = this.grid.sortOrder || '';
-      this.emailService.sendMail(
-        options.distributionList,
-        options.subject,
-        options.bodyText,
-        emailSettings,
-        this.grid.selectedRows,
-        sortField,
-        sortOrder
-      );
-      if (options.export && this.grid.selectedRows.length > 0) {
-        this.grid.onExport({
-          records: 'all',
-          format: 'xlsx',
-          fields: 'visible',
-        });
+    if (this.grid.selectedRows.length > 0) {
+      // Attaches the records to another one.
+      if (options.attachToRecord) {
+        await this.promisedAttachToRecord(
+          this.grid.selectedRows,
+          options.targetForm,
+          options.targetFormField,
+          options.targetFormQuery
+        );
       }
-    }
-
-    // Opens a form with selected records.
-    if (options.prefillForm && this.grid.selectedRows.length > 0) {
-      const promisedRecords: Promise<any>[] = [];
-      // Fetches the record object for each selected record.
-      for (const record of this.grid.selectedItems) {
-        promisedRecords.push(
+      const promises: Promise<any>[] = [];
+      // Notifies on a channel.
+      if (options.notify) {
+        promises.push(
           this.apollo
-            .query<GetRecordDetailsQueryResponse>({
-              query: GET_RECORD_DETAILS,
+            .mutate<PublishNotificationMutationResponse>({
+              mutation: PUBLISH_NOTIFICATION,
               variables: {
-                id: record.id,
+                action: options.notificationMessage
+                  ? options.notificationMessage
+                  : 'Records update',
+                content: this.grid.selectedRows,
+                channel: options.notificationChannel,
               },
             })
             .toPromise()
         );
       }
-      const records = (await Promise.all(promisedRecords)).map(
-        (x) => x.data.record
-      );
+      // Publishes on a channel.
+      if (options.publish) {
+        promises.push(
+          this.apollo
+            .mutate<PublishMutationResponse>({
+              mutation: PUBLISH,
+              variables: {
+                ids: this.grid.selectedRows,
+                channel: options.publicationChannel,
+              },
+            })
+            .toPromise()
+        );
+      }
+      if (promises.length > 0) {
+        await Promise.all(promises);
+      }
+      // Opens email client of user.
+      if (options.sendMail) {
+        const emailSettings = {
+          query: {
+            name: this.settings.query.name,
+            fields: options.bodyFields,
+          },
+        };
+        const sortField = this.grid.sortField || '';
+        const sortOrder = this.grid.sortOrder || '';
+        await this.emailService.sendMail(
+          options.distributionList,
+          options.subject,
+          this.grid.selectedRows.length > 0
+            ? options.bodyText
+            : options.bodyTextAlternate,
+          emailSettings,
+          this.grid.selectedRows,
+          sortField,
+          sortOrder
+        );
+        if (options.export && this.grid.selectedRows.length > 0) {
+          this.grid.onExport({
+            records: 'all',
+            format: 'xlsx',
+            fields: 'visible',
+          });
+        }
+      }
 
-      // Opens a modal containing the prefilled form.
-      this.dialog.open(SafeFormModalComponent, {
-        data: {
-          template: options.prefillTargetForm,
-          locale: 'en',
-          prefillRecords: records,
-          askForConfirm: false,
-        },
-        height: '98%',
-        width: '100vw',
-        panelClass: 'full-screen-modal',
-        autoFocus: false,
-      });
+      // Opens a form with selected records.
+      if (options.prefillForm) {
+        const promisedRecords: Promise<any>[] = [];
+        // Fetches the record object for each selected record.
+        for (const record of this.grid.selectedItems) {
+          promisedRecords.push(
+            this.apollo
+              .query<GetRecordDetailsQueryResponse>({
+                query: GET_RECORD_DETAILS,
+                variables: {
+                  id: record.id,
+                },
+              })
+              .toPromise()
+          );
+        }
+        const records = (await Promise.all(promisedRecords)).map(
+          (x) => x.data.record
+        );
+
+        // Opens a modal containing the prefilled form.
+        this.dialog.open(SafeFormModalComponent, {
+          data: {
+            template: options.prefillTargetForm,
+            locale: 'en',
+            prefillRecords: records,
+            askForConfirm: false,
+          },
+          height: '98%',
+          width: '100vw',
+          panelClass: 'full-screen-modal',
+          autoFocus: false,
+        });
+      }
     }
 
     // Workflow only: goes to next step, or closes the workflow.
@@ -292,40 +321,33 @@ export class SafeGridWidgetComponent implements OnInit {
    * Applies inline edition before applying modifications.
    *
    * @param modifications list of modifications to apply.
-   * @param rows rows to edit.
+   * @param ids records to edit.
    * @returns Array of Promises to execute.
    */
   private promisedRowsModifications(
     modifications: any[],
-    items: any[]
-  ): Promise<any>[] {
-    const promises: Promise<any>[] = [];
-    for (const item of items) {
-      const update: any = {};
-      for (const modification of modifications) {
-        // modificationFields.push(modification.field.name);
-        if (['Date', 'DateTime'].includes(modification.field.type.name)) {
-          update[modification.field.name] = this.getDateForFilter(
-            modification.value
-          );
-        } else {
-          update[modification.field.name] = modification.value;
-        }
+    ids: any[]
+  ): Promise<any> {
+    const update: any = {};
+    for (const modification of modifications) {
+      // modificationFields.push(modification.field.name);
+      if (['Date', 'DateTime'].includes(modification.field.type.name)) {
+        update[modification.field.name] = this.getDateForFilter(
+          modification.value
+        );
+      } else {
+        update[modification.field.name] = modification.value;
       }
-      promises.push(
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
-            mutation: EDIT_RECORD,
-            variables: {
-              id: item.id,
-              data: update,
-              template: this.settings.query.template,
-            },
-          })
-          .toPromise()
-      );
     }
-    return promises;
+    return this.apollo
+      .mutate<EditRecordsMutationResponse>({
+        mutation: EDIT_RECORDS,
+        variables: {
+          ids,
+          data: update,
+        },
+      })
+      .toPromise();
   }
 
   /**
@@ -360,7 +382,7 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   private async promisedAttachToRecord(
     // come from 'attach to record' button from grid component
-    selectedRecords: any[],
+    selectedRecords: string[],
     targetForm: Form,
     targetFormField: string,
     targetFormQuery: any
@@ -389,13 +411,12 @@ export class SafeGridWidgetComponent implements OnInit {
           let data = res.data.record.data;
           const key = resourceField.name;
           if (resourceField.type === 'resource') {
-            data = { ...data, [key]: selectedRecords[0].id };
+            data = { ...data, [key]: selectedRecords[0] };
           } else {
             if (data[key]) {
-              const ids = selectedRecords.map((x) => x.id);
-              data = { ...data, [key]: data[key].concat(ids) };
+              data = { ...data, [key]: data[key].concat(selectedRecords) };
             } else {
-              data = { ...data, [key]: selectedRecords.map((x) => x.id) };
+              data = { ...data, [key]: selectedRecords };
             }
           }
           this.apollo
@@ -418,6 +439,7 @@ export class SafeGridWidgetComponent implements OnInit {
                     )
                   );
                   this.dialog.open(SafeFormModalComponent, {
+                    disableClose: true,
                     data: {
                       recordId: record.id,
                       locale: 'en',
@@ -435,16 +457,23 @@ export class SafeGridWidgetComponent implements OnInit {
   }
 
   /**
-   * Save the current layout of the grid as default layout
+   * Updates current layout.
+   *
+   * @param layout new layout.
    */
-  onDefaultLayout(): void {
-    this.defaultLayoutChanged.emit(this.layout);
+  onLayoutChange(layout: Layout): void {
+    this.layout = layout;
+    this.gridSettings = {
+      ...this.settings,
+      ...this.layout,
+      ...{ template: this.settings.query?.template },
+    };
   }
 
   /**
-   * Reset the currently cached layout to the default one
+   * Resets the current layout.
    */
-  onResetDefaultLayout(): void {
-    this.defaultLayoutReset.emit();
+  onResetLayout(): void {
+    this.onLayoutChange(this.layout || {});
   }
 }

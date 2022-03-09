@@ -2,7 +2,7 @@
     <mat-form-field appearance="outline">
         <mat-label>{{'widgets.query.sort.field' | translate}}</mat-label>
         <mat-select formControlName="field">
-            <mat-option>-- None --</mat-option>
+            <mat-option>{{'global.none' | translate}}</mat-option>
             <mat-option *ngFor="let field of fields" [value]="field.name">
                 {{field.name}}
             </mat-option>

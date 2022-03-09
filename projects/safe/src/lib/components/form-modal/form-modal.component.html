@@ -1,4 +1,4 @@
-<safe-button mat-dialog-close (click)="onClose()" [isIcon]="true" icon="close" variant="danger" class="modal-close"></safe-button>
+<safe-button (click)="onClose()" [isIcon]="true" icon="close" variant="danger" class="modal-close"></safe-button>
 <ng-container *ngIf="!loading">
     <safe-record-summary *ngIf="record" [record]="record" (showHistory)="onShowHistory()"></safe-record-summary>
     <div mat-dialog-title>

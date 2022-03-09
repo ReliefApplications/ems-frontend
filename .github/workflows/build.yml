@@ -3,13 +3,10 @@ name: Build
 on:
   push:
     branches:
-      - 'dev'
+      - 'main'
       - 'release-*'
       - 'hotfix-*'
-  pull_request:
-    branches:
-      - 'release-*'
-      - 'hotfix-*'
+      - 'feature-*'
 
 jobs:
   build:
@@ -40,6 +37,6 @@ jobs:
       - name: Build Shared Library
         run: npm run build -- --prod safe
       - name: Build Back-office
-        run: npm run build:az:uat:back
+        run: npm run build -- --configuration=azure-uat back-office
       - name: Build Front-office
-        run: npm run build:az:uat:front
+        run: npm run build -- --configuration=azure-uat front-office

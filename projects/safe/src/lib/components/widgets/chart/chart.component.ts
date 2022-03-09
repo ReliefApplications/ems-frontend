@@ -31,6 +31,8 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   private dataQuery: any;
   private dataSubscription?: Subscription;
 
+  public lastUpdate = '';
+
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() export = true;
@@ -50,20 +52,14 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   /*  Detect changes of the settings to reload the data.
    */
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      changes.settings?.firstChange ||
-      changes.settings.currentValue.chart.pipeline !==
-        changes.settings.previousValue.chart.pipeline
-    ) {
-      this.loading = true;
-      this.dataQuery = this.aggregationBuilder.buildAggregation(
-        this.settings.chart.pipeline
-      );
-      if (this.dataQuery) {
-        this.getData();
-      } else {
-        this.loading = false;
-      }
+    this.loading = true;
+    this.dataQuery = this.aggregationBuilder.buildAggregation(
+      this.settings.chart.aggregation
+    );
+    if (this.dataQuery) {
+      this.getData();
+    } else {
+      this.loading = false;
     }
   }
 
@@ -86,6 +82,11 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   private getData(): void {
     this.dataSubscription = this.dataQuery.valueChanges.subscribe(
       (res: any) => {
+        const today = new Date();
+        this.lastUpdate =
+          ('0' + today.getHours()).slice(-2) +
+          ':' +
+          ('0' + today.getMinutes()).slice(-2);
         if (
           ['pie', 'donut', 'line', 'bar', 'column'].includes(
             this.settings.chart.type

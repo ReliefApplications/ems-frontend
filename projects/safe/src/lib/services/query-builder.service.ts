@@ -2,8 +2,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { prettifyLabel } from '../utils/prettify';
+import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
 
 /** List of fields part of the schema but not selectable */
@@ -47,14 +46,14 @@ export class QueryBuilderService {
         query: GET_QUERY_TYPES,
       })
       .subscribe((res) => {
+        // eslint-disable-next-line no-underscore-dangle
+        this.availableTypes.next(res.data.__schema.types);
         this.availableQueries.next(
           // eslint-disable-next-line no-underscore-dangle
           res.data.__schema.queryType.fields.filter((x: any) =>
             x.name.startsWith('all')
           )
         );
-        // eslint-disable-next-line no-underscore-dangle
-        this.availableTypes.next(res.data.__schema.types);
         // eslint-disable-next-line no-underscore-dangle
         this.userFields = res.data.__schema.types
           .find((x: any) => x.name === 'User')
@@ -234,55 +233,65 @@ export class QueryBuilderService {
    */
   public buildQuery(settings: any): any {
     const builtQuery = settings.query;
-    if (builtQuery && builtQuery.fields.length > 0) {
+    if (builtQuery?.fields?.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(
         this.buildFields(builtQuery.fields)
       );
-      const query = gql`
-        query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String) {
-          ${builtQuery.name}(
-          first: $first,
-          skip: $skip,
-          sortField: $sortField,
-          sortOrder: $sortOrder,
-          filter: $filter
-          ) {
-            edges {
-              node {
-                ${fields}
-              }
-            }
-            totalCount
-        }
-        }
-      `;
-      return query;
+      return this.graphqlQuery(builtQuery.name, fields);
     } else {
       return null;
     }
   }
 
   /**
+   * Builds a graphQL query from name and fields strings.
+   *
+   * @param name name of the query.
+   * @param fields fields to fetch.
+   * @returns GraphQL query.
+   */
+  public graphqlQuery(name: string, fields: any) {
+    return gql`
+    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON) {
+      ${name}(
+      first: $first,
+      skip: $skip,
+      sortField: $sortField,
+      sortOrder: $sortOrder,
+      filter: $filter,
+      display: $display
+      styles: $styles
+      ) {
+        edges {
+          node {
+            ${fields}
+          }
+          meta
+        }
+        totalCount
+      }
+    }
+  `;
+  }
+
+  /**
    * Builds a GraphQL meta query of a form / resource from widget settings.
    *
-   * @param settings Widget settings.
+   * @param query Widget query.
    * @returns GraphQL meta query.
    */
-  public buildMetaQuery(
-    settings: any
-  ): Observable<ApolloQueryResult<any>> | null {
-    const builtQuery = settings.query;
-    if (builtQuery && builtQuery.fields.length > 0) {
-      const metaFields = this.buildMetaFields(builtQuery.fields);
-      const query = gql`
+  public buildMetaQuery(query: any): Observable<ApolloQueryResult<any>> | null {
+    if (query && query.fields.length > 0) {
+      const metaFields = this.buildMetaFields(query.fields);
+      const metaQuery = gql`
         query GetCustomMetaQuery {
-          _${builtQuery.name}Meta {
+          _${query.name}Meta {
             ${metaFields}
           }
         }
       `;
       return this.apollo.query<any>({
-        query,
+        query: metaQuery,
         variables: {},
         fetchPolicy: 'cache-first',
       });
@@ -305,126 +314,6 @@ export class QueryBuilderService {
         .find((x) => x.type.name.toLowerCase() === nameTrimmed + 'connection')
         ?.name || ''
     );
-  }
-
-  /**
-   * Builds a query form.
-   *
-   * @param value Initial value
-   * @param validators Enables or not the validators of the form
-   * @returns Query form
-   */
-  public createQueryForm(value: any, validators = true): FormGroup {
-    return this.formBuilder.group({
-      name: [value ? value.name : '', validators ? Validators.required : null],
-      template: [value ? value.template : '', null],
-      fields: this.formBuilder.array(
-        value && value.fields
-          ? value.fields.map((x: any) => this.addNewField(x))
-          : [],
-        validators ? Validators.required : null
-      ),
-      sort: this.formBuilder.group({
-        field: [value && value.sort ? value.sort.field : ''],
-        order: [value && value.sort ? value.sort.order : 'asc'],
-      }),
-      filter: this.createFilterGroup(
-        value && value.filter ? value.filter : {},
-        null
-      ),
-    });
-  }
-
-  /**
-   * Builds a filter form
-   *
-   * @param filter Initial filter
-   * @param fields List of fields
-   * @returns Filter form
-   */
-  public createFilterGroup(filter: any, fields: any): FormGroup {
-    if (filter) {
-      if (filter.filters) {
-        const filters = filter.filters.map((x: any) =>
-          this.createFilterGroup(x, fields)
-        );
-        return this.formBuilder.group({
-          logic: filter.logic || 'and',
-          filters: this.formBuilder.array(filters),
-        });
-      } else {
-        if (filter.field) {
-          return this.formBuilder.group({
-            field: filter.field,
-            operator: filter.operator || 'eq',
-            value: Array.isArray(filter.value) ? [filter.value] : filter.value,
-          });
-        }
-      }
-    }
-    return this.formBuilder.group({
-      logic: 'and',
-      filters: this.formBuilder.array([]),
-    });
-  }
-
-  /**
-   * Adds a field to the query
-   *
-   * @param field Field definition
-   * @param newField Is the field new ?
-   * @returns Field form
-   */
-  public addNewField(field: any, newField?: boolean): FormGroup {
-    switch (newField ? field.type.kind : field.kind) {
-      case 'LIST': {
-        return this.formBuilder.group({
-          name: [{ value: field.name, disabled: true }],
-          label: [field.label],
-          type: [newField ? field.type.ofType.name : field.type],
-          kind: [newField ? field.type.kind : field.kind],
-          fields: this.formBuilder.array(
-            !newField && field.fields
-              ? field.fields.map((x: any) => this.addNewField(x))
-              : [],
-            Validators.required
-          ),
-          sort: this.formBuilder.group({
-            field: [field.sort ? field.sort.field : ''],
-            order: [field.sort && field.sort.order ? field.sort.order : 'asc'],
-          }),
-          filter: newField
-            ? this.formBuilder.group({})
-            : this.createFilterGroup(field.filter, null),
-        });
-      }
-      case 'OBJECT': {
-        return this.formBuilder.group({
-          name: [{ value: field.name, disabled: true }],
-          type: [newField ? field.type.name : field.type],
-          kind: [newField ? field.type.kind : field.kind],
-          fields: this.formBuilder.array(
-            !newField && field.fields
-              ? field.fields.map((x: any) => this.addNewField(x))
-              : [],
-            Validators.required
-          ),
-        });
-      }
-      default: {
-        return this.formBuilder.group({
-          name: [{ value: field.name, disabled: true }],
-          type: [
-            { value: newField ? field.type.name : field.type, disabled: true },
-          ],
-          kind: [newField ? field.type.kind : field.kind],
-          label: [
-            field.label ? field.label : prettifyLabel(field.name),
-            Validators.required,
-          ],
-        });
-      }
-    }
   }
 
   /**

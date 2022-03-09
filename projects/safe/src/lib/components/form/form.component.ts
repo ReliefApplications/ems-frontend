@@ -5,6 +5,7 @@ import {
   ComponentFactory,
   ComponentFactoryResolver,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -66,8 +67,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   private temporaryFilesStorage: any = {};
   public containerId: string;
 
-  // === SURVEY COLORS ===
-  primaryColor = '#008DC9';
+  environment: any;
 
   // === MODIFIED AT ===
   public modifiedAt: Date | null = null;
@@ -85,6 +85,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   constructor(
+    @Inject('environment') environment: any,
     public dialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
@@ -95,6 +96,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private formBuilderService: SafeFormBuilderService
   ) {
     this.containerId = uuidv4();
+    this.environment = environment;
   }
 
   ngOnInit(): void {
@@ -102,8 +104,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       SafeRecordHistoryComponent
     );
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.primaryColor;
-    defaultThemeColorsSurvey['$main-hover-color'] = this.primaryColor;
+    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
+    defaultThemeColorsSurvey['$main-hover-color'] =
+      this.environment.theme.primary;
 
     Survey.StylesManager.applyTheme();
 
@@ -184,7 +187,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.survey.showNavigationButtons = false;
     this.setPages();
-    this.survey.onComplete.add(this.complete);
+    this.survey.onComplete.add(this.onComplete);
     this.survey.showCompletedPage = false;
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
@@ -241,7 +244,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    *
    * @param survey Survey instance.
    */
-  public complete = async () => {
+  public onComplete = async () => {
     let mutation: any;
     this.surveyActive = false;
     const data = this.survey.data;

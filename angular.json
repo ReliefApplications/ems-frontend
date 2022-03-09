@@ -130,7 +130,46 @@
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
+            },
+            "azure-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.azure.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/backoffice/",
+              "baseHref": "/backoffice",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
             },
             "azure-uat": {
               "fileReplacements": [
@@ -146,6 +185,8 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/backoffice/",
+              "baseHref": "/backoffice",
               "budgets": [
                 {
                   "type": "initial",
@@ -157,7 +198,12 @@
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
             },
             "azure-prod": {
               "fileReplacements": [
@@ -173,6 +219,8 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/backoffice/",
+              "baseHref": "/backoffice",
               "budgets": [
                 {
                   "type": "initial",
@@ -184,7 +232,12 @@
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
             },
             "oort-dev": {
               "fileReplacements": [
@@ -213,7 +266,46 @@
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
+              }
+            },
+            "oort-guyane": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.oort.guyane.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/admin/",
+              "baseHref": "/admin/",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
+              }
             },
             "oort-prod": {
               "fileReplacements": [
@@ -242,7 +334,12 @@
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
+              }
             },
             "development": {
               "buildOptimizer": false,
@@ -250,7 +347,12 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
             }
           },
           "defaultConfiguration": "production"
@@ -412,7 +514,44 @@
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
+            },
+            "azure-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.azure.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
             },
             "azure-uat": {
               "fileReplacements": [
@@ -439,7 +578,12 @@
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
             },
             "azure-prod": {
               "fileReplacements": [
@@ -466,7 +610,12 @@
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
             },
             "oort-dev": {
               "fileReplacements": [
@@ -493,7 +642,44 @@
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
+              }
+            },
+            "oort-guyane": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.oort.guyane.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
+              }
             },
             "oort-prod": {
               "fileReplacements": [
@@ -520,7 +706,12 @@
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
+              }
             },
             "development": {
               "buildOptimizer": false,
@@ -528,10 +719,15 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -684,7 +880,12 @@
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
             },
             "build-dev": {
               "fileReplacements": [
@@ -719,7 +920,12 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
             }
           },
           "defaultConfiguration": "development"

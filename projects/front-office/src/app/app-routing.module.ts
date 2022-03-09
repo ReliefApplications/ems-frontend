@@ -1,20 +1,30 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AccessGuard } from './guards/access.guard';
+import { AuthGuard } from './guards/auth.guard';
 
 /**
  * List of top level routes of the Front-Office.
  */
 const routes: Routes = [
   {
-    path: '',
-    loadChildren: () =>
-      import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
-    canActivate: [AccessGuard],
-  },
-  {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
+  },
+  {
+    path: '',
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+      },
+      {
+        path: ':id',
+        loadChildren: () =>
+          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+      },
+    ],
+    canActivate: [AuthGuard],
   },
   {
     path: '**',

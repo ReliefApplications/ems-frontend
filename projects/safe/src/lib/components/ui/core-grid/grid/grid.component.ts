@@ -116,6 +116,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     history: false,
     convert: false,
   };
+  @Input() hasDetails = true;
   @Output() action = new EventEmitter();
   get hasEnabledActions(): boolean {
     return Object.values(this.actions).includes(true);
@@ -144,6 +145,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   @Input() filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
   @Output() filterChange = new EventEmitter();
   @Output() showFilterChange = new EventEmitter();
+  @Input() searchable = true;
   public search = new FormControl('');
   @Output() searchChange = new EventEmitter();
 
@@ -215,6 +217,19 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     } else {
       return value;
     }
+  }
+
+  /**
+   * Returns field style from path.
+   *
+   * @param item Item to get style of.
+   * @param path Path of the property.
+   * @returns Style fo the property.
+   */
+  public getStyle(item: any, path: string): any {
+    const fieldStyle = get(item, `_meta.style.${path}`);
+    const rowStyle = get(item, '_meta.style._row');
+    return fieldStyle ? fieldStyle : rowStyle;
   }
 
   // === FILTER ===
