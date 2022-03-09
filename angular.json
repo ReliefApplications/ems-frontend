@@ -894,6 +894,11 @@
                   "with": "projects/web-element/src/environments/environment.prod.ts"
                 }
               ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              },
               "optimization": true,
               "outputHashing": "media",
               "sourceMap": false,

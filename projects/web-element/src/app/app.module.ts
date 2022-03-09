@@ -221,7 +221,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
         ({ nativeElement: document.body } as ElementRef),
     },
   ],
-  // bootstrap: [AppComponent],
+  bootstrap: [AppComponent],
 })
 export class AppModule implements DoBootstrap {
   constructor(
