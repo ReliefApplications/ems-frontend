@@ -37,6 +37,8 @@ export const initCustomWidgets = (
 ): void => {
   survey.settings.commentPrefix = '_comment';
   // supportCreatorV2
+  // with or without it doesn't change anything
+  widgets.autocomplete(survey);
   widgets.select2tagbox(survey);
   initResourceComponent(survey, domService, apollo, dialog, formBuilder);
   initResourcesComponent(survey, domService, apollo, dialog, formBuilder);

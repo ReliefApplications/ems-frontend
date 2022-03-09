@@ -10,7 +10,7 @@ import { ButtonCategory } from '../components/ui/button/button-category.enum';
 import { EmbeddedViewRef } from '@angular/core';
 import { SafeRecordDropdownComponent } from '../components/record-dropdown/record-dropdown.component';
 import { SafeCoreGridComponent } from '../components/ui/core-grid/core-grid.component';
-
+import $ from 'jquery';
 /**
  * Adds zero to number if < 10.
  *
@@ -311,6 +311,22 @@ export const init = (
       }
       if (question.getType() === 'file') {
         question.maxSize = 7340032;
+      }
+
+      if (question.getType() === 'dropdown') {
+        const choices = question.choices.map((x: any) => {
+          return {
+            text: x.text,
+            value: x.value
+          }
+        });
+        let options = {
+          data: choices,
+          getValue: "value",
+        };
+        // easyAutocomplete not recognized as a function
+        (<any>$(el.parentElement)).easyAutocomplete(options);
+
       }
     },
   };
