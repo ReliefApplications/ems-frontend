@@ -29,8 +29,13 @@ import { BehaviorSubject } from 'rxjs';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import {
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 localStorage.setItem('loaded', 'false');
 
@@ -54,7 +59,7 @@ export const provideApollo = (httpLink: HttpLink): any => {
     // Get the authentication token from local storage if it exists
     // const token = localStorage.getItem('idtoken');
     const token =
-      'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJxcVFRZElCNzFxaFpWbDBiSXo5OFd2R1VqaHk3TlR5Q1g1U3ZPRVhya29jIn0.eyJleHAiOjE2NDY4MzcyMDgsImlhdCI6MTY0NjgzNjkwOCwiYXV0aF90aW1lIjoxNjQ2ODM2MDAwLCJqdGkiOiJhNTRhMGFhZS03ZDQ0LTQwOTEtOTM3MS02MWFlYzI0ZmU3MTUiLCJpc3MiOiJodHRwczovL2lkLWRldi5vb3J0Y2xvdWQudGVjaC9hdXRoL3JlYWxtcy9vb3J0IiwiYXVkIjoib29ydC1jbGllbnQiLCJzdWIiOiJjMmY3MDlkMy1iNzMwLTQ0N2EtYWExZi05M2I3MjU4MmQwNWMiLCJ0eXAiOiJJRCIsImF6cCI6Im9vcnQtY2xpZW50Iiwibm9uY2UiOiJkRFoxU21GemJXVjRTSFpoUVMxaFVIbDNTWEkwTjJSRmVrVmlSV3RmVWpOSmNHZGllVEYtYkRKNFozbDEiLCJzZXNzaW9uX3N0YXRlIjoiOWM4ODA5YmUtYTM2Ny00Y2U4LWI2NGYtMDg1YjRkYjY1OTc5IiwiYXRfaGFzaCI6InhVb1NEcTU3LXBXRTdiWFU5VnJoTFEiLCJhY3IiOiIxIiwic2lkIjoiOWM4ODA5YmUtYTM2Ny00Y2U4LWI2NGYtMDg1YjRkYjY1OTc5IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiQW50b2luZSBIdXJhcmQiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhbnRvaW5lQHJlbGllZmFwcGxpY2F0aW9ucy5vcmciLCJnaXZlbl9uYW1lIjoiQW50b2luZSIsImZhbWlseV9uYW1lIjoiSHVyYXJkIiwiZW1haWwiOiJhbnRvaW5lQHJlbGllZmFwcGxpY2F0aW9ucy5vcmcifQ.h5hzSksjfkvVHPy_XhVhisRsHOcvsndMej1BOC4SLxp7ECrQFU2yeO5SMQKf5QYmgbh0d3UugcBC4dULLwoIwv0uaMJwtsiQuN9ra40AIc9frPYNDrHpST5c1jLXPgSF2BB-LVdctAGFdwrmFwtNKo0a0BQ_YZ4hwBQf6nK9KUaq3uroXqUXHbk_Z0PqwCVZK5Y6mHe11P36E8U_2cuDVVPKWchMBE280vb1gRGv9vcNwDdB8sHGblbCFKyMDCn9cCQJ6QHgQJ1ZNosDrk0an9CkCUpvbZsYzahGZefIOAviipr4bV5Tz_mINkkSiT-48sYDm1EuxDG9So8PFzG6hA';
+      'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJxcVFRZElCNzFxaFpWbDBiSXo5OFd2R1VqaHk3TlR5Q1g1U3ZPRVhya29jIn0.eyJleHAiOjE2NDY4Mzg3OTcsImlhdCI6MTY0NjgzODQ5NywiYXV0aF90aW1lIjoxNjQ2ODM2MDAwLCJqdGkiOiJkYmJmYTA1ZC1jZjQ2LTRiMDUtYTAzMS1hY2VkYzg1NTBmNDgiLCJpc3MiOiJodHRwczovL2lkLWRldi5vb3J0Y2xvdWQudGVjaC9hdXRoL3JlYWxtcy9vb3J0IiwiYXVkIjoib29ydC1jbGllbnQiLCJzdWIiOiJjMmY3MDlkMy1iNzMwLTQ0N2EtYWExZi05M2I3MjU4MmQwNWMiLCJ0eXAiOiJJRCIsImF6cCI6Im9vcnQtY2xpZW50Iiwibm9uY2UiOiJkRFoxU21GemJXVjRTSFpoUVMxaFVIbDNTWEkwTjJSRmVrVmlSV3RmVWpOSmNHZGllVEYtYkRKNFozbDEiLCJzZXNzaW9uX3N0YXRlIjoiOWM4ODA5YmUtYTM2Ny00Y2U4LWI2NGYtMDg1YjRkYjY1OTc5IiwiYXRfaGFzaCI6Ing1RUF6WVJJZkg1bDhVT05lMGRGSGciLCJhY3IiOiIxIiwic2lkIjoiOWM4ODA5YmUtYTM2Ny00Y2U4LWI2NGYtMDg1YjRkYjY1OTc5IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiQW50b2luZSBIdXJhcmQiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhbnRvaW5lQHJlbGllZmFwcGxpY2F0aW9ucy5vcmciLCJnaXZlbl9uYW1lIjoiQW50b2luZSIsImZhbWlseV9uYW1lIjoiSHVyYXJkIiwiZW1haWwiOiJhbnRvaW5lQHJlbGllZmFwcGxpY2F0aW9ucy5vcmcifQ.gvY0sGnXfHUmLIG1ZZrr4GRMz-GEYXhrdcs8Obmq4CSDmKU96vc-7-j3VK0w2HwecipluMUhDCm5wu5YpL24weCYDSbE9z39mEOOtEhm1yZ4HNIDbjKdBbpfsOvom62XRavS6C6T6-nk5hAy3L6TiqbYQlYnpXJE890hwmAHLiy1DAoo_xXOIMDW1rRuSheRupxQl9DO8Dlnl631zSamUqSfcYUzSTx30wlRnqArwgg7e7NX5myVfTITQ6jag3ovo2AeVIRN1rVGnC970xZGrypJypAgc64Xv5w8Wi4ZNWTLU8r4yVefs59PF8xAr5-y_IlcJFZ__Xh068muwvqraA';
     return {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -144,6 +149,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
   declarations: [AppComponent, NewsComponent],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     MatSnackBarModule,
     RouterModule.forRoot([]),
@@ -180,7 +186,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
   ],
 })
 export class AppModule implements DoBootstrap {
-  constructor(private injector: Injector, private translate: TranslateService) {
+  constructor(
+    private injector: Injector,
+    private translate: TranslateService,
+  ) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang('en');
   }
