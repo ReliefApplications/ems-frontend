@@ -88,6 +88,18 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
                 settings: this.buildSettingsForm(
                   this.apiConfiguration?.authType || ''
                 ),
+                graphQLEndpoint: [
+                  this.apiConfiguration?.graphQLEndpoint,
+                Validators.required
+              ],
+                // graphQL: this.formBuilder.group({
+                //   endpoint: [hasActions ? tileSettings.actions.delete : true],
+                //   typesQuery: [hasActions ? tileSettings.actions.history : true],
+                //   typesQueryPath: [hasActions ? tileSettings.actions.convert : true],
+                //   typesQueryDisplayField: [hasActions ? tileSettings.actions.update : true],
+                //   inlineEdition: [hasActions ? tileSettings.actions.inlineEdition : true],
+                //   addRecord: [hasActions ? tileSettings.actions.addRecord : false],
+                // }),
               });
               this.apiForm.get('authType')?.valueChanges.subscribe((value) => {
                 this.apiForm.controls.settings.clearValidators();

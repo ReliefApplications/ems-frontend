@@ -210,7 +210,14 @@
     "token": "Token",
     "tokenPlaceholder": "Enter token for authentication",
     "delete": "Delete API configuration",
-    "deleteDesc": "Do you confirm the deletion of the API Configuration {{value}}?"
+    "deleteDesc": "Do you confirm the deletion of the API Configuration {{value}}?",
+    "graphQL": "GraphQL settings",
+    "typesQuery": "Types query",
+    "fieldsQuery": "Fields query",
+    "path": "Path",
+    "displayField": "Display field",
+    "typeIdField": "Type id field"
+
   },
   "pullJobs": {
     "create": "Create a pull job",

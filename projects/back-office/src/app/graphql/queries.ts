@@ -977,6 +977,7 @@ export const GET_API_CONFIGURATION = gql`
       endpoint
       pingUrl
       settings
+      graphQLEndpoint
       permissions {
         canSee {
           id
