@@ -109,7 +109,11 @@ export class SafeGridWidgetComponent implements OnInit {
         .then((res) => {
           this.layouts = res;
           this.layout = this.layouts[0] || null;
-          this.gridSettings = { ...this.settings, ...this.layout };
+          this.gridSettings = {
+            ...this.settings,
+            ...this.layout,
+            ...{ template: this.settings.query?.template },
+          };
         });
     }
   }
@@ -126,7 +130,7 @@ export class SafeGridWidgetComponent implements OnInit {
             variables: {
               id: item.id,
               data,
-              template: this.settings.query.template,
+              template: this.settings.template,
             },
           })
           .toPromise()
@@ -485,7 +489,11 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   onLayoutChange(layout: Layout): void {
     this.layout = layout;
-    this.gridSettings = { ...this.settings, ...this.layout };
+    this.gridSettings = {
+      ...this.settings,
+      ...this.layout,
+      ...{ template: this.settings.query?.template },
+    };
   }
 
   /**
