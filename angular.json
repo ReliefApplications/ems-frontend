@@ -887,6 +887,38 @@
                 ]
               }
             },
+            "build-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/web-element/src/environments/environment.ts",
+                  "with": "projects/web-element/src/environments/environment.prod.ts"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              },
+              "optimization": true,
+              "outputHashing": "media",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -968,6 +1000,174 @@
             }
           },
           "defaultConfiguration": "development"
+        }
+      }
+    },
+    "web-widgets": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "projects/web-widgets",
+      "sourceRoot": "projects/web-widgets/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/web-widgets",
+            "index": "projects/web-widgets/src/index.html",
+            "main": "projects/web-widgets/src/main.ts",
+            "polyfills": "projects/web-widgets/src/polyfills.ts",
+            "tsConfig": "projects/web-widgets/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
+              "projects/web-widgets/src/favicon.ico",
+              "projects/web-widgets/src/assets"
+            ],
+            "styles": [
+              "projects/web-widgets/src/styles.scss",
+              "projects/safe/src/lib/style/styles.scss",
+              "./node_modules/leaflet/dist/leaflet.css",
+              "node_modules/survey-angular/survey.min.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "node_modules/select2/dist/css/select2.min.css"
+            ],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/select2/dist/js/select2.min.js"
+            ]
+          },
+          "configurations": {
+            "oort-dev": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              },
+              "fileReplacements": [
+                {
+                  "replace": "projects/web-widgets/src/environments/environment.ts",
+                  "with": "projects/web-widgets/src/environments/environment.oort.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "none",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "local": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "11mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              },
+              "fileReplacements": [
+                {
+                  "replace": "projects/web-widgets/src/environments/environment.ts",
+                  "with": "projects/web-widgets/src/environments/environment.local.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
+            }
+          },
+          "defaultConfiguration": "oort-dev"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "web-widgets:build:production"
+            },
+            "development": {
+              "browserTarget": "web-widgets:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "web-widgets:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/web-widgets/src/test.ts",
+            "polyfills": "projects/web-widgets/src/polyfills.ts",
+            "tsConfig": "projects/web-widgets/tsconfig.spec.json",
+            "karmaConfig": "projects/web-widgets/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/web-widgets/src/favicon.ico",
+              "projects/web-widgets/src/assets"
+            ],
+            "styles": [
+              "projects/web-widgets/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/web-widgets/**/*.ts",
+              "projects/web-widgets/**/*.html"
+            ]
+          }
         }
       }
     }
