@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SafeSnackBarService } from './snackbar.service';
-import { NOTIFICATIONS } from '../const/notifications';
-import { SafePreprocessorService } from './preprocessor.service';
-import { Clipboard } from '@angular/cdk/clipboard';
 import { Apollo } from 'apollo-angular';
 import { sendEmailMutationResponse, SEND_EMAIL } from '../graphql/mutations';
+import { SafeSnackbarSpinnerComponent } from '../components/snackbar-spinner/snackbar-spinner.component';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Shared email service.
@@ -24,9 +23,8 @@ export class SafeEmailService {
    */
   constructor(
     private snackBar: SafeSnackBarService,
-    private preprocessor: SafePreprocessorService,
-    private clipboard: Clipboard,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -55,20 +53,16 @@ export class SafeEmailService {
     },
     attachment?: boolean
   ): Promise<void> {
-    // body = await this.preprocessor.preprocess(body, {
-    //   settings,
-    //   ids,
-    //   sortField,
-    //   sortOrder,
-    // });
-    this.clipboard.copy(body);
-    this.snackBar.openSnackBar(NOTIFICATIONS.emailBodyCopiedToClipboard, {
-      duration: 3000,
-    });
-
-    subject = await this.preprocessor.preprocess(subject);
-
-    // === SEND THE EMAIL ===
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SafeSnackbarSpinnerComponent,
+      {
+        duration: 0,
+        data: {
+          message: this.translate.instant('email.processing'),
+          loading: true,
+        },
+      }
+    );
     this.apollo
       .mutate<sendEmailMutationResponse>({
         mutation: SEND_EMAIL,
@@ -82,32 +76,19 @@ export class SafeEmailService {
       })
       .subscribe((res) => {
         if (res.errors) {
-          this.snackBar.openSnackBar(
-            NOTIFICATIONS.emailClientNotResponding(res.errors[0]),
-            {
-              error: true,
-            }
-          );
+          snackBarRef.instance.data = {
+            message: this.translate.instant('email.error'),
+            loading: false,
+            error: true,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
         } else {
-          this.snackBar.openSnackBar('Email sent.', {
-            duration: 3000,
-          });
+          snackBarRef.instance.data = {
+            message: this.translate.instant('email.sent'),
+            loading: false,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
         }
       });
-    // try {
-    //   window.location.href = `mailto:${recipient.join(';')}?subject=${subject}`;
-    // } catch (error) {
-    //   this.snackBar.openSnackBar(NOTIFICATIONS.emailTooLong(error), {
-    //     error: true,
-    //   });
-    //   try {
-    //     window.location.href = `mailto:${recipient}?subject=${subject}`;
-    //   } catch (error2) {
-    //     this.snackBar.openSnackBar(
-    //       NOTIFICATIONS.emailClientNotResponding(error2),
-    //       { error: true }
-    //     );
-    //   }
-    // }
   }
 }

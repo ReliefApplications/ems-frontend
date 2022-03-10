@@ -463,5 +463,10 @@
       "ready": "File uploaded",
       "error": "Something went wrong during the upload"
     }
+  },
+  "email": {
+    "processing": "Sending email...",
+    "sent": "Email sent",
+    "error": "Something went wrong during the email sending"
   }
 }

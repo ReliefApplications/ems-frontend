@@ -222,7 +222,7 @@ export class SafeGridWidgetComponent implements OnInit {
       if (promises.length > 0) {
         await Promise.all(promises);
       }
-      // Opens email client of user.
+      // Send email using backend mail server.
       if (options.sendMail) {
         const gridSettings = {
           query: {
@@ -242,13 +242,6 @@ export class SafeGridWidgetComponent implements OnInit {
           gridSettings,
           options.export && this.grid.selectedRows.length > 0
         );
-        // if (options.export && this.grid.selectedRows.length > 0) {
-        //   this.grid.onExport({
-        //     records: 'all',
-        //     format: 'xlsx',
-        //     fields: 'visible',
-        //   });
-        // }
       }
 
       // Opens a form with selected records.
