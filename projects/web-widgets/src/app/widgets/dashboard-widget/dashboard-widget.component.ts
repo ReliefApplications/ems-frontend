@@ -1,6 +1,7 @@
 import {
   Component,
   ComponentRef,
+  Input,
   OnInit,
   ViewChild,
   ViewContainerRef,
@@ -13,6 +14,8 @@ import { SafeLayoutService } from '@safe/builder';
   styleUrls: ['./dashboard-widget.component.scss'],
 })
 export class DashboardWidgetComponent implements OnInit {
+  @Input() id = '';
+
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
 

@@ -16,6 +16,8 @@ import { Page, SafeLayoutService } from '@safe/builder';
   styleUrls: ['./application-widget.component.scss'],
 })
 export class ApplicationWidgetComponent implements OnInit {
+  @Input() id = '';
+
   @Input() pageId = '';
 
   @Output() pages = new EventEmitter<Page[]>();
