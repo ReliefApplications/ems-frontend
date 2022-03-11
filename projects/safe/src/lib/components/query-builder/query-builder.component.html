@@ -66,13 +66,11 @@
           class="mat-elevation-z0"
           (opened)="panelOpenState = true"
           (closed)="panelOpenState = false">
-            <mat-expansion-panel-header>
+            <mat-expansion-panel-header
+              [matTooltip]="'widgets.map.fieldSelectionTooltip' | translate">
             <mat-panel-title>
               {{'widgets.map.fieldSelection' | translate}}
             </mat-panel-title>
-            <mat-panel-description>
-              {{'widgets.map.fieldSelectionTooltip' | translate}}
-            </mat-panel-description>
             </mat-expansion-panel-header>
               <safe-tab-fields
                 [form]="$any(form.controls.fields)"
