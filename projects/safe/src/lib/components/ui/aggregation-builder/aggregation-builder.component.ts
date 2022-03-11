@@ -129,6 +129,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
       .get('pipeline')
       ?.valueChanges.pipe(debounceTime(1000))
       .subscribe((pipeline) => {
+        console.log('a');
         this.aggregationBuilder.initGrid(
           this.aggregationForm,
           pipeline,
@@ -149,6 +150,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
   private initFields(): void {
     this.updateFields(this.aggregationForm.value.dataSource);
     this.updateSelectedAndMetaFields(this.aggregationForm.value.sourceFields);
+    console.log('b');
     this.aggregationBuilder.initGrid(
       this.aggregationForm,
       this.aggregationForm.value.pipeline,

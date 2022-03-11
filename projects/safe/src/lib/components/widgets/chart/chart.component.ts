@@ -85,36 +85,34 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   /*  Load the data, using widget parameters.
    */
   private getData(): void {
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-      (res: any) => {
-        if (res.errors) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.aggregationError, {
-            error: true,
-          });
+    this.dataSubscription = this.dataQuery.subscribe((res: any) => {
+      if (res.errors) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.aggregationError, {
+          error: true,
+        });
+      } else {
+        const today = new Date();
+        this.lastUpdate =
+          ('0' + today.getHours()).slice(-2) +
+          ':' +
+          ('0' + today.getMinutes()).slice(-2);
+        if (
+          ['pie', 'donut', 'line', 'bar', 'column'].includes(
+            this.settings.chart.type
+          )
+        ) {
+          this.series = [
+            {
+              data: JSON.parse(JSON.stringify(res.data.recordsAggregation)),
+            },
+          ];
         } else {
-          const today = new Date();
-          this.lastUpdate =
-            ('0' + today.getHours()).slice(-2) +
-            ':' +
-            ('0' + today.getMinutes()).slice(-2);
-          if (
-            ['pie', 'donut', 'line', 'bar', 'column'].includes(
-              this.settings.chart.type
-            )
-          ) {
-            this.series = [
-              {
-                data: JSON.parse(JSON.stringify(res.data.recordsAggregation)),
-              },
-            ];
-          } else {
-            this.series = res.data.recordsAggregation;
-          }
-          this.loading = res.loading;
-          this.dataSubscription?.unsubscribe();
+          this.series = res.data.recordsAggregation;
         }
+        this.loading = res.loading;
+        this.dataSubscription?.unsubscribe();
       }
-    );
+    });
   }
 
   ngOnDestroy(): void {

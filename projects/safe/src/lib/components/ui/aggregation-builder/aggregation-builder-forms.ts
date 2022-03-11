@@ -97,7 +97,7 @@ export const addStage = (value: any): FormGroup => {
       });
     }
     case PipelineStage.CUSTOM: {
-      const temp = formBuilder.group({
+      const formGroup = formBuilder.group({
         type: [PipelineStage.CUSTOM],
         form: formBuilder.group({
           raw: [
@@ -106,11 +106,11 @@ export const addStage = (value: any): FormGroup => {
           ],
         }),
       });
-      temp
+      formGroup
         .get('form')
         ?.get('raw')
         ?.setValidators([Validators.required, jsonValidator]);
-      return temp;
+      return formGroup;
     }
     default: {
       return formBuilder.group({
@@ -174,6 +174,12 @@ export const createAggregationForm = (
     ),
   });
 
+/**
+ * Checks that the control value is a valid JSON.
+ *
+ * @param control
+ * @returns
+ */
 const jsonValidator = (control: AbstractControl): ValidationErrors | null => {
   try {
     JSON.parse(control.value);

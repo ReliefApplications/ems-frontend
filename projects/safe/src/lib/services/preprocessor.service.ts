@@ -47,15 +47,6 @@ export class SafePreprocessorService {
       text = text.split('{today}').join(todayToString);
     }
 
-    // === NOW ===
-    if (text.includes('{now}')) {
-      const nowToString = new Date().toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-      text = text.split('{now}').join(nowToString);
-    }
-
     // === DATASET ===
     if (text.includes('{dataset}') && dataset) {
       if (dataset.ids.length > 0) {

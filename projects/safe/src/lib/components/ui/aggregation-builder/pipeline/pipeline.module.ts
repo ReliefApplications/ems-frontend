@@ -15,8 +15,8 @@ import { SafeAddFieldStageComponent } from './add-field-stage/add-field-stage.co
 import { SafeExpressionsComponent } from './expressions/expressions.component';
 import { SafeFieldDropdownComponent } from './field-dropdown/field-dropdown.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SafeIconModule } from '../../icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -39,7 +39,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ReactiveFormsModule,
     MatInputModule,
     DragDropModule,
-    MatIconModule,
+    SafeIconModule,
     MatTooltipModule,
   ],
   exports: [

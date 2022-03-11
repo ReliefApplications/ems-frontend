@@ -1,4 +1,4 @@
-import { Apollo, gql } from 'apollo-angular';
+import { Apollo, gql, QueryRef } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { PipelineStage } from '../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
 import { Accumulators } from '../components/ui/aggregation-builder/pipeline/expressions/operators';
@@ -6,6 +6,7 @@ import { Observable, Subject } from 'rxjs';
 import { addNewField } from '../components/query-builder/query-builder-forms';
 import { SafeSnackBarService } from './snackbar.service';
 import { NOTIFICATIONS } from '../const/notifications';
+import { ApolloQueryResult } from '@apollo/client';
 
 /**
  * Shared aggregation service.
@@ -59,29 +60,29 @@ export class AggregationBuilderService {
         gridFields = this.formatFields(
           this.fieldsAfter(selectedFields.value, pipeline)
         );
-        this.buildAggregation(
-          aggregationForm.value,
-          false
-        ).valueChanges.subscribe((res: any) => {
-          if (res.errors) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.aggregationError, {
-              error: true,
-            });
-          } else {
-            if (res.data.recordsAggregation) {
-              gridData = {
-                data: res.data.recordsAggregation,
-                total: res.data.recordsAggregation.length,
-              };
+        const query = this.buildAggregation(aggregationForm.value, false);
+        if (query) {
+          query.subscribe((res: any) => {
+            if (res.errors) {
+              this.snackBar.openSnackBar(NOTIFICATIONS.aggregationError, {
+                error: true,
+              });
+            } else {
+              if (res.data.recordsAggregation) {
+                gridData = {
+                  data: res.data.recordsAggregation,
+                  total: res.data.recordsAggregation.length,
+                };
+              }
+              loadingGrid = res.loading;
+              this.gridSubject.next({
+                fields: gridFields,
+                data: gridData,
+                loading: loadingGrid,
+              });
             }
-            loadingGrid = res.loading;
-            this.gridSubject.next({
-              fields: gridFields,
-              data: gridData,
-              loading: loadingGrid,
-            });
-          }
-        });
+          });
+        }
       } else {
         gridFields = [];
         gridData = {
@@ -118,8 +119,12 @@ export class AggregationBuilderService {
    * @param withMapping Wether if we should inculde the mapping in the aggregation.
    * @returns Aggregation query
    */
-  public buildAggregation(aggregation: any, withMapping = true): any {
+  public buildAggregation(
+    aggregation: any,
+    withMapping = true
+  ): Observable<ApolloQueryResult<any>> | null {
     if (aggregation) {
+      console.log('d');
       const query = gql`
         query GetCustomAggregation($aggregation: JSON!, $withMapping: Boolean) {
           recordsAggregation(
@@ -128,7 +133,7 @@ export class AggregationBuilderService {
           )
         }
       `;
-      return this.apollo.watchQuery<any>({
+      return this.apollo.query<any>({
         query,
         variables: {
           aggregation,

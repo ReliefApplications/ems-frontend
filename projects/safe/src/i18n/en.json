@@ -444,7 +444,7 @@
       "unwind": "Unwind",
       "custom": "Custom"
     },
-    "placeholder": {
+    "tooltip": {
       "filter": "Returns an array with only those elements that match the condition.",
       "sort": "Sorts all input documents and returns them to the pipeline in sorted order.",
       "group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
