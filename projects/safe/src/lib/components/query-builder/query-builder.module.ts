@@ -16,6 +16,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatExpansionModule } from '@angular/material/expansion';
+
 
 @NgModule({
   declarations: [
@@ -39,6 +41,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatAutocompleteModule,
     SafeButtonModule,
     TranslateModule,
+    MatExpansionModule
   ],
   exports: [
     SafeQueryBuilderComponent,

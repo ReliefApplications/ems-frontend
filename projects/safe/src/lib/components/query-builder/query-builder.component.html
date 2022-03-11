@@ -37,7 +37,20 @@
     <mat-tab-group mat-align-tabs="start" animationDuration="0ms" *ngIf="form.getRawValue().name">
       <mat-tab [label]="'widgets.query.field.title' | translate">
         <ng-template matTabContent>
-          <safe-tab-fields *ngIf="availableFields.length > 0" [form]="$any(form.controls.fields)"
+          <mat-expansion-panel *ngIf="inMapSettings && availableFields.length > 0" class="mat-elevation-z0" (opened)="panelOpenState = true"
+          (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{'widgets.map.fieldSelection' | translate}}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{'widgets.map.fieldSelectionTooltip' | translate}}
+            </mat-panel-description>
+            </mat-expansion-panel-header>
+              <safe-tab-fields [form]="$any(form.controls.fields)"
+                [fields]="availableFields" [factory]="factory"></safe-tab-fields>
+          </mat-expansion-panel>
+          <safe-tab-fields *ngIf="!inMapSettings && availableFields.length > 0" [form]="$any(form.controls.fields)"
             [fields]="availableFields" [factory]="factory"></safe-tab-fields>
         </ng-template>
       </mat-tab>

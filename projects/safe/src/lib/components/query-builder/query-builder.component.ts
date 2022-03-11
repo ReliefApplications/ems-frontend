@@ -41,6 +41,8 @@ export class SafeQueryBuilderComponent implements OnInit {
   public allQueries: any[] = [];
   public filteredQueries: any[] = [];
 
+  public panelOpenState = false;
+
   get availableScalarFields(): any[] {
     return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
   }
@@ -49,6 +51,7 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() canExpand = true;
   @Input() canSelectDataSet = true;
   @Input() templates: Form[] = [];
+  @Input() inMapSettings: boolean = false;
 
   // === FIELD EDITION ===
   public isField = false;
