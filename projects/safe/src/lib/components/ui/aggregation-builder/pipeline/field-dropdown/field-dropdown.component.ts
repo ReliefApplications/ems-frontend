@@ -12,8 +12,9 @@ import { FormControl } from '@angular/forms';
 export class SafeFieldDropdownComponent implements OnInit {
   @Input() fieldControl!: FormControl;
   @Input() fields: any[] = [];
-  @Input() label?: any;
-  @Input() none? = false;
+  @Input() label = '';
+  @Input() nullable = false;
+
   constructor() {}
 
   ngOnInit(): void {}

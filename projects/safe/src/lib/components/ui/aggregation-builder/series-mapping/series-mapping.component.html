@@ -3,5 +3,5 @@
   [label]="'aggregation.mapping.' + controlName | translate"
   [fieldControl]="$any($any(mappingForm).controls[controlName])"
   [fields]="fieldsByControl[controlName]"
-  [none]="true"
+  [nullable]="true"
 ></safe-field-dropdown>
