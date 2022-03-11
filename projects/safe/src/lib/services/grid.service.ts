@@ -49,7 +49,10 @@ export class SafeGridService {
     metaFields: any,
     layoutFields: any,
     prefix?: string,
-    options?: { disabled?: boolean; filter?: boolean }
+    options: { disabled?: boolean; filter: boolean } = {
+      disabled: false,
+      filter: true,
+    }
   ): any[] {
     return flatDeep(
       fields.map((f) => {
@@ -61,7 +64,7 @@ export class SafeGridService {
               metaFields,
               layoutFields,
               fullName,
-              { disabled: true }
+              { disabled: true, filter: f.type === 'User' }
             );
           }
           case 'LIST': {
@@ -99,11 +102,10 @@ export class SafeGridService {
               type: f.type,
               format: this.getFieldFormat(f.type),
               editor: this.getFieldEditor(f.type),
-              filter:
-                !options?.filter || prefix ? '' : this.getFieldFilter(f.type),
+              filter: !options.filter ? '' : this.getFieldFilter(f.type),
               meta: metaData,
               disabled:
-                options?.disabled ||
+                options.disabled ||
                 DISABLED_FIELDS.includes(f.name) ||
                 metaData?.readOnly,
               hidden: cachedField?.hidden || false,

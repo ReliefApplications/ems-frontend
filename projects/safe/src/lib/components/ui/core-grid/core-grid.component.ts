@@ -300,8 +300,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
                 fields,
                 this.metaFields,
                 defaultLayoutFields,
-                '',
-                { filter: true }
+                ''
               );
             }
           }

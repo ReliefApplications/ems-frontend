@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
 import { debounceTime } from 'rxjs/operators';
+import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { codesFactory } from '../grid-settings/floating-button-settings/floating-button-settings.component';
 import { Chart } from './charts/chart';
@@ -50,6 +51,7 @@ export class SafeChartSettingsComponent implements OnInit {
 
   // === DISPLAY PREVIEW ===
   public settings: any;
+  public grid: any;
 
   public get chartForm(): FormGroup {
     return (this.tileForm?.controls.chart as FormGroup) || null;
@@ -62,7 +64,10 @@ export class SafeChartSettingsComponent implements OnInit {
     );
   }
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private aggregationBuilder: AggregationBuilderService
+  ) {}
 
   /*  Build the settings form, using the widget saved parameters.
    */
@@ -103,5 +108,9 @@ export class SafeChartSettingsComponent implements OnInit {
       .subscribe((value) => {
         this.settings = this.tileForm?.value;
       });
+
+    this.aggregationBuilder.getPreviewGrid().subscribe((value) => {
+      this.grid = value;
+    });
   }
 }
