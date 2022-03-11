@@ -1,14 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { GET_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
 import { Form } from '../../../models/form.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
+import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { isMongoId } from '../../../utils/is-mongo-id';
-import { addNewField } from '../../query-builder/query-builder-forms';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -61,7 +61,8 @@ export class SafeAggregationBuilderComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService,
-    private aggregationBuilder: AggregationBuilderService
+    private aggregationBuilder: AggregationBuilderService,
+    private gridService: SafeGridService
   ) {}
 
   ngOnInit(): void {
@@ -121,6 +122,12 @@ export class SafeAggregationBuilderComponent implements OnInit {
       ?.valueChanges.pipe(debounceTime(1000))
       .subscribe((fieldsNames: string[]) => {
         this.updateSelectedAndMetaFields(fieldsNames);
+        this.aggregationBuilder.initGrid(
+          this.aggregationForm,
+          this.aggregationForm.value.pipeline,
+          this.selectedFields.value,
+          this.metaFields.value
+        );
       });
 
     // Preview grid and mapping fields
@@ -132,7 +139,8 @@ export class SafeAggregationBuilderComponent implements OnInit {
         this.aggregationBuilder.initGrid(
           this.aggregationForm,
           pipeline,
-          this.selectedFields
+          this.selectedFields.value,
+          this.metaFields.value
         );
         this.mappingFields.next(
           this.aggregationBuilder.fieldsAfter(
@@ -152,7 +160,8 @@ export class SafeAggregationBuilderComponent implements OnInit {
     this.aggregationBuilder.initGrid(
       this.aggregationForm,
       this.aggregationForm.value.pipeline,
-      this.selectedFields
+      this.selectedFields.value,
+      this.metaFields.value
     );
   }
 
@@ -167,8 +176,17 @@ export class SafeAggregationBuilderComponent implements OnInit {
       this.queryName = formName
         ? this.queryBuilder.getQueryNameFromResourceName(formName)
         : '';
-      const fields = this.queryBuilder.getFields(this.queryName);
-      this.fields.next(fields.filter((x) => x.type.kind === 'SCALAR'));
+      const fields = this.queryBuilder
+        .getFields(this.queryName)
+        .filter(
+          (field: any) =>
+            !(
+              field.name.includes('_id') &&
+              (field.type.name === 'ID' ||
+                (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+            )
+        );
+      this.fields.next(fields);
     }
   }
 
@@ -180,9 +198,19 @@ export class SafeAggregationBuilderComponent implements OnInit {
   private updateSelectedAndMetaFields(fieldsNames: string[]): void {
     if (fieldsNames && fieldsNames.length) {
       const currentFields = this.fields.value;
-      const selectedFields = fieldsNames.map((x: string) =>
-        currentFields.find((y) => x === y.name)
-      );
+      const selectedFields = fieldsNames.map((x: string) => {
+        const field = { ...currentFields.find((y) => x === y.name) };
+        if (field.type.kind !== 'SCALAR') {
+          field.fields = this.queryBuilder
+            .getFieldsFromType(
+              field.type.kind === 'OBJECT'
+                ? field.type.name
+                : field.type.ofType.name
+            )
+            .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR');
+        }
+        return field;
+      });
       const formattedFields =
         this.aggregationBuilder.formatFields(selectedFields);
       this.selectedFields.next(selectedFields);

@@ -195,15 +195,15 @@ export class QueryBuilderService {
             return x.name + '\n';
           }
           case 'LIST': {
-            return (
-              `${x.name} {
-            ${
-              x.fields && x.fields.length > 0
-                ? this.buildMetaFields(x.fields)
-                : ''
-            }
-          }` + '\n'
-            );
+            return x.fields && x.fields.length > 0
+              ? `${x.name} {
+                ${
+                  x.fields && x.fields.length > 0
+                    ? this.buildMetaFields(x.fields)
+                    : ''
+                }
+              }` + '\n'
+              : x.name + '\n';
           }
           case 'OBJECT': {
             return (

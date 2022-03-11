@@ -7,6 +7,7 @@ import { addNewField } from '../components/query-builder/query-builder-forms';
 import { SafeSnackBarService } from './snackbar.service';
 import { NOTIFICATIONS } from '../const/notifications';
 import { ApolloQueryResult } from '@apollo/client';
+import { SafeGridService } from './grid.service';
 
 /**
  * Shared aggregation service.
@@ -26,7 +27,11 @@ export class AggregationBuilderService {
    *
    * @param apollo Apollo client
    */
-  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
+  constructor(
+    private apollo: Apollo,
+    private snackBar: SafeSnackBarService,
+    private gridService: SafeGridService
+  ) {}
 
   /**
    * Returns an observable with all the data needed for the preview grid.
@@ -45,7 +50,8 @@ export class AggregationBuilderService {
   public initGrid(
     aggregationForm: any,
     pipeline: any[],
-    selectedFields: any
+    selectedFields: any,
+    metaFields: any[]
   ): void {
     let loadingGrid = true;
     let gridData: any = {
@@ -57,8 +63,10 @@ export class AggregationBuilderService {
     if (aggregationForm.get('pipeline')?.valid) {
       if (pipeline.length) {
         loadingGrid = true;
-        gridFields = this.formatFields(
-          this.fieldsAfter(selectedFields.value, pipeline)
+        gridFields = this.gridService.getFields(
+          this.formatFields(this.fieldsAfter(selectedFields, pipeline)),
+          metaFields,
+          {}
         );
         const query = this.buildAggregation(aggregationForm.value, false);
         if (query) {
@@ -108,7 +116,11 @@ export class AggregationBuilderService {
     return fields.map((field: any) => {
       const formattedForm = addNewField(field, true);
       formattedForm.enable();
-      return formattedForm.value;
+      const formattedField = formattedForm.value;
+      if (formattedField.kind !== 'SCALAR' && field.fields.length) {
+        formattedField.fields = this.formatFields(field.fields);
+      }
+      return formattedField;
     });
   }
 
@@ -157,11 +169,29 @@ export class AggregationBuilderService {
       switch (stage.type) {
         case PipelineStage.GROUP: {
           if (stage.form.groupBy) {
-            const groupByField = fields.find(
+            let groupByField = fields.find(
               (x) => x.name === stage.form.groupBy
             );
+            if (!groupByField && stage.form.groupBy.includes('.')) {
+              const fieldArray = stage.form.groupBy.split('.');
+              const parent = fieldArray.shift();
+              const sub = fieldArray.pop();
+              groupByField = fields.reduce((o, field) => {
+                if (
+                  field.name === parent &&
+                  field.fields.some((x: any) => x.name === sub)
+                ) {
+                  const newField = { ...field };
+                  newField.fields = field.fields.filter(
+                    (x: any) => x.name === sub
+                  );
+                  return newField;
+                }
+                return o;
+              }, null);
+            }
+            fields = [];
             if (groupByField) {
-              fields = [];
               fields.push(groupByField);
             }
           }
@@ -175,14 +205,40 @@ export class AggregationBuilderService {
           break;
         }
         case PipelineStage.UNWIND: {
-          fields = fields.map((field) => {
-            if (field.name === stage.form.field) {
-              const newField = Object.assign({}, field);
-              newField.type = { ...field.type, kind: 'SCALAR', name: 'String' };
-              return newField;
-            }
-            return field;
-          });
+          if (stage.form.field.includes('.')) {
+            const fieldArray = stage.form.field.split('.');
+            const parent = fieldArray.shift();
+            const sub = fieldArray.pop();
+            fields = fields.map((field) => {
+              if (field.name === parent) {
+                const newField = Object.assign({}, field);
+                newField.type = { ...field.type, kind: 'OBJECT' };
+                newField.fields = field.fields.map((x: any) =>
+                  x.name === sub
+                    ? {
+                        ...x,
+                        type: { ...x.type, kind: 'SCALAR', name: 'String' },
+                      }
+                    : x
+                );
+                return newField;
+              }
+              return field;
+            });
+          } else {
+            fields = fields.map((field) => {
+              if (field.name === stage.form.field) {
+                const newField = Object.assign({}, field);
+                newField.type = {
+                  ...field.type,
+                  kind: 'SCALAR',
+                  name: 'String',
+                };
+                return newField;
+              }
+              return field;
+            });
+          }
           break;
         }
         default: {
