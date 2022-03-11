@@ -124,7 +124,6 @@ export class AggregationBuilderService {
     withMapping = true
   ): Observable<ApolloQueryResult<any>> | null {
     if (aggregation) {
-      console.log('d');
       const query = gql`
         query GetCustomAggregation($aggregation: JSON!, $withMapping: Boolean) {
           recordsAggregation(
