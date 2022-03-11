@@ -48,6 +48,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   // === DATA ===
   public loading = true;
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
+  private newApplicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   public applications = new MatTableDataSource<Application>([]);
   public cachedApplications: Application[] = [];
   public displayedColumns = [
@@ -99,10 +100,19 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           first: DEFAULT_PAGE_SIZE,
         },
       });
+    // new query for card
 
+    this.newApplicationsQuery =
+      this.apollo.watchQuery<GetApplicationsQueryResponse>({
+        query: GET_APPLICATIONS,
+        variables: {
+          first: DEFAULT_PAGE_SIZE,
+          sortField: 'modifiedAt',
+          sortOrder: 'desc',
+        },
+      });
     this.applicationsQuery.valueChanges.subscribe((res) => {
       this.cachedApplications = res.data.applications.edges.map((x) => x.node);
-      this.newApplications = this.cachedApplications.slice(0, 5);
       this.applications.data = this.cachedApplications.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
@@ -110,6 +120,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
+    });
+    this.newApplicationsQuery.valueChanges.subscribe((res) => {
+      this.newApplications = res.data.applications.edges
+        .map((x) => x.node)
+        .slice(0, 5);
     });
     this.authSubscription = this.authService.user$.subscribe(() => {
       this.canAdd =

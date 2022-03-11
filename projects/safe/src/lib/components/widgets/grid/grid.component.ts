@@ -109,7 +109,11 @@ export class SafeGridWidgetComponent implements OnInit {
         .then((res) => {
           this.layouts = res;
           this.layout = this.layouts[0] || null;
-          this.gridSettings = { ...this.settings, ...this.layout };
+          this.gridSettings = {
+            ...this.settings,
+            ...this.layout,
+            ...{ template: this.settings.query?.template },
+          };
         });
     }
   }
@@ -126,7 +130,7 @@ export class SafeGridWidgetComponent implements OnInit {
             variables: {
               id: item.id,
               data,
-              template: this.settings.query.template,
+              template: this.settings.template,
             },
           })
           .toPromise()
@@ -332,8 +336,10 @@ export class SafeGridWidgetComponent implements OnInit {
         update[modification.field.name] = this.getDateForFilter(
           modification.value
         );
-      } else {
-        update[modification.field.name] = modification.value;
+      } else if (['Time'].includes(modification.field.type.name)) {
+        update[modification.field.name] = this.getTimeForFilter(
+          modification.value
+        );
       }
     }
     return this.apollo
@@ -373,6 +379,29 @@ export class SafeGridWidgetComponent implements OnInit {
       date = new Date(value);
     }
     return date;
+  }
+
+  /**
+   * Gets from input time value a time value display.
+   *
+   * @param value record value
+   * @returns calculated time
+   */
+  private getTimeForFilter(value: any): string {
+    if (value === 'now()') {
+      const time = new Date()
+        .toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        .split(/:| /);
+      if (
+        (time[2] === 'PM' && time[0] !== '12') ||
+        (time[2] === 'AM' && time[0] === '12')
+      ) {
+        time[0] = (parseInt(time[0], 10) + 12).toString();
+      }
+      return time[0] + ':' + time[1];
+    } else {
+      return value;
+    }
   }
 
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
@@ -460,7 +489,11 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   onLayoutChange(layout: Layout): void {
     this.layout = layout;
-    this.gridSettings = { ...this.settings, ...this.layout };
+    this.gridSettings = {
+      ...this.settings,
+      ...this.layout,
+      ...{ template: this.settings.query?.template },
+    };
   }
 
   /**
