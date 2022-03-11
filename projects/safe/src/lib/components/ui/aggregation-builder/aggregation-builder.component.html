@@ -13,33 +13,15 @@
       [label]="'aggregation.sourceFields' | translate"
     ></safe-tagbox>
   </div>
-  <div class="aggregation-builder">
-    <div class="aggregation-builder-form">
-      <safe-pipeline
-        [fields$]="selectedFields$"
-        [metaFields$]="metaFields$"
-        [pipelineForm]="pipelineForm"
-      ></safe-pipeline>
-      <safe-series-mapping
-        [fields$]="mappingFields$"
-        [mappingForm]="aggregationForm.controls.mapping"
-      ></safe-series-mapping>
-    </div>
-    <div class="aggregation-preview">
-      <safe-grid
-        [loading]="loadingGrid"
-        [fields]="gridFields"
-        [data]="gridData"
-        [exportable]="false"
-        [resizable]="false"
-        [reorderable]="false"
-        [selectable]="false"
-        [multiSelect]="false"
-        [filterable]="false"
-        [sortable]="false"
-        [searchable]="false"
-        [hasDetails]="false"
-      ></safe-grid>
-    </div>
+  <div class="aggregation-builder-form">
+    <safe-pipeline
+      [fields$]="selectedFields$"
+      [metaFields$]="metaFields$"
+      [pipelineForm]="pipelineForm"
+    ></safe-pipeline>
+    <safe-series-mapping
+      [fields$]="mappingFields$"
+      [mappingForm]="aggregationForm.controls.mapping"
+    ></safe-series-mapping>
   </div>
 </ng-container>

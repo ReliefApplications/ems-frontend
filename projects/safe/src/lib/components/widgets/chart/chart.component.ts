@@ -14,6 +14,8 @@ import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
 import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
+import { SafeSnackBarService } from '../../../services/snackbar.service';
+import { NOTIFICATIONS } from '../../../const/notifications';
 
 const DEFAULT_FILE_NAME = 'chart.png';
 
@@ -47,7 +49,10 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     | SafeBarChartComponent
     | SafeColumnChartComponent;
 
-  constructor(private aggregationBuilder: AggregationBuilderService) {}
+  constructor(
+    private aggregationBuilder: AggregationBuilderService,
+    private snackBar: SafeSnackBarService
+  ) {}
 
   /*  Detect changes of the settings to reload the data.
    */
@@ -80,8 +85,12 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   /*  Load the data, using widget parameters.
    */
   private getData(): void {
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-      (res: any) => {
+    this.dataSubscription = this.dataQuery.subscribe((res: any) => {
+      if (res.errors) {
+        this.snackBar.openSnackBar(NOTIFICATIONS.aggregationError, {
+          error: true,
+        });
+      } else {
         const today = new Date();
         this.lastUpdate =
           ('0' + today.getHours()).slice(-2) +
@@ -103,7 +112,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
         this.loading = res.loading;
         this.dataSubscription?.unsubscribe();
       }
-    );
+    });
   }
 
   ngOnDestroy(): void {
