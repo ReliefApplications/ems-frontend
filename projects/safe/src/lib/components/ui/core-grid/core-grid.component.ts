@@ -14,10 +14,8 @@ import {
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
-  GridComponent as KendoGridComponent,
   GridDataResult,
   PageChangeEvent,
-  Selection,
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import {
@@ -144,6 +142,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       : this.settings.query?.sort?.order || '';
   }
 
+  get style(): any {
+    return this.settings.query?.style || null;
+  }
+
   // === FILTERING ===
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
   public showFilter = false;
@@ -249,7 +251,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(): void {
     // define row actions
     this.actions = {
-      add: this.settings.actions?.addRecord && this.settings.query?.template,
+      add: this.settings.actions?.addRecord && this.settings.template,
       history: this.settings.actions?.history,
       update: this.settings.actions?.update,
       delete: this.settings.actions?.delete,
@@ -276,6 +278,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder,
+        styles: this.style,
       },
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-first',
@@ -292,7 +295,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               await this.gridService.populateMetaFields(this.metaFields);
               const fields = this.settings?.query?.fields || [];
               const defaultLayoutFields = this.defaultLayout.fields || {};
-              console.log(this.defaultLayout);
               this.fields = this.gridService.getFields(
                 fields,
                 this.metaFields,
@@ -300,7 +302,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
                 '',
                 { filter: true }
               );
-              console.log(this.fields);
             }
           }
           this.getRecords();
@@ -427,7 +428,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             variables: {
               id: item.id,
               data,
-              template: this.settings.query.template,
+              template: this.settings.template,
             },
           })
           .toPromise()
@@ -451,7 +452,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           this.error = false;
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              const nodes = res.data[field].edges.map((x: any) => x.node) || [];
+              const nodes =
+                res.data[field].edges.map((x: any) => ({
+                  ...x.node,
+                  _meta: {
+                    style: x.meta.style,
+                  },
+                })) || [];
               this.totalCount = res.data[field].totalCount;
               this.items = cloneData(nodes);
               this.convertDateFields(this.items);
@@ -616,11 +623,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Displays an embedded form in a modal to add new record.
    */
   private onAdd(): void {
-    if (this.settings.query.template) {
+    if (this.settings.template) {
       const dialogRef = this.dialog.open(SafeFormModalComponent, {
         disableClose: true,
         data: {
-          template: this.settings.query.template,
+          template: this.settings.template,
           locale: 'en',
           askForConfirm: false,
         },
@@ -675,7 +682,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             this.settings.actions &&
             this.settings.actions.update &&
             items.canUpdate,
-          ...(!isArray && { template: this.settings.query.template }),
+          ...(!isArray && { template: this.settings.template }),
         },
         height: '98%',
         width: '100vw',
@@ -702,7 +709,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: ids.length > 1 ? ids : ids[0],
         locale: 'en',
-        template: this.settings.query.template || null,
+        template: this.settings.template || null,
       },
       height: '98%',
       width: '100vw',
@@ -813,7 +820,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             revert: (record: any, dialog: any) => {
               this.confirmRevertDialog(res.data.record, record);
             },
-            template: this.settings.query.template || null,
+            template: this.settings.template || null,
           },
         });
       });
@@ -943,6 +950,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder,
+        styles: this.style,
       },
       updateQuery: (prev: any, { fetchMoreResult }: any) => {
         // this.loading = false;

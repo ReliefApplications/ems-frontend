@@ -1,5 +1,0 @@
-<!-- <app-dashboard [id]="dashboardId"></app-dashboard> -->
-<!-- <app-form [id]="formId"></app-form> -->
-<!-- <app-workflow [id]="workflowId"></app-workflow> -->
-<button *ngFor="let page of pages" (click)="openPage(page.id)">{{ page.name }}</button>
-<app-web-application [id]="applicationId" [pageId]="selectedPageId" (pages)="setPages($event)"></app-web-application>
