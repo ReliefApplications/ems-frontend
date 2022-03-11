@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Layout } from '../../../../models/layout.model';
 import { Form } from '../../../../models/form.model';
@@ -13,6 +6,8 @@ import { Resource } from '../../../../models/resource.model';
 import { AddLayoutComponent } from '../add-layout/add-layout.component';
 import { FormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { SafeGridLayoutService } from '../../../../services/grid-layout.service';
+import { SafeLayoutModalComponent } from '../../../layout-modal/layout-modal.component';
 
 /**
  * Layouts list configuration for grid widgets
@@ -27,15 +22,14 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
   @Input() form: Form | null = null;
   @Input() selectedLayouts: FormControl | null = null;
 
-  @Output() add = new EventEmitter();
-  @Output() delete = new EventEmitter();
-  @Output() edit = new EventEmitter();
-
   layouts: Layout[] = [];
   allLayouts: Layout[] = [];
   columns: string[] = ['name', 'createdAt', '_actions'];
 
-  constructor(private dialog: MatDialog) {}
+  constructor(
+    private dialog: MatDialog,
+    private gridLayoutService: SafeGridLayoutService
+  ) {}
 
   ngOnInit(): void {
     const defaultValue = this.selectedLayouts?.value;
@@ -80,7 +74,7 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Adds a new widget to the list.
+   * Adds a new layout to the list.
    */
   public onAdd(): void {
     const dialogRef = this.dialog.open(AddLayoutComponent, {
@@ -92,10 +86,16 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.allLayouts.push(value);
-        this.selectedLayouts?.setValue(
-          this.selectedLayouts?.value.concat(value.id)
-        );
+        if (typeof value === 'string') {
+          this.selectedLayouts?.setValue(
+            this.selectedLayouts?.value.concat(value)
+          );
+        } else {
+          this.allLayouts.push(value);
+          this.selectedLayouts?.setValue(
+            this.selectedLayouts?.value.concat(value.id)
+          );
+        }
       }
     });
   }
@@ -103,7 +103,34 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
   /**
    * Edits existing layout.
    */
-  onEditLayout(layout: Layout): void {}
+  onEditLayout(layout: Layout): void {
+    const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
+      disableClose: true,
+      data: {
+        layout,
+      },
+      position: {
+        bottom: '0',
+        right: '0',
+      },
+      panelClass: 'tile-settings-dialog',
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.gridLayoutService
+          .editLayout(layout, value, this.resource?.id, this.form?.id)
+          .subscribe((res: any) => {
+            if (res.data.editLayout) {
+              const layouts = [...this.allLayouts];
+              const index = layouts.findIndex((x) => x.id === layout.id);
+              layouts[index] = res.data.editLayout;
+              this.allLayouts = layouts;
+              this.setSelectedLayouts(this.selectedLayouts?.value);
+            }
+          });
+      }
+    });
+  }
 
   /**
    * Removes layout from list.

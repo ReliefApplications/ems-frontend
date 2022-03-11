@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   SafeDownloadService,
   SafeSnackBarService,
-  NOTIFICATIONS,
   SafeConfirmModalComponent,
   Record,
   Form,
@@ -158,7 +157,12 @@ export class ResourceComponent implements OnInit, OnDestroy {
             this.loading = res.loading;
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.accessNotProvided('resource'),
+              this.translate.instant('notification.accessNotProvided', {
+                type: this.translate
+                  .instant('notification.term.resource')
+                  .toLowerCase(),
+                error: '',
+              }),
               { error: true }
             );
             this.router.navigate(['/resources']);
@@ -284,7 +288,11 @@ export class ResourceComponent implements OnInit, OnDestroy {
         },
       })
       .subscribe((res) => {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Record'));
+        this.snackBar.openSnackBar(
+          this.translate.instant('notification.objectDeleted', {
+            value: this.translate.instant('notification.term.record'),
+          })
+        );
         this.dataSourceRecords = this.dataSourceRecords.filter(
           (x) => x.id !== id
         );
@@ -303,7 +311,13 @@ export class ResourceComponent implements OnInit, OnDestroy {
         },
       })
       .subscribe((res) => {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'));
+        this.snackBar.openSnackBar(
+          this.translate.instant('notification.objectDeleted', {
+            value: this.translate
+              .instant('notification.term.form')
+              .toLowerCase(),
+          })
+        );
         this.dataSourceForms = this.dataSourceForms.filter((x) => x.id !== id);
       });
   }

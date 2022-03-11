@@ -34,7 +34,6 @@ import {
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeWorkflowService } from '../../../services/workflow.service';
 import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
-import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeAuthService } from '../../../services/auth.service';
 import { SafeEmailService } from '../../../services/email.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -42,6 +41,7 @@ import { GridLayout } from '../../ui/core-grid/models/grid-layout.model';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
+import { TranslateService } from '@ngx-translate/core';
 
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
 
@@ -91,7 +91,8 @@ export class SafeGridWidgetComponent implements OnInit {
     private safeAuthService: SafeAuthService,
     private emailService: SafeEmailService,
     private queryBuilder: QueryBuilderService,
-    private gridLayoutService: SafeGridLayoutService
+    private gridLayoutService: SafeGridLayoutService,
+    private translate: TranslateService
   ) {
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -108,7 +109,11 @@ export class SafeGridWidgetComponent implements OnInit {
         .then((res) => {
           this.layouts = res;
           this.layout = this.layouts[0] || null;
-          this.gridSettings = { ...this.settings, ...this.layout };
+          this.gridSettings = {
+            ...this.settings,
+            ...this.layout,
+            ...{ template: this.settings.query?.template },
+          };
         });
     }
   }
@@ -125,7 +130,7 @@ export class SafeGridWidgetComponent implements OnInit {
             variables: {
               id: item.id,
               data,
-              template: this.settings.query.template,
+              template: this.settings.template,
             },
           })
           .toPromise()
@@ -331,8 +336,10 @@ export class SafeGridWidgetComponent implements OnInit {
         update[modification.field.name] = this.getDateForFilter(
           modification.value
         );
-      } else {
-        update[modification.field.name] = modification.value;
+      } else if (['Time'].includes(modification.field.type.name)) {
+        update[modification.field.name] = this.getTimeForFilter(
+          modification.value
+        );
       }
     }
     return this.apollo
@@ -372,6 +379,29 @@ export class SafeGridWidgetComponent implements OnInit {
       date = new Date(value);
     }
     return date;
+  }
+
+  /**
+   * Gets from input time value a time value display.
+   *
+   * @param value record value
+   * @returns calculated time
+   */
+  private getTimeForFilter(value: any): string {
+    if (value === 'now()') {
+      const time = new Date()
+        .toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        .split(/:| /);
+      if (
+        (time[2] === 'PM' && time[0] !== '12') ||
+        (time[2] === 'AM' && time[0] === '12')
+      ) {
+        time[0] = (parseInt(time[0], 10) + 12).toString();
+      }
+      return time[0] + ':' + time[1];
+    } else {
+      return value;
+    }
   }
 
   /* Open a modal to select which record we want to attach the rows to and perform the attach.
@@ -428,11 +458,11 @@ export class SafeGridWidgetComponent implements OnInit {
                 const record = res2.data.editRecord;
                 if (record) {
                   this.snackBar.openSnackBar(
-                    NOTIFICATIONS.addRowsToRecord(
-                      selectedRecords.length,
-                      key,
-                      record.data[targetFormField]
-                    )
+                    this.translate.instant('notification.addRowsToRecord', {
+                      field: record.data[targetFormField],
+                      length: selectedRecords.length,
+                      value: key,
+                    })
                   );
                   this.dialog.open(SafeFormModalComponent, {
                     disableClose: true,
@@ -459,7 +489,11 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   onLayoutChange(layout: Layout): void {
     this.layout = layout;
-    this.gridSettings = { ...this.settings, ...this.layout };
+    this.gridSettings = {
+      ...this.settings,
+      ...this.layout,
+      ...{ template: this.settings.query?.template },
+    };
   }
 
   /**

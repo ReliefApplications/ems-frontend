@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { Subscription } from 'rxjs';
 import { SafeSnackBarService } from './snackbar.service';
 import {
   AddLayoutMutationResponse,
@@ -72,6 +71,15 @@ export class SafeGridLayoutService {
       });
   }
 
+  /**
+   * Edits a layout.
+   *
+   * @param layout layout to edit
+   * @param value new value of the layout
+   * @param resource resource the layout is attached to ( optional )
+   * @param form form the layout is attached to ( optional )
+   * @returns Mutation observable
+   */
   public editLayout(
     layout: Layout,
     value: Layout,
