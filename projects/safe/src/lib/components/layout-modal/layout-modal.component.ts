@@ -61,7 +61,6 @@ export class SafeLayoutModalComponent implements OnInit {
    * @param value new value
    */
   onGridLayoutChange(value: any): void {
-    console.log(value);
     this.form?.get('display')?.setValue(value);
   }
 

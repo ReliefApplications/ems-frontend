@@ -46,14 +46,14 @@ export class QueryBuilderService {
         query: GET_QUERY_TYPES,
       })
       .subscribe((res) => {
+        // eslint-disable-next-line no-underscore-dangle
+        this.availableTypes.next(res.data.__schema.types);
         this.availableQueries.next(
           // eslint-disable-next-line no-underscore-dangle
           res.data.__schema.queryType.fields.filter((x: any) =>
             x.name.startsWith('all')
           )
         );
-        // eslint-disable-next-line no-underscore-dangle
-        this.availableTypes.next(res.data.__schema.types);
         // eslint-disable-next-line no-underscore-dangle
         this.userFields = res.data.__schema.types
           .find((x: any) => x.name === 'User')
@@ -252,7 +252,7 @@ export class QueryBuilderService {
    */
   public graphqlQuery(name: string, fields: any) {
     return gql`
-    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean) {
+    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON) {
       ${name}(
       first: $first,
       skip: $skip,
@@ -260,11 +260,13 @@ export class QueryBuilderService {
       sortOrder: $sortOrder,
       filter: $filter,
       display: $display
+      styles: $styles
       ) {
         edges {
           node {
             ${fields}
           }
+          meta
         }
         totalCount
       }

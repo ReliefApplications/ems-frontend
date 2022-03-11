@@ -283,6 +283,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         value && value.sendMail ? Validators.required : null
       ),
       bodyText: [value && value.bodyText ? value.bodyText : ''],
+      bodyTextAlternate: [
+        value && value.bodyTextAlternate ? value.bodyTextAlternate : '',
+      ],
     });
     return buttonForm;
   }

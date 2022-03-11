@@ -135,8 +135,6 @@ const initializeAuth =
 export const httpTranslateLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http);
 
-const imports: any[] = [];
-
 @NgModule({
   declarations: [AppComponent],
   imports: [

@@ -108,7 +108,11 @@ export class SafeGridWidgetComponent implements OnInit {
         .then((res) => {
           this.layouts = res;
           this.layout = this.layouts[0] || null;
-          this.gridSettings = { ...this.settings, ...this.layout };
+          this.gridSettings = {
+            ...this.settings,
+            ...this.layout,
+            ...{ template: this.settings.query?.template },
+          };
         });
     }
   }
@@ -125,7 +129,7 @@ export class SafeGridWidgetComponent implements OnInit {
             variables: {
               id: item.id,
               data,
-              template: this.settings.query.template,
+              template: this.settings.template,
             },
           })
           .toPromise()
@@ -235,13 +239,15 @@ export class SafeGridWidgetComponent implements OnInit {
         await this.emailService.sendMail(
           options.distributionList,
           options.subject,
-          options.bodyText,
+          this.grid.selectedRows.length > 0
+            ? options.bodyText
+            : options.bodyTextAlternate,
           emailSettings,
           this.grid.selectedRows,
           sortField,
           sortOrder
         );
-        if (options.export) {
+        if (options.export && this.grid.selectedRows.length > 0) {
           this.grid.onExport({
             records: 'all',
             format: 'xlsx',
@@ -457,7 +463,11 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   onLayoutChange(layout: Layout): void {
     this.layout = layout;
-    this.gridSettings = { ...this.settings, ...this.layout };
+    this.gridSettings = {
+      ...this.settings,
+      ...this.layout,
+      ...{ template: this.settings.query?.template },
+    };
   }
 
   /**

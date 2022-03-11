@@ -9,7 +9,6 @@ import { AggregationBuilderService } from '../../../services/aggregation-builder
 import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { isMongoId } from '../../../utils/is-mongo-id';
-import { addNewField } from '../../query-builder/query-builder-forms';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -123,7 +122,12 @@ export class SafeAggregationBuilderComponent implements OnInit {
       ?.valueChanges.pipe(debounceTime(1000))
       .subscribe((fieldsNames: string[]) => {
         this.updateSelectedAndMetaFields(fieldsNames);
-        this.initGrid(this.aggregationForm.value.pipeline);
+        this.aggregationBuilder.initGrid(
+          this.aggregationForm,
+          this.aggregationForm.value.pipeline,
+          this.selectedFields.value,
+          this.metaFields.value
+        );
       });
 
     // Preview grid and mapping fields
@@ -132,7 +136,12 @@ export class SafeAggregationBuilderComponent implements OnInit {
       .get('pipeline')
       ?.valueChanges.pipe(debounceTime(1000))
       .subscribe((pipeline) => {
-        this.initGrid(pipeline);
+        this.aggregationBuilder.initGrid(
+          this.aggregationForm,
+          pipeline,
+          this.selectedFields.value,
+          this.metaFields.value
+        );
         this.mappingFields.next(
           this.aggregationBuilder.fieldsAfter(
             this.selectedFields.value,
@@ -148,7 +157,12 @@ export class SafeAggregationBuilderComponent implements OnInit {
   private initFields(): void {
     this.updateFields(this.aggregationForm.value.dataSource);
     this.updateSelectedAndMetaFields(this.aggregationForm.value.sourceFields);
-    this.initGrid(this.aggregationForm.value.pipeline);
+    this.aggregationBuilder.initGrid(
+      this.aggregationForm,
+      this.aggregationForm.value.pipeline,
+      this.selectedFields.value,
+      this.metaFields.value
+    );
   }
 
   /**
@@ -197,7 +211,8 @@ export class SafeAggregationBuilderComponent implements OnInit {
         }
         return field;
       });
-      const formattedFields = this.formatFields(selectedFields);
+      const formattedFields =
+        this.aggregationBuilder.formatFields(selectedFields);
       this.selectedFields.next(selectedFields);
       this.queryBuilder
         .buildMetaQuery({ name: this.queryName, fields: formattedFields })
@@ -219,64 +234,6 @@ export class SafeAggregationBuilderComponent implements OnInit {
       this.metaFields.next([]);
       this.mappingFields.next([]);
     }
-  }
-
-  /**
-   * Initializes preview grid using pipeline parameters.
-   *
-   * @param pipeline Array of stages.
-   */
-  private initGrid(pipeline: any[]): void {
-    if (this.aggregationForm.get('pipeline')?.valid) {
-      if (pipeline.length) {
-        this.loadingGrid = true;
-        this.gridFields = this.gridService.getFields(
-          this.formatFields(
-            this.aggregationBuilder.fieldsAfter(
-              this.selectedFields.value,
-              pipeline
-            )
-          ),
-          this.metaFields.value,
-          {}
-        );
-        this.aggregationBuilder
-          .buildAggregation(this.aggregationForm.value, false)
-          .valueChanges.subscribe((res: any) => {
-            if (res.data.recordsAggregation) {
-              this.gridData = {
-                data: res.data.recordsAggregation,
-                total: res.data.recordsAggregation.length,
-              };
-            }
-            this.loadingGrid = res.loading;
-          });
-      } else {
-        this.gridFields = [];
-        this.gridData = {
-          data: [],
-          total: 0,
-        };
-      }
-    }
-  }
-
-  /**
-   * Formats fields so they are aligned with the queryBuilder format.
-   *
-   * @param fields Raw fields to format.
-   * @return formatted fields.
-   */
-  private formatFields(fields: any[]): any[] {
-    return fields.map((field: any) => {
-      const formattedForm = addNewField(field, true);
-      formattedForm.enable();
-      const formattedField = formattedForm.value;
-      if (formattedField.kind !== 'SCALAR' && field.fields.length) {
-        formattedField.fields = this.formatFields(field.fields);
-      }
-      return formattedField;
-    });
   }
 
   /**

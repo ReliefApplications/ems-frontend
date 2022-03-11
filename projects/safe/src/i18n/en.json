@@ -48,7 +48,7 @@
   "action": {
     "edit": "Edit",
     "editAs": "Edit as",
-    "view": "View",
+    "view": "View records",
     "delete": "Delete",
     "deletePerm": "Delete premanently",
     "close": "Close",
@@ -162,7 +162,8 @@
   "resources": {
     "create": "Create a resource",
     "delete": "Delete resource",
-    "deleteDesc": "Do you confirm the deletion of the resource {{name}}?"
+    "deleteDesc": "Do you confirm the deletion of the resource {{name}}?",
+    "layouts": "Layouts"
   },
   "users": {
     "export": "Export users",
@@ -276,8 +277,12 @@
       "data": "Data set selection",
       "lat": "Latitude",
       "long": "Longitude",
-      "default": "Default display",
-      "zoom": "Zoom"
+      "zoom": "Zoom",
+      "default": {
+        "title": "Default display",
+        "lat": "Map center latitude",
+        "long": "Map center longitude"
+      }
     },
     "scheduler": {
       "new": "New scheduler",
@@ -312,9 +317,33 @@
         "new": "Add new fiter",
         "newGroup": "Add new filter group",
         "operator": "Operator"
+      },
+      "style": {
+        "title": "Style",
+        "logic": "Style filter",
+        "description": "Styling rules make records with important information stand out. When a record matches more than one rule, the first rule is used.",
+        "or": "Or",
+        "and": "And",
+        "new": "Add styling rule",
+        "operator": "Operator"
       }
     },
     "grid": {
+      "style": {
+        "name": "Rule name",
+        "criteria": "Rule criteria",
+        "background": {
+          "color": "Background color"
+        },
+        "text": {
+          "color": "Text color",
+          "style": "Text style"
+        },
+        "fields": "Fields",
+        "appliesTo": "Apply style to",
+        "wholeRow": "Whole row",
+        "selectedColumns": "Only selected columns"
+      },
       "save": "Save Layout as default",
       "reset": "Reset default Layout",
       "invalid": "Invalid grid configuration",
@@ -415,6 +444,14 @@
       "unwind": "Unwind",
       "custom": "Custom"
     },
+    "tooltip": {
+      "filter": "Returns an array with only those elements that match the condition.",
+      "sort": "Sorts all input documents and returns them to the pipeline in sorted order.",
+      "group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
+      "addFields": "Adds new fields to documents.",
+      "unwind": "Deconstructs an array field from the input documents to output a document for each element.",
+      "custom": "Defines a custom aggregation function or expression in JavaScript."
+    },
     "mapping": {
       "xAxis": "X Axis",
       "yAxis": "Y Axis"
@@ -446,6 +483,7 @@
     "add": "Add a layout",
     "preview": {
       "description": "Reorder, sort, filter and hide columns to edit default display of the layout"
-    }
+    },
+    "select": "Select a layout"
   }
 }
