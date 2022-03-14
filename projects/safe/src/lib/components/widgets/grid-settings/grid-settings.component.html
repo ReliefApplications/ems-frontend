@@ -2,75 +2,120 @@
   <form [formGroup]="tileForm">
     <!-- MAIN PARAMETERS -->
     <div class="form-group">
-      <div class="form-group-title">{{'global.general' | translate}}</div>
+      <div class="form-group-title">{{ 'global.general' | translate }}</div>
       <mat-form-field appearance="outline">
-        <mat-label>{{'global.title' | translate}}</mat-label>
+        <mat-label>{{ 'global.title' | translate }}</mat-label>
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
     </div>
     <ng-container formGroupName="query">
       <mat-form-field appearance="outline">
-        <mat-label>{{'widgets.query.select' | translate}}</mat-label>
-        <input type="text" [placeholder]="'widgets.query.select' | translate" matInput formControlName="name" [matAutocomplete]="auto">
+        <mat-label>{{ 'widgets.query.select' | translate }}</mat-label>
+        <input
+          type="text"
+          [placeholder]="'widgets.query.select' | translate"
+          matInput
+          formControlName="name"
+          [matAutocomplete]="auto"
+        />
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
           <mat-option *ngFor="let option of filteredQueries" [value]="option">
-            {{option}}
+            {{ option }}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>{{'global.template' | translate}}</mat-label>
+        <mat-label>{{ 'global.template' | translate }}</mat-label>
         <mat-select formControlName="template">
           <mat-option>-</mat-option>
-          <mat-option *ngFor="let template of templates" [value]="template.id">{{template.name}}</mat-option>
+          <mat-option
+            *ngFor="let template of templates"
+            [value]="template.id"
+            >{{ template.name }}</mat-option
+          >
         </mat-select>
       </mat-form-field>
     </ng-container>
     <!-- SELECTION OF LAYOUTS -->
     <div class="form-group" *ngIf="queryName">
-      <div class="form-group-title">{{'layouts.title' | translate}}</div>
-      <safe-layouts-parameters [form]="form" [resource]="resource" [selectedLayouts]="$any(tileForm).get('layouts')"></safe-layouts-parameters>
+      <div class="form-group-title">{{ 'layouts.title' | translate }}</div>
+      <safe-layouts-parameters
+        [form]="form"
+        [resource]="resource"
+        [selectedLayouts]="$any(tileForm).get('layouts')"
+      ></safe-layouts-parameters>
     </div>
     <!-- AVAILABLE ACTIONS -->
     <div formGroupName="actions" class="form-group">
-      <div class="form-group-title">{{'widgets.grid.enabled' | translate}}</div>
+      <div class="form-group-title">
+        {{ 'widgets.grid.enabled' | translate }}
+      </div>
       <mat-slide-toggle formControlName="delete">
-        {{'widgets.grid.actions.delete' | translate}}
+        {{ 'widgets.grid.actions.delete' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="history">
-        {{'widgets.grid.actions.show' | translate}}
+        {{ 'widgets.grid.actions.show' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="convert">
-        {{'widgets.grid.actions.convert' | translate}}
+        {{ 'widgets.grid.actions.convert' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="update">
-        {{'widgets.grid.actions.update' | translate}}
+        {{ 'widgets.grid.actions.update' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="inlineEdition">
-        {{'widgets.grid.actions.inline' | translate}}
+        {{ 'widgets.grid.actions.inline' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="addRecord">
-        {{'widgets.grid.actions.add' | translate}}
+        {{ 'widgets.grid.actions.add' | translate }}
       </mat-slide-toggle>
     </div>
     <!-- BUTTONS -->
     <div class="form-group">
-      <div class="form-group-title">{{'widgets.grid.quickBtn' | translate}}</div>
-      <div class="info-text">{{'widgets.grid.quickBtnDesc' | translate}}</div>
-      <safe-button icon="add" variant="primary" class="add-button" (click)="addFloatingButton()">
-        {{'widgets.grid.addBtn' | translate}}
+      <div class="form-group-title">
+        {{ 'widgets.grid.quickBtn' | translate }}
+      </div>
+      <div class="info-text">{{ 'widgets.grid.quickBtnDesc' | translate }}</div>
+      <safe-button
+        icon="add"
+        variant="primary"
+        class="add-button"
+        (click)="addFloatingButton()"
+      >
+        {{ 'widgets.grid.addBtn' | translate }}
       </safe-button>
-      <mat-tab-group mat-align-tabs="start" animationDuration="0ms" dynamicHeight style="min-height: 500px"
-        [(selectedIndex)]="tabIndex" *ngIf="floatingButtons.length > 0">
+      <mat-tab-group
+        mat-align-tabs="start"
+        animationDuration="0ms"
+        dynamicHeight
+        style="min-height: 500px"
+        [(selectedIndex)]="tabIndex"
+        *ngIf="floatingButtons.length > 0"
+      >
         <ng-container *ngFor="let floatingButton of floatingButtons.controls">
           <mat-tab>
             <ng-template mat-tab-label>
-              <mat-icon class="form-error" *ngIf="floatingButton.invalid">error</mat-icon>
-              {{floatingButton.value.name.length > 0 ? floatingButton.value.name : ( "widgets.grid.btn" | translate )}}
+              {{
+                floatingButton.value.name.length > 0
+                  ? floatingButton.value.name
+                  : ('widgets.grid.btn' | translate)
+              }}
+              <safe-icon
+                *ngIf="floatingButton.invalid"
+                style="padding-left: 2px"
+                icon="error_outline"
+                [inline]="true"
+                [size]="18"
+                variant="danger"
+              ></safe-icon>
             </ng-template>
             <ng-template matTabContent>
-              <safe-floating-button-settings [buttonForm]="$any(floatingButton)" [fields]="fields" [channels]="channels"
-                [relatedForms]="relatedForms" (deleteButton)="deleteFloatingButton()"></safe-floating-button-settings>
+              <safe-floating-button-settings
+                [buttonForm]="$any(floatingButton)"
+                [fields]="fields"
+                [channels]="channels"
+                [relatedForms]="relatedForms"
+                (deleteButton)="deleteFloatingButton()"
+              ></safe-floating-button-settings>
             </ng-template>
           </mat-tab>
         </ng-container>
