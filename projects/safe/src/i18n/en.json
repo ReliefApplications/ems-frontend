@@ -313,7 +313,8 @@
         "title": "Fields",
         "description": "Select data points below and drag them to 'selected fields' on the right",
         "available": "Available fields",
-        "selected": "Selected fields"
+        "selected": "Selected fields",
+        "search": "Search fields..."
       },
       "sort": {
         "title": "Sort",
