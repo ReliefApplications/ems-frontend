@@ -33,6 +33,9 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public selectedFields: any[] = [];
   public fieldForm: FormGroup | null = null;
 
+  public searchAvailable = '';
+  public searchSelected = '';
+
   constructor(private queryBuilder: QueryBuilderService) {}
 
   ngOnInit(): void {
@@ -111,6 +114,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   }
 
   public onEdit(index: number): void {
+    console.log(index);
     this.fieldForm = this.form.at(index) as FormGroup;
     if (this.fieldForm.value.kind !== 'SCALAR') {
       if (this.childTemplate && this.factory) {
@@ -128,5 +132,9 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public onDelete(index: number): void {
     this.form.removeAt(index);
     this.selectedFields.splice(index, 1);
+  }
+
+  public blankFunction(): void {
+    return;
   }
 }

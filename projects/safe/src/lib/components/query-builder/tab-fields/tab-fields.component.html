@@ -3,11 +3,24 @@
     <div class="field-container" *ngIf="!fieldForm">
         <h2>{{'widgets.query.field.available' | translate}}</h2>
 
+        <mat-form-field appearance="outline">
+            <mat-label>Search field</mat-label>
+            <input type="text" matInput [(ngModel)]="searchAvailable">
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        <button style="display: none;" (click)="blankFunction()"></button>
+
         <div class="field-list-wrapper">
             <div cdkDropList [cdkDropListData]="availableFields" class="field-list" cdkDropListSortingDisabled
                 (cdkDropListDropped)="drop($event)">
-                <div class="field-box" *ngFor="let field of availableFields" cdkDrag>{{ field.name }}<span
-                        class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span></div>
+                <ng-container *ngFor="let field of availableFields">
+                    <div class="field-box" cdkDrag *ngIf="searchAvailable.length < 1 || field.name.toLowerCase().includes(searchAvailable.toLowerCase())">
+                        {{ field.name }}
+                        <span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">
+                            {{ field.type.kind }}
+                        </span>
+                    </div>
+                </ng-container>
             </div>
         </div>
     </div>
@@ -15,24 +28,33 @@
     <div class="field-container" *ngIf="!fieldForm">
         <h2>{{'widgets.query.field.selected' | translate}}</h2>
 
+        <mat-form-field appearance="outline">
+            <mat-label>Search field</mat-label>
+            <input type="text" matInput [(ngModel)]= "searchSelected">
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        <button style="display: none;" (click)="blankFunction()"></button>
+
         <div class="field-list-wrapper">
             <div cdkDropList [cdkDropListData]="selectedFields" class="field-list" (cdkDropListDropped)="drop($event)">
-                <div class="field-box" *ngFor="let field of selectedFields; let index = index" cdkDrag>
-                    <div>
-                        <span>{{ field.name }}</span>
-                        <safe-button [isIcon]="true" icon="error" class="field-error" (click)="onEdit(index)"
-                            *ngIf="form.at(index)?.invalid && field.type">
-                        </safe-button>
-                        <safe-button [isIcon]="true" icon="close" class="field-error" *ngIf="!field.type" (click)="onDelete(index)"
-                            matTooltip="Invalid field. Please click to remove.">
-                        </safe-button>
+                <ng-container *ngFor="let field of selectedFields; let index = index">
+                    <div class="field-box" *ngIf="searchSelected.length < 1 || field.name.toLowerCase().includes(searchSelected.toLowerCase())" cdkDrag>
+                        <div>
+                            <span>{{ field.name }}</span>
+                            <safe-button [isIcon]="true" icon="error" class="field-error" (click)="onEdit(index)"
+                                *ngIf="form.at(index)?.invalid && field.type">
+                            </safe-button>
+                            <safe-button [isIcon]="true" icon="close" class="field-error" *ngIf="!field.type" (click)="onDelete(index)"
+                                matTooltip="Invalid field. Please click to remove.">
+                            </safe-button>
+                        </div>
+                        <div *ngIf="field.type">
+                            <span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span>
+                            <safe-button [isIcon]="true" icon="edit" (click)="onEdit(index)">
+                            </safe-button>
+                        </div>
                     </div>
-                    <div *ngIf="field.type">
-                        <span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span>
-                        <safe-button [isIcon]="true" icon="edit" (click)="onEdit(index)">
-                        </safe-button>
-                    </div>
-                </div>
+                </ng-container>
             </div>
         </div>
     </div>
