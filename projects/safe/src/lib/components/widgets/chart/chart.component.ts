@@ -14,8 +14,6 @@ import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
 import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
-import { SafeSnackBarService } from '../../../services/snackbar.service';
-import { NOTIFICATIONS } from '../../../const/notifications';
 
 const DEFAULT_FILE_NAME = 'chart.png';
 
@@ -34,6 +32,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   private dataSubscription?: Subscription;
 
   public lastUpdate = '';
+  public dataError = true;
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -49,10 +48,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     | SafeBarChartComponent
     | SafeColumnChartComponent;
 
-  constructor(
-    private aggregationBuilder: AggregationBuilderService,
-    private snackBar: SafeSnackBarService
-  ) {}
+  constructor(private aggregationBuilder: AggregationBuilderService) {}
 
   /*  Detect changes of the settings to reload the data.
    */
@@ -87,10 +83,9 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   private getData(): void {
     this.dataSubscription = this.dataQuery.subscribe((res: any) => {
       if (res.errors) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.aggregationError, {
-          error: true,
-        });
+        this.dataError = true;
       } else {
+        this.dataError = false;
         const today = new Date();
         this.lastUpdate =
           ('0' + today.getHours()).slice(-2) +

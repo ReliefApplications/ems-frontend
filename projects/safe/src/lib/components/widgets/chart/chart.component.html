@@ -16,4 +16,8 @@
         [legend]="settings.chart.legend" [series]="series"></safe-bar-chart>
     <mat-spinner [diameter]="30" *ngIf="loading"></mat-spinner>
     <p class="widget-last-update" *ngIf="lastUpdate && lastUpdate.length > 0">Last update: {{lastUpdate}}</p>
+    <div *ngIf="dataError" class="error">
+        <safe-icon variant="danger" icon="error_outline"></safe-icon>
+        <p color="danger">{{'widgets.chart.dataError' | translate}}</p>
+    </div>
 </div>
