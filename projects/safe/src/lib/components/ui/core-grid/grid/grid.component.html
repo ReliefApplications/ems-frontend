@@ -77,8 +77,11 @@
                     <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem"
                         *ngIf="['datetime', 'date', 'time'].includes(field.meta.type)">
                         <div class="translate textbox-container" [style]="getStyle(dataItem, field.name)">
-                            <div #refSpan class="textbox">
-                                {{getPropertyValue(dataItem, field.name) | date}}
+                            <div #refSpan class="textbox" *ngIf="field.meta.type === 'time'">
+                                {{getPropertyValue(dataItem, field.name) |  date:'shortTime'}}
+                            </div>
+                            <div #refSpan class="textbox" *ngIf="field.meta.type !== 'time'">
+                                {{getPropertyValue(dataItem, field.name) |  date}}
                             </div>
                         </div>
                     </ng-template>
