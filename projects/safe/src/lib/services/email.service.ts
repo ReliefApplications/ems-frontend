@@ -29,7 +29,7 @@ export class SafeEmailService {
     private snackBar: SafeSnackBarService,
     private translate: TranslateService
   ) {
-    this.url = environment.apiUrl + '/send-email/';
+    this.url = environment.apiUrl + '/email/';
   }
 
   /**

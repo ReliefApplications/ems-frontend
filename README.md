@@ -24,7 +24,7 @@ The project is seperated into three sub-projects:
 - back-office, an application accessible to administrators
 - front-office, an application that would depend on the logged user
 - safe, a library shared by both other projects
-- web-element, an application to genereate the web components
+- web-widgets, an application to genereate the web components
 
 Every change made to the shared library will require a new build of the library, please refer to the commands section to see the command to execute.
 
@@ -49,7 +49,7 @@ First, install globally the bundle analyzer:
 npm install -g webpack-bundle-analyzer
 ```
 
-You can then run, for both back, front office and web element projects:
+You can then run, for both back, front office and web widgets projects:
 ```
 ng build --stats-json
 ```

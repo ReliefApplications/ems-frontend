@@ -17,13 +17,14 @@ import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 
 const DEFAULT_FILE_NAME = 'chart.png';
 
+/**
+ * Chart widget using KendoUI.
+ */
 @Component({
   selector: 'safe-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-/*  Chart widget using KendoUI.
- */
 export class SafeChartComponent implements OnChanges, OnDestroy {
   // === DATA ===
   public loading = true;
@@ -32,6 +33,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   private dataSubscription?: Subscription;
 
   public lastUpdate = '';
+  public hasError = false;
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -80,8 +82,13 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   /*  Load the data, using widget parameters.
    */
   private getData(): void {
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-      (res: any) => {
+    this.dataSubscription = this.dataQuery.subscribe((res: any) => {
+      if (res.errors) {
+        this.loading = false;
+        this.hasError = true;
+        this.series = [];
+      } else {
+        this.hasError = false;
         const today = new Date();
         this.lastUpdate =
           ('0' + today.getHours()).slice(-2) +
@@ -103,7 +110,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
         this.loading = res.loading;
         this.dataSubscription?.unsubscribe();
       }
-    );
+    });
   }
 
   ngOnDestroy(): void {

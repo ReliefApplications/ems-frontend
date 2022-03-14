@@ -2,8 +2,10 @@
   [fieldControl]="$any($any(form).controls.groupBy)"
   [fields]="fields"
 ></safe-field-dropdown>
-<safe-add-field-stage
-  [fields]="fields"
-  [form]="addFields"
-  [operators]="operators"
-></safe-add-field-stage>
+<div>
+  <safe-add-field-stage
+    [fields]="fields"
+    [form]="addFields"
+    [operators]="operators"
+  ></safe-add-field-stage>
+</div>
