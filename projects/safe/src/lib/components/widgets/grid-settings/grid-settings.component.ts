@@ -212,7 +212,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   private createFloatingButtonForm(value: any): FormGroup {
     const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
-      name: [value && value.name ? value.name : 'Next'],
+      name: [value && value.name ? value.name : 'Next', Validators.required],
       selectAll: [value && value.selectAll ? value.selectAll : false],
       selectPage: [value && value.selectPage ? value.selectPage : false],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],

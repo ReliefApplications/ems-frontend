@@ -377,6 +377,7 @@
       "quickBtn": "Quick action buttons",
       "quickBtnDesc": "Quick action buttons will appear on the widget and allow you to complete any of the actions below",
       "addBtn": "Add a button",
+      "btn": "Action button",
       "enable": "Enable",
       "selectAll": "Select all records",
       "prefill": "Pre-fill form with selected data",
