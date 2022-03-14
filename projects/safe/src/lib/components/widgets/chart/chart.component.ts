@@ -32,7 +32,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   private dataSubscription?: Subscription;
 
   public lastUpdate = '';
-  public dataError = false;
+  public hasError = false;
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -84,9 +84,10 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     this.dataSubscription = this.dataQuery.subscribe((res: any) => {
       if (res.errors) {
         this.loading = false;
-        this.dataError = true;
+        this.hasError = true;
+        this.series = [];
       } else {
-        this.dataError = false;
+        this.hasError = false;
         const today = new Date();
         this.lastUpdate =
           ('0' + today.getHours()).slice(-2) +

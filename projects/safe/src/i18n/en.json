@@ -390,7 +390,11 @@
     },
     "chart": {
       "type": "Type",
-      "dataError": "Aggregation cannot execute"
+      "error": {
+        "aggregation": {
+          "invalid": "Aggregation cannot execute"
+        }
+      }
     }
   },
   "history": {
