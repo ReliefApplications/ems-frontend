@@ -4,8 +4,6 @@ import { PipelineStage } from '../components/ui/aggregation-builder/pipeline/pip
 import { Accumulators } from '../components/ui/aggregation-builder/pipeline/expressions/operators';
 import { Observable, Subject } from 'rxjs';
 import { addNewField } from '../components/query-builder/query-builder-forms';
-import { SafeSnackBarService } from './snackbar.service';
-import { NOTIFICATIONS } from '../const/notifications';
 import { ApolloQueryResult } from '@apollo/client';
 import { SafeGridService } from './grid.service';
 
@@ -27,11 +25,7 @@ export class AggregationBuilderService {
    *
    * @param apollo Apollo client
    */
-  constructor(
-    private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
-    private gridService: SafeGridService
-  ) {}
+  constructor(private apollo: Apollo, private gridService: SafeGridService) {}
 
   /**
    * Returns an observable with all the data needed for the preview grid.
@@ -71,24 +65,18 @@ export class AggregationBuilderService {
         const query = this.buildAggregation(aggregationForm.value, false);
         if (query) {
           query.subscribe((res: any) => {
-            if (res.errors) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.aggregationError, {
-                error: true,
-              });
-            } else {
-              if (res.data.recordsAggregation) {
-                gridData = {
-                  data: res.data.recordsAggregation,
-                  total: res.data.recordsAggregation.length,
-                };
-              }
-              loadingGrid = res.loading;
-              this.gridSubject.next({
-                fields: gridFields,
-                data: gridData,
-                loading: loadingGrid,
-              });
+            if (res.data.recordsAggregation) {
+              gridData = {
+                data: res.data.recordsAggregation,
+                total: res.data.recordsAggregation.length,
+              };
             }
+            loadingGrid = res.loading;
+            this.gridSubject.next({
+              fields: gridFields,
+              data: gridData,
+              loading: loadingGrid,
+            });
           });
         }
       } else {
