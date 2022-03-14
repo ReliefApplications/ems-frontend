@@ -4,10 +4,10 @@
   class="collapsible-form-group"
 >
   <mat-expansion-panel
-    *ngFor="let stageForm of pipelineForm.controls; let index = index"
     cdkDrag
+    *ngFor="let stageForm of pipelineForm.controls; let index = index"
   >
-    <mat-expansion-panel-header>
+    <mat-expansion-panel-header cdkDragHandle>
       <mat-panel-title>
         {{ 'aggregation.stages.' + stageForm.value.type | translate }}
         <safe-icon
@@ -18,7 +18,7 @@
             'aggregation.tooltip.' + stageForm.value.type | translate
           "
           matTooltipPosition="right"
-          icon="info"
+          icon="info_outline"
           [inline]="true"
         ></safe-icon>
       </mat-panel-title>

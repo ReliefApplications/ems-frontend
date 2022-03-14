@@ -14,18 +14,17 @@ import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
 import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
-import { SafeSnackBarService } from '../../../services/snackbar.service';
-import { TranslateService } from '@ngx-translate/core';
 
 const DEFAULT_FILE_NAME = 'chart.png';
 
+/**
+ * Chart widget using KendoUI.
+ */
 @Component({
   selector: 'safe-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-/*  Chart widget using KendoUI.
- */
 export class SafeChartComponent implements OnChanges, OnDestroy {
   // === DATA ===
   public loading = true;
@@ -34,6 +33,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   private dataSubscription?: Subscription;
 
   public lastUpdate = '';
+  public hasError = false;
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -49,11 +49,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     | SafeBarChartComponent
     | SafeColumnChartComponent;
 
-  constructor(
-    private aggregationBuilder: AggregationBuilderService,
-    private snackBar: SafeSnackBarService,
-    private translate: TranslateService
-  ) {}
+  constructor(private aggregationBuilder: AggregationBuilderService) {}
 
   /*  Detect changes of the settings to reload the data.
    */
@@ -88,13 +84,11 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   private getData(): void {
     this.dataSubscription = this.dataQuery.subscribe((res: any) => {
       if (res.errors) {
-        this.snackBar.openSnackBar(
-          this.translate.instant('notification.aggregationError'),
-          {
-            error: true,
-          }
-        );
+        this.loading = false;
+        this.hasError = true;
+        this.series = [];
       } else {
+        this.hasError = false;
         const today = new Date();
         this.lastUpdate =
           ('0' + today.getHours()).slice(-2) +
