@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { PipelineStage } from './pipeline-stage.enum';
 import { addStage } from '../aggregation-builder-forms';
 import { debounceTime } from 'rxjs/operators';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 /**
  * Aggregation pipeline component.
@@ -33,20 +34,14 @@ export class SafePipelineComponent implements OnInit {
     this.fields$.subscribe((fields: any[]) => {
       this.initialFields = [...fields];
       this.fieldsPerStage = [];
-      this.updateFieldsPerStage(
-        this.pipelineForm.valid ? this.pipelineForm.value : []
-      );
+      this.updateFieldsPerStage(this.pipelineForm.value);
     });
     this.metaFields$.subscribe((meta: any) => {
       this.metaFields = Object.assign({}, meta);
     });
     this.pipelineForm.valueChanges
       .pipe(debounceTime(500))
-      .subscribe((pipeline: any[]) => {
-        if (this.pipelineForm.valid) {
-          this.updateFieldsPerStage(pipeline);
-        }
-      });
+      .subscribe((pipeline: any[]) => this.updateFieldsPerStage(pipeline));
   }
 
   /**
@@ -55,11 +50,19 @@ export class SafePipelineComponent implements OnInit {
    * @param pipeline list of pipeline stages.
    */
   private updateFieldsPerStage(pipeline: any[]): void {
-    for (let index = 0; index <= pipeline.length; index++) {
+    for (let index = 0; index < pipeline.length; index++) {
       this.fieldsPerStage[index] = this.aggregationBuilder.fieldsAfter(
         this.initialFields,
         pipeline.slice(0, index)
       );
+      if (
+        pipeline[index]?.type === PipelineStage.FILTER ||
+        pipeline[index]?.type === PipelineStage.SORT
+      ) {
+        this.fieldsPerStage[index] = this.fieldsPerStage[index].filter(
+          (field: any) => field.type.kind === 'SCALAR'
+        );
+      }
     }
   }
 
@@ -79,5 +82,17 @@ export class SafePipelineComponent implements OnInit {
    */
   public deleteStage(index: number) {
     this.pipelineForm.removeAt(index);
+  }
+
+  /**
+   * Moves an element in array.
+   *
+   * @param event positions to move.
+   */
+  drop(event: CdkDragDrop<string[]>) {
+    const temp = this.pipelineForm.at(event.previousIndex);
+
+    this.pipelineForm.removeAt(event.previousIndex);
+    this.pipelineForm.insert(event.currentIndex, temp);
   }
 }

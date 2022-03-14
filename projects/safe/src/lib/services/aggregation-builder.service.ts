@@ -1,7 +1,13 @@
-import { Apollo, gql } from 'apollo-angular';
+import { Apollo, gql, QueryRef } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { PipelineStage } from '../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
 import { Accumulators } from '../components/ui/aggregation-builder/pipeline/expressions/operators';
+import { Observable, Subject } from 'rxjs';
+import { addNewField } from '../components/query-builder/query-builder-forms';
+import { SafeSnackBarService } from './snackbar.service';
+import { ApolloQueryResult } from '@apollo/client';
+import { SafeGridService } from './grid.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Shared aggregation service.
@@ -12,6 +18,8 @@ import { Accumulators } from '../components/ui/aggregation-builder/pipeline/expr
   providedIn: 'root',
 })
 export class AggregationBuilderService {
+  private gridSubject = new Subject<any>();
+
   /**
    * Shared aggregation service.
    * Aggregation are used by chart widgets, to get the data.
@@ -19,7 +27,106 @@ export class AggregationBuilderService {
    *
    * @param apollo Apollo client
    */
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private apollo: Apollo,
+    private snackBar: SafeSnackBarService,
+    private gridService: SafeGridService,
+    private translate: TranslateService
+  ) {}
+
+  /**
+   * Returns an observable with all the data needed for the preview grid.
+   */
+  public getPreviewGrid(): Observable<any> {
+    return this.gridSubject.asObservable();
+  }
+
+  /**
+   * Initializes preview grid using pipeline parameters.
+   *
+   * @param aggregation form.
+   * @param pipeline Array of stages.
+   * @param selected fields before aggregation.
+   */
+  public initGrid(
+    aggregationForm: any,
+    pipeline: any[],
+    selectedFields: any,
+    metaFields: any[]
+  ): void {
+    let loadingGrid = true;
+    let gridData: any = {
+      data: [],
+      total: 0,
+    };
+    let gridFields: any[] = [];
+
+    if (aggregationForm.get('pipeline')?.valid) {
+      if (pipeline.length) {
+        loadingGrid = true;
+        gridFields = this.gridService.getFields(
+          this.formatFields(this.fieldsAfter(selectedFields, pipeline)),
+          metaFields,
+          {}
+        );
+        const query = this.buildAggregation(aggregationForm.value, false);
+        if (query) {
+          query.subscribe((res: any) => {
+            if (res.errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('notification.aggregationError'),
+                {
+                  error: true,
+                }
+              );
+            } else {
+              if (res.data.recordsAggregation) {
+                gridData = {
+                  data: res.data.recordsAggregation,
+                  total: res.data.recordsAggregation.length,
+                };
+              }
+              loadingGrid = res.loading;
+              this.gridSubject.next({
+                fields: gridFields,
+                data: gridData,
+                loading: loadingGrid,
+              });
+            }
+          });
+        }
+      } else {
+        gridFields = [];
+        gridData = {
+          data: [],
+          total: 0,
+        };
+      }
+    }
+    this.gridSubject.next({
+      fields: gridFields,
+      data: gridData,
+      loading: loadingGrid,
+    });
+  }
+
+  /**
+   * Formats fields so they are aligned with the queryBuilder format.
+   *
+   * @param fields Raw fields to format.
+   * @return formatted fields.
+   */
+  public formatFields(fields: any[]): any[] {
+    return fields.map((field: any) => {
+      const formattedForm = addNewField(field, true);
+      formattedForm.enable();
+      const formattedField = formattedForm.value;
+      if (formattedField.kind !== 'SCALAR' && field.fields.length) {
+        formattedField.fields = this.formatFields(field.fields);
+      }
+      return formattedField;
+    });
+  }
 
   /**
    * Builds the aggregation query from aggregation definition
@@ -28,7 +135,10 @@ export class AggregationBuilderService {
    * @param withMapping Wether if we should inculde the mapping in the aggregation.
    * @returns Aggregation query
    */
-  public buildAggregation(aggregation: any, withMapping = true): any {
+  public buildAggregation(
+    aggregation: any,
+    withMapping = true
+  ): Observable<ApolloQueryResult<any>> | null {
     if (aggregation) {
       const query = gql`
         query GetCustomAggregation($aggregation: JSON!, $withMapping: Boolean) {
@@ -38,7 +148,7 @@ export class AggregationBuilderService {
           )
         }
       `;
-      return this.apollo.watchQuery<any>({
+      return this.apollo.query<any>({
         query,
         variables: {
           aggregation,
@@ -63,11 +173,29 @@ export class AggregationBuilderService {
       switch (stage.type) {
         case PipelineStage.GROUP: {
           if (stage.form.groupBy) {
-            const groupByField = fields.find(
+            let groupByField = fields.find(
               (x) => x.name === stage.form.groupBy
             );
+            if (!groupByField && stage.form.groupBy.includes('.')) {
+              const fieldArray = stage.form.groupBy.split('.');
+              const parent = fieldArray.shift();
+              const sub = fieldArray.pop();
+              groupByField = fields.reduce((o, field) => {
+                if (
+                  field.name === parent &&
+                  field.fields.some((x: any) => x.name === sub)
+                ) {
+                  const newField = { ...field };
+                  newField.fields = field.fields.filter(
+                    (x: any) => x.name === sub
+                  );
+                  return newField;
+                }
+                return o;
+              }, null);
+            }
+            fields = [];
             if (groupByField) {
-              fields = [];
               fields.push(groupByField);
             }
           }
@@ -81,14 +209,40 @@ export class AggregationBuilderService {
           break;
         }
         case PipelineStage.UNWIND: {
-          fields = fields.map((field) => {
-            if (field.name === stage.form.field) {
-              const newField = Object.assign({}, field);
-              newField.type = { ...field.type, kind: 'SCALAR', name: 'String' };
-              return newField;
-            }
-            return field;
-          });
+          if (stage.form.field.includes('.')) {
+            const fieldArray = stage.form.field.split('.');
+            const parent = fieldArray.shift();
+            const sub = fieldArray.pop();
+            fields = fields.map((field) => {
+              if (field.name === parent) {
+                const newField = Object.assign({}, field);
+                newField.type = { ...field.type, kind: 'OBJECT' };
+                newField.fields = field.fields.map((x: any) =>
+                  x.name === sub
+                    ? {
+                        ...x,
+                        type: { ...x.type, kind: 'SCALAR', name: 'String' },
+                      }
+                    : x
+                );
+                return newField;
+              }
+              return field;
+            });
+          } else {
+            fields = fields.map((field) => {
+              if (field.name === stage.form.field) {
+                const newField = Object.assign({}, field);
+                newField.type = {
+                  ...field.type,
+                  kind: 'SCALAR',
+                  name: 'String',
+                };
+                return newField;
+              }
+              return field;
+            });
+          }
           break;
         }
         default: {

@@ -459,6 +459,14 @@
       "unwind": "Unwind",
       "custom": "Custom"
     },
+    "tooltip": {
+      "filter": "Returns an array with only those elements that match the condition.",
+      "sort": "Sorts all input documents and returns them to the pipeline in sorted order.",
+      "group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
+      "addFields": "Adds new fields to documents.",
+      "unwind": "Deconstructs an array field from the input documents to output a document for each element.",
+      "custom": "Defines a custom aggregation function or expression in JavaScript."
+    },
     "mapping": {
       "xAxis": "X Axis",
       "yAxis": "Y Axis"
@@ -546,6 +554,7 @@
     "pingResponseAuthToken": "Authentication token fetched, ping again to get the actual response.",
     "pingResponseReceived": "Received positive response from ping request.",
     "pingResponseError": "ERROR during the PING request.",
+    "aggregationError": "Aggregation failed to execute.",
     "term": {
       "deleted": "Deleted",
       "application": "Application",
