@@ -402,7 +402,12 @@
       "tooltip3": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
     },
     "chart": {
-      "type": "Type"
+      "type": "Type",
+      "error": {
+        "aggregation": {
+          "invalid": "Aggregation cannot execute"
+        }
+      }
     }
   },
   "history": {
