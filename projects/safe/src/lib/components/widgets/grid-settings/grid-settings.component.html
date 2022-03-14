@@ -66,7 +66,7 @@
           <mat-tab>
             <ng-template mat-tab-label>
               <mat-icon class="form-error" *ngIf="floatingButton.invalid">error</mat-icon>
-              {{ floatingButton.value.name }}
+                {{floatingButton.value.name.length > 0 ? floatingButton.value.name : ( "widgets.grid.btn" | translate )}}
             </ng-template>
             <ng-template matTabContent>
               <safe-floating-button-settings [buttonForm]="$any(floatingButton)" [fields]="fields" [channels]="channels"
