@@ -25,7 +25,18 @@
     </div>
     <div formGroupName="chart" *ngIf="chartForm">
       <mat-tab-group animationDuration="0ms" preserveContent="true">
-        <mat-tab [label]="'global.aggregation' | translate">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            {{ 'global.aggregation' | translate }}
+            <safe-icon
+              *ngIf="aggregationForm.invalid"
+              style="padding-left: 2px"
+              icon="error_outline"
+              [inline]="true"
+              [size]="18"
+              variant="danger"
+            ></safe-icon>
+          </ng-template>
           <safe-aggregation-builder
             [aggregationForm]="aggregationForm"
           ></safe-aggregation-builder>
@@ -139,7 +150,8 @@
               </safe-chart>
             </div>
             <div class="sub-container">
-              <safe-grid *ngIf="grid"
+              <safe-grid
+                *ngIf="grid"
                 [loading]="grid.loading"
                 [fields]="grid.fields"
                 [data]="grid.data"
