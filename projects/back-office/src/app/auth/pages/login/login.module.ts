@@ -6,11 +6,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [LoginComponent],
-  imports: [
-    CommonModule,
-    LoginRoutingModule,
-    MatProgressSpinnerModule
-  ],
+  imports: [CommonModule, LoginRoutingModule, MatProgressSpinnerModule],
   exports: [LoginComponent],
 })
 export class LoginModule {}
