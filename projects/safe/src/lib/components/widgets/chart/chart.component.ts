@@ -72,9 +72,16 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
         height: 800,
       })
       .then((dataURI: string) => {
+        const date = new Date();
+        const formatDate =
+          date.toLocaleString('en-EN', { month: 'short', day: 'numeric' }) +
+          ' ' +
+          date.toLocaleString('en-EN', { year: 'numeric' });
         saveAs(
           dataURI,
-          this.settings.title ? `${this.settings.title}.png` : DEFAULT_FILE_NAME
+          this.settings.title
+            ? `${this.settings.title} ${formatDate}.png`
+            : DEFAULT_FILE_NAME
         );
       });
   }
