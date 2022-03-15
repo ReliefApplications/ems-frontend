@@ -380,14 +380,13 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     return this.allQueries.filter((x) => x.toLowerCase().includes(filterValue));
   }
 
-
   /**
    * Changes order of action buttons.
    *
    * @param event Drop event.
    */
   drop(event: CdkDragDrop<string[]>) {
-    if (event.previousIndex != event.currentIndex) {
+    if (event.previousIndex !== event.currentIndex) {
       const value = this.floatingButtons.at(event.previousIndex);
       this.floatingButtons.removeAt(event.previousIndex);
       this.floatingButtons.insert(event.currentIndex, value);

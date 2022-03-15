@@ -48,7 +48,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     TranslateModule,
     LayoutsParametersModule,
     MatAutocompleteModule,
-    DragDropModule
+    DragDropModule,
   ],
   exports: [SafeGridSettingsComponent],
 })
