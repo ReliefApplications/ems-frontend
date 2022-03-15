@@ -712,6 +712,7 @@ export const ADD_API_CONFIGURATIION = gql`
       status
       authType
       endpoint
+      graphQLEndpoint
       pingUrl
       settings
       permissions {
@@ -741,7 +742,7 @@ export interface AddApiConfigurationMutationResponse {
 }
 
 // === DELETE API CONFIGURATION ===
-export const DELETE_API_CONFIGURATIION = gql`
+export const DELETE_API_CONFIGURATION = gql`
   mutation deleteApiConfiguration($id: ID!) {
     deleteApiConfiguration(id: $id) {
       id
@@ -762,6 +763,7 @@ export const EDIT_API_CONFIGURATION = gql`
     $status: Status
     $authType: AuthType
     $endpoint: String
+    $graphQLEndpoint: String
     $pingUrl: String
     $settings: JSON
     $permissions: JSON
@@ -772,6 +774,7 @@ export const EDIT_API_CONFIGURATION = gql`
       status: $status
       authType: $authType
       endpoint: $endpoint
+      graphQLEndpoint: $graphQLEndpoint
       pingUrl: $pingUrl
       settings: $settings
       permissions: $permissions
@@ -781,6 +784,7 @@ export const EDIT_API_CONFIGURATION = gql`
       status
       authType
       endpoint
+      graphQLEndpoint
       pingUrl
       settings
       permissions {

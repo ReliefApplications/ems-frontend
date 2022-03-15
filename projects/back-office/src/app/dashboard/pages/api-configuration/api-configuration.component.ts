@@ -88,10 +88,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
                 settings: this.buildSettingsForm(
                   this.apiConfiguration?.authType || ''
                 ),
-                graphQLEndpoint: [
-                  this.apiConfiguration?.graphQLEndpoint,
-                  Validators.required,
-                ],
+                graphQLEndpoint: this.apiConfiguration?.graphQLEndpoint
               });
               this.apiForm.get('authType')?.valueChanges.subscribe((value) => {
                 this.apiForm.controls.settings.clearValidators();
@@ -223,6 +220,9 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       },
       this.apiForm.value.endpoint !== this.apiConfiguration?.endpoint && {
         endpoint: this.apiForm.value.endpoint,
+      },
+      this.apiForm.value.graphQLEndpoint !== this.apiConfiguration?.graphQLEndpoint && {
+        graphQLEndpoint: this.apiForm.value.graphQLEndpoint,
       },
       this.apiForm.value.pingUrl !== this.apiConfiguration?.pingUrl && {
         pingUrl: this.apiForm.value.pingUrl,
