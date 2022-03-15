@@ -60,13 +60,15 @@
       <safe-button icon="add" variant="primary" class="add-button" (click)="addFloatingButton()">
         {{'widgets.grid.addBtn' | translate}}
       </safe-button>
-      <mat-tab-group mat-align-tabs="start" animationDuration="0ms" dynamicHeight style="min-height: 500px"
+      <mat-tab-group cdkDropList (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal" mat-align-tabs="start" animationDuration="0ms" dynamicHeight style="min-height: 500px"
         [(selectedIndex)]="tabIndex" *ngIf="floatingButtons.length > 0">
         <ng-container *ngFor="let floatingButton of floatingButtons.controls">
           <mat-tab>
             <ng-template mat-tab-label>
-              <mat-icon class="form-error" *ngIf="floatingButton.invalid">error</mat-icon>
-              {{ floatingButton.value.name }}
+              <div class="btn-tab" cdkDrag>
+                <mat-icon class="form-error" *ngIf="floatingButton.invalid">error</mat-icon>
+                {{ floatingButton.value.name }}
+              </div>
             </ng-template>
             <ng-template matTabContent>
               <safe-floating-button-settings [buttonForm]="$any(floatingButton)" [fields]="fields" [channels]="channels"

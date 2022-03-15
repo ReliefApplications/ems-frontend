@@ -13,3 +13,14 @@
 .form-error {
     color: red;
 }
+
+.btn-tab {
+    width: 160px;
+    height: 48px;
+    padding: 0 24px;
+    margin: 0 -24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}

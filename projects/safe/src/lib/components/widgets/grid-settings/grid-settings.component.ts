@@ -31,6 +31,7 @@ import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { Layout } from '../../../models/layout.model';
 import { Resource } from '../../../models/resource.model';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -377,5 +378,19 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   private filterQueries(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.allQueries.filter((x) => x.toLowerCase().includes(filterValue));
+  }
+
+
+  /**
+   * Changes order of action buttons.
+   *
+   * @param event Drop event.
+   */
+  drop(event: CdkDragDrop<string[]>) {
+    if (event.previousIndex != event.currentIndex) {
+      const value = this.floatingButtons.at(event.previousIndex);
+      this.floatingButtons.removeAt(event.previousIndex);
+      this.floatingButtons.insert(event.currentIndex, value);
+    }
   }
 }
