@@ -195,11 +195,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /** Builds filename from the date and widget title */
   get fileName(): string {
     const today = new Date();
-    const month = today.toLocaleString('en-us', { month: 'short' });
-    const date = month + ' ' + today.getDate() + ' ' + today.getFullYear();
+    const formatDate = `${today.toLocaleString('en-us', {
+      month: 'short',
+      day: 'numeric',
+    })} ${today.getFullYear()}`;
     return `${
       this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
-    } ${date}`;
+    } ${formatDate}.png`;
   }
 
   get hasChanges(): boolean {
