@@ -15,7 +15,7 @@ import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.compon
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 
-const DEFAULT_FILE_NAME = 'chart.png';
+const DEFAULT_FILE_NAME = 'chartS';
 
 /**
  * Chart widget using KendoUI.
@@ -39,6 +39,18 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   @Input() header = true;
   @Input() export = true;
   @Input() settings: any = null;
+
+  /** Builds filename from the date and widget title */
+  get fileName(): string {
+    const today = new Date();
+    const formatDate = `${today.toLocaleString('en-us', {
+      month: 'short',
+      day: 'numeric',
+    })} ${today.getFullYear()}`;
+    return `${
+      this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
+    } ${formatDate}.png`;
+  }
 
   // === CHART ===
   @ViewChild('chartWrapper')
@@ -72,17 +84,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
         height: 800,
       })
       .then((dataURI: string) => {
-        const date = new Date();
-        const formatDate =
-          date.toLocaleString('en-EN', { month: 'short', day: 'numeric' }) +
-          ' ' +
-          date.toLocaleString('en-EN', { year: 'numeric' });
-        saveAs(
-          dataURI,
-          this.settings.title
-            ? `${this.settings.title} ${formatDate}.png`
-            : DEFAULT_FILE_NAME
-        );
+        saveAs(dataURI, this.fileName);
       });
   }
 
