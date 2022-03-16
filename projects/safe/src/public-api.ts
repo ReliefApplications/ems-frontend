@@ -16,6 +16,9 @@ export * from './lib/services/api-proxy.service';
 export * from './lib/services/dashboard.service';
 export * from './lib/services/grid-layout.service';
 
+// === DIRECTIVES ===
+export * from './lib/directives/skeleton/public-api';
+
 // === GUARDS ===
 export * from './lib/guards/permission.guard';
 
