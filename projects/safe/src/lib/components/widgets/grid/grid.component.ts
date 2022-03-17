@@ -159,22 +159,19 @@ export class SafeGridWidgetComponent implements OnInit {
     if (promises.length > 0) {
       await Promise.all(promises);
     }
-    // Opens email client of user.
+    // Send email using backend mail service.
     if (options.sendMail) {
-      const emailSettings = {
+      const gridSettings = {
         query: {
-          name: this.settings.query.name,
-          fields: options.bodyFields
-        }
+          name: this.settings.query.name as string,
+          fields: options.bodyFields as any[],
+        },
+        ids: this.grid.selectedRows,
+        sortField: this.grid.sortField || undefined,
+        sortOrder: this.grid.sortOrder || undefined,
       };
-      const sortField = this.grid.sortField || '';
-      const sortOrder = this.grid.sortOrder || '';
       const body = this.grid.selectedRows.length > 0 ? options.bodyText : options.bodyTextAlternate;
-      this.emailService.sendMail(options.distributionList, options.subject, body, emailSettings,
-        this.grid.selectedRows, sortField, sortOrder);
-      if (options.export && this.grid.selectedRows.length > 0) {
-        this.grid.onExport({ records: 'all', format: 'xlsx', fields: 'visible' });
-      }
+      this.emailService.sendMail(options.distributionList, options.subject, body, gridSettings, options.export && this.grid.selectedRows.length > 0);
     }
 
     // Opens a form with selected records.

@@ -29,6 +29,7 @@ import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
 import { SafeWorkflowStepperModule } from './components/workflow-stepper/workflow-stepper.module';
 import { SafeApplicationsSummaryModule } from './components/applications-summary/applications-summary.module';
+import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackbar-spinner.module';
 
 @NgModule({
   exports: [
@@ -61,7 +62,8 @@ import { SafeApplicationsSummaryModule } from './components/applications-summary
     SafeButtonModule,
     SafeContentChoiceModule,
     SafeWorkflowStepperModule,
-    SafeApplicationsSummaryModule
+    SafeApplicationsSummaryModule,
+    SafeSnackbarSpinnerModule,
   ],
   declarations: []})
 export class SafeModule { }
