@@ -13,7 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SafeButtonModule } from '@safe/builder';
+import { SafeButtonModule, SafeSkeletonTableModule } from '@safe/builder';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -40,6 +40,7 @@ import { AddResourceModule } from '../../../components/add-resource/add-resource
     ReactiveFormsModule,
     TranslateModule,
     AddResourceModule,
+    SafeSkeletonTableModule,
   ],
   exports: [ResourcesComponent],
 })

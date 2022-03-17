@@ -1,45 +1,45 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
+<!-- <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner> -->
 
-  <div class="header">
-    <div class="filters">
-      <div class="top">
-        <mat-form-field appearance="outline">
-          <mat-icon matPrefix>search</mat-icon>
-          <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
-            [placeholder]="'filter.search' | translate">
-        </mat-form-field>
-        <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
-          {{ showFilters ? ('filter.hide' | translate) : 'filter.show' | translate }}
-        </safe-button>
-      </div>
-      <div class="advanced" [style.display]="!showFilters ? 'none' : ''">
-        <mat-form-field appearance="outline">
-          <mat-label>{{'global.status' | translate}}</mat-label>
-          <mat-select [ngModel]="statusFilter" (selectionChange)="applyFilter('status', $event)">
-            <mat-option>-</mat-option>
-            <mat-option value="active">
-              {{'status.active' | translate}}
-            </mat-option>
-            <mat-option value="pending">
-              {{'status.pending' | translate}}
-            </mat-option>
-            <mat-option value="archived">
-              {{'status.archived' | translate}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <safe-button variant="danger" (click)="clearAllFilters()">{{'filter.clear' | translate}}</safe-button>
-      </div>
-    </div>
-
-    <div class="actions">
-      <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
-        {{'APIConf.create' | translate}}
+<div class="header">
+  <div class="filters">
+    <div class="top">
+      <mat-form-field appearance="outline">
+        <mat-icon matPrefix>search</mat-icon>
+        <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
+          [placeholder]="'filter.search' | translate">
+      </mat-form-field>
+      <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
+        {{ showFilters ? ('filter.hide' | translate) : 'filter.show' | translate }}
       </safe-button>
+    </div>
+    <div class="advanced" [style.display]="!showFilters ? 'none' : ''">
+      <mat-form-field appearance="outline">
+        <mat-label>{{'global.status' | translate}}</mat-label>
+        <mat-select [ngModel]="statusFilter" (selectionChange)="applyFilter('status', $event)">
+          <mat-option>-</mat-option>
+          <mat-option value="active">
+            {{'status.active' | translate}}
+          </mat-option>
+          <mat-option value="pending">
+            {{'status.pending' | translate}}
+          </mat-option>
+          <mat-option value="archived">
+            {{'status.archived' | translate}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <safe-button variant="danger" (click)="clearAllFilters()">{{'filter.clear' | translate}}</safe-button>
     </div>
   </div>
 
+  <div class="actions">
+    <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
+      {{'APIConf.create' | translate}}
+    </safe-button>
+  </div>
+</div>
+
+<ng-container *ngIf="!loading">
   <table mat-table [dataSource]="dataSource" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
@@ -104,3 +104,8 @@
     (page)="onPage($event)">
   </mat-paginator>
 </ng-container>
+
+<safe-skeleton-table *ngIf="loading"
+  [columns]="['global.name', 'global.status', 'table.authType']"
+  [actions]="true">
+</safe-skeleton-table>

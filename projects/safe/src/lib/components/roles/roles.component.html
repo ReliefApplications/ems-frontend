@@ -1,19 +1,20 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
-  <div class="header">
-    <div class="filters">
-      <mat-form-field appearance="outline">
-        <mat-icon matPrefix>search</mat-icon>
-        <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
-          [placeholder]="'filter.search' | translate">
-      </mat-form-field>
-    </div>
-    <div class="actions">
-      <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
-        {{'roles.create' | translate}}
-      </safe-button>
-    </div>
+<!-- <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner> -->
+<div class="header">
+  <div class="filters">
+    <mat-form-field appearance="outline">
+      <mat-icon matPrefix>search</mat-icon>
+      <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
+        [placeholder]="'filter.search' | translate">
+    </mat-form-field>
   </div>
+  <div class="actions">
+    <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
+      {{'roles.create' | translate}}
+    </safe-button>
+  </div>
+</div>
+
+<ng-container *ngIf="!loading">
   <table mat-table [dataSource]="roles" matSort>
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef>
@@ -56,3 +57,8 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
 </ng-container>
+
+<safe-skeleton-table *ngIf="loading"
+  [columns]="['global.title', 'global.users']"
+  [actions]="true">
+</safe-skeleton-table>

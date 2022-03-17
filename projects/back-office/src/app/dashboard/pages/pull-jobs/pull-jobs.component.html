@@ -1,10 +1,12 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<!-- <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner> -->
+
+<div class="actions">
+    <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
+      {{'pullJobs.create' | translate}}
+    </safe-button>
+</div>
+
 <ng-container *ngIf="!loading">
-    <div class="actions">
-        <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
-          {{'pullJobs.create' | translate}}
-        </safe-button>
-    </div>
     <table mat-table [dataSource]="pullJobs">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>{{'global.name' | translate}}</th>
@@ -59,3 +61,8 @@
       (page)="onPage($event)">
     </mat-paginator>
 </ng-container>
+
+<safe-skeleton-table *ngIf="loading"
+  [columns]="['global.name', 'global.status', 'table.APIConf', 'global.convert']"
+  [actions]="true">
+</safe-skeleton-table>

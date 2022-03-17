@@ -1,5 +1,5 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
+<!-- <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner> -->
+<ng-container>
   <!-- FILTERING -->
   <app-filter (filter)="onFilter($event)"></app-filter>
 
@@ -9,8 +9,8 @@
     (openApplication)="onOpenApplication($event)" (delete)="onDelete($event)" (preview)="onPreview($event)" (clone)="onClone($event)"></safe-applications-summary>
 
   <!-- APPLICATIONS TABLE -->
-  <ng-container>
-    <h2>{{'apps.all' | translate}}</h2>
+  <h2>{{'apps.all' | translate}}</h2>
+  <ng-container *ngIf="!loading">
     <table mat-table [dataSource]="applications" matSort>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
@@ -95,4 +95,8 @@
       (page)="onPage($event)">
     </mat-paginator>
   </ng-container>
+  <safe-skeleton-table *ngIf="loading"
+    [columns]="['global.name', 'table.date', 'global.status', 'global.users']"
+    [actions]="true">
+  </safe-skeleton-table>
 </ng-container>

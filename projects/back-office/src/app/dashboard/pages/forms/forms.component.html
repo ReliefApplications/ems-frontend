@@ -1,16 +1,16 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
-  <div class="forms-header">
-    <!-- FILTERING -->
-    <app-filter (filter)="onFilter($event)"></app-filter>
-    <!-- ACTIONS -->
-    <div class="actions">
-      <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
-        {{'forms.create' | translate}}
-      </safe-button>
-    </div>
+<!-- <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner> -->
+<div class="forms-header">
+  <!-- FILTERING -->
+  <app-filter (filter)="onFilter($event)"></app-filter>
+  <!-- ACTIONS -->
+  <div class="actions">
+    <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
+      {{'forms.create' | translate}}
+    </safe-button>
   </div>
+</div>
 
+<ng-container *ngIf="!loading">
   <table mat-table [dataSource]="forms" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
@@ -133,3 +133,8 @@
     (page)="onPage($event)">
   </mat-paginator>
 </ng-container>
+
+<safe-skeleton-table *ngIf="loading"
+  [columns]="['global.name', 'table.date', 'global.status', 'table.history', 'table.records', 'table.core', 'table.parent']"
+  [actions]="true">
+</safe-skeleton-table>
