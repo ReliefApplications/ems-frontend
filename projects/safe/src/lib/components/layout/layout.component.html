@@ -8,7 +8,7 @@
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button mat-button [matMenuTriggerFor]="applicationMenu">
-      {{title}}
+      {{theme.prefix}} {{title}}
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
     <mat-menu #applicationMenu="matMenu">
