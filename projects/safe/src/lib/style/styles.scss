@@ -132,6 +132,14 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
       color: mat.get-color-from-palette($primary);
     }
   }
+
+  .safe-add-step {
+    background-color:  mat.get-color-from-palette($primary, 50);
+
+    span {
+      color: mat.get-color-from-palette($primary);
+    }
+  }
 }
 
 @mixin chip($theme) {
