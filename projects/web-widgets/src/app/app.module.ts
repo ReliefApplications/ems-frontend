@@ -16,7 +16,6 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { setContext } from '@apollo/client/link/context';
 import { AppComponent } from './app.component';
-import { NewsComponent } from './news/news.component';
 import { ApplicationWidgetComponent } from './widgets/application-widget/application-widget.component';
 import { ApplicationWidgetModule } from './widgets/application-widget/application-widget.module';
 import { DashboardWidgetComponent } from './widgets/dashboard-widget/dashboard-widget.component';
@@ -38,6 +37,8 @@ import {
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { AppOverlayContainer } from './utils/overlay-container';
 
 localStorage.setItem('loaded', 'false');
 
@@ -146,7 +147,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http);
 
 @NgModule({
-  declarations: [AppComponent, NewsComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -189,6 +190,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
         // return the container ElementRef, where the popup will be injected
         ({ nativeElement: document.body } as ElementRef),
     },
+    // {
+    //   provide: OverlayContainer,
+    //   useFactory: () => new AppOverlayContainer(document)
+    // },
   ],
 })
 export class AppModule implements DoBootstrap {

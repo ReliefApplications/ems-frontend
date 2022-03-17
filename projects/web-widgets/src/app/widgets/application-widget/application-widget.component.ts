@@ -7,6 +7,7 @@ import {
   Output,
   ViewChild,
   ViewContainerRef,
+  ViewEncapsulation,
 } from '@angular/core';
 import { Page, SafeLayoutService } from '@safe/builder';
 
@@ -14,6 +15,7 @@ import { Page, SafeLayoutService } from '@safe/builder';
   selector: 'app-application-widget',
   templateUrl: './application-widget.component.html',
   styleUrls: ['./application-widget.component.scss'],
+  encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class ApplicationWidgetComponent implements OnInit {
   @Input() id = '';

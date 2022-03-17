@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild,
   ViewContainerRef,
+  ViewEncapsulation,
 } from '@angular/core';
 import { SafeLayoutService } from '@safe/builder';
 
@@ -12,6 +13,7 @@ import { SafeLayoutService } from '@safe/builder';
   selector: 'app-workflow-widget',
   templateUrl: './workflow-widget.component.html',
   styleUrls: ['./workflow-widget.component.scss'],
+  encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class WorkflowWidgetComponent implements OnInit {
   @Input() id = '';

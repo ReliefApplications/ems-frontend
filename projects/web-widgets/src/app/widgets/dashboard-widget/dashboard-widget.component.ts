@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild,
   ViewContainerRef,
+  ViewEncapsulation,
 } from '@angular/core';
 import { SafeLayoutService } from '@safe/builder';
 
@@ -12,6 +13,7 @@ import { SafeLayoutService } from '@safe/builder';
   selector: 'app-dashboard-widget',
   templateUrl: './dashboard-widget.component.html',
   styleUrls: ['./dashboard-widget.component.scss'],
+  encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class DashboardWidgetComponent implements OnInit {
   @Input() id = '';

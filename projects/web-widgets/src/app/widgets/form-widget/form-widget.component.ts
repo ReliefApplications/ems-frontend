@@ -5,13 +5,15 @@ import {
   OnInit,
   ViewChild,
   ViewContainerRef,
+  ViewEncapsulation,
 } from '@angular/core';
-import { SafeLayoutService } from '@safe/builder';
+import { SafeFormService, SafeLayoutService } from '@safe/builder';
 
 @Component({
   selector: 'app-form-widget',
   templateUrl: './form-widget.component.html',
   styleUrls: ['./form-widget.component.scss'],
+  encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class FormWidgetComponent implements OnInit {
   @Input() id = '';
@@ -21,7 +23,10 @@ export class FormWidgetComponent implements OnInit {
 
   public showSidenav = false;
 
-  constructor(private layoutService: SafeLayoutService) {}
+  constructor(
+    private layoutService: SafeLayoutService,
+    private formService: SafeFormService
+  ) {}
 
   ngOnInit(): void {
     this.layoutService.rightSidenav$.subscribe((view) => {
