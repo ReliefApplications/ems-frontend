@@ -517,11 +517,6 @@
       "error": "Something went wrong during the upload"
     }
   },
-  "email": {
-    "processing": "Sending email...",
-    "sent": "Email sent",
-    "error": "Something went wrong during the email sending"
-  },
   "notification": {
     "appPublished": "Application {{value}} published.",
     "userInvalidActions": "User could not be {{action}}.",
