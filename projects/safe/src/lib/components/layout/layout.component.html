@@ -1,10 +1,10 @@
-<mat-toolbar color="primary">
+<mat-toolbar [color]="theme.headerColor">
   <safe-button [isIcon]="true" icon="menu" (click)="nav.toggle()" *ngIf="!largeDevice">
   </safe-button>
   <safe-button [isIcon]="true" icon="keyboard_backspace" (click)="goBack()" *ngIf="route" matTooltip="Go to application list">
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1 class="application-title">{{title}}</h1>
+    <h1 class="application-title">{{theme.prefix}} {{title}}</h1>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button mat-button [matMenuTriggerFor]="applicationMenu">

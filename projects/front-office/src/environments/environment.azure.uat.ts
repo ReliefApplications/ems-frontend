@@ -1,3 +1,5 @@
+import { theme } from '../themes/default/default.uat';
+
 export const environment = {
     production: true,
     API_URL: 'https://ems-safe-test.who.int/api',
@@ -8,5 +10,6 @@ export const environment = {
     postLogoutRedirectUri: 'https://ems-safe-test.who.int/auth',
     frontOfficeUri: 'https://ems-safe-test.who.int/',
     backOfficeUri: 'https://ems-safe-test.who.int/backoffice/',
-    module: 'frontoffice'
+    module: 'frontoffice',
+    theme
 };

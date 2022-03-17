@@ -1,3 +1,5 @@
+import { theme } from '../themes/oort/oort.prod';
+
 export const environment = {
   production: true,
   API_URL: 'https://dms.oortcloud.tech/api',
@@ -8,5 +10,6 @@ export const environment = {
   postLogoutRedirectUri: 'https://dms.oortcloud.tech/admin/auth',
   frontOfficeUri: 'https://dms.oortcloud.tech',
   backOfficeUri: 'https://dms.oortcloud.tech/admin/',
-  module: 'backoffice'
+  module: 'backoffice',
+  theme
 };

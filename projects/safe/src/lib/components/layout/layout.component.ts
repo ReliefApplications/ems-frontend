@@ -7,7 +7,7 @@ import { PermissionsManagement, PermissionType, User } from '../../models/user.m
 import { Application } from '../../models/application.model';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Notification } from '../../models/notification.model';
+import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
@@ -54,6 +54,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   // === DISPLAY ===
   public largeDevice: boolean;
+  public theme: any;
 
   public showSidenav = false;
 
@@ -72,6 +73,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.largeDevice = (window.innerWidth > 1024);
     this.account = this.authService.account;
     this.environment = environment;
+    this.theme = this.environment.theme;
   }
 
   ngOnInit(): void {

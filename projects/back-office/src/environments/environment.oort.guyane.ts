@@ -1,3 +1,5 @@
+import { theme } from '../themes/oort/oort.prod';
+
 export const environment = {
   production: true,
   API_URL: 'https://aide-alimentaire-guyane.oortcloud.tech/api',
@@ -9,4 +11,5 @@ export const environment = {
   frontOfficeUri: 'https://aide-alimentaire-guyane.oortcloud.tech',
   backOfficeUri: 'https://aide-alimentaire-guyane.oortcloud.tech/admin/',
   module: 'backoffice',
+  theme
 };

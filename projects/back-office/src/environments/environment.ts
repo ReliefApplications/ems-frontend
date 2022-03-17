@@ -1,3 +1,5 @@
+import { theme } from '../themes/default/default.local';
+
 export const environment = {
   production: false,
   API_URL: 'http://localhost:3000',
@@ -8,5 +10,6 @@ export const environment = {
   postLogoutRedirectUri: 'http://localhost:4200/auth',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
-  module: 'backoffice'
+  module: 'backoffice',
+  theme
 };

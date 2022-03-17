@@ -1,3 +1,5 @@
+import { theme } from '../themes/default/default.prod';
+
 export const environment = {
   production: true,
   API_URL: 'https://safe-api.development.humanitarian.tech',
@@ -8,5 +10,6 @@ export const environment = {
   postLogoutRedirectUri: 'https://safe-backoffice.development.humanitarian.tech/auth',
   frontOfficeUri: 'https://safe.development.humanitarian.tech/',
   backOfficeUri: 'https://safe-backoffice.development.humanitarian.tech/',
-  module: 'backoffice'
+  module: 'backoffice',
+  theme
 };
