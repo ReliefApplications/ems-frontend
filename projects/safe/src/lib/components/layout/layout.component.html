@@ -1,4 +1,4 @@
-<mat-toolbar color="primary">
+<mat-toolbar [color]="theme.headerColor">
   <safe-button [isIcon]="true" icon="menu" (click)="nav.toggle()"
     [matTooltip]="nav.opened ? 'Collapse sidebar' : 'Show sidebar'">
   </safe-button>
@@ -6,7 +6,7 @@
     [matTooltip]="'tooltip.backApps' | translate">
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1 class="application-title">{{(route) ? (title) : ('nav.title' | translate)}}</h1>
+    <h1 class="application-title">{{theme.prefix}} {{(route) ? (title) : ('nav.title' | translate)}}</h1>
     <!-- Temporal language changer -->
     <span class="form-inline" style="margin-left: 1em;" *ngIf="languages.length > 1">
       <select class="form-control" #selectedLang (change)="setLanguage(selectedLang.value)" [(ngModel)]="currentLanguage">
