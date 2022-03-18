@@ -3,13 +3,10 @@ import { CommonModule } from '@angular/common';
 import { DashboardWidgetComponent } from './dashboard-widget.component';
 import { DashboardModule } from '../../components/dashboard/dashboard.module';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
-import { AppOverlayContainer } from '../../utils/overlay-container';
 
 @NgModule({
   declarations: [DashboardWidgetComponent],
-  imports: [CommonModule, DashboardModule, MatSidenavModule, OverlayModule],
+  imports: [CommonModule, DashboardModule, MatSidenavModule],
   exports: [DashboardWidgetComponent],
-  providers: [{ provide: OverlayContainer, useClass: AppOverlayContainer }],
 })
 export class DashboardWidgetModule {}

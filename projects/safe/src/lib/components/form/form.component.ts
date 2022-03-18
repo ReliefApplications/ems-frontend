@@ -211,7 +211,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    console.log('there');
     this.survey.render(this.containerId);
   }
 

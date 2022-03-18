@@ -1,4 +1,6 @@
+import { OverlayContainer } from '@angular/cdk/overlay';
 import {
+  AfterViewInit,
   Component,
   ComponentRef,
   Input,
@@ -7,7 +9,8 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { SafeFormService, SafeLayoutService } from '@safe/builder';
+import { SafeLayoutService } from '@safe/builder';
+import { AppOverlayContainer } from '../../utils/overlay-container';
 
 @Component({
   selector: 'app-form-widget',
@@ -15,7 +18,7 @@ import { SafeFormService, SafeLayoutService } from '@safe/builder';
   styleUrls: ['./form-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class FormWidgetComponent implements OnInit {
+export class FormWidgetComponent implements OnInit, AfterViewInit {
   @Input() id = '';
 
   @ViewChild('rightSidenav', { read: ViewContainerRef })
@@ -25,7 +28,7 @@ export class FormWidgetComponent implements OnInit {
 
   constructor(
     private layoutService: SafeLayoutService,
-    private formService: SafeFormService
+    private overlayContainer: OverlayContainer
   ) {}
 
   ngOnInit(): void {
@@ -50,5 +53,11 @@ export class FormWidgetComponent implements OnInit {
         }
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    const test: AppOverlayContainer = this
+      .overlayContainer as AppOverlayContainer;
+    test.updateContainer('form-widget');
   }
 }

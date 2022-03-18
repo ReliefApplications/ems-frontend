@@ -9,7 +9,7 @@ import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 // Apollo
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
+import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
 import { getMainDefinition } from '@apollo/client/utilities';
@@ -37,6 +37,9 @@ import {
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
+import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
+import { Platform } from '@angular/cdk/platform';
+import { AppOverlayContainer } from './utils/overlay-container';
 
 localStorage.setItem('loaded', 'false');
 
@@ -144,6 +147,15 @@ const initializeAuth =
 export const httpTranslateLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http);
 
+/**
+ * Provides custom overlay to inject modals / snackbars in shadow root.
+ *
+ * @param _platform CDK platform.
+ * @returns custom Overlay container.
+ */
+const provideOverlay = (_platform: Platform): AppOverlayContainer =>
+  new AppOverlayContainer(_platform);
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -160,6 +172,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
         deps: [HttpClient],
       },
     }),
+    OverlayModule,
     DashboardWidgetModule,
     FormWidgetModule,
     WorkflowWidgetModule,
@@ -187,6 +200,11 @@ export const httpTranslateLoader = (http: HttpClient) =>
       useFactory: () =>
         // return the container ElementRef, where the popup will be injected
         ({ nativeElement: document.body } as ElementRef),
+    },
+    {
+      provide: OverlayContainer,
+      useFactory: provideOverlay,
+      deps: [Platform],
     },
   ],
 })
