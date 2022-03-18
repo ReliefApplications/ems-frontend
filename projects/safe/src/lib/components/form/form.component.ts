@@ -4,16 +4,17 @@ import {
   Component,
   ComponentFactory,
   ComponentFactoryResolver,
+  ElementRef,
   EventEmitter,
   Inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-angular';
-import { v4 as uuidv4 } from 'uuid';
 import {
   AddRecordMutationResponse,
   ADD_RECORD,
@@ -65,7 +66,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
-  public containerId: string;
+
+  @ViewChild('formContainer') formContainer!: ElementRef;
 
   environment: any;
 
@@ -96,7 +98,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private formBuilderService: SafeFormBuilderService,
     private translate: TranslateService
   ) {
-    this.containerId = uuidv4();
     this.environment = environment;
   }
 
@@ -211,7 +212,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.survey.render(this.containerId);
+    this.survey.render(this.formContainer.nativeElement);
   }
 
   public reset(): void {

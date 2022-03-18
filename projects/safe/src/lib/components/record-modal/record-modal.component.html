@@ -19,15 +19,11 @@
 </ng-container>
 <mat-dialog-content>
     <ng-container *ngIf="!data.compareTo">
-        <div [id]="containerId"></div>
+        <div #formContainer class="form-container"></div>
     </ng-container>
     <ng-container *ngIf="data.compareTo">
-        <mat-grid-list cols="2" rowHeight="2:1">
-            <mat-grid-tile [id]="containerNextId">
-            </mat-grid-tile>
-            <mat-grid-tile [id]="containerId">
-            </mat-grid-tile>
-        </mat-grid-list>
+        <div #formContainerNext class="form-container"></div>
+        <div #formContainer class="form-container"></div>
     </ng-container>
 </mat-dialog-content>
 <mat-dialog-actions align="end" *ngIf="!loading && data.compareTo">
