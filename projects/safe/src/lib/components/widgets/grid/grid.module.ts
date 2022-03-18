@@ -5,6 +5,7 @@ import { SafeFormModalModule } from '../../form-modal/form-modal.module';
 import { MatButtonModule } from '@angular/material/button';
 import { SafeChooseRecordModalModule } from '../../choose-record-modal/choose-record-modal.module';
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
+import { SafeEmailPreviewModule } from '../../email-preview/email-preview.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
     SafeFormModalModule,
     MatButtonModule,
     SafeChooseRecordModalModule,
-    SafeCoreGridModule
+    SafeCoreGridModule,
+    SafeEmailPreviewModule
   ],
   exports: [SafeGridWidgetComponent]
 })
