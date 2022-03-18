@@ -171,7 +171,7 @@ export class SafeGridWidgetComponent implements OnInit {
         sortOrder: this.grid.sortOrder || undefined,
       };
       const body = this.grid.selectedRows.length > 0 ? options.bodyText : options.bodyTextAlternate;
-      this.emailService.sendMail(options.distributionList, options.subject, body, gridSettings, options.export && this.grid.selectedRows.length > 0);
+      this.emailService.previewMail(options.distributionList, options.subject, body, gridSettings, options.export && this.grid.selectedRows.length > 0);
     }
 
     // Opens a form with selected records.
