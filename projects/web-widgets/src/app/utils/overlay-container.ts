@@ -1,12 +1,8 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { Platform } from '@angular/cdk/platform';
 import { Injectable } from '@angular/core';
 
 @Injectable()
 export class AppOverlayContainer extends OverlayContainer {
-  constructor(document: Document, _platform: Platform) {
-    super(document, _platform);
-  }
 
   protected _createContainer(): void {
     console.log('there');

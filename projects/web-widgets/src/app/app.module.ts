@@ -37,8 +37,6 @@ import {
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { AppOverlayContainer } from './utils/overlay-container';
 
 localStorage.setItem('loaded', 'false');
 
@@ -190,10 +188,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
         // return the container ElementRef, where the popup will be injected
         ({ nativeElement: document.body } as ElementRef),
     },
-    // {
-    //   provide: OverlayContainer,
-    //   useFactory: () => new AppOverlayContainer(document)
-    // },
   ],
 })
 export class AppModule implements DoBootstrap {
