@@ -184,8 +184,10 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
 
-<safe-skeleton-table *ngIf="loading"
+<safe-skeleton-table
+  *ngIf="loading"
   [columns]="['global.name', 'global.username', 'table.authId', 'global.role']"
   [actions]="true"
-  [checkbox]="true">
+  [checkbox]="true"
+>
 </safe-skeleton-table>

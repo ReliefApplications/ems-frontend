@@ -133,6 +133,7 @@ export class ApiConfigurationsComponent
       if (e.pageSize > this.pageInfo.pageSize) {
         neededSize -= this.pageInfo.pageSize;
       }
+      this.loading = true;
       this.apiConfigurationsQuery.fetchMore({
         variables: {
           first: neededSize,

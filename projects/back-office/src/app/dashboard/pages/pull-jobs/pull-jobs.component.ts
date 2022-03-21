@@ -98,6 +98,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       e.pageIndex > e.previousPageIndex &&
       e.length > this.cachedPullJobs.length
     ) {
+      this.loading = true;
       this.pullJobsQuery.fetchMore({
         variables: {
           first: ITEMS_PER_PAGE,

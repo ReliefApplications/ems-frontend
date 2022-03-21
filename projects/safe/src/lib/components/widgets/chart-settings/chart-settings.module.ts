@@ -46,7 +46,7 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
     MatAutocompleteModule,
     MatChipsModule,
     SafeGridModule,
-    SafeIconModule,
+    SafeIconModule
   ],
   exports: [SafeChartSettingsComponent],
 })

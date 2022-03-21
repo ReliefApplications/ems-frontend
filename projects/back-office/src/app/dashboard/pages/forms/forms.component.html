@@ -1,140 +1,194 @@
-<!-- <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner> -->
 <div class="forms-header">
   <!-- FILTERING -->
   <app-filter (filter)="onFilter($event)"></app-filter>
   <!-- ACTIONS -->
   <div class="actions">
-    <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
-      {{'forms.create' | translate}}
+    <safe-button
+      icon="add"
+      category="secondary"
+      variant="primary"
+      (click)="onAdd()"
+      *ngIf="canAdd"
+    >
+      {{ 'forms.create' | translate }}
     </safe-button>
   </div>
 </div>
 
-<ng-container *ngIf="!loading">
-  <table mat-table [dataSource]="forms" matSort>
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{'global.name' | translate}}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-    </ng-container>
+<table *ngIf="!loading" mat-table [dataSource]="forms" matSort>
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'global.name' | translate }}
+      </span>
+    </th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
 
-    <ng-container matColumnDef="createdAt">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{'table.date' | translate}}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
-    </ng-container>
+  <ng-container matColumnDef="createdAt">
+    <th mat-header-cell *matHeaderCellDef>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'table.date' | translate }}
+      </span>
+    </th>
+    <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
+  </ng-container>
 
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{'global.status' | translate}}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <mat-chip-list>
-          <mat-chip class="success-chip" disabled *ngIf="element.status === 'active'">
-            {{ 'status.active' | translate | titlecase }}
-          </mat-chip>
-          <mat-chip class="accent-chip" disabled color="accent" *ngIf="element.status === 'pending'">
-            {{ 'status.pending' | translate | titlecase }}
-          </mat-chip>
-          <mat-chip class="warn-chip" disabled color="warn" *ngIf="element.status === 'archived'">
-            {{ 'status.archived' | translate | titlecase }}
-          </mat-chip>
-        </mat-chip-list>
-      </td>
-    </ng-container>
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'global.status' | translate }}
+      </span>
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <mat-chip-list>
+        <mat-chip
+          class="success-chip"
+          disabled
+          *ngIf="element.status === 'active'"
+        >
+          {{ 'status.active' | translate | titlecase }}
+        </mat-chip>
+        <mat-chip
+          class="accent-chip"
+          disabled
+          color="accent"
+          *ngIf="element.status === 'pending'"
+        >
+          {{ 'status.pending' | translate | titlecase }}
+        </mat-chip>
+        <mat-chip
+          class="warn-chip"
+          disabled
+          color="warn"
+          *ngIf="element.status === 'archived'"
+        >
+          {{ 'status.archived' | translate | titlecase }}
+        </mat-chip>
+      </mat-chip-list>
+    </td>
+  </ng-container>
 
-    <ng-container matColumnDef="versionsCount">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{'table.history' | translate}}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">{{ element.versionsCount }}</td>
-    </ng-container>
+  <ng-container matColumnDef="versionsCount">
+    <th mat-header-cell *matHeaderCellDef>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'table.history' | translate }}
+      </span>
+    </th>
+    <td mat-cell *matCellDef="let element">{{ element.versionsCount }}</td>
+  </ng-container>
 
-    <ng-container matColumnDef="recordsCount">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{'table.records' | translate}}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">{{ element.recordsCount }}</td>
-    </ng-container>
+  <ng-container matColumnDef="recordsCount">
+    <th mat-header-cell *matHeaderCellDef>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'table.records' | translate }}
+      </span>
+    </th>
+    <td mat-cell *matCellDef="let element">{{ element.recordsCount }}</td>
+  </ng-container>
 
-    <ng-container matColumnDef="core">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{'table.core' | translate}}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <mat-chip-list *ngIf="element.core">
-          <mat-chip class="primary-chip" disabled>{{'global.core' | translate}}</mat-chip>
-        </mat-chip-list>
-      </td>
-    </ng-container>
+  <ng-container matColumnDef="core">
+    <th mat-header-cell *matHeaderCellDef>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'table.core' | translate }}
+      </span>
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <mat-chip-list *ngIf="element.core">
+        <mat-chip class="primary-chip" disabled>{{
+          'global.core' | translate
+        }}</mat-chip>
+      </mat-chip-list>
+    </td>
+  </ng-container>
 
-    <ng-container matColumnDef="parentForm">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{'table.parent' | translate}}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <safe-button *ngIf="!element.core && element.resource?.coreForm?.name"
-          [routerLink]="['/forms/builder', element.resource.coreForm.id]">
-          {{ element.resource.coreForm.name }}
-        </safe-button>
-      </td>
-    </ng-container>
+  <ng-container matColumnDef="parentForm">
+    <th mat-header-cell *matHeaderCellDef>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'table.parent' | translate }}
+      </span>
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <safe-button
+        *ngIf="!element.core && element.resource?.coreForm?.name"
+        [routerLink]="['/forms/builder', element.resource.coreForm.id]"
+      >
+        {{ element.resource.coreForm.name }}
+      </safe-button>
+    </td>
+  </ng-container>
 
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let element">
-        <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()"
-          [disabled]="!(element.canUpdate || element.canDelete || (element.recordsCount > 0))">
-        </safe-button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item [routerLink]="['/forms/builder', element.id]" *ngIf="element.canUpdate">
-            <mat-icon>edit</mat-icon>
-            {{'action.edit' | translate}}
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <safe-button
+        [isIcon]="true"
+        icon="more_vert"
+        [matMenuTriggerFor]="menu"
+        (click)="$event.stopPropagation()"
+        [disabled]="
+          !(element.canUpdate || element.canDelete || element.recordsCount > 0)
+        "
+      >
+      </safe-button>
+      <mat-menu #menu="matMenu">
+        <button
+          mat-menu-item
+          [routerLink]="['/forms/builder', element.id]"
+          *ngIf="element.canUpdate"
+        >
+          <mat-icon>edit</mat-icon>
+          {{ 'action.edit' | translate }}
+        </button>
+        <ng-container *ngIf="element.canSee">
+          <button mat-menu-item [routerLink]="['/forms/records', element.id]">
+            <mat-icon>plagiarism</mat-icon>
+            {{ 'action.view' | translate }}
           </button>
-          <ng-container *ngIf="element.canSee">
-            <button mat-menu-item [routerLink]="['/forms/records', element.id]">
-              <mat-icon>plagiarism</mat-icon>
-              {{'action.view' | translate}}
-            </button>
-          </ng-container>
-          <ng-container *ngIf="element.canDelete">
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="onDelete(element, $event)">
-              <mat-icon>delete</mat-icon>
-              {{'action.delete' | translate}}
-            </button>
-          </ng-container>
-        </mat-menu>
-      </td>
-    </ng-container>
+        </ng-container>
+        <ng-container *ngIf="element.canDelete">
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="onDelete(element, $event)">
+            <mat-icon>delete</mat-icon>
+            {{ 'action.delete' | translate }}
+          </button>
+        </ng-container>
+      </mat-menu>
+    </td>
+  </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"
-      [ngClass]="{'clickable': ( row.canCreateRecords && (row.status === 'active') )}"
-      [routerLink]="( row.canCreateRecords && (row.status === 'active') ) ? ['/forms/answer', row.id] : []"></tr>
-  </table>
-  <mat-paginator [pageSize]="pageInfo.pageSize" [pageSizeOptions]="[10, 25, 50]" [length]="pageInfo.length" aria-label="Select page of forms"
-    (page)="onPage($event)">
-  </mat-paginator>
-</ng-container>
-
-<safe-skeleton-table *ngIf="loading"
-  [columns]="['global.name', 'table.date', 'global.status', 'table.history', 'table.records', 'table.core', 'table.parent']"
-  [actions]="true">
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    [ngClass]="{ clickable: row.canCreateRecords && row.status === 'active' }"
+    [routerLink]="
+      row.canCreateRecords && row.status === 'active'
+        ? ['/forms/answer', row.id]
+        : []
+    "
+  ></tr>
+</table>
+<safe-skeleton-table
+  *ngIf="loading"
+  [columns]="[
+    'global.name',
+    'table.date',
+    'global.status',
+    'table.history',
+    'table.records',
+    'table.core',
+    'table.parent'
+  ]"
+  [actions]="true"
+>
 </safe-skeleton-table>
+<mat-paginator
+  [disabled]="loading"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [length]="pageInfo.length"
+  aria-label="Select page of forms"
+  (page)="onPage($event)"
+>
+</mat-paginator>
