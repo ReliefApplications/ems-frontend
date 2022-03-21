@@ -388,6 +388,7 @@
       "quickBtn": "Quick action buttons",
       "quickBtnDesc": "Quick action buttons will appear on the widget and allow you to complete any of the actions below",
       "addBtn": "Add a button",
+      "btn": "Action button",
       "enable": "Enable",
       "selectAll": "Select all records",
       "prefill": "Pre-fill form with selected data",
@@ -413,7 +414,12 @@
       "tooltip3": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
     },
     "chart": {
-      "type": "Type"
+      "type": "Type",
+      "error": {
+        "aggregation": {
+          "invalid": "Aggregation cannot execute"
+        }
+      }
     }
   },
   "history": {

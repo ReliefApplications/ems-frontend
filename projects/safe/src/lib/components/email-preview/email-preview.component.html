@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>Email Preview</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form" *ngIf="form">
+        <mat-form-field>
+            <mat-label>Subject</mat-label>
+            <input matInput formControlName="subject" type="text" />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>From</mat-label>
+            <input matInput formControlName="from" type="text" />
+        </mat-form-field>
+        <mat-form-field id="previewEmailTo">
+            <mat-label>To</mat-label>
+            <mat-chip-list formControlName="to">
+              <mat-chip *ngFor="let email of form.value.to">
+                {{email}}
+              </mat-chip>
+            </mat-chip-list>
+        </mat-form-field>
+        <div class="email-body-container">
+            <div class="email-body-preview" [innerHTML]="form.value.html"></div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Dismiss</button>
+    <button mat-flat-button color="primary" [mat-dialog-close]="true">Send</button>
+</div>
