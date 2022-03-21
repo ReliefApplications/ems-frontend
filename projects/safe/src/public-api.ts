@@ -72,8 +72,8 @@ export * from './lib/components/config-display-grid-fields-modal/public-api';
 export * from './lib/components/content-choice/public-api';
 export * from './lib/components/workflow-stepper/public-api';
 export * from './lib/components/applications-summary/public-api';
-/** Grid Layouts */
 export * from './lib/components/layout-modal/public-api';
+export * from './lib/components/snackbar-spinner/public-api';
 
 // === UI ===
 export * from './lib/components/ui/button/public-api';
