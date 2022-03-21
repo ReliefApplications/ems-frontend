@@ -46,7 +46,7 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
     TranslateModule,
     LayoutsParametersModule,
     MatAutocompleteModule,
-    SafeIconModule
+    SafeIconModule,
   ],
   exports: [SafeGridSettingsComponent],
 })

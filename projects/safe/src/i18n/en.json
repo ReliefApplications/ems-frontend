@@ -98,7 +98,8 @@
     "APIConf": "API Configuration",
     "authType": "Authentication type",
     "rolesSub": "Roles subscribed",
-    "azure": "Azure"
+    "azure": "Azure",
+    "authId": "Authentication ID"
   },
   "nav": {
     "title": "Back-Office",

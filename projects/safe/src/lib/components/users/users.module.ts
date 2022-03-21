@@ -22,6 +22,7 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 
 @NgModule({
   declarations: [SafeUsersComponent, SafeEditUserComponent],
@@ -48,6 +49,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTooltipModule,
     SafeInviteUsersModule,
     TranslateModule,
+    SafeSkeletonTableModule,
   ],
   exports: [SafeUsersComponent],
 })

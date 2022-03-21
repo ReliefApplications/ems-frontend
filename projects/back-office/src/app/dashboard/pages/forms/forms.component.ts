@@ -135,6 +135,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.loading = true;
       this.formsQuery.fetchMore({
         variables: {
           first,

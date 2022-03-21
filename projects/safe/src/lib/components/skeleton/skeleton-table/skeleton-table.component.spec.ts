@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeEmailPreviewComponent } from './email-preview.component';
+import { SkeletonTableComponent } from './skeleton-table.component';
 
-describe('SafeEmailPreviewComponent', () => {
-  let component: SafeEmailPreviewComponent;
-  let fixture: ComponentFixture<SafeEmailPreviewComponent>;
+describe('SkeletonTableComponent', () => {
+  let component: SkeletonTableComponent;
+  let fixture: ComponentFixture<SkeletonTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeEmailPreviewComponent],
+      declarations: [SkeletonTableComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeEmailPreviewComponent);
+    fixture = TestBed.createComponent(SkeletonTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
