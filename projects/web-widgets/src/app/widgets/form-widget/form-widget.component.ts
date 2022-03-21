@@ -9,7 +9,7 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { SafeLayoutService } from '@safe/builder';
+import { SafeFormService, SafeLayoutService } from '@safe/builder';
 import { AppOverlayContainer } from '../../utils/overlay-container';
 
 @Component({
@@ -28,7 +28,8 @@ export class FormWidgetComponent implements OnInit, AfterViewInit {
 
   constructor(
     private layoutService: SafeLayoutService,
-    private overlayContainer: OverlayContainer
+    private overlayContainer: OverlayContainer,
+    private formService: SafeFormService
   ) {}
 
   ngOnInit(): void {

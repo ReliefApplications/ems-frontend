@@ -40,7 +40,6 @@ import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
 import { AppOverlayContainer } from './utils/overlay-container';
-import { SafeFormService } from '@safe/builder';
 
 localStorage.setItem('loaded', 'false');
 
@@ -210,11 +209,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
   ],
 })
 export class AppModule implements DoBootstrap {
-  constructor(
-    private injector: Injector,
-    private translate: TranslateService,
-    private formService: SafeFormService
-  ) {
+  constructor(private injector: Injector, private translate: TranslateService) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang('en');
   }
