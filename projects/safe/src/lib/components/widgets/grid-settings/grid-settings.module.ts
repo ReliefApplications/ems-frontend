@@ -8,7 +8,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -20,6 +19,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutsParametersModule } from './layouts-parameters/layouts-parameters.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { SafeIconModule } from '../../ui/icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -35,7 +35,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatRadioModule,
     MatSelectModule,
     MatButtonModule,
-    MatIconModule,
     TextFieldModule,
     SafeQueryBuilderModule,
     MatSlideToggleModule,
@@ -47,6 +46,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     TranslateModule,
     LayoutsParametersModule,
     MatAutocompleteModule,
+    SafeIconModule,
   ],
   exports: [SafeGridSettingsComponent],
 })

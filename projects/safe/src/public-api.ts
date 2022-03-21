@@ -16,6 +16,9 @@ export * from './lib/services/api-proxy.service';
 export * from './lib/services/dashboard.service';
 export * from './lib/services/grid-layout.service';
 
+// === DIRECTIVES ===
+export * from './lib/directives/skeleton/public-api';
+
 // === GUARDS ===
 export * from './lib/guards/permission.guard';
 
@@ -70,9 +73,11 @@ export * from './lib/components/content-choice/public-api';
 export * from './lib/components/workflow-stepper/public-api';
 export * from './lib/components/applications-summary/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
+export * from './lib/components/skeleton/skeleton-table/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/layout-modal/public-api';
+export * from './lib/components/snackbar-spinner/public-api';
 
 // === UI ===
 export * from './lib/components/ui/button/public-api';

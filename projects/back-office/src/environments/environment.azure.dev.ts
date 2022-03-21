@@ -1,5 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/default';
+import { theme } from '../themes/default/default.dev';
 
 const authConfig: AuthConfig = {
   issuer:

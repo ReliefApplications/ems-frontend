@@ -253,7 +253,7 @@ export class SafeApplicationService {
           mutation: EDIT_APPLICATION,
           variables: {
             id: application?.id,
-            value: value.name,
+            name: value.name,
             description: value.description,
             status: value.status,
           },
@@ -280,7 +280,7 @@ export class SafeApplicationService {
             if (res.data?.editApplication) {
               const newApplication = {
                 ...application,
-                value: res.data.editApplication.name,
+                name: res.data.editApplication.name,
                 description: res.data.editApplication.description,
                 status: res.data.editApplication.status,
               };

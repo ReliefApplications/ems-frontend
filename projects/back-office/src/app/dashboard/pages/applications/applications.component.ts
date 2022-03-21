@@ -163,6 +163,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.loading = true;
       this.applicationsQuery.fetchMore({
         variables: {
           first,
