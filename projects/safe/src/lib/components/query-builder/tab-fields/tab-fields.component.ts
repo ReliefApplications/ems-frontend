@@ -133,8 +133,4 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
     this.form.removeAt(index);
     this.selectedFields.splice(index, 1);
   }
-
-  public blankFunction(): void {
-    return;
-  }
 }
