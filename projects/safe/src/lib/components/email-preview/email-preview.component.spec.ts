@@ -8,9 +8,8 @@ describe('SafeEmailPreviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeEmailPreviewComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeEmailPreviewComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

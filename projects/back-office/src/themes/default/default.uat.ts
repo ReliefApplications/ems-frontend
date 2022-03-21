@@ -1,4 +1,4 @@
 export const theme = {
-    headerColor: 'warn',
-    prefix: '[UAT]'
+  headerColor: 'warn',
+  prefix: '[UAT]',
 };
