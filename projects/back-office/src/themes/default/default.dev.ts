@@ -1,4 +1,4 @@
 export const theme = {
-    headerColor: 'accent',
-    prefix: '[DEV]'
+  headerColor: 'accent',
+  prefix: '[DEV]',
 };

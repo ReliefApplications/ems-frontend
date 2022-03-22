@@ -1,4 +1,4 @@
 export const theme = {
-    headerColor: 'primary',
-    prefix: null
+  headerColor: 'primary',
+  prefix: null,
 };
