@@ -1,18 +1,20 @@
 <!-- GRID HEADER -->
-<kendo-grid id="recordsGrid" [loading]="loading" [data]="error ? [] : data" 
-    [autoSize]="false" [resizable]="resizable"
+<kendo-grid id="recordsGrid" [loading]="loading" [data]="error ? [] : data" [autoSize]="false" [resizable]="resizable"
     [reorderable]="reorderable" [columnMenu]="reorderable && columnMenu" [pageable]="pagerSettings"
     [pageSize]="pageSize" [skip]="skip" [filterable]="filterable && showFilter ? true : 'menu'" [filter]="filter"
     (filterChange)="onFilterChange($event)" (pageChange)="onPageChange($event)" [sortable]="sortable" [sort]="sort"
     (sortChange)="onSortChange($event)" [selectable]="selectable && selectableSettings" [rowSelected]="isRowSelected"
-    (selectionChange)="onSelectionChange($event)"
-    (columnResize)="onColumnResize()" (columnVisibilityChange)="onColumnVisibilityChange()"
-    (cellClick)="cellClickHandler($event)">
+    (selectionChange)="onSelectionChange($event)" (columnResize)="onColumnResize()"
+    (columnVisibilityChange)="onColumnVisibilityChange()" (cellClick)="cellClickHandler($event)">
     <!-- ACTIONS -->
-    <ng-template *ngIf="searchable || reorderable || actions.add || exportable || editable || filterable || admin || hasEnabledActions" kendoGridToolbarTemplate position="top">
-        <input *ngIf="searchable" [placeholder]="'filter.search' | translate" kendoTextBox [formControl]="search" class="grid-searchbox" />
+    <ng-template
+        *ngIf="searchable || reorderable || actions.add || exportable || editable || filterable || admin || hasEnabledActions"
+        kendoGridToolbarTemplate position="top">
+        <input *ngIf="searchable" [placeholder]="'filter.search' | translate" kendoTextBox [formControl]="search"
+            class="grid-searchbox" />
         <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
-        <button *ngIf="actions.add" kendoButton (click)="action.emit({ action: 'add' })">{{'action.add' | translate}}</button>
+        <button *ngIf="actions.add" kendoButton (click)="action.emit({ action: 'add' })">{{'action.add' |
+            translate}}</button>
         <button *ngIf="exportable" kendoButton (click)="onExport()">{{'action.export' | translate}}</button>
         <ng-container *ngIf="editable">
             <button kendoButton (click)="onSave()" [disabled]="!hasChanges">{{'action.save' | translate}}</button>
@@ -33,7 +35,8 @@
     <ng-container *ngIf="fields.length > 0">
         <!-- ROW SELECTION -->
         <kendo-grid-checkbox-column *ngIf="selectable" [width]="41" [headerClass]="{'text-center': true}"
-            [class]="{'text-center': true}" [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect"  [sticky]="true">
+            [class]="{'text-center': true}" [resizable]="false" [columnMenu]="false" [showSelectAll]="multiSelect"
+            [sticky]="true">
         </kendo-grid-checkbox-column>
         <!-- FIELDS -->
         <ng-container *ngFor="let field of fields">
@@ -78,13 +81,14 @@
                         *ngIf="['datetime', 'datetime-local', 'date', 'time'].includes(field.meta.type)">
                         <div class="translate textbox-container" [style]="getStyle(dataItem, field.name)">
                             <div #refSpan class="textbox" *ngIf="field.meta.type === 'time'">
-                                {{getPropertyValue(dataItem, field.name) |  date:'shortTime'}}
+                                {{getPropertyValue(dataItem, field.name) | date:'shortTime'}}
                             </div>
-                            <div #refSpan class="textbox" *ngIf="['datetime', 'datetime-local'].includes(field.meta.type)">
-                                {{getPropertyValue(dataItem, field.name) |  date:'short'}}
+                            <div #refSpan class="textbox"
+                                *ngIf="['datetime', 'datetime-local'].includes(field.meta.type)">
+                                {{getPropertyValue(dataItem, field.name) | date:'short'}}
                             </div>
                             <div #refSpan class="textbox" *ngIf="field.meta.type === 'date'">
-                                {{getPropertyValue(dataItem, field.name) |  date:'shortDate'}}
+                                {{getPropertyValue(dataItem, field.name) | date:'shortDate'}}
                             </div>
                         </div>
                     </ng-template>
@@ -105,8 +109,9 @@
                     </ng-template>
                     <!-- DISPLAY ( boolean ) -->
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'boolean'">
-                        <input type="checkbox" kendoCheckBox 
-                         [(ngModel)]="dataItem[field.name]" disabled />
+                        <div class="textbox-container" [style]="getStyle(dataItem, field.name)">
+                            <input type="checkbox" kendoCheckBox [(ngModel)]="dataItem[field.name]" disabled />
+                        </div>
                     </ng-template>
                     <!-- DISPLAY ( color ) -->
                     <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="field.meta.type === 'color'">
@@ -119,8 +124,9 @@
                             <div #refSpan class="textbox external-link" *ngIf="dataItem[field.name].length > 0"
                                 matTooltip="Open detail"
                                 (click)="action.emit({ action: 'details', items: dataItem[field.name], field: field })">
-                                {{(dataItem[field.name].length > 1 ? 'widgets.grid.items' : 'widgets.grid.item') | translate : {
-                                    number: dataItem[field.name].length
+                                {{(dataItem[field.name].length > 1 ? 'widgets.grid.items' : 'widgets.grid.item') |
+                                translate : {
+                                number: dataItem[field.name].length
                                 } }}
                             </div>
                         </div>
@@ -175,7 +181,8 @@
             <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->
             <kendo-grid-column *ngIf="field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)"
                 [field]="field.name" [filterable]="true" [title]="field.title" [editor]="field.editor"
-                [editable]="!field.disabled" [width]="field.width" [hidden]="field.hidden" [minResizableWidth]="50" class="no-padding">
+                [editable]="!field.disabled" [width]="field.width" [hidden]="field.hidden" [minResizableWidth]="50"
+                class="no-padding">
                 <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
                     let-filterService="filterService">
                     <safe-array-filter-menu [filter]="filter" [filterService]="filterService"
@@ -194,8 +201,7 @@
                 </ng-template>
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
                     <kendo-multiselect [data]="field.meta.choices" textField="text" valueField="value"
-                        [valuePrimitive]="true" [formControl]="formGroup.get(field.name)" [autoClose]="false"
-                       >
+                        [valuePrimitive]="true" [formControl]="formGroup.get(field.name)" [autoClose]="false">
                     </kendo-multiselect>
                 </ng-template>
             </kendo-grid-column>
@@ -336,7 +342,8 @@
             </ng-template>
         </kendo-grid-column>
         <!-- ROW ACTIONS -->
-        <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56" [resizable]="false" [sticky]="true">
+        <kendo-grid-column *ngIf="hasEnabledActions" [columnMenu]="false" [width]="56" [resizable]="false"
+            [sticky]="true">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-idx="rowIndex">
                 <safe-grid-row-actions [item]="dataItem" [actions]="actions" (action)="action.emit($event)">
                 </safe-grid-row-actions>
@@ -345,6 +352,7 @@
     </ng-container>
     <!-- EMPTY TABLE / INVALID QUERY -->
     <ng-template kendoGridNoRecordsTemplate>
-        {{ (error ? 'widgets.grid.invalid' : (blank ? 'widgets.grid.selectDataset' : 'widgets.grid.noRecord')) | translate }}
+        {{ (error ? 'widgets.grid.invalid' : (blank ? 'widgets.grid.selectDataset' : 'widgets.grid.noRecord')) |
+        translate }}
     </ng-template>
 </kendo-grid>
