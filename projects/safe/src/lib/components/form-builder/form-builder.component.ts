@@ -93,7 +93,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    const options = {
+    const creatorOptions = {
       showEmbededSurveyTab: false,
       showJSONEditorTab: false,
       generateValidJSON: true,
@@ -105,7 +105,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
     this.surveyCreator = new SurveyCreator.SurveyCreator(
       'surveyCreatorContainer',
-      options
+      creatorOptions
     );
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = this.form.structure || '';
@@ -129,8 +129,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.onModified.add((survey, option) => {
       this.formChange.emit(survey.text);
     });
-    this.surveyCreator.survey.onUpdateQuestionCssClasses.add((_, opt) =>
-      this.onSetCustomCss(opt)
+    this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
+      (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
     this.surveyCreator.onTestSurveyCreated.add((sender, opt) => {
       opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
@@ -200,11 +200,13 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   }
 
   private addCustomClassToCoreFields(coreFields: string[]): void {
-    this.surveyCreator.survey.onAfterRenderQuestion.add((_, options: any) => {
-      if (coreFields.includes(options.question.valueName)) {
-        options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      (survey: Survey.SurveyModel, options: any) => {
+        if (coreFields.includes(options.question.valueName)) {
+          options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
+        }
       }
-    });
+    );
   }
 
   setCustomTheme(): void {
