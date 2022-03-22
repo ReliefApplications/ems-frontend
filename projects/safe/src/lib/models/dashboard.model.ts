@@ -4,6 +4,7 @@ import { SafeChartSettingsComponent } from '../components/widgets/chart-settings
 import { SafeGridSettingsComponent } from '../components/widgets/grid-settings/grid-settings.component';
 import { SafeMapSettingsComponent } from '../components/widgets/map-settings/map-settings.component';
 import { SafeEditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
+import { SafeSchedulerSettingsComponent } from '../components/widgets/scheduler-settings/scheduler-settings.component';
 
 export interface IWidgetType {
   id: string;
@@ -142,6 +143,17 @@ export const WIDGET_TYPES = [
     minRow: 1,
     component: 'editor',
     settingsTemplate: SafeEditorSettingsComponent,
+  },
+  {
+    id: 'scheduler',
+    name: 'Scheduler',
+    icon: '/assets/schedule.svg',
+    color: '#3b3bcf',
+    defaultCols: 8,
+    defaultRows: 3,
+    minRow: 1,
+    component: 'scheduler',
+    settingsTemplate: SafeSchedulerSettingsComponent,
   },
 ];
 

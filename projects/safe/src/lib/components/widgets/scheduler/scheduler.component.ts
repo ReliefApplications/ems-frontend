@@ -8,6 +8,7 @@ import {
   GetFormByIdQueryResponse,
   GET_FORM_BY_ID,
 } from '../../../graphql/queries';
+import { MOCKED_EVENTS } from './MOCK_EVENTS';
 
 @Component({
   selector: 'safe-scheduler',
@@ -38,6 +39,7 @@ export class SafeSchedulerComponent implements OnInit {
     if (this.settings.source) {
       this.getRecords();
     } else {
+      this.events = MOCKED_EVENTS;
       this.loading = false;
     }
   }
