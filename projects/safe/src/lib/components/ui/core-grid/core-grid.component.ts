@@ -35,7 +35,7 @@ import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
 
-const DEFAULT_FILE_NAME = 'grid.xlsx';
+const DEFAULT_FILE_NAME = 'Records';
 
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
@@ -114,7 +114,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   get sortField(): string | null {
     return (this.sort.length > 0 && this.sort[0].dir) ? this.sort[0].field :
-    (this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
+      (this.settings.query?.sort && this.settings.query.sort.field ? this.settings.query.sort.field : null);
   }
 
   get sortOrder(): string {
@@ -166,8 +166,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public editionActive = false;
 
   // === DOWNLOAD ===
-  public excelFileName = '';
   private apiUrl = '';
+  /** Builds filename from the date and widget title */
+  get fileName(): string {
+    const today = new Date();
+    const month = today.toLocaleString('en-us', { month: 'short' });
+    const date = month + ' ' + today.getDate() + ' ' + today.getFullYear();
+    return `${this.settings.title ? this.settings.title : DEFAULT_FILE_NAME} ${date}`;
+  }
 
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
@@ -231,7 +237,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.defaultLayout.sort;
     }
     this.showFilter = !!this.defaultLayout?.showFilter;
-    this.excelFileName = this.settings.title ? `${this.settings.title}.xlsx` : DEFAULT_FILE_NAME;
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     this.dataQuery = this.apollo.watchQuery<any>({
@@ -255,7 +260,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             await this.gridService.populateMetaFields(this.metaFields);
             const fields = this.settings?.query?.fields || [];
             const defaultLayoutFields = this.defaultLayout.fields || {};
-            this.fields = this.gridService.getFields(fields, this.metaFields, defaultLayoutFields, '', { filter: true });
+            this.fields = this.gridService.getFields(fields, this.metaFields, defaultLayoutFields, '');
           }
         }
         this.getRecords();
@@ -569,7 +574,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           recordId: isArray ? items[0].id : items.id,
           locale: 'en',
           canUpdate: this.settings.actions && this.settings.actions.update && items.canUpdate,
-          ...!isArray && { template: this.settings.query.template }
+          ...!isArray && { template: this.settings.query.template }
         },
         height: '98%',
         width: '100vw',
@@ -751,7 +756,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Builds the request body with all the useful data
-    const fileName = `${this.settings.title ? this.settings.title : 'records'}.${e.format}`;
     const currentLayout = this.layout;
     const body = {
       ids,
@@ -762,18 +766,22 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       sortOrder: this.sortOrder,
       format: e.format,
       // we only export visible fields ( not hidden )
-      ...e.fields === 'visible' && { fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
-        .sort((a: any, b: any) => a.order - b.order).map((x: any) => ( { name: x.field, title: x.title } )) },
+      ...e.fields === 'visible' && {
+        fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
+          .sort((a: any, b: any) => a.order - b.order).map((x: any) => ({ name: x.field, title: x.title }))
+      },
       // we export ALL fields of the grid ( including hidden columns )
-      ...e.fields === 'all' && { fields: Object.values(currentLayout.fields)
-        .sort((a: any, b: any) => a.order - b.order).map((x: any) => ( { name: x.field, title: x.title } )) }
+      ...e.fields === 'all' && {
+        fields: Object.values(currentLayout.fields)
+          .sort((a: any, b: any) => a.order - b.order).map((x: any) => ({ name: x.field, title: x.title }))
+      }
     };
 
     // Builds and make the request
     this.downloadService.getRecordsExport(
       `${this.apiUrl}/download/records`,
       `text/${e.format};charset=utf-8;`,
-      fileName,
+      `${this.fileName}.${e.format}`,
       body
     );
   }
