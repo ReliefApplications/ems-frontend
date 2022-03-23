@@ -68,6 +68,7 @@ export const GET_GRID_FORM_META = gql`
     form(id: $id) {
       id
       name
+      queryName
       layouts {
         id
         name
@@ -108,6 +109,7 @@ export const GET_GRID_RESOURCE_META = gql`
     resource(id: $resource) {
       id
       name
+      queryName
       forms {
         id
         name

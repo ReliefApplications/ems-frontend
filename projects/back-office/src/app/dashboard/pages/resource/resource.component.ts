@@ -49,7 +49,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
   public id = '';
   public resource: any;
   public cachedRecords: Record[] = [];
-  public resourceName?: string = '';
 
   // === RECORDS ASSOCIATED ===
   recordsDefaultColumns: string[] = RECORDS_DEFAULT_COLUMNS;
@@ -152,7 +151,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
       .valueChanges.subscribe(
         (res) => {
           if (res.data.resource) {
-            this.resourceName = res.data.resource.name;
             this.resource = res.data.resource;
             this.dataSourceForms = this.resource.forms;
             this.dataSourceLayouts = this.resource.layouts;
@@ -442,7 +440,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
       disableClose: true,
       data: {
-        resourceName: this.resourceName,
+        queryName: this.resource.queryName,
       },
       position: {
         bottom: '0',

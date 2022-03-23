@@ -40,7 +40,6 @@ export class SafeQueryBuilderComponent implements OnInit {
 
   public allQueries: any[] = [];
   public filteredQueries: any[] = [];
-  public queryName = '';
 
   get availableScalarFields(): any[] {
     return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
@@ -50,7 +49,7 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() canExpand = true;
   @Input() canSelectDataSet = true;
   @Input() templates: Form[] = [];
-  @Input() resourceName?: string = '';
+  @Input() queryName? = '';
 
   // === FIELD EDITION ===
   public isField = false;
@@ -91,21 +90,13 @@ export class SafeQueryBuilderComponent implements OnInit {
       this.availableQueries = this.queryBuilder.availableQueries$;
       this.availableQueries.subscribe((res) => {
         if (res && res.length > 0) {
-          if (this.resourceName) {
-            // generate queryName to filter the layout
-            const camelCaseQueryName = this.resourceName
-              ?.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
-                index === 0 ? word.toLowerCase() : word.toUpperCase()
-              )
-              .replace(/\s+/g, '');
-            this.queryName =
-              'all' +
-              camelCaseQueryName?.charAt(0).toUpperCase() +
-              camelCaseQueryName?.slice(1) +
-              's';
+          if (this.queryName) {
             this.allQueries = res
               .filter((x) => x.name === this.queryName)
               .map((x) => x.name);
+            if (this.allQueries.length === 1) {
+              this.form?.get('name')?.setValue(this.allQueries[0]);
+            }
           } else {
             this.allQueries = res.filter((x) => x.name).map((x) => x.name);
           }

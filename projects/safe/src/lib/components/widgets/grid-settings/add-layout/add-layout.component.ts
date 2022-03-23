@@ -15,7 +15,6 @@ interface DialogData {
   layouts: Layout[];
   form?: Form;
   resource?: Resource;
-  queryName?: string;
 }
 
 /**
@@ -52,7 +51,7 @@ export class AddLayoutComponent implements OnInit {
   public onCreate(): void {
     const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
       data: {
-        resourceName: this.resource?.name,
+        queryName: this.resource?.queryName || this.form?.queryName,
       },
     });
     dialogRef.afterClosed().subscribe((layout) => {
