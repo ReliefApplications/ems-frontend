@@ -439,7 +439,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
   onAddLayout(): void {
     const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
       disableClose: true,
-      data: {},
+      data: {
+        queryName: this.resource.queryName,
+      },
       position: {
         bottom: '0',
         right: '0',
