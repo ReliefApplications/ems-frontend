@@ -32,9 +32,8 @@ export class SafeEmailService {
     private snackBar: SafeSnackBarService,
     private dialog: MatDialog // private translate: TranslateService
   ) {
-    // this.url = environment.apiUrl + '/email/';
-    this.sendUrl = environment.API_URL + '/email/';
-    this.previewUrl = environment.API_URL + '/email/preview/';
+    this.sendUrl = environment.apiUrl + '/email/';
+    this.previewUrl = environment.apiUrl + '/email/preview/';
   }
 
   /**
