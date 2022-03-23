@@ -18,7 +18,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatFormFieldModule,
     MatInputModule,
     MatDialogModule,
-    MatChipsModule
+    MatChipsModule,
   ],
   exports: [SafeEmailPreviewComponent],
 })

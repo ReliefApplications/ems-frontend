@@ -101,6 +101,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.loading = true;
       this.resourcesQuery.fetchMore({
         variables: {
           first,

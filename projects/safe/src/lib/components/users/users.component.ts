@@ -53,6 +53,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   @Input() roles: Role[] = [];
   @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
   @Input() applicationService?: SafeApplicationService;
+  @Input() loading = true;
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns: string[] = [];
@@ -66,7 +67,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   public showFilters = false;
 
   selection = new SelectionModel<User>(true, []);
-  loading = false;
 
   constructor(
     private apollo: Apollo,

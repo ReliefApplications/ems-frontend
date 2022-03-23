@@ -41,6 +41,7 @@
                                 <mat-select formControlName="value">
                                     <mat-option [value]="true">{{'global.true' | translate}}</mat-option>
                                     <mat-option [value]="false">{{'global.false' | translate}}</mat-option>
+                                    <mat-option [value]="null">{{'global.none' | translate}}</mat-option>
                                 </mat-select>
                             </ng-container>
                             <ng-container *ngIf="['String', 'Time'].includes(selectedFields[i].type)">

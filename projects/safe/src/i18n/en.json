@@ -98,7 +98,8 @@
     "APIConf": "API Configuration",
     "authType": "Authentication type",
     "rolesSub": "Roles subscribed",
-    "azure": "Azure"
+    "azure": "Azure",
+    "authId": "Authentication ID"
   },
   "nav": {
     "title": "Back-Office",
@@ -145,7 +146,7 @@
   "forms": {
     "create": "Create a form",
     "delete": "Delete form",
-    "deleteDesc": "Do you confirm the deletion of the form {{value}}?",
+    "deleteDesc": "Do you confirm the deletion of the form {{name}}?",
     "exit": "Exit without saving changes",
     "exitDesc": "There are unsaved changes on your form. Are you sure you want to exit?",
     "title": "Available forms",
@@ -324,7 +325,8 @@
         "title": "Fields",
         "description": "Select data points below and drag them to 'selected fields' on the right",
         "available": "Available fields",
-        "selected": "Selected fields"
+        "selected": "Selected fields",
+        "search": "Search fields..."
       },
       "sort": {
         "title": "Sort",
