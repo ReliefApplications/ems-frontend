@@ -1,0 +1,15 @@
+::ng-deep .k-scheduler-toolbar,
+::ng-deep .k-scheduler-footer {
+  position: sticky;
+  left: 0;
+}
+
+::ng-deep multi-day-view,
+::ng-deep week-view,
+::ng-deep month-view {
+  min-width: 1000px;
+}
+
+kendo-scheduler {
+  overflow-x: scroll;
+}
