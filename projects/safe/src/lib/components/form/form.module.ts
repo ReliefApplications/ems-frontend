@@ -8,6 +8,8 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 
 @NgModule({
   declarations: [SafeFormComponent],
@@ -20,6 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeIconModule,
     SafeRecordSummaryModule,
     TranslateModule,
+    DateInputModule,
   ],
   exports: [SafeFormComponent],
 })

@@ -9,6 +9,8 @@ import { SafeApplicationDropdownModule } from '../application-dropdown/applicati
 import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { DateInputModule } from '@progress/kendo-angular-dateinputs';
+import { PopupService } from '@progress/kendo-angular-popup';
 
 @NgModule({
   declarations: [SafeResourceGridModalComponent],
@@ -20,9 +22,13 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeResourceDropdownModule,
     SafeApplicationDropdownModule,
     SafeRecordDropdownModule,
+    DateInputModule,
     SafeCoreGridModule,
     TranslateModule,
   ],
   exports: [SafeResourceGridModalComponent],
+  providers: [
+    PopupService
+  ]
 })
 export class SafeSearchResourceGridModalModule {}

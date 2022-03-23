@@ -10,6 +10,11 @@ import { ButtonCategory } from '../components/ui/button/button-category.enum';
 import { EmbeddedViewRef } from '@angular/core';
 import { SafeRecordDropdownComponent } from '../components/record-dropdown/record-dropdown.component';
 import { SafeCoreGridComponent } from '../components/ui/core-grid/core-grid.component';
+import {
+  DatePickerComponent,
+  DateTimePickerComponent,
+  TimePickerComponent,
+} from '@progress/kendo-angular-dateinputs';
 
 /**
  * Adds zero to number if < 10.
@@ -92,36 +97,115 @@ export const init = (
     afterRender: (question: any, el: any): void => {
       // Correction of date inputs
       if (
-        question.value &&
         ['date', 'datetime', 'datetime-local', 'time'].includes(
           question.inputType
         )
       ) {
-        const date = new Date(question.value);
-        if (date.toString() !== 'Invalid Date') {
-          const year = date.getFullYear();
-          const month = addZero(date.getMonth() + 1);
-          const day = addZero(date.getDate());
-          const hour = addZero(date.getUTCHours());
-          const minutes = addZero(date.getUTCMinutes());
-          switch (question.inputType) {
-            case 'date':
-              question.value = `${year}-${month}-${day}`;
-              break;
-            case 'datetime':
-              break;
-            case 'datetime-local':
-              question.value = `${year}-${month}-${day}T${hour}:${minutes}`;
-              break;
-            case 'time':
-              question.value = `${hour}:${minutes}`;
-              break;
-            default:
-              break;
-          }
-          el.value = question.value;
+        switch (question.inputType) {
+          case 'date':
+            console.log('date');
+            try {
+              const datePicker = domService.appendComponentToBody(
+                DatePickerComponent,
+                el.parentElement
+              );
+              console.log('ok');
+              const datePickerInstance: DatePickerComponent = datePicker.instance;
+              console.log(datePickerInstance);
+            } catch (err) {
+              console.log(err);
+            }
+            break;
+          case 'datetime':
+            console.log('datetime');
+            const dateTimePicker = domService.appendComponentToBody(
+              DateTimePickerComponent,
+              el.parentElement
+            );
+            console.log('ok');
+            const dateTimePickerInstance: DateTimePickerComponent =
+              dateTimePicker.instance;
+            console.log(dateTimePickerInstance);
+            break;
+          case 'datetime-local':
+            console.log('datetimelocal');
+            const dateTimeLocalPicker = domService.appendComponentToBody(
+              DateTimePickerComponent,
+              el.parentElement
+            );
+            console.log('ok');
+            const dateTimePickerLocalInstance: DateTimePickerComponent =
+              dateTimeLocalPicker.instance;
+            break;
+          case 'time':
+            console.log('time');
+            const timePicker = domService.appendComponentToBody(
+              TimePickerComponent,
+              el.parentElement
+            );
+            console.log('ok');
+            const timePickerInstance: TimePickerComponent = timePicker.instance;
+            console.log(timePickerInstance);
+            break;
+          default:
+            break;
         }
       }
+      // if (
+      //   question.value &&
+      //   ['date', 'datetime', 'datetime-local', 'time'].includes(
+      //     question.inputType
+      //   )
+      // ) {
+      //   const date = new Date(question.value);
+      //   if (date.toString() !== 'Invalid Date') {
+      //     const year = date.getFullYear();
+      //     const month = addZero(date.getMonth() + 1);
+      //     const day = addZero(date.getDate());
+      //     const hour = addZero(date.getUTCHours());
+      //     const minutes = addZero(date.getUTCMinutes());
+      //     switch (question.inputType) {
+      //       case 'date':
+      //         const datePicker = domService.appendComponentToBody(
+      //           DatePickerComponent,
+      //           el.parentElement
+      //         );
+      //         const datePickerInstance: DatePickerComponent = datePicker.instance;
+      //         console.log(datePickerInstance);
+      //         question.value = `${year}-${month}-${day}`;
+      //         break;
+      //       case 'datetime':
+      //         const dateTimePicker = domService.appendComponentToBody(
+      //           DateTimePickerComponent,
+      //           el.parentElement
+      //         );
+      //         const dateTimePickerInstance: DateTimePickerComponent = dateTimePicker.instance;
+      //         console.log(dateTimePickerInstance);
+      //         question.value = `${year}-${month}-${day}`;
+      //         break;
+      //       case 'datetime-local':
+      //         const dateTimeLocalPicker = domService.appendComponentToBody(
+      //           DateTimePickerComponent,
+      //           el.parentElement
+      //         );
+      //         const dateTimePickerLocalInstance: DateTimePickerComponent = dateTimeLocalPicker.instance;
+      //         question.value = `${year}-${month}-${day}T${hour}:${minutes}`;
+      //         break;
+      //       case 'time':
+      //         const timePicker = domService.appendComponentToBody(
+      //           TimePickerComponent,
+      //           el.parentElement
+      //         );
+      //         const timePickerInstance: TimePickerComponent = timePicker.instance;
+      //         console.log(timePickerInstance);
+      //         question.value = `${hour}:${minutes}`;
+      //         break;
+      //       default:
+      //         break;
+      //     }
+      //     el.value = question.value;
+      //   }
+      // }
       // Display of edit button for comment question
       if (question.getType() === 'comment' && question.allowEdition) {
         const mainDiv = document.createElement('div');
