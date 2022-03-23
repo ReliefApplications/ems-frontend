@@ -20,6 +20,7 @@ const DEFAULT_GRID_SETTINGS = {
 
 interface DialogData {
   layout?: Layout;
+  resourceName?: string;
 }
 
 @Component({
