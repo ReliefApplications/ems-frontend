@@ -20,7 +20,6 @@ interface DialogData {
   styleUrls: ['./email-preview.component.scss'],
 })
 export class SafeEmailPreviewComponent implements OnInit {
-
   public form!: FormGroup;
 
   constructor(
@@ -31,10 +30,10 @@ export class SafeEmailPreviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      from: [{value: this.data.from, disabled: true }],
-      to: [{value: this.data.to, disabled: true }],
-      subject: [{value: this.data.subject, disabled: true }],
-      html: [{value: this.data.html, disabled: true }],
+      from: [{ value: this.data.from, disabled: true }],
+      to: [{ value: this.data.to, disabled: true }],
+      subject: [{ value: this.data.subject, disabled: true }],
+      html: [{ value: this.data.html, disabled: true }],
     });
   }
 }
