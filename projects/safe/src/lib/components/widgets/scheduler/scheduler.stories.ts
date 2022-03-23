@@ -13,7 +13,7 @@ export default {
   title: 'WIDGETS/Scheduler',
   argTypes: {
     title: {
-      defaultValue: 'Titulo de testez',
+      defaultValue: 'Test Widget',
       control: { type: 'text' },
     },
     header: {
