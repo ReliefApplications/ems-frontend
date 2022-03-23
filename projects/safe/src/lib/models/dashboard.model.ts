@@ -147,8 +147,8 @@ export const WIDGET_TYPES = [
   {
     id: 'scheduler',
     name: 'Scheduler',
-    icon: '/assets/schedule.svg',
-    color: '#3b3bcf',
+    icon: '/assets/event.svg',
+    color: '#D58C8C',
     defaultCols: 8,
     defaultRows: 3,
     minRow: 1,
