@@ -133,6 +133,17 @@ export const WIDGET_TYPES = [
     settingsTemplate: SafeMapSettingsComponent,
   },
   {
+    id: 'scheduler',
+    name: 'Scheduler',
+    icon: '/assets/event.svg',
+    color: '#D58C8C',
+    defaultCols: 8,
+    defaultRows: 3,
+    minRow: 1,
+    component: 'scheduler',
+    settingsTemplate: SafeSchedulerSettingsComponent,
+  },
+  {
     id: 'text',
     name: 'Text',
     icon: '/assets/text.svg',
@@ -143,17 +154,6 @@ export const WIDGET_TYPES = [
     minRow: 1,
     component: 'editor',
     settingsTemplate: SafeEditorSettingsComponent,
-  },
-  {
-    id: 'scheduler',
-    name: 'Scheduler',
-    icon: '/assets/event.svg',
-    color: '#D58C8C',
-    defaultCols: 8,
-    defaultRows: 3,
-    minRow: 1,
-    component: 'scheduler',
-    settingsTemplate: SafeSchedulerSettingsComponent,
   },
 ];
 
