@@ -5,12 +5,12 @@
         {{'action.update' | translate}}
     </button>
     <button *ngIf="actions.history" mat-menu-item color="warn" (click)="action.emit({ action: 'history', item: item })">
-        {{'table.history' | translate}}
+        {{'common.history' | translate}}
     </button>
     <button *ngIf="actions.convert && item.canUpdate" mat-menu-item color="warn" (click)="action.emit({ action: 'convert', item: item })">
         {{'action.convert' | translate}}
     </button>
     <button *ngIf="actions.delete && item.canDelete" mat-menu-item color="warn" (click)="action.emit({ action: 'delete', item: item })">
-        {{'action.delete' | translate}}
+        {{'common.delete' | translate}}
     </button>
 </mat-menu>

@@ -13,7 +13,7 @@
           <div class="form-group-row">
             <mat-form-field appearance="outline" style="flex: 2;">
               <mat-label>
-                {{'global.name' | translate}}
+                {{'common.name' | translate}}
               </mat-label>
               <input matInput formControlName="name" type='text' [placeholder]="'global.namePlaceholder' | translate" />
               <mat-error *ngIf="name?.errors">
@@ -23,15 +23,15 @@
 
             <mat-form-field appearance="outline" style="flex: 1;">
               <mat-label>
-                {{'global.status' | translate}}
+                {{'common.status' | translate}}
               </mat-label>
               <mat-select formControlName="status">
                 <mat-option *ngFor="let statusChoice of statusChoices" [value]=statusChoice>{{
                   ((statusChoice === "active") ?
-                      'status.active' :
+                      'common.status_active' :
                       ((statusChoice === "pending") ?
-                          'status.pending' :
-                          'status.archived'))
+                          'common.status_pending' :
+                          'common.status_archived'))
                   | translate
                   }}
                 </mat-option>
@@ -120,7 +120,7 @@
           </ng-container>
         </div>
         <safe-button category="secondary" variant="primary" (click)="onSave()" [disabled]="apiForm.invalid || !apiForm.dirty">
-          {{'action.save' | translate}}
+          {{'common.save' | translate}}
         </safe-button>
       </form>
 </ng-container>

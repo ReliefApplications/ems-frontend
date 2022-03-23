@@ -49,7 +49,7 @@ export class SafeFloatingOptionsComponent implements OnInit {
       },
       {
         name: 'Delete',
-        text: this.translate.instant('action.delete'),
+        text: this.translate.instant('common.delete'),
         icon: 'delete',
       },
     ];

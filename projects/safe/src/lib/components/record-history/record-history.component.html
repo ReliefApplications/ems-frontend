@@ -1,6 +1,6 @@
 <div class="history-header">
   <div>
-    <h2>{{'table.history' | translate}}</h2>
+    <h2>{{'common.history' | translate}}</h2>
     <safe-button [isIcon]="true" icon="close" style="float: right" (click)="onCancel()">
     </safe-button>
   </div>
@@ -22,7 +22,7 @@
   </div>
   <div class="actions">
     <safe-button category="secondary" variant="primary" [matMenuTriggerFor]="menu">
-      {{'history.download' | translate}}
+      {{'components.history.download' | translate}}
     </safe-button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onDownload('csv')">.csv</button>

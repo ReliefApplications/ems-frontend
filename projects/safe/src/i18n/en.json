@@ -1,28 +1,209 @@
 {
-  "global": {
-    "status": "Status",
+  "common": {
     "name": "Name",
-    "namePlaceholder": "Enter a name",
+    "role": {
+      "none": "No role",
+      "one": "Role",
+      "few": "Roles"
+    },
+    "form": {
+      "none": "No form",
+      "one": "Form",
+      "few": "Forms"
+    },
+    "step": {
+      "none": "No step",
+      "one": "Step",
+      "few": "Steps"
+    },
+    "email": {
+      "none": "No email",
+      "one": "Email",
+      "few": "Emails"
+    },
+    "user": {
+      "none": "No user",
+      "one": "User",
+      "few": "Users"
+    },
+    "channel": {
+      "none": "No channel",
+      "one": "Channel",
+      "few": "Channels"
+    },
+    "filter": {
+      "show": "Show Filter",
+      "hide": "Hide Filter",
+      "clear": "Clear Filter"
+    },
     "title": "Title",
-    "titlePlaceholder": "Enter a title",
-    "role": "Role",
-    "roles": "Roles",
-    "email": "Email",
-    "emailPlaceholder": "Enter user's email",
-    "users": "Users",
-    "core": "Core",
+    "status": "Status",
+    "status_active": "Active",
+    "status_pending": "Pending",
+    "status_archived": "Archived",
+    "placeholder": {
+      "name": "Enter a name",
+      "title": "Enter a title",
+      "email": "Enter email",
+      "search": "Search..."
+    },
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "createdOn": "Created on",
+    "delete": "Delete",
+    "deleteObject": "Delete {{name}}",
+    "searchObject": "Search {{name}}",
+    "save": "Save",
+    "edit": "Edit",
+    "editObject": "Edit {{name}}",
+    "downloadObject": "Download {{name}}",
+    "uploadObject": "Upload {{name}}",
+    "application": {
+      "none": "No application",
+      "one": "Application",
+      "few": "Applications"
+    },
+    "record": {
+      "none": "No record",
+      "one": "Record",
+      "few": "Records"
+    },
+    "cancel": "Cancel",
+    "history": "History",
+    "newObject": "New {{name}}",
+    "positionAttribute": {
+      "none": "No position attribute",
+      "one": "Position attribute",
+      "few": "Position attributes"
+    },
+    "aggregation": {
+      "none": "No aggregation",
+      "one": "Aggregation",
+      "few": "Aggregations"
+    },
+    "resource": {
+      "none": "No resource",
+      "one": "Resource",
+      "few": "Resources"
+    },
+    "pullJob": {
+      "none": "No pull job",
+      "one": "Pull job",
+      "few": "Pull jobs"
+    },
+    "pagination": {
+      "loadMore": "Load more"
+    },
+    "select": "Select",
+    "saveChanges": "Save changes",
+    "preview": "Preview",
+    "duplicate": "Duplicate"
+  },
+  "pages": {
+    "applications": {
+      "title": "My applications",
+      "recent": "Recent applications",
+      "all": "All applications",
+      "goTo": "Go to Application list"
+    },
+    "application": {
+      "empty": {
+        "add": "Add a Page",
+        "customize": "Customize each of the pages created",
+        "create": "Click on create to finish the process"
+      },
+      "addPage": {
+        "selectType": "Select which type of page you want to create"
+      }
+    },
+    "worklow": {
+      "empty": {
+        "add": "Add steps",
+        "customize": "Customize each of the steps created"
+      },
+      "addStep": {
+        "selectType": "Select which type of step you want to create"
+      }
+    },
+    "profile": {
+      "title": "Your profile"
+    }
+  },
+  "components": {
+    "application": {
+      "delete": {
+        "confirmationMessage": "Do you confirm the deletion of this application?"
+      },
+      "duplicate": {
+        "name": {
+          "description": "Please enter a description for the application"
+        }
+      }
+    },
+    "applications": {
+      "dropdown": {
+        "select": "From applications"
+      }
+    },
+    "history": {
+      "download": "Download history"
+    },
+    "form": {
+      "delete": {
+        "confirmationMessage": "Do you confirm the deletion of the form {{name}}?"
+      },
+      "summary": {
+        "cache": {
+          "clear": "Clear cache",
+          "load": "Load from cache {{date}}"
+        },
+        "createdBy": "Created by {{user}} at {{date}}",
+        "modifiedBy": "Last modified by {{user}} on {{date}}"
+      }
+    },
+    "record": {
+      "delete": {
+        "confirmationMessage": "Do you confirm the deletion of the record {{name}}?"
+      }
+    },
+    "records": {
+      "showArchived": "Show archived records",
+      "showActive": "Show active records"
+    },
+    "header": {
+      "sidenav": {
+        "collapse": "Collapse sidebar",
+        "show": "Show sidebar"
+      }
+    }
+  },
+  "models": {
+    "form": {
+      "create": "Create a form",
+      "core": "Core"
+    },
+    "pullJob": {
+      "schedule": "Schedule"
+    },
+    "application": {
+      "setAsFavorite": "Set as favorite"
+    },
+    "page": {
+      "add": "Add a Page"
+    },
+    "user": {
+      "username": "Username"
+    }
+  },
+  "global": {
     "yes": "Yes",
     "no": "No",
-    "schedule": "Schedule",
     "field": "Field",
     "value": "Value",
     "notify": "Notify on",
     "convert": "Convert to",
     "general": "General",
-    "username": "Username",
-    "channel": "Channel",
-    "channels": "Channels",
-    "apps": "Applications",
     "description": "Description",
     "actions": "Actions",
     "settings": "Settings",
@@ -39,25 +220,15 @@
     "text": "Text",
     "legend": "Legend",
     "orientation": "Orientation",
-    "aggregation": "Aggregation",
     "id": "Id",
     "none": "-- None --",
     "raw": "Raw JSON",
     "preview": "Preview"
   },
   "action": {
-    "edit": "Edit",
     "editAs": "Edit as",
     "view": "View records",
-    "delete": "Delete",
     "deletePerm": "Delete premanently",
-    "close": "Close",
-    "back": "Back",
-    "next": "Next",
-    "save": "Save",
-    "saveChg": "Save changes",
-    "preview": "Preview",
-    "duplicate": "Duplicate",
     "publish": "Publish",
     "access": "Access",
     "clear": "Clear",
@@ -66,7 +237,6 @@
     "update": "Update",
     "invite": "Invite",
     "saveClose": "Save and close",
-    "cancel": "Cancel",
     "previous": "Previous",
     "previewRevert": "Preview and revert",
     "showMore": "Show more",
@@ -78,19 +248,7 @@
     "attach": "Attach",
     "expand": "Expand"
   },
-  "status": {
-    "active": "Active",
-    "pending": "Pending",
-    "archived": "Archived"
-  },
-  "date": {
-    "loadFromCache": "Loaded from cache {{date}}",
-    "created": "Created by {{name}} at {{date}}",
-    "modified": "Last modified by {{name}} on {{date}}"
-  },
   "table": {
-    "date": "Created on",
-    "history": "History",
     "records": "Records",
     "core": "Is core",
     "parent": "Parent form",
@@ -101,30 +259,19 @@
   },
   "nav": {
     "title": "Back-Office",
-    "addPage": "Add a Page",
-    "profile": "Profile",
     "switch": "Switch to",
     "logout": "Logout",
-    "readAll": "Mark all as read",
-    "load": "Load more"
+    "readAll": "Mark all as read"
   },
   "sidenav": {
     "builder": "Site builder",
-    "apps": "My applications",
     "advanced": "Advanced settings",
-    "forms": "Forms",
-    "resources": "Resources",
     "administration": "Administration",
     "subscriptions": "Subscriptions",
-    "attributes": "Attributes",
-    "pullJobs": "Pull jobs"
+    "attributes": "Attributes"
   },
   "filter": {
-    "search": "Search...",
-    "show": "Show Filter",
-    "hide": "Hide Filter",
-    "date": "Date Range",
-    "clear": "Clear Filters"
+    "date": "Date Range"
   },
   "access": {
     "description": "Update access permissions",
@@ -132,19 +279,7 @@
     "canUpdate": "Can update",
     "canDelete": "Can delete"
   },
-  "apps": {
-    "recent": "Recent applications",
-    "all": "All applications",
-    "step2": "Customize each of the pages created",
-    "step3": "Click on create to finish the process",
-    "from": "From applications",
-    "delete": "Delete application",
-    "deleteDesc": "Do you confirm the deletion of this application?"
-  },
   "forms": {
-    "create": "Create a form",
-    "delete": "Delete form",
-    "deleteDesc": "Do you confirm the deletion of the form {{name}}?",
     "exit": "Exit without saving changes",
     "exitDesc": "There are unsaved changes on your form. Are you sure you want to exit?",
     "title": "Available forms",
@@ -223,16 +358,6 @@
     "delete": "Delete pull job",
     "deleteDesc": "Do you confirm the deletion of the pull job {{name}}?"
   },
-  "appSummary": {
-    "new": "New Application",
-    "created": "Created",
-    "description": "Please enter a name for the application"
-  },
-  "profile": {
-    "title": "Your profile",
-    "position": "Position attributes",
-    "fav": "Set as favorite"
-  },
   "settings": {
     "id": "Application ID",
     "description": "Please enter a description for the application"
@@ -258,15 +383,6 @@
     "listen": "Listen to",
     "listenPlaceholder": "Select a routing key",
     "listenHint": "Message broker routing key"
-  },
-  "addPage": {
-    "description": "Select what type of page you want to create"
-  },
-  "workflow": {
-    "new": "New step",
-    "step1": "Add steps",
-    "step2": "Customize each of the steps created",
-    "select": "Select which type of step you want to create"
   },
   "widgets": {
     "add": "Add a widget",
@@ -389,29 +505,15 @@
       "tooltip3": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
     },
     "chart": {
-      "type": "Type",
-      "error": {
-        "aggregation": {
-          "invalid": "Aggregation cannot execute"
-        }
-      }
+      "type": "Type"
     }
   },
-  "history": {
-    "download": "Download history"
-  },
   "record": {
-    "edit": "Edit records",
-    "download": "Download records",
-    "upload": "Upload records",
-    "archived": "Show archived records",
-    "active": "Show active records",
     "revert": "Revert to past record",
     "pastVersion": "Past version",
     "currentVersion": "Current version",
     "fromResource": "From resource",
     "delete": "Delete record",
-    "deleteDesc": "Do you confirm the deletion of the reord {{name}}?",
     "select": "Select {{name}} target",
     "placeholder": "Select record"
   },
@@ -432,9 +534,7 @@
     "ok": "Conversion OK"
   },
   "tooltip": {
-    "backApps": "Go to application list",
     "changeAccess": "Change access",
-    "clearCache": "Clear cache",
     "filterVisibility": "Click to toggle visibility of filter"
   },
   "aggregation": {
@@ -448,14 +548,6 @@
       "addFields": "Add fields",
       "unwind": "Unwind",
       "custom": "Custom"
-    },
-    "tooltip": {
-      "filter": "Returns an array with only those elements that match the condition.",
-      "sort": "Sorts all input documents and returns them to the pipeline in sorted order.",
-      "group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
-      "addFields": "Adds new fields to documents.",
-      "unwind": "Deconstructs an array field from the input documents to output a document for each element.",
-      "custom": "Defines a custom aggregation function or expression in JavaScript."
     },
     "mapping": {
       "xAxis": "X Axis",

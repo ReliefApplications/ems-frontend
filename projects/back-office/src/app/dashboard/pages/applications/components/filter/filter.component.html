@@ -2,9 +2,9 @@
     <div class="top">
         <mat-form-field appearance="outline">
             <mat-icon matPrefix>search</mat-icon>
-            <input id="custom-search" matInput [formControl]="search" type="search" [placeholder]="'filter.search' | translate">
+            <input id="custom-search" matInput [formControl]="search" type="search" [placeholder]="'common.placeholder.search' | translate">
         </mat-form-field>
-        <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="show = !show">{{ show ? ('filter.hide' | translate) : 'filter.show' | translate }}
+        <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="show = !show">{{ show ? ('common.filter.hide' | translate) : 'common.filter.show' | translate }}
         </safe-button>
     </div>
     <div class="advanced" *ngIf="show">
@@ -27,20 +27,20 @@
             </mat-date-range-picker>
         </mat-form-field>
         <mat-form-field appearance="outline">
-            <mat-label>{{'global.status' | translate}}</mat-label>
+            <mat-label>{{'common.status' | translate}}</mat-label>
             <mat-select formControlName="status">
                 <mat-option>-</mat-option>
                 <mat-option value="active">
-                    {{'status.active' | translate}}
+                    {{'common.status_active' | translate}}
                 </mat-option>
                 <mat-option value="pending">
-                    {{'status.pending' | translate}}
+                    {{'common.status_pending' | translate}}
                 </mat-option>
                 <mat-option value="archived">
-                    {{'status.archived' | translate}}
+                    {{'common.status_archived' | translate}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <safe-button variant="danger" (click)="clear()">{{'filter.clear' | translate}}</safe-button>
+        <safe-button variant="danger" (click)="clear()">{{'common.filter.clear' | translate}}</safe-button>
     </div>
 </div>

@@ -27,7 +27,7 @@
       <mat-tab-group animationDuration="0ms" preserveContent="true">
         <mat-tab>
           <ng-template mat-tab-label>
-            {{ 'global.aggregation' | translate }}
+            {{ 'common.aggregation.one' | translate }}
             <safe-icon
               *ngIf="aggregationForm.invalid"
               style="padding-left: 2px"
@@ -138,7 +138,7 @@
             </mat-expansion-panel>
           </mat-accordion>
         </mat-tab>
-        <mat-tab [label]="'action.preview' | translate">
+        <mat-tab [label]="'common.preview' | translate">
           <div class="preview-container">
             <div class="sub-container">
               <safe-chart

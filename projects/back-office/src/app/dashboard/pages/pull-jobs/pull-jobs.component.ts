@@ -210,8 +210,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           content: this.translate.instant('pullJobs.deleteDesc', {
             name: element.name,
           }),
-          confirmText: this.translate.instant('action.delete'),
-          cancelText: this.translate.instant('action.cancel'),
+          confirmText: this.translate.instant('common.delete'),
+          cancelText: this.translate.instant('common.cancel'),
           confirmColor: 'warn',
         },
       });

@@ -3,7 +3,7 @@
     <form [formGroup]="addForm">
         <div class="form-group">
             <mat-form-field>
-                <mat-label>{{'global.name' | translate}}</mat-label>
+                <mat-label>{{'common.name' | translate}}</mat-label>
                 <input matInput formControlName="name" type="text" placeholder="Enter a name" />
             </mat-form-field>
             <mat-radio-group formControlName="binding" class="form-radio-group">
@@ -34,7 +34,7 @@
                                 <mat-option *ngFor="let template of templates" [value]="template.id">
                                     {{template.name}}
                                     <mat-chip-list *ngIf="template.core" class="core-form">
-                                        <mat-chip class="primary-chip" disabled>{{'global.core' | translate}}</mat-chip>
+                                        <mat-chip class="primary-chip" disabled>{{'models.form.core' | translate}}</mat-chip>
                                     </mat-chip-list>
                                 </mat-option>
                             </mat-select>
@@ -46,7 +46,7 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="addForm.value" cdkFocusInitial color="primary"
         [disabled]="!addForm.valid">{{'action.create' | translate}}</button>
 </div>

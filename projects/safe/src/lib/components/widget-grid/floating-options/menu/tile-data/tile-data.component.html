@@ -4,7 +4,7 @@
   icon="close"
   variant="danger"
   (click)="onClose()"
-  [matTooltip]="'action.close' | translate"
+  [matTooltip]="'common.close' | translate"
 >
 </safe-button>
 <h1 mat-dialog-title>{{ 'global.settings' | translate }}</h1>
@@ -13,7 +13,7 @@
 </div>
 <div mat-dialog-actions class="mat-dialog-actions" align="end">
   <button mat-button (click)="onClose()">
-    {{ 'action.close' | translate }}
+    {{ 'common.close' | translate }}
   </button>
   <button
     mat-flat-button
@@ -22,6 +22,6 @@
     color="primary"
     [disabled]="!tileForm || !tileForm.valid"
   >
-    {{ 'action.save' | translate }}
+    {{ 'common.save' | translate }}
   </button>
 </div>

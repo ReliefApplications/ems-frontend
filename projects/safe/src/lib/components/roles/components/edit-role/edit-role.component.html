@@ -15,7 +15,7 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field>
-                <mat-label>{{'global.channels' | translate}}</mat-label>
+                <mat-label>{{'common.channel.few' | translate}}</mat-label>
                 <mat-select matNativeControl multiple formControlName="channels">
                     <mat-optgroup *ngFor="let application of applications" [label]="application.name || ''">
                         <mat-option *ngFor="let channel of application.channels" [value]="channel.id">
@@ -28,7 +28,7 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="roleForm.value" cdkFocusInitial color="primary" [disabled]="!roleForm.valid">
         {{'action.update' | translate}}
     </button>

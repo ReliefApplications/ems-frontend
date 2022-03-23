@@ -252,11 +252,11 @@ export class ResourceComponent implements OnInit, OnDestroy {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
           title: this.translate.instant('record.delete'),
-          content: this.translate.instant('record.deleteDesc', {
+          content: this.translate.instant('components.record.delete.confirmationMessage', {
             name: element.name,
           }),
-          confirmText: this.translate.instant('action.delete'),
-          cancelText: this.translate.instant('action.cancel'),
+          confirmText: this.translate.instant('common.delete'),
+          cancelText: this.translate.instant('common.cancel'),
         },
       });
       dialogRef.afterClosed().subscribe((value) => {
@@ -510,8 +510,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
         content: this.translate.instant('layout.deleteDesc', {
           name: layout.name,
         }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

@@ -3,7 +3,9 @@
     [isIcon]="true"
     icon="menu"
     (click)="nav.toggle()"
-    [matTooltip]="nav.opened ? 'Collapse sidebar' : 'Show sidebar'"
+    [matTooltip]="
+      { nav.opened ? 'components.header.sidenav.collapse' : 'components.header.sidenav.show' | translate }
+    "
   >
   </safe-button>
   <safe-button
@@ -11,7 +13,7 @@
     icon="keyboard_backspace"
     (click)="goBack()"
     *ngIf="route"
-    [matTooltip]="'tooltip.backApps' | translate"
+    [matTooltip]="'pages.applications.goTo' | translate"
   >
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
@@ -86,7 +88,7 @@
   </button>
   <mat-menu #accountMenu="matMenu">
     <button mat-menu-item (click)="onOpenProfile()">
-      {{ 'nav.profile' | translate }}
+      {{ 'pages.profile.title' | translate }}
     </button>
     <ng-container *ngIf="user && user.isAdmin">
       <mat-divider></mat-divider>
@@ -122,7 +124,7 @@
       [loading]="loadingNotifications"
       (click)="onLoadMoreNotifications($event)"
     >
-      {{ 'nav.load' | translate }}
+      {{ 'common.pagination.loadMore' | translate }}
     </safe-button>
   </mat-menu>
 </mat-toolbar>
@@ -163,7 +165,7 @@
                       class="add-page-button"
                       [class]="item.class ? item.class : ''"
                     >
-                      {{ 'nav.addPage' | translate }}
+                      {{ 'models.page.add' | translate }}
                     </safe-button>
                   </ng-container>
                   <ng-container *ngIf="!item.isAddPage">

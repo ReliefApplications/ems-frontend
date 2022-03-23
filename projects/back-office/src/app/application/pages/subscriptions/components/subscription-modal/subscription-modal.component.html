@@ -41,7 +41,7 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="subscriptionForm.value" cdkFocusInitial color="primary"
         [disabled]="!subscriptionForm.valid">
         {{(data.subscription ? 'action.update' : 'action.create') | translate}}

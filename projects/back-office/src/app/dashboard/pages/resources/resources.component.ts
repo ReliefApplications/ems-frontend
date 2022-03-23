@@ -178,8 +178,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
         content: this.translate.instant('resources.deleteDesc', {
           name: resource.name,
         }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });

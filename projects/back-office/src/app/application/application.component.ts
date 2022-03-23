@@ -82,12 +82,12 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                   icon: 'settings',
                 },
                 {
-                  name: this.translate.instant('global.users'),
+                  name: this.translate.instant('common.user.few'),
                   path: './settings/users',
                   icon: 'supervisor_account',
                 },
                 {
-                  name: this.translate.instant('global.roles'),
+                  name: this.translate.instant('common.role.few'),
                   path: './settings/roles',
                   icon: 'admin_panel_settings',
                 },
@@ -97,7 +97,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                   icon: 'manage_accounts',
                 },
                 {
-                  name: this.translate.instant('global.channels'),
+                  name: this.translate.instant('common.channel.few'),
                   path: './settings/channels',
                   icon: 'edit_notifications',
                 },

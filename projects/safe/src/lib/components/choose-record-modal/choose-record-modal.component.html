@@ -20,7 +20,7 @@
     </div>
     <div mat-dialog-actions align="end">
         <button mat-button mat-stroked-button color="primary" (click)="onSearch()" *ngIf="data.targetFormQuery">{{ isSearchActivated ? 'Select' : 'Search' }}</button>
-        <button mat-button (click)="onClose()">{{'action.cancel' | translate}}</button>
+        <button mat-button (click)="onClose()">{{'common.cancel' | translate}}</button>
         <button mat-flat-button [mat-dialog-close]="chooseRecordForm.value" cdkFocusInitial color="primary"
             [disabled]="!chooseRecordForm.valid">{{'action.attach' | translate}}</button>
     </div>

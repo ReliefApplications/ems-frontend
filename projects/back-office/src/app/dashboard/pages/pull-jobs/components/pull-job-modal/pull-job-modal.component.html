@@ -5,19 +5,19 @@
         <div class="form-group">
             <div class="form-group-row">
                 <mat-form-field appearance="outline" style="flex: 1;">
-                    <mat-label>{{'global.name' | translate}}</mat-label>
+                    <mat-label>{{'common.name' | translate}}</mat-label>
                     <input type="text" [placeholder]="'global.namePlaceholder' | translate"
                     matInput formControlName="name">
                 </mat-form-field>
                 <mat-form-field appearance="outline" style="flex: 1;">
-                    <mat-label>{{'global.status' | translate}}</mat-label>
+                    <mat-label>{{'common.status' | translate}}</mat-label>
                     <mat-select formControlName="status">
                         <mat-option *ngFor="let statusChoice of statusChoices" [value]=statusChoice>{{
                             ((statusChoice === "active") ?
-                                'status.active' :
+                                'common.status_active' :
                                 ((statusChoice === "pending") ?
-                                    'status.pending' :
-                                    'status.archived'))
+                                    'common.status_pending' :
+                                    'common.status_archived'))
                             | translate
                             }}
                         </mat-option>
@@ -26,7 +26,7 @@
             </div>
             <div class="form-group-row">
                 <mat-form-field appearance="outline" style="flex: 1;">
-                    <mat-label>{{'global.schedule' | translate}}</mat-label>
+                    <mat-label>{{'models.pullJob.schedule' | translate}}</mat-label>
                     <input type="text" [placeholder]="'pullJobs.schedulePlaceholder' | translate"
                     matInput formControlName="schedule">
                 </mat-form-field>
@@ -106,7 +106,7 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="returnFormValue()" cdkFocusInitial color="primary"
         [disabled]="!pullJobForm.valid" (click)="toggleRawJSON()">{{(data.pullJob ? 'action.update' : 'action.create') | translate}}</button>
 </div>

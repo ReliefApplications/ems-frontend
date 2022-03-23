@@ -191,8 +191,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
         content: this.translate.instant('roles.deleteDesc', {
           name: item.title,
         }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });

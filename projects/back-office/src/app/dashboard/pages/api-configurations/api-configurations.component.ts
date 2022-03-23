@@ -259,8 +259,8 @@ export class ApiConfigurationsComponent
         content: this.translate.instant('APIConf.deleteDesc', {
           name: element.name,
         }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });

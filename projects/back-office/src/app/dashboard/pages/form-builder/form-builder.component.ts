@@ -87,7 +87,7 @@ export class FormBuilderComponent implements OnInit {
           title: this.translate.instant('forms.exit'),
           content: this.translate.instant('forms.exitDesc'),
           confirmText: this.translate.instant('action.confirm'),
-          cancelText: this.translate.instant('action.cancel'),
+          cancelText: this.translate.instant('common.cancel'),
           confirmColor: 'primary',
         },
       });

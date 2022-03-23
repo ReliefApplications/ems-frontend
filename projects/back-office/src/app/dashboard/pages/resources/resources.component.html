@@ -15,7 +15,7 @@
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          {{'global.name' | translate}}
+          {{'common.name' | translate}}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -24,7 +24,7 @@
     <ng-container matColumnDef="createdAt">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          {{'table.date' | translate}}
+          {{'common.createdOn' | translate}}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
@@ -48,7 +48,7 @@
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="onDelete(element)">
             <mat-icon>delete</mat-icon>
-            {{'action.delete' | translate}}
+            {{'common.delete' | translate}}
           </button>
         </mat-menu>
       </td>

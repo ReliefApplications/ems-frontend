@@ -4,12 +4,12 @@
       <div style="display: flex; justify-content: space-between;">
         <mat-slide-toggle formControlName="show">{{'widgets.grid.enable' | translate}}</mat-slide-toggle>
         <safe-button icon="remove_circle_outline" variant="danger" (click)="emitDeleteButton()">
-          {{'action.delete' | translate}}
+          {{'common.delete' | translate}}
         </safe-button>
       </div>
       <ng-container *ngIf="buttonForm.value.show">
         <mat-form-field appearance="outline">
-          <mat-label>{{'global.name' | translate}}</mat-label>
+          <mat-label>{{'common.name' | translate}}</mat-label>
           <input matInput formControlName="name" type="string">
         </mat-form-field>
         <mat-checkbox formControlName="selectAll">Select all records</mat-checkbox>
@@ -119,7 +119,7 @@
         </span>
         <div *ngIf="buttonForm.value.notify" class="sub-parameters">
           <mat-form-field appearance="outline">
-            <mat-label>{{'global.channel' | translate}}</mat-label>
+            <mat-label>{{'common.channel.one' | translate}}</mat-label>
             <mat-select formControlName="notificationChannel">
               <mat-option>--</mat-option>
               <mat-option *ngFor="let channel of channels" [value]="channel.id">
@@ -142,7 +142,7 @@
         </span>
         <div *ngIf="buttonForm.value.publish" class="sub-parameters">
           <mat-form-field appearance="outline">
-            <mat-label>{{'global.channel' | translate}}</mat-label>
+            <mat-label>{{'common.channel.one' | translate}}</mat-label>
             <mat-select formControlName="publicationChannel">
               <mat-option>--</mat-option>
               <mat-option *ngFor="let channel of channels" [value]="channel.id">

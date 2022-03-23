@@ -1,6 +1,6 @@
 <form [formGroup]="$any(fieldForm)" class="add-field" *ngFor="let fieldForm of form.controls; let index = index ">
   <mat-form-field appearance="outline">
-    <mat-label>{{'global.name' | translate}}</mat-label>
+    <mat-label>{{'common.name' | translate}}</mat-label>
     <input matInput formControlName="name">
   </mat-form-field>
   <safe-expressions [fields]="fields" [form]="$any(fieldForm.get('expression'))" [operators]="$any(operators)"></safe-expressions>

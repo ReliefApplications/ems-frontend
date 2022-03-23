@@ -81,8 +81,8 @@ export class PositionComponent implements OnInit, OnDestroy {
         content: this.translate.instant('attributes.deleteDesc', {
           name: positionCategory.title,
         }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });

@@ -11,7 +11,7 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="positionForm.value"
     cdkFocusInitial color="primary" [disabled]="!positionForm.valid">
         {{(data.add ? 'action.create' : 'action.update') | translate}}

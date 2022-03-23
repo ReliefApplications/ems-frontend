@@ -207,8 +207,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       data: {
         title,
         content,
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });
