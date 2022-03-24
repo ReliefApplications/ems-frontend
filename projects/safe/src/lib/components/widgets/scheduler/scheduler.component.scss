@@ -1,22 +1,24 @@
-::ng-deep multi-day-view {
-  overflow: auto hidden;
-
-  .k-scheduler-weekview {
-    min-width: 1000px;
-
-    .k-scheduler-times {
-      position: sticky;
-      left: 0;
-      z-index: 1;
-      background-color: white;
+:host ::ng-deep {
+  multi-day-view {
+    overflow: auto hidden;
+  
+    .k-scheduler-weekview {
+      min-width: 1000px;
+  
+      .k-scheduler-times {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        background-color: white;
+      }
     }
   }
-}
-
-::ng-deep month-view {
-  overflow: auto hidden;
-
-  .k-scheduler-monthview {
-    min-width: 1000px;
+  
+  month-view {
+    overflow: auto hidden;
+  
+    .k-scheduler-monthview {
+      min-width: 1000px;
+    }
   }
 }
