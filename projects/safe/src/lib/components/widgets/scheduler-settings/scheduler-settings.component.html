@@ -1,78 +1,55 @@
-<form [formGroup]="tileForm">
-<div class="form-group">
-    <div class="form-group-title">{{ 'global.general' | translate }}</div>
-        <mat-form-field appearance="outline">
-            <mat-label>{{ 'global.title' | translate }}</mat-label>
-            <input matInput formControlName="title" type="string" />
-        </mat-form-field>
-        <mat-slide-toggle formControlName="header">
-            {{ 'widgets.scheduler.header' | translate }}
-          </mat-slide-toggle>
-    </div>
-    <!-- <div formGroupName="actions" class="form-group">
-        <div class="form-group-title">
-          {{ 'widgets.scheduler.header' | translate }}
+<ng-container *ngIf="tileForm">
+    <form [formGroup]="tileForm">
+        <div class="form-group">
+            <div class="form-group-title">{{ 'global.general' | translate }}</div>
+            <mat-form-field appearance="outline">
+                <mat-label>{{ 'global.title' | translate }}</mat-label>
+                <input matInput formControlName="title" type="string" />
+            </mat-form-field>
+            <mat-slide-toggle formControlName="header">
+                {{ 'widgets.scheduler.header' | translate }}
+            </mat-slide-toggle>
         </div>
-        
-        <mat-slide-toggle formControlName="history">
-          {{ 'widgets.grid.actions.show' | translate }}
-        </mat-slide-toggle>
-        <mat-slide-toggle formControlName="convert">
-          {{ 'widgets.grid.actions.convert' | translate }}
-        </mat-slide-toggle>
-        <mat-slide-toggle formControlName="update">
-          {{ 'widgets.grid.actions.update' | translate }}
-        </mat-slide-toggle>
-        <mat-slide-toggle formControlName="inlineEdition">
-          {{ 'widgets.grid.actions.inline' | translate }}
-        </mat-slide-toggle>
-        <mat-slide-toggle formControlName="addRecord">
-          {{ 'widgets.grid.actions.add' | translate }}
-        </mat-slide-toggle>
-      </div>
 
-    <mat-label>{{ 'widgets.scheduler.header' | translate }}</mat-label>
-    <mat-slide-toggle formControlName="header" type="boolean">
-    </mat-slide-toggle> -->
-    <!-- <div class="form-group-title">{{'global.data' | translate}}</div>
-        <mat-radio-group formControlName="from" class="form-radio-group" (change)="getSources($event)">
-            <mat-radio-button value="resource">{{'widgets.scheduler.useRecords' | translate}}</mat-radio-button>
-            <mat-radio-button value="form">{{'widgets.scheduler.useForm' | translate}}</mat-radio-button>
-        </mat-radio-group>
-        <mat-form-field>
-            <mat-label>{{'global.dataSrc' | translate}}</mat-label>
-            <mat-select formControlName="source" (selectionChange)="getSource($event)">
-                <mat-option *ngFor="let source of sources" [value]="source.id"> {{source.name}}</mat-option>
-            </mat-select>
-        </mat-form-field> -->
-        <!-- <div formGroupName="events" *ngIf="tileForm.controls.source.value !== null" class="nested-form-group">
-            <div class="form-group">
-                <div class="form-group-title">{{'global.events' | translate}}</div>
-            <mat-form-field>
-                <mat-label>{{'widgets.scheduler.title' | translate}}</mat-label>
-                <mat-select formControlName="title" [disabled]="!(fields.length > 0)">
-                    <mat-option *ngFor="let field of fields" [value]="field.name"> {{field.name}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>{{'widgets.scheduler.description' | translate}}</mat-label>
-                <mat-select formControlName="description" [disabled]="!(fields.length > 0)">
-                    <mat-option *ngFor="let field of fields" [value]="field.name"> {{field.name}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>{{'widgets.scheduler.start' | translate}}</mat-label>
-                <mat-select formControlName="startDate" [disabled]="!(fields.length > 0)">
-                    <mat-option *ngFor="let field of fields" [value]="field.name"> {{field.name}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>{{'widgets.scheduler.end' | translate}}</mat-label>
-                <mat-select formControlName="endDate" [disabled]="!(fields.length > 0)">
-                    <mat-option [value]="null">{{'widgets.scheduler.noDate' | translate}}</mat-option>
-                    <mat-option *ngFor="let field of fields" [value]="field.name"> {{field.name}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-    </div> -->
-</form>
+        <mat-tab-group animationDuration="0ms" preserveContent="true">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    {{ 'global.aggregation' | translate }}
+                    <!-- <safe-icon
+                  *ngIf="aggregationForm.invalid"
+                  style="padding-left: 2px"
+                  icon="error_outline"
+                  [inline]="true"
+                  [size]="18"
+                  variant="danger"
+                ></safe-icon> -->
+                </ng-template>
+                <!-- <safe-aggregation-builder
+                [aggregationForm]="aggregationForm"
+              ></safe-aggregation-builder> -->
+            </mat-tab>
+            <mat-tab [label]="'widgets.scheduler.times' | translate">
+                <div class="timesInputGroup" formGroupName="times">
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{ 'widgets.scheduler.startTime' | translate }}</mat-label>
+                        <input matInput formControlName="startTime" type="string" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{ 'widgets.scheduler.endTime' | translate }}</mat-label>
+                        <input matInput formControlName="endTime" type="string" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{ 'widgets.scheduler.workStartTime' | translate }}</mat-label>
+                        <input matInput formControlName="workStartTime" type="string" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{ 'widgets.scheduler.workEndTime' | translate }}</mat-label>
+                        <input matInput formControlName="workEndTime" type="string" />
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+
+        </mat-tab-group>
+
+    </form>
+</ng-container>

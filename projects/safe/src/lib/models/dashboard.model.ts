@@ -140,6 +140,12 @@ export const WIDGET_TYPES = [
     settings: {
       title: 'New Scheduler',
       header: true,
+      times: {
+        startTime: '06:00',
+        endTime: '19:00',
+        workStartTime: '08:00',
+        workEndTime: '18:00',
+      }
     },
     defaultCols: 8,
     defaultRows: 3,

@@ -307,7 +307,12 @@
       "start": "Start field",
       "end": "End field",
       "noDate": "No end date",
-      "header": "Display header"
+      "header": "Display header",
+      "times": "Display times",
+      "startTime": "Scheduler start time",
+      "endTime": "Scheduler end time",
+      "workStartTime": "Work hours start time",
+      "workEndTime": "Work hours end time"
     },
     "query": {
       "select": "Select a dataset",

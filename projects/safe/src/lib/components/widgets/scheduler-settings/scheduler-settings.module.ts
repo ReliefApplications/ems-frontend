@@ -8,6 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTabsModule } from '@angular/material/tabs';
+import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
 
 @NgModule({
   declarations: [SafeSchedulerSettingsComponent],
@@ -18,9 +20,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatFormFieldModule,
     MatInputModule,
     MatSlideToggleModule,
+    MatTabsModule,
     MatRadioModule,
     MatSelectModule,
     TranslateModule,
+    SafeAggregationBuilderModule
   ],
   exports: [SafeSchedulerSettingsComponent],
 })

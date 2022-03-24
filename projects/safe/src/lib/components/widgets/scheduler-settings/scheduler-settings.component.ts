@@ -48,13 +48,22 @@ export class SafeSchedulerSettingsComponent implements OnInit {
         tileSettings && tileSettings.title
           ? tileSettings.title
           : 'New schedule',
+        Validators.required
+
       ],
       header: [
         tileSettings
           && tileSettings.hasOwnProperty('header')
           ? tileSettings.header
-          : true
+          : true,
+        Validators.required
       ],
+      times: this.formBuilder.group({
+        startTime: [tileSettings.times.startTime, Validators.required],
+        endTime: [tileSettings.times.endTime, Validators.required],
+        workStartTime: [tileSettings.times.workStartTime, Validators.required],
+        workEndTime: [tileSettings.times.workEndTime, Validators.required],
+      })
       // from: [
       //   tileSettings && tileSettings.from ? tileSettings.from : 'resource',
       //   Validators.required,
@@ -88,16 +97,19 @@ export class SafeSchedulerSettingsComponent implements OnInit {
       //   ],
       // }),
     });
+
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
 
-    this.getSources({ value: this.tileForm.get('from')?.value }, true);
-    if (tileSettings.source) {
-      this.getSource({ value: tileSettings.source });
-    }
+    // this.getSources({ value: this.tileForm.get('from')?.value }, true);
+    // if (tileSettings.source) {
+    //   this.getSource({ value: tileSettings.source });
+    // }
   }
+
+
 
   /*  Load the list of resources or forms.
    */

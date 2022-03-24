@@ -19,10 +19,10 @@ export class SafeSchedulerComponent implements OnInit {
   public loading = true;
 
   // === TIME CONFIG ===
-  public startTime = '06:00';
-  public endTime = '19:00';
-  public workStartTime = '08:00';
-  public workEndTime = '18:00';
+  public startTime = '';
+  public endTime = '';
+  public workStartTime = '';
+  public workEndTime = '';
 
   // === WIDGET CONFIGURATION ===
   @Input() settings: any = null;
@@ -39,12 +39,12 @@ export class SafeSchedulerComponent implements OnInit {
   configSetup(): void {
     // Setting up time configuration
     if (this.settings) {
-      const { startTime, endTime, workStartTime, workEndTime } = this.settings;
+      const { startTime, endTime, workStartTime, workEndTime } = this.settings!.times;
 
-      this.startTime = startTime ? startTime : this.startTime;
-      this.endTime = endTime ? endTime : this.endTime;
-      this.workStartTime = workStartTime ? workStartTime : this.workStartTime;
-      this.workEndTime = workEndTime ? workEndTime : this.workEndTime;
+      this.startTime = startTime;
+      this.endTime = endTime;
+      this.workStartTime = workStartTime;
+      this.workEndTime = workEndTime;
     }
 
     // Other configs
