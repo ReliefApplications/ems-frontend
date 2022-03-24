@@ -47,40 +47,44 @@ export class SafeSchedulerSettingsComponent implements OnInit {
       title: [
         tileSettings && tileSettings.title
           ? tileSettings.title
-          : 'New scheduler',
+          : 'New schedule',
       ],
-      from: [
-        tileSettings && tileSettings.from ? tileSettings.from : 'resource',
+      header: [
+        tileSettings && tileSettings.header ? tileSettings.header : true,
         Validators.required,
       ],
-      source: [
-        tileSettings && tileSettings.source ? tileSettings.source : null,
-        Validators.required,
-      ],
-      events: this.formBuilder.group({
-        title: [
-          tileSettings && tileSettings.events && tileSettings.events.title
-            ? tileSettings.events.title
-            : null,
-          Validators.required,
-        ],
-        description: [
-          tileSettings && tileSettings.events && tileSettings.events.description
-            ? tileSettings.events.description
-            : null,
-        ],
-        startDate: [
-          tileSettings && tileSettings.events && tileSettings.events.startDate
-            ? tileSettings.events.startDate
-            : null,
-          Validators.required,
-        ],
-        endDate: [
-          tileSettings && tileSettings.events && tileSettings.events.endDate
-            ? tileSettings.events.endDate
-            : null,
-        ],
-      }),
+      // from: [
+      //   tileSettings && tileSettings.from ? tileSettings.from : 'resource',
+      //   Validators.required,
+      // ],
+      // source: [
+      //   tileSettings && tileSettings.source ? tileSettings.source : null,
+      //   Validators.required,
+      // ],
+      // events: this.formBuilder.group({
+      //   title: [
+      //     tileSettings && tileSettings.events && tileSettings.events.title
+      //       ? tileSettings.events.title
+      //       : null,
+      //     Validators.required,
+      //   ],
+      //   description: [
+      //     tileSettings && tileSettings.events && tileSettings.events.description
+      //       ? tileSettings.events.description
+      //       : null,
+      //   ],
+      //   startDate: [
+      //     tileSettings && tileSettings.events && tileSettings.events.startDate
+      //       ? tileSettings.events.startDate
+      //       : null,
+      //     Validators.required,
+      //   ],
+      //   endDate: [
+      //     tileSettings && tileSettings.events && tileSettings.events.endDate
+      //       ? tileSettings.events.endDate
+      //       : null,
+      //   ],
+      // }),
     });
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {

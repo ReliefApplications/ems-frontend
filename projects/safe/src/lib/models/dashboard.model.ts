@@ -137,6 +137,10 @@ export const WIDGET_TYPES = [
     name: 'Scheduler',
     icon: '/assets/event.svg',
     color: '#D58C8C',
+    settings: {
+      title: 'New Scheduler',
+      header: true,
+    },
     defaultCols: 8,
     defaultRows: 3,
     minRow: 1,

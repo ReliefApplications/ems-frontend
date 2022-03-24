@@ -1,5 +1,5 @@
 <div class="widget-container">
-  <div class="widget-header" *ngIf="header">
+  <div class="widget-header" *ngIf="settings ? settings.header : true">
     <div class="widget-title" [title]="settings ? settings.title : ''">
       {{
         settings && settings.title

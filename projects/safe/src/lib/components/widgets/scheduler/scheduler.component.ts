@@ -25,7 +25,6 @@ export class SafeSchedulerComponent implements OnInit {
   public workEndTime = '18:00';
 
   // === WIDGET CONFIGURATION ===
-  @Input() header = true;
   @Input() settings: any = null;
 
   /**
@@ -35,6 +34,7 @@ export class SafeSchedulerComponent implements OnInit {
     this.events = MOCKED_EVENTS;
     this.configSetup();
     this.loading = false;
+    console.log(this.settings);
   }
 
   configSetup(): void {
