@@ -1,15 +1,22 @@
-::ng-deep .k-scheduler-toolbar,
-::ng-deep .k-scheduler-footer {
-  position: sticky;
-  left: 0;
+::ng-deep multi-day-view {
+  overflow: auto hidden;
+
+  .k-scheduler-weekview {
+    min-width: 1000px;
+
+    .k-scheduler-times {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background-color: white;
+    }
+  }
 }
 
-::ng-deep multi-day-view,
-::ng-deep week-view,
 ::ng-deep month-view {
-  min-width: 1000px;
-}
+  overflow: auto hidden;
 
-kendo-scheduler {
-  overflow-x: scroll;
+  .k-scheduler-monthview {
+    min-width: 1000px;
+  }
 }
