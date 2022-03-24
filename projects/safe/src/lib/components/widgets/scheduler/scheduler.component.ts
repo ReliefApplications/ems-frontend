@@ -39,7 +39,8 @@ export class SafeSchedulerComponent implements OnInit {
   configSetup(): void {
     // Setting up time configuration
     if (this.settings) {
-      const { startTime, endTime, workStartTime, workEndTime } = this.settings!.times;
+      const { startTime, endTime, workStartTime, workEndTime } =
+        this.settings.times;
 
       this.startTime = startTime;
       this.endTime = endTime;

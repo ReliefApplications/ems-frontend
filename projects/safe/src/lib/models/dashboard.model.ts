@@ -145,7 +145,7 @@ export const WIDGET_TYPES = [
         endTime: '19:00',
         workStartTime: '08:00',
         workEndTime: '18:00',
-      }
+      },
     },
     defaultCols: 8,
     defaultRows: 3,

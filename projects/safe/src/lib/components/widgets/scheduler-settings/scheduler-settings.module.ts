@@ -24,7 +24,7 @@ import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggre
     MatRadioModule,
     MatSelectModule,
     TranslateModule,
-    SafeAggregationBuilderModule
+    SafeAggregationBuilderModule,
   ],
   exports: [SafeSchedulerSettingsComponent],
 })
