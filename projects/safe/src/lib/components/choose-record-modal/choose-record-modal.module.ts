@@ -32,8 +32,6 @@ import { PopupService } from '@progress/kendo-angular-popup';
     DateInputModule,
   ],
   exports: [SafeChooseRecordModalComponent],
-  providers: [
-    PopupService
-  ]
+  providers: [PopupService],
 })
 export class SafeChooseRecordModalModule {}

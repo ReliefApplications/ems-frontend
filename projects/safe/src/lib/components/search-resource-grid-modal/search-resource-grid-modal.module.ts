@@ -27,8 +27,6 @@ import { PopupService } from '@progress/kendo-angular-popup';
     TranslateModule,
   ],
   exports: [SafeResourceGridModalComponent],
-  providers: [
-    PopupService
-  ]
+  providers: [PopupService],
 })
 export class SafeSearchResourceGridModalModule {}
