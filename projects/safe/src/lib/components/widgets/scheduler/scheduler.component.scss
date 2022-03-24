@@ -1,0 +1,24 @@
+:host ::ng-deep {
+  multi-day-view {
+    overflow: auto hidden;
+  
+    .k-scheduler-weekview {
+      min-width: 1000px;
+  
+      .k-scheduler-times {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        background-color: white;
+      }
+    }
+  }
+  
+  month-view {
+    overflow: auto hidden;
+  
+    .k-scheduler-monthview {
+      min-width: 1000px;
+    }
+  }
+}
