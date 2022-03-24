@@ -36,7 +36,7 @@ export class SafeSchedulerSettingsComponent implements OnInit {
   public fields: any[] = [];
   public forms: any[] = [];
 
-  constructor(private formBuilder: FormBuilder, private apollo: Apollo) {}
+  constructor(private formBuilder: FormBuilder, private apollo: Apollo) { }
 
   /*  Build the settings form, using the widget saved parameters.
    */
@@ -50,8 +50,10 @@ export class SafeSchedulerSettingsComponent implements OnInit {
           : 'New schedule',
       ],
       header: [
-        tileSettings && tileSettings.header ? tileSettings.header : true,
-        Validators.required,
+        tileSettings
+          && tileSettings.hasOwnProperty('header')
+          ? tileSettings.header
+          : true
       ],
       // from: [
       //   tileSettings && tileSettings.from ? tileSettings.from : 'resource',

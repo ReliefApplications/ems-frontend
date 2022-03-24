@@ -34,7 +34,6 @@ export class SafeSchedulerComponent implements OnInit {
     this.events = MOCKED_EVENTS;
     this.configSetup();
     this.loading = false;
-    console.log(this.settings);
   }
 
   configSetup(): void {

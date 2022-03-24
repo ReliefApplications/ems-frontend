@@ -306,7 +306,8 @@
       "description": "Description field",
       "start": "Start field",
       "end": "End field",
-      "noDate": "No end date"
+      "noDate": "No end date",
+      "header": "Display header"
     },
     "query": {
       "select": "Select a dataset",
