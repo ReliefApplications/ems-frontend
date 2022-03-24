@@ -103,49 +103,47 @@ export const init = (
       ) {
         switch (question.inputType) {
           case 'date':
-            console.log('date');
             try {
               const datePicker = domService.appendComponentToBody(
                 DatePickerComponent,
                 el.parentElement
               );
-              console.log('ok');
-              const datePickerInstance: DatePickerComponent = datePicker.instance;
-              console.log(datePickerInstance);
+              const datePickerInstance: DatePickerComponent =
+                datePicker.instance;
+              datePickerInstance.format = 'dd/MM/yyyy';
+              el.style.display = 'none';
             } catch (err) {
               console.log(err);
             }
             break;
           case 'datetime':
-            console.log('datetime');
             const dateTimePicker = domService.appendComponentToBody(
               DateTimePickerComponent,
               el.parentElement
             );
-            console.log('ok');
             const dateTimePickerInstance: DateTimePickerComponent =
               dateTimePicker.instance;
-            console.log(dateTimePickerInstance);
+            dateTimePickerInstance.format = 'dd/MM/yyyy HH:mm:ss';
+            el.style.display = 'none';
             break;
           case 'datetime-local':
-            console.log('datetimelocal');
             const dateTimeLocalPicker = domService.appendComponentToBody(
               DateTimePickerComponent,
               el.parentElement
             );
-            console.log('ok');
             const dateTimePickerLocalInstance: DateTimePickerComponent =
               dateTimeLocalPicker.instance;
+            dateTimePickerLocalInstance.format = 'dd/MM/yyyy HH:mm:ss';
+            el.style.display = 'none';
             break;
           case 'time':
-            console.log('time');
             const timePicker = domService.appendComponentToBody(
               TimePickerComponent,
               el.parentElement
             );
-            console.log('ok');
             const timePickerInstance: TimePickerComponent = timePicker.instance;
-            console.log(timePickerInstance);
+            timePickerInstance.format = 'HH:mm:ss';
+            el.style.display = 'none';
             break;
           default:
             break;
