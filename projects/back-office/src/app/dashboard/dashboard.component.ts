@@ -72,16 +72,16 @@ export class DashboardComponent implements OnInit {
 
   constructor(translate: TranslateService) {
     translate.stream('ID').subscribe(() => {
-      this.navGroups[0].name = translate.instant('sidenav.builder');
+      this.navGroups[0].name = translate.instant('pages.appBuilder.title');
       this.navGroups[0].navItems[0].name = translate.instant(
         'pages.applications.title'
       );
-      this.navGroups[1].name = translate.instant('sidenav.advanced');
+      this.navGroups[1].name = translate.instant('pages.formBuilder.title');
       this.navGroups[1].navItems[0].name = translate.instant('common.form.few');
       this.navGroups[1].navItems[1].name = translate.instant(
         'common.resource.few'
       );
-      this.navGroups[2].name = translate.instant('sidenav.administration');
+      this.navGroups[2].name = translate.instant('pages.administration.title');
       this.navGroups[2].navItems[0].name = translate.instant('common.user.few');
       this.navGroups[2].navItems[1].name = translate.instant('common.role.few');
       this.navGroups[2].navItems[2].name = translate.instant('table.APIConf');

@@ -92,7 +92,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                   icon: 'admin_panel_settings',
                 },
                 {
-                  name: this.translate.instant('sidenav.attributes'),
+                  name: this.translate.instant('pages.application.positionAttributes.title'),
                   path: './settings/position',
                   icon: 'manage_accounts',
                 },
@@ -102,7 +102,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                   icon: 'edit_notifications',
                 },
                 {
-                  name: this.translate.instant('sidenav.subscriptions'),
+                  name: this.translate.instant('common.subscription.few'),
                   path: './settings/subscriptions',
                   icon: 'move_to_inbox',
                 },
@@ -114,7 +114,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 navItems: displayNavItems,
               },
               {
-                name: this.translate.instant('sidenav.administration'),
+                name: this.translate.instant('pages.administration.title'),
                 navItems: adminNavItems,
               },
             ];

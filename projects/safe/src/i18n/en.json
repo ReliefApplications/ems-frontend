@@ -47,15 +47,19 @@
       "email": "Enter email",
       "search": "Search..."
     },
+    "update": "Update",
     "back": "Back",
     "next": "Next",
     "close": "Close",
+    "create": "Create",
+    "clear": "Clear",
     "createdOn": "Created on",
     "delete": "Delete",
     "deleteObject": "Delete {{name}}",
     "searchObject": "Search {{name}}",
     "save": "Save",
     "edit": "Edit",
+    "viewObject": "View {{name}}",
     "editObject": "Edit {{name}}",
     "downloadObject": "Download {{name}}",
     "uploadObject": "Upload {{name}}",
@@ -92,15 +96,40 @@
       "one": "Pull job",
       "few": "Pull jobs"
     },
+    "layout": {
+      "none": "No layout",
+      "one": "Layout",
+      "few": "Layouts"
+    },
+    "subscription": {
+      "none": "No subscription",
+      "one": "Subscription",
+      "few": "Subscriptions"
+    },
     "pagination": {
       "loadMore": "Load more"
     },
     "select": "Select",
     "saveChanges": "Save changes",
     "preview": "Preview",
-    "duplicate": "Duplicate"
+    "duplicate": "Duplicate",
+    "add": "Add",
+    "export": "Export",
+    "input": {
+      "dateRange": "Date range"
+    },
+    "previous": "Previous"
   },
   "pages": {
+    "appBuilder": {
+      "title": "Site builder"
+    },
+    "formBuilder": {
+      "title": "Advanced settings"
+    },
+    "administration": {
+      "title": "Administration"
+    },
     "applications": {
       "title": "My applications",
       "recent": "Recent applications",
@@ -115,6 +144,9 @@
       },
       "addPage": {
         "selectType": "Select which type of page you want to create"
+      },
+      "positionAttributes": {
+        "title": "Attributes"
       }
     },
     "worklow": {
@@ -131,6 +163,12 @@
     }
   },
   "components": {
+    "access": {
+      "description": "Update access permissions",
+      "canSee": "Can see",
+      "canUpdate": "Can update",
+      "canDelete": "Can delete"
+    },
     "application": {
       "delete": {
         "confirmationMessage": "Do you confirm the deletion of this application?"
@@ -144,6 +182,11 @@
     "applications": {
       "dropdown": {
         "select": "From applications"
+      }
+    },
+    "channel": {
+      "delete": {
+        "confirmationMessage": "Do you confirm the deletion of the channel {{name}}?"
       }
     },
     "history": {
@@ -165,6 +208,14 @@
     "record": {
       "delete": {
         "confirmationMessage": "Do you confirm the deletion of the record {{name}}?"
+      },
+      "modal": {
+        "update": "Save and close"
+      }
+    },
+    "resource": {
+      "delete": {
+        "confirmationMessage": "Do you confirm the deletion of the resource {{name}}?"
       }
     },
     "records": {
@@ -175,7 +226,8 @@
       "sidenav": {
         "collapse": "Collapse sidebar",
         "show": "Show sidebar"
-      }
+      },
+      "logout": "Logout"
     }
   },
   "models": {
@@ -194,6 +246,9 @@
     },
     "user": {
       "username": "Username"
+    },
+    "channel": {
+      "create": "Create a channel"
     }
   },
   "global": {
@@ -226,23 +281,14 @@
     "preview": "Preview"
   },
   "action": {
-    "editAs": "Edit as",
-    "view": "View records",
     "deletePerm": "Delete premanently",
     "publish": "Publish",
     "access": "Access",
-    "clear": "Clear",
     "apply": "Apply",
-    "create": "Create",
-    "update": "Update",
     "invite": "Invite",
-    "saveClose": "Save and close",
-    "previous": "Previous",
     "previewRevert": "Preview and revert",
     "showMore": "Show more",
-    "export": "Export",
     "convert": "Convert",
-    "add": "Add",
     "restore": "Restore",
     "confirm": "Confirm",
     "attach": "Attach",
@@ -260,24 +306,7 @@
   "nav": {
     "title": "Back-Office",
     "switch": "Switch to",
-    "logout": "Logout",
     "readAll": "Mark all as read"
-  },
-  "sidenav": {
-    "builder": "Site builder",
-    "advanced": "Advanced settings",
-    "administration": "Administration",
-    "subscriptions": "Subscriptions",
-    "attributes": "Attributes"
-  },
-  "filter": {
-    "date": "Date Range"
-  },
-  "access": {
-    "description": "Update access permissions",
-    "canSee": "Can see",
-    "canUpdate": "Can update",
-    "canDelete": "Can delete"
   },
   "forms": {
     "exit": "Exit without saving changes",
@@ -293,12 +322,6 @@
     "fromTemplate": "From template",
     "startFrom": "Start from existing template",
     "tooltip": "If no template is selected, core structure will be loaded"
-  },
-  "resources": {
-    "create": "Create a resource",
-    "delete": "Delete resource",
-    "deleteDesc": "Do you confirm the deletion of the resource {{name}}?",
-    "layouts": "Layouts"
   },
   "users": {
     "export": "Export users",
@@ -368,13 +391,6 @@
     "edit": "Edit position category",
     "delete": "Delete position attribute",
     "deleteDesc": "Do you confirm the deletion of the position attribute {{name}}?"
-  },
-  "channels": {
-    "create": "Create a channel",
-    "new": "New channel",
-    "edit": "Edit channel",
-    "delete": "Delete channel",
-    "deleteDesc": "Do you confirm the deletion of the channel {{name}}?"
   },
   "subscriptions": {
     "create": "Create a subscription",

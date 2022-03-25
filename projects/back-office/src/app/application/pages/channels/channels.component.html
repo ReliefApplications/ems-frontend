@@ -2,7 +2,7 @@
 <ng-container *ngIf="!loading">
     <div class="actions">
         <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
-            {{'channels.create' | translate}}
+            {{'models.channel.create' | translate}}
         </safe-button>
     </div>
     <table mat-table [dataSource]="channelsData">

@@ -108,5 +108,5 @@
 <div mat-dialog-actions align="end">
     <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="returnFormValue()" cdkFocusInitial color="primary"
-        [disabled]="!pullJobForm.valid" (click)="toggleRawJSON()">{{(data.pullJob ? 'action.update' : 'action.create') | translate}}</button>
+        [disabled]="!pullJobForm.valid" (click)="toggleRawJSON()">{{(data.pullJob ? 'common.update' : 'common.create') | translate}}</button>
 </div>

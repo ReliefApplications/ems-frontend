@@ -96,10 +96,15 @@ export class ChannelsComponent implements OnInit, OnDestroy {
   onDelete(channel: Channel): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('channels.delete'),
-        content: this.translate.instant('channels.deleteDesc', {
-          name: channel.title,
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.channel.one'),
         }),
+        content: this.translate.instant(
+          'components.channel.delete.confirmationMessage',
+          {
+            name: channel.title,
+          }
+        ),
         confirmText: this.translate.instant('common.delete'),
         cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',

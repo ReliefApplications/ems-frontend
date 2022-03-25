@@ -14,6 +14,6 @@
     <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="positionForm.value"
     cdkFocusInitial color="primary" [disabled]="!positionForm.valid">
-        {{(data.add ? 'action.create' : 'action.update') | translate}}
+        {{(data.add ? 'common.create' : 'common.update') | translate}}
     </button>
 </div>

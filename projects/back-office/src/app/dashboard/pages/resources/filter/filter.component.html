@@ -10,7 +10,7 @@
   </div>
   <div class="advanced" *ngIf="show">
     <mat-form-field appearance="outline">
-      <mat-label>{{'filter.date' | translate}}</mat-label>
+      <mat-label>{{'common.input.dateRange' | translate}}</mat-label>
       <mat-date-range-input [rangePicker]="rangePicker">
         <input formControlName="startDate" matStartDate>
         <input formControlName="endDate" matEndDate>
@@ -19,7 +19,7 @@
       <mat-date-range-picker #rangePicker>
         <mat-date-range-picker-actions>
           <safe-button matDateRangePickerCancel (click)="clearDateFilter()">
-            {{'action.clear' | translate}}
+            {{'common.clear' | translate}}
           </safe-button>
           <safe-button category="secondary" variant="primary" matDateRangePickerApply>
             {{'action.apply' | translate}}

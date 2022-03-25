@@ -12,8 +12,8 @@
     <ng-template *ngIf="searchable || reorderable || actions.add || exportable || editable || filterable || admin || hasEnabledActions" kendoGridToolbarTemplate position="top">
         <input *ngIf="searchable" [placeholder]="'common.placeholder.search' | translate" kendoTextBox [formControl]="search" class="grid-searchbox" />
         <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
-        <button *ngIf="actions.add" kendoButton (click)="action.emit({ action: 'add' })">{{'action.add' | translate}}</button>
-        <button *ngIf="exportable" kendoButton (click)="onExport()">{{'action.export' | translate}}</button>
+        <button *ngIf="actions.add" kendoButton (click)="action.emit({ action: 'add' })">{{'common.add' | translate}}</button>
+        <button *ngIf="exportable" kendoButton (click)="onExport()">{{'common.export' | translate}}</button>
         <ng-container *ngIf="editable">
             <button kendoButton (click)="onSave()" [disabled]="!hasChanges">{{'common.save' | translate}}</button>
             <button kendoButton (click)="onCancel()" [disabled]="!hasChanges">{{'common.cancel' | translate}}</button>

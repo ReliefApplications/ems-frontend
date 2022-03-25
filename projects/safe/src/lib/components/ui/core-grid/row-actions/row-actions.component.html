@@ -2,7 +2,7 @@
     [matMenuTriggerFor]="menu"></button>
 <mat-menu #menu="matMenu">
     <button *ngIf="actions.update && item.canUpdate" mat-menu-item color="warn" (click)="action.emit({ action: 'update', item: item })">
-        {{'action.update' | translate}}
+        {{'common.update' | translate}}
     </button>
     <button *ngIf="actions.history" mat-menu-item color="warn" (click)="action.emit({ action: 'history', item: item })">
         {{'common.history' | translate}}

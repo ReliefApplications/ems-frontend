@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{'channels.edit' | translate}}</h1>
+<h1 mat-dialog-title>{{'common.editObject' | translate: { name: 'common.channel.one' | translate}}}</h1>
 <div mat-dialog-content>
     <form [formGroup]="roleForm">
         <div class="form-group">
@@ -14,6 +14,6 @@
     <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="roleForm.value"
     cdkFocusInitial color="primary" [disabled]="!roleForm.valid">
-        {{'action.update' | translate}}
+        {{'common.update' | translate}}
     </button>
 </div>
