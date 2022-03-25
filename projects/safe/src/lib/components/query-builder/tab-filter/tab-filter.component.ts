@@ -148,7 +148,7 @@ const AVAILABLE_TYPES = [
   'DateTime',
   'Time',
   'JSON',
-  'ID'
+  'ID',
 ];
 
 @Component({
