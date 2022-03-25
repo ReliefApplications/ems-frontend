@@ -31,6 +31,36 @@ const addZero = (i: number): string => {
 };
 
 /**
+ * Format the value to make it usable by an HTML input element
+ *
+ * @param value value to format
+ * @param type type of the formatting 
+ * @returns formatted value usable by an HTML input element
+ */
+const formatDateTime = (value: Date, type: string) => {
+  console.log(value);
+  const year = value.getFullYear();
+  const month = addZero(value.getMonth() + 1);
+  const day = addZero(value.getDate());
+  const hour = addZero(value.getHours());
+  const hourUTC = addZero(value.getUTCHours());
+  const minutes = addZero(value.getMinutes());
+  const minutesUTC = addZero(value.getUTCMinutes());
+  switch (type) {
+    case 'date':
+      return `${year}-${month}-${day}`;
+    case 'datetime':
+      return `${year}-${month}-${day}T${hourUTC}:${minutesUTC}`;
+    case 'datetime-local':
+      return `${year}-${month}-${day}T${hour}:${minutes}`;
+    case 'time':
+      return `${hourUTC}:${minutesUTC}`;
+    default:
+      return null;
+  }
+};
+
+/**
  * Custom definition for survey. Definition of all additional code built on the default logic.
  *
  * @param survey Survey instance
@@ -111,7 +141,10 @@ export const init = (
               const datePickerInstance: DatePickerComponent =
                 datePicker.instance;
               datePickerInstance.format = 'dd/MM/yyyy';
-              el.style.display = 'none';
+              datePickerInstance.registerOnChange((newValue: Date) => {
+                el.value = formatDateTime(newValue, question.inputType);
+              });
+              //el.style.display = 'none';
             } catch (err) {
               console.log(err);
             }
@@ -124,7 +157,10 @@ export const init = (
             const dateTimePickerInstance: DateTimePickerComponent =
               dateTimePicker.instance;
             dateTimePickerInstance.format = 'dd/MM/yyyy HH:mm:ss';
-            el.style.display = 'none';
+            dateTimePickerInstance.registerOnChange((newValue: any) => {
+              el.value = formatDateTime(newValue, question.inputType);
+            });
+            //el.style.display = 'none';
             break;
           case 'datetime-local':
             const dateTimeLocalPicker = domService.appendComponentToBody(
@@ -134,7 +170,10 @@ export const init = (
             const dateTimePickerLocalInstance: DateTimePickerComponent =
               dateTimeLocalPicker.instance;
             dateTimePickerLocalInstance.format = 'dd/MM/yyyy HH:mm:ss';
-            el.style.display = 'none';
+            dateTimePickerLocalInstance.registerOnChange((newValue: any) => {
+              el.value = formatDateTime(newValue, question.inputType);
+            });
+            //el.style.display = 'none';
             break;
           case 'time':
             const timePicker = domService.appendComponentToBody(
@@ -143,7 +182,10 @@ export const init = (
             );
             const timePickerInstance: TimePickerComponent = timePicker.instance;
             timePickerInstance.format = 'HH:mm:ss';
-            el.style.display = 'none';
+            timePickerInstance.registerOnChange((newValue: any) => {
+              el.value = formatDateTime(newValue, question.inputType);
+            });
+            //el.style.display = 'none';
             break;
           default:
             break;
