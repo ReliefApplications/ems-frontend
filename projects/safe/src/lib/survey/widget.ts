@@ -34,7 +34,7 @@ const addZero = (i: number): string => {
  * Format the value to make it usable by an HTML input element
  *
  * @param value value to format
- * @param type type of the formatting 
+ * @param type type of the formatting
  * @returns formatted value usable by an HTML input element
  */
 const formatDateTime = (value: Date, type: string) => {
