@@ -44,8 +44,13 @@
                                     <mat-option [value]="null">{{'global.none' | translate}}</mat-option>
                                 </mat-select>
                             </ng-container>
-                            <ng-container *ngIf="['String', 'Time'].includes(selectedFields[i].type)">
-                                <input matInput formControlName="value" type="string" />
+                            <ng-container *ngIf="['String', 'Time', 'ID'].includes(selectedFields[i].type)">
+                                <mat-select formControlName="value" 
+                                *ngIf="metaFields[selectedFields[i].name]">
+                                    <mat-option *ngFor="let choice of metaFields[selectedFields[i].name].choices"
+                                        [value]="choice.value">{{ choice.text }}</mat-option>
+                                </mat-select>
+                                <input *ngIf="!metaFields[selectedFields[i].name]" matInput formControlName="value" type="string" />
                             </ng-container>
                             <ng-container *ngIf="['Date', 'DateTime'].includes(selectedFields[i].type)">
                                 <input matInput matTooltip="YYYY/MM/DD" [matTooltipPosition]="'above'"

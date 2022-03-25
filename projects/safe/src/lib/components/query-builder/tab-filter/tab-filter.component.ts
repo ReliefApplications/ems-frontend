@@ -90,6 +90,22 @@ const TYPES: any = {
     ],
   },
   // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
+  ID: {
+    defaultOperator: 'eq',
+    operators: [
+      'eq',
+      'neq',
+      'contains',
+      'doesnotcontain',
+      'startswith',
+      'endswith',
+      'isnull',
+      'isnotnull',
+      'isempty',
+      'isnotempty',
+    ],
+  },
+  // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   Boolean: {
     defaultOperator: 'eq',
     operators: ['eq'],
@@ -132,6 +148,7 @@ const AVAILABLE_TYPES = [
   'DateTime',
   'Time',
   'JSON',
+  'ID'
 ];
 
 @Component({
