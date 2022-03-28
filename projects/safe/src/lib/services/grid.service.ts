@@ -35,12 +35,12 @@ export class SafeGridService {
    */
   public getFields(
     fields: any[], metaFields: any, layoutFields: any, prefix?: string,
-    options: { disabled?: boolean, filter: boolean } = { disabled: false, filter: true }): any[] {
+    options: { disabled?: boolean, hidden?: boolean, filter: boolean } = { disabled: false, hidden: false, filter: true }): any[] {
     return flatDeep(fields.map(f => {
       const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
       switch (f.kind) {
         case 'OBJECT': {
-          return this.getFields(f.fields, metaFields, layoutFields, fullName, { disabled: true, filter: (f.type === 'User') });
+          return this.getFields(f.fields, metaFields, layoutFields, fullName, { disabled: true, hidden: options.hidden, filter: (f.type === 'User') });
         }
         case 'LIST': {
           let metaData = get(metaFields, fullName);
@@ -48,6 +48,7 @@ export class SafeGridService {
           metaData.type = 'records';
           const cachedField = get(layoutFields, fullName);
           const title = f.label ? f.label : prettifyLabel(f.name);
+          const subFields = this.getFields(f.fields, metaFields, layoutFields, fullName, { disabled: true, hidden: true, filter: false });
           return {
             name: fullName,
             title,
@@ -57,14 +58,15 @@ export class SafeGridService {
             filter: prefix ? '' : this.getFieldFilter(f.type),
             meta: metaData,
             disabled: true,
-            hidden: cachedField?.hidden || false,
+            hidden: options.hidden || cachedField?.hidden || false,
             width: cachedField?.width || title.length * 7 + 50,
             order: cachedField?.order,
             query: {
               sort: f.sort,
               fields: f.fields,
               filter: f.filter
-            }
+            },
+            subFields,
           };
         }
         default: {
@@ -80,7 +82,7 @@ export class SafeGridService {
             filter: !options.filter ? '' : this.getFieldFilter(f.type),
             meta: metaData,
             disabled: options.disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
-            hidden: cachedField?.hidden || false,
+            hidden: options.hidden || cachedField?.hidden || false,
             width: cachedField?.width || title.length * 7 + 50,
             order: cachedField?.order,
           };
