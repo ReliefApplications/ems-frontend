@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { GridSettings } from '../../ui/core-grid/models/grid-settings.model';
 
 export interface LayoutPreviewData {
-  form: any,
-  defaultLayout: any
+  form: any;
+  defaultLayout: any;
 }
 
 const DEFAULT_GRID_SETTINGS = {
@@ -22,11 +22,10 @@ const DEFAULT_GRID_SETTINGS = {
   styleUrls: ['./tab-layout-preview.component.scss'],
 })
 export class SafeTabLayoutPreviewComponent implements OnInit {
-
   @Input() data: LayoutPreviewData | null = null;
   public gridSettings: GridSettings = DEFAULT_GRID_SETTINGS;
 
-  constructor( ) {}
+  constructor() {}
 
   ngOnInit(): void {
     if (this.data) {
