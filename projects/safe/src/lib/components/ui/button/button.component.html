@@ -5,5 +5,7 @@
     [disabled]="disabled" (click)="emittedEventSubject.next('click')">
     <safe-icon *ngIf="icon && !loading" [class.safe-btn-icon]="!isIcon" [icon]="icon" [inline]="!isIcon"></safe-icon>
     <safe-spinner *ngIf="loading" class="safe-btn-spinner" size="small" [variant]="spinnerVariant"></safe-spinner>
-    <ng-content></ng-content>
+    <div class="text-content">
+        <ng-content></ng-content>
+    </div>
 </button>
