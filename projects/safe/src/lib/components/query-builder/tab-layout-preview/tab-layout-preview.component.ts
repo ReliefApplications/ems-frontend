@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { GridSettings } from '../../ui/core-grid/models/grid-settings.model';
 
 export interface LayoutPreviewData {
@@ -21,20 +21,28 @@ const DEFAULT_GRID_SETTINGS = {
   templateUrl: './tab-layout-preview.component.html',
   styleUrls: ['./tab-layout-preview.component.scss'],
 })
-export class SafeTabLayoutPreviewComponent implements OnInit {
+export class SafeTabLayoutPreviewComponent implements OnInit, OnDestroy {
   @Input() data: LayoutPreviewData | null = null;
   public gridSettings: GridSettings = DEFAULT_GRID_SETTINGS;
+  private subscription: any;
 
   constructor() {}
 
   ngOnInit(): void {
+    console.log('hey');
     if (this.data) {
-      this.data.form.get('query')?.valueChanges.subscribe(() => {
-        this.gridSettings = {
-          ...this.data?.form?.getRawValue(),
-          ...DEFAULT_GRID_SETTINGS,
-        };
-      });
+      this.gridSettings = {
+        ...this.data?.form?.getRawValue(),
+        ...DEFAULT_GRID_SETTINGS,
+      };
+      this.subscription = this.data.form
+        .get('query')
+        ?.valueChanges.subscribe(() => {
+          this.gridSettings = {
+            ...this.data?.form?.getRawValue(),
+            ...DEFAULT_GRID_SETTINGS,
+          };
+        });
     }
   }
 
@@ -46,6 +54,13 @@ export class SafeTabLayoutPreviewComponent implements OnInit {
   onGridLayoutChange(value: any): void {
     if (this.data) {
       this.data.form?.get('display')?.setValue(value);
+    }
+  }
+
+  ngOnDestroy(): void {
+    console.log('bye');
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
   }
 }
