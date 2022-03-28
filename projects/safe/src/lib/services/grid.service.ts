@@ -49,7 +49,7 @@ export class SafeGridService {
           const cachedField = get(layoutFields, fullName);
           const title = f.label ? f.label : prettifyLabel(f.name);
           const subFields = this.getFields(f.fields, metaFields, layoutFields, fullName, { disabled: true, hidden: true, filter: false });
-          const mainField = {
+          return {
             name: fullName,
             title,
             type: f.type,
@@ -65,9 +65,9 @@ export class SafeGridService {
               sort: f.sort,
               fields: f.fields,
               filter: f.filter
-            }
+            },
+            subFields,
           };
-          return [mainField, ...subFields];
         }
         default: {
           const metaData = get(metaFields, fullName);

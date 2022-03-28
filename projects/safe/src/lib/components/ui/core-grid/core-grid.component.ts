@@ -261,7 +261,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             const fields = this.settings?.query?.fields || [];
             const defaultLayoutFields = this.defaultLayout.fields || {};
             this.fields = this.gridService.getFields(fields, this.metaFields, defaultLayoutFields, '');
-            console.log(this.fields);
           }
         }
         this.getRecords();
@@ -769,12 +768,20 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       // we only export visible fields ( not hidden )
       ...e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
-          .sort((a: any, b: any) => a.order - b.order).map((x: any) => ({ name: x.field, title: x.title }))
+          .sort((a: any, b: any) => a.order - b.order).map((x: any) =>
+            ({ name: x.field, title: x.title, subFields: x.subFields.map((y: any) =>
+                ({ name: y.name, title: y.title })
+              )
+            }))
       },
       // we export ALL fields of the grid ( including hidden columns )
       ...e.fields === 'all' && {
         fields: Object.values(currentLayout.fields)
-          .sort((a: any, b: any) => a.order - b.order).map((x: any) => ({ name: x.field, title: x.title }))
+          .sort((a: any, b: any) => a.order - b.order).map((x: any) =>
+            ({ name: x.field, title: x.title, subFields: x.subFields.map((y: any) =>
+                ({ name: y.name, title: y.title })
+              )
+            }))
       }
     };
 
