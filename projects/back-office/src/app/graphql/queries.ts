@@ -14,6 +14,7 @@ import {
   PositionAttribute,
   ApiConfiguration,
   PullJob,
+  ReferenceData,
 } from '@safe/builder';
 
 // === GET USERS ===
@@ -1044,6 +1045,67 @@ export interface GetPullJobsQueryResponse {
   pullJobs: {
     edges: {
       node: PullJob;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
+}
+
+// === GET REFERENCE DATAS ===
+export const GET_REFERENCE_DATAS = gql`
+  query GetReferenceDatas($first: Int, $afterCursor: ID) {
+    referenceDatas(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+          apiConfiguration {
+            name
+          }
+          type
+          query
+          fields
+          valueField
+          path
+          data
+          permissions {
+            canSee {
+              id
+              title
+            }
+            canUpdate {
+              id
+              title
+            }
+            canDelete {
+              id
+              title
+            }
+          }
+          canSee
+          canUpdate
+          canDelete
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+export interface GetReferenceDatasQueryResponse {
+  loading: boolean;
+  referenceDatas: {
+    edges: {
+      node: ReferenceData;
       cursor: string;
     }[];
     pageInfo: {

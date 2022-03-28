@@ -41,6 +41,11 @@ export class DashboardComponent implements OnInit {
           path: '/resources',
           icon: 'storage',
         },
+        {
+          name: 'Reference data',
+          path: '/referencedata',
+          icon: 'cloud_download',
+        },
       ],
     },
     {

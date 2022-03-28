@@ -99,7 +99,8 @@
     "authType": "Authentication type",
     "rolesSub": "Roles subscribed",
     "azure": "Azure",
-    "authId": "Authentication ID"
+    "authId": "Authentication ID",
+    "referenceData": "Reference data"
   },
   "nav": {
     "title": "Back-Office",
@@ -213,6 +214,12 @@
     "tokenPlaceholder": "Enter token for authentication",
     "delete": "Delete API configuration",
     "deleteDesc": "Do you confirm the deletion of the API Configuration {{value}}?"
+  },
+  "referenceData" : {
+    "add" : "Add a new reference data",
+    "apiConfiguration": "API Configuration",
+    "delete": "Delete reference data",
+    "deleteDesc": "Do you confirm the deletion of the reference data {{value}}?"
   },
   "pullJobs": {
     "create": "Create a pull job",
