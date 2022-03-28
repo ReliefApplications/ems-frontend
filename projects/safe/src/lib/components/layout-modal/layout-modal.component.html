@@ -22,10 +22,11 @@
         [form]="$any(form.controls.query)"
         [templates]="templates"
         [queryName]="data.queryName"
+        [layoutPreviewData]="{form, defaultLayout: data.layout?.display}"
       ></safe-query-builder>
     </div>
   </form>
-  <div class="form-group">
+  <!-- <div class="form-group">
     <div class="form-group-title">{{ 'global.preview' | translate }}</div>
     <div class="info-text">{{'layouts.preview.description' | translate}}</div>
     <safe-core-grid
@@ -35,7 +36,7 @@
       (layoutChanged)="onGridLayoutChange($event)"
     >
     </safe-core-grid>
-  </div>
+  </div> -->
 </div>
 <div mat-dialog-actions class="mat-dialog-actions" align="end">
   <button mat-button (click)="onClose()">
