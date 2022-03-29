@@ -578,5 +578,8 @@
       "record": "Record",
       "platform": "Platform"
     }
+  },
+  "referenceData": {
+    "fromReferenceData": "From Reference data"
   }
 }
