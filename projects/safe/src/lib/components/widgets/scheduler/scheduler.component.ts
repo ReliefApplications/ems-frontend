@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { SchedulerEvent } from "@progress/kendo-angular-scheduler";
 import { MOCKED_EVENTS } from './MOCK_EVENTS';
-import { SafeDownloadService } from '../../../services/download.service';
 
 /**
  * Scheduler widget using KendoUI.
@@ -24,7 +23,7 @@ export class SafeSchedulerComponent implements OnInit {
   @Input() header = true;
   @Input() settings: any = null;
 
-  constructor(public downloadService: SafeDownloadService) {}
+  constructor() {}
 
   /**
    * Init the widget.
