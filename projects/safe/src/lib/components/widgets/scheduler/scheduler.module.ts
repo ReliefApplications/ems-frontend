@@ -18,7 +18,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
     TranslateModule,
     PDFModule,
     MatMenuModule,
-    ButtonModule
+    ButtonModule,
   ],
   exports: [SafeSchedulerComponent],
 })

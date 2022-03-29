@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { SchedulerEvent } from "@progress/kendo-angular-scheduler";
+import { SchedulerEvent } from '@progress/kendo-angular-scheduler';
 import { MOCKED_EVENTS } from './MOCK_EVENTS';
 
 /**
@@ -13,7 +13,7 @@ import { MOCKED_EVENTS } from './MOCK_EVENTS';
 export class SafeSchedulerComponent implements OnInit {
   // === SCHEDULER ===
   public selectedDate: Date = new Date();
-  @ViewChild("scheduler") public scheduler: any;
+  @ViewChild('scheduler') public scheduler: any;
 
   // === DATA ===
   public events: SchedulerEvent[] = [];
