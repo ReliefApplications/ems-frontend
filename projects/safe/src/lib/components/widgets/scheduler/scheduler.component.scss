@@ -1,3 +1,7 @@
+.widget-container {
+  position: relative;
+}
+
 :host ::ng-deep {
   multi-day-view {
     overflow: auto hidden;
