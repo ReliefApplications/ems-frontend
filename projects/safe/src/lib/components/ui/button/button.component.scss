@@ -4,6 +4,15 @@
     }
 }
 
+:host ::ng-deep .mat-button {
+    .mat-button-wrapper {
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: pre;
+    }
+}
+
 .safe-btn-block {
     width: 100%;
 }
@@ -44,10 +53,4 @@ safe-icon {
             border-color: #63d168;
         }
     }
-}
-
-.text-content {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
