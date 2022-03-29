@@ -100,6 +100,16 @@ export class SafeSchedulerComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Checks if an event already ended.
+   */
+  eventEnded(event: { end: string; [key: string]: any }) {
+    const eventTime = new Date(event.end);
+    const now = new Date();
+
+    return now > eventTime;
+  }
+
+  /**
    * Exports the scheduler as a pdf.
    */
   public exportPDF() {

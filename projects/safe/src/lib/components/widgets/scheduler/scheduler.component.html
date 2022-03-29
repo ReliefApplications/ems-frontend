@@ -12,6 +12,16 @@
     [selectedViewIndex]="1"
     style="height: 600px"
   >
+    <ng-template
+      kendoSchedulerEventTemplate
+      let-event="event"
+      let-resources="resources"
+    >
+      <div [ngClass]="eventEnded(event) ? 'past-event event' : 'event'">
+        {{ event.title }}
+      </div>
+    </ng-template>
+
     <kendo-scheduler-day-view> </kendo-scheduler-day-view>
 
     <kendo-scheduler-week-view> </kendo-scheduler-week-view>
