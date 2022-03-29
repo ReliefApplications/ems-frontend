@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { PDFModule } from '@progress/kendo-angular-scheduler';
 import { MatMenuModule } from '@angular/material/menu';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { LayoutModule } from '@progress/kendo-angular-layout';
 
 /**
  * Scheduler Widget Module.
@@ -14,6 +15,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
   declarations: [SafeSchedulerComponent],
   imports: [
     CommonModule,
+    LayoutModule,
     SchedulerModule,
     TranslateModule,
     PDFModule,
