@@ -43,7 +43,8 @@
     "id": "Id",
     "none": "-- None --",
     "raw": "Raw JSON",
-    "preview": "Preview"
+    "preview": "Preview",
+    "noResults": "No results"
   },
   "action": {
     "edit": "Edit",
