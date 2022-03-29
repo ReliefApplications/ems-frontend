@@ -70,7 +70,7 @@
   <mat-tab-group dynamicHeight>
     <mat-tab>
       <ng-template mat-tab-label>
-        {{ 'table.records' | translate }} ( {{ pageInfo.length }} )
+        {{ 'common.record.few' | translate }} ( {{ pageInfo.length }} )
       </ng-template>
       <div class="table-container">
         <table mat-table [dataSource]="dataSourceRecords">
@@ -230,7 +230,7 @@
 
           <ng-container matColumnDef="recordsCount">
             <th mat-header-cell *matHeaderCellDef>
-              {{ 'table.records' | translate }}
+              {{ 'common.record.few' | translate }}
             </th>
             <td mat-cell *matCellDef="let element">
               {{ element.recordsCount }}
@@ -239,7 +239,7 @@
 
           <ng-container matColumnDef="core">
             <th mat-header-cell *matHeaderCellDef>
-              {{ 'table.core' | translate }}
+              {{ 'components.forms.isCore' | translate }}
             </th>
             <td mat-cell *matCellDef="let element">
               <mat-chip-list *ngIf="element.core">

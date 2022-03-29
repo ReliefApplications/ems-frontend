@@ -63,7 +63,7 @@
     <ng-container matColumnDef="recordsCount">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          {{'table.records' | translate}}
+          {{'common.record.few' | translate}}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.recordsCount }}</td>
@@ -72,7 +72,7 @@
     <ng-container matColumnDef="core">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          {{'table.core' | translate}}
+          {{'components.forms.isCore' | translate}}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">

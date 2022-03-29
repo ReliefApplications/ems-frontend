@@ -1,5 +1,8 @@
 {
   "common": {
+    "platform": {
+      "backOffice": "Back-Office"
+    },
     "name": "Name",
     "role": {
       "none": "No role",
@@ -101,6 +104,11 @@
       "one": "Layout",
       "few": "Layouts"
     },
+    "apiConfiguration": {
+      "none": "No API Configuration",
+      "one": "API Configuration",
+      "few": "API Configurations"
+    },
     "subscription": {
       "none": "No subscription",
       "one": "Subscription",
@@ -115,6 +123,7 @@
     "duplicate": "Duplicate",
     "add": "Add",
     "export": "Export",
+    "exportObject": "Export {{name}}",
     "input": {
       "dateRange": "Date range"
     },
@@ -136,6 +145,9 @@
       "all": "All applications",
       "goTo": "Go to Application list"
     },
+    "forms": {
+      "title": "Available forms"
+    },
     "application": {
       "empty": {
         "add": "Add a Page",
@@ -143,7 +155,10 @@
         "create": "Click on create to finish the process"
       },
       "addPage": {
-        "selectType": "Select which type of page you want to create"
+        "selectType": "Select which type of page you want to create",
+        "form": {
+          "title": "Available forms"
+        }
       },
       "positionAttributes": {
         "title": "Attributes"
@@ -177,6 +192,11 @@
         "name": {
           "description": "Please enter a description for the application"
         }
+      },
+      "update": {
+        "placeholder": {
+          "description": "Please enter a description for the application"
+        }
       }
     },
     "applications": {
@@ -203,7 +223,15 @@
         },
         "createdBy": "Created by {{user}} at {{date}}",
         "modifiedBy": "Last modified by {{user}} on {{date}}"
+      },
+      "update": {
+        "exit": "Exit without saving changes",
+        "exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
       }
+    },
+    "forms": {
+      "isCore": "Is core",
+      "parent":"Parent form"
     },
     "record": {
       "delete": {
@@ -222,23 +250,44 @@
       "showArchived": "Show archived records",
       "showActive": "Show active records"
     },
+    "notifications": {
+      "readAll": "Mark all as read"
+    },
     "header": {
       "sidenav": {
         "collapse": "Collapse sidebar",
         "show": "Show sidebar"
       },
+      "goToPlatform": "Navigate to",
       "logout": "Logout"
+    },
+    "widget": {
+      "settings": {
+        "chart": {
+          "type": "Chart Type"
+        }
+      },
+      "grid": {
+        "filter": {
+          "toggle": "Toggle visibility of filter"
+        }
+      }
     }
   },
   "models": {
+    "apiConfiguration": {
+      "authType": "Authentication type"
+    },
     "form": {
-      "create": "Create a form",
+      "select": "Select a Form",
+      "create": "Create a Form",
       "core": "Core"
     },
     "pullJob": {
       "schedule": "Schedule"
     },
     "application": {
+      "id": "Application ID",
       "setAsFavorite": "Set as favorite"
     },
     "page": {
@@ -249,6 +298,21 @@
     },
     "channel": {
       "create": "Create a channel"
+    },
+    "widget": {
+      "add": "Add a Widget",
+      "map": {
+        "defaultTitle": "Map Widget",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "zoom": "Zoom"
+      },
+      "scheduler": {
+        "defaultTitle": "Scheduler Widget"
+      },
+      "chart": {
+        "defaultTitle": "Chart Widget"
+      }
     }
   },
   "global": {
@@ -294,28 +358,7 @@
     "attach": "Attach",
     "expand": "Expand"
   },
-  "table": {
-    "records": "Records",
-    "core": "Is core",
-    "parent": "Parent form",
-    "APIConf": "API Configuration",
-    "authType": "Authentication type",
-    "rolesSub": "Roles subscribed",
-    "azure": "Azure"
-  },
-  "nav": {
-    "title": "Back-Office",
-    "switch": "Switch to",
-    "readAll": "Mark all as read"
-  },
   "forms": {
-    "exit": "Exit without saving changes",
-    "exitDesc": "There are unsaved changes on your form. Are you sure you want to exit?",
-    "title": "Available forms",
-    "select": "Select a form",
-    "edit": "Edit form",
-    "record": "New record",
-    "new": "New form",
     "createBlank": "Create a blank form",
     "createNew": "Create a new resource",
     "copy": "Copy existing resource template",
@@ -324,7 +367,6 @@
     "tooltip": "If no template is selected, core structure will be loaded"
   },
   "users": {
-    "export": "Export users",
     "invite": "Invite users",
     "description": "Select existing users, invite new users or import from Excel file",
     "getTemplate": "Get template",
@@ -381,10 +423,6 @@
     "delete": "Delete pull job",
     "deleteDesc": "Do you confirm the deletion of the pull job {{name}}?"
   },
-  "settings": {
-    "id": "Application ID",
-    "description": "Please enter a description for the application"
-  },
   "attributes": {
     "create": "Create a position category",
     "new": "New position category",
@@ -401,30 +439,13 @@
     "listenHint": "Message broker routing key"
   },
   "widgets": {
-    "add": "Add a widget",
-    "cols": "Cols",
-    "rows": "Rows",
     "map": {
-      "new": "New Map",
       "data": "Data set selection",
-      "lat": "Latitude",
-      "long": "Longitude",
-      "zoom": "Zoom",
       "default": {
         "title": "Default display",
         "lat": "Map center latitude",
         "long": "Map center longitude"
       }
-    },
-    "scheduler": {
-      "new": "New scheduler",
-      "useRecords": "Use resource records",
-      "useForm": "Use form records",
-      "title": "Title field",
-      "description": "Description field",
-      "start": "Start field",
-      "end": "End field",
-      "noDate": "No end date"
     },
     "query": {
       "select": "Select a dataset",
@@ -519,9 +540,6 @@
       "tooltip1": "When enabled, you must provide a form and a field of this form. All selected rows will be attached to a record from this form. The user will be able to choose which record using a the given field",
       "tooltip2": "When enabled, you must provide a channel and a message. All selected rows will be sent as a single notification on the specified channel. The provided message is used to define the notification’s action",
       "tooltip3": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
-    },
-    "chart": {
-      "type": "Type"
     }
   },
   "record": {
@@ -548,10 +566,6 @@
     "overwrite": "Overwrite source record",
     "ignored": "Following fields will be ignored:",
     "ok": "Conversion OK"
-  },
-  "tooltip": {
-    "changeAccess": "Change access",
-    "filterVisibility": "Click to toggle visibility of filter"
   },
   "aggregation": {
     "dataSource": "Select the data source",

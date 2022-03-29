@@ -84,8 +84,8 @@ export class FormBuilderComponent implements OnInit {
     if (this.hasChanges) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: this.translate.instant('forms.exit'),
-          content: this.translate.instant('forms.exitDesc'),
+          title: this.translate.instant('components.form.update.exit'),
+          content: this.translate.instant('components.form.update.exitMessage'),
           confirmText: this.translate.instant('action.confirm'),
           cancelText: this.translate.instant('common.cancel'),
           confirmColor: 'primary',

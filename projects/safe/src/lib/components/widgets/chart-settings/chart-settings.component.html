@@ -8,7 +8,7 @@
       </mat-form-field>
       <ng-container formGroupName="chart" *ngIf="chartForm">
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'widgets.chart.type' | translate }}</mat-label>
+          <mat-label>{{ 'components.widget.settings.chart.type' | translate }}</mat-label>
           <mat-select formControlName="type">
             <mat-select-trigger>
               <img class="chart-icon" [src]="type.icon" />{{

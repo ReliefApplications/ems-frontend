@@ -18,7 +18,7 @@
             <button kendoButton (click)="onSave()" [disabled]="!hasChanges">{{'common.save' | translate}}</button>
             <button kendoButton (click)="onCancel()" [disabled]="!hasChanges">{{'common.cancel' | translate}}</button>
         </ng-container>
-        <button *ngIf="filterable" [matTooltip]="'tooltip.filterVisibility' | translate" kendoButton icon="eye"
+        <button *ngIf="filterable" [matTooltip]="'components.widget.grid.filter.toggle' | translate" kendoButton icon="eye"
             (click)="onToggleFilter()">{{(showFilter ? 'common.filter.hide' : 'common.filter.hide') | translate}}</button>
         <!-- ADMIN FEATURES -->
         <ng-container *ngIf="admin">

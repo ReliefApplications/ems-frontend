@@ -18,7 +18,7 @@
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
     <h1 class="application-title">
-      {{ theme.prefix }} {{ route ? title : ('nav.title' | translate) }}
+      {{ theme.prefix }} {{ route ? title : ('common.platform.backOffice' | translate) }}
     </h1>
     <!-- Temporal language changer -->
     <span
@@ -93,7 +93,7 @@
     <ng-container *ngIf="user && user.isAdmin">
       <mat-divider></mat-divider>
       <button mat-menu-item (click)="onSwitchOffice()">
-        {{ 'nav.switch' | translate }} {{ otherOffice }}
+        {{ 'components.header.goToPlatform' | translate }} {{ otherOffice }}
       </button>
     </ng-container>
     <mat-divider></mat-divider>
@@ -104,7 +104,7 @@
   <mat-menu #notificationMenu="matMenu">
     <div class="notification-menu">
       <a (click)="onMarkAllNotificationsAsRead()"
-        >{{ 'nav.readAll' | translate
+        >{{ 'components.notifications.readAll' | translate
         }}<mat-icon [inline]="true"> check_circle_outline </mat-icon></a
       >
       <button

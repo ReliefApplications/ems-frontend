@@ -12,7 +12,7 @@
             <safe-query-builder [form]="$any(tileForm.controls.query)" [canExpand]="false"></safe-query-builder>
             <ng-container *ngIf="selectedFields.length > 0">
                 <mat-form-field appearance="outline">
-                    <mat-label>{{'widgets.map.lat' | translate}}</mat-label>
+                    <mat-label>{{'models.widget.map.latitude' | translate}}</mat-label>
                     <mat-select formControlName="latitude">
                         <mat-option *ngFor="let field of selectedFields" [value]="field">
                             {{field}}
@@ -20,7 +20,7 @@
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field appearance="outline">
-                    <mat-label>{{'widgets.map.long' | translate}}</mat-label>
+                    <mat-label>{{'models.widget.map.longitude' | translate}}</mat-label>
                     <mat-select formControlName="longitude">
                         <mat-option *ngFor="let field of selectedFields" [value]="field">
                             {{field}}
@@ -32,7 +32,7 @@
         <div class="form-group">
             <div class="form-group-title">{{'widgets.map.default.title' | translate}}</div>
             <mat-form-field appearance="outline">
-                <mat-label>{{'widgets.map.zoom' | translate}}</mat-label>
+                <mat-label>{{'models.widget.map.zoom' | translate}}</mat-label>
                 <input type="number" matInput formControlName="zoom">
             </mat-form-field>
             <mat-form-field appearance="outline">

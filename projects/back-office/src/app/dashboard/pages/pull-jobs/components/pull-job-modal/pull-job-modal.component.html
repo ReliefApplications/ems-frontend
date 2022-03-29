@@ -31,7 +31,7 @@
                     matInput formControlName="schedule">
                 </mat-form-field>
                 <mat-form-field appearance="outline" style="flex: 1;">
-                    <mat-label>{{'table.APIConf' | translate}}</mat-label>
+                    <mat-label>{{'common.apiConfiguration.one' | translate}}</mat-label>
                     <mat-select #apiSelect formControlName="apiConfiguration" (openedChange)="onOpenApiSelect($event)">
                         <mat-option *ngFor="let apiConfiguration of apiConfigurations$ | async" [value]="apiConfiguration.id">{{ apiConfiguration.name }}</mat-option>
                     </mat-select>
