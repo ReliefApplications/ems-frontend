@@ -15,6 +15,7 @@
     scrollTime="08:00"
     [selectedViewIndex]="1"
     style="height: 600px"
+    #scheduler
   >
     <kendo-scheduler-day-view> </kendo-scheduler-day-view>
 
@@ -23,5 +24,20 @@
     <kendo-scheduler-month-view> </kendo-scheduler-month-view>
 
     <kendo-scheduler-timeline-view> </kendo-scheduler-timeline-view>
+
+    <kendo-scheduler-pdf fileName="Scheduler.pdf"></kendo-scheduler-pdf>
+    
+    <ng-template kendoSchedulerToolbarTemplate>
+      <button kendoButton [matMenuTriggerFor]="menu">Export</button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="exportPDF()">Export as PDF</button>
+        <button mat-menu-item>Export as CSV</button>
+        <button mat-menu-item>Export as PNG</button>
+      </mat-menu>
+      <div kendoSchedulerToolbarNavigation></div>
+      <span class="k-spacer"></span>
+      <div kendoSchedulerToolbarViewSelector></div>
+    </ng-template>
+    
   </kendo-scheduler>
 </div>
