@@ -42,17 +42,17 @@ export class FormBuilderComponent implements OnInit {
   public statuses = [
     {
       value: 'active',
-      text: 'Active',
+      key: 'common.status_active',
       color: 'primary',
     },
     {
       value: 'pending',
-      text: 'Pending',
+      key: 'common.status_pending',
       color: 'accent',
     },
     {
       value: 'archived',
-      text: 'Archive',
+      key: 'common.status_archived',
       color: 'warn',
     },
   ];
@@ -70,13 +70,7 @@ export class FormBuilderComponent implements OnInit {
     public dialog: MatDialog,
     private authService: SafeAuthService,
     private translate: TranslateService
-  ) {
-    translate.stream('status').subscribe((status: any) => {
-      this.statuses[0].text = status.active;
-      this.statuses[1].text = status.pending;
-      this.statuses[2].text = status.archived;
-    });
-  }
+  ) {}
 
   /* Shows modal confirmation before leave the page if has changes on form
    */
