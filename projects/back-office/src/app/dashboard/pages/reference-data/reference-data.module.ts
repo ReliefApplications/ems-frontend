@@ -20,8 +20,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
+import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
+import { SafeIconModule } from 'projects/safe/src/lib/components/ui/icon/icon.module';
+
 @NgModule({
-  declarations: [ReferenceDataComponent],
+  declarations: [ReferenceDataComponent, AddReferenceDataComponent],
   imports: [
     CommonModule,
     MatMenuModule,
@@ -37,6 +40,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     MatDialogModule,
     SafeButtonModule,
+    SafeIconModule,
     MatIconModule,
     MatButtonModule,
     MatPaginatorModule,

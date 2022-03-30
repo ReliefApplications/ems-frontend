@@ -22,14 +22,15 @@ import {
   GetReferenceDatasQueryResponse,
   GET_REFERENCE_DATAS,
 } from '../../../graphql/queries';
-import { 
+import {
   AddReferenceDataMutationResponse,
   ADD_REFERENCE_DATA,
   DeleteReferenceDataMutationResponse,
-  DELETE_REFERENCE_DATA
+  DELETE_REFERENCE_DATA,
 } from '../../../graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -196,43 +197,44 @@ export class ReferenceDataComponent
    * Displays the AddReferenceData modal.
    * Creates a new reference data on closed if result.
    */
-   onAdd(): void {
-    // TODO: Uncomment after the creation of the AddReferenceDataComponent (or whatever name)
-    // const dialogRef = this.dialog.open(AddReferenceDataComponent);
-    // dialogRef.afterClosed().subscribe((value) => {
-    //   if (value) {
-    //     this.apollo
-    //       .mutate<AddReferenceDataMutationResponse>({
-    //         mutation: ADD_REFERENCE_DATA,
-    //         variables: {
-    //           name: value.name,
-    //         },
-    //       })
-    //       .subscribe(
-    //         (res) => {
-    //           if (res.errors) {
-    //             this.snackBar.openSnackBar(
-    //               this.translate.instant('notification.objectNotCreated', {
-    //                 type: this.translate.instant('referenceData.apiConfiguration'),
-    //                 error: res.errors[0].message,
-    //               }),
-    //               { error: true }
-    //             );
-    //           } else {
-    //             if (res.data) {
-    //               this.router.navigate([
-    //                 '/referencedata',
-    //                 res.data.addReferenceData.id,
-    //               ]);
-    //             }
-    //           }
-    //         },
-    //         (err) => {
-    //           this.snackBar.openSnackBar(err.message, { error: true });
-    //         }
-    //       );
-    //   }
-    // });
+  onAdd(): void {
+    const dialogRef = this.dialog.open(AddReferenceDataComponent);
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.apollo
+          .mutate<AddReferenceDataMutationResponse>({
+            mutation: ADD_REFERENCE_DATA,
+            variables: {
+              name: value.name,
+            },
+          })
+          .subscribe(
+            (res) => {
+              if (res.errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('notification.objectNotCreated', {
+                    type: this.translate.instant(
+                      'referenceData.apiConfiguration'
+                    ),
+                    error: res.errors[0].message,
+                  }),
+                  { error: true }
+                );
+              } else {
+                if (res.data) {
+                  this.router.navigate([
+                    '/referencedata',
+                    res.data.addReferenceData.id,
+                  ]);
+                }
+              }
+            },
+            (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            }
+          );
+      }
+    });
   }
 
   /**
@@ -241,7 +243,7 @@ export class ReferenceDataComponent
    * @param element Reference data to delete.
    * @param e click event.
    */
-   onDelete(element: any, e: any): void {
+  onDelete(element: any, e: any): void {
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {

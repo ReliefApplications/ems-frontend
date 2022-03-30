@@ -952,6 +952,26 @@ export const GET_API_CONFIGURATIONS = gql`
   }
 `;
 
+// === GET API CONFGIURATIONS NAME ===
+export const GET_API_CONFIGURATIONS_NAMES = gql`
+  query GetApiConfigurationsName($first: Int, $afterCursor: ID) {
+    apiConfigurations(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
 export interface GetApiConfigurationsQueryResponse {
   loading: boolean;
   apiConfigurations: {

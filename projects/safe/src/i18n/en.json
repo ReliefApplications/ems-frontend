@@ -43,7 +43,9 @@
     "id": "Id",
     "none": "-- None --",
     "raw": "Raw JSON",
-    "preview": "Preview"
+    "preview": "Preview",
+    "type": "Type",
+    "queryNamePlaceholder": "Enter a query name"
   },
   "action": {
     "edit": "Edit",
@@ -219,7 +221,15 @@
     "add" : "Add a new reference data",
     "apiConfiguration": "API Configuration",
     "delete": "Delete reference data",
-    "deleteDesc": "Do you confirm the deletion of the reference data {{value}}?"
+    "deleteDesc": "Do you confirm the deletion of the reference data {{value}}?",
+    "new": "New reference data",
+    "warning": "Only letters, hypens or underscores are accepted",
+    "static": "Static",
+    "graphql": "GraphQL",
+    "queryName": "Query Name",
+    "rest": "Rest",
+    "path": "Path",
+    "fields": "Fields"
   },
   "pullJobs": {
     "create": "Create a pull job",
