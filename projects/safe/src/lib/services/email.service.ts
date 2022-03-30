@@ -75,8 +75,7 @@ export class SafeEmailService {
         },
       }
     );
-    // const token = localStorage.getItem('idtoken');
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -153,8 +152,7 @@ export class SafeEmailService {
         },
       }
     );
-    // const token = localStorage.getItem('idtoken');
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,

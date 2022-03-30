@@ -1,7 +1,7 @@
-<div class="info-text">{{ 'widgets.query.field.description' | translate }}</div>
+<div class="info-text">{{ 'components.queryBuilder.hint.fields' | translate }}</div>
 <div cdkDropListGroup class="field-wrapper" [ngClass]="{ hidden: fieldForm }">
   <div class="field-container" *ngIf="!fieldForm">
-    <h2>{{ 'widgets.query.field.available' | translate }}</h2>
+    <h2>{{ 'components.queryBuilder.fields.available' | translate }}</h2>
 
     <mat-form-field appearance="outline">
       <mat-label>{{ 'widgets.query.field.search' | translate }}</mat-label>
@@ -42,7 +42,7 @@
   </div>
 
   <div class="field-container" *ngIf="!fieldForm">
-    <h2>{{ 'widgets.query.field.selected' | translate }}</h2>
+    <h2>{{ 'components.queryBuilder.fields.selected' | translate }}</h2>
 
     <mat-form-field appearance="outline">
       <mat-label>{{ 'widgets.query.field.search' | translate }}</mat-label>
@@ -110,7 +110,7 @@
         <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
         </safe-button>
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'global.name' | translate }}</mat-label>
+          <mat-label>{{ 'common.name' | translate }}</mat-label>
           <input
             matInput
             formControlName="name"
@@ -119,7 +119,7 @@
           />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'global.label' | translate }}</mat-label>
+          <mat-label>{{ 'models.form.field.label' | translate }}</mat-label>
           <input matInput formControlName="label" type="text" />
         </mat-form-field>
       </form>

@@ -1,17 +1,17 @@
-<h1 mat-dialog-title>{{'users.invite' | translate}}</h1>
+<h1 mat-dialog-title>{{'components.users.invite.confirm' | translate}}</h1>
 <div mat-dialog-content>
-    <div class="invite-label">{{'users.description' | translate}}</div>
+    <div class="invite-label">{{'components.users.invite.description' | translate}}</div>
     <!-- DOWNLOAD TEMPLATE / UPLOAD -->
     <div class="file-row">
         <input type="file" #fileReader name="Upload XLSX" class="file-select" (change)="onUpload($event)" accept=".xlsx" />
-        <button mat-button (click)="onDownload()" color="primary">{{'users.getTemplate' | translate}}</button>
+        <button mat-button (click)="onDownload()" color="primary">{{'common.downloadTemplate' | translate}}</button>
       </div>
     <kendo-grid [data]="gridData" (cellClick)="cellClickHandler($event)" (add)="onAdd()">
         <ng-template kendoGridToolbarTemplate>
-            <button kendoGridAddCommand>{{'users.inviteNew' | translate}}</button>
+            <button kendoGridAddCommand>{{'components.users.invite.add' | translate}}</button>
         </ng-template>
-        <kendo-grid-column field="email" [title]="'global.email' | translate"></kendo-grid-column>
-        <kendo-grid-column field="role" [title]="'global.role' | translate">
+        <kendo-grid-column field="email" [title]="'common.email.one' | translate"></kendo-grid-column>
+        <kendo-grid-column field="role" [title]="'common.role.one' | translate">
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                 <kendo-dropdownlist [data]="data.roles" textField="title" valueField="id" [valuePrimitive]="true" [value]="dataItem.role" [disabled]="true">
                 </kendo-dropdownlist>
@@ -46,6 +46,6 @@
     </kendo-grid>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
-    <button type="submit" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="gridData.data.length === 0">{{'users.invite' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
+    <button type="submit" mat-flat-button color="primary" (click)="onSubmit()" [disabled]="gridData.data.length === 0">{{'components.users.invite.confirm' | translate}}</button>
 </div>

@@ -297,6 +297,7 @@ export const GET_RESOURCE_BY_ID = gql`
     resource(id: $id) {
       id
       name
+      queryName
       createdAt
       fields
       layouts {

@@ -49,6 +49,7 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() canExpand = true;
   @Input() canSelectDataSet = true;
   @Input() templates: Form[] = [];
+  @Input() queryName? = '';
 
   // === FIELD EDITION ===
   public isField = false;
@@ -89,7 +90,16 @@ export class SafeQueryBuilderComponent implements OnInit {
       this.availableQueries = this.queryBuilder.availableQueries$;
       this.availableQueries.subscribe((res) => {
         if (res && res.length > 0) {
-          this.allQueries = res.map((x) => x.name);
+          if (this.queryName) {
+            this.allQueries = res
+              .filter((x) => x.name === this.queryName)
+              .map((x) => x.name);
+            if (this.allQueries.length === 1) {
+              this.form?.get('name')?.setValue(this.allQueries[0]);
+            }
+          } else {
+            this.allQueries = res.filter((x) => x.name).map((x) => x.name);
+          }
           this.filteredQueries = this.filterQueries(this.form?.value.name);
           this.availableFields = this.queryBuilder.getFields(
             this.form?.value.name
