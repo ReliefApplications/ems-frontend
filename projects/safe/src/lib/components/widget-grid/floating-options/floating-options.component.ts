@@ -38,18 +38,18 @@ export class SafeFloatingOptionsComponent implements OnInit {
     this.items = [
       {
         name: 'Settings',
-        text: this.translate.instant('global.settings'),
+        text: this.translate.instant('common.settings'),
         icon: 'insert_chart',
         disabled: !this.widget || !this.widget.settings,
       },
       {
         name: 'Expand',
-        text: this.translate.instant('action.expand'),
+        text: this.translate.instant('components.widget.expand'),
         icon: 'open_in_full',
       },
       {
         name: 'Delete',
-        text: this.translate.instant('action.delete'),
+        text: this.translate.instant('common.delete'),
         icon: 'delete',
       },
     ];

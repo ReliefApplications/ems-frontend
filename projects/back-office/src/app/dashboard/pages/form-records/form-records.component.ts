@@ -227,12 +227,14 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     if (this.showDeletedRecords) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: this.translate.instant('record.delete'),
-          content: this.translate.instant('record.deleteDesc', {
+          title: this.translate.instant('common.deleteObject', {
+            name: this.translate.instant('common.record.one'),
+          }),
+          content: this.translate.instant('components.record.delete.confirmationMessage', {
             name: element.name,
           }),
-          confirmText: this.translate.instant('action.delete'),
-          cancelText: this.translate.instant('action.cancel'),
+          confirmText: this.translate.instant('common.delete'),
+          cancelText: this.translate.instant('common.cancel'),
           confirmColor: 'warn',
         },
       });

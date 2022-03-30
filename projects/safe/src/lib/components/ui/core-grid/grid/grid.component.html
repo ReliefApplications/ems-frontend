@@ -41,7 +41,7 @@
   >
     <input
       *ngIf="searchable"
-      [placeholder]="'filter.search' | translate"
+      [placeholder]="'common.placeholder.search' | translate"
       kendoTextBox
       [formControl]="search"
       class="grid-searchbox"
@@ -52,27 +52,29 @@
       kendoButton
       (click)="action.emit({ action: 'add' })"
     >
-      {{ 'action.add' | translate }}
+      {{ 'common.add' | translate }}
     </button>
     <button *ngIf="exportable" kendoButton (click)="onExport()">
-      {{ 'action.export' | translate }}
+      {{ 'common.export' | translate }}
     </button>
     <ng-container *ngIf="editable">
       <button kendoButton (click)="onSave()" [disabled]="!hasChanges">
-        {{ 'action.save' | translate }}
+        {{ 'common.save' | translate }}
       </button>
       <button kendoButton (click)="onCancel()" [disabled]="!hasChanges">
-        {{ 'action.cancel' | translate }}
+        {{ 'common.cancel' | translate }}
       </button>
     </ng-container>
     <button
       *ngIf="filterable"
-      [matTooltip]="'tooltip.filterVisibility' | translate"
+      [matTooltip]="'components.widget.grid.filter.toggle' | translate"
       kendoButton
       icon="eye"
       (click)="onToggleFilter()"
     >
-      {{ (showFilter ? 'filter.hide' : 'filter.hide') | translate }}
+      {{
+        (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
+      }}
     </button>
     <!-- ADMIN FEATURES -->
     <ng-container *ngIf="admin">
@@ -82,7 +84,7 @@
           class="k-button"
           (click)="action.emit({ action: 'resetLayout' })"
         >
-          {{ 'widgets.grid.reset' | translate }}
+          {{ 'components.widget.grid.layout.reset' | translate }}
         </button>
       </span>
     </ng-container>
@@ -299,12 +301,12 @@
               >
                 {{
                   (dataItem[field.name].length > 1
-                    ? 'widgets.grid.items'
-                    : 'widgets.grid.item'
+                    ? 'components.widget.grid.item.few'
+                    : 'components.widget.grid.item.one'
                   )
                     | translate
                       : {
-                          number: dataItem[field.name].length
+                          count: dataItem[field.name].length
                         }
                 }}
               </div>
@@ -771,10 +773,10 @@
   <ng-template kendoGridNoRecordsTemplate>
     {{
       (error
-        ? 'widgets.grid.invalid'
+        ? 'components.widget.grid.errors.invalid'
         : blank
-        ? 'widgets.grid.selectDataset'
-        : 'widgets.grid.noRecord'
+        ? 'components.widget.grid.errors.missingDataset'
+        : 'components.widget.grid.empty'
       ) | translate
     }}
   </ng-template>

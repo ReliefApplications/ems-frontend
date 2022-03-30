@@ -77,12 +77,12 @@ export class PositionComponent implements OnInit, OnDestroy {
   onDelete(positionCategory: PositionAttributeCategory): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('attributes.delete'),
-        content: this.translate.instant('attributes.deleteDesc', {
+        title: this.translate.instant('components.application.positionAttribute.delete.title'),
+        content: this.translate.instant('components.application.positionAttribute.delete.confirmationMessage', {
           name: positionCategory.title,
         }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });

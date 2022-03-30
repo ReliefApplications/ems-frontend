@@ -9,14 +9,14 @@
       </safe-button>
 
       <div class="field-form">
-        <span class="field-name">{{ 'widgets.grid.style.name' | translate }}</span>
+        <span class="field-name">{{ 'components.queryBuilder.style.edit.name' | translate }}</span>
         <mat-form-field appearance="outline">
           <input matInput formControlName="name" type="text" />
         </mat-form-field>
       </div>
 
       <div class="field-form">
-        <span class="field-name">{{ 'widgets.grid.style.criteria' | translate }}</span>
+        <span class="field-name">{{ 'components.queryBuilder.style.edit.criteria' | translate }}</span>
         <safe-tab-filter
           [form]="$any(form?.controls?.filter)"
           [fields]="scalarFields"
@@ -27,7 +27,7 @@
       <ng-container formGroupName="background">
         <div class="field-form">
           <span class="field-name">{{
-            'widgets.grid.style.background.color' | translate
+            'components.queryBuilder.style.edit.background.color' | translate
           }}</span>
           <kendo-colorpicker formControlName="color"></kendo-colorpicker>
         </div>
@@ -35,13 +35,13 @@
       <ng-container formGroupName="text">
         <div class="field-form">
           <span class="field-name">{{
-            'widgets.grid.style.text.color' | translate
+            'components.queryBuilder.style.edit.text.color' | translate
           }}</span>
           <kendo-colorpicker formControlName="color"></kendo-colorpicker>
         </div>
         <div class="field-form">
           <span class="field-name">{{
-            'widgets.grid.style.text.style' | translate
+            'components.queryBuilder.style.edit.text.style' | translate
           }}</span>
           <div class="text-style">
             <safe-button
@@ -67,15 +67,15 @@
       </ng-container>
 
       <div class="field-form">
-        <span class="field-name">{{ 'widgets.grid.style.appliesTo' | translate }}</span>
+        <span class="field-name">{{ 'components.queryBuilder.style.edit.appliesTo' | translate }}</span>
         <mat-radio-group [formControl]="wholeRow">
-          <mat-radio-button [value]="true">{{ 'widgets.grid.style.wholeRow' | translate }}</mat-radio-button>
-          <mat-radio-button [value]="false">{{ 'widgets.grid.style.selectedColumns' | translate }}</mat-radio-button>
+          <mat-radio-button [value]="true">{{ 'components.queryBuilder.style.edit.wholeRow' | translate }}</mat-radio-button>
+          <mat-radio-button [value]="false">{{ 'components.queryBuilder.style.edit.selectedColumns' | translate }}</mat-radio-button>
         </mat-radio-group>
       </div>
 
       <div class="field-form" *ngIf="!wholeRow.value">
-        <span class="field-name">{{'widgets.grid.style.fields' | translate }}</span>
+        <span class="field-name">{{'components.queryBuilder.style.edit.fields' | translate }}</span>
         <safe-checkbox-tree [checklist]="checklist" (valueChange)="onChange($event)" [value]="this.form.get('fields')?.value || []"></safe-checkbox-tree>
       </div>
     </form>

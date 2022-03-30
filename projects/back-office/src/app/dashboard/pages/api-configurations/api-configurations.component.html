@@ -7,35 +7,35 @@
         <mat-form-field appearance="outline">
           <mat-icon matPrefix>search</mat-icon>
           <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
-            [placeholder]="'filter.search' | translate">
+            [placeholder]="'common.placeholder.search' | translate">
         </mat-form-field>
         <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
-          {{ showFilters ? ('filter.hide' | translate) : 'filter.show' | translate }}
+          {{ showFilters ? ('common.filter.hide' | translate) : 'common.filter.show' | translate }}
         </safe-button>
       </div>
       <div class="advanced" [style.display]="!showFilters ? 'none' : ''">
         <mat-form-field appearance="outline">
-          <mat-label>{{'global.status' | translate}}</mat-label>
+          <mat-label>{{'common.status' | translate}}</mat-label>
           <mat-select [ngModel]="statusFilter" (selectionChange)="applyFilter('status', $event)">
             <mat-option>-</mat-option>
             <mat-option value="active">
-              {{'status.active' | translate}}
+              {{'common.status_active' | translate}}
             </mat-option>
             <mat-option value="pending">
-              {{'status.pending' | translate}}
+              {{'common.status_pending' | translate}}
             </mat-option>
             <mat-option value="archived">
-              {{'status.archived' | translate}}
+              {{'common.status_archived' | translate}}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <safe-button variant="danger" (click)="clearAllFilters()">{{'filter.clear' | translate}}</safe-button>
+        <safe-button variant="danger" (click)="clearAllFilters()">{{'common.filter.clear' | translate}}</safe-button>
       </div>
     </div>
 
     <div class="actions">
       <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
-        {{'APIConf.create' | translate}}
+        {{'pages.apiConfigurations.create' | translate}}
       </safe-button>
     </div>
   </div>
@@ -44,7 +44,7 @@
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          {{'global.name' | translate}}
+          {{'common.name' | translate}}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -53,19 +53,19 @@
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          {{'global.status' | translate}}
+          {{'common.status' | translate}}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">
         <mat-chip-list>
           <mat-chip class="success-chip" disabled *ngIf="element.status === 'active'">
-            {{ 'status.active' | translate | titlecase }}
+            {{ 'common.status_active' | translate | titlecase }}
           </mat-chip>
           <mat-chip class="accent-chip" disabled color="accent" *ngIf="element.status === 'pending'">
-            {{ 'status.pending' | translate | titlecase }}
+            {{ 'common.status_pending' | translate | titlecase }}
           </mat-chip>
           <mat-chip class="warn-chip" disabled color="warn" *ngIf="element.status === 'archived'">
-            {{ 'status.archived' | translate | titlecase }}
+            {{ 'common.status_archived' | translate | titlecase }}
           </mat-chip>
         </mat-chip-list>
       </td>
@@ -74,7 +74,7 @@
     <ng-container matColumnDef="authType">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          {{'table.authType' | translate}}
+          {{'models.apiConfiguration.authType' | translate}}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.authType }}</td>
@@ -89,7 +89,7 @@
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="onDelete(element, $event)" *ngIf="element.canDelete">
             <mat-icon>delete</mat-icon>
-            {{'action.delete' | translate}}
+            {{'common.delete' | translate}}
           </button>
         </mat-menu>
       </td>
