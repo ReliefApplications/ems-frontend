@@ -24,6 +24,7 @@
       "one": "Email",
       "few": "Emails"
     },
+    "confirm": "Confirm",
     "user": {
       "none": "No user",
       "one": "User",
@@ -37,9 +38,11 @@
     "filter": {
       "show": "Show Filter",
       "hide": "Hide Filter",
-      "clear": "Clear Filter"
+      "clear": "Clear Filter",
+      "apply": "Apply"
     },
     "title": "Title",
+    "general": "General",
     "status": "Status",
     "status_active": "Active",
     "status_pending": "Pending",
@@ -57,6 +60,7 @@
     "create": "Create",
     "clear": "Clear",
     "createdOn": "Created on",
+    "id": "Id",
     "delete": "Delete",
     "deleteObject": "Delete {{name}}",
     "searchObject": "Search {{name}}",
@@ -66,6 +70,7 @@
     "editObject": "Edit {{name}}",
     "downloadObject": "Download {{name}}",
     "uploadObject": "Upload {{name}}",
+    "publish": "Publish",
     "application": {
       "none": "No application",
       "one": "Application",
@@ -99,6 +104,16 @@
       "one": "Pull job",
       "few": "Pull jobs"
     },
+    "field": {
+      "none": "No field",
+      "one": "Field",
+      "few": "Fields"
+    },
+    "value": {
+      "none": "No value",
+      "one": "Value",
+      "few": "Values"
+    },
     "layout": {
       "none": "No layout",
       "one": "Layout",
@@ -123,11 +138,17 @@
     "duplicate": "Duplicate",
     "add": "Add",
     "export": "Export",
+    "display": "Display",
     "exportObject": "Export {{name}}",
     "input": {
-      "dateRange": "Date range"
+      "dateRange": "Date range",
+      "none": "-- None --",
+      "rawJson": "Raw JSON"
     },
-    "previous": "Previous"
+    "previous": "Previous",
+    "true": "True",
+    "false": "False",
+    "settings": "Settings"
   },
   "pages": {
     "appBuilder": {
@@ -162,6 +183,9 @@
       },
       "positionAttributes": {
         "title": "Attributes"
+      },
+      "settings": {
+        "actions": "Actions"
       }
     },
     "worklow": {
@@ -179,6 +203,7 @@
   },
   "components": {
     "access": {
+      "title": "Access",
       "description": "Update access permissions",
       "canSee": "Can see",
       "canUpdate": "Can update",
@@ -205,14 +230,32 @@
       }
     },
     "channel": {
+      "dropdown": {
+        "select": "Notify on"
+      },
       "delete": {
         "confirmationMessage": "Do you confirm the deletion of the channel {{name}}?"
       }
     },
     "history": {
-      "download": "Download history"
+      "download": "Download history",
+      "preview": "Preview and revert"
     },
     "form": {
+      "create": {
+        "choice": {
+          "blank": "Create a blank form",
+          "resource": "Create a new resource",
+          "inherit": "Copy existing resource template",
+          "template": "Start from existing template"
+        },
+        "template": {
+          "title": "From resource",
+          "tooltip": "If no template is selected, core structure will be loaded",
+          "placeholder": "Pick an existing template",
+          "from": "From template"
+        }
+      },
       "delete": {
         "confirmationMessage": "Do you confirm the deletion of the form {{name}}?"
       },
@@ -234,11 +277,16 @@
       "parent":"Parent form"
     },
     "record": {
+      "convert": {
+        "select": "Convert to"
+      },
       "delete": {
-        "confirmationMessage": "Do you confirm the deletion of the record {{name}}?"
+        "confirmationMessage": "Do you confirm the deletion of the record {{name}}?",
+        "permanently": "Delete permanently"
       },
       "modal": {
-        "update": "Save and close"
+        "update": "Save and close",
+        "attach": "Attach"
       }
     },
     "resource": {
@@ -262,15 +310,25 @@
       "logout": "Logout"
     },
     "widget": {
+      "expand": "Expand",
       "settings": {
         "chart": {
-          "type": "Chart Type"
+          "type": "Chart Type",
+          "position": "Position",
+          "text": "Text",
+          "legend": "Legend",
+          "orientation": "Orientation"
         }
       },
       "grid": {
         "filter": {
           "toggle": "Toggle visibility of filter"
         }
+      }
+    },
+    "user": {
+      "invite": {
+        "confirm": "Invite"
       }
     }
   },
@@ -281,14 +339,19 @@
     "form": {
       "select": "Select a Form",
       "create": "Create a Form",
-      "core": "Core"
+      "core": "Core",
+      "template": "Template",
+      "field": {
+        "label": "Label"
+      }
     },
     "pullJob": {
       "schedule": "Schedule"
     },
     "application": {
       "id": "Application ID",
-      "setAsFavorite": "Set as favorite"
+      "setAsFavorite": "Set as favorite",
+      "description": "Description"
     },
     "page": {
       "add": "Add a Page"
@@ -298,6 +361,10 @@
     },
     "channel": {
       "create": "Create a channel"
+    },
+    "record": {
+      "convert": "Convert",
+      "restore": "Restore"
     },
     "widget": {
       "add": "Add a Widget",
@@ -314,57 +381,6 @@
         "defaultTitle": "Chart Widget"
       }
     }
-  },
-  "global": {
-    "yes": "Yes",
-    "no": "No",
-    "field": "Field",
-    "value": "Value",
-    "notify": "Notify on",
-    "convert": "Convert to",
-    "general": "General",
-    "description": "Description",
-    "actions": "Actions",
-    "settings": "Settings",
-    "search": "Search",
-    "template": "Template",
-    "label": "Label",
-    "true": "True",
-    "false": "False",
-    "events": "Events",
-    "data": "Data",
-    "dataSrc": "Data source",
-    "display": "Display",
-    "position": "Position",
-    "text": "Text",
-    "legend": "Legend",
-    "orientation": "Orientation",
-    "id": "Id",
-    "none": "-- None --",
-    "raw": "Raw JSON",
-    "preview": "Preview"
-  },
-  "action": {
-    "deletePerm": "Delete premanently",
-    "publish": "Publish",
-    "access": "Access",
-    "apply": "Apply",
-    "invite": "Invite",
-    "previewRevert": "Preview and revert",
-    "showMore": "Show more",
-    "convert": "Convert",
-    "restore": "Restore",
-    "confirm": "Confirm",
-    "attach": "Attach",
-    "expand": "Expand"
-  },
-  "forms": {
-    "createBlank": "Create a blank form",
-    "createNew": "Create a new resource",
-    "copy": "Copy existing resource template",
-    "fromTemplate": "From template",
-    "startFrom": "Start from existing template",
-    "tooltip": "If no template is selected, core structure will be loaded"
   },
   "users": {
     "invite": "Invite users",

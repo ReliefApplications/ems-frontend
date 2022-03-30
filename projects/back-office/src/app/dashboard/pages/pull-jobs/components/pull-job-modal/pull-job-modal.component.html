@@ -39,14 +39,14 @@
             </div>
             <div class="form-group-row">
                 <mat-form-field appearance="outline" style="flex: 1;">
-                    <mat-label>{{'global.convert' | translate}}</mat-label>
+                    <mat-label>{{'components.record.convert.select' | translate}}</mat-label>
                     <mat-select #formSelect formControlName="convertTo" (openedChange)="onOpenFormsSelect($event)">
                         <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{ form.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 
                 <mat-form-field appearance="outline">
-                    <mat-label>{{'global.notify' | translate}}</mat-label>
+                    <mat-label>{{'components.channel.dropdown.select' | translate}}</mat-label>
                     <mat-select #channelSelect formControlName="channel" placeholder="Select a channel" (opened)="onOpenApplicationSelect()">
                         <mat-optgroup *ngFor="let application of applications | async" [label]="application.name || ''">
                             <mat-option *ngFor="let channel of application.channels" [value]="channel.id">
@@ -70,7 +70,7 @@
                 </div>
                 <ng-container *ngIf="openRawJSON">
                     <mat-form-field appearance="outline" style="width: 100%;">
-                        <mat-label>{{'global.raw' | translate}}</mat-label>
+                        <mat-label>{{'common.input.rawJson' | translate}}</mat-label>
                         <textarea matInput formControlName="rawMapping" placeholder="Please enter a JSON for the data mapping between the API and the Form."
                         [matTextareaAutosize]="true" [matAutosizeMinRows]="2"></textarea>
                     </mat-form-field>
@@ -78,13 +78,13 @@
                 <ng-container *ngIf="!openRawJSON">
                     <form [formGroup]="$any(element)" *ngFor="let element of mappingArray.controls; index as i">
                         <mat-form-field appearance="outline" style=" margin-bottom: -1.25em">
-                            <mat-label>{{'global.field' | translate}}</mat-label>
+                            <mat-label>{{'common.field.one' | translate}}</mat-label>
                             <mat-select formControlName="name">
                                 <mat-option *ngFor="let field of filteredFields(element.value.name)" [value]="field.name">{{field.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field appearance="outline" *ngIf="element.value.name" style=" margin-bottom: -1.25em">
-                            <mat-label>{{'global.value' | translate}}</mat-label>
+                            <mat-label>{{'common.value.one' | translate}}</mat-label>
                             <input matInput formControlName="value" type="string" />
                         </mat-form-field>
                         <safe-button [isIcon]="true" icon="remove_circle_outline" variant="danger" (click)="onDeleteElement(i)">

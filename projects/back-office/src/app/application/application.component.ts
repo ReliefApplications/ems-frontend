@@ -77,7 +77,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
               });
               adminNavItems = adminNavItems.concat([
                 {
-                  name: this.translate.instant('global.settings'),
+                  name: this.translate.instant('common.settings'),
                   path: './settings/edit',
                   icon: 'settings',
                 },
@@ -110,7 +110,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
             }
             this.navGroups = [
               {
-                name: this.translate.instant('global.display'),
+                name: this.translate.instant('common.display'),
                 navItems: displayNavItems,
               },
               {

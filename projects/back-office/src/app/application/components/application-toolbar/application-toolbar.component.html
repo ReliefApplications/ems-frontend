@@ -3,7 +3,7 @@
         <safe-button *ngIf="application?.canUpdate && locked" [isIcon]="true" icon="lock" [variant]="lockedByUser ? 'primary' : 'danger'"(click)="onUnlock()">
         </safe-button>
         <safe-button variant="danger" (click)="onClose()">{{'common.close' | translate}}</safe-button>
-        <safe-button category="secondary" variant="success" (click)="onPublish()" [disabled]="!canPublish">{{'action.publish' | translate}}</safe-button>
+        <safe-button category="secondary" variant="success" (click)="onPublish()" [disabled]="!canPublish">{{'common.publish' | translate}}</safe-button>
     </div>
 </div>
 <mat-divider></mat-divider>

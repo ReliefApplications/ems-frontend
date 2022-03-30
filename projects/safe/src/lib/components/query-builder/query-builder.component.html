@@ -28,7 +28,7 @@
       appearance="outline"
       *ngIf="!isField && canSelectDataSet && templates.length > 0"
     >
-      <mat-label>{{ 'global.template' | translate }}</mat-label>
+      <mat-label>{{ 'models.form.template' | translate }}</mat-label>
       <mat-select formControlName="template">
         <mat-option>-</mat-option>
         <mat-option *ngFor="let template of templates" [value]="template.id">{{

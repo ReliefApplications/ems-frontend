@@ -1,5 +1,5 @@
 <form [formGroup]="settingsForm" *ngIf="settingsForm" class="settings-form">
-  <h1>{{'global.general' | translate}}</h1>
+  <h1>{{'common.general' | translate}}</h1>
   <div class="app-status">
     <mat-form-field appearance="outline">
       <mat-label>{{'common.status' | translate}}</mat-label>
@@ -35,7 +35,7 @@
 
     <mat-form-field appearance="outline">
       <mat-label>
-        {{'global.description' | translate}}
+        {{'models.application.description' | translate}}
       </mat-label>
       <textarea matInput formControlName="description" [placeholder]="'components.application.update.placeholder.description' | translate"
         [matTextareaAutosize]="true" [matAutosizeMinRows]="2" [matAutosizeMaxRows]="5"></textarea>
@@ -47,7 +47,7 @@
 </form>
 
 <div class="action-list" *ngIf="application && (application.canUpdate || application.canDelete)">
-  <h1 class="header">{{'global.actions' | translate}}</h1>
+  <h1 class="header">{{'pages.application.settings.actions' | translate}}</h1>
   <safe-button icon="file_copy" category="tertiary" variant="primary" (click)="onDuplicate()" *ngIf="application.canUpdate">
     {{'common.duplicate' | translate}}
   </safe-button>

@@ -8,7 +8,7 @@
         {{'common.history' | translate}}
     </button>
     <button *ngIf="actions.convert && item.canUpdate" mat-menu-item color="warn" (click)="action.emit({ action: 'convert', item: item })">
-        {{'action.convert' | translate}}
+        {{'models.record.convert' | translate}}
     </button>
     <button *ngIf="actions.delete && item.canDelete" mat-menu-item color="warn" (click)="action.emit({ action: 'delete', item: item })">
         {{'common.delete' | translate}}

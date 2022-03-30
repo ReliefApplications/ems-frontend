@@ -19,7 +19,7 @@
             <ng-container *ngIf="!filters.at(i).value.logic">
                 <div [formGroup]="$any(filters.at(i))" class="filter-row">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{'global.field' | translate}}</mat-label>
+                        <mat-label>{{'common.field.one' | translate}}</mat-label>
                         <mat-select formControlName="field" (selectionChange)="onSetField($event, i)">
                             <mat-option *ngFor="let field of fields" [value]="field.name">{{ field.name }}</mat-option>
                         </mat-select>
@@ -33,14 +33,14 @@
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field appearance="outline">
-                            <mat-label>{{'global.value' | translate}}</mat-label>
+                            <mat-label>{{'common.value.one' | translate}}</mat-label>
                             <ng-container *ngIf="['Int', 'Float'].includes(selectedFields[i].type)">
                                 <input matInput formControlName="value" type="number" />
                             </ng-container>
                             <ng-container *ngIf="selectedFields[i].type === 'Boolean'">
                                 <mat-select formControlName="value">
-                                    <mat-option [value]="true">{{'global.true' | translate}}</mat-option>
-                                    <mat-option [value]="false">{{'global.false' | translate}}</mat-option>
+                                    <mat-option [value]="true">{{'common.true' | translate}}</mat-option>
+                                    <mat-option [value]="false">{{'common.false' | translate}}</mat-option>
                                 </mat-select>
                             </ng-container>
                             <ng-container *ngIf="['String', 'Time'].includes(selectedFields[i].type)">

@@ -1,7 +1,7 @@
 <ng-container *ngIf="tileForm">
   <form [formGroup]="tileForm" class="widget-form-container">
     <div class="form-group">
-      <div class="form-group-title">{{ 'global.general' | translate }}</div>
+      <div class="form-group-title">{{ 'common.general' | translate }}</div>
       <mat-form-field appearance="outline">
         <mat-label>{{ 'global.title' | translate }}</mat-label>
         <input matInput formControlName="title" type="string" />
@@ -41,20 +41,20 @@
             [aggregationForm]="aggregationForm"
           ></safe-aggregation-builder>
         </mat-tab>
-        <mat-tab [label]="'global.display' | translate">
+        <mat-tab [label]="'common.display' | translate">
           <mat-accordion>
             <mat-expansion-panel formGroupName="legend">
               <mat-expansion-panel-header>
                 <mat-panel-title>
-                  {{ 'global.legend' | translate }}
+                  {{ 'components.widget.settings.chart.legend' | translate }}
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <mat-slide-toggle formControlName="visible">{{
-                'global.display' | translate
+                'common.display' | translate
               }}</mat-slide-toggle>
               <ng-container *ngIf="chartForm.value.legend.visible">
                 <div>
-                  <h3>{{ 'global.position' | translate }}</h3>
+                  <h3>{{ 'components.widget.settings.chart.position' | translate }}</h3>
                   <div>
                     <safe-button
                       icon="{{ position.icon }}"
@@ -75,7 +75,7 @@
                   </div>
                 </div>
                 <div>
-                  <h3>{{ 'global.orientation' | translate }}</h3>
+                  <h3>{{ 'components.widget.settings.chart.orientation' | translate }}</h3>
                   <div>
                     <safe-button
                       icon="{{ orientation.icon }}"
@@ -104,17 +104,17 @@
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <mat-slide-toggle formControlName="visible">{{
-                'global.display' | translate
+                'common.display' | translate
               }}</mat-slide-toggle>
               <ng-container *ngIf="chartForm.value.title.visible">
                 <div>
                   <mat-form-field appearance="outline">
-                    <mat-label>{{ 'global.text' | translate }}</mat-label>
+                    <mat-label>{{ 'components.widget.settings.chart.text' | translate }}</mat-label>
                     <input matInput formControlName="text" />
                   </mat-form-field>
                 </div>
                 <div>
-                  <h3>{{ 'global.position' | translate }}</h3>
+                  <h3>{{ 'components.widget.settings.chart.position' | translate }}</h3>
                   <div>
                     <safe-button
                       icon="{{ position.icon }}"

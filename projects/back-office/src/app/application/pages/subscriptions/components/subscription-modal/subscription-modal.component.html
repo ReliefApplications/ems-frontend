@@ -25,13 +25,13 @@
                 <mat-hint>{{'subscriptions.listenHint' | translate}}</mat-hint>
             </mat-form-field>
             <mat-form-field appearance="outline">
-                <mat-label>{{'global.convert' | translate}}</mat-label>
+                <mat-label>{{'components.record.convert.select' | translate}}</mat-label>
                 <mat-select #formSelect  formControlName="convertTo" (openedChange)="onOpenFormSelect($event)">
                     <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{ form.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline">
-                <mat-label>{{'global.notify' | translate}}</mat-label>
+                <mat-label>{{'components.channel.dropdown.select' | translate}}</mat-label>
                 <mat-select formControlName="channel">
                     <mat-option *ngFor="let channel of data.channels" [value]="channel.id">{{ channel.title }}
                     </mat-option>

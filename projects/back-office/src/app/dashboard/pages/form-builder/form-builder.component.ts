@@ -86,7 +86,7 @@ export class FormBuilderComponent implements OnInit {
         data: {
           title: this.translate.instant('components.form.update.exit'),
           content: this.translate.instant('components.form.update.exitMessage'),
-          confirmText: this.translate.instant('action.confirm'),
+          confirmText: this.translate.instant('common.confirm'),
           cancelText: this.translate.instant('common.cancel'),
           confirmColor: 'primary',
         },

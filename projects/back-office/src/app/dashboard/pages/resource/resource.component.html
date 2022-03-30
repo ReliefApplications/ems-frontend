@@ -134,7 +134,7 @@
                     (click)="onDeleteRecord(element, $event)"
                   >
                     <mat-icon>delete_forever</mat-icon>
-                    {{ 'action.deletePerm' | translate }}
+                    {{ 'components.record.delete.permanently' | translate }}
                   </button>
                   <button
                     *ngIf="showDeletedRecords"
@@ -142,7 +142,7 @@
                     (click)="onRestoreRecord(element.id, $event)"
                   >
                     <mat-icon>unarchive</mat-icon>
-                    {{ 'action.restore' | translate }}
+                    {{ 'models.record.restore' | translate }}
                   </button>
                 </mat-menu>
                 <mat-menu #templates="matMenu">

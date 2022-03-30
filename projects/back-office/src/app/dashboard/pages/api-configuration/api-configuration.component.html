@@ -8,7 +8,7 @@
       <safe-access [access]="apiConfiguration?.permissions" (save)="saveAccess($event)" *ngIf="apiConfiguration?.canUpdate"></safe-access>
     </div>
     <form [formGroup]="apiForm" *ngIf="apiForm">
-        <h1>{{'global.general' | translate}}</h1>
+        <h1>{{'common.general' | translate}}</h1>
         <div class="form-group">
           <div class="form-group-row">
             <mat-form-field appearance="outline" style="flex: 2;">

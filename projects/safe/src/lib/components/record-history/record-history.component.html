@@ -15,7 +15,7 @@
       <mat-date-range-picker #rangePicker>
         <mat-date-range-picker-actions>
           <safe-button matDateRangePickerCancel (click)="clearDateFilter()">{{'common.clear' | translate}}</safe-button>
-          <safe-button category="secondary" variant="primary" matDateRangePickerApply (click)="applyFilter()">{{'action.apply' | translate}}</safe-button>
+          <safe-button category="secondary" variant="primary" matDateRangePickerApply (click)="applyFilter()">{{'common.filter.apply' | translate}}</safe-button>
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
@@ -46,10 +46,10 @@
           [innerHTML]="value"></div>
         <div class="full-history">
           <safe-button variant="primary" *ngIf="!showMore && item.changes.length > 4"
-            (click)="showMore = true">{{'action.showMore' | translate}} ({{item.changes.length - 4}})</safe-button>
+            (click)="showMore = true">{{'common.pagination.loadMore' | translate}} ({{item.changes.length - 4}})</safe-button>
         </div>
         <safe-button icon="update" class="revert-icon" (click)="onRevert(item)" *ngIf="index > 0">
-          {{'action.previewRevert' | translate}}
+          {{'components.history.preview' | translate}}
         </safe-button>
       </ng-template>
     </mat-expansion-panel>

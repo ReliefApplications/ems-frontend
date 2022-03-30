@@ -18,7 +18,7 @@
           <mat-checkbox formControlName="prefillForm">{{'widgets.grid.prefill' | translate}}</mat-checkbox>
           <div *ngIf="buttonForm.value.prefillForm" class="sub-parameters">
             <mat-form-field appearance="outline">
-              <mat-label>{{'global.template' | translate}}</mat-label>
+              <mat-label>{{'models.form.template' | translate}}</mat-label>
               <mat-select formControlName="prefillTargetForm">
                 <mat-option>--</mat-option>
                 <mat-option *ngFor="let form of relatedForms" [value]="form.id">
@@ -58,8 +58,8 @@
                 <ng-container *ngIf="modification.value.field.type.name === 'Boolean'">
                   <mat-select formControlName="value">
                     <mat-option>--</mat-option>
-                    <mat-option [value]="true">{{'global.true' | translate}}</mat-option>
-                    <mat-option [value]="false">{{'global.false' | translate}}</mat-option>
+                    <mat-option [value]="true">{{'common.true' | translate}}</mat-option>
+                    <mat-option [value]="false">{{'common.false' | translate}}</mat-option>
                   </mat-select>
                 </ng-container>
                 <ng-container
@@ -110,7 +110,7 @@
           </ng-container>
         </div>
         <span class="info-row">
-          <mat-checkbox formControlName="notify">{{'global.notify' | translate}}</mat-checkbox>
+          <mat-checkbox formControlName="notify">{{'components.channel.dropdown.select' | translate}}</mat-checkbox>
           <mat-icon class="info-icon"
             [matTooltip]="'widgets.grid.tooltip2' | translate"
             matTooltipPosition="right">
@@ -133,7 +133,7 @@
           </mat-form-field>
         </div>
         <span class="info-row">
-          <mat-checkbox formControlName="publish">{{'action.publish' | translate}}</mat-checkbox>
+          <mat-checkbox formControlName="publish">{{'common.publish' | translate}}</mat-checkbox>
           <mat-icon class="info-icon"
             [matTooltip]="'widgets.grid.tooltip3' | translate"
             matTooltipPosition="right">
