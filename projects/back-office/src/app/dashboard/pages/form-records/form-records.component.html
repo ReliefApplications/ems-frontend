@@ -29,8 +29,7 @@
       variant="primary"
       [matMenuTriggerFor]="menu"
     >
-      {{'common.downloadObject' | translate: { name: 'common.record.few' | translate
-      }}}
+      {{'common.downloadObject' | translate: { name: 'common.record.few' | translate } }}
     </safe-button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onDownload('csv')">.csv</button>
@@ -44,8 +43,7 @@
       [matMenuTriggerFor]="matUploadMenu"
       style="margin-left: 1rem"
     >
-      {{'common.uploadObject' | translate: { name: 'common.record.few' | translate
-      }}}
+      {{'common.uploadObject' | translate: { name: 'common.record.few' | translate } }}
     </safe-button>
     <mat-menu #matUploadMenu="matMenu">
       <button mat-menu-item (click)="onDownloadTemplate()">

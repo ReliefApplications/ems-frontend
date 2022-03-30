@@ -36,8 +36,7 @@
         variant="primary"
         [matMenuTriggerFor]="menu"
       >
-        {{'common.downloadObject' | translate: { name: 'common.record.few' | translate
-        }}}
+        {{'common.downloadObject' | translate: { name: 'common.record.few' | translate } }}
       </safe-button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="onDownload('csv')">.csv</button>
@@ -50,8 +49,7 @@
         matTooltip="File should contain one record per row. Header row contains the names of data fields."
         [matMenuTriggerFor]="matUploadMenu"
       >
-        {{'common.uploadObject' | translate: { name: 'common.record.few' | translate
-        }}}
+        {{'common.uploadObject' | translate: { name: 'common.record.few' | translate } }}
       </safe-button>
       <mat-menu #matUploadMenu="matMenu">
         <button mat-menu-item (click)="onDownloadTemplate()">

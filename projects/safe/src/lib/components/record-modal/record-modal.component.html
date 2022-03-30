@@ -80,6 +80,6 @@
     {{ 'common.next' | translate }}
   </button>
   <button *ngIf="canEdit" mat-flat-button color="primary" (click)="onEdit()">
-    {{'common.editObject' | translate: { name: 'common.record.few' }}}
+    {{'common.editObject' | translate: { name: 'common.record.few' | translate } }}
   </button>
 </mat-dialog-actions>

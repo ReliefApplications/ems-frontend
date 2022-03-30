@@ -110,7 +110,7 @@
           <ng-container *ngIf="element.canSee">
             <button mat-menu-item [routerLink]="['/forms/records', element.id]">
               <mat-icon>plagiarism</mat-icon>
-              {{'common.viewObject' | translate: { name: 'common.record.few' | translate }}}
+              {{'common.viewObject' | translate: { name: 'common.record.few' | translate } }}
             </button>
           </ng-container>
           <ng-container *ngIf="element.canDelete">

@@ -254,9 +254,12 @@ export class ResourceComponent implements OnInit, OnDestroy {
           title: this.translate.instant('common.deleteObject', {
             name: this.translate.instant('common.record.one'),
           }),
-          content: this.translate.instant('components.record.delete.confirmationMessage', {
-            name: element.name,
-          }),
+          content: this.translate.instant(
+            'components.record.delete.confirmationMessage',
+            {
+              name: element.name,
+            }
+          ),
           confirmText: this.translate.instant('common.delete'),
           cancelText: this.translate.instant('common.cancel'),
         },
