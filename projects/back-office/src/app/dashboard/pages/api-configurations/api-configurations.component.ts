@@ -255,8 +255,8 @@ export class ApiConfigurationsComponent
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('APIConf.delete'),
-        content: this.translate.instant('APIConf.deleteDesc', {
+        title: this.translate.instant('components.apiConfiguration.delete.title'),
+        content: this.translate.instant('components.apiConfiguration.delete.confirmationMessage', {
           name: element.name,
         }),
         confirmText: this.translate.instant('common.delete'),

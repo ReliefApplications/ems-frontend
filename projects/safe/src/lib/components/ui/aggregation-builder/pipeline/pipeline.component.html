@@ -5,12 +5,12 @@
   >
     <mat-expansion-panel-header cdkDragHandle>
       <mat-panel-title>
-        {{ 'aggregation.stages.' + stageForm.value.type | translate }}
+        {{ 'components.aggregationBuilder.stages.' + stageForm.value.type | translate }}
         <safe-icon
           class="info"
           [size]="18"
           [matTooltip]="
-            'aggregation.tooltip.' + stageForm.value.type | translate
+            'components.aggregationBuilder.tooltip.' + stageForm.value.type | translate
           "
           matTooltipPosition="right"
           icon="info_outline"
@@ -81,7 +81,7 @@
     [block]="true"
     (click)="$event.stopPropagation()"
   >
-    {{ 'aggregation.addStage' | translate }}
+    {{ 'components.aggregationBuilder.addStage' | translate }}
   </safe-button>
   <mat-menu #menu="matMenu">
     <button
@@ -89,7 +89,7 @@
       mat-menu-item
       (click)="addStage(stage)"
     >
-      {{ 'aggregation.stages.' + stage | translate }}
+      {{ 'components.aggregationBuilder.stages.' + stage | translate }}
     </button>
   </mat-menu>
 </div>

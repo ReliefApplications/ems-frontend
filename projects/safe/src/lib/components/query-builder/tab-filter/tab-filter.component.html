@@ -1,10 +1,10 @@
 <form [formGroup]="form">
     <div class="filter-header">
         <mat-form-field appearance="outline">
-            <mat-label>{{'widgets.query.filter.logic' | translate}}</mat-label>
+            <mat-label>{{'components.queryBuilder.filter.logic' | translate}}</mat-label>
             <mat-select formControlName="logic">
-                <mat-option value="or">{{'widgets.query.filter.or' | translate}}</mat-option>
-                <mat-option value="and">{{'widgets.query.filter.and' | translate}}</mat-option>
+                <mat-option value="or">{{'components.queryBuilder.filter.or' | translate}}</mat-option>
+                <mat-option value="and">{{'components.queryBuilder.filter.and' | translate}}</mat-option>
             </mat-select>
         </mat-form-field>
         <safe-button [isIcon]="true" icon="delete" (click)="delete.emit(true)" variant="danger" *ngIf="canDelete">
@@ -26,7 +26,7 @@
                     </mat-form-field>
                     <ng-container *ngIf="selectedFields[i].name">
                         <mat-form-field appearance="outline">
-                            <mat-label>{{'widgets.query.filter.operator' | translate}}</mat-label>
+                            <mat-label>{{'components.queryBuilder.filter.operator' | translate}}</mat-label>
                             <mat-select formControlName="operator">
                                 <mat-option *ngFor="let operator of types[selectedFields[i].type].operators"
                                     [value]="operators[operator].value">{{ operators[operator].label }}</mat-option>
@@ -68,7 +68,7 @@
         </div>
     </div>
     <div class="filter-buttons">
-        <safe-button (click)="onAddFilter()" category="tertiary">{{'widgets.query.filter.new' | translate}}</safe-button>
-        <safe-button (click)="onAddFilterGroup()" category="tertiary">{{'widgets.query.filter.newGroup' | translate}}</safe-button>
+        <safe-button (click)="onAddFilter()" category="tertiary">{{'components.queryBuilder.filter.new' | translate}}</safe-button>
+        <safe-button (click)="onAddFilterGroup()" category="tertiary">{{'components.queryBuilder.filter.newGroup' | translate}}</safe-button>
     </div>
 </form>

@@ -251,7 +251,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
     if (this.showDeletedRecords) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: this.translate.instant('record.delete'),
+          title: this.translate.instant('common.deleteObject', {
+            name: this.translate.instant('common.record.one'),
+          }),
           content: this.translate.instant('components.record.delete.confirmationMessage', {
             name: element.name,
           }),

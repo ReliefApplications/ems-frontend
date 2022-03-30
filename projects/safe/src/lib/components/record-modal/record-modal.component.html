@@ -25,11 +25,11 @@
     </mat-tab-group>
     <div class="versions-info" *ngIf="data.compareTo">
       <div class="version-info">
-        <div>{{ 'record.pastVersion' | translate }}</div>
+        <div>{{ 'components.record.history.version.old' | translate }}</div>
         <span>{{ data.compareTo.createdAt | date: 'dd/MM/yy, h:mm a' }}</span>
       </div>
       <div class="version-info">
-        <div>{{ 'record.currentVersion' | translate }}</div>
+        <div>{{ 'components.record.history.version.current' | translate }}</div>
         <span>{{ record.modifiedAt | date: 'dd/MM/yy, h:mm a' }}</span>
       </div>
     </div>
@@ -56,7 +56,7 @@
     cdkFocusInitial
     color="primary"
   >
-    {{ 'record.revert' | translate }}
+    {{ 'components.record.history.revert' | translate }}
   </button>
 </mat-dialog-actions>
 <mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo">

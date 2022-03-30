@@ -7,7 +7,7 @@
   [matTooltip]="'common.close' | translate"
 >
 </safe-button>
-<h1 mat-dialog-title>{{ 'layouts.create' | translate }}</h1>
+<h1 mat-dialog-title>{{ 'components.widget.settings.grid.layouts.add.choice.create' | translate }}</h1>
 <div mat-dialog-content class="mat-dialog-content" *ngIf="form">
   <form [formGroup]="form">
     <div class="form-group">
@@ -26,7 +26,7 @@
   </form>
   <div class="form-group">
     <div class="form-group-title">{{ 'common.preview' | translate }}</div>
-    <div class="info-text">{{'layouts.preview.description' | translate}}</div>
+    <div class="info-text">{{'components.form.layout.update.preview.description' | translate}}</div>
     <safe-core-grid
       [defaultLayout]="data.layout?.display || {}"
       [settings]="gridSettings"

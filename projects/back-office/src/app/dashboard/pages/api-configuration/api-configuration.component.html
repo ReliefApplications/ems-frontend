@@ -17,7 +17,7 @@
               </mat-label>
               <input matInput formControlName="name" type='text' [placeholder]="'global.namePlaceholder' | translate" />
               <mat-error *ngIf="name?.errors">
-                {{'APIConf.warning' | translate}}
+                {{'components.apiConfiguration.create.errors.name' | translate}}
               </mat-error>
             </mat-form-field>
 
@@ -48,62 +48,62 @@
               </mat-form-field>
           </div>
 
-          <h1>{{'APIConf.endpoint' | translate}}</h1>
+          <h1>{{'pages.apiConfiguration.host' | translate}}</h1>
           <div class="form-group-row">
             <mat-form-field appearance="outline" style="flex: 2;">
               <mat-label>
-                {{'APIConf.main' | translate}}
+                {{'pages.apiConfiguration.baseUrl' | translate}}
               </mat-label>
               <input matInput formControlName="endpoint" type='text'
-              [placeholder]="'APIConf.mainPlaceholder' | translate" />
+              [placeholder]="'pages.apiConfiguration.placeholder.baseUrl' | translate" />
             </mat-form-field>
 
             <mat-form-field appearance="outline" style="flex: 1;">
               <mat-label>
-                {{'APIConf.ping' | translate}}
+                {{'pages.apiConfiguration.pingUrl' | translate}}
               </mat-label>
               <input matInput formControlName="pingUrl" type='text'
-              [placeholder]="'APIConf.pingPlaceholder' | translate" />
+              [placeholder]="'pages.apiConfiguration.placeholder.pingUrl' | translate" />
             </mat-form-field>
 
             <div class="ping-button-container">
               <safe-button icon="online_prediction" category="secondary" variant="primary" (click)="onPing()" [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint">
-                {{'APIConf.send' | translate}}
+                {{'pages.apiConfiguration.ping' | translate}}
               </safe-button>
             </div>
 
           </div>
 
-          <h1>{{'APIConf.auth' | translate}}</h1>
+          <h1>{{'pages.apiConfiguration.authentication' | translate}}</h1>
           <ng-container *ngIf="apiForm.value.authType === 'serviceToService'">
             <div formGroupName="settings" class="form-group">
               <mat-form-field appearance="outline">
                 <mat-label>
-                  {{'APIConf.tokenURL' | translate}}
+                  {{'pages.apiConfiguration.tokenUrl' | translate}}
                 </mat-label>
                 <input matInput formControlName="authTargetUrl" type='text'
-                [placeholder]="'APIConf.tokenURLPlaceholder' | translate" onfocus="this.value=''"/>
+                [placeholder]="'pages.apiConfiguration.placeholder.tokenUrl' | translate" onfocus="this.value=''"/>
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>
-                  {{'APIConf.id' | translate}}
+                  {{'pages.apiConfiguration.clientId' | translate}}
                 </mat-label>
                 <input matInput formControlName="apiClientID" type='text'
-                [placeholder]="'APIConf.idPlaceholder' | translate" onfocus="this.value=''"/>
+                [placeholder]="'pages.apiConfiguration.placeholder.clientId' | translate" onfocus="this.value=''"/>
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>
-                  {{'APIConf.secret' | translate}}
+                  {{'pages.apiConfiguration.secret' | translate}}
                 </mat-label>
                 <input matInput formControlName="safeSecret" type='text'
-                [placeholder]="'APIConf.secretPlaceholder' | translate" onfocus="this.value=''"/>
+                [placeholder]="'pages.apiConfiguration.placeholder.secret' | translate" onfocus="this.value=''"/>
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>
-                  {{'APIConf.scope' | translate}}
+                  {{'pages.apiConfiguration.scope' | translate}}
                 </mat-label>
                 <input matInput formControlName="scope" type='text'
-                [placeholder]="'APIConf.scopePlaceholder' | translate" onfocus="this.value=''"/>
+                [placeholder]="'pages.apiConfiguration.placeholder.scope' | translate" onfocus="this.value=''"/>
               </mat-form-field>
             </div>
           </ng-container>
@@ -111,10 +111,10 @@
             <div formGroupName="settings" class="form-group">
               <mat-form-field appearance="outline">
                 <mat-label>
-                  {{'APIConf.token' | translate}}
+                  {{'pages.apiConfiguration.token' | translate}}
                 </mat-label>
                 <input matInput formControlName="token" type='text'
-                [placeholder]="'APIConf.tokenPlaceholder' | translate" onfocus="this.value=''"/>
+                [placeholder]="'pages.apiConfiguration.placeholder.token' | translate" onfocus="this.value=''"/>
               </mat-form-field>
             </div>
           </ng-container>

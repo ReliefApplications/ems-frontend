@@ -9,10 +9,10 @@
     </safe-button>
 
     <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
-      <mat-label>{{ 'widgets.query.select' | translate }}</mat-label>
+      <mat-label>{{ 'components.queryBuilder.dataset.select' | translate }}</mat-label>
       <input
         type="text"
-        [placeholder]="'widgets.query.select' | translate"
+        [placeholder]="'components.queryBuilder.dataset.select' | translate"
         matInput
         formControlName="name"
         [matAutocomplete]="auto"
@@ -59,7 +59,7 @@
       animationDuration="0ms"
       *ngIf="form.getRawValue().name"
     >
-      <mat-tab [label]="'widgets.query.field.title' | translate">
+      <mat-tab [label]="'components.queryBuilder.fields.title' | translate">
         <ng-template matTabContent>
           <safe-tab-fields
             *ngIf="availableFields.length > 0"
@@ -70,7 +70,7 @@
         </ng-template>
       </mat-tab>
       <mat-tab
-        [label]="'widgets.query.sort.title' | translate"
+        [label]="'components.queryBuilder.sort.title' | translate"
         *ngIf="form.get('sort')"
       >
         <ng-template matTabContent>
@@ -81,7 +81,7 @@
         </ng-template>
       </mat-tab>
       <mat-tab
-        [label]="'widgets.query.filter.title' | translate"
+        [label]="'components.queryBuilder.filter.title' | translate"
         *ngIf="form.get('filter')"
       >
         <ng-template matTabContent>
@@ -94,7 +94,7 @@
         </ng-template>
       </mat-tab>
       <mat-tab
-        [label]="'widgets.query.style.title' | translate"
+        [label]="'components.queryBuilder.style.title' | translate"
         *ngIf="form.get('style')"
       >
         <ng-template matTabContent>

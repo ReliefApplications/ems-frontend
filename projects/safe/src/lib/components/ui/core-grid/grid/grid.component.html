@@ -24,7 +24,7 @@
         <ng-container *ngIf="admin">
             <span kendotooltip>
                 <button title="This will erase current layout with default layout" class='k-button'
-                    (click)="action.emit({ action: 'resetLayout' })">{{'widgets.grid.reset' | translate}}</button>
+                    (click)="action.emit({ action: 'resetLayout' })">{{'components.widget.grid.layout.reset' | translate}}</button>
             </span>
         </ng-container>
         <safe-grid-toolbar [actions]="actions" [items]="selectedRows" (action)="action.emit($event)">
@@ -119,8 +119,8 @@
                             <div #refSpan class="textbox external-link" *ngIf="dataItem[field.name].length > 0"
                                 matTooltip="Open detail"
                                 (click)="action.emit({ action: 'details', items: dataItem[field.name], field: field })">
-                                {{(dataItem[field.name].length > 1 ? 'widgets.grid.items' : 'widgets.grid.item') | translate : {
-                                    number: dataItem[field.name].length
+                                {{(dataItem[field.name].length > 1 ? 'components.widget.grid.item.few' : 'components.widget.grid.item.one') | translate : {
+                                    count: dataItem[field.name].length
                                 } }}
                             </div>
                         </div>
@@ -345,6 +345,6 @@
     </ng-container>
     <!-- EMPTY TABLE / INVALID QUERY -->
     <ng-template kendoGridNoRecordsTemplate>
-        {{ (error ? 'widgets.grid.invalid' : (blank ? 'widgets.grid.selectDataset' : 'widgets.grid.noRecord')) | translate }}
+        {{ (error ? 'components.widget.grid.errors.invalid' : (blank ? 'components.widget.grid.errors.missingDataset' : 'components.widget.grid.empty')) | translate }}
     </ng-template>
 </kendo-grid>
