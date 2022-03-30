@@ -92,7 +92,9 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                   icon: 'admin_panel_settings',
                 },
                 {
-                  name: this.translate.instant('pages.application.positionAttributes.title'),
+                  name: this.translate.instant(
+                    'pages.application.positionAttributes.title'
+                  ),
                   path: './settings/position',
                   icon: 'manage_accounts',
                 },

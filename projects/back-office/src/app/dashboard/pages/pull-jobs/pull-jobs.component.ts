@@ -207,9 +207,12 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
           title: this.translate.instant('components.pullJob.delete.title'),
-          content: this.translate.instant('components.pullJob.delete.confirmationMessage', {
-            name: element.name,
-          }),
+          content: this.translate.instant(
+            'components.pullJob.delete.confirmationMessage',
+            {
+              name: element.name,
+            }
+          ),
           confirmText: this.translate.instant('common.delete'),
           cancelText: this.translate.instant('common.cancel'),
           confirmColor: 'warn',
