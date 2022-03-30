@@ -64,7 +64,7 @@
       variant="primary"
       (click)="onInvite()"
     >
-      {{ 'users.invite' | translate }}
+      {{ 'components.users.invite.confirm' | translate }}
     </safe-button>
   </div>
 </div>
@@ -76,7 +76,7 @@
       variant="danger"
       (click)="onDelete(selection.selected)"
     >
-      {{ 'users.deleteSelected' | translate }}
+      {{ 'common.deleteObject' | translate: { name: 'common.user.few' | translate } }}
     </safe-button>
   </div>
 </div>

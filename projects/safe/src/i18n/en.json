@@ -70,6 +70,7 @@
     "editObject": "Edit {{name}}",
     "downloadObject": "Download {{name}}",
     "uploadObject": "Upload {{name}}",
+    "downloadTemplate": "Get template",
     "publish": "Publish",
     "application": {
       "none": "No application",
@@ -328,7 +329,24 @@
     },
     "user": {
       "invite": {
-        "confirm": "Invite"
+        "confirm": "Invite",
+        "role": {
+          "description": "Select the role to assign"
+        }
+      },
+      "edit": {
+        "title": "Update user"
+      },
+      "delete": {
+        "title": "Delete user",
+        "confirmationMessage": "Do you confirm the deletion of the user {{name}}?"
+      }
+    },
+    "users": {
+      "invite": {
+        "description": "Select existing users, invite new users or import from Excel file",
+        "confirm": "Invite users",
+        "add": "Add new user"
       }
     }
   },
@@ -381,19 +399,6 @@
         "defaultTitle": "Chart Widget"
       }
     }
-  },
-  "users": {
-    "invite": "Invite users",
-    "description": "Select existing users, invite new users or import from Excel file",
-    "getTemplate": "Get template",
-    "inviteNew": "Invite new user",
-    "add": "Add user",
-    "roleDescription": "Select the role to assign",
-    "edit": "Update user roles",
-    "delete": "Delete user",
-    "deleteDesc": "Do you confirm the deletion of the user {{name}}?",
-    "deleteSelected": "Delete selected users",
-    "deleteSelectedDesc": "Do you confirm the deletion of the selected users"
   },
   "roles": {
     "create": "Create a role",

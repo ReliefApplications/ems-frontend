@@ -195,13 +195,25 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onDelete(users: User[]): void {
-    let title = this.translate.instant('users.delete');
-    let content = this.translate.instant('users.deleteDesc', {
-      name: users[0].username,
+    let title = this.translate.instant('common.deleteObject', {
+      name: this.translate.instant('common.user.one'),
     });
+    let content = this.translate.instant(
+      'components.user.delete.confirmationMessage',
+      {
+        name: users[0].username,
+      }
+    );
     if (users.length > 1) {
-      title = this.translate.instant('users.deleteSelected');
-      content = this.translate.instant('users.deleteSelectedDesc');
+      title = this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.user.few'),
+      });
+      content = this.translate.instant(
+        'components.user.delete.confirmationMessage',
+        {
+          name: users[0].username,
+        }
+      );
     }
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
