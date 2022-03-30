@@ -1,242 +1,221 @@
 {
   "common": {
-    "platform": {
-      "backOffice": "Back-Office"
-    },
-    "name": "Name",
-    "role": {
-      "none": "No role",
-      "one": "Role",
-      "few": "Roles"
-    },
-    "form": {
-      "none": "No form",
-      "one": "Form",
-      "few": "Forms"
-    },
-    "step": {
-      "none": "No step",
-      "one": "Step",
-      "few": "Steps"
-    },
-    "email": {
-      "none": "No email",
-      "one": "Email",
-      "few": "Emails"
-    },
-    "confirm": "Confirm",
-    "user": {
-      "none": "No user",
-      "one": "User",
-      "few": "Users"
-    },
-    "channel": {
-      "none": "No channel",
-      "one": "Channel",
-      "few": "Channels"
-    },
-    "filter": {
-      "show": "Show Filter",
-      "hide": "Hide Filter",
-      "clear": "Clear Filter",
-      "apply": "Apply"
-    },
-    "title": "Title",
-    "general": "General",
-    "status": "Status",
-    "status_active": "Active",
-    "status_pending": "Pending",
-    "status_archived": "Archived",
-    "placeholder": {
-      "name": "Enter a name",
-      "title": "Enter a title",
-      "email": "Enter email",
-      "search": "Search..."
-    },
-    "update": "Update",
-    "back": "Back",
-    "next": "Next",
-    "close": "Close",
-    "create": "Create",
-    "clear": "Clear",
-    "createdOn": "Created on",
-    "id": "Id",
-    "delete": "Delete",
-    "deleteObject": "Delete {{name}}",
-    "searchObject": "Search {{name}}",
-    "save": "Save",
-    "edit": "Edit",
-    "viewObject": "View {{name}}",
-    "editObject": "Edit {{name}}",
-    "downloadObject": "Download {{name}}",
-    "uploadObject": "Upload {{name}}",
-    "downloadTemplate": "Get template",
-    "publish": "Publish",
-    "application": {
-      "none": "No application",
-      "one": "Application",
-      "few": "Applications"
-    },
-    "record": {
-      "none": "No record",
-      "one": "Record",
-      "few": "Records"
-    },
-    "cancel": "Cancel",
-    "history": "History",
-    "newObject": "New {{name}}",
-    "positionAttribute": {
-      "none": "No position attribute",
-      "one": "Position attribute",
-      "few": "Position attributes"
-    },
+    "add": "Add",
     "aggregation": {
+      "few": "Aggregations",
       "none": "No aggregation",
-      "one": "Aggregation",
-      "few": "Aggregations"
-    },
-    "resource": {
-      "none": "No resource",
-      "one": "Resource",
-      "few": "Resources"
-    },
-    "pullJob": {
-      "none": "No pull job",
-      "one": "Pull job",
-      "few": "Pull jobs"
-    },
-    "field": {
-      "none": "No field",
-      "one": "Field",
-      "few": "Fields"
-    },
-    "value": {
-      "none": "No value",
-      "one": "Value",
-      "few": "Values"
-    },
-    "layout": {
-      "none": "No layout",
-      "one": "Layout",
-      "few": "Layouts"
+      "one": "Aggregation"
     },
     "apiConfiguration": {
+      "few": "API Configurations",
       "none": "No API Configuration",
-      "one": "API Configuration",
-      "few": "API Configurations"
+      "one": "API Configuration"
     },
-    "subscription": {
-      "none": "No subscription",
-      "one": "Subscription",
-      "few": "Subscriptions"
+    "application": {
+      "few": "Applications",
+      "none": "No application",
+      "one": "Application"
     },
-    "pagination": {
-      "loadMore": "Load more"
+    "back": "Back",
+    "cancel": "Cancel",
+    "channel": {
+      "few": "Channels",
+      "none": "No channel",
+      "one": "Channel"
     },
-    "select": "Select",
-    "saveChanges": "Save changes",
-    "preview": "Preview",
-    "duplicate": "Duplicate",
-    "add": "Add",
-    "export": "Export",
+    "clear": "Clear",
+    "close": "Close",
+    "confirm": "Confirm",
+    "create": "Create",
+    "createdOn": "Created on",
+    "delete": "Delete",
+    "deleteObject": "Delete {{name}}",
     "display": "Display",
+    "downloadObject": "Download {{name}}",
+    "downloadTemplate": "Get template",
+    "duplicate": "Duplicate",
+    "edit": "Edit",
+    "editObject": "Edit {{name}}",
+    "email": {
+      "few": "Emails",
+      "none": "No email",
+      "one": "Email"
+    },
+    "export": "Export",
     "exportObject": "Export {{name}}",
+    "false": "False",
+    "field": {
+      "few": "Fields",
+      "none": "No field",
+      "one": "Field"
+    },
+    "filter": {
+      "apply": "Apply",
+      "clear": "Clear Filter",
+      "hide": "Hide Filter",
+      "show": "Show Filter"
+    },
+    "form": {
+      "few": "Forms",
+      "none": "No form",
+      "one": "Form"
+    },
+    "general": "General",
+    "history": "History",
+    "id": "Id",
     "input": {
       "dateRange": "Date range",
       "none": "-- None --",
       "rawJson": "Raw JSON"
     },
+    "layout": {
+      "few": "Layouts",
+      "none": "No layout",
+      "one": "Layout"
+    },
+    "modifiedOn": "Modified On",
+    "name": "Name",
+    "newObject": "New {{name}}",
+    "next": "Next",
+    "pagination": {
+      "loadMore": "Load more"
+    },
+    "placeholder": {
+      "email": "Enter email",
+      "name": "Enter a name",
+      "search": "Search...",
+      "title": "Enter a title"
+    },
+    "platform": {
+      "backOffice": "Back-Office"
+    },
+    "positionAttribute": {
+      "few": "Position attributes",
+      "none": "No position attribute",
+      "one": "Position attribute"
+    },
+    "preview": "Preview",
     "previous": "Previous",
+    "publish": "Publish",
+    "pullJob": {
+      "few": "Pull jobs",
+      "none": "No pull job",
+      "one": "Pull job"
+    },
+    "record": {
+      "few": "Records",
+      "none": "No record",
+      "one": "Record"
+    },
+    "resource": {
+      "few": "Resources",
+      "none": "No resource",
+      "one": "Resource"
+    },
+    "role": {
+      "few": "Roles",
+      "none": "No role",
+      "one": "Role"
+    },
+    "save": "Save",
+    "saveChanges": "Save changes",
+    "searchObject": "Search {{name}}",
+    "select": "Select",
+    "settings": "Settings",
+    "status": "Status",
+    "status_active": "Active",
+    "status_archived": "Archived",
+    "status_pending": "Pending",
+    "step": {
+      "few": "Steps",
+      "none": "No step",
+      "one": "Step"
+    },
+    "subscription": {
+      "few": "Subscriptions",
+      "none": "No subscription",
+      "one": "Subscription"
+    },
+    "title": "Title",
     "true": "True",
-    "false": "False",
-    "settings": "Settings"
-  },
-  "pages": {
-    "appBuilder": {
-      "title": "Site builder"
+    "update": "Update",
+    "uploadObject": "Upload {{name}}",
+    "user": {
+      "few": "Users",
+      "none": "No user",
+      "one": "User"
     },
-    "formBuilder": {
-      "title": "Advanced settings"
+    "value": {
+      "few": "Values",
+      "none": "No value",
+      "one": "Value"
     },
-    "administration": {
-      "title": "Administration"
-    },
-    "applications": {
-      "title": "My applications",
-      "recent": "Recent applications",
-      "all": "All applications",
-      "goTo": "Go to Application list"
-    },
-    "forms": {
-      "title": "Available forms"
-    },
-    "application": {
-      "empty": {
-        "add": "Add a Page",
-        "customize": "Customize each of the pages created",
-        "create": "Click on create to finish the process"
-      },
-      "addPage": {
-        "selectType": "Select which type of page you want to create",
-        "form": {
-          "title": "Available forms"
-        }
-      },
-      "positionAttributes": {
-        "title": "Attributes",
-        "create": "Create a position category"
-      },
-      "settings": {
-        "actions": "Actions"
-      }
-    },
-    "worklow": {
-      "empty": {
-        "add": "Add steps",
-        "customize": "Customize each of the steps created"
-      },
-      "addStep": {
-        "selectType": "Select which type of step you want to create"
-      }
-    },
-    "profile": {
-      "title": "Your profile"
-    },
-    "pullJobs": {
-      "create": "Create a pull job"
-    },
-    "apiConfigurations": {
-      "create": "Create an API Configuration"
-    },
-    "apiConfiguration": {
-      "host": "Host settings",
-      "authentication": "Authentication settings",
-      "token": "Token",
-      "baseUrl": "Main endpoint",
-      "ping": "Try settings",
-      "pingUrl": "Ping extension",
-      "tokenUrl": "Access token URL",
-      "clientId": "Client ID",
-      "secret": "Client Secret",
-      "scope": "Scope",
-      "placeholder": {
-        "token": "Enter token for authentication",
-        "scope": "Enter scope",
-        "secret": "Enter client secret",
-        "clientId": "Enter client ID",
-        "tokenUrl": "Enter acces token URL",
-        "pingUrl": "Enter ping extension URL",
-        "baseUrl": "Base URL for the API"
-      }
-    }
+    "viewObject": "View {{name}}"
   },
   "components": {
     "access": {
-      "title": "Access",
-      "description": "Update access permissions",
+      "canDelete": "Can delete",
       "canSee": "Can see",
       "canUpdate": "Can update",
-      "canDelete": "Can delete"
+      "description": "Update access permissions",
+      "title": "Access"
+    },
+    "aggregationBuilder": {
+      "addField": "Add field",
+      "addStage": "Add stage",
+      "dataset": {
+        "select": "Select the data source"
+      },
+      "fieldName": "Field name",
+      "groupBy": "Group by",
+      "mapping": {
+        "xAxis": "X Axis",
+        "yAxis": "Y Axis"
+      },
+      "operator": "Operator",
+      "operators": {
+        "add": "Add",
+        "avg": "Average",
+        "count": "Count",
+        "day": "Day",
+        "first": "First",
+        "last": "Last",
+        "max": "Maximum",
+        "min": "Minimum",
+        "month": "Month",
+        "multiply": "Multiply",
+        "sum": "Sum",
+        "week": "Week",
+        "year": "Year"
+      },
+      "sourceFields": "Select fields",
+      "stages": {
+        "addFields": "Add fields",
+        "custom": "Custom",
+        "filter": "Filter",
+        "group": "Group",
+        "sort": "Sort",
+        "unwind": "Unwind"
+      },
+      "tooltip": {
+        "addFields": "Adds new fields to documents.",
+        "custom": "Defines a custom aggregation function or expression in JavaScript.",
+        "filter": "Returns an array with only those elements that match the condition.",
+        "group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
+        "sort": "Sorts all input documents and returns them to the pipeline in sorted order.",
+        "unwind": "Deconstructs an array field from the input documents to output a document for each element."
+      }
+    },
+    "apiConfiguration": {
+      "create": {
+        "errors": {
+          "name": "Only letters, hypens or underscores are accepted"
+        }
+      },
+      "delete": {
+        "confirmationMessage": "Do you confirm the deletion of the API Configuration {{name}}?",
+        "title": "Delete API configuration"
+      }
     },
     "application": {
       "delete": {
@@ -247,26 +226,26 @@
           "description": "Please enter a description for the application"
         }
       },
-      "update": {
-        "placeholder": {
-          "description": "Please enter a description for the application"
-        }
-      },
       "positionAttribute": {
         "delete": {
-          "title": "Delete position attribute",
-          "confirmationMessage": "Do you confirm the deletion of the position attribute {{name}}?"
+          "confirmationMessage": "Do you confirm the deletion of the position attribute {{name}}?",
+          "title": "Delete position attribute"
         }
       },
       "subscription": {
         "modal": {
+          "hint": {
+            "listenTo": "Message broker routing key"
+          },
           "listenTo": "Listen to",
           "placeholder": {
             "listenTo": "Select a routing key"
-          },
-          "hint": {
-            "listenTo": "Message broker routing key"
           }
+        }
+      },
+      "update": {
+        "placeholder": {
+          "description": "Please enter a description for the application"
         }
       }
     },
@@ -276,34 +255,43 @@
       }
     },
     "channel": {
-      "dropdown": {
-        "select": "Notify on"
-      },
       "delete": {
         "confirmationMessage": "Do you confirm the deletion of the channel {{name}}?"
+      },
+      "dropdown": {
+        "select": "Notify on"
       }
     },
-    "history": {
-      "download": "Download history",
-      "preview": "Preview and revert"
+    "emailBuilder": {
+      "body": "Body",
+      "distribution": "Distribution list",
+      "fields": "Select fields to write in body",
+      "subject": "Subject"
     },
     "form": {
       "create": {
         "choice": {
           "blank": "Create a blank form",
-          "resource": "Create a new resource",
           "inherit": "Copy existing resource template",
+          "resource": "Create a new resource",
           "template": "Start from existing template"
         },
         "template": {
-          "title": "From resource",
-          "tooltip": "If no template is selected, core structure will be loaded",
+          "from": "From template",
           "placeholder": "Pick an existing template",
-          "from": "From template"
+          "title": "From resource",
+          "tooltip": "If no template is selected, core structure will be loaded"
         }
       },
       "delete": {
         "confirmationMessage": "Do you confirm the deletion of the form {{name}}?"
+      },
+      "layout": {
+        "update": {
+          "preview": {
+            "description": "Reorder, sort, filter and hide columns to edit default display of the layout"
+          }
+        }
       },
       "summary": {
         "cache": {
@@ -316,188 +304,162 @@
       "update": {
         "exit": "Exit without saving changes",
         "exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
-      },
-      "layout": {
-        "update": {
-          "preview": {
-            "description": "Reorder, sort, filter and hide columns to edit default display of the layout"
-          }
-        }
       }
     },
     "forms": {
       "isCore": "Is core",
       "parent": "Parent form"
     },
+    "header": {
+      "goToPlatform": "Navigate to",
+      "logout": "Logout",
+      "sidenav": {
+        "collapse": "Collapse sidebar",
+        "show": "Show sidebar"
+      }
+    },
+    "history": {
+      "download": "Download history",
+      "preview": "Preview and revert"
+    },
+    "notifications": {
+      "readAll": "Mark all as read"
+    },
+    "pullJob": {
+      "delete": {
+        "confirmationMessage": "Do you confirm the deletion of the pull job {{name}}?",
+        "title": "Delete pull job"
+      },
+      "modal": {
+        "identifier": "Unique identifiers",
+        "mapping": "Mapping",
+        "placeholder": {
+          "schedule": "Enter the schedule time for this Pull job"
+        },
+        "switch": "Switch mode"
+      }
+    },
+    "queryBuilder": {
+      "dataset": {
+        "select": "Select a dataset"
+      },
+      "fields": {
+        "available": "Available fields",
+        "search": "Search fields...",
+        "selected": "Selected fields",
+        "title": "Fields"
+      },
+      "filter": {
+        "and": "And",
+        "logic": "Filter logic",
+        "new": "Add new fiter",
+        "newGroup": "Add new filter group",
+        "operator": "Operator",
+        "or": "Or",
+        "title": "Filter"
+      },
+      "hint": {
+        "fields": "Select data points below and drag them to 'selected fields' on the right",
+        "style": "Styling rules make records with important information stand out. When a record matches more than one rule, the first rule is used."
+      },
+      "sort": {
+        "ascending": "Ascending",
+        "descending": "Descending",
+        "field": "Sort field",
+        "order": "Sort order",
+        "title": "Sort"
+      },
+      "style": {
+        "and": "And",
+        "edit": {
+          "appliesTo": "Apply style to",
+          "background": {
+            "color": "Background color"
+          },
+          "criteria": "Rule criteria",
+          "fields": "Fields",
+          "name": "Rule name",
+          "selectedColumns": "Only selected columns",
+          "text": {
+            "color": "Text color",
+            "style": "Text style"
+          },
+          "wholeRow": "Whole row"
+        },
+        "logic": "Style filter",
+        "new": "Add styling rule",
+        "operator": "Operator",
+        "or": "Or",
+        "title": "Style"
+      }
+    },
     "record": {
-      "history": {
-        "revert": "Revert to past record",
-        "version": {
-          "old": "Past version",
-          "current": "Current version"
-        }
+      "attach": {
+        "confirm": "Attach",
+        "selectTarget": "Select {{name}} target"
       },
       "convert": {
-        "select": "Convert to",
         "choice": {
           "copy": "Copy source record",
           "overwrite": "Overwrite source record"
         },
         "result": {
-          "smooth": "Conversion OK",
-          "force": "Following fields will be ignored:"
-        }
+          "force": "Following fields will be ignored:",
+          "smooth": "Conversion OK"
+        },
+        "select": "Convert to"
       },
       "delete": {
         "confirmationMessage": "Do you confirm the deletion of the record {{name}}?",
         "permanently": "Delete permanently"
       },
-      "modal": {
-        "update": "Save and close"
-      },
-      "attach": {
-        "selectTarget": "Select {{name}} target",
-        "confirm": "Attach"
-      },
       "dropdown": {
         "select": "Select record"
-      }
-    },
-    "resource": {
-      "dropdown": {
-        "select": "From resource"
       },
-      "delete": {
-        "confirmationMessage": "Do you confirm the deletion of the resource {{name}}?"
+      "history": {
+        "revert": "Revert to past record",
+        "version": {
+          "current": "Current version",
+          "old": "Past version"
+        }
+      },
+      "modal": {
+        "update": "Save and close"
       }
     },
     "records": {
-      "showArchived": "Show archived records",
-      "showActive": "Show active records"
+      "showActive": "Show active records",
+      "showArchived": "Show archived records"
     },
-    "notifications": {
-      "readAll": "Mark all as read"
-    },
-    "header": {
-      "sidenav": {
-        "collapse": "Collapse sidebar",
-        "show": "Show sidebar"
+    "resource": {
+      "delete": {
+        "confirmationMessage": "Do you confirm the deletion of the resource {{name}}?"
       },
-      "goToPlatform": "Navigate to",
-      "logout": "Logout"
+      "dropdown": {
+        "select": "From resource"
+      }
     },
-    "widget": {
-      "expand": "Expand",
-      "settings": {
-        "chart": {
-          "type": "Chart Type",
-          "position": "Position",
-          "text": "Text",
-          "legend": "Legend",
-          "orientation": "Orientation"
-        },
-        "grid": {
-          "actions": {
-            "title": "Enabled actions",
-            "delete": "Delete records",
-            "show": "Show history",
-            "convert": "Convert records",
-            "update": "Update records",
-            "inline": "Inline edition",
-            "add": "Add new records"
-          },
-          "layouts": {
-            "title": "Grid layouts",
-            "add": {
-              "choice": {
-                "load": "Load existing layout",
-                "create": "Create a new layout"
-              },
-              "select": "Select a layout"
-            }
-          },
-          "buttons": {
-            "title": "Quick action buttons",
-            "create": "Add a button",
-            "enable": "Enable",
-            "callback": {
-              "export": "Export selected dataset",
-              "sendMail": "Send mail",
-              "attach": "Attach to record",
-              "save": "Auto-save",
-              "modify": "Auto-modify selected rows",
-              "workflow": {
-                "close": "Close workflow",
-                "confirm": "Confirmation message",
-                "next": "Go to next step"
-              },
-              "prefill": "Pre-fill form with selected data",
-              "notify": {
-                "message": "Notification message"
-              },
-              "modifyField": "Field to update",
-              "modifyValue": "Value to attribute",
-              "selectDisplay": "Select displayed fields",
-              "displayField": "Display field"
-            },
-            "tooltip": {
-              "attach": "When enabled, you must provide a form and a field of this form. All selected rows will be attached to a record from this form. The user will be able to choose which record using a the given field",
-              "notify": "When enabled, you must provide a channel and a message. All selected rows will be sent as a single notification on the specified channel. The provided message is used to define the notification’s action",
-              "publish": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
-            }
-          },
-          "hint": {
-            "buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below"
-          }
-        },
-        "map": {
-          "dataset": "Data set selection",
-          "display": {
-            "title": "Default display",
-            "latitude": "Map center latitude",
-            "longitude": "Map center longitude"
-          }
-        }
+    "role": {
+      "add": {
+        "title": "Add new role"
       },
-      "grid": {
-        "empty": "No record detected",
-        "layout": {
-          "reset": "Reset default Layout"
-        },
-        "filter": {
-          "toggle": "Toggle visibility of filter"
-        },
-        "export": {
-          "dataset": {
-            "title": "Select records to export",
-            "choice": {
-              "all": "All records in view",
-              "selected": "Only selected records"
-            }
-          },
-          "columns": {
-            "title": "Select columns to export",
-            "choice": {
-              "all": "All available columns",
-              "visible": "Only visible columns"
-            }
-          },
-          "format": {
-            "title": "Select export format"
-          }
-        },
-        "errors": {
-          "invalid": "Invalid grid configuration",
-          "missingDataset": "Select a dataset in settings"
-        },
-        "item": {
-          "none": "No item",
-          "one": "{{count}} item",
-          "few": "{{count}} items"
-        }
+      "delete": {
+        "confirmationMessage": "Do you confirm the deletion of the role {{name}}?",
+        "title": "Delete role"
+      },
+      "impersonate": {
+        "title": "Choose role to simulate"
+      },
+      "update": {
+        "permissions": "Permissions",
+        "title": "Update role permissions and channels"
       }
     },
     "user": {
+      "delete": {
+        "confirmationMessage": "Do you confirm the deletion of the user {{name}}?",
+        "title": "Delete user"
+      },
       "invite": {
         "confirm": "Invite",
         "role": {
@@ -506,212 +468,176 @@
       },
       "update": {
         "title": "Update user"
-      },
-      "delete": {
-        "title": "Delete user",
-        "confirmationMessage": "Do you confirm the deletion of the user {{name}}?"
       }
     },
     "users": {
       "invite": {
-        "description": "Select existing users, invite new users or import from Excel file",
+        "add": "Add new user",
         "confirm": "Invite users",
-        "add": "Add new user"
+        "description": "Select existing users, invite new users or import from Excel file"
       }
     },
-    "role": {
-      "delete": {
-        "title": "Delete role",
-        "confirmationMessage": "Do you confirm the deletion of the role {{name}}?"
-      },
-      "impersonate": {
-        "title": "Choose role to simulate"
-      },
-      "add": {
-        "title": "Add new role"
-      },
-      "update": {
-        "title": "Update role permissions and channels",
-        "permissions": "Permissions"
-      }
-    },
-    "pullJob": {
-      "modal": {
-        "placeholder": {
-          "schedule": "Enter the schedule time for this Pull job"
-        },
-        "mapping": "Mapping",
-        "switch": "Switch mode",
-        "identifier": "Unique identifiers"
-      },
-      "delete": {
-        "title": "Delete pull job",
-        "confirmationMessage": "Do you confirm the deletion of the pull job {{name}}?"
-      }
-    },
-    "apiConfiguration": {
-      "create": {
+    "widget": {
+      "expand": "Expand",
+      "grid": {
+        "empty": "No record detected",
         "errors": {
-          "name": "Only letters, hypens or underscores are accepted"
+          "invalid": "Invalid grid configuration",
+          "missingDataset": "Select a dataset in settings"
+        },
+        "export": {
+          "columns": {
+            "choice": {
+              "all": "All available columns",
+              "visible": "Only visible columns"
+            },
+            "title": "Select columns to export"
+          },
+          "dataset": {
+            "choice": {
+              "all": "All records in view",
+              "selected": "Only selected records"
+            },
+            "title": "Select records to export"
+          },
+          "format": {
+            "title": "Select export format"
+          }
+        },
+        "filter": {
+          "toggle": "Toggle visibility of filter"
+        },
+        "item": {
+          "few": "{{count}} items",
+          "none": "No item",
+          "one": "{{count}} item"
+        },
+        "layout": {
+          "reset": "Reset default Layout"
         }
       },
-      "delete": {
-        "title": "Delete API configuration",
-        "confirmationMessage": "Do you confirm the deletion of the API Configuration {{name}}?"
-      }
-    },
-    "queryBuilder": {
-      "dataset": {
-        "select": "Select a dataset"
-      },
-      "fields": {
-        "title": "Fields",
-        "available": "Available fields",
-        "selected": "Selected fields",
-        "search": "Search fields..."
-      },
-      "sort": {
-        "title": "Sort",
-        "field": "Sort field",
-        "order": "Sort order",
-        "ascending": "Ascending",
-        "descending": "Descending"
-      },
-      "filter": {
-        "title": "Filter",
-        "logic": "Filter logic",
-        "or": "Or",
-        "and": "And",
-        "new": "Add new fiter",
-        "newGroup": "Add new filter group",
-        "operator": "Operator"
-      },
-      "style": {
-        "title": "Style",
-        "logic": "Style filter",
-        "or": "Or",
-        "and": "And",
-        "new": "Add styling rule",
-        "operator": "Operator",
-        "edit": {
-          "name": "Rule name",
-          "criteria": "Rule criteria",
-          "background": {
-            "color": "Background color"
+      "settings": {
+        "chart": {
+          "legend": "Legend",
+          "orientation": "Orientation",
+          "position": "Position",
+          "text": "Text",
+          "type": "Chart Type"
+        },
+        "grid": {
+          "actions": {
+            "add": "Add new records",
+            "convert": "Convert records",
+            "delete": "Delete records",
+            "inline": "Inline edition",
+            "show": "Show history",
+            "title": "Enabled actions",
+            "update": "Update records"
           },
-          "text": {
-            "color": "Text color",
-            "style": "Text style"
+          "buttons": {
+            "callback": {
+              "attach": "Attach to record",
+              "displayField": "Display field",
+              "export": "Export selected dataset",
+              "modify": "Auto-modify selected rows",
+              "modifyField": "Field to update",
+              "modifyValue": "Value to attribute",
+              "notify": {
+                "message": "Notification message"
+              },
+              "prefill": "Pre-fill form with selected data",
+              "save": "Auto-save",
+              "selectDisplay": "Select displayed fields",
+              "sendMail": "Send mail",
+              "workflow": {
+                "close": "Close workflow",
+                "confirm": "Confirmation message",
+                "next": "Go to next step"
+              }
+            },
+            "create": "Add a button",
+            "enable": "Enable",
+            "title": "Quick action buttons",
+            "defaultName": "Action button",
+            "tooltip": {
+              "attach": "When enabled, you must provide a form and a field of this form. All selected rows will be attached to a record from this form. The user will be able to choose which record using a the given field",
+              "notify": "When enabled, you must provide a channel and a message. All selected rows will be sent as a single notification on the specified channel. The provided message is used to define the notification’s action",
+              "publish": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
+            }
           },
-          "fields": "Fields",
-          "appliesTo": "Apply style to",
-          "wholeRow": "Whole row",
-          "selectedColumns": "Only selected columns"
+          "hint": {
+            "buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below"
+          },
+          "layouts": {
+            "add": {
+              "choice": {
+                "create": "Create a new layout",
+                "load": "Load existing layout"
+              },
+              "select": "Select a layout"
+            },
+            "title": "Grid layouts"
+          }
+        },
+        "map": {
+          "dataset": "Data set selection",
+          "display": {
+            "latitude": "Map center latitude",
+            "longitude": "Map center longitude",
+            "title": "Default display"
+          }
         }
-      },
-      "hint": {
-        "fields": "Select data points below and drag them to 'selected fields' on the right",
-        "style": "Styling rules make records with important information stand out. When a record matches more than one rule, the first rule is used."
       }
-    },
-    "aggregationBuilder": {
-      "dataset": {
-        "select": "Select the data source"
-      },
-      "sourceFields": "Select fields",
-      "addStage": "Add stage",
-      "stages": {
-        "filter": "Filter",
-        "sort": "Sort",
-        "group": "Group",
-        "addFields": "Add fields",
-        "unwind": "Unwind",
-        "custom": "Custom"
-      },
-      "tooltip": {
-        "filter": "Returns an array with only those elements that match the condition.",
-        "sort": "Sorts all input documents and returns them to the pipeline in sorted order.",
-        "group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
-        "addFields": "Adds new fields to documents.",
-        "unwind": "Deconstructs an array field from the input documents to output a document for each element.",
-        "custom": "Defines a custom aggregation function or expression in JavaScript."
-      },
-      "mapping": {
-        "xAxis": "X Axis",
-        "yAxis": "Y Axis"
-      },
-      "groupBy": "Group by",
-      "addField": "Add field",
-      "fieldName": "Field name",
-      "operator": "Operator",
-      "operators": {
-        "sum": "Sum",
-        "avg": "Average",
-        "count": "Count",
-        "max": "Maximum",
-        "min": "Minimum",
-        "first": "First",
-        "last": "Last",
-        "year": "Year",
-        "month": "Month",
-        "week": "Week",
-        "day": "Day",
-        "add": "Add",
-        "multiply": "Multiply"
-      }
-    },
-    "emailBuilder": {
-      "subject": "Subject",
-      "body": "Body",
-      "distribution": "Distribution list",
-      "fields": "Select fields to write in body"
     }
   },
   "models": {
-    "resource": {
-      "create": "Create a Resource"
-    },
     "apiConfiguration": {
       "authType": "Authentication type"
     },
-    "form": {
-      "select": "Select a Form",
-      "create": "Create a Form",
-      "core": "Core",
-      "template": "Template",
-      "field": {
-        "label": "Label"
-      }
-    },
-    "pullJob": {
-      "schedule": "Schedule"
-    },
     "application": {
+      "description": "Description",
       "id": "Application ID",
       "setAsFavorite": "Set as favorite",
-      "description": "Description",
       "subscription": {
         "create": "Create a subscription"
       }
     },
+    "channel": {
+      "create": "Create a channel"
+    },
+    "form": {
+      "core": "Core",
+      "create": "Create a Form",
+      "field": {
+        "label": "Label"
+      },
+      "select": "Select a Form",
+      "template": "Template"
+    },
     "page": {
       "add": "Add a Page"
     },
-    "user": {
-      "username": "Username"
-    },
-    "channel": {
-      "create": "Create a channel"
+    "pullJob": {
+      "schedule": "Schedule"
     },
     "record": {
       "convert": "Convert",
       "restore": "Restore"
     },
+    "resource": {
+      "create": "Create a Resource"
+    },
     "role": {
       "create": "Create a role"
     },
+    "user": {
+      "username": "Username"
+    },
     "widget": {
       "add": "Add a Widget",
+      "chart": {
+        "defaultTitle": "Chart Widget"
+      },
       "map": {
         "defaultTitle": "Map Widget",
         "latitude": "Latitude",
@@ -720,9 +646,85 @@
       },
       "scheduler": {
         "defaultTitle": "Scheduler Widget"
+      }
+    }
+  },
+  "pages": {
+    "administration": {
+      "title": "Administration"
+    },
+    "apiConfiguration": {
+      "authentication": "Authentication settings",
+      "baseUrl": "Main endpoint",
+      "clientId": "Client ID",
+      "host": "Host settings",
+      "ping": "Try settings",
+      "pingUrl": "Ping extension",
+      "placeholder": {
+        "baseUrl": "Base URL for the API",
+        "clientId": "Enter client ID",
+        "pingUrl": "Enter ping extension URL",
+        "scope": "Enter scope",
+        "secret": "Enter client secret",
+        "token": "Enter token for authentication",
+        "tokenUrl": "Enter acces token URL"
       },
-      "chart": {
-        "defaultTitle": "Chart Widget"
+      "scope": "Scope",
+      "secret": "Client Secret",
+      "token": "Token",
+      "tokenUrl": "Access token URL"
+    },
+    "apiConfigurations": {
+      "create": "Create an API Configuration"
+    },
+    "appBuilder": {
+      "title": "Site builder"
+    },
+    "application": {
+      "addPage": {
+        "form": {
+          "title": "Available forms"
+        },
+        "selectType": "Select which type of page you want to create"
+      },
+      "empty": {
+        "add": "Add a Page",
+        "create": "Click on create to finish the process",
+        "customize": "Customize each of the pages created"
+      },
+      "positionAttributes": {
+        "create": "Create a position category",
+        "title": "Attributes"
+      },
+      "settings": {
+        "actions": "Actions"
+      }
+    },
+    "applications": {
+      "all": "All applications",
+      "goTo": "Go to Application list",
+      "recent": "Recent applications",
+      "title": "My applications"
+    },
+    "formBuilder": {
+      "title": "Advanced settings"
+    },
+    "forms": {
+      "title": "Available forms"
+    },
+    "profile": {
+      "title": "Your profile"
+    },
+    "pullJobs": {
+      "create": "Create a pull job"
+    },
+    "worklow": {
+      "addStep": {
+        "selectType": "Select which type of step you want to create"
+      },
+      "empty": {
+        "add": "Add steps",
+        "customize": "Customize each of the steps created"
       }
     }
   }
