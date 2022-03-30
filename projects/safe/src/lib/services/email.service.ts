@@ -30,12 +30,10 @@ export class SafeEmailService {
     @Inject('environment') environment: any,
     private http: HttpClient,
     private snackBar: SafeSnackBarService,
-    private dialog: MatDialog
-  ) // private translate: TranslateService
-  {
-    // this.url = environment.apiUrl + '/email/';
-    this.sendUrl = environment.API_URL + '/email/';
-    this.previewUrl = environment.API_URL + '/email/preview/';
+    private dialog: MatDialog // private translate: TranslateService
+  ) {
+    this.sendUrl = environment.apiUrl + '/email/';
+    this.previewUrl = environment.apiUrl + '/email/preview/';
   }
 
   /**
@@ -77,8 +75,7 @@ export class SafeEmailService {
         },
       }
     );
-    // const token = localStorage.getItem('idtoken');
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -155,8 +152,7 @@ export class SafeEmailService {
         },
       }
     );
-    // const token = localStorage.getItem('idtoken');
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
