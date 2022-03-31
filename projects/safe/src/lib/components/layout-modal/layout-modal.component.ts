@@ -41,6 +41,7 @@ export class SafeLayoutModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log(this.data.layout?.query);
     this.form = this.formBuilder.group({
       name: [this.data.layout?.name, Validators.required],
       query: createQueryForm(this.data.layout?.query),
@@ -52,6 +53,7 @@ export class SafeLayoutModalComponent implements OnInit {
         ...this.form?.getRawValue(),
         ...DEFAULT_GRID_SETTINGS,
       };
+      console.log(this.gridSettings);
     });
   }
 
@@ -75,6 +77,9 @@ export class SafeLayoutModalComponent implements OnInit {
    * Closes the modal sending tile form value.
    */
   onSubmit(): void {
+    //this.form?.controls.pageSize.setValue(10);
+    this.form?.get('query')?.patchValue({pageSize: 10})
+    console.log(this.form?.get('query'));
     this.dialogRef.close(this.form?.getRawValue());
   }
 }

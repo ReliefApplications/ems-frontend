@@ -947,6 +947,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
+    console.log(this.pageSize)
     this.dataQuery.fetchMore({
       variables: {
         first: this.pageSize,

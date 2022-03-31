@@ -106,6 +106,7 @@ export const createQueryForm = (value: any, validators = true): FormGroup =>
   formBuilder.group({
     name: [value ? value.name : '', validators ? Validators.required : null],
     template: [value ? value.template : '', null],
+    pageSize: [value ? value.pageSize : 10, null],
     fields: formBuilder.array(
       value && value.fields ? value.fields.map((x: any) => addNewField(x)) : [],
       validators ? Validators.required : null
@@ -119,7 +120,7 @@ export const createQueryForm = (value: any, validators = true): FormGroup =>
       value && value.style && value.style.length
         ? value.style.map((x: any) => createStyleForm(x))
         : [createStyleForm(null)]
-    ),
+    )
   });
 
 /**
