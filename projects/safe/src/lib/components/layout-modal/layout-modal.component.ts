@@ -33,6 +33,7 @@ export class SafeLayoutModalComponent implements OnInit {
   private queryName = '';
   public templates: any[] = [];
   public gridSettings: GridSettings = DEFAULT_GRID_SETTINGS;
+  private pageSize?: number;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -41,7 +42,6 @@ export class SafeLayoutModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.data.layout?.query);
     this.form = this.formBuilder.group({
       name: [this.data.layout?.name, Validators.required],
       query: createQueryForm(this.data.layout?.query),
@@ -53,7 +53,6 @@ export class SafeLayoutModalComponent implements OnInit {
         ...this.form?.getRawValue(),
         ...DEFAULT_GRID_SETTINGS,
       };
-      console.log(this.gridSettings);
     });
   }
 
@@ -67,6 +66,15 @@ export class SafeLayoutModalComponent implements OnInit {
   }
 
   /**
+   * Updates pageSize parameter.
+   *
+   * @param value new value
+   */
+  onPageSizeChange(value: any): void {
+    this.pageSize = value;
+  }
+
+  /**
    * Closes the modal without sending any data.
    */
   onClose(): void {
@@ -77,9 +85,9 @@ export class SafeLayoutModalComponent implements OnInit {
    * Closes the modal sending tile form value.
    */
   onSubmit(): void {
-    //this.form?.controls.pageSize.setValue(10);
-    this.form?.get('query')?.patchValue({pageSize: 10})
-    console.log(this.form?.get('query'));
+    if (this.pageSize) {
+      this.form?.get('query')?.patchValue({ pageSize: this.pageSize });
+    }
     this.dialogRef.close(this.form?.getRawValue());
   }
 }

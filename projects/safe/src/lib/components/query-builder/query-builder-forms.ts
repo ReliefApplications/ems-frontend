@@ -120,7 +120,7 @@ export const createQueryForm = (value: any, validators = true): FormGroup =>
       value && value.style && value.style.length
         ? value.style.map((x: any) => createStyleForm(x))
         : [createStyleForm(null)]
-    )
+    ),
   });
 
 /**

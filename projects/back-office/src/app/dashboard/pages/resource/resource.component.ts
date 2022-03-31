@@ -494,7 +494,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        console.log(value)
         this.gridLayoutService
           .editLayout(layout, value, this.resource.id)
           .subscribe((res: any) => {

@@ -117,6 +117,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === PAGINATION ===
   public pageSize = 10;
   public skip = 0;
+  @Output() pageSizeChanged: EventEmitter<any> = new EventEmitter<any>();
 
   // === INLINE EDITION ===
   private originalItems: any[] = this.gridData.data;
@@ -272,6 +273,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.defaultLayout.sort;
     }
     this.showFilter = !!this.defaultLayout?.showFilter;
+    if (this.settings.query.pageSize) {
+      this.pageSize = this.settings.query.pageSize;
+    }
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     this.dataQuery = this.apollo.watchQuery<any>({
@@ -947,7 +951,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
-    console.log(this.pageSize)
+    this.pageSizeChanged.emit(this.pageSize);
     this.dataQuery.fetchMore({
       variables: {
         first: this.pageSize,
