@@ -193,7 +193,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     );
   }
 
-  public show = false;
   // === DATA ===
   /**
    * Returns property value in object from path.
@@ -203,10 +202,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @returns Value of the property.
    */
   public getPropertyValue(item: any, path: string): any {
-    if (!this.show) {
-      this.show = true;
-      console.log(this.fields);
-    }
     const meta = this.fields.find((x) => x.name === path).meta;
     const value = get(item, path);
     if (meta.choices) {
