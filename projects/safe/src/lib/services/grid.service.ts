@@ -45,58 +45,87 @@ export class SafeGridService {
    * @returns List of fields for the grid.
    */
   public getFields(
-    fields: any[], metaFields: any, layoutFields: any, prefix?: string,
-    options: { disabled?: boolean, hidden?: boolean, filter: boolean } = { disabled: false, hidden: false, filter: true }): any[] {
-    return flatDeep(fields.map(f => {
-      const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
-      switch (f.kind) {
-        case 'OBJECT': {
-          return this.getFields(f.fields, metaFields, layoutFields, fullName, { disabled: true, hidden: options.hidden, filter: (f.type === 'User') });
-        }
-        case 'LIST': {
-          let metaData = get(metaFields, fullName);
-          metaData = Object.assign([], metaData);
-          metaData.type = 'records';
-          const cachedField = get(layoutFields, fullName);
-          const title = f.label ? f.label : prettifyLabel(f.name);
-          const subFields = this.getFields(f.fields, metaFields, layoutFields, fullName, { disabled: true, hidden: true, filter: false });
-          return {
-            name: fullName,
-            title,
-            type: f.type,
-            format: this.getFieldFormat(f.type),
-            editor: this.getFieldEditor(f.type),
-            filter: prefix ? '' : this.getFieldFilter(f.type),
-            meta: metaData,
-            disabled: true,
-            hidden: options.hidden || cachedField?.hidden || false,
-            width: cachedField?.width || title.length * 7 + 50,
-            order: cachedField?.order,
-            query: {
-              sort: f.sort,
-              fields: f.fields,
-              filter: f.filter
-            },
-            subFields,
-          };
-        }
-        default: {
-          const metaData = get(metaFields, fullName);
-          const cachedField = get(layoutFields, fullName);
-          const title = f.label ? f.label : prettifyLabel(f.name);
-          return {
-            name: fullName,
-            title,
-            type: f.type,
-            format: this.getFieldFormat(f.type),
-            editor: this.getFieldEditor(f.type),
-            filter: !options.filter ? '' : this.getFieldFilter(f.type),
-            meta: metaData,
-            disabled: options.disabled || DISABLED_FIELDS.includes(f.name) || metaData?.readOnly,
-            hidden: options.hidden || cachedField?.hidden || false,
-            width: cachedField?.width || title.length * 7 + 50,
-            order: cachedField?.order,
-          };
+    fields: any[],
+    metaFields: any,
+    layoutFields: any,
+    prefix?: string,
+    options: { disabled?: boolean; hidden?: boolean; filter: boolean } = {
+      disabled: false,
+      hidden: false,
+      filter: true,
+    }
+  ): any[] {
+    return flatDeep(
+      fields.map((f) => {
+        const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
+        switch (f.kind) {
+          case 'OBJECT': {
+            return this.getFields(
+              f.fields,
+              metaFields,
+              layoutFields,
+              fullName,
+              {
+                disabled: true,
+                hidden: options.hidden,
+                filter: f.type === 'User',
+              }
+            );
+          }
+          case 'LIST': {
+            let metaData = get(metaFields, fullName);
+            metaData = Object.assign([], metaData);
+            metaData.type = 'records';
+            const cachedField = get(layoutFields, fullName);
+            const title = f.label ? f.label : prettifyLabel(f.name);
+            const subFields = this.getFields(
+              f.fields,
+              metaFields,
+              layoutFields,
+              fullName,
+              { disabled: true, hidden: true, filter: false }
+            );
+            return {
+              name: fullName,
+              title,
+              type: f.type,
+              format: this.getFieldFormat(f.type),
+              editor: this.getFieldEditor(f.type),
+              filter: prefix ? '' : this.getFieldFilter(f.type),
+              meta: metaData,
+              disabled: true,
+              hidden: options.hidden || cachedField?.hidden || false,
+              width: cachedField?.width || title.length * 7 + 50,
+              order: cachedField?.order,
+              query: {
+                sort: f.sort,
+                fields: f.fields,
+                filter: f.filter,
+              },
+              subFields,
+            };
+          }
+          default: {
+            const metaData = get(metaFields, fullName);
+            const cachedField = get(layoutFields, fullName);
+            const title = f.label ? f.label : prettifyLabel(f.name);
+            return {
+              name: fullName,
+              title,
+              type: f.type,
+              format: this.getFieldFormat(f.type),
+              editor: this.getFieldEditor(f.type),
+              filter: !options.filter ? '' : this.getFieldFilter(f.type),
+              meta: metaData,
+              disabled:
+                options.disabled ||
+                DISABLED_FIELDS.includes(f.name) ||
+                metaData?.readOnly,
+              hidden: options.hidden || cachedField?.hidden || false,
+              width: cachedField?.width || title.length * 7 + 50,
+              order: cachedField?.order,
+            };
+          }
         }
       })
     ).sort((a, b) => a.order - b.order);
