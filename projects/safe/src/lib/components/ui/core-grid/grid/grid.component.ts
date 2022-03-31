@@ -203,7 +203,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @returns Value of the property.
    */
   public getPropertyValue(item: any, path: string): any {
-    if (! this.show) {
+    if (!this.show) {
       this.show = true;
       console.log(this.fields);
     }
