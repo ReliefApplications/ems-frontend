@@ -8,6 +8,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 
+/**
+ * Preview Email Component Module.
+ */
 @NgModule({
   declarations: [SafeEmailPreviewComponent],
   imports: [
