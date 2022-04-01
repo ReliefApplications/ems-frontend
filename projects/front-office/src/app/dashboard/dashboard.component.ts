@@ -98,9 +98,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.permissions = user.permissions || [];
           } else {
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.accessNotProvided', {
+              this.translate.instant('components.notifications.accessNotProvided', {
                 type: this.translate
-                  .instant('notification.term.platform')
+                  .instant('common.platform.one')
                   .toLowerCase(),
                 error: '',
               }),

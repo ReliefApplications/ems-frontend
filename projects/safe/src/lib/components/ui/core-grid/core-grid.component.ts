@@ -862,7 +862,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             this.reloadData();
             this.layoutService.setRightSidenav(null);
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.dataRecovered')
+              this.translate.instant('components.notifications.dataRecovered')
             );
           });
       }

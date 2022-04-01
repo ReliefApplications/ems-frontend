@@ -150,7 +150,7 @@
   <ng-container matColumnDef="oid">
     <th mat-header-cell *matHeaderCellDef>
       <span class="headerTitle" mat-sort-header>
-        {{ 'table.authId' | translate }}
+        {{ 'common.id' | translate }}
       </span>
     </th>
     <td mat-cell *matCellDef="let element">{{ element.oid }}</td>
@@ -186,7 +186,7 @@
 
 <safe-skeleton-table
   *ngIf="loading"
-  [columns]="['global.name', 'global.username', 'table.authId', 'global.role']"
+  [columns]="['common.name', 'models.user.username', 'common.id', 'common.role.few']"
   [actions]="true"
   [checkbox]="true"
 >

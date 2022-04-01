@@ -150,7 +150,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         if (res.errors) {
           // TO-DO: Check why it's not working as intended.
           this.snackBar.openSnackBar(
-            this.translate.instant('notification.accessNotProvided', {
+            this.translate.instant('components.notifications.accessNotProvided', {
               type: this.translate.instant('table.records').toLowerCase(),
               error: res.errors[0].message,
             }),
@@ -302,7 +302,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
           .subscribe((res) => {
             this.layoutService.setRightSidenav(null);
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.dataRecovered')
+              this.translate.instant('components.notifications.dataRecovered')
             );
           });
       }
@@ -372,7 +372,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         this.xlsxFile.nativeElement.value = '';
         if (res.status === 'OK') {
           this.snackBar.openSnackBar(
-            this.translate.instant('notification.recordUploadSuccess')
+            this.translate.instant('models.record.notifications.uploadSuccess')
           );
           this.getFormData();
         }

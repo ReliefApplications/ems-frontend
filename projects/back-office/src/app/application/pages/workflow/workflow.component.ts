@@ -196,9 +196,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             .subscribe((res) => {
               if (res.data) {
                 this.snackBar.openSnackBar(
-                  this.translateService.instant('notification.objectDeleted', {
+                  this.translateService.instant('components.notifications.deleted', {
                     value: this.translateService.instant(
-                      'notification.term.step'
+                      'common.step.one'
                     ),
                   })
                 );
@@ -259,8 +259,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectReordered', {
-              type: this.translateService.instant('notification.term.step'),
+            this.translateService.instant('components.notifications.reordered', {
+              type: this.translateService.instant('common.step.one'),
             })
           );
           if (currentStep) {
@@ -270,8 +270,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.steps = steps;
         } else {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectNotEdited', {
-              type: this.translateService.instant('notification.term.workflow'),
+            this.translateService.instant('components.notifications.notEdited', {
+              type: this.translateService.instant('common.workflow'),
               error: res.errors ? res.errors[0].message : '',
             })
           );
@@ -288,13 +288,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else if (this.activeStep + 1 === this.steps.length) {
       this.onOpenStep(0);
       this.snackBar.openSnackBar(
-        this.translateService.instant('notification.goToStep', {
+        this.translateService.instant('components.notifications.goToStep', {
           step: this.steps[0].name,
         })
       );
     } else {
       this.snackBar.openSnackBar(
-        this.translateService.instant('notification.cannotGoToNextStep'),
+        this.translateService.instant('components.notifications.cannotGoToNextStep'),
         { error: true }
       );
     }

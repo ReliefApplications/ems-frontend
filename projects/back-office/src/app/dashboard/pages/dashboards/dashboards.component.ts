@@ -88,9 +88,9 @@ export class DashboardsComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectDeleted', {
+            this.translateService.instant('components.notifications.deleted', {
               value: this.translateService.instant(
-                'notification.term.dashboard'
+                'common.dashboard'
               ),
             })
           );
@@ -117,9 +117,9 @@ export class DashboardsComponent implements OnInit, OnDestroy {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectCreated', {
+              this.translateService.instant('components.notifications.created', {
                 type: this.translateService
-                  .instant('notification.term.dashboard')
+                  .instant('common.dashboard')
                   .toLowerCase(),
                 value: value.name,
               })

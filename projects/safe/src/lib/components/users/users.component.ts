@@ -128,15 +128,15 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
             if (!res.errors) {
               this.snackBar.openSnackBar(
                 res?.data?.addUsers.length
-                  ? this.translate.instant('notification.usersActions', {
+                  ? this.translate.instant('models.user.notifications.usersActions', {
                       action: this.translate
-                        .instant('notification.term.invited')
+                        .instant('common.invited')
                         .toLowerCase(),
                       length: res?.data?.addUsers.length,
                     })
-                  : this.translate.instant('notification.userActions', {
+                  : this.translate.instant('models.user.notifications.userActions', {
                       action: this.translate
-                        .instant('notification.term.invited')
+                        .instant('common.invited')
                         .toLowerCase(),
                     })
               );
@@ -145,9 +145,9 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               );
             } else {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.userInvalidActions', {
+                this.translate.instant('models.user.notifications.invalidActions', {
                   action: this.translate
-                    .instant('notification.term.invited')
+                    .instant('common.invited')
                     .toLowerCase(),
                 }),
                 { error: true }
@@ -184,7 +184,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
             .subscribe((res) => {
               if (res.data) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.userRolesUpdated', {
+                  this.translate.instant('models.user.notifications.rolesUpdated', {
                     username: user.username,
                   })
                 );
@@ -258,15 +258,15 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               if (res.data?.deleteUsers) {
                 this.snackBar.openSnackBar(
                   res.data.deleteUsers > 1
-                    ? this.translate.instant('notification.usersActions', {
+                    ? this.translate.instant('models.user.notifications.usersActions', {
                         action: this.translate
-                          .instant('notification.term.deleted')
+                          .instant('common.deleted')
                           .toLowerCase(),
                         length: res.data.deleteUsers,
                       })
-                    : this.translate.instant('notification.userActions', {
+                    : this.translate.instant('models.user.notifications.userActions', {
                         action: this.translate
-                          .instant('notification.term.deleted')
+                          .instant('common.deleted')
                           .toLowerCase(),
                       })
                 );
@@ -275,9 +275,9 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
                 );
               } else {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.userInvalidActions', {
+                  this.translate.instant('models.user.notifications.invalidActions', {
                     action: this.translate
-                      .instant('notification.term.deleted')
+                      .instant('common.deleted')
                       .toLowerCase(),
                   }),
                   { error: true }

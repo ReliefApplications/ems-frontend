@@ -98,10 +98,10 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
-                  'notification.accessNotProvided',
+                  'components.notifications.accessNotProvided',
                   {
                     type: this.translateService
-                      .instant('notification.term.resource')
+                      .instant('common.resource.one')
                       .toLowerCase(),
                     error: '',
                   }
@@ -235,7 +235,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectNotUpdated', {
+            this.translateService.instant('components.notifications.notUpdated', {
               type: this.translateService.instant('table.APIConf'),
               error: res.errors[0].message,
             }),
@@ -263,17 +263,21 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
           if (res.access_token) {
             this.snackBar.openSnackBar(
               this.translateService.instant(
-                'notification.pingResponseAuthToken'
+                'models.pingResponse.notifications.authToken'
               )
             );
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.pingResponseReceived')
+              this.translateService.instant(
+              'models.pingResponse.notifications.received'
+              )
             );
           }
         } else {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.pingResponseError'),
+            this.translateService.instant(
+              'models.pingResponse.notifications.error'
+            ),
             { error: true }
           );
         }

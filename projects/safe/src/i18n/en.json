@@ -87,6 +87,7 @@
       "title": "Enter a title"
     },
     "platform": {
+      "one": "Platform",
       "backOffice": "Back-Office"
     },
     "positionAttribute": {
@@ -150,7 +151,16 @@
       "none": "No value",
       "one": "Value"
     },
-    "viewObject": "View {{name}}"
+    "viewObject": "View {{name}}",
+    "deleted": "Deleted",
+    "page": {
+      "one": "Page",
+      "few": "Pages"
+    },
+    "invited": "Invited",
+    "positionCategory": "Position category",
+    "dashboard": "Dashboard",
+    "workflow": "Workflow"
   },
   "components": {
     "access": {
@@ -323,7 +333,31 @@
       "preview": "Preview and revert"
     },
     "notifications": {
-      "readAll": "Mark all as read"
+      "readAll": "Mark all as read",
+      "accessNotProvided": "No access provided to this {{type}}. {{error}}",
+      "notUpdated": "{{type}} is locked for edition. {{error}}",
+      "edited": "{{value}} {{type}} edited.",
+      "notEdited": "{{type}} not edited. {{error}}",
+      "duplicated": "The {{type}} {{value}} was successfully duplicated.",
+      "notDuplicated": "The {{type}} was not duplicated. {{error}}",
+      "alreadyExists": "The {{type}} {{value}} already exists on this application.",
+      "created": "{{value}} {{type}} created.",
+      "notCreated": "The {{type}} was not created. {{error}}",
+      "deleted": "{{value}} deleted.",
+      "notDeleted": "The {{value}} was not deleted. {{error}}",
+      "reordered": "{{type}} reordered.",
+      "loadedFromCache": "{{type}} loaded from cache.",
+      "isLocked": "{{value}} edition is locked by another user.",
+      "unlocked": "{{value}} edition has been unlocked by another user.",
+      "accessDenied": "You don't have permission to see the {{type}}.",
+      "goToStep": "Back to {{step}} step.",
+      "cannotGoToNextStep": "Cannot go to next step.",
+      "statusUpdated": "Status updated to {{value}}.",
+      "noOpened": "No opened {{value}}.",
+      "formatInvalid": "Please upload a valid .{{format}} file.",
+      "copied": "Copied!",
+      "dataRecovered": "The data has been recovered",
+      "profileSaved": "Preferences saved."
     },
     "pullJob": {
       "delete": {
@@ -600,6 +634,10 @@
       "setAsFavorite": "Set as favorite",
       "subscription": {
         "create": "Create a subscription"
+      },
+      "notifications": {
+        "updated": "This application has been updated by someone else.",
+        "published": "Application {{value}} published."
       }
     },
     "channel": {
@@ -622,7 +660,12 @@
     },
     "record": {
       "convert": "Convert",
-      "restore": "Restore"
+      "restore": "Restore",
+      "notifications": {
+        "addRows": "Added {{length}} row(s) to the field {{field}} in the record {{value}}.",
+        "doesNotMatch": "Selected record(s) do not match with some fields from this form.",
+        "uploadSuccess": "Records upload successful."
+      }
     },
     "resource": {
       "create": "Create a Resource"
@@ -631,7 +674,13 @@
       "create": "Create a role"
     },
     "user": {
-      "username": "Username"
+      "username": "Username",
+      "notifications": {
+        "invalidActions": "User could not be {{action}}.",
+        "rolesUpdated": "{{username}} roles updated.",
+        "usersActions": "{{length}} users were {{action}}.",
+        "userActions": "User was {{action}}."
+      }
     },
     "widget": {
       "add": "Add a Widget",
@@ -646,6 +695,13 @@
       },
       "scheduler": {
         "defaultTitle": "Scheduler Widget"
+      }
+    },
+    "pingResponse": {
+      "notifications": {
+        "authToken": "Authentication token fetched, ping again to get the actual response.",
+        "received": "Received positive response from ping request.",
+        "error": "ERROR during the PING request."
       }
     }
   },
@@ -725,6 +781,9 @@
       "empty": {
         "add": "Add steps",
         "customize": "Customize each of the steps created"
+      },
+      "notifications": {
+        
       }
     }
   }

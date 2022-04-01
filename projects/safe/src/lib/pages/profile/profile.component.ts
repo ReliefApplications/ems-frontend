@@ -91,7 +91,7 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            this.translate.instant('notification.profileSaved')
+            this.translate.instant('components.notifications.profileSaved')
           );
           this.user.name = res.data.editUserProfile.name;
         }
@@ -121,7 +121,7 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.profileSaved')
+              this.translate.instant('components.notifications.profileSaved')
             );
             this.user.favoriteApp = res.data.editUserProfile.favoriteApp;
           }

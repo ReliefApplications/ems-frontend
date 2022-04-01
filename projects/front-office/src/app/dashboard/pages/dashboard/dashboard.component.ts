@@ -87,9 +87,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
               this.loading = res.loading;
             } else {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.accessNotProvided', {
+                this.translate.instant('components.notifications.accessNotProvided', {
                   type: this.translate
-                    .instant('notification.term.dashboard')
+                    .instant('common.dashboard')
                     .toLowerCase(),
                   error: '',
                 }),

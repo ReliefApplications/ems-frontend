@@ -31,7 +31,7 @@ export class ShareUrlComponent implements OnInit {
   onCopy(): void {
     this.clipboard.copy(this.data.url);
     this.snackBar.openSnackBar(
-      this.translateService.instant('notification.copied')
+      this.translateService.instant('components.notifications.copied')
     );
     this.dialogRef.close();
   }

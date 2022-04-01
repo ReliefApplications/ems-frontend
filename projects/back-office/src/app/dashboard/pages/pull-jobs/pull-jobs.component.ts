@@ -178,9 +178,9 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               .subscribe((res) => {
                 if (res.data?.addPullJob) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('notification.objectCreated', {
+                    this.translate.instant('components.notifications.created', {
                       type: this.translate
-                        .instant('notification.term.pullJob')
+                        .instant('common.pullJob.one')
                         .toLowerCase(),
                       value: value.name,
                     })
@@ -235,8 +235,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
             .subscribe((res) => {
               if (res.data?.deletePullJob) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.objectDeleted', {
-                    value: this.translate.instant('notification.term.pullJob'),
+                  this.translate.instant('components.notifications.deleted', {
+                    value: this.translate.instant('common.pullJob.one'),
                   })
                 );
                 this.cachedPullJobs = this.cachedPullJobs.filter(
@@ -308,9 +308,9 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               .subscribe((res) => {
                 if (res.data?.editPullJob) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('notification.objectEdited', {
+                    this.translate.instant('components.notifications.edited', {
                       type: this.translate
-                        .instant('notification.term.pullJob')
+                        .instant('common.pullJob.one')
                         .toLowerCase(),
                       value: value.name,
                     })

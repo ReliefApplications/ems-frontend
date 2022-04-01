@@ -270,9 +270,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectDeleted', {
+              this.translateService.instant('components.notifications.deleted', {
                 value: this.translateService.instant(
-                  'notification.term.application'
+                  'common.application.one'
                 ),
               })
             );
@@ -299,8 +299,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors?.length) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectNotCreated', {
-              type: this.translateService.instant('notification.term.app'),
+            this.translateService.instant('components.notifications.notCreated', {
+              type: this.translateService.instant('common.application.one'),
               error: res.errors[0].message,
             }),
             { error: true }
@@ -308,9 +308,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectCreated', {
+              this.translateService.instant('components.notifications.created', {
                 type: this.translateService
-                  .instant('notification.term.application')
+                  .instant('common.application.one')
                   .toLowerCase(),
                 value: res.data.addApplication.name,
               })
@@ -340,7 +340,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectEdited', {
+            this.translateService.instant('components.notifications.edited', {
               type: this.translateService
                 .instant('action.access')
                 .toLowerCase(),

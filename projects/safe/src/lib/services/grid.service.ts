@@ -98,6 +98,7 @@ export class SafeGridService {
             order: cachedField?.order,
           };
         }
+      }
       })
     ).sort((a, b) => a.order - b.order);
   }

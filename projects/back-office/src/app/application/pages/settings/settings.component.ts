@@ -72,7 +72,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   onDuplicate(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
-        this.translate.instant('notification.objectIsLocked', {
+        this.translate.instant('components.notifications.isLocked', {
           value: this.application?.name,
         })
       );
@@ -89,7 +89,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   onDelete(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
-        this.translate.instant('notification.objectIsLocked', {
+        this.translate.instant('components.notifications.isLocked', {
           value: this.application?.name,
         })
       );
@@ -117,9 +117,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
             })
             .subscribe((res) => {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectDeleted', {
+                this.translate.instant('components.notifications.deleted', {
                   value: this.translate.instant(
-                    'notification.term.application'
+                    'common.application.one'
                   ),
                 })
               );

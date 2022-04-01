@@ -157,9 +157,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
             this.loading = res.loading;
           } else {
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.accessNotProvided', {
+              this.translate.instant('components.notifications.accessNotProvided', {
                 type: this.translate
-                  .instant('notification.term.resource')
+                  .instant('common.resource.one')
                   .toLowerCase(),
                 error: '',
               }),
@@ -294,8 +294,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         this.snackBar.openSnackBar(
-          this.translate.instant('notification.objectDeleted', {
-            value: this.translate.instant('notification.term.record'),
+          this.translate.instant('components.notifications.deleted', {
+            value: this.translate.instant('common.record.one'),
           })
         );
         this.dataSourceRecords = this.dataSourceRecords.filter(
@@ -317,9 +317,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         this.snackBar.openSnackBar(
-          this.translate.instant('notification.objectDeleted', {
+          this.translate.instant('components.notifications.deleted', {
             value: this.translate
-              .instant('notification.term.form')
+              .instant('common.form.one')
               .toLowerCase(),
           })
         );

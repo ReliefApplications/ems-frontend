@@ -83,9 +83,9 @@ export class SafeWorkflowService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.objectCreated', {
+              this.translate.instant('components.notifications.created', {
                 type: this.translate
-                  .instant('notification.term.step')
+                  .instant('common.step.one')
                   .toLowerCase(),
                 value: res.data.addStep.name,
               })
@@ -104,8 +104,8 @@ export class SafeWorkflowService {
             }
           } else {
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.objectNotEdited', {
-                type: this.translate.instant('notification.term.workflow'),
+              this.translate.instant('components.notifications.notEdited', {
+                type: this.translate.instant('common.workflow'),
                 error: res.errors ? res.errors[0].message : '',
               }),
               { error: true }
@@ -114,9 +114,9 @@ export class SafeWorkflowService {
         });
     } else {
       this.snackBar.openSnackBar(
-        this.translate.instant('notification.noObjectOpened', {
+        this.translate.instant('components.notifications.noOpened', {
           value: this.translate
-            .instant('notification.term.workflow')
+            .instant('common.workflow')
             .toLowerCase(),
         }),
         { error: true }
@@ -143,8 +143,8 @@ export class SafeWorkflowService {
         }),
       };
       this.snackBar.openSnackBar(
-        this.translate.instant('notification.objectEdited', {
-          type: this.translate.instant('notification.term.step').toLowerCase(),
+        this.translate.instant('components.notifications.edited', {
+          type: this.translate.instant('common.step.one').toLowerCase(),
           value: step.name,
         })
       );

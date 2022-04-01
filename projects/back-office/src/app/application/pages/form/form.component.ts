@@ -159,9 +159,9 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectNotUpdated', {
+              this.translateService.instant('components.notifications.notUpdated', {
                 type: this.translateService
-                  .instant('notification.term.step')
+                  .instant('common.step.one')
                   .toLowerCase(),
                 error: res.errors[0].message,
               }),
@@ -170,9 +170,9 @@ export class FormComponent implements OnInit, OnDestroy {
           } else {
             if (res.data) {
               this.snackBar.openSnackBar(
-                this.translateService.instant('notification.objectEdited', {
+                this.translateService.instant('components.notifications.edited', {
                   type: this.translateService
-                    .instant('notification.term.step')
+                    .instant('common.step.one')
                     .toLowerCase(),
                   value: tabName,
                 })
@@ -194,9 +194,9 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectNotUpdated', {
+              this.translateService.instant('components.notifications.notUpdated', {
                 type: this.translateService
-                  .instant('notification.term.page')
+                  .instant('common.page.one')
                   .toLowerCase(),
                 error: res.errors[0].message,
               }),
@@ -205,9 +205,9 @@ export class FormComponent implements OnInit, OnDestroy {
           } else {
             if (res.data) {
               this.snackBar.openSnackBar(
-                this.translateService.instant('notification.objectEdited', {
+                this.translateService.instant('components.notifications.edited', {
                   type: this.translateService
-                    .instant('notification.term.page')
+                    .instant('common.page.one')
                     .toLowerCase(),
                   value: tabName,
                 })

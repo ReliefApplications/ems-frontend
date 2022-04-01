@@ -450,7 +450,7 @@ export class SafeGridWidgetComponent implements OnInit {
                 const record = res2.data.editRecord;
                 if (record) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('notification.addRowsToRecord', {
+                    this.translate.instant('models.record.notifications.addRows', {
                       field: record.data[targetFormField],
                       length: selectedRecords.length,
                       value: key,

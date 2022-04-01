@@ -222,7 +222,7 @@ export class ApiConfigurationsComponent
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.objectNotCreated', {
+                  this.translate.instant('components.notifications.notCreated', {
                     type: this.translate.instant('table.APIConf'),
                     error: res.errors[0].message,
                   }),
@@ -281,7 +281,7 @@ export class ApiConfigurationsComponent
           .subscribe((res) => {
             if (res && !res.errors) {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectDeleted', {
+                this.translate.instant('components.notifications.deleted', {
                   value: this.translate.instant('table.APIConf'),
                 })
               );
