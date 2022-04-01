@@ -31,9 +31,9 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'widgets.map.category' | translate }}</mat-label>
+          <mat-label>{{ 'components.widget.settings.map.category' | translate }}</mat-label>
           <mat-select formControlName="category">
-            <mat-option [value]="">{{ 'global.none' | translate }}</mat-option>
+            <mat-option [value]="">{{ 'common.input.none' | translate }}</mat-option>
             <mat-option *ngFor="let field of selectedFields" [value]="field">
               {{ field }}
             </mat-option>
@@ -47,7 +47,7 @@
     </div>
     <div class="form-group">
       <div class="form-group-title">
-        {{ 'widgets.map.layers.title' | translate }}
+        {{ 'components.widget.settings.map.layers.title' | translate }}
       </div>
       <mat-form-field appearance="outline">
         <mat-label>{{ 'components.widget.settings.map.layers.select' | translate }}</mat-label>
@@ -76,7 +76,7 @@
           tileForm.value.onlineLayers && tileForm.value.onlineLayers.length > 0
         "
       >
-        {{ 'widgets.map.layers.selected' | translate }}
+        {{ ''components.widget.settings.map.layers.selected' | translate }}
       </h2>
       <h3 *ngFor="let layer of tileForm.value.onlineLayers">
         {{ layer.title }}
@@ -93,7 +93,7 @@
         {{ 'components.widget.settings.map.display.title' | translate }}
       </div>
       <mat-form-field appearance="outline">
-        <mat-label>{{ 'widgets.map.default.basemap' | translate }}</mat-label>
+        <mat-label>{{ ''components.widget.settings.map.display.basemap' | translate }}</mat-label>
         <mat-select formControlName="basemap" placeholder="OSM">
           <mat-option *ngFor="let map of basemaps" [value]="map">
             {{ map }}
@@ -101,7 +101,7 @@
         </mat-select>
       </mat-form-field>
       <mat-label>
-        {{ 'models.widget.map.zoom' | translate }}
+        {{ 'components.widget.settings.map.display.zoom' | translate }}
         <safe-icon
           icon="info"
           [matTooltip]="'components.widget.settings.map.display.latitude' | translate"
@@ -120,32 +120,32 @@
       <div class="map-default-settings">
         <mat-form-field appearance="outline">
           <mat-label>
-            {{ 'components.widget.settings.map.display.longitude' | translate }}
+            {{ 'components.widget.settings.map.display.latitude' | translate }}
           </mat-label>
           <input type="number" matInput formControlName="centerLat" />
           <safe-icon
             matSuffix
             icon="info"
             variant="grey"
-            [matTooltip]="'widgets.map.tooltip.default.lat' | translate"
+            [matTooltip]="''components.widget.settings.map.tooltip.display.longitude' | translate"
           ></safe-icon>
           <mat-error *ngIf="tileForm.controls.centerLat.errors">
-            {{ 'widgets.map.error.lat' | translate }}
+            {{ 'components.widget.settings.map.errors.latitude' | translate }}
           </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>
-            {{ 'widgets.map.default.long' | translate }}
+            {{ 'components.widget.settings.map.display.longitude' | translate }}
           </mat-label>
           <input type="number" matInput formControlName="centerLong" />
           <safe-icon
             matSuffix
             icon="info"
             variant="grey"
-            [matTooltip]="'widgets.map.tooltip.default.long' | translate"
+            [matTooltip]="'components.widget.settings.map.tooltip.display.longitude' | translate"
           ></safe-icon>
           <mat-error *ngIf="tileForm.controls.centerLat.errors">
-            {{ 'widgets.map.error.long' | translate }}
+            {{ 'components.widget.settings.map.errors.longitude' | translate }}
           </mat-error>
         </mat-form-field>
       </div>
