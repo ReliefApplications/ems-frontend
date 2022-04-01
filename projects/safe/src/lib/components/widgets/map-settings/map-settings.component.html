@@ -93,7 +93,7 @@
         {{ 'components.widget.settings.map.display.title' | translate }}
       </div>
       <mat-form-field appearance="outline">
-        <mat-label>{{ ''components.widget.settings.map.display.basemap' | translate }}</mat-label>
+        <mat-label>{{ 'components.widget.settings.map.display.basemap' | translate }}</mat-label>
         <mat-select formControlName="basemap" placeholder="OSM">
           <mat-option *ngFor="let map of basemaps" [value]="map">
             {{ map }}
@@ -127,7 +127,7 @@
             matSuffix
             icon="info"
             variant="grey"
-            [matTooltip]="''components.widget.settings.map.tooltip.display.longitude' | translate"
+            [matTooltip]="'components.widget.settings.map.tooltip.display.longitude' | translate"
           ></safe-icon>
           <mat-error *ngIf="tileForm.controls.centerLat.errors">
             {{ 'components.widget.settings.map.errors.latitude' | translate }}
