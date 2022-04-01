@@ -84,9 +84,7 @@ export class SafeWorkflowService {
           if (res.data) {
             this.snackBar.openSnackBar(
               this.translate.instant('components.notifications.created', {
-                type: this.translate
-                  .instant('common.step.one')
-                  .toLowerCase(),
+                type: this.translate.instant('common.step.one').toLowerCase(),
                 value: res.data.addStep.name,
               })
             );
@@ -115,9 +113,7 @@ export class SafeWorkflowService {
     } else {
       this.snackBar.openSnackBar(
         this.translate.instant('components.notifications.noOpened', {
-          value: this.translate
-            .instant('common.workflow')
-            .toLowerCase(),
+          value: this.translate.instant('common.workflow').toLowerCase(),
         }),
         { error: true }
       );

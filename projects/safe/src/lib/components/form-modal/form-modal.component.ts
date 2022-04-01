@@ -164,7 +164,9 @@ export class SafeFormModalComponent implements OnInit {
                   this.data.prefillRecords.map((x) => x.id);
               } else {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('models.record.notifications.doesNotMatch'),
+                  this.translate.instant(
+                    'models.record.notifications.doesNotMatch'
+                  ),
                   { error: true }
                 );
               }
