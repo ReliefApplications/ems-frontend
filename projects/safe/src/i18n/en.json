@@ -149,7 +149,8 @@
     "previous": "Previous",
     "true": "True",
     "false": "False",
-    "settings": "Settings"
+    "settings": "Settings",
+    "child": "Child"
   },
   "pages": {
     "appBuilder": {
