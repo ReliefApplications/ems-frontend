@@ -76,12 +76,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               }
             } else {
               this.snackBar.openSnackBar(
-                this.translate.instant('components.notifications.accessNotProvided', {
-                  type: this.translate
-                    .instant('common.workflow')
-                    .toLowerCase(),
-                  error: '',
-                }),
+                this.translate.instant(
+                  'components.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.workflow')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
             }

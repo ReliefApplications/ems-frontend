@@ -87,12 +87,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
               this.loading = res.loading;
             } else {
               this.snackBar.openSnackBar(
-                this.translate.instant('components.notifications.accessNotProvided', {
-                  type: this.translate
-                    .instant('common.dashboard')
-                    .toLowerCase(),
-                  error: '',
-                }),
+                this.translate.instant(
+                  'components.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.dashboard')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
               this.router.navigate(['/applications']);
