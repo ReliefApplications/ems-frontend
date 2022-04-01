@@ -125,7 +125,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       );
     } else {
       this.snackBar.openSnackBar(
-        this.translateService.instant('components.notifications.cannotGoToNextStep'),
+        this.translateService.instant(
+          'components.notifications.cannotGoToNextStep'
+        ),
         { error: true }
       );
     }

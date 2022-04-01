@@ -150,10 +150,13 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         if (res.errors) {
           // TO-DO: Check why it's not working as intended.
           this.snackBar.openSnackBar(
-            this.translate.instant('components.notifications.accessNotProvided', {
-              type: this.translate.instant('table.records').toLowerCase(),
-              error: res.errors[0].message,
-            }),
+            this.translate.instant(
+              'components.notifications.accessNotProvided',
+              {
+                type: this.translate.instant('table.records').toLowerCase(),
+                error: res.errors[0].message,
+              }
+            ),
             { error: true }
           );
         }

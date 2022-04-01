@@ -250,12 +250,15 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('components.notifications.notCreated', {
-                    type: this.translate
-                      .instant('common.form.one')
-                      .toLowerCase(),
-                    error: res.errors[0].message,
-                  }),
+                  this.translate.instant(
+                    'components.notifications.notCreated',
+                    {
+                      type: this.translate
+                        .instant('common.form.one')
+                        .toLowerCase(),
+                      error: res.errors[0].message,
+                    }
+                  ),
                   { error: true }
                 );
               } else {

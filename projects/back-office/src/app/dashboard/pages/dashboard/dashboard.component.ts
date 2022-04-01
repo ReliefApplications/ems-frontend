@@ -308,10 +308,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.workflowService.updateStepName(res.data.editStep);
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant('components.notifications.notUpdated', {
-                type: this.translateService.instant('common.step.one'),
-                error: res.errors ? res.errors[0].message : '',
-              })
+              this.translateService.instant(
+                'components.notifications.notUpdated',
+                {
+                  type: this.translateService.instant('common.step.one'),
+                  error: res.errors ? res.errors[0].message : '',
+                }
+              )
             );
           }
         });

@@ -196,11 +196,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             .subscribe((res) => {
               if (res.data) {
                 this.snackBar.openSnackBar(
-                  this.translateService.instant('components.notifications.deleted', {
-                    value: this.translateService.instant(
-                      'common.step.one'
-                    ),
-                  })
+                  this.translateService.instant(
+                    'components.notifications.deleted',
+                    {
+                      value: this.translateService.instant('common.step.one'),
+                    }
+                  )
                 );
                 this.steps = this.steps.filter(
                   (x) => x.id !== res.data?.deleteStep.id
@@ -259,9 +260,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('components.notifications.reordered', {
-              type: this.translateService.instant('common.step.one'),
-            })
+            this.translateService.instant(
+              'components.notifications.reordered',
+              {
+                type: this.translateService.instant('common.step.one'),
+              }
+            )
           );
           if (currentStep) {
             const index = steps.findIndex((x) => x.id === currentStep.id);
@@ -270,10 +274,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.steps = steps;
         } else {
           this.snackBar.openSnackBar(
-            this.translateService.instant('components.notifications.notEdited', {
-              type: this.translateService.instant('common.workflow'),
-              error: res.errors ? res.errors[0].message : '',
-            })
+            this.translateService.instant(
+              'components.notifications.notEdited',
+              {
+                type: this.translateService.instant('common.workflow'),
+                error: res.errors ? res.errors[0].message : '',
+              }
+            )
           );
         }
       });
@@ -294,7 +301,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       );
     } else {
       this.snackBar.openSnackBar(
-        this.translateService.instant('components.notifications.cannotGoToNextStep'),
+        this.translateService.instant(
+          'components.notifications.cannotGoToNextStep'
+        ),
         { error: true }
       );
     }

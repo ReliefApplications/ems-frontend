@@ -179,12 +179,15 @@ export class AddPageComponent implements OnInit, OnDestroy {
                 const id = res.data?.addForm.id || '';
                 this.pageForm.controls.content.setValue(id);
                 this.snackBar.openSnackBar(
-                  this.translateService.instant('components.notifications.created', {
-                    type: this.translateService
-                      .instant('common.page')
-                      .toLowerCase(),
-                    value: value.name,
-                  })
+                  this.translateService.instant(
+                    'components.notifications.created',
+                    {
+                      type: this.translateService
+                        .instant('common.page')
+                        .toLowerCase(),
+                      value: value.name,
+                    }
+                  )
                 );
 
                 this.onSubmit();

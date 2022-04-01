@@ -159,23 +159,29 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('components.notifications.notUpdated', {
-                type: this.translateService
-                  .instant('common.step.one')
-                  .toLowerCase(),
-                error: res.errors[0].message,
-              }),
+              this.translateService.instant(
+                'components.notifications.notUpdated',
+                {
+                  type: this.translateService
+                    .instant('common.step.one')
+                    .toLowerCase(),
+                  error: res.errors[0].message,
+                }
+              ),
               { error: true }
             );
           } else {
             if (res.data) {
               this.snackBar.openSnackBar(
-                this.translateService.instant('components.notifications.edited', {
-                  type: this.translateService
-                    .instant('common.step.one')
-                    .toLowerCase(),
-                  value: tabName,
-                })
+                this.translateService.instant(
+                  'components.notifications.edited',
+                  {
+                    type: this.translateService
+                      .instant('common.step.one')
+                      .toLowerCase(),
+                    value: tabName,
+                  }
+                )
               );
               this.step = { ...this.step, name: res.data.editStep.name };
               this.workflowService.updateStepName(res.data.editStep);
@@ -194,23 +200,29 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('components.notifications.notUpdated', {
-                type: this.translateService
-                  .instant('common.page.one')
-                  .toLowerCase(),
-                error: res.errors[0].message,
-              }),
+              this.translateService.instant(
+                'components.notifications.notUpdated',
+                {
+                  type: this.translateService
+                    .instant('common.page.one')
+                    .toLowerCase(),
+                  error: res.errors[0].message,
+                }
+              ),
               { error: true }
             );
           } else {
             if (res.data) {
               this.snackBar.openSnackBar(
-                this.translateService.instant('components.notifications.edited', {
-                  type: this.translateService
-                    .instant('common.page.one')
-                    .toLowerCase(),
-                  value: tabName,
-                })
+                this.translateService.instant(
+                  'components.notifications.edited',
+                  {
+                    type: this.translateService
+                      .instant('common.page.one')
+                      .toLowerCase(),
+                    value: tabName,
+                  }
+                )
               );
               const newPage = { ...this.page, name: res.data.editPage.name };
               this.page = newPage;

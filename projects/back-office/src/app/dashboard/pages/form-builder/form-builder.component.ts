@@ -130,12 +130,15 @@ export class FormBuilderComponent implements OnInit {
               }
             } else {
               this.snackBar.openSnackBar(
-                this.translate.instant('components.notifications.accessNotProvided', {
-                  type: this.translate
-                    .instant('common.form.one')
-                    .toLowerCase(),
-                  error: '',
-                }),
+                this.translate.instant(
+                  'components.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.form.one')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
               // redirect to default screen if error
@@ -192,9 +195,7 @@ export class FormBuilderComponent implements OnInit {
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant('components.notifications.edited', {
-                  type: this.translate
-                    .instant('common.form.one')
-                    .toLowerCase(),
+                  type: this.translate.instant('common.form.one').toLowerCase(),
                   value: this.form?.name,
                 })
               );
@@ -311,9 +312,7 @@ export class FormBuilderComponent implements OnInit {
         if (res.errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('components.notifications.notUpdated', {
-              type: this.translate
-                .instant('common.form.one')
-                .toLowerCase(),
+              type: this.translate.instant('common.form.one').toLowerCase(),
               error: res.errors[0].message,
             }),
             { error: true }
@@ -322,9 +321,7 @@ export class FormBuilderComponent implements OnInit {
         } else {
           this.snackBar.openSnackBar(
             this.translate.instant('components.notifications.edited', {
-              type: this.translate
-                .instant('common.form.one')
-                .toLowerCase(),
+              type: this.translate.instant('common.form.one').toLowerCase(),
               value: formName,
             })
           );

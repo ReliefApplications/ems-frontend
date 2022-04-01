@@ -235,10 +235,13 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('components.notifications.notUpdated', {
-              type: this.translateService.instant('table.APIConf'),
-              error: res.errors[0].message,
-            }),
+            this.translateService.instant(
+              'components.notifications.notUpdated',
+              {
+                type: this.translateService.instant('table.APIConf'),
+                error: res.errors[0].message,
+              }
+            ),
             { error: true }
           );
           this.loading = false;
@@ -269,7 +272,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
           } else {
             this.snackBar.openSnackBar(
               this.translateService.instant(
-              'models.pingResponse.notifications.received'
+                'models.pingResponse.notifications.received'
               )
             );
           }

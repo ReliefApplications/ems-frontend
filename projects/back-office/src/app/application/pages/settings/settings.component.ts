@@ -118,9 +118,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
             .subscribe((res) => {
               this.snackBar.openSnackBar(
                 this.translate.instant('components.notifications.deleted', {
-                  value: this.translate.instant(
-                    'common.application.one'
-                  ),
+                  value: this.translate.instant('common.application.one'),
                 })
               );
               this.applications.data = this.applications.data.filter(

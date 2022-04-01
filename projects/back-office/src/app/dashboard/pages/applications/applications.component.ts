@@ -270,11 +270,14 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              this.translateService.instant('components.notifications.deleted', {
-                value: this.translateService.instant(
-                  'common.application.one'
-                ),
-              })
+              this.translateService.instant(
+                'components.notifications.deleted',
+                {
+                  value: this.translateService.instant(
+                    'common.application.one'
+                  ),
+                }
+              )
             );
             this.applications.data = this.applications.data.filter(
               (x) => x.id !== res.data?.deleteApplication.id
@@ -299,21 +302,27 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors?.length) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('components.notifications.notCreated', {
-              type: this.translateService.instant('common.application.one'),
-              error: res.errors[0].message,
-            }),
+            this.translateService.instant(
+              'components.notifications.notCreated',
+              {
+                type: this.translateService.instant('common.application.one'),
+                error: res.errors[0].message,
+              }
+            ),
             { error: true }
           );
         } else {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('components.notifications.created', {
-                type: this.translateService
-                  .instant('common.application.one')
-                  .toLowerCase(),
-                value: res.data.addApplication.name,
-              })
+              this.translateService.instant(
+                'components.notifications.created',
+                {
+                  type: this.translateService
+                    .instant('common.application.one')
+                    .toLowerCase(),
+                  value: res.data.addApplication.name,
+                }
+              )
             );
             const id = res.data.addApplication.id;
             this.router.navigate(['/applications', id]);

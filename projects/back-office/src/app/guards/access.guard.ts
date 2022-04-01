@@ -41,12 +41,15 @@ export class AccessGuard implements CanActivate {
             return true;
           } else {
             this.snackBar.openSnackBar(
-              this.translate.instant('components.notifications.accessNotProvided', {
-                type: this.translate
-                  .instant('common.platform.one')
-                  .toLowerCase(),
-                error: '',
-              }),
+              this.translate.instant(
+                'components.notifications.accessNotProvided',
+                {
+                  type: this.translate
+                    .instant('common.platform.one')
+                    .toLowerCase(),
+                  error: '',
+                }
+              ),
               { error: true }
             );
             this.authService.logout();

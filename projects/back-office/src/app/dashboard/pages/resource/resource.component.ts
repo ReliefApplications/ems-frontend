@@ -157,12 +157,15 @@ export class ResourceComponent implements OnInit, OnDestroy {
             this.loading = res.loading;
           } else {
             this.snackBar.openSnackBar(
-              this.translate.instant('components.notifications.accessNotProvided', {
-                type: this.translate
-                  .instant('common.resource.one')
-                  .toLowerCase(),
-                error: '',
-              }),
+              this.translate.instant(
+                'components.notifications.accessNotProvided',
+                {
+                  type: this.translate
+                    .instant('common.resource.one')
+                    .toLowerCase(),
+                  error: '',
+                }
+              ),
               { error: true }
             );
             this.router.navigate(['/resources']);
@@ -318,9 +321,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         this.snackBar.openSnackBar(
           this.translate.instant('components.notifications.deleted', {
-            value: this.translate
-              .instant('common.form.one')
-              .toLowerCase(),
+            value: this.translate.instant('common.form.one').toLowerCase(),
           })
         );
         this.dataSourceForms = this.dataSourceForms.filter((x) => x.id !== id);
