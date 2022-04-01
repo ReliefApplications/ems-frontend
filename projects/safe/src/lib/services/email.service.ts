@@ -8,9 +8,11 @@ import { SafeEmailPreviewComponent } from '../components/email-preview/email-pre
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../utils/prettify';
 
-const flatDeep = (arr: any[]): any[] => {
-  return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val), []);
-};
+const flatDeep = (arr: any[]): any[] =>
+  arr.reduce(
+    (acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val),
+    []
+  );
 
 /**
  * Shared email service.
@@ -203,7 +205,7 @@ export class SafeEmailService {
                 query,
                 sortField,
                 sortOrder,
-                attachment,
+                attachment
               );
             }
           });
@@ -228,29 +230,31 @@ export class SafeEmailService {
    * @returns List of fields for the email
    */
   private getFields(fields: any[], prefix?: string): any[] {
-    return flatDeep(fields.map(f => {
-      const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
-      switch (f.kind) {
-        case 'OBJECT': {
-          return this.getFields(f.fields, fullName);
+    return flatDeep(
+      fields.map((f) => {
+        const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
+        switch (f.kind) {
+          case 'OBJECT': {
+            return this.getFields(f.fields, fullName);
+          }
+          case 'LIST': {
+            const title = f.label ? f.label : prettifyLabel(f.name);
+            const subFields = this.getFields(f.fields, fullName);
+            return {
+              name: fullName,
+              title,
+              subFields,
+            };
+          }
+          default: {
+            const title = f.label ? f.label : prettifyLabel(f.name);
+            return {
+              name: fullName,
+              title,
+            };
+          }
         }
-        case 'LIST': {
-          const title = f.label ? f.label : prettifyLabel(f.name);
-          const subFields = this.getFields(f.fields, fullName);
-          return {
-            name: fullName,
-            title,
-            subFields,
-          };
-        }
-        default: {
-          const title = f.label ? f.label : prettifyLabel(f.name);
-          return {
-            name: fullName,
-            title,
-          };
-        }
-      }
-    }));
+      })
+    );
   }
 }
