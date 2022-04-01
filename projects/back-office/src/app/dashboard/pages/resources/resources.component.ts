@@ -174,12 +174,17 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   onDelete(resource: Resource): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('resources.delete'),
-        content: this.translate.instant('resources.deleteDesc', {
-          name: resource.name,
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.resource.one'),
         }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        content: this.translate.instant(
+          'components.resource.delete.confirmationMessage',
+          {
+            name: resource.name,
+          }
+        ),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });

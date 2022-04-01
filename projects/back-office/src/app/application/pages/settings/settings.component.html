@@ -1,17 +1,17 @@
 <form [formGroup]="settingsForm" *ngIf="settingsForm" class="settings-form">
-  <h1>{{'global.general' | translate}}</h1>
+  <h1>{{'common.general' | translate}}</h1>
   <div class="app-status">
     <mat-form-field appearance="outline">
-      <mat-label>{{'global.status' | translate}}</mat-label>
+      <mat-label>{{'common.status' | translate}}</mat-label>
       <mat-select formControlName="status">
         <mat-option value="active">
-          {{'status.active' | translate}}
+          {{'common.status_active' | translate}}
         </mat-option>
         <mat-option value="pending">
-          {{'status.pending' | translate}}
+          {{'common.status_pending' | translate}}
         </mat-option>
         <mat-option value="archived">
-          {{'status.archived' | translate}}
+          {{'common.status_archived' | translate}}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -20,14 +20,14 @@
     <div class="form-group-row">
       <mat-form-field appearance="outline" style="flex: 2;">
         <mat-label>
-          {{'global.name' | translate}}
+          {{'common.name' | translate}}
         </mat-label>
         <input matInput formControlName="name" type='text' [placeholder]="'global.namePlaceholder' | translate" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" style="flex: 1;">
         <mat-label>
-          {{'settings.id' | translate}}
+          {{'models.application.id' | translate}}
         </mat-label>
         <input matInput formControlName="id" type='text'/>
       </mat-form-field>
@@ -35,23 +35,23 @@
 
     <mat-form-field appearance="outline">
       <mat-label>
-        {{'global.description' | translate}}
+        {{'models.application.description' | translate}}
       </mat-label>
-      <textarea matInput formControlName="description" [placeholder]="'settings.description' | translate"
+      <textarea matInput formControlName="description" [placeholder]="'components.application.update.placeholder.description' | translate"
         [matTextareaAutosize]="true" [matAutosizeMinRows]="2" [matAutosizeMaxRows]="5"></textarea>
     </mat-form-field>
   </div>
   <safe-button category="secondary" variant="primary" (click)="onSubmit()" [disabled]="settingsForm.invalid || !settingsForm.dirty">
-    {{'action.saveChg' | translate}}
+    {{'common.saveChanges' | translate}}
   </safe-button>
 </form>
 
 <div class="action-list" *ngIf="application && (application.canUpdate || application.canDelete)">
-  <h1 class="header">{{'global.actions' | translate}}</h1>
+  <h1 class="header">{{'pages.application.settings.actions' | translate}}</h1>
   <safe-button icon="file_copy" category="tertiary" variant="primary" (click)="onDuplicate()" *ngIf="application.canUpdate">
-    {{'action.duplicate' | translate}}
+    {{'common.duplicate' | translate}}
   </safe-button>
   <safe-button icon="delete" category="tertiary" variant="danger" (click)="onDelete()" *ngIf="application.canDelete">
-    {{'action.delete' | translate}}
+    {{'common.delete' | translate}}
   </safe-button>
 </div>
