@@ -160,7 +160,8 @@
     "invited": "Invited",
     "positionCategory": "Position category",
     "dashboard": "Dashboard",
-    "workflow": "Workflow"
+    "workflow": "Workflow",
+    "child": "Child"
   },
   "components": {
     "access": {

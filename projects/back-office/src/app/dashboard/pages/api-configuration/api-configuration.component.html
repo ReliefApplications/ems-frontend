@@ -15,7 +15,7 @@
               <mat-label>
                 {{'common.name' | translate}}
               </mat-label>
-              <input matInput formControlName="name" type='text' [placeholder]="'global.namePlaceholder' | translate" />
+              <input matInput formControlName="name" type='text' [placeholder]="'common.placeholder.name' | translate" />
               <mat-error *ngIf="name?.errors">
                 {{'components.apiConfiguration.create.errors.name' | translate}}
               </mat-error>
