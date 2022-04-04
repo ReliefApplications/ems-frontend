@@ -122,7 +122,7 @@
                     [matMenuTriggerFor]="templates"
                   >
                     <mat-icon>edit_note</mat-icon>
-                    {{ 'actionAs.edit' | translate }}
+                    {{ 'common.editObject' | translate : { name: 'common.child' | translate } }}
                   </button>
                   <button
                     *ngIf="!showDeletedRecords"

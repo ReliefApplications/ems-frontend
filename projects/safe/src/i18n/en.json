@@ -1,6 +1,7 @@
 {
   "common": {
     "add": "Add",
+    "child": "Child",
     "aggregation": {
       "few": "Aggregations",
       "none": "No aggregation",
