@@ -12,7 +12,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
+import {
+  SafeConfirmModalModule,
+  SafeButtonModule,
+  SafeSkeletonTableModule,
+} from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
@@ -43,6 +47,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatPaginatorModule,
     TranslateModule,
     MatChipsModule,
+    SafeSkeletonTableModule,
   ],
 })
 export class PullJobsModule {}

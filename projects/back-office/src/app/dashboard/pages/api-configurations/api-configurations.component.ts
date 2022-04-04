@@ -133,6 +133,7 @@ export class ApiConfigurationsComponent
       if (e.pageSize > this.pageInfo.pageSize) {
         neededSize -= this.pageInfo.pageSize;
       }
+      this.loading = true;
       this.apiConfigurationsQuery.fetchMore({
         variables: {
           first: neededSize,
@@ -254,12 +255,17 @@ export class ApiConfigurationsComponent
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('APIConf.delete'),
-        content: this.translate.instant('APIConf.deleteDesc', {
-          name: element.name,
-        }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        title: this.translate.instant(
+          'components.apiConfiguration.delete.title'
+        ),
+        content: this.translate.instant(
+          'components.apiConfiguration.delete.confirmationMessage',
+          {
+            name: element.name,
+          }
+        ),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });

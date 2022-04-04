@@ -6,11 +6,11 @@
       variant="primary"
       category="tertiary"
       (click)="nextStep = true"
-      >{{ 'layouts.load' | translate }}</safe-button
+      >{{ 'components.widget.settings.grid.layouts.add.choice.load' | translate }}</safe-button
     >
     <!-- ADD A NEW LAYOUT -->
     <safe-button variant="primary" category="tertiary" (click)="onCreate()">{{
-      'layouts.create' | translate
+      'components.widget.settings.grid.layouts.add.choice.create' | translate
     }}</safe-button>
   </div>
   <div *ngIf="nextStep">
@@ -20,10 +20,10 @@
         icon="arrow_back"
         (click)="nextStep = false"
       ></safe-button>
-      <div>{{ 'layouts.load' | translate }}</div>
+      <div>{{ 'components.widget.settings.grid.layouts.add.choice.load' | translate }}</div>
     </div>
     <mat-form-field appearance="outline">
-      <mat-label>{{ 'layouts.select' | translate }}</mat-label>
+      <mat-label>{{ 'components.widget.settings.grid.layouts.add.select' | translate }}</mat-label>
       <mat-select (selectionChange)="onSelect($event)">
         <mat-option *ngFor="let layout of layouts" [value]="layout.id">{{
           layout.name

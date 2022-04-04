@@ -53,6 +53,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   @Input() roles: Role[] = [];
   @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
   @Input() applicationService?: SafeApplicationService;
+  @Input() loading = true;
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns: string[] = [];
@@ -66,7 +67,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   public showFilters = false;
 
   selection = new SelectionModel<User>(true, []);
-  loading = false;
 
   constructor(
     private apollo: Apollo,
@@ -208,20 +208,32 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onDelete(users: User[]): void {
-    let title = this.translate.instant('users.delete');
-    let content = this.translate.instant('users.deleteDesc', {
-      name: users[0].username,
+    let title = this.translate.instant('common.deleteObject', {
+      name: this.translate.instant('common.user.one'),
     });
+    let content = this.translate.instant(
+      'components.user.delete.confirmationMessage',
+      {
+        name: users[0].username,
+      }
+    );
     if (users.length > 1) {
-      title = this.translate.instant('users.deleteSelected');
-      content = this.translate.instant('users.deleteSelectedDesc');
+      title = this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.user.few'),
+      });
+      content = this.translate.instant(
+        'components.user.delete.confirmationMessage',
+        {
+          name: users[0].username,
+        }
+      );
     }
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title,
         content,
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });

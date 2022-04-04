@@ -4,16 +4,16 @@
   icon="close"
   variant="danger"
   (click)="onClose()"
-  [matTooltip]="'action.close' | translate"
+  [matTooltip]="'common.close' | translate"
 >
 </safe-button>
-<h1 mat-dialog-title>{{ 'layouts.create' | translate }}</h1>
+<h1 mat-dialog-title>{{ 'components.widget.settings.grid.layouts.add.choice.create' | translate }}</h1>
 <div mat-dialog-content class="mat-dialog-content" *ngIf="form">
   <form [formGroup]="form">
     <div class="form-group">
-      <div class="form-group-title">{{ 'global.general' | translate }}</div>
+      <div class="form-group-title">{{ 'common.general' | translate }}</div>
       <mat-form-field appearance="outline">
-        <mat-label>{{ 'global.title' | translate }}</mat-label>
+        <mat-label>{{ 'common.title' | translate }}</mat-label>
         <input matInput formControlName="name" type="string" />
       </mat-form-field>
     </div>
@@ -21,12 +21,13 @@
       <safe-query-builder
         [form]="$any(form.controls.query)"
         [templates]="templates"
+        [queryName]="data.queryName"
       ></safe-query-builder>
     </div>
   </form>
   <div class="form-group">
-    <div class="form-group-title">{{ 'global.preview' | translate }}</div>
-    <div class="info-text">{{'layouts.preview.description' | translate}}</div>
+    <div class="form-group-title">{{ 'common.preview' | translate }}</div>
+    <div class="info-text">{{'components.form.layout.update.preview.description' | translate}}</div>
     <safe-core-grid
       [defaultLayout]="data.layout?.display || {}"
       [settings]="gridSettings"
@@ -38,7 +39,7 @@
 </div>
 <div mat-dialog-actions class="mat-dialog-actions" align="end">
   <button mat-button (click)="onClose()">
-    {{ 'action.close' | translate }}
+    {{ 'common.close' | translate }}
   </button>
   <button
     mat-flat-button
@@ -47,6 +48,6 @@
     color="primary"
     [disabled]="!form || !form.valid"
   >
-    {{ 'action.save' | translate }}
+    {{ 'common.save' | translate }}
   </button>
 </div>

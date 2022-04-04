@@ -76,6 +76,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   // === DISPLAY ===
   public largeDevice: boolean;
+  public theme: any;
 
   public showSidenav = false;
 
@@ -100,6 +101,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.environment = environment;
     this.currentLanguage = this.translate.defaultLang;
     this.languages = this.translate.getLangs();
+    this.theme = this.environment.theme;
   }
 
   ngOnInit(): void {

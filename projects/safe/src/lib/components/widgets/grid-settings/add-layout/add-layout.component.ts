@@ -50,7 +50,9 @@ export class AddLayoutComponent implements OnInit {
    */
   public onCreate(): void {
     const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
-      data: {},
+      data: {
+        queryName: this.resource?.queryName || this.form?.queryName,
+      },
     });
     dialogRef.afterClosed().subscribe((layout) => {
       if (layout) {

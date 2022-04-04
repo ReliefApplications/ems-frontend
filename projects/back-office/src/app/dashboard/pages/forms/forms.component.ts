@@ -135,6 +135,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.loading = true;
       this.formsQuery.fetchMore({
         variables: {
           first,
@@ -220,12 +221,17 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('forms.delete'),
-        content: this.translate.instant('forms.deleteDesc', {
-          name: form.name,
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.form.one'),
         }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        content: this.translate.instant(
+          'components.form.delete.confirmationMessage',
+          {
+            name: form.name,
+          }
+        ),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });

@@ -918,13 +918,27 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         fields: Object.values(currentLayout.fields)
           .filter((x: any) => !x.hidden)
           .sort((a: any, b: any) => a.order - b.order)
-          .map((x: any) => ({ name: x.field, title: x.title })),
+          .map((x: any) => ({
+            name: x.field,
+            title: x.title,
+            subFields: x.subFields.map((y: any) => ({
+              name: y.name,
+              title: y.title,
+            })),
+          })),
       }),
       // we export ALL fields of the grid ( including hidden columns )
       ...(e.fields === 'all' && {
         fields: Object.values(currentLayout.fields)
           .sort((a: any, b: any) => a.order - b.order)
-          .map((x: any) => ({ name: x.field, title: x.title })),
+          .map((x: any) => ({
+            name: x.field,
+            title: x.title,
+            subFields: x.subFields.map((y: any) => ({
+              name: y.name,
+              title: y.title,
+            })),
+          })),
       }),
     };
 

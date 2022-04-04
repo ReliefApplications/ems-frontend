@@ -70,7 +70,11 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
    */
   private setSelectedLayouts(value: string[]): void {
     this.layouts =
-      this.allLayouts.filter((x) => x.id && value.includes(x.id)) || [];
+      this.allLayouts
+        .filter((x) => x.id && value.includes(x.id))
+        .sort(
+          (a, b) => value.indexOf(a.id || '') - value.indexOf(b.id || '')
+        ) || [];
   }
 
   /**
