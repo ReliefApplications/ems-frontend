@@ -232,6 +232,19 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     return fieldStyle ? fieldStyle : rowStyle;
   }
 
+  /**
+   * Returns full URL value.
+   *
+   * @param url Initial URL.
+   * @returns full valid URL.
+   */
+  public buildFullUrl(url: string): string {
+    if (!url.includes('https://') && !url.includes('http://')) {
+      return 'https://' + url;
+    }
+    return url;
+  }
+
   // === FILTER ===
   /**
    * Handles filter change event.
