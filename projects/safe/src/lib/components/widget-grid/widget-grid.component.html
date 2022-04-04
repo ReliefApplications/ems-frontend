@@ -2,7 +2,7 @@
     <!-- NEW WIDGETS -->
     <div class="widget-choice-wrapper" *ngIf="canUpdate"
         [ngClass]="{'floating-widget-choice-wrapper': widgets.length > 0}">
-        <h2 *ngIf="widgets.length === 0">{{!singleWidget ? ('models.widget.add' | translate) : 'Select a widget'}}</h2>
+        <h2 *ngIf="widgets.length === 0">{{'models.widget.add' | translate}}</h2>
         <safe-widget-choice [floating]="!singleWidget ? widgets.length > 0 : false" *ngIf="!singleWidget || widgets.length === 0" [widgetTypes]="widgetTypes" (add)="onAdd($event)">
         </safe-widget-choice>
     </div>
@@ -13,7 +13,8 @@
             [colSpan]="( widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1) ) ? colsNumber : widget.defaultCols"
             [rowSpan]="(!canUpdate && widgets.length === 1) ? 4 : widget.defaultRows">
             <safe-floating-options *ngIf="canUpdate" class="widget-options" [widget]="widget"
-                (edit)="onEditWidget($event)" (delete)="onDeleteWidget($event)" (expand)="onExpandWidget($event)">
+                (edit)="onEditWidget($event)" (delete)="onDeleteWidget($event)"
+                (expand)="onExpandWidget($event)" [canDelete]="!singleWidget">
             </safe-floating-options>
             <safe-widget [widget]="widget" (goToNextStep)="goToNextStep.emit($event)"></safe-widget>
             <safe-icon *ngIf="canUpdate" icon="drag_indicator" class="widget-handle">

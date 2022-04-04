@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class SafeFloatingOptionsComponent implements OnInit {
   // === WIDGET ===
   @Input() widget: any;
+  @Input() canDelete: boolean = true;
 
   // === EMIT ACTION SELECTED ===
   @Output() edit: EventEmitter<any> = new EventEmitter();
@@ -46,13 +47,17 @@ export class SafeFloatingOptionsComponent implements OnInit {
         name: 'Expand',
         text: this.translate.instant('components.widget.expand'),
         icon: 'open_in_full',
-      },
-      {
-        name: 'Delete',
-        text: this.translate.instant('common.delete'),
-        icon: 'delete',
-      },
+      }
     ];
+    if (this.canDelete) {
+      this.items.push(
+        {
+          name: 'Delete',
+          text: this.translate.instant('common.delete'),
+          icon: 'delete',
+        }
+      )
+    }
   }
 
   /**
