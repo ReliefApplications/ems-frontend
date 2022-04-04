@@ -197,7 +197,7 @@ export class SafeRecordModalComponent implements AfterViewInit {
             options.htmlElement.style.background = '#EBB2B2';
           }
         }
-      });
+      );
       this.surveyNext.render(this.formContainerNext.nativeElement);
     }
     this.loading = false;
