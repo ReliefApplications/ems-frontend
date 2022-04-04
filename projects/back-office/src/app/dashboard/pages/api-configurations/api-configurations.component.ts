@@ -222,10 +222,13 @@ export class ApiConfigurationsComponent
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.objectNotCreated', {
-                    type: this.translate.instant('table.APIConf'),
-                    error: res.errors[0].message,
-                  }),
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate.instant('table.APIConf'),
+                      error: res.errors[0].message,
+                    }
+                  ),
                   { error: true }
                 );
               } else {
@@ -281,7 +284,7 @@ export class ApiConfigurationsComponent
           .subscribe((res) => {
             if (res && !res.errors) {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectDeleted', {
+                this.translate.instant('common.notifications.objectDeleted', {
                   value: this.translate.instant('table.APIConf'),
                 })
               );

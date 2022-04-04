@@ -24,6 +24,11 @@
       "none": "No channel",
       "one": "Channel"
     },
+    "dashboard": {
+      "few": "Dashboards",
+      "none": "No dashboard",
+      "one": "Dashboard"
+    },
     "clear": "Clear",
     "close": "Close",
     "confirm": "Confirm",
@@ -79,7 +84,8 @@
     "newObject": "New {{name}}",
     "next": "Next",
     "pagination": {
-      "loadMore": "Load more"
+      "loadMore": "Load more",
+      "empty": "No result"
     },
     "placeholder": {
       "email": "Enter email",
@@ -94,6 +100,11 @@
       "few": "Position attributes",
       "none": "No position attribute",
       "one": "Position attribute"
+    },
+    "positionCategory": {
+      "few": "Position categories",
+      "none": "No position category",
+      "one": "Position category"
     },
     "preview": "Preview",
     "previous": "Previous",
@@ -127,6 +138,7 @@
     "status_active": "Active",
     "status_archived": "Archived",
     "status_pending": "Pending",
+    "deleted": "Deleted",
     "step": {
       "few": "Steps",
       "none": "No step",
@@ -151,7 +163,48 @@
       "none": "No value",
       "one": "Value"
     },
-    "viewObject": "View {{name}}"
+    "page": {
+      "few": "Pages",
+      "none": "No page",
+      "one": "Page"
+    },
+    "workflow": {
+      "few": "Workflows",
+      "none": "No workflow",
+      "one": "Workflow"
+    },
+    "label": "Label",
+    "viewObject": "View {{name}}",
+    "notifications": {
+      "accessNotProvided": "No access provided to this {{type}}. {{error}}",
+      "objectLocked": "{{name}} edition is locked by another user.",
+      "objectNotCreated": "The {{type}} was not created. {{error}}",
+      "objectCreated": "{{value}} {{type}} created.",
+      "objectUpdated": "{{value}} {{type}} edited.",
+      "objectNotUpdated": "{{type}} not edited. {{error}}",
+      "objectDeleted": "{{value}} deleted.",
+      "objectNotDeleted": "{{value}} deletion failed. {{error}}",
+      "objectReordered": "{{type}} reordered.",
+      "objectNotDuplicated": "The {{type}} was not duplicated. {{error}}",
+      "objectDuplicated": "The {{type}} {{value}} was successfully duplicated.",
+      "copiedToClipboard": "Copied!",
+      "objectInvited": "{{name}} invited.",
+      "objectNotInvited": "{{name}} invitation failed.",
+      "objectNotFound": "{{name}} not found.",
+      "platformAccessNotGranted": "You don't have a valid access to this platform.",
+      "readAll": "Mark all as read",
+      "alreadyExists": "The {{type}} {{value}} already exists on this application.",
+      "loadedFromCache": "{{type}} loaded from cache.",
+      "unlocked": "{{value}} edition has been unlocked by another user.",
+      "accessDenied": "You don't have permission to see the {{type}}.",
+      "statusUpdated": "Status updated to {{value}}.",
+      "noOpened": "No opened {{value}}.",
+      "formatInvalid": "Please upload a valid .{{format}} file.",
+      "dataRecovered": "The data has been recovered"
+    },
+    "errors": {
+      "objectDuplicated": "{{type}} {{value}} already exists."
+    }
   },
   "components": {
     "access": {
@@ -601,6 +654,10 @@
       "setAsFavorite": "Set as favorite",
       "subscription": {
         "create": "Create a subscription"
+      },
+      "notifications": {
+        "published": "{{value}} application published.",
+        "updated": "Application updated."
       }
     },
     "channel": {
@@ -623,7 +680,12 @@
     },
     "record": {
       "convert": "Convert",
-      "restore": "Restore"
+      "restore": "Restore",
+      "notifications": {
+        "uploadSuccessful": "Records upload successful.",
+        "conversionIncomplete": "Selected record(s) do not match with some fields from this form.",
+        "rowsAdded": "Added {{length}} row(s) to the field {{field}} in the record {{value}}."
+      }
     },
     "resource": {
       "create": "Create a Resource"
@@ -632,7 +694,10 @@
       "create": "Create a role"
     },
     "user": {
-      "username": "Username"
+      "username": "Username",
+      "notifications": {
+        "rolesUpdated": "{{username}} roles updated."
+      }
     },
     "widget": {
       "add": "Add a Widget",
@@ -647,6 +712,12 @@
       },
       "scheduler": {
         "defaultTitle": "Scheduler Widget"
+      }
+    },
+    "workflow": {
+      "notifications": {
+        "cannotGoToNextStep": "Cannot go to next step.",
+        "goToStep": "Back to {{step}} step."
       }
     }
   },
@@ -673,7 +744,12 @@
       "scope": "Scope",
       "secret": "Client Secret",
       "token": "Token",
-      "tokenUrl": "Access token URL"
+      "tokenUrl": "Access token URL",
+      "notifications": {
+        "authTokenFetched": "Authentication token fetched, ping again to get the actual response.",
+        "pingReceived": "Received positive response from ping request.",
+        "pingFailed": "Ping request failed."
+      }
     },
     "apiConfigurations": {
       "create": "Create an API Configuration"
@@ -714,7 +790,10 @@
       "title": "Available forms"
     },
     "profile": {
-      "title": "Your profile"
+      "title": "Your profile",
+      "notifications": {
+        "updated": "Preferences saved."
+      }
     },
     "pullJobs": {
       "create": "Create a pull job"
