@@ -2,5 +2,8 @@
     "files.exclude": {
         "documentation/**": true
     },
-    "appService.defaultWebAppToDeploy": "None"
+    "appService.defaultWebAppToDeploy": "None",
+    "i18n-ally.localesPaths": [
+        "projects/safe/src/i18n"
+    ]
 }
