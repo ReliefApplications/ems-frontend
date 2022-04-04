@@ -366,6 +366,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
             width: c.width,
             hidden: c.hidden,
             order: c.orderIndex,
+            subFields:
+              this.fields.find((x) => x.name === c.field)?.subFields || [],
           },
         }),
         {}
