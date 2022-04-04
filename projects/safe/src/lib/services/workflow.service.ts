@@ -83,10 +83,8 @@ export class SafeWorkflowService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.objectCreated', {
-                type: this.translate
-                  .instant('notification.term.step')
-                  .toLowerCase(),
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate.instant('common.step.one').toLowerCase(),
                 value: res.data.addStep.name,
               })
             );
@@ -104,8 +102,8 @@ export class SafeWorkflowService {
             }
           } else {
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.objectNotEdited', {
-                type: this.translate.instant('notification.term.workflow'),
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.workflow.one'),
                 error: res.errors ? res.errors[0].message : '',
               }),
               { error: true }
@@ -114,10 +112,8 @@ export class SafeWorkflowService {
         });
     } else {
       this.snackBar.openSnackBar(
-        this.translate.instant('notification.noObjectOpened', {
-          value: this.translate
-            .instant('notification.term.workflow')
-            .toLowerCase(),
+        this.translate.instant('common.notifications.objectNotFound', {
+          value: this.translate.instant('common.workflow.one').toLowerCase(),
         }),
         { error: true }
       );
@@ -143,8 +139,8 @@ export class SafeWorkflowService {
         }),
       };
       this.snackBar.openSnackBar(
-        this.translate.instant('notification.objectEdited', {
-          type: this.translate.instant('notification.term.step').toLowerCase(),
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type: this.translate.instant('common.step.one').toLowerCase(),
           value: step.name,
         })
       );

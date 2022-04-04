@@ -164,7 +164,9 @@ export class SafeFormModalComponent implements OnInit {
                   this.data.prefillRecords.map((x) => x.id);
               } else {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.recordDoesNotMatch'),
+                  this.translate.instant(
+                    'models.record.notifications.conversionIncomplete'
+                  ),
                   { error: true }
                 );
               }
@@ -657,7 +659,7 @@ export class SafeFormModalComponent implements OnInit {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.dataRecovered')
+              this.translate.instant('common.notifications.dataRecovered')
             );
             this.dialog.closeAll();
           });
