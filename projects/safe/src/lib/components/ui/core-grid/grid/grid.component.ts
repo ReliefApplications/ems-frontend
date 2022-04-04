@@ -234,15 +234,20 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
 
   /**
    * Returns full URL value.
+   * TODO: avoid template call
    *
    * @param url Initial URL.
    * @returns full valid URL.
    */
-  public buildFullUrl(url: string): string {
-    if (!url.includes('https://') && !url.includes('http://')) {
-      return 'https://' + url;
+  public getUrl(url: string): URL | null {
+    if (url && !(url.startsWith('https://') || url.startsWith('http://'))) {
+      url = 'https://' + url;
     }
-    return url;
+    try {
+      return new URL(url);
+    } catch {
+      return null;
+    }
   }
 
   // === FILTER ===
