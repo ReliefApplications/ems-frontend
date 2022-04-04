@@ -28,7 +28,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
-import { PopupService } from '@progress/kendo-angular-popup';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 
 localStorage.setItem('loaded', 'false');

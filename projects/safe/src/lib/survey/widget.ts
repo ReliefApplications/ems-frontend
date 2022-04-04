@@ -38,23 +38,20 @@ const addZero = (i: number): string => {
  * @returns formatted value usable by an HTML input element
  */
 const formatDateTime = (value: Date, type: string) => {
-  console.log(value);
   const year = value.getFullYear();
   const month = addZero(value.getMonth() + 1);
   const day = addZero(value.getDate());
   const hour = addZero(value.getHours());
-  const hourUTC = addZero(value.getUTCHours());
   const minutes = addZero(value.getMinutes());
-  const minutesUTC = addZero(value.getUTCMinutes());
   switch (type) {
     case 'date':
       return `${year}-${month}-${day}`;
     case 'datetime':
-      return `${year}-${month}-${day}T${hourUTC}:${minutesUTC}`;
+      return value;
     case 'datetime-local':
-      return `${year}-${month}-${day}T${hour}:${minutes}`;
+      return value;
     case 'time':
-      return `${hourUTC}:${minutesUTC}`;
+      return `${hour}:${minutes}`;
     default:
       return null;
   }
@@ -133,21 +130,21 @@ export const init = (
       ) {
         switch (question.inputType) {
           case 'date':
-            try {
-              const datePicker = domService.appendComponentToBody(
-                DatePickerComponent,
-                el.parentElement
-              );
-              const datePickerInstance: DatePickerComponent =
-                datePicker.instance;
-              datePickerInstance.format = 'dd/MM/yyyy';
-              datePickerInstance.registerOnChange((newValue: Date) => {
-                el.value = formatDateTime(newValue, question.inputType);
-              });
-              //el.style.display = 'none';
-            } catch (err) {
-              console.log(err);
+            console.log('there');
+            const datePicker = domService.appendComponentToBody(
+              DatePickerComponent,
+              el.parentElement
+            );
+            const datePickerInstance: DatePickerComponent = datePicker.instance;
+            datePickerInstance.format = 'dd/MM/yyyy';
+            if (question.value) {
+              datePickerInstance.value = new Date(question.value);
             }
+            datePickerInstance.registerOnChange((value: Date) => {
+              question.value = formatDateTime(value, question.inputType);
+            });
+            el.style.display = 'none';
+            console.log('done');
             break;
           case 'datetime':
             const dateTimePicker = domService.appendComponentToBody(
@@ -156,11 +153,14 @@ export const init = (
             );
             const dateTimePickerInstance: DateTimePickerComponent =
               dateTimePicker.instance;
-            dateTimePickerInstance.format = 'dd/MM/yyyy HH:mm:ss';
-            dateTimePickerInstance.registerOnChange((newValue: any) => {
-              el.value = formatDateTime(newValue, question.inputType);
+            dateTimePickerInstance.format = 'dd/MM/yyyy HH:mm';
+            if (question.value) {
+              dateTimePickerInstance.value = new Date(question.value);
+            }
+            dateTimePickerInstance.registerOnChange((value: any) => {
+              question.value = formatDateTime(value, question.inputType);
             });
-            //el.style.display = 'none';
+            el.style.display = 'none';
             break;
           case 'datetime-local':
             const dateTimeLocalPicker = domService.appendComponentToBody(
@@ -169,11 +169,14 @@ export const init = (
             );
             const dateTimePickerLocalInstance: DateTimePickerComponent =
               dateTimeLocalPicker.instance;
-            dateTimePickerLocalInstance.format = 'dd/MM/yyyy HH:mm:ss';
-            dateTimePickerLocalInstance.registerOnChange((newValue: any) => {
-              el.value = formatDateTime(newValue, question.inputType);
+            dateTimePickerLocalInstance.format = 'dd/MM/yyyy HH:mm';
+            if (question.value) {
+              dateTimePickerLocalInstance.value = new Date(question.value);
+            }
+            dateTimePickerLocalInstance.registerOnChange((value: any) => {
+              question.value = formatDateTime(value, question.inputType);
             });
-            //el.style.display = 'none';
+            el.style.display = 'none';
             break;
           case 'time':
             const timePicker = domService.appendComponentToBody(
@@ -181,71 +184,19 @@ export const init = (
               el.parentElement
             );
             const timePickerInstance: TimePickerComponent = timePicker.instance;
-            timePickerInstance.format = 'HH:mm:ss';
-            timePickerInstance.registerOnChange((newValue: any) => {
-              el.value = formatDateTime(newValue, question.inputType);
+            timePickerInstance.format = 'HH:mm';
+            if (question.value) {
+              timePickerInstance.value = new Date(question.value);
+            }
+            timePickerInstance.registerOnChange((value: any) => {
+              question.value = formatDateTime(value, question.inputType);
             });
-            //el.style.display = 'none';
+            el.style.display = 'none';
             break;
           default:
             break;
         }
       }
-      // if (
-      //   question.value &&
-      //   ['date', 'datetime', 'datetime-local', 'time'].includes(
-      //     question.inputType
-      //   )
-      // ) {
-      //   const date = new Date(question.value);
-      //   if (date.toString() !== 'Invalid Date') {
-      //     const year = date.getFullYear();
-      //     const month = addZero(date.getMonth() + 1);
-      //     const day = addZero(date.getDate());
-      //     const hour = addZero(date.getUTCHours());
-      //     const minutes = addZero(date.getUTCMinutes());
-      //     switch (question.inputType) {
-      //       case 'date':
-      //         const datePicker = domService.appendComponentToBody(
-      //           DatePickerComponent,
-      //           el.parentElement
-      //         );
-      //         const datePickerInstance: DatePickerComponent = datePicker.instance;
-      //         console.log(datePickerInstance);
-      //         question.value = `${year}-${month}-${day}`;
-      //         break;
-      //       case 'datetime':
-      //         const dateTimePicker = domService.appendComponentToBody(
-      //           DateTimePickerComponent,
-      //           el.parentElement
-      //         );
-      //         const dateTimePickerInstance: DateTimePickerComponent = dateTimePicker.instance;
-      //         console.log(dateTimePickerInstance);
-      //         question.value = `${year}-${month}-${day}`;
-      //         break;
-      //       case 'datetime-local':
-      //         const dateTimeLocalPicker = domService.appendComponentToBody(
-      //           DateTimePickerComponent,
-      //           el.parentElement
-      //         );
-      //         const dateTimePickerLocalInstance: DateTimePickerComponent = dateTimeLocalPicker.instance;
-      //         question.value = `${year}-${month}-${day}T${hour}:${minutes}`;
-      //         break;
-      //       case 'time':
-      //         const timePicker = domService.appendComponentToBody(
-      //           TimePickerComponent,
-      //           el.parentElement
-      //         );
-      //         const timePickerInstance: TimePickerComponent = timePicker.instance;
-      //         console.log(timePickerInstance);
-      //         question.value = `${hour}:${minutes}`;
-      //         break;
-      //       default:
-      //         break;
-      //     }
-      //     el.value = question.value;
-      //   }
-      // }
       // Display of edit button for comment question
       if (question.getType() === 'comment' && question.allowEdition) {
         const mainDiv = document.createElement('div');

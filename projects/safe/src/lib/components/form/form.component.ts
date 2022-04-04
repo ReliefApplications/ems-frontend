@@ -277,6 +277,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
     const questions = this.survey.getAllQuestions();
+    console.log(questions);
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();

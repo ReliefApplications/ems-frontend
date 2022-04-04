@@ -214,10 +214,10 @@
                 class="textbox"
                 *ngIf="['datetime', 'datetime-local'].includes(field.meta.type)"
               >
-                {{ getPropertyValue(dataItem, field.name) | date: 'short' }}
+                {{ getPropertyValue(dataItem, field.name) | date: 'd/M/yy, h:mm a' }}
               </div>
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'date'">
-                {{ getPropertyValue(dataItem, field.name) | date: 'shortDate' }}
+                {{ getPropertyValue(dataItem, field.name) | date: 'd/M/yy' }}
               </div>
             </div>
           </ng-template>

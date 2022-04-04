@@ -25,5 +25,6 @@ import { DateInputModule } from '@progress/kendo-angular-dateinputs';
     DateInputModule,
   ],
   exports: [SafeFormComponent],
+  providers: [PopupService],
 })
 export class SafeFormModule {}
