@@ -23,6 +23,13 @@ export const routes = [
               ),
           },
           {
+            path: 'widget/:id',
+            loadChildren: () =>
+              import('./pages/dashboard/dashboard.module').then(
+                (m) => m.DashboardModule
+              ),
+          },
+          {
             path: 'form/:id',
             loadChildren: () =>
               import('./pages/form/form.module').then((m) => m.FormModule),

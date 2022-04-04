@@ -426,6 +426,7 @@ export class SafeApplicationService {
    */
   addPage(page: any): void {
     const application = this.application.getValue();
+    console.log(page);
     if (application && this.isUnlocked) {
       this.apollo
         .mutate<AddPageMutationResponse>({

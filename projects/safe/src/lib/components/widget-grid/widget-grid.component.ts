@@ -28,6 +28,7 @@ export class SafeWidgetGridComponent implements OnInit {
 
   @Input() widgets: any[] = [];
   @Input() canUpdate = false;
+  @Input() singleWidget = false;
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;

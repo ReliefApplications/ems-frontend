@@ -1,0 +1,30 @@
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ng-container *ngIf="!loading && dashboard">
+    <!-- HEADER -->
+    <div *ngIf="!formActive" class="dashboard-name-container">
+        <h1 class="dashboard-name" (click)="toggleFormActive()">{{dashboard.name}}</h1>
+        <safe-access [access]="dashboard.permissions" [application]="applicationId" (save)="saveAccess($event)"
+            *ngIf="dashboard.page ? dashboard.page.canUpdate : dashboard.step ? dashboard.step.canUpdate : false">
+        </safe-access>
+        <safe-button [isIcon]="true" icon="share" matTooltipPosition="above" matTooltip="Share Dashboard"
+            class="share-button" (click)="onShare()">
+        </safe-button>
+    </div>
+    <!-- NAME EDITION -->
+    <ng-container *ngIf="formActive">
+        <form [formGroup]="dashboardNameForm" (ngSubmit)="saveName()" class="dashboard-name-container">
+            <mat-form-field>
+                <mat-label>{{'common.name' | translate}}</mat-label>
+                <input matInput formControlName="dashboardName" type="string">
+            </mat-form-field>
+            <safe-button type="submit" [isIcon]="true" icon="save" variant="primary"
+                [disabled]="!dashboardNameForm.valid">
+            </safe-button>
+            <safe-button mat-icon-button [isIcon]="true" icon="close" variant="danger" (click)="toggleFormActive()">
+            </safe-button>
+        </form>
+    </ng-container>
+    <safe-widget-grid [widgets]="tiles" [canUpdate]="dashboard.canUpdate || false" [singleWidget]="true" (move)="onMove($event)"
+        (edit)="onEditTile($event)" (delete)="onDeleteTile($event)" (goToNextStep)="goToNextStep.emit($event)"
+        (add)="onAdd($event)"></safe-widget-grid>
+</ng-container>

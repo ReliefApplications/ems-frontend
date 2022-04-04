@@ -2,8 +2,8 @@
     <!-- NEW WIDGETS -->
     <div class="widget-choice-wrapper" *ngIf="canUpdate"
         [ngClass]="{'floating-widget-choice-wrapper': widgets.length > 0}">
-        <h2 *ngIf="widgets.length === 0">{{'models.widget.add' | translate}}</h2>
-        <safe-widget-choice [floating]="widgets.length > 0" [widgetTypes]="widgetTypes" (add)="onAdd($event)">
+        <h2 *ngIf="widgets.length === 0">{{!singleWidget ? ('models.widget.add' | translate) : 'Select a widget'}}</h2>
+        <safe-widget-choice [floating]="!singleWidget ? widgets.length > 0 : false" *ngIf="!singleWidget || widgets.length === 0" [widgetTypes]="widgetTypes" (add)="onAdd($event)">
         </safe-widget-choice>
     </div>
     <!-- GRID OF WIDGETS -->

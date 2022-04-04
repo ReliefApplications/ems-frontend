@@ -7,6 +7,7 @@ export enum ContentType {
   workflow = 'workflow',
   dashboard = 'dashboard',
   form = 'form',
+  widget = 'widget',
 }
 
 /**
@@ -44,6 +45,13 @@ export const CONTENT_TYPES: IContentType[] = [
     img: '/assets/dashboard.svg',
     color: '#F6C48133',
     focusColor: '#F6C481',
+  },
+  {
+    value: 'widget',
+    name: 'widget',
+    img: '/assets/map.svg',
+    color: '#FEC4FF33',
+    focusColor: '#FEC4FF',
   },
 ];
 

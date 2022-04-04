@@ -243,6 +243,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         return 'linear_scale';
       case 'form':
         return 'description';
+      case 'widget':
+        return 'widgets';
       default:
         return 'dashboard';
     }
