@@ -187,12 +187,15 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('roles.delete'),
-        content: this.translate.instant('roles.deleteDesc', {
-          name: item.title,
-        }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        title: this.translate.instant('components.role.delete.title'),
+        content: this.translate.instant(
+          'components.role.delete.confirmationMessage',
+          {
+            name: item.title,
+          }
+        ),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });

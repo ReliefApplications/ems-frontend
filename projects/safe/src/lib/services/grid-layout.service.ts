@@ -64,7 +64,13 @@ export class SafeGridLayoutService {
             });
         } else {
           const layouts = res.data.resource.layouts || [];
-          return ids ? layouts.filter((x) => x.id && ids.includes(x.id)) : [];
+          return ids
+            ? layouts
+                .filter((x) => x.id && ids.includes(x.id))
+                .sort(
+                  (a, b) => ids.indexOf(a.id || '') - ids.indexOf(b.id || '')
+                )
+            : [];
         }
       });
   }
