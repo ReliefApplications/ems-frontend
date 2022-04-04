@@ -142,6 +142,9 @@ export class SafeRecordModalComponent implements OnInit {
         this.selectedTabIndex = survey.currentPageNo;
       }
     );
+    this.survey.onUpdateQuestionCssClasses.add(
+      (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
+    );
     this.survey.data = this.record.data;
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
     this.survey.mode = 'display';
@@ -193,6 +196,10 @@ export class SafeRecordModalComponent implements OnInit {
           }
         }
       );
+      this.surveyNext.onUpdateQuestionCssClasses.add(
+        (survey: Survey.SurveyModel, options: any) =>
+          this.onSetCustomCss(options)
+      );
       this.surveyNext.render(this.containerNextId);
     }
     this.loading = false;
@@ -204,6 +211,17 @@ export class SafeRecordModalComponent implements OnInit {
     if (this.data.compareTo && this.surveyNext) {
       this.surveyNext.currentPageNo = i;
     }
+  }
+
+  /**
+   * Add custom CSS classes to the survey elements.
+   *
+   * @param survey current survey.
+   * @param options survey options.
+   */
+  private onSetCustomCss(options: any): void {
+    const classes = options.cssClasses;
+    classes.content += 'safe-qst-content';
   }
 
   /* Download the file.

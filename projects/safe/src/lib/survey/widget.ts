@@ -144,7 +144,7 @@ export const init = (
               question.value = formatDateTime(value, question.inputType);
             });
             el.style.display = 'none';
-            console.log('done');
+            console.log(question);
             break;
           case 'datetime':
             const dateTimePicker = domService.appendComponentToBody(
@@ -186,7 +186,14 @@ export const init = (
             const timePickerInstance: TimePickerComponent = timePicker.instance;
             timePickerInstance.format = 'HH:mm';
             if (question.value) {
-              timePickerInstance.value = new Date(question.value);
+              if (typeof question.value === 'string') {
+                console.log(new Date(question.value));
+              } else {
+                const rawDate = new Date(question.value);
+                timePickerInstance.value = new Date(
+                  rawDate.getTime() + rawDate.getTimezoneOffset() * 60 * 1000
+                );
+              }
             }
             timePickerInstance.registerOnChange((value: any) => {
               question.value = formatDateTime(value, question.inputType);
