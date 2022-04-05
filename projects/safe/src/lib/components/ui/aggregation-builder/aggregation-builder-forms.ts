@@ -11,9 +11,12 @@ const formBuilder = new FormBuilder();
  * @param value initial value
  * @returns Stage form group.
  */
-export const addFieldsForm = (value: any): FormGroup =>
+export const addFieldsForm = (value: any, validators = true): FormGroup =>
   formBuilder.group({
-    name: [value && value.name ? value.name : '', Validators.required],
+    name: [
+      value && value.name ? value.name : '',
+      validators ? Validators.required : null,
+    ],
     expression: formBuilder.group({
       operator: [
         value && value.expression && value.expression.operator
@@ -68,7 +71,7 @@ export const addStage = (value: any): FormGroup => {
           ],
           addFields: formBuilder.array(
             value.form && value.form.addFields
-              ? value.form.addFields.map((x: any) => addFieldsForm(x))
+              ? value.form.addFields.map((x: any) => addFieldsForm(x, false))
               : []
           ),
         }),

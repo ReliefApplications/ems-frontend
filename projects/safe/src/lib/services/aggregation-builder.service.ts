@@ -240,7 +240,7 @@ export class AggregationBuilderService {
   private addFields(fields: any[], form: any, initialFields: any[]): void {
     for (const addField of form) {
       fields.push({
-        name: addField.name,
+        name: addField.name ? addField.name : addField.expression.operator,
         type: {
           name:
             addField.expression.operator === Accumulators.AVG

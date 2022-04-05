@@ -1,5 +1,5 @@
 <form [formGroup]="$any(fieldForm)" class="add-field" *ngFor="let fieldForm of form.controls; let index = index ">
-  <mat-form-field appearance="outline">
+  <mat-form-field appearance="outline" *ngIf="displayName">
     <mat-label>{{'common.name' | translate}}</mat-label>
     <input matInput formControlName="name">
   </mat-form-field>
