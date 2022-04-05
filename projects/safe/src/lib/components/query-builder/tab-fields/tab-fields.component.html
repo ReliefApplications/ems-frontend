@@ -1,14 +1,21 @@
-<div class="info-text">{{ 'components.queryBuilder.hint.fields' | translate }}</div>
+<div class="info-text">
+  {{ 'components.queryBuilder.hint.fields' | translate }}
+</div>
 <div cdkDropListGroup class="field-wrapper" [ngClass]="{ hidden: fieldForm }">
   <div class="field-container" *ngIf="!fieldForm">
     <h2>{{ 'components.queryBuilder.fields.available' | translate }}</h2>
 
     <mat-form-field appearance="outline">
       <mat-label>{{ 'widgets.query.field.search' | translate }}</mat-label>
-      <input type="text" matInput [(ngModel)]="searchAvailable" />
+      <input
+        type="text"
+        matInput
+        [(ngModel)]="searchAvailable"
+        (input)="onSearch()"
+      />
       <safe-button
         matSuffix
-        (click)="searchAvailable = ''"
+        (click)="searchAvailable = ''; onSearch()"
         [isIcon]="true"
         [icon]="searchAvailable ? 'cancel' : 'search'"
       ></safe-button>
@@ -17,20 +24,13 @@
     <div class="field-list-wrapper">
       <div
         cdkDropList
-        [cdkDropListData]="availableFields"
+        [cdkDropListData]="filteredFields"
         class="field-list"
         cdkDropListSortingDisabled
         (cdkDropListDropped)="drop($event)"
       >
-        <ng-container *ngFor="let field of availableFields">
-          <div
-            class="field-box"
-            cdkDrag
-            *ngIf="
-              searchAvailable.length < 1 ||
-              field.name.toLowerCase().includes(searchAvailable.toLowerCase())
-            "
-          >
+        <ng-container *ngFor="let field of filteredFields">
+          <div class="field-box" cdkDrag>
             {{ field.name }}
             <span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">
               {{ field.type.kind }}

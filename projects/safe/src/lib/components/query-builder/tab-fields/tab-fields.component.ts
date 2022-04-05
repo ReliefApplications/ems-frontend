@@ -30,6 +30,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   childTemplate?: ViewContainerRef;
 
   public availableFields: any[] = [];
+  public filteredFields: any[] = [];
   public selectedFields: any[] = [];
   public fieldForm: FormGroup | null = null;
 
@@ -43,6 +44,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
     this.availableFields = this.fields
       .slice()
       .filter((x) => !selectedFields.includes(x.name));
+    this.filteredFields = this.availableFields;
     this.selectedFields = selectedFields.map(
       (x) => this.fields.find((f) => f.name === x) || { name: x }
     );
@@ -58,9 +60,22 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
     this.availableFields = this.fields
       .slice()
       .filter((x) => !selectedFields.includes(x.name));
+    this.filteredFields = this.availableFields;
     this.selectedFields = selectedFields.map(
       (x) => this.fields.find((f) => f.name === x) || { name: x }
     );
+  }
+
+  /**
+   * removes fields moved to selected fields from the avaiableFields array
+   */
+  updateAvailable() {
+    this.availableFields = this.availableFields.filter((field) => {
+      const index = this.selectedFields.findIndex(
+        (selected) => selected.name === field.name
+      );
+      return index === -1;
+    });
   }
 
   drop(event: CdkDragDrop<string[]>): void {
@@ -101,6 +116,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
           event.previousIndex,
           event.currentIndex
         );
+        this.updateAvailable();
         this.form.insert(
           event.currentIndex,
           addNewField(this.selectedFields[event.currentIndex], true)
@@ -109,12 +125,18 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
     }
   }
 
+  onSearch() {
+    const searchedValue = this.searchAvailable.toLowerCase();
+    this.filteredFields = this.availableFields.filter((field) =>
+      field.name.toLowerCase().includes(searchedValue)
+    );
+  }
+
   public onCloseField(): void {
     this.fieldForm = null;
   }
 
   public onEdit(index: number): void {
-    console.log(index);
     this.fieldForm = this.form.at(index) as FormGroup;
     if (this.fieldForm.value.kind !== 'SCALAR') {
       if (this.childTemplate && this.factory) {
