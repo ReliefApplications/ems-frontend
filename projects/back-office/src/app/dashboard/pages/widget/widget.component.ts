@@ -143,6 +143,8 @@ export class WidgetComponent implements OnInit, OnDestroy {
   onAdd(e: any): void {
     const tile = JSON.parse(JSON.stringify(e));
     tile.id = this.generatedTiles;
+    tile.defaultCols = 8;
+    tile.defaultRows = 3;
     this.generatedTiles += 1;
     this.tiles = [...this.tiles, tile];
     this.autoSaveChanges();

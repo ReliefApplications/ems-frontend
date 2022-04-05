@@ -147,7 +147,6 @@ export class ApplicationComponent implements OnInit, OnDestroy {
             this.title = '';
             this.navGroups = [];
           }
-          console.log(this.navGroups);
         }
       );
   }
