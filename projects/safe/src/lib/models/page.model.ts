@@ -49,9 +49,9 @@ export const CONTENT_TYPES: IContentType[] = [
   {
     value: 'widget',
     name: 'widget',
-    img: '/assets/map.svg',
-    color: '#FEC4FF33',
-    focusColor: '#FEC4FF',
+    img: '/assets/widget.svg',
+    color: '#F6EA8133',
+    focusColor: '#F6EA81',
   },
 ];
 
