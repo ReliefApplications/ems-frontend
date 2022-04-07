@@ -24,10 +24,22 @@ export const routes = [
       },
       {
         path: 'referencedata',
-        loadChildren: () =>
-          import('./pages/reference-data/reference-data.module').then(
-            (m) => m.ReferenceDataModule
-          ),
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('./pages/reference-datas/reference-datas.module').then(
+                (m) => m.ReferenceDatasModule
+              ),
+          },
+          {
+            path: ':id',
+            loadChildren: () =>
+              import('./pages/reference-data/reference-data.module')
+                .then()
+                .then((m) => m.ReferenceDataModule),
+          },
+        ],
       },
       {
         path: 'forms',

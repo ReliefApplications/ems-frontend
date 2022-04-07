@@ -1,97 +1,104 @@
-<div class="header">
-  <div class="filters">
-    <div class="top">
-      <mat-form-field appearance="outline">
-        <mat-icon matPrefix>search</mat-icon>
-        <input
-          id="custom-search"
-          matInput
-          [ngModel]="searchText"
-          (keyup)="applyFilter('', $event)"
-          type="search"
-          [placeholder]="'filter.search' | translate"
-        />
-      </mat-form-field>
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ng-container *ngIf="!loading && referenceData">
+    <div class="page-header">
+        <safe-previous-button path="/referencedata"></safe-previous-button>
+            <h1 class="page-title">
+                {{referenceData?.name}}
+            </h1>
+        <safe-access [access]="referenceData?.permissions" (save)="saveAccess($event)" *ngIf="referenceData?.canUpdate"></safe-access>
     </div>
-  </div>
-
-  <div class="actions">
-    <safe-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-      *ngIf="canAdd"
-    >
-      {{ 'referenceData.add' | translate }}
-    </safe-button>
-  </div>
-</div>
-
-<table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort>
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
-        {{ 'global.name' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="apiConfiguration">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
-        {{ 'referenceData.apiConfiguration' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">{{ element.authType }}</td>
-  </ng-container>
-
-
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element">
-      <safe-button
-        [isIcon]="true"
-        icon="more_vert"
-        [matMenuTriggerFor]="menu"
-        (click)="$event.stopPropagation()"
-        [disabled]="!(element.canUpdate || element.canDelete)"
-      >
-      </safe-button>
-      <mat-menu #menu="matMenu">
-        <button
-          mat-menu-item
-          (click)="onDelete(element, $event)"
-          *ngIf="element.canDelete"
-        >
-          <mat-icon>delete</mat-icon>
-          {{ 'action.delete' | translate }}
-        </button>
-      </mat-menu>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: displayedColumns"
-    class="clickable"
-    [routerLink]="['/referencedata', row.id]"
-  ></tr>
-</table>
-<safe-skeleton-table
-  *ngIf="loading"
-  [columns]="['global.name', 'referenceData.apiConfiguration']"
-  [actions]="true"
->
-</safe-skeleton-table>
-<mat-paginator
-  [disabled]="loading"
-  [pageSize]="pageInfo.pageSize"
-  [pageSizeOptions]="[10, 25, 50]"
-  [length]="pageInfo.length"
-  aria-label="Select page of forms"
-  (page)="onPage($event)"
->
-</mat-paginator>
+    <div mat-dialog-content>
+        <form [formGroup]="referenceForm">
+            <div style="display: flex">
+                <!-- Name -->
+                <mat-form-field appearance="outline" style="flex:2">
+                    <mat-label>{{'global.name' | translate}}</mat-label>
+                    <input matInput formControlName="name" type="text" [placeholder]="'global.namePlaceholder' | translate"/>
+                    <mat-error *ngIf="name?.errors">
+                        {{'referenceData.warning' | translate}}
+                    </mat-error>
+                </mat-form-field>
+                <!-- Type selection -->
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ 'global.type' | translate }}</mat-label>
+                    <mat-select formControlName="type">
+                        <mat-option *ngFor="let referenceTypeChoice of referenceTypeChoices" [value]=referenceTypeChoice>{{ referenceTypeChoice }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!-- Specific to GraphQL and Rest type -->
+            <div *ngIf="['rest', 'graphql'].includes(type)">
+                <div style="display: flex">
+                    <!-- API Configuration -->
+                    <mat-form-field appearance="outline" style="flex:2">
+                        <mat-label>{{ 'referenceData.apiConfiguration' | translate }}</mat-label>
+                        <mat-select #apiConfSelect formControlName="apiConfiguration" (openedChange)="onOpenSelect($event)">
+                            <mat-option *ngFor="let apiConf of apiConfigurations$ | async" [value]="apiConf.id">{{ apiConf.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <!-- QueryName -->
+                    <mat-form-field appearance="outline" style="flex:3">
+                        <mat-label>{{'referenceData.queryName' | translate}}</mat-label>
+                        <input matInput formControlName="query" type="text" [placeholder]="'global.queryNamePlaceholder' | translate"/>
+                    </mat-form-field>
+                </div>
+                <!-- Fields -->
+                <div style="display: flex">
+                    <mat-form-field class="chip-list" appearance="outline" style="flex:2">
+                        <mat-label>{{ 'referenceData.fields' | translate }}</mat-label>
+                        <mat-chip-list #chipList aria-label="Fields chip list">
+                        <mat-chip
+                            *ngFor="let field of valueFields"
+                            [selectable]="true"
+                            [removable]="true"
+                            (removed)="remove(field)">
+                            {{ field }}
+                            <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
+                        </mat-chip>
+                        <input
+                            #fieldInput
+                            [matChipInputFor]="chipList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            (focusout)="add($event)"
+                            (matChipInputTokenEnd)="add($event)"
+                        />
+                        </mat-chip-list>
+                    </mat-form-field>
+                </div>
+            </div>
+            <!-- CSV Input for static type -->
+            <div *ngIf="type === 'static'" class="csv-input">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ 'referenceData.csv' | translate }}</mat-label>
+                    <textarea matInput [placeholder]="'referenceData.csvPlaceholder' | translate" formControlName="data" [value]="csvValue"></textarea>
+                </mat-form-field>
+                <safe-button category="secondary" variant="primary" (click)="onValidateCSV()">
+                    {{'referenceData.saveCSV' | translate}}
+                </safe-button>
+            </div>
+            <div style="display: flex">
+                <!-- Path -->
+                <mat-form-field  style="flex:3" appearance="outline" *ngIf="['rest', 'graphql'].includes(type)">
+                    <mat-label>{{'referenceData.path' | translate}}</mat-label>
+                    <input matInput formControlName="path" type="text" [placeholder]="'global.queryNamePlaceholder' | translate"/>
+                </mat-form-field>
+                <!-- Value field to be displayed -->
+                <mat-form-field style="flex:2" appearance="outline" *ngIf="type && valueFields.length > 0">
+                    <mat-label>{{ 'referenceData.valueField' | translate }}</mat-label>
+                    <mat-select formControlName="valueField">
+                        <mat-option *ngFor="let value of valueFields" [value]="value">{{ value }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!-- Kendo grid to preview data on static type -->
+            <div *ngIf="csvValue && type === 'static'">
+                <kendo-grid [data]="newData">
+                    <kendo-grid-column *ngFor="let field of valueFields" [field]="field">{{ field }}</kendo-grid-column>
+                </kendo-grid>
+            </div>
+            <safe-button category="secondary" variant="primary" (click)="onSave()" [disabled]="referenceForm.invalid || !referenceForm.dirty">
+                {{'action.save' | translate}}
+            </safe-button>
+        </form>
+    </div>
+</ng-container>

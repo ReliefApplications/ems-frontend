@@ -1,0 +1,19 @@
+mat-form-field {
+  width: 250px;
+}
+
+.csv-input {
+  display: flex;
+  .mat-form-field {
+    display: flex;
+    width: 100%;
+    ::ng-deep .mat-form-field-wrapper {
+      width: 90%;
+    }
+    
+  }
+  safe-button {
+    display: flex;
+    align-items: center;
+  }
+}

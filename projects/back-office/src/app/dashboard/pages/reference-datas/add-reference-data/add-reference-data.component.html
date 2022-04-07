@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>{{'referenceData.new' | translate}}</h1>
+<div mat-dialog-content>
+    <form [formGroup]="referenceForm">
+        <div>
+            <mat-form-field appearance="outline">
+                <mat-label>{{'global.name' | translate}}</mat-label>
+                <input matInput formControlName="name" type="text" [placeholder]="'global.namePlaceholder' | translate"/>
+                <mat-error *ngIf="name?.errors">
+                    {{'referenceData.warning' | translate}}
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
+    <button mat-flat-button [mat-dialog-close]="referenceForm.value" cdkFocusInitial color="primary" [disabled]="!referenceForm.valid">{{'action.create' | translate}}</button>
+</div>

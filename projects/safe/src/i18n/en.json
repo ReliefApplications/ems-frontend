@@ -229,7 +229,11 @@
     "queryName": "Query Name",
     "rest": "Rest",
     "path": "Path",
-    "fields": "Fields"
+    "fields": "Fields",
+    "valueField": "Value field",
+    "csv": "CSV input",
+    "csvPlaceholder": "Insert CSV here",
+    "saveCSV": "Validate CSV"
   },
   "pullJobs": {
     "create": "Create a pull job",
