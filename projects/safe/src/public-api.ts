@@ -74,6 +74,7 @@ export * from './lib/components/workflow-stepper/public-api';
 export * from './lib/components/applications-summary/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
 export * from './lib/components/skeleton/skeleton-table/public-api';
+export * from './lib/components/share-redirect/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/layout-modal/public-api';
