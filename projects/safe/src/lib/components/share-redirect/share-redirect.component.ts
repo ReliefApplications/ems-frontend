@@ -22,6 +22,8 @@ export class SafeShareRedirectComponent implements OnInit, OnDestroy {
     private translateService: TranslateService
   ) {}
 
+  /*  Makes a query to get the necessary data to generate the correct link for the dashboard.
+   */
   ngOnInit(): void {
     this.route.params.subscribe((params: any) => {
       this.apollo
