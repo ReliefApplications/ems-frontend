@@ -70,7 +70,7 @@
             <div *ngIf="type === 'static'" class="csv-input">
                 <mat-form-field appearance="outline">
                     <mat-label>{{ 'referenceData.csv' | translate }}</mat-label>
-                    <textarea matInput [placeholder]="'referenceData.csvPlaceholder' | translate" formControlName="data" [value]="csvValue"></textarea>
+                    <textarea #csvData matInput [placeholder]="'referenceData.csvPlaceholder' | translate" [value]="csvValue"></textarea>
                 </mat-form-field>
                 <safe-button category="secondary" variant="primary" (click)="onValidateCSV()">
                     {{'referenceData.saveCSV' | translate}}

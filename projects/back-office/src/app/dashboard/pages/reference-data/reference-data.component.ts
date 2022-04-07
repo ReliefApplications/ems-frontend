@@ -66,6 +66,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
 
   @ViewChild('formSelect') apiConfSelect?: MatSelect;
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('csvData') csvData?: ElementRef<HTMLInputElement>;
 
   private pageInfo = {
     endCursor: '',
@@ -403,39 +404,33 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
   /*  Validate the CSV input and transform it into JSON object
    */
   onValidateCSV(): void {
-    const dataTemp = this.referenceForm?.get('data')?.value;
-    this.csvValue = Array.isArray(dataTemp)
-      ? this.convertToCSV(dataTemp)
-      : dataTemp;
-    this.newData = Array.isArray(dataTemp) ? dataTemp : [];
-    if (!Array.isArray(dataTemp)) {
-      const lines = dataTemp.split('\n');
-      const headers = lines[0].split(',');
-      this.valueFields = headers;
+    const dataTemp: any = this.csvData?.nativeElement.value;
+    this.csvValue = dataTemp;
+    this.newData = [];
+    const lines = dataTemp.split('\n');
+    const headers = lines[0].split(',');
+    this.valueFields = headers;
 
-      for (let i = 1; i < lines.length; i++) {
-        if (!lines[i]) continue;
-        const obj: any = {};
-        const currentline = lines[i].split(',');
-
-        for (let j = 0; j < headers.length; j++) {
-          obj[headers[j]] = currentline[j];
-        }
-        this.newData.push(obj);
+    for (let i = 1; i < lines.length; i++) {
+      if (!lines[i]) continue;
+      const obj: any = {};
+      const currentline = lines[i].split(',');
+      for (let j = 0; j < headers.length; j++) {
+        obj[headers[j]] = currentline[j];
       }
-      this.referenceForm?.get('data')?.setValue(this.newData);
-      this.referenceForm?.get('data')?.updateValueAndValidity();
-      this.referenceForm?.get('fields')?.setValue(this.valueFields);
-      this.referenceForm?.get('fields')?.updateValueAndValidity();
+      this.newData.push(obj);
     }
-    return this.newData;
+    this.referenceForm?.get('data')?.setValue(this.newData);
+    this.referenceForm?.get('data')?.updateValueAndValidity();
+    this.referenceForm?.get('fields')?.setValue(this.valueFields);
+    this.referenceForm?.get('fields')?.updateValueAndValidity();
+    this.referenceForm?.markAsDirty();
   }
 
   /*  Convert the JSON into a csv format
    */
   convertToCSV(obj: any): string {
     const array = [Object.keys(obj[0])].concat(obj);
-
     return array.map((it) => Object.values(it).toString()).join('\n');
   }
 }
