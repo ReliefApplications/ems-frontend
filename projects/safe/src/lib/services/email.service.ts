@@ -7,9 +7,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeEmailPreviewComponent } from '../components/email-preview/email-preview.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../utils/prettify';
+import { Observable } from 'rxjs';
 
 const flatDeep = (arr: any[]): any[] => {
-  return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val), []);
+  return arr.reduce(
+    (acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val),
+    []
+  );
 };
 
 /**
@@ -17,12 +21,12 @@ const flatDeep = (arr: any[]): any[] => {
  * Used by widgets to send request to the back to send emails.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeEmailService {
-
   private sendUrl = '';
   private previewUrl = '';
+  private filesUrl = '';
 
   /**
    * Shared email service.
@@ -33,16 +37,31 @@ export class SafeEmailService {
    * @param snackBar Shared snackbar service.
    * @param translate Angular translate service.
    */
-   constructor(
+  constructor(
     @Inject('environment') environment: any,
     private http: HttpClient,
     private snackBar: SafeSnackBarService,
-    private dialog: MatDialog,
-    // private translate: TranslateService
-  ) {
+    private dialog: MatDialog
+  ) // private translate: TranslateService
+  {
     // this.url = environment.apiUrl + '/email/';
     this.sendUrl = environment.API_URL + '/email/';
     this.previewUrl = environment.API_URL + '/email/preview/';
+    this.filesUrl = environment.API_URL + '/email/files';
+  }
+
+  public sendFiles(files: any[]): Observable<any> {
+    // const token = localStorage.getItem('idtoken');
+    const token = localStorage.getItem('msal.idtoken');
+    const headers = new HttpHeaders({
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('attachments', file, file.name);
+    }
+    return this.http.post(this.filesUrl, formData, { headers });
   }
 
   /**
@@ -69,7 +88,8 @@ export class SafeEmailService {
     },
     sortField?: string,
     sortOrder?: string,
-    attachment?: boolean
+    attachment?: boolean,
+    files?: any[]
   ): Promise<void> {
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SafeSnackbarSpinnerComponent,
@@ -82,12 +102,20 @@ export class SafeEmailService {
         },
       }
     );
+    let fileFolderId = '';
+    if (files && files.length > 0) {
+      const response = await this.sendFiles(files).toPromise();
+      if (response.id) {
+        fileFolderId = response.id;
+      }
+    }
     // const token = localStorage.getItem('idtoken');
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
+
     this.http
       .post(
         this.sendUrl,
@@ -101,6 +129,7 @@ export class SafeEmailService {
           sortField,
           sortOrder,
           attachment,
+          ...(fileFolderId && { files: fileFolderId }),
         },
         { headers }
       )
@@ -209,6 +238,7 @@ export class SafeEmailService {
                 sortField,
                 sortOrder,
                 attachment,
+                value.files
               );
             }
           });
@@ -233,29 +263,31 @@ export class SafeEmailService {
    * @returns List of fields for the email
    */
   private getFields(fields: any[], prefix?: string): any[] {
-    return flatDeep(fields.map(f => {
-      const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
-      switch (f.kind) {
-        case 'OBJECT': {
-          return this.getFields(f.fields, fullName);
+    return flatDeep(
+      fields.map((f) => {
+        const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
+        switch (f.kind) {
+          case 'OBJECT': {
+            return this.getFields(f.fields, fullName);
+          }
+          case 'LIST': {
+            const title = f.label ? f.label : prettifyLabel(f.name);
+            const subFields = this.getFields(f.fields, fullName);
+            return {
+              name: fullName,
+              title,
+              subFields,
+            };
+          }
+          default: {
+            const title = f.label ? f.label : prettifyLabel(f.name);
+            return {
+              name: fullName,
+              title,
+            };
+          }
         }
-        case 'LIST': {
-          const title = f.label ? f.label : prettifyLabel(f.name);
-          const subFields = this.getFields(f.fields, fullName);
-          return {
-            name: fullName,
-            title,
-            subFields,
-          };
-        }
-        default: {
-          const title = f.label ? f.label : prettifyLabel(f.name);
-          return {
-            name: fullName,
-            title,
-          };
-        }
-      }
-    }));
+      })
+    );
   }
 }

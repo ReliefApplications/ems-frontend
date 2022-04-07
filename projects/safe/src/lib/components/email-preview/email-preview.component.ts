@@ -48,6 +48,7 @@ export class SafeEmailPreviewComponent implements OnInit {
       to: [{value: this.data.to, disabled: true }],
       subject: [{value: this.data.subject, disabled: true }],
       html: [{value: this.sanitizer.bypassSecurityTrustHtml(this.data.html), disabled: true }],
+      files: [[]]
     });
   }
 }
