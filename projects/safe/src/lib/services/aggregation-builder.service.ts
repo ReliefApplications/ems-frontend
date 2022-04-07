@@ -180,8 +180,28 @@ export class AggregationBuilderService {
             }
             fields = [];
             if (groupByField) {
-              fields.push(groupByField);
+              // Change field type because of automatic unwind
+              const newField = Object.assign({}, groupByField);
+              newField.type = { ...groupByField.type };
+              if (stage.form.groupBy.includes('.')) {
+                const fieldArray = stage.form.field.split('.');
+                const sub = fieldArray.pop();
+                newField.type.kind = 'OBJECT';
+                newField.fields = newField.fields.map((x: any) =>
+                  x.name === sub
+                    ? {
+                        ...x,
+                        type: { ...x.type, kind: 'SCALAR', name: 'String' },
+                      }
+                    : x
+                );
+              } else {
+                newField.type.kind = 'SCALAR';
+                newField.type.name = 'String';
+              }
+              groupByField = newField;
             }
+            fields.push(groupByField);
           }
           if (stage.form.addFields) {
             this.addFields(fields, stage.form.addFields, initialFields);
@@ -234,6 +254,7 @@ export class AggregationBuilderService {
         }
       }
     }
+    console.log('FIELDS', fields);
     return fields.sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
   }
 
