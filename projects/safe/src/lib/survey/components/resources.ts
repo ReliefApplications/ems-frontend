@@ -274,7 +274,7 @@ export const init = (
             // return !hasUniqueRecord(obj.resource);
           }
         },
-        visibleIndex: 3,
+        visibleIndex: 2,
       });
       survey.Serializer.addProperty('resources', {
         name: 'canDelete:boolean',

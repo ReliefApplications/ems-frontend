@@ -382,6 +382,16 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
               '. Please provide a valid data value name (snake_case) to save the form.'
           );
         }
+
+        if (element.addRecord && !element.addTemplate) {
+          throw new Error(
+            'Missing add records template for question ' +
+              element.title +
+              ' on page ' +
+              page.name +
+              '. Please select a template to save the form.'
+          );
+        }
       }
     }
   }
