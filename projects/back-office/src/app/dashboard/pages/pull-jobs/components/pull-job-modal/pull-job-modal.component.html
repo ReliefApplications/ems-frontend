@@ -58,6 +58,26 @@
           </mat-select>
         </mat-form-field>
       </div>
+      <div class="form-group-row" *ngIf="!isHardcoded">
+        <mat-form-field appearance="outline" style="flex: 1">
+          <mat-label>{{ 'models.pullJob.url' | translate }}</mat-label>
+          <input
+            type="text"
+            [placeholder]="'components.pullJob.modal.placeholder.url' | translate"
+            matInput
+            formControlName="url"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="flex: 1">
+          <mat-label>{{ 'models.pullJob.path' | translate }}</mat-label>
+          <input
+            type="text"
+            [placeholder]="'components.pullJob.modal.placeholder.path' | translate"
+            matInput
+            formControlName="path"
+          />
+        </mat-form-field>
+      </div>
       <div class="form-group-row">
         <mat-form-field appearance="outline" style="flex: 1">
           <mat-label>{{

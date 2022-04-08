@@ -539,6 +539,8 @@
     "pullJob": {
       "modal": {
         "placeholder": {
+          "url": "Enter the URL after the host to reach specific data",
+          "path": "Enter the path to extract data from response",
           "schedule": "Enter the schedule time for this Pull job"
         },
         "mapping": "Mapping",
@@ -684,6 +686,8 @@
       }
     },
     "pullJob": {
+      "url": "Url",
+      "path": "Path",
       "schedule": "Schedule"
     },
     "application": {
