@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
+import { UploadsModule } from '@progress/kendo-angular-upload';
 
 /**
  * Preview Email Component Module.
@@ -22,6 +23,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatInputModule,
     MatDialogModule,
     MatChipsModule,
+    UploadsModule,
   ],
   exports: [SafeEmailPreviewComponent],
 })

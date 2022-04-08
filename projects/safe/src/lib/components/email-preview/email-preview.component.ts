@@ -52,6 +52,7 @@ export class SafeEmailPreviewComponent implements OnInit {
           disabled: true,
         },
       ],
+      files: [[]],
     });
   }
 }
