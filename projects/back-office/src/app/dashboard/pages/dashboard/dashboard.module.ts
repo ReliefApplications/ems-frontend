@@ -21,6 +21,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { SafeSearchMenuModule } from '@safe/builder';
 
 @NgModule({
   declarations: [DashboardComponent, ShareUrlComponent],
@@ -44,6 +46,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeRecordHistoryModule,
     SafeButtonModule,
     TranslateModule,
+    OverlayModule,
+    SafeSearchMenuModule
   ],
   exports: [DashboardComponent],
 })

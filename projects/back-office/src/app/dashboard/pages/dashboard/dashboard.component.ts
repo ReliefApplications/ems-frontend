@@ -16,6 +16,7 @@ import {
   SafeApplicationService,
   SafeWorkflowService,
   SafeDashboardService,
+  SafeAuthService,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
@@ -59,6 +60,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
+  // === DUP APP SELECTION ===
+  public showAppMenu = false;
+  public appList = [];
+
   constructor(
     private applicationService: SafeApplicationService,
     private workflowService: SafeWorkflowService,
@@ -68,7 +73,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private authService: SafeAuthService
   ) {}
 
   ngOnInit(): void {
@@ -345,5 +351,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
       },
     });
     dialogRef.afterClosed().subscribe();
+  }
+
+  public onDup(event: any): void {
+    this.applicationService.dupPage('dashboard', this.dashboard, event.id);
+  }
+
+  public onAppSelection(): void {
+    this.showAppMenu = !this.showAppMenu
+    const authSubscription = this.authService.user$.subscribe(
+      (user: any | null) => {
+        if (user) {
+          this.appList = user.applications;
+        }
+      }
+    )
+    authSubscription.unsubscribe();
   }
 }

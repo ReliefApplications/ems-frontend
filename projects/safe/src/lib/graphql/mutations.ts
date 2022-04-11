@@ -180,6 +180,21 @@ export interface EditUserProfileMutationResponse {
   editUserProfile: User;
 }
 
+// === EDIT PAGE ===
+export const EDIT_PAGE = gql`
+  mutation editPage($id: ID!, $name: String) {
+    editPage(id: $id, name: $name) {
+      id
+      name
+    }
+  }
+`;
+
+export interface EditPageMutationResponse {
+  loading: boolean;
+  editPage: Page;
+}
+
 // === ADD PAGE ===
 export const ADD_PAGE = gql`
   mutation addPage($type: ContentEnumType!, $content: ID, $application: ID!) {

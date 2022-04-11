@@ -11,6 +11,7 @@ import {
   ContentType,
   SafeApplicationService,
   SafeWorkflowService,
+  SafeAuthService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import {
@@ -49,6 +50,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   // === ROUTE ===
   private routeSubscription?: Subscription;
 
+  // === DUP APP SELECTION ===
+  public showAppMenu = false;
+  public appList = [];
+
   constructor(
     private apollo: Apollo,
     private workflowService: SafeWorkflowService,
@@ -57,7 +62,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private authService: SafeAuthService
   ) {}
 
   ngOnInit(): void {
@@ -162,6 +168,22 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           permissions: res.data?.editPage.permissions,
         };
       });
+  }
+
+  public onDup(event: any): void {
+    this.applicationService.dupPage('workflow', this.workflow, event.id);
+  }
+
+  public onAppSelection(): void {
+    this.showAppMenu = !this.showAppMenu
+    const authSubscription = this.authService.user$.subscribe(
+      (user: any | null) => {
+        if (user) {
+          this.appList = user.applications;
+        }
+      }
+    )
+    authSubscription.unsubscribe();
   }
 
   /**
