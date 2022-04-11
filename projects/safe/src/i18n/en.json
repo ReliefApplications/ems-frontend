@@ -149,7 +149,8 @@
     "previous": "Previous",
     "true": "True",
     "false": "False",
-    "settings": "Settings"
+    "settings": "Settings",
+    "page": "Page"
   },
   "pages": {
     "appBuilder": {
@@ -190,7 +191,7 @@
         "actions": "Actions"
       }
     },
-    "worklow": {
+    "workflow": {
       "empty": {
         "add": "Add steps",
         "customize": "Customize each of the steps created"
