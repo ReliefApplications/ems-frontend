@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeEmailPreviewComponent } from '../components/email-preview/email-preview.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../utils/prettify';
+import { Observable } from 'rxjs';
 
 const flatDeep = (arr: any[]): any[] =>
   arr.reduce(
@@ -24,6 +25,7 @@ const flatDeep = (arr: any[]): any[] =>
 export class SafeEmailService {
   private sendUrl = '';
   private previewUrl = '';
+  private filesUrl = '';
 
   /**
    * Shared email service.
@@ -38,10 +40,25 @@ export class SafeEmailService {
     @Inject('environment') environment: any,
     private http: HttpClient,
     private snackBar: SafeSnackBarService,
-    private dialog: MatDialog // private translate: TranslateService
-  ) {
+    private dialog: MatDialog
+  ) // private translate: TranslateService
+  {
     this.sendUrl = environment.apiUrl + '/email/';
     this.previewUrl = environment.apiUrl + '/email/preview/';
+    this.filesUrl = environment.apiUrl + '/email/files';
+  }
+
+  public sendFiles(files: any[]): Observable<any> {
+    const token = localStorage.getItem('idtoken');
+    const headers = new HttpHeaders({
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('attachments', file, file.name);
+    }
+    return this.http.post(this.filesUrl, formData, { headers });
   }
 
   /**
@@ -68,7 +85,8 @@ export class SafeEmailService {
     },
     sortField?: string,
     sortOrder?: string,
-    attachment?: boolean
+    attachment?: boolean,
+    files?: any[]
   ): Promise<void> {
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SafeSnackbarSpinnerComponent,
@@ -81,11 +99,19 @@ export class SafeEmailService {
         },
       }
     );
+    let fileFolderId = '';
+    if (files && files.length > 0) {
+      const response = await this.sendFiles(files).toPromise();
+      if (response.id) {
+        fileFolderId = response.id;
+      }
+    }
     const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
+
     this.http
       .post(
         this.sendUrl,
@@ -99,6 +125,7 @@ export class SafeEmailService {
           sortField,
           sortOrder,
           attachment,
+          ...(fileFolderId && { files: fileFolderId }),
         },
         { headers }
       )
@@ -205,7 +232,8 @@ export class SafeEmailService {
                 query,
                 sortField,
                 sortOrder,
-                attachment
+                attachment,
+                value.files
               );
             }
           });
