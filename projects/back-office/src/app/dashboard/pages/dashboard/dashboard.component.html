@@ -7,29 +7,16 @@
             <safe-access [access]="dashboard.permissions" [application]="applicationId" (save)="saveAccess($event)"
                 *ngIf="dashboard.page ? dashboard.page.canUpdate : dashboard.step ? dashboard.step.canUpdate : false">
             </safe-access>
-            <!-- <safe-button
-                [isIcon]="true"
-                icon="file_copy"
-                matTooltipPosition="above"
-                matTooltip="Duplicate Dashboard"
-                class="share-button" 
-                (click)="onAppSelection()"
-                cdkOverlayOrigin
-                #appMenuTrigger="cdkOverlayOrigin">
-            </safe-button>
-            <safe-button [isIcon]="true" icon="share" matTooltipPosition="above" matTooltip="Share Dashboard"
-                class="share-button" (click)="onShare()">
-            </safe-button> -->
             <safe-button [isIcon]="true" icon="more_vert" class="share-button" [matMenuTriggerFor]="menu" cdkOverlayOrigin #appMenuTrigger="cdkOverlayOrigin">
             </safe-button>
             <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="onAppSelection()">
                     <mat-icon>file_copy</mat-icon>
-                    Duplicate
+                    {{'common.duplicate' | translate}}
                 </button>
                 <button mat-menu-item (click)="onShare()">
                     <mat-icon>share</mat-icon>
-                    Share
+                    {{'common.share' | translate}}
                 </button>
             </mat-menu>
 
