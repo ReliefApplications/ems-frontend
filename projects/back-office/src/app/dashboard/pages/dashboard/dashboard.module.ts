@@ -47,7 +47,7 @@ import { SafeSearchMenuModule } from '@safe/builder';
     SafeButtonModule,
     TranslateModule,
     OverlayModule,
-    SafeSearchMenuModule
+    SafeSearchMenuModule,
   ],
   exports: [DashboardComponent],
 })

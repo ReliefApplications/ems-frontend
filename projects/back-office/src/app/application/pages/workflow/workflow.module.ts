@@ -34,7 +34,7 @@ import { MatMenuModule } from '@angular/material/menu';
     OverlayModule,
     SafeSearchMenuModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
   ],
   exports: [WorkflowComponent],
 })

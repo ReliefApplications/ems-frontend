@@ -175,14 +175,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   public onAppSelection(): void {
-    this.showAppMenu = !this.showAppMenu
+    this.showAppMenu = !this.showAppMenu;
     const authSubscription = this.authService.user$.subscribe(
       (user: any | null) => {
         if (user) {
           this.appList = user.applications;
         }
       }
-    )
+    );
     authSubscription.unsubscribe();
   }
 
