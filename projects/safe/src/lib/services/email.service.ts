@@ -40,9 +40,8 @@ export class SafeEmailService {
     @Inject('environment') environment: any,
     private http: HttpClient,
     private snackBar: SafeSnackBarService,
-    private dialog: MatDialog
-  ) // private translate: TranslateService
-  {
+    private dialog: MatDialog // private translate: TranslateService
+  ) {
     this.sendUrl = environment.apiUrl + '/email/';
     this.previewUrl = environment.apiUrl + '/email/preview/';
     this.filesUrl = environment.apiUrl + '/email/files';
