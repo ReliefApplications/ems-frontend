@@ -26,7 +26,8 @@
         >
         <ng-container *ngIf="relatedForms.length > 0">
           <mat-checkbox formControlName="prefillForm">{{
-            'components.widget.settings.grid.buttons.callback.prefill' | translate
+            'components.widget.settings.grid.buttons.callback.prefill'
+              | translate
           }}</mat-checkbox>
           <div *ngIf="buttonForm.value.prefillForm" class="sub-parameters">
             <mat-form-field appearance="outline">
@@ -43,17 +44,22 @@
 
         <ng-container *ngIf="!isDashboard">
           <mat-checkbox formControlName="goToNextStep">{{
-            'components.widget.settings.grid.buttons.callback.workflow.next' | translate
+            'components.widget.settings.grid.buttons.callback.workflow.next'
+              | translate
           }}</mat-checkbox>
           <mat-checkbox formControlName="closeWorkflow">{{
-            'components.widget.settings.grid.buttons.callback.workflow.close' | translate
+            'components.widget.settings.grid.buttons.callback.workflow.close'
+              | translate
           }}</mat-checkbox>
           <mat-form-field
             appearance="outline"
             class="sub-parameters"
             *ngIf="buttonForm.value.closeWorkflow"
           >
-            <mat-label>{{ 'components.widget.settings.grid.buttons.callback.workflow.confirm' | translate }}</mat-label>
+            <mat-label>{{
+              'components.widget.settings.grid.buttons.callback.workflow.confirm'
+                | translate
+            }}</mat-label>
             <input matInput formControlName="confirmationText" type="string" />
           </mat-form-field>
         </ng-container>
@@ -62,7 +68,8 @@
         }}</mat-checkbox>
         <div class="update-form">
           <mat-checkbox formControlName="modifySelectedRows">{{
-            'components.widget.settings.grid.buttons.callback.modify' | translate
+            'components.widget.settings.grid.buttons.callback.modify'
+              | translate
           }}</mat-checkbox>
           <div
             *ngIf="buttonForm.value.modifySelectedRows"
@@ -77,7 +84,10 @@
               class="update-row"
             >
               <mat-form-field appearance="outline">
-                <mat-label>{{ 'components.widget.settings.grid.buttons.callback.modifyField' | translate }}</mat-label>
+                <mat-label>{{
+                  'components.widget.settings.grid.buttons.callback.modifyField'
+                    | translate
+                }}</mat-label>
                 <mat-select
                   formControlName="field"
                   [compareWith]="compareFields"
@@ -95,7 +105,8 @@
                 *ngIf="modification.value.field"
               >
                 <mat-label>{{
-                  'components.widget.settings.grid.buttons.callback.modifyValue' | translate
+                  'components.widget.settings.grid.buttons.callback.modifyValue'
+                    | translate
                 }}</mat-label>
                 <ng-container
                   *ngIf="modification.value.field.type.name === 'Int'"
@@ -143,7 +154,8 @@
         </div>
         <span class="info-row" *ngIf="relatedForms.length > 0">
           <mat-checkbox formControlName="attachToRecord">{{
-            'components.widget.settings.grid.buttons.callback.attach' | translate
+            'components.widget.settings.grid.buttons.callback.attach'
+              | translate
           }}</mat-checkbox>
           <safe-icon
             style="padding-left: 2px"
@@ -151,7 +163,10 @@
             variant="grey"
             [size]="18"
             [inline]="true"
-            [matTooltip]="'components.widget.settings.grid.buttons.tooltip.attach' | translate"
+            [matTooltip]="
+              'components.widget.settings.grid.buttons.tooltip.attach'
+                | translate
+            "
             matTooltipPosition="right"
           ></safe-icon>
         </span>
@@ -171,7 +186,8 @@
           <ng-container *ngIf="buttonForm.value.targetForm">
             <mat-form-field appearance="outline">
               <mat-label>{{
-                'components.widget.settings.grid.buttons.callback.displayField' | translate
+                'components.widget.settings.grid.buttons.callback.displayField'
+                  | translate
               }}</mat-label>
               <mat-select formControlName="targetFormField">
                 <mat-option>--</mat-option>
@@ -202,7 +218,10 @@
             variant="grey"
             [size]="18"
             [inline]="true"
-            [matTooltip]="'components.widget.settings.grid.buttons.tooltip.notify' | translate"
+            [matTooltip]="
+              'components.widget.settings.grid.buttons.tooltip.notify'
+                | translate
+            "
             matTooltipPosition="right"
           ></safe-icon>
         </span>
@@ -217,7 +236,10 @@
             </mat-select>
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <mat-label>{{ 'components.widget.settings.grid.buttons.callback.notify.message' | translate }}</mat-label>
+            <mat-label>{{
+              'components.widget.settings.grid.buttons.callback.notify.message'
+                | translate
+            }}</mat-label>
             <input
               matInput
               formControlName="notificationMessage"
@@ -235,7 +257,10 @@
             variant="grey"
             [size]="18"
             [inline]="true"
-            [matTooltip]="'components.widget.settings.grid.buttons.tooltip.publish' | translate"
+            [matTooltip]="
+              'components.widget.settings.grid.buttons.tooltip.publish'
+                | translate
+            "
             matTooltipPosition="right"
           ></safe-icon>
         </span>
@@ -251,11 +276,14 @@
           </mat-form-field>
         </div>
         <mat-checkbox formControlName="sendMail">{{
-          'components.widget.settings.grid.buttons.callback.sendMail' | translate
+          'components.widget.settings.grid.buttons.callback.sendMail'
+            | translate
         }}</mat-checkbox>
         <div *ngIf="buttonForm.value.sendMail" class="sub-parameters">
           <mat-form-field class="chip-list" appearance="outline">
-            <mat-label>{{ 'components.emailBuilder.distribution' | translate }}</mat-label>
+            <mat-label>{{
+              'components.emailBuilder.distribution' | translate
+            }}</mat-label>
             <mat-chip-list #chipList aria-label="Emails chip list">
               <mat-chip
                 *ngFor="let email of emails"
@@ -276,7 +304,9 @@
             </mat-chip-list>
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <mat-label>{{ 'components.emailBuilder.subject' | translate }}</mat-label>
+            <mat-label>{{
+              'components.emailBuilder.subject' | translate
+            }}</mat-label>
             <input matInput formControlName="subject" type="string" />
           </mat-form-field>
           <mat-tab-group
@@ -288,18 +318,13 @@
             <mat-tab>
               <ng-template mat-tab-label> Default </ng-template>
               <ng-template matTabContent>
-                <mat-form-field appearance="outline" style="width: 100%">
-                  <mat-label>Body</mat-label>
-                  <textarea
-                    matInput
-                    formControlName="bodyText"
-                    placeholder="Please enter a body template for the email"
-                    [matTextareaAutosize]="true"
-                    [matAutosizeMinRows]="5"
-                  ></textarea>
-                </mat-form-field>
+                <safe-email-template
+                  formControlName="bodyText"
+                  style="height: 400px"
+                ></safe-email-template>
                 <mat-checkbox formControlName="export">{{
-                  'components.widget.settings.grid.buttons.callback.export' | translate
+                  'components.widget.settings.grid.buttons.callback.export'
+                    | translate
                 }}</mat-checkbox>
                 <h2>{{ 'components.emailBuilder.fields' | translate }}</h2>
                 <safe-tab-fields
@@ -313,16 +338,10 @@
             <mat-tab>
               <ng-template mat-tab-label> Without record </ng-template>
               <ng-template matTabContent>
-                <mat-form-field appearance="outline" style="width: 100%">
-                  <mat-label>Body</mat-label>
-                  <textarea
-                    matInput
-                    formControlName="bodyTextAlternate"
-                    placeholder="Please enter a body template for the email"
-                    [matTextareaAutosize]="true"
-                    [matAutosizeMinRows]="5"
-                  ></textarea>
-                </mat-form-field>
+                <safe-email-template
+                  formControlName="bodyTextAlternate"
+                  style="height: 400px"
+                ></safe-email-template>
               </ng-template>
             </mat-tab>
           </mat-tab-group>
