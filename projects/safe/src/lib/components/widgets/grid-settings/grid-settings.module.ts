@@ -20,7 +20,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutsParametersModule } from './layouts-parameters/layouts-parameters.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { EditorModule } from "@progress/kendo-angular-editor";
+import { SafeEmailTemplateModule } from '../../email-template/email-template.module';
 
 @NgModule({
   declarations: [
@@ -48,7 +48,7 @@ import { EditorModule } from "@progress/kendo-angular-editor";
     TranslateModule,
     LayoutsParametersModule,
     MatAutocompleteModule,
-    EditorModule
+    SafeEmailTemplateModule,
   ],
   exports: [SafeGridSettingsComponent],
 })
