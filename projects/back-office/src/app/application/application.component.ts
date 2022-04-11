@@ -62,7 +62,9 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                   orderable: true,
                   action: x.canDelete && {
                     icon: 'delete',
-                    toolTip: this.translate.instant('common.deleteObject', { name: this.translate.instant('common.page').toLowerCase() }),
+                    toolTip: this.translate.instant('common.deleteObject', {
+                      name: this.translate.instant('common.page').toLowerCase(),
+                    }),
                     callback: () => this.onDelete(x),
                   },
                 })) || [];
