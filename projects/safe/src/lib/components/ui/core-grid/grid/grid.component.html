@@ -270,6 +270,30 @@
               />
             </div>
           </ng-template>
+          <!-- DISPLAY ( number ) -->
+          <ng-template
+          #refSpan
+          kendoGridCellTemplate
+          let-dataItem="dataItem"
+          *ngIf="field.meta.type === 'numeric'"
+          >
+          <div
+            class="translate textbox-container"
+            [style]="getStyle(dataItem, field.name)"
+          >
+            <div #refSpan class="textbox">
+              {{ getPropertyValue(dataItem, field.name) }}
+            </div>
+            <button
+              kendoButton
+              *ngIf="isEllipsisActive(refSpan)"
+              icon="hyperlink-open-sm"
+              (click)="onExpandText(dataItem, field.name)"
+              [look]="'flat'"
+              matTooltip="Open in full width"
+            ></button>
+          </div>
+          </ng-template>
           <!-- DISPLAY ( color ) -->
           <ng-template
             kendoGridCellTemplate
