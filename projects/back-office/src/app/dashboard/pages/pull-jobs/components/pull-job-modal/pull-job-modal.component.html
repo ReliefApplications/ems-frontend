@@ -1,5 +1,8 @@
 <h1 mat-dialog-title>
-  {{(data.pullJob ? 'common.editObject' : 'common.newObject') | translate: { name: 'common.pullJob.one' | translate } }}  
+  {{
+    (data.pullJob ? 'common.editObject' : 'common.newObject')
+      | translate: { name: 'common.pullJob.one' | translate }
+  }}
 </h1>
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <div mat-dialog-content *ngIf="!loading">
@@ -7,7 +10,7 @@
     <div class="form-group">
       <div class="form-group-row">
         <mat-form-field appearance="outline" style="flex: 1">
-          <mat-label>{{ 'common.name' | translate }}</mat-label>
+          <mat-label>{{ 'common.name' | translate }} *</mat-label>
           <input
             type="text"
             [placeholder]="'common.placeholder.name' | translate"
@@ -38,10 +41,17 @@
           <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
           <input
             type="text"
-            [placeholder]="'components.pullJob.modal.placeholder.schedule' | translate"
+            [placeholder]="
+              'components.pullJob.modal.placeholder.schedule' | translate
+            "
             matInput
             formControlName="schedule"
           />
+          <mat-icon
+            matSuffix
+            [matTooltip]="'components.pullJob.modal.hint.schedule' | translate"
+            >info</mat-icon
+          >
         </mat-form-field>
         <mat-form-field appearance="outline" style="flex: 1">
           <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
@@ -63,19 +73,33 @@
           <mat-label>{{ 'models.pullJob.url' | translate }}</mat-label>
           <input
             type="text"
-            [placeholder]="'components.pullJob.modal.placeholder.url' | translate"
+            [placeholder]="
+              'components.pullJob.modal.placeholder.url' | translate
+            "
             matInput
             formControlName="url"
           />
+          <mat-icon
+            matSuffix
+            [matTooltip]="'components.pullJob.modal.hint.url' | translate"
+            >info</mat-icon
+          >
         </mat-form-field>
         <mat-form-field appearance="outline" style="flex: 1">
           <mat-label>{{ 'models.pullJob.path' | translate }}</mat-label>
           <input
             type="text"
-            [placeholder]="'components.pullJob.modal.placeholder.path' | translate"
+            [placeholder]="
+              'components.pullJob.modal.placeholder.path' | translate
+            "
             matInput
             formControlName="path"
           />
+          <mat-icon
+            matSuffix
+            [matTooltip]="'components.pullJob.modal.hint.path' | translate"
+            >info</mat-icon
+          >
         </mat-form-field>
       </div>
       <div class="form-group-row">
@@ -195,7 +219,9 @@
         *ngIf="mappingArray.controls.length > 0"
         appearance="outline"
       >
-        <mat-label>{{ 'components.pullJob.modal.identifier' | translate }}</mat-label>
+        <mat-label>{{
+          'components.pullJob.modal.identifier' | translate
+        }}</mat-label>
         <mat-select formControlName="uniqueIdentifiers" multiple>
           <mat-option
             *ngFor="let element of mappingArray.controls"
