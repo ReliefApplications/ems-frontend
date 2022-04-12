@@ -51,3 +51,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+projects/back-office/src/environments/environment.ts
+package-lock.json
