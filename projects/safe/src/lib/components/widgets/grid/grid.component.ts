@@ -227,19 +227,27 @@ export class SafeGridWidgetComponent implements OnInit {
     }
     // Send email using backend mail service.
     if (options.sendMail) {
-      const body = this.grid.selectedRows.length > 0 ? options.bodyText : options.bodyTextAlternate;
+      const body =
+        this.grid.selectedRows.length > 0
+          ? options.bodyText
+          : options.bodyTextAlternate;
       this.emailService.previewMail(
         options.distributionList,
         options.subject,
         body,
-        { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: this.grid.selectedRows }] },
+        {
+          logic: 'and',
+          filters: [
+            { operator: 'eq', field: 'ids', value: this.grid.selectedRows },
+          ],
+        },
         {
           name: this.settings.query.name,
-          fields: options.bodyFields
+          fields: options.bodyFields,
         },
         this.grid.sortField || undefined,
         this.grid.sortOrder || undefined,
-        options.export,
+        options.export
       );
     }
 

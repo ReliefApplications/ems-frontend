@@ -21,6 +21,5 @@ export class LoginComponent implements OnInit {
   /**
    * Redirects to Azure authentication page.
    */
-  onLogin(): void {
-  }
+  onLogin(): void {}
 }
