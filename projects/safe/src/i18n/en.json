@@ -150,6 +150,11 @@
     "true": "True",
     "false": "False",
     "settings": "Settings",
+    "page": {
+      "none": "No page",
+      "one": "Page",
+      "few": "Pages"
+    },
     "child": "Child"
   },
   "pages": {
@@ -191,7 +196,7 @@
         "actions": "Actions"
       }
     },
-    "worklow": {
+    "workflow": {
       "empty": {
         "add": "Add steps",
         "customize": "Customize each of the steps created"
@@ -675,6 +680,9 @@
     }
   },
   "models": {
+    "dashboard": {
+      "share": "Share Dashboard"
+    },
     "resource": {
       "create": "Create a Resource"
     },
