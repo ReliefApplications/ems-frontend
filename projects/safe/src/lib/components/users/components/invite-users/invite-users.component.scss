@@ -5,3 +5,16 @@
 .file-select {
     margin-bottom: 24px;
 }
+
+.file-row {
+    display: flex;
+    justify-content: space-between;
+
+    kendo-fileselect {
+        width: 100%;
+    }
+    button {
+        margin-bottom: 24px;
+    }
+}
+

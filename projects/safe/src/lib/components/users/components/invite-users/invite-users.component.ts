@@ -103,9 +103,10 @@ export class SafeInviteUsersComponent implements OnInit {
    * @param $event Event of file upload.
    */
   onUpload($event: any): void {
-    const files = $event.target.files;
-    if (files[0] && this.isValidFile(files[0])) {
-      this.downloadService.uploadFile(this.data.uploadPath, files[0]).subscribe(
+    //const files = $event.target.files;
+    const file = $event.files[0].rawFile;
+    if (file && this.isValidFile(file)) {
+      this.downloadService.uploadFile(this.data.uploadPath, file).subscribe(
         (res) => {
           this.gridData.data = this.gridData.data.concat(res);
         },
@@ -117,7 +118,7 @@ export class SafeInviteUsersComponent implements OnInit {
         }
       );
     } else {
-      if (files.length > 0) {
+      if ($event.files.length === 0) {
         this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {
           error: true,
         });
