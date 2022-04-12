@@ -150,7 +150,12 @@
     "true": "True",
     "false": "False",
     "settings": "Settings",
-    "page": "Page"
+    "page": {
+      "none": "No page",
+      "one": "Page",
+      "few": "Pages"
+    },
+    "child": "Child"
   },
   "pages": {
     "appBuilder": {
@@ -539,6 +544,13 @@
     "pullJob": {
       "modal": {
         "placeholder": {
+          "url": "Enter URL...",
+          "path": "Enter path...",
+          "schedule": "Enter schedule time..."
+        },
+        "hint": {
+          "url": "Enter the URL after the host to reach specific data",
+          "path": "Enter the path to extract data from response",
           "schedule": "Enter the schedule time for this Pull job"
         },
         "mapping": "Mapping",
@@ -684,6 +696,8 @@
       }
     },
     "pullJob": {
+      "url": "Url",
+      "path": "Path",
       "schedule": "Schedule"
     },
     "application": {
