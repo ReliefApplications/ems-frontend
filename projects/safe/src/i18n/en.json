@@ -680,6 +680,9 @@
     }
   },
   "models": {
+    "dashboard": {
+      "share": "Share Dashboard"
+    },
     "resource": {
       "create": "Create a Resource"
     },
