@@ -155,7 +155,8 @@
       "one": "Page",
       "few": "Pages"
     },
-    "child": "Child"
+    "child": "Child",
+    "openFullScreen": "Open in Full Screen"
   },
   "pages": {
     "appBuilder": {
@@ -379,7 +380,10 @@
     },
     "records": {
       "showArchived": "Show archived records",
-      "showActive": "Show active records"
+      "showActive": "Show active records",
+      "upload": {
+        "hint": "File should contain one record per row. Header row contains the names of data fields."
+      }
     },
     "notifications": {
       "readAll": "Mark all as read"
@@ -467,6 +471,10 @@
       },
       "grid": {
         "empty": "No record detected",
+        "actions": {
+          "detail": "Open detail",
+          "history": "Show history"
+        },
         "layout": {
           "reset": "Reset default Layout"
         },
@@ -624,6 +632,11 @@
       "hint": {
         "fields": "Select data points below and drag them to 'selected fields' on the right",
         "style": "Styling rules make records with important information stand out. When a record matches more than one rule, the first rule is used."
+      },
+      "error": {
+        "field": {
+          "invalid": "Invalid field. Please click to remove."
+        }
       }
     },
     "aggregationBuilder": {

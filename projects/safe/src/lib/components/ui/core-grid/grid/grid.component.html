@@ -187,7 +187,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                matTooltip="Open in full width"
+                [matTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -248,7 +248,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                matTooltip="Open in full width"
+                [matTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -290,7 +290,7 @@
               icon="hyperlink-open-sm"
               (click)="onExpandText(dataItem, field.name)"
               [look]="'flat'"
-              matTooltip="Open in full width"
+              [matTooltip]="'common.openFullScreen' | translate"
             ></button>
           </div>
           </ng-template>
@@ -314,7 +314,7 @@
                 #refSpan
                 class="textbox external-link"
                 *ngIf="dataItem[field.name].length > 0"
-                matTooltip="Open detail"
+                [matTooltip]="'components.widget.grid.actions.detail' | translate"
                 (click)="
                   action.emit({
                     action: 'details',
@@ -767,7 +767,7 @@
           [icon]="'detail-section'"
           [look]="'flat'"
           (click)="action.emit({ action: 'details', items: dataItem })"
-          matTooltip="Open detail"
+          [matTooltip]="'components.widget.grid.actions.detail' | translate"
         ></button>
       </ng-template>
     </kendo-grid-column>
