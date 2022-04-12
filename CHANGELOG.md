@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.2...v1.1.3) (2022-04-12)
+
+
+### Features
+
+* add attachment in email ([8e03407](https://github.com/ReliefApplications/emrs-safe-frontend/commits/8e03407f9a8a5273c164e751caad9114baacc7f0))
+* email from back' [#25833](https://github.com/ReliefApplications/oort-frontend/issues/25833) ([7f516b9](https://github.com/ReliefApplications/emrs-safe-frontend/commits/7f516b92cced8a71569b86ab421ebe4013786b44))
+* grid now generates files with timestamp in the name [#25831](https://github.com/ReliefApplications/oort-frontend/issues/25831) ([a2c991e](https://github.com/ReliefApplications/emrs-safe-frontend/commits/a2c991e4c2562e512013e462a3cd84809dced0e1))
+* preview email [#27626](https://github.com/ReliefApplications/oort-frontend/issues/27626) ([5c50267](https://github.com/ReliefApplications/emrs-safe-frontend/commits/5c502677cf839d8243ff71bc1ae12dca617a1367))
+
 ### [1.1.2](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.2-alpha.0...v1.1.2) (2022-02-23)
 
 
