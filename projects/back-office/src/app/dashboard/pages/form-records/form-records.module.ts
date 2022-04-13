@@ -11,7 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
-import { UploadsModule } from "@progress/kendo-angular-upload";
+import { UploadsModule } from '@progress/kendo-angular-upload';
 
 @NgModule({
   declarations: [FormRecordsComponent],
@@ -28,7 +28,7 @@ import { UploadsModule } from "@progress/kendo-angular-upload";
     MatProgressSpinnerModule,
     MatPaginatorModule,
     TranslateModule,
-    UploadsModule
+    UploadsModule,
   ],
   exports: [FormRecordsComponent],
 })
