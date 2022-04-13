@@ -214,6 +214,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       } else {
         return meta.choices.find((x: any) => x.value === value)?.text || '';
       }
+    } else if (meta.relatedForms){
+      return meta.relatedForms.find((x: any) => x.id === value)?.name || '';
     } else {
       return value;
     }
