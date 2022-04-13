@@ -43,9 +43,7 @@ const setDefaultValue = (json, defaultValue) => {
 };
 
 // Check that translation files are sorted.
-// console.log(enJson);
 const sortedEnJson = sortJson(enJson);
-// console.log(sortedEnJson);
 fs.writeFile(
   'projects/safe/src/i18n/en.json',
   JSON.stringify(sortedEnJson, null, '\t'),
