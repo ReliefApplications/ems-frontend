@@ -372,7 +372,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
    * @param event new file event.
    */
   onFileChange(event: any): void {
-    const file = event.target.files[0];
+    const file = event.files[0].rawFile;
     this.uploadFileData(file);
   }
 
@@ -385,7 +385,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
     const path = `upload/resource/records/${this.id}`;
     this.downloadService.uploadFile(path, file).subscribe(
       (res) => {
-        this.xlsxFile.nativeElement.value = '';
+        this.xlsxFile.clearFiles();
         if (res.status === 'OK') {
           this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
           this.getResourceData();
@@ -393,7 +393,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       },
       (error: any) => {
         this.snackBar.openSnackBar(error.error, { error: true });
-        this.xlsxFile.nativeElement.value = '';
+        this.xlsxFile.clearFiles();
       }
     );
   }

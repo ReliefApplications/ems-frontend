@@ -357,9 +357,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   }
 
   onFileChange(event: any): void {
-    console.log(event);
     const file = event.files[0].rawFile;
-    console.log(file);
     this.uploadFileData(file);
   }
 
@@ -367,7 +365,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     const path = `upload/form/records/${this.id}`;
     this.downloadService.uploadFile(path, file).subscribe(
       (res) => {
-        //this.xlsxFile.nativeElement.value = '';
+        this.xlsxFile.clearFiles();
         if (res.status === 'OK') {
           this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
           this.getFormData();
@@ -375,7 +373,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       },
       (error: any) => {
         this.snackBar.openSnackBar(error.error, { error: true });
-        this.xlsxFile.nativeElement.value = '';
+        this.xlsxFile.clearFiles();
       }
     );
   }

@@ -102,27 +102,29 @@ export class SafeInviteUsersComponent implements OnInit {
    *
    * @param $event Event of file upload.
    */
-  onUpload($event: any): void {
-    //const files = $event.target.files;
-    const file = $event.files[0].rawFile;
-    if (file && this.isValidFile(file)) {
-      this.downloadService.uploadFile(this.data.uploadPath, file).subscribe(
-        (res) => {
-          this.gridData.data = this.gridData.data.concat(res);
-        },
-        (err) => {
-          if (err.status === 400) {
-            this.snackBar.openSnackBar(err.error, { error: true });
-            this.resetFileInput();
+  onUpload(files: any): void {
+    this.gridData.data = [];
+    if (files.length > 0) {
+      const file = files[0];
+      if (file && this.isValidFile(file)) {
+        this.downloadService.uploadFile(this.data.uploadPath, file).subscribe(
+          (res) => {
+            this.gridData.data = res;
+          },
+          (err) => {
+            if (err.status === 400) {
+              this.snackBar.openSnackBar(err.error, { error: true });
+              this.resetFileInput();
+            }
           }
+        );
+      } else {
+        if (files.length > 1) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {
+            error: true,
+          });
+          this.resetFileInput();
         }
-      );
-    } else {
-      if ($event.files.length === 0) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {
-          error: true,
-        });
-        this.resetFileInput();
       }
     }
   }
@@ -142,7 +144,7 @@ export class SafeInviteUsersComponent implements OnInit {
    * Deletes the file.
    */
   private resetFileInput(): void {
-    this.fileReader.nativeElement.value = '';
+    this.fileReader.clearFiles();
   }
 
   /**

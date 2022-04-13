@@ -55,13 +55,13 @@
         <button mat-menu-item (click)="onDownloadTemplate()">
           {{ 'common.downloadTemplate' | translate }}
         </button>
-        <input
+        <kendo-fileselect
           #xlsxFile
-          type="file"
           data-max-size="5120"
           accept=".xlsx"
-          (change)="onFileChange($event)"
-        />
+          (select)="onFileChange($event)"
+          [multiple]='false'>
+        </kendo-fileselect>
       </mat-menu>
     </div>
   </div>

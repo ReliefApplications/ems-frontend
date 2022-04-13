@@ -7,11 +7,10 @@
             #fileReader
             name="Upload XLSX"
             class="file-select"
-            (select)="onUpload($event)"
+            (valueChange)="onUpload($event)"
             accept=".xlsx"
             [multiple]='false'>
         </kendo-fileselect>
-        <!-- <input type="file" #fileReader name="Upload XLSX" class="file-select" (change)="onUpload($event)" accept=".xlsx" /> -->
         <button mat-button (click)="onDownload()" color="primary">{{'common.downloadTemplate' | translate}}</button>
     </div>
     <kendo-grid [data]="gridData" (cellClick)="cellClickHandler($event)" (add)="onAdd()">
