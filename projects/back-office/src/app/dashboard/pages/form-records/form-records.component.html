@@ -39,7 +39,7 @@
       icon="file_upload"
       category="secondary"
       variant="primary"
-      matTooltip="File should contain one record per row. Header row contains the names of data fields."
+      [matTooltip]="'components.records.upload.hint' | translate"
       [matMenuTriggerFor]="matUploadMenu"
       style="margin-left: 1rem"
     >

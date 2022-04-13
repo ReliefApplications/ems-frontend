@@ -7,7 +7,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { SafeButtonModule } from '@safe/builder';
 
 /**
- * Login Module.
+ * Login Page Module.
  */
 @NgModule({
   declarations: [LoginComponent],

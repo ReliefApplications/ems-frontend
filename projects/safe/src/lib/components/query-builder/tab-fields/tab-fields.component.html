@@ -24,7 +24,7 @@
                             *ngIf="form.at(index)?.invalid && field.type">
                         </safe-button>
                         <safe-button [isIcon]="true" icon="close" class="field-error" *ngIf="!field.type" (click)="onDelete(index)"
-                            matTooltip="Invalid field. Please click to remove.">
+                            [matTooltip]="'components.queryBuilder.error.field.invalid' | translate">
                         </safe-button>
                     </div>
                     <div *ngIf="field.type">

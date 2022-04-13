@@ -39,7 +39,9 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
 
   // === FORM ===
   public apiForm: FormGroup = new FormGroup({});
+  public status = status;
   public statusChoices = Object.values(status);
+  public authType = authType;
   public authTypeChoices = Object.values(authType);
 
   get name(): AbstractControl | null {
