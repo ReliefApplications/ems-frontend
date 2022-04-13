@@ -158,6 +158,7 @@
       "none": "No user",
       "one": "User"
     },
+    "openFullScreen": "Open in Full Screen",
     "value": {
       "few": "Values",
       "none": "No value",
@@ -383,6 +384,11 @@
       "dataset": {
         "select": "Select a dataset"
       },
+      "errors": {
+        "field": {
+          "invalid": "Invalid field. Please click to remove."
+        }
+      },
       "fields": {
         "available": "Available fields",
         "search": "Search fields...",
@@ -469,7 +475,10 @@
     },
     "records": {
       "showActive": "Show active records",
-      "showArchived": "Show archived records"
+      "showArchived": "Show archived records",
+      "upload": {
+        "hint": "File should contain one record per row. Header row contains the names of data fields."
+      }
     },
     "resource": {
       "delete": {
@@ -520,6 +529,10 @@
     "widget": {
       "expand": "Expand",
       "grid": {
+        "actions": {
+          "detail": "Open detail",
+          "history": "Show history"
+        },
         "empty": "No record detected",
         "errors": {
           "invalid": "Invalid grid configuration",
@@ -543,17 +556,6 @@
           "format": {
             "title": "Select export format"
           }
-        },
-        "filter": {
-          "toggle": "Toggle visibility of filter"
-        },
-        "item": {
-          "few": "{{count}} items",
-          "none": "No item",
-          "one": "{{count}} item"
-        },
-        "layout": {
-          "reset": "Reset default Layout"
         }
       },
       "settings": {
@@ -622,19 +624,10 @@
         "map": {
           "dataset": "Data set selection",
           "display": {
+            "title": "Default display",
             "latitude": "Map center latitude",
-            "longitude": "Map center longitude",
-            "title": "Default display"
+            "longitude": "Map center longitude"
           }
-        },
-        "errors": {
-          "invalid": "Invalid grid configuration",
-          "missingDataset": "Select a dataset in settings"
-        },
-        "item": {
-          "none": "No item",
-          "one": "{{count}} item",
-          "few": "{{count}} items"
         }
       }
     },
@@ -683,6 +676,9 @@
     },
     "channel": {
       "create": "Create a channel"
+    },
+    "dashboard": {
+      "share": "Share Dashboard"
     },
     "form": {
       "core": "Core",
@@ -816,7 +812,7 @@
     "pullJobs": {
       "create": "Create a pull job"
     },
-    "worklow": {
+    "workflow": {
       "addStep": {
         "selectType": "Select which type of step you want to create"
       },
