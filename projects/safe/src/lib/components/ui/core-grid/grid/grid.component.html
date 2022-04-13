@@ -130,7 +130,7 @@
           <!-- FILTER ( dropdown / radiogroup ) -->
           <ng-container
             *ngIf="
-              field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'
+              ['dropdown', 'radiogroup','form'].includes(field.meta.type)
             "
           >
             <ng-template
@@ -142,7 +142,7 @@
               <safe-dropdown-filter-menu
                 [filter]="filter"
                 [filterService]="filterService"
-                [data]="field.meta.choices"
+                [data]="field.meta.choices || field.meta.relatedForms"
                 [field]="field.name"
                 textField="text"
                 valueField="value"
@@ -156,7 +156,7 @@
             >
               <safe-dropdown-filter
                 [filter]="filter"
-                [data]="field.meta.choices"
+                [data]="field.meta.choices || field.meta.relatedForms"
                 [field]="field.name"
                 textField="text"
                 valueField="value"
