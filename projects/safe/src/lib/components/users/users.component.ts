@@ -53,7 +53,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   @Input() roles: Role[] = [];
   @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
   @Input() applicationService?: SafeApplicationService;
-  @Input() loading = true;
+  @Input() loading = false;
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns: string[] = [];
