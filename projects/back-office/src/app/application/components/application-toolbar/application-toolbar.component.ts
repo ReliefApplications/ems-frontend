@@ -77,8 +77,8 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   onPublish(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
-        this.translateService.instant('notification.objectIsLocked', {
-          value: this.application?.name,
+        this.translateService.instant('common.notifications.objectLocked', {
+          name: this.application?.name,
         })
       );
     } else {

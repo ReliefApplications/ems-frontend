@@ -49,7 +49,7 @@
         icon="file_upload"
         category="secondary"
         variant="primary"
-        matTooltip="File should contain one record per row. Header row contains the names of data fields."
+        [matTooltip]="'components.records.upload.hint' | translate"
         [matMenuTriggerFor]="matUploadMenu"
       >
         {{
@@ -122,7 +122,7 @@
                     [matMenuTriggerFor]="templates"
                   >
                     <mat-icon>edit_note</mat-icon>
-                    {{ 'actionAs.edit' | translate }}
+                    {{ 'common.editObject' | translate : { name: 'common.child' | translate } }}
                   </button>
                   <button
                     *ngIf="!showDeletedRecords"

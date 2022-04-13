@@ -76,7 +76,7 @@
       variant="danger"
       (click)="onDelete(selection.selected)"
     >
-      {{ 'common.deleteObject' | translate: { name: 'common.user.few' | translate } }}
+      {{ 'common.deleteObject' | translate: { name: 'common.user.few' | translate } }}
     </safe-button>
   </div>
 </div>
@@ -186,7 +186,7 @@
 
 <safe-skeleton-table
   *ngIf="loading"
-  [columns]="['global.name', 'global.username', 'table.authId', 'global.role']"
+  [columns]="['common.name', 'models.user.username', 'table.authId', 'common.role.one']"
   [actions]="true"
   [checkbox]="true"
 >

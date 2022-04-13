@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "1.2.0",
+  "version": "1.1.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -66,6 +66,7 @@
     "@progress/kendo-angular-scheduler": "^2.1.5",
     "@progress/kendo-angular-toolbar": "^4.1.2",
     "@progress/kendo-angular-treeview": "^5.4.3",
+    "@progress/kendo-angular-upload": "^8.0.2",
     "@progress/kendo-data-query": "^1.5.5",
     "@progress/kendo-date-math": "^1.5.3",
     "@progress/kendo-drawing": "^1.15.0",

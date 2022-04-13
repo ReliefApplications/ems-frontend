@@ -127,29 +127,29 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
           .subscribe((res) => {
             if (!res.errors) {
               this.snackBar.openSnackBar(
-                res?.data?.addUsers.length
-                  ? this.translate.instant('notification.usersActions', {
-                      action: this.translate
-                        .instant('notification.term.invited')
-                        .toLowerCase(),
-                      length: res?.data?.addUsers.length,
-                    })
-                  : this.translate.instant('notification.userActions', {
-                      action: this.translate
-                        .instant('notification.term.invited')
-                        .toLowerCase(),
-                    })
+                this.translate.instant('common.notifications.objectInvited', {
+                  name: this.translate
+                    .instant(
+                      res.data?.addUsers.length
+                        ? 'common.user.few'
+                        : 'common.user.one'
+                    )
+                    .toLowerCase(),
+                })
               );
               this.users.data = this.users.data.concat(
                 res?.data?.addUsers || []
               );
             } else {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.userInvalidActions', {
-                  action: this.translate
-                    .instant('notification.term.invited')
-                    .toLowerCase(),
-                }),
+                this.translate.instant(
+                  'common.notifications.objectNotInvited',
+                  {
+                    name: this.translate
+                      .instant('common.user.few')
+                      .toLowerCase(),
+                  }
+                ),
                 { error: true }
               );
             }
@@ -184,9 +184,12 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
             .subscribe((res) => {
               if (res.data) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.userRolesUpdated', {
-                    username: user.username,
-                  })
+                  this.translate.instant(
+                    'models.user.notifications.rolesUpdated',
+                    {
+                      username: user.username,
+                    }
+                  )
                 );
                 this.users.data = this.users.data.map((x) => {
                   if (x.id === user.id) {
@@ -257,29 +260,31 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               this.loading = false;
               if (res.data?.deleteUsers) {
                 this.snackBar.openSnackBar(
-                  res.data.deleteUsers > 1
-                    ? this.translate.instant('notification.usersActions', {
-                        action: this.translate
-                          .instant('notification.term.deleted')
-                          .toLowerCase(),
-                        length: res.data.deleteUsers,
-                      })
-                    : this.translate.instant('notification.userActions', {
-                        action: this.translate
-                          .instant('notification.term.deleted')
-                          .toLowerCase(),
-                      })
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate
+                      .instant(
+                        res.data.deleteUsers > 1
+                          ? 'common.user.few'
+                          : 'common.user.one'
+                      )
+                      .toLowerCase(),
+                  })
                 );
                 this.users.data = this.users.data.filter(
                   (u) => !ids.includes(u.id)
                 );
               } else {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.userInvalidActions', {
-                    action: this.translate
-                      .instant('notification.term.deleted')
-                      .toLowerCase(),
-                  }),
+                  this.translate.instant(
+                    'common.notifications.objectNotDeleted',
+                    {
+                      value: this.translate
+                        .instant(
+                          ids.length > 1 ? 'common.user.few' : 'common.user.one'
+                        )
+                        .toLowerCase(),
+                    }
+                  ),
                   { error: true }
                 );
               }

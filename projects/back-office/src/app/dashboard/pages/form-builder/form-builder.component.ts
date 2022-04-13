@@ -130,12 +130,15 @@ export class FormBuilderComponent implements OnInit {
               }
             } else {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.accessNotProvided', {
-                  type: this.translate
-                    .instant('notification.term.form')
-                    .toLowerCase(),
-                  error: '',
-                }),
+                this.translate.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.form.one')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
               // redirect to default screen if error
@@ -191,12 +194,15 @@ export class FormBuilderComponent implements OnInit {
               statusModal.close();
             } else {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectEdited', {
-                  type: this.translate
-                    .instant('notification.term.form')
-                    .toLowerCase(),
-                  value: this.form?.name,
-                })
+                this.translate.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translate
+                      .instant('common.form.one')
+                      .toLowerCase(),
+                    value: this.form?.name,
+                  }
+                )
               );
               this.form = { ...res.data?.editForm, structure };
               this.structure = structure;
@@ -235,8 +241,8 @@ export class FormBuilderComponent implements OnInit {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            this.translate.instant('notification.objectNotUpdated', {
-              type: this.translate.instant('notification.term.status'),
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.status'),
               error: res.errors[0].message,
             }),
             { error: true }
@@ -244,7 +250,7 @@ export class FormBuilderComponent implements OnInit {
           statusModal.close();
         } else {
           this.snackBar.openSnackBar(
-            this.translate.instant('notification.statusUpdated', {
+            this.translate.instant('common.notifications.statusUpdated', {
               value: e.value,
             })
           );
@@ -310,10 +316,8 @@ export class FormBuilderComponent implements OnInit {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            this.translate.instant('notification.objectNotUpdated', {
-              type: this.translate
-                .instant('notification.term.form')
-                .toLowerCase(),
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.form.one').toLowerCase(),
               error: res.errors[0].message,
             }),
             { error: true }
@@ -321,10 +325,8 @@ export class FormBuilderComponent implements OnInit {
           statusModal.close();
         } else {
           this.snackBar.openSnackBar(
-            this.translate.instant('notification.objectEdited', {
-              type: this.translate
-                .instant('notification.term.form')
-                .toLowerCase(),
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.form.one').toLowerCase(),
               value: formName,
             })
           );
@@ -355,7 +357,7 @@ export class FormBuilderComponent implements OnInit {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            this.translate.instant('notification.objectNotUpdated', {
+            this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('action.access').toLowerCase(),
               error: res.errors[0].message,
             }),
@@ -364,7 +366,7 @@ export class FormBuilderComponent implements OnInit {
           statusModal.close();
         } else {
           this.snackBar.openSnackBar(
-            this.translate.instant('notification.objectEdited', {
+            this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('action.access').toLowerCase(),
               value: '',
             })

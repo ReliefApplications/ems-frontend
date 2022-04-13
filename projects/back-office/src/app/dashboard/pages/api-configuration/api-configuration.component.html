@@ -15,7 +15,7 @@
               <mat-label>
                 {{'common.name' | translate}}
               </mat-label>
-              <input matInput formControlName="name" type='text' [placeholder]="'global.namePlaceholder' | translate" />
+              <input matInput formControlName="name" type='text' [placeholder]="'common.placeholder.name' | translate" />
               <mat-error *ngIf="name?.errors">
                 {{'components.apiConfiguration.create.errors.name' | translate}}
               </mat-error>
@@ -27,9 +27,9 @@
               </mat-label>
               <mat-select formControlName="status">
                 <mat-option *ngFor="let statusChoice of statusChoices" [value]=statusChoice>{{
-                  ((statusChoice === "active") ?
+                  ((statusChoice === status.active) ?
                       'common.status_active' :
-                      ((statusChoice === "pending") ?
+                      ((statusChoice === status.pending) ?
                           'common.status_pending' :
                           'common.status_archived'))
                   | translate
@@ -73,50 +73,51 @@
             </div>
 
           </div>
-
-          <h1>{{'pages.apiConfiguration.authentication' | translate}}</h1>
-          <ng-container *ngIf="apiForm.value.authType === 'serviceToService'">
-            <div formGroupName="settings" class="form-group">
-              <mat-form-field appearance="outline">
-                <mat-label>
-                  {{'pages.apiConfiguration.tokenUrl' | translate}}
-                </mat-label>
-                <input matInput formControlName="authTargetUrl" type='text'
-                [placeholder]="'pages.apiConfiguration.placeholder.tokenUrl' | translate" onfocus="this.value=''"/>
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>
-                  {{'pages.apiConfiguration.clientId' | translate}}
-                </mat-label>
-                <input matInput formControlName="apiClientID" type='text'
-                [placeholder]="'pages.apiConfiguration.placeholder.clientId' | translate" onfocus="this.value=''"/>
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>
-                  {{'pages.apiConfiguration.secret' | translate}}
-                </mat-label>
-                <input matInput formControlName="safeSecret" type='text'
-                [placeholder]="'pages.apiConfiguration.placeholder.secret' | translate" onfocus="this.value=''"/>
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>
-                  {{'pages.apiConfiguration.scope' | translate}}
-                </mat-label>
-                <input matInput formControlName="scope" type='text'
-                [placeholder]="'pages.apiConfiguration.placeholder.scope' | translate" onfocus="this.value=''"/>
-              </mat-form-field>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="apiForm.value.authType === 'userToService'">
-            <div formGroupName="settings" class="form-group">
-              <mat-form-field appearance="outline">
-                <mat-label>
-                  {{'pages.apiConfiguration.token' | translate}}
-                </mat-label>
-                <input matInput formControlName="token" type='text'
-                [placeholder]="'pages.apiConfiguration.placeholder.token' | translate" onfocus="this.value=''"/>
-              </mat-form-field>
-            </div>
+          <ng-container *ngIf="apiForm.value.authType !== authType.public">
+            <h1>{{'pages.apiConfiguration.authentication' | translate}}</h1>
+            <ng-container *ngIf="apiForm.value.authType === authType.serviceToService">
+              <div formGroupName="settings" class="form-group">
+                <mat-form-field appearance="outline">
+                  <mat-label>
+                    {{'pages.apiConfiguration.tokenUrl' | translate}}
+                  </mat-label>
+                  <input matInput formControlName="authTargetUrl" type='text'
+                  [placeholder]="'pages.apiConfiguration.placeholder.tokenUrl' | translate" onfocus="this.value=''"/>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>
+                    {{'pages.apiConfiguration.clientId' | translate}}
+                  </mat-label>
+                  <input matInput formControlName="apiClientID" type='text'
+                  [placeholder]="'pages.apiConfiguration.placeholder.clientId' | translate" onfocus="this.value=''"/>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>
+                    {{'pages.apiConfiguration.secret' | translate}}
+                  </mat-label>
+                  <input matInput formControlName="safeSecret" type='text'
+                  [placeholder]="'pages.apiConfiguration.placeholder.secret' | translate" onfocus="this.value=''"/>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>
+                    {{'pages.apiConfiguration.scope' | translate}}
+                  </mat-label>
+                  <input matInput formControlName="scope" type='text'
+                  [placeholder]="'pages.apiConfiguration.placeholder.scope' | translate" onfocus="this.value=''"/>
+                </mat-form-field>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="apiForm.value.authType === authType.userToService">
+              <div formGroupName="settings" class="form-group">
+                <mat-form-field appearance="outline">
+                  <mat-label>
+                    {{'pages.apiConfiguration.token' | translate}}
+                  </mat-label>
+                  <input matInput formControlName="token" type='text'
+                  [placeholder]="'pages.apiConfiguration.placeholder.token' | translate" onfocus="this.value=''"/>
+                </mat-form-field>
+              </div>
+            </ng-container>
           </ng-container>
         </div>
         <safe-button category="secondary" variant="primary" (click)="onSave()" [disabled]="apiForm.invalid || !apiForm.dirty">

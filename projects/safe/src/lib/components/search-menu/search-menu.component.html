@@ -5,4 +5,4 @@
 <div class="application-list">
     <safe-button *ngFor="let item of searchResults" [block]="true" (click)="onClick(item)">{{item.name}}</safe-button>
 </div>
-<p *ngIf="searchResults.length === 0">{{'global.noResults' | translate}}</p>
+<p *ngIf="searchResults.length === 0">{{'common.pagination.empty' | translate}}</p>

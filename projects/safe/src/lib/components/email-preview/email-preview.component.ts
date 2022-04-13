@@ -21,7 +21,6 @@ interface DialogData {
   styleUrls: ['./email-preview.component.scss'],
 })
 export class SafeEmailPreviewComponent implements OnInit {
-
   /** mail is put in a form to use read-only inputs */
   public form!: FormGroup;
 
@@ -44,10 +43,16 @@ export class SafeEmailPreviewComponent implements OnInit {
   /** Create the form from the dialog data, putting all fields as read-only */
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      from: [{value: this.data.from, disabled: true }],
-      to: [{value: this.data.to, disabled: true }],
-      subject: [{value: this.data.subject, disabled: true }],
-      html: [{value: this.sanitizer.bypassSecurityTrustHtml(this.data.html), disabled: true }],
+      from: [{ value: this.data.from, disabled: true }],
+      to: [{ value: this.data.to, disabled: true }],
+      subject: [{ value: this.data.subject, disabled: true }],
+      html: [
+        {
+          value: this.sanitizer.bypassSecurityTrustHtml(this.data.html),
+          disabled: true,
+        },
+      ],
+      files: [[]],
     });
   }
 }

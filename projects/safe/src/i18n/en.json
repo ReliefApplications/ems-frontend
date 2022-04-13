@@ -1,6 +1,7 @@
 {
   "common": {
     "add": "Add",
+    "child": "Child",
     "aggregation": {
       "few": "Aggregations",
       "none": "No aggregation",
@@ -22,6 +23,11 @@
       "few": "Channels",
       "none": "No channel",
       "one": "Channel"
+    },
+    "dashboard": {
+      "few": "Dashboards",
+      "none": "No dashboard",
+      "one": "Dashboard"
     },
     "clear": "Clear",
     "close": "Close",
@@ -78,7 +84,8 @@
     "newObject": "New {{name}}",
     "next": "Next",
     "pagination": {
-      "loadMore": "Load more"
+      "loadMore": "Load more",
+      "empty": "No result"
     },
     "placeholder": {
       "email": "Enter email",
@@ -93,6 +100,11 @@
       "few": "Position attributes",
       "none": "No position attribute",
       "one": "Position attribute"
+    },
+    "positionCategory": {
+      "few": "Position categories",
+      "none": "No position category",
+      "one": "Position category"
     },
     "preview": "Preview",
     "previous": "Previous",
@@ -126,6 +138,7 @@
     "status_active": "Active",
     "status_archived": "Archived",
     "status_pending": "Pending",
+    "deleted": "Deleted",
     "step": {
       "few": "Steps",
       "none": "No step",
@@ -145,12 +158,54 @@
       "none": "No user",
       "one": "User"
     },
+    "openFullScreen": "Open in Full Screen",
     "value": {
       "few": "Values",
       "none": "No value",
       "one": "Value"
     },
-    "viewObject": "View {{name}}"
+    "page": {
+      "few": "Pages",
+      "none": "No page",
+      "one": "Page"
+    },
+    "workflow": {
+      "few": "Workflows",
+      "none": "No workflow",
+      "one": "Workflow"
+    },
+    "label": "Label",
+    "viewObject": "View {{name}}",
+    "notifications": {
+      "accessNotProvided": "No access provided to this {{type}}. {{error}}",
+      "objectLocked": "{{name}} edition is locked by another user.",
+      "objectNotCreated": "The {{type}} was not created. {{error}}",
+      "objectCreated": "{{value}} {{type}} created.",
+      "objectUpdated": "{{value}} {{type}} edited.",
+      "objectNotUpdated": "{{type}} not edited. {{error}}",
+      "objectDeleted": "{{value}} deleted.",
+      "objectNotDeleted": "{{value}} deletion failed. {{error}}",
+      "objectReordered": "{{type}} reordered.",
+      "objectNotDuplicated": "The {{type}} was not duplicated. {{error}}",
+      "objectDuplicated": "The {{type}} {{value}} was successfully duplicated.",
+      "copiedToClipboard": "Copied!",
+      "objectInvited": "{{name}} invited.",
+      "objectNotInvited": "{{name}} invitation failed.",
+      "objectNotFound": "{{name}} not found.",
+      "platformAccessNotGranted": "You don't have a valid access to this platform.",
+      "readAll": "Mark all as read",
+      "alreadyExists": "The {{type}} {{value}} already exists on this application.",
+      "loadedFromCache": "{{type}} loaded from cache.",
+      "unlocked": "{{value}} edition has been unlocked by another user.",
+      "accessDenied": "You don't have permission to see the {{type}}.",
+      "statusUpdated": "Status updated to {{value}}.",
+      "noOpened": "No opened {{value}}.",
+      "formatInvalid": "Please upload a valid .{{format}} file.",
+      "dataRecovered": "The data has been recovered"
+    },
+    "errors": {
+      "objectDuplicated": "{{type}} {{value}} already exists."
+    }
   },
   "components": {
     "access": {
@@ -325,23 +380,14 @@
     "notifications": {
       "readAll": "Mark all as read"
     },
-    "pullJob": {
-      "delete": {
-        "confirmationMessage": "Do you confirm the deletion of the pull job {{name}}?",
-        "title": "Delete pull job"
-      },
-      "modal": {
-        "identifier": "Unique identifiers",
-        "mapping": "Mapping",
-        "placeholder": {
-          "schedule": "Enter the schedule time for this Pull job"
-        },
-        "switch": "Switch mode"
-      }
-    },
     "queryBuilder": {
       "dataset": {
         "select": "Select a dataset"
+      },
+      "errors": {
+        "field": {
+          "invalid": "Invalid field. Please click to remove."
+        }
       },
       "fields": {
         "available": "Available fields",
@@ -429,7 +475,10 @@
     },
     "records": {
       "showActive": "Show active records",
-      "showArchived": "Show archived records"
+      "showArchived": "Show archived records",
+      "upload": {
+        "hint": "File should contain one record per row. Header row contains the names of data fields."
+      }
     },
     "resource": {
       "delete": {
@@ -480,6 +529,10 @@
     "widget": {
       "expand": "Expand",
       "grid": {
+        "actions": {
+          "detail": "Open detail",
+          "history": "Show history"
+        },
         "empty": "No record detected",
         "errors": {
           "invalid": "Invalid grid configuration",
@@ -503,17 +556,6 @@
           "format": {
             "title": "Select export format"
           }
-        },
-        "filter": {
-          "toggle": "Toggle visibility of filter"
-        },
-        "item": {
-          "few": "{{count}} items",
-          "none": "No item",
-          "one": "{{count}} item"
-        },
-        "layout": {
-          "reset": "Reset default Layout"
         }
       },
       "settings": {
@@ -582,9 +624,9 @@
         "map": {
           "dataset": "Data set selection",
           "display": {
+            "title": "Default display",
             "latitude": "Map center latitude",
             "longitude": "Map center longitude",
-            "title": "Default display",
             "basemap": "Base map",
             "zoom": "Default zoom"
           },
@@ -609,11 +651,37 @@
           }
         }
       }
+    },
+    "pullJob": {
+      "modal": {
+        "placeholder": {
+          "url": "Enter URL...",
+          "path": "Enter path...",
+          "schedule": "Enter schedule time..."
+        },
+        "hint": {
+          "url": "Enter the URL after the host to reach specific data",
+          "path": "Enter the path to extract data from response",
+          "schedule": "Enter the schedule time for this Pull job"
+        },
+        "mapping": "Mapping",
+        "switch": "Switch mode",
+        "identifier": "Unique identifiers"
+      },
+      "delete": {
+        "title": "Delete pull job",
+        "confirmationMessage": "Do you confirm the deletion of the pull job {{name}}?"
+      }
     }
   },
   "models": {
     "apiConfiguration": {
       "authType": "Authentication type"
+    },
+    "pullJob": {
+      "url": "Url",
+      "path": "Path",
+      "schedule": "Schedule"
     },
     "application": {
       "description": "Description",
@@ -621,10 +689,17 @@
       "setAsFavorite": "Set as favorite",
       "subscription": {
         "create": "Create a subscription"
+      },
+      "notifications": {
+        "published": "{{value}} application published.",
+        "updated": "Application updated."
       }
     },
     "channel": {
       "create": "Create a channel"
+    },
+    "dashboard": {
+      "share": "Share Dashboard"
     },
     "form": {
       "core": "Core",
@@ -638,12 +713,14 @@
     "page": {
       "add": "Add a Page"
     },
-    "pullJob": {
-      "schedule": "Schedule"
-    },
     "record": {
       "convert": "Convert",
-      "restore": "Restore"
+      "restore": "Restore",
+      "notifications": {
+        "uploadSuccessful": "Records upload successful.",
+        "conversionIncomplete": "Selected record(s) do not match with some fields from this form.",
+        "rowsAdded": "Added {{length}} row(s) to the field {{field}} in the record {{value}}."
+      }
     },
     "resource": {
       "create": "Create a Resource"
@@ -652,7 +729,10 @@
       "create": "Create a role"
     },
     "user": {
-      "username": "Username"
+      "username": "Username",
+      "notifications": {
+        "rolesUpdated": "{{username}} roles updated."
+      }
     },
     "widget": {
       "add": "Add a Widget",
@@ -667,6 +747,12 @@
       },
       "scheduler": {
         "defaultTitle": "Scheduler Widget"
+      }
+    },
+    "workflow": {
+      "notifications": {
+        "cannotGoToNextStep": "Cannot go to next step.",
+        "goToStep": "Back to {{step}} step."
       }
     }
   },
@@ -693,7 +779,12 @@
       "scope": "Scope",
       "secret": "Client Secret",
       "token": "Token",
-      "tokenUrl": "Access token URL"
+      "tokenUrl": "Access token URL",
+      "notifications": {
+        "authTokenFetched": "Authentication token fetched, ping again to get the actual response.",
+        "pingReceived": "Received positive response from ping request.",
+        "pingFailed": "Ping request failed."
+      }
     },
     "apiConfigurations": {
       "create": "Create an API Configuration"
@@ -734,12 +825,15 @@
       "title": "Available forms"
     },
     "profile": {
-      "title": "Your profile"
+      "title": "Your profile",
+      "notifications": {
+        "updated": "Preferences saved."
+      }
     },
     "pullJobs": {
       "create": "Create a pull job"
     },
-    "worklow": {
+    "workflow": {
       "addStep": {
         "selectType": "Select which type of step you want to create"
       },

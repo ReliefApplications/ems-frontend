@@ -110,10 +110,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
-                  'notification.accessNotProvided',
+                  'common.notifications.accessNotProvided',
                   {
                     type: this.translateService
-                      .instant('notification.term.dashboard')
+                      .instant('common.dashboard.one')
                       .toLowerCase(),
                     error: '',
                   }
@@ -308,10 +308,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.workflowService.updateStepName(res.data.editStep);
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectNotUpdated', {
-                type: this.translateService.instant('notification.term.step'),
-                error: res.errors ? res.errors[0].message : '',
-              })
+              this.translateService.instant(
+                'common.notifications.objectNotUpdated',
+                {
+                  type: this.translateService.instant('common.step.one'),
+                  error: res.errors ? res.errors[0].message : '',
+                }
+              )
             );
           }
         });

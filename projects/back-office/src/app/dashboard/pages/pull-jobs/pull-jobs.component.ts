@@ -1,19 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
-  Application,
   Channel,
   PullJob,
-  SafeApplicationService,
   status,
   SafeConfirmModalComponent,
   SafeSnackBarService,
 } from '@safe/builder';
-import { Apollo, Query, QueryRef } from 'apollo-angular';
-import { Subscription } from 'rxjs';
+import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GetPullJobsQueryResponse,
-  GET_API_CONFIGURATIONS,
   GET_PULL_JOBS,
 } from '../../../graphql/queries';
 import {
@@ -147,6 +143,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           name: string;
           status: status;
           apiConfiguration: string;
+          url?: string;
+          path?: string;
           schedule?: string;
           convertTo?: string;
           channel?: string;
@@ -162,6 +160,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
             };
             Object.assign(
               variables,
+              value.url && { url: value.url },
+              value.path && { path: value.path },
               value.schedule && { schedule: value.schedule },
               value.convertTo && { convertTo: value.convertTo },
               value.channel && { channel: value.channel },
@@ -178,12 +178,15 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               .subscribe((res) => {
                 if (res.data?.addPullJob) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('notification.objectCreated', {
-                      type: this.translate
-                        .instant('notification.term.pullJob')
-                        .toLowerCase(),
-                      value: value.name,
-                    })
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate
+                          .instant('common.pullJob.one')
+                          .toLowerCase(),
+                        value: value.name,
+                      }
+                    )
                   );
                   if (this.cachedPullJobs.length === this.pageInfo.length) {
                     this.cachedPullJobs = this.cachedPullJobs.concat([
@@ -235,8 +238,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
             .subscribe((res) => {
               if (res.data?.deletePullJob) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.objectDeleted', {
-                    value: this.translate.instant('notification.term.pullJob'),
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.pullJob.one'),
                   })
                 );
                 this.cachedPullJobs = this.cachedPullJobs.filter(
@@ -274,6 +277,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           name: string;
           status: status;
           apiConfiguration: string;
+          url?: string;
+          path?: string;
           schedule?: string;
           convertTo?: string;
           channel?: string;
@@ -292,6 +297,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               value.apiConfiguration && {
                 apiConfiguration: value.apiConfiguration,
               },
+              value.url && { url: value.url },
+              value.path && { path: value.path },
               value.schedule && { schedule: value.schedule },
               value.convertTo && { convertTo: value.convertTo },
               value.channel && { channel: value.channel },
@@ -308,12 +315,15 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               .subscribe((res) => {
                 if (res.data?.editPullJob) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('notification.objectEdited', {
-                      type: this.translate
-                        .instant('notification.term.pullJob')
-                        .toLowerCase(),
-                      value: value.name,
-                    })
+                    this.translate.instant(
+                      'common.notifications.objectNotUpdated',
+                      {
+                        type: this.translate
+                          .instant('common.pullJob.one')
+                          .toLowerCase(),
+                        value: value.name,
+                      }
+                    )
                   );
                   this.cachedPullJobs = this.cachedPullJobs.map(
                     (pullJob: PullJob) => {

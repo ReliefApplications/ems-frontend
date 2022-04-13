@@ -39,7 +39,9 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
 
   // === FORM ===
   public apiForm: FormGroup = new FormGroup({});
+  public status = status;
   public statusChoices = Object.values(status);
+  public authType = authType;
   public authTypeChoices = Object.values(authType);
 
   get name(): AbstractControl | null {
@@ -98,10 +100,10 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
-                  'notification.accessNotProvided',
+                  'common.notifications.accessNotProvided',
                   {
                     type: this.translateService
-                      .instant('notification.term.resource')
+                      .instant('common.resource.one')
                       .toLowerCase(),
                     error: '',
                   }
@@ -235,10 +237,13 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectNotUpdated', {
-              type: this.translateService.instant('table.APIConf'),
-              error: res.errors[0].message,
-            }),
+            this.translateService.instant(
+              'common.notifications.objectNotUpdated',
+              {
+                type: this.translateService.instant('table.APIConf'),
+                error: res.errors[0].message,
+              }
+            ),
             { error: true }
           );
           this.loading = false;
@@ -263,17 +268,21 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
           if (res.access_token) {
             this.snackBar.openSnackBar(
               this.translateService.instant(
-                'notification.pingResponseAuthToken'
+                'pages.apiConfiguration.notifications.authTokenFetched'
               )
             );
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.pingResponseReceived')
+              this.translateService.instant(
+                'pages.apiConfiguration.notifications.pingReceived'
+              )
             );
           }
         } else {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.pingResponseError'),
+            this.translateService.instant(
+              'pages.apiConfiguration.notifications.pingFailed'
+            ),
             { error: true }
           );
         }
