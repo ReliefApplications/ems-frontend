@@ -129,6 +129,7 @@
       "none": "No role",
       "one": "Role"
     },
+    "summary": "Summary",
     "save": "Save",
     "saveChanges": "Save changes",
     "searchObject": "Search {{name}}",
@@ -820,6 +821,13 @@
         "add": "Add steps",
         "customize": "Customize each of the steps created"
       }
+    },
+    "users": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "region": "Region",
+      "country": "Country",
+      "locationType": "Location type"
     }
   }
 }
