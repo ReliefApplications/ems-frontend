@@ -1,12 +1,12 @@
 {
 	"common": {
 		"add": "******",
-		"aggregation": {
+		"apiConfiguration": {
 			"few": "******",
 			"none": "******",
 			"one": "******"
 		},
-		"apiConfiguration": {
+		"aggregation": {
 			"few": "******",
 			"none": "******",
 			"one": "******"
