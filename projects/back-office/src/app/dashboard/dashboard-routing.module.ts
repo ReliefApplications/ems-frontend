@@ -159,16 +159,20 @@ export const routes = [
               {
                 path: '',
                 loadChildren: () =>
-                  import('./pages/users/users.module').then((m) => m.UsersModule),
+                  import('./pages/users/users.module').then(
+                    (m) => m.UsersModule
+                  ),
                 // canActivate: [SafePermissionGuard]
               },
               {
                 path: ':id',
                 loadChildren: () =>
-                  import('./pages/user-management/user-management.module').then((m) => m.UserManagementModule),
+                  import('./pages/user-management/user-management.module').then(
+                    (m) => m.UserManagementModule
+                  ),
                 // canActivate: [SafePermissionGuard]
               },
-            ]
+            ],
           },
           {
             path: 'roles',

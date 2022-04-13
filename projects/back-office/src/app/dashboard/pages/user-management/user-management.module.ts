@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { UserManagementRoutingModule } from './user-management-routing.module';
 import { UserManagementComponent } from './user-management.component';
-import { SafeUserManagementModule } from '@safe/builder'
+import { SafeUserManagementModule } from '@safe/builder';
 @NgModule({
   declarations: [UserManagementComponent],
   imports: [

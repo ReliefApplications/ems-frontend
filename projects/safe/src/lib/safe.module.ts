@@ -77,9 +77,8 @@ import { SafeUserManagementModule } from './components/user-management/user-mana
     SafeSnackbarSpinnerModule,
     SafeSkeletonTableModule,
     SafeSkeletonModule,
-    SafeUserManagementModule
+    SafeUserManagementModule,
   ],
-  declarations: [
-  ],
+  declarations: [],
 })
 export class SafeModule {}

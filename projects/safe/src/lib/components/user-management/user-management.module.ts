@@ -9,8 +9,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 
-
-
 @NgModule({
   declarations: [SafeUserManagementComponent],
   imports: [
@@ -22,7 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSelectModule
+    MatSelectModule,
   ],
   exports: [SafeUserManagementComponent],
 })

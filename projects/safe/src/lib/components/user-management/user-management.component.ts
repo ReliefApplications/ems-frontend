@@ -5,19 +5,15 @@ import { Role } from '../../models/user.model';
 
 // Dummy data
 const regions = [
-  "Asia",
-  "Africa",
-  "North America",
-  "South America",
-  "Europe",
-  "Australia"
-]
-const countries = [
-  "Chile"
-]
-const locationTypes = [
-  "Headquarters"
-]
+  'Asia',
+  'Africa',
+  'North America',
+  'South America',
+  'Europe',
+  'Australia',
+];
+const countries = ['Chile'];
+const locationTypes = ['Headquarters'];
 const dummyUser = {
   firstName: 'Pedro',
   lastName: 'Pascal',
@@ -25,17 +21,16 @@ const dummyUser = {
   region: 'South America',
   country: 'Chile',
   locationType: 'Headquarters',
-  roles: []
-}
+  roles: [],
+};
 
 @Component({
   selector: 'safe-user-management',
   templateUrl: './user-management.component.html',
-  styleUrls: ['./user-management.component.scss']
+  styleUrls: ['./user-management.component.scss'],
 })
 export class SafeUserManagementComponent implements OnInit {
-
-  @Input() public id: string = '';
+  @Input() public id = '';
   @Input() public roles?: Role[];
   public regions = regions;
   public countries = countries;
@@ -43,7 +38,7 @@ export class SafeUserManagementComponent implements OnInit {
 
   public userForm?: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
     const user = dummyUser;
@@ -54,7 +49,7 @@ export class SafeUserManagementComponent implements OnInit {
       region: user.region,
       country: user.country,
       locationType: user.locationType,
-      roles: user.roles
+      roles: user.roles,
     });
   }
 

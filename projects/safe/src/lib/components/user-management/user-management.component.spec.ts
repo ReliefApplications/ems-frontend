@@ -8,9 +8,8 @@ describe('UserManagementComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeUserManagementComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeUserManagementComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
