@@ -34,5 +34,5 @@ jobs:
         with:
           token: ${{ secrets.CD_ACCESS_TOKEN }}
           event-type: cd
-          client-payload:
+          client-payload: '{"environment": "${{ matrix.environment }}", "branch": "${{ matrix.branch }}"}'
           
