@@ -164,7 +164,7 @@ export class AggregationBuilderService {
               const newField = Object.assign({}, groupByField);
               newField.type = { ...groupByField.type };
               if (stage.form.groupBy.includes('.')) {
-                const fieldArray = stage.form.field.split('.');
+                const fieldArray = stage.form.groupBy.split('.');
                 const sub = fieldArray.pop();
                 newField.type.kind = 'OBJECT';
                 newField.fields = newField.fields.map((x: any) =>

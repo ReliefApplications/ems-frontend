@@ -37,6 +37,9 @@ export class SafeGroupStageComponent implements OnInit {
     this.form.get('groupBy')?.valueChanges.subscribe((fieldName) => {
       if (fieldName) {
         this.displayDateOperators = this.isDateField(fieldName);
+        if (!this.displayDateOperators) {
+          this.form.get('groupByExpression')?.get('operator')?.setValue(null);
+        }
       }
     });
   }
