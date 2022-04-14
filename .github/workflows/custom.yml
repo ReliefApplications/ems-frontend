@@ -1,4 +1,4 @@
-name: Custom
+name: Trigger CD
 
 on:
   # schedule:

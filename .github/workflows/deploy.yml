@@ -22,6 +22,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         ref: ${{ github.event.client_payload.branch }}
+        with:
+          ref: ${{ github.event.client_payload.branch }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
