@@ -31,6 +31,7 @@ import {
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
 
 const ITEMS_PER_PAGE = 10;
 const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
@@ -81,6 +82,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
   };
 
   @ViewChild('xlsxFile') xlsxFile: any;
+
+  public showUpload = false;
 
   constructor(
     private apollo: Apollo,
@@ -389,11 +392,13 @@ export class ResourceComponent implements OnInit, OnDestroy {
         if (res.status === 'OK') {
           this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
           this.getResourceData();
+          this.showUpload = false;
         }
       },
       (error: any) => {
         this.snackBar.openSnackBar(error.error, { error: true });
-        this.xlsxFile.clearFiles();
+        // this.xlsxFile.clearFiles();
+        this.showUpload = false;
       }
     );
   }

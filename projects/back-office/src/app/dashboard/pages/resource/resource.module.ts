@@ -17,7 +17,8 @@ import {
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
-import { UploadsModule } from '@progress/kendo-angular-upload';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
 
 @NgModule({
   declarations: [ResourceComponent],
@@ -37,7 +38,8 @@ import { UploadsModule } from '@progress/kendo-angular-upload';
     MatPaginatorModule,
     TranslateModule,
     SafeLayoutModalModule,
-    UploadsModule,
+    OverlayModule,
+    UploadMenuModule,
   ],
   exports: [ResourceComponent],
 })

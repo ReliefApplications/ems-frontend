@@ -29,7 +29,10 @@
       variant="primary"
       [matMenuTriggerFor]="menu"
     >
-      {{'common.downloadObject' | translate: { name: 'common.record.few' | translate } }}
+      {{
+        'common.downloadObject'
+          | translate: { name: 'common.record.few' | translate }
+      }}
     </safe-button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onDownload('csv')">.csv</button>
@@ -40,23 +43,27 @@
       category="secondary"
       variant="primary"
       [matTooltip]="'components.records.upload.hint' | translate"
-      [matMenuTriggerFor]="matUploadMenu"
+      (click)="showUpload = !showUpload"
+      cdkOverlayOrigin
+      #uploadTrigger="cdkOverlayOrigin"
       style="margin-left: 1rem"
     >
-      {{'common.uploadObject' | translate: { name: 'common.record.few' | translate } }}
+      {{
+        'common.uploadObject'
+          | translate: { name: 'common.record.few' | translate }
+      }}
     </safe-button>
-    <mat-menu #matUploadMenu="matMenu">
-      <button mat-menu-item (click)="onDownloadTemplate()">
-        {{ 'common.downloadTemplate' | translate }}
-      </button>
-      <kendo-fileselect
-        #xlsxFile
-        data-max-size="5120"
-        accept=".xlsx"
-        (select)="onFileChange($event)"
-        [multiple]="false">
-      </kendo-fileselect>
-    </mat-menu>
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="uploadTrigger"
+      [cdkConnectedOverlayOpen]="showUpload"
+    >
+      <app-upload-menu
+      (close)="showUpload = false"
+      (upload)="onFileChange($event)"
+      (download)="onDownloadTemplate()"
+      ></app-upload-menu>
+    </ng-template>
   </div>
 </div>
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
