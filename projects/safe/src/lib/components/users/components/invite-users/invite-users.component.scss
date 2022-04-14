@@ -9,12 +9,11 @@
 .file-row {
     display: flex;
     justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
 
-    kendo-fileselect {
-        width: 100%;
-    }
-    button {
-        margin-bottom: 24px;
+    kendo-upload {
+        flex: 1;
     }
 }
-

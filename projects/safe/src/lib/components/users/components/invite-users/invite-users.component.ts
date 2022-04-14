@@ -13,6 +13,7 @@ import { NOTIFICATIONS } from '../../../../const/notifications';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { SafeDownloadService } from '../../../../services/download.service';
 import { TranslateService } from '@ngx-translate/core';
+import { UploadEvent } from '@progress/kendo-angular-upload';
 
 interface DialogData {
   roles: Role[];
@@ -100,12 +101,13 @@ export class SafeInviteUsersComponent implements OnInit {
   /**
    * Uploads a list of users as xlsx file.
    *
-   * @param $event Event of file upload.
+   * @param e Event of file upload.
    */
-  onUpload(files: any): void {
+  onUpload(e: UploadEvent): void {
+    e.preventDefault();
     this.gridData.data = [];
-    if (files.length > 0) {
-      const file = files[0];
+    if (e.files.length > 0) {
+      const file = e.files[0].rawFile;
       if (file && this.isValidFile(file)) {
         this.downloadService.uploadFile(this.data.uploadPath, file).subscribe(
           (res) => {
@@ -119,7 +121,7 @@ export class SafeInviteUsersComponent implements OnInit {
           }
         );
       } else {
-        if (files.length > 1) {
+        if (e.files.length > 1) {
           this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {
             error: true,
           });
