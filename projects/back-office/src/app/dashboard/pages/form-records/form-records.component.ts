@@ -357,11 +357,21 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Take file from upload event and call upload method.
+   *
+   * @param event Upload event.
+   */
   onFileChange(event: any): void {
     const file = event.files[0].rawFile;
     this.uploadFileData(file);
   }
 
+  /**
+   * Upload file and indicate status of request.
+   *
+   * @param file file to upload.
+   */
   uploadFileData(file: any): void {
     const path = `upload/form/records/${this.id}`;
     this.downloadService.uploadFile(path, file).subscribe(

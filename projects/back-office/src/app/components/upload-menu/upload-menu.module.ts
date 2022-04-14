@@ -5,6 +5,10 @@ import { UploadModule } from '@progress/kendo-angular-upload';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '@safe/builder';
 
+/**
+ * Upload Menu to be displayed in overlay container.
+ * Contains file upload and template download.
+ */
 @NgModule({
   declarations: [UploadMenuComponent],
   imports: [CommonModule, UploadModule, TranslateModule, SafeButtonModule],
