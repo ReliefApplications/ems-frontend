@@ -1,11 +1,6 @@
 name: Front-end CD
 
 on:
-  # workflow_dispatch:
-  #   inputs:
-  #     environment:
-  #       type: environment
-  #       required: true
   repository_dispatch:
     types: [cd]
 

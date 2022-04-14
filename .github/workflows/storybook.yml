@@ -1,9 +1,8 @@
 name: Storybook
 
 on:
-  push:
-    branches:
-      - 'main'
+  schedule:
+    - '0 0 * * *'
 
 jobs:
   build:
