@@ -577,6 +577,17 @@
 					"format": {
 						"title": "Select export format"
 					}
+				},
+				"filter": {
+					"toggle": "Toggle visibility of filter"
+				},
+				"item": {
+					"few": "{{count}} items",
+					"none": "No item",
+					"one": "{{count}} item"
+				},
+				"layout": {
+					"reset": "Reset default Layout"
 				}
 			},
 			"settings": {
@@ -637,7 +648,8 @@
 								"create": "Create a new layout",
 								"load": "Load existing layout"
 							},
-							"select": "Select a layout"
+							"select": "Select a layout",
+							"title": "Add new layout"
 						},
 						"title": "Grid layouts"
 					}

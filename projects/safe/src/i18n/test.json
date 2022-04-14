@@ -577,6 +577,17 @@
 					"format": {
 						"title": "******"
 					}
+				},
+				"item": {
+					"none": "******",
+					"one": "******",
+					"few": "******"
+				},
+				"layout": {
+					"reset": "******"
+				},
+				"filter": {
+					"toggle": "******"
 				}
 			},
 			"settings": {
@@ -633,6 +644,7 @@
 					},
 					"layouts": {
 						"add": {
+							"title": "******",
 							"choice": {
 								"create": "******",
 								"load": "******"
