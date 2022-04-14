@@ -2,7 +2,7 @@ name: Trigger CD
 
 on:
   schedule:
-    - '0 0 * * *'
+    - cron: '0 0 * * *'
 
 jobs:
   deploy:

@@ -2,7 +2,7 @@ name: CodeSee Map
 
 on:
   schedule:
-    - '0 0 * * *'
+    - cron: '0 0 * * *'
   pull_request:
     # The branches below must be a subset of the branches above
     branches:
