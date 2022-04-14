@@ -74,6 +74,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   };
 
   @ViewChild('xlsxFile') xlsxFile: any;
+  public showUpload = false;
 
   constructor(
     private apollo: Apollo,
@@ -357,7 +358,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   }
 
   onFileChange(event: any): void {
-    const file = event.target.files[0];
+    const file = event.files[0].rawFile;
     this.uploadFileData(file);
   }
 
@@ -365,15 +366,17 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     const path = `upload/form/records/${this.id}`;
     this.downloadService.uploadFile(path, file).subscribe(
       (res) => {
-        this.xlsxFile.nativeElement.value = '';
+        // this.xlsxFile.clearFiles();
         if (res.status === 'OK') {
           this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
           this.getFormData();
+          this.showUpload = false;
         }
       },
       (error: any) => {
         this.snackBar.openSnackBar(error.error, { error: true });
-        this.xlsxFile.nativeElement.value = '';
+        // this.xlsxFile.clearFiles();
+        this.showUpload = false;
       }
     );
   }
