@@ -6,9 +6,26 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 const formBuilder = new FormBuilder();
 
 /**
+ * Creates an expression form.
+ *
+ * @param value initial value
+ * @param validators boolean to set validators or not (default true)
+ * @returns Expression form group.
+ */
+export const expressionForm = (value: any, validators = true): FormGroup =>
+  formBuilder.group({
+    operator: [
+      value && value.operator ? value.operator : '',
+      validators ? Validators.required : null,
+    ],
+    field: [value && value.field ? value.field : ''],
+  });
+
+/**
  * Creates a addFields stage form.
  *
  * @param value initial value
+ * @param validators boolean to set validators or not (default true)
  * @returns Stage form group.
  */
 export const addFieldsForm = (value: any, validators = true): FormGroup =>
@@ -17,19 +34,9 @@ export const addFieldsForm = (value: any, validators = true): FormGroup =>
       value && value.name ? value.name : '',
       validators ? Validators.required : null,
     ],
-    expression: formBuilder.group({
-      operator: [
-        value && value.expression && value.expression.operator
-          ? value.expression.operator
-          : '',
-        Validators.required,
-      ],
-      field: [
-        value && value.expression && value.expression.field
-          ? value.expression.field
-          : '',
-      ],
-    }),
+    expression: expressionForm(
+      value && value.expression ? value.expression : false
+    ),
   });
 
 /**
@@ -69,6 +76,12 @@ export const addStage = (value: any): FormGroup => {
             value.form && value.form.groupBy ? value.form.groupBy : '',
             Validators.required,
           ],
+          groupByExpression: expressionForm(
+            value.form && value.form.groupByExpression
+              ? value.form.groupByExpression
+              : false,
+            false
+          ),
           addFields: formBuilder.array(
             value.form && value.form.addFields
               ? value.form.addFields.map((x: any) => addFieldsForm(x, false))

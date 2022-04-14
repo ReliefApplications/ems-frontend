@@ -157,27 +157,7 @@ export class AggregationBuilderService {
       switch (stage.type) {
         case PipelineStage.GROUP: {
           if (stage.form.groupBy) {
-            let groupByField = fields.find(
-              (x) => x.name === stage.form.groupBy
-            );
-            if (!groupByField && stage.form.groupBy.includes('.')) {
-              const fieldArray = stage.form.groupBy.split('.');
-              const parent = fieldArray.shift();
-              const sub = fieldArray.pop();
-              groupByField = fields.reduce((o, field) => {
-                if (
-                  field.name === parent &&
-                  field.fields.some((x: any) => x.name === sub)
-                ) {
-                  const newField = { ...field };
-                  newField.fields = field.fields.filter(
-                    (x: any) => x.name === sub
-                  );
-                  return newField;
-                }
-                return o;
-              }, null);
-            }
+            let groupByField = this.findField(stage.form.groupBy, fields);
             fields = [];
             if (groupByField) {
               // Change field type because of automatic unwind
@@ -275,5 +255,28 @@ export class AggregationBuilderService {
         },
       });
     }
+  }
+
+  public findField(fieldName: string, fields: any[]): any {
+    let outField = fields.find((x) => x.name === fieldName);
+    if (!outField && fieldName.includes('.')) {
+      const fieldArray = fieldName.split('.');
+      const parent = fieldArray.shift();
+      const sub = fieldArray.pop();
+      outField = fields.reduce((o, field) => {
+        if (
+          field.name === parent &&
+          field.fields.some((x: any) => x.name === sub)
+        ) {
+          const newField = { ...field };
+          newField.fields = field.fields.filter((x: any) => x.name === sub);
+          return newField;
+        }
+        return o;
+      }, null);
+    } else {
+      outField = { ...outField };
+    }
+    return outField;
   }
 }

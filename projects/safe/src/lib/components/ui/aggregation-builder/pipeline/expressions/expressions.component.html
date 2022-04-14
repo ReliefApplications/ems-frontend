@@ -5,6 +5,6 @@
       <mat-option *ngFor="let operator of operatorsList" [value]="operator">{{ 'components.aggregationBuilder.operators.' + operator | translate }}</mat-option>
     </mat-select>
   </mat-form-field>
-  <safe-field-dropdown *ngIf="form.value.operator && !noFieldOperators.includes(form.value.operator)" 
+  <safe-field-dropdown *ngIf="displayField && form.value.operator && !noFieldOperators.includes(form.value.operator)" 
     [fieldControl]="$any(form.controls.field)" [fields]="fields"></safe-field-dropdown>
 </form>
