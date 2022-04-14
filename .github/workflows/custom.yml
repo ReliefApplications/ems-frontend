@@ -14,17 +14,25 @@ jobs:
     strategy:
       matrix:
         include:
-          - environment: OORT_ILO
-            branch: release-1.3.0-next
-          - environment: OORT_GUYANE
-            branch: release-1.3.0-next
-          - environment: OORT_PROD
-            branch: release-1.3.0-next
-          - environemtn: OORT_DEV
+          # - environment: OORT_ILO
+          #   branch: release-1.3.0-next
+          # - environment: OORT_GUYANE
+          #   branch: release-1.3.0-next
+          # - environment: OORT_PROD
+          #   branch: release-1.3.0-next
+          - environment: OORT_DEV
             branch: release-1.3.0-next
     environment:
       name: ${{ matrix.environment }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Test action
         run: echo "Print env name ${{ matrix.environment }}"
+      - name: Dispatch CD Event
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.CD_ACCESS_TOKEN }}
+          event-type: cd
+          client-payload:
           
