@@ -46,23 +46,6 @@ const routes: Routes = [
         ],
         canActivate: [AccessGuard],
       },
-      {
-        path: 'share',
-        children: [
-          // Redirect to main page
-          {
-            path: '',
-            redirectTo: '/applications',
-            pathMatch: 'full',
-          },
-          {
-            path: ':id',
-            loadChildren: () =>
-              import('./share/share.module').then((m) => m.ShareModule),
-          },
-        ],
-        canActivate: [AccessGuard],
-      },
     ],
     canActivate: [AuthGuard],
   },
