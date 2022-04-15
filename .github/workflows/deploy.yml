@@ -2,7 +2,7 @@ name: Front-end CD
 
 on:
   repository_dispatch:
-    types: [cd]
+    types: [CD]
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.client_payload.branch }}
+          ref: ${{ github.event.client_payload.ref }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
