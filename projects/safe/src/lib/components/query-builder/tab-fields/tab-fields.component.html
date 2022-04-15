@@ -87,7 +87,7 @@
                 class="field-error"
                 *ngIf="!field.type"
                 (click)="onDelete(index)"
-                matTooltip="Invalid field. Please click to remove."
+                [matTooltip]="'components.queryBuilder.errors.field.invalid' | translate"
               >
               </safe-button>
             </div>

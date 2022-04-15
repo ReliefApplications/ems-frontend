@@ -14,7 +14,6 @@ name: "CodeQL"
 on:
   push:
     branches:
-      - 'main'
       - 'release-*'
       - 'hotfix-*'
       - 'feature-*'
@@ -25,7 +24,11 @@ on:
       - 'hotfix-*'
       - 'feature-*'
   schedule:
-    - cron: '20 18 * * 5'
+    - cron: '0 0 * * *'
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:
