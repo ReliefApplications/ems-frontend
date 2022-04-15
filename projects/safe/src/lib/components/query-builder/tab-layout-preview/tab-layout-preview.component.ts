@@ -1,11 +1,13 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { GridSettings } from '../../ui/core-grid/models/grid-settings.model';
 
+/** Layout preview interface */
 export interface LayoutPreviewData {
   form: any;
   defaultLayout: any;
 }
 
+/** Default grid settings provided to core grid */
 const DEFAULT_GRID_SETTINGS = {
   actions: {
     delete: false,
@@ -16,6 +18,9 @@ const DEFAULT_GRID_SETTINGS = {
   },
 };
 
+/**
+ * Tab component to preview grid widget.
+ */
 @Component({
   selector: 'safe-tab-layout-preview',
   templateUrl: './tab-layout-preview.component.html',
@@ -28,8 +33,8 @@ export class SafeTabLayoutPreviewComponent implements OnInit, OnDestroy {
 
   constructor() {}
 
+  /** Update grid actions, listening to form changes */
   ngOnInit(): void {
-    console.log('hey');
     if (this.data) {
       this.gridSettings = {
         ...this.data?.form?.getRawValue(),
@@ -57,8 +62,10 @@ export class SafeTabLayoutPreviewComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Remove subscriptions.
+   */
   ngOnDestroy(): void {
-    console.log('bye');
     if (this.subscription) {
       this.subscription.unsubscribe();
     }

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SafeTabLayoutPreviewComponent } from './tab-layout-preview.component';
 
-describe('SafeTabFilterComponent', () => {
+describe('SafeTabLayoutPreviewComponent', () => {
   let component: SafeTabLayoutPreviewComponent;
   let fixture: ComponentFixture<SafeTabLayoutPreviewComponent>;
 
