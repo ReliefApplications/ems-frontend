@@ -1,4 +1,6 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
-  <safe-users [users]="users" [roles]="roles" [applicationService]="applicationService"></safe-users>
-</ng-container>
+<safe-users
+  [loading]="loading"
+  [users]="users"
+  [roles]="roles"
+  [applicationService]="applicationService"
+></safe-users>

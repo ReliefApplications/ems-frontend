@@ -8,9 +8,8 @@ describe('UploadMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ UploadMenuComponent ]
-    })
-    .compileComponents();
+      declarations: [UploadMenuComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

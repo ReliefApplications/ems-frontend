@@ -361,6 +361,13 @@
 				"exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
 			}
 		},
+		"formBuilder": {
+			"errors": {
+				"invalidRelatedName": "Provided related name ({{name}}) for question {{question}} on page {{page}} is invalid. Please provide a valid related name (snake case format) to save the form.",
+				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
+				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
+			}
+		},
 		"forms": {
 			"isCore": "Is core",
 			"parent": "Parent form"
