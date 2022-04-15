@@ -20,5 +20,5 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.CD_ACCESS_TOKEN }}
-          event-type: cd
-          client-payload: '{"environment": "${{ github.event.inputs.environment }}", "branch": "${{ github.event.inputs.branch }}"}'
+          event-type: CD
+          client-payload: '{"environment": "${{ github.event.inputs.environment }}", "ref": "${{ github.ref }}"}'

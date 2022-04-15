@@ -8,6 +8,10 @@ on:
       - 'hotfix-*'
       - 'feature-*'
 
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build
