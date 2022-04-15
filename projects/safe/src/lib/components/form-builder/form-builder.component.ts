@@ -12,6 +12,7 @@ import * as SurveyCreator from 'survey-creator';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
 import { Form } from '../../models/form.model';
+import { TranslateService } from '@ngx-translate/core';
 
 /* Commented types are not yet implemented.
  */
@@ -87,7 +88,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   constructor(
     @Inject('environment') environment: any,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) {
     this.environment = environment;
   }
@@ -366,30 +368,38 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           element.relatedName = this.toSnakeCase(element.relatedName);
           if (!this.isSnakeCase(element.relatedName)) {
             throw new Error(
-              'The related name ' +
-                element.relatedName +
-                ' on page ' +
-                page.name +
-                ' is invalid. Please conform to snake_case.'
+              this.translate.instant(
+                'components.formBuilder.errors.invalidRelatedName',
+                {
+                  name: element.relatedName,
+                  question: element.name,
+                  page: page.name,
+                }
+              )
             );
           }
         } else {
+          console.log(element);
           throw new Error(
-            'Missing related name for question ' +
-              element.title +
-              ' on page ' +
-              page.name +
-              '. Please provide a valid data value name (snake_case) to save the form.'
+            this.translate.instant(
+              'components.formBuilder.errors.missingRelatedName',
+              {
+                question: element.name,
+                page: page.name,
+              }
+            )
           );
         }
 
         if (element.addRecord && !element.addTemplate) {
           throw new Error(
-            'Missing add records template for question ' +
-              element.title +
-              ' on page ' +
-              page.name +
-              '. Please select a template to save the form.'
+            this.translate.instant(
+              'components.formBuilder.errors.missingTemplate',
+              {
+                question: element.name,
+                page: page.name,
+              }
+            )
           );
         }
       }
