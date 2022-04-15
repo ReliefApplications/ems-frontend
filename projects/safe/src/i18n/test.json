@@ -361,6 +361,13 @@
 				"exitMessage": "******"
 			}
 		},
+		"formBuilder": {
+			"errors": {
+				"invalidRelatedName": "******",
+				"missingRelatedName": "******",
+				"missingTemplate": "******"
+			}
+		},
 		"forms": {
 			"isCore": "******",
 			"parent": "******"
