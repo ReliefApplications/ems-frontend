@@ -77,6 +77,5 @@ import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
     SafeSkeletonTableModule,
     SafeSkeletonModule,
   ],
-  declarations: [],
 })
 export class SafeModule {}
