@@ -46,7 +46,9 @@ export class SafeRecordDropdownComponent implements OnInit {
   @Input() record = '';
   @Input() resourceId = '';
   @Input() field = '';
-  @Input() placeholder = this.translate.instant('record.placeholder');
+  @Input() placeholder = this.translate.instant(
+    'components.record.dropdown.select'
+  );
   @Input() filter: any = {};
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 

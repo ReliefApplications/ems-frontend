@@ -1,15 +1,67 @@
 {
-  "global": {
-    "status": "Status",
+  "common": {
     "name": "Name",
-    "namePlaceholder": "Enter a name",
+    "role": {
+      "none": "No role",
+      "one": "Role",
+      "few": "Roles"
+    },
+    "email": {
+      "none": "No email",
+      "one": "Email",
+      "few": "Emails"
+    },
+    "user": {
+      "none": "No user",
+      "one": "User",
+      "few": "Users"
+    },
+    "filter": {
+      "show": "Show Filter",
+      "hide": "Hide Filter",
+      "clear": "Clear Filter"
+    },
     "title": "Title",
-    "titlePlaceholder": "Enter a title",
-    "role": "Role",
-    "roles": "Roles",
-    "email": "Email",
-    "emailPlaceholder": "Enter user's email",
-    "users": "Users",
+    "status": "Status",
+    "status_active": "Active",
+    "status_pending": "Pending",
+    "status_archived": "Archived",
+    "placeholder": {
+      "name": "Enter a name",
+      "title": "Enter a title",
+      "email": "Enter email"
+    },
+    "createdOn": "Created on",
+    "delete": "Delete",
+    "deleteObject": "Delete {{name}}",
+    "application": {
+      "none": "No application",
+      "one": "Application",
+      "few": "Applications"
+    },
+    "cancel": "Cancel"
+  },
+  "pages": {
+    "applications": {
+      "recent": "Recent applications",
+      "all": "All applications"
+    },
+    "application": {
+      "empty": {
+        "add": "Add a Page",
+        "customize": "Customize each of the pages created",
+        "create": "Click on create to finish the process"
+      }
+    }
+  },
+  "components": {
+    "applications": {
+      "dropdown": {
+        "select": "From applications"
+      }
+    }
+  },
+  "global": {
     "core": "Core",
     "yes": "Yes",
     "no": "No",
@@ -78,11 +130,6 @@
     "attach": "Attach",
     "expand": "Expand"
   },
-  "status": {
-    "active": "Active",
-    "pending": "Pending",
-    "archived": "Archived"
-  },
   "date": {
     "loadFromCache": "Loaded from cache {{date}}",
     "created": "Created by {{name}} at {{date}}",
@@ -121,8 +168,6 @@
   },
   "filter": {
     "search": "Search...",
-    "show": "Show Filter",
-    "hide": "Hide Filter",
     "date": "Date Range",
     "clear": "Clear Filters"
   },
@@ -133,11 +178,6 @@
     "canDelete": "Can delete"
   },
   "apps": {
-    "recent": "Recent applications",
-    "all": "All applications",
-    "step2": "Customize each of the pages created",
-    "step3": "Click on create to finish the process",
-    "from": "From applications",
     "delete": "Delete application",
     "deleteDesc": "Do you confirm the deletion of this application?"
   },

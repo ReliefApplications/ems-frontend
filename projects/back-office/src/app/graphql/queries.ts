@@ -1004,7 +1004,10 @@ export const GET_PULL_JOBS = gql`
           apiConfiguration {
             id
             name
+            authType
           }
+          url
+          path
           schedule
           convertTo {
             id

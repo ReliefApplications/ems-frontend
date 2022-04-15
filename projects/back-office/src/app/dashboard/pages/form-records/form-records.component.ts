@@ -74,6 +74,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   };
 
   @ViewChild('xlsxFile') xlsxFile: any;
+  public showUpload = false;
 
   constructor(
     private apollo: Apollo,
@@ -227,12 +228,17 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     if (this.showDeletedRecords) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: this.translate.instant('record.delete'),
-          content: this.translate.instant('record.deleteDesc', {
-            name: element.name,
+          title: this.translate.instant('common.deleteObject', {
+            name: this.translate.instant('common.record.one'),
           }),
-          confirmText: this.translate.instant('action.delete'),
-          cancelText: this.translate.instant('action.cancel'),
+          content: this.translate.instant(
+            'components.record.delete.confirmationMessage',
+            {
+              name: element.name,
+            }
+          ),
+          confirmText: this.translate.instant('common.delete'),
+          cancelText: this.translate.instant('common.cancel'),
           confirmColor: 'warn',
         },
       });
@@ -351,24 +357,36 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Take file from upload event and call upload method.
+   *
+   * @param event Upload event.
+   */
   onFileChange(event: any): void {
-    const file = event.target.files[0];
+    const file = event.files[0].rawFile;
     this.uploadFileData(file);
   }
 
+  /**
+   * Upload file and indicate status of request.
+   *
+   * @param file file to upload.
+   */
   uploadFileData(file: any): void {
     const path = `upload/form/records/${this.id}`;
     this.downloadService.uploadFile(path, file).subscribe(
       (res) => {
-        this.xlsxFile.nativeElement.value = '';
+        // this.xlsxFile.clearFiles();
         if (res.status === 'OK') {
           this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
           this.getFormData();
+          this.showUpload = false;
         }
       },
       (error: any) => {
         this.snackBar.openSnackBar(error.error, { error: true });
-        this.xlsxFile.nativeElement.value = '';
+        // this.xlsxFile.clearFiles();
+        this.showUpload = false;
       }
     );
   }

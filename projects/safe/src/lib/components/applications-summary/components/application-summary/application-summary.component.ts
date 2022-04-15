@@ -48,13 +48,13 @@ export class SafeApplicationSummaryComponent implements OnInit {
 
   constructor(translate: TranslateService) {
     this.statuses[0].short = translate
-      .instant('status.active')[0]
+      .instant('common.status_active')[0]
       .toUpperCase();
     this.statuses[1].short = translate
-      .instant('status.pending')[0]
+      .instant('common.status_pending')[0]
       .toUpperCase();
     this.statuses[2].short = translate
-      .instant('status.archived')[0]
+      .instant('common.status_archived')[0]
       .toUpperCase();
   }
 

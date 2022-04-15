@@ -1,20 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
-  Application,
   Channel,
   PullJob,
-  SafeApplicationService,
   status,
   SafeConfirmModalComponent,
   SafeSnackBarService,
   NOTIFICATIONS,
 } from '@safe/builder';
-import { Apollo, Query, QueryRef } from 'apollo-angular';
-import { Subscription } from 'rxjs';
+import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GetPullJobsQueryResponse,
-  GET_API_CONFIGURATIONS,
   GET_PULL_JOBS,
 } from '../../../graphql/queries';
 import {
@@ -147,6 +143,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           name: string;
           status: status;
           apiConfiguration: string;
+          url?: string;
+          path?: string;
           schedule?: string;
           convertTo?: string;
           channel?: string;
@@ -162,6 +160,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
             };
             Object.assign(
               variables,
+              value.url && { url: value.url },
+              value.path && { path: value.path },
               value.schedule && { schedule: value.schedule },
               value.convertTo && { convertTo: value.convertTo },
               value.channel && { channel: value.channel },
@@ -206,12 +206,15 @@ export class PullJobsComponent implements OnInit, OnDestroy {
     if (element) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: this.translate.instant('pullJobs.delete'),
-          content: this.translate.instant('pullJobs.deleteDesc', {
-            name: element.name,
-          }),
-          confirmText: this.translate.instant('action.delete'),
-          cancelText: this.translate.instant('action.cancel'),
+          title: this.translate.instant('components.pullJob.delete.title'),
+          content: this.translate.instant(
+            'components.pullJob.delete.confirmationMessage',
+            {
+              name: element.name,
+            }
+          ),
+          confirmText: this.translate.instant('common.delete'),
+          cancelText: this.translate.instant('common.cancel'),
           confirmColor: 'warn',
         },
       });
@@ -264,6 +267,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
           name: string;
           status: status;
           apiConfiguration: string;
+          url?: string;
+          path?: string;
           schedule?: string;
           convertTo?: string;
           channel?: string;
@@ -282,6 +287,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               value.apiConfiguration && {
                 apiConfiguration: value.apiConfiguration,
               },
+              value.url && { url: value.url },
+              value.path && { path: value.path },
               value.schedule && { schedule: value.schedule },
               value.convertTo && { convertTo: value.convertTo },
               value.channel && { channel: value.channel },

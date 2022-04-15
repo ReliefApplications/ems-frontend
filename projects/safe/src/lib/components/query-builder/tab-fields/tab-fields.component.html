@@ -1,7 +1,7 @@
-<div class="info-text">{{'widgets.query.field.description' | translate}}</div>
+<div class="info-text">{{'components.queryBuilder.hint.fields' | translate}}</div>
 <div cdkDropListGroup class="field-wrapper" [ngClass]="{'hidden': fieldForm }">
     <div class="field-container" *ngIf="!fieldForm">
-        <h2>{{'widgets.query.field.available' | translate}}</h2>
+        <h2>{{'components.queryBuilder.fields.available' | translate}}</h2>
 
         <div class="field-list-wrapper">
             <div cdkDropList [cdkDropListData]="availableFields" class="field-list" cdkDropListSortingDisabled
@@ -13,7 +13,7 @@
     </div>
 
     <div class="field-container" *ngIf="!fieldForm">
-        <h2>{{'widgets.query.field.selected' | translate}}</h2>
+        <h2>{{'components.queryBuilder.fields.selected' | translate}}</h2>
 
         <div class="field-list-wrapper">
             <div cdkDropList [cdkDropListData]="selectedFields" class="field-list" (cdkDropListDropped)="drop($event)">
@@ -24,7 +24,7 @@
                             *ngIf="form.at(index)?.invalid && field.type">
                         </safe-button>
                         <safe-button [isIcon]="true" icon="close" class="field-error" *ngIf="!field.type" (click)="onDelete(index)"
-                            matTooltip="Invalid field. Please click to remove.">
+                            [matTooltip]="'components.queryBuilder.error.field.invalid' | translate">
                         </safe-button>
                     </div>
                     <div *ngIf="field.type">
@@ -43,7 +43,7 @@
                 <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
                 </safe-button>
                 <mat-form-field appearance="outline">
-                    <mat-label>{{'global.name' | translate}}</mat-label>
+                    <mat-label>{{'common.name' | translate}}</mat-label>
                     <input matInput formControlName="name" type="text" [disabled]="true" />
                 </mat-form-field>
                 <mat-form-field appearance="outline">

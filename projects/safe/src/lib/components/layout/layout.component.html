@@ -3,7 +3,7 @@
     [isIcon]="true"
     icon="menu"
     (click)="nav.toggle()"
-    [matTooltip]="nav.opened ? 'Collapse sidebar' : 'Show sidebar'"
+    [matTooltip]="(nav.opened ? 'components.header.sidenav.collapse' : 'components.header.sidenav.show') | translate"
   >
   </safe-button>
   <safe-button
@@ -11,12 +11,12 @@
     icon="keyboard_backspace"
     (click)="goBack()"
     *ngIf="route"
-    [matTooltip]="'tooltip.backApps' | translate"
+    [matTooltip]="'pages.applications.goTo' | translate"
   >
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
     <h1 class="application-title">
-      {{ theme.prefix }} {{ route ? title : ('nav.title' | translate) }}
+      {{ theme.prefix }} {{ route ? title : ('common.platform.backOffice' | translate) }}
     </h1>
     <!-- Temporal language changer -->
     <span
@@ -86,23 +86,23 @@
   </button>
   <mat-menu #accountMenu="matMenu">
     <button mat-menu-item (click)="onOpenProfile()">
-      {{ 'nav.profile' | translate }}
+      {{ 'pages.profile.title' | translate }}
     </button>
     <ng-container *ngIf="user && user.isAdmin">
       <mat-divider></mat-divider>
       <button mat-menu-item (click)="onSwitchOffice()">
-        {{ 'nav.switch' | translate }} {{ otherOffice }}
+        {{ 'components.header.goToPlatform' | translate }} {{ otherOffice }}
       </button>
     </ng-container>
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="logout()" class="warn">
-      {{ 'nav.logout' | translate }}
+      {{ 'components.header.logout' | translate }}
     </button>
   </mat-menu>
   <mat-menu #notificationMenu="matMenu">
     <div class="notification-menu">
       <a (click)="onMarkAllNotificationsAsRead()"
-        >{{ 'nav.readAll' | translate
+        >{{ 'components.notifications.readAll' | translate
         }}<mat-icon [inline]="true"> check_circle_outline </mat-icon></a
       >
       <button
@@ -122,7 +122,7 @@
       [loading]="loadingNotifications"
       (click)="onLoadMoreNotifications($event)"
     >
-      {{ 'nav.load' | translate }}
+      {{ 'common.pagination.loadMore' | translate }}
     </safe-button>
   </mat-menu>
 </mat-toolbar>
@@ -163,7 +163,7 @@
                       class="add-page-button"
                       [class]="item.class ? item.class : ''"
                     >
-                      {{ 'nav.addPage' | translate }}
+                      {{ 'models.page.add' | translate }}
                     </safe-button>
                   </ng-container>
                   <ng-container *ngIf="!item.isAddPage">
