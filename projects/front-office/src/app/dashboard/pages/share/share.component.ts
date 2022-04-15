@@ -4,26 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { Dashboard, SafeSnackBarService } from '@safe/builder';
 import { Subscription } from 'rxjs';
-import { gql } from 'apollo-angular';
-
-// === GET URL NEEDED INFO FROM AN SPECIFIC DASHBOARD ID ===
-export const GET_SHARE_DASHBOARD_BY_ID = gql`
-  query GetDashboardById($id: ID!) {
-    dashboard(id: $id) {
-      id
-      page {
-        application {
-          id
-        }
-      }
-    }
-  }
-`;
-
-export interface GetShareDashboardByIdQueryResponse {
-  loading: boolean;
-  dashboard: Dashboard;
-}
+import {
+  GetShareDashboardByIdQueryResponse,
+  GET_SHARE_DASHBOARD_BY_ID,
+} from './graphql/queries';
 
 /**
  * Share URL access component.
@@ -36,6 +20,15 @@ export interface GetShareDashboardByIdQueryResponse {
 export class ShareComponent implements OnInit, OnDestroy {
   private routeSubscription?: Subscription;
 
+  /**
+   * Share URL access component.
+   *
+   * @param router Angular shared router service
+   * @param route Angular shared route service
+   * @param apollo Apollo client service
+   * @param snackBar Shared snackbar service
+   * @param translateService Angular Translate service
+   */
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -57,11 +50,18 @@ export class ShareComponent implements OnInit, OnDestroy {
           },
         })
         .subscribe((res) => {
-          let url = '/applications';
-
-          if (res.data.dashboard) {
-            url += '/' + res.data.dashboard.page?.application?.id;
-            url += '/dashboard/' + res.data.dashboard.id;
+          let url = '';
+          const dashboard: Dashboard = res.data.dashboard;
+          if (dashboard) {
+            if (dashboard.step) {
+              url +=
+                '/' + res.data.dashboard.step?.workflow?.page?.application?.id;
+              url += '/workflow/' + res.data.dashboard.step?.workflow?.id;
+              url += '/dashboard/' + res.data.dashboard.id;
+            } else {
+              url += '/' + res.data.dashboard.page?.application?.id;
+              url += '/dashboard/' + res.data.dashboard.id;
+            }
           } else {
             // Error handling
             this.snackBar.openSnackBar(
@@ -77,14 +77,11 @@ export class ShareComponent implements OnInit, OnDestroy {
               { error: true }
             );
           }
+          console.log(url);
           this.router.navigate([url]);
         });
     });
   }
-
-  // http://localhost:4200/share/62542e5915e63d22f5924b17 ( workflow )
-
-  // http://localhost:4200/share/61a4da46de315f49de578396 ( page )
 
   /**
    * Destroy subscriptions.
