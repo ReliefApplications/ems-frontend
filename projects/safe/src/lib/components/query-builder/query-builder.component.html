@@ -117,6 +117,15 @@
           </safe-tab-style>
         </ng-template>
       </mat-tab>
+      <mat-tab
+        [label]="'common.preview' | translate"
+        *ngIf="layoutPreviewData"
+      >
+        <ng-template matTabContent>
+          <safe-tab-layout-preview [data]="layoutPreviewData">
+          </safe-tab-layout-preview>
+        </ng-template>
+      </mat-tab>
     </mat-tab-group>
   </form>
 </ng-container>

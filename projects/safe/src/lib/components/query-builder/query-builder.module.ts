@@ -7,6 +7,7 @@ import { SafeTabFieldsComponent } from './tab-fields/tab-fields.component';
 import { SafeTabSortComponent } from './tab-sort/tab-sort.component';
 import { SafeTabFilterComponent } from './tab-filter/tab-filter.component';
 import { SafeTabStyleComponent } from './tab-style/tab-style.component';
+import { SafeTabLayoutPreviewComponent } from './tab-layout-preview/tab-layout-preview.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,6 +29,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { SafeQueryStyleComponent } from './tab-style/query-style/query-style.component';
 import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/query-style-preview.component';
 import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
+import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
+import { SafeIconModule } from '../ui/icon/icon.module';
 
 @NgModule({
   declarations: [
@@ -37,6 +40,7 @@ import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
     SafeTabFilterComponent,
     SafeTabClorophletComponent,
     SafeTabStyleComponent,
+    SafeTabLayoutPreviewComponent,
     SafeQueryStyleListComponent,
     SafeQueryStyleComponent,
     SafeQueryStylePreviewComponent,
@@ -59,10 +63,12 @@ import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
     MatAutocompleteModule,
     MatButtonToggleModule,
     SafeButtonModule,
+    SafeIconModule,
     TranslateModule,
     InputsModule,
     LabelModule,
     SafeCheckboxTreeModule,
+    SafeCoreGridModule,
   ],
   exports: [
     SafeQueryBuilderComponent,
