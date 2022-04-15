@@ -18,7 +18,7 @@
   <safe-button
     [isIcon]="true"
     icon="history"
-    matTooltip="Display history"
+    [matTooltip]="'components.widget.grid.actions.history' | translate"
     (click)="showHistory.emit()"
   ></safe-button>
   <div>

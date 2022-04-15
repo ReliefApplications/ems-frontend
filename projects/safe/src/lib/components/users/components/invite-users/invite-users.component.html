@@ -3,9 +3,15 @@
     <div class="invite-label">{{'components.users.invite.description' | translate}}</div>
     <!-- DOWNLOAD TEMPLATE / UPLOAD -->
     <div class="file-row">
-        <input type="file" #fileReader name="Upload XLSX" class="file-select" (change)="onUpload($event)" accept=".xlsx" />
+        <kendo-upload
+            #fileReader
+            name="Upload XLSX"
+            (upload)="onUpload($event)"
+            accept=".xlsx"
+            [multiple]="false">
+        </kendo-upload>
         <button mat-button (click)="onDownload()" color="primary">{{'common.downloadTemplate' | translate}}</button>
-      </div>
+    </div>
     <kendo-grid [data]="gridData" (cellClick)="cellClickHandler($event)" (add)="onAdd()">
         <ng-template kendoGridToolbarTemplate>
             <button kendoGridAddCommand>{{'components.users.invite.add' | translate}}</button>
