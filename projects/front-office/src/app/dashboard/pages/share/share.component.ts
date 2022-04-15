@@ -77,7 +77,6 @@ export class ShareComponent implements OnInit, OnDestroy {
               { error: true }
             );
           }
-          console.log(url);
           this.router.navigate([url]);
         });
     });

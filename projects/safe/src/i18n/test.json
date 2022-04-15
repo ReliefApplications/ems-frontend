@@ -434,7 +434,8 @@
 			},
 			"hint": {
 				"fields": "******",
-				"style": "******"
+				"style": "******",
+				"sortingDisabled": "******"
 			},
 			"sort": {
 				"ascending": "******",

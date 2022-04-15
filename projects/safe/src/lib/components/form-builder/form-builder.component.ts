@@ -379,7 +379,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
             );
           }
         } else {
-          console.log(element);
           throw new Error(
             this.translate.instant(
               'components.formBuilder.errors.missingRelatedName',
