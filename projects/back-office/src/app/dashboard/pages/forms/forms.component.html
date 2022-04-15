@@ -173,12 +173,12 @@
   *ngIf="loading"
   [columns]="[
     'common.name',
-    'table.date',
+    'common.createdOn',
     'common.status',
-    'table.history',
-    'table.records',
-    'table.core',
-    'table.parent'
+    'common.history',
+    'common.record.few',
+    'components.forms.isCore',
+    'components.forms.parent'
   ]"
   [actions]="true"
 >

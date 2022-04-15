@@ -1,9 +1,12 @@
 name: Storybook
 
 on:
-  push:
-    branches:
-      - 'main'
+  schedule:
+    - cron: '0 0 * * *'
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:

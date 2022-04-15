@@ -32,7 +32,6 @@ export class UsersComponent implements OnInit, OnDestroy {
    * Subscribes to application service to load the roles and users.
    */
   ngOnInit(): void {
-    this.loading = false;
     this.applicationSubscription =
       this.applicationService.application$.subscribe(
         (application: Application | null) => {
@@ -43,6 +42,7 @@ export class UsersComponent implements OnInit, OnDestroy {
             this.users.data = [];
             this.roles = [];
           }
+          this.loading = false;
         }
       );
   }
