@@ -36,7 +36,6 @@ import { SafeLayoutModalModule } from './components/layout-modal/layout-modal.mo
 import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackbar-spinner.module';
 import { SafeSkeletonTableModule } from './components/skeleton/skeleton-table/skeleton-table.module';
 import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
-import { SafeShareRedirectModule } from './components/share-redirect/share-redirect.module';
 
 @NgModule({
   exports: [
@@ -77,7 +76,6 @@ import { SafeShareRedirectModule } from './components/share-redirect/share-redir
     SafeSnackbarSpinnerModule,
     SafeSkeletonTableModule,
     SafeSkeletonModule,
-    SafeShareRedirectModule,
   ],
   declarations: [],
 })

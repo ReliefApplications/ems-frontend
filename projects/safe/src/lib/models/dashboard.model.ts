@@ -160,14 +160,3 @@ export interface Dashboard {
   page?: Page;
   step?: Step;
 }
-
-/*  Model for Share ashboard object.
- */
-export interface ShareDashboard {
-  id?: string;
-  page?: {
-    application?: {
-      id?: string;
-    };
-  };
-}

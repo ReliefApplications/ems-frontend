@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ShareComponent } from './share.component';
 
+/** List of routes */
 const routes: Routes = [
   {
     path: '',
@@ -10,6 +11,9 @@ const routes: Routes = [
   },
 ];
 
+/**
+ * Routing of Share module.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

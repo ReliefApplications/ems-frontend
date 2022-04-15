@@ -7,7 +7,7 @@ import { Notification } from '../models/notification.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
 import { Workflow } from '../models/workflow.model';
-import { Dashboard, ShareDashboard } from '../models/dashboard.model';
+import { Dashboard } from '../models/dashboard.model';
 
 // === GET PROFILE ===
 export const GET_PROFILE = gql`
@@ -931,23 +931,4 @@ export interface GetResourceRecordsQueryResponse {
       totalCount: number;
     };
   };
-}
-
-// === GET URL NEEDED INFO FROM AN SPECIFIC DASHBOARD ID ===
-export const GET_SHARE_DASHBOARD_BY_ID = gql`
-  query GetDashboardById($id: ID!) {
-    dashboard(id: $id) {
-      id
-      page {
-        application {
-          id
-        }
-      }
-    }
-  }
-`;
-
-export interface GetShareDashboardByIdQueryResponse {
-  loading: boolean;
-  dashboard: ShareDashboard;
 }

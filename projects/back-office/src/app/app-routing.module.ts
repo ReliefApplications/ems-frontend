@@ -49,6 +49,7 @@ const routes: Routes = [
       {
         path: 'share',
         children: [
+          // Redirect to main page
           {
             path: '',
             redirectTo: '/applications',
