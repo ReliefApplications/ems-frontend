@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { SafeWidgetGridModule } from '@safe/builder';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 /**
  * Dashboard page.
  * Dashboard is one of the available content types of application pages.
@@ -15,7 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CommonModule,
     DashboardRoutingModule,
     SafeWidgetGridModule,
-    MatProgressSpinnerModule,
+    IndicatorsModule,
   ],
   exports: [DashboardComponent],
 })

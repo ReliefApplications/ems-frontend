@@ -1,4 +1,30 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<div class="loading-skeleton" *ngIf="loading">
+  <kendo-skeleton
+    shape="text"
+    animation="pulse"
+    [width]="180"
+    [height]="45"
+  ></kendo-skeleton>
+  <div class="skeleton-widget">
+    <div class="header">
+      <kendo-skeleton
+        shape="text"
+        animation="pulse"
+        [width]="180"
+        [height]="25"
+      ></kendo-skeleton>
+    </div>
+    <kendo-skeleton
+      shape="rectangle"
+      animation="pulse"
+      [width]="'100%'"
+      [height]="'100%'"
+    ></kendo-skeleton>
+  </div>
+</div>
 <ng-container *ngIf="!loading && dashboard">
-    <safe-widget-grid [widgets]="widgets" (goToNextStep)="goToNextStep.emit($event)"></safe-widget-grid>
+  <safe-widget-grid
+    [widgets]="widgets"
+    (goToNextStep)="goToNextStep.emit($event)"
+  ></safe-widget-grid>
 </ng-container>
