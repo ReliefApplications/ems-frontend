@@ -1,12 +1,12 @@
 .skeleton-widget{
   height: 100%;
   width: 100%;
-
+  
   display: grid;
   grid-template-rows: min-content 1fr;
   
   .header {
-    box-shadow: rgba(0, 0, 0, 0.20) 0px 2px 8px;
+    box-shadow: 0 2px 5px #86868633;
     padding: 0.4em 1em;
   }
 }
