@@ -214,7 +214,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onClick(user: User): void {
-    this.router.navigate([user.id], {relativeTo: this.activatedRoute});
+    this.router.navigate([user.id], { relativeTo: this.activatedRoute });
   }
 
   onDelete(users: User[]): void {
