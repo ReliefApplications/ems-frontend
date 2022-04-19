@@ -17,6 +17,8 @@ import {
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
 
 @NgModule({
   declarations: [ResourceComponent],
@@ -36,6 +38,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatPaginatorModule,
     TranslateModule,
     SafeLayoutModalModule,
+    OverlayModule,
+    UploadMenuModule,
   ],
   exports: [ResourceComponent],
 })

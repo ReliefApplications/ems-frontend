@@ -270,11 +270,14 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectDeleted', {
-                value: this.translateService.instant(
-                  'notification.term.application'
-                ),
-              })
+              this.translateService.instant(
+                'common.notifications.objectDeleted',
+                {
+                  value: this.translateService.instant(
+                    'common.application.onelication'
+                  ),
+                }
+              )
             );
             this.applications.data = this.applications.data.filter(
               (x) => x.id !== res.data?.deleteApplication.id
@@ -299,21 +302,27 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors?.length) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectNotCreated', {
-              type: this.translateService.instant('notification.term.app'),
-              error: res.errors[0].message,
-            }),
+            this.translateService.instant(
+              'common.notifications.objectNotCreated',
+              {
+                type: this.translateService.instant('common.application.one'),
+                error: res.errors[0].message,
+              }
+            ),
             { error: true }
           );
         } else {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectCreated', {
-                type: this.translateService
-                  .instant('notification.term.application')
-                  .toLowerCase(),
-                value: res.data.addApplication.name,
-              })
+              this.translateService.instant(
+                'common.notifications.objectCreated',
+                {
+                  type: this.translateService
+                    .instant('common.application.onelication')
+                    .toLowerCase(),
+                  value: res.data.addApplication.name,
+                }
+              )
             );
             const id = res.data.addApplication.id;
             this.router.navigate(['/applications', id]);
@@ -340,12 +349,15 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectEdited', {
-              type: this.translateService
-                .instant('action.access')
-                .toLowerCase(),
-              value: element.name,
-            })
+            this.translateService.instant(
+              'common.notifications.objectNotUpdated',
+              {
+                type: this.translateService
+                  .instant('action.access')
+                  .toLowerCase(),
+                value: element.name,
+              }
+            )
           );
           const index = this.applications.data.findIndex(
             (x) => x.id === element.id

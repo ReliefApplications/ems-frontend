@@ -72,7 +72,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   onDuplicate(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
-        this.translate.instant('notification.objectIsLocked', {
+        this.translate.instant('common.notifications.objectLocked', {
           value: this.application?.name,
         })
       );
@@ -89,17 +89,19 @@ export class SettingsComponent implements OnInit, OnDestroy {
   onDelete(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
-        this.translate.instant('notification.objectIsLocked', {
+        this.translate.instant('common.notifications.objectLocked', {
           value: this.application?.name,
         })
       );
     } else {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: this.translate.instant('apps.delete'),
-          content: this.translate.instant('apps.deleteDesc'),
-          confirmText: this.translate.instant('action.delete'),
-          cancelText: this.translate.instant('action.cancel'),
+          title: this.translate.instant('common.deleteObject', {
+            object: this.translate.instant('common.application.one'),
+          }),
+          content: this.translate.instant('components.application.delete'),
+          confirmText: this.translate.instant('common.delete'),
+          cancelText: this.translate.instant('common.cancel'),
           confirmColor: 'warn',
         },
       });
@@ -115,10 +117,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
             })
             .subscribe((res) => {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectDeleted', {
-                  value: this.translate.instant(
-                    'notification.term.application'
-                  ),
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.application.one'),
                 })
               );
               this.applications.data = this.applications.data.filter(

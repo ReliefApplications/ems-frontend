@@ -41,7 +41,7 @@
   >
     <input
       *ngIf="searchable"
-      [placeholder]="'filter.search' | translate"
+      [placeholder]="'common.placeholder.search' | translate"
       kendoTextBox
       [formControl]="search"
       class="grid-searchbox"
@@ -52,27 +52,29 @@
       kendoButton
       (click)="action.emit({ action: 'add' })"
     >
-      {{ 'action.add' | translate }}
+      {{ 'common.add' | translate }}
     </button>
     <button *ngIf="exportable" kendoButton (click)="onExport()">
-      {{ 'action.export' | translate }}
+      {{ 'common.export' | translate }}
     </button>
     <ng-container *ngIf="editable">
       <button kendoButton (click)="onSave()" [disabled]="!hasChanges">
-        {{ 'action.save' | translate }}
+        {{ 'common.save' | translate }}
       </button>
       <button kendoButton (click)="onCancel()" [disabled]="!hasChanges">
-        {{ 'action.cancel' | translate }}
+        {{ 'common.cancel' | translate }}
       </button>
     </ng-container>
     <button
       *ngIf="filterable"
-      [matTooltip]="'tooltip.filterVisibility' | translate"
+      [matTooltip]="'components.widget.grid.filter.toggle' | translate"
       kendoButton
       icon="eye"
       (click)="onToggleFilter()"
     >
-      {{ (showFilter ? 'filter.hide' : 'filter.hide') | translate }}
+      {{
+        (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
+      }}
     </button>
     <!-- ADMIN FEATURES -->
     <ng-container *ngIf="admin">
@@ -82,7 +84,7 @@
           class="k-button"
           (click)="action.emit({ action: 'resetLayout' })"
         >
-          {{ 'widgets.grid.reset' | translate }}
+          {{ 'components.widget.grid.layout.reset' | translate }}
         </button>
       </span>
     </ng-container>
@@ -185,7 +187,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                matTooltip="Open in full width"
+                [matTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -232,7 +234,7 @@
             >
               <a
                 class="url-container textbox"
-                href="{{ getPropertyValue(dataItem, field.name) }}"
+                href="{{ getUrl(getPropertyValue(dataItem, field.name)) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -246,7 +248,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                matTooltip="Open in full width"
+                [matTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -268,6 +270,30 @@
               />
             </div>
           </ng-template>
+          <!-- DISPLAY ( number ) -->
+          <ng-template
+          #refSpan
+          kendoGridCellTemplate
+          let-dataItem="dataItem"
+          *ngIf="field.meta.type === 'numeric'"
+          >
+          <div
+            class="translate textbox-container"
+            [style]="getStyle(dataItem, field.name)"
+          >
+            <div #refSpan class="textbox">
+              {{ getPropertyValue(dataItem, field.name) }}
+            </div>
+            <button
+              kendoButton
+              *ngIf="isEllipsisActive(refSpan)"
+              icon="hyperlink-open-sm"
+              (click)="onExpandText(dataItem, field.name)"
+              [look]="'flat'"
+              [matTooltip]="'common.openFullScreen' | translate"
+            ></button>
+          </div>
+          </ng-template>
           <!-- DISPLAY ( color ) -->
           <ng-template
             kendoGridCellTemplate
@@ -288,7 +314,7 @@
                 #refSpan
                 class="textbox external-link"
                 *ngIf="dataItem[field.name].length > 0"
-                matTooltip="Open detail"
+                [matTooltip]="'components.widget.grid.actions.detail' | translate"
                 (click)="
                   action.emit({
                     action: 'details',
@@ -299,12 +325,12 @@
               >
                 {{
                   (dataItem[field.name].length > 1
-                    ? 'widgets.grid.items'
-                    : 'widgets.grid.item'
+                    ? 'components.widget.grid.item.few'
+                    : 'components.widget.grid.item.one'
                   )
                     | translate
                       : {
-                          number: dataItem[field.name].length
+                          count: dataItem[field.name].length
                         }
                 }}
               </div>
@@ -741,7 +767,7 @@
           [icon]="'detail-section'"
           [look]="'flat'"
           (click)="action.emit({ action: 'details', items: dataItem })"
-          matTooltip="Open detail"
+          [matTooltip]="'components.widget.grid.actions.detail' | translate"
         ></button>
       </ng-template>
     </kendo-grid-column>
@@ -771,10 +797,10 @@
   <ng-template kendoGridNoRecordsTemplate>
     {{
       (error
-        ? 'widgets.grid.invalid'
+        ? 'components.widget.grid.errors.invalid'
         : blank
-        ? 'widgets.grid.selectDataset'
-        : 'widgets.grid.noRecord'
+        ? 'components.widget.grid.errors.missingDataset'
+        : 'components.widget.grid.empty'
       ) | translate
     }}
   </ng-template>

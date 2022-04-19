@@ -30,6 +30,7 @@ import {
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
 
 const ITEMS_PER_PAGE = 10;
 const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
@@ -80,6 +81,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
   };
 
   @ViewChild('xlsxFile') xlsxFile: any;
+
+  public showUpload = false;
 
   constructor(
     private apollo: Apollo,
@@ -157,9 +160,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
             this.loading = res.loading;
           } else {
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.accessNotProvided', {
+              this.translate.instant('common.notifications.accessNotProvided', {
                 type: this.translate
-                  .instant('notification.term.resource')
+                  .instant('common.resource.one')
                   .toLowerCase(),
                 error: '',
               }),
@@ -255,12 +258,17 @@ export class ResourceComponent implements OnInit, OnDestroy {
     if (this.showDeletedRecords) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: this.translate.instant('record.delete'),
-          content: this.translate.instant('record.deleteDesc', {
-            name: element.name,
+          title: this.translate.instant('common.deleteObject', {
+            name: this.translate.instant('common.record.one'),
           }),
-          confirmText: this.translate.instant('action.delete'),
-          cancelText: this.translate.instant('action.cancel'),
+          content: this.translate.instant(
+            'components.record.delete.confirmationMessage',
+            {
+              name: element.name,
+            }
+          ),
+          confirmText: this.translate.instant('common.delete'),
+          cancelText: this.translate.instant('common.cancel'),
         },
       });
       dialogRef.afterClosed().subscribe((value) => {
@@ -289,8 +297,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         this.snackBar.openSnackBar(
-          this.translate.instant('notification.objectDeleted', {
-            value: this.translate.instant('notification.term.record'),
+          this.translate.instant('common.notifications.objectDeleted', {
+            value: this.translate.instant('common.record.one'),
           })
         );
         this.dataSourceRecords = this.dataSourceRecords.filter(
@@ -312,10 +320,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         this.snackBar.openSnackBar(
-          this.translate.instant('notification.objectDeleted', {
-            value: this.translate
-              .instant('notification.term.form')
-              .toLowerCase(),
+          this.translate.instant('common.notifications.objectDeleted', {
+            value: this.translate.instant('common.form.one').toLowerCase(),
           })
         );
         this.dataSourceForms = this.dataSourceForms.filter((x) => x.id !== id);
@@ -381,7 +387,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
    * @param event new file event.
    */
   onFileChange(event: any): void {
-    const file = event.target.files[0];
+    const file = event.files[0].rawFile;
     this.uploadFileData(file);
   }
 
@@ -394,14 +400,16 @@ export class ResourceComponent implements OnInit, OnDestroy {
     const path = `upload/resource/records/${this.id}`;
     this.downloadService.uploadFile(path, file).subscribe(
       (res) => {
-        this.xlsxFile.nativeElement.value = '';
+        this.xlsxFile.clearFiles();
         if (res.status === 'OK') {
           this.getResourceData();
+          this.showUpload = false;
         }
       },
       (error: any) => {
         this.snackBar.openSnackBar(error.error, { error: true });
-        this.xlsxFile.nativeElement.value = '';
+        // this.xlsxFile.clearFiles();
+        this.showUpload = false;
       }
     );
   }
@@ -452,7 +460,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
   onAddLayout(): void {
     const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
       disableClose: true,
-      data: {},
+      data: {
+        queryName: this.resource.queryName,
+      },
       position: {
         bottom: '0',
         right: '0',
@@ -523,8 +533,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
         content: this.translate.instant('layout.deleteDesc', {
           name: layout.name,
         }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

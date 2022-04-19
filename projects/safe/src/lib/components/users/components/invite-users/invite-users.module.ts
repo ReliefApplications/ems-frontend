@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
 import { SafeAddUserModule } from '../add-user/add-user.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { UploadsModule } from '@progress/kendo-angular-upload';
 
 @NgModule({
   declarations: [SafeInviteUsersComponent],
@@ -25,6 +26,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ButtonsModule,
     SafeAddUserModule,
     TranslateModule,
+    UploadsModule,
   ],
   exports: [SafeInviteUsersComponent],
 })

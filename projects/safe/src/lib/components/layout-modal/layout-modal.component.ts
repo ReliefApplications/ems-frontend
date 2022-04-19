@@ -1,25 +1,15 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 import { Layout } from '../../models/layout.model';
 import {
   createDisplayForm,
   createQueryForm,
 } from '../query-builder/query-builder-forms';
 
-const DEFAULT_GRID_SETTINGS = {
-  actions: {
-    delete: false,
-    history: true,
-    convert: false,
-    update: false,
-    inlineEdition: false,
-  },
-};
-
 interface DialogData {
   layout?: Layout;
+  queryName?: string;
 }
 
 @Component({
@@ -32,8 +22,6 @@ export class SafeLayoutModalComponent implements OnInit {
   public form?: FormGroup;
   private queryName = '';
   public templates: any[] = [];
-  public gridSettings: GridSettings = DEFAULT_GRID_SETTINGS;
-  private pageSize?: number;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -48,30 +36,6 @@ export class SafeLayoutModalComponent implements OnInit {
       display: createDisplayForm(this.data.layout?.display),
     });
     this.queryName = this.form.get('query')?.value.name;
-    this.form.get('query')?.valueChanges.subscribe((value) => {
-      this.gridSettings = {
-        ...this.form?.getRawValue(),
-        ...DEFAULT_GRID_SETTINGS,
-      };
-    });
-  }
-
-  /**
-   * Updates layout parameters.
-   *
-   * @param value new value
-   */
-  onGridLayoutChange(value: any): void {
-    this.form?.get('display')?.setValue(value);
-  }
-
-  /**
-   * Updates pageSize parameter.
-   *
-   * @param value new value
-   */
-  onPageSizeChange(value: any): void {
-    this.pageSize = value;
   }
 
   /**
@@ -85,9 +49,6 @@ export class SafeLayoutModalComponent implements OnInit {
    * Closes the modal sending tile form value.
    */
   onSubmit(): void {
-    if (this.pageSize) {
-      this.form?.get('query')?.patchValue({ pageSize: this.pageSize });
-    }
     this.dialogRef.close(this.form?.getRawValue());
   }
 }

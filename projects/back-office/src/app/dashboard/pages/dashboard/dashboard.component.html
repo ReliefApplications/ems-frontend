@@ -6,7 +6,7 @@
         <safe-access [access]="dashboard.permissions" [application]="applicationId" (save)="saveAccess($event)"
             *ngIf="dashboard.page ? dashboard.page.canUpdate : dashboard.step ? dashboard.step.canUpdate : false">
         </safe-access>
-        <safe-button [isIcon]="true" icon="share" matTooltipPosition="above" matTooltip="Share Dashboard"
+        <safe-button [isIcon]="true" icon="share" matTooltipPosition="above" [matTooltip]="'models.dashboard.share' | translate"
             class="share-button" (click)="onShare()">
         </safe-button>
     </div>
@@ -14,7 +14,7 @@
     <ng-container *ngIf="formActive">
         <form [formGroup]="dashboardNameForm" (ngSubmit)="saveName()" class="dashboard-name-container">
             <mat-form-field>
-                <mat-label>{{'global.name' | translate}}</mat-label>
+                <mat-label>{{'common.name' | translate}}</mat-label>
                 <input matInput formControlName="dashboardName" type="string">
             </mat-form-field>
             <safe-button type="submit" [isIcon]="true" icon="save" variant="primary"

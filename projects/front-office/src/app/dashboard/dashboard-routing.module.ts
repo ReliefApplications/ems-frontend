@@ -13,6 +13,22 @@ export const routes = [
     component: DashboardComponent,
     children: [
       {
+        path: 'share',
+        children: [
+          // Redirect to main page
+          {
+            path: '',
+            redirectTo: '/',
+            pathMatch: 'full',
+          },
+          {
+            path: ':id',
+            loadChildren: () =>
+              import('./pages/share/share.module').then((m) => m.ShareModule),
+          },
+        ],
+      },
+      {
         path: ':id',
         children: [
           {

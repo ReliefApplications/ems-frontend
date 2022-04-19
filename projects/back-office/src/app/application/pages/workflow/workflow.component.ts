@@ -63,6 +63,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.formActive = false;
     this.routeSubscription = this.route.params.subscribe((params) => {
+      this.loading = true;
       this.id = params.id;
       this.workflowService.loadWorkflow(this.id);
     });
@@ -196,11 +197,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             .subscribe((res) => {
               if (res.data) {
                 this.snackBar.openSnackBar(
-                  this.translateService.instant('notification.objectDeleted', {
-                    value: this.translateService.instant(
-                      'notification.term.step'
-                    ),
-                  })
+                  this.translateService.instant(
+                    'common.notifications.objectDeleted',
+                    {
+                      value: this.translateService.instant('common.step.one'),
+                    }
+                  )
                 );
                 this.steps = this.steps.filter(
                   (x) => x.id !== res.data?.deleteStep.id
@@ -259,9 +261,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectReordered', {
-              type: this.translateService.instant('notification.term.step'),
-            })
+            this.translateService.instant(
+              'common.notifications.objectReordered',
+              {
+                type: this.translateService.instant('common.step.one'),
+              }
+            )
           );
           if (currentStep) {
             const index = steps.findIndex((x) => x.id === currentStep.id);
@@ -270,10 +275,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.steps = steps;
         } else {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectNotEdited', {
-              type: this.translateService.instant('notification.term.workflow'),
-              error: res.errors ? res.errors[0].message : '',
-            })
+            this.translateService.instant(
+              'common.notifications.objectNotEdited',
+              {
+                type: this.translateService.instant('common.workflow.one'),
+                error: res.errors ? res.errors[0].message : '',
+              }
+            )
           );
         }
       });
@@ -288,13 +296,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else if (this.activeStep + 1 === this.steps.length) {
       this.onOpenStep(0);
       this.snackBar.openSnackBar(
-        this.translateService.instant('notification.goToStep', {
-          step: this.steps[0].name,
-        })
+        this.translateService.instant(
+          'models.workflow.notifications.goToStep',
+          {
+            step: this.steps[0].name,
+          }
+        )
       );
     } else {
       this.snackBar.openSnackBar(
-        this.translateService.instant('notification.cannotGoToNextStep'),
+        this.translateService.instant(
+          'models.workflow.notifications.cannotGoToNextStep'
+        ),
         { error: true }
       );
     }
