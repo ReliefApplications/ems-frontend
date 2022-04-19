@@ -107,11 +107,14 @@ export class FormComponent implements OnInit, OnDestroy {
               !this.form.canCreateRecords
             ) {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectAccessDenied', {
-                  type: this.translate
-                    .instant('notification.term.form')
-                    .toLowerCase(),
-                }),
+                this.translate.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.form.one')
+                      .toLowerCase(),
+                  }
+                ),
                 { error: true }
               );
             } else {
@@ -148,11 +151,14 @@ export class FormComponent implements OnInit, OnDestroy {
               !this.form.canCreateRecords
             ) {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectAccessDenied', {
-                  type: this.translate
-                    .instant('notification.term.form')
-                    .toLowerCase(),
-                }),
+                this.translate.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.form.one')
+                      .toLowerCase(),
+                  }
+                ),
                 { error: true }
               );
             } else {

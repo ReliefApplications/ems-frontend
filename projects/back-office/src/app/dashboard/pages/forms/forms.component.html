@@ -172,13 +172,13 @@
 <safe-skeleton-table
   *ngIf="loading"
   [columns]="[
-    'global.name',
-    'table.date',
-    'global.status',
-    'table.history',
-    'table.records',
-    'table.core',
-    'table.parent'
+    'common.name',
+    'common.createdOn',
+    'common.status',
+    'common.history',
+    'common.record.few',
+    'components.forms.isCore',
+    'components.forms.parent'
   ]"
   [actions]="true"
 >

@@ -73,6 +73,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   };
 
   @ViewChild('xlsxFile') xlsxFile: any;
+  public showUpload = false;
 
   constructor(
     private apollo: Apollo,
@@ -150,7 +151,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         if (res.errors) {
           // TO-DO: Check why it's not working as intended.
           this.snackBar.openSnackBar(
-            this.translate.instant('notification.accessNotProvided', {
+            this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate.instant('table.records').toLowerCase(),
               error: res.errors[0].message,
             }),
@@ -302,7 +303,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
           .subscribe((res) => {
             this.layoutService.setRightSidenav(null);
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.dataRecovered')
+              this.translate.instant('common.notifications.dataRecovered')
             );
           });
       }
@@ -360,26 +361,40 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Take file from upload event and call upload method.
+   *
+   * @param event Upload event.
+   */
   onFileChange(event: any): void {
-    const file = event.target.files[0];
+    const file = event.files[0].rawFile;
     this.uploadFileData(file);
   }
 
+  /**
+   * Upload file and indicate status of request.
+   *
+   * @param file file to upload.
+   */
   uploadFileData(file: any): void {
     const path = `upload/form/records/${this.id}`;
     this.downloadService.uploadFile(path, file).subscribe(
       (res) => {
-        this.xlsxFile.nativeElement.value = '';
+        // this.xlsxFile.clearFiles();
         if (res.status === 'OK') {
           this.snackBar.openSnackBar(
-            this.translate.instant('notification.recordUploadSuccess')
+            this.translate.instant(
+              'models.record.notifications.uploadSuccessful'
+            )
           );
           this.getFormData();
+          this.showUpload = false;
         }
       },
       (error: any) => {
         this.snackBar.openSnackBar(error.error, { error: true });
-        this.xlsxFile.nativeElement.value = '';
+        // this.xlsxFile.clearFiles();
+        this.showUpload = false;
       }
     );
   }

@@ -187,7 +187,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                matTooltip="Open in full width"
+                [matTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -234,7 +234,7 @@
             >
               <a
                 class="url-container textbox"
-                href="{{ getPropertyValue(dataItem, field.name) }}"
+                href="{{ getUrl(getPropertyValue(dataItem, field.name)) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -248,7 +248,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                matTooltip="Open in full width"
+                [matTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -270,6 +270,30 @@
               />
             </div>
           </ng-template>
+          <!-- DISPLAY ( number ) -->
+          <ng-template
+          #refSpan
+          kendoGridCellTemplate
+          let-dataItem="dataItem"
+          *ngIf="field.meta.type === 'numeric'"
+          >
+          <div
+            class="translate textbox-container"
+            [style]="getStyle(dataItem, field.name)"
+          >
+            <div #refSpan class="textbox">
+              {{ getPropertyValue(dataItem, field.name) }}
+            </div>
+            <button
+              kendoButton
+              *ngIf="isEllipsisActive(refSpan)"
+              icon="hyperlink-open-sm"
+              (click)="onExpandText(dataItem, field.name)"
+              [look]="'flat'"
+              [matTooltip]="'common.openFullScreen' | translate"
+            ></button>
+          </div>
+          </ng-template>
           <!-- DISPLAY ( color ) -->
           <ng-template
             kendoGridCellTemplate
@@ -290,7 +314,7 @@
                 #refSpan
                 class="textbox external-link"
                 *ngIf="dataItem[field.name].length > 0"
-                matTooltip="Open detail"
+                [matTooltip]="'components.widget.grid.actions.detail' | translate"
                 (click)="
                   action.emit({
                     action: 'details',
@@ -743,7 +767,7 @@
           [icon]="'detail-section'"
           [look]="'flat'"
           (click)="action.emit({ action: 'details', items: dataItem })"
-          matTooltip="Open detail"
+          [matTooltip]="'components.widget.grid.actions.detail' | translate"
         ></button>
       </ng-template>
     </kendo-grid-column>

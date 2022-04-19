@@ -149,8 +149,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFromCacheData = !!cachedData;
     if (this.isFromCacheData) {
       this.snackBar.openSnackBar(
-        this.translate.instant('notification.objectLoadedFromCache', {
-          type: this.translate.instant('notification.term.record'),
+        this.translate.instant('common.notifications.loadedFromCache', {
+          type: this.translate.instant('common.record.one'),
         })
       );
     }
@@ -502,7 +502,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
           .subscribe((res) => {
             this.layoutService.setRightSidenav(null);
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.dataRecovered')
+              this.translate.instant('common.notifications.dataRecovered')
             );
           });
       }

@@ -43,7 +43,7 @@
         <input matInput formControlName="name" type="text" />
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>{{ 'global.label' | translate }}</mat-label>
+        <mat-label>{{ 'common.label' | translate }}</mat-label>
         <input matInput formControlName="label" type="text" />
       </mat-form-field>
     </ng-container>
@@ -105,6 +105,15 @@
             [scalarFields]="availableScalarFields"
           >
           </safe-tab-style>
+        </ng-template>
+      </mat-tab>
+      <mat-tab
+        [label]="'common.preview' | translate"
+        *ngIf="layoutPreviewData"
+      >
+        <ng-template matTabContent>
+          <safe-tab-layout-preview [data]="layoutPreviewData">
+          </safe-tab-layout-preview>
         </ng-template>
       </mat-tab>
     </mat-tab-group>

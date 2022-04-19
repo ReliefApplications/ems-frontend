@@ -23,6 +23,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [PullJobsComponent, PullJobModalComponent],
@@ -36,6 +37,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatTooltipModule,
     MatSelectModule,
     MatMenuModule,
     MatProgressSpinnerModule,

@@ -110,10 +110,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
-                  'notification.accessNotProvided',
+                  'common.notifications.accessNotProvided',
                   {
                     type: this.translateService
-                      .instant('notification.term.dashboard')
+                      .instant('common.dashboard.one')
                       .toLowerCase(),
                     error: '',
                   }
@@ -308,10 +308,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.workflowService.updateStepName(res.data.editStep);
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectNotUpdated', {
-                type: this.translateService.instant('notification.term.step'),
-                error: res.errors ? res.errors[0].message : '',
-              })
+              this.translateService.instant(
+                'common.notifications.objectNotUpdated',
+                {
+                  type: this.translateService.instant('common.step.one'),
+                  error: res.errors ? res.errors[0].message : '',
+                }
+              )
             );
           }
         });
@@ -333,12 +336,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*  Display the ShareUrl modal with the route to access the dashboard.
+  /**
+   * Display the ShareUrl modal with the route to access the dashboard.
    */
   public onShare(): void {
+    const url = `${window.origin}/share/${this.dashboard?.id}`;
     const dialogRef = this.dialog.open(ShareUrlComponent, {
       data: {
-        url: window.location,
+        url,
       },
     });
     dialogRef.afterClosed().subscribe();
