@@ -1,19 +1,22 @@
+
 .loading-skeleton {
-  height: 90%;
+  height: 100%;
   display: flex;
   justify-content: start;
   gap: 2em;
   flex-direction: column;
 
-  .skeleton-widget{
+  .skeleton-grid{
     height: 100%;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2em;
+  } 
 
-    .header {
-      box-shadow: rgba(0, 0, 0, 0.10) 0px 2px 8px;
-      padding: 0.4em 1em;
-    }
-
+  .span-2 {
+    grid-column: span 2;
   }
+  
 }
 
 .grid-tile {
