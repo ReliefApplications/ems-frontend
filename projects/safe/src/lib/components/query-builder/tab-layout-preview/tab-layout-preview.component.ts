@@ -63,6 +63,17 @@ export class SafeTabLayoutPreviewComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Updates pageSize parameter.
+   *
+   * @param value new value
+   */
+  onPageSizeChange(value: any): void {
+    if (this.data) {
+      this.data.form?.get('query')?.patchValue({ pageSize: value });
+    }
+  }
+
+  /**
    * Remove subscriptions.
    */
   ngOnDestroy(): void {
