@@ -21,7 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
-
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 @NgModule({
   declarations: [DashboardComponent, ShareUrlComponent],
   imports: [
@@ -44,6 +44,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeRecordHistoryModule,
     SafeButtonModule,
     TranslateModule,
+    IndicatorsModule,
   ],
   exports: [DashboardComponent],
 })
