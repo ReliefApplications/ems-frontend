@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-import { SafeWidgetGridModule } from '@safe/builder';
+import { SafeSkeletonWidgetModule, SafeWidgetGridModule } from '@safe/builder';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 /**
  * Dashboard page.
@@ -14,6 +14,7 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     CommonModule,
     DashboardRoutingModule,
     SafeWidgetGridModule,
+    SafeSkeletonWidgetModule,
     IndicatorsModule,
   ],
   exports: [DashboardComponent],
