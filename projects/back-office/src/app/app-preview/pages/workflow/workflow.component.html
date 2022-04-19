@@ -1,9 +1,9 @@
-<ng-container *ngIf="!loading && workflow">
-    <!-- STEPS -->
-    <safe-workflow-stepper [steps]="steps" (openStep)="onOpenStep($event)" [activeStep]="activeStep">
-    </safe-workflow-stepper>
-</ng-container>
-<ng-container *ngIf="loading">
-    <safe-workflow-stepper [loading]="true"></safe-workflow-stepper>
-</ng-container>
+<!-- STEPS -->
+<safe-workflow-stepper
+  [loading]="loading"
+  [steps]="steps"
+  (openStep)="onOpenStep($event)"
+  [activeStep]="activeStep"
+>
+</safe-workflow-stepper>
 <router-outlet (activate)="onActivate($event)"></router-outlet>
