@@ -305,7 +305,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
             this.translateService.instant(
               'common.notifications.objectNotCreated',
               {
-                type: this.translateService.instant('common.application.one'),
+                type: this.translateService
+                  .instant('common.application.one')
+                  .toLowerCase(),
                 error: res.errors[0].message,
               }
             ),

@@ -281,11 +281,19 @@
 					"description": "******"
 				}
 			},
+			"edition": {
+				"confirmationMessage": "******",
+				"title": "******"
+			},
 			"positionAttribute": {
 				"delete": {
 					"confirmationMessage": "******",
 					"title": "******"
 				}
+			},
+			"publish": {
+				"confirmationMessage": "******",
+				"title": "******"
 			},
 			"subscription": {
 				"modal": {
@@ -302,14 +310,6 @@
 				"placeholder": {
 					"description": "******"
 				}
-			},
-			"publish": {
-				"title": "******",
-				"confirmationMessage": "******"
-			},
-			"edition": {
-				"title": "******",
-				"confirmationMessage": "******"
 			}
 		},
 		"applications": {
