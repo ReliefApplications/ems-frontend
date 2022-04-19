@@ -1,4 +1,4 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<!-- <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner> -->
 <ng-container *ngIf="!loading && workflow">
     <!-- HEADER -->
     <div *ngIf="!formActive" class="workflow-name-container">
@@ -24,5 +24,18 @@
     <safe-workflow-stepper [steps]="steps" [canUpdate]="canUpdate" (add)="onAddStep()" (openStep)="onOpenStep($event)"
         (delete)="onDeleteStep($event)" (reorderSteps)="onReorderSteps($event)" [activeStep]="activeStep">
     </safe-workflow-stepper>
+</ng-container>
+<ng-container *ngIf="loading">
+    <div class="workflow-name-container">
+        <kendo-skeleton
+            shape="rectangle"
+            animation="pulse"
+            width="100px"
+            height="24px"
+        ></kendo-skeleton>
+        <safe-button [isIcon]="true" icon="admin_panel_settings" matTooltipPosition="above" [disabled]="true">
+        </safe-button>
+    </div>
+    <safe-workflow-stepper [loading]="true"></safe-workflow-stepper>
 </ng-container>
 <router-outlet (activate)="onActivate($event)"></router-outlet>
