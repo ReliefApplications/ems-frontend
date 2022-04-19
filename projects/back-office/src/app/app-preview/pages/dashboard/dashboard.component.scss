@@ -1,0 +1,18 @@
+
+.loading-skeleton {
+  height: 90%;
+  display: flex;
+  justify-content: start;
+  gap: 2em;
+  flex-direction: column;
+
+  .skeleton-widget{
+    height: 100%;
+
+    .header {
+      box-shadow: rgba(0, 0, 0, 0.10) 0px 2px 8px;
+      padding: 0.4em 1em;
+    }
+
+  }
+}
