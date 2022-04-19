@@ -29,7 +29,7 @@ import { SafeDownloadService } from '../../services/download.service';
 import { Application } from '../../models/application.model';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 const ADMIN_COLUMNS = ['select', 'name', 'username', 'oid', 'roles', 'actions'];
 
@@ -76,7 +76,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
     private translate: TranslateService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -213,7 +214,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   }
 
   onClick(user: User): void {
-    this.router.navigate(['/settings/users/' + user.id]);
+    this.router.navigate([user.id], {relativeTo: this.activatedRoute});
   }
 
   onDelete(users: User[]): void {

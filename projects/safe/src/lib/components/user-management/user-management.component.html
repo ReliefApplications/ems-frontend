@@ -64,7 +64,6 @@
                         {{ 'common.role.few' | translate }}
                     </mat-label>
                     <mat-select formControlName="roles" multiple>
-                        <mat-option>{{ 'common.input.none' | translate }}</mat-option>
                         <mat-option *ngFor="let role of roles" [value]="role.title">
                             {{role.title}}
                         </mat-option>
