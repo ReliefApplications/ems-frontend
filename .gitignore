@@ -17,6 +17,9 @@ documentation.json
 # Storybook
 storybook-static/*
 
+# Widgets
+/widgets
+
 # Profiling files
 chrome-profiler-events*.json
 speed-measure-plugin*.json
