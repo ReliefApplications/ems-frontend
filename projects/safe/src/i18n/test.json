@@ -302,6 +302,14 @@
 				"placeholder": {
 					"description": "******"
 				}
+			},
+			"publish": {
+				"title": "******",
+				"confirmationMessage": "******"
+			},
+			"edition": {
+				"title": "******",
+				"confirmationMessage": "******"
 			}
 		},
 		"applications": {
@@ -434,8 +442,8 @@
 			},
 			"hint": {
 				"fields": "******",
-				"style": "******",
-				"sortingDisabled": "******"
+				"sortingDisabled": "******",
+				"style": "******"
 			},
 			"sort": {
 				"ascending": "******",

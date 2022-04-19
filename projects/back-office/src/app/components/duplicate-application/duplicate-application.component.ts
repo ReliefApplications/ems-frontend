@@ -60,7 +60,9 @@ export class DuplicateApplicationComponent implements OnInit {
             this.translateService.instant(
               'common.notifications.objectDuplicated',
               {
-                type: this.translateService.instant('common.application.one'),
+                type: this.translateService
+                  .instant('common.application.one')
+                  .toLowerCase(),
                 value: this.currentApp.name,
               }
             )

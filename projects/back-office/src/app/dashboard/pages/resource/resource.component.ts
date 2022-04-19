@@ -321,7 +321,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.objectDeleted', {
-            value: this.translate.instant('common.form.one').toLowerCase(),
+            value: this.translate.instant('common.form.one'),
           })
         );
         this.dataSourceForms = this.dataSourceForms.filter((x) => x.id !== id);

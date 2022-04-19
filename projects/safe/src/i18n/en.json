@@ -281,11 +281,19 @@
 					"description": "Please enter a description for the application"
 				}
 			},
+			"edition": {
+				"confirmationMessage": "Do you want to unlock {{name}} edition?",
+				"title": "Unlock edition"
+			},
 			"positionAttribute": {
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the position attribute {{name}}?",
 					"title": "Delete position attribute"
 				}
+			},
+			"publish": {
+				"confirmationMessage": "Do you confirm the publication of {{name}}?",
+				"title": "Publish application"
 			},
 			"subscription": {
 				"modal": {

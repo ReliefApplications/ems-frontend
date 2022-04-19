@@ -249,9 +249,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
             if (!res.errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate
-                    .instant('common.form.one')
-                    .toLowerCase(),
+                  value: this.translate.instant('common.form.one'),
                 })
               );
               this.forms.data = this.forms.data.filter(
@@ -262,9 +260,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.translate.instant(
                   'common.notifications.objectNotDeleted',
                   {
-                    value: this.translate
-                      .instant('common.form.one')
-                      .toLowerCase(),
+                    value: this.translate.instant('common.form.one'),
                     error: res.errors[0].message,
                   }
                 ),
