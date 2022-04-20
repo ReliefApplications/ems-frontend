@@ -287,6 +287,10 @@
 					"title": "Delete position attribute"
 				}
 			},
+			"publish": {
+				"confirmationMessage": "Do you confirm the publication of {{name}} application?",
+				"title": "Publish application"
+			},
 			"subscription": {
 				"modal": {
 					"hint": {
@@ -297,6 +301,10 @@
 						"listenTo": "Select a routing key"
 					}
 				}
+			},
+			"unlock": {
+				"confirmationMessage": "Do you want to unlock {{name}} edition?",
+				"title": "Unlock edition"
 			},
 			"update": {
 				"placeholder": {

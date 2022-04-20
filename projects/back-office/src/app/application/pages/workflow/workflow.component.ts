@@ -276,7 +276,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         } else {
           this.snackBar.openSnackBar(
             this.translateService.instant(
-              'common.notifications.objectNotEdited',
+              'common.notifications.objectNotUpdated',
               {
                 type: this.translateService.instant('common.workflow.one'),
                 error: res.errors ? res.errors[0].message : '',

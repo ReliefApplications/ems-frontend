@@ -73,7 +73,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectLocked', {
-          value: this.application?.name,
+          name: this.application?.name,
         })
       );
     } else {
@@ -90,7 +90,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectLocked', {
-          value: this.application?.name,
+          name: this.application?.name,
         })
       );
     } else {

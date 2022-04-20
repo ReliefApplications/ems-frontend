@@ -281,11 +281,19 @@
 					"description": "******"
 				}
 			},
+			"unlock": {
+				"confirmationMessage": "******",
+				"title": "******"
+			},
 			"positionAttribute": {
 				"delete": {
 					"confirmationMessage": "******",
 					"title": "******"
 				}
+			},
+			"publish": {
+				"confirmationMessage": "******",
+				"title": "******"
 			},
 			"subscription": {
 				"modal": {
