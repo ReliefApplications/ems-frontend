@@ -94,7 +94,9 @@ export class SafeEmailService {
       {
         duration: 0,
         data: {
-          message: this.translate.instant('common.notifications.email.processing'),
+          message: this.translate.instant(
+            'common.notifications.email.processing'
+          ),
           loading: true,
         },
       }
@@ -179,7 +181,9 @@ export class SafeEmailService {
       {
         duration: 0,
         data: {
-          message: this.translate.instant('common.notifications.email.processing'),
+          message: this.translate.instant(
+            'common.notifications.email.processing'
+          ),
           loading: true,
         },
       }
