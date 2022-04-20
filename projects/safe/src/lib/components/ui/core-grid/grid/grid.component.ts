@@ -204,16 +204,15 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   public getPropertyValue(item: any, path: string): any {
     const meta = this.fields.find((x) => x.name === path).meta;
     const value = get(item, path);
-    const optionsList = meta.choices || meta.relatedForms;
-    if (optionsList) {
+    if (meta.choices) {
       if (Array.isArray(value)) {
-        return optionsList.reduce(
+        return meta.choices.reduce(
           (acc: string[], x: any) =>
             value.includes(x.value) ? acc.concat([x.text]) : acc,
           []
         );
       } else {
-        return optionsList.find((x: any) => x.value === value)?.text || '';
+        return meta.choices.find((x: any) => x.value === value)?.text || '';
       }
     } else {
       return value;
