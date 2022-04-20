@@ -281,10 +281,6 @@
 					"description": "Please enter a description for the application"
 				}
 			},
-			"edition": {
-				"confirmationMessage": "Do you want to unlock {{name}} edition?",
-				"title": "Unlock edition"
-			},
 			"positionAttribute": {
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the position attribute {{name}}?",
@@ -292,7 +288,7 @@
 				}
 			},
 			"publish": {
-				"confirmationMessage": "Do you confirm the publication of {{name}}?",
+				"confirmationMessage": "Do you confirm the publication of {{name}} application?",
 				"title": "Publish application"
 			},
 			"subscription": {
@@ -305,6 +301,10 @@
 						"listenTo": "Select a routing key"
 					}
 				}
+			},
+			"unlock": {
+				"confirmationMessage": "Do you want to unlock {{name}} edition?",
+				"title": "Unlock edition"
 			},
 			"update": {
 				"placeholder": {

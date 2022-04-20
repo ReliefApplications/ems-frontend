@@ -61,10 +61,10 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: this.translateService.instant(
-          'components.application.edition.title'
+          'components.application.unlock.title'
         ),
         content: this.translateService.instant(
-          'components.application.edition.confirmationMessage',
+          'components.application.unlock.confirmationMessage',
           {
             name: this.application?.name,
           }
