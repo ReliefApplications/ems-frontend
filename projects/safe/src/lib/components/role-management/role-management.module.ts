@@ -10,9 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-
-
-
 @NgModule({
   declarations: [SafeRoleManagementComponent],
   imports: [
@@ -25,7 +22,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,
-    MatCheckboxModule
+    MatCheckboxModule,
   ],
   exports: [SafeRoleManagementComponent],
 })

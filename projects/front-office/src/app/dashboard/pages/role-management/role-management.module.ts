@@ -7,7 +7,11 @@ import { SafeRoleManagementModule } from '@safe/builder';
 
 @NgModule({
   declarations: [RoleManagementComponent],
-  imports: [CommonModule, RoleManagementRoutingModule, SafeRoleManagementModule],
+  imports: [
+    CommonModule,
+    RoleManagementRoutingModule,
+    SafeRoleManagementModule,
+  ],
   exports: [RoleManagementComponent],
 })
 export class RoleManagementModule {}

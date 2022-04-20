@@ -528,13 +528,13 @@
 			"impersonate": {
 				"title": "******"
 			},
+			"permissions": {
+				"canSeeRoles": "******",
+				"canSeeUsers": "******"
+			},
 			"update": {
 				"permissions": "******",
 				"title": "******"
-			},
-			"permissions": {
-				"canSeeUsers": "******",
-				"canSeeRoles": "******"
 			}
 		},
 		"user": {
