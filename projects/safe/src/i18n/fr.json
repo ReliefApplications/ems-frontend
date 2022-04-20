@@ -1,0 +1,845 @@
+{
+	"common": {
+		"add": "Ajouter",
+		"aggregation": {
+			"few": "Aggrégations",
+			"none": "Pas d'aggrégation",
+			"one": "Aggrégation"
+		},
+		"apiConfiguration": {
+			"few": "Configurations d'API",
+			"none": "Pas de configuration d'API",
+			"one": "Configuration d'API"
+		},
+		"application": {
+			"few": "Applications",
+			"none": "Pas d'application",
+			"one": "Application"
+		},
+		"back": "Retour",
+		"cancel": "Annuler",
+		"channel": {
+			"few": "Canaux",
+			"none": "Pas de canal",
+			"one": "Canal"
+		},
+		"child": "Enfant",
+		"clear": "Clear",
+		"close": "Fermer",
+		"confirm": "Confirmer",
+		"create": "Créer",
+		"createdOn": "Créé le",
+		"dashboard": {
+			"few": "Tableaux de bord",
+			"none": "Pas de tableau de bord",
+			"one": "Tableau de bord"
+		},
+		"delete": "Supprimer",
+		"deleteObject": "Supprimer {{name}}",
+		"deleted": "Supprimé",
+		"display": "Afficher",
+		"downloadObject": "Télécharger {{name}}",
+		"downloadTemplate": "Télécharger le template",
+		"duplicate": "Dupliquer",
+		"edit": "Modifier",
+		"editObject": "Modifier {{name}}",
+		"email": {
+			"few": "Emails",
+			"none": "Pas d'email",
+			"one": "Email"
+		},
+		"errors": {
+			"objectDuplicated": "{{type}} {{value}} existe déjà."
+		},
+		"export": "Exporter",
+		"exportObject": "Exporter {{name}}",
+		"false": "Faux",
+		"field": {
+			"few": "Champs",
+			"none": "Pas de champ",
+			"one": "Champ"
+		},
+		"filter": {
+			"apply": "Appliquer",
+			"clear": "Supprimer le filtre",
+			"hide": "Cacher le filtre",
+			"show": "Afficher le filtre"
+		},
+		"form": {
+			"few": "Formulaires",
+			"none": "Pas de formulaire",
+			"one": "Formulaire"
+		},
+		"general": "Général",
+		"history": "Historique",
+		"id": "Id",
+		"input": {
+			"dateRange": "Plage temporelle",
+			"none": "-- Aucun --",
+			"rawJson": "JSON brut"
+		},
+		"label": "Etiquette",
+		"layout": {
+			"few": "Layouts",
+			"none": "Pas de layout",
+			"one": "Layout"
+		},
+		"modifiedOn": "Modifié le",
+		"name": "Nom",
+		"newObject": "Nouveau : {{name}}",
+		"next": "Suivant",
+		"notifications": {
+			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
+			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
+			"alreadyExists": "Cet objet {{type}} {{value}} existe déjà dans cette application.",
+			"copiedToClipboard": "Copié !",
+			"dataRecovered": "Les données ont été récupérées !",
+			"formatInvalid": "Veuillez importer un fichier de format .{{format}}.",
+			"loadedFromCache": "Objet de type {{type}} chargé depuis le cache.",
+			"noOpened": "Aucun objet {{value}} n'a été ouvert.",
+			"objectCreated": "{{value}} {{type}} créé.",
+			"objectDeleted": "{{value}} supprimé.",
+			"objectDuplicated": "L'objet {{type}} {{value}} a été dupliqué avec succès.",
+			"objectInvited": "{{name}} a été invité.",
+			"objectLocked": "L'édition de {{name}} a été bloquée par un autre utilisateur.",
+			"objectNotCreated": "L'objet de type {{type}} n'a pas pu être créé. {{error}}",
+			"objectNotDeleted": "L'objet {{value}} n'a pas pu être supprimé. {{error}}",
+			"objectNotDuplicated": "L'objet de type {{type}} n'a pas pu être dupliqué. {{error}}",
+			"objectNotFound": "{{name}} n'a pas été trouvé.",
+			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
+			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
+			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
+			"objectUpdated": "{{value}} {{type}} a été modifié.",
+			"platformAccessNotGranted": "Vous n'avez pas d'accès valide à cette plateforme.",
+			"readAll": "Tout marqué comme lu",
+			"statusUpdated": "Statut mis à jour par {{value}}.",
+			"unlocked": "L'édition de l'objet {{value}} a été débloquée par un autre utilisateur."
+		},
+		"openFullScreen": "Ouvrir en plein écran",
+		"page": {
+			"few": "Pages",
+			"none": "Pas de page",
+			"one": "Page"
+		},
+		"pagination": {
+			"empty": "Aucun résultat",
+			"loadMore": "Charger plus"
+		},
+		"placeholder": {
+			"email": "Entrez un email",
+			"name": "Entrez un nom",
+			"search": "Rechercher...",
+			"title": "Entrez un titre"
+		},
+		"platform": {
+			"backOffice": "Back-Office"
+		},
+		"positionAttribute": {
+			"few": "Attributs de position",
+			"none": "Pas d'attributs de position",
+			"one": "Attribut de position"
+		},
+		"positionCategory": {
+			"few": "Catégories de position",
+			"none": "Pas de catégories de position",
+			"one": "Catégories de position"
+		},
+		"preview": "Prévisualisation",
+		"previous": "Précédent",
+		"publish": "Publier",
+		"pullJob": {
+			"few": "Pull jobs",
+			"none": "Pas de pull job",
+			"one": "Pull job"
+		},
+		"record": {
+			"few": "Enregistrements",
+			"none": "Pas d'enregistrement",
+			"one": "Enregistrement"
+		},
+		"resource": {
+			"few": "Ressources",
+			"none": "Pas de ressource",
+			"one": "Ressource"
+		},
+		"role": {
+			"few": "Rôles",
+			"none": "Pas de rôle",
+			"one": "Rôle"
+		},
+		"save": "Sauvegarder",
+		"saveChanges": "Sauvegarder les changements",
+		"searchObject": "Rechercher {{name}}",
+		"select": "Sélectionner",
+		"settings": "Paramètres",
+		"status": "Statut",
+		"status_active": "Actif",
+		"status_archived": "Archivé",
+		"status_pending": "En attente",
+		"step": {
+			"few": "Etape",
+			"none": "Pas d'étape",
+			"one": "Etape"
+		},
+		"subscription": {
+			"few": "Abonnements",
+			"none": "Pas d'abonnement",
+			"one": "Abonnement"
+		},
+		"title": "Titre",
+		"true": "Vrai",
+		"update": "Mettre à jour",
+		"uploadObject": "Importer {{name}}",
+		"user": {
+			"few": "Utilisateurs",
+			"none": "Pas d'utilisateur",
+			"one": "Utilisateur"
+		},
+		"value": {
+			"few": "Valeurs",
+			"none": "Pas de valeurs",
+			"one": "Valeur"
+		},
+		"viewObject": "Voir {{name}}",
+		"workflow": {
+			"few": "Workflows",
+			"none": "Pas de workflow",
+			"one": "Workflow"
+		}
+	},
+	"components": {
+		"access": {
+			"canDelete": "Peut supprimer",
+			"canSee": "Peut voir",
+			"canUpdate": "Peut modifier",
+			"description": "Modifier les permissions d'accès",
+			"title": "Accès"
+		},
+		"aggregationBuilder": {
+			"addField": "Ajouter un champ",
+			"addStage": "Ajouter une étape",
+			"dataset": {
+				"select": "Sélectionner la source de données"
+			},
+			"fieldName": "Nom du champ",
+			"groupBy": "Regrouper par",
+			"mapping": {
+				"xAxis": "Axe X",
+				"yAxis": "Axe Y"
+			},
+			"operator": "Opérateur",
+			"operators": {
+				"add": "Ajouter",
+				"avg": "Moyenne",
+				"count": "Compte",
+				"day": "Jour",
+				"first": "Premier",
+				"last": "Dernier",
+				"max": "Maximum",
+				"min": "Minimum",
+				"month": "Mois",
+				"multiply": "Multiplier",
+				"sum": "Somme",
+				"week": "Semaine",
+				"year": "Année"
+			},
+			"sourceFields": "Sélectionner les champs",
+			"stages": {
+				"addFields": "Ajouter des champs",
+				"custom": "Customiser",
+				"filter": "Filtrer",
+				"group": "Regrouper",
+				"sort": "Trier",
+				"unwind": "Dégrouper"
+			},
+			"tooltip": {
+				"addFields": "Ajouter de nouveaux champs au document.",
+				"custom": "Définit une fonction ou une expression d'aggrégation personnalisée en JavaScript.",
+				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
+				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
+				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
+				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
+			}
+		},
+		"apiConfiguration": {
+			"create": {
+				"errors": {
+					"name": "Seulement les lettres, les tirets et les underscores sont acceptés."
+				}
+			},
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression de la configuration d'API {{name}}?",
+				"title": "Supprimer la configuration d'API"
+			}
+		},
+		"application": {
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression de cette application ?"
+			},
+			"duplicate": {
+				"name": {
+					"description": "Veuillez entrer une description pour cette application."
+				}
+			},
+			"positionAttribute": {
+				"delete": {
+					"confirmationMessage": "Confirmez-vous la suppression de l'attribut de position {{name}}?",
+					"title": "Supprimer l'attribut de position."
+				}
+			},
+			"subscription": {
+				"modal": {
+					"hint": {
+						"listenTo": "Clé de routage de l'agent de messages"
+					},
+					"listenTo": "Écouter",
+					"placeholder": {
+						"listenTo": "Sélectionner une clé de routage"
+					}
+				}
+			},
+			"update": {
+				"placeholder": {
+					"description": "Veuillez entrer une description pour l'application."
+				}
+			}
+		},
+		"applications": {
+			"dropdown": {
+				"select": "Depuis les applications"
+			}
+		},
+		"channel": {
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du canal {{name}}?"
+			},
+			"dropdown": {
+				"select": "Notifier sur"
+			}
+		},
+		"emailBuilder": {
+			"body": "Corps du texte",
+			"distribution": "Liste de distribution",
+			"fields": "Sélectionner les champs à écrire dans le corps du texte",
+			"subject": "Objet"
+		},
+		"form": {
+			"create": {
+				"choice": {
+					"blank": "Créer un formulaire vide",
+					"inherit": "Copier un template de ressources existant",
+					"resource": "Créer une nouvelle ressource",
+					"template": "Commencer depuis un template existant"
+				},
+				"template": {
+					"from": "Depuis le template",
+					"placeholder": "Choisir un template existant",
+					"title": "Depuis la ressource",
+					"tooltip": "Si aucun template n'est sélectionné, la structure principale sera chargée"
+				}
+			},
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du formulaire {{name}}?"
+			},
+			"layout": {
+				"update": {
+					"preview": {
+						"description": "Réorganise, trie, filtre et cache des colonnes pour changer l'affichage par défaut du layout"
+					}
+				}
+			},
+			"summary": {
+				"cache": {
+					"clear": "Vider le cache",
+					"load": "Charger depuis le cache {{date}}"
+				},
+				"createdBy": "Créé par {{user}} le {{date}}",
+				"modifiedBy": "Modifié pour la dernière fois par {{user}} le {{date}}"
+			},
+			"update": {
+				"exit": "Sortir sans sauvegarder les changements",
+				"exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, êtes-vous sûrs de vouloir quitter cette page ?"
+			}
+		},
+		"formBuilder": {
+			"errors": {
+				"invalidRelatedName": "Le nom lié fourni ({{name}}) pour la question {{question}} à la page {{page}} est invalide. Veuillez entrer un nom lié valide (au format snake case) pour sauvegarder le formulaire.",
+				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake case) pour sauvegarder le formulaire.",
+				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un template pour sauvegarder le formulaire."
+			}
+		},
+		"forms": {
+			"isCore": "Is core",
+			"parent": "Formulaire parent"
+		},
+		"header": {
+			"goToPlatform": "Naviguer vers",
+			"logout": "Se déconnecter",
+			"sidenav": {
+				"collapse": "Cacher la barre latérale",
+				"show": "Afficher la barre latérale"
+			}
+		},
+		"history": {
+			"download": "Télécharger l'historique",
+			"preview": "Prévisualiser et revenir"
+		},
+		"notifications": {
+			"readAll": "Tout marquer comme lu"
+		},
+		"pullJob": {
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du pull job {{name}}?",
+				"title": "Supprimer pull job"
+			},
+			"modal": {
+				"hint": {
+					"path": "Entrer le chemin pour extraire la donnée de la réponse",
+					"schedule": "Entrez l'horaire programmé pour ce Pull job",
+					"url": "Entrez l'URL après l'hôte pour atteindre la donnée spécifique"
+				},
+				"identifier": "Identificateur unique",
+				"mapping": "Correspondance",
+				"placeholder": {
+					"path": "Entrer le chemin...",
+					"schedule": "Entrer l'heure programmée...",
+					"url": "Entrer l'URL..."
+				},
+				"switch": "Changer de mode"
+			}
+		},
+		"queryBuilder": {
+			"dataset": {
+				"select": "Sélectionner un jeu de données"
+			},
+			"errors": {
+				"field": {
+					"invalid": "Champ invalide. Veuillez cliquer pour le retirer."
+				}
+			},
+			"fields": {
+				"available": "Champs disponibles",
+				"search": "Rechercher champs...",
+				"selected": "Champs sélectionnés",
+				"title": "Champs"
+			},
+			"filter": {
+				"and": "Et",
+				"logic": "Logique de filtre",
+				"new": "Ajouter un nouveau filtre",
+				"newGroup": "Ajouter un nouveau groupe de filtres",
+				"operator": "Opérateur",
+				"or": "Ou",
+				"title": "Filtre"
+			},
+			"hint": {
+				"fields": "Sélectionnez des points de donnée ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
+				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
+				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
+			},
+			"sort": {
+				"ascending": "Croissant",
+				"descending": "Décroissant",
+				"field": "Filtrer le champ",
+				"order": "Ordre de tri",
+				"title": "Tri"
+			},
+			"style": {
+				"and": "Et",
+				"edit": {
+					"appliesTo": "Appliquer le style à",
+					"background": {
+						"color": "Couleur de fond"
+					},
+					"criteria": "Critère",
+					"fields": "Champ",
+					"name": "Nom de la règle",
+					"selectedColumns": "Seulement les colonnes sélectionnées.",
+					"text": {
+						"color": "Couleur du texte",
+						"style": "Style du texte"
+					},
+					"wholeRow": "Ligne entière"
+				},
+				"logic": "Filtre de style",
+				"new": "Ajouter une règle de style",
+				"operator": "Opérateur",
+				"or": "Ou",
+				"title": "Style"
+			}
+		},
+		"record": {
+			"attach": {
+				"confirm": "Attacher",
+				"selectTarget": "Select {{name}} target"
+			},
+			"convert": {
+				"choice": {
+					"copy": "Copier l'enregistrement source",
+					"overwrite": "Écraser l'enregistrement source"
+				},
+				"result": {
+					"force": "Les champs suivants seront ignorés:",
+					"smooth": "Conversion OK"
+				},
+				"select": "Convertir en"
+			},
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression de l'enregistrement {{name}}?",
+				"permanently": "Supprimer de manière permanente"
+			},
+			"dropdown": {
+				"select": "Sélectionner un enregistrement"
+			},
+			"history": {
+				"revert": "Revenir à l'enregistrement précédent",
+				"version": {
+					"current": "Version actuelle",
+					"old": "Ancienne version"
+				}
+			},
+			"modal": {
+				"update": "Sauvegarder et fermer"
+			}
+		},
+		"records": {
+			"showActive": "Voir les enregistrements actifs",
+			"showArchived": "Voir les enregistrements archivés",
+			"upload": {
+				"hint": "Le fichier doit contenir uniquement un enregistrement par ligne. La ligne d'en-tête contient les noms des champs de données."
+			}
+		},
+		"resource": {
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression de la ressource {{name}}?"
+			},
+			"dropdown": {
+				"select": "Depuis la ressource"
+			}
+		},
+		"role": {
+			"add": {
+				"title": "Ajouter un nouveau rôle"
+			},
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du rôle {{name}}?",
+				"title": "Supprimer le rôle"
+			},
+			"impersonate": {
+				"title": "Choix du rôle à simuler"
+			},
+			"update": {
+				"permissions": "Permissions",
+				"title": "Modifier les permissions des rôles et les canaux"
+			}
+		},
+		"user": {
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression de l'utilisateur {{name}}?",
+				"title": "Supprimer l'utilisateur"
+			},
+			"invite": {
+				"confirm": "Inviter",
+				"role": {
+					"description": "Sélectionner le rôle à assigner"
+				}
+			},
+			"update": {
+				"title": "Modifier l'utilisateur"
+			}
+		},
+		"users": {
+			"invite": {
+				"add": "Ajouter un nouvel utilisateur",
+				"confirm": "Inviter des utilisateurs",
+				"description": "Sélectionner des utilisateurs existants, inviter de nouveaux utilisateurs ou en importer depuis un fichier Excel"
+			}
+		},
+		"widget": {
+			"expand": "Étendre",
+			"grid": {
+				"actions": {
+					"detail": "Ouvrir le détail",
+					"history": "Voir l'historique"
+				},
+				"empty": "Aucun enregistrement détecté",
+				"errors": {
+					"invalid": "Configuration de grille invalide",
+					"missingDataset": "Sélectionner un jeu de données dans les jeux de données"
+				},
+				"export": {
+					"columns": {
+						"choice": {
+							"all": "Toutes les colonnes disponibles",
+							"visible": "Toutes les colonnes visibles"
+						},
+						"title": "Sélectionner les colonnes à exporter"
+					},
+					"dataset": {
+						"choice": {
+							"all": "Tous les enregistrements visibles",
+							"selected": "Seulement les enregistrements visibles"
+						},
+						"title": "Sélectionner les enregistrements à exporter"
+					},
+					"format": {
+						"title": "Sélectionner le format d'export"
+					}
+				},
+				"filter": {
+					"toggle": "Activer la visibilité du filtre"
+				},
+				"item": {
+					"few": "{{count}} éléments",
+					"none": "Pas d'élément",
+					"one": "{{count}} élément"
+				},
+				"layout": {
+					"reset": "Réinitialiser le Layout par défaut"
+				}
+			},
+			"settings": {
+				"chart": {
+					"legend": "Légende",
+					"orientation": "Orientation",
+					"position": "Position",
+					"text": "Texte",
+					"type": "Graphique"
+				},
+				"grid": {
+					"actions": {
+						"add": "Ajouter de nouveaux enregistrements",
+						"convert": "Convertir des enregistrements",
+						"delete": "Supprimer les enregistrements",
+						"inline": "Édition inline",
+						"show": "Voir l'historique",
+						"title": "Actions activées",
+						"update": "Modifier les enregistrements"
+					},
+					"buttons": {
+						"callback": {
+							"attach": "Attacher à l'enregistrement",
+							"displayField": "Afficher le champ",
+							"export": "Exporter le jeu de données sélectionné",
+							"modify": "Modifier automatiquement les lignes sélectionnées",
+							"modifyField": "Champ à modifier",
+							"modifyValue": "Value to attribute",
+							"notify": {
+								"message": "Message de notification"
+							},
+							"prefill": "Préremplir le formulaire avec les données sélectionnées",
+							"save": "Sauvegarder automatiquement",
+							"selectDisplay": "Sélectionner les champs affichés",
+							"sendMail": "Envoyer mail",
+							"workflow": {
+								"close": "Fermer le workflow",
+								"confirm": "Message de confirmation",
+								"next": "Aller à l'étape suivante"
+							}
+						},
+						"create": "Ajouter un bouton",
+						"defaultName": "Bouton d'action",
+						"enable": "Activer",
+						"title": "Bouton d'action rapide",
+						"tooltip": {
+							"attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",
+							"notify": "Si activé, vous devez fournir un canal et un message.Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Le message fourni est utilisé pour définir l'action de la notification.",
+							"publish": "Si activé, vous devez fournir un canal. Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Quiconque écoutant sur ce canal pourra recevoir ces enregistrements."
+						}
+					},
+					"hint": {
+						"buttons": "Les boutons d'action rapides apparaitront dans le widget et vous permettront de réaliser chacune des actions ci-dessous"
+					},
+					"layouts": {
+						"add": {
+							"choice": {
+								"create": "Créer un nouveau layout",
+								"load": "Charger un layout existant"
+							},
+							"select": "Sélectionner un layout",
+							"title": "Ajouter un nouveau layout"
+						},
+						"title": "Layout de la grille"
+					}
+				},
+				"map": {
+					"dataset": "Sélection du jeu de données",
+					"display": {
+						"latitude": "Latitude du centre de la carte",
+						"longitude": "Longitude du centre de la carte",
+						"title": "Affichage par défaut"
+					}
+				}
+			}
+		}
+	},
+	"models": {
+		"apiConfiguration": {
+			"authType": "Type d'authentification"
+		},
+		"application": {
+			"description": "Description",
+			"id": "ID de l'application",
+			"notifications": {
+				"published": "L'application {{value}} a été publiée.",
+				"updated": "Application modifiée."
+			},
+			"setAsFavorite": "Ajouter aux favoris",
+			"subscription": {
+				"create": "Créer un abonnement"
+			}
+		},
+		"channel": {
+			"create": "Créer un canal"
+		},
+		"dashboard": {
+			"share": "Partager le tableau de bord"
+		},
+		"form": {
+			"core": "Core",
+			"create": "Créer un formulaire",
+			"field": {
+				"label": "Étiquette"
+			},
+			"select": "Sélectionner un formulaire",
+			"template": "Template"
+		},
+		"page": {
+			"add": "Ajouter une page"
+		},
+		"pullJob": {
+			"path": "Chemin",
+			"schedule": "Programmation",
+			"url": "Url"
+		},
+		"record": {
+			"convert": "Convertir",
+			"notifications": {
+				"conversionIncomplete": "Il n'y a pas de correspondance entre le(s) enregistrement(s) sélectionné(s) et certains champs de ce formulaire.",
+				"rowsAdded": "{{length}} ligne(s) ont été ajoutées à {{field}} dans l'enregistrement {{value}}.",
+				"uploadSuccessful": "Enregistrements importés avec succès"
+			},
+			"restore": "Restaurer"
+		},
+		"resource": {
+			"create": "Créer une ressource"
+		},
+		"role": {
+			"create": "Créer un rôle"
+		},
+		"user": {
+			"notifications": {
+				"rolesUpdated": "Les rôles de {{username}} ont été modifiés."
+			},
+			"username": "Nom d'utilisateur"
+		},
+		"widget": {
+			"add": "Ajouter un widget",
+			"chart": {
+				"defaultTitle": "Widget Graphique"
+			},
+			"map": {
+				"defaultTitle": "Widget Carte",
+				"latitude": "Latitude",
+				"longitude": "Longitude",
+				"zoom": "Zoom"
+			},
+			"scheduler": {
+				"defaultTitle": "Widget Calendrier"
+			}
+		},
+		"workflow": {
+			"notifications": {
+				"cannotGoToNextStep": "Impossible de passer à l'étape suivante",
+				"goToStep": "De retour à l'étape {{step}}."
+			}
+		}
+	},
+	"pages": {
+		"administration": {
+			"title": "Administration"
+		},
+		"apiConfiguration": {
+			"authentication": "Paramètres d'authentification",
+			"baseUrl": "Point d'arrivée principal",
+			"clientId": "ID Client",
+			"host": "Paramètres de l'hôte",
+			"notifications": {
+				"authTokenFetched": "Jeton d'authentification récupéré, faîtes un autre ping pour obtenir la vraie réponse.",
+				"pingFailed": "La requête ping a échoué.",
+				"pingReceived": "La requête ping a reçu une réponse positive."
+			},
+			"ping": "Essayer avec ces paramètres",
+			"pingUrl": "Extension ping",
+			"placeholder": {
+				"baseUrl": "URL de base pour l'API",
+				"clientId": "Entrez l'ID Client",
+				"pingUrl": "Entrez l'URL de l'extension ping",
+				"scope": "Entrer le scope",
+				"secret": "Entrer le client secret",
+				"token": "Entrez le jeton d'accès pour l'authentification",
+				"tokenUrl": "Entrez l'URL du jeton d'accès"
+			},
+			"scope": "Scope",
+			"secret": "Client Secret",
+			"token": "Token",
+			"tokenUrl": "URL du jeton d'accès"
+		},
+		"apiConfigurations": {
+			"create": "Créer une configuration d'API"
+		},
+		"appBuilder": {
+			"title": "Site builder"
+		},
+		"application": {
+			"addPage": {
+				"form": {
+					"title": "Formulaires disponibles"
+				},
+				"selectType": "Sélectionnez le type de page que vous voulez créer"
+			},
+			"empty": {
+				"add": "Ajouter une page",
+				"create": "Cliquez sur créer pour terminer le processus",
+				"customize": "Customisez chacune des pages créées"
+			},
+			"positionAttributes": {
+				"create": "Créer une catégorie de position a position category",
+				"title": "Attributs"
+			},
+			"settings": {
+				"actions": "Actions"
+			}
+		},
+		"applications": {
+			"all": "Toutes les applications",
+			"goTo": "Aller vers la liste d'applications",
+			"recent": "Applications récentes",
+			"title": "Mes applications"
+		},
+		"formBuilder": {
+			"title": "Paramètres avancés"
+		},
+		"forms": {
+			"title": "Formulaires disponibles"
+		},
+		"profile": {
+			"notifications": {
+				"updated": "Préférences sauvegardées."
+			},
+			"title": "Votre profil"
+		},
+		"pullJobs": {
+			"create": "Créer un pull job"
+		},
+		"workflow": {
+			"addStep": {
+				"selectType": "Sélectionner quel type d'étape vous voulez créer."
+			},
+			"empty": {
+				"add": "Ajoutez des étapes",
+				"customize": "Customisez chacune des étapes créées."
+			}
+		}
+	}
+}
