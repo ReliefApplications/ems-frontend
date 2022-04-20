@@ -29,6 +29,7 @@ import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'safe-roles',
@@ -62,7 +63,9 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -112,6 +115,10 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.inApplication && this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();
     }
+  }
+
+  onClick(role: Role) {
+    this.router.navigate([role.id], {relativeTo: this.activatedRoute});
   }
 
   onAdd(): void {

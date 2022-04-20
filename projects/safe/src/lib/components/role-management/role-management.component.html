@@ -1,0 +1,44 @@
+<h1>{{roleForm?.get('name')?.value}}</h1>
+<form [formGroup]="roleForm" *ngIf="roleForm" (ngSubmit)="onSubmit()">
+    <mat-tab-group>
+        <mat-tab [label]="'Summary'">
+                <div class="form-group">
+                    <mat-form-field appearance="outline">
+                        <mat-label>
+                            {{'common.name' | translate}}
+                        </mat-label>
+                        <input matInput formControlName="name" type='text' />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>
+                            {{'models.application.description' | translate}}
+                        </mat-label>
+                        <textarea matInput
+                            formControlName="description"
+                            cdkTextareaAutosize
+                            #autosize="cdkTextareaAutosize">
+                        </textarea>
+                    </mat-form-field>
+                    <div class="checkbox-area">
+                        <mat-checkbox formControlName="canSeeRoles">
+                            {{'components.role.permissions.canSeeRoles' | translate}}
+                        </mat-checkbox>
+                        <mat-checkbox formControlName="canSeeUsers">
+                            {{'components.role.permissions.canSeeUsers' | translate}}
+                        </mat-checkbox>
+                    </div>
+                    <div class="users-area">
+                        <h3>{{'common.user.few' | translate}}</h3>
+                        <div>
+                            <p *ngFor="let user of users">{{user}}</p>
+                        </div>
+                    </div>
+                </div>
+        </mat-tab>
+        <mat-tab [label]="'Features'" *ngIf="!inApp">
+        </mat-tab>
+        <mat-tab [label]="'Channels'">
+        </mat-tab>
+    </mat-tab-group>
+    <safe-button variant="primary" category="secondary" type="submit">{{ 'common.saveChanges' | translate }}</safe-button>
+</form> 

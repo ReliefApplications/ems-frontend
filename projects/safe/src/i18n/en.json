@@ -528,6 +528,10 @@
 			"impersonate": {
 				"title": "Choose role to simulate"
 			},
+			"permissions": {
+				"canSeeRoles": "Can see roles",
+				"canSeeUsers": "Can see users"
+			},
 			"update": {
 				"permissions": "Permissions",
 				"title": "Update role permissions and channels"
