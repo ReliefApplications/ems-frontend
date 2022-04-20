@@ -1,5 +1,6 @@
 {
 	"common": {
+		"access": "Access",
 		"add": "Add",
 		"aggregation": {
 			"few": "Aggregations",
@@ -100,6 +101,18 @@
 				"processing": "Sending email...",
 				"ready": "Email ready",
 				"sent": "Email sent"
+			},
+			"file": {
+				"download": {
+					"error": "Something went wrong during the download",
+					"processing": "Downloading file...",
+					"ready": "Your file is ready"
+				},
+				"upload": {
+					"error": "Something went wrong during the upload",
+					"processing": "Uploading file...",
+					"ready": "File uploaded"
+				}
 			},
 			"formatInvalid": "Please upload a valid .{{format}} file.",
 			"loadedFromCache": "{{type}} loaded from cache.",
@@ -693,6 +706,16 @@
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
 						"title": "Default display"
+					},
+					"errors": {
+						"latitude": "Invalid latitude, please select a number between -90 and 90",
+						"longitude": "Invalid longitude, please select a number between -180 and 180"
+					},
+					"tooltip": {
+						"default": {
+							"latitude": "Select a default latitude to center the map around",
+							"longitude": "Select a default longitude to center the map around"
+						}
 					}
 				}
 			}

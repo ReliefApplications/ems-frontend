@@ -353,7 +353,7 @@ export class FormBuilderComponent implements OnInit {
         if (res.errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
-              type: this.translate.instant('action.access'),
+              type: this.translate.instant('common.access'),
               error: res.errors[0].message,
             }),
             { error: true }
@@ -362,7 +362,7 @@ export class FormBuilderComponent implements OnInit {
         } else {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('action.access').toLowerCase(),
+              type: this.translate.instant('common.access').toLowerCase(),
               value: '',
             })
           );

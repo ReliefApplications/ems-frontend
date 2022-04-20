@@ -1,6 +1,7 @@
 {
 	"common": {
 		"add": "******",
+		"access": "******",
 		"aggregation": {
 			"few": "******",
 			"none": "******",
@@ -100,6 +101,18 @@
 				"processing": "******",
 				"ready": "******",
 				"sent": "******"
+			},
+			"file": {
+				"download": {
+					"processing": "******",
+					"ready": "******",
+					"error": "******"
+				},
+				"upload": {
+					"processing": "******",
+					"ready": "******",
+					"error": "******"
+				}
 			},
 			"formatInvalid": "******",
 			"loadedFromCache": "******",
@@ -693,6 +706,16 @@
 						"latitude": "******",
 						"longitude": "******",
 						"title": "******"
+					},
+					"errors": {
+						"latitude": "******",
+						"longitude": "******"
+					},
+					"tooltip": {
+						"default": {
+							"latitude": "******",
+							"longitude": "******"
+						}
 					}
 				}
 			}

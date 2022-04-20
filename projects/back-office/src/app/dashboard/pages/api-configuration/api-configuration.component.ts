@@ -240,7 +240,9 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
             this.translateService.instant(
               'common.notifications.objectNotUpdated',
               {
-                type: this.translateService.instant('table.APIConf'),
+                type: this.translateService.instant(
+                  'common.apiConfiguration.one'
+                ),
                 error: res.errors[0].message,
               }
             ),
