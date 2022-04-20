@@ -13,7 +13,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeFloatingOptionsComponent } from './floating-options/floating-options.component';
 import { SafeTileDataComponent } from './floating-options/menu/tile-data/tile-data.component';
-import { SafeTileDisplayComponent } from './floating-options/menu/tile-display/tile-display.component';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
@@ -27,7 +26,6 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     SafeWidgetGridComponent,
     SafeFloatingOptionsComponent,
     SafeTileDataComponent,
-    SafeTileDisplayComponent,
     SafeExpandedWidgetComponent,
   ],
   imports: [

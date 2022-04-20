@@ -7,6 +7,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeEmailPreviewComponent } from '../components/email-preview/email-preview.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../utils/prettify';
+import { Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 const flatDeep = (arr: any[]): any[] =>
   arr.reduce(
@@ -24,6 +26,7 @@ const flatDeep = (arr: any[]): any[] =>
 export class SafeEmailService {
   private sendUrl = '';
   private previewUrl = '';
+  private filesUrl = '';
 
   /**
    * Shared email service.
@@ -38,10 +41,25 @@ export class SafeEmailService {
     @Inject('environment') environment: any,
     private http: HttpClient,
     private snackBar: SafeSnackBarService,
-    private dialog: MatDialog // private translate: TranslateService
+    private dialog: MatDialog,
+    private translate: TranslateService
   ) {
     this.sendUrl = environment.apiUrl + '/email/';
     this.previewUrl = environment.apiUrl + '/email/preview/';
+    this.filesUrl = environment.apiUrl + '/email/files';
+  }
+
+  public sendFiles(files: any[]): Observable<any> {
+    const token = localStorage.getItem('idtoken');
+    const headers = new HttpHeaders({
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('attachments', file, file.name);
+    }
+    return this.http.post(this.filesUrl, formData, { headers });
   }
 
   /**
@@ -68,24 +86,34 @@ export class SafeEmailService {
     },
     sortField?: string,
     sortOrder?: string,
-    attachment?: boolean
+    attachment?: boolean,
+    files?: any[]
   ): Promise<void> {
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SafeSnackbarSpinnerComponent,
       {
         duration: 0,
         data: {
-          message: 'Sending email...',
-          // message: this.translate.instant('email.processing'),
+          message: this.translate.instant(
+            'common.notifications.email.processing'
+          ),
           loading: true,
         },
       }
     );
+    let fileFolderId = '';
+    if (files && files.length > 0) {
+      const response = await this.sendFiles(files).toPromise();
+      if (response.id) {
+        fileFolderId = response.id;
+      }
+    }
     const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
+
     this.http
       .post(
         this.sendUrl,
@@ -99,22 +127,21 @@ export class SafeEmailService {
           sortField,
           sortOrder,
           attachment,
+          ...(fileFolderId && { files: fileFolderId }),
         },
         { headers }
       )
       .subscribe(
         (res) => {
           snackBarRef.instance.data = {
-            message: 'Email sent',
-            // message: this.translate.instant('email.sent'),
+            message: this.translate.instant('common.notifications.email.sent'),
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
         () => {
           snackBarRef.instance.data = {
-            message: 'Something went wrong during the email sending',
-            // message: this.translate.instant('email.error'),
+            message: this.translate.instant('common.notifications.email.error'),
             loading: false,
             error: true,
           };
@@ -154,8 +181,9 @@ export class SafeEmailService {
       {
         duration: 0,
         data: {
-          message: 'Generating email...',
-          // message: this.translate.instant('email.processing'),
+          message: this.translate.instant(
+            'common.notifications.email.processing'
+          ),
           loading: true,
         },
       }
@@ -184,8 +212,7 @@ export class SafeEmailService {
       .subscribe(
         (res) => {
           snackBarRef.instance.data = {
-            message: 'Email ready',
-            // message: this.translate.instant('email.sent'),
+            message: this.translate.instant('common.notifications.email.ready'),
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
@@ -205,15 +232,15 @@ export class SafeEmailService {
                 query,
                 sortField,
                 sortOrder,
-                attachment
+                attachment,
+                value.files
               );
             }
           });
         },
         () => {
           snackBarRef.instance.data = {
-            message: 'Something went wrong during the email creation',
-            // message: this.translate.instant('email.error'),
+            message: this.translate.instant('common.notifications.email.error'),
             loading: false,
             error: true,
           };
