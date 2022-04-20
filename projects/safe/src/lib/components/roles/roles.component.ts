@@ -176,15 +176,10 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             })
             .subscribe((res) => {
               this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate
-                      .instant('common.role.one')
-                      .toLowerCase(),
-                    value: role.title,
-                  }
-                )
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.role.one').toLowerCase(),
+                  value: role.title,
+                })
               );
               this.getRoles();
             });

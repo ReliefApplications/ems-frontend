@@ -127,7 +127,7 @@
             matSuffix
             icon="info"
             variant="grey"
-            [matTooltip]="'components.widget.settings.map.tooltip.display.longitude' | translate"
+            [matTooltip]="'components.widget.settings.map.tooltip.default.latitude' | translate"
           ></safe-icon>
           <mat-error *ngIf="tileForm.controls.centerLat.errors">
             {{ 'components.widget.settings.map.errors.latitude' | translate }}
@@ -142,7 +142,7 @@
             matSuffix
             icon="info"
             variant="grey"
-            [matTooltip]="'components.widget.settings.map.tooltip.display.longitude' | translate"
+            [matTooltip]="'components.widget.settings.map.tooltip.default.longitude' | translate"
           ></safe-icon>
           <mat-error *ngIf="tileForm.controls.centerLat.errors">
             {{ 'components.widget.settings.map.errors.longitude' | translate }}

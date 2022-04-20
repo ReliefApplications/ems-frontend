@@ -113,6 +113,7 @@ export class FormComponent implements OnInit, OnDestroy {
                     type: this.translate
                       .instant('common.form.one')
                       .toLowerCase(),
+                    error: '',
                   }
                 ),
                 { error: true }
@@ -157,6 +158,7 @@ export class FormComponent implements OnInit, OnDestroy {
                     type: this.translate
                       .instant('common.form.one')
                       .toLowerCase(),
+                    error: '',
                   }
                 ),
                 { error: true }

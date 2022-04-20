@@ -225,7 +225,9 @@ export class ApiConfigurationsComponent
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
-                      type: this.translate.instant('table.APIConf'),
+                      type: this.translate.instant(
+                        'common.apiConfiguration.one'
+                      ),
                       error: res.errors[0].message,
                     }
                   ),
@@ -285,7 +287,7 @@ export class ApiConfigurationsComponent
             if (res && !res.errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('table.APIConf'),
+                  value: this.translate.instant('common.apiConfiguration.one'),
                 })
               );
               this.dataSource.data = this.dataSource.data.filter(
