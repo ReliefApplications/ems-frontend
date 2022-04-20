@@ -53,6 +53,7 @@
 		"filter": {
 			"apply": "Apply",
 			"clear": "Clear Filter",
+			"empty": "No result",
 			"hide": "Hide Filter",
 			"show": "Show Filter"
 		},
@@ -77,6 +78,14 @@
 		"name": "Name",
 		"newObject": "New {{name}}",
 		"next": "Next",
+		"notifications": {
+			"email": {
+				"error": "Something went wrong during the email sending",
+				"processing": "Sending email...",
+				"ready": "Email ready",
+				"sent": "Email sent"
+			}
+		},
 		"openFullScreen": "Open in Full Screen",
 		"page": {
 			"few": "Pages",
@@ -293,6 +302,9 @@
 				"confirmationMessage": "Do you confirm the deletion of the form {{name}}?"
 			},
 			"layout": {
+				"delete": {
+					"confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"
+				},
 				"update": {
 					"preview": {
 						"description": "Reorder, sort, filter and hide columns to edit default display of the layout"
@@ -498,6 +510,13 @@
 			}
 		},
 		"widget": {
+			"chart": {
+				"errors": {
+					"aggregation": {
+						"invalid": "Invalid aggregation"
+					}
+				}
+			},
 			"expand": "Expand",
 			"grid": {
 				"actions": {
@@ -597,7 +616,8 @@
 								"create": "Create a new layout",
 								"load": "Load existing layout"
 							},
-							"select": "Select a layout"
+							"select": "Select a layout",
+							"title": "Add a layout"
 						},
 						"title": "Grid layouts"
 					}
@@ -635,7 +655,8 @@
 			"core": "Core",
 			"create": "Create a Form",
 			"field": {
-				"label": "Label"
+				"label": "Label",
+				"name": "Field name"
 			},
 			"select": "Select a Form",
 			"template": "Template"

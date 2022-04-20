@@ -96,7 +96,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
           title: this.translate.instant('common.deleteObject', {
             object: this.translate.instant('common.application.one'),
           }),
-          content: this.translate.instant('components.application.delete'),
+          content: this.translate.instant(
+            'components.application.delete.confirmationMessage'
+          ),
           confirmText: this.translate.instant('common.delete'),
           cancelText: this.translate.instant('common.cancel'),
           confirmColor: 'warn',

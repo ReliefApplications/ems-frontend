@@ -54,7 +54,8 @@
 			"apply": "******",
 			"clear": "******",
 			"hide": "******",
-			"show": "******"
+			"show": "******",
+			"empty": "******"
 		},
 		"form": {
 			"few": "******",
@@ -156,7 +157,15 @@
 			"none": "******",
 			"one": "******"
 		},
-		"viewObject": "******"
+		"viewObject": "******",
+		"notifications": {
+			"email": {
+				"processing": "******",
+				"error": "******",
+				"sent": "******",
+				"ready": "******"
+			}
+		}
 	},
 	"components": {
 		"access": {
@@ -297,6 +306,9 @@
 					"preview": {
 						"description": "******"
 					}
+				},
+				"delete": {
+					"confirmationMessage": "******"
 				}
 			},
 			"summary": {
@@ -499,6 +511,13 @@
 		},
 		"widget": {
 			"expand": "******",
+			"chart": {
+				"errors": {
+					"aggregation": {
+						"invalid": "******"
+					}
+				}
+			},
 			"grid": {
 				"actions": {
 					"detail": "******",
@@ -593,6 +612,7 @@
 					},
 					"layouts": {
 						"add": {
+							"title": "******",
 							"choice": {
 								"create": "******",
 								"load": "******"
@@ -635,6 +655,7 @@
 			"core": "******",
 			"create": "******",
 			"field": {
+				"name": "******",
 				"label": "******"
 			},
 			"select": "******",
