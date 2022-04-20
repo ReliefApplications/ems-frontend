@@ -95,6 +95,12 @@
 			"alreadyExists": "******",
 			"copiedToClipboard": "******",
 			"dataRecovered": "******",
+			"email": {
+				"error": "******",
+				"processing": "******",
+				"ready": "******",
+				"sent": "******"
+			},
 			"formatInvalid": "******",
 			"loadedFromCache": "******",
 			"noOpened": "******",
@@ -114,13 +120,7 @@
 			"platformAccessNotGranted": "******",
 			"readAll": "******",
 			"statusUpdated": "******",
-			"unlocked": "******",
-			"email": {
-				"error": "******",
-				"processing": "******",
-				"ready": "******",
-				"sent": "******"
-			}
+			"unlocked": "******"
 		},
 		"openFullScreen": "******",
 		"page": {
