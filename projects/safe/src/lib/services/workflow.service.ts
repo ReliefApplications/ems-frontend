@@ -50,6 +50,7 @@ export class SafeWorkflowService {
    * @param id workflow id.
    */
   loadWorkflow(id: any): void {
+    this.workflow.next(null);
     this.apollo
       .query<GetWorkflowByIdQueryResponse>({
         query: GET_WORKFLOW_BY_ID,

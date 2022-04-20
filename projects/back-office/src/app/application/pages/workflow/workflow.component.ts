@@ -106,6 +106,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.workflow = workflow;
           this.canUpdate = this.workflow.canUpdate || false;
         } else {
+          this.loading = true;
           this.steps = [];
         }
       }

@@ -62,6 +62,7 @@
 		"filter": {
 			"apply": "Apply",
 			"clear": "Clear Filter",
+			"empty": "No result",
 			"hide": "Hide Filter",
 			"show": "Show Filter"
 		},
@@ -94,6 +95,12 @@
 			"alreadyExists": "The {{type}} {{value}} already exists on this application.",
 			"copiedToClipboard": "Copied!",
 			"dataRecovered": "The data has been recovered",
+			"email": {
+				"error": "Something went wrong during the email sending",
+				"processing": "Sending email...",
+				"ready": "Email ready",
+				"sent": "Email sent"
+			},
 			"formatInvalid": "Please upload a valid .{{format}} file.",
 			"loadedFromCache": "{{type}} loaded from cache.",
 			"noOpened": "No opened {{value}}.",
@@ -350,6 +357,9 @@
 				"confirmationMessage": "Do you confirm the deletion of the form {{name}}?"
 			},
 			"layout": {
+				"delete": {
+					"confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"
+				},
 				"update": {
 					"preview": {
 						"description": "Reorder, sort, filter and hide columns to edit default display of the layout"
@@ -564,6 +574,13 @@
 			}
 		},
 		"widget": {
+			"chart": {
+				"errors": {
+					"aggregation": {
+						"invalid": "Invalid aggregation"
+					}
+				}
+			},
 			"expand": "Expand",
 			"grid": {
 				"actions": {
@@ -707,7 +724,8 @@
 			"core": "Core",
 			"create": "Create a Form",
 			"field": {
-				"label": "Label"
+				"label": "Label",
+				"name": "Field name"
 			},
 			"select": "Select a Form",
 			"template": "Template"

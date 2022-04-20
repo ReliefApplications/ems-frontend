@@ -529,10 +529,15 @@ export class ResourceComponent implements OnInit, OnDestroy {
   onDeleteLayout(layout: Layout): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('layout.delete'),
-        content: this.translate.instant('layout.deleteDesc', {
-          name: layout.name,
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.layout.one'),
         }),
+        content: this.translate.instant(
+          'components.form.layout.delete.confirmationMessage',
+          {
+            name: layout.name,
+          }
+        ),
         confirmText: this.translate.instant('common.delete'),
         cancelText: this.translate.instant('common.cancel'),
       },

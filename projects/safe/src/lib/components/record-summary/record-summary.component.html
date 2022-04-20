@@ -23,7 +23,7 @@
   ></safe-button>
   <div>
     <span>{{
-      'date.created'
+      'components.form.summary.createdBy'
         | translate
           : {
               user: record.createdBy?.name || 'unknown',
@@ -31,7 +31,7 @@
             }
     }}</span>
     <span *ngIf="record.modifiedAt">{{
-      'date.modified'
+      'components.form.summary.modifiedBy'
         | translate
           : {
               user: record.modifiedBy?.name || 'unknown',
