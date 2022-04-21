@@ -99,8 +99,8 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.largeDevice = window.innerWidth > 1024;
     this.account = this.authService.account;
     this.environment = environment;
-    this.currentLanguage = this.translate.defaultLang;
     this.languages = this.translate.getLangs();
+    this.currentLanguage = this.getLanguage();
     this.theme = this.environment.theme;
   }
 
@@ -294,5 +294,25 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   setLanguage(language: string) {
     this.translate.use(language);
     this.currentLanguage = language;
+    window.localStorage.setItem('lang', language);
+  }
+
+  /**
+   * Get the current active language. First it checks if there is one already
+   * set, else it takes the default one.
+   *
+   * @returns language id of the language
+   */
+  getLanguage(): string {
+    // select the langage saved (or default if not)
+    let language = window.localStorage.getItem('lang');
+    if (!language || !this.languages.includes(language)) {
+      language = this.translate.defaultLang;
+    }
+    // if not default language, change langage of the interface
+    if (language !== this.translate.defaultLang) {
+      this.translate.use(language);
+    }
+    return language;
   }
 }
