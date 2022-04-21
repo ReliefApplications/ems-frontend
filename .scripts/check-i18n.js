@@ -4,11 +4,11 @@ const fs = require('fs');
 const I18N_FOLDER_PATH = 'projects/safe/src/i18n/';
 
 /** Default value that will be used as key in test translation file. */
-const DEFAULT_VALUE = '******';
+const DEFAULT_VALUE = ' ****** ';
 
-// Regex which matches variables inside translations
-// Be aware that it will only match when the variable name is a single word, which should always be the case
-const REGEX_VALUE_VARIABLE = /({{\w+}})/;
+// Regex matching everything that is not between double brackets
+// Can be improved to match even values without brackets and leave the spaces before and after brackets
+const REGEX_VALUE_VARIABLE = new RegExp(/([^{}]+(?={{))|((?<=}})[^{}]+)/, 'g');
 
 /**
  * Sort a JSON object by its keys. (Array are not available)
@@ -40,24 +40,9 @@ const setDefaultValue = (json, defaultValue) => {
   const newJson = { ...json };
   for (const key of Object.keys(json)) {
     if (typeof newJson[key] === 'string') {
-      let newValue = defaultValue;
-      if (REGEX_VALUE_VARIABLE.test(newJson[key])) {
-        // Split the translation value using variables as delimiter, including them in the array
-        // Then, filter out empty values
-        const splittedValue = json[key]
-          .split(REGEX_VALUE_VARIABLE)
-          .filter((x) => x.length > 0);
-
-        // Build the placeholder by replacing all text that is not the variable by the default value, and remove whitespace at start and end
-        newValue = splittedValue
-          .reduce((prev, curr) => {
-            return REGEX_VALUE_VARIABLE.test(curr)
-              ? prev.concat(' ' + curr)
-              : prev.concat(' ' + DEFAULT_VALUE);
-          }, '')
-          .trim();
-      }
-      newJson[key] = newValue;
+      newJson[key] = REGEX_VALUE_VARIABLE.test(json[key])
+        ? json[key].replaceAll(REGEX_VALUE_VARIABLE, defaultValue).trim()
+        : defaultValue.trim();
     } else {
       newJson[key] = setDefaultValue(newJson[key], defaultValue);
     }
