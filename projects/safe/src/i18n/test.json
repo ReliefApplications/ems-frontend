@@ -1,7 +1,7 @@
 {
 	"common": {
-		"add": "******",
 		"access": "******",
+		"add": "******",
 		"aggregation": {
 			"few": "******",
 			"none": "******",
@@ -104,14 +104,14 @@
 			},
 			"file": {
 				"download": {
+					"error": "******",
 					"processing": "******",
-					"ready": "******",
-					"error": "******"
+					"ready": "******"
 				},
 				"upload": {
+					"error": "******",
 					"processing": "******",
-					"ready": "******",
-					"error": "******"
+					"ready": "******"
 				}
 			},
 			"formatInvalid": "******",
