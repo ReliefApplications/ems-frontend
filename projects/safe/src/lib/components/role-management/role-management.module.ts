@@ -9,6 +9,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [SafeRoleManagementComponent],
@@ -23,6 +25,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     ReactiveFormsModule,
     MatSelectModule,
     MatCheckboxModule,
+    MatExpansionModule,
+    MatIconModule,
   ],
   exports: [SafeRoleManagementComponent],
 })

@@ -36,8 +36,67 @@
                 </div>
         </mat-tab>
         <mat-tab [label]="'Features'" *ngIf="!inApp">
+            <div class="searchbar">
+                <mat-form-field appearance="outline">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput
+                        type="search"
+                        [(ngModel)]="featureSearch"
+                        [ngModelOptions]="{standalone: true}"
+                        [placeholder]="'common.placeholder.search' | translate"
+                        (ngModelChange)="onFeatureSearch()">
+                </mat-form-field>
+            </div>
+            <ng-container *ngFor="let group of features">
+                <mat-expansion-panel *ngIf="group.contents.length > 0">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title class="panel-header">
+                            <mat-icon *ngIf="group.icon.length > 0">{{group.icon}}</mat-icon>
+                            {{('common.' + group.type + '.few') | translate}}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="checkbox-area">
+                            <mat-checkbox
+                                *ngFor="let feature of group.contents"
+                                [checked]="selectedFeatures.includes(feature.id)"
+                                (click)="$event.preventDefault(); onFeatureClick(feature.id)">
+                                {{feature.title}}
+                            </mat-checkbox>
+                    </div>
+                </mat-expansion-panel>
+            </ng-container>
+            <div class="spacer"></div>
         </mat-tab>
         <mat-tab [label]="'Channels'">
+            <div class="searchbar">
+                <mat-form-field appearance="outline">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput
+                        type="search"
+                        [(ngModel)]="channelSearch"
+                        [ngModelOptions]="{standalone: true}"
+                        [placeholder]="'common.placeholder.search' | translate"
+                        (ngModelChange)="onChannelSearch()">
+                </mat-form-field>
+            </div>
+            <ng-container *ngFor="let application of applications">
+                <mat-expansion-panel *ngIf="application.channels.length > 0">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{application.name}}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="checkbox-area">
+                            <mat-checkbox
+                                *ngFor="let channel of application.channels"
+                                [checked]="selectedChannels.includes(channel.id)"
+                                (click)="$event.preventDefault(); onChannelClick(channel.id)">
+                                {{channel.title}}
+                            </mat-checkbox>
+                    </div>
+                </mat-expansion-panel>
+            </ng-container>
+            <div class="spacer"></div>
         </mat-tab>
     </mat-tab-group>
     <safe-button variant="primary" category="secondary" type="submit">{{ 'common.saveChanges' | translate }}</safe-button>
