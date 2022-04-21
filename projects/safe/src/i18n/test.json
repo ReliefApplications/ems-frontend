@@ -1,5 +1,6 @@
 {
 	"common": {
+		"access": "******",
 		"add": "******",
 		"aggregation": {
 			"few": "******",
@@ -62,6 +63,7 @@
 		"filter": {
 			"apply": "******",
 			"clear": "******",
+			"empty": "******",
 			"hide": "******",
 			"show": "******"
 		},
@@ -94,6 +96,24 @@
 			"alreadyExists": "******",
 			"copiedToClipboard": "******",
 			"dataRecovered": "******",
+			"email": {
+				"error": "******",
+				"processing": "******",
+				"ready": "******",
+				"sent": "******"
+			},
+			"file": {
+				"download": {
+					"error": "******",
+					"processing": "******",
+					"ready": "******"
+				},
+				"upload": {
+					"error": "******",
+					"processing": "******",
+					"ready": "******"
+				}
+			},
 			"formatInvalid": "******",
 			"loadedFromCache": "******",
 			"noOpened": "******",
@@ -287,6 +307,10 @@
 					"title": "******"
 				}
 			},
+			"publish": {
+				"confirmationMessage": "******",
+				"title": "******"
+			},
 			"subscription": {
 				"modal": {
 					"hint": {
@@ -297,6 +321,10 @@
 						"listenTo": "******"
 					}
 				}
+			},
+			"unlock": {
+				"confirmationMessage": "******",
+				"title": "******"
 			},
 			"update": {
 				"placeholder": {
@@ -342,6 +370,9 @@
 				"confirmationMessage": "******"
 			},
 			"layout": {
+				"delete": {
+					"confirmationMessage": "******"
+				},
 				"update": {
 					"preview": {
 						"description": "******"
@@ -556,6 +587,13 @@
 			}
 		},
 		"widget": {
+			"chart": {
+				"errors": {
+					"aggregation": {
+						"invalid": "******"
+					}
+				}
+			},
 			"expand": "******",
 			"grid": {
 				"actions": {
@@ -668,6 +706,16 @@
 						"latitude": "******",
 						"longitude": "******",
 						"title": "******"
+					},
+					"errors": {
+						"latitude": "******",
+						"longitude": "******"
+					},
+					"tooltip": {
+						"default": {
+							"latitude": "******",
+							"longitude": "******"
+						}
 					}
 				}
 			}
@@ -699,7 +747,8 @@
 			"core": "******",
 			"create": "******",
 			"field": {
-				"label": "******"
+				"label": "******",
+				"name": "******"
 			},
 			"select": "******",
 			"template": "******"

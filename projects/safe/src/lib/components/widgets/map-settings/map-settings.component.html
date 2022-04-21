@@ -56,32 +56,32 @@
       <div class="map-default-settings">
         <mat-form-field appearance="outline">
           <mat-label>
-            {{ 'components.widget.settings.map.display.longitude' | translate }}
+            {{ 'components.widget.settings.map.display.latitude' | translate }}
           </mat-label>
           <input type="number" matInput formControlName="centerLat" />
           <safe-icon
             matSuffix
             icon="info"
             variant="grey"
-            [matTooltip]="'widgets.map.tooltip.default.lat' | translate"
+            [matTooltip]="'components.widget.settings.map.tooltip.default.latitude' | translate"
           ></safe-icon>
           <mat-error *ngIf="tileForm.controls.centerLat.errors">
-            {{ 'widgets.map.error.lat' | translate }}
+            {{ 'components.widget.settings.map.errors.latitude' | translate }}
           </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>
-            {{ 'widgets.map.default.long' | translate }}
+            {{ 'components.widget.settings.map.display.longitude' | translate }}
           </mat-label>
           <input type="number" matInput formControlName="centerLong" />
           <safe-icon
             matSuffix
             icon="info"
             variant="grey"
-            [matTooltip]="'widgets.map.tooltip.default.long' | translate"
+            [matTooltip]="'components.widget.settings.map.tooltip.default.longitude' | translate"
           ></safe-icon>
           <mat-error *ngIf="tileForm.controls.centerLat.errors">
-            {{ 'widgets.map.error.long' | translate }}
+            {{ 'components.widget.settings.map.errors.longitude' | translate }}
           </mat-error>
         </mat-form-field>
       </div>
