@@ -30,20 +30,20 @@
 		"create": "******",
 		"createdOn": "******",
 		"delete": "******",
-		"deleteObject": "******",
+		"deleteObject": "****** {{name}}",
 		"display": "******",
-		"downloadObject": "******",
+		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
 		"edit": "******",
-		"editObject": "******",
+		"editObject": "****** {{name}}",
 		"email": {
 			"few": "******",
 			"none": "******",
 			"one": "******"
 		},
 		"export": "******",
-		"exportObject": "******",
+		"exportObject": "****** {{name}}",
 		"false": "******",
 		"field": {
 			"few": "******",
@@ -76,7 +76,7 @@
 			"one": "******"
 		},
 		"name": "******",
-		"newObject": "******",
+		"newObject": "****** {{name}}",
 		"next": "******",
 		"notifications": {
 			"email": {
@@ -134,7 +134,7 @@
 		},
 		"save": "******",
 		"saveChanges": "******",
-		"searchObject": "******",
+		"searchObject": "****** {{name}}",
 		"select": "******",
 		"settings": "******",
 		"status": "******",
@@ -154,7 +154,7 @@
 		"title": "******",
 		"true": "******",
 		"update": "******",
-		"uploadObject": "******",
+		"uploadObject": "****** {{name}}",
 		"user": {
 			"few": "******",
 			"none": "******",
@@ -165,7 +165,7 @@
 			"none": "******",
 			"one": "******"
 		},
-		"viewObject": "******"
+		"viewObject": "****** {{name}}"
 	},
 	"components": {
 		"access": {
@@ -228,7 +228,7 @@
 				}
 			},
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			}
 		},
@@ -243,7 +243,7 @@
 			},
 			"positionAttribute": {
 				"delete": {
-					"confirmationMessage": "******",
+					"confirmationMessage": "****** {{name}} ******",
 					"title": "******"
 				}
 			},
@@ -271,7 +271,7 @@
 		},
 		"channel": {
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"dropdown": {
 				"select": "******"
@@ -299,11 +299,11 @@
 				}
 			},
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"layout": {
 				"delete": {
-					"confirmationMessage": "******"
+					"confirmationMessage": "****** {{name}} ******"
 				},
 				"update": {
 					"preview": {
@@ -314,10 +314,10 @@
 			"summary": {
 				"cache": {
 					"clear": "******",
-					"load": "******"
+					"load": "****** {{date}}"
 				},
-				"createdBy": "******",
-				"modifiedBy": "******"
+				"createdBy": "****** {{user}} ****** {{date}}",
+				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
 				"exit": "******",
@@ -345,7 +345,7 @@
 		},
 		"pullJob": {
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"modal": {
@@ -425,7 +425,7 @@
 		"record": {
 			"attach": {
 				"confirm": "******",
-				"selectTarget": "******"
+				"selectTarget": "****** {{name}} ******"
 			},
 			"convert": {
 				"choice": {
@@ -439,7 +439,7 @@
 				"select": "******"
 			},
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"permanently": "******"
 			},
 			"dropdown": {
@@ -465,7 +465,7 @@
 		},
 		"resource": {
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"dropdown": {
 				"select": "******"
@@ -476,7 +476,7 @@
 				"title": "******"
 			},
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"impersonate": {
@@ -489,7 +489,7 @@
 		},
 		"user": {
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"invite": {
@@ -551,9 +551,9 @@
 					"toggle": "******"
 				},
 				"item": {
-					"few": "******",
+					"few": "{{count}} ******",
 					"none": "******",
-					"one": "******"
+					"one": "{{count}} ******"
 				},
 				"layout": {
 					"reset": "******"
