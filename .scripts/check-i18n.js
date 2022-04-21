@@ -33,6 +33,7 @@ const sortJson = (json) => {
  * Writes in a new JSON default value for each key.
  *
  * @param {*} json json to copy
+ * @param {*} defaultValue default placeholder value
  * @returns new json
  */
 const setDefaultValue = (json, defaultValue) => {
