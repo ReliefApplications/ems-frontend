@@ -36,24 +36,24 @@
 			"one": "******"
 		},
 		"delete": "******",
-		"deleteObject": "******",
+		"deleteObject": "****** {{name}}",
 		"deleted": "******",
 		"display": "******",
-		"downloadObject": "******",
+		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
 		"edit": "******",
-		"editObject": "******",
+		"editObject": "****** {{name}}",
 		"email": {
 			"few": "******",
 			"none": "******",
 			"one": "******"
 		},
 		"errors": {
-			"objectDuplicated": "******"
+			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
 		"export": "******",
-		"exportObject": "******",
+		"exportObject": "****** {{name}}",
 		"false": "******",
 		"field": {
 			"few": "******",
@@ -88,12 +88,12 @@
 		},
 		"modifiedOn": "******",
 		"name": "******",
-		"newObject": "******",
+		"newObject": "****** {{name}}",
 		"next": "******",
 		"notifications": {
-			"accessDenied": "******",
-			"accessNotProvided": "******",
-			"alreadyExists": "******",
+			"accessDenied": "****** {{type}} ******",
+			"accessNotProvided": "****** {{type}} ****** {{error}}",
+			"alreadyExists": "****** {{type}} ****** {{value}} ******",
 			"copiedToClipboard": "******",
 			"dataRecovered": "******",
 			"email": {
@@ -114,26 +114,26 @@
 					"ready": "******"
 				}
 			},
-			"formatInvalid": "******",
-			"loadedFromCache": "******",
-			"noOpened": "******",
-			"objectCreated": "******",
-			"objectDeleted": "******",
-			"objectDuplicated": "******",
-			"objectInvited": "******",
-			"objectLocked": "******",
-			"objectNotCreated": "******",
-			"objectNotDeleted": "******",
-			"objectNotDuplicated": "******",
-			"objectNotFound": "******",
-			"objectNotInvited": "******",
-			"objectNotUpdated": "******",
-			"objectReordered": "******",
-			"objectUpdated": "******",
+			"formatInvalid": "****** {{format}} ******",
+			"loadedFromCache": "{{type}} ******",
+			"noOpened": "****** {{value}} ******",
+			"objectCreated": "{{value}} ****** {{type}} ******",
+			"objectDeleted": "{{value}} ******",
+			"objectDuplicated": "****** {{type}} ****** {{value}} ******",
+			"objectInvited": "{{name}} ******",
+			"objectLocked": "{{name}} ******",
+			"objectNotCreated": "****** {{type}} ****** {{error}}",
+			"objectNotDeleted": "{{value}} ****** {{error}}",
+			"objectNotDuplicated": "****** {{type}} ****** {{error}}",
+			"objectNotFound": "{{name}} ******",
+			"objectNotInvited": "{{name}} ******",
+			"objectNotUpdated": "{{type}} ****** {{error}}",
+			"objectReordered": "{{type}} ******",
+			"objectUpdated": "{{value}} ****** {{type}} ******",
 			"platformAccessNotGranted": "******",
 			"readAll": "******",
-			"statusUpdated": "******",
-			"unlocked": "******"
+			"statusUpdated": "****** {{value}} ******",
+			"unlocked": "{{value}} ******"
 		},
 		"openFullScreen": "******",
 		"page": {
@@ -189,7 +189,7 @@
 		},
 		"save": "******",
 		"saveChanges": "******",
-		"searchObject": "******",
+		"searchObject": "****** {{name}}",
 		"select": "******",
 		"settings": "******",
 		"status": "******",
@@ -209,7 +209,7 @@
 		"title": "******",
 		"true": "******",
 		"update": "******",
-		"uploadObject": "******",
+		"uploadObject": "****** {{name}}",
 		"user": {
 			"few": "******",
 			"none": "******",
@@ -220,7 +220,7 @@
 			"none": "******",
 			"one": "******"
 		},
-		"viewObject": "******",
+		"viewObject": "****** {{name}}",
 		"workflow": {
 			"few": "******",
 			"none": "******",
@@ -288,7 +288,7 @@
 				}
 			},
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			}
 		},
@@ -303,12 +303,12 @@
 			},
 			"positionAttribute": {
 				"delete": {
-					"confirmationMessage": "******",
+					"confirmationMessage": "****** {{name}} ******",
 					"title": "******"
 				}
 			},
 			"publish": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"subscription": {
@@ -323,7 +323,7 @@
 				}
 			},
 			"unlock": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"update": {
@@ -339,7 +339,7 @@
 		},
 		"channel": {
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"dropdown": {
 				"select": "******"
@@ -367,11 +367,11 @@
 				}
 			},
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"layout": {
 				"delete": {
-					"confirmationMessage": "******"
+					"confirmationMessage": "****** {{name}} ******"
 				},
 				"update": {
 					"preview": {
@@ -382,10 +382,10 @@
 			"summary": {
 				"cache": {
 					"clear": "******",
-					"load": "******"
+					"load": "****** {{date}}"
 				},
-				"createdBy": "******",
-				"modifiedBy": "******"
+				"createdBy": "****** {{user}} ****** {{date}}",
+				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
 				"exit": "******",
@@ -394,9 +394,9 @@
 		},
 		"formBuilder": {
 			"errors": {
-				"invalidRelatedName": "******",
-				"missingRelatedName": "******",
-				"missingTemplate": "******"
+				"invalidRelatedName": "****** {{name}} ****** {{question}} ****** {{page}} ******",
+				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
+				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			}
 		},
 		"forms": {
@@ -420,7 +420,7 @@
 		},
 		"pullJob": {
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"modal": {
@@ -502,7 +502,7 @@
 		"record": {
 			"attach": {
 				"confirm": "******",
-				"selectTarget": "******"
+				"selectTarget": "****** {{name}} ******"
 			},
 			"convert": {
 				"choice": {
@@ -516,7 +516,7 @@
 				"select": "******"
 			},
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"permanently": "******"
 			},
 			"dropdown": {
@@ -542,7 +542,7 @@
 		},
 		"resource": {
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"dropdown": {
 				"select": "******"
@@ -553,7 +553,7 @@
 				"title": "******"
 			},
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"impersonate": {
@@ -566,7 +566,7 @@
 		},
 		"user": {
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"invite": {
@@ -628,9 +628,9 @@
 					"toggle": "******"
 				},
 				"item": {
-					"few": "******",
+					"few": "{{count}} ******",
 					"none": "******",
-					"one": "******"
+					"one": "{{count}} ******"
 				},
 				"layout": {
 					"reset": "******"
@@ -729,7 +729,7 @@
 			"description": "******",
 			"id": "******",
 			"notifications": {
-				"published": "******",
+				"published": "{{value}} ******",
 				"updated": "******"
 			},
 			"setAsFavorite": "******",
@@ -765,7 +765,7 @@
 			"convert": "******",
 			"notifications": {
 				"conversionIncomplete": "******",
-				"rowsAdded": "******",
+				"rowsAdded": "****** {{length}} ****** {{field}} ****** {{value}} ******",
 				"uploadSuccessful": "******"
 			},
 			"restore": "******"
@@ -778,7 +778,7 @@
 		},
 		"user": {
 			"notifications": {
-				"rolesUpdated": "******"
+				"rolesUpdated": "{{username}} ******"
 			},
 			"username": "******"
 		},
@@ -800,7 +800,7 @@
 		"workflow": {
 			"notifications": {
 				"cannotGoToNextStep": "******",
-				"goToStep": "******"
+				"goToStep": "****** {{step}} ******"
 			}
 		}
 	},
