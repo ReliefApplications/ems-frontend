@@ -1,13 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-import {
-  SafeAccessModule,
-  SafeSkeletonWidgetModule,
-  SafeWidgetGridModule,
-} from '@safe/builder';
+import { SafeAccessModule, SafeWidgetGridModule } from '@safe/builder';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,6 +14,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+
 @NgModule({
   declarations: [DashboardComponent],
   imports: [
@@ -37,7 +33,6 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     MatTooltipModule,
     MatMenuModule,
     ClipboardModule,
-    SafeSkeletonWidgetModule,
     IndicatorsModule,
   ],
   exports: [DashboardComponent],

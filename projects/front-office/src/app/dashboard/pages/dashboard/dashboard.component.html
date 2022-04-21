@@ -1,19 +1,5 @@
-<div class="loading-skeleton" *ngIf="loading">
-  <kendo-skeleton
-    shape="text"
-    animation="pulse"
-    [width]="180"
-    [height]="45"
-  ></kendo-skeleton>
-  <div class="skeleton-grid">
-    <safe-skeleton-widget></safe-skeleton-widget>
-    <safe-skeleton-widget></safe-skeleton-widget>
-    <safe-skeleton-widget class="span-2"></safe-skeleton-widget>
-  </div>
-</div>
-<ng-container *ngIf="!loading && dashboard">
-  <safe-widget-grid
-    [widgets]="widgets"
-    (goToNextStep)="goToNextStep.emit($event)"
-  ></safe-widget-grid>
-</ng-container>
+<safe-widget-grid
+  [loading]="loading"
+  [widgets]="widgets"
+  (goToNextStep)="goToNextStep.emit($event)"
+></safe-widget-grid>

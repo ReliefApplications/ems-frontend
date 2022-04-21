@@ -69,6 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.id = params.id;
+      this.loading = true;
       this.apollo
         .watchQuery<GetDashboardByIdQueryResponse>({
           query: GET_DASHBOARD_BY_ID,

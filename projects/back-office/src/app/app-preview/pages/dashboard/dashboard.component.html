@@ -1,13 +1,5 @@
-<div class="loading-skeleton" *ngIf="loading">
-  <div class="skeleton-grid">
-    <safe-skeleton-widget></safe-skeleton-widget>
-    <safe-skeleton-widget></safe-skeleton-widget>
-    <safe-skeleton-widget class="span-2"></safe-skeleton-widget>
-  </div>
-</div>
-<ng-container *ngIf="!loading && dashboard">
-  <safe-widget-grid
-    [widgets]="tiles"
-    (goToNextStep)="goToNextStep.emit($event)"
-  ></safe-widget-grid>
-</ng-container>
+<safe-widget-grid
+  [loading]="loading"
+  [widgets]="tiles"
+  (goToNextStep)="goToNextStep.emit($event)"
+></safe-widget-grid>

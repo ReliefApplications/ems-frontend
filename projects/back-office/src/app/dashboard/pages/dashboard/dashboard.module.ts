@@ -7,7 +7,7 @@ import {
   SafeRecordHistoryModule,
   SafeWidgetGridModule,
   SafeButtonModule,
-  SafeSkeletonWidgetModule,
+  SafeSkeletonModule,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -21,7 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
-import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+
 @NgModule({
   declarations: [DashboardComponent, ShareUrlComponent],
   imports: [
@@ -41,10 +41,9 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     MatMenuModule,
     ClipboardModule,
     SafeRecordHistoryModule,
-    SafeSkeletonWidgetModule,
     SafeButtonModule,
     TranslateModule,
-    IndicatorsModule,
+    SafeSkeletonModule,
   ],
   exports: [DashboardComponent],
 })
