@@ -8,6 +8,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { UploadsModule } from '@progress/kendo-angular-upload';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { MatIconModule } from '@angular/material/icon';
+
+
 
 /**
  * Preview Email Component Module.
@@ -23,7 +27,9 @@ import { UploadsModule } from '@progress/kendo-angular-upload';
     MatInputModule,
     MatDialogModule,
     MatChipsModule,
-    UploadsModule
+    UploadsModule,
+    TextFieldModule,
+    MatIconModule
   ],
   exports: [SafeEmailPreviewComponent],
 })

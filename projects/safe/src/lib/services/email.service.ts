@@ -203,7 +203,7 @@ export class SafeEmailService {
         {
           recipient,
           subject,
-          body,
+          body: '{dataset}',
           filter,
           query,
           fields: this.getFields(query.fields),
@@ -221,6 +221,8 @@ export class SafeEmailService {
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
+          (res as any).dataset = (res as any).html;
+          (res as any).html = body;
           const dialogRef = this.dialog.open(SafeEmailPreviewComponent, {
             data: res,
             autoFocus: false,
@@ -232,7 +234,7 @@ export class SafeEmailService {
               this.sendMail(
                 recipient,
                 subject,
-                body,
+                (res as any).html,
                 filter,
                 query,
                 sortField,

@@ -9,6 +9,15 @@ form {
     border-radius: 8px;
     overflow: auto;
     font-size: 12px;
+    position: relative;
+
+    mat-icon {
+        position: absolute;
+        opacity: 0.4;
+        right: 8px;
+        font-size: 20px;
+        cursor: pointer;
+    }
 }
 
 .mat-chip {
@@ -26,3 +35,4 @@ form {
 kendo-fileselect {
     margin-bottom: 16px;
 }
+
