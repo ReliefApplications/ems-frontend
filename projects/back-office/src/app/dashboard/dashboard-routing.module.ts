@@ -167,8 +167,8 @@ export const routes = [
               {
                 path: ':id',
                 loadChildren: () =>
-                  import('./pages/user-management/user-management.module').then(
-                    (m) => m.UserManagementModule
+                  import('./pages/user-summary/user-summary.module').then(
+                    (m) => m.UserSummaryModule
                   ),
                 // canActivate: [SafePermissionGuard]
               },

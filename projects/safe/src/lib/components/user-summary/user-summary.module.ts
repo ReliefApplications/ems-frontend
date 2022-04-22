@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeUserManagementComponent } from './user-management.component';
+import { SafeUserSummaryComponent } from './user-summary.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { SafeButtonModule } from '../../components/ui/button/button.module';
+import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
-  declarations: [SafeUserManagementComponent],
+  declarations: [SafeUserSummaryComponent],
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -22,6 +22,6 @@ import { MatSelectModule } from '@angular/material/select';
     ReactiveFormsModule,
     MatSelectModule,
   ],
-  exports: [SafeUserManagementComponent],
+  exports: [SafeUserSummaryComponent],
 })
-export class SafeUserManagementModule {}
+export class SafeUserSummaryModule {}

@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeUserManagementComponent } from './user-management.component';
+import { SafeUserSummaryComponent } from './user-summary.component';
 
-describe('UserManagementComponent', () => {
-  let component: SafeUserManagementComponent;
-  let fixture: ComponentFixture<SafeUserManagementComponent>;
+describe('UserSummaryComponent', () => {
+  let component: SafeUserSummaryComponent;
+  let fixture: ComponentFixture<SafeUserSummaryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeUserManagementComponent],
+      declarations: [SafeUserSummaryComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeUserManagementComponent);
+    fixture = TestBed.createComponent(SafeUserSummaryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -25,6 +25,8 @@ export interface Role {
  */
 export interface User {
   id?: string;
+  firstName?: string;
+  lastName?: string;
   username?: string;
   isAdmin?: boolean;
   name?: string;

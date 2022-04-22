@@ -5,11 +5,11 @@ import { Apollo } from 'apollo-angular';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-user-management',
-  templateUrl: './user-management.component.html',
-  styleUrls: ['./user-management.component.scss'],
+  selector: 'app-user-summary',
+  templateUrl: './user-summary.component.html',
+  styleUrls: ['./user-summary.component.scss'],
 })
-export class UserManagementComponent implements OnInit {
+export class UserSummaryComponent implements OnInit {
   public roles: Role[] = [];
   public id = '';
 
