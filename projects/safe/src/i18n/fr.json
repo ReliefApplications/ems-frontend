@@ -3,25 +3,25 @@
     "add": "Ajouter",
     "aggregation": {
       "few": "Aggrégations",
-      "none": "Pas d'aggrégation",
+      "none": "Aucune aggrégation",
       "one": "Aggrégation"
     },
     "apiConfiguration": {
       "few": "Configurations d'API",
-      "none": "Pas de configuration d'API",
+      "none": "Aucune configuration d'API",
       "one": "Configuration d'API"
     },
     "application": {
       "few": "Applications",
-      "none": "Pas d'application",
+      "none": "Aucune application",
       "one": "Application"
     },
     "back": "Retour",
     "cancel": "Annuler",
     "channel": {
-      "few": "Canaux",
-      "none": "Pas de canal",
-      "one": "Canal"
+      "few": "Canaux de diffusion",
+      "none": "Aucun canal de diffusion",
+      "one": "Canal de diffusion"
     },
     "child": "Enfant",
     "clear": "Annuler",
@@ -31,7 +31,7 @@
     "createdOn": "Créé le",
     "dashboard": {
       "few": "Tableaux de bord",
-      "none": "Pas de tableau de bord",
+      "none": "Aucun tableau de bord",
       "one": "Tableau de bord"
     },
     "delete": "Supprimer",
@@ -56,7 +56,7 @@
     "false": "Faux",
     "field": {
       "few": "Champs",
-      "none": "Pas de champ",
+      "none": "Aucun champ",
       "one": "Champ"
     },
     "filter": {
@@ -67,7 +67,7 @@
     },
     "form": {
       "few": "Formulaires",
-      "none": "Pas de formulaire",
+      "none": "Aucun formulaire",
       "one": "Formulaire"
     },
     "general": "Général",
@@ -117,7 +117,7 @@
     "openFullScreen": "Ouvrir en plein écran",
     "page": {
       "few": "Pages",
-      "none": "Pas de page",
+      "none": "Aucune page",
       "one": "Page"
     },
     "pagination": {
@@ -135,12 +135,12 @@
     },
     "positionAttribute": {
       "few": "Attributs de position",
-      "none": "Pas d'attributs de position",
+      "none": "Aucun attribut de position",
       "one": "Attribut de position"
     },
     "positionCategory": {
       "few": "Catégories de position",
-      "none": "Pas de catégories de position",
+      "none": "Aucune catégorie de position",
       "one": "Catégories de position"
     },
     "preview": "Prévisualisation",
@@ -158,12 +158,12 @@
     },
     "resource": {
       "few": "Ressources",
-      "none": "Pas de ressource",
+      "none": "Aucune ressource",
       "one": "Ressource"
     },
     "role": {
       "few": "Rôles",
-      "none": "Pas de rôle",
+      "none": "Aucun rôle",
       "one": "Rôle"
     },
     "save": "Sauvegarder",
@@ -177,12 +177,12 @@
     "status_pending": "En attente",
     "step": {
       "few": "Etape",
-      "none": "Pas d'étape",
+      "none": "Aucune étape",
       "one": "Etape"
     },
     "subscription": {
       "few": "Abonnements",
-      "none": "Pas d'abonnement",
+      "none": "Aucun abonnement",
       "one": "Abonnement"
     },
     "title": "Titre",
@@ -191,18 +191,18 @@
     "uploadObject": "Importer {{name}}",
     "user": {
       "few": "Utilisateurs",
-      "none": "Pas d'utilisateur",
+      "none": "Aucun utilisateur",
       "one": "Utilisateur"
     },
     "value": {
       "few": "Valeurs",
-      "none": "Pas de valeurs",
+      "none": "Aucune valeur",
       "one": "Valeur"
     },
     "viewObject": "Voir {{name}}",
     "workflow": {
       "few": "Workflows",
-      "none": "Pas de workflow",
+      "none": "Aucun workflow",
       "one": "Workflow"
     }
   },
@@ -394,14 +394,14 @@
       "modal": {
         "hint": {
           "path": "Entrer le chemin pour extraire la donnée de la réponse",
-          "schedule": "Entrez l'horaire planifié pour cette tâche",
+          "schedule": "Entrez une expression CRON pour planifier la tâche",
           "url": "Entrez l'URL après l'hôte pour atteindre la donnée spécifique"
         },
         "identifier": "Identificateur unique",
         "mapping": "Correspondance",
         "placeholder": {
           "path": "Entrer le chemin...",
-          "schedule": "Entrer l'horaire planifié...",
+          "schedule": "Entrez l'horaire planifié...",
           "url": "Entrer l'URL..."
         },
         "switch": "Changer de mode"
@@ -642,8 +642,8 @@
             "title": "Bouton d'action rapide",
             "tooltip": {
               "attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",
-              "notify": "Si activé, vous devez fournir un canal et un message.Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Le message fourni est utilisé pour définir l'action de la notification.",
-              "publish": "Si activé, vous devez fournir un canal. Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Quiconque écoutant sur ce canal pourra recevoir ces enregistrements."
+              "notify": "Si activé, vous devez fournir un canal de diffusion et un message.Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Le message fourni est utilisé pour définir l'action de la notification.",
+              "publish": "Si activé, vous devez fournir un canal de diffusion. Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Quiconque écoutant sur ce canal pourra recevoir ces enregistrements."
             }
           },
           "hint": {
@@ -691,8 +691,8 @@
       }
     },
     "channel": {
-      "create": "Créer un canal",
-      "new": "Nouveau canal"
+      "create": "Créer un canal de diffusion",
+      "new": "Nouveau canal de diffusion"
     },
     "dashboard": {
       "share": "Partager le tableau de bord"
@@ -716,7 +716,7 @@
     "pullJob": {
       "new": "Nouvelle tâche planifiée",
       "path": "Chemin",
-      "schedule": "Horaire",
+      "schedule": "Horaire planifié",
       "url": "Url"
     },
     "record": {
@@ -803,7 +803,7 @@
       "create": "Créer une configuration d'API"
     },
     "appBuilder": {
-      "title": "Site builder"
+      "title": "Constructeur de site"
     },
     "application": {
       "addPage": {
