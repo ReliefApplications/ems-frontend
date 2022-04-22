@@ -57,10 +57,16 @@ export class SafeEmailPreviewComponent implements OnInit {
     });
   }
 
+  /**
+   * Creates the preview html changing dataset keys to its value
+   *
+   * @param fields list of fields saved in settings
+   */
   private setDatasetView(dataset: string): void {
     this.datasetView = this.sanitizer.bypassSecurityTrustHtml(this.data.html.replace(new RegExp('{dataset}', 'g'), dataset));
   }
 
+  /** Changes edition state and updates the preview when needed */
   public onButtonClick(): void {
     this.isEditable = !this.isEditable;
     if (!this.isEditable) {
