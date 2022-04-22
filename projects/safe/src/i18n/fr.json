@@ -28,7 +28,7 @@
     "close": "Fermer",
     "confirm": "Confirmer",
     "create": "Créer",
-    "createdOn": "Créé le",
+    "createdOn": "Date de création",
     "dashboard": {
       "few": "Tableaux de bord",
       "none": "Aucun tableau de bord",
@@ -267,13 +267,13 @@
         }
       },
       "delete": {
-        "confirmationMessage": "Confirmez-vous la suppression de la configuration d'API {{name}}?",
+        "confirmationMessage": "Voulez-vous vraiment supprimer la configuration d'API {{name}} ?",
         "title": "Supprimer la configuration d'API"
       }
     },
     "application": {
       "delete": {
-        "confirmationMessage": "Confirmez-vous la suppression de cette application ?"
+        "confirmationMessage": "Voulez-vous vraiment supprimer cette application ?"
       },
       "duplicate": {
         "name": {
@@ -282,8 +282,8 @@
       },
       "positionAttribute": {
         "delete": {
-          "confirmationMessage": "Confirmez-vous la suppression de l'attribut de position {{name}}?",
-          "title": "Supprimer l'attribut de position."
+          "confirmationMessage": "Voulez-vous vraiment supprimer l'attribut de position {{name}} ?",
+          "title": "Supprimer l'attribut de position"
         }
       },
       "subscription": {
@@ -310,7 +310,7 @@
     },
     "channel": {
       "delete": {
-        "confirmationMessage": "Confirmez-vous la suppression du canal {{name}}?"
+        "confirmationMessage": "Voulez-vous vraiment supprimer le canal {{name}} ?"
       },
       "dropdown": {
         "select": "Notifier sur"
@@ -338,7 +338,7 @@
         }
       },
       "delete": {
-        "confirmationMessage": "Confirmez-vous la suppression du formulaire {{name}}?"
+        "confirmationMessage": "Voulez-vous vraiment supprimer le formulaire {{name}} ?"
       },
       "layout": {
         "update": {
@@ -357,13 +357,13 @@
       },
       "update": {
         "exit": "Quitter sans sauvegarder les changements",
-        "exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, êtes-vous sûrs de vouloir quitter cette page ?"
+        "exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, voulez-vous vraiment quitter cette page ?"
       }
     },
     "formBuilder": {
       "errors": {
-        "invalidRelatedName": "Le nom lié fourni ({{name}}) pour la question {{question}} à la page {{page}} est invalide. Veuillez entrer un nom lié valide (au format snake case) pour sauvegarder le formulaire.",
-        "missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake case) pour sauvegarder le formulaire.",
+        "invalidRelatedName": "Le nom lié fourni ({{name}}) pour la question {{question}} à la page {{page}} est invalide. Veuillez entrer un nom lié valide (au format snake_case) pour sauvegarder le formulaire.",
+        "missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
         "missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
       }
     },
@@ -388,7 +388,7 @@
     },
     "pullJob": {
       "delete": {
-        "confirmationMessage": "Confirmez-vous la suppression de la tâche {{name}}?",
+        "confirmationMessage": "Voulez-vous vraiment supprimer la tâche {{name}} ?",
         "title": "Supprimer la tâche"
       },
       "modal": {
@@ -397,10 +397,10 @@
           "schedule": "Entrez une expression CRON pour planifier la tâche",
           "url": "Entrez l'URL après l'hôte pour atteindre la donnée spécifique"
         },
-        "identifier": "Identificateur unique",
+        "identifier": "Identificateurs uniques",
         "mapping": "Correspondance",
         "placeholder": {
-          "path": "Entrer le chemin...",
+          "path": "Entrez le chemin d'accès...",
           "schedule": "Entrez l'horaire planifié...",
           "url": "Entrer l'URL..."
         },
@@ -418,7 +418,7 @@
       },
       "fields": {
         "available": "Champs disponibles",
-        "search": "Rechercher champs...",
+        "search": "Rechercher des champs...",
         "selected": "Champs sélectionnés",
         "title": "Champs"
       },
@@ -470,7 +470,7 @@
     "record": {
       "attach": {
         "confirm": "Attacher",
-        "selectTarget": "Select {{name}} target"
+        "selectTarget": "Sélectionner la cible {{name}}"
       },
       "convert": {
         "choice": {
@@ -478,13 +478,13 @@
           "overwrite": "Écraser l'enregistrement source"
         },
         "result": {
-          "force": "Les champs suivants seront ignorés:",
+          "force": "Les champs suivants seront ignorés :",
           "smooth": "Conversion OK"
         },
         "select": "Convertir en"
       },
       "delete": {
-        "confirmationMessage": "Confirmez-vous la suppression de l'enregistrement {{name}}?",
+        "confirmationMessage": "Voulez-vous vraiment supprimer l'enregistrement {{name}} ?",
         "permanently": "Supprimer de manière permanente"
       },
       "dropdown": {
@@ -510,7 +510,7 @@
     },
     "resource": {
       "delete": {
-        "confirmationMessage": "Confirmez-vous la suppression de la ressource {{name}}?"
+        "confirmationMessage": "Voulez-vous vraiment supprimer la ressource {{name}}?"
       },
       "dropdown": {
         "select": "Depuis la ressource"
@@ -521,7 +521,7 @@
         "title": "Ajouter un nouveau rôle"
       },
       "delete": {
-        "confirmationMessage": "Confirmez-vous la suppression du rôle {{name}}?",
+        "confirmationMessage": "Voulez-vous vraiment supprimer le rôle {{name}}?",
         "title": "Supprimer le rôle"
       },
       "impersonate": {
@@ -529,12 +529,12 @@
       },
       "update": {
         "permissions": "Permissions",
-        "title": "Modifier les permissions des rôles et les canaux"
+        "title": "Modifier les permissions des rôles et les canaux de diffusion"
       }
     },
     "user": {
       "delete": {
-        "confirmationMessage": "Confirmez-vous la suppression de l'utilisateur {{name}}?",
+        "confirmationMessage": "Voulez-vous vraiment supprimer l'utilisateur {{name}} ?",
         "title": "Supprimer l'utilisateur"
       },
       "invite": {
@@ -590,7 +590,7 @@
         },
         "item": {
           "few": "{{count}} éléments",
-          "none": "Pas d'élément",
+          "none": "Aucun élément",
           "one": "{{count}} élément"
         },
         "layout": {
@@ -610,7 +610,7 @@
             "add": "Ajouter de nouveaux enregistrements",
             "convert": "Convertir des enregistrements",
             "delete": "Supprimer les enregistrements",
-            "inline": "Édition inline",
+            "inline": "Modifier par ligne",
             "show": "Voir l'historique",
             "title": "Actions activées",
             "update": "Modifier les enregistrements"
@@ -629,7 +629,7 @@
               "prefill": "Préremplir le formulaire avec les données sélectionnées",
               "save": "Sauvegarder automatiquement",
               "selectDisplay": "Sélectionner les champs affichés",
-              "sendMail": "Envoyer mail",
+              "sendMail": "Envoyer le mail",
               "workflow": {
                 "close": "Fermer le workflow",
                 "confirm": "Message de confirmation",
@@ -815,10 +815,10 @@
       "empty": {
         "add": "Ajouter une page",
         "create": "Cliquez sur créer pour terminer le processus",
-        "customize": "Customisez chacune des pages créées"
+        "customize": "Personnalisez chacune des pages créées"
       },
       "positionAttributes": {
-        "create": "Créer une catégorie de position a position category",
+        "create": "Créer une catégorie de position",
         "title": "Attributs"
       },
       "settings": {
@@ -852,7 +852,7 @@
       },
       "empty": {
         "add": "Ajoutez des étapes",
-        "customize": "Customisez chacune des étapes créées."
+        "customize": "Personnalisez chacune des étapes créées."
       }
     }
   }
