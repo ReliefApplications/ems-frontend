@@ -86,7 +86,6 @@
 		},
 		"modifiedOn": "Modified On",
 		"name": "Name",
-		"newObject": "New {{name}}",
 		"next": "Next",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
@@ -675,11 +674,13 @@
 	},
 	"models": {
 		"apiConfiguration": {
-			"authType": "Authentication type"
+			"authType": "Authentication type",
+			"new": "New API Configuration"
 		},
 		"application": {
 			"description": "Description",
 			"id": "Application ID",
+			"new": "New application",
 			"notifications": {
 				"published": "{{value}} application published.",
 				"updated": "Application updated."
@@ -690,7 +691,8 @@
 			}
 		},
 		"channel": {
-			"create": "Create a channel"
+			"create": "Create a channel",
+			"new": "New channel"
 		},
 		"dashboard": {
 			"share": "Share Dashboard"
@@ -701,19 +703,25 @@
 			"field": {
 				"label": "Label"
 			},
+			"new": "New form",
 			"select": "Select a Form",
 			"template": "Template"
 		},
 		"page": {
 			"add": "Add a Page"
 		},
+		"positionAttribute": {
+			"new": "New position attribute"
+		},
 		"pullJob": {
+			"new": "New pull job",
 			"path": "Path",
 			"schedule": "Schedule",
 			"url": "Url"
 		},
 		"record": {
 			"convert": "Convert",
+			"new": "New record",
 			"notifications": {
 				"conversionIncomplete": "Selected record(s) do not match with some fields from this form.",
 				"rowsAdded": "Added {{length}} row(s) to the field {{field}} in the record {{value}}.",
@@ -726,6 +734,12 @@
 		},
 		"role": {
 			"create": "Create a role"
+		},
+		"step": {
+			"new": "New step"
+		},
+		"subscription": {
+			"new": "New subscription"
 		},
 		"user": {
 			"notifications": {
