@@ -147,9 +147,9 @@
     "previous": "Précédent",
     "publish": "Publier",
     "pullJob": {
-      "few": "Tâches programmées",
-      "none": "Aucune tâche programmée",
-      "one": "Tâche programmée"
+      "few": "Tâches planifiées",
+      "none": "Aucune tâche planifiée",
+      "one": "Tâche planifiée"
     },
     "record": {
       "few": "Enregistrements",
@@ -388,20 +388,20 @@
     },
     "pullJob": {
       "delete": {
-        "confirmationMessage": "Confirmez-vous la suppression de la tâche programmée {{name}}?",
-        "title": "Supprimer la tâche programmée"
+        "confirmationMessage": "Confirmez-vous la suppression de la tâche {{name}}?",
+        "title": "Supprimer la tâche"
       },
       "modal": {
         "hint": {
           "path": "Entrer le chemin pour extraire la donnée de la réponse",
-          "schedule": "Entrez l'horaire programmé pour cette tâche",
+          "schedule": "Entrez l'horaire planifié pour cette tâche",
           "url": "Entrez l'URL après l'hôte pour atteindre la donnée spécifique"
         },
         "identifier": "Identificateur unique",
         "mapping": "Correspondance",
         "placeholder": {
           "path": "Entrer le chemin...",
-          "schedule": "Entrer l'heure programmée...",
+          "schedule": "Entrer l'horaire planifié...",
           "url": "Entrer l'URL..."
         },
         "switch": "Changer de mode"
@@ -714,9 +714,9 @@
       "new": "Nouvel attribut de position"
     },
     "pullJob": {
-      "new": "Nouvelle tâche programmée",
+      "new": "Nouvelle tâche planifiée",
       "path": "Chemin",
-      "schedule": "Programmation",
+      "schedule": "Horaire",
       "url": "Url"
     },
     "record": {
@@ -844,7 +844,7 @@
       "title": "Votre profil"
     },
     "pullJobs": {
-      "create": "Créer une tâche programmée"
+      "create": "Créer une tâche planifiée"
     },
     "workflow": {
       "addStep": {
