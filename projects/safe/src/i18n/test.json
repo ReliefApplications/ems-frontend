@@ -575,16 +575,16 @@
 					"description": "******"
 				}
 			},
-			"update": {
-				"title": "******"
-			},
 			"summary": {
-				"title": "******",
+				"country": "******",
 				"firstName": "******",
 				"lastName": "******",
+				"locationType": "******",
 				"region": "******",
-				"country": "******",
-				"locationType": "******"
+				"title": "******"
+			},
+			"update": {
+				"title": "******"
 			}
 		},
 		"users": {
