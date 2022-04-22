@@ -39,7 +39,7 @@
 		"deleted": "Supprimé",
 		"display": "Afficher",
 		"downloadObject": "Télécharger {{name}}",
-		"downloadTemplate": "Télécharger le template",
+		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",
 		"edit": "Modifier",
 		"editObject": "Modifier {{name}}",
@@ -74,17 +74,17 @@
 		"history": "Historique",
 		"id": "Id",
 		"input": {
-			"dateRange": "Plage temporelle",
+			"dateRange": "Intervalle de dates",
 			"none": "-- Aucun --",
 			"rawJson": "JSON brut"
 		},
 		"label": "Etiquette",
 		"layout": {
-			"few": "Layouts",
-			"none": "Pas de layout",
-			"one": "Layout"
+			"few": "Mises en page",
+			"none": "Aucune mise en page",
+			"one": "Mise en page"
 		},
-		"modifiedOn": "Modifié le",
+		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"newObject": "Nouveau : {{name}}",
 		"next": "Suivant",
@@ -148,9 +148,9 @@
 		"previous": "Précédent",
 		"publish": "Publier",
 		"pullJob": {
-			"few": "Pull jobs",
-			"none": "Pas de pull job",
-			"one": "Pull job"
+			"few": "Tâches programmées",
+			"none": "Aucune tâche programmée",
+			"one": "Tâche programmée"
 		},
 		"record": {
 			"few": "Enregistrements",
@@ -246,11 +246,11 @@
 			"sourceFields": "Sélectionner les champs",
 			"stages": {
 				"addFields": "Ajouter des champs",
-				"custom": "Customiser",
+				"custom": "Personnaliser",
 				"filter": "Filtrer",
-				"group": "Regrouper",
+				"group": "Grouper",
 				"sort": "Trier",
-				"unwind": "Dégrouper"
+				"unwind": "Dissocier"
 			},
 			"tooltip": {
 				"addFields": "Ajouter de nouveaux champs au document.",
@@ -264,7 +264,7 @@
 		"apiConfiguration": {
 			"create": {
 				"errors": {
-					"name": "Seulement les lettres, les tirets et les underscores sont acceptés."
+					"name": "Seules les lettres, les tirets et les tirets bas sont acceptés."
 				}
 			},
 			"delete": {
@@ -327,15 +327,15 @@
 			"create": {
 				"choice": {
 					"blank": "Créer un formulaire vide",
-					"inherit": "Copier un template de ressources existant",
+					"inherit": "Copier un modèle de ressources existant",
 					"resource": "Créer une nouvelle ressource",
-					"template": "Commencer depuis un template existant"
+					"template": "Commencer depuis un modèle existant"
 				},
 				"template": {
-					"from": "Depuis le template",
-					"placeholder": "Choisir un template existant",
+					"from": "Depuis le modèle",
+					"placeholder": "Choisir un modèle existant",
 					"title": "Depuis la ressource",
-					"tooltip": "Si aucun template n'est sélectionné, la structure principale sera chargée"
+					"tooltip": "Si aucun modèle n'est sélectionné, la structure principale sera chargée"
 				}
 			},
 			"delete": {
@@ -344,7 +344,7 @@
 			"layout": {
 				"update": {
 					"preview": {
-						"description": "Réorganise, trie, filtre et cache des colonnes pour changer l'affichage par défaut du layout"
+						"description": "Réorganise, trie, filtre et cache des colonnes pour changer l'affichage par défaut de la mise en page"
 					}
 				}
 			},
@@ -357,7 +357,7 @@
 				"modifiedBy": "Modifié pour la dernière fois par {{user}} le {{date}}"
 			},
 			"update": {
-				"exit": "Sortir sans sauvegarder les changements",
+				"exit": "Quitter sans sauvegarder les changements",
 				"exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, êtes-vous sûrs de vouloir quitter cette page ?"
 			}
 		},
@@ -365,11 +365,11 @@
 			"errors": {
 				"invalidRelatedName": "Le nom lié fourni ({{name}}) pour la question {{question}} à la page {{page}} est invalide. Veuillez entrer un nom lié valide (au format snake case) pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake case) pour sauvegarder le formulaire.",
-				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un template pour sauvegarder le formulaire."
+				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
 			}
 		},
 		"forms": {
-			"isCore": "Is core",
+			"isCore": "Est un formulaire source",
 			"parent": "Formulaire parent"
 		},
 		"header": {
@@ -389,13 +389,13 @@
 		},
 		"pullJob": {
 			"delete": {
-				"confirmationMessage": "Confirmez-vous la suppression du pull job {{name}}?",
-				"title": "Supprimer pull job"
+				"confirmationMessage": "Confirmez-vous la suppression de la tâche programmée {{name}}?",
+				"title": "Supprimer la tâche programmée"
 			},
 			"modal": {
 				"hint": {
 					"path": "Entrer le chemin pour extraire la donnée de la réponse",
-					"schedule": "Entrez l'horaire programmé pour ce Pull job",
+					"schedule": "Entrez l'horaire programmé pour cette tâche",
 					"url": "Entrez l'URL après l'hôte pour atteindre la donnée spécifique"
 				},
 				"identifier": "Identificateur unique",
@@ -595,7 +595,7 @@
 					"one": "{{count}} élément"
 				},
 				"layout": {
-					"reset": "Réinitialiser le Layout par défaut"
+					"reset": "Réinitialiser la mise en page par défaut"
 				}
 			},
 			"settings": {
@@ -653,13 +653,13 @@
 					"layouts": {
 						"add": {
 							"choice": {
-								"create": "Créer un nouveau layout",
-								"load": "Charger un layout existant"
+								"create": "Créer une nouvelle mise en page",
+								"load": "Charger une mise en page existante"
 							},
-							"select": "Sélectionner un layout",
-							"title": "Ajouter un nouveau layout"
+							"select": "Sélectionner une mise en page",
+							"title": "Ajouter une nouvelle mise en page"
 						},
-						"title": "Layout de la grille"
+						"title": "Mise en page de la grille"
 					}
 				},
 				"map": {
@@ -696,13 +696,13 @@
 			"share": "Partager le tableau de bord"
 		},
 		"form": {
-			"core": "Core",
+			"core": "Source",
 			"create": "Créer un formulaire",
 			"field": {
 				"label": "Étiquette"
 			},
 			"select": "Sélectionner un formulaire",
-			"template": "Template"
+			"template": "Modèle"
 		},
 		"page": {
 			"add": "Ajouter une page"
@@ -830,7 +830,7 @@
 			"title": "Votre profil"
 		},
 		"pullJobs": {
-			"create": "Créer un pull job"
+			"create": "Créer une tâche programmée"
 		},
 		"workflow": {
 			"addStep": {
