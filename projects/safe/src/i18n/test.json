@@ -1,4 +1,11 @@
 {
+	"kendo": {
+		"grid": {
+			"pagerOf": "******",
+			"pagerItems": "******",
+			"pagerItemsPerPage": "******"
+		}
+	},
 	"common": {
 		"add": "******",
 		"aggregation": {

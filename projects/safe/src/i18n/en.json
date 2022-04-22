@@ -633,6 +633,13 @@
 			}
 		}
 	},
+	"kendo": {
+		"grid": {
+			"pagerItems": "items",
+			"pagerItemsPerPage": "items per page",
+			"pagerOf": "of"
+		}
+	},
 	"models": {
 		"apiConfiguration": {
 			"authType": "Authentication type"
