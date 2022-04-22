@@ -149,7 +149,11 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
                   'common.notifications.objectNotInvited',
                   {
                     name: this.translate
-                      .instant('common.user.few')
+                      .instant(
+                        res.data?.addUsers.length
+                          ? 'common.user.few'
+                          : 'common.user.one'
+                      )
                       .toLowerCase(),
                   }
                 ),
@@ -290,6 +294,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
                           ids.length > 1 ? 'common.user.few' : 'common.user.one'
                         )
                         .toLowerCase(),
+                      error: '',
                     }
                   ),
                   { error: true }

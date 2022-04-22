@@ -112,7 +112,7 @@
   <ng-container matColumnDef="authType">
     <th mat-header-cell *matHeaderCellDef>
       <span class="headerTitle" mat-sort-header>
-        {{ ''models.apiConfiguration.authType' | translate }}
+        {{ 'models.apiConfiguration.authType' | translate }}
       </span>
     </th>
     <td mat-cell *matCellDef="let element">{{ element.authType }}</td>
@@ -152,7 +152,11 @@
 </table>
 <safe-skeleton-table
   *ngIf="loading"
-  [columns]="['common.name', 'common.status', 'table.authType']"
+  [columns]="[
+    'common.name',
+    'common.status',
+    'models.apiConfiguration.authType'
+  ]"
   [actions]="true"
 >
 </safe-skeleton-table>

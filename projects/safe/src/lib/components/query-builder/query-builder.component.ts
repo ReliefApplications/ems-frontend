@@ -15,6 +15,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { Form } from '../../models/form.model';
 import { createFilterGroup } from './query-builder-forms';
 import { scrollFactory } from '../../utils/scroll-factory';
+import { LayoutPreviewData } from './tab-layout-preview/tab-layout-preview.component';
 
 /**
  * Main query builder component.
@@ -50,6 +51,7 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() canSelectDataSet = true;
   @Input() templates: Form[] = [];
   @Input() queryName? = '';
+  @Input() layoutPreviewData: LayoutPreviewData | null = null;
 
   // === FIELD EDITION ===
   public isField = false;

@@ -1,17 +1,17 @@
 <h1>{{ ('common.user.one' | translate) + ' - ' + userForm?.get('firstName')?.value + ' ' + userForm?.get('lastName')?.value }}</h1>
 <form [formGroup]="userForm" *ngIf="userForm" (ngSubmit)="onSubmit()">
     <mat-tab-group>
-        <mat-tab [label]="'common.summary' | translate">
+        <mat-tab [label]="'components.user.summary.title' | translate">
                 <div class="form-group">
                     <mat-form-field appearance="outline">
                         <mat-label>
-                            {{ 'pages.users.firstName' | translate }}
+                            {{ 'components.user.summary.firstName' | translate }}
                         </mat-label>
                         <input matInput formControlName="firstName" type='text' />
                     </mat-form-field>
                     <mat-form-field appearance="outline">
                         <mat-label>
-                            {{ 'pages.users.lastName' | translate }}
+                            {{ 'components.user.summary.lastName' | translate }}
                         </mat-label>
                         <input matInput formControlName="lastName" type='text' />
                     </mat-form-field>
@@ -25,7 +25,7 @@
                 <div class="form-group">
                     <mat-form-field appearance="outline">
                         <mat-label>
-                            {{ 'pages.users.region' | translate }}
+                            {{ 'components.user.summary.region' | translate }}
                         </mat-label>
                         <mat-select formControlName="region">
                             <mat-option *ngFor="let region of regions" [value]="region">
@@ -36,7 +36,7 @@
                     </mat-form-field>
                     <mat-form-field appearance="outline">
                         <mat-label>
-                            {{ 'pages.users.country' | translate }}
+                            {{ 'components.user.summary.country' | translate }}
                         </mat-label>
                         <mat-select formControlName="country">
                             <mat-option *ngFor="let country of countries" [value]="country">
@@ -46,7 +46,7 @@
                     </mat-form-field>
                     <mat-form-field appearance="outline">
                         <mat-label>
-                            {{ 'pages.users.locationType' | translate }}
+                            {{ 'components.user.summary.locationType' | translate }}
                         </mat-label>
                         <mat-select formControlName="locationType">
                             <mat-option>{{ 'common.input.none' | translate }}</mat-option>

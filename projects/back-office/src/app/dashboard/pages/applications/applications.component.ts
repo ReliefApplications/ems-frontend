@@ -274,7 +274,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
                 'common.notifications.objectDeleted',
                 {
                   value: this.translateService.instant(
-                    'common.application.onelication'
+                    'common.application.one'
                   ),
                 }
               )
@@ -305,7 +305,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
             this.translateService.instant(
               'common.notifications.objectNotCreated',
               {
-                type: this.translateService.instant('common.application.one'),
+                type: this.translateService
+                  .instant('common.application.one')
+                  .toLowerCase(),
                 error: res.errors[0].message,
               }
             ),
@@ -318,7 +320,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
                 'common.notifications.objectCreated',
                 {
                   type: this.translateService
-                    .instant('common.application.onelication')
+                    .instant('common.application.one')
                     .toLowerCase(),
                   value: res.data.addApplication.name,
                 }
@@ -350,7 +352,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         if (res.data) {
           this.snackBar.openSnackBar(
             this.translateService.instant(
-              'common.notifications.objectNotUpdated',
+              'common.notifications.objectUpdated',
               {
                 type: this.translateService
                   .instant('action.access')

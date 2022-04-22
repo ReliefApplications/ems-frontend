@@ -316,11 +316,10 @@ export class PullJobsComponent implements OnInit, OnDestroy {
                 if (res.data?.editPullJob) {
                   this.snackBar.openSnackBar(
                     this.translate.instant(
-                      'common.notifications.objectNotUpdated',
+                      'common.notifications.objectUpdated',
                       {
-                        type: this.translate
-                          .instant('common.pullJob.one')
-                          .toLowerCase(),
+                        type: this.translate.instant('common.pullJob.one')
+                          .toLowerCase,
                         value: value.name,
                       }
                     )

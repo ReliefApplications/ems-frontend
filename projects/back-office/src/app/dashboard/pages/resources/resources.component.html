@@ -9,7 +9,7 @@
       variant="primary"
       (click)="onAdd()"
     >
-      {{ 'rmodels.resource.create' | translate }}
+      {{ 'models.resource.create' | translate }}
     </safe-button>
   </div>
 </div>
@@ -72,7 +72,7 @@
 </table>
 <safe-skeleton-table
   *ngIf="loading"
-  [columns]="['common.name', 'table.date', 'table.records']"
+  [columns]="['common.name', 'common.createdOn', 'common.record.few']"
   [actions]="true"
 >
 </safe-skeleton-table>

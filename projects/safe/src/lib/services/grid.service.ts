@@ -7,7 +7,13 @@ import { SafeApiProxyService } from './api-proxy.service';
 /** List of multi select question types */
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
 /** List of disabled fields */
-const DISABLED_FIELDS = ['id', 'incrementalId', 'createdAt', 'modifiedAt'];
+const DISABLED_FIELDS = [
+  'id',
+  'incrementalId',
+  'createdAt',
+  'modifiedAt',
+  'form',
+];
 /** Transforms a list with nested lists into a flat list */
 const flatDeep = (arr: any[]): any[] =>
   arr.reduce(

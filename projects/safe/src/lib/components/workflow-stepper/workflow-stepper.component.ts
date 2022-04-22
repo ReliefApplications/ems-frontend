@@ -11,6 +11,7 @@ export class SafeWorkflowStepperComponent implements OnInit {
   @Input() activeStep = 0;
   @Input() steps: Step[] = [];
   @Input() canUpdate = false;
+  @Input() loading = false;
   @Output() add = new EventEmitter();
   @Output() delete = new EventEmitter<number>();
   @Output() openStep = new EventEmitter<number>();
