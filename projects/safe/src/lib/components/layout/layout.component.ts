@@ -30,6 +30,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
+import { SafePreferencesModalComponent } from '../preferences-modal/preferences-modal.component';
 
 @Component({
   selector: 'safe-layout',
@@ -262,6 +263,15 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   onOpenProfile(): void {
     this.router.navigate([this.profileRoute]);
+  }
+
+  onOpenPreferences(): void {
+    const dialogRef = this.dialog.open(SafePreferencesModalComponent, {
+      data: {
+        languages: this.languages,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {});
   }
 
   onSwitchOffice(): void {
