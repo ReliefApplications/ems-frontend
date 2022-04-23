@@ -8,6 +8,9 @@ import { MessageService } from '@progress/kendo-angular-l10n';
 export class KendoTranslationService extends MessageService {
   constructor(private translateService: TranslateService) {
     super();
+    this.translateService.onLangChange.subscribe(() => {
+      this.notify();
+    });
   }
 
   get(key: string): string {
