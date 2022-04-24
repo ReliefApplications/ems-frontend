@@ -24,23 +24,6 @@
       {{ theme.prefix }}
       {{ route ? title : ('common.platform.backOffice' | translate) }}
     </h1>
-    <!-- Temporal language changer -->
-    <span
-      class="form-inline"
-      style="margin-left: 1em"
-      *ngIf="languages.length > 1"
-    >
-      <select
-        class="form-control"
-        #selectedLang
-        (change)="setLanguage(selectedLang.value)"
-        [(ngModel)]="currentLanguage"
-      >
-        <option *ngFor="let language of languages" [value]="language">
-          {{ language }}
-        </option>
-      </select>
-    </span>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button

@@ -1,7 +1,4 @@
 {
-	"language": {
-		"name": "******"
-	},
 	"common": {
 		"add": "******",
 		"aggregation": {
@@ -347,8 +344,8 @@
 			"readAll": "******"
 		},
 		"preferences": {
-			"title": "******",
-			"language": "******"
+			"language": "******",
+			"title": "******"
 		},
 		"pullJob": {
 			"delete": {
@@ -639,6 +636,9 @@
 				}
 			}
 		}
+	},
+	"language": {
+		"name": "******"
 	},
 	"models": {
 		"apiConfiguration": {

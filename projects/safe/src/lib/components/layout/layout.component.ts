@@ -60,7 +60,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   filteredNavGroups: any[] = [];
 
-  currentLanguage = '';
   languages: string[] = [];
 
   // === NOTIFICATIONS ===
@@ -101,7 +100,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.account = this.authService.account;
     this.environment = environment;
     this.languages = this.translate.getLangs();
-    this.currentLanguage = this.getLanguage();
     this.theme = this.environment.theme;
   }
 
@@ -265,6 +263,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.router.navigate([this.profileRoute]);
   }
 
+  /**
+   * Opens the preferences modal and deals with the resulting form
+   */
   onOpenPreferences(): void {
     const dialogRef = this.dialog.open(SafePreferencesModalComponent, {
       data: {
@@ -273,7 +274,11 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       width: '100%',
       height: '90%',
     });
-    dialogRef.afterClosed().subscribe((value) => {});
+    dialogRef.afterClosed().subscribe((form) => {
+      if (form && form.touched) {
+        this.setLanguage(form.value.language);
+      }
+    });
   }
 
   onSwitchOffice(): void {
@@ -305,7 +310,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    */
   setLanguage(language: string) {
     this.translate.use(language);
-    this.currentLanguage = language;
     window.localStorage.setItem('lang', language);
   }
 
