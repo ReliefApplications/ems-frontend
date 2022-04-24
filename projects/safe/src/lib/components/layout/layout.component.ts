@@ -270,6 +270,8 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         languages: this.languages,
       },
+      width: '100%',
+      height: '90%',
     });
     dialogRef.afterClosed().subscribe((value) => {});
   }

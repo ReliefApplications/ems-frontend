@@ -6,10 +6,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
-import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
-import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
 import { TranslateModule } from '@ngx-translate/core';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { NgxTranslateInModule } from 'ngx-translate-in';
 @NgModule({
   declarations: [SafePreferencesModalComponent],
   imports: [
@@ -19,9 +20,12 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     SafeButtonModule,
     SafeIconModule,
-    SafeRecordHistoryModalModule,
-    SafeRecordSummaryModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
     TranslateModule,
+    MatSelectModule,
+    NgxTranslateInModule,
   ],
   exports: [SafePreferencesModalComponent],
 })

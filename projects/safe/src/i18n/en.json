@@ -109,7 +109,6 @@
 			"none": "No position attribute",
 			"one": "Position attribute"
 		},
-		"preferences": "Preferences",
 		"preview": "Preview",
 		"previous": "Previous",
 		"publish": "Publish",
@@ -343,6 +342,10 @@
 		},
 		"notifications": {
 			"readAll": "Mark all as read"
+		},
+		"preferences": {
+			"language": "Language",
+			"title": "Preferences"
 		},
 		"pullJob": {
 			"delete": {
@@ -633,6 +636,9 @@
 				}
 			}
 		}
+	},
+	"language": {
+		"name": "English"
 	},
 	"models": {
 		"apiConfiguration": {

@@ -1,4 +1,7 @@
 {
+	"language": {
+		"name": "******"
+	},
 	"common": {
 		"add": "******",
 		"aggregation": {
@@ -109,7 +112,6 @@
 			"none": "******",
 			"one": "******"
 		},
-		"preferences": "******",
 		"preview": "******",
 		"previous": "******",
 		"publish": "******",
@@ -343,6 +345,10 @@
 		},
 		"notifications": {
 			"readAll": "******"
+		},
+		"preferences": {
+			"title": "******",
+			"language": "******"
 		},
 		"pullJob": {
 			"delete": {
