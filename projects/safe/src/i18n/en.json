@@ -177,6 +177,11 @@
 			"none": "No record",
 			"one": "Record"
 		},
+		"referenceData": {
+			"few": "Reference Data",
+			"none": "No Reference Data",
+			"one": "Reference Data"
+		},
 		"resource": {
 			"few": "Resources",
 			"none": "No resource",
@@ -540,6 +545,12 @@
 				"hint": "File should contain one record per row. Header row contains the names of data fields."
 			}
 		},
+		"referenceData": {
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of Reference Data {{name}}?",
+				"title": "Delete Reference Data"
+			}
+		},
 		"resource": {
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the resource {{name}}?"
@@ -769,6 +780,9 @@
 				"uploadSuccessful": "Records upload successful."
 			},
 			"restore": "Restore"
+		},
+		"referenceData": {
+			"add": "Add new reference data"
 		},
 		"resource": {
 			"create": "Create a Resource"

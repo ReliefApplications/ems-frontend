@@ -14,6 +14,7 @@ import {
   ApiConfiguration,
   PullJob,
   Layout,
+  ReferenceData,
 } from '@safe/builder';
 
 // === EDIT USER ===
@@ -933,4 +934,59 @@ export const EDIT_PULL_JOB = gql`
 export interface EditPullJobMutationResponse {
   loading: boolean;
   editPullJob: PullJob;
+}
+
+// === ADD REFERENCE DATA===
+export const ADD_REFERENCE_DATA = gql`
+  mutation addReferenceData($name: String!) {
+    addReferenceData(name: $name) {
+      id
+      name
+      apiConfiguration {
+        name
+      }
+      type
+      query
+      fields
+      valueField
+      path
+      data
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
+export interface AddReferenceDataMutationResponse {
+  loading: boolean;
+  addReferenceData: ReferenceData;
+}
+
+// === DELETE REFERENCE DATA ===
+export const DELETE_REFERENCE_DATA = gql`
+  mutation deleteReferenceData($id: ID!) {
+    deleteReferenceData(id: $id) {
+      id
+    }
+  }
+`;
+
+export interface DeleteReferenceDataMutationResponse {
+  loading: boolean;
+  deleteReferenceData: ReferenceData;
 }

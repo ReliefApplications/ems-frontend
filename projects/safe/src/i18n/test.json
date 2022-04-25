@@ -177,6 +177,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"referenceData": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"resource": {
 			"few": "******",
 			"none": "******",
@@ -540,6 +545,12 @@
 				"hint": "******"
 			}
 		},
+		"referenceData": {
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			}
+		},
 		"resource": {
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
@@ -769,6 +780,9 @@
 				"uploadSuccessful": "******"
 			},
 			"restore": "******"
+		},
+		"referenceData": {
+			"add": "******"
 		},
 		"resource": {
 			"create": "******"

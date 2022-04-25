@@ -47,6 +47,11 @@ export class DashboardComponent implements OnInit {
             path: '/resources',
             icon: 'storage',
           },
+          {
+            name: this.translate.instant('common.referenceData.few'),
+            path: '/referencedata',
+            icon: 'cloud_download',
+          },
         ],
       },
       {
