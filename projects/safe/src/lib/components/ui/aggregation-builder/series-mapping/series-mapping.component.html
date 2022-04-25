@@ -1,11 +1,7 @@
-<form [formGroup]="mappingGroup">
-  <mat-form-field *ngFor="let controlName of controlNames" appearance="outline">
-    <mat-label>{{'aggregation.mapping.' + controlName | translate}}</mat-label>
-    <mat-select [formControlName]="controlName">
-      <mat-option>{{'global.none' | translate}}</mat-option>
-      <mat-option *ngFor="let field of fieldsFor(controlName)" [value]="field.name">
-          {{field.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</form>
+<safe-field-dropdown
+  *ngFor="let controlName of controlNames"
+  [label]="'components.aggregationBuilder.mapping.' + controlName | translate"
+  [fieldControl]="$any($any(mappingForm).controls[controlName])"
+  [fields]="fieldsByControl[controlName]"
+  [nullable]="true"
+></safe-field-dropdown>

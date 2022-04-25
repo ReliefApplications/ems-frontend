@@ -57,6 +57,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
+      this.loading = true;
       this.id = params.id;
       this.apollo
         .watchQuery<GetWorkflowByIdQueryResponse>({
@@ -76,12 +77,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               }
             } else {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.accessNotProvided', {
-                  type: this.translate
-                    .instant('notification.term.workflow')
-                    .toLowerCase(),
-                  error: '',
-                }),
+                this.translate.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.workflow.one')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
             }
@@ -147,13 +151,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else if (this.activeStep + 1 === this.steps.length) {
       this.onOpenStep(0);
       this.snackBar.openSnackBar(
-        this.translate.instant('notification.goToStep', {
+        this.translate.instant('models.workflow.notifications.goToStep', {
           step: this.steps[0].name,
         })
       );
     } else {
       this.snackBar.openSnackBar(
-        this.translate.instant('notification.cannotGoToNextStep'),
+        this.translate.instant(
+          'models.workflow.notifications.cannotGoToNextStep'
+        ),
         { error: true }
       );
     }

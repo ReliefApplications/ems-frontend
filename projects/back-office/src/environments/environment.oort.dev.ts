@@ -1,5 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/oort';
+import { theme } from '../themes/oort/oort.dev';
 
 const authConfig: AuthConfig = {
   issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',

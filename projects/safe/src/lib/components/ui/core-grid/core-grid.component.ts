@@ -14,10 +14,8 @@ import {
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
-  GridComponent as KendoGridComponent,
   GridDataResult,
   PageChangeEvent,
-  Selection,
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import {
@@ -119,6 +117,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === PAGINATION ===
   public pageSize = 10;
   public skip = 0;
+  @Output() pageSizeChanged: EventEmitter<any> = new EventEmitter<any>();
 
   // === INLINE EDITION ===
   private originalItems: any[] = this.gridData.data;
@@ -142,6 +141,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     return this.sort.length > 0 && this.sort[0].dir
       ? this.sort[0].dir
       : this.settings.query?.sort?.order || '';
+  }
+
+  get style(): any {
+    return this.settings.query?.style || null;
   }
 
   // === FILTERING ===
@@ -193,11 +196,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /** Builds filename from the date and widget title */
   get fileName(): string {
     const today = new Date();
-    const month = today.toLocaleString('en-us', { month: 'short' });
-    const date = month + ' ' + today.getDate() + ' ' + today.getFullYear();
+    const formatDate = `${today.toLocaleString('en-us', {
+      month: 'short',
+      day: 'numeric',
+    })} ${today.getFullYear()}`;
     return `${
       this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
-    } ${date}`;
+    } ${formatDate}.png`;
   }
 
   get hasChanges(): boolean {
@@ -250,7 +255,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(): void {
     // define row actions
     this.actions = {
-      add: this.settings.actions?.addRecord && this.settings.query?.template,
+      add: this.settings.actions?.addRecord && this.settings.template,
       history: this.settings.actions?.history,
       update: this.settings.actions?.update,
       delete: this.settings.actions?.delete,
@@ -268,6 +273,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.defaultLayout.sort;
     }
     this.showFilter = !!this.defaultLayout?.showFilter;
+    if (this.settings.query.pageSize) {
+      this.pageSize = this.settings.query.pageSize;
+    }
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     this.dataQuery = this.apollo.watchQuery<any>({
@@ -277,6 +285,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder,
+        styles: this.style,
       },
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-first',
@@ -297,8 +306,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
                 fields,
                 this.metaFields,
                 defaultLayoutFields,
-                '',
-                { filter: true }
+                ''
               );
             }
           }
@@ -426,7 +434,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             variables: {
               id: item.id,
               data,
-              template: this.settings.query.template,
+              template: this.settings.template,
             },
           })
           .toPromise()
@@ -450,7 +458,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           this.error = false;
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              const nodes = res.data[field].edges.map((x: any) => x.node) || [];
+              const nodes =
+                res.data[field].edges.map((x: any) => ({
+                  ...x.node,
+                  _meta: {
+                    style: x.meta.style,
+                  },
+                })) || [];
               this.totalCount = res.data[field].totalCount;
               this.items = cloneData(nodes);
               this.convertDateFields(this.items);
@@ -615,11 +629,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Displays an embedded form in a modal to add new record.
    */
   private onAdd(): void {
-    if (this.settings.query.template) {
+    if (this.settings.template) {
       const dialogRef = this.dialog.open(SafeFormModalComponent, {
         disableClose: true,
         data: {
-          template: this.settings.query.template,
+          template: this.settings.template,
           locale: 'en',
           askForConfirm: false,
         },
@@ -674,7 +688,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             this.settings.actions &&
             this.settings.actions.update &&
             items.canUpdate,
-          ...(!isArray && { template: this.settings.query.template }),
+          ...(!isArray && { template: this.settings.template }),
         },
         height: '98%',
         width: '100vw',
@@ -701,7 +715,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         recordId: ids.length > 1 ? ids : ids[0],
         locale: 'en',
-        template: this.settings.query.template || null,
+        template: this.settings.template || null,
       },
       height: '98%',
       width: '100vw',
@@ -812,7 +826,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             revert: (record: any, dialog: any) => {
               this.confirmRevertDialog(res.data.record, record);
             },
-            template: this.settings.query.template || null,
+            template: this.settings.template || null,
           },
         });
       });
@@ -852,7 +866,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             this.reloadData();
             this.layoutService.setRightSidenav(null);
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.dataRecovered')
+              this.translate.instant('common.notifications.dataRecovered')
             );
           });
       }
@@ -908,13 +922,27 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         fields: Object.values(currentLayout.fields)
           .filter((x: any) => !x.hidden)
           .sort((a: any, b: any) => a.order - b.order)
-          .map((x: any) => ({ name: x.field, title: x.title })),
+          .map((x: any) => ({
+            name: x.field,
+            title: x.title,
+            subFields: x.subFields.map((y: any) => ({
+              name: y.name,
+              title: y.title,
+            })),
+          })),
       }),
       // we export ALL fields of the grid ( including hidden columns )
       ...(e.fields === 'all' && {
         fields: Object.values(currentLayout.fields)
           .sort((a: any, b: any) => a.order - b.order)
-          .map((x: any) => ({ name: x.field, title: x.title })),
+          .map((x: any) => ({
+            name: x.field,
+            title: x.title,
+            subFields: x.subFields.map((y: any) => ({
+              name: y.name,
+              title: y.title,
+            })),
+          })),
       }),
     };
 
@@ -937,6 +965,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
+    this.pageSizeChanged.emit(this.pageSize);
     this.dataQuery.fetchMore({
       variables: {
         first: this.pageSize,
@@ -944,6 +973,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         filter: this.queryFilter,
         sortField: this.sortField,
         sortOrder: this.sortOrder,
+        styles: this.style,
       },
       updateQuery: (prev: any, { fetchMoreResult }: any) => {
         // this.loading = false;

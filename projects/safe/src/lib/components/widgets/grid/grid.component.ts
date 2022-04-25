@@ -109,7 +109,11 @@ export class SafeGridWidgetComponent implements OnInit {
         .then((res) => {
           this.layouts = res;
           this.layout = this.layouts[0] || null;
-          this.gridSettings = { ...this.settings, ...this.layout };
+          this.gridSettings = {
+            ...this.settings,
+            ...this.layout,
+            ...{ template: this.settings.query?.template },
+          };
         });
     }
   }
@@ -126,7 +130,7 @@ export class SafeGridWidgetComponent implements OnInit {
             variables: {
               id: item.id,
               data,
-              template: this.settings.query.template,
+              template: this.settings.template,
             },
           })
           .toPromise()
@@ -178,115 +182,109 @@ export class SafeGridWidgetComponent implements OnInit {
       );
     }
 
-    if (this.grid.selectedRows.length > 0) {
-      // Attaches the records to another one.
-      if (options.attachToRecord) {
-        await this.promisedAttachToRecord(
-          this.grid.selectedRows,
-          options.targetForm,
-          options.targetFormField,
-          options.targetFormQuery
-        );
-      }
-      const promises: Promise<any>[] = [];
-      // Notifies on a channel.
-      if (options.notify) {
-        promises.push(
+    // Attaches the records to another one.
+    if (options.attachToRecord && this.grid.selectedRows.length > 0) {
+      await this.promisedAttachToRecord(
+        this.grid.selectedItems,
+        options.targetForm,
+        options.targetFormField,
+        options.targetFormQuery
+      );
+    }
+    const promises: Promise<any>[] = [];
+    // Notifies on a channel.
+    if (options.notify && this.grid.selectedRows.length > 0) {
+      promises.push(
+        this.apollo
+          .mutate<PublishNotificationMutationResponse>({
+            mutation: PUBLISH_NOTIFICATION,
+            variables: {
+              action: options.notificationMessage
+                ? options.notificationMessage
+                : 'Records update',
+              content: this.grid.selectedItems,
+              channel: options.notificationChannel,
+            },
+          })
+          .toPromise()
+      );
+    }
+    // Publishes on a channel.
+    if (options.publish && this.grid.selectedRows.length > 0) {
+      promises.push(
+        this.apollo
+          .mutate<PublishMutationResponse>({
+            mutation: PUBLISH,
+            variables: {
+              ids: this.grid.selectedRows,
+              channel: options.publicationChannel,
+            },
+          })
+          .toPromise()
+      );
+    }
+    if (promises.length > 0) {
+      await Promise.all(promises);
+    }
+    // Send email using backend mail service.
+    if (options.sendMail) {
+      const body =
+        this.grid.selectedRows.length > 0
+          ? options.bodyText
+          : options.bodyTextAlternate;
+      this.emailService.previewMail(
+        options.distributionList,
+        options.subject,
+        body,
+        {
+          logic: 'and',
+          filters: [
+            { operator: 'eq', field: 'ids', value: this.grid.selectedRows },
+          ],
+        },
+        {
+          name: this.settings.query.name,
+          fields: options.bodyFields,
+        },
+        this.grid.sortField || undefined,
+        this.grid.sortOrder || undefined,
+        options.export
+      );
+    }
+
+    // Opens a form with selected records.
+    if (options.prefillForm) {
+      const promisedRecords: Promise<any>[] = [];
+      // Fetches the record object for each selected record.
+      for (const record of this.grid.selectedItems) {
+        promisedRecords.push(
           this.apollo
-            .mutate<PublishNotificationMutationResponse>({
-              mutation: PUBLISH_NOTIFICATION,
+            .query<GetRecordDetailsQueryResponse>({
+              query: GET_RECORD_DETAILS,
               variables: {
-                action: options.notificationMessage
-                  ? options.notificationMessage
-                  : 'Records update',
-                content: this.grid.selectedRows,
-                channel: options.notificationChannel,
+                id: record.id,
               },
             })
             .toPromise()
         );
       }
-      // Publishes on a channel.
-      if (options.publish) {
-        promises.push(
-          this.apollo
-            .mutate<PublishMutationResponse>({
-              mutation: PUBLISH,
-              variables: {
-                ids: this.grid.selectedRows,
-                channel: options.publicationChannel,
-              },
-            })
-            .toPromise()
-        );
-      }
-      if (promises.length > 0) {
-        await Promise.all(promises);
-      }
-      // Opens email client of user.
-      if (options.sendMail) {
-        const emailSettings = {
-          query: {
-            name: this.settings.query.name,
-            fields: options.bodyFields,
-          },
-        };
-        const sortField = this.grid.sortField || '';
-        const sortOrder = this.grid.sortOrder || '';
-        await this.emailService.sendMail(
-          options.distributionList,
-          options.subject,
-          this.grid.selectedRows.length > 0
-            ? options.bodyText
-            : options.bodyTextAlternate,
-          emailSettings,
-          this.grid.selectedRows,
-          sortField,
-          sortOrder
-        );
-        if (options.export && this.grid.selectedRows.length > 0) {
-          this.grid.onExport({
-            records: 'all',
-            format: 'xlsx',
-            fields: 'visible',
-          });
-        }
-      }
+      const records = (await Promise.all(promisedRecords)).map(
+        (x) => x.data.record
+      );
 
-      // Opens a form with selected records.
-      if (options.prefillForm) {
-        const promisedRecords: Promise<any>[] = [];
-        // Fetches the record object for each selected record.
-        for (const record of this.grid.selectedItems) {
-          promisedRecords.push(
-            this.apollo
-              .query<GetRecordDetailsQueryResponse>({
-                query: GET_RECORD_DETAILS,
-                variables: {
-                  id: record.id,
-                },
-              })
-              .toPromise()
-          );
-        }
-        const records = (await Promise.all(promisedRecords)).map(
-          (x) => x.data.record
-        );
-
-        // Opens a modal containing the prefilled form.
-        this.dialog.open(SafeFormModalComponent, {
-          data: {
-            template: options.prefillTargetForm,
-            locale: 'en',
-            prefillRecords: records,
-            askForConfirm: false,
-          },
-          height: '98%',
-          width: '100vw',
-          panelClass: 'full-screen-modal',
-          autoFocus: false,
-        });
-      }
+      // Opens a modal containing the prefilled form.
+      this.dialog.open(SafeFormModalComponent, {
+        data: {
+          template: options.prefillTargetForm,
+          locale: 'en',
+          prefillRecords: records,
+          askForConfirm: false,
+        },
+        height: '98%',
+        width: '100vw',
+        panelClass: 'full-screen-modal',
+        autoFocus: false,
+      });
     }
 
     // Workflow only: goes to next step, or closes the workflow.
@@ -454,11 +452,14 @@ export class SafeGridWidgetComponent implements OnInit {
                 const record = res2.data.editRecord;
                 if (record) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('notification.addRowsToRecord', {
-                      field: record.data[targetFormField],
-                      length: selectedRecords.length,
-                      value: key,
-                    })
+                    this.translate.instant(
+                      'models.record.notifications.rowsAdded',
+                      {
+                        field: record.data[targetFormField],
+                        length: selectedRecords.length,
+                        value: key,
+                      }
+                    )
                   );
                   this.dialog.open(SafeFormModalComponent, {
                     disableClose: true,
@@ -485,7 +486,11 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   onLayoutChange(layout: Layout): void {
     this.layout = layout;
-    this.gridSettings = { ...this.settings, ...this.layout };
+    this.gridSettings = {
+      ...this.settings,
+      ...this.layout,
+      ...{ template: this.settings.query?.template },
+    };
   }
 
   /**

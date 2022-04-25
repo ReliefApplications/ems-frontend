@@ -12,13 +12,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
+import {
+  SafeConfirmModalModule,
+  SafeButtonModule,
+  SafeSkeletonTableModule,
+} from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [PullJobsComponent, PullJobModalComponent],
@@ -32,6 +37,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatTooltipModule,
     MatSelectModule,
     MatMenuModule,
     MatProgressSpinnerModule,
@@ -43,6 +49,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatPaginatorModule,
     TranslateModule,
     MatChipsModule,
+    SafeSkeletonTableModule,
   ],
 })
 export class PullJobsModule {}

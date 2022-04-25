@@ -53,6 +53,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
+      this.loading = true;
       this.id = params.id;
       this.apollo
         .watchQuery<GetDashboardByIdQueryResponse>({
@@ -73,10 +74,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
-                  'notification.accessNotProvided',
+                  'common.notifications.accessNotProvided',
                   {
                     type: this.translateService
-                      .instant('notification.term.dashboard')
+                      .instant('common.dashboard.one')
                       .toLowerCase(),
                     error: '',
                   }

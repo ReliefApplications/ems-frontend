@@ -106,6 +106,7 @@ export const createQueryForm = (value: any, validators = true): FormGroup =>
   formBuilder.group({
     name: [value ? value.name : '', validators ? Validators.required : null],
     template: [value ? value.template : '', null],
+    pageSize: [value?.pageSize || 10],
     fields: formBuilder.array(
       value && value.fields ? value.fields.map((x: any) => addNewField(x)) : [],
       validators ? Validators.required : null
@@ -115,6 +116,11 @@ export const createQueryForm = (value: any, validators = true): FormGroup =>
       order: [value && value.sort ? value.sort.order : 'asc'],
     }),
     filter: createFilterGroup(value && value.filter ? value.filter : {}, null),
+    style: formBuilder.array(
+      value && value.style && value.style.length
+        ? value.style.map((x: any) => createStyleForm(x))
+        : [createStyleForm(null)]
+    ),
   });
 
 /**
@@ -129,4 +135,26 @@ export const createDisplayForm = (value: any): FormGroup =>
     sort: [value?.sort || []],
     fields: [value?.fields || null],
     filter: [value?.filter || null],
+  });
+
+/**
+ * Creates a style form.
+ *
+ * @param value Initial value.
+ * @returns Style form.
+ */
+export const createStyleForm = (value: any): FormGroup =>
+  formBuilder.group({
+    name: [value?.name || 'New rule', Validators.required],
+    background: formBuilder.group({
+      color: [value?.background?.color || ''],
+    }),
+    text: formBuilder.group({
+      color: [value?.text?.color || ''],
+      bold: [value?.text?.bold || false],
+      underline: [value?.text?.underline || false],
+      italic: [value?.text?.italic || false],
+    }),
+    fields: [value?.fields || []],
+    filter: createFilterGroup(value?.filter || {}, null),
   });

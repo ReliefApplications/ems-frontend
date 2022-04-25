@@ -9,6 +9,8 @@ import { SafePieChartModule } from '../../ui/pie-chart/pie-chart.module';
 import { SafeLineChartModule } from '../../ui/line-chart/line-chart.module';
 import { SafeBarChartModule } from '../../ui/bar-chart/bar-chart.module';
 import { LayoutModule } from '@progress/kendo-angular-layout';
+import { SafeIconModule } from '../../ui/icon/icon.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SafeChartComponent],
@@ -22,6 +24,8 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
     SafeLineChartModule,
     SafeColumnChartModule,
     SafeBarChartModule,
+    SafeIconModule,
+    TranslateModule,
   ],
   exports: [SafeChartComponent],
 })

@@ -15,15 +15,16 @@ import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.compon
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 
-const DEFAULT_FILE_NAME = 'chart.png';
+const DEFAULT_FILE_NAME = 'chartS';
 
+/**
+ * Chart widget using KendoUI.
+ */
 @Component({
   selector: 'safe-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-/*  Chart widget using KendoUI.
- */
 export class SafeChartComponent implements OnChanges, OnDestroy {
   // === DATA ===
   public loading = true;
@@ -32,11 +33,24 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   private dataSubscription?: Subscription;
 
   public lastUpdate = '';
+  public hasError = false;
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() export = true;
   @Input() settings: any = null;
+
+  /** Builds filename from the date and widget title */
+  get fileName(): string {
+    const today = new Date();
+    const formatDate = `${today.toLocaleString('en-us', {
+      month: 'short',
+      day: 'numeric',
+    })} ${today.getFullYear()}`;
+    return `${
+      this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
+    } ${formatDate}.png`;
+  }
 
   // === CHART ===
   @ViewChild('chartWrapper')
@@ -70,18 +84,20 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
         height: 800,
       })
       .then((dataURI: string) => {
-        saveAs(
-          dataURI,
-          this.settings.title ? `${this.settings.title}.png` : DEFAULT_FILE_NAME
-        );
+        saveAs(dataURI, this.fileName);
       });
   }
 
   /*  Load the data, using widget parameters.
    */
   private getData(): void {
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-      (res: any) => {
+    this.dataSubscription = this.dataQuery.subscribe((res: any) => {
+      if (res.errors) {
+        this.loading = false;
+        this.hasError = true;
+        this.series = [];
+      } else {
+        this.hasError = false;
         const today = new Date();
         this.lastUpdate =
           ('0' + today.getHours()).slice(-2) +
@@ -103,7 +119,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
         this.loading = res.loading;
         this.dataSubscription?.unsubscribe();
       }
-    );
+    });
   }
 
   ngOnDestroy(): void {

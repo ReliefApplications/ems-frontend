@@ -819,6 +819,8 @@ export const ADD_PULL_JOB = gql`
     $name: String!
     $status: Status!
     $apiConfiguration: ID!
+    $url: String
+    $path: String
     $schedule: String
     $convertTo: ID
     $mapping: JSON
@@ -829,6 +831,8 @@ export const ADD_PULL_JOB = gql`
       name: $name
       status: $status
       apiConfiguration: $apiConfiguration
+      url: $url
+      path: $path
       schedule: $schedule
       convertTo: $convertTo
       mapping: $mapping
@@ -883,6 +887,8 @@ export const EDIT_PULL_JOB = gql`
     $name: String
     $status: Status
     $apiConfiguration: ID
+    $url: String
+    $path: String
     $schedule: String
     $convertTo: ID
     $mapping: JSON
@@ -894,6 +900,8 @@ export const EDIT_PULL_JOB = gql`
       name: $name
       status: $status
       apiConfiguration: $apiConfiguration
+      url: $url
+      path: $path
       schedule: $schedule
       convertTo: $convertTo
       mapping: $mapping

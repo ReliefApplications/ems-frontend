@@ -7,6 +7,7 @@ import { SafeChooseRecordModalModule } from '../../choose-record-modal/choose-re
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
+import { SafeEmailPreviewModule } from '../../email-preview/email-preview.module';
 
 @NgModule({
   declarations: [SafeGridWidgetComponent],
@@ -18,6 +19,7 @@ import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
     SafeCoreGridModule,
     LayoutModule,
     DropDownListModule,
+    SafeEmailPreviewModule,
   ],
   exports: [SafeGridWidgetComponent],
 })

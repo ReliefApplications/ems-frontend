@@ -133,6 +133,7 @@ export class ApiConfigurationsComponent
       if (e.pageSize > this.pageInfo.pageSize) {
         neededSize -= this.pageInfo.pageSize;
       }
+      this.loading = true;
       this.apiConfigurationsQuery.fetchMore({
         variables: {
           first: neededSize,
@@ -221,10 +222,15 @@ export class ApiConfigurationsComponent
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.objectNotCreated', {
-                    type: this.translate.instant('table.APIConf'),
-                    error: res.errors[0].message,
-                  }),
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate.instant(
+                        'common.apiConfiguration.one'
+                      ),
+                      error: res.errors[0].message,
+                    }
+                  ),
                   { error: true }
                 );
               } else {
@@ -254,12 +260,17 @@ export class ApiConfigurationsComponent
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('APIConf.delete'),
-        content: this.translate.instant('APIConf.deleteDesc', {
-          name: element.name,
-        }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        title: this.translate.instant(
+          'components.apiConfiguration.delete.title'
+        ),
+        content: this.translate.instant(
+          'components.apiConfiguration.delete.confirmationMessage',
+          {
+            name: element.name,
+          }
+        ),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });
@@ -275,8 +286,8 @@ export class ApiConfigurationsComponent
           .subscribe((res) => {
             if (res && !res.errors) {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectDeleted', {
-                  value: this.translate.instant('table.APIConf'),
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.apiConfiguration.one'),
                 })
               );
               this.dataSource.data = this.dataSource.data.filter(

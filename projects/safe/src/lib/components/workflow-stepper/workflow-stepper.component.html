@@ -1,8 +1,33 @@
 <mat-divider></mat-divider>
-<div class="safe-steps" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropStep($event)">
-    <safe-step *ngFor="let step of steps; let index = index;" [step]="step" [canUpdate]="canUpdate"
-        [active]="index === activeStep" (click)="onStep(index)" (delete)="delete.emit(index)" cdkDragLockAxis="x" (cdkDragStarted)="onDragStart()"
-        cdkDrag [cdkDragDisabled]="!canUpdate"></safe-step>
-    <safe-add-step *ngIf="canUpdate" (click)="add.emit()"></safe-add-step>
+<div class="safe-steps" *ngIf="loading">
+  <kendo-skeleton
+    shape="rectangle"
+    animation="pulse"
+    width="100px"
+    height="100px"
+    style="border-radius: 8px"
+    *ngFor="let number of [0, 1, 2]"
+  ></kendo-skeleton>
+</div>
+<div
+  class="safe-steps"
+  *ngIf="!loading"
+  cdkDropList
+  cdkDropListOrientation="horizontal"
+  (cdkDropListDropped)="dropStep($event)"
+>
+  <safe-step
+    *ngFor="let step of steps; let index = index"
+    [step]="step"
+    [canUpdate]="canUpdate"
+    [active]="index === activeStep"
+    (click)="onStep(index)"
+    (delete)="delete.emit(index)"
+    cdkDragLockAxis="x"
+    (cdkDragStarted)="onDragStart()"
+    cdkDrag
+    [cdkDragDisabled]="!canUpdate"
+  ></safe-step>
+  <safe-add-step *ngIf="canUpdate" (click)="add.emit()"></safe-add-step>
 </div>
 <mat-divider></mat-divider>

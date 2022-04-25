@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { Subscription } from 'rxjs';
 import { SafeSnackBarService } from './snackbar.service';
 import {
   AddLayoutMutationResponse,
@@ -60,18 +59,31 @@ export class SafeGridLayoutService {
                 const layouts = res2.data.form.layouts || [];
                 return ids
                   ? layouts.filter((x) => x.id && ids.includes(x.id))
-                  : layouts;
+                  : [];
               }
             });
         } else {
           const layouts = res.data.resource.layouts || [];
           return ids
-            ? layouts.filter((x) => x.id && ids.includes(x.id))
-            : layouts;
+            ? layouts
+                .filter((x) => x.id && ids.includes(x.id))
+                .sort(
+                  (a, b) => ids.indexOf(a.id || '') - ids.indexOf(b.id || '')
+                )
+            : [];
         }
       });
   }
 
+  /**
+   * Edits a layout.
+   *
+   * @param layout layout to edit
+   * @param value new value of the layout
+   * @param resource resource the layout is attached to ( optional )
+   * @param form form the layout is attached to ( optional )
+   * @returns Mutation observable
+   */
   public editLayout(
     layout: Layout,
     value: Layout,

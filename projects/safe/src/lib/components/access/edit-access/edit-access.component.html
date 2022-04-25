@@ -1,8 +1,8 @@
-<h1 mat-dialog-title>{{'access.description' | translate}}</h1>
+<h1 mat-dialog-title>{{'components.access.description' | translate}}</h1>
 <div mat-dialog-content>
     <form [formGroup]="accessForm" class="form-group">
         <mat-form-field>
-            <mat-label>{{'access.canSee' | translate}}</mat-label>
+            <mat-label>{{'components.access.canSee' | translate}}</mat-label>
             <mat-select formControlName="canSee" multiple>
                 <mat-option *ngFor="let role of roles" [value]="role.id">
                     {{role.title}}
@@ -11,7 +11,7 @@
         </mat-form-field>
         <ng-container *ngIf="!data.application">
             <mat-form-field>
-                <mat-label>{{'access.canUpdate' | translate}}</mat-label>
+                <mat-label>{{'components.access.canUpdate' | translate}}</mat-label>
                 <mat-select formControlName="canUpdate" multiple>
                     <mat-option *ngFor="let role of roles" [value]="role.id">
                         {{role.title}}
@@ -19,7 +19,7 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field>
-                <mat-label>{{'access.canDelete' | translate}}</mat-label>
+                <mat-label>{{'components.access.canDelete' | translate}}</mat-label>
                 <mat-select formControlName="canDelete" multiple>
                     <mat-option *ngFor="let role of roles" [value]="role.id">
                         {{role.title}}
@@ -30,6 +30,6 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
-    <button mat-flat-button [mat-dialog-close]="accessForm.value" cdkFocusInitial color="primary" [disabled]="!accessForm.valid">{{'action.update' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
+    <button mat-flat-button [mat-dialog-close]="accessForm.value" cdkFocusInitial color="primary" [disabled]="!accessForm.valid">{{'common.update' | translate}}</button>
 </div>

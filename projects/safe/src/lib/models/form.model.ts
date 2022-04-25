@@ -24,6 +24,7 @@ export enum status {
 export interface Form {
   id?: string;
   name?: string;
+  queryName?: string;
   createdAt?: Date;
   structure?: string;
   status?: status;

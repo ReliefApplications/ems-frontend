@@ -219,6 +219,37 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Returns field style from path.
+   *
+   * @param item Item to get style of.
+   * @param path Path of the property.
+   * @returns Style fo the property.
+   */
+  public getStyle(item: any, path: string): any {
+    const fieldStyle = get(item, `_meta.style.${path}`);
+    const rowStyle = get(item, '_meta.style._row');
+    return fieldStyle ? fieldStyle : rowStyle;
+  }
+
+  /**
+   * Returns full URL value.
+   * TODO: avoid template call
+   *
+   * @param url Initial URL.
+   * @returns full valid URL.
+   */
+  public getUrl(url: string): URL | null {
+    if (url && !(url.startsWith('https://') || url.startsWith('http://'))) {
+      url = 'https://' + url;
+    }
+    try {
+      return new URL(url);
+    } catch {
+      return null;
+    }
+  }
+
   // === FILTER ===
   /**
    * Handles filter change event.
@@ -353,6 +384,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
             width: c.width,
             hidden: c.hidden,
             order: c.orderIndex,
+            subFields:
+              this.fields.find((x) => x.name === c.field)?.subFields || [],
           },
         }),
         {}

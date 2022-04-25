@@ -297,6 +297,7 @@ export const GET_RESOURCE_BY_ID = gql`
     resource(id: $id) {
       id
       name
+      queryName
       createdAt
       fields
       layouts {
@@ -1016,7 +1017,10 @@ export const GET_PULL_JOBS = gql`
           apiConfiguration {
             id
             name
+            authType
           }
+          url
+          path
           schedule
           convertTo {
             id

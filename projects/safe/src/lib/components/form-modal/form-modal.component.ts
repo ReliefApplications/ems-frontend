@@ -164,7 +164,9 @@ export class SafeFormModalComponent implements OnInit {
                   this.data.prefillRecords.map((x) => x.id);
               } else {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.recordDoesNotMatch'),
+                  this.translate.instant(
+                    'models.record.notifications.conversionIncomplete'
+                  ),
                   { error: true }
                 );
               }
@@ -181,28 +183,34 @@ export class SafeFormModalComponent implements OnInit {
     this.survey = this.formBuilderService.createSurvey(
       this.form?.structure || ''
     );
-    this.survey.onClearFiles.add((survey, options) =>
+    this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
       this.onClearFiles(survey, options)
     );
-    this.survey.onUploadFiles.add((survey, options) =>
+    this.survey.onUploadFiles.add((survey: Survey.SurveyModel, options: any) =>
       this.onUploadFiles(survey, options)
     );
-    this.survey.onDownloadFile.add((survey, options) =>
+    this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
       this.onDownloadFile(survey, options)
     );
-    this.survey.onUpdateQuestionCssClasses.add((_, options) =>
-      this.onSetCustomCss(options)
+    this.survey.onUpdateQuestionCssClasses.add(
+      (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
-    this.survey.onCurrentPageChanged.add((survey, _) => {
-      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
-      this.selectedTabIndex = survey.currentPageNo;
-    });
+    this.survey.onCurrentPageChanged.add(
+      (survey: Survey.SurveyModel, options: any) => {
+        survey.checkErrorsMode = survey.isLastPage
+          ? 'onComplete'
+          : 'onNextPage';
+        this.selectedTabIndex = survey.currentPageNo;
+      }
+    );
     this.survey.onPageVisibleChanged.add(() => {
       this.setPages();
     });
-    this.survey.onSettingQuestionErrors.add((survey, options) => {
-      this.setPages();
-    });
+    this.survey.onSettingQuestionErrors.add(
+      (survey: Survey.SurveyModel, options: any) => {
+        this.setPages();
+      }
+    );
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
     if (this.data.recordId && this.record) {
       addCustomFunctions(Survey, this.authService, this.apollo, this.record);
@@ -651,7 +659,7 @@ export class SafeFormModalComponent implements OnInit {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.dataRecovered')
+              this.translate.instant('common.notifications.dataRecovered')
             );
             this.dialog.closeAll();
           });
