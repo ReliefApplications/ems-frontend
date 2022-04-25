@@ -22,11 +22,11 @@ import {
   GetReferenceDatasQueryResponse,
   GET_REFERENCE_DATAS,
 } from '../../../graphql/queries';
-import { 
+import {
   AddReferenceDataMutationResponse,
   ADD_REFERENCE_DATA,
   DeleteReferenceDataMutationResponse,
-  DELETE_REFERENCE_DATA
+  DELETE_REFERENCE_DATA,
 } from '../../../graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -196,7 +196,7 @@ export class ReferenceDataComponent
    * Displays the AddReferenceData modal.
    * Creates a new reference data on closed if result.
    */
-   onAdd(): void {
+  onAdd(): void {
     // TODO: Uncomment after the creation of the AddReferenceDataComponent (or whatever name)
     // const dialogRef = this.dialog.open(AddReferenceDataComponent);
     // dialogRef.afterClosed().subscribe((value) => {
@@ -241,16 +241,19 @@ export class ReferenceDataComponent
    * @param element Reference data to delete.
    * @param e click event.
    */
-   onDelete(element: any, e: any): void {
+  onDelete(element: any, e: any): void {
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('APIConf.delete'),
-        content: this.translate.instant('APIConf.deleteDesc', {
-          name: element.name,
-        }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        title: this.translate.instant('components.referenceData.delete.title'),
+        content: this.translate.instant(
+          'components.referenceData.delete.confirmationMessage',
+          {
+            name: element.name,
+          }
+        ),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });
@@ -266,8 +269,8 @@ export class ReferenceDataComponent
           .subscribe((res) => {
             if (res && !res.errors) {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectDeleted', {
-                  value: this.translate.instant('table.referenceData'),
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.referenceData.one'),
                 })
               );
               this.dataSource.data = this.dataSource.data.filter(

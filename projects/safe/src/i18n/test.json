@@ -17,6 +17,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"referenceData": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"back": "******",
 		"cancel": "******",
 		"channel": {
@@ -287,6 +292,12 @@
 					"name": "******"
 				}
 			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			}
+		},
+		"referenceData": {
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
@@ -769,6 +780,9 @@
 				"uploadSuccessful": "******"
 			},
 			"restore": "******"
+		},
+		"referenceData": {
+			"add": "******"
 		},
 		"resource": {
 			"create": "******"
