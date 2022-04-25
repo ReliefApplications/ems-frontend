@@ -32,8 +32,12 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
 
+/** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * List of Reference data page.
+ */
 @Component({
   selector: 'app-reference-datas',
   templateUrl: './reference-datas.component.html',
@@ -66,6 +70,16 @@ export class ReferenceDatasComponent
     endCursor: '',
   };
 
+  /**
+   * List of Reference data page.
+   *
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param router Angular router
+   * @param translate Angular translation service
+   */
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,

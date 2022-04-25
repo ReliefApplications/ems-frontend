@@ -546,15 +546,15 @@
 			}
 		},
 		"referenceData": {
+			"create": {
+				"errors": {
+					"name": "******"
+				},
+				"title": "******"
+			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
-			},
-			"create": {
-				"title": "******",
-				"errors": {
-					"name": "******"
-				}
 			}
 		},
 		"resource": {
@@ -907,19 +907,19 @@
 			"create": "******"
 		},
 		"referenceData": {
-			"type": "******",
-			"queryName": "******",
-			"fields": "******",
 			"csv": "******",
+			"errors": {
+				"name": "******"
+			},
+			"fields": "******",
 			"path": "******",
-			"valueField": "******",
-			"validateCsv": "******",
 			"placeholder": {
 				"csv": "******"
 			},
-			"errors": {
-				"name": "******"
-			}
+			"queryName": "******",
+			"type": "******",
+			"validateCsv": "******",
+			"valueField": "******"
 		},
 		"workflow": {
 			"addStep": {

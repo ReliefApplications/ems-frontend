@@ -7,6 +7,9 @@ import {
 } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 
+/**
+ * New Refence Data modal.
+ */
 @Component({
   selector: 'app-add-reference-data',
   templateUrl: './add-reference-data.component.html',
@@ -20,12 +23,19 @@ export class AddReferenceDataComponent implements OnInit {
     return this.referenceForm.get('name');
   }
 
+  /**
+   * New Refence Data modal.
+   *
+   * @param formBuilder Angular form builder
+   * @param dialogRef Material dialog ref.
+   */
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<AddReferenceDataComponent>
   ) {}
 
-  /*  Build the form.
+  /**
+   * Build the form.
    */
   ngOnInit(): void {
     this.referenceForm = this.formBuilder.group({
@@ -33,7 +43,8 @@ export class AddReferenceDataComponent implements OnInit {
     });
   }
 
-  /*  Close the modal without sending data.
+  /**
+   * Close the modal without sending data.
    */
   onClose(): void {
     this.dialogRef.close();

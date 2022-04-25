@@ -22,14 +22,6 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import {
-  GetReferenceDatasQueryResponse,
-  GET_REFERENCE_DATAS,
-} from '../../../graphql/queries';
-import {
-  AddReferenceDataMutationResponse,
-  ADD_REFERENCE_DATA,
-  DeleteReferenceDataMutationResponse,
-  DELETE_REFERENCE_DATA,
   EditReferenceDataMutationResponse,
   EDIT_REFERENCE_DATA,
 } from '../../../graphql/mutations';
@@ -97,11 +89,11 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
    * Reference data page.
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param route Angular route
    * @param snackBar Shared snackbar service
-   * @param authService Shared authentication service
    * @param router Angular router
-   * @param translate Angular translation service
+   * @param formBuilder Angular form builder
+   * @param translateService Angular translate service
    */
   constructor(
     private apollo: Apollo,
@@ -186,7 +178,8 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*  Unsubscribe from the apollo subscription if needed
+  /**
+   * Unsubscribe from the apollo subscription if needed.
    */
   ngOnDestroy(): void {
     if (this.apolloSubscription) {
@@ -194,7 +187,10 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     }
   }
 
-  /* Load all Api Configurations
+  /**
+   * Load all Api Configurations.
+   *
+   * @param type type of API configuration
    */
   loadApiConfigurations(type?: any): void {
     if (['graphql', 'rest'].includes(type)) {
@@ -230,7 +226,10 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     this.referenceForm?.get('fields')?.updateValueAndValidity();
   }
 
-  /*  Edit the permissions layer.
+  /**
+   * Edit the permissions layer.
+   *
+   * @param e permission event
    */
   saveAccess(e: any): void {
     if (this.apolloSubscription) {

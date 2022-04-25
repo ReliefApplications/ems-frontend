@@ -15,6 +15,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import { SafeIconModule } from 'projects/safe/src/lib/components/ui/icon/icon.module';
 import { GridModule } from '@progress/kendo-angular-grid';
 
+/**
+ * Reference Data page module.
+ */
 @NgModule({
   declarations: [ReferenceDataComponent],
   imports: [
