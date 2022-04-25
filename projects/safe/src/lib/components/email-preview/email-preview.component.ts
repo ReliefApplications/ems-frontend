@@ -43,7 +43,6 @@ export class SafeEmailPreviewComponent implements OnInit {
 
   /** Create the form from the dialog data, putting all fields as read-only */
   ngOnInit(): void {
-    console.log(this.data.html);
     this.form = this.formBuilder.group({
       from: [{value: this.data.from, disabled: true }],
       to: [{value: this.data.to, disabled: true }],

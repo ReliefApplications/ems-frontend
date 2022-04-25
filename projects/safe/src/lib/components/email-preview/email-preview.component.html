@@ -21,7 +21,7 @@
     <!-- <div class="email-body-container">
       <div class="email-body-preview" [innerHTML]="form.controls.html.value"></div>
     </div> -->
-    <kendo-editor style="height: 300px;" formControlName="html">
+    <kendo-editor style="height: 350px;" formControlName="html">
       <kendo-toolbar>
         <kendo-toolbar-buttongroup>
           <kendo-toolbar-button kendoEditorBoldButton></kendo-toolbar-button>
@@ -29,18 +29,10 @@
           <kendo-toolbar-button
             kendoEditorUnderlineButton
           ></kendo-toolbar-button>
-          <kendo-toolbar-button
-            kendoEditorStrikethroughButton
-          ></kendo-toolbar-button>
         </kendo-toolbar-buttongroup>
-        <kendo-toolbar-buttongroup>
-          <kendo-toolbar-button
-            kendoEditorSubscriptButton
-          ></kendo-toolbar-button>
-          <kendo-toolbar-button
-            kendoEditorSuperscriptButton
-          ></kendo-toolbar-button>
-        </kendo-toolbar-buttongroup>
+        <kendo-toolbar-dropdownlist
+          kendoEditorFormat
+        ></kendo-toolbar-dropdownlist>
         <kendo-toolbar-buttongroup>
           <kendo-toolbar-button
             kendoEditorAlignLeftButton
@@ -55,22 +47,6 @@
             kendoEditorAlignJustifyButton
           ></kendo-toolbar-button>
         </kendo-toolbar-buttongroup>
-        <kendo-toolbar-dropdownlist
-          kendoEditorFormat
-        ></kendo-toolbar-dropdownlist>
-        <kendo-toolbar-dropdownlist
-          kendoEditorFontSize
-        ></kendo-toolbar-dropdownlist>
-        <kendo-toolbar-dropdownlist
-          kendoEditorFontFamily
-        ></kendo-toolbar-dropdownlist>
-        <kendo-toolbar-colorpicker
-          kendoEditorForeColor
-        ></kendo-toolbar-colorpicker>
-        <kendo-toolbar-colorpicker
-          kendoEditorBackColor
-          view="gradient"
-        ></kendo-toolbar-colorpicker>
         <kendo-toolbar-buttongroup>
           <kendo-toolbar-button
             kendoEditorInsertUnorderedListButton
@@ -81,14 +57,6 @@
           <kendo-toolbar-button kendoEditorIndentButton></kendo-toolbar-button>
           <kendo-toolbar-button kendoEditorOutdentButton></kendo-toolbar-button>
         </kendo-toolbar-buttongroup>
-        <kendo-toolbar-button
-          kendoEditorBlockquoteButton
-        ></kendo-toolbar-button>
-        <kendo-toolbar-button kendoEditorSelectAllButton></kendo-toolbar-button>
-        <kendo-toolbar-buttongroup>
-          <kendo-toolbar-button kendoEditorUndoButton></kendo-toolbar-button>
-          <kendo-toolbar-button kendoEditorRedoButton></kendo-toolbar-button>
-        </kendo-toolbar-buttongroup>
         <kendo-toolbar-buttongroup>
           <kendo-toolbar-button
             kendoEditorCreateLinkButton
@@ -96,16 +64,7 @@
           <kendo-toolbar-button kendoEditorUnlinkButton></kendo-toolbar-button>
         </kendo-toolbar-buttongroup>
         <kendo-toolbar-button
-          kendoEditorInsertFileButton
-        ></kendo-toolbar-button>
-        <kendo-toolbar-button
           kendoEditorInsertImageButton
-        ></kendo-toolbar-button>
-        <kendo-toolbar-button
-          kendoEditorViewSourceButton
-        ></kendo-toolbar-button>
-        <kendo-toolbar-button
-          kendoEditorCleanFormattingButton
         ></kendo-toolbar-button>
         <kendo-editor-insert-table-button></kendo-editor-insert-table-button>
         <kendo-toolbar-buttongroup>
@@ -133,15 +92,6 @@
             kendoEditorDeleteTableButton
           ></kendo-toolbar-button>
         </kendo-toolbar-buttongroup>
-        <kendo-toolbar-buttongroup>
-          <kendo-toolbar-button
-            kendoEditorMergeCellsButton
-          ></kendo-toolbar-button>
-          <kendo-toolbar-button
-            kendoEditorSplitCellButton
-          ></kendo-toolbar-button>
-        </kendo-toolbar-buttongroup>
-        <kendo-toolbar-button kendoEditorPrintButton></kendo-toolbar-button>
       </kendo-toolbar>
     </kendo-editor>
   </form>

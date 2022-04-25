@@ -116,7 +116,6 @@ export class SafeEmailService {
       Authorization: `Bearer ${token}`,
     });
 
-    console.log(body);
     this.http
       .post(
         this.sendUrl,
