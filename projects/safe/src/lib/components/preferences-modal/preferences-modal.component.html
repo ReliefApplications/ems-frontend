@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>{{ 'components.preferences.title' | translate }}</h1>
+<mat-dialog-content>
+  <form [formGroup]="preferencesForm">
+    <!-- LANGUAGE SELECTION -->
+    <div class="form-group">
+      <div class="form-group-title">
+        {{ 'components.preferences.language' | translate }}
+      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.preferences.language' | translate
+        }}</mat-label>
+        <mat-select formControlName="language">
+          <mat-option *ngFor="let lang of languages" [value]="lang.value">
+            {{ lang.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>{{ 'common.cancel' | translate }}</button>
+  <button
+    mat-flat-button
+    color="primary"
+    [disabled]="!preferencesForm.valid"
+    [mat-dialog-close]="preferencesForm"
+    cdkFocusInitial
+  >
+    {{ 'common.save' | translate }}
+  </button>
+</mat-dialog-actions>

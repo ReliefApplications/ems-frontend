@@ -343,6 +343,10 @@
 		"notifications": {
 			"readAll": "Mark all as read"
 		},
+		"preferences": {
+			"language": "Language",
+			"title": "Preferences"
+		},
 		"pullJob": {
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the pull job {{name}}?",

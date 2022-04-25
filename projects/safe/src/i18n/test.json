@@ -343,6 +343,10 @@
 		"notifications": {
 			"readAll": "******"
 		},
+		"preferences": {
+			"language": "******",
+			"title": "******"
+		},
 		"pullJob": {
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
@@ -634,6 +638,15 @@
 		}
 	},
 	"kendo": {
+		"editor": {
+			"fontFamily": "******",
+			"fontSize": "******",
+			"format": "******"
+		},
+		"fileselect": {
+			"dropFilesHere": "******",
+			"select": "******"
+		},
 		"grid": {
 			"columnMenu": "******",
 			"columns": "******",
@@ -706,17 +719,8 @@
 			"unstick": "******"
 		},
 		"upload": {
-			"select": "******",
-			"dropFilesHere": "******"
-		},
-		"fileselect": {
-			"select": "******",
-			"dropFilesHere": "******"
-		},
-		"editor": {
-			"format": "******",
-			"fontSize": "******",
-			"fontFamily": "******"
+			"dropFilesHere": "******",
+			"select": "******"
 		}
 	},
 	"models": {
