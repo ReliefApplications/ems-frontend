@@ -21,7 +21,6 @@ export class UsersComponent implements OnInit, OnDestroy {
    * Gets the list of users from loaded application.
    */
   ngOnInit(): void {
-    this.loading = false;
     this.applicationSubscription =
       this.applicationService.application$.subscribe(
         (application: Application | null) => {
@@ -32,6 +31,7 @@ export class UsersComponent implements OnInit, OnDestroy {
             this.users.data = [];
             this.roles = [];
           }
+          this.loading = false;
         }
       );
   }

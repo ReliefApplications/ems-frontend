@@ -7,7 +7,8 @@ export enum type {
   rest = 'rest',
 }
 
-/*  Model for ReferenceData object.
+/**
+ * Model for ReferenceData object.
  */
 export interface ReferenceData {
   id?: string;

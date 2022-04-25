@@ -174,12 +174,17 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   onDelete(resource: Resource): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('resources.delete'),
-        content: this.translate.instant('resources.deleteDesc', {
-          name: resource.name,
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.resource.one'),
         }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        content: this.translate.instant(
+          'components.resource.delete.confirmationMessage',
+          {
+            name: resource.name,
+          }
+        ),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });
@@ -199,20 +204,23 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
                 (x) => x.id !== resource.id
               );
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectDeleted', {
+                this.translate.instant('common.notifications.objectDeleted', {
                   value: this.translate
-                    .instant('notification.term.resource')
+                    .instant('common.resource.one')
                     .toLowerCase(),
                 })
               );
             } else {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectNotDeleted', {
-                  value: this.translate
-                    .instant('notification.term.resource')
-                    .toLowerCase(),
-                  error: res.errors[0].message,
-                }),
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate
+                      .instant('common.resource.one')
+                      .toLowerCase(),
+                    error: res.errors[0].message,
+                  }
+                ),
                 { error: true }
               );
             }
@@ -245,12 +253,15 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.objectNotCreated', {
-                    type: this.translate
-                      .instant('notification.term.form')
-                      .toLowerCase(),
-                    error: res.errors[0].message,
-                  }),
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate
+                        .instant('common.form.one')
+                        .toLowerCase(),
+                      error: res.errors[0].message,
+                    }
+                  ),
                   { error: true }
                 );
               } else {

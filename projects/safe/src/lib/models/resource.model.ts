@@ -7,6 +7,7 @@ import { RecordConnection } from './record.model';
 export interface Resource {
   id?: string;
   name?: string;
+  queryName?: string;
   forms?: Form[];
   relatedForms?: Form[];
   createdAt?: Date;

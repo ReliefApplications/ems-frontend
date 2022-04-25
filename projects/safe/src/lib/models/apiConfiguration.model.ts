@@ -4,6 +4,7 @@ import { status } from './form.model';
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export enum authType {
+  public = 'public',
   serviceToService = 'serviceToService',
   userToService = 'userToService',
 }
@@ -16,6 +17,7 @@ export interface ApiConfiguration {
   status?: status;
   authType?: authType;
   endpoint?: string;
+  graphQLEndpoint?: string;
   pingUrl?: string;
   settings?: any;
   permissions?: any;

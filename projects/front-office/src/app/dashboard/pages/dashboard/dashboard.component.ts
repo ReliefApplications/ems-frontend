@@ -69,6 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.id = params.id;
+      this.loading = true;
       this.apollo
         .watchQuery<GetDashboardByIdQueryResponse>({
           query: GET_DASHBOARD_BY_ID,
@@ -87,12 +88,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
               this.loading = res.loading;
             } else {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.accessNotProvided', {
-                  type: this.translate
-                    .instant('notification.term.dashboard')
-                    .toLowerCase(),
-                  error: '',
-                }),
+                this.translate.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.dashboard.one')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
               this.router.navigate(['/applications']);

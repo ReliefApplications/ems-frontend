@@ -2,12 +2,12 @@
 <ng-container *ngIf="!loading">
   <div class="actions">
     <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
-      {{'attributes.create' | translate}}
+      {{'pages.application.positionAttributes.create' | translate}}
     </safe-button>
   </div>
   <table mat-table [dataSource]="positionCategories">
     <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef>{{'global.title' | translate}}</th>
+        <th mat-header-cell *matHeaderCellDef>{{'common.title' | translate}}</th>
         <td mat-cell *matCellDef="let element">{{ element.title }}</td>
     </ng-container>
 
@@ -19,11 +19,11 @@
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="onEdit(element)">
             <mat-icon>edit</mat-icon>
-            {{'action.edit' | translate}}
+            {{'common.edit' | translate}}
           </button>
           <button mat-menu-item color="warn" (click)="onDelete(element)">
             <mat-icon>delete</mat-icon>
-            {{'action.delete' | translate}}
+            {{'common.delete' | translate}}
           </button>
         </mat-menu>
       </td>

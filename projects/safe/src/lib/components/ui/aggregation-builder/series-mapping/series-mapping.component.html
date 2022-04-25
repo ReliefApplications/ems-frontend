@@ -1,6 +1,6 @@
 <safe-field-dropdown
   *ngFor="let controlName of controlNames"
-  [label]="'aggregation.mapping.' + controlName | translate"
+  [label]="'components.aggregationBuilder.mapping.' + controlName | translate"
   [fieldControl]="$any($any(mappingForm).controls[controlName])"
   [fields]="fieldsByControl[controlName]"
   [nullable]="true"

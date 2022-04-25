@@ -14,10 +14,10 @@
 </ng-container>
 <mat-dialog-content [id]="containerId"></mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button color="warn" (click)="onClose()">{{ 'action.cancel' | translate }}</button>
+    <button mat-button color="warn" (click)="onClose()">{{ 'common.cancel' | translate }}</button>
     <button [disabled]="!survey || survey.isFirstPage" mat-button color="primary" (click)="survey && survey.prevPage()">
-        {{ 'action.previous' | translate }}</button>
+        {{ 'common.previous' | translate }}</button>
     <button [disabled]="!survey || survey.isLastPage" mat-button color="primary" (click)="survey && survey.nextPage()">
-        {{ 'action.next' | translate }}</button>
-    <button mat-flat-button color="primary" (click)="submit()">{{ 'action.saveClose' | translate }}</button>
+        {{ 'common.next' | translate }}</button>
+    <button mat-flat-button color="primary" (click)="submit()">{{ 'components.record.modal.update' | translate }}</button>
 </mat-dialog-actions>

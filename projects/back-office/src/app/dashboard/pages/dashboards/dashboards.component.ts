@@ -88,11 +88,12 @@ export class DashboardsComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectDeleted', {
-              value: this.translateService.instant(
-                'notification.term.dashboard'
-              ),
-            })
+            this.translateService.instant(
+              'common.notifications.objectDeleted',
+              {
+                value: this.translateService.instant('common.dashboard.one'),
+              }
+            )
           );
           this.dashboards = this.dashboards.filter(
             (x) => x.id !== res.data?.deleteDashboard.id
@@ -117,12 +118,15 @@ export class DashboardsComponent implements OnInit, OnDestroy {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectCreated', {
-                type: this.translateService
-                  .instant('notification.term.dashboard')
-                  .toLowerCase(),
-                value: value.name,
-              })
+              this.translateService.instant(
+                'common.notifications.objectCreated',
+                {
+                  type: this.translateService
+                    .instant('common.dashboard.one')
+                    .toLowerCase(),
+                  value: value.name,
+                }
+              )
             );
             const id = res.data?.addDashboard.id;
             this.router.navigate(['/dashboards', id]);

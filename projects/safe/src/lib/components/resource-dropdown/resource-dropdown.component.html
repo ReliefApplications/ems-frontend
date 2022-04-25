@@ -1,5 +1,5 @@
 <mat-form-field appearance="outline">
-    <mat-label>{{'record.fromResource' | translate}}</mat-label>
+    <mat-label>{{'components.resource.dropdown.select' | translate}}</mat-label>
     <mat-select #resourceSelect [(ngModel)]="resource" name="resource" (openedChange)="onOpenSelect($event)"
         (selectionChange)="onSelect($event)">
         <mat-option *ngIf="selectedResource" [value]="selectedResource.id">{{selectedResource.name}}</mat-option>

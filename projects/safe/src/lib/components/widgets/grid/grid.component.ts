@@ -228,15 +228,6 @@ export class SafeGridWidgetComponent implements OnInit {
     }
     // Send email using backend mail service.
     if (options.sendMail) {
-      const gridSettings = {
-        query: {
-          name: this.settings.query.name as string,
-          fields: options.bodyFields as any[],
-        },
-        ids: this.grid.selectedRows,
-        sortField: this.grid.sortField || undefined,
-        sortOrder: this.grid.sortOrder || undefined,
-      };
       const body =
         this.grid.selectedRows.length > 0
           ? options.bodyText
@@ -245,8 +236,19 @@ export class SafeGridWidgetComponent implements OnInit {
         options.distributionList,
         options.subject,
         body,
-        gridSettings,
-        options.export && this.grid.selectedRows.length > 0
+        {
+          logic: 'and',
+          filters: [
+            { operator: 'eq', field: 'ids', value: this.grid.selectedRows },
+          ],
+        },
+        {
+          name: this.settings.query.name,
+          fields: options.bodyFields,
+        },
+        this.grid.sortField || undefined,
+        this.grid.sortOrder || undefined,
+        options.export
       );
     }
 
@@ -450,11 +452,14 @@ export class SafeGridWidgetComponent implements OnInit {
                 const record = res2.data.editRecord;
                 if (record) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('notification.addRowsToRecord', {
-                      field: record.data[targetFormField],
-                      length: selectedRecords.length,
-                      value: key,
-                    })
+                    this.translate.instant(
+                      'models.record.notifications.rowsAdded',
+                      {
+                        field: record.data[targetFormField],
+                        length: selectedRecords.length,
+                        value: key,
+                      }
+                    )
                   );
                   this.dialog.open(SafeFormModalComponent, {
                     disableClose: true,

@@ -117,6 +117,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === PAGINATION ===
   public pageSize = 10;
   public skip = 0;
+  @Output() pageSizeChanged: EventEmitter<any> = new EventEmitter<any>();
 
   // === INLINE EDITION ===
   private originalItems: any[] = this.gridData.data;
@@ -272,6 +273,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.defaultLayout.sort;
     }
     this.showFilter = !!this.defaultLayout?.showFilter;
+    if (this.settings.query.pageSize) {
+      this.pageSize = this.settings.query.pageSize;
+    }
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     this.dataQuery = this.apollo.watchQuery<any>({
@@ -862,7 +866,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             this.reloadData();
             this.layoutService.setRightSidenav(null);
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.dataRecovered')
+              this.translate.instant('common.notifications.dataRecovered')
             );
           });
       }
@@ -918,13 +922,27 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         fields: Object.values(currentLayout.fields)
           .filter((x: any) => !x.hidden)
           .sort((a: any, b: any) => a.order - b.order)
-          .map((x: any) => ({ name: x.field, title: x.title })),
+          .map((x: any) => ({
+            name: x.field,
+            title: x.title,
+            subFields: x.subFields.map((y: any) => ({
+              name: y.name,
+              title: y.title,
+            })),
+          })),
       }),
       // we export ALL fields of the grid ( including hidden columns )
       ...(e.fields === 'all' && {
         fields: Object.values(currentLayout.fields)
           .sort((a: any, b: any) => a.order - b.order)
-          .map((x: any) => ({ name: x.field, title: x.title })),
+          .map((x: any) => ({
+            name: x.field,
+            title: x.title,
+            subFields: x.subFields.map((y: any) => ({
+              name: y.name,
+              title: y.title,
+            })),
+          })),
       }),
     };
 
@@ -947,6 +965,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
+    this.pageSizeChanged.emit(this.pageSize);
     this.dataQuery.fetchMore({
       variables: {
         first: this.pageSize,

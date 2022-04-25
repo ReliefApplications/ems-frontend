@@ -60,9 +60,16 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   onUnlock(): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Unlock edition',
-        content: `Do you want to unlock ${this.application?.name}'s edition ?`,
-        confirmText: 'Confirm',
+        title: this.translateService.instant(
+          'components.application.unlock.title'
+        ),
+        content: this.translateService.instant(
+          'components.application.unlock.confirmationMessage',
+          {
+            name: this.application?.name,
+          }
+        ),
+        confirmText: this.translateService.instant('common.confirm'),
         confirmColor: 'primary',
       },
     });
@@ -77,16 +84,23 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   onPublish(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
-        this.translateService.instant('notification.objectIsLocked', {
-          value: this.application?.name,
+        this.translateService.instant('common.notifications.objectLocked', {
+          name: this.application?.name,
         })
       );
     } else {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: `Publish application`,
-          content: `Do you confirm the publication of ${this.application?.name} ?`,
-          confirmText: 'Confirm',
+          title: this.translateService.instant(
+            'components.application.publish.title'
+          ),
+          content: this.translateService.instant(
+            'components.application.publish.confirmationMessage',
+            {
+              name: this.application?.name,
+            }
+          ),
+          confirmText: this.translateService.instant('common.confirm'),
           confirmColor: 'primary',
         },
       });
