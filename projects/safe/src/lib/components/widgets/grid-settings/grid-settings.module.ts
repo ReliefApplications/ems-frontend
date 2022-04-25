@@ -17,6 +17,9 @@ import { SafeFloatingButtonSettingsComponent } from './floating-button-settings/
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeButtonModule } from '../../ui/button/button.module';
+import { EditorModule } from '@progress/kendo-angular-editor';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { ButtonsModule } from '@progress/kendo-angular-buttons';
 
 @NgModule({
   declarations: [SafeGridSettingsComponent, SafeFloatingButtonSettingsComponent],
@@ -37,7 +40,10 @@ import { SafeButtonModule } from '../../ui/button/button.module';
     MatTooltipModule,
     MatTabsModule,
     MatChipsModule,
-    SafeButtonModule
+    SafeButtonModule,
+    EditorModule,
+    InputsModule,
+    ButtonsModule,
   ],
   exports: [SafeGridSettingsComponent]
 })

@@ -23,6 +23,8 @@ import { SafeAuthService } from '../../../services/auth.service';
 import { SafeEmailService } from '../../../services/email.service';
 import { GridLayout } from '../../ui/core-grid/models/grid-layout.model';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
+import { SafeEmailPreviewComponent } from '../../email-preview/email-preview.component';
+import { SafeSnackbarSpinnerComponent } from '../../snackbar-spinner/snackbar-spinner.component';
 
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
 
@@ -162,6 +164,17 @@ export class SafeGridWidgetComponent implements OnInit {
     // Send email using backend mail service.
     if (options.sendMail) {
       const body = this.grid.selectedRows.length > 0 ? options.bodyText : options.bodyTextAlternate;
+      const snackBarRef = this.snackBar.openComponentSnackBar(
+        SafeSnackbarSpinnerComponent,
+        {
+          duration: 0,
+          data: {
+            message: 'Generating email...',
+            // message: this.translate.instant('email.processing'),
+            loading: true,
+          },
+        }
+      );
       this.emailService.previewMail(
         options.distributionList,
         options.subject,
@@ -174,6 +187,49 @@ export class SafeGridWidgetComponent implements OnInit {
         this.grid.sortField || undefined,
         this.grid.sortOrder || undefined,
         options.export,
+      ).then( (value) => value.subscribe(
+        (res) => {
+          snackBarRef.instance.data = {
+            message: 'Email ready',
+            // message: this.translate.instant('email.sent'),
+            loading: false,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
+          const dialogRef = this.dialog.open(SafeEmailPreviewComponent, {
+            data: res,
+            autoFocus: false,
+            disableClose: true,
+            width: '100%',
+          });
+          dialogRef.afterClosed().subscribe((dialogData) => {
+            if (dialogData) {
+              this.emailService.sendMail(
+                options.distributionList,
+                options.subject,
+                dialogData.html,
+                { logic: 'and', filters: [{ operator: 'eq', field: 'ids', value: this.grid.selectedRows }] },
+                {
+                  name: this.settings.query.name,
+                  fields: options.bodyFields
+                },
+                this.grid.sortField || undefined,
+                this.grid.sortOrder || undefined,
+                options.export,
+                dialogData.files
+              );
+            }
+          });
+        },
+        () => {
+          snackBarRef.instance.data = {
+            message: 'Something went wrong during the email creation',
+            // message: this.translate.instant('email.error'),
+            loading: false,
+            error: true,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
+        }
+        )
       );
     }
 

@@ -116,6 +116,7 @@ export class SafeEmailService {
       Authorization: `Bearer ${token}`,
     });
 
+    console.log(body);
     this.http
       .post(
         this.sendUrl,
@@ -179,25 +180,14 @@ export class SafeEmailService {
     sortField?: string,
     sortOrder?: string,
     attachment?: boolean
-  ): Promise<void> {
-    const snackBarRef = this.snackBar.openComponentSnackBar(
-      SafeSnackbarSpinnerComponent,
-      {
-        duration: 0,
-        data: {
-          message: 'Generating email...',
-          // message: this.translate.instant('email.processing'),
-          loading: true,
-        },
-      }
-    );
+  ): Promise<Observable<object>> {
     // const token = localStorage.getItem('idtoken');
     const token = localStorage.getItem('msal.idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
-    this.http
+    return this.http
       .post(
         this.previewUrl,
         {
@@ -212,46 +202,6 @@ export class SafeEmailService {
           attachment,
         },
         { headers }
-      )
-      .subscribe(
-        (res) => {
-          snackBarRef.instance.data = {
-            message: 'Email ready',
-            // message: this.translate.instant('email.sent'),
-            loading: false,
-          };
-          setTimeout(() => snackBarRef.dismiss(), 1000);
-          const dialogRef = this.dialog.open(SafeEmailPreviewComponent, {
-            data: res,
-            autoFocus: false,
-            disableClose: true,
-            width: '100%',
-          });
-          dialogRef.afterClosed().subscribe((value) => {
-            if (value) {
-              this.sendMail(
-                recipient,
-                subject,
-                body,
-                filter,
-                query,
-                sortField,
-                sortOrder,
-                attachment,
-                value.files
-              );
-            }
-          });
-        },
-        () => {
-          snackBarRef.instance.data = {
-            message: 'Something went wrong during the email creation',
-            // message: this.translate.instant('email.error'),
-            loading: false,
-            error: true,
-          };
-          setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
       );
   }
 
