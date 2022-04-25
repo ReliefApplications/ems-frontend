@@ -812,6 +812,10 @@
 			"authentication": "******",
 			"baseUrl": "******",
 			"clientId": "******",
+			"graphQL": {
+				"endpoint": "******",
+				"title": "******"
+			},
 			"host": "******",
 			"notifications": {
 				"authTokenFetched": "******",
@@ -823,6 +827,7 @@
 			"placeholder": {
 				"baseUrl": "******",
 				"clientId": "******",
+				"graphQLEndpoint": "******",
 				"pingUrl": "******",
 				"scope": "******",
 				"secret": "******",
@@ -832,11 +837,7 @@
 			"scope": "******",
 			"secret": "******",
 			"token": "******",
-			"tokenUrl": "******",
-			"graphQL": {
-				"title": "******",
-				"endpoint": "******"
-			}
+			"tokenUrl": "******"
 		},
 		"apiConfigurations": {
 			"create": "******"

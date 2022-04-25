@@ -827,6 +827,7 @@
 			"placeholder": {
 				"baseUrl": "Base URL for the API",
 				"clientId": "Enter client ID",
+				"graphQLEndpoint": "GraphQL extension",
 				"pingUrl": "Enter ping extension URL",
 				"scope": "Enter scope",
 				"secret": "Enter client secret",
