@@ -28,7 +28,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
-import { filter } from 'rxjs/operators';
+import { MessageService } from '@progress/kendo-angular-l10n';
+import { KendoTranslationService } from '@safe/builder';
 
 localStorage.setItem('loaded', 'false');
 
@@ -181,6 +182,10 @@ const imports: any[] = [];
       useFactory: initializeAuth,
       multi: true,
       deps: [OAuthService],
+    },
+    {
+      provide: MessageService,
+      useClass: KendoTranslationService,
     },
   ],
   bootstrap: [AppComponent],
