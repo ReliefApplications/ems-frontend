@@ -79,6 +79,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   public theme: any;
 
   public showSidenav = false;
+  public showPreferences = false;
 
   public otherOffice = '';
   private environment: any;
@@ -101,6 +102,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.environment = environment;
     this.languages = this.translate.getLangs();
     this.theme = this.environment.theme;
+    this.showPreferences = environment.availableLanguages.length > 1;
   }
 
   ngOnInit(): void {
@@ -272,7 +274,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         languages: this.languages,
       },
       width: '100%',
-      height: '90%',
     });
     dialogRef.afterClosed().subscribe((form) => {
       if (form && form.touched) {

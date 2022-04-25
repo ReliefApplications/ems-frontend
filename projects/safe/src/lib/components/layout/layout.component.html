@@ -78,7 +78,7 @@
       {{ 'pages.profile.title' | translate }}
     </button>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="onOpenPreferences()">
+    <button mat-menu-item (click)="onOpenPreferences()" *ngIf="showPreferences">
       {{ 'components.preferences.title' | translate }}
     </button>
     <ng-container *ngIf="user && user.isAdmin">

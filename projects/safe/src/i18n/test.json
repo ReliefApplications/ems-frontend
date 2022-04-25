@@ -723,9 +723,6 @@
 			"select": "******"
 		}
 	},
-	"language": {
-		"name": "******"
-	},
 	"models": {
 		"apiConfiguration": {
 			"authType": "******"

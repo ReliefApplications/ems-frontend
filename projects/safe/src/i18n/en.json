@@ -723,9 +723,6 @@
 			"select": "Select files..."
 		}
 	},
-	"language": {
-		"name": "English"
-	},
 	"models": {
 		"apiConfiguration": {
 			"authType": "Authentication type"
