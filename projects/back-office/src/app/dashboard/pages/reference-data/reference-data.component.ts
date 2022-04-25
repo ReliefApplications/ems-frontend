@@ -31,8 +31,12 @@ import {
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Reference data page.
+ */
 @Component({
   selector: 'app-reference-data',
   templateUrl: './reference-data.component.html',
@@ -65,6 +69,16 @@ export class ReferenceDataComponent
     endCursor: '',
   };
 
+  /**
+   * Reference data page.
+   *
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param router Angular router
+   * @param translate Angular translation service
+   */
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -75,7 +89,7 @@ export class ReferenceDataComponent
   ) {}
 
   /**
-   * Creates the Reference data query, and subscribes to the query changes.
+   * Create the Reference data query, and subscribe to the query changes.
    */
   ngOnInit(): void {
     this.referenceDatasQuery =
@@ -111,7 +125,7 @@ export class ReferenceDataComponent
   }
 
   /**
-   * Handles page event.
+   * Handle page event.
    *
    * @param e page event.
    */
@@ -172,7 +186,7 @@ export class ReferenceDataComponent
   }
 
   /**
-   * Applies the filter to the data source.
+   * Apply the filter to the data source.
    *
    * @param column Column to filter on.
    * @param event Value of the filter.
@@ -185,7 +199,7 @@ export class ReferenceDataComponent
   }
 
   /**
-   * Removes all the filters.
+   * Remove all the filters.
    */
   clearAllFilters(): void {
     this.searchText = '';
@@ -193,8 +207,8 @@ export class ReferenceDataComponent
   }
 
   /**
-   * Displays the AddReferenceData modal.
-   * Creates a new reference data on closed if result.
+   * Display the AddReferenceData modal.
+   * Create a new reference data on closed if result.
    */
   onAdd(): void {
     // TODO: Uncomment after the creation of the AddReferenceDataComponent (or whatever name)
@@ -236,7 +250,7 @@ export class ReferenceDataComponent
   }
 
   /**
-   * Removes a reference data if authorized.
+   * Remove a reference data if authorized.
    *
    * @param element Reference data to delete.
    * @param e click event.
@@ -283,14 +297,14 @@ export class ReferenceDataComponent
   }
 
   /**
-   * Sets the sort in the view.
+   * Set the sort in the view.
    */
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort || null;
   }
 
   /**
-   * Removes all subscriptions.
+   * Remove all subscriptions.
    */
   ngOnDestroy(): void {
     if (this.authSubscription) {

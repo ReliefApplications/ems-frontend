@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ReferenceDataComponent } from './reference-data.component';
 
+/**
+ * Routes of reference data module.
+ */
 const routes: Routes = [
   {
     path: '',
@@ -9,6 +12,9 @@ const routes: Routes = [
   },
 ];
 
+/**
+ * Reference data routing module.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

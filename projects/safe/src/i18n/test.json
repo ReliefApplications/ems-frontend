@@ -17,11 +17,6 @@
 			"none": "******",
 			"one": "******"
 		},
-		"referenceData": {
-			"few": "******",
-			"none": "******",
-			"one": "******"
-		},
 		"back": "******",
 		"cancel": "******",
 		"channel": {
@@ -182,6 +177,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"referenceData": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"resource": {
 			"few": "******",
 			"none": "******",
@@ -292,12 +292,6 @@
 					"name": "******"
 				}
 			},
-			"delete": {
-				"confirmationMessage": "****** {{name}} ******",
-				"title": "******"
-			}
-		},
-		"referenceData": {
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
@@ -549,6 +543,12 @@
 			"showArchived": "******",
 			"upload": {
 				"hint": "******"
+			}
+		},
+		"referenceData": {
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
 			}
 		},
 		"resource": {
