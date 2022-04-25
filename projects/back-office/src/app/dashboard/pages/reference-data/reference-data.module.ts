@@ -2,47 +2,40 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
-import { MatMenuModule } from '@angular/material/menu';
+import { SafeAccessModule, SafePreviousButtonModule } from '@safe/builder';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTableModule } from '@angular/material/table';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-import {
-  FormsModule as AngularFormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
-import { SafeButtonModule, SafeSkeletonTableModule } from '@safe/builder';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatOptionModule } from '@angular/material/core';
+import { SafeButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatChipsModule } from '@angular/material/chips';
+import { SafeIconModule } from 'projects/safe/src/lib/components/ui/icon/icon.module';
+import { GridModule } from '@progress/kendo-angular-grid';
+
+/**
+ * Reference Data page module.
+ */
 @NgModule({
   declarations: [ReferenceDataComponent],
   imports: [
     CommonModule,
-    MatMenuModule,
     ReferenceDataRoutingModule,
+    SafePreviousButtonModule,
+    SafeAccessModule,
     MatProgressSpinnerModule,
-    MatTableModule,
-    MatChipsModule,
-    MatSortModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
-    AngularFormsModule,
     ReactiveFormsModule,
-    MatDialogModule,
+    MatSelectModule,
+    MatOptionModule,
     SafeButtonModule,
-    MatIconModule,
-    MatButtonModule,
-    MatPaginatorModule,
     TranslateModule,
-    SafeSkeletonTableModule,
+    MatChipsModule,
+    SafeIconModule,
+    GridModule,
   ],
-  exports: [ReferenceDataComponent],
 })
 export class ReferenceDataModule {}

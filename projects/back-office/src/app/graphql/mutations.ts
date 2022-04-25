@@ -943,6 +943,7 @@ export const ADD_REFERENCE_DATA = gql`
       id
       name
       apiConfiguration {
+        id
         name
       }
       type
@@ -989,4 +990,68 @@ export const DELETE_REFERENCE_DATA = gql`
 export interface DeleteReferenceDataMutationResponse {
   loading: boolean;
   deleteReferenceData: ReferenceData;
+}
+
+// === EDIT REFERENCE DATA ===
+export const EDIT_REFERENCE_DATA = gql`
+  mutation editReferenceData(
+    $id: ID!
+    $name: String
+    $type: ReferenceDataType
+    $apiConfiguration: ID
+    $query: String
+    $fields: [String]
+    $valueField: String
+    $path: String
+    $data: JSON
+    $permissions: JSON
+  ) {
+    editReferenceData(
+      id: $id
+      name: $name
+      type: $type
+      apiConfiguration: $apiConfiguration
+      query: $query
+      fields: $fields
+      valueField: $valueField
+      path: $path
+      data: $data
+      permissions: $permissions
+    ) {
+      id
+      name
+      apiConfiguration {
+        id
+        name
+      }
+      type
+      query
+      fields
+      valueField
+      path
+      data
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
+export interface EditReferenceDataMutationResponse {
+  loading: boolean;
+  editReferenceData: ReferenceData;
 }

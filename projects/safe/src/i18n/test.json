@@ -546,6 +546,12 @@
 			}
 		},
 		"referenceData": {
+			"create": {
+				"errors": {
+					"name": "******"
+				},
+				"title": "******"
+			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
@@ -899,6 +905,21 @@
 		},
 		"pullJobs": {
 			"create": "******"
+		},
+		"referenceData": {
+			"csv": "******",
+			"errors": {
+				"name": "******"
+			},
+			"fields": "******",
+			"path": "******",
+			"placeholder": {
+				"csv": "******"
+			},
+			"queryName": "******",
+			"type": "******",
+			"validateCsv": "******",
+			"valueField": "******"
 		},
 		"workflow": {
 			"addStep": {

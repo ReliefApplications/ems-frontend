@@ -546,6 +546,12 @@
 			}
 		},
 		"referenceData": {
+			"create": {
+				"errors": {
+					"name": "Only letters, hypens or underscores are accepted"
+				},
+				"title": "New Reference Data"
+			},
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of Reference Data {{name}}?",
 				"title": "Delete Reference Data"
@@ -899,6 +905,21 @@
 		},
 		"pullJobs": {
 			"create": "Create a pull job"
+		},
+		"referenceData": {
+			"csv": "CSV input",
+			"errors": {
+				"name": "Only letters, hypens or underscores are accepted"
+			},
+			"fields": "Fields",
+			"path": "Path",
+			"placeholder": {
+				"csv": "Insert CSV here"
+			},
+			"queryName": "Query Name",
+			"type": "Type",
+			"validateCsv": "Validate CSV",
+			"valueField": "Value Field"
 		},
 		"workflow": {
 			"addStep": {
