@@ -283,6 +283,7 @@ export const init = (
       survey.Serializer.addProperty('resource', {
         name: 'placeholder',
         category: 'Custom Questions',
+        isLocalizable: true,
       });
       survey.Serializer.addProperty('resource', {
         name: 'prefillWithCurrentRecord:boolean',
