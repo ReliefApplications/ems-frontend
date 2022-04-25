@@ -2,15 +2,15 @@
     [matMenuTriggerFor]="menu"></button>
 <mat-menu #menu="matMenu">
     <button *ngIf="actions.update && item.canUpdate" mat-menu-item color="warn" (click)="action.emit({ action: 'update', item: item })">
-        {{'action.update' | translate}}
+        {{'common.update' | translate}}
     </button>
     <button *ngIf="actions.history" mat-menu-item color="warn" (click)="action.emit({ action: 'history', item: item })">
-        {{'table.history' | translate}}
+        {{'common.history' | translate}}
     </button>
     <button *ngIf="actions.convert && item.canUpdate" mat-menu-item color="warn" (click)="action.emit({ action: 'convert', item: item })">
-        {{'action.convert' | translate}}
+        {{'models.record.convert' | translate}}
     </button>
     <button *ngIf="actions.delete && item.canDelete" mat-menu-item color="warn" (click)="action.emit({ action: 'delete', item: item })">
-        {{'action.delete' | translate}}
+        {{'common.delete' | translate}}
     </button>
 </mat-menu>

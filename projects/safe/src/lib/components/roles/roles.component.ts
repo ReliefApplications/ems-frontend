@@ -131,8 +131,10 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             .subscribe(
               (res) => {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.objectCreated', {
-                    type: this.translate.instant('global.role').toLowerCase(),
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.role.one')
+                      .toLowerCase(),
                     value: value.title,
                   })
                 );
@@ -174,8 +176,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             })
             .subscribe((res) => {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectEdited', {
-                  type: this.translate.instant('global.role').toLowerCase(),
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.role.one').toLowerCase(),
                   value: role.title,
                 })
               );
@@ -192,12 +194,15 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('roles.delete'),
-        content: this.translate.instant('roles.deleteDesc', {
-          name: item.title,
-        }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        title: this.translate.instant('components.role.delete.title'),
+        content: this.translate.instant(
+          'components.role.delete.confirmationMessage',
+          {
+            name: item.title,
+          }
+        ),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });
@@ -215,7 +220,7 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             })
             .subscribe((res) => {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectDeleted', {
+                this.translate.instant('common.notifications.objectDeleted', {
                   value: item.title,
                 })
               );

@@ -9,7 +9,7 @@
           [ngModel]="searchText"
           (keyup)="applyFilter('', $event)"
           type="search"
-          [placeholder]="'filter.search' | translate"
+          [placeholder]="'common.placeholder.search' | translate"
         />
       </mat-form-field>
     </div>
@@ -23,7 +23,7 @@
       (click)="onAdd()"
       *ngIf="canAdd"
     >
-      {{ 'referenceData.add' | translate }}
+      {{ 'models.referenceData.add' | translate }}
     </safe-button>
   </div>
 </div>
@@ -32,7 +32,7 @@
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
       <span class="headerTitle" mat-sort-header>
-        {{ 'global.name' | translate }}
+        {{ 'common.name' | translate }}
       </span>
     </th>
     <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -41,12 +41,11 @@
   <ng-container matColumnDef="apiConfiguration">
     <th mat-header-cell *matHeaderCellDef>
       <span class="headerTitle" mat-sort-header>
-        {{ 'referenceData.apiConfiguration' | translate }}
+        {{ 'common.apiConfiguration.one' | translate }}
       </span>
     </th>
     <td mat-cell *matCellDef="let element">{{ element.authType }}</td>
   </ng-container>
-
 
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
@@ -66,7 +65,7 @@
           *ngIf="element.canDelete"
         >
           <mat-icon>delete</mat-icon>
-          {{ 'action.delete' | translate }}
+          {{ 'common.delete' | translate }}
         </button>
       </mat-menu>
     </td>
@@ -82,7 +81,7 @@
 </table>
 <safe-skeleton-table
   *ngIf="loading"
-  [columns]="['global.name', 'referenceData.apiConfiguration']"
+  [columns]="['common.name', 'common.apiConfiguration.one']"
   [actions]="true"
 >
 </safe-skeleton-table>

@@ -5,6 +5,16 @@ import { SafeSnackbarSpinnerComponent } from '../components/snackbar-spinner/sna
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeEmailPreviewComponent } from '../components/email-preview/email-preview.component';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { prettifyLabel } from '../utils/prettify';
+import { Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+
+const flatDeep = (arr: any[]): any[] =>
+  arr.reduce(
+    (acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val),
+    []
+  );
 
 /**
  * Shared email service.
@@ -16,6 +26,7 @@ import { SafeEmailPreviewComponent } from '../components/email-preview/email-pre
 export class SafeEmailService {
   private sendUrl = '';
   private previewUrl = '';
+  private filesUrl = '';
 
   /**
    * Shared email service.
@@ -30,10 +41,25 @@ export class SafeEmailService {
     @Inject('environment') environment: any,
     private http: HttpClient,
     private snackBar: SafeSnackBarService,
-    private dialog: MatDialog // private translate: TranslateService
+    private dialog: MatDialog,
+    private translate: TranslateService
   ) {
     this.sendUrl = environment.apiUrl + '/email/';
     this.previewUrl = environment.apiUrl + '/email/preview/';
+    this.filesUrl = environment.apiUrl + '/email/files';
+  }
+
+  public sendFiles(files: any[]): Observable<any> {
+    const token = localStorage.getItem('idtoken');
+    const headers = new HttpHeaders({
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('attachments', file, file.name);
+    }
+    return this.http.post(this.filesUrl, formData, { headers });
   }
 
   /**
@@ -53,34 +79,41 @@ export class SafeEmailService {
     recipient: string[],
     subject: string,
     body: string = '{dataset}',
-    gridSettings: {
-      query: {
-        name: string;
-        fields: any[];
-      };
-      ids: string[];
-      sortField?: string;
-      sortOrder?: string;
+    filter: CompositeFilterDescriptor,
+    query: {
+      name: string;
+      fields: any[];
     },
-    attachment?: boolean
+    sortField?: string,
+    sortOrder?: string,
+    attachment?: boolean,
+    files?: any[]
   ): Promise<void> {
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SafeSnackbarSpinnerComponent,
       {
         duration: 0,
         data: {
-          message: 'Sending email...',
-          // message: this.translate.instant('email.processing'),
+          message: this.translate.instant(
+            'common.notifications.email.processing'
+          ),
           loading: true,
         },
       }
     );
-    // const token = localStorage.getItem('idtoken');
-    const token = localStorage.getItem('msal.idtoken');
+    let fileFolderId = '';
+    if (files && files.length > 0) {
+      const response = await this.sendFiles(files).toPromise();
+      if (response.id) {
+        fileFolderId = response.id;
+      }
+    }
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
+
     this.http
       .post(
         this.sendUrl,
@@ -88,24 +121,27 @@ export class SafeEmailService {
           recipient,
           subject,
           body,
-          gridSettings,
+          filter,
+          query,
+          fields: this.getFields(query.fields),
+          sortField,
+          sortOrder,
           attachment,
+          ...(fileFolderId && { files: fileFolderId }),
         },
         { headers }
       )
       .subscribe(
         (res) => {
           snackBarRef.instance.data = {
-            message: 'Email sent',
-            // message: this.translate.instant('email.sent'),
+            message: this.translate.instant('common.notifications.email.sent'),
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
         () => {
           snackBarRef.instance.data = {
-            message: 'Something went wrong during the email sending',
-            // message: this.translate.instant('email.error'),
+            message: this.translate.instant('common.notifications.email.error'),
             loading: false,
             error: true,
           };
@@ -131,15 +167,13 @@ export class SafeEmailService {
     recipient: string[],
     subject: string,
     body: string = '{dataset}',
-    gridSettings: {
-      query: {
-        name: string;
-        fields: any[];
-      };
-      ids: string[];
-      sortField?: string;
-      sortOrder?: string;
+    filter: CompositeFilterDescriptor,
+    query: {
+      name: string;
+      fields: any[];
     },
+    sortField?: string,
+    sortOrder?: string,
     attachment?: boolean
   ): Promise<void> {
     const snackBarRef = this.snackBar.openComponentSnackBar(
@@ -147,14 +181,14 @@ export class SafeEmailService {
       {
         duration: 0,
         data: {
-          message: 'Generating email...',
-          // message: this.translate.instant('email.processing'),
+          message: this.translate.instant(
+            'common.notifications.email.processing'
+          ),
           loading: true,
         },
       }
     );
-    // const token = localStorage.getItem('idtoken');
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -166,7 +200,11 @@ export class SafeEmailService {
           recipient,
           subject,
           body,
-          gridSettings,
+          filter,
+          query,
+          fields: this.getFields(query.fields),
+          sortField,
+          sortOrder,
           attachment,
         },
         { headers }
@@ -174,8 +212,7 @@ export class SafeEmailService {
       .subscribe(
         (res) => {
           snackBarRef.instance.data = {
-            message: 'Email ready',
-            // message: this.translate.instant('email.sent'),
+            message: this.translate.instant('common.notifications.email.ready'),
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
@@ -187,19 +224,64 @@ export class SafeEmailService {
           });
           dialogRef.afterClosed().subscribe((value) => {
             if (value) {
-              this.sendMail(recipient, subject, body, gridSettings, attachment);
+              this.sendMail(
+                recipient,
+                subject,
+                body,
+                filter,
+                query,
+                sortField,
+                sortOrder,
+                attachment,
+                value.files
+              );
             }
           });
         },
         () => {
           snackBarRef.instance.data = {
-            message: 'Something went wrong during the email creation',
-            // message: this.translate.instant('email.error'),
+            message: this.translate.instant('common.notifications.email.error'),
             loading: false,
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         }
       );
+  }
+
+  /**
+   * Generates list of fields for the email, based on email parameters.
+   *
+   * @param fields list of fields saved in settings
+   * @param prefix prefix of the field, generated from parents.
+   * @returns List of fields for the email
+   */
+  private getFields(fields: any[], prefix?: string): any[] {
+    return flatDeep(
+      fields.map((f) => {
+        const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
+        switch (f.kind) {
+          case 'OBJECT': {
+            return this.getFields(f.fields, fullName);
+          }
+          case 'LIST': {
+            const title = f.label ? f.label : prettifyLabel(f.name);
+            const subFields = this.getFields(f.fields, fullName);
+            return {
+              name: fullName,
+              title,
+              subFields,
+            };
+          }
+          default: {
+            const title = f.label ? f.label : prettifyLabel(f.name);
+            return {
+              name: fullName,
+              title,
+            };
+          }
+        }
+      })
+    );
   }
 }

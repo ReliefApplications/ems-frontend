@@ -15,6 +15,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { Form } from '../../models/form.model';
 import { createFilterGroup } from './query-builder-forms';
 import { scrollFactory } from '../../utils/scroll-factory';
+import { LayoutPreviewData } from './tab-layout-preview/tab-layout-preview.component';
 
 /**
  * Main query builder component.
@@ -49,6 +50,8 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() canExpand = true;
   @Input() canSelectDataSet = true;
   @Input() templates: Form[] = [];
+  @Input() queryName? = '';
+  @Input() layoutPreviewData: LayoutPreviewData | null = null;
 
   // === FIELD EDITION ===
   public isField = false;
@@ -89,7 +92,16 @@ export class SafeQueryBuilderComponent implements OnInit {
       this.availableQueries = this.queryBuilder.availableQueries$;
       this.availableQueries.subscribe((res) => {
         if (res && res.length > 0) {
-          this.allQueries = res.map((x) => x.name);
+          if (this.queryName) {
+            this.allQueries = res
+              .filter((x) => x.name === this.queryName)
+              .map((x) => x.name);
+            if (this.allQueries.length === 1) {
+              this.form?.get('name')?.setValue(this.allQueries[0]);
+            }
+          } else {
+            this.allQueries = res.filter((x) => x.name).map((x) => x.name);
+          }
           this.filteredQueries = this.filterQueries(this.form?.value.name);
           this.availableFields = this.queryBuilder.getFields(
             this.form?.value.name

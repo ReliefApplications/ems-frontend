@@ -212,12 +212,13 @@ export class ReferenceDatasComponent
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('notification.objectNotCreated', {
-                    type: this.translate.instant(
-                      'referenceData.apiConfiguration'
-                    ),
-                    error: res.errors[0].message,
-                  }),
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate.instant('common.referenceData.one'),
+                      error: res.errors[0].message,
+                    }
+                  ),
                   { error: true }
                 );
               } else {
@@ -247,12 +248,15 @@ export class ReferenceDatasComponent
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant('referenceData.delete'),
-        content: this.translate.instant('referenceData.deleteDesc', {
-          name: element.name,
-        }),
-        confirmText: this.translate.instant('action.delete'),
-        cancelText: this.translate.instant('action.cancel'),
+        title: this.translate.instant('components.referenceData.delete.title'),
+        content: this.translate.instant(
+          'components.referenceData.delete.confirmationMessage',
+          {
+            name: element.name,
+          }
+        ),
+        confirmText: this.translate.instant('common.delete'),
+        cancelText: this.translate.instant('common.cancel'),
         confirmColor: 'warn',
       },
     });
@@ -268,8 +272,8 @@ export class ReferenceDatasComponent
           .subscribe((res) => {
             if (res && !res.errors) {
               this.snackBar.openSnackBar(
-                this.translate.instant('notification.objectDeleted', {
-                  value: this.translate.instant('table.referenceData'),
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.referenceData.one'),
                 })
               );
               this.dataSource.data = this.dataSource.data.filter(

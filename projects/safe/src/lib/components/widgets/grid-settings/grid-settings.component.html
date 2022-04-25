@@ -2,43 +2,49 @@
   <form [formGroup]="tileForm">
     <!-- MAIN PARAMETERS -->
     <div class="form-group">
-      <div class="form-group-title">{{ 'global.general' | translate }}</div>
+      <div class="form-group-title">{{ 'common.general' | translate }}</div>
       <mat-form-field appearance="outline">
-        <mat-label>{{ 'global.title' | translate }}</mat-label>
+        <mat-label>{{ 'common.title' | translate }}</mat-label>
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
+      <ng-container formGroupName="query">
+        <div class="form-group-row">
+          <mat-form-field appearance="outline">
+            <mat-label>{{
+              'components.queryBuilder.dataset.select' | translate
+            }}</mat-label>
+            <input
+              type="text"
+              [placeholder]="'components.queryBuilder.dataset.select' | translate"
+              matInput
+              formControlName="name"
+              [matAutocomplete]="auto"
+            />
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+              <mat-option *ngFor="let option of filteredQueries" [value]="option">
+                {{ option }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'models.form.template' | translate }}</mat-label>
+            <mat-select formControlName="template">
+              <mat-option>-</mat-option>
+              <mat-option
+                *ngFor="let template of templates"
+                [value]="template.id"
+                >{{ template.name }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </ng-container>
     </div>
-    <ng-container formGroupName="query">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'widgets.query.select' | translate }}</mat-label>
-        <input
-          type="text"
-          [placeholder]="'widgets.query.select' | translate"
-          matInput
-          formControlName="name"
-          [matAutocomplete]="auto"
-        />
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-          <mat-option *ngFor="let option of filteredQueries" [value]="option">
-            {{ option }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'global.template' | translate }}</mat-label>
-        <mat-select formControlName="template">
-          <mat-option>-</mat-option>
-          <mat-option
-            *ngFor="let template of templates"
-            [value]="template.id"
-            >{{ template.name }}</mat-option
-          >
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
     <!-- SELECTION OF LAYOUTS -->
     <div class="form-group" *ngIf="queryName">
-      <div class="form-group-title">{{ 'layouts.title' | translate }}</div>
+      <div class="form-group-title">
+        {{ 'components.widget.settings.grid.layouts.title' | translate }}
+      </div>
       <safe-layouts-parameters
         [form]="form"
         [resource]="resource"
@@ -48,40 +54,42 @@
     <!-- AVAILABLE ACTIONS -->
     <div formGroupName="actions" class="form-group">
       <div class="form-group-title">
-        {{ 'widgets.grid.enabled' | translate }}
+        {{ 'components.widget.settings.grid.actions.title' | translate }}
       </div>
       <mat-slide-toggle formControlName="delete">
-        {{ 'widgets.grid.actions.delete' | translate }}
+        {{ 'components.widget.settings.grid.actions.delete' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="history">
-        {{ 'widgets.grid.actions.show' | translate }}
+        {{ 'components.widget.settings.grid.actions.show' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="convert">
-        {{ 'widgets.grid.actions.convert' | translate }}
+        {{ 'components.widget.settings.grid.actions.convert' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="update">
-        {{ 'widgets.grid.actions.update' | translate }}
+        {{ 'components.widget.settings.grid.actions.update' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="inlineEdition">
-        {{ 'widgets.grid.actions.inline' | translate }}
+        {{ 'components.widget.settings.grid.actions.inline' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="addRecord">
-        {{ 'widgets.grid.actions.add' | translate }}
+        {{ 'components.widget.settings.grid.actions.add' | translate }}
       </mat-slide-toggle>
     </div>
     <!-- BUTTONS -->
     <div class="form-group">
       <div class="form-group-title">
-        {{ 'widgets.grid.quickBtn' | translate }}
+        {{ 'components.widget.settings.grid.buttons.title' | translate }}
       </div>
-      <div class="info-text">{{ 'widgets.grid.quickBtnDesc' | translate }}</div>
+      <div class="info-text">
+        {{ 'components.widget.settings.grid.hint.buttons' | translate }}
+      </div>
       <safe-button
         icon="add"
         variant="primary"
         class="add-button"
         (click)="addFloatingButton()"
       >
-        {{ 'widgets.grid.addBtn' | translate }}
+        {{ 'components.widget.settings.grid.buttons.create' | translate }}
       </safe-button>
       <mat-tab-group
         mat-align-tabs="start"
@@ -97,7 +105,8 @@
               {{
                 floatingButton.value.name.length > 0
                   ? floatingButton.value.name
-                  : ('widgets.grid.btn' | translate)
+                  : ('components.widget.settings.grid.buttons.defaultName'
+                    | translate)
               }}
               <safe-icon
                 *ngIf="floatingButton.invalid"

@@ -22,6 +22,14 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import {
+  GetReferenceDatasQueryResponse,
+  GET_REFERENCE_DATAS,
+} from '../../../graphql/queries';
+import {
+  AddReferenceDataMutationResponse,
+  ADD_REFERENCE_DATA,
+  DeleteReferenceDataMutationResponse,
+  DELETE_REFERENCE_DATA,
   EditReferenceDataMutationResponse,
   EDIT_REFERENCE_DATA,
 } from '../../../graphql/mutations';
@@ -35,9 +43,13 @@ import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { MatSelect } from '@angular/material/select';
 import { MatChipInputEvent } from '@angular/material/chips';
 
+/** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
+/**
+ * Reference data page.
+ */
 @Component({
   selector: 'app-reference-data',
   templateUrl: './reference-data.component.html',
@@ -81,6 +93,16 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     return this.referenceForm.get('type')?.value;
   }
 
+  /**
+   * Reference data page.
+   *
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param router Angular router
+   * @param translate Angular translation service
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -90,6 +112,9 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     private translateService: TranslateService
   ) {}
 
+  /**
+   * Create the Reference data query, and subscribe to the query changes.
+   */
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
@@ -140,7 +165,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
-                  'notification.accessNotProvided',
+                  'common.notifications.accessNotProvided',
                   {
                     type: this.translateService
                       .instant('notification.term.resource')
@@ -228,7 +253,8 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
       });
   }
 
-  /*  Edit the Reference data using referenceForm changes
+  /**
+   * Edit the Reference data using referenceForm changes.
    */
   onSave(): void {
     if (this.apolloSubscription) {
@@ -282,10 +308,13 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectNotUpdated', {
-              type: this.translateService.instant('table.referenceData'),
-              error: res.errors[0].message,
-            }),
+            this.translateService.instant(
+              'common.notifications.objectNotUpdated',
+              {
+                type: this.translateService.instant('common.referenceData.one'),
+                error: res.errors[0].message,
+              }
+            ),
             { error: true }
           );
           this.loading = false;
@@ -298,7 +327,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Adds scroll listener to select.
+   * Add scroll listener to select.
    *
    * @param e open select event.
    */
@@ -401,7 +430,8 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     this.referenceForm?.get('fields')?.updateValueAndValidity();
   }
 
-  /*  Validate the CSV input and transform it into JSON object
+  /**
+   * Validate the CSV input and transform it into JSON object.
    */
   onValidateCSV(): void {
     const dataTemp: any = this.csvData?.nativeElement.value;
@@ -427,7 +457,11 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     this.referenceForm?.markAsDirty();
   }
 
-  /*  Convert the JSON into a csv format
+  /**
+   * Convert the JSON into a csv format.
+   *
+   * @param obj json to convert
+   * @returns csv
    */
   convertToCSV(obj: any): string {
     const array = [Object.keys(obj[0])].concat(obj);

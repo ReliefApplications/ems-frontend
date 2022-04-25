@@ -3,7 +3,7 @@
   <app-filter (filter)="onFilter($event)"></app-filter>
 
   <!-- NEW APPLICATIONS -->
-  <h2>{{ 'apps.recent' | translate }}</h2>
+  <h2>{{ 'pages.applications.recent' | translate }}</h2>
   <safe-applications-summary
     [loading]="loading"
     [canCreate]="canAdd"
@@ -16,12 +16,12 @@
   ></safe-applications-summary>
 
   <!-- APPLICATIONS TABLE -->
-  <h2>{{ 'apps.all' | translate }}</h2>
+  <h2>{{ 'pages.applications.all' | translate }}</h2>
   <table *ngIf="!loading" mat-table [dataSource]="applications" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          {{ 'global.name' | translate }}
+          {{ 'common.name' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -30,7 +30,7 @@
     <ng-container matColumnDef="createdAt">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          {{ 'table.date' | translate }}
+          {{ 'common.createdOn' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">
@@ -41,7 +41,7 @@
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          {{ 'global.status' | translate }}
+          {{ 'common.status' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">
@@ -51,7 +51,7 @@
             disabled
             *ngIf="element.status === 'active'"
           >
-            {{ 'status.active' | translate | titlecase }}
+            {{ 'common.status_active' | translate | titlecase }}
           </mat-chip>
           <mat-chip
             class="accent-chip"
@@ -59,7 +59,7 @@
             color="accent"
             *ngIf="element.status === 'pending'"
           >
-            {{ 'status.pending' | translate | titlecase }}
+            {{ 'common.status_pending' | translate | titlecase }}
           </mat-chip>
           <mat-chip
             class="warn-chip"
@@ -67,7 +67,7 @@
             color="warn"
             *ngIf="element.status === 'archived'"
           >
-            {{ 'status.archived' | translate | titlecase }}
+            {{ 'common.status_archived' | translate | titlecase }}
           </mat-chip>
         </mat-chip-list>
       </td>
@@ -76,7 +76,7 @@
     <ng-container matColumnDef="usersCount">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          {{ 'global.users' | translate }}
+          {{ 'common.user.few' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
@@ -95,7 +95,7 @@
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="onPreview(element)">
             <mat-icon>preview</mat-icon>
-            {{ 'action.preview' | translate }}
+            {{ 'common.preview' | translate }}
           </button>
           <safe-access
             [menuItem]="true"
@@ -109,13 +109,13 @@
             *ngIf="element.canDelete"
           >
             <mat-icon>file_copy</mat-icon>
-            {{ 'action.duplicate' | translate }}
+            {{ 'common.duplicate' | translate }}
           </button>
           <ng-container *ngIf="element.canDelete">
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="onDelete(element, $event)">
               <mat-icon>delete</mat-icon>
-              {{ 'action.delete' | translate }}
+              {{ 'common.delete' | translate }}
             </button>
           </ng-container>
         </mat-menu>
@@ -132,7 +132,12 @@
   </table>
   <safe-skeleton-table
     *ngIf="loading"
-    [columns]="['global.name', 'table.date', 'global.status', 'global.users']"
+    [columns]="[
+      'common.name',
+      'common.createdOn',
+      'common.status',
+      'common.user.few'
+    ]"
     [actions]="true"
   >
   </safe-skeleton-table>

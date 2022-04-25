@@ -20,6 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LayoutsParametersModule } from './layouts-parameters/layouts-parameters.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SafeIconModule } from '../../ui/icon/icon.module';
+import { SafeEmailTemplateModule } from '../../email-template/email-template.module';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
     LayoutsParametersModule,
     MatAutocompleteModule,
     SafeIconModule,
+    SafeEmailTemplateModule,
   ],
   exports: [SafeGridSettingsComponent],
 })

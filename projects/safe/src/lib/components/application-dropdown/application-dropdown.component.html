@@ -1,5 +1,5 @@
 <mat-form-field appearance="outline">
-    <mat-label>{{'apps.from' | translate}}</mat-label>
+    <mat-label>{{'components.applications.dropdown.select' | translate}}</mat-label>
     <mat-select #applicationSelect [(ngModel)]="value" name="applications" (openedChange)="onOpenSelect($event)"
         (selectionChange)="onSelect($event)" multiple>
         <mat-option *ngFor="let application of selectedApplications" [value]="application.id">{{application.name}}

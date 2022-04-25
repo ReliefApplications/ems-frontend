@@ -92,6 +92,12 @@
   border: 1px solid #dfe1e5;
 }
 
-mat-form-field {
-  width: 100%;
+// mat-form-field {
+//   width: 100%;
+// }
+
+.floating-info {
+  position: absolute;
+  bottom: 40px;
+  right: 12px;
 }
