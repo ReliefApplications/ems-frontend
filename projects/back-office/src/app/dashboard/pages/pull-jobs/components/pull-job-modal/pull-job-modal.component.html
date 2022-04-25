@@ -1,12 +1,8 @@
 <h1 mat-dialog-title>
   {{(data.pullJob ?
-      ('common.editObject' | translate: { name: 'common.pullJob.one' | translate }) :
-      ('models.pullJob.new' | translate)
-    )}}
-  {{
-    (data.pullJob ? 'common.editObject' : 'models.pullJob.new')
-    | translate
-  }}
+    ('common.editObject' | translate: { name: 'common.pullJob.one' | translate }) :
+    ('models.pullJob.new' | translate)
+  )}}
 </h1>
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <div mat-dialog-content *ngIf="!loading">
