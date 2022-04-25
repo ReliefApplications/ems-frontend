@@ -4,7 +4,6 @@ import { SafeSnackbarSpinnerComponent } from '../components/snackbar-spinner/sna
 // import { TranslateService } from '@ngx-translate/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { SafeEmailPreviewComponent } from '../components/email-preview/email-preview.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../utils/prettify';
 import { Observable } from 'rxjs';
