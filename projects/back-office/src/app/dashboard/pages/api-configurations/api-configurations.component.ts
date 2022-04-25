@@ -27,7 +27,7 @@ import {
   AddApiConfigurationMutationResponse,
   ADD_API_CONFIGURATIION,
   DeleteApiConfigurationMutationResponse,
-  DELETE_API_CONFIGURATIION,
+  DELETE_API_CONFIGURATION,
 } from '../../../graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -278,7 +278,7 @@ export class ApiConfigurationsComponent
       if (value) {
         this.apollo
           .mutate<DeleteApiConfigurationMutationResponse>({
-            mutation: DELETE_API_CONFIGURATIION,
+            mutation: DELETE_API_CONFIGURATION,
             variables: {
               id: element.id,
             },

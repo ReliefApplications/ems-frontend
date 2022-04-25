@@ -812,6 +812,10 @@
 			"authentication": "Authentication settings",
 			"baseUrl": "Main endpoint",
 			"clientId": "Client ID",
+			"graphQL": {
+				"endpoint": "GraphQL endpoint",
+				"title": "GraphQL Settings"
+			},
 			"host": "Host settings",
 			"notifications": {
 				"authTokenFetched": "Authentication token fetched, ping again to get the actual response.",
@@ -823,6 +827,7 @@
 			"placeholder": {
 				"baseUrl": "Base URL for the API",
 				"clientId": "Enter client ID",
+				"graphQLEndpoint": "GraphQL extension",
 				"pingUrl": "Enter ping extension URL",
 				"scope": "Enter scope",
 				"secret": "Enter client secret",
