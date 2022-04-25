@@ -637,9 +637,6 @@
 			}
 		}
 	},
-	"language": {
-		"name": "******"
-	},
 	"kendo": {
 		"editor": {
 			"fontFamily": "******",
@@ -725,6 +722,9 @@
 			"dropFilesHere": "******",
 			"select": "******"
 		}
+	},
+	"language": {
+		"name": "******"
 	},
 	"models": {
 		"apiConfiguration": {

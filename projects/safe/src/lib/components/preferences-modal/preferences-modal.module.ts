@@ -10,7 +10,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { NgxTranslateInModule } from 'ngx-translate-in';
 @NgModule({
   declarations: [SafePreferencesModalComponent],
   imports: [
@@ -25,7 +24,6 @@ import { NgxTranslateInModule } from 'ngx-translate-in';
     MatFormFieldModule,
     TranslateModule,
     MatSelectModule,
-    NgxTranslateInModule,
   ],
   exports: [SafePreferencesModalComponent],
 })

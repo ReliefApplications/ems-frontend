@@ -16,7 +16,7 @@ export class SafePreferencesModalComponent implements OnInit {
   public preferencesForm: FormGroup = new FormGroup({});
 
   // === DATA ===
-  languages: string[] = [];
+  languages: { name: string; value: string }[] = [];
   currLang: string;
 
   constructor(
@@ -28,10 +28,29 @@ export class SafePreferencesModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.languages = this.data.languages;
-
+    this.getLocalizedLangNames();
     this.preferencesForm = this.formBuilder.group({
+      // initializes select field with current language
       language: [this.currLang, Validators.required],
+    });
+  }
+
+  /**
+   * Initializes the languages array.
+   * Gets the translated language name for each of the available languages.
+   */
+  getLocalizedLangNames() {
+    this.data.languages.forEach((lang, i) => {
+      this.translate.use(lang).subscribe((translations) => {
+        this.languages.push({
+          name: translations.language.name,
+          value: lang,
+        });
+
+        // in the end, the original selected language is maintained
+        const isLastLang = i === this.data.languages.length - 1;
+        if (isLastLang) this.translate.use(this.currLang);
+      });
     });
   }
 }
