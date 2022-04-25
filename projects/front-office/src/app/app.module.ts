@@ -29,8 +29,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
-import { KendoTranslationService } from 'projects/safe/src/public-api';
-import { filter } from 'rxjs/operators';
+import { KendoTranslationService } from '@safe/builder';
 
 localStorage.setItem('loaded', 'false');
 

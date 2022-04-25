@@ -704,6 +704,19 @@
 			"stick": "******",
 			"unlock": "******",
 			"unstick": "******"
+		},
+		"upload": {
+			"select": "******",
+			"dropFilesHere": "******"
+		},
+		"fileselect": {
+			"select": "******",
+			"dropFilesHere": "******"
+		},
+		"editor": {
+			"format": "******",
+			"fontSize": "******",
+			"fontFamily": "******"
 		}
 	},
 	"models": {

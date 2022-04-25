@@ -634,6 +634,15 @@
 		}
 	},
 	"kendo": {
+		"editor": {
+			"fontFamily": "Select font family",
+			"fontSize": "Select font size",
+			"format": "Format"
+		},
+		"fileselect": {
+			"dropFilesHere": "Drop files here to select",
+			"select": "Select files..."
+		},
 		"grid": {
 			"columnMenu": "'{columnName} Column Menu'",
 			"columns": "Columns",
@@ -704,6 +713,10 @@
 			"stick": "Stick",
 			"unlock": "Unlock",
 			"unstick": "Unstick"
+		},
+		"upload": {
+			"dropFilesHere": "Drop files here to upload",
+			"select": "Select files..."
 		}
 	},
 	"models": {

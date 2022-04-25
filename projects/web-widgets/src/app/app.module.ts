@@ -36,6 +36,8 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MessageService } from '@progress/kendo-angular-l10n';
+import { KendoTranslationService } from '@safe/builder';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 
@@ -188,6 +190,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
       useFactory: () =>
         // return the container ElementRef, where the popup will be injected
         ({ nativeElement: document.body } as ElementRef),
+    },
+    {
+      provide: MessageService,
+      useClass: KendoTranslationService,
     },
   ],
 })
