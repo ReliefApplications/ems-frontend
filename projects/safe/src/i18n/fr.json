@@ -796,14 +796,14 @@
       },
       "scope": "Scope",
       "secret": "Client Secret",
-      "token": "Token",
+      "token": "Jeton d'accès",
       "tokenUrl": "URL du jeton d'accès"
     },
     "apiConfigurations": {
       "create": "Créer une configuration d'API"
     },
     "appBuilder": {
-      "title": "Constructeur de site"
+      "title": "Création de site"
     },
     "application": {
       "addPage": {

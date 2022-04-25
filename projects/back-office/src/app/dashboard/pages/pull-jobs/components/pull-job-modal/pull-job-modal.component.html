@@ -1,4 +1,8 @@
 <h1 mat-dialog-title>
+  {{(data.pullJob ?
+      ('common.editObject' | translate: { name: 'common.pullJob.one' | translate }) :
+      ('models.pullJob.new' | translate)
+    )}}
   {{
     (data.pullJob ? 'common.editObject' : 'models.pullJob.new')
     | translate
