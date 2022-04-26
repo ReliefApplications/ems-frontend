@@ -8,6 +8,7 @@ interface PreferencesDialogData {
   languages: string[];
 }
 
+/** List of available languages. Filtered by languages proposed by the platform. */
 const AVAILABLE_LANGUAGES = [
   {
     name: 'English',
@@ -16,6 +17,10 @@ const AVAILABLE_LANGUAGES = [
   {
     name: 'Test',
     value: 'test',
+  },
+  {
+    name: 'Français',
+    value: 'fr',
   },
 ];
 

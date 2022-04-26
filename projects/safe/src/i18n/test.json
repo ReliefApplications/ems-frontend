@@ -88,7 +88,6 @@
 		},
 		"modifiedOn": "******",
 		"name": "******",
-		"newObject": "****** {{name}}",
 		"next": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
@@ -830,11 +829,13 @@
 	},
 	"models": {
 		"apiConfiguration": {
-			"authType": "******"
+			"authType": "******",
+			"new": "******"
 		},
 		"application": {
 			"description": "******",
 			"id": "******",
+			"new": "******",
 			"notifications": {
 				"published": "{{value}} ******",
 				"updated": "******"
@@ -845,7 +846,8 @@
 			}
 		},
 		"channel": {
-			"create": "******"
+			"create": "******",
+			"new": "******"
 		},
 		"dashboard": {
 			"share": "******"
@@ -857,19 +859,25 @@
 				"label": "******",
 				"name": "******"
 			},
+			"new": "******",
 			"select": "******",
 			"template": "******"
 		},
 		"page": {
 			"add": "******"
 		},
+		"positionAttribute": {
+			"new": "******"
+		},
 		"pullJob": {
+			"new": "******",
 			"path": "******",
 			"schedule": "******",
 			"url": "******"
 		},
 		"record": {
 			"convert": "******",
+			"new": "******",
 			"notifications": {
 				"conversionIncomplete": "******",
 				"rowsAdded": "****** {{length}} ****** {{field}} ****** {{value}} ******",
@@ -885,6 +893,12 @@
 		},
 		"role": {
 			"create": "******"
+		},
+		"step": {
+			"new": "******"
+		},
+		"subscription": {
+			"new": "******"
 		},
 		"user": {
 			"notifications": {
