@@ -14,6 +14,7 @@ import {
   ApiConfiguration,
   PullJob,
   Layout,
+  ReferenceData,
 } from '@safe/builder';
 
 // === EDIT USER ===
@@ -933,4 +934,124 @@ export const EDIT_PULL_JOB = gql`
 export interface EditPullJobMutationResponse {
   loading: boolean;
   editPullJob: PullJob;
+}
+
+// === ADD REFERENCE DATA===
+export const ADD_REFERENCE_DATA = gql`
+  mutation addReferenceData($name: String!) {
+    addReferenceData(name: $name) {
+      id
+      name
+      apiConfiguration {
+        id
+        name
+      }
+      type
+      query
+      fields
+      valueField
+      path
+      data
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
+export interface AddReferenceDataMutationResponse {
+  loading: boolean;
+  addReferenceData: ReferenceData;
+}
+
+// === DELETE REFERENCE DATA ===
+export const DELETE_REFERENCE_DATA = gql`
+  mutation deleteReferenceData($id: ID!) {
+    deleteReferenceData(id: $id) {
+      id
+    }
+  }
+`;
+
+export interface DeleteReferenceDataMutationResponse {
+  loading: boolean;
+  deleteReferenceData: ReferenceData;
+}
+
+// === EDIT REFERENCE DATA ===
+export const EDIT_REFERENCE_DATA = gql`
+  mutation editReferenceData(
+    $id: ID!
+    $name: String
+    $type: ReferenceDataType
+    $apiConfiguration: ID
+    $query: String
+    $fields: [String]
+    $valueField: String
+    $path: String
+    $data: JSON
+    $permissions: JSON
+  ) {
+    editReferenceData(
+      id: $id
+      name: $name
+      type: $type
+      apiConfiguration: $apiConfiguration
+      query: $query
+      fields: $fields
+      valueField: $valueField
+      path: $path
+      data: $data
+      permissions: $permissions
+    ) {
+      id
+      name
+      apiConfiguration {
+        id
+        name
+      }
+      type
+      query
+      fields
+      valueField
+      path
+      data
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
+export interface EditReferenceDataMutationResponse {
+  loading: boolean;
+  editReferenceData: ReferenceData;
 }

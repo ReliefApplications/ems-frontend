@@ -14,6 +14,7 @@ import {
   PositionAttribute,
   ApiConfiguration,
   PullJob,
+  ReferenceData,
 } from '@safe/builder';
 
 // === GET USERS ===
@@ -952,6 +953,26 @@ export const GET_API_CONFIGURATIONS = gql`
   }
 `;
 
+// === GET API CONFGIURATIONS NAME ===
+export const GET_API_CONFIGURATIONS_NAMES = gql`
+  query GetApiConfigurationsName($first: Int, $afterCursor: ID) {
+    apiConfigurations(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
 export interface GetApiConfigurationsQueryResponse {
   loading: boolean;
   apiConfigurations: {
@@ -1057,4 +1078,108 @@ export interface GetPullJobsQueryResponse {
     };
     totalCount: number;
   };
+}
+
+// === GET REFERENCE DATAS ===
+export const GET_REFERENCE_DATAS = gql`
+  query GetReferenceDatas($first: Int, $afterCursor: ID) {
+    referenceDatas(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+          apiConfiguration {
+            id
+            name
+          }
+          type
+          query
+          fields
+          valueField
+          path
+          data
+          permissions {
+            canSee {
+              id
+              title
+            }
+            canUpdate {
+              id
+              title
+            }
+            canDelete {
+              id
+              title
+            }
+          }
+          canSee
+          canUpdate
+          canDelete
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+export interface GetReferenceDatasQueryResponse {
+  loading: boolean;
+  referenceDatas: {
+    edges: {
+      node: ReferenceData;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
+}
+
+// === GET REFERENCE DATA ===
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!) {
+    referenceData(id: $id) {
+      id
+      name
+      apiConfiguration {
+        id
+        name
+      }
+      type
+      query
+      fields
+      valueField
+      path
+      data
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
+export interface GetReferenceDataQueryResponse {
+  loading: boolean;
+  referenceData: ReferenceData;
 }

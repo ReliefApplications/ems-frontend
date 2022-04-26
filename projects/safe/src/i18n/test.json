@@ -88,7 +88,6 @@
 		},
 		"modifiedOn": "******",
 		"name": "******",
-		"newObject": "****** {{name}}",
 		"next": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
@@ -173,6 +172,11 @@
 			"one": "******"
 		},
 		"record": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"referenceData": {
 			"few": "******",
 			"none": "******",
 			"one": "******"
@@ -418,6 +422,10 @@
 		"notifications": {
 			"readAll": "******"
 		},
+		"preferences": {
+			"language": "******",
+			"title": "******"
+		},
 		"pullJob": {
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
@@ -538,6 +546,18 @@
 			"showArchived": "******",
 			"upload": {
 				"hint": "******"
+			}
+		},
+		"referenceData": {
+			"create": {
+				"errors": {
+					"name": "******"
+				},
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
 			}
 		},
 		"resource": {
@@ -721,13 +741,101 @@
 			}
 		}
 	},
+	"kendo": {
+		"editor": {
+			"fontFamily": "******",
+			"fontSize": "******",
+			"format": "******"
+		},
+		"fileselect": {
+			"dropFilesHere": "******",
+			"select": "******"
+		},
+		"grid": {
+			"columnMenu": "******",
+			"columns": "******",
+			"columnsApply": "******",
+			"columnsReset": "******",
+			"detailCollapse": "******",
+			"detailExpand": "******",
+			"filter": "******",
+			"filterAfterOperator": "******",
+			"filterAfterOrEqualOperator": "******",
+			"filterAndLogic": "******",
+			"filterBeforeOperator": "******",
+			"filterBeforeOrEqualOperator": "******",
+			"filterBooleanAll": "******",
+			"filterClearButton": "******",
+			"filterContainsOperator": "******",
+			"filterDateToday": "******",
+			"filterDateToggle": "******",
+			"filterEndsWithOperator": "******",
+			"filterEqOperator": "******",
+			"filterFilterButton": "******",
+			"filterGtOperator": "******",
+			"filterGteOperator": "******",
+			"filterInputLabel": "******",
+			"filterIsEmptyOperator": "******",
+			"filterIsFalse": "******",
+			"filterIsNotEmptyOperator": "******",
+			"filterIsNotNullOperator": "******",
+			"filterIsNullOperator": "******",
+			"filterIsTrue": "******",
+			"filterLtOperator": "******",
+			"filterLteOperator": "******",
+			"filterMenuLogicDropDownLabel": "******",
+			"filterMenuOperatorsDropDownLabel": "******",
+			"filterMenuTitle": "******",
+			"filterNotContainsOperator": "******",
+			"filterNotEqOperator": "******",
+			"filterNumericDecrement": "******",
+			"filterNumericIncrement": "******",
+			"filterOrLogic": "******",
+			"filterStartsWithOperator": "******",
+			"gridLabel": "******",
+			"groupCollapse": "******",
+			"groupExpand": "******",
+			"groupPanelEmpty": "******",
+			"loading": "******",
+			"lock": "******",
+			"noRecords": "******",
+			"pagerFirstPage": "******",
+			"pagerItems": "******",
+			"pagerItemsPerPage": "******",
+			"pagerLabel": "******",
+			"pagerLastPage": "******",
+			"pagerNextPage": "******",
+			"pagerOf": "******",
+			"pagerPage": "******",
+			"pagerPageNumberInputTitle": "******",
+			"pagerPreviousPage": "******",
+			"selectAllCheckboxLabel": "******",
+			"selectionCheckboxLabel": "******",
+			"setColumnPosition": "******",
+			"sortAscending": "******",
+			"sortDescending": "******",
+			"sortable": "******",
+			"sortedAscending": "******",
+			"sortedDefault": "******",
+			"sortedDescending": "******",
+			"stick": "******",
+			"unlock": "******",
+			"unstick": "******"
+		},
+		"upload": {
+			"dropFilesHere": "******",
+			"select": "******"
+		}
+	},
 	"models": {
 		"apiConfiguration": {
-			"authType": "******"
+			"authType": "******",
+			"new": "******"
 		},
 		"application": {
 			"description": "******",
 			"id": "******",
+			"new": "******",
 			"notifications": {
 				"published": "{{value}} ******",
 				"updated": "******"
@@ -738,7 +846,8 @@
 			}
 		},
 		"channel": {
-			"create": "******"
+			"create": "******",
+			"new": "******"
 		},
 		"dashboard": {
 			"share": "******"
@@ -750,19 +859,25 @@
 				"label": "******",
 				"name": "******"
 			},
+			"new": "******",
 			"select": "******",
 			"template": "******"
 		},
 		"page": {
 			"add": "******"
 		},
+		"positionAttribute": {
+			"new": "******"
+		},
 		"pullJob": {
+			"new": "******",
 			"path": "******",
 			"schedule": "******",
 			"url": "******"
 		},
 		"record": {
 			"convert": "******",
+			"new": "******",
 			"notifications": {
 				"conversionIncomplete": "******",
 				"rowsAdded": "****** {{length}} ****** {{field}} ****** {{value}} ******",
@@ -770,11 +885,20 @@
 			},
 			"restore": "******"
 		},
+		"referenceData": {
+			"add": "******"
+		},
 		"resource": {
 			"create": "******"
 		},
 		"role": {
 			"create": "******"
+		},
+		"step": {
+			"new": "******"
+		},
+		"subscription": {
+			"new": "******"
 		},
 		"user": {
 			"notifications": {
@@ -885,6 +1009,21 @@
 		},
 		"pullJobs": {
 			"create": "******"
+		},
+		"referenceData": {
+			"csv": "******",
+			"errors": {
+				"name": "******"
+			},
+			"fields": "******",
+			"path": "******",
+			"placeholder": {
+				"csv": "******"
+			},
+			"queryName": "******",
+			"type": "******",
+			"validateCsv": "******",
+			"valueField": "******"
 		},
 		"workflow": {
 			"addStep": {

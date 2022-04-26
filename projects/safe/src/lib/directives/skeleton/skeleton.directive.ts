@@ -8,7 +8,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { SkeletonComponent } from '@progress/kendo-angular-indicators';
-import { random } from 'lodash';
+import random from 'lodash/random';
 
 /**
  * Dircetive to replace ng-container with skeleton indicators.
