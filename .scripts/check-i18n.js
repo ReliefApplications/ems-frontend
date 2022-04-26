@@ -50,19 +50,38 @@ const setDefaultValue = (json, defaultValue) => {
   return newJson;
 };
 
+
+let listOfJson = [];
+let listOfFileNames = [];
+
+//Getting the name of all the files in the I18n folder except for 'test.json'
+listOfFileNames = fs.readdirSync(I18N_FOLDER_PATH);
+const indexTestJson = listOfFileNames.indexOf('test.json');
+if (indexTestJson > -1) {
+  listOfFileNames.splice(indexTestJson); 
+}
+
+//Putting all the JSONs in a list
+listOfJson = listOfFileNames.map(filename=>require('../'+I18N_FOLDER_PATH+filename));
+
+//Sort all the JSONs
+listOfJson = listOfJson.map(json=>sortJson(json));
+
+
 // Check that translation files are sorted.
-const sortedEnJson = sortJson(enJson);
-fs.writeFile(
-  I18N_FOLDER_PATH + 'en.json',
-  JSON.stringify(sortedEnJson, null, '\t'),
-  (err) => {
-    if (err) {
-      console.error(err);
-      return;
+for(let i in listOfJson){
+  fs.writeFile(
+    I18N_FOLDER_PATH + listOfFileNames[i],
+    JSON.stringify(listOfJson[i], null, '\t'),
+    (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      // else success
     }
-    // else success
-  }
-);
+  );
+}
 
 // Update the i18n test file.
 const testJson = setDefaultValue(enJson, DEFAULT_VALUE);
