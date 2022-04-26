@@ -50,6 +50,25 @@ const setDefaultValue = (json, defaultValue) => {
   return newJson;
 };
 
+/**
+ * Gets all keys (including nested) in JSON Object
+ *
+ * @param {*} json json to inspect and extract the keys from
+ * @param {*} ret_array array in which we will return the keys
+ * @returns ret_array, containing all the keys
+ */
+function getAllJsonKeys(json, ret_array = []) {
+  for (json_key in json) {
+      if (typeof(json[json_key]) === 'object') {
+          ret_array.push(json_key);
+          getAllJsonKeys(json[json_key], ret_array);
+      } else {
+          ret_array.push(json_key);
+      }
+  }
+  return ret_array
+}
+
 
 let listOfJson = [];
 let listOfFileNames = [];
@@ -66,6 +85,15 @@ listOfJson = listOfFileNames.map(filename=>require('../'+I18N_FOLDER_PATH+filena
 
 //Sort all the JSONs
 listOfJson = listOfJson.map(json=>sortJson(json));
+
+//Check that the "non-english" files have the same keys than en.json
+
+var allKeysEn = [];
+var allKeysFr = [];
+getAllJsonKeys(enJson,allKeysEn);
+getAllJsonKeys(listOfJson[1],allKeysFr);
+
+console.log(allKeysFr);
 
 
 // Check that translation files are sorted.
