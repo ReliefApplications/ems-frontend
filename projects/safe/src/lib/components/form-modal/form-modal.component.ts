@@ -224,6 +224,7 @@ export class SafeFormModalComponent implements OnInit {
       };
     }
     this.survey.showNavigationButtons = false;
+    this.survey.focusFirstQuestionAutomatic = false;
     this.survey.render(this.containerId);
     this.setPages();
     this.survey.onComplete.add(this.onComplete);
