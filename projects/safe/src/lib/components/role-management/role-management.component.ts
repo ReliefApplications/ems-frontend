@@ -73,8 +73,8 @@ const mockFeatures = [
   },
 ];
 
-const LOAD_ITEMS: number = 20;
-const SEARCH_DEBOUNCE_TIME: number = 500;
+const LOAD_ITEMS = 20;
+const SEARCH_DEBOUNCE_TIME = 500;
 
 @Component({
   selector: 'safe-role-management',
@@ -145,8 +145,8 @@ export class SafeRoleManagementComponent implements OnInit {
       variables: { first: LOAD_ITEMS },
     });
     this.resourcesQuery.valueChanges.subscribe((res) => {
-      (this.resourcesQueryInfo = res.data.resources.pageInfo),
-        (this.resources = res.data.resources.edges.map((x) => x.node));
+      this.resourcesQueryInfo = res.data.resources.pageInfo;
+      this.resources = res.data.resources.edges.map((x) => x.node);
     });
 
     this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
@@ -154,8 +154,8 @@ export class SafeRoleManagementComponent implements OnInit {
       variables: { first: LOAD_ITEMS },
     });
     this.formsQuery.valueChanges.subscribe((res) => {
-      (this.formsQueryInfo = res.data.forms.pageInfo),
-        (this.forms = res.data.forms.edges.map((x) => x.node));
+      this.formsQueryInfo = res.data.forms.pageInfo;
+      this.forms = res.data.forms.edges.map((x) => x.node);
     });
 
     this.updateFeatures();
@@ -176,7 +176,7 @@ export class SafeRoleManagementComponent implements OnInit {
       .subscribe((value) => {
         this.formsAndResourcesQueryFilter = {
           logic: 'and',
-          filters: [{ field: 'name', operator: 'contains', value: value }],
+          filters: [{ field: 'name', operator: 'contains', value }],
         };
         this.loadResources({ search: true });
         this.loadForms({ search: true });
@@ -227,11 +227,13 @@ export class SafeRoleManagementComponent implements OnInit {
    * Adds or removes a feature from the list of selected features
    */
   public onFeatureClick(id: string) {
-    this.selectedFeatures.includes(id)
-      ? (this.selectedFeatures = this.selectedFeatures.filter(
-          (item) => item !== id
-        ))
-      : this.selectedFeatures.push(id);
+    if (this.selectedFeatures.includes(id)) {
+      this.selectedFeatures = this.selectedFeatures.filter(
+        (item) => item !== id
+      );
+    } else {
+      this.selectedFeatures.push(id);
+    }
   }
 
   /**
@@ -267,11 +269,13 @@ export class SafeRoleManagementComponent implements OnInit {
    * Adds or removes a channel from the list of selected channels
    */
   public onChannelClick(id: string) {
-    this.selectedChannels.includes(id)
-      ? (this.selectedChannels = this.selectedChannels.filter(
-          (item) => item !== id
-        ))
-      : this.selectedChannels.push(id);
+    if (this.selectedChannels.includes(id)) {
+      this.selectedChannels = this.selectedChannels.filter(
+        (item) => item !== id
+      );
+    } else {
+      this.selectedChannels.push(id);
+    }
   }
 
   /**
@@ -296,6 +300,7 @@ export class SafeRoleManagementComponent implements OnInit {
 
   /**
    * Load the list of resources
+   *
    * @param options object containing optional arguments
    * "search" is used if the query is a new search which means the previous results will not be used
    */
@@ -328,18 +333,22 @@ export class SafeRoleManagementComponent implements OnInit {
 
   /**
    * Add or remove the clicked resource's id to the list of selected ones
+   *
    * @param id
    */
   onResourceClick(id: string) {
-    this.selectedResources.includes(id)
-      ? (this.selectedResources = this.selectedResources.filter(
-          (item) => item !== id
-        ))
-      : this.selectedResources.push(id);
+    if (this.selectedResources.includes(id)) {
+      this.selectedResources = this.selectedResources.filter(
+        (item) => item !== id
+      );
+    } else {
+      this.selectedResources.push(id);
+    }
   }
 
   /**
    * Load the list of forms
+   *
    * @param options object containing optional arguments
    * "search" is used if the query is a new search which means the previous results will not be used
    */
@@ -372,11 +381,14 @@ export class SafeRoleManagementComponent implements OnInit {
 
   /**
    * Add or remove the clicked resource's id to the list of selected ones
+   *
    * @param id
    */
   onFormClick(id: string) {
-    this.selectedForms.includes(id)
-      ? (this.selectedForms = this.selectedForms.filter((item) => item !== id))
-      : this.selectedForms.push(id);
+    if (this.selectedForms.includes(id)) {
+      this.selectedForms = this.selectedForms.filter((item) => item !== id);
+    } else {
+      this.selectedForms.push(id);
+    }
   }
 }
