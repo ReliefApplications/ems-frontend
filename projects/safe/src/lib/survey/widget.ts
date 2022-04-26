@@ -150,7 +150,8 @@ export const init = (
         const header =
           el.parentElement.parentElement.querySelector('.sv_q_title');
         if (header) {
-          header.title = question.tooltip;
+          header.title =
+            question.localizableStrings?.tooltip?.renderedText || '';
           const span = document.createElement('span');
           span.innerText = 'help';
           span.className = 'material-icons';
@@ -318,6 +319,7 @@ export const init = (
         question.maxSize = 7340032;
       }
     },
+    willUnmount: (): void => {},
   };
 
   const buildSearchButton = (
