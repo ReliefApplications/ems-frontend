@@ -1,5 +1,6 @@
 {
   "common": {
+    "access": "Accès",
     "add": "Ajouter",
     "aggregation": {
       "few": "Aggrégations",
@@ -62,6 +63,7 @@
     "filter": {
       "apply": "Appliquer",
       "clear": "Supprimer le filtre",
+      "empty": "Aucun résultat",
       "hide": "Cacher le filtre",
       "show": "Afficher le filtre"
     },
@@ -91,8 +93,26 @@
       "accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
       "accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
       "alreadyExists": "Cet objet {{type}} {{value}} existe déjà dans cette application.",
-      "copiedToClipboard": "Copié !",
-      "dataRecovered": "Les données ont été récupérées !",
+      "copiedToClipboard": "Copié !",
+      "dataRecovered": "Les données ont été récupérées !",
+      "email": {
+        "error": "Un problème est survenu lors de l'envoi de l'e-mail",
+        "processing": "Envoi en cours...",
+        "ready": "E-mail prêt",
+        "sent": "E-mail envoyé"
+      },
+      "file": {
+        "download": {
+          "error": "Un problème est survenu lors du téléchargement",
+          "processing": "Téléchargement du fichier en cours...",
+          "ready": "Votre fichier est prêt"
+        },
+        "upload": {
+          "error": "Un problème est survenu lors de l'import",
+          "processing": "Fichier en cours d'importation...",
+          "ready": "Fichier importé"
+        }
+      },
       "formatInvalid": "Veuillez importer un fichier de format .{{format}}.",
       "loadedFromCache": "Objet de type {{type}} chargé depuis le cache.",
       "noOpened": "Aucun objet {{value}} n'a été ouvert.",
@@ -155,6 +175,11 @@
       "few": "Enregistrements",
       "none": "Pas d'enregistrement",
       "one": "Enregistrement"
+    },
+    "referenceData": {
+      "few": "Références de données",
+      "none": "Aucune référence de données",
+      "one": "Référence de données"
     },
     "resource": {
       "few": "Ressources",
@@ -267,13 +292,13 @@
         }
       },
       "delete": {
-        "confirmationMessage": "Voulez-vous vraiment supprimer la configuration d'API {{name}} ?",
+        "confirmationMessage": "Voulez-vous vraiment supprimer la configuration d'API {{name}} ?",
         "title": "Supprimer la configuration d'API"
       }
     },
     "application": {
       "delete": {
-        "confirmationMessage": "Voulez-vous vraiment supprimer cette application ?"
+        "confirmationMessage": "Voulez-vous vraiment supprimer cette application ?"
       },
       "duplicate": {
         "name": {
@@ -282,9 +307,13 @@
       },
       "positionAttribute": {
         "delete": {
-          "confirmationMessage": "Voulez-vous vraiment supprimer l'attribut de position {{name}} ?",
+          "confirmationMessage": "Voulez-vous vraiment supprimer l'attribut de position {{name}} ?",
           "title": "Supprimer l'attribut de position"
         }
+      },
+      "publish": {
+        "confirmationMessage": "Confirmer la publication de l'application {{name}} ?",
+        "title": "Publier l'application"
       },
       "subscription": {
         "modal": {
@@ -296,6 +325,10 @@
             "listenTo": "Sélectionner une clé de routage"
           }
         }
+      },
+      "unlock": {
+        "confirmationMessage": "Voulez-vous déverrouiller l'édition de {{name}} ?",
+        "title": "Déverrouiller l'édition"
       },
       "update": {
         "placeholder": {
@@ -310,7 +343,7 @@
     },
     "channel": {
       "delete": {
-        "confirmationMessage": "Voulez-vous vraiment supprimer le canal {{name}} ?"
+        "confirmationMessage": "Voulez-vous vraiment supprimer le canal {{name}} ?"
       },
       "dropdown": {
         "select": "Notifier sur"
@@ -338,9 +371,12 @@
         }
       },
       "delete": {
-        "confirmationMessage": "Voulez-vous vraiment supprimer le formulaire {{name}} ?"
+        "confirmationMessage": "Voulez-vous vraiment supprimer le formulaire {{name}} ?"
       },
       "layout": {
+        "delete": {
+          "confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"
+        },
         "update": {
           "preview": {
             "description": "Réorganise, trie, filtre et cache des colonnes pour changer l'affichage par défaut de la mise en page"
@@ -357,7 +393,7 @@
       },
       "update": {
         "exit": "Quitter sans sauvegarder les changements",
-        "exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, voulez-vous vraiment quitter cette page ?"
+        "exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, voulez-vous vraiment quitter cette page ?"
       }
     },
     "formBuilder": {
@@ -386,9 +422,13 @@
     "notifications": {
       "readAll": "Tout marquer comme lu"
     },
+    "preferences": {
+      "language": "Langage",
+      "title": "Préférences"
+    },
     "pullJob": {
       "delete": {
-        "confirmationMessage": "Voulez-vous vraiment supprimer la tâche {{name}} ?",
+        "confirmationMessage": "Voulez-vous vraiment supprimer la tâche {{name}} ?",
         "title": "Supprimer la tâche"
       },
       "modal": {
@@ -478,13 +518,13 @@
           "overwrite": "Écraser l'enregistrement source"
         },
         "result": {
-          "force": "Les champs suivants seront ignorés :",
+          "force": "Les champs suivants seront ignorés :",
           "smooth": "Conversion OK"
         },
         "select": "Convertir en"
       },
       "delete": {
-        "confirmationMessage": "Voulez-vous vraiment supprimer l'enregistrement {{name}} ?",
+        "confirmationMessage": "Voulez-vous vraiment supprimer l'enregistrement {{name}} ?",
         "permanently": "Supprimer de manière permanente"
       },
       "dropdown": {
@@ -508,9 +548,21 @@
         "hint": "Le fichier doit contenir uniquement un enregistrement par ligne. La ligne d'en-tête contient les noms des champs de données."
       }
     },
+    "referenceData": {
+      "create": {
+        "errors": {
+          "name": "Seules les lettres, les tirets et les tirets bas sont acceptés."
+        },
+        "title": "Nouvelle référence de données"
+      },
+      "delete": {
+        "confirmationMessage": "Voulez-vous vraiment supprimer la référence de données {{name}} ?",
+        "title": "Supprimer la référence de données"
+      }
+    },
     "resource": {
       "delete": {
-        "confirmationMessage": "Voulez-vous vraiment supprimer la ressource {{name}}?"
+        "confirmationMessage": "Voulez-vous vraiment supprimer la ressource {{name}} ?"
       },
       "dropdown": {
         "select": "Depuis la ressource"
@@ -521,7 +573,7 @@
         "title": "Ajouter un nouveau rôle"
       },
       "delete": {
-        "confirmationMessage": "Voulez-vous vraiment supprimer le rôle {{name}}?",
+        "confirmationMessage": "Voulez-vous vraiment supprimer le rôle {{name}} ?",
         "title": "Supprimer le rôle"
       },
       "impersonate": {
@@ -534,7 +586,7 @@
     },
     "user": {
       "delete": {
-        "confirmationMessage": "Voulez-vous vraiment supprimer l'utilisateur {{name}} ?",
+        "confirmationMessage": "Voulez-vous vraiment supprimer l'utilisateur {{name}} ?",
         "title": "Supprimer l'utilisateur"
       },
       "invite": {
@@ -555,6 +607,13 @@
       }
     },
     "widget": {
+      "chart": {
+        "errors": {
+          "aggregation": {
+            "invalid": "Aggrégation invalide"
+          }
+        }
+      },
       "expand": "Étendre",
       "grid": {
         "actions": {
@@ -667,9 +726,105 @@
             "latitude": "Latitude du centre de la carte",
             "longitude": "Longitude du centre de la carte",
             "title": "Affichage par défaut"
+          },
+          "errors": {
+            "latitude": "Latitude incorrecte, merci de sélectionner un nombre entre -90 et 90",
+            "longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
+          },
+          "tooltip": {
+            "default": {
+              "latitude": "Sélectionnez une latitude par défaut autour de laquelle vous souhaitez centrer la carte",
+              "longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte"
+            }
           }
         }
       }
+    }
+  },
+  "kendo": {
+    "editor": {
+      "fontFamily": "Sélectionnez une police de caractère",
+      "fontSize": "Sélectionnez la taille de police",
+      "format": "Format"
+    },
+    "fileselect": {
+      "dropFilesHere": "Déposez les fichiers ici pour les sélectionner",
+      "select": "Choisir des fichiers..."
+    },
+    "grid": {
+      "columnMenu": "'Menu de la colonne {columnName}'",
+      "columns": "Colonnes",
+      "columnsApply": "Appliquer",
+      "columnsReset": "Réinitialiser",
+      "detailCollapse": "Réduire",
+      "detailExpand": "Etendre",
+      "filter": "Filtrer",
+      "filterAfterOperator": "Est après",
+      "filterAfterOrEqualOperator": "Est après ou égal à",
+      "filterAndLogic": "Et",
+      "filterBeforeOperator": "Est avant",
+      "filterBeforeOrEqualOperator": "Est avant ou égal à",
+      "filterBooleanAll": "(Tous)",
+      "filterClearButton": "Effacer",
+      "filterContainsOperator": "Contient",
+      "filterDateToday": "Aujourd'hui",
+      "filterDateToggle": "Afficher/masquer le calendrier",
+      "filterEndsWithOperator": "Termine par",
+      "filterEqOperator": "Est égal à",
+      "filterFilterButton": "Filtrer",
+      "filterGtOperator": "Est plus grand que",
+      "filterGteOperator": "Est plus grand que ou égal à",
+      "filterInputLabel": "'Filtrer {columnName}'",
+      "filterIsEmptyOperator": "Est vide",
+      "filterIsFalse": "est faux",
+      "filterIsNotEmptyOperator": "Est non-vide",
+      "filterIsNotNullOperator": "Est non-nul",
+      "filterIsNullOperator": "Est nul",
+      "filterIsTrue": "est vrai",
+      "filterLtOperator": "Est plus petit que",
+      "filterLteOperator": "Est plus petit que ou égal à",
+      "filterMenuLogicDropDownLabel": "'Logique de filtre sur {columnName}'",
+      "filterMenuOperatorsDropDownLabel": "'Opérateurs de filtre sur {columnName}'",
+      "filterMenuTitle": "'Menu de filtre sur {columnName}'",
+      "filterNotContainsOperator": "Ne contient pas",
+      "filterNotEqOperator": "Est différent de",
+      "filterNumericDecrement": "Décrémenter la valeur",
+      "filterNumericIncrement": "Incrémenter la valeur",
+      "filterOrLogic": "Ou",
+      "filterStartsWithOperator": "Commence par",
+      "gridLabel": "Table de données",
+      "groupCollapse": "Réduire le groupe",
+      "groupExpand": "Etendre le groupe",
+      "groupPanelEmpty": "Faites glisser un en-tête de colonne et déposez-le ici pour grouper par cette colonne",
+      "loading": "Chargement",
+      "lock": "Verrouiller",
+      "noRecords": "Aucun enregistrement disponible",
+      "pagerFirstPage": "Aller à la première page",
+      "pagerItems": "éléments",
+      "pagerItemsPerPage": "éléments par page",
+      "pagerLabel": "'Navigation de page, page {currentPage} sur {totalPages}'",
+      "pagerLastPage": "Aller à la dernière page",
+      "pagerNextPage": "Aller à la page suivante",
+      "pagerOf": "sur",
+      "pagerPage": "Page",
+      "pagerPageNumberInputTitle": "Numéro de page",
+      "pagerPreviousPage": "Aller à la page précédente",
+      "selectAllCheckboxLabel": "Tout sélectionner",
+      "selectionCheckboxLabel": "Sélectionner la ligne",
+      "setColumnPosition": "Définir la position de la colonne",
+      "sortAscending": "Trier par ordre croissant",
+      "sortDescending": "Trier par ordre décroissant",
+      "sortable": "Triable",
+      "sortedAscending": "Trié par ordre croissant",
+      "sortedDefault": "Non trié",
+      "sortedDescending": "Trié par ordre décroissant",
+      "stick": "Epingler",
+      "unlock": "Déverrouiller",
+      "unstick": "Désépingler"
+    },
+    "upload": {
+      "dropFilesHere": "Déposez les fichiers ici pour les importer",
+      "select": "Sélectionner les fichiers..."
     }
   },
   "models": {
@@ -701,7 +856,8 @@
       "core": "Source",
       "create": "Créer un formulaire",
       "field": {
-        "label": "Étiquette"
+        "label": "Étiquette",
+        "name": "Nom du champ"
       },
       "new": "Nouveau formulaire",
       "select": "Sélectionner un formulaire",
@@ -728,6 +884,9 @@
         "uploadSuccessful": "Enregistrements importés avec succès"
       },
       "restore": "Restaurer"
+    },
+    "referenceData": {
+      "add": "Ajouter une référence de données"
     },
     "resource": {
       "create": "Créer une ressource"
@@ -777,6 +936,10 @@
       "authentication": "Paramètres d'authentification",
       "baseUrl": "Point d'arrivée principal",
       "clientId": "ID Client",
+      "graphQL": {
+        "endpoint": "Point d'accès GraphQL",
+        "title": "Paramètres de GraphQL"
+      },
       "host": "Paramètres de l'hôte",
       "notifications": {
         "authTokenFetched": "Jeton d'authentification récupéré, faîtes un autre ping pour obtenir la vraie réponse.",
@@ -788,6 +951,7 @@
       "placeholder": {
         "baseUrl": "URL de base pour l'API",
         "clientId": "Entrez l'ID Client",
+        "graphQLEndpoint": "Extension GraphQL",
         "pingUrl": "Entrez l'URL de l'extension ping",
         "scope": "Entrer le scope",
         "secret": "Entrer le client secret",
@@ -845,6 +1009,21 @@
     },
     "pullJobs": {
       "create": "Créer une tâche planifiée"
+    },
+    "referenceData": {
+      "csv": "Fichier CSV d'entrée",
+      "errors": {
+        "name": "Seules les lettres, les tirets et les tirets bas sont acceptés"
+      },
+      "fields": "Champs",
+      "path": "Chemin",
+      "placeholder": {
+        "csv": "Insérer le CSV ici"
+      },
+      "queryName": "Nom de la requête",
+      "type": "Type",
+      "validateCsv": "Valider le CSV",
+      "valueField": "Champ de valeur"
     },
     "workflow": {
       "addStep": {
