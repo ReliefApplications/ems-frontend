@@ -5,10 +5,17 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Channel } from '../../models/channel.model';
-import { GetChannelsQueryResponse, GET_CHANNELS } from '../../graphql/queries';
-import { I } from '@angular/cdk/keycodes';
+import {
+  GetChannelsQueryResponse,
+  GetFormsQueryResponse,
+  GetResourcesQueryResponse,
+  GET_CHANNELS,
+  GET_FORMS,
+  GET_RESOURCES,
+} from '../../graphql/queries';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 const role = {
   name: 'Wizard',
@@ -29,6 +36,8 @@ const role = {
   ],
   features: [],
   channels: [],
+  resources: [],
+  forms: [],
 };
 
 const mockFeatures = [
@@ -64,6 +73,9 @@ const mockFeatures = [
   },
 ];
 
+const LOAD_ITEMS: number = 20;
+const SEARCH_DEBOUNCE_TIME: number = 500;
+
 @Component({
   selector: 'safe-role-management',
   templateUrl: './role-management.component.html',
@@ -90,6 +102,32 @@ export class SafeRoleManagementComponent implements OnInit {
   public selectedFeatures: any[] = role.features;
   public featureSearch = '';
 
+  // Resources tab
+  public resources: any[] = [];
+  public selectedResources: any[] = role.resources;
+
+  private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public resourcesQueryInfo: {
+    endCursor?: string;
+    hasNextPage?: boolean;
+    loading?: boolean;
+  } = {};
+
+  // Forms tab
+  public forms: any[] = [];
+  public selectedForms: any[] = role.forms;
+
+  private formsQuery!: QueryRef<GetFormsQueryResponse>;
+  public formsQueryInfo: {
+    endCursor?: string;
+    hasNextPage?: boolean;
+    loading?: boolean;
+  } = {};
+
+  // Resources and forms search functionality
+  public formsAndResourcesSearch = new FormControl('');
+  private formsAndResourcesQueryFilter: any = {};
+
   constructor(private formBuilder: FormBuilder, private apollo: Apollo) {}
 
   ngOnInit(): void {
@@ -102,16 +140,47 @@ export class SafeRoleManagementComponent implements OnInit {
         this.updateApplicationsChannels();
       });
 
+    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+      query: GET_RESOURCES,
+      variables: { first: LOAD_ITEMS },
+    });
+    this.resourcesQuery.valueChanges.subscribe((res) => {
+      (this.resourcesQueryInfo = res.data.resources.pageInfo),
+        (this.resources = res.data.resources.edges.map((x) => x.node));
+    });
+
+    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+      query: GET_FORMS,
+      variables: { first: LOAD_ITEMS },
+    });
+    this.formsQuery.valueChanges.subscribe((res) => {
+      (this.formsQueryInfo = res.data.forms.pageInfo),
+        (this.forms = res.data.forms.edges.map((x) => x.node));
+    });
+
     this.updateFeatures();
 
     this.roleForm = this.formBuilder.group({
       name: [role.name, Validators.required],
       features: [role.features],
       channels: [role.channels],
+      resources: [role.resources],
+      forms: [role.forms],
       description: new FormControl(role.description),
       canSeeRoles: new FormControl(role.canSeeRoles),
       canSeeUsers: new FormControl(role.canSeeUsers),
     });
+
+    this.formsAndResourcesSearch.valueChanges
+      .pipe(debounceTime(SEARCH_DEBOUNCE_TIME), distinctUntilChanged())
+      .subscribe((value) => {
+        this.formsAndResourcesQueryFilter = {
+          logic: 'and',
+          filters: [{ field: 'name', operator: 'contains', value: value }],
+        };
+        this.loadResources({ search: true });
+        this.loadForms({ search: true });
+      });
   }
 
   /**
@@ -158,13 +227,11 @@ export class SafeRoleManagementComponent implements OnInit {
    * Adds or removes a feature from the list of selected features
    */
   public onFeatureClick(id: string) {
-    if (this.selectedFeatures.includes(id)) {
-      this.selectedFeatures = this.selectedFeatures.filter(
-        (item) => item !== id
-      );
-    } else {
-      this.selectedFeatures.push(id);
-    }
+    this.selectedFeatures.includes(id)
+      ? (this.selectedFeatures = this.selectedFeatures.filter(
+          (item) => item !== id
+        ))
+      : this.selectedFeatures.push(id);
   }
 
   /**
@@ -200,13 +267,11 @@ export class SafeRoleManagementComponent implements OnInit {
    * Adds or removes a channel from the list of selected channels
    */
   public onChannelClick(id: string) {
-    if (this.selectedChannels.includes(id)) {
-      this.selectedChannels = this.selectedChannels.filter(
-        (item) => item !== id
-      );
-    } else {
-      this.selectedChannels.push(id);
-    }
+    this.selectedChannels.includes(id)
+      ? (this.selectedChannels = this.selectedChannels.filter(
+          (item) => item !== id
+        ))
+      : this.selectedChannels.push(id);
   }
 
   /**
@@ -223,7 +288,95 @@ export class SafeRoleManagementComponent implements OnInit {
     this.roleForm?.patchValue({
       features: this.selectedFeatures,
       channels: this.selectedChannels,
+      resources: this.selectedResources,
+      forms: this.selectedForms,
     });
     console.log(this.roleForm?.value);
+  }
+
+  /**
+   * Load the list of resources
+   * @param options object containing optional arguments
+   * "search" is used if the query is a new search which means the previous results will not be used
+   */
+  public loadResources(options?: { search: boolean }) {
+    this.resourcesQueryInfo.loading = true;
+    this.resourcesQuery.fetchMore({
+      variables: {
+        first: LOAD_ITEMS,
+        filter: this.formsAndResourcesQueryFilter,
+        ...(!options?.search && {
+          afterCursor: this.resourcesQueryInfo.endCursor,
+        }), // If the query is from a search, don't take into account the cursor
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign({}, prev, {
+          resources: {
+            edges: [
+              ...(options?.search ? [] : prev.resources.edges), // If the query is from a search, don't take into account the previous results
+              ...fetchMoreResult.resources.edges,
+            ],
+            pageInfo: fetchMoreResult.resources.pageInfo,
+          },
+        });
+      },
+    });
+  }
+
+  /**
+   * Add or remove the clicked resource's id to the list of selected ones
+   * @param id
+   */
+  onResourceClick(id: string) {
+    this.selectedResources.includes(id)
+      ? (this.selectedResources = this.selectedResources.filter(
+          (item) => item !== id
+        ))
+      : this.selectedResources.push(id);
+  }
+
+  /**
+   * Load the list of forms
+   * @param options object containing optional arguments
+   * "search" is used if the query is a new search which means the previous results will not be used
+   */
+  public loadForms(options?: { search: boolean }) {
+    this.formsQueryInfo.loading = true;
+    this.formsQuery.fetchMore({
+      variables: {
+        first: LOAD_ITEMS,
+        filter: this.formsAndResourcesQueryFilter,
+        ...(!options?.search && {
+          afterCursor: this.formsQueryInfo.endCursor, // If the query is from a search, don't take into account the cursor
+        }),
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign({}, prev, {
+          forms: {
+            edges: [
+              ...(options?.search ? [] : prev.forms.edges), // If the query is from a search, don't take into account the previous results
+              ...fetchMoreResult.forms.edges,
+            ],
+            pageInfo: fetchMoreResult.forms.pageInfo,
+          },
+        });
+      },
+    });
+  }
+
+  /**
+   * Add or remove the clicked resource's id to the list of selected ones
+   * @param id
+   */
+  onFormClick(id: string) {
+    this.selectedForms.includes(id)
+      ? (this.selectedForms = this.selectedForms.filter((item) => item !== id))
+      : this.selectedForms.push(id);
   }
 }

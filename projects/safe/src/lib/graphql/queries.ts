@@ -242,8 +242,8 @@ export interface GetFormsQueryResponse {
 
 // === GET RESOURCES ===
 export const GET_RESOURCES = gql`
-  query GetResources($first: Int, $afterCursor: ID) {
-    resources(first: $first, afterCursor: $afterCursor) {
+  query GetResources($first: Int, $afterCursor: ID, $filter: JSON) {
+    resources(first: $first, afterCursor: $afterCursor, filter: $filter) {
       edges {
         node {
           id
