@@ -51,8 +51,8 @@
                     </mat-expansion-panel-header>
                     <div class="checkbox-area">
                         <mat-checkbox *ngFor="let feature of group.contents"
-                            [checked]="selectedFeatures.includes(feature.id)"
-                            (click)="$event.preventDefault(); onFeatureClick(feature.id)">
+                            [checked]="selectedItems.features.includes(feature.id)"
+                            (click)="$event.preventDefault(); onItemClick('features', feature.id)">
                             {{feature.title}}
                         </mat-checkbox>
                     </div>
@@ -71,12 +71,12 @@
             <mat-expansion-panel>
                 <mat-expansion-panel-header>
                     <mat-panel-title class=" panel-header">
-                        Resources
+                        {{'common.resource.few' | translate}}
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <div class="checkbox-area">
-                    <mat-checkbox *ngFor="let resource of resources" [checked]="selectedResources.includes(resource.id)"
-                        (click)="$event.preventDefault(); onResourceClick(resource.id)">
+                    <mat-checkbox *ngFor="let resource of resources" [checked]="selectedItems.resources.includes(resource.id)"
+                        (click)="$event.preventDefault(); onItemClick('resources', resource.id)">
                         {{resource.name}}
                     </mat-checkbox>
                 </div>
@@ -87,12 +87,12 @@
             <mat-expansion-panel>
                 <mat-expansion-panel-header>
                     <mat-panel-title class="panel-header">
-                        Forms
+                        {{'common.form.few' | translate}}
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <div class="checkbox-area">
-                    <mat-checkbox *ngFor="let form of forms" [checked]="selectedForms.includes(form.id)"
-                        (click)="$event.preventDefault(); onFormClick(form.id)">
+                    <mat-checkbox *ngFor="let form of forms" [checked]="selectedItems.forms.includes(form.id)"
+                        (click)="$event.preventDefault(); onItemClick('forms', form.id)">
                         {{form.name + (form.core? ' (core)' : '')}}
                     </mat-checkbox>
                 </div>
@@ -119,8 +119,8 @@
                     </mat-expansion-panel-header>
                     <div class="checkbox-area">
                         <mat-checkbox *ngFor="let channel of application.channels"
-                            [checked]="selectedChannels.includes(channel.id)"
-                            (click)="$event.preventDefault(); onChannelClick(channel.id)">
+                            [checked]="selectedItems.channels.includes(channel.id)"
+                            (click)="$event.preventDefault(); onItemClick('channels', channel.id)">
                             {{channel.title}}
                         </mat-checkbox>
                     </div>

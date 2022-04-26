@@ -73,7 +73,7 @@ const mockFeatures = [
   },
 ];
 
-const LOAD_ITEMS = 20;
+const LOAD_ITEMS = 10;
 const SEARCH_DEBOUNCE_TIME = 500;
 
 @Component({
@@ -88,23 +88,33 @@ export class SafeRoleManagementComponent implements OnInit {
   // Final form to be updated
   public roleForm?: FormGroup;
 
+  // Selected objects
+  public selectedItems: {
+    channels: string[];
+    features: string[];
+    resources: string[];
+    forms: string[];
+  } = {
+    channels: role.channels,
+    features: role.features,
+    resources: role.resources,
+    forms: role.forms,
+  };
+
   // Summary tab
   public users: string[] = role.users.map((val: any) => val.name);
 
   // Channels tab
   public channels: Channel[] = [];
   public applications: any[] = [];
-  public selectedChannels: any[] = role.channels;
   public channelSearch = '';
 
   // Features tab
   public features: any[] = [];
-  public selectedFeatures: any[] = role.features;
   public featureSearch = '';
 
   // Resources tab
   public resources: any[] = [];
-  public selectedResources: any[] = role.resources;
 
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public resourcesQueryInfo: {
@@ -115,7 +125,6 @@ export class SafeRoleManagementComponent implements OnInit {
 
   // Forms tab
   public forms: any[] = [];
-  public selectedForms: any[] = role.forms;
 
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   public formsQueryInfo: {
@@ -145,7 +154,10 @@ export class SafeRoleManagementComponent implements OnInit {
       variables: { first: LOAD_ITEMS },
     });
     this.resourcesQuery.valueChanges.subscribe((res) => {
-      this.resourcesQueryInfo = res.data.resources.pageInfo;
+      this.resourcesQueryInfo = {
+        ...res.data.resources.pageInfo,
+        loading: res.loading,
+      };
       this.resources = res.data.resources.edges.map((x) => x.node);
     });
 
@@ -154,7 +166,10 @@ export class SafeRoleManagementComponent implements OnInit {
       variables: { first: LOAD_ITEMS },
     });
     this.formsQuery.valueChanges.subscribe((res) => {
-      this.formsQueryInfo = res.data.forms.pageInfo;
+      this.formsQueryInfo = {
+        ...res.data.forms.pageInfo,
+        loading: res.loading,
+      };
       this.forms = res.data.forms.edges.map((x) => x.node);
     });
 
@@ -226,13 +241,16 @@ export class SafeRoleManagementComponent implements OnInit {
   /**
    * Adds or removes a feature from the list of selected features
    */
-  public onFeatureClick(id: string) {
-    if (this.selectedFeatures.includes(id)) {
-      this.selectedFeatures = this.selectedFeatures.filter(
+  public onItemClick(
+    itemKey: 'channels' | 'features' | 'resources' | 'forms',
+    id: string
+  ) {
+    if (this.selectedItems[itemKey].includes(id)) {
+      this.selectedItems[itemKey] = this.selectedItems[itemKey].filter(
         (item) => item !== id
       );
     } else {
-      this.selectedFeatures.push(id);
+      this.selectedItems[itemKey].push(id);
     }
   }
 
@@ -266,19 +284,6 @@ export class SafeRoleManagementComponent implements OnInit {
   }
 
   /**
-   * Adds or removes a channel from the list of selected channels
-   */
-  public onChannelClick(id: string) {
-    if (this.selectedChannels.includes(id)) {
-      this.selectedChannels = this.selectedChannels.filter(
-        (item) => item !== id
-      );
-    } else {
-      this.selectedChannels.push(id);
-    }
-  }
-
-  /**
    * Updates the channel list depending on the searchterm
    */
   public onChannelSearch() {
@@ -289,12 +294,7 @@ export class SafeRoleManagementComponent implements OnInit {
    * Adds selected features and channels, then it updates the role
    */
   public onSubmit(): void {
-    this.roleForm?.patchValue({
-      features: this.selectedFeatures,
-      channels: this.selectedChannels,
-      resources: this.selectedResources,
-      forms: this.selectedForms,
-    });
+    this.roleForm?.patchValue(this.selectedItems);
     console.log(this.roleForm?.value);
   }
 
@@ -325,25 +325,11 @@ export class SafeRoleManagementComponent implements OnInit {
               ...fetchMoreResult.resources.edges,
             ],
             pageInfo: fetchMoreResult.resources.pageInfo,
+            totalCount: fetchMoreResult.resources.totalCount,
           },
         });
       },
     });
-  }
-
-  /**
-   * Add or remove the clicked resource's id to the list of selected ones
-   *
-   * @param id
-   */
-  onResourceClick(id: string) {
-    if (this.selectedResources.includes(id)) {
-      this.selectedResources = this.selectedResources.filter(
-        (item) => item !== id
-      );
-    } else {
-      this.selectedResources.push(id);
-    }
   }
 
   /**
@@ -373,22 +359,10 @@ export class SafeRoleManagementComponent implements OnInit {
               ...fetchMoreResult.forms.edges,
             ],
             pageInfo: fetchMoreResult.forms.pageInfo,
+            totalCount: fetchMoreResult.forms.totalCount,
           },
         });
       },
     });
-  }
-
-  /**
-   * Add or remove the clicked resource's id to the list of selected ones
-   *
-   * @param id
-   */
-  onFormClick(id: string) {
-    if (this.selectedForms.includes(id)) {
-      this.selectedForms = this.selectedForms.filter((item) => item !== id);
-    } else {
-      this.selectedForms.push(id);
-    }
   }
 }
