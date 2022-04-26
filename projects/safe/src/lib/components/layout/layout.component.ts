@@ -101,6 +101,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.account = this.authService.account;
     this.environment = environment;
     this.languages = this.translate.getLangs();
+    this.getLanguage();
     this.theme = this.environment.theme;
     this.showPreferences = environment.availableLanguages.length > 1;
   }
@@ -311,7 +312,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    */
   setLanguage(language: string) {
     this.translate.use(language);
-    window.localStorage.setItem('lang', language);
+    localStorage.setItem('lang', language);
   }
 
   /**
@@ -322,7 +323,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    */
   getLanguage(): string {
     // select the langage saved (or default if not)
-    let language = window.localStorage.getItem('lang');
+    let language = localStorage.getItem('lang');
+    console.log(language);
+    console.log(this.languages);
     if (!language || !this.languages.includes(language)) {
       language = this.translate.defaultLang;
     }

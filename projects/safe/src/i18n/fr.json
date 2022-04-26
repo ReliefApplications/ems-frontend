@@ -174,7 +174,7 @@
     "status": "Statut",
     "status_active": "Actif",
     "status_archived": "Archivé",
-    "status_pending": "En attente",
+    "status_pending": "Inactif",
     "step": {
       "few": "Etape",
       "none": "Aucune étape",
