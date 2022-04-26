@@ -177,6 +177,11 @@
 			"none": "No record",
 			"one": "Record"
 		},
+		"referenceData": {
+			"few": "Reference Data",
+			"none": "No Reference Data",
+			"one": "Reference Data"
+		},
 		"resource": {
 			"few": "Resources",
 			"none": "No resource",
@@ -418,6 +423,10 @@
 		"notifications": {
 			"readAll": "Mark all as read"
 		},
+		"preferences": {
+			"language": "Language",
+			"title": "Preferences"
+		},
 		"pullJob": {
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the pull job {{name}}?",
@@ -538,6 +547,18 @@
 			"showArchived": "Show archived records",
 			"upload": {
 				"hint": "File should contain one record per row. Header row contains the names of data fields."
+			}
+		},
+		"referenceData": {
+			"create": {
+				"errors": {
+					"name": "Only letters, hypens or underscores are accepted"
+				},
+				"title": "New Reference Data"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of Reference Data {{name}}?",
+				"title": "Delete Reference Data"
 			}
 		},
 		"resource": {
@@ -732,6 +753,92 @@
 			}
 		}
 	},
+	"kendo": {
+		"editor": {
+			"fontFamily": "Select font family",
+			"fontSize": "Select font size",
+			"format": "Format"
+		},
+		"fileselect": {
+			"dropFilesHere": "Drop files here to select",
+			"select": "Select files..."
+		},
+		"grid": {
+			"columnMenu": "'{columnName} Column Menu'",
+			"columns": "Columns",
+			"columnsApply": "Apply",
+			"columnsReset": "Reset",
+			"detailCollapse": "Collapse Details",
+			"detailExpand": "Expand Details",
+			"filter": "Filter",
+			"filterAfterOperator": "Is after",
+			"filterAfterOrEqualOperator": "Is after or equal to",
+			"filterAndLogic": "And",
+			"filterBeforeOperator": "Is before",
+			"filterBeforeOrEqualOperator": "Is before or equal to",
+			"filterBooleanAll": "(All)",
+			"filterClearButton": "Clear",
+			"filterContainsOperator": "Contains",
+			"filterDateToday": "Today",
+			"filterDateToggle": "Toggle calendar",
+			"filterEndsWithOperator": "Ends with",
+			"filterEqOperator": "Is equal to",
+			"filterFilterButton": "Filter",
+			"filterGtOperator": "Is greater than",
+			"filterGteOperator": "Is greater than or equal to",
+			"filterInputLabel": "'{columnName} Filter'",
+			"filterIsEmptyOperator": "Is empty",
+			"filterIsFalse": "is false",
+			"filterIsNotEmptyOperator": "Is not empty",
+			"filterIsNotNullOperator": "Is not null",
+			"filterIsNullOperator": "Is null",
+			"filterIsTrue": "is true",
+			"filterLtOperator": "Is less than",
+			"filterLteOperator": "Is less than or equal to",
+			"filterMenuLogicDropDownLabel": "'{columnName} Filter Logic'",
+			"filterMenuOperatorsDropDownLabel": "'{columnName} Filter Operators'",
+			"filterMenuTitle": "'{columnName} Filter Menu'",
+			"filterNotContainsOperator": "Does not contain",
+			"filterNotEqOperator": "Is not equal to",
+			"filterNumericDecrement": "Decrease value",
+			"filterNumericIncrement": "Increase value",
+			"filterOrLogic": "Or",
+			"filterStartsWithOperator": "Starts with",
+			"gridLabel": "Data table",
+			"groupCollapse": "Collapse Group",
+			"groupExpand": "Expand Group",
+			"groupPanelEmpty": "Drag a column header and drop it here to group by that column",
+			"loading": "Loading",
+			"lock": "Lock",
+			"noRecords": "No records available.",
+			"pagerFirstPage": "Go to the first page",
+			"pagerItems": "items",
+			"pagerItemsPerPage": "items per page",
+			"pagerLabel": "'Page navigation, page {currentPage} of {totalPages}'",
+			"pagerLastPage": "Go to the last page",
+			"pagerNextPage": "Go to the next page",
+			"pagerOf": "of",
+			"pagerPage": "Page",
+			"pagerPageNumberInputTitle": "Page Number",
+			"pagerPreviousPage": "Go to the previous page",
+			"selectAllCheckboxLabel": "Select All Rows",
+			"selectionCheckboxLabel": "Select Row",
+			"setColumnPosition": "Set Column Position",
+			"sortAscending": "Sort Ascending",
+			"sortDescending": "Sort Descending",
+			"sortable": "Sortable",
+			"sortedAscending": "Sorted ascending",
+			"sortedDefault": "Not sorted",
+			"sortedDescending": "Sorted descending",
+			"stick": "Stick",
+			"unlock": "Unlock",
+			"unstick": "Unstick"
+		},
+		"upload": {
+			"dropFilesHere": "Drop files here to upload",
+			"select": "Select files..."
+		}
+	},
 	"models": {
 		"apiConfiguration": {
 			"authType": "Authentication type"
@@ -781,6 +888,9 @@
 			},
 			"restore": "Restore"
 		},
+		"referenceData": {
+			"add": "Add new reference data"
+		},
 		"resource": {
 			"create": "Create a Resource"
 		},
@@ -823,6 +933,10 @@
 			"authentication": "Authentication settings",
 			"baseUrl": "Main endpoint",
 			"clientId": "Client ID",
+			"graphQL": {
+				"endpoint": "GraphQL endpoint",
+				"title": "GraphQL Settings"
+			},
 			"host": "Host settings",
 			"notifications": {
 				"authTokenFetched": "Authentication token fetched, ping again to get the actual response.",
@@ -834,6 +948,7 @@
 			"placeholder": {
 				"baseUrl": "Base URL for the API",
 				"clientId": "Enter client ID",
+				"graphQLEndpoint": "GraphQL extension",
 				"pingUrl": "Enter ping extension URL",
 				"scope": "Enter scope",
 				"secret": "Enter client secret",
@@ -891,6 +1006,21 @@
 		},
 		"pullJobs": {
 			"create": "Create a pull job"
+		},
+		"referenceData": {
+			"csv": "CSV input",
+			"errors": {
+				"name": "Only letters, hypens or underscores are accepted"
+			},
+			"fields": "Fields",
+			"path": "Path",
+			"placeholder": {
+				"csv": "Insert CSV here"
+			},
+			"queryName": "Query Name",
+			"type": "Type",
+			"validateCsv": "Validate CSV",
+			"valueField": "Value Field"
 		},
 		"workflow": {
 			"addStep": {

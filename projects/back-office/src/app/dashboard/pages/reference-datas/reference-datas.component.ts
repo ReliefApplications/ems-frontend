@@ -10,44 +10,48 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
-  ApiConfiguration,
   PermissionsManagement,
   PermissionType,
+  ReferenceData,
   SafeAuthService,
   SafeConfirmModalComponent,
   SafeSnackBarService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import {
-  GetApiConfigurationsQueryResponse,
-  GET_API_CONFIGURATIONS,
+  GetReferenceDatasQueryResponse,
+  GET_REFERENCE_DATAS,
 } from '../../../graphql/queries';
-import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
 import {
-  AddApiConfigurationMutationResponse,
-  ADD_API_CONFIGURATIION,
-  DeleteApiConfigurationMutationResponse,
-  DELETE_API_CONFIGURATION,
+  AddReferenceDataMutationResponse,
+  ADD_REFERENCE_DATA,
+  DeleteReferenceDataMutationResponse,
+  DELETE_REFERENCE_DATA,
 } from '../../../graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
 
+/** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * List of Reference data page.
+ */
 @Component({
-  selector: 'app-api-configurations',
-  templateUrl: './api-configurations.component.html',
-  styleUrls: ['./api-configurations.component.scss'],
+  selector: 'app-reference-datas',
+  templateUrl: './reference-datas.component.html',
+  styleUrls: ['./reference-datas.component.scss'],
 })
-export class ApiConfigurationsComponent
+export class ReferenceDatasComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
   // === DATA ===
   public loading = true;
-  private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
-  displayedColumns = ['name', 'status', 'authType', 'actions'];
-  dataSource = new MatTableDataSource<ApiConfiguration>([]);
-  public cachedApiConfigurations: ApiConfiguration[] = [];
+  private referenceDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
+  displayedColumns = ['name', 'apiConfiguration', 'actions'];
+  dataSource = new MatTableDataSource<ReferenceData>([]);
+  public cachedReferenceDatas: ReferenceData[] = [];
 
   // === PERMISSIONS ===
   canAdd = false;
@@ -57,9 +61,7 @@ export class ApiConfigurationsComponent
   @ViewChild(MatSort) sort?: MatSort;
 
   // === FILTERS ===
-  public showFilters = false;
   public searchText = '';
-  public statusFilter = '';
 
   public pageInfo = {
     pageIndex: 0,
@@ -68,6 +70,16 @@ export class ApiConfigurationsComponent
     endCursor: '',
   };
 
+  /**
+   * List of Reference data page.
+   *
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param router Angular router
+   * @param translate Angular translation service
+   */
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -78,27 +90,27 @@ export class ApiConfigurationsComponent
   ) {}
 
   /**
-   * Creates the API configuration query, and subscribes to the query changes.
+   * Creates the Reference data query, and subscribes to the query changes.
    */
   ngOnInit(): void {
-    this.apiConfigurationsQuery =
-      this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
-        query: GET_API_CONFIGURATIONS,
+    this.referenceDatasQuery =
+      this.apollo.watchQuery<GetReferenceDatasQueryResponse>({
+        query: GET_REFERENCE_DATAS,
         variables: {
           first: ITEMS_PER_PAGE,
         },
       });
 
-    this.apiConfigurationsQuery.valueChanges.subscribe((res) => {
-      this.cachedApiConfigurations = res.data.apiConfigurations.edges.map(
+    this.referenceDatasQuery.valueChanges.subscribe((res) => {
+      this.cachedReferenceDatas = res.data.referenceDatas.edges.map(
         (x) => x.node
       );
-      this.dataSource.data = this.cachedApiConfigurations.slice(
+      this.dataSource.data = this.cachedReferenceDatas.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
       );
-      this.pageInfo.length = res.data.apiConfigurations.totalCount;
-      this.pageInfo.endCursor = res.data.apiConfigurations.pageInfo.endCursor;
+      this.pageInfo.length = res.data.referenceDatas.totalCount;
+      this.pageInfo.endCursor = res.data.referenceDatas.pageInfo.endCursor;
       this.loading = res.loading;
       this.filterPredicate();
     });
@@ -124,7 +136,7 @@ export class ApiConfigurationsComponent
     if (
       (e.pageIndex > e.previousPageIndex ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedApiConfigurations.length
+      e.length > this.cachedReferenceDatas.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -134,7 +146,7 @@ export class ApiConfigurationsComponent
         neededSize -= this.pageInfo.pageSize;
       }
       this.loading = true;
-      this.apiConfigurationsQuery.fetchMore({
+      this.referenceDatasQuery.fetchMore({
         variables: {
           first: neededSize,
           afterCursor: this.pageInfo.endCursor,
@@ -146,17 +158,17 @@ export class ApiConfigurationsComponent
           return Object.assign({}, prev, {
             apiConfigurations: {
               edges: [
-                ...prev.apiConfigurations.edges,
-                ...fetchMoreResult.apiConfigurations.edges,
+                ...prev.referenceDatas.edges,
+                ...fetchMoreResult.referenceDatas.edges,
               ],
-              pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
-              totalCount: fetchMoreResult.apiConfigurations.totalCount,
+              pageInfo: fetchMoreResult.referenceDatas.pageInfo,
+              totalCount: fetchMoreResult.referenceDatas.totalCount,
             },
           });
         },
       });
     } else {
-      this.dataSource.data = this.cachedApiConfigurations.slice(
+      this.dataSource.data = this.cachedReferenceDatas.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
@@ -169,12 +181,9 @@ export class ApiConfigurationsComponent
    */
   private filterPredicate(): void {
     this.dataSource.filterPredicate = (data: any) =>
-      (this.searchText.trim().length === 0 ||
-        (this.searchText.trim().length > 0 &&
-          data.name.toLowerCase().includes(this.searchText.trim()))) &&
-      (this.statusFilter.trim().length === 0 ||
-        (this.statusFilter.trim().length > 0 &&
-          data.status.toLowerCase().includes(this.statusFilter.trim())));
+      this.searchText.trim().length === 0 ||
+      (this.searchText.trim().length > 0 &&
+        data.name.toLowerCase().includes(this.searchText.trim()));
   }
 
   /**
@@ -184,13 +193,9 @@ export class ApiConfigurationsComponent
    * @param event Value of the filter.
    */
   applyFilter(column: string, event: any): void {
-    if (column === 'status') {
-      this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
-    } else {
-      this.searchText = !!event
-        ? event.target.value.trim().toLowerCase()
-        : this.searchText;
-    }
+    this.searchText = !!event
+      ? event.target.value.trim().toLowerCase()
+      : this.searchText;
     this.dataSource.filter = '##';
   }
 
@@ -199,21 +204,20 @@ export class ApiConfigurationsComponent
    */
   clearAllFilters(): void {
     this.searchText = '';
-    this.statusFilter = '';
     this.applyFilter('', null);
   }
 
   /**
-   * Displays the AddApiConfiguration modal.
-   * Creates a new apiConfiguration on closed if result.
+   * Displays the AddReferenceData modal.
+   * Creates a new reference data on closed if result.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddApiConfigurationComponent);
+    const dialogRef = this.dialog.open(AddReferenceDataComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.apollo
-          .mutate<AddApiConfigurationMutationResponse>({
-            mutation: ADD_API_CONFIGURATIION,
+          .mutate<AddReferenceDataMutationResponse>({
+            mutation: ADD_REFERENCE_DATA,
             variables: {
               name: value.name,
             },
@@ -225,9 +229,7 @@ export class ApiConfigurationsComponent
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
-                      type: this.translate.instant(
-                        'common.apiConfiguration.one'
-                      ),
+                      type: this.translate.instant('common.referenceData.one'),
                       error: res.errors[0].message,
                     }
                   ),
@@ -236,8 +238,8 @@ export class ApiConfigurationsComponent
               } else {
                 if (res.data) {
                   this.router.navigate([
-                    '/settings/apiconfigurations',
-                    res.data.addApiConfiguration.id,
+                    '/referencedata',
+                    res.data.addReferenceData.id,
                   ]);
                 }
               }
@@ -251,20 +253,18 @@ export class ApiConfigurationsComponent
   }
 
   /**
-   * Removes an apiConfiguration if authorized.
+   * Removes a reference data if authorized.
    *
-   * @param element API config to delete.
+   * @param element Reference data to delete.
    * @param e click event.
    */
   onDelete(element: any, e: any): void {
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant(
-          'components.apiConfiguration.delete.title'
-        ),
+        title: this.translate.instant('components.referenceData.delete.title'),
         content: this.translate.instant(
-          'components.apiConfiguration.delete.confirmationMessage',
+          'components.referenceData.delete.confirmationMessage',
           {
             name: element.name,
           }
@@ -277,8 +277,8 @@ export class ApiConfigurationsComponent
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.apollo
-          .mutate<DeleteApiConfigurationMutationResponse>({
-            mutation: DELETE_API_CONFIGURATION,
+          .mutate<DeleteReferenceDataMutationResponse>({
+            mutation: DELETE_REFERENCE_DATA,
             variables: {
               id: element.id,
             },
@@ -287,7 +287,7 @@ export class ApiConfigurationsComponent
             if (res && !res.errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('common.apiConfiguration.one'),
+                  value: this.translate.instant('common.referenceData.one'),
                 })
               );
               this.dataSource.data = this.dataSource.data.filter(

@@ -15,6 +15,7 @@ export * from './lib/services/layout.service';
 export * from './lib/services/api-proxy.service';
 export * from './lib/services/dashboard.service';
 export * from './lib/services/grid-layout.service';
+export * from './lib/services/kendo-translation.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -39,6 +40,7 @@ export * from './lib/models/position-attribute-category.model';
 export * from './lib/models/position-attribute.model';
 export * from './lib/models/apiConfiguration.model';
 export * from './lib/models/pullJob.model';
+export * from './lib/models/referenceData.model';
 export * from './lib/models/layout.model';
 
 // === COMPONENTS ===
