@@ -88,7 +88,6 @@
 		},
 		"modifiedOn": "Modified On",
 		"name": "Name",
-		"newObject": "New {{name}}",
 		"next": "Next",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
@@ -423,6 +422,10 @@
 		"notifications": {
 			"readAll": "Mark all as read"
 		},
+		"preferences": {
+			"language": "Language",
+			"title": "Preferences"
+		},
 		"pullJob": {
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the pull job {{name}}?",
@@ -738,13 +741,101 @@
 			}
 		}
 	},
+	"kendo": {
+		"editor": {
+			"fontFamily": "Select font family",
+			"fontSize": "Select font size",
+			"format": "Format"
+		},
+		"fileselect": {
+			"dropFilesHere": "Drop files here to select",
+			"select": "Select files..."
+		},
+		"grid": {
+			"columnMenu": "'{columnName} Column Menu'",
+			"columns": "Columns",
+			"columnsApply": "Apply",
+			"columnsReset": "Reset",
+			"detailCollapse": "Collapse Details",
+			"detailExpand": "Expand Details",
+			"filter": "Filter",
+			"filterAfterOperator": "Is after",
+			"filterAfterOrEqualOperator": "Is after or equal to",
+			"filterAndLogic": "And",
+			"filterBeforeOperator": "Is before",
+			"filterBeforeOrEqualOperator": "Is before or equal to",
+			"filterBooleanAll": "(All)",
+			"filterClearButton": "Clear",
+			"filterContainsOperator": "Contains",
+			"filterDateToday": "Today",
+			"filterDateToggle": "Toggle calendar",
+			"filterEndsWithOperator": "Ends with",
+			"filterEqOperator": "Is equal to",
+			"filterFilterButton": "Filter",
+			"filterGtOperator": "Is greater than",
+			"filterGteOperator": "Is greater than or equal to",
+			"filterInputLabel": "'{columnName} Filter'",
+			"filterIsEmptyOperator": "Is empty",
+			"filterIsFalse": "is false",
+			"filterIsNotEmptyOperator": "Is not empty",
+			"filterIsNotNullOperator": "Is not null",
+			"filterIsNullOperator": "Is null",
+			"filterIsTrue": "is true",
+			"filterLtOperator": "Is less than",
+			"filterLteOperator": "Is less than or equal to",
+			"filterMenuLogicDropDownLabel": "'{columnName} Filter Logic'",
+			"filterMenuOperatorsDropDownLabel": "'{columnName} Filter Operators'",
+			"filterMenuTitle": "'{columnName} Filter Menu'",
+			"filterNotContainsOperator": "Does not contain",
+			"filterNotEqOperator": "Is not equal to",
+			"filterNumericDecrement": "Decrease value",
+			"filterNumericIncrement": "Increase value",
+			"filterOrLogic": "Or",
+			"filterStartsWithOperator": "Starts with",
+			"gridLabel": "Data table",
+			"groupCollapse": "Collapse Group",
+			"groupExpand": "Expand Group",
+			"groupPanelEmpty": "Drag a column header and drop it here to group by that column",
+			"loading": "Loading",
+			"lock": "Lock",
+			"noRecords": "No records available.",
+			"pagerFirstPage": "Go to the first page",
+			"pagerItems": "items",
+			"pagerItemsPerPage": "items per page",
+			"pagerLabel": "'Page navigation, page {currentPage} of {totalPages}'",
+			"pagerLastPage": "Go to the last page",
+			"pagerNextPage": "Go to the next page",
+			"pagerOf": "of",
+			"pagerPage": "Page",
+			"pagerPageNumberInputTitle": "Page Number",
+			"pagerPreviousPage": "Go to the previous page",
+			"selectAllCheckboxLabel": "Select All Rows",
+			"selectionCheckboxLabel": "Select Row",
+			"setColumnPosition": "Set Column Position",
+			"sortAscending": "Sort Ascending",
+			"sortDescending": "Sort Descending",
+			"sortable": "Sortable",
+			"sortedAscending": "Sorted ascending",
+			"sortedDefault": "Not sorted",
+			"sortedDescending": "Sorted descending",
+			"stick": "Stick",
+			"unlock": "Unlock",
+			"unstick": "Unstick"
+		},
+		"upload": {
+			"dropFilesHere": "Drop files here to upload",
+			"select": "Select files..."
+		}
+	},
 	"models": {
 		"apiConfiguration": {
-			"authType": "Authentication type"
+			"authType": "Authentication type",
+			"new": "New API Configuration"
 		},
 		"application": {
 			"description": "Description",
 			"id": "Application ID",
+			"new": "New application",
 			"notifications": {
 				"published": "{{value}} application published.",
 				"updated": "Application updated."
@@ -755,7 +846,8 @@
 			}
 		},
 		"channel": {
-			"create": "Create a channel"
+			"create": "Create a channel",
+			"new": "New channel"
 		},
 		"dashboard": {
 			"share": "Share Dashboard"
@@ -767,19 +859,25 @@
 				"label": "Label",
 				"name": "Field name"
 			},
+			"new": "New form",
 			"select": "Select a Form",
 			"template": "Template"
 		},
 		"page": {
 			"add": "Add a Page"
 		},
+		"positionAttribute": {
+			"new": "New position attribute"
+		},
 		"pullJob": {
+			"new": "New pull job",
 			"path": "Path",
 			"schedule": "Schedule",
 			"url": "Url"
 		},
 		"record": {
 			"convert": "Convert",
+			"new": "New record",
 			"notifications": {
 				"conversionIncomplete": "Selected record(s) do not match with some fields from this form.",
 				"rowsAdded": "Added {{length}} row(s) to the field {{field}} in the record {{value}}.",
@@ -795,6 +893,12 @@
 		},
 		"role": {
 			"create": "Create a role"
+		},
+		"step": {
+			"new": "New step"
+		},
+		"subscription": {
+			"new": "New subscription"
 		},
 		"user": {
 			"notifications": {
