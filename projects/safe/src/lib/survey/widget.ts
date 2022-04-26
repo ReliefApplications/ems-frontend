@@ -63,6 +63,7 @@ export const init = (
         },
       });
       survey.Serializer.removeProperty('expression', 'readOnly');
+      survey.Serializer.removeProperty('survey', 'focusFirstQuestionAutomatic');
       survey.Serializer.addProperty('expression', {
         name: 'readOnly:boolean',
         type: 'boolean',
