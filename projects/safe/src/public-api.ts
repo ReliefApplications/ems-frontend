@@ -15,6 +15,7 @@ export * from './lib/services/layout.service';
 export * from './lib/services/api-proxy.service';
 export * from './lib/services/dashboard.service';
 export * from './lib/services/grid-layout.service';
+export * from './lib/services/kendo-translation.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
