@@ -1,36 +1,38 @@
 <table mat-table [dataSource]="dataSource" matSort>
-    <ng-container matColumnDef="select" *ngIf="checkbox">
-      <th mat-header-cell *matHeaderCellDef style="width: 3.5vw;">
-        <mat-checkbox></mat-checkbox>
+  <ng-container matColumnDef="select" *ngIf="checkbox">
+    <th mat-header-cell *matHeaderCellDef style="width: 3.5vw">
+      <mat-checkbox></mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let element" style="width: 3.5vw">
+      <mat-checkbox></mat-checkbox>
+    </td>
+  </ng-container>
+
+  <ng-container *ngFor="let column of columns">
+    <ng-container
+      [matColumnDef]="column"
+      *ngIf="column !== 'actions' && column !== 'select'"
+    >
+      <th mat-header-cell *matHeaderCellDef>
+        {{ column | translate }}
       </th>
-      <td mat-cell *matCellDef="let element" style="width: 3.5vw;">
-        <mat-checkbox></mat-checkbox>
+      <td mat-cell *matCellDef="let element">
+        <kendo-skeleton
+          shape="text"
+          animation="pulse"
+          width="80%"
+        ></kendo-skeleton>
       </td>
     </ng-container>
+  </ng-container>
 
-    <ng-container *ngFor="let column of columns">
-        <ng-container [matColumnDef]="column" *ngIf="column !== 'actions' && column !== 'select'">
-            <th mat-header-cell *matHeaderCellDef>
-                {{column | translate}}
-            </th>
-            <td mat-cell *matCellDef="let element">
-                <kendo-skeleton
-                shape="text"
-                animation="pulse"
-                width="80%"
-                ></kendo-skeleton>
-            </td>
-        </ng-container>
-    </ng-container>
+  <ng-container matColumnDef="actions" *ngIf="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <safe-button [isIcon]="true" icon="more_vert"> </safe-button>
+    </td>
+  </ng-container>
 
-    <ng-container matColumnDef="actions" *ngIf="actions">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let element">
-          <safe-button [isIcon]="true" icon="more_vert">
-          </safe-button>
-        </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="columns"></tr>
-    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: columns"></tr>
 </table>

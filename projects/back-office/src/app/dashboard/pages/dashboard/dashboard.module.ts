@@ -7,6 +7,7 @@ import {
   SafeRecordHistoryModule,
   SafeWidgetGridModule,
   SafeButtonModule,
+  SafeSkeletonModule,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -15,7 +16,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,7 +33,6 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatProgressSpinnerModule,
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
@@ -44,6 +43,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeRecordHistoryModule,
     SafeButtonModule,
     TranslateModule,
+    SafeSkeletonModule,
   ],
   exports: [DashboardComponent],
 })

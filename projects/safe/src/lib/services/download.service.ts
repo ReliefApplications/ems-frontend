@@ -48,7 +48,9 @@ export class SafeDownloadService {
       {
         duration: 0,
         data: {
-          message: this.translate.instant('file.download.processing'),
+          message: this.translate.instant(
+            'common.notifications.file.download.processing'
+          ),
           loading: true,
         },
       }
@@ -66,14 +68,18 @@ export class SafeDownloadService {
         const blob = new Blob([res], { type });
         this.saveFile(fileName, blob);
         snackBarRef.instance.data = {
-          message: this.translate.instant('file.download.ready'),
+          message: this.translate.instant(
+            'common.notifications.file.download.ready'
+          ),
           loading: false,
         };
         setTimeout(() => snackBarRef.dismiss(), 1000);
       },
       () => {
         snackBarRef.instance.data = {
-          message: this.translate.instant('file.download.error'),
+          message: this.translate.instant(
+            'common.notifications.file.download.error'
+          ),
           loading: false,
           error: true,
         };
@@ -102,7 +108,9 @@ export class SafeDownloadService {
       {
         duration: 0,
         data: {
-          message: this.translate.instant('file.download.processing'),
+          message: this.translate.instant(
+            'common.notifications.file.download.processing'
+          ),
           loading: true,
         },
       }
@@ -120,14 +128,18 @@ export class SafeDownloadService {
         const blob = new Blob([res], { type });
         this.saveFile(fileName, blob);
         snackBarRef.instance.data = {
-          message: this.translate.instant('file.download.ready'),
+          message: this.translate.instant(
+            'common.notifications.file.download.ready'
+          ),
           loading: false,
         };
         setTimeout(() => snackBarRef.dismiss(), 1000);
       },
       () => {
         snackBarRef.instance.data = {
-          message: this.translate.instant('file.download.error'),
+          message: this.translate.instant(
+            'common.notifications.file.download.error'
+          ),
           loading: false,
           error: true,
         };
@@ -164,7 +176,9 @@ export class SafeDownloadService {
       {
         duration: 0,
         data: {
-          message: this.translate.instant('file.upload.processing'),
+          message: this.translate.instant(
+            'common.notifications.file.upload.processing'
+          ),
           loading: true,
         },
       }
@@ -183,14 +197,18 @@ export class SafeDownloadService {
       tap(
         () => {
           snackBarRef.instance.data = {
-            message: this.translate.instant('file.upload.ready'),
+            message: this.translate.instant(
+              'common.notifications.file.upload.ready'
+            ),
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
         () => {
           snackBarRef.instance.data = {
-            message: this.translate.instant('file.upload.error'),
+            message: this.translate.instant(
+              'common.notifications.file.upload.error'
+            ),
             loading: false,
             error: true,
           };
