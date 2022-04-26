@@ -47,6 +47,7 @@ export const init = (
       survey.Serializer.addProperty('question', {
         name: 'tooltip:text',
         category: 'general',
+        isLocalizable: true,
       });
       survey.Serializer.addProperty('comment', {
         name: 'allowEdition:boolean',
@@ -149,7 +150,8 @@ export const init = (
         const header =
           el.parentElement.parentElement.querySelector('.sv_q_title');
         if (header) {
-          header.title = question.tooltip;
+          header.title =
+            question.localizableStrings?.tooltip?.renderedText || '';
           const span = document.createElement('span');
           span.innerText = 'help';
           span.className = 'material-icons';
@@ -165,6 +167,11 @@ export const init = (
       }
       // Display of add button for resource question
       if (question.getType() === 'resource') {
+        // support the placeholder field
+        if (question.placeholder) {
+          question.contentQuestion.optionsCaption =
+            question.localizableStrings?.placeholder?.renderedText || '';
+        }
         // const dropdownComponent = buildRecordDropdown(question, el);
         if (question.survey.mode !== 'display' && question.resource) {
           const actionsButtons = document.createElement('div');
@@ -312,6 +319,7 @@ export const init = (
         question.maxSize = 7340032;
       }
     },
+    willUnmount: (): void => {},
   };
 
   const buildSearchButton = (
