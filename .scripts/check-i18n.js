@@ -84,6 +84,14 @@ listOfJson = listOfFileNames.map(filename=>require('../'+I18N_FOLDER_PATH+filena
 
 //Sort all the JSONs
 listOfJson = listOfJson.map(json=>sortJson(json));
+let enJsonSorted = sortJson(enJson);
+
+//Create a list of all the JSONs files except en.json
+let listOfJSONWithoutEn = JSON.parse(JSON.stringify(listOfJson));
+const indexEnJson = listOfFileNames.indexOf('en.json');
+if (indexEnJson > -1) {
+  listOfJSONWithoutEn.splice(indexEnJson,1); 
+}
 
 // Check that translation files are sorted.
 for(let i in listOfJson){
@@ -100,16 +108,9 @@ for(let i in listOfJson){
   );
 }
 
-//Create a list of all the JSONs files except en.json
-let listOfJSONWithoutEn = JSON.parse(JSON.stringify(listOfJson));
-const indexEnJson = listOfFileNames.indexOf('en.json');
-if (indexEnJson > -1) {
-  listOfJSONWithoutEn.splice(indexEnJson,1); 
-}
-
 //Check that the "non-english" files have the same keys than en.json
 let allKeysEn = [];
-getAllJsonKeys(enJson,allKeysEn);
+getAllJsonKeys(enJsonSorted,allKeysEn);
 listOfJSONWithoutEn.map(element=>{
   let allKeys = [];
   getAllJsonKeys(element,allKeys);
@@ -121,7 +122,7 @@ listOfJSONWithoutEn.map(element=>{
 })
 
 // Update the i18n test file.
-const testJson = setDefaultValue(enJson, DEFAULT_VALUE);
+const testJson = setDefaultValue(enJsonSorted, DEFAULT_VALUE);
 fs.writeFile(
   I18N_FOLDER_PATH + 'test.json',
   JSON.stringify(testJson, null, '\t'),
