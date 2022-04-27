@@ -30,6 +30,13 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import { KendoTranslationService } from '@safe/builder';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import localeEn from '@angular/common/locales/en';
+
+// register local translations for dates
+registerLocaleData(localeFr);
+registerLocaleData(localeEn);
 
 localStorage.setItem('loaded', 'false');
 
