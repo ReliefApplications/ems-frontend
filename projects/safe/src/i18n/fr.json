@@ -377,6 +377,9 @@
         "delete": {
           "confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"
         },
+        "errors": {
+          "invalid": "Le formulaire est invalide"
+        },
         "update": {
           "preview": {
             "description": "Réorganise, trie, filtre et cache des colonnes pour changer l'affichage par défaut de la mise en page"
