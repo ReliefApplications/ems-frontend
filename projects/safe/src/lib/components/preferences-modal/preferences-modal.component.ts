@@ -8,22 +8,6 @@ interface PreferencesDialogData {
   languages: string[];
 }
 
-/** List of available languages. Filtered by languages proposed by the platform. */
-const AVAILABLE_LANGUAGES = [
-  {
-    name: 'English',
-    value: 'en',
-  },
-  {
-    name: 'Test',
-    value: 'test',
-  },
-  {
-    name: 'Français',
-    value: 'fr',
-  },
-];
-
 /**
  * Preferences Modal.
  */
@@ -54,9 +38,26 @@ export class SafePreferencesModalComponent implements OnInit {
     private translate: TranslateService
   ) {
     this.currLang = this.translate.currentLang || this.translate.defaultLang;
-    this.languages = AVAILABLE_LANGUAGES.filter((x) =>
-      environment.availableLanguages.includes(x.value)
+    // create an object to get the language name from its code, displayed in
+    // the current language
+    const languageNames = new (Intl as any).DisplayNames(
+      this.currLang !== 'test' ? this.currLang : 'en',
+      { type: 'language' }
     );
+    this.languages = environment.availableLanguages.map((code: string) => {
+      try {
+        return {
+          value: code,
+          name: languageNames.of(code),
+        };
+      } catch {
+        // if the code is not a language, use the code as a name (eg: test)
+        return {
+          value: code,
+          name: code,
+        };
+      }
+    });
   }
 
   ngOnInit(): void {

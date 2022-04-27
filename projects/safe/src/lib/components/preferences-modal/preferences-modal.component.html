@@ -12,7 +12,7 @@
         }}</mat-label>
         <mat-select formControlName="language">
           <mat-option *ngFor="let lang of languages" [value]="lang.value">
-            {{ lang.name }}
+            {{ lang.name | titlecase }}
           </mat-option>
         </mat-select>
       </mat-form-field>
