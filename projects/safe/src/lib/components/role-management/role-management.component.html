@@ -60,7 +60,7 @@
             </ng-container>
             <div class="spacer"></div>
         </mat-tab>
-        <mat-tab [label]="'Resources & Forms'">
+        <mat-tab [label]="'Resources & Forms'" *ngIf="inApp">
             <div class="searchbar">
                 <mat-form-field appearance="outline">
                     <mat-icon matPrefix>search</mat-icon>
