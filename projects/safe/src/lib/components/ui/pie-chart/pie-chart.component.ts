@@ -21,6 +21,11 @@ interface ChartSeries {
   }[];
 }
 
+interface ChartPalette {
+  use: boolean;
+  palette: string[];
+}
+
 @Component({
   selector: 'safe-pie-chart',
   templateUrl: './pie-chart.component.html',
@@ -32,6 +37,8 @@ export class SafePieChartComponent implements OnInit {
   @Input() legend: ChartLegend | undefined;
 
   @Input() series: ChartSeries[] = [];
+
+  @Input() palette: ChartPalette | undefined;
 
   @ViewChild('chart')
   public chart?: ChartComponent;

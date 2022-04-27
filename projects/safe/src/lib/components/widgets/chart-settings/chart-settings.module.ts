@@ -22,6 +22,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import { SafeGridModule } from '../../../components/ui/core-grid/grid/grid.module';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatGridListModule } from '@angular/material/grid-list';
+
 @NgModule({
   declarations: [SafeChartSettingsComponent],
   imports: [
@@ -47,6 +50,8 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
     MatChipsModule,
     SafeGridModule,
     SafeIconModule,
+    DragDropModule,
+    MatGridListModule,
   ],
   exports: [SafeChartSettingsComponent],
 })

@@ -26,3 +26,36 @@
         min-width: 300px;
     }
 }
+
+.palette-container {
+    padding-top: 10px;
+    width: 100%;
+    max-width: 410px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .color-input-container {
+        border: solid 1px rgba($color: black, $alpha: 0.15);
+        position: relative;
+        border-radius: 4px;
+
+        .color {
+            position: absolute;
+            border-radius: 4px;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            width: 20px;
+            height: 20px;
+        }
+
+        input {
+            width: 30px;
+            height: 30px;
+            opacity: 0;
+        }
+    }
+}

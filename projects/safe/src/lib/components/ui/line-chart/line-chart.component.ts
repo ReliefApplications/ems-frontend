@@ -22,6 +22,11 @@ interface ChartSeries {
   }[];
 }
 
+interface ChartPalette {
+  use: boolean;
+  palette: string[];
+}
+
 @Component({
   selector: 'safe-line-chart',
   templateUrl: './line-chart.component.html',
@@ -33,6 +38,8 @@ export class SafeLineChartComponent implements OnInit {
   @Input() legend: ChartLegend | undefined;
 
   @Input() series: ChartSeries[] = [];
+
+  @Input() palette: ChartPalette | undefined;
 
   @ViewChild('chart')
   public chart?: ChartComponent;

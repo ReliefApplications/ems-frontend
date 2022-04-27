@@ -22,6 +22,11 @@ interface ChartSeries {
   }[];
 }
 
+interface ChartPalette {
+  use: boolean;
+  palette: string[];
+}
+
 @Component({
   selector: 'safe-bar-chart',
   templateUrl: './bar-chart.component.html',
@@ -33,6 +38,8 @@ export class SafeBarChartComponent implements OnInit {
   @Input() legend: ChartLegend | undefined;
 
   @Input() series: ChartSeries[] = [];
+
+  @Input() palette: ChartPalette | undefined;
 
   @Input() gap = 2;
 

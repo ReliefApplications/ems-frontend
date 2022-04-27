@@ -22,6 +22,11 @@ interface ChartSeries {
   }[];
 }
 
+interface ChartPalette {
+  use: boolean;
+  palette: string[];
+}
+
 @Component({
   selector: 'safe-column-chart',
   templateUrl: './column-chart.component.html',
@@ -33,6 +38,8 @@ export class SafeColumnChartComponent implements OnInit {
   @Input() legend: ChartLegend | undefined;
 
   @Input() series: ChartSeries[] = [];
+
+  @Input() palette: ChartPalette | undefined;
 
   @Input() gap = 2;
 

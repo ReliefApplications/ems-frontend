@@ -1,4 +1,4 @@
-<kendo-chart #chart>
+<kendo-chart #chart [seriesColors]="palette && palette.use ? palette.palette : undefined!">
     <kendo-chart-title *ngIf="title" [visible]="title.visible" [text]="title.text" [position]="title.position">
     </kendo-chart-title>
     <kendo-chart-legend *ngIf="legend" [visible]="legend.visible" [position]="legend.position"

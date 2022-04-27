@@ -136,6 +136,33 @@
                 </div>
               </ng-container>
             </mat-expansion-panel>
+            <mat-expansion-panel formGroupName="colorPalette">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Color palette
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-slide-toggle formControlName="use">
+                Use custom color palette
+              </mat-slide-toggle>
+              <div class="palette-container" formArrayName="palette" cdkDropListGroup>
+                <div
+                  *ngFor="let _ of palette; let i = index;"
+                  cdkDropList
+                  cdkDropListOrientation="horizontal"
+                  [cdkDropListData]="i"
+                  (cdkDropListDropped)="onColorMove($event)">
+                  <div class="color-input-container" cdkDrag [cdkDragData]="i">
+                    <div class="color" [style]="'background-color: ' + tileForm.value.chart.colorPalette.palette[i]"></div>
+                    <input type="color" [formControlName]="i" />
+                    <!-- Preview fix -->
+                    <div class="color-input-container" *cdkDragPreview>
+                      <div class="color" [style]="'background-color: ' + tileForm.value.chart.colorPalette.palette[i]"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
           </mat-accordion>
         </mat-tab>
         <mat-tab [label]="'common.preview' | translate">
@@ -146,8 +173,7 @@
                 [header]="false"
                 [export]="false"
                 [settings]="settings"
-              >
-              </safe-chart>
+              ></safe-chart>
             </div>
             <div class="sub-container">
               <safe-grid

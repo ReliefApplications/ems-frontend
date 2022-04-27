@@ -20,6 +20,10 @@ interface ChartSeries {
     color?: string;
   }[];
 }
+interface ChartPalette {
+  use: boolean;
+  palette: string[];
+}
 
 @Component({
   selector: 'safe-donut-chart',
@@ -32,6 +36,8 @@ export class SafeDonutChartComponent implements OnInit {
   @Input() legend: ChartLegend | undefined;
 
   @Input() series: ChartSeries[] = [];
+
+  @Input() palette: ChartPalette | undefined;
 
   @ViewChild('chart')
   public chart?: ChartComponent;

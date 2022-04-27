@@ -48,6 +48,7 @@ export class SafeChartSettingsComponent implements OnInit {
   public titlePositions = TITLE_POSITIONS;
   public chart?: Chart;
   public type: any;
+  public palette: string[] = [];
 
   // === DISPLAY PREVIEW ===
   public settings: any;
@@ -112,5 +113,23 @@ export class SafeChartSettingsComponent implements OnInit {
     this.aggregationBuilder.getPreviewGrid().subscribe((value) => {
       this.grid = value;
     });
+    this.palette = this.tileForm.value.chart.colorPalette.palette;
+  }
+
+  /*  Replicates drag event in the palette array.
+   */
+  onColorMove(event: any) {
+    const palette = (this.tileForm?.controls.chart as any).controls.colorPalette
+      .controls.palette.value;
+    const newIndex = event.container.data;
+    const prevIndex = event.previousContainer.data;
+    const newValue = palette[prevIndex];
+
+    palette.splice(prevIndex, 1);
+    palette.splice(newIndex, 0, newValue);
+
+    (
+      this.tileForm?.controls.chart as any
+    ).controls.colorPalette.controls.palette.setValue(palette);
   }
 }
