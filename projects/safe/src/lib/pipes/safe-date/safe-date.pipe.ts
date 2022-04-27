@@ -7,10 +7,16 @@ import { TranslateService } from '@ngx-translate/core';
   pure: false,
 })
 export class SafeDatePipe implements PipeTransform {
-  constructor(private translateService: TranslateService) {}
+  constructor(private translate: TranslateService) {}
 
-  transform(value: Date, format: string = 'mediumDate'): string {
-    const datePipe = new DatePipe(this.translateService.currentLang);
-    return datePipe.transform(value, format) || '';
+  transform(
+    value: Date,
+    format: string = 'mediumDate',
+    timezone: string | undefined = undefined
+  ): string {
+    const datePipe = new DatePipe(
+      this.translate.currentLang || this.translate.defaultLang
+    );
+    return datePipe.transform(value, format, timezone) || '';
   }
 }
