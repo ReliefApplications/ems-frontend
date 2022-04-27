@@ -655,12 +655,12 @@
 			},
 			"settings": {
 				"chart": {
+					"colorPalette": "******",
 					"legend": "******",
 					"orientation": "******",
 					"position": "******",
 					"text": "******",
 					"type": "******",
-					"colorPalette": "******",
 					"useColorPalette": "******"
 				},
 				"grid": {

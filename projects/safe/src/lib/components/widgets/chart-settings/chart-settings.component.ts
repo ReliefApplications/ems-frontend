@@ -48,7 +48,6 @@ export class SafeChartSettingsComponent implements OnInit {
   public titlePositions = TITLE_POSITIONS;
   public chart?: Chart;
   public type: any;
-  public palette: string[] = [];
 
   // === DISPLAY PREVIEW ===
   public settings: any;
@@ -97,6 +96,7 @@ export class SafeChartSettingsComponent implements OnInit {
 
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
+      this.settings = this.tileForm?.value
     });
 
     this.chartForm.controls.type.valueChanges.subscribe((value) => {
@@ -113,7 +113,6 @@ export class SafeChartSettingsComponent implements OnInit {
     this.aggregationBuilder.getPreviewGrid().subscribe((value) => {
       this.grid = value;
     });
-    this.palette = this.tileForm.value.chart.colorPalette.palette;
   }
 
   /*  Replicates drag event in the palette array.

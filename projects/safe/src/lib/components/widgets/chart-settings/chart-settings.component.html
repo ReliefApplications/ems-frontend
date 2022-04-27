@@ -147,7 +147,7 @@
               </mat-slide-toggle>
               <div class="palette-container" formArrayName="palette" cdkDropListGroup>
                 <div
-                  *ngFor="let _ of palette; let i = index;"
+                  *ngFor="let _ of tileForm.value.chart.colorPalette.palette let i = index;"
                   cdkDropList
                   cdkDropListOrientation="horizontal"
                   [cdkDropListData]="i"
