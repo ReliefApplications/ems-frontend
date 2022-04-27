@@ -105,6 +105,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
     this.setCustomTheme();
 
+    // translate the editor in the same language as the interface
+    SurveyCreator.localization.currentLocale = this.translate.currentLang;
+
     this.surveyCreator = new SurveyCreator.SurveyCreator(
       'surveyCreatorContainer',
       creatorOptions
