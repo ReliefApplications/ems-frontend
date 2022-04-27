@@ -659,7 +659,9 @@
 					"orientation": "******",
 					"position": "******",
 					"text": "******",
-					"type": "******"
+					"type": "******",
+					"colorPalette": "******",
+					"useColorPalette": "******"
 				},
 				"grid": {
 					"actions": {

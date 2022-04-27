@@ -655,11 +655,13 @@
 			},
 			"settings": {
 				"chart": {
+					"colorPalette": "Color palette",
 					"legend": "Legend",
 					"orientation": "Orientation",
 					"position": "Position",
 					"text": "Text",
-					"type": "Chart Type"
+					"type": "Chart Type",
+					"useColorPalette": "Use custom color palette"
 				},
 				"grid": {
 					"actions": {

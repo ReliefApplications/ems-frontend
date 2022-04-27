@@ -139,11 +139,11 @@
             <mat-expansion-panel formGroupName="colorPalette">
               <mat-expansion-panel-header>
                 <mat-panel-title>
-                  Color palette
+                  {{ 'components.widget.settings.chart.colorPalette' | translate }}
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <mat-slide-toggle formControlName="use">
-                Use custom color palette
+                {{ 'components.widget.settings.chart.useColorPalette' | translate }}
               </mat-slide-toggle>
               <div class="palette-container" formArrayName="palette" cdkDropListGroup>
                 <div
