@@ -91,3 +91,6 @@ export * from './lib/pages/profile/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';
+
+// === PIPES ===
+export * from './lib/pipes/safe-date/public-api';
