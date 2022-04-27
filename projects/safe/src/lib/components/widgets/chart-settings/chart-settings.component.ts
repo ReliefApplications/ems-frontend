@@ -96,7 +96,7 @@ export class SafeChartSettingsComponent implements OnInit {
 
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
-      this.settings = this.tileForm?.value
+      this.settings = this.tileForm?.value;
     });
 
     this.chartForm.controls.type.valueChanges.subscribe((value) => {
