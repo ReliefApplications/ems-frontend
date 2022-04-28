@@ -752,7 +752,7 @@
     </ng-container>
     <!-- ROW DETAILS -->
     <kendo-grid-column
-      *ngIf="hasDetails"
+      *ngIf="hasDetails && !actions.disableDetails"
       [columnMenu]="false"
       [width]="54"
       [resizable]="false"
