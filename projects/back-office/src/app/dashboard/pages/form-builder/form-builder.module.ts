@@ -6,6 +6,7 @@ import {
   SafeAccessModule,
   SafeFormBuilderModule,
   SafeButtonModule,
+  SafeDateModule,
 } from '@safe/builder';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HistoryComponent } from './components/history/history.component';
@@ -32,6 +33,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeAccessModule,
     SafeButtonModule,
     TranslateModule,
+    SafeDateModule,
   ],
   exports: [FormBuilderComponent],
 })

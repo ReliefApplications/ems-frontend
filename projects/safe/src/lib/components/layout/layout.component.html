@@ -103,7 +103,7 @@
         (click)="onNotificationClick(notification)"
         *ngFor="let notification of notifications"
       >
-        {{ notification.action }} - {{ notification.createdAt | date }}
+        {{ notification.action }} - {{ notification.createdAt | safeDate }}
       </button>
     </div>
     <safe-button

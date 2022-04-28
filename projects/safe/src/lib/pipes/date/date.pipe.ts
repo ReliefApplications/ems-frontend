@@ -34,7 +34,7 @@ export class SafeDatePipe implements PipeTransform {
    * @returns A readable date as string
    */
   transform(
-    value: Date,
+    value: string | number | Date | null | undefined,
     format: DateFormat = 'mediumDate',
     timezone: string | undefined = undefined
   ): string | null {
