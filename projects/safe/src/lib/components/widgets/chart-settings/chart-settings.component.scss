@@ -39,20 +39,21 @@
         border: 1px solid rgba($color: black, $alpha: 0.1);
         position: relative;
         border-radius: 4px;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
         .color {
-            position: absolute;
             border-radius: 4px;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            margin: auto;
             width: 24px;
             height: 24px;
         }
 
         input {
+            
+            position: absolute;
             cursor: pointer;
             width: 30px;
             height: 30px;

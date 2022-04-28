@@ -110,7 +110,7 @@
                 <div>
                   <mat-form-field appearance="outline">
                     <mat-label>{{ 'components.widget.settings.chart.text' | translate }}</mat-label>
-                    <input matInput formControlName="text" />
+                    <input matInput formControlName="text"/>
                   </mat-form-field>
                 </div>
                 <div>
@@ -145,8 +145,9 @@
               <mat-slide-toggle formControlName="use">
                 {{ 'components.widget.settings.chart.useColorPalette' | translate }}
               </mat-slide-toggle>
-              <div class="palette-container" formArrayName="palette" cdkDropListGroup>
+              <div class="palette-container" cdkDropListGroup>
                 <div
+                  formArrayName="palette"
                   *ngFor="let _ of tileForm.value.chart.colorPalette.palette let i = index;"
                   cdkDropList
                   cdkDropListOrientation="horizontal"
@@ -154,8 +155,10 @@
                   (cdkDropListDropped)="onColorMove($event)">
                   <div class="color-input-container" cdkDrag [cdkDragData]="i">
                     <div class="color" [style]="'background-color: ' + tileForm.value.chart.colorPalette.palette[i]"></div>
-                    <input type="color" [formControlName]="i" />
-                    <!-- Preview fix -->
+                    <input
+                      type="color"
+                      [value]="tileForm.value.chart.colorPalette.palette[i]"
+                      (change)="onColorChange($event, i)">
                     <div class="color-input-container" *cdkDragPreview>
                       <div class="color" [style]="'background-color: ' + tileForm.value.chart.colorPalette.palette[i]"></div>
                     </div>
@@ -169,10 +172,18 @@
           <div class="preview-container">
             <div class="sub-container">
               <safe-chart
+                *ngIf="settings.chart.colorPalette.use"
                 class="widget-content"
                 [header]="false"
                 [export]="false"
                 [settings]="settings"
+              ></safe-chart>
+              <safe-chart
+                *ngIf="!settings.chart.colorPalette.use"
+                class="widget-content"
+                [header]="false"
+                [export]="false"
+                [settings]="defaultPaletteSettings"
               ></safe-chart>
             </div>
             <div class="sub-container">

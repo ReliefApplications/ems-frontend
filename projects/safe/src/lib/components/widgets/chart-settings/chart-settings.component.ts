@@ -51,6 +51,7 @@ export class SafeChartSettingsComponent implements OnInit {
 
   // === DISPLAY PREVIEW ===
   public settings: any;
+  public defaultPaletteSettings: any;
   public grid: any;
 
   public get chartForm(): FormGroup {
@@ -97,6 +98,8 @@ export class SafeChartSettingsComponent implements OnInit {
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
       this.settings = this.tileForm?.value;
+      this.defaultPaletteSettings = this.settings;
+      this.defaultPaletteSettings.colorPalette = {};
     });
 
     this.chartForm.controls.type.valueChanges.subscribe((value) => {
@@ -126,6 +129,19 @@ export class SafeChartSettingsComponent implements OnInit {
 
     palette.splice(prevIndex, 1);
     palette.splice(newIndex, 0, newValue);
+
+    (
+      this.tileForm?.controls.chart as any
+    ).controls.colorPalette.controls.palette.setValue(palette);
+  }
+
+  /*  Updates color palette with the new color.
+   */
+  onColorChange(event: any, i: number) {
+    const palette = (this.tileForm?.controls.chart as any).controls.colorPalette
+      .controls.palette.value;
+
+    palette[i] = event.target.value;
 
     (
       this.tileForm?.controls.chart as any
