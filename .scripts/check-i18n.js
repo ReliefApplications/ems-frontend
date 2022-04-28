@@ -152,7 +152,6 @@ try {
   );
   updateFile(TEST_LANGUAGE, testJson);
 } catch (err) {
-  console.log('there');
   console.error(err);
   process.exit(1);
 }
