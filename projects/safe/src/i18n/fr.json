@@ -423,7 +423,7 @@
       "readAll": "Tout marquer comme lu"
     },
     "preferences": {
-      "dateLanguage": "Format de date",
+      "dateLanguage": "Format de date et heure",
       "language": "Langage",
       "title": "Préférences"
     },

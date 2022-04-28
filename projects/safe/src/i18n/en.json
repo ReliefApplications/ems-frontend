@@ -423,7 +423,7 @@
 			"readAll": "Mark all as read"
 		},
 		"preferences": {
-			"dateLanguage": "Date format",
+			"dateLanguage": "Date and time format",
 			"language": "Language",
 			"title": "Preferences"
 		},

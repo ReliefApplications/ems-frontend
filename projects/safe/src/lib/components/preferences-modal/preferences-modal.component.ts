@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
+import { SafeDateTranslateService } from '../../services/date-translate.service';
 
 /** Preferences Dialog Data */
 interface PreferencesDialogData {
@@ -37,7 +38,8 @@ export class SafePreferencesModalComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: PreferencesDialogData,
     private formBuilder: FormBuilder,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dateTranslate: SafeDateTranslateService
   ) {
     // find the current language
     this.currLang = this.translate.currentLang || this.translate.defaultLang;
@@ -48,7 +50,7 @@ export class SafePreferencesModalComponent implements OnInit {
     }));
 
     // find the current date language
-    this.currDateLang = this.currLang;
+    this.currDateLang = this.dateTranslate.currentLang;
     // find the list of languages with their example date formats
     this.dateLanguages = data.languages
       .map((code: string) => ({
@@ -107,7 +109,7 @@ export class SafePreferencesModalComponent implements OnInit {
     const date = new Date(1984, 0, 24, 8, 34);
     try {
       const datePipe = new DatePipe(lang);
-      return datePipe.transform(date, 'short');
+      return `(${lang.toUpperCase()}) ${datePipe.transform(date, 'short')}`;
     } catch {
       return null;
     }

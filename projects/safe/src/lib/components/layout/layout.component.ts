@@ -31,6 +31,7 @@ import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafePreferencesModalComponent } from '../preferences-modal/preferences-modal.component';
+import { SafeDateTranslateService } from '../../services/date-translate.service';
 
 @Component({
   selector: 'safe-layout',
@@ -95,7 +96,8 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     private notificationService: SafeNotificationService,
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dateTranslate: SafeDateTranslateService
   ) {
     this.largeDevice = window.innerWidth > 1024;
     this.account = this.authService.account;
@@ -279,6 +281,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     dialogRef.afterClosed().subscribe((form) => {
       if (form && form.touched) {
         this.setLanguage(form.value.language);
+        this.dateTranslate.use(form.value.dateLanguage);
       }
     });
   }

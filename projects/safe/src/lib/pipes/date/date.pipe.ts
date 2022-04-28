@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { SafeDateTranslateService } from '../../services/date-translate.service';
 
 export type DateFormat =
   | 'short'
@@ -22,7 +22,7 @@ export type DateFormat =
   pure: false,
 })
 export class SafeDatePipe implements PipeTransform {
-  constructor(private translate: TranslateService) {}
+  constructor(private dateTranslate: SafeDateTranslateService) {}
 
   /**
    * Convert the date to a user-readable format, according to the user
@@ -39,13 +39,11 @@ export class SafeDatePipe implements PipeTransform {
     timezone: string | undefined = undefined
   ): string | null {
     try {
-      const datePipe = new DatePipe(
-        this.translate.currentLang || this.translate.defaultLang
-      );
+      const datePipe = new DatePipe(this.dateTranslate.currentLang);
       return datePipe.transform(value, format, timezone);
     } catch {
       console.warn(
-        `Dates are not available with language ${this.translate.currentLang},`,
+        `Dates are not available with language ${this.dateTranslate.currentLang},`,
         `please change the language or add it to the app.module.ts file.`
       );
       return null;
