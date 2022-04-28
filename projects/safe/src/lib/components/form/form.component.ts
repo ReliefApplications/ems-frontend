@@ -184,7 +184,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.surveyLanguage = (LANGUAGES as any)[code];
       this.survey.locale = code;
     } else {
-      // TODO: check
       this.survey.locale = 'en';
     }
 
@@ -351,7 +350,10 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   };
 
-  /* Change language of the form.
+  /**
+   * Change language of the form.
+   *
+   * @param ev language event
    */
   setLanguage(ev: string): void {
     this.survey.locale = this.usedLocales.filter(

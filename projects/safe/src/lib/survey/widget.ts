@@ -294,7 +294,6 @@ export const init = (
 
         // Create an <a> HTMLElement only used to verify the validity of the URL
         const urlTester = document.createElement('a');
-        urlTester.id = 'urlTesterElement';
         urlTester.href = el.value;
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         urlTester.host && urlTester.host !== window.location.host
