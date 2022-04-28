@@ -17,11 +17,11 @@
         </mat-chip>
       </mat-chip-list>
     </mat-form-field>
-    <kendo-fileselect [multiple]="true" formControlName="files"></kendo-fileselect>
-    <!-- <div class="email-body-container">
-      <div class="email-body-preview" [innerHTML]="form.controls.html.value"></div>
-    </div> -->
-    <kendo-editor style="height: 350px;" formControlName="html">
+    <kendo-fileselect
+      [multiple]="true"
+      formControlName="files"
+    ></kendo-fileselect>
+    <kendo-editor style="height: 350px" formControlName="html" [iframe]="false">
       <kendo-toolbar>
         <kendo-toolbar-buttongroup>
           <kendo-toolbar-button kendoEditorBoldButton></kendo-toolbar-button>
