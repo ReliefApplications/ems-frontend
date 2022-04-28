@@ -53,7 +53,7 @@ export class SafePreferencesModalComponent implements OnInit {
     this.dateLanguages = data.languages
       .map((code: string) => ({
         value: code,
-        name: this.getDateLanguageExample(code),
+        name: this.getDateLanguageText(code),
       }))
       .filter((dateLang) => dateLang.name);
   }
@@ -64,7 +64,7 @@ export class SafePreferencesModalComponent implements OnInit {
       // initializes select field with current language
       language: [this.currLang, Validators.required],
       // initializes select field with current date language format
-      date: [this.currDateLang, Validators.required],
+      dateLanguage: [this.currDateLang, Validators.required],
     });
   }
 
@@ -84,7 +84,7 @@ export class SafePreferencesModalComponent implements OnInit {
         type: 'language',
       });
     } catch {
-      // if display language is not a language, fall back to english
+      // if displayLang is not a language, fall back to english
       displayNameObject = new (Intl as any).DisplayNames('en', {
         type: 'language',
       });
@@ -103,7 +103,7 @@ export class SafePreferencesModalComponent implements OnInit {
    * @param lang The language in which we want the date
    * @returns The date formated as a string
    */
-  private getDateLanguageExample(lang: string): string | null {
+  private getDateLanguageText(lang: string): string | null {
     const date = new Date(1984, 0, 24, 8, 34);
     try {
       const datePipe = new DatePipe(lang);
