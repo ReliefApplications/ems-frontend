@@ -154,7 +154,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       );
     }
 
-    // cached data is the priorit
+    // cached data is the priority
     if (cachedData) {
       this.survey.data = cachedData;
     } else if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
