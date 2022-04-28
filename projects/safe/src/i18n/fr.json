@@ -829,7 +829,8 @@
 	},
 	"models": {
 		"apiConfiguration": {
-			"authType": "Type d'authentification"
+			"authType": "Type d'authentification",
+			"new": "Nouvelle configuration d'API"
 		},
 		"application": {
 			"description": "Description",

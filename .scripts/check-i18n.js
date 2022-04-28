@@ -154,5 +154,5 @@ try {
 } catch (err) {
   console.log('there');
   console.error(err);
-  process.exit();
+  process.exit(1);
 }
