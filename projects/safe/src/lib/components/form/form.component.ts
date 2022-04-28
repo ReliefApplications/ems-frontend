@@ -327,7 +327,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         localStorage.removeItem(this.storageId);
         if (res.data.editRecord || res.data.addRecord.form.uniqueRecord) {
-          this.survey.clear(false, true);
+          this.survey.clear(false, false);
           if (res.data.addRecord) {
             this.record = res.data.addRecord;
             this.modifiedAt = this.record?.modifiedAt || null;
@@ -337,9 +337,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
           this.surveyActive = true;
         } else {
           this.survey.showCompletedPage = true;
-        }
-        if (this.form.uniqueRecord) {
-          this.selectedTabIndex = 0;
         }
         this.save.emit({
           completed: true,
