@@ -1,4 +1,4 @@
-import { SafeDatePipe } from './safe-date.pipe';
+import { SafeDatePipe } from './date.pipe';
 import { TranslateService } from '@ngx-translate/core';
 
 describe('SafeDatePipe', () => {
