@@ -17,6 +17,13 @@
             {{ option }}
           </mat-option>
         </mat-autocomplete>
+        <safe-icon
+          *ngIf="canSelectDataSet && form.invalid"
+          matSuffix
+          icon="error"
+          variant="danger"
+          [matTooltip]="'components.form.layout.errors.invalid' | translate"
+        ></safe-icon>
       </mat-form-field>
 
       <mat-form-field
@@ -33,13 +40,6 @@
           >
         </mat-select>
       </mat-form-field>
-      <div
-        class="form-error"
-        *ngIf="canSelectDataSet && form.invalid"
-        title="{{ 'components.form.layout.errors.invalid' | translate }}"
-      >
-        <mat-icon>error</mat-icon>
-      </div>
     </div>
 
     <ng-container *ngIf="isField">
