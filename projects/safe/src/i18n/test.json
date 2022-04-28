@@ -377,6 +377,9 @@
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
 				},
+				"errors": {
+					"invalid": "******"
+				},
 				"update": {
 					"preview": {
 						"description": "******"

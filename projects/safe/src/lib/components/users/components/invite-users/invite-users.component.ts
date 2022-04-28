@@ -140,7 +140,7 @@ export class SafeInviteUsersComponent implements OnInit {
     this.downloadService.getFile(
       this.data.downloadPath,
       `text/xlsx;charset=utf-8;`,
-      'users.xlsx'
+      'users_template.xlsx'
     );
   }
 

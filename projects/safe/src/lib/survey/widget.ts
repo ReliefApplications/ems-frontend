@@ -64,6 +64,7 @@ export const init = (
         },
       });
       survey.Serializer.removeProperty('expression', 'readOnly');
+      survey.Serializer.removeProperty('survey', 'focusFirstQuestionAutomatic');
       survey.Serializer.addProperty('expression', {
         name: 'readOnly:boolean',
         type: 'boolean',
@@ -125,6 +126,7 @@ export const init = (
       }
       // Display of edit button for comment question
       if (question.getType() === 'comment' && question.allowEdition) {
+        el.parentElement.querySelector('#editComment')?.remove();
         const mainDiv = document.createElement('div');
         mainDiv.id = 'editComment';
         mainDiv.style.height = '23px';
@@ -152,6 +154,7 @@ export const init = (
         if (header) {
           header.title =
             question.localizableStrings?.tooltip?.renderedText || '';
+          header.querySelector('span.material-icons')?.remove();
           const span = document.createElement('span');
           span.innerText = 'help';
           span.className = 'material-icons';
@@ -174,6 +177,7 @@ export const init = (
         }
         // const dropdownComponent = buildRecordDropdown(question, el);
         if (question.survey.mode !== 'display' && question.resource) {
+          el.parentElement.querySelector('#actionsButtons')?.remove();
           const actionsButtons = document.createElement('div');
           actionsButtons.id = 'actionsButtons';
           actionsButtons.style.display = 'flex';
@@ -219,6 +223,7 @@ export const init = (
         const gridComponent = buildRecordsGrid(question, el);
 
         if (question.survey.mode !== 'display') {
+          el.parentElement.querySelector('#actionsButtons')?.remove();
           const actionsButtons = document.createElement('div');
           actionsButtons.id = 'actionsButtons';
           actionsButtons.style.display = 'flex';

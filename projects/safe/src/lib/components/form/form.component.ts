@@ -184,10 +184,10 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.surveyLanguage = (LANGUAGES as any)[code];
       this.survey.locale = code;
     } else {
-      // TODO: check
       this.survey.locale = 'en';
     }
 
+    this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showNavigationButtons = false;
     this.setPages();
     this.survey.onComplete.add(this.onComplete);
@@ -350,12 +350,16 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   };
 
-  /* Change language of the form.
+  /**
+   * Change language of the form.
+   *
+   * @param ev language event
    */
   setLanguage(ev: string): void {
     this.survey.locale = this.usedLocales.filter(
       (locale) => locale.text === ev
     )[0].value;
+    this.survey.render(this.containerId);
   }
 
   private onClearFiles(survey: Survey.SurveyModel, options: any): void {
