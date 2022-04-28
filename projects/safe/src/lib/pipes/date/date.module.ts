@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeDatePipe } from './safe-date.pipe';
+import { SafeDatePipe } from './date.pipe';
 
 @NgModule({
   declarations: [SafeDatePipe],
