@@ -324,8 +324,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   getLanguage(): string {
     // select the langage saved (or default if not)
     let language = localStorage.getItem('lang');
-    console.log(language);
-    console.log(this.languages);
     if (!language || !this.languages.includes(language)) {
       language = this.translate.defaultLang;
     }

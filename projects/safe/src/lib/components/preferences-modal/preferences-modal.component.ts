@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { DatePipe } from '@angular/common';
 
 /** Preferences Dialog Data */
 interface PreferencesDialogData {
@@ -23,6 +24,8 @@ export class SafePreferencesModalComponent implements OnInit {
   // === DATA ===
   languages: { name: string; value: string }[] = [];
   currLang: string;
+  dateLanguages: { name: string | null; value: string }[] = [];
+  currDateLang: string;
 
   /**
    * Preferences Modal.
@@ -32,32 +35,27 @@ export class SafePreferencesModalComponent implements OnInit {
    * @param translate Angular translate service
    */
   constructor(
-    @Inject('environment') environment: any,
     @Inject(MAT_DIALOG_DATA) public data: PreferencesDialogData,
     private formBuilder: FormBuilder,
     private translate: TranslateService
   ) {
+    // find the current language
     this.currLang = this.translate.currentLang || this.translate.defaultLang;
-    // create an object to get the language name from its code, displayed in
-    // the current language
-    const languageNames = new (Intl as any).DisplayNames(
-      this.currLang !== 'test' ? this.currLang : 'en',
-      { type: 'language' }
-    );
-    this.languages = environment.availableLanguages.map((code: string) => {
-      try {
-        return {
-          value: code,
-          name: languageNames.of(code),
-        };
-      } catch {
-        // if the code is not a language, use the code as a name (eg: test)
-        return {
-          value: code,
-          name: code,
-        };
-      }
-    });
+    // find the list of languages and their complete names
+    this.languages = data.languages.map((code: string) => ({
+      value: code,
+      name: this.getLanguageName(code, this.currLang),
+    }));
+
+    // find the current date language
+    this.currDateLang = this.currLang;
+    // find the list of languages with their example date formats
+    this.dateLanguages = data.languages
+      .map((code: string) => ({
+        value: code,
+        name: this.getDateLanguageExample(code),
+      }))
+      .filter((dateLang) => dateLang.name);
   }
 
   ngOnInit(): void {
@@ -65,6 +63,53 @@ export class SafePreferencesModalComponent implements OnInit {
     this.preferencesForm = this.formBuilder.group({
       // initializes select field with current language
       language: [this.currLang, Validators.required],
+      // initializes select field with current date language format
+      date: [this.currDateLang, Validators.required],
     });
+  }
+
+  /**
+   * Get the full name of a language from its code
+   *
+   * @param lang The code of the language we want the name of
+   * @param displayLang The code of the language in which we want the name translated
+   * @returns The language name
+   */
+  private getLanguageName(lang: string, displayLang: string): string {
+    // create the DisplayNames object if not created
+    let displayNameObject: any;
+    try {
+      // try to get names for the asking language
+      displayNameObject = new (Intl as any).DisplayNames(displayLang, {
+        type: 'language',
+      });
+    } catch {
+      // if display language is not a language, fall back to english
+      displayNameObject = new (Intl as any).DisplayNames('en', {
+        type: 'language',
+      });
+    }
+    // get the language name
+    try {
+      return displayNameObject.of(lang);
+    } catch {
+      return lang;
+    }
+  }
+
+  /**
+   * Get an example short date in a certain language format
+   *
+   * @param lang The language in which we want the date
+   * @returns The date formated as a string
+   */
+  private getDateLanguageExample(lang: string): string | null {
+    const date = new Date(1984, 0, 24, 8, 34);
+    try {
+      const datePipe = new DatePipe(lang);
+      return datePipe.transform(date, 'short');
+    } catch {
+      return null;
+    }
   }
 }
