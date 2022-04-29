@@ -270,7 +270,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     if (!this.loading) {
       this.showFilter = !this.showFilter;
       this.showFilterChange.emit(this.showFilter);
-      this.onFilterChange({ logic: 'and', filters: [] });
+      this.onFilterChange({
+        logic: 'and',
+        filters: this.showFilter ? [] : this.filter.filters,
+      });
     }
   }
 
