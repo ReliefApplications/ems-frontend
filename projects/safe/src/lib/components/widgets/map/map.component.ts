@@ -346,8 +346,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             }
             return {
               fillColor: color,
-              stroke: false,
-              fillOpacity: 1,
+              fillOpacity: 0.5,
+              weight: 0.5,
+              opacity: 1,
+              color: 'white',
             };
           },
         }).addTo(this.map);
