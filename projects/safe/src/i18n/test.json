@@ -426,6 +426,7 @@
 			"readAll": "******"
 		},
 		"preferences": {
+			"dateFormat": "******",
 			"language": "******",
 			"title": "******"
 		},
@@ -745,6 +746,9 @@
 		}
 	},
 	"kendo": {
+		"datepicker": {
+			"today": "******"
+		},
 		"editor": {
 			"fontFamily": "******",
 			"fontSize": "******",

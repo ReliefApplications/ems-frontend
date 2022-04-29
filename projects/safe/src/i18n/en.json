@@ -426,6 +426,7 @@
 			"readAll": "Mark all as read"
 		},
 		"preferences": {
+			"dateFormat": "Date and time format",
 			"language": "Language",
 			"title": "Preferences"
 		},
@@ -745,6 +746,9 @@
 		}
 	},
 	"kendo": {
+		"datepicker": {
+			"today": "Today"
+		},
 		"editor": {
 			"fontFamily": "Select font family",
 			"fontSize": "Select font size",

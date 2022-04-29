@@ -205,17 +205,17 @@
               [style]="getStyle(dataItem, field.name)"
             >
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'time'">
-                {{ getPropertyValue(dataItem, field.name) | date: 'shortTime' }}
+                {{ getPropertyValue(dataItem, field.name) | safeDate: 'shortTime' }}
               </div>
               <div
                 #refSpan
                 class="textbox"
                 *ngIf="['datetime', 'datetime-local'].includes(field.meta.type)"
               >
-                {{ getPropertyValue(dataItem, field.name) | date: 'short' }}
+                {{ getPropertyValue(dataItem, field.name) | safeDate: 'short' }}
               </div>
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'date'">
-                {{ getPropertyValue(dataItem, field.name) | date: 'shortDate' }}
+                {{ getPropertyValue(dataItem, field.name) | safeDate: 'shortDate' }}
               </div>
             </div>
           </ng-template>
