@@ -34,7 +34,7 @@ import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
 
-// register local translations for dates
+// Register local translations for dates
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
 

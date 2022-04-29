@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { SafeDateTranslateService } from '../../services/date-translate.service';
 
+/** Available date formats. */
 export type DateFormat =
   | 'short'
   | 'medium'
@@ -17,11 +18,19 @@ export type DateFormat =
   | 'longTime'
   | 'fullTime';
 
+/**
+ * Pipe to translate dates and formats them according to the user preferences.
+ */
 @Pipe({
   name: 'safeDate',
   pure: false,
 })
 export class SafeDatePipe implements PipeTransform {
+  /**
+   * Pipe to translate dates and formats them according to the user preferences.
+   *
+   * @param dateTranslate Shared date translation service
+   */
   constructor(private dateTranslate: SafeDateTranslateService) {}
 
   /**

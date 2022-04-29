@@ -746,6 +746,9 @@
 		}
 	},
 	"kendo": {
+		"datepicker": {
+			"today": "Aujourd'hui"
+		},
 		"editor": {
 			"fontFamily": "Sélectionnez une police de caractère",
 			"fontSize": "Sélectionnez la taille de police",

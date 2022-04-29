@@ -746,6 +746,9 @@
 		}
 	},
 	"kendo": {
+		"datepicker": {
+			"today": "******"
+		},
 		"editor": {
 			"fontFamily": "******",
 			"fontSize": "******",
