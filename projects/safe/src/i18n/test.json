@@ -377,6 +377,9 @@
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
 				},
+				"errors": {
+					"invalid": "******"
+				},
 				"update": {
 					"preview": {
 						"description": "******"
@@ -423,7 +426,7 @@
 			"readAll": "******"
 		},
 		"preferences": {
-			"dateLanguage": "******",
+			"dateFormat": "******",
 			"language": "******",
 			"title": "******"
 		},

@@ -281,7 +281,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     dialogRef.afterClosed().subscribe((form) => {
       if (form && form.touched) {
         this.setLanguage(form.value.language);
-        this.dateTranslate.use(form.value.dateLanguage);
+        this.dateTranslate.use(form.value.dateFormat);
       }
     });
   }

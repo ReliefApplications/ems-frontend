@@ -92,6 +92,11 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     private translate: TranslateService
   ) {
     this.environment = environment;
+    // translate the editor in the same language as the interface
+    SurveyCreator.localization.currentLocale = this.translate.currentLang;
+    this.translate.onLangChange.subscribe(() => {
+      SurveyCreator.localization.currentLocale = this.translate.currentLang;
+    });
   }
 
   ngOnInit(): void {

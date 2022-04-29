@@ -20,14 +20,14 @@
     <!-- DATE LANGUAGE SELECTION -->
     <div class="form-group">
       <div class="form-group-title">
-        {{ 'components.preferences.dateLanguage' | translate }}
+        {{ 'components.preferences.dateFormat' | translate }}
       </div>
       <mat-form-field appearance="outline">
         <mat-label>{{
-          'components.preferences.dateLanguage' | translate
+          'components.preferences.dateFormat' | translate
         }}</mat-label>
-        <mat-select formControlName="dateLanguage">
-          <mat-option *ngFor="let dateLang of dateLanguages" [value]="dateLang.value">
+        <mat-select formControlName="dateFormat">
+          <mat-option *ngFor="let dateLang of dateFormats" [value]="dateLang.value">
             {{ dateLang.name }}
           </mat-option>
         </mat-select>

@@ -377,6 +377,9 @@
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"
 				},
+				"errors": {
+					"invalid": "The form is not valid"
+				},
 				"update": {
 					"preview": {
 						"description": "Reorder, sort, filter and hide columns to edit default display of the layout"
@@ -423,7 +426,7 @@
 			"readAll": "Mark all as read"
 		},
 		"preferences": {
-			"dateLanguage": "Date and time format",
+			"dateFormat": "Date and time format",
 			"language": "Language",
 			"title": "Preferences"
 		},
