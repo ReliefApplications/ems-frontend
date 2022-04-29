@@ -115,8 +115,10 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         update: [hasActions ? tileSettings.actions.update : true],
         inlineEdition: [hasActions ? tileSettings.actions.inlineEdition : true],
         addRecord: [hasActions ? tileSettings.actions.addRecord : false],
-        disableDetails: [
-          hasActions ? tileSettings.actions.disableDetails : false,
+        showDetails: [
+          hasActions && typeof tileSettings.actions.showDetails !== 'undefined'
+            ? tileSettings.actions.showDetails
+            : true,
         ],
       }),
       floatingButtons: this.formBuilder.array(

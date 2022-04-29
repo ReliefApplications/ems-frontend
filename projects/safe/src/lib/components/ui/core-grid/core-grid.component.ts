@@ -213,7 +213,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     delete: false,
     history: false,
     convert: false,
-    disableDetails: false,
+    showDetails: true,
   };
 
   public editable = false;
@@ -257,7 +257,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       update: this.settings.actions?.update,
       delete: this.settings.actions?.delete,
       convert: this.settings.actions?.convert,
-      disableDetails: this.settings.actions?.disableDetails,
+      showDetails:
+        this.settings.actions &&
+        typeof this.settings.actions?.showDetails !== 'undefined'
+          ? this.settings.actions?.showDetails
+          : true,
     };
     this.editable = this.settings.actions?.inlineEdition;
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
