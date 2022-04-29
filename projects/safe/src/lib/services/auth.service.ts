@@ -56,9 +56,10 @@ export class SafeAuthService {
    * @param apollo Apollo client
    */
   constructor(private apollo: Apollo, private oauthService: OAuthService) {
-    this.oauthService.events.subscribe(() =>
-      this.isAuthenticated.next(this.oauthService.hasValidAccessToken())
-    );
+    this.oauthService.events.subscribe(() => {
+      this.isAuthenticated.next(this.oauthService.hasValidAccessToken());
+      this.checkAccount();
+    });
     this.oauthService.events
       .pipe(filter((e) => ['token_received'].includes(e.type)))
       .subscribe(() => {
@@ -66,7 +67,6 @@ export class SafeAuthService {
         this.oauthService.loadUserProfile();
       });
     this.oauthService.setupAutomaticSilentRefresh();
-    this.checkAccount();
   }
 
   /**
