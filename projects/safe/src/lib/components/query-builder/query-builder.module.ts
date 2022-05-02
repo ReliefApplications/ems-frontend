@@ -31,6 +31,7 @@ import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/
 import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     LabelModule,
     SafeCheckboxTreeModule,
     SafeCoreGridModule,
+    MatSliderModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

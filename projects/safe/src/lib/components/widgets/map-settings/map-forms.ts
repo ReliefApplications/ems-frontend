@@ -40,6 +40,7 @@ const createClorophletFormArray = (clorophlets: any[]): any[] => {
         geoJSON: value.geoJSON,
         geoJSONname: value.geoJSONname,
         geoJSONfield: value.geoJSONfield,
+        opacity: value.opacity || 100,
         place: value.place,
         divisions: formBuilder.array(
           createDivisionFormArray(value.divisions ? value.divisions : [])
