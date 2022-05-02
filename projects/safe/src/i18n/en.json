@@ -675,6 +675,7 @@
 						"delete": "Delete records",
 						"inline": "Inline edition",
 						"show": "Show history",
+						"showDetails": "Show record details",
 						"title": "Enabled actions",
 						"update": "Update records"
 					},

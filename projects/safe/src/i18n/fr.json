@@ -675,6 +675,7 @@
 						"delete": "Supprimer les enregistrements",
 						"inline": "Modifier par ligne",
 						"show": "Voir l'historique",
+						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
 						"update": "Modifier les enregistrements"
 					},
