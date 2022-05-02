@@ -111,7 +111,6 @@ export class SafeReferenceDataService {
           graphqlEndpoint;
         const body = { query: this.buildGraphQLQuery(referenceData, isCached) };
         const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
-        console.log(data);
         items = referenceData.path ? get(data, referenceData.path) : data;
         items = referenceData.query ? items[referenceData.query] : items;
         // Cache items
