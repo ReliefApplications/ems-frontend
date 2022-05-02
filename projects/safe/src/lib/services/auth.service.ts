@@ -68,7 +68,6 @@ export class SafeAuthService {
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
-        console.log('invalid_nonce_in_state');
         this.oauthService.initImplicitFlow();
       });
     this.oauthService.setupAutomaticSilentRefresh();
