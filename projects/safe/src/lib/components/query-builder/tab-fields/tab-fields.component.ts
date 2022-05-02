@@ -33,6 +33,9 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public selectedFields: any[] = [];
   public fieldForm: FormGroup | null = null;
 
+  public searchAvailable = '';
+  public searchSelected = '';
+
   constructor(private queryBuilder: QueryBuilderService) {}
 
   ngOnInit(): void {

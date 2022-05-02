@@ -62,7 +62,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                   orderable: true,
                   action: x.canDelete && {
                     icon: 'delete',
-                    toolTip: 'Delete the page',
+                    toolTip: this.translate.instant('common.deleteObject', {
+                      name: this.translate
+                        .instant('common.page.one')
+                        .toLowerCase(),
+                    }),
                     callback: () => this.onDelete(x),
                   },
                 })) || [];
@@ -77,32 +81,34 @@ export class ApplicationComponent implements OnInit, OnDestroy {
               });
               adminNavItems = adminNavItems.concat([
                 {
-                  name: this.translate.instant('global.settings'),
+                  name: this.translate.instant('common.settings'),
                   path: './settings/edit',
                   icon: 'settings',
                 },
                 {
-                  name: this.translate.instant('global.users'),
+                  name: this.translate.instant('common.user.few'),
                   path: './settings/users',
                   icon: 'supervisor_account',
                 },
                 {
-                  name: this.translate.instant('global.roles'),
+                  name: this.translate.instant('common.role.few'),
                   path: './settings/roles',
                   icon: 'admin_panel_settings',
                 },
                 {
-                  name: this.translate.instant('sidenav.attributes'),
+                  name: this.translate.instant(
+                    'pages.application.positionAttributes.title'
+                  ),
                   path: './settings/position',
                   icon: 'manage_accounts',
                 },
                 {
-                  name: this.translate.instant('global.channels'),
+                  name: this.translate.instant('common.channel.few'),
                   path: './settings/channels',
                   icon: 'edit_notifications',
                 },
                 {
-                  name: this.translate.instant('sidenav.subscriptions'),
+                  name: this.translate.instant('common.subscription.few'),
                   path: './settings/subscriptions',
                   icon: 'move_to_inbox',
                 },
@@ -110,11 +116,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
             }
             this.navGroups = [
               {
-                name: this.translate.instant('global.display'),
+                name: this.translate.instant('common.display'),
                 navItems: displayNavItems,
               },
               {
-                name: this.translate.instant('sidenav.administration'),
+                name: this.translate.instant('pages.administration.title'),
                 navItems: adminNavItems,
               },
             ];

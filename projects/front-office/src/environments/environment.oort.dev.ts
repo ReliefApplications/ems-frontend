@@ -1,5 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/oort';
+import { theme } from '../themes/oort/oort.dev';
 
 const authConfig: AuthConfig = {
   issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
@@ -21,7 +21,7 @@ export const environment = {
   frontOfficeUri: 'https://oort-dev.oortcloud.tech',
   backOfficeUri: 'https://oort-dev.oortcloud.tech/admin/',
   module: 'frontoffice',
-  availableLanguages: ['en', 'test'],
+  availableLanguages: ['en', 'fr', 'test'],
   authConfig,
   theme,
 };

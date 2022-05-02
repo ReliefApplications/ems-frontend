@@ -236,7 +236,7 @@ export const init = (
             // return !hasUniqueRecord(obj.resource);
           }
         },
-        visibleIndex: 3,
+        visibleIndex: 2,
       });
       survey.Serializer.addProperty('resource', {
         name: 'canSearch:boolean',
@@ -283,6 +283,7 @@ export const init = (
       survey.Serializer.addProperty('resource', {
         name: 'placeholder',
         category: 'Custom Questions',
+        isLocalizable: true,
       });
       survey.Serializer.addProperty('resource', {
         name: 'prefillWithCurrentRecord:boolean',

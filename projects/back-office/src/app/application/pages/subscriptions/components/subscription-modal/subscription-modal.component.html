@@ -1,16 +1,19 @@
 <h1 mat-dialog-title>
-    {{(data.subscription ? 'subscriptions.edit' : 'subscriptions.new') | translate}}
+    {{(data.subscription ?
+      ('common.editObject' | translate: { name: 'common.subscription.one' | translate }) :
+      ('models.subscription.new' | translate)
+    )}}
 </h1>
 <div mat-dialog-content>
     <form [formGroup]="subscriptionForm">
         <div class="form-group">
             <mat-form-field appearance="outline">
-                <mat-label>{{'global.title' | translate}}</mat-label>
-                <input type="text" [placeholder]="'global.titlePlaceholder' | translate" matInput formControlName="title">
+                <mat-label>{{'common.title' | translate}}</mat-label>
+                <input type="text" [placeholder]="'common.placeholder.title' | translate" matInput formControlName="title">
             </mat-form-field>
             <mat-form-field appearance="outline">
-                <mat-label>{{'subscriptions.listen' | translate}}</mat-label>
-                <input type="text" [placeholder]="'subscriptions.listenPlaceholder' | translate"
+                <mat-label>{{'components.application.subscription.modal.listenTo' | translate}}</mat-label>
+                <input type="text" [placeholder]="'components.application.subscription.modal.placeholder.listenTo' | translate"
                 matInput formControlName="routingKey" [matAutocomplete]="auto">
                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" #applicationSelect (opened)="onOpenApplicationSelect()">
                     <mat-optgroup *ngFor="let application of applications$ | async" [label]="application.name || ''">
@@ -22,16 +25,16 @@
                 <safe-button *ngIf="routingKey" matSuffix [isIcon]="true" icon="close" aria-label="Clear"
                     (click)="routingKey=''">
                 </safe-button>
-                <mat-hint>{{'subscriptions.listenHint' | translate}}</mat-hint>
+                <mat-hint>{{'components.application.subscription.modal.hint.listenTo' | translate}}</mat-hint>
             </mat-form-field>
             <mat-form-field appearance="outline">
-                <mat-label>{{'global.convert' | translate}}</mat-label>
+                <mat-label>{{'components.record.convert.select' | translate}}</mat-label>
                 <mat-select #formSelect  formControlName="convertTo" (openedChange)="onOpenFormSelect($event)">
                     <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{ form.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline">
-                <mat-label>{{'global.notify' | translate}}</mat-label>
+                <mat-label>{{'components.channel.dropdown.select' | translate}}</mat-label>
                 <mat-select formControlName="channel">
                     <mat-option *ngFor="let channel of data.channels" [value]="channel.id">{{ channel.title }}
                     </mat-option>
@@ -41,9 +44,9 @@
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'action.close' | translate}}</button>
+    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
     <button mat-flat-button [mat-dialog-close]="subscriptionForm.value" cdkFocusInitial color="primary"
         [disabled]="!subscriptionForm.valid">
-        {{(data.subscription ? 'action.update' : 'action.create') | translate}}
+        {{(data.subscription ? 'common.update' : 'common.create') | translate}}
     </button>
 </div>

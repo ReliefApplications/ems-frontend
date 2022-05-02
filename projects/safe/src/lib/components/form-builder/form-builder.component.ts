@@ -12,6 +12,7 @@ import * as SurveyCreator from 'survey-creator';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
 import { Form } from '../../models/form.model';
+import { TranslateService } from '@ngx-translate/core';
 
 /* Commented types are not yet implemented.
  */
@@ -87,13 +88,19 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   constructor(
     @Inject('environment') environment: any,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) {
     this.environment = environment;
+    // translate the editor in the same language as the interface
+    SurveyCreator.localization.currentLocale = this.translate.currentLang;
+    this.translate.onLangChange.subscribe(() => {
+      SurveyCreator.localization.currentLocale = this.translate.currentLang;
+    });
   }
 
   ngOnInit(): void {
-    const options = {
+    const creatorOptions = {
       showEmbededSurveyTab: false,
       showJSONEditorTab: false,
       generateValidJSON: true,
@@ -105,7 +112,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
     this.surveyCreator = new SurveyCreator.SurveyCreator(
       'surveyCreatorContainer',
-      options
+      creatorOptions
     );
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = this.form.structure || '';
@@ -129,8 +136,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.onModified.add((survey, option) => {
       this.formChange.emit(survey.text);
     });
-    this.surveyCreator.survey.onUpdateQuestionCssClasses.add((_, opt) =>
-      this.onSetCustomCss(opt)
+    this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
+      (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
     this.surveyCreator.onTestSurveyCreated.add((sender, opt) => {
       opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
@@ -200,11 +207,13 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   }
 
   private addCustomClassToCoreFields(coreFields: string[]): void {
-    this.surveyCreator.survey.onAfterRenderQuestion.add((_, options: any) => {
-      if (coreFields.includes(options.question.valueName)) {
-        options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      (survey: Survey.SurveyModel, options: any) => {
+        if (coreFields.includes(options.question.valueName)) {
+          options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
+        }
       }
-    });
+    );
   }
 
   setCustomTheme(): void {
@@ -364,20 +373,37 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           element.relatedName = this.toSnakeCase(element.relatedName);
           if (!this.isSnakeCase(element.relatedName)) {
             throw new Error(
-              'The related name ' +
-                element.relatedName +
-                ' on page ' +
-                page.name +
-                ' is invalid. Please conform to snake_case.'
+              this.translate.instant(
+                'components.formBuilder.errors.invalidRelatedName',
+                {
+                  name: element.relatedName,
+                  question: element.name,
+                  page: page.name,
+                }
+              )
             );
           }
         } else {
           throw new Error(
-            'Missing related name for question ' +
-              element.title +
-              ' on page ' +
-              page.name +
-              '. Please provide a valid data value name (snake_case) to save the form.'
+            this.translate.instant(
+              'components.formBuilder.errors.missingRelatedName',
+              {
+                question: element.name,
+                page: page.name,
+              }
+            )
+          );
+        }
+
+        if (element.addRecord && !element.addTemplate) {
+          throw new Error(
+            this.translate.instant(
+              'components.formBuilder.errors.missingTemplate',
+              {
+                question: element.name,
+                page: page.name,
+              }
+            )
           );
         }
       }

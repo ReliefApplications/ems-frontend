@@ -1,5 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/default';
+import { theme } from '../themes/default/default.local';
 
 // const authConfig: AuthConfig = {
 //   issuer:
@@ -35,7 +35,7 @@ export const environment = {
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
   module: 'backoffice',
-  availableLanguages: ['en', 'test'],
+  availableLanguages: ['en', 'fr', 'test'],
   authConfig,
   theme,
 };

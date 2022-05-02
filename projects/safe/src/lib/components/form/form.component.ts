@@ -111,25 +111,23 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
     Survey.StylesManager.applyTheme();
 
-    Survey.StylesManager.findSheet('default');
-
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
 
     const structure = JSON.parse(this.form.structure || '');
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure)
     );
-    this.survey.onClearFiles.add((survey, options) =>
+    this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
       this.onClearFiles(survey, options)
     );
-    this.survey.onUploadFiles.add((survey, options) =>
+    this.survey.onUploadFiles.add((survey: Survey.SurveyModel, options: any) =>
       this.onUploadFiles(survey, options)
     );
-    this.survey.onDownloadFile.add((survey, options) =>
+    this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
       this.onDownloadFile(survey, options)
     );
-    this.survey.onUpdateQuestionCssClasses.add((_, options) =>
-      this.onSetCustomCss(options)
+    this.survey.onUpdateQuestionCssClasses.add(
+      (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
     // Unset readOnly fields if it's the record creation
     if (!this.record) {
@@ -150,24 +148,20 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFromCacheData = !!cachedData;
     if (this.isFromCacheData) {
       this.snackBar.openSnackBar(
-        this.translate.instant('notification.objectLoadedFromCache', {
-          type: this.translate.instant('notification.term.record'),
+        this.translate.instant('common.notifications.loadedFromCache', {
+          type: this.translate.instant('common.record.one'),
         })
       );
     }
 
-    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+    if (cachedData) {
+      this.survey.data = cachedData;
+    } else if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
-    } else {
-      if (cachedData) {
-        this.survey.data = cachedData;
-      } else {
-        if (this.record && this.record.data) {
-          this.survey.data = this.record.data;
-          this.modifiedAt = this.record.modifiedAt || null;
-        }
-      }
+    } else if (this.record && this.record.data) {
+      this.survey.data = this.record.data;
+      this.modifiedAt = this.record.modifiedAt || null;
     }
 
     if (this.survey.getUsedLocales().length > 1) {
@@ -186,10 +180,10 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.surveyLanguage = (LANGUAGES as any)[code];
       this.survey.locale = code;
     } else {
-      // TODO: check
       this.survey.locale = 'en';
     }
 
+    this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showNavigationButtons = false;
     this.setPages();
     this.survey.onComplete.add(this.onComplete);
@@ -197,16 +191,22 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
-    this.survey.onCurrentPageChanged.add((survey, options) => {
-      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
-      this.selectedTabIndex = survey.currentPageNo;
-    });
+    this.survey.onCurrentPageChanged.add(
+      (survey: Survey.SurveyModel, options: any) => {
+        survey.checkErrorsMode = survey.isLastPage
+          ? 'onComplete'
+          : 'onNextPage';
+        this.selectedTabIndex = survey.currentPageNo;
+      }
+    );
     this.survey.onPageVisibleChanged.add(() => {
       this.setPages();
     });
-    this.survey.onSettingQuestionErrors.add((survey, options) => {
-      this.setPages();
-    });
+    this.survey.onSettingQuestionErrors.add(
+      (survey: Survey.SurveyModel, options: any) => {
+        this.setPages();
+      }
+    );
     this.survey.onValueChanged.add(this.valueChange.bind(this));
   }
 
@@ -323,7 +323,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         localStorage.removeItem(this.storageId);
         if (res.data.editRecord || res.data.addRecord.form.uniqueRecord) {
-          this.survey.clear(false, true);
+          this.survey.clear(false, false);
           if (res.data.addRecord) {
             this.record = res.data.addRecord;
             this.modifiedAt = this.record?.modifiedAt || null;
@@ -334,9 +334,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
           this.survey.showCompletedPage = true;
         }
-        if (this.form.uniqueRecord) {
-          this.selectedTabIndex = 0;
-        }
         this.save.emit({
           completed: true,
           hideNewRecord:
@@ -346,12 +343,16 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   };
 
-  /* Change language of the form.
+  /**
+   * Change language of the form.
+   *
+   * @param ev language event
    */
   setLanguage(ev: string): void {
     this.survey.locale = this.usedLocales.filter(
       (locale) => locale.text === ev
     )[0].value;
+    this.survey.render(this.containerId);
   }
 
   private onClearFiles(survey: Survey.SurveyModel, options: any): void {
@@ -451,9 +452,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.survey) {
       this.survey.currentPageNo = i;
     }
-    if (this.survey.compareTo) {
-      this.survey.currentPageNo = i;
-    }
+    // if (this.survey.compareTo) {
+    //   this.survey.currentPageNo = i;
+    // }
     this.selectedTabIndex = i;
   }
 
@@ -497,7 +498,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
           .subscribe((res) => {
             this.layoutService.setRightSidenav(null);
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.dataRecovered')
+              this.translate.instant('common.notifications.dataRecovered')
             );
           });
       }

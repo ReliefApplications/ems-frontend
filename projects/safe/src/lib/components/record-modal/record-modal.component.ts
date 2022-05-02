@@ -135,16 +135,19 @@ export class SafeRecordModalComponent implements OnInit {
     this.survey = this.formBuilderService.createSurvey(
       this.form?.structure || ''
     );
-    this.survey.onDownloadFile.add((survey, options) =>
+    this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
       this.onDownloadFile(survey, options)
     );
-    this.survey.onCurrentPageChanged.add((surveyModel, options) => {
-      this.selectedTabIndex = surveyModel.currentPageNo;
-    });
+    this.survey.onCurrentPageChanged.add(
+      (survey: Survey.SurveyModel, options: any) => {
+        this.selectedTabIndex = survey.currentPageNo;
+      }
+    );
     this.survey.data = this.record.data;
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
     this.survey.mode = 'display';
     this.survey.showNavigationButtons = 'none';
+    this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showProgressBar = 'off';
     this.survey.render(this.containerId);
     this.setPages();
@@ -152,13 +155,15 @@ export class SafeRecordModalComponent implements OnInit {
       this.surveyNext = this.formBuilderService.createSurvey(
         this.form?.structure || ''
       );
-      this.survey.onDownloadFile.add((survey, options) =>
-        this.onDownloadFile(survey, options)
+      this.survey.onDownloadFile.add(
+        (survey: Survey.SurveyModel, options: any) =>
+          this.onDownloadFile(survey, options)
       );
       this.surveyNext.data = this.data.compareTo.data;
       this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';
       this.surveyNext.mode = 'display';
       this.surveyNext.showNavigationButtons = 'none';
+      this.surveyNext.focusFirstQuestionAutomatic = false;
       this.surveyNext.showProgressBar = 'off';
       // Set list of updated questions
       const updatedQuestions: string[] = [];
@@ -177,16 +182,20 @@ export class SafeRecordModalComponent implements OnInit {
           }
         }
       }
-      this.survey.onAfterRenderQuestion.add((survey, options): void => {
-        if (updatedQuestions.includes(options.question.valueName)) {
-          options.htmlElement.style.background = '#b2ebbf';
+      this.survey.onAfterRenderQuestion.add(
+        (survey: Survey.SurveyModel, options: any): void => {
+          if (updatedQuestions.includes(options.question.valueName)) {
+            options.htmlElement.style.background = '#b2ebbf';
+          }
         }
-      });
-      this.surveyNext.onAfterRenderQuestion.add((survey, options): void => {
-        if (updatedQuestions.includes(options.question.valueName)) {
-          options.htmlElement.style.background = '#EBB2B2';
+      );
+      this.surveyNext.onAfterRenderQuestion.add(
+        (survey: Survey.SurveyModel, options: any): void => {
+          if (updatedQuestions.includes(options.question.valueName)) {
+            options.htmlElement.style.background = '#EBB2B2';
+          }
         }
-      });
+      );
       this.surveyNext.render(this.containerNextId);
     }
     this.loading = false;
@@ -277,7 +286,7 @@ export class SafeRecordModalComponent implements OnInit {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              this.translate.instant('notification.dataRecovered')
+              this.translate.instant('common.notifications.dataRecovered')
             );
             this.dialogRef.close();
           });

@@ -34,7 +34,9 @@ import { SafeAggregationBuilderModule } from './components/ui/aggregation-builde
 import { SafeTagboxModule } from './components/ui/tagbox/tagbox.module';
 import { SafeLayoutModalModule } from './components/layout-modal/layout-modal.module';
 import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackbar-spinner.module';
+import { SafeSkeletonTableModule } from './components/skeleton/skeleton-table/skeleton-table.module';
 import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
+import { SafeDateModule } from './pipes/date/date.module';
 
 @NgModule({
   exports: [
@@ -73,7 +75,9 @@ import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
     SafeTagboxModule,
     SafeLayoutModalModule,
     SafeSnackbarSpinnerModule,
+    SafeSkeletonTableModule,
     SafeSkeletonModule,
+    SafeDateModule,
   ],
 })
 export class SafeModule {}

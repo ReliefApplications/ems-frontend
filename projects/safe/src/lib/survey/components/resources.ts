@@ -274,7 +274,7 @@ export const init = (
             // return !hasUniqueRecord(obj.resource);
           }
         },
-        visibleIndex: 3,
+        visibleIndex: 2,
       });
       survey.Serializer.addProperty('resources', {
         name: 'canDelete:boolean',
@@ -687,9 +687,7 @@ export const init = (
     onAfterRender: (question: any, el: any): void => {
       if (question.displayAsGrid) {
         // hide tagbox if grid view is enable
-        const element = el.getElementsByClassName(
-          'select2 select2-container'
-        )[0].parentElement;
+        const element = el.getElementsByTagName('select')[0].parentElement;
         element.style.display = 'none';
       }
     },

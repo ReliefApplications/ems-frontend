@@ -165,10 +165,10 @@ export class AddPageComponent implements OnInit, OnDestroy {
               if (res.errors) {
                 this.snackBar.openSnackBar(
                   this.translateService.instant(
-                    'notification.objectNotCreated',
+                    'common.notifications.objectNotCreated',
                     {
                       type: this.translateService
-                        .instant('notification.term.form')
+                        .instant('common.form.one')
                         .toLowerCase(),
                       error: res.errors[0].message,
                     }
@@ -179,12 +179,15 @@ export class AddPageComponent implements OnInit, OnDestroy {
                 const id = res.data?.addForm.id || '';
                 this.pageForm.controls.content.setValue(id);
                 this.snackBar.openSnackBar(
-                  this.translateService.instant('notification.objectCreated', {
-                    type: this.translateService
-                      .instant('notification.term.page')
-                      .toLowerCase(),
-                    value: value.name,
-                  })
+                  this.translateService.instant(
+                    'common.notifications.objectCreated',
+                    {
+                      type: this.translateService
+                        .instant('common.page.one')
+                        .toLowerCase(),
+                      value: value.name,
+                    }
+                  )
                 );
 
                 this.onSubmit();

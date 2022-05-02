@@ -16,9 +16,9 @@
   <div class="title">{{ application.name }}</div>
   <div class="bottom">
     <span
-      >{{ 'appSummary.modified' | translate }}:
+      >{{ 'common.modifiedOn' | translate }}:
       {{
-        application.modifiedAt ?? application.createdAt | date: 'mediumDate'
+        application.modifiedAt ?? application.createdAt | safeDate: 'mediumDate'
       }}</span
     >
     <safe-button
@@ -31,7 +31,7 @@
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="preview.emit()">
         <mat-icon>preview</mat-icon>
-        {{ 'action.preview' | translate }}
+        {{ 'common.preview' | translate }}
       </button>
       <button
         mat-menu-item
@@ -39,13 +39,13 @@
         *ngIf="application.canUpdate"
       >
         <mat-icon>file_copy</mat-icon>
-        {{ 'action.duplicate' | translate }}
+        {{ 'common.duplicate' | translate }}
       </button>
       <ng-container *ngIf="application.canDelete">
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="delete.emit()">
           <mat-icon>delete</mat-icon>
-          {{ 'action.delete' | translate }}
+          {{ 'common.delete' | translate }}
         </button>
       </ng-container>
     </mat-menu>

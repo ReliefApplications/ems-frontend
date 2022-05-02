@@ -115,6 +115,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     delete: false,
     history: false,
     convert: false,
+    showDetails: true,
   };
   @Input() hasDetails = true;
   @Output() action = new EventEmitter();
@@ -232,6 +233,24 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     return fieldStyle ? fieldStyle : rowStyle;
   }
 
+  /**
+   * Returns full URL value.
+   * TODO: avoid template call
+   *
+   * @param url Initial URL.
+   * @returns full valid URL.
+   */
+  public getUrl(url: string): URL | null {
+    if (url && !(url.startsWith('https://') || url.startsWith('http://'))) {
+      url = 'https://' + url;
+    }
+    try {
+      return new URL(url);
+    } catch {
+      return null;
+    }
+  }
+
   // === FILTER ===
   /**
    * Handles filter change event.
@@ -252,7 +271,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     if (!this.loading) {
       this.showFilter = !this.showFilter;
       this.showFilterChange.emit(this.showFilter);
-      this.onFilterChange({ logic: 'and', filters: [] });
+      this.onFilterChange({
+        logic: 'and',
+        filters: this.showFilter ? [] : this.filter.filters,
+      });
     }
   }
 
@@ -366,6 +388,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
             width: c.width,
             hidden: c.hidden,
             order: c.orderIndex,
+            subFields:
+              this.fields.find((x) => x.name === c.field)?.subFields || [],
           },
         }),
         {}

@@ -7,7 +7,13 @@ import { SafeApiProxyService } from './api-proxy.service';
 /** List of multi select question types */
 const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
 /** List of disabled fields */
-const DISABLED_FIELDS = ['id', 'incrementalId', 'createdAt', 'modifiedAt'];
+const DISABLED_FIELDS = [
+  'id',
+  'incrementalId',
+  'createdAt',
+  'modifiedAt',
+  'form',
+];
 /** Transforms a list with nested lists into a flat list */
 const flatDeep = (arr: any[]): any[] =>
   arr.reduce(
@@ -49,8 +55,9 @@ export class SafeGridService {
     metaFields: any,
     layoutFields: any,
     prefix?: string,
-    options: { disabled?: boolean; filter: boolean } = {
+    options: { disabled?: boolean; hidden?: boolean; filter: boolean } = {
       disabled: false,
+      hidden: false,
       filter: true,
     }
   ): any[] {
@@ -64,7 +71,11 @@ export class SafeGridService {
               metaFields,
               layoutFields,
               fullName,
-              { disabled: true, filter: f.type === 'User' }
+              {
+                disabled: true,
+                hidden: options.hidden,
+                filter: f.type === 'User',
+              }
             );
           }
           case 'LIST': {
@@ -73,6 +84,13 @@ export class SafeGridService {
             metaData.type = 'records';
             const cachedField = get(layoutFields, fullName);
             const title = f.label ? f.label : prettifyLabel(f.name);
+            const subFields = this.getFields(
+              f.fields,
+              metaFields,
+              layoutFields,
+              fullName,
+              { disabled: true, hidden: true, filter: false }
+            );
             return {
               name: fullName,
               title,
@@ -82,7 +100,7 @@ export class SafeGridService {
               filter: prefix ? '' : this.getFieldFilter(f.type),
               meta: metaData,
               disabled: true,
-              hidden: cachedField?.hidden || false,
+              hidden: options.hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
               query: {
@@ -90,6 +108,7 @@ export class SafeGridService {
                 fields: f.fields,
                 filter: f.filter,
               },
+              subFields,
             };
           }
           default: {
@@ -108,7 +127,7 @@ export class SafeGridService {
                 options.disabled ||
                 DISABLED_FIELDS.includes(f.name) ||
                 metaData?.readOnly,
-              hidden: cachedField?.hidden || false,
+              hidden: options.hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
             };

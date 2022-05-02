@@ -28,6 +28,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
+import { MessageService } from '@progress/kendo-angular-l10n';
+import { KendoTranslationService } from '@safe/builder';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import localeEn from '@angular/common/locales/en';
+
+// Register local translations for dates
+registerLocaleData(localeFr);
+registerLocaleData(localeEn);
 
 localStorage.setItem('loaded', 'false');
 
@@ -173,6 +182,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
       useFactory: initializeAuth,
       multi: true,
       deps: [OAuthService],
+    },
+    {
+      provide: MessageService,
+      useClass: KendoTranslationService,
     },
   ],
   bootstrap: [AppComponent],

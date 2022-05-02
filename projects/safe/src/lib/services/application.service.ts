@@ -98,7 +98,7 @@ export class SafeApplicationService {
     if (application) {
       if (application?.locked && !application.lockedByUser) {
         this.snackBar.openSnackBar(
-          this.translateService.instant('notification.objectIsLocked', {
+          this.translate.instant('common.notifications.objectLocked', {
             value: application.name,
           })
         );
@@ -123,7 +123,7 @@ export class SafeApplicationService {
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     private router: Router,
-    private translateService: TranslateService
+    private translate: TranslateService
   ) {
     this.environment = environment;
   }
@@ -149,7 +149,7 @@ export class SafeApplicationService {
         if (res.data.application.locked) {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectIsLocked', {
+              this.translate.instant('common.notifications.objectLocked', {
                 value: res.data.application.name,
               })
             );
@@ -165,7 +165,7 @@ export class SafeApplicationService {
       })
       .subscribe(() => {
         const snackBar = this.snackBar.openSnackBar(
-          this.translateService.instant('notification.appEdited'),
+          this.translate.instant('models.application.notifications.updated'),
           {
             action: 'Reload',
             duration: 0,
@@ -253,7 +253,7 @@ export class SafeApplicationService {
           mutation: EDIT_APPLICATION,
           variables: {
             id: application?.id,
-            value: value.name,
+            name: value.name,
             description: value.description,
             status: value.status,
           },
@@ -261,18 +261,16 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectNotUpdated', {
-                type: this.translateService.instant(
-                  'notification.term.application'
-                ),
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.application.one'),
                 error: res.errors[0].message,
               })
             );
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectEdited', {
-                type: this.translateService
-                  .instant('notification.term.application')
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate
+                  .instant('common.application.one')
                   .toLowerCase(),
                 value: value.name,
               })
@@ -280,7 +278,7 @@ export class SafeApplicationService {
             if (res.data?.editApplication) {
               const newApplication = {
                 ...application,
-                value: res.data.editApplication.name,
+                name: res.data.editApplication.name,
                 description: res.data.editApplication.description,
                 status: res.data.editApplication.status,
               };
@@ -308,9 +306,12 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.appPublished', {
-                value: res.data.editApplication.name,
-              })
+              this.translate.instant(
+                'models.application.notifications.published',
+                {
+                  value: res.data.editApplication.name,
+                }
+              )
             );
             this.router.navigate(['/applications']);
           }
@@ -336,8 +337,8 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectDeleted', {
-                value: this.translateService.instant('notification.term.page'),
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.page.one'),
               })
             );
             const app = this.application.getValue();
@@ -353,10 +354,8 @@ export class SafeApplicationService {
             }
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectNotDeleted', {
-                value: this.translateService
-                  .instant('notification.term.page')
-                  .toLowerCase(),
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: this.translate.instant('common.page.one').toLowerCase(),
                 error: res.errors ? res.errors[0].message : '',
               }),
               { error: true }
@@ -384,10 +383,8 @@ export class SafeApplicationService {
         })
         .subscribe((res) => {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectReordered', {
-              type: this.translateService
-                .instant('notification.term.pages')
-                .toLowerCase(),
+            this.translate.instant('common.notifications.objectReordered', {
+              type: this.translate.instant('common.page.few').toLowerCase(),
             })
           );
           this.application.next({
@@ -439,10 +436,8 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data?.addPage) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectCreated', {
-                type: this.translateService
-                  .instant('notification.term.page')
-                  .toLowerCase(),
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate.instant('common.page.one').toLowerCase(),
                 value: res.data.addPage.name,
               })
             );
@@ -459,10 +454,8 @@ export class SafeApplicationService {
             ]);
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectNotCreated', {
-                type: this.translateService
-                  .instant('notification.term.page')
-                  .toLowerCase(),
+              this.translate.instant('common.notifications.objectNotCreated', {
+                type: this.translate.instant('common.page.one').toLowerCase(),
                 error: res.errors ? res.errors[0].message : '',
               }),
               { error: true }
@@ -491,10 +484,8 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectCreated', {
-                type: this.translateService
-                  .instant('global.role')
-                  .toLowerCase(),
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate.instant('common.role.one').toLowerCase(),
                 value: role.title,
               })
             );
@@ -530,10 +521,8 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectEdited', {
-                type: this.translateService
-                  .instant('global.role')
-                  .toLowerCase(),
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.role.one').toLowerCase(),
                 value: role.title,
               })
             );
@@ -591,7 +580,7 @@ export class SafeApplicationService {
         })
         .subscribe((res) => {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectDeleted', {
+            this.translate.instant('common.notifications.objectDeleted', {
               value: role.title,
             })
           );
@@ -627,18 +616,15 @@ export class SafeApplicationService {
               (x) => x.id
             );
             this.snackBar.openSnackBar(
-              deletedUsers.length > 1
-                ? this.translateService.instant('notification.usersActions', {
-                    length: deletedUsers.length,
-                    action: this.translateService
-                      .instant('notification.term.deleted')
-                      .toLowerCase(),
-                  })
-                : this.translateService.instant('notification.userActions', {
-                    action: this.translateService
-                      .instant('notification.term.deleted')
-                      .toLowerCase(),
-                  })
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate
+                  .instant(
+                    deletedUsers.length > 1
+                      ? 'common.user.few'
+                      : 'common.user.one'
+                  )
+                  .toLowerCase(),
+              })
             );
             const newApplication = {
               ...application,
@@ -649,10 +635,13 @@ export class SafeApplicationService {
             this.application.next(newApplication);
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.userInvalidActions', {
-                action: this.translateService
-                  .instant('notification.term.deleted')
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: this.translate
+                  .instant(
+                    ids.length > 1 ? 'common.user.few' : 'common.user.one'
+                  )
                   .toLowerCase(),
+                error: '',
               }),
               { error: true }
             );
@@ -686,18 +675,15 @@ export class SafeApplicationService {
         .subscribe((res: any) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              res.data.addRoleToUsers.length > 1
-                ? this.translateService.instant('notification.usersActions', {
-                    action: this.translateService
-                      .instant('notification.term.invited')
-                      .toLowerCase(),
-                    length: res.data.addRoleToUsers.length,
-                  })
-                : this.translateService.instant('notification.userActions', {
-                    action: this.translateService
-                      .instant('notification.term.invited')
-                      .toLowerCase(),
-                  })
+              this.translate.instant('common.notifications.objectInvited', {
+                name: this.translate
+                  .instant(
+                    res.data?.addUsers.length
+                      ? 'common.user.few'
+                      : 'common.user.one'
+                  )
+                  .toLowerCase(),
+              })
             );
             const newApplication = {
               ...application,
@@ -706,9 +692,13 @@ export class SafeApplicationService {
             this.application.next(newApplication);
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.userInvalidActions', {
-                action: this.translateService
-                  .instant('notification.term.invited')
+              this.translate.instant('common.notifications.objectNotInvited', {
+                name: this.translate
+                  .instant(
+                    res.data?.addUsers.length
+                      ? 'common.user.few'
+                      : 'common.user.one'
+                  )
                   .toLowerCase(),
               }),
               { error: true }
@@ -743,10 +733,8 @@ export class SafeApplicationService {
           if (res.data) {
             const newUser = res.data.editUser;
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectEdited', {
-                type: this.translateService
-                  .instant('global.roles')
-                  .toLowerCase(),
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.role.few').toLowerCase(),
                 value: user.username,
               })
             );
@@ -786,9 +774,9 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectCreated', {
-                type: this.translateService
-                  .instant('notification.term.positionCategory')
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate
+                  .instant('common.positionCategory.one')
                   .toLowerCase(),
                 value: category.title,
               })
@@ -825,7 +813,7 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectDeleted', {
+              this.translate.instant('common.notifications.objectDeleted', {
                 value: category.title,
               })
             );
@@ -866,23 +854,18 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'notification.objectAlreadyExists',
-                {
-                  type: this.translateService
-                    .instant('notification.term.positionCategory')
-                    .toLowerCase(),
-                  value: value.title,
-                }
-              ),
+              this.translate.instant('common.errors.objectDuplicated', {
+                type: this.translate
+                  .instant('common.positionCategory.one')
+                  .toLowerCase(),
+                value: value.title,
+              }),
               { error: true }
             );
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectEdited', {
-                type: this.translateService.instant(
-                  'notification.term.positionCategory'
-                ),
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.positionCategory.one'),
                 value: value.title,
               })
             );
@@ -924,9 +907,9 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectCreated', {
-                type: this.translateService
-                  .instant('global.channel')
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate
+                  .instant('common.channel.one')
                   .toLowerCase(),
                 value: channel.title,
               })
@@ -960,8 +943,8 @@ export class SafeApplicationService {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectEdited', {
-              type: this.translateService.instant('global.channel'),
+            this.translate.instant('common.notifications.objectUpdated', {
+              type: this.translate.instant('common.channel.one'),
               value: title,
             })
           );
@@ -997,7 +980,7 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectDeleted', {
+              this.translate.instant('common.notifications.objectDeleted', {
                 value: channel.title,
               })
             );
@@ -1040,9 +1023,9 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectCreated', {
-                type: this.translateService
-                  .instant('notification.term.subscription')
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate
+                  .instant('common.subscription.one')
                   .toLowerCase(),
                 value: subscription.title,
               })
@@ -1077,10 +1060,8 @@ export class SafeApplicationService {
         })
         .subscribe((res) => {
           this.snackBar.openSnackBar(
-            this.translateService.instant('notification.objectDeleted', {
-              value: this.translateService.instant(
-                'notification.term.subscription'
-              ),
+            this.translate.instant('common.notifications.objectDeleted', {
+              value: this.translate.instant('common.subscription.one'),
             })
           );
           const newApplication = {
@@ -1119,9 +1100,9 @@ export class SafeApplicationService {
           if (res.data) {
             const subscription = res.data.editSubscription;
             this.snackBar.openSnackBar(
-              this.translateService.instant('notification.objectEdited', {
-                type: this.translateService
-                  .instant('notification.term.subscription')
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate
+                  .instant('common.subscription.one')
                   .toLowerCase(),
                 value: value.title,
               })

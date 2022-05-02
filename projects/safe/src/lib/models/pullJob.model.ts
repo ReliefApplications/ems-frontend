@@ -10,6 +10,8 @@ export interface PullJob {
   name?: string;
   status?: status;
   apiConfiguration?: ApiConfiguration;
+  url?: string;
+  path?: string;
   schedule?: string;
   convertTo?: Form;
   mapping?: any;

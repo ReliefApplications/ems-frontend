@@ -55,6 +55,7 @@ export const init = (
       serializer.addProperty('question', {
         name: 'tooltip:text',
         category: 'general',
+        isLocalizable: true,
       });
       serializer.addProperty('comment', {
         name: 'allowEdition:boolean',
@@ -71,6 +72,7 @@ export const init = (
         },
       });
       serializer.removeProperty('expression', 'readOnly');
+      serializer.removeProperty('survey', 'focusFirstQuestionAutomatic');
       serializer.addProperty('expression', {
         name: 'readOnly:boolean',
         type: 'boolean',
@@ -183,6 +185,7 @@ export const init = (
       }
       // Display of edit button for comment question
       if (question.getType() === 'comment' && question.allowEdition) {
+        el.parentElement.querySelector('#editComment')?.remove();
         const mainDiv = document.createElement('div');
         mainDiv.id = 'editComment';
         mainDiv.style.height = '23px';
@@ -208,7 +211,9 @@ export const init = (
         const header =
           el.parentElement.parentElement.querySelector('.sv_q_title');
         if (header) {
-          header.title = question.tooltip;
+          header.title =
+            question.localizableStrings?.tooltip?.renderedText || '';
+          header.querySelector('span.material-icons')?.remove();
           const span = document.createElement('span');
           span.innerText = 'help';
           span.className = 'material-icons';
@@ -224,8 +229,14 @@ export const init = (
       }
       // Display of add button for resource question
       if (question.getType() === 'resource') {
+        // support the placeholder field
+        if (question.placeholder) {
+          question.contentQuestion.optionsCaption =
+            question.localizableStrings?.placeholder?.renderedText || '';
+        }
         // const dropdownComponent = buildRecordDropdown(question, el);
         if (question.survey.mode !== 'display' && question.resource) {
+          el.parentElement.querySelector('#actionsButtons')?.remove();
           const actionsButtons = document.createElement('div');
           actionsButtons.id = 'actionsButtons';
           actionsButtons.style.display = 'flex';
@@ -271,6 +282,7 @@ export const init = (
         const gridComponent = buildRecordsGrid(question, el);
 
         if (question.survey.mode !== 'display') {
+          el.parentElement.querySelector('#actionsButtons')?.remove();
           const actionsButtons = document.createElement('div');
           actionsButtons.id = 'actionsButtons';
           actionsButtons.style.display = 'flex';
@@ -394,6 +406,7 @@ export const init = (
         }
       }
     },
+    willUnmount: (): void => {},
   };
 
   const buildSearchButton = (

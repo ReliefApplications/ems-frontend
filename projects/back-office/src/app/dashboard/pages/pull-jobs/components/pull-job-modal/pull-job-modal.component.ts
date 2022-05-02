@@ -9,6 +9,7 @@ import {
   Form,
   PullJob,
   status,
+  authType,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -37,6 +38,7 @@ const DEFAULT_FIELDS = ['createdBy'];
 export class PullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
   pullJobForm: FormGroup = new FormGroup({});
+  isHardcoded = true;
 
   // === FORMS ===
   @ViewChild('formSelect') formSelect?: MatSelect;
@@ -123,6 +125,8 @@ export class PullJobModalComponent implements OnInit {
           : '',
         Validators.required,
       ],
+      url: [this.data.pullJob ? this.data.pullJob.url : ''],
+      path: [this.data.pullJob ? this.data.pullJob.path : ''],
       schedule: [this.data.pullJob ? this.data.pullJob.schedule : ''],
       convertTo: [
         this.data.pullJob && this.data.pullJob.convertTo
@@ -234,6 +238,28 @@ export class PullJobModalComponent implements OnInit {
       this.applicationsPageInfo = res.data.applications.pageInfo;
       this.applicationsLoading = res.loading;
     });
+
+    // Set boolean to allow additional fields if it's not isHardcoded
+    this.isHardcoded = !(
+      this.data.pullJob &&
+      this.data.pullJob.apiConfiguration &&
+      this.data.pullJob.apiConfiguration.authType &&
+      this.data.pullJob.apiConfiguration.authType === authType.public
+    );
+    this.pullJobForm
+      .get('apiConfiguration')
+      ?.valueChanges.subscribe((apiConfiguration: string) => {
+        if (apiConfiguration) {
+          const api = this.apiConfigurations.value.find(
+            (x) => x.id === apiConfiguration
+          );
+          this.isHardcoded = !(
+            api &&
+            api.authType &&
+            api.authType === authType.public
+          );
+        }
+      });
   }
 
   /**
