@@ -149,18 +149,14 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.snackBar.openSnackBar(NOTIFICATIONS.objectLoadedFromCache('Record'));
     }
 
-    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+    if (cachedData) {
+      this.survey.data = cachedData;
+    } else if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
-    } else {
-      if (cachedData) {
-        this.survey.data = cachedData;
-      } else {
-        if (this.record && this.record.data) {
-          this.survey.data = this.record.data;
-          this.modifiedAt = this.record.modifiedAt || null;
-        }
-      }
+    } else if (this.record && this.record.data) {
+      this.survey.data = this.record.data;
+      this.modifiedAt = this.record.modifiedAt || null;
     }
 
     if (this.survey.getUsedLocales().length > 1) {
