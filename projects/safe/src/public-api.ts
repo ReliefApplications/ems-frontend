@@ -42,7 +42,6 @@ export * from './lib/models/position-attribute-category.model';
 export * from './lib/models/position-attribute.model';
 export * from './lib/models/apiConfiguration.model';
 export * from './lib/models/pullJob.model';
-export * from './lib/models/referenceData.model';
 export * from './lib/models/layout.model';
 export * from './lib/models/reference-data.model';
 

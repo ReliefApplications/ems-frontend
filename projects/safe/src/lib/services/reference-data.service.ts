@@ -48,15 +48,15 @@ export class SafeReferenceDataService {
     newItems = false
   ): string {
     let query = '{ ' + (referenceData.query || '');
-    if (newItems) {
-      // eslint-disable-next-line prettier/prettier
-      let filter = 'filter:"modifieddate > \\\"$$TODAY\\\":datetime"'; // TO REMOVE WITH FIELD OF REF DATA
-      if (filter.includes('$$TODAY')) {
-        const today = new Date().toISOString().split('T')[0];
-        filter = filter.split('$$TODAY').join(today);
-      }
-      query += '(' + filter + ')';
-    }
+    // if (newItems) {
+    //   // eslint-disable-next-line prettier/prettier
+    //   let filter = 'filter:"modifieddate > \\\"$$TODAY\\\":datetime"'; // TO REMOVE WITH FIELD OF REF DATA
+    //   if (filter.includes('$$TODAY')) {
+    //     const today = new Date().toISOString().split('T')[0];
+    //     filter = filter.split('$$TODAY').join(today);
+    //   }
+    //   query += '(' + filter + ')';
+    // }
     query += ' { ';
     for (const field of referenceData.fields || []) {
       query += field + ' ';
@@ -111,6 +111,7 @@ export class SafeReferenceDataService {
           graphqlEndpoint;
         const body = { query: this.buildGraphQLQuery(referenceData, isCached) };
         const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
+        console.log(data);
         items = referenceData.path ? get(data, referenceData.path) : data;
         items = referenceData.query ? items[referenceData.query] : items;
         // Cache items

@@ -22,8 +22,12 @@ import {
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../../utils/scroll-factory';
 
+/** Pagination */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Reference data dropdown component.
+ */
 @Component({
   selector: 'safe-reference-data-dropdown',
   templateUrl: './reference-data-dropdown.component.html',

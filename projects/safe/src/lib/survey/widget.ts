@@ -388,6 +388,7 @@ export const init = (
           question.referenceDataDisplayField = null;
         });
         if (question.referenceData && question.referenceDataDisplayField) {
+          console.log('there');
           if (
             question.populatedReferenceData !==
             question.referenceData + question.referenceDataDisplayField
