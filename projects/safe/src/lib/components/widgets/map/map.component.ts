@@ -346,7 +346,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             }
             return {
               fillColor: color,
-              fillOpacity: 0.5,
+              fillOpacity: value.opacity / 100 || 1,
               weight: 0.5,
               opacity: 1,
               color: 'white',

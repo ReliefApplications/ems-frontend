@@ -46,6 +46,7 @@ export class SafeTabClorophletComponent implements OnInit {
         geoJSON: ['', [Validators.required]],
         geoJSONname: ['', [Validators.required]],
         geoJSONfield: ['', [Validators.required]],
+        opacity: [100],
         place: ['', [Validators.required]],
         divisions: this.formBuilder.array([]),
       })
