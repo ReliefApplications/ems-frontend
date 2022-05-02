@@ -562,6 +562,9 @@
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer la référence de données {{name}} ?",
 				"title": "Supprimer la référence de données"
+			},
+			"dropdown": {
+				"select": "Depuis la référence de données"
 			}
 		},
 		"resource": {

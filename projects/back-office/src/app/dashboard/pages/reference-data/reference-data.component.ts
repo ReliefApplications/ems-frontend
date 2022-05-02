@@ -16,7 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   ReferenceData,
   SafeSnackBarService,
-  referenceType,
+  referenceDataType,
   ApiConfiguration,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -56,7 +56,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
 
   // === FORM ===
   public referenceForm: FormGroup = new FormGroup({});
-  public referenceTypeChoices = Object.values(referenceType);
+  public referenceTypeChoices = Object.values(referenceDataType);
 
   private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
   private apiConfigurations = new BehaviorSubject<ApiConfiguration[]>([]);

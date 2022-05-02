@@ -7,13 +7,14 @@ import { init as initResourceComponent } from './components/resource';
 import { init as initResourcesComponent } from './components/resources';
 import { init as initOwnerComponent } from './components/owner';
 import { init as initUsersComponent } from './components/users';
-import addCustomFunctions from '../utils/custom-functions';
 import { init as initCustomWidget } from './widget';
+import addCustomFunctions from '../utils/custom-functions';
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { DomService } from '../services/dom.service';
 import { FormBuilder } from '@angular/forms';
 import { SafeAuthService } from '../services/auth.service';
+import { SafeReferenceDataService } from '../services/reference-data.service';
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -25,6 +26,7 @@ import { SafeAuthService } from '../services/auth.service';
  * @param formBuilder form builder service
  * @param authService custom auth service
  * @param environment injected environment
+ * @param referenceDataService Reference data service
  */
 export const initCustomWidgets = (
   survey: any,
@@ -33,7 +35,8 @@ export const initCustomWidgets = (
   apollo: Apollo,
   formBuilder: FormBuilder,
   authService: SafeAuthService,
-  environment: any
+  environment: any,
+  referenceDataService: SafeReferenceDataService
 ): void => {
   survey.settings.commentPrefix = '_comment';
   // supportCreatorV2
@@ -42,6 +45,12 @@ export const initCustomWidgets = (
   initResourcesComponent(survey, domService, apollo, dialog, formBuilder);
   initOwnerComponent(survey, domService, apollo, dialog, formBuilder);
   initUsersComponent(survey, domService, apollo, dialog, formBuilder);
-  initCustomWidget(survey, domService, dialog, environment);
+  initCustomWidget(
+    survey,
+    domService,
+    dialog,
+    environment,
+    referenceDataService
+  );
   addCustomFunctions(survey, authService, apollo);
 };

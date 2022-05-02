@@ -3,13 +3,18 @@ import { SafeFormModalComponent } from '../components/form-modal/form-modal.comp
 import { DomService } from '../services/dom.service';
 import { SafeResourceGridModalComponent } from '../components/search-resource-grid-modal/search-resource-grid-modal.component';
 import { FormGroup } from '@angular/forms';
-import { ChoicesRestful } from 'survey-angular';
+import { ChoicesRestful, JsonMetadata } from 'survey-angular';
+import * as SurveyCreator from 'survey-creator';
 import { SafeButtonComponent } from '../components/ui/button/button.component';
 import { ButtonSize } from '../components/ui/button/button-size.enum';
 import { ButtonCategory } from '../components/ui/button/button-category.enum';
 import { EmbeddedViewRef } from '@angular/core';
 import { SafeRecordDropdownComponent } from '../components/record-dropdown/record-dropdown.component';
 import { SafeCoreGridComponent } from '../components/ui/core-grid/core-grid.component';
+import { SafeReferenceDataDropdownComponent } from '../components/reference-data-dropdown/reference-data-dropdown.component';
+import { SafeReferenceDataService } from '../services/reference-data.service';
+
+const SELECTABLE_TYPES = ['dropdown', 'checkbox', 'radiogroup', 'tagbox'];
 
 /**
  * Adds zero to number if < 10.
@@ -32,24 +37,27 @@ const addZero = (i: number): string => {
  * @param domService Shared DOM service
  * @param dialog Material dialog service
  * @param environment Current environment
+ * @param referenceDataService Reference data service
  */
 export const init = (
   survey: any,
   domService: DomService,
   dialog: MatDialog,
-  environment: any
+  environment: any,
+  referenceDataService: SafeReferenceDataService
 ): void => {
   const widget = {
     name: 'custom-widget',
     widgetIsLoaded: (): boolean => true,
     isFit: (question: any): any => true,
     init: (): void => {
-      survey.Serializer.addProperty('question', {
+      const serializer: JsonMetadata = survey.Serializer;
+      serializer.addProperty('question', {
         name: 'tooltip:text',
         category: 'general',
         isLocalizable: true,
       });
-      survey.Serializer.addProperty('comment', {
+      serializer.addProperty('comment', {
         name: 'allowEdition:boolean',
         type: 'boolean',
         dependsOn: ['readOnly'],
@@ -63,9 +71,9 @@ export const init = (
           }
         },
       });
-      survey.Serializer.removeProperty('expression', 'readOnly');
-      survey.Serializer.removeProperty('survey', 'focusFirstQuestionAutomatic');
-      survey.Serializer.addProperty('expression', {
+      serializer.removeProperty('expression', 'readOnly');
+      serializer.removeProperty('survey', 'focusFirstQuestionAutomatic');
+      serializer.addProperty('expression', {
         name: 'readOnly:boolean',
         type: 'boolean',
         visibleIndex: 6,
@@ -83,12 +91,63 @@ export const init = (
           options.request.setRequestHeader('Authorization', `Bearer ${token}`);
         }
       };
-      survey.Serializer.addProperty('survey', {
+      serializer.addProperty('survey', {
         name: 'onCompleteExpression:expression',
         type: 'expression',
         visibleIndex: 350,
         category: 'logic',
       });
+
+      // === REFERENCE DATA SELECTION ===
+      serializer.addProperty('selectbase', {
+        name: 'referenceData',
+        category: 'Choices from Reference data',
+        type: 'referenceDataDropdown',
+        visibleIndex: 1,
+      });
+
+      serializer.addProperty('selectbase', {
+        name: 'referenceDataDisplayField',
+        displayName: 'Display field',
+        category: 'Choices from Reference data',
+        required: true,
+        dependsOn: 'referenceData',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.referenceData) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 2,
+        choices: (obj: any, choicesCallback: any) => {
+          if (obj.referenceData) {
+            referenceDataService
+              .loadReferenceData(obj.referenceData)
+              .then((referenceData) =>
+                choicesCallback(referenceData.fields || [])
+              );
+          }
+        },
+      });
+
+      const referenceDataEditor = {
+        render: (editor: any, htmlElement: any) => {
+          const question = editor.object;
+          const dropdown = domService.appendComponentToBody(
+            SafeReferenceDataDropdownComponent,
+            htmlElement
+          );
+          const instance: SafeReferenceDataDropdownComponent =
+            dropdown.instance;
+          instance.referenceData = question.referenceData;
+          instance.choice.subscribe((res) => editor.onChanged(res));
+        },
+      };
+      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+        'referenceDataDropdown',
+        referenceDataEditor
+      );
     },
     isDefaultRender: true,
     afterRender: (question: any, el: any): void => {
@@ -322,6 +381,29 @@ export const init = (
       }
       if (question.getType() === 'file') {
         question.maxSize = 7340032;
+      }
+      // === REFERENCE DATA CHOICES ===
+      if (SELECTABLE_TYPES.includes(question.getType())) {
+        question.registerFunctionOnPropertyValueChanged('referenceData', () => {
+          question.referenceDataDisplayField = null;
+        });
+        if (question.referenceData && question.referenceDataDisplayField) {
+          if (
+            question.populatedReferenceData !==
+            question.referenceData + question.referenceDataDisplayField
+          ) {
+            question.populatedReferenceData =
+              question.referenceData + question.referenceDataDisplayField;
+            referenceDataService
+              .getChoices(
+                question.referenceData,
+                question.referenceDataDisplayField
+              )
+              .then((choices) => {
+                question.choices = choices;
+              });
+          }
+        }
       }
     },
     willUnmount: (): void => {},

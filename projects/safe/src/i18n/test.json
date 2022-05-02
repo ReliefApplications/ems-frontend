@@ -562,6 +562,9 @@
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
+			},
+			"dropdown": {
+				"select": "******"
 			}
 		},
 		"resource": {

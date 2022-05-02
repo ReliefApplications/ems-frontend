@@ -562,6 +562,9 @@
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of Reference Data {{name}}?",
 				"title": "Delete Reference Data"
+			},
+			"dropdown": {
+				"select": "From Reference data"
 			}
 		},
 		"resource": {
