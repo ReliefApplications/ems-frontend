@@ -12,6 +12,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeDateModule } from '../../pipes/date/date.module';
 
 @NgModule({
   declarations: [SafeRecordHistoryComponent],
@@ -28,6 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatMenuModule,
     SafeButtonModule,
     TranslateModule,
+    SafeDateModule,
   ],
   exports: [SafeRecordHistoryComponent],
 })

@@ -200,7 +200,7 @@
               {{ 'common.createdOn' | translate }}
             </th>
             <td mat-cell *matCellDef="let element">
-              {{ element.createdAt | date }}
+              {{ element.createdAt | safeDate }}
             </td>
           </ng-container>
 
@@ -337,7 +337,7 @@
               {{ 'common.createdOn' | translate }}
             </th>
             <td mat-cell *matCellDef="let element">
-              {{ element.createdAt | date }}
+              {{ element.createdAt | safeDate }}
             </td>
           </ng-container>
 

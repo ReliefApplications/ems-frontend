@@ -426,6 +426,7 @@
 			"readAll": "Mark all as read"
 		},
 		"preferences": {
+			"dateFormat": "Date and time format",
 			"language": "Language",
 			"title": "Preferences"
 		},
@@ -674,6 +675,7 @@
 						"delete": "Delete records",
 						"inline": "Inline edition",
 						"show": "Show history",
+						"showDetails": "Show record details",
 						"title": "Enabled actions",
 						"update": "Update records"
 					},
@@ -756,6 +758,9 @@
 		}
 	},
 	"kendo": {
+		"datepicker": {
+			"today": "Today"
+		},
 		"editor": {
 			"fontFamily": "Select font family",
 			"fontSize": "Select font size",
