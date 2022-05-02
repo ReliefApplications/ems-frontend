@@ -27,7 +27,7 @@
         | translate
           : {
               user: record.createdBy?.name || 'unknown',
-              date: (record.createdAt | date: 'dd/MM/yy, h:mm a')
+              date: (record.createdAt | date: 'dd/MM/yyyy, h:mm a')
             }
     }}</span>
     <span *ngIf="record.modifiedAt">{{
@@ -35,7 +35,7 @@
         | translate
           : {
               user: record.modifiedBy?.name || 'unknown',
-              date: (record.modifiedAt | date: 'dd/MM/yy, h:mm a')
+              date: (record.modifiedAt | date: 'dd/MM/yyyy, h:mm a')
             }
     }}</span>
   </div>
