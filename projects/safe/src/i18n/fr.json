@@ -426,6 +426,7 @@
 			"readAll": "Tout marquer comme lu"
 		},
 		"preferences": {
+			"dateFormat": "Format de date et heure",
 			"language": "Langage",
 			"title": "Préférences"
 		},
@@ -674,6 +675,7 @@
 						"delete": "Supprimer les enregistrements",
 						"inline": "Modifier par ligne",
 						"show": "Voir l'historique",
+						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
 						"update": "Modifier les enregistrements"
 					},
@@ -756,6 +758,9 @@
 		}
 	},
 	"kendo": {
+		"datepicker": {
+			"today": "Aujourd'hui"
+		},
 		"editor": {
 			"fontFamily": "Sélectionnez une police de caractère",
 			"fontSize": "Sélectionnez la taille de police",

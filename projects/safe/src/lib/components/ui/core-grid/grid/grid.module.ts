@@ -19,6 +19,7 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SafeExportModule } from '../export/export.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeDateModule } from '../../../../pipes/date/date.module';
 
 @NgModule({
   declarations: [SafeGridComponent],
@@ -52,6 +53,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeExportModule,
     // === TRANSLATE ===
     TranslateModule,
+    SafeDateModule,
   ],
   exports: [SafeGridComponent],
 })

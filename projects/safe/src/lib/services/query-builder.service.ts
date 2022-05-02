@@ -307,7 +307,11 @@ export class QueryBuilderService {
    * @returns Query name
    */
   public getQueryNameFromResourceName(resourceName: string): any {
-    const nameTrimmed = resourceName.replace(/\s/g, '').toLowerCase();
+    const nameTrimmed = resourceName
+      .replace(/_|-/g, '')
+      .replace(/\s+(?=\d)/g, '_')
+      .replace(/\s/g, '')
+      .toLowerCase();
     return (
       this.availableQueries
         .getValue()

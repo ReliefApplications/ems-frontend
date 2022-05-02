@@ -30,7 +30,7 @@
         {{ 'common.createdOn' | translate }}
       </span>
     </th>
-    <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
+    <td mat-cell *matCellDef="let element">{{ element.createdAt | safeDate }}</td>
   </ng-container>
 
   <ng-container matColumnDef="recordsCount">
