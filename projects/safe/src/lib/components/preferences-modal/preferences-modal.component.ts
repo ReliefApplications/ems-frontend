@@ -77,23 +77,15 @@ export class SafePreferencesModalComponent implements OnInit {
    * @returns The language name
    */
   private getLanguageName(lang: string): string {
-    // create the DisplayNames object if not created
-    let displayName: any;
     try {
-      // try to get names for the asking language
-      displayName = new (Intl as any).DisplayNames(lang, {
+      // create the displayName object for the language
+      const displayName = new (Intl as any).DisplayNames(lang, {
         type: 'language',
       });
-    } catch {
-      // if displayLang is not a language, fall back to english
-      displayName = new (Intl as any).DisplayNames('en', {
-        type: 'language',
-      });
-    }
-    // get the language name
-    try {
+      // get the name of the language in the lang of the language
       return displayName.of(lang);
     } catch {
+      // if it is not a language, return the code
       return lang;
     }
   }
