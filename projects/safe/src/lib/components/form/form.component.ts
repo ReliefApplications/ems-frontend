@@ -173,7 +173,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     }
 
-    const appLanguage = this.translate.currentLang.split('-')[0];
+    const appLanguage = (
+      this.translate.currentLang || this.translate.defaultLang
+    ).split('-')[0];
     const code = this.survey.getUsedLocales().includes(appLanguage)
       ? appLanguage
       : Survey.surveyLocalization.defaultLocaleValue;
