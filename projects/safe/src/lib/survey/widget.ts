@@ -11,6 +11,7 @@ import { EmbeddedViewRef } from '@angular/core';
 import { SafeRecordDropdownComponent } from '../components/record-dropdown/record-dropdown.component';
 import { SafeCoreGridComponent } from '../components/ui/core-grid/core-grid.component';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
 
 /**
  * Adds zero to number if < 10.
@@ -98,8 +99,11 @@ export const init = (
       const lang =
         survey.surveyLocalization.currentLocaleValue ||
         survey.surveyLocalization.defaultLocaleValue;
-      const translations = await translate.getTranslation(lang).toPromise();
-      console.log(translations);
+      const translations = translate.langs
+        .map((lg) => lg.split('-')[0])
+        .includes(lang)
+        ? translate.getTranslation(lang)
+        : translate.getTranslation(translate.defaultLang);
       // Correction of date inputs
       if (
         question.value &&
@@ -140,7 +144,9 @@ export const init = (
         mainDiv.style.height = '23px';
         mainDiv.style.marginBottom = '0.5em';
         const btnEl = document.createElement('button');
-        btnEl.innerText = translations.survey.editButton.text;
+        translations.subscribe(
+          (res) => (btnEl.innerText = res.survey.editButton.text)
+        );
         btnEl.style.width = '50px';
         mainDiv.appendChild(btnEl);
         el.parentElement.insertBefore(mainDiv, el);
@@ -299,7 +305,9 @@ export const init = (
         el.parentElement.style.flexDirection = 'row';
         el.parentElement.style.pointerEvents = 'auto';
         el.parentElement.style.justifyContent = 'space-between';
-        el.parentElement.title = translations.survey.urlInput.title;
+        translations.subscribe(
+          (res) => (el.parentElement.title = res.survey.urlInput.title)
+        );
 
         // Create an <a> HTMLElement only used to verify the validity of the URL
         const urlTester = document.createElement('a');
@@ -340,10 +348,12 @@ export const init = (
     question: any,
     fieldsSettingsForm: FormGroup,
     multiselect: boolean,
-    translations: any
+    translations: Observable<any>
   ): any => {
     const searchButton = document.createElement('button');
-    searchButton.innerText = translations.survey.searchButton.text;
+    translations.subscribe(
+      (res) => (searchButton.innerText = res.survey.searchButton.text)
+    );
     searchButton.style.marginRight = '8px';
     if (fieldsSettingsForm) {
       searchButton.onclick = () => {
@@ -379,11 +389,13 @@ export const init = (
   const buildAddButton = (
     question: any,
     multiselect: boolean,
-    translations: any,
+    translations: Observable<any>,
     gridComponent?: SafeCoreGridComponent
   ): any => {
     const addButton = document.createElement('button');
-    addButton.innerText = translations.survey.addButton.text;
+    translations.subscribe(
+      (res) => (addButton.innerText = res.survey.addButton.text)
+    );
     if (question.addRecord && question.addTemplate) {
       addButton.onclick = () => {
         const dialogRef = dialog.open(SafeFormModalComponent, {
