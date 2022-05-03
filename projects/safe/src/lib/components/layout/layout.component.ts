@@ -319,21 +319,26 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Get the current active language. First it checks if there is one already
-   * set, else it takes the default one.
-   *
-   * @returns language id of the language
+   * Get the best language for the user: first try to retrieve a preference,
+   * else get the language of the browser or else the default one.
    */
-  getLanguage(): string {
-    // select the langage saved (or default if not)
-    let language = localStorage.getItem('lang');
-    if (!language || !this.languages.includes(language)) {
-      language = this.translate.defaultLang;
+  getLanguage(): void {
+    // find the langage saved (or default if not)
+    let language =
+      localStorage.getItem('lang') ||
+      this.translate.getBrowserCultureLang() ||
+      this.translate.getBrowserLang() ||
+      this.translate.defaultLang;
+    // check that we support the language
+    if (!this.languages.includes(language)) {
+      language = language.split('-')[0];
+      if (!this.languages.includes(language)) {
+        language = this.translate.defaultLang;
+      }
     }
-    // if not default language, change langage of the interface
+    // if not default language, change the language of the interface
     if (language !== this.translate.defaultLang) {
       this.translate.use(language);
     }
-    return language;
   }
 }
