@@ -25,7 +25,7 @@ import {
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar.service';
-import { LANGUAGES } from '../../utils/languages';
+import { getLanguageName } from '../../utils/languages';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
@@ -55,10 +55,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === SURVEYJS ===
   public survey!: Survey.Model;
-  public surveyLanguage: { name: string; nativeName: string } = {
-    name: 'English',
-    nativeName: 'English',
-  };
+  public surveyLanguage = '';
   public usedLocales: Array<{ text: string; value: string }> = [];
   public dropdownLocales: any[] = [];
   public surveyActive = true;
@@ -170,22 +167,18 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.survey.getUsedLocales().length > 1) {
       this.survey.getUsedLocales().forEach((lang) => {
-        const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
+        const nativeName = getLanguageName(lang);
         this.usedLocales.push({ value: lang, text: nativeName });
         this.dropdownLocales.push(nativeName);
       });
     }
 
-    if (navigator.language) {
-      const clientLanguage = navigator.language.substring(0, 2);
-      const code = this.survey.getUsedLocales().includes(clientLanguage)
-        ? clientLanguage
-        : 'en';
-      this.surveyLanguage = (LANGUAGES as any)[code];
-      this.survey.locale = code;
-    } else {
-      this.survey.locale = 'en';
-    }
+    const appLanguage = this.translate.currentLang.split('-')[0];
+    const code = this.survey.getUsedLocales().includes(appLanguage)
+      ? appLanguage
+      : Survey.surveyLocalization.defaultLocaleValue;
+    this.surveyLanguage = getLanguageName(code);
+    this.survey.locale = code;
 
     this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showNavigationButtons = false;
