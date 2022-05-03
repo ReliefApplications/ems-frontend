@@ -1041,5 +1041,19 @@
 				"customize": "Personnalisez chacune des étapes créées."
 			}
 		}
+	},
+	"survey": {
+		"addButton": {
+			"text": "Ajouter un enregistrement"
+		},
+		"editButton": {
+			"text": "Modifier"
+		},
+		"searchButton": {
+			"text": "Rechercher"
+		},
+		"urlInput": {
+			"title": "L'URL doit commencer par \"http://\" ou \"https://\""
+		}
 	}
 }

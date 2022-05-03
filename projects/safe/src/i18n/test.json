@@ -1041,5 +1041,19 @@
 				"customize": "******"
 			}
 		}
+	},
+	"survey": {
+		"addButton": {
+			"text": "******"
+		},
+		"editButton": {
+			"text": "******"
+		},
+		"searchButton": {
+			"text": "******"
+		},
+		"urlInput": {
+			"title": "******"
+		}
 	}
 }

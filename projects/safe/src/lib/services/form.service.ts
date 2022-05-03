@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
 import { FormBuilder } from '@angular/forms';
 import { SafeAuthService } from './auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Shared survey service.
@@ -36,7 +37,8 @@ export class SafeFormService {
     public dialog: MatDialog,
     public apollo: Apollo,
     public formBuilder: FormBuilder,
-    public authService: SafeAuthService
+    public authService: SafeAuthService,
+    public translate: TranslateService
   ) {
     // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomWidgets(
@@ -46,7 +48,8 @@ export class SafeFormService {
       apollo,
       formBuilder,
       authService,
-      environment
+      environment,
+      translate
     );
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
@@ -58,7 +61,8 @@ export class SafeFormService {
       apollo,
       formBuilder,
       authService,
-      environment
+      environment,
+      translate
     );
   }
 }

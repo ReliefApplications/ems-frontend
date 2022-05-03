@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DomService } from '../services/dom.service';
 import { FormBuilder } from '@angular/forms';
 import { SafeAuthService } from '../services/auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -33,7 +34,8 @@ export const initCustomWidgets = (
   apollo: Apollo,
   formBuilder: FormBuilder,
   authService: SafeAuthService,
-  environment: any
+  environment: any,
+  translate: TranslateService
 ): void => {
   survey.settings.commentPrefix = '_comment';
   // supportCreatorV2
@@ -42,6 +44,6 @@ export const initCustomWidgets = (
   initResourcesComponent(survey, domService, apollo, dialog, formBuilder);
   initOwnerComponent(survey, domService, apollo, dialog, formBuilder);
   initUsersComponent(survey, domService, apollo, dialog, formBuilder);
-  initCustomWidget(survey, domService, dialog, environment);
+  initCustomWidget(survey, domService, dialog, environment, translate);
   addCustomFunctions(survey, authService, apollo);
 };

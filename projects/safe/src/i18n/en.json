@@ -1041,5 +1041,19 @@
 				"customize": "Customize each of the steps created"
 			}
 		}
+	},
+	"survey": {
+		"addButton": {
+			"text": "Add new record"
+		},
+		"editButton": {
+			"text": "Edit"
+		},
+		"searchButton": {
+			"text": "Search"
+		},
+		"urlInput": {
+			"title": "The URL should start with \"http://\" or \"https://\""
+		}
 	}
 }

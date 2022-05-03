@@ -10,6 +10,7 @@ import { ButtonCategory } from '../components/ui/button/button-category.enum';
 import { EmbeddedViewRef } from '@angular/core';
 import { SafeRecordDropdownComponent } from '../components/record-dropdown/record-dropdown.component';
 import { SafeCoreGridComponent } from '../components/ui/core-grid/core-grid.component';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Adds zero to number if < 10.
@@ -37,7 +38,8 @@ export const init = (
   survey: any,
   domService: DomService,
   dialog: MatDialog,
-  environment: any
+  environment: any,
+  translate: TranslateService
 ): void => {
   const widget = {
     name: 'custom-widget',
@@ -91,7 +93,13 @@ export const init = (
       });
     },
     isDefaultRender: true,
-    afterRender: (question: any, el: any): void => {
+    afterRender: async (question: any, el: any): Promise<void> => {
+      // get the language of the form
+      const lang =
+        survey.surveyLocalization.currentLocaleValue ||
+        survey.surveyLocalization.defaultLocaleValue;
+      const translations = await translate.getTranslation(lang).toPromise();
+      console.log(translations);
       // Correction of date inputs
       if (
         question.value &&
@@ -132,7 +140,7 @@ export const init = (
         mainDiv.style.height = '23px';
         mainDiv.style.marginBottom = '0.5em';
         const btnEl = document.createElement('button');
-        btnEl.innerText = 'Edit';
+        btnEl.innerText = translations.survey.editButton.text;
         btnEl.style.width = '50px';
         mainDiv.appendChild(btnEl);
         el.parentElement.insertBefore(mainDiv, el);
@@ -186,11 +194,12 @@ export const init = (
           const searchBtn = buildSearchButton(
             question,
             question.gridFieldsSettings,
-            false
+            false,
+            translations
           );
           actionsButtons.appendChild(searchBtn);
 
-          const addBtn = buildAddButton(question, false);
+          const addBtn = buildAddButton(question, false, translations);
           actionsButtons.appendChild(addBtn);
 
           el.parentElement.insertBefore(actionsButtons, el);
@@ -232,7 +241,8 @@ export const init = (
           const searchBtn = buildSearchButton(
             question,
             question.gridFieldsSettings,
-            true
+            true,
+            translations
           );
           actionsButtons.appendChild(searchBtn);
 
@@ -289,8 +299,7 @@ export const init = (
         el.parentElement.style.flexDirection = 'row';
         el.parentElement.style.pointerEvents = 'auto';
         el.parentElement.style.justifyContent = 'space-between';
-        el.parentElement.title =
-          'The URL should start with "http://" or "https://"';
+        el.parentElement.title = translations.survey.urlInput.title;
 
         // Create an <a> HTMLElement only used to verify the validity of the URL
         const urlTester = document.createElement('a');
@@ -330,10 +339,11 @@ export const init = (
   const buildSearchButton = (
     question: any,
     fieldsSettingsForm: FormGroup,
-    multiselect: boolean
+    multiselect: boolean,
+    translations: any
   ): any => {
     const searchButton = document.createElement('button');
-    searchButton.innerText = 'Search';
+    searchButton.innerText = translations.survey.searchButton.text;
     searchButton.style.marginRight = '8px';
     if (fieldsSettingsForm) {
       searchButton.onclick = () => {
@@ -369,10 +379,11 @@ export const init = (
   const buildAddButton = (
     question: any,
     multiselect: boolean,
+    translations: any,
     gridComponent?: SafeCoreGridComponent
   ): any => {
     const addButton = document.createElement('button');
-    addButton.innerText = 'Add new record';
+    addButton.innerText = translations.survey.addButton.text;
     if (question.addRecord && question.addTemplate) {
       addButton.onclick = () => {
         const dialogRef = dialog.open(SafeFormModalComponent, {
