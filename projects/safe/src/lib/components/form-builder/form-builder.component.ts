@@ -93,7 +93,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   ) {
     this.environment = environment;
     // translate the editor in the same language as the interface
-    SurveyCreator.localization.currentLocale = this.translate.currentLang;
+    SurveyCreator.localization.currentLocale =
+      this.translate.currentLang || this.translate.defaultLang;
     this.translate.onLangChange.subscribe(() => {
       SurveyCreator.localization.currentLocale = this.translate.currentLang;
     });
