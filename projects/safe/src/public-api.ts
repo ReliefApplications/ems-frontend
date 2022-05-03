@@ -97,4 +97,4 @@ export * from './lib/safe.module';
 export * from './lib/pipes/date/public-api';
 
 // === UTILS ===
-export * from './lib/utils/translateHttpLoader';
+export * from './lib/utils/translate-http-loader';
