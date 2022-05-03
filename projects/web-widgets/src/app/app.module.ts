@@ -200,7 +200,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
 export class AppModule implements DoBootstrap {
   constructor(private injector: Injector, private translate: TranslateService) {
     this.translate.addLangs(environment.availableLanguages);
-    this.translate.setDefaultLang('en');
+    this.translate.setDefaultLang(environment.defaultLanguage);
   }
 
   ngDoBootstrap(): void {
