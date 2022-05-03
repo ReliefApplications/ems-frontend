@@ -46,7 +46,7 @@ export class SafePaletteControlComponent
   }
 
   writeValue(value: string[]): void {
-    this.colors = value;
+    this.colors = JSON.parse(JSON.stringify(value));
   }
 
   setDisabledState(isDisabled: boolean): void {
@@ -54,16 +54,18 @@ export class SafePaletteControlComponent
   }
 
   onColorChange(e: any, i: number): void {
+    this.onTouched();
     this.colors[i] = e;
   }
 
   onClose(e: any): void {
-    this.formControl.setValue(this.colors);
+    this.onChanged(this.colors);
   }
 
   onReorder(e: any): void {
+    this.onTouched();
     this.colors[e.previousContainer.data.index] = e.container.data.item;
     this.colors[e.container.data.index] = e.previousContainer.data.item;
-    this.formControl.setValue(this.colors);
+    this.onChanged(this.colors);
   }
 }

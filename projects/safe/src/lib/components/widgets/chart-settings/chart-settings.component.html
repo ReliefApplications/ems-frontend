@@ -136,6 +136,15 @@
                 </div>
               </ng-container>
             </mat-expansion-panel>
+            <mat-expansion-panel formGroupName="palette">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ 'components.widget.settings.chart.colorPalette' | translate }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-slide-toggle formControlName="enabled">{{ 'components.widget.settings.chart.useColorPalette' | translate }}</mat-slide-toggle>
+              <safe-palette-control formControlName="value"></safe-palette-control>
+            </mat-expansion-panel>
           </mat-accordion>
         </mat-tab>
         <mat-tab [label]="'common.preview' | translate">

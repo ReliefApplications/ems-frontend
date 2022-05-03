@@ -21,6 +21,10 @@ interface ChartSeries {
   }[];
 }
 
+interface ChartOptions {
+  palette: string[];
+}
+
 @Component({
   selector: 'safe-pie-chart',
   templateUrl: './pie-chart.component.html',
@@ -33,10 +37,16 @@ export class SafePieChartComponent implements OnInit {
 
   @Input() series: ChartSeries[] = [];
 
+  @Input() options: ChartOptions = {
+    palette: [],
+  };
+
   @ViewChild('chart')
   public chart?: ChartComponent;
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.options);
+  }
 }

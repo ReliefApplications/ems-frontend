@@ -14,6 +14,7 @@ import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
 import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
+import get from 'lodash/get';
 
 const DEFAULT_FILE_NAME = 'chartS';
 
@@ -29,6 +30,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   // === DATA ===
   public loading = true;
   public series: any[] = [];
+  public options: any = null;
   private dataQuery: any;
   private dataSubscription?: Subscription;
 
@@ -71,6 +73,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
       this.settings.chart.aggregation
     );
     if (this.dataQuery) {
+      this.getOptions();
       this.getData();
     } else {
       this.loading = false;
@@ -86,6 +89,12 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
       .then((dataURI: string) => {
         saveAs(dataURI, this.fileName);
       });
+  }
+
+  public getOptions(): void {
+    this.options = {
+      palette: get(this.settings, 'chart.palette.value', null),
+    };
   }
 
   /*  Load the data, using widget parameters.
