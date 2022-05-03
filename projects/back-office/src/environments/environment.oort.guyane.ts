@@ -20,6 +20,7 @@ export const environment = {
   backOfficeUri: 'https://aide-alimentaire-guyane.oortcloud.tech/admin/',
   module: 'backoffice',
   availableLanguages: ['en', 'fr'],
+  defaultLanguage: 'en',
   authConfig,
   theme,
 };

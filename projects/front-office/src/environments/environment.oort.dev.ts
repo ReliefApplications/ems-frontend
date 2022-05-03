@@ -22,6 +22,7 @@ export const environment = {
   backOfficeUri: 'https://oort-dev.oortcloud.tech/admin/',
   module: 'frontoffice',
   availableLanguages: ['en', 'fr', 'test'],
+  defaultLanguage: 'en',
   authConfig,
   theme,
 };

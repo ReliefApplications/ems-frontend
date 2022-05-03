@@ -21,6 +21,7 @@ export const environment = {
   backOfficeUri: 'https://ems-safe.who.int/backoffice/',
   module: 'backoffice',
   availableLanguages: ['en'],
+  defaultLanguage: 'en',
   authConfig,
   theme,
 };

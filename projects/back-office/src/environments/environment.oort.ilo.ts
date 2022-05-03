@@ -19,6 +19,7 @@ export const environment = {
   backOfficeUri: 'https://c2a-durban.oortcloud.tech/admin/',
   module: 'backoffice',
   availableLanguages: ['en', 'fr'],
+  defaultLanguage: 'en',
   authConfig,
   theme,
 };

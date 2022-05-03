@@ -36,6 +36,7 @@ export const environment = {
   backOfficeUri: 'http://localhost:4200/',
   module: 'frontoffice',
   availableLanguages: ['en', 'fr', 'test'],
+  defaultLanguage: 'en',
   authConfig,
   theme,
 };

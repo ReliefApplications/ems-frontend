@@ -22,6 +22,7 @@ export const environment = {
   backOfficeUri: 'http://localhost:4200/',
   module: 'widgets',
   availableLanguages: ['en', 'test'],
+  defaultLanguage: 'en',
   authConfig,
   theme,
 };
