@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { SafeDateTranslateService } from '../../services/date-translate.service';
+import { getLanguageName } from '../../utils/languages';
 
 /** Preferences Dialog Data */
 interface PreferencesDialogData {
@@ -46,7 +47,7 @@ export class SafePreferencesModalComponent implements OnInit {
     // find the list of languages and their complete names
     this.languages = data.languages.map((code: string) => ({
       value: code,
-      name: this.getLanguageName(code),
+      name: getLanguageName(code),
     }));
 
     // find the current date language
@@ -68,26 +69,6 @@ export class SafePreferencesModalComponent implements OnInit {
       // initializes select field with current date language format
       dateFormat: [this.currDateFormat, Validators.required],
     });
-  }
-
-  /**
-   * Get the full name of a language from its code
-   *
-   * @param lang The code of the language we want the name of
-   * @returns The language name
-   */
-  private getLanguageName(lang: string): string {
-    try {
-      // create the displayName object for the language
-      const displayName = new (Intl as any).DisplayNames(lang, {
-        type: 'language',
-      });
-      // get the name of the language in the lang of the language
-      return displayName.of(lang);
-    } catch {
-      // if it is not a language, return the code
-      return lang;
-    }
   }
 
   /**
