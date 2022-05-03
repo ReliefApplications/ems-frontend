@@ -95,3 +95,6 @@ export * from './lib/safe.module';
 
 // === PIPES ===
 export * from './lib/pipes/date/public-api';
+
+// === UTILS ===
+export * from './lib/utils/translateHttpLoader';
