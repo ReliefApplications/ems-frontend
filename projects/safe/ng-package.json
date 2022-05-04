@@ -33,7 +33,8 @@
       "@progress/kendo-angular-label": "@progress/kendo-angular-label",
       "@ngx-translate/core": "@ngx-translate/core",
       "angular-oauth2-oidc": "angular-oauth2-oidc",
-      "@progress/kendo-angular-upload": "@progress/kendo-angular-upload"
+      "@progress/kendo-angular-upload": "@progress/kendo-angular-upload",
+      "@progress/kendo-angular-l10n": "@progress/kendo-angular-l10n"
     }
   }
 }
