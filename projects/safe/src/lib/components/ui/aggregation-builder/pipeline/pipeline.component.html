@@ -5,12 +5,16 @@
   >
     <mat-expansion-panel-header cdkDragHandle>
       <mat-panel-title>
-        {{ 'components.aggregationBuilder.stages.' + stageForm.value.type | translate }}
+        {{
+          'components.aggregationBuilder.stages.' + stageForm.value.type
+            | translate
+        }}
         <safe-icon
           class="info"
           [size]="18"
           [matTooltip]="
-            'components.aggregationBuilder.tooltip.' + stageForm.value.type | translate
+            'components.aggregationBuilder.tooltip.' + stageForm.value.type
+              | translate
           "
           matTooltipPosition="right"
           icon="info_outline"

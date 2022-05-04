@@ -1,24 +1,51 @@
 <form [formGroup]="pageForm">
-    <div class="form-group" [ngSwitch]="step" [ngClass]="{'content-choice-step': step === 1 }">
-        <ng-container *ngSwitchCase="1">
-            <h2>{{'pages.application.addPage.selectType' | translate}}</h2>
-            <safe-content-choice formControlName="type" [contentTypes]="contentTypes"></safe-content-choice>
-        </ng-container>
-        <ng-container *ngSwitchCase="2">
-            <h2>{{'pages.application.addPage.form.title' | translate}}</h2>
-            <mat-form-field appearance="outline">
-                <mat-label>{{'models.form.select' | translate}}</mat-label>
-                <mat-select #formSelect formControlName="content" (openedChange)="onOpenSelect($event)">
-                    <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{ form.name }}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" [disabled]=!canCreateForm>
-                {{'models.form.create' | translate}}
-            </safe-button>
-        </ng-container>
-    </div>
+  <div
+    class="form-group"
+    [ngSwitch]="step"
+    [ngClass]="{ 'content-choice-step': step === 1 }"
+  >
+    <ng-container *ngSwitchCase="1">
+      <h2>{{ 'pages.application.addPage.selectType' | translate }}</h2>
+      <safe-content-choice
+        formControlName="type"
+        [contentTypes]="contentTypes"
+      ></safe-content-choice>
+    </ng-container>
+    <ng-container *ngSwitchCase="2">
+      <h2>{{ 'pages.application.addPage.form.title' | translate }}</h2>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'models.form.select' | translate }}</mat-label>
+        <mat-select
+          #formSelect
+          formControlName="content"
+          (openedChange)="onOpenSelect($event)"
+        >
+          <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{
+            form.name
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <safe-button
+        icon="add"
+        category="secondary"
+        variant="primary"
+        (click)="onAdd()"
+        [disabled]="!canCreateForm"
+      >
+        {{ 'models.form.create' | translate }}
+      </safe-button>
+    </ng-container>
+  </div>
 </form>
 <div class="add-page-stepper" *ngIf="step !== 1">
-    <safe-button [disabled]="step <= 1" (click)="onBack()">{{'common.back' | translate}}</safe-button>
-    <safe-button category="secondary" variant="primary" (click)="onNext()" [disabled]="!isStepValid(step)">{{'common.next' | translate}}</safe-button>
+  <safe-button [disabled]="step <= 1" (click)="onBack()">{{
+    'common.back' | translate
+  }}</safe-button>
+  <safe-button
+    category="secondary"
+    variant="primary"
+    (click)="onNext()"
+    [disabled]="!isStepValid(step)"
+    >{{ 'common.next' | translate }}</safe-button
+  >
 </div>

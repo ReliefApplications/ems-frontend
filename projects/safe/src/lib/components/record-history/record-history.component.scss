@@ -32,7 +32,9 @@
   overflow: hidden;
 }
 
-::ng-deep .modify-field, ::ng-deep .add-field, ::ng-deep .remove-field {
+::ng-deep .modify-field,
+::ng-deep .add-field,
+::ng-deep .remove-field {
   border-radius: 10px;
   padding: 5px;
 }
@@ -46,7 +48,7 @@
 }
 
 ::ng-deep .remove-field {
-  background-color: #EBB2B2;
+  background-color: #ebb2b2;
 }
 
 .changes-content {
