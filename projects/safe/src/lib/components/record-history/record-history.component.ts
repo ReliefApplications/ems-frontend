@@ -11,8 +11,6 @@ import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeRecordModalComponent } from '../record-modal/record-modal.component';
 import { SafeDownloadService } from '../../services/download.service';
-import { DateAdapter } from '@angular/material/core';
-import { SafeDateTranslateService } from '@safe/builder';
 
 @Component({
   selector: 'safe-record-history',
@@ -38,9 +36,7 @@ export class SafeRecordHistoryComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private downloadService: SafeDownloadService,
-    private adapter: DateAdapter<any>,
-    private dateTranslate: SafeDateTranslateService
+    private downloadService: SafeDownloadService
   ) {}
 
   ngOnInit(): void {
@@ -49,10 +45,6 @@ export class SafeRecordHistoryComponent implements OnInit {
     );
     this.filterHistory = this.history;
     this.loading = false;
-    // get the correct date format
-    this.dateTranslate
-      .getCurrentLang()
-      .subscribe((lang) => this.adapter.setLocale(lang));
   }
 
   onCancel(): void {
