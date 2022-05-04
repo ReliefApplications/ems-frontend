@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeGridComponent } from './grid.component';
 import { SafeGridRowActionsModule } from '../row-actions/row-actions.module';
