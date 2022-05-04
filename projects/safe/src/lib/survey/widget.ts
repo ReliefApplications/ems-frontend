@@ -94,7 +94,7 @@ export const init = (
       });
     },
     isDefaultRender: true,
-    afterRender: async (question: any, el: any): Promise<void> => {
+    afterRender: (question: any, el: any): void => {
       // get the language of the form
       const lang =
         survey.surveyLocalization.currentLocaleValue ||
