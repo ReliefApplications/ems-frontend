@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeGridComponent } from './grid.component';
 import { SafeGridRowActionsModule } from '../row-actions/row-actions.module';
@@ -20,6 +20,7 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SafeExportModule } from '../export/export.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../../../pipes/date/date.module';
+import { CldrIntlService, IntlService } from '@progress/kendo-angular-intl';
 
 @NgModule({
   declarations: [SafeGridComponent],
@@ -56,5 +57,11 @@ import { SafeDateModule } from '../../../../pipes/date/date.module';
     SafeDateModule,
   ],
   exports: [SafeGridComponent],
+  providers: [
+    {
+      provide: IntlService,
+      useExisting: CldrIntlService,
+    },
+  ],
 })
 export class SafeGridModule {}

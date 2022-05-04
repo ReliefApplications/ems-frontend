@@ -178,14 +178,16 @@ export class SafeGridService {
    * @param type Type of the field.
    * @returns Format of the field.
    */
-  private getFieldFormat(type: any): string {
+  private getFieldFormat(
+    type: any
+  ): string | { date?: string; time?: string; datetime?: string } {
     switch (type) {
       case 'Date':
-        return 'dd/MM/yy';
+        return { date: 'short' };
       case 'DateTime':
-        return 'dd/MM/yy HH:mm';
+        return { datetime: 'short' };
       case 'Time':
-        return 'HH:mm';
+        return { time: 'short' };
       default:
         return '';
     }

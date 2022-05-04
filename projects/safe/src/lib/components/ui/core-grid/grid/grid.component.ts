@@ -47,6 +47,8 @@ import { SafeDownloadService } from '../../../../services/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
+import { CldrIntlService, IntlService } from '@progress/kendo-angular-intl';
+import { SafeDateTranslateService } from '../../../../services/date-translate.service';
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
@@ -174,7 +176,9 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private dateTranslate: SafeDateTranslateService,
+    private intlService: IntlService
   ) {}
 
   ngOnInit(): void {
@@ -185,6 +189,13 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       .subscribe((value) => {
         this.searchChange.emit(value);
       });
+    // transalte kendo components (like month in datepicker)
+    (this.intlService as CldrIntlService).localeId =
+      this.dateTranslate.currentLang;
+    this.dateTranslate.getCurrentLang().subscribe((lang) => {
+      console.log('Lang changed to', lang);
+      (this.intlService as CldrIntlService).localeId = lang;
+    });
   }
 
   ngAfterViewInit(): void {
