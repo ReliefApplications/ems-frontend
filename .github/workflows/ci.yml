@@ -3,7 +3,9 @@ name: CI
 on:
   push:
     branches:
-      - 'OORT-223'
+      - 'release-*'
+      - 'hotfix-*'
+      - 'feature-*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -42,4 +44,5 @@ jobs:
         with:
           commit_message: Prettify
           commit_options: '--no-verify'
-          
+          push_options: '--no-verify'
+
