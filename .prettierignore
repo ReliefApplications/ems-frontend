@@ -3,3 +3,6 @@ documentation/*
 
 # Widgets
 widgets/*
+
+# Dist
+dist/*
