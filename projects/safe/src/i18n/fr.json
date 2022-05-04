@@ -667,6 +667,10 @@
 				"chart": {
 					"legend": "Légende",
 					"orientation": "Orientation",
+					"palette": {
+						"enable": "Configurer la palette",
+						"title": "Palette de couleurs"
+					},
 					"position": "Position",
 					"text": "Texte",
 					"type": "Graphique"
