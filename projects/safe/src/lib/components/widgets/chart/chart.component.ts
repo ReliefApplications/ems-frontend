@@ -93,7 +93,9 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
 
   public getOptions(): void {
     this.options = {
-      palette: get(this.settings, 'chart.palette.value', null),
+      palette: get(this.settings, 'chart.palette.enabled', false)
+        ? get(this.settings, 'chart.palette.value', null)
+        : null,
     };
   }
 

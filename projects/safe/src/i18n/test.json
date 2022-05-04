@@ -667,6 +667,10 @@
 				"chart": {
 					"legend": "******",
 					"orientation": "******",
+					"palette": {
+						"enable": "******",
+						"title": "******"
+					},
 					"position": "******",
 					"text": "******",
 					"type": "******"

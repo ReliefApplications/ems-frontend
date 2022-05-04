@@ -34,7 +34,6 @@ export class Chart {
     const legend = settings ? settings.legend : null;
     const title = settings ? settings.title : null;
     const palette: string[] = get(settings, 'palette.value', []);
-    console.log(palette);
 
     // build form
     this.form = this.fb.group({
@@ -57,14 +56,14 @@ export class Chart {
         position: [title ? title.position : 'top'],
       }),
       palette: this.fb.group({
-        enabled: palette.length > 0,
+        enabled: get(settings, 'palette.enabled', false),
         value: [
           {
             value:
               palette.length > 0
                 ? palette
                 : JSON.parse(JSON.stringify(DEFAULT_PALETTE)),
-            disabled: palette.length > 0,
+            disabled: !(palette.length > 0),
           },
         ],
       }),

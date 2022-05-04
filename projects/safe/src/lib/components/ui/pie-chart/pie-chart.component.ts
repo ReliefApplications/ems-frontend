@@ -46,7 +46,5 @@ export class SafePieChartComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
-    console.log(this.options);
-  }
+  ngOnInit(): void {}
 }
