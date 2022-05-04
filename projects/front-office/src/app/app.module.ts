@@ -37,6 +37,9 @@ import localeEn from '@angular/common/locales/en';
 // Register local translations for dates
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
+// register local translations for kendo
+import '@progress/kendo-angular-intl/locales/en/all';
+import '@progress/kendo-angular-intl/locales/fr/all';
 
 localStorage.setItem('loaded', 'false');
 
