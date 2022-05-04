@@ -11,6 +11,9 @@
 documentation/*
 documentation.json
 
+# Widgets
+widgets/*
+
 # Dependencies
 /node_modules
 

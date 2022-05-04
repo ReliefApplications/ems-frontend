@@ -52,7 +52,10 @@
       variant="primary"
       [matMenuTriggerFor]="menu"
     >
-      {{ 'common.exportObject' | translate: { name: 'common.user.few' | translate } }}
+      {{
+        'common.exportObject'
+          | translate: { name: 'common.user.few' | translate }
+      }}
     </safe-button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onExport('csv')">.csv</button>
@@ -76,7 +79,10 @@
       variant="danger"
       (click)="onDelete(selection.selected)"
     >
-      {{ 'common.deleteObject' | translate: { name: 'common.user.few' | translate } }}
+      {{
+        'common.deleteObject'
+          | translate: { name: 'common.user.few' | translate }
+      }}
     </safe-button>
   </div>
 </div>
