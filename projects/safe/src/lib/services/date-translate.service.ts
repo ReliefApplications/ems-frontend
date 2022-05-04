@@ -30,6 +30,12 @@ export class SafeDateTranslateService {
     return this.lang;
   }
 
+  /**
+   * Get the current language as an observable to allowed the component to
+   * subscribe to it and be aware of language changes.
+   *
+   * @returns An observable of the current language for the dates
+   */
   public getCurrentLang(): Observable<string> {
     return this.lang$.asObservable();
   }
