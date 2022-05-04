@@ -332,7 +332,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
     // if not default language, change langage of the interface
     if (language !== this.translate.defaultLang) {
-      this.translate.use(language);
+      this.setLanguage(language);
     }
     return language;
   }
