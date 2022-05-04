@@ -37,3 +37,9 @@ jobs:
         run: npm ci
       - name: Prettify
         run: npx prettier --write "**/*.{scss,html}"
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Prettify
+          commit_options: '--no-verify'
+          
