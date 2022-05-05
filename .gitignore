@@ -12,7 +12,7 @@ documentation/*
 documentation.json
 
 # Widgets
-widgets/*
+# widgets/*
 
 # Dependencies
 /node_modules
