@@ -26,6 +26,7 @@
       "angular-oauth2-oidc": "angular-oauth2-oidc",
       "apollo-angular": "apollo-angular",
       "leaflet": "leaflet",
+      "localForage": "localForage",
       "lodash/get": "lodash/get",
       "lodash/isEqual": "lodash/isEqual",
       "lodash/isNil": "lodash/isNil",
