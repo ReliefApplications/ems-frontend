@@ -1,5 +1,11 @@
 import { Apollo } from 'apollo-angular';
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
@@ -26,7 +32,6 @@ import {
   EDIT_RECORDS,
   EditRecordsMutationResponse,
 } from '../../graphql/mutations';
-import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar.service';
@@ -64,7 +69,6 @@ export class SafeFormModalComponent implements OnInit {
   public form?: Form;
   public record?: Record;
 
-  public containerId: string;
   public modifiedAt: Date | null = null;
 
   private isMultiEdition = false;
@@ -74,6 +78,8 @@ export class SafeFormModalComponent implements OnInit {
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
+
+  @ViewChild('formContainer') formContainer!: ElementRef;
 
   environment: any;
 
@@ -93,7 +99,6 @@ export class SafeFormModalComponent implements OnInit {
     private formBuilderService: SafeFormBuilderService,
     private translate: TranslateService
   ) {
-    this.containerId = uuidv4();
     this.environment = environment;
   }
 
@@ -225,7 +230,8 @@ export class SafeFormModalComponent implements OnInit {
     }
     this.survey.showNavigationButtons = false;
     this.survey.focusFirstQuestionAutomatic = false;
-    this.survey.render(this.containerId);
+    this.survey.render(this.formContainer.nativeElement);
+    // this.survey.render(this.containerId);
     this.setPages();
     this.survey.onComplete.add(this.onComplete);
   }
