@@ -11,6 +11,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonModule } from '../../directives/skeleton/skeleton.module';
+import { SafeDateModule } from '../../pipes/date/date.module';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { SafeSkeletonModule } from '../../directives/skeleton/skeleton.module';
     SafeButtonModule,
     TranslateModule,
     SafeSkeletonModule,
+    SafeDateModule,
   ],
   exports: [
     SafeApplicationsSummaryComponent,

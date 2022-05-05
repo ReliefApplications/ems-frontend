@@ -18,6 +18,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { SafePreferencesModalModule } from '../preferences-modal/preferences-modal.module';
+import { SafeDateModule } from '../../pipes/date/date.module';
 
 @NgModule({
   declarations: [SafeLayoutComponent],
@@ -40,6 +42,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
     TranslateModule,
     SafeSearchMenuModule,
     OverlayModule,
+    SafePreferencesModalModule,
+    SafeDateModule,
   ],
   exports: [SafeLayoutComponent],
 })

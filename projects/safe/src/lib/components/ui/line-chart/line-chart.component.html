@@ -1,4 +1,8 @@
-<kendo-chart #chart [categoryAxis]="categoryAxis">
+<kendo-chart
+  #chart
+  [categoryAxis]="categoryAxis"
+  [seriesColors]="options.palette"
+>
   <kendo-chart-title
     *ngIf="title"
     [visible]="title.visible"

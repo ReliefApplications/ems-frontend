@@ -10,13 +10,14 @@
 mat-dialog-content {
   flex: 1;
   max-height: unset !important;
-  display: flex;
-  gap: 16px;
-  justify-content: space-between;
+}
 
-  .form-container {
-    flex: 1;
-  }
+mat-grid-tile {
+  padding-top: 0px !important;
+}
+
+mat-grid-tile:nth-child(2n) {
+  margin-left: 1.5rem !important;
 }
 
 .versions-info {

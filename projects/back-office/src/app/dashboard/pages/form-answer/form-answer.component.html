@@ -2,7 +2,7 @@
   <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
   <ng-container *ngIf="completed && !form.uniqueRecord">
     <safe-button category="secondary" (click)="clearForm()">{{
-      'common.newObject' | translate: { name: 'common.record.one' | translate }
+      'models.record.new' | translate
     }}</safe-button>
   </ng-container>
 </ng-container>

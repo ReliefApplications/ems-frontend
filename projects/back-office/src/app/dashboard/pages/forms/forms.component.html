@@ -31,7 +31,9 @@
         {{ 'common.createdOn' | translate }}
       </span>
     </th>
-    <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
+    <td mat-cell *matCellDef="let element">
+      {{ element.createdAt | safeDate }}
+    </td>
   </ng-container>
 
   <ng-container matColumnDef="status">
@@ -143,7 +145,10 @@
         <ng-container *ngIf="element.canSee">
           <button mat-menu-item [routerLink]="['/forms/records', element.id]">
             <mat-icon>plagiarism</mat-icon>
-            {{ 'common.view' | translate }}
+            {{
+              'common.viewObject'
+                | translate: { name: 'common.record.few' | translate }
+            }}
           </button>
         </ng-container>
         <ng-container *ngIf="element.canDelete">

@@ -10,6 +10,7 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeDateModule } from '../../pipes/date/date.module';
 
 @NgModule({
   declarations: [SafeRecordModalComponent],
@@ -24,6 +25,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeRecordHistoryModalModule,
     SafeRecordSummaryModule,
     TranslateModule,
+    SafeDateModule,
   ],
   exports: [SafeRecordModalComponent],
 })

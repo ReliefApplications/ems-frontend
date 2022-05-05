@@ -155,18 +155,14 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       );
     }
 
-    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+    if (cachedData) {
+      this.survey.data = cachedData;
+    } else if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
-    } else {
-      if (cachedData) {
-        this.survey.data = cachedData;
-      } else {
-        if (this.record && this.record.data) {
-          this.survey.data = this.record.data;
-          this.modifiedAt = this.record.modifiedAt || null;
-        }
-      }
+    } else if (this.record && this.record.data) {
+      this.survey.data = this.record.data;
+      this.modifiedAt = this.record.modifiedAt || null;
     }
 
     if (this.survey.getUsedLocales().length > 1) {
@@ -185,10 +181,10 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.surveyLanguage = (LANGUAGES as any)[code];
       this.survey.locale = code;
     } else {
-      // TODO: check
       this.survey.locale = 'en';
     }
 
+    this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showNavigationButtons = false;
     this.setPages();
     this.survey.onComplete.add(this.onComplete);
@@ -328,7 +324,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         localStorage.removeItem(this.storageId);
         if (res.data.editRecord || res.data.addRecord.form.uniqueRecord) {
-          this.survey.clear(false, true);
+          this.survey.clear(false, false);
           if (res.data.addRecord) {
             this.record = res.data.addRecord;
             this.modifiedAt = this.record?.modifiedAt || null;
@@ -339,9 +335,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
           this.survey.showCompletedPage = true;
         }
-        if (this.form.uniqueRecord) {
-          this.selectedTabIndex = 0;
-        }
         this.save.emit({
           completed: true,
           hideNewRecord:
@@ -351,12 +344,16 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   };
 
-  /* Change language of the form.
+  /**
+   * Change language of the form.
+   *
+   * @param ev language event
    */
   setLanguage(ev: string): void {
     this.survey.locale = this.usedLocales.filter(
       (locale) => locale.text === ev
     )[0].value;
+    this.survey.render(this.containerId);
   }
 
   private onClearFiles(survey: Survey.SurveyModel, options: any): void {

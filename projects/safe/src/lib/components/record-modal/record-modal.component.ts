@@ -151,6 +151,7 @@ export class SafeRecordModalComponent implements AfterViewInit {
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
     this.survey.mode = 'display';
     this.survey.showNavigationButtons = 'none';
+    this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showProgressBar = 'off';
     this.survey.render(this.formContainer.nativeElement);
     this.setPages();
@@ -166,6 +167,7 @@ export class SafeRecordModalComponent implements AfterViewInit {
       this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';
       this.surveyNext.mode = 'display';
       this.surveyNext.showNavigationButtons = 'none';
+      this.surveyNext.focusFirstQuestionAutomatic = false;
       this.surveyNext.showProgressBar = 'off';
       // Set list of updated questions
       const updatedQuestions: string[] = [];

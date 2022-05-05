@@ -1,5 +1,6 @@
 {
 	"common": {
+		"access": "******",
 		"add": "******",
 		"aggregation": {
 			"few": "******",
@@ -35,24 +36,24 @@
 			"one": "******"
 		},
 		"delete": "******",
-		"deleteObject": "******",
+		"deleteObject": "****** {{name}}",
 		"deleted": "******",
 		"display": "******",
-		"downloadObject": "******",
+		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
 		"edit": "******",
-		"editObject": "******",
+		"editObject": "****** {{name}}",
 		"email": {
 			"few": "******",
 			"none": "******",
 			"one": "******"
 		},
 		"errors": {
-			"objectDuplicated": "******"
+			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
 		"export": "******",
-		"exportObject": "******",
+		"exportObject": "****** {{name}}",
 		"false": "******",
 		"field": {
 			"few": "******",
@@ -62,6 +63,7 @@
 		"filter": {
 			"apply": "******",
 			"clear": "******",
+			"empty": "******",
 			"hide": "******",
 			"show": "******"
 		},
@@ -86,34 +88,51 @@
 		},
 		"modifiedOn": "******",
 		"name": "******",
-		"newObject": "******",
 		"next": "******",
 		"notifications": {
-			"accessDenied": "******",
-			"accessNotProvided": "******",
-			"alreadyExists": "******",
+			"accessDenied": "****** {{type}} ******",
+			"accessNotProvided": "****** {{type}} ****** {{error}}",
+			"alreadyExists": "****** {{type}} ****** {{value}} ******",
 			"copiedToClipboard": "******",
 			"dataRecovered": "******",
-			"formatInvalid": "******",
-			"loadedFromCache": "******",
-			"noOpened": "******",
-			"objectCreated": "******",
-			"objectDeleted": "******",
-			"objectDuplicated": "******",
-			"objectInvited": "******",
-			"objectLocked": "******",
-			"objectNotCreated": "******",
-			"objectNotDeleted": "******",
-			"objectNotDuplicated": "******",
-			"objectNotFound": "******",
-			"objectNotInvited": "******",
-			"objectNotUpdated": "******",
-			"objectReordered": "******",
-			"objectUpdated": "******",
+			"email": {
+				"error": "******",
+				"processing": "******",
+				"ready": "******",
+				"sent": "******"
+			},
+			"file": {
+				"download": {
+					"error": "******",
+					"processing": "******",
+					"ready": "******"
+				},
+				"upload": {
+					"error": "******",
+					"processing": "******",
+					"ready": "******"
+				}
+			},
+			"formatInvalid": "****** {{format}} ******",
+			"loadedFromCache": "{{type}} ******",
+			"noOpened": "****** {{value}} ******",
+			"objectCreated": "{{value}} ****** {{type}} ******",
+			"objectDeleted": "{{value}} ******",
+			"objectDuplicated": "****** {{type}} ****** {{value}} ******",
+			"objectInvited": "{{name}} ******",
+			"objectLocked": "{{name}} ******",
+			"objectNotCreated": "****** {{type}} ****** {{error}}",
+			"objectNotDeleted": "{{value}} ****** {{error}}",
+			"objectNotDuplicated": "****** {{type}} ****** {{error}}",
+			"objectNotFound": "{{name}} ******",
+			"objectNotInvited": "{{name}} ******",
+			"objectNotUpdated": "{{type}} ****** {{error}}",
+			"objectReordered": "{{type}} ******",
+			"objectUpdated": "{{value}} ****** {{type}} ******",
 			"platformAccessNotGranted": "******",
 			"readAll": "******",
-			"statusUpdated": "******",
-			"unlocked": "******"
+			"statusUpdated": "****** {{value}} ******",
+			"unlocked": "{{value}} ******"
 		},
 		"openFullScreen": "******",
 		"page": {
@@ -157,6 +176,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"referenceData": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"resource": {
 			"few": "******",
 			"none": "******",
@@ -169,7 +193,7 @@
 		},
 		"save": "******",
 		"saveChanges": "******",
-		"searchObject": "******",
+		"searchObject": "****** {{name}}",
 		"select": "******",
 		"settings": "******",
 		"status": "******",
@@ -189,7 +213,7 @@
 		"title": "******",
 		"true": "******",
 		"update": "******",
-		"uploadObject": "******",
+		"uploadObject": "****** {{name}}",
 		"user": {
 			"few": "******",
 			"none": "******",
@@ -200,7 +224,7 @@
 			"none": "******",
 			"one": "******"
 		},
-		"viewObject": "******",
+		"viewObject": "****** {{name}}",
 		"workflow": {
 			"few": "******",
 			"none": "******",
@@ -268,7 +292,7 @@
 				}
 			},
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			}
 		},
@@ -283,9 +307,13 @@
 			},
 			"positionAttribute": {
 				"delete": {
-					"confirmationMessage": "******",
+					"confirmationMessage": "****** {{name}} ******",
 					"title": "******"
 				}
+			},
+			"publish": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
 			},
 			"subscription": {
 				"modal": {
@@ -297,6 +325,10 @@
 						"listenTo": "******"
 					}
 				}
+			},
+			"unlock": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
 			},
 			"update": {
 				"placeholder": {
@@ -311,7 +343,7 @@
 		},
 		"channel": {
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"dropdown": {
 				"select": "******"
@@ -339,9 +371,15 @@
 				}
 			},
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"layout": {
+				"delete": {
+					"confirmationMessage": "****** {{name}} ******"
+				},
+				"errors": {
+					"invalid": "******"
+				},
 				"update": {
 					"preview": {
 						"description": "******"
@@ -351,10 +389,10 @@
 			"summary": {
 				"cache": {
 					"clear": "******",
-					"load": "******"
+					"load": "****** {{date}}"
 				},
-				"createdBy": "******",
-				"modifiedBy": "******"
+				"createdBy": "****** {{user}} ****** {{date}}",
+				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
 				"exit": "******",
@@ -363,9 +401,9 @@
 		},
 		"formBuilder": {
 			"errors": {
-				"invalidRelatedName": "******",
-				"missingRelatedName": "******",
-				"missingTemplate": "******"
+				"invalidRelatedName": "****** {{name}} ****** {{question}} ****** {{page}} ******",
+				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
+				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			}
 		},
 		"forms": {
@@ -387,9 +425,14 @@
 		"notifications": {
 			"readAll": "******"
 		},
+		"preferences": {
+			"dateFormat": "******",
+			"language": "******",
+			"title": "******"
+		},
 		"pullJob": {
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"modal": {
@@ -471,7 +514,7 @@
 		"record": {
 			"attach": {
 				"confirm": "******",
-				"selectTarget": "******"
+				"selectTarget": "****** {{name}} ******"
 			},
 			"convert": {
 				"choice": {
@@ -485,7 +528,7 @@
 				"select": "******"
 			},
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"permanently": "******"
 			},
 			"dropdown": {
@@ -509,9 +552,24 @@
 				"hint": "******"
 			}
 		},
+		"referenceData": {
+			"create": {
+				"errors": {
+					"name": "******"
+				},
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			},
+			"dropdown": {
+				"select": "******"
+			}
+		},
 		"resource": {
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"dropdown": {
 				"select": "******"
@@ -522,7 +580,7 @@
 				"title": "******"
 			},
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"impersonate": {
@@ -535,7 +593,7 @@
 		},
 		"user": {
 			"delete": {
-				"confirmationMessage": "******",
+				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"invite": {
@@ -556,6 +614,13 @@
 			}
 		},
 		"widget": {
+			"chart": {
+				"errors": {
+					"aggregation": {
+						"invalid": "******"
+					}
+				}
+			},
 			"expand": "******",
 			"grid": {
 				"actions": {
@@ -590,9 +655,9 @@
 					"toggle": "******"
 				},
 				"item": {
-					"few": "******",
+					"few": "{{count}} ******",
 					"none": "******",
-					"one": "******"
+					"one": "{{count}} ******"
 				},
 				"layout": {
 					"reset": "******"
@@ -602,6 +667,10 @@
 				"chart": {
 					"legend": "******",
 					"orientation": "******",
+					"palette": {
+						"enable": "******",
+						"title": "******"
+					},
 					"position": "******",
 					"text": "******",
 					"type": "******"
@@ -613,6 +682,7 @@
 						"delete": "******",
 						"inline": "******",
 						"show": "******",
+						"showDetails": "******",
 						"title": "******",
 						"update": "******"
 					},
@@ -668,20 +738,170 @@
 						"latitude": "******",
 						"longitude": "******",
 						"title": "******"
+					},
+					"errors": {
+						"latitude": "******",
+						"longitude": "******"
+					},
+					"tooltip": {
+						"default": {
+							"latitude": "******",
+							"longitude": "******"
+						}
 					}
 				}
 			}
 		}
 	},
+	"kendo": {
+		"datepicker": {
+			"today": "******"
+		},
+		"editor": {
+			"addColumnAfter": "******",
+			"addColumnBefore": "******",
+			"addRowAfter": "******",
+			"addRowBefore": "******",
+			"alignCenter": "******",
+			"alignJustify": "******",
+			"alignLeft": "******",
+			"alignRight": "******",
+			"backColor": "******",
+			"bold": "******",
+			"cleanFormatting": "******",
+			"createLink": "******",
+			"deleteColumn": "******",
+			"deleteRow": "******",
+			"deleteTable": "******",
+			"dialogApply": "******",
+			"dialogCancel": "******",
+			"dialogInsert": "******",
+			"dialogUpdate": "******",
+			"fileText": "******",
+			"fileTitle": "******",
+			"fileWebAddress": "******",
+			"fontFamily": "******",
+			"fontSize": "******",
+			"foreColor": "******",
+			"format": "******",
+			"imageAltText": "******",
+			"imageHeight": "******",
+			"imageWebAddress": "******",
+			"imageWidth": "******",
+			"indent": "******",
+			"insertFile": "******",
+			"insertImage": "******",
+			"insertOrderedList": "******",
+			"insertTable": "******",
+			"insertUnorderedList": "******",
+			"italic": "******",
+			"linkOpenInNewWindow": "******",
+			"linkText": "******",
+			"linkTitle": "******",
+			"linkWebAddress": "******",
+			"outdent": "******",
+			"print": "******",
+			"redo": "******",
+			"selectAll": "******",
+			"strikethrough": "******",
+			"subscript": "******",
+			"superscript": "******",
+			"underline": "******",
+			"undo": "******",
+			"unlink": "******",
+			"viewSource": "******"
+		},
+		"fileselect": {
+			"dropFilesHere": "******",
+			"select": "******"
+		},
+		"grid": {
+			"columnMenu": "******",
+			"columns": "******",
+			"columnsApply": "******",
+			"columnsReset": "******",
+			"detailCollapse": "******",
+			"detailExpand": "******",
+			"filter": "******",
+			"filterAfterOperator": "******",
+			"filterAfterOrEqualOperator": "******",
+			"filterAndLogic": "******",
+			"filterBeforeOperator": "******",
+			"filterBeforeOrEqualOperator": "******",
+			"filterBooleanAll": "******",
+			"filterClearButton": "******",
+			"filterContainsOperator": "******",
+			"filterDateToday": "******",
+			"filterDateToggle": "******",
+			"filterEndsWithOperator": "******",
+			"filterEqOperator": "******",
+			"filterFilterButton": "******",
+			"filterGtOperator": "******",
+			"filterGteOperator": "******",
+			"filterInputLabel": "******",
+			"filterIsEmptyOperator": "******",
+			"filterIsFalse": "******",
+			"filterIsNotEmptyOperator": "******",
+			"filterIsNotNullOperator": "******",
+			"filterIsNullOperator": "******",
+			"filterIsTrue": "******",
+			"filterLtOperator": "******",
+			"filterLteOperator": "******",
+			"filterMenuLogicDropDownLabel": "******",
+			"filterMenuOperatorsDropDownLabel": "******",
+			"filterMenuTitle": "******",
+			"filterNotContainsOperator": "******",
+			"filterNotEqOperator": "******",
+			"filterNumericDecrement": "******",
+			"filterNumericIncrement": "******",
+			"filterOrLogic": "******",
+			"filterStartsWithOperator": "******",
+			"gridLabel": "******",
+			"groupCollapse": "******",
+			"groupExpand": "******",
+			"groupPanelEmpty": "******",
+			"loading": "******",
+			"lock": "******",
+			"noRecords": "******",
+			"pagerFirstPage": "******",
+			"pagerItems": "******",
+			"pagerItemsPerPage": "******",
+			"pagerLabel": "******",
+			"pagerLastPage": "******",
+			"pagerNextPage": "******",
+			"pagerOf": "******",
+			"pagerPage": "******",
+			"pagerPageNumberInputTitle": "******",
+			"pagerPreviousPage": "******",
+			"selectAllCheckboxLabel": "******",
+			"selectionCheckboxLabel": "******",
+			"setColumnPosition": "******",
+			"sortAscending": "******",
+			"sortDescending": "******",
+			"sortable": "******",
+			"sortedAscending": "******",
+			"sortedDefault": "******",
+			"sortedDescending": "******",
+			"stick": "******",
+			"unlock": "******",
+			"unstick": "******"
+		},
+		"upload": {
+			"dropFilesHere": "******",
+			"select": "******"
+		}
+	},
 	"models": {
 		"apiConfiguration": {
-			"authType": "******"
+			"authType": "******",
+			"new": "******"
 		},
 		"application": {
 			"description": "******",
 			"id": "******",
+			"new": "******",
 			"notifications": {
-				"published": "******",
+				"published": "{{value}} ******",
 				"updated": "******"
 			},
 			"setAsFavorite": "******",
@@ -690,7 +910,8 @@
 			}
 		},
 		"channel": {
-			"create": "******"
+			"create": "******",
+			"new": "******"
 		},
 		"dashboard": {
 			"share": "******"
@@ -699,27 +920,37 @@
 			"core": "******",
 			"create": "******",
 			"field": {
-				"label": "******"
+				"label": "******",
+				"name": "******"
 			},
+			"new": "******",
 			"select": "******",
 			"template": "******"
 		},
 		"page": {
 			"add": "******"
 		},
+		"positionAttribute": {
+			"new": "******"
+		},
 		"pullJob": {
+			"new": "******",
 			"path": "******",
 			"schedule": "******",
 			"url": "******"
 		},
 		"record": {
 			"convert": "******",
+			"new": "******",
 			"notifications": {
 				"conversionIncomplete": "******",
-				"rowsAdded": "******",
+				"rowsAdded": "****** {{length}} ****** {{field}} ****** {{value}} ******",
 				"uploadSuccessful": "******"
 			},
 			"restore": "******"
+		},
+		"referenceData": {
+			"add": "******"
 		},
 		"resource": {
 			"create": "******"
@@ -727,9 +958,15 @@
 		"role": {
 			"create": "******"
 		},
+		"step": {
+			"new": "******"
+		},
+		"subscription": {
+			"new": "******"
+		},
 		"user": {
 			"notifications": {
-				"rolesUpdated": "******"
+				"rolesUpdated": "{{username}} ******"
 			},
 			"username": "******"
 		},
@@ -751,7 +988,7 @@
 		"workflow": {
 			"notifications": {
 				"cannotGoToNextStep": "******",
-				"goToStep": "******"
+				"goToStep": "****** {{step}} ******"
 			}
 		}
 	},
@@ -763,6 +1000,10 @@
 			"authentication": "******",
 			"baseUrl": "******",
 			"clientId": "******",
+			"graphQL": {
+				"endpoint": "******",
+				"title": "******"
+			},
 			"host": "******",
 			"notifications": {
 				"authTokenFetched": "******",
@@ -774,6 +1015,7 @@
 			"placeholder": {
 				"baseUrl": "******",
 				"clientId": "******",
+				"graphQLEndpoint": "******",
 				"pingUrl": "******",
 				"scope": "******",
 				"secret": "******",
@@ -831,6 +1073,21 @@
 		},
 		"pullJobs": {
 			"create": "******"
+		},
+		"referenceData": {
+			"csv": "******",
+			"errors": {
+				"name": "******"
+			},
+			"fields": "******",
+			"path": "******",
+			"placeholder": {
+				"csv": "******"
+			},
+			"queryName": "******",
+			"type": "******",
+			"validateCsv": "******",
+			"valueField": "******"
 		},
 		"workflow": {
 			"addStep": {

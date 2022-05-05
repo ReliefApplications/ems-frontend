@@ -1,7 +1,9 @@
 <h1 mat-dialog-title>
   {{
-    (data.subscription ? 'common.editObject' : 'common.newObject')
-      | translate: { name: 'common.subscription.one' | translate }
+    data.subscription
+      ? ('common.editObject'
+        | translate: { name: 'common.subscription.one' | translate })
+      : ('models.subscription.new' | translate)
   }}
 </h1>
 <div mat-dialog-content>

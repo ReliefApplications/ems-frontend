@@ -12,9 +12,9 @@
       ></safe-content-choice>
     </ng-container>
     <ng-container *ngSwitchCase="2">
-      <h2>{{ 'form.title' | translate }}</h2>
+      <h2>{{ 'pages.forms.title' | translate }}</h2>
       <mat-form-field appearance="outline">
-        <mat-label>{{ 'form.select' | translate }}</mat-label>
+        <mat-label>{{ 'models.form.select' | translate }}</mat-label>
         <mat-select
           #formSelect
           formControlName="content"
@@ -32,7 +32,7 @@
         (click)="onAdd()"
         [disabled]="!canCreateForm"
       >
-        {{ 'form.create' | translate }}
+        {{ 'models.form.create' | translate }}
       </safe-button>
     </ng-container>
   </div>

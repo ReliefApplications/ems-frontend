@@ -35,6 +35,8 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MessageService } from '@progress/kendo-angular-l10n';
+import { KendoTranslationService } from '@safe/builder';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
@@ -205,6 +207,10 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       provide: OverlayContainer,
       useFactory: provideOverlay,
       deps: [Platform],
+    },
+    {
+      provide: MessageService,
+      useClass: KendoTranslationService,
     },
   ],
 })

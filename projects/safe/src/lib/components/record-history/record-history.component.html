@@ -70,9 +70,9 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <span class="history-date">{{
-            item.created | date: 'dd/MM/yyyy'
+            item.created | safeDate: 'shortDate'
           }}</span>
-          {{ item.created | date: 'HH:mm' }}
+          {{ item.created | safeDate: 'shortTime' }}
           <span class="history-user" *ngIf="item.createdBy">{{
             item.createdBy
           }}</span>

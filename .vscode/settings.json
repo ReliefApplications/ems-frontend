@@ -7,5 +7,9 @@
         "projects/safe/src/i18n"
     ],
     "i18n-ally.sortKeys": true,
-    "i18n-ally.keystyle": "nested"
+    "i18n-ally.keystyle": "nested",
+    "i18n-ally.usage.scanningIgnore": [
+        "widgets/*",
+        "dist/*",
+    ]
 }
