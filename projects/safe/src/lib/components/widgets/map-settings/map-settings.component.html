@@ -8,7 +8,9 @@
       </mat-form-field>
     </div>
     <div class="form-group">
-      <div class="form-group-title">{{ 'components.widget.settings.map.dataset' | translate }}</div>
+      <div class="form-group-title">
+        {{ 'components.widget.settings.map.dataset' | translate }}
+      </div>
       <safe-query-builder
         [form]="$any(tileForm.controls.query)"
         [canExpand]="false"
@@ -40,7 +42,9 @@
         {{ 'models.widget.map.zoom' | translate }}
         <safe-icon
           icon="info"
-          [matTooltip]="'components.widget.settings.map.display.latitude' | translate"
+          [matTooltip]="
+            'components.widget.settings.map.display.latitude' | translate
+          "
           [inline]="true"
           [size]="16"
           variant="grey"
@@ -63,7 +67,10 @@
             matSuffix
             icon="info"
             variant="grey"
-            [matTooltip]="'components.widget.settings.map.tooltip.default.latitude' | translate"
+            [matTooltip]="
+              'components.widget.settings.map.tooltip.default.latitude'
+                | translate
+            "
           ></safe-icon>
           <mat-error *ngIf="tileForm.controls.centerLat.errors">
             {{ 'components.widget.settings.map.errors.latitude' | translate }}
@@ -78,7 +85,10 @@
             matSuffix
             icon="info"
             variant="grey"
-            [matTooltip]="'components.widget.settings.map.tooltip.default.longitude' | translate"
+            [matTooltip]="
+              'components.widget.settings.map.tooltip.default.longitude'
+                | translate
+            "
           ></safe-icon>
           <mat-error *ngIf="tileForm.controls.centerLat.errors">
             {{ 'components.widget.settings.map.errors.longitude' | translate }}

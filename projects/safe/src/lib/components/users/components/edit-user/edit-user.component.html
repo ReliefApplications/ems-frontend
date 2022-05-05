@@ -1,26 +1,53 @@
-<h1 mat-dialog-title>{{'components.user.update.title' | translate}}</h1>
+<h1 mat-dialog-title>{{ 'components.user.update.title' | translate }}</h1>
 <div mat-dialog-content>
-    <form [formGroup]="userForm">
-        <mat-form-field appearance="outline">
-            <mat-label>{{'common.role.few' | translate}}</mat-label>
-            <mat-select formControlName="roles" multiple>
-                <mat-option *ngFor="let role of data.availableRoles" [value]="role.id">
-                    {{role.title}}
-                </mat-option>
-            </mat-select>
+  <form [formGroup]="userForm">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.role.few' | translate }}</mat-label>
+      <mat-select formControlName="roles" multiple>
+        <mat-option *ngFor="let role of data.availableRoles" [value]="role.id">
+          {{ role.title }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <ng-container
+      *ngIf="
+        positionAttributeCategories && positionAttributeCategories.length > 0;
+        s
+      "
+    >
+      <h3>Attributes</h3>
+      <div formArrayName="positionAttributes" class="position-attributes">
+        <mat-form-field
+          appearance="outline"
+          *ngFor="
+            let category of positionAttributes?.controls;
+            let index = index
+          "
+          [formGroup]="$any(category)"
+        >
+          <mat-label>{{ positionAttributeCategories[index].title }}</mat-label>
+          <input
+            matInput
+            formControlName="value"
+            type="text"
+            placeholder="Enter a value for the category"
+          />
         </mat-form-field>
-        <ng-container *ngIf="positionAttributeCategories && positionAttributeCategories.length > 0S">
-            <h3>Attributes</h3>
-            <div formArrayName="positionAttributes" class="position-attributes">
-                <mat-form-field appearance="outline" *ngFor="let category of positionAttributes?.controls; let index = index;" [formGroup]="$any(category)">
-                    <mat-label>{{ positionAttributeCategories[index].title }}</mat-label>
-                    <input matInput formControlName="value" type="text" placeholder="Enter a value for the category"/>
-                </mat-form-field>
-            </div>
-        </ng-container>
-    </form>
+      </div>
+    </ng-container>
+  </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
-    <button mat-flat-button [mat-dialog-close]="userForm.value" cdkFocusInitial color="primary" [disabled]="!userForm.valid">{{'common.update' | translate}}</button>
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="userForm.value"
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!userForm.valid"
+  >
+    {{ 'common.update' | translate }}
+  </button>
 </div>

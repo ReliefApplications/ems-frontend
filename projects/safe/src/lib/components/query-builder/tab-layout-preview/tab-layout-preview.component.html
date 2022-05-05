@@ -1,5 +1,7 @@
 <div class="form-group">
-  <div class="info-text">{{'components.form.layout.update.preview.description' | translate}}</div>
+  <div class="info-text">
+    {{ 'components.form.layout.update.preview.description' | translate }}
+  </div>
   <safe-core-grid
     [defaultLayout]="data?.defaultLayout || {}"
     [settings]="gridSettings"

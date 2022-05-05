@@ -1,54 +1,57 @@
 :host {
-    display: block;
+  display: block;
 }
 
 // === DASHBOARD WIDGETS===
 .grid-container {
-    margin: 0 -16px;
+  margin: 0 -16px;
 }
 
-.widget-options, .widget-expand, .widget-handle {
-    position: absolute;
-    color: darkgray;
-    z-index: 1100;
+.widget-options,
+.widget-expand,
+.widget-handle {
+  position: absolute;
+  color: darkgray;
+  z-index: 1100;
 }
 
-.widget-options, .widget-expand {
-    top: 0;
-    right: 0;
-    width: 40px;
-    height: 40px;
+.widget-options,
+.widget-expand {
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
 }
 
 .widget-handle {
-    left: 8px;
-    top: 8px;
-    cursor: grab;
-    pointer-events: none;
+  left: 8px;
+  top: 8px;
+  cursor: grab;
+  pointer-events: none;
 }
 
 .floating-widget-choice-wrapper {
-    position: fixed;
-    bottom: 48px;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 3000;
-    pointer-events: none;
+  position: fixed;
+  bottom: 48px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 3000;
+  pointer-events: none;
 }
 
 kendo-tilelayout {
-    grid-auto-flow: row;
-    background-color: unset;
-    
-    kendo-tilelayout-item {
-        border: none;
-        border-radius: 0;
-        overflow: hidden;
-        box-shadow: 0 2px 5px 0 rgba(134,134,134,.2);
-    }
+  grid-auto-flow: row;
+  background-color: unset;
+
+  kendo-tilelayout-item {
+    border: none;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 2px 5px 0 rgba(134, 134, 134, 0.2);
+  }
 }
 
 .skeleton-grid-container {
-    display: flex;
-} 
+  display: flex;
+}
