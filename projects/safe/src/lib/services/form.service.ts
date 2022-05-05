@@ -65,7 +65,5 @@ export class SafeFormService {
       environment,
       referenceDataService
     );
-    const surveyAng = document.getElementById('survey-content-angular');
-    console.log(surveyAng);
   }
 }

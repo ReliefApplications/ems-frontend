@@ -213,12 +213,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    console.log(document.getElementById('survey-content-angular'));
-    console.log('will render');
     this.survey.render(this.formContainer.nativeElement);
-    console.log(document.getElementById('survey-content-angular'));
-    console.log('rendered');
-    console.log(this.el.nativeElement.shadowRoot);
   }
 
   public reset(): void {
