@@ -9,7 +9,9 @@
     </safe-button>
 
     <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
-      <mat-label>{{ 'components.queryBuilder.dataset.select' | translate }}</mat-label>
+      <mat-label>{{
+        'components.queryBuilder.dataset.select' | translate
+      }}</mat-label>
       <input
         type="text"
         [placeholder]="'components.queryBuilder.dataset.select' | translate"
@@ -107,10 +109,7 @@
           </safe-tab-style>
         </ng-template>
       </mat-tab>
-      <mat-tab
-        [label]="'common.preview' | translate"
-        *ngIf="layoutPreviewData"
-      >
+      <mat-tab [label]="'common.preview' | translate" *ngIf="layoutPreviewData">
         <ng-template matTabContent>
           <safe-tab-layout-preview [data]="layoutPreviewData">
           </safe-tab-layout-preview>

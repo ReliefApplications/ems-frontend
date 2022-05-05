@@ -1,23 +1,41 @@
-<ng-container *ngIf="floating then floatingTemplate else listTemplate"></ng-container>
+<ng-container
+  *ngIf="floating; then floatingTemplate; else listTemplate"
+></ng-container>
 
 <ng-template #listTemplate>
-    <div class="safe-widget-choice">
-        <div class="safe-widget-type" *ngFor="let type of widgetTypes" (click)="onSelect(type)" matRipple
-            [ngStyle]="hovered === type.id ? { 'border-color': type.color } : null" (mouseover)="hovered = type.id"
-            (mouseout)="hovered = ''">
-            <img [src]="type.icon">
-            <span>{{ type.name | titlecase }}</span>
-        </div>
+  <div class="safe-widget-choice">
+    <div
+      class="safe-widget-type"
+      *ngFor="let type of widgetTypes"
+      (click)="onSelect(type)"
+      matRipple
+      [ngStyle]="hovered === type.id ? { 'border-color': type.color } : null"
+      (mouseover)="hovered = type.id"
+      (mouseout)="hovered = ''"
+    >
+      <img [src]="type.icon" />
+      <span>{{ type.name | titlecase }}</span>
     </div>
+  </div>
 </ng-template>
 
 <ng-template #floatingTemplate>
-    <div class="safe-floating-widget-choice" cdkDrag>
-        <div class="safe-widget-type" *ngFor="let type of widgetTypes" (click)="onSelect(type)"
-            [matTooltip]="type.name" matTooltipPosition="above" (mouseover)="hovered = type.id"
-            (mouseout)="hovered = ''">
-            <img [src]="type.icon">
-            <div *ngIf="hovered === type.id" [style.background]="type.color" class="safe-widget-hovered"></div>
-        </div>
+  <div class="safe-floating-widget-choice" cdkDrag>
+    <div
+      class="safe-widget-type"
+      *ngFor="let type of widgetTypes"
+      (click)="onSelect(type)"
+      [matTooltip]="type.name"
+      matTooltipPosition="above"
+      (mouseover)="hovered = type.id"
+      (mouseout)="hovered = ''"
+    >
+      <img [src]="type.icon" />
+      <div
+        *ngIf="hovered === type.id"
+        [style.background]="type.color"
+        class="safe-widget-hovered"
+      ></div>
     </div>
+  </div>
 </ng-template>

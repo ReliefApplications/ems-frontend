@@ -4,7 +4,13 @@
     (click)="add.emit()"
   ></safe-add-application>
   <ng-container
-    *safeSkeleton="loading; repeat: 5; height: '192px'; width: 192; shape: 'rectangle'"
+    *safeSkeleton="
+      loading;
+      repeat: 5;
+      height: '192px';
+      width: 192;
+      shape: 'rectangle'
+    "
   >
     <safe-application-summary
       *ngFor="let application of applications; let index = index"

@@ -1,28 +1,28 @@
 form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .email-body-container {
-    border: 1px dashed #2F383E33;
-    padding: 8px;
-    border-radius: 8px;
-    overflow: auto;
-    font-size: 12px;
+  border: 1px dashed #2f383e33;
+  padding: 8px;
+  border-radius: 8px;
+  overflow: auto;
+  font-size: 12px;
 }
 
 .mat-chip {
-    max-width: none;
-    border-radius: 1rem !important;
+  max-width: none;
+  border-radius: 1rem !important;
 }
 
 ::ng-deep #previewEmailTo {
-    .mat-chip-list-wrapper {
-        overflow-y: auto;
-        max-height: 200px;
-    }
+  .mat-chip-list-wrapper {
+    overflow-y: auto;
+    max-height: 200px;
+  }
 }
 
 kendo-fileselect {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
