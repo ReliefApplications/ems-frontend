@@ -353,7 +353,14 @@ export const init = (
 
         // Create an <a> HTMLElement only used to verify the validity of the URL
         const urlTester = document.createElement('a');
-        urlTester.href = el.value;
+        if (
+          el.value &&
+          !(el.value.startsWith('https://') || el.value.startsWith('http://'))
+        ) {
+          urlTester.href = 'https://' + el.value;
+        } else {
+          urlTester.href = el.value || '';
+        }
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         urlTester.host && urlTester.host !== window.location.host
           ? (instance.disabled = false)
@@ -361,7 +368,17 @@ export const init = (
 
         question.survey.onValueChanged.add((_: any, options: any) => {
           if (options.question.name === question.name) {
-            urlTester.href = el.value;
+            if (
+              el.value &&
+              !(
+                el.value.startsWith('https://') ||
+                el.value.startsWith('http://')
+              )
+            ) {
+              urlTester.href = 'https://' + el.value;
+            } else {
+              urlTester.href = el.value || '';
+            }
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             urlTester.host && urlTester.host !== window.location.host
               ? (instance.disabled = false)
