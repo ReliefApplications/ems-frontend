@@ -21,6 +21,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeGridModule } from '../../../components/ui/core-grid/grid/grid.module';
 import { SafeIconModule } from '../../ui/icon/icon.module';
+import { SafePaletteControlModule } from '../../palette-control/palette-control.module';
 
 @NgModule({
   declarations: [SafeChartSettingsComponent],
@@ -47,6 +48,7 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
     MatChipsModule,
     SafeGridModule,
     SafeIconModule,
+    SafePaletteControlModule,
   ],
   exports: [SafeChartSettingsComponent],
 })

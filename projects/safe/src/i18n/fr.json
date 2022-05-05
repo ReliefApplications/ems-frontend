@@ -562,6 +562,9 @@
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer la référence de données {{name}} ?",
 				"title": "Supprimer la référence de données"
+			},
+			"dropdown": {
+				"select": "Depuis la référence de données"
 			}
 		},
 		"resource": {
@@ -664,6 +667,10 @@
 				"chart": {
 					"legend": "Légende",
 					"orientation": "Orientation",
+					"palette": {
+						"enable": "Configurer la palette",
+						"title": "Palette de couleurs"
+					},
 					"position": "Position",
 					"text": "Texte",
 					"type": "Graphique"
@@ -762,9 +769,58 @@
 			"today": "Aujourd'hui"
 		},
 		"editor": {
+			"addColumnAfter": "Nouvelle colonne à droite",
+			"addColumnBefore": "Nouvelle colonne à gauche",
+			"addRowAfter": "Nouvelle ligne en bas",
+			"addRowBefore": "Nouvelle ligne en haut",
+			"alignCenter": "Centrer",
+			"alignJustify": "Justifier",
+			"alignLeft": "Aligner à gauche",
+			"alignRight": "Aligner à droite",
+			"backColor": "Couleur de fond",
+			"bold": "Gras",
+			"cleanFormatting": "Supprimer le format",
+			"createLink": "Nouveau lien",
+			"deleteColumn": "Supprimer la colonne",
+			"deleteRow": "Supprimer la ligne",
+			"deleteTable": "Supprimer la table",
+			"dialogApply": "Appliquer",
+			"dialogCancel": "Annuler",
+			"dialogInsert": "Insérer",
+			"dialogUpdate": "Modifier",
+			"fileText": "Texte",
+			"fileTitle": "Titre",
+			"fileWebAddress": "Adresse Web",
 			"fontFamily": "Sélectionnez une police de caractère",
 			"fontSize": "Sélectionnez la taille de police",
-			"format": "Format"
+			"foreColor": "Couleur",
+			"format": "Format",
+			"imageAltText": "Texte alternatif",
+			"imageHeight": "Hauteur (px)",
+			"imageWebAddress": "Adresse Web",
+			"imageWidth": "Largeur (px)",
+			"indent": "Augmenter le retrait",
+			"insertFile": "Nouveau fichier",
+			"insertImage": "Nouvelle image",
+			"insertOrderedList": "Nouvelle liste ordonnée",
+			"insertTable": "Nouvelle table",
+			"insertUnorderedList": "Nouvelle liste non-ordonnée",
+			"italic": "Italique",
+			"linkOpenInNewWindow": "Ouvrir dans une nouvelle fenêtre",
+			"linkText": "Texte",
+			"linkTitle": "Titre",
+			"linkWebAddress": "Adresse Web",
+			"outdent": "Diminuer le retrait",
+			"print": "Imprimer",
+			"redo": "Répéter",
+			"selectAll": "Tout sélectionner",
+			"strikethrough": "Barrer",
+			"subscript": "Indice",
+			"superscript": "Exposant",
+			"underline": "Souligner",
+			"undo": "Annuler",
+			"unlink": "Supprimer le lien",
+			"viewSource": "Voir la source"
 		},
 		"fileselect": {
 			"dropFilesHere": "Déposez les fichiers ici pour les sélectionner",

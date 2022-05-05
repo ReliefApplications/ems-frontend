@@ -1,21 +1,20 @@
 import { ApiConfiguration } from './apiConfiguration.model';
 
-/*  Enum of referenceType.
+/*  Enum of referenceDataType.
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export enum referenceType {
+export enum referenceDataType {
   static = 'static',
   graphql = 'graphql',
   rest = 'rest',
 }
 
-/**
- * Model for ReferenceData object.
+/*  Model for Reference data object.
  */
 export interface ReferenceData {
   id?: string;
   name?: string;
-  type?: referenceType;
+  type?: referenceDataType;
   apiConfiguration?: ApiConfiguration;
   query?: string;
   fields?: string[];
