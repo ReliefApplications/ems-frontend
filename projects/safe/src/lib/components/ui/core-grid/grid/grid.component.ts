@@ -449,6 +449,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param e click event.
    */
   private onDocumentClick(e: any): void {
+    console.log(e);
+    console.log(e.target);
     if (
       !this.editing &&
       this.formGroup &&

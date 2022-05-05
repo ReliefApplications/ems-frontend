@@ -96,7 +96,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private layoutService: SafeLayoutService,
     private resolver: ComponentFactoryResolver,
     private formBuilderService: SafeFormBuilderService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private el: ElementRef
   ) {
     this.environment = environment;
   }
@@ -212,7 +213,12 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    console.log(document.getElementById('survey-content-angular'));
+    console.log('will render');
     this.survey.render(this.formContainer.nativeElement);
+    console.log(document.getElementById('survey-content-angular'));
+    console.log('rendered');
+    console.log(this.el.nativeElement.shadowRoot);
   }
 
   public reset(): void {
