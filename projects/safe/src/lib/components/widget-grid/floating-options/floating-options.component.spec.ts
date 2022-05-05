@@ -6,13 +6,11 @@ describe('SafeFloatingOptionsComponent', () => {
   let component: SafeFloatingOptionsComponent;
   let fixture: ComponentFixture<SafeFloatingOptionsComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [SafeFloatingOptionsComponent],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [SafeFloatingOptionsComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeFloatingOptionsComponent);
