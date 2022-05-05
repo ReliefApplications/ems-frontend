@@ -1,26 +1,26 @@
 .actions {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end !important;
-    text-align: end;
-    margin-left: auto;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end !important;
+  text-align: end;
+  margin-left: auto;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
 }
 
 .table-column {
-    padding: 0px 4px;
+  padding: 0px 4px;
 
-    div {
-        max-height: 48px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 240px;
-    }
+  div {
+    max-height: 48px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 240px;
+  }
 }
 
 .table-container {
-    overflow-x: auto;
+  overflow-x: auto;
 }

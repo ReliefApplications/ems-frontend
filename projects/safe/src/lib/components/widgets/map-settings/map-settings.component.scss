@@ -1,36 +1,36 @@
 .advanced-filtering {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .layer-list {
-    position: relative;
-    margin-top: 1em;
-    border: solid 1px lightgray;
-    border-radius: 0.3em;
-    display: flex;
-    flex-direction: column;
+  position: relative;
+  margin-top: 1em;
+  border: solid 1px lightgray;
+  border-radius: 0.3em;
+  display: flex;
+  flex-direction: column;
 
-    button {
-        text-align: left;
-        overflow: hidden;
+  button {
+    text-align: left;
+    overflow: hidden;
 
-        safe-badge {
-            position: relative;
-            bottom: 0.15em;
-            padding-left: 0.5em;
-        }
+    safe-badge {
+      position: relative;
+      bottom: 0.15em;
+      padding-left: 0.5em;
     }
+  }
 }
 
 .map-default-settings {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 
-    mat-form-field {
-        flex: 1;
-    }
+  mat-form-field {
+    flex: 1;
+  }
 }

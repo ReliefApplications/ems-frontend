@@ -27,7 +27,10 @@
           'components.preferences.dateFormat' | translate
         }}</mat-label>
         <mat-select formControlName="dateFormat">
-          <mat-option *ngFor="let dateLang of dateFormats" [value]="dateLang.value">
+          <mat-option
+            *ngFor="let dateLang of dateFormats"
+            [value]="dateLang.value"
+          >
             {{ dateLang.name }}
           </mat-option>
         </mat-select>
