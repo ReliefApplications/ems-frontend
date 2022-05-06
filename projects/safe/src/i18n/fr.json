@@ -420,6 +420,10 @@
 		},
 		"history": {
 			"download": "Télécharger l'historique",
+			"field": {
+				"all": "Tous les champ",
+				"select": "Sélectionner un champ"
+			},
 			"preview": "Prévisualiser et revenir"
 		},
 		"notifications": {

@@ -420,6 +420,10 @@
 		},
 		"history": {
 			"download": "Download history",
+			"field": {
+				"all": "All fields",
+				"select": "Select a field"
+			},
 			"preview": "Preview and revert"
 		},
 		"notifications": {

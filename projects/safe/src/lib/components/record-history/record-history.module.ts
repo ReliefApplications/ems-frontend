@@ -9,11 +9,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../pipes/date/date.module';
-
 @NgModule({
   declarations: [SafeRecordHistoryComponent],
   imports: [
@@ -30,6 +30,7 @@ import { SafeDateModule } from '../../pipes/date/date.module';
     SafeButtonModule,
     TranslateModule,
     SafeDateModule,
+    MatSelectModule,
   ],
   exports: [SafeRecordHistoryComponent],
 })

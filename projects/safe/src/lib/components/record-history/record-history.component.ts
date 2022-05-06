@@ -29,6 +29,8 @@ export class SafeRecordHistoryComponent implements OnInit {
   public showMore = false;
   public displayedColumns: string[] = ['position'];
   public filtersDate = { startDate: '', endDate: '' };
+  public sortedFields: any[] = [];
+  public filterField = 'all';
 
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
@@ -40,6 +42,8 @@ export class SafeRecordHistoryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.sortFields();
+
     this.history = this.getHistory(this.record).filter(
       (item) => item.changes.length > 0
     );
@@ -53,17 +57,23 @@ export class SafeRecordHistoryComponent implements OnInit {
 
   /*  Get current and next record to see difference and put it in a string
    */
-  getDifference(current: any, after: any): string[] {
+  getDifference(
+    current: any,
+    after: any
+  ): { changes: string[]; touched: string[] } {
+    const touched: string[] = [];
     const changes: any[] = [];
     if (current) {
       const keysCurrent = Object.keys(current);
       keysCurrent.forEach((key) => {
+        let touchedFlag = false;
         if (
           typeof after[key] === 'boolean' ||
           typeof current[key] === 'boolean'
         ) {
           if (current[key] !== null && after[key] !== current[key]) {
             changes.push(this.modifyField(key, after, current));
+            touchedFlag = true;
           }
         } else if (!Array.isArray(after[key]) && !Array.isArray(current[key])) {
           if (after[key]) {
@@ -71,20 +81,25 @@ export class SafeRecordHistoryComponent implements OnInit {
               const element = this.modifyObjects(after, current, key);
               if (element.length > 0) {
                 changes.push(element);
+                touchedFlag = true;
               }
             } else if (current[key] && after[key] !== current[key]) {
               changes.push(this.modifyField(key, after, current));
+              touchedFlag = true;
             }
           } else if (current[key]) {
             if (current[key] instanceof Object) {
               const element = this.modifyObjects(after, current, key);
               if (element.length > 0) {
                 changes.push(element);
+                touchedFlag = true;
               }
             } else if (after[key] !== current[key]) {
               changes.push(this.modifyField(key, after, current));
+              touchedFlag = true;
             } else {
               changes.push(this.addField(key, current));
+              touchedFlag = true;
             }
           }
         } else {
@@ -95,15 +110,19 @@ export class SafeRecordHistoryComponent implements OnInit {
               after[key].toString() !== current[key].toString())
           ) {
             changes.push(this.modifyField(key, after, current));
+            touchedFlag = true;
           } else if (!after[key] && current[key]) {
             changes.push(this.addField(key, current));
+            touchedFlag = true;
           }
         }
+        if (touchedFlag) touched.push(key);
       });
     }
 
     const keysAfter = Object.keys(after);
     keysAfter.forEach((key) => {
+      let touchedFlag = false;
       if (typeof after[key] === 'boolean') {
         if ((!current || current[key]) === null && after[key] !== null) {
           changes.push(
@@ -113,6 +132,7 @@ export class SafeRecordHistoryComponent implements OnInit {
               after[key] +
               '</b> </p>'
           );
+          touchedFlag = true;
         }
       } else if (
         (!current || current[key] === null) &&
@@ -122,6 +142,7 @@ export class SafeRecordHistoryComponent implements OnInit {
         const element = this.addObject(after, key);
         if (element.length > 0) {
           changes.push(element);
+          touchedFlag = true;
         }
       } else if ((!current || current[key] === null) && after[key]) {
         changes.push(
@@ -131,9 +152,12 @@ export class SafeRecordHistoryComponent implements OnInit {
             after[key] +
             '</b> </p>'
         );
+        touchedFlag = true;
       }
+      if (touchedFlag && !touched.find((_key) => key === _key))
+        touched.push(key);
     });
-    return changes;
+    return { changes, touched };
   }
 
   private addObject(current: any, key: string): string {
@@ -230,8 +254,8 @@ export class SafeRecordHistoryComponent implements OnInit {
       res.push({
         created: record.createdAt,
         createdBy: record.createdBy?.name,
-        changes: difference,
         id: record.id,
+        ...difference,
       });
       return res;
     }
@@ -239,16 +263,16 @@ export class SafeRecordHistoryComponent implements OnInit {
     res.push({
       created: versions[0].createdAt,
       createdBy: record.createdBy?.name,
-      changes: difference,
       id: versions[0].id,
+      ...difference,
     });
     for (let i = 1; i < versions.length; i++) {
       difference = this.getDifference(versions[i - 1].data, versions[i].data);
       res.push({
         created: versions[i].createdAt,
         createdBy: versions[i - 1].createdBy?.name,
-        changes: difference,
         id: versions[i].id,
+        ...difference,
       });
     }
     difference = this.getDifference(
@@ -258,8 +282,8 @@ export class SafeRecordHistoryComponent implements OnInit {
     res.push({
       created: record.modifiedAt,
       createdBy: versions[versions.length - 1].createdBy?.name,
-      changes: difference,
       id: record.id,
+      ...difference,
     });
     return res.reverse();
   }
@@ -292,15 +316,27 @@ export class SafeRecordHistoryComponent implements OnInit {
     this.endDate.value = '';
   }
 
-  applyFilter(): void {
+  applyFilter(filterField?: string): void {
+    if (filterField === undefined) {
+      filterField = this.filterField;
+    }
     const startDate = new Date(this.filtersDate.startDate).getTime();
     const endDate = new Date(this.filtersDate.endDate).getTime();
+
+    // filtering by date
     this.filterHistory = this.history.filter(
       (item) =>
         !startDate ||
         !endDate ||
         (item.created >= startDate && item.created <= endDate)
     );
+
+    // filtering by field
+    if (filterField !== 'all')
+      this.filterHistory = this.filterHistory.filter(
+        (item) =>
+          !!item.touched.find((op: string) => `field-${op}` === filterField)
+      );
   }
 
   onDownload(type: string): void {
@@ -312,5 +348,25 @@ export class SafeRecordHistoryComponent implements OnInit {
       `text/${type};charset=utf-8;`,
       fileName
     );
+  }
+
+  /**
+   * Parses the structure of the record and sorts the fields
+   * based on their names or lables, if available
+   */
+  sortFields() {
+    if (!this.record.form || !this.record.form.structure) return;
+    const structure = JSON.parse(this.record.form.structure);
+
+    if (!structure.pages || !structure.pages.length) return;
+    for (const page of structure.pages) {
+      this.sortedFields.push(...page.elements);
+    }
+
+    this.sortedFields.sort((a, b) => {
+      const compA = a.title || a.name;
+      const compB = b.title || b.name;
+      return compA.localeCompare(compB);
+    });
   }
 }

@@ -9,7 +9,7 @@
     >
     </safe-button>
   </div>
-  <div style="clear: both">
+  <div style="clear: both; display: flex; flex-direction: column">
     <mat-form-field>
       <mat-date-range-input
         (click)="rangePicker.open()"
@@ -48,6 +48,22 @@
           >
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{ 'components.history.field.select' | translate }}</mat-label>
+      <mat-select
+        [value]="filterField"
+        (selectionChange)="applyFilter($event.value)"
+      >
+        <mat-option value="all">{{
+          'components.history.field.all' | translate
+        }}</mat-option>
+        <mat-option
+          *ngFor="let field of sortedFields"
+          value="field-{{ field.name }}"
+          >{{ field.title || field.name }}</mat-option
+        >
+      </mat-select>
     </mat-form-field>
   </div>
   <div class="actions">
