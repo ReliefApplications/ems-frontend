@@ -240,7 +240,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.survey?.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
-        'Saving failed, some fields require your attention.',
+        this.translate.instant('models.form.notifications.savingFailed'),
         { error: true }
       );
     }
