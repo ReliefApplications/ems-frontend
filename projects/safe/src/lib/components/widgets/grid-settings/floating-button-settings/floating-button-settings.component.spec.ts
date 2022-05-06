@@ -21,7 +21,10 @@ import {
 } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
-import { GET_QUERY_TYPES } from 'projects/safe/src/lib/graphql/queries';
+import {
+  GET_QUERY_TYPES,
+  GET_WORKFLOW_BY_ID,
+} from 'projects/safe/src/lib/graphql/queries';
 
 import { SafeFloatingButtonSettingsComponent } from './floating-button-settings.component';
 
@@ -78,6 +81,10 @@ describe('SafeFloatingButtonSettingsComponent', () => {
         fields: [],
       },
     });
+
+    const op2 = controller.expectOne(GET_WORKFLOW_BY_ID);
+
+    op2.flush({});
   });
 
   afterEach(() => {

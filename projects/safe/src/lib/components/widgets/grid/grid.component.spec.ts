@@ -18,10 +18,19 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 import { FormBuilder } from '@angular/forms';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
+import {
+  GET_GRID_RESOURCE_META,
+  GET_QUERY_TYPES,
+} from '../../../graphql/queries';
 
 describe('SafeGridWidgetComponent', () => {
   let component: SafeGridWidgetComponent;
   let fixture: ComponentFixture<SafeGridWidgetComponent>;
+  let controller: ApolloTestingController;
 
   beforeEach(
     waitForAsync(() => {
@@ -47,8 +56,11 @@ describe('SafeGridWidgetComponent', () => {
               useClass: TranslateFakeLoader,
             },
           }),
+          ApolloTestingModule,
         ],
       }).compileComponents();
+
+      controller = TestBed.inject(ApolloTestingController);
     })
   );
 
@@ -61,6 +73,28 @@ describe('SafeGridWidgetComponent', () => {
       query: {},
     };
     fixture.detectChanges();
+
+    const op1 = controller.expectOne(GET_QUERY_TYPES);
+
+    op1.flush({
+      data: {
+        __schema: {
+          types: [],
+        },
+        fields: [],
+      },
+    });
+
+    const op2 = controller.expectOne(GET_GRID_RESOURCE_META);
+
+    op2.flush({
+      data: {},
+    });
+  });
+
+  afterEach(() => {
+    controller.verify();
+    fixture.destroy();
   });
 
   it('should create', () => {

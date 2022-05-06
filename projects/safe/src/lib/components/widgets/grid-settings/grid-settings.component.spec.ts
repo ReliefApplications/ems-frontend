@@ -23,7 +23,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { SafeGridSettingsComponent } from './grid-settings.component';
-import { GET_CHANNELS } from '../../../graphql/queries';
+import { GET_CHANNELS, GET_QUERY_TYPES } from '../../../graphql/queries';
 
 describe('SafeGridSettingsComponent', () => {
   let component: SafeGridSettingsComponent;
@@ -68,16 +68,14 @@ describe('SafeGridSettingsComponent', () => {
     component.tile = { settings: {} };
     fixture.detectChanges();
 
-    const op1 = controller.expectOne('GetQueryTypes');
+    const op1 = controller.expectOne(GET_QUERY_TYPES);
 
     op1.flush({
       data: {
         __schema: {
           types: [],
-          queryType: {
-            fields: [],
-          },
         },
+        fields: [],
       },
     });
 

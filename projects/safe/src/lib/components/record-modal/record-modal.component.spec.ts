@@ -14,10 +14,16 @@ import {
 } from 'angular-oauth2-oidc';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
+import { GET_RECORD_BY_ID } from '../../graphql/queries';
 
 describe('SafeRecordModalComponent', () => {
   let component: SafeRecordModalComponent;
   let fixture: ComponentFixture<SafeRecordModalComponent>;
+  let controller: ApolloTestingController;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -31,14 +37,32 @@ describe('SafeRecordModalComponent', () => {
         DateTimeProvider,
       ],
       declarations: [SafeRecordModalComponent],
-      imports: [MatDialogModule, HttpClientModule, MatSnackBarModule],
+      imports: [
+        MatDialogModule,
+        HttpClientModule,
+        MatSnackBarModule,
+        ApolloTestingModule,
+      ],
     }).compileComponents();
+
+    controller = TestBed.inject(ApolloTestingController);
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeRecordModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    const op = controller.expectOne(GET_RECORD_BY_ID);
+
+    op.flush({
+      data: {},
+    });
+  });
+
+  afterEach(() => {
+    controller.verify();
+    fixture.destroy();
   });
 
   it('should create', () => {
