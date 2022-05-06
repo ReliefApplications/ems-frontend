@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
+import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
 
 import { SafeFloatingOptionsComponent } from './floating-options.component';
 
@@ -9,7 +12,20 @@ describe('SafeFloatingOptionsComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
+        providers: [
+          TranslateService
+        ],
         declarations: [SafeFloatingOptionsComponent],
+        imports: [
+          MatDialogModule,
+          TranslateModule.forRoot({
+            loader: {
+              provide: TranslateLoader,
+              useClass: TranslateFakeLoader
+            }
+          }),
+          MatMenuModule
+        ]
       }).compileComponents();
     })
   );

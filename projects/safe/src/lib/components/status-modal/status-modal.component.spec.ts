@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SafeStatusModalComponent } from './status-modal.component';
 
 describe('StatusModalComponent', () => {
@@ -8,7 +8,17 @@ describe('StatusModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [
+        { provide: MatDialogRef, useValue: {
+            updateSize(width: any, height: any){},
+            addPanelClass(string: any){}
+        } },
+        { provide: MAT_DIALOG_DATA, useValue: {title: '', content: ''} },
+      ],
       declarations: [SafeStatusModalComponent],
+      imports: [
+        MatDialogModule
+      ]
     }).compileComponents();
   });
 

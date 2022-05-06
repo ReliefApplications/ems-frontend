@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
 import { SafeTabLayoutPreviewComponent } from './tab-layout-preview.component';
 
 describe('SafeTabLayoutPreviewComponent', () => {
@@ -8,7 +8,18 @@ describe('SafeTabLayoutPreviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [
+        TranslateService
+      ],
       declarations: [SafeTabLayoutPreviewComponent],
+      imports: [
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader
+          }
+        }),
+      ]
     }).compileComponents();
   });
 
