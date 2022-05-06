@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { GET_QUERY_TYPES } from '../../graphql/queries';
 import { SafeQueryBuilderComponent } from './query-builder.component';
 
@@ -11,13 +14,9 @@ describe('SafeQueryBuilderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        FormBuilder
-      ],
+      providers: [FormBuilder],
       declarations: [SafeQueryBuilderComponent],
-      imports: [
-        ApolloTestingModule
-      ]
+      imports: [ApolloTestingModule],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -35,9 +34,9 @@ describe('SafeQueryBuilderComponent', () => {
         __schema: {
           types: [],
         },
-        fields: []
-      }
-    })
+        fields: [],
+      },
+    });
   });
 
   afterEach(() => {

@@ -9,9 +9,7 @@ describe('SafeDropdownFilterMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        FormBuilder
-      ],
+      providers: [FormBuilder],
       declarations: [SafeDropdownFilterMenuComponent],
     }).compileComponents();
   });
@@ -21,7 +19,7 @@ describe('SafeDropdownFilterMenuComponent', () => {
     component = fixture.componentInstance;
     component.filter = {
       logic: [],
-      filters: []
+      filters: [],
     };
     fixture.detectChanges();
   });

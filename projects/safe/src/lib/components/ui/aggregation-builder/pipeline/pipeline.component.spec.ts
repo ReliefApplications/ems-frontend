@@ -1,10 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder } from '@angular/forms';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
 import { SafePipelineComponent } from './pipeline.component';
 import { HttpClientModule } from '@angular/common/http';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { Observable } from 'rxjs';
 
@@ -21,7 +31,7 @@ describe('SafePipelineComponent', () => {
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
-        TranslateService
+        TranslateService,
       ],
       declarations: [SafePipelineComponent],
       imports: [
@@ -29,20 +39,20 @@ describe('SafePipelineComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-        MatMenuModule
-      ]
+        MatMenuModule,
+      ],
     }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafePipelineComponent);
     component = fixture.componentInstance;
-    component.fields$ = new Observable;
-    component.metaFields$ = new Observable;
-    component.metaFields$ = new Observable;
+    component.fields$ = new Observable();
+    component.metaFields$ = new Observable();
+    component.metaFields$ = new Observable();
     component.pipelineForm = new FormArray([]);
     fixture.detectChanges();
   });

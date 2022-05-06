@@ -8,9 +8,7 @@ describe('SafeLayoutService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ]
+      imports: [RouterTestingModule],
     });
     service = TestBed.inject(SafeLayoutService);
   });

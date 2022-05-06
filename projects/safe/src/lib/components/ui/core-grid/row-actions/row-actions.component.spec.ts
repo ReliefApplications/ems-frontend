@@ -10,9 +10,7 @@ describe('SafeGridRowActionsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafeGridRowActionsComponent],
-      imports: [
-        MatMenuModule
-      ]
+      imports: [MatMenuModule],
     }).compileComponents();
   });
 
@@ -21,8 +19,8 @@ describe('SafeGridRowActionsComponent', () => {
     component = fixture.componentInstance;
     component.item = {
       canDelete: false,
-      canUpdate: false
-    }
+      canUpdate: false,
+    };
     fixture.detectChanges();
   });
 

@@ -17,9 +17,7 @@ describe('SafeChartComponent', () => {
           { provide: 'environment', useValue: environment },
         ],
         declarations: [SafeChartComponent],
-        imports: [
-          HttpClientModule
-        ]
+        imports: [HttpClientModule],
       }).compileComponents();
     })
   );
@@ -33,10 +31,10 @@ describe('SafeChartComponent', () => {
         type: {
           name: '',
           icon: '',
-          class: null
-        }
-      }
-    }
+          class: null,
+        },
+      },
+    };
     fixture.detectChanges();
   });
 

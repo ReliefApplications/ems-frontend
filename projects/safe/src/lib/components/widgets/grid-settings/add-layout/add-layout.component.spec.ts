@@ -1,7 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 import { AddLayoutComponent } from './add-layout.component';
 
@@ -14,7 +23,7 @@ describe('AddLayoutComponent', () => {
       providers: [
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: {} },
-        TranslateService
+        TranslateService,
       ],
       declarations: [AddLayoutComponent],
       imports: [
@@ -23,10 +32,10 @@ describe('AddLayoutComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

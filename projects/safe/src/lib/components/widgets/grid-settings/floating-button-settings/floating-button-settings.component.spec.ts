@@ -3,9 +3,22 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
 import { GET_QUERY_TYPES } from 'projects/safe/src/lib/graphql/queries';
@@ -26,7 +39,7 @@ describe('SafeFloatingButtonSettingsComponent', () => {
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
-        TranslateService
+        TranslateService,
       ],
       declarations: [SafeFloatingButtonSettingsComponent],
       imports: [
@@ -38,10 +51,10 @@ describe('SafeFloatingButtonSettingsComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
-        })
-      ]
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -51,8 +64,8 @@ describe('SafeFloatingButtonSettingsComponent', () => {
     fixture = TestBed.createComponent(SafeFloatingButtonSettingsComponent);
     component = fixture.componentInstance;
     component.buttonForm = new FormGroup({
-      distributionList:  new FormControl([])
-    })
+      distributionList: new FormControl([]),
+    });
     fixture.detectChanges();
 
     const op1 = controller.expectOne(GET_QUERY_TYPES);
@@ -62,9 +75,9 @@ describe('SafeFloatingButtonSettingsComponent', () => {
         __schema: {
           types: [],
         },
-        fields: []
-      }
-    })
+        fields: [],
+      },
+    });
   });
 
   afterEach(() => {

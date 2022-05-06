@@ -1,7 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormBuilder } from '@angular/forms';
 
@@ -20,10 +25,7 @@ describe('SafeFormService', () => {
         OAuthLogger,
         DateTimeProvider,
       ],
-      imports: [
-        HttpClientModule,
-        MatDialogModule
-      ]
+      imports: [HttpClientModule, MatDialogModule],
     });
     service = TestBed.inject(SafeFormService);
   });

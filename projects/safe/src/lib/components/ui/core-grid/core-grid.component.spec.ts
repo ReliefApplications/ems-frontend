@@ -1,13 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { SafeCoreGridComponent } from './core-grid.component';
 import { FormBuilder } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { GET_QUERY_TYPES } from '../../../graphql/queries';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
@@ -27,7 +39,7 @@ describe('SafeCoreGridComponent', () => {
         OAuthLogger,
         DateTimeProvider,
         FormBuilder,
-        QueryBuilderService
+        QueryBuilderService,
       ],
       declarations: [SafeCoreGridComponent],
       imports: [
@@ -35,8 +47,8 @@ describe('SafeCoreGridComponent', () => {
         MatDialogModule,
         RouterTestingModule,
         MatSnackBarModule,
-        ApolloTestingModule
-      ]
+        ApolloTestingModule,
+      ],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -54,9 +66,9 @@ describe('SafeCoreGridComponent', () => {
         __schema: {
           types: [],
         },
-        fields: []
-      }
-    })
+        fields: [],
+      },
+    });
   });
 
   afterEach(() => {

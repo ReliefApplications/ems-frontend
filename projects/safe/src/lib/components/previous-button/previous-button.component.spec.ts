@@ -10,9 +10,7 @@ describe('SafePreviousButtonComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafePreviousButtonComponent],
-      imports: [
-        RouterTestingModule
-      ]
+      imports: [RouterTestingModule],
     }).compileComponents();
   });
 

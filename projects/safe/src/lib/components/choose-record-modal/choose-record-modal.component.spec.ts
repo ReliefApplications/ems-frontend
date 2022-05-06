@@ -1,9 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { QueryBuilderService } from '../../services/query-builder.service';
 import { SafeChooseRecordModalComponent } from './choose-record-modal.component';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { GET_QUERY_TYPES } from '../../graphql/queries';
 
 describe('SafeChooseRecordModalComponent', () => {
@@ -20,10 +27,7 @@ describe('SafeChooseRecordModalComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: {} },
       ],
       declarations: [SafeChooseRecordModalComponent],
-      imports: [
-        MatDialogModule,
-        ApolloTestingModule
-      ]
+      imports: [MatDialogModule, ApolloTestingModule],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -41,15 +45,15 @@ describe('SafeChooseRecordModalComponent', () => {
         __schema: {
           types: [],
         },
-        fields: []
-      }
-    })
+        fields: [],
+      },
+    });
 
     const op2 = controller.expectOne('GetCustomQuery');
 
     op2.flush({
-      data: { }
-    })
+      data: {},
+    });
   });
 
   afterEach(() => {

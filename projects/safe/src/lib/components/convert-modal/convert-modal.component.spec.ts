@@ -1,10 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { SafeConvertModalComponent } from './convert-modal.component';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { GET_RECORD_DETAILS } from '../../graphql/queries';
-
 
 describe('SafeConvertModalComponent', () => {
   let component: SafeConvertModalComponent;
@@ -19,10 +25,7 @@ describe('SafeConvertModalComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: {} },
       ],
       declarations: [SafeConvertModalComponent],
-      imports: [
-        MatDialogModule,
-        ApolloTestingModule
-      ]
+      imports: [MatDialogModule, ApolloTestingModule],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -36,8 +39,8 @@ describe('SafeConvertModalComponent', () => {
     const op = controller.expectOne(GET_RECORD_DETAILS);
 
     op.flush({
-      data: { }
-    })
+      data: {},
+    });
   });
 
   afterEach(() => {

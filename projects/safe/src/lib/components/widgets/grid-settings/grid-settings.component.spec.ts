@@ -2,9 +2,22 @@ import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -27,7 +40,7 @@ describe('SafeGridSettingsComponent', () => {
           UrlHelperService,
           OAuthLogger,
           DateTimeProvider,
-          TranslateService
+          TranslateService,
         ],
         declarations: [SafeGridSettingsComponent],
         imports: [
@@ -37,12 +50,12 @@ describe('SafeGridSettingsComponent', () => {
           TranslateModule.forRoot({
             loader: {
               provide: TranslateLoader,
-              useClass: TranslateFakeLoader
-            }
+              useClass: TranslateFakeLoader,
+            },
           }),
           MatAutocompleteModule,
-          ApolloTestingModule
-        ]
+          ApolloTestingModule,
+        ],
       }).compileComponents();
 
       controller = TestBed.inject(ApolloTestingController);
@@ -55,24 +68,24 @@ describe('SafeGridSettingsComponent', () => {
     component.tile = { settings: {} };
     fixture.detectChanges();
 
-    const op1 = controller.expectOne("GetQueryTypes");
+    const op1 = controller.expectOne('GetQueryTypes');
 
     op1.flush({
       data: {
         __schema: {
           types: [],
           queryType: {
-            fields: []
-          }
-        }
-      }
-    })
+            fields: [],
+          },
+        },
+      },
+    });
 
     const op2 = controller.expectOne(GET_CHANNELS);
 
     op2.flush({
-      data: { }
-    })
+      data: {},
+    });
   });
 
   afterEach(() => {

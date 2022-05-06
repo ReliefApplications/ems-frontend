@@ -1,5 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 import { KendoTranslationService } from './kendo-translation.service';
 
@@ -8,17 +13,15 @@ describe('KendoTranslationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        TranslateService
-      ],
+      providers: [TranslateService],
       imports: [
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-      ]
+      ],
     });
     service = TestBed.inject(KendoTranslationService);
   });

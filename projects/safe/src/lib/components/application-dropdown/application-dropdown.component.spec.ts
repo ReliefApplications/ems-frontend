@@ -1,8 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SafeApplicationDropdownComponent } from './application-dropdown.component';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { GET_APPLICATIONS } from '../../graphql/queries';
 
 describe('SafeApplicationDropdownComponent', () => {
@@ -18,11 +26,11 @@ describe('SafeApplicationDropdownComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-        ApolloTestingModule
-      ]
+        ApolloTestingModule,
+      ],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -38,10 +46,10 @@ describe('SafeApplicationDropdownComponent', () => {
     op.flush({
       data: {
         applications: {
-          edges: []
-        }
-      }
-    })
+          edges: [],
+        },
+      },
+    });
   });
 
   afterEach(() => {

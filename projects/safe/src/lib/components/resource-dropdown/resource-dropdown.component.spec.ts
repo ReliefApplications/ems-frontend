@@ -1,7 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { SafeResourceDropdownComponent } from './resource-dropdown.component';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { GET_RESOURCES } from '../../graphql/queries';
 
 describe('SafeResourceDropdownComponent', () => {
@@ -11,19 +19,17 @@ describe('SafeResourceDropdownComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        TranslateService
-      ],
+      providers: [TranslateService],
       declarations: [SafeResourceDropdownComponent],
       imports: [
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-        ApolloTestingModule
-      ]
+        ApolloTestingModule,
+      ],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -39,10 +45,10 @@ describe('SafeResourceDropdownComponent', () => {
     op.flush({
       data: {
         resources: {
-          edges: []
-        }
-      }
-    })
+          edges: [],
+        },
+      },
+    });
   });
 
   afterEach(() => {

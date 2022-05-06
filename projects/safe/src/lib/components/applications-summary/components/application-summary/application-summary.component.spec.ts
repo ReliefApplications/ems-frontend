@@ -1,6 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SafeApplicationSummaryComponent } from './application-summary.component';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { MatMenuModule } from '@angular/material/menu';
 
 describe('SafeApplicationSummaryComponent', () => {
@@ -15,11 +20,11 @@ describe('SafeApplicationSummaryComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-        MatMenuModule
-      ]
+        MatMenuModule,
+      ],
     }).compileComponents();
   });
 
@@ -32,8 +37,7 @@ describe('SafeApplicationSummaryComponent', () => {
       createdAt: new Date(),
       usersCount: 250,
       status: undefined,
-    },
-
+    };
     fixture.detectChanges();
   });
 

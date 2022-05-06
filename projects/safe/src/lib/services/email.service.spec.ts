@@ -3,7 +3,12 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 import { SafeEmailService } from './email.service';
 
@@ -14,7 +19,7 @@ describe('SafeEmailService', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: 'environment', useValue: environment },
-        TranslateService
+        TranslateService,
       ],
       imports: [
         HttpClientModule,
@@ -23,10 +28,10 @@ describe('SafeEmailService', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-      ]
+      ],
     });
     service = TestBed.inject(SafeEmailService);
   });

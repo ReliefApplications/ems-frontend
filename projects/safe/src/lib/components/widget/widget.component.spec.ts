@@ -16,8 +16,8 @@ describe('SafeWidgetComponent', () => {
     fixture = TestBed.createComponent(SafeWidgetComponent);
     component = fixture.componentInstance;
     component.widget = {
-      component: null
-    }
+      component: null,
+    };
     fixture.detectChanges();
   });
 

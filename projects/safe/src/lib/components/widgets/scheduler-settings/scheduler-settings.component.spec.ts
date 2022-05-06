@@ -1,6 +1,11 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 import { SafeSchedulerSettingsComponent } from './scheduler-settings.component';
 
@@ -11,19 +16,16 @@ describe('SafeSchedulerSettingsComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        providers: [
-          FormBuilder,
-          TranslateService
-        ],
+        providers: [FormBuilder, TranslateService],
         declarations: [SafeSchedulerSettingsComponent],
         imports: [
           TranslateModule.forRoot({
             loader: {
               provide: TranslateLoader,
-              useClass: TranslateFakeLoader
-            }
-        }),
-        ]
+              useClass: TranslateFakeLoader,
+            },
+          }),
+        ],
       }).compileComponents();
     })
   );
@@ -34,9 +36,9 @@ describe('SafeSchedulerSettingsComponent', () => {
     component.tile = {
       if: '',
       settings: {
-        source: ''
-      }
-    }
+        source: '',
+      },
+    };
     fixture.detectChanges();
   });
 

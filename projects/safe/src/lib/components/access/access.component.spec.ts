@@ -1,8 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SafeAccessComponent } from './access.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
-
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 describe('SafeAccessComponent', () => {
   let component: SafeAccessComponent;
@@ -17,10 +21,10 @@ describe('SafeAccessComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
-        })
-      ]
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
     }).compileComponents();
   });
 

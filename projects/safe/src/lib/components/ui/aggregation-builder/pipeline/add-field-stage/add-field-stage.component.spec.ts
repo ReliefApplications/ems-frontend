@@ -1,6 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray } from '@angular/forms';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { SafeAddFieldStageComponent } from './add-field-stage.component';
 
 describe('SafeAddFieldStageComponent', () => {
@@ -9,18 +14,16 @@ describe('SafeAddFieldStageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        TranslateService
-      ],
+      providers: [TranslateService],
       declarations: [SafeAddFieldStageComponent],
       imports: [
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

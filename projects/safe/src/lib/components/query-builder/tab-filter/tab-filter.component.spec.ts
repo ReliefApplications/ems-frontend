@@ -1,11 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeTabFilterComponent } from './tab-filter.component';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
 import { HttpClientModule } from '@angular/common/http';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { GET_QUERY_TYPES } from '../../../graphql/queries';
 
 describe('SafeTabFilterComponent', () => {
@@ -22,7 +35,7 @@ describe('SafeTabFilterComponent', () => {
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
-        TranslateService
+        TranslateService,
       ],
       declarations: [SafeTabFilterComponent],
       imports: [
@@ -31,10 +44,10 @@ describe('SafeTabFilterComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-      ]
+      ],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -44,7 +57,7 @@ describe('SafeTabFilterComponent', () => {
     fixture = TestBed.createComponent(SafeTabFilterComponent);
     component = fixture.componentInstance;
     component.form = new FormGroup({
-      filters: new FormControl([])
+      filters: new FormControl([]),
     });
     fixture.detectChanges();
 
@@ -55,9 +68,9 @@ describe('SafeTabFilterComponent', () => {
         __schema: {
           types: [],
         },
-        fields: []
-      }
-    })
+        fields: [],
+      },
+    });
   });
 
   afterEach(() => {

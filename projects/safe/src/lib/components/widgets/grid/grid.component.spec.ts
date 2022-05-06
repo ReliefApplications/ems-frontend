@@ -4,11 +4,20 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeGridWidgetComponent } from './grid.component';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
 import { HttpClientModule } from '@angular/common/http';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { FormBuilder } from '@angular/forms';
-
 
 describe('SafeGridWidgetComponent', () => {
   let component: SafeGridWidgetComponent;
@@ -24,7 +33,7 @@ describe('SafeGridWidgetComponent', () => {
           OAuthLogger,
           DateTimeProvider,
           TranslateService,
-          FormBuilder
+          FormBuilder,
         ],
         declarations: [SafeGridWidgetComponent],
         imports: [
@@ -35,10 +44,10 @@ describe('SafeGridWidgetComponent', () => {
           TranslateModule.forRoot({
             loader: {
               provide: TranslateLoader,
-              useClass: TranslateFakeLoader
-            }
+              useClass: TranslateFakeLoader,
+            },
           }),
-        ]
+        ],
       }).compileComponents();
     })
   );
@@ -49,8 +58,8 @@ describe('SafeGridWidgetComponent', () => {
     component.settings = {
       resource: {},
       layout: {},
-      query: {}
-    }
+      query: {},
+    };
     fixture.detectChanges();
   });
 

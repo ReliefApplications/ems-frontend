@@ -2,9 +2,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConfigDisplayGridFieldsModalComponent } from './config-display-grid-fields-modal.component';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { QueryBuilderService } from '../../services/query-builder.service';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { GET_QUERY_TYPES } from '../../graphql/queries';
 
 describe('ConfigDisplayGridFieldsModalComponent', () => {
@@ -17,20 +25,20 @@ describe('ConfigDisplayGridFieldsModalComponent', () => {
       providers: [
         FormBuilder,
         { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {types: []} },
+        { provide: MAT_DIALOG_DATA, useValue: { types: [] } },
         TranslateService,
-        QueryBuilderService
+        QueryBuilderService,
       ],
       declarations: [ConfigDisplayGridFieldsModalComponent],
       imports: [
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-        ApolloTestingModule
-      ]
+        ApolloTestingModule,
+      ],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -48,11 +56,11 @@ describe('ConfigDisplayGridFieldsModalComponent', () => {
         __schema: {
           types: [],
           queryType: {
-            fields: []
-          }
-        }
-      }
-    })
+            fields: [],
+          },
+        },
+      },
+    });
   });
 
   afterEach(() => {

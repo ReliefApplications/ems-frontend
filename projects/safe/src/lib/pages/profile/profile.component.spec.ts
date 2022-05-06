@@ -2,8 +2,18 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 import { SafeProfileComponent } from './profile.component';
 
@@ -19,7 +29,7 @@ describe('SafeProfileComponent', () => {
         OAuthLogger,
         DateTimeProvider,
         FormBuilder,
-        TranslateService
+        TranslateService,
       ],
       declarations: [SafeProfileComponent],
       imports: [
@@ -28,10 +38,10 @@ describe('SafeProfileComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

@@ -1,13 +1,30 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
 import { SafeLayoutComponent } from './layout.component';
 import { HttpClientModule } from '@angular/common/http';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { MatMenuModule } from '@angular/material/menu';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { GET_NOTIFICATIONS } from '../../graphql/queries';
 import { NOTIFICATION_SUBSCRIPTION } from '../../graphql/subscriptions';
 
@@ -26,7 +43,7 @@ describe('SafeLayoutComponent', () => {
         DateTimeProvider,
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: {} },
-        TranslateService
+        TranslateService,
       ],
       declarations: [SafeLayoutComponent],
       imports: [
@@ -36,12 +53,12 @@ describe('SafeLayoutComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
         MatMenuModule,
-        ApolloTestingModule
-      ]
+        ApolloTestingModule,
+      ],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -55,14 +72,14 @@ describe('SafeLayoutComponent', () => {
     const op1 = controller.expectOne(GET_NOTIFICATIONS);
 
     op1.flush({
-      data: { }
-    })
+      data: {},
+    });
 
     const op2 = controller.expectOne(NOTIFICATION_SUBSCRIPTION);
 
     op2.flush({
-      data: { }
-    })
+      data: {},
+    });
   });
 
   afterEach(() => {

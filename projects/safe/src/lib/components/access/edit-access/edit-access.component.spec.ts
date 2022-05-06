@@ -1,9 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { SafeEditAccessComponent } from './edit-access.component';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { GET_ROLES } from '../../../graphql/queries';
 
 describe('SafeEditAccessComponent', () => {
@@ -16,8 +28,13 @@ describe('SafeEditAccessComponent', () => {
       providers: [
         FormBuilder,
         { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {access: {canSee: null, canUpdate: null, canDelete: null}} },
-        TranslateService
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {
+            access: { canSee: null, canUpdate: null, canDelete: null },
+          },
+        },
+        TranslateService,
       ],
       declarations: [SafeEditAccessComponent],
       imports: [
@@ -25,11 +42,11 @@ describe('SafeEditAccessComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-        ApolloTestingModule
-      ]
+        ApolloTestingModule,
+      ],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -43,8 +60,8 @@ describe('SafeEditAccessComponent', () => {
     const op = controller.expectOne(GET_ROLES);
 
     op.flush({
-      data: { }
-    })
+      data: {},
+    });
   });
 
   afterEach(() => {

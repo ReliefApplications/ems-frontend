@@ -1,11 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafePreferencesModalComponent } from './preferences-modal.component';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { FormBuilder } from '@angular/forms';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
-
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 describe('SafePreferencesModalComponent', () => {
   let component: SafePreferencesModalComponent;
@@ -19,7 +30,12 @@ describe('SafePreferencesModalComponent', () => {
         TranslateService,
         { provide: 'environment', useValue: environment },
         { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {access: {canSee: null, canUpdate: null, canDelete: null}} },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {
+            access: { canSee: null, canUpdate: null, canDelete: null },
+          },
+        },
       ],
       declarations: [SafePreferencesModalComponent],
       imports: [
@@ -28,10 +44,10 @@ describe('SafePreferencesModalComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-      ]
+      ],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);

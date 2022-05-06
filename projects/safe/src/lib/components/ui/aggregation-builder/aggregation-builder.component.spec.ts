@@ -1,10 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
 import { SafeAggregationBuilderComponent } from './aggregation-builder.component';
 import { HttpClientModule } from '@angular/common/http';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { GET_QUERY_TYPES } from '../../../graphql/queries';
 
 describe('SafeAggregationBuilderComponent', () => {
@@ -20,13 +28,10 @@ describe('SafeAggregationBuilderComponent', () => {
         OAuthService,
         UrlHelperService,
         OAuthLogger,
-        DateTimeProvider
+        DateTimeProvider,
       ],
       declarations: [SafeAggregationBuilderComponent],
-      imports: [
-        HttpClientModule,
-        ApolloTestingModule
-      ]
+      imports: [HttpClientModule, ApolloTestingModule],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -44,19 +49,19 @@ describe('SafeAggregationBuilderComponent', () => {
         __schema: {
           types: [],
         },
-        fields: []
-      }
-    })
+        fields: [],
+      },
+    });
 
     const op2 = controller.expectOne('GetFormNames');
 
     op2.flush({
       data: {
         forms: {
-          edges: []
-        }
-      }
-    })
+          edges: [],
+        },
+      },
+    });
   });
 
   afterEach(() => {

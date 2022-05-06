@@ -9,12 +9,8 @@ describe('SafeApiProxyService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: 'environment', useValue: environment },
-      ],
-      imports: [
-        HttpClientModule
-      ]
+      providers: [{ provide: 'environment', useValue: environment }],
+      imports: [HttpClientModule],
     });
     service = TestBed.inject(SafeApiProxyService);
   });

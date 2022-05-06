@@ -1,6 +1,11 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
 
 import { SafeAuthService } from './auth.service';
 
@@ -13,9 +18,9 @@ describe('SafeAuthService', () => {
         OAuthService,
         UrlHelperService,
         OAuthLogger,
-        DateTimeProvider
+        DateTimeProvider,
       ],
-      imports: [HttpClientModule]
+      imports: [HttpClientModule],
     });
     service = TestBed.inject(SafeAuthService);
   });

@@ -1,8 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { SafeLayoutModalComponent } from './layout-modal.component';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 describe('SafeLayoutModalComponent', () => {
   let component: SafeLayoutModalComponent;
@@ -14,7 +23,12 @@ describe('SafeLayoutModalComponent', () => {
         FormBuilder,
         TranslateService,
         { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {access: {canSee: null, canUpdate: null, canDelete: null}} },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {
+            access: { canSee: null, canUpdate: null, canDelete: null },
+          },
+        },
       ],
       declarations: [SafeLayoutModalComponent],
       imports: [
@@ -22,10 +36,10 @@ describe('SafeLayoutModalComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

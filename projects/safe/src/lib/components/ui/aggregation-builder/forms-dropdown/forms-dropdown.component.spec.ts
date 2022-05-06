@@ -1,7 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Form, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { Observable, observable } from 'rxjs';
 import { SafeFormsDropdownComponent } from './forms-dropdown.component';
 
@@ -11,19 +16,17 @@ describe('SafeFormsDropdownComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        TranslateService
-      ],
+      providers: [TranslateService],
       declarations: [SafeFormsDropdownComponent],
       imports: [
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
+            useClass: TranslateFakeLoader,
           },
         }),
-        MatAutocompleteModule
-      ]
+        MatAutocompleteModule,
+      ],
     }).compileComponents();
   });
 
@@ -31,7 +34,7 @@ describe('SafeFormsDropdownComponent', () => {
     fixture = TestBed.createComponent(SafeFormsDropdownComponent);
     component = fixture.componentInstance;
     component.sourceControl = new FormControl();
-    component.forms$ = new Observable;
+    component.forms$ = new Observable();
     fixture.detectChanges();
   });
 

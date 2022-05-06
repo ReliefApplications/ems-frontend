@@ -2,9 +2,19 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 import { SafeUsersComponent } from './users.component';
 import { MatMenuModule } from '@angular/material/menu';
@@ -21,7 +31,7 @@ describe('SafeUsersComponent', () => {
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
-        TranslateService
+        TranslateService,
       ],
       declarations: [SafeUsersComponent],
       imports: [
@@ -31,11 +41,11 @@ describe('SafeUsersComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-        MatMenuModule
-      ]
+        MatMenuModule,
+      ],
     }).compileComponents();
   });
 

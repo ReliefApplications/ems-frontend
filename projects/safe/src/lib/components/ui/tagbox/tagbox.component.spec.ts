@@ -11,16 +11,14 @@ describe('SafeTagboxComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafeTagboxComponent],
-      imports: [
-        MatAutocompleteModule
-      ]
+      imports: [MatAutocompleteModule],
     }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeTagboxComponent);
     component = fixture.componentInstance;
-    component.choices$ = new Observable;
+    component.choices$ = new Observable();
     fixture.detectChanges();
   });
 

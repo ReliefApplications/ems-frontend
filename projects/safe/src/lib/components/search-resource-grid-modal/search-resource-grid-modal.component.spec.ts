@@ -1,7 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { SafeResourceGridModalComponent } from './search-resource-grid-modal.component';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 describe('ResourceTableModalComponent', () => {
   let component: SafeResourceGridModalComponent;
@@ -11,8 +20,11 @@ describe('ResourceTableModalComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {gridSettings: {sort: {field: []}}} },
-        TranslateService
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: { gridSettings: { sort: { field: [] } } },
+        },
+        TranslateService,
       ],
       declarations: [SafeResourceGridModalComponent],
       imports: [
@@ -20,10 +32,10 @@ describe('ResourceTableModalComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

@@ -1,13 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { SafeFormComponent } from './form.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
-
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 describe('SafeFormComponent', () => {
   let component: SafeFormComponent;
@@ -18,12 +31,17 @@ describe('SafeFormComponent', () => {
       providers: [
         { provide: 'environment', useValue: environment },
         { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {access: {canSee: null, canUpdate: null, canDelete: null}} },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {
+            access: { canSee: null, canUpdate: null, canDelete: null },
+          },
+        },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
-        TranslateService
+        TranslateService,
       ],
       declarations: [SafeFormComponent],
       imports: [
@@ -34,10 +52,10 @@ describe('SafeFormComponent', () => {
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 
@@ -46,7 +64,7 @@ describe('SafeFormComponent', () => {
     component = fixture.componentInstance;
     component.form = {
       structure: '{}',
-    }
+    };
     fixture.detectChanges();
   });
 

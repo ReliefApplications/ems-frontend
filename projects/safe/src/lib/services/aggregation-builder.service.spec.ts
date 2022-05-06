@@ -14,9 +14,7 @@ describe('AggregationBuilderService', () => {
         FormBuilder,
         { provide: 'environment', useValue: environment },
       ],
-      imports: [
-        HttpClientModule
-      ]
+      imports: [HttpClientModule],
     });
     service = TestBed.inject(AggregationBuilderService);
   });

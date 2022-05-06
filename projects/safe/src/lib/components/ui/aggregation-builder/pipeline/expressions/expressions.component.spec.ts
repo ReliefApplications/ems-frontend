@@ -1,6 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { SafeExpressionsComponent } from './expressions.component';
 
 describe('SafeExpressionsComponent', () => {
@@ -9,18 +14,16 @@ describe('SafeExpressionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        TranslateService
-      ],
+      providers: [TranslateService],
       declarations: [SafeExpressionsComponent],
       imports: [
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
+            useClass: TranslateFakeLoader,
+          },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 
@@ -29,7 +32,7 @@ describe('SafeExpressionsComponent', () => {
     component = fixture.componentInstance;
     component.form = new FormGroup({
       operator: new FormControl(),
-      field: new FormControl()
+      field: new FormControl(),
     });
     fixture.detectChanges();
   });

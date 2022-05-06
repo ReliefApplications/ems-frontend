@@ -1,7 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { QueryBuilderService } from './query-builder.service';
-import { ApolloTestingModule, ApolloTestingController } from 'apollo-angular/testing';
+import {
+  ApolloTestingModule,
+  ApolloTestingController,
+} from 'apollo-angular/testing';
 import { GET_QUERY_TYPES } from '../graphql/queries';
 
 describe('QueryBuilderService', () => {
@@ -11,7 +14,7 @@ describe('QueryBuilderService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [FormBuilder],
-      imports: [ApolloTestingModule]
+      imports: [ApolloTestingModule],
     });
     service = TestBed.inject(QueryBuilderService);
 
@@ -24,9 +27,9 @@ describe('QueryBuilderService', () => {
         __schema: {
           types: [],
         },
-        fields: []
-      }
-    })
+        fields: [],
+      },
+    });
   });
 
   afterEach(() => {

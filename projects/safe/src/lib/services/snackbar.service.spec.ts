@@ -8,9 +8,7 @@ describe('SafeSnackBarService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MatSnackBarModule
-      ]
+      imports: [MatSnackBarModule],
     });
     service = TestBed.inject(SafeSnackBarService);
   });

@@ -10,7 +10,7 @@ describe('SafeWidgetGridComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafeWidgetGridComponent],
-      imports: [MatDialogModule]
+      imports: [MatDialogModule],
     }).compileComponents();
   });
 

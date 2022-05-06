@@ -9,9 +9,7 @@ describe('SafeArrayFilterMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        FormBuilder
-      ],
+      providers: [FormBuilder],
       declarations: [SafeArrayFilterMenuComponent],
     }).compileComponents();
   });
@@ -21,8 +19,8 @@ describe('SafeArrayFilterMenuComponent', () => {
     component = fixture.componentInstance;
     component.filter = {
       logic: null,
-      filters: []
-    }
+      filters: [],
+    };
     fixture.detectChanges();
   });
 

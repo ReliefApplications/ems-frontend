@@ -9,12 +9,8 @@ describe('SafeDownloadService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: 'environment', useValue: environment },
-      ],
-      imports: [
-        HttpClientModule
-      ]
+      providers: [{ provide: 'environment', useValue: environment }],
+      imports: [HttpClientModule],
     });
     service = TestBed.inject(SafeDownloadService);
   });

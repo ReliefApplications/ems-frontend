@@ -1,5 +1,10 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { SafeSchedulerComponent } from './scheduler.component';
 
 describe('SafeSchedulerComponent', () => {
@@ -9,18 +14,16 @@ describe('SafeSchedulerComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        providers: [
-          TranslateService
-        ],
+        providers: [TranslateService],
         declarations: [SafeSchedulerComponent],
         imports: [
           TranslateModule.forRoot({
             loader: {
               provide: TranslateLoader,
-              useClass: TranslateFakeLoader
-            }
+              useClass: TranslateFakeLoader,
+            },
           }),
-        ]
+        ],
       }).compileComponents();
     })
   );
@@ -29,8 +32,8 @@ describe('SafeSchedulerComponent', () => {
     fixture = TestBed.createComponent(SafeSchedulerComponent);
     component = fixture.componentInstance;
     component.settings = {
-      source: ''
-    }
+      source: '',
+    };
     fixture.detectChanges();
   });
 

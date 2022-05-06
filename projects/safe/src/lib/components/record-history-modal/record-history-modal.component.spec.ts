@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { RecordHistoryModalComponent } from './record-history-modal.component';
 
 describe('HistoryModalComponent', () => {
@@ -13,9 +17,7 @@ describe('HistoryModalComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: {} },
       ],
       declarations: [RecordHistoryModalComponent],
-      imports: [
-        MatDialogModule
-      ]
+      imports: [MatDialogModule],
     }).compileComponents();
   });
 

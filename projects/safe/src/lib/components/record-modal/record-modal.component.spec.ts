@@ -1,8 +1,17 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { SafeRecordModalComponent } from './record-modal.component';
-import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -22,11 +31,7 @@ describe('SafeRecordModalComponent', () => {
         DateTimeProvider,
       ],
       declarations: [SafeRecordModalComponent],
-      imports: [
-        MatDialogModule,
-        HttpClientModule,
-        MatSnackBarModule
-      ]
+      imports: [MatDialogModule, HttpClientModule, MatSnackBarModule],
     }).compileComponents();
   });
 

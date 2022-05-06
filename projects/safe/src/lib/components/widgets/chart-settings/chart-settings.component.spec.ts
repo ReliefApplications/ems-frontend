@@ -2,7 +2,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { TranslateModule, TranslateService, TranslateFakeLoader, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 import { SafeChartSettingsComponent } from './chart-settings.component';
 
@@ -16,7 +21,7 @@ describe('SafeChartSettingsComponent', () => {
         providers: [
           FormBuilder,
           { provide: 'environment', useValue: environment },
-          TranslateService
+          TranslateService,
         ],
         declarations: [SafeChartSettingsComponent],
         imports: [
@@ -24,10 +29,10 @@ describe('SafeChartSettingsComponent', () => {
           TranslateModule.forRoot({
             loader: {
               provide: TranslateLoader,
-              useClass: TranslateFakeLoader
-            }
+              useClass: TranslateFakeLoader,
+            },
           }),
-        ]
+        ],
       }).compileComponents();
     })
   );
@@ -42,11 +47,11 @@ describe('SafeChartSettingsComponent', () => {
           type: {
             name: '',
             icon: '',
-            class: null
-          }
-        }
-      }
-    }
+            class: null,
+          },
+        },
+      },
+    };
     fixture.detectChanges();
   });
 
