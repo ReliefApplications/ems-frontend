@@ -6,11 +6,13 @@ describe('SafeMapSettingsComponent', () => {
   let component: SafeMapSettingsComponent;
   let fixture: ComponentFixture<SafeMapSettingsComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [SafeMapSettingsComponent],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [SafeMapSettingsComponent],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeMapSettingsComponent);
