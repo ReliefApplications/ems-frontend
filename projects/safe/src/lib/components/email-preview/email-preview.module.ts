@@ -11,6 +11,7 @@ import { UploadsModule } from '@progress/kendo-angular-upload';
 import { EditorModule } from '@progress/kendo-angular-editor';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 /**
  * Preview Email Component Module.
@@ -18,6 +19,7 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 @NgModule({
   declarations: [SafeEmailPreviewComponent],
   imports: [
+    CKEditorModule,
     CommonModule,
     MatButtonModule,
     FormsModule,

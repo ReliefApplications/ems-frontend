@@ -41,6 +41,8 @@
     "@angular/router": "~11.2.8",
     "@apollo/client": "^3.0.0",
     "@azure/msal-angular": "^1.1.2",
+    "@ckeditor/ckeditor5-angular": "^4.0.0",
+    "@ckeditor/ckeditor5-build-classic": "^34.0.0",
     "@progress/kendo-angular-buttons": "^5.0.0",
     "@progress/kendo-angular-charts": "^4.2.0",
     "@progress/kendo-angular-common": "^1.0.0",
