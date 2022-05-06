@@ -639,6 +639,9 @@
 		}
 	},
 	"kendo": {
+		"datepicker": {
+			"today": "Today"
+		},
 		"editor": {
 			"addColumnAfter": "Add column after",
 			"addColumnBefore": "Add column before",
@@ -767,6 +770,11 @@
 			"stick": "Stick",
 			"unlock": "Unlock",
 			"unstick": "Unstick"
+		},
+		"timepicker": {
+			"accept": "Accept",
+			"cancel": "Cancel",
+			"now": "Now"
 		},
 		"upload": {
 			"dropFilesHere": "Drop files here to upload",

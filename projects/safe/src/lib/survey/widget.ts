@@ -7,9 +7,14 @@ import { ChoicesRestful } from 'survey-angular';
 import { SafeButtonComponent } from '../components/ui/button/button.component';
 import { ButtonSize } from '../components/ui/button/button-size.enum';
 import { ButtonCategory } from '../components/ui/button/button-category.enum';
-import { EmbeddedViewRef } from '@angular/core';
+import { ComponentRef, EmbeddedViewRef } from '@angular/core';
 import { SafeRecordDropdownComponent } from '../components/record-dropdown/record-dropdown.component';
 import { SafeCoreGridComponent } from '../components/ui/core-grid/core-grid.component';
+import {
+  DatePickerComponent,
+  DateTimePickerComponent,
+  TimePickerComponent,
+} from '@progress/kendo-angular-dateinputs';
 
 /**
  * Adds zero to number if < 10.
@@ -90,36 +95,61 @@ export const init = (
     },
     isDefaultRender: true,
     afterRender: (question: any, el: any): void => {
-      // Correction of date inputs
+      // use kendo date picker for date fields
       if (
-        question.value &&
         ['date', 'datetime', 'datetime-local', 'time'].includes(
           question.inputType
         )
       ) {
-        const date = new Date(question.value);
-        if (date.toString() !== 'Invalid Date') {
-          const year = date.getFullYear();
-          const month = addZero(date.getMonth() + 1);
-          const day = addZero(date.getDate());
-          const hour = addZero(date.getUTCHours());
-          const minutes = addZero(date.getUTCMinutes());
-          switch (question.inputType) {
-            case 'date':
-              question.value = `${year}-${month}-${day}`;
-              break;
-            case 'datetime':
-              break;
-            case 'datetime-local':
-              question.value = `${year}-${month}-${day}T${hour}:${minutes}`;
-              break;
-            case 'time':
-              question.value = `${hour}:${minutes}`;
-              break;
-            default:
-              break;
+        type PickerComponent =
+          | DatePickerComponent
+          | DateTimePickerComponent
+          | TimePickerComponent;
+        // define the picker according to the type
+        let picker: ComponentRef<PickerComponent> | undefined;
+        let customFormat: string | undefined;
+        switch (question.inputType) {
+          case 'date':
+            picker = domService.appendComponentToBody(
+              DatePickerComponent,
+              el.parentElement
+            );
+            customFormat = 'dd/MM/yyyy';
+            break;
+          case 'datetime':
+          case 'datetime-local':
+            picker = domService.appendComponentToBody(
+              DateTimePickerComponent,
+              el.parentElement
+            );
+            customFormat = 'dd/MM/yyyy HH:mm';
+            break;
+          case 'time':
+            picker = domService.appendComponentToBody(
+              TimePickerComponent,
+              el.parentElement
+            );
+            customFormat = 'HH:mm';
+            break;
+        }
+        // create an instance
+        if (picker && customFormat) {
+          const pickerInstance: PickerComponent = picker.instance;
+          pickerInstance.format = customFormat;
+          if (question.value) {
+            pickerInstance.value = new Date(question.value);
           }
-          el.value = question.value;
+          if (question.min) {
+            pickerInstance.min = new Date(question.min);
+          }
+          if (question.max) {
+            pickerInstance.max = new Date(question.max);
+          }
+          pickerInstance.readonly = question.isReadOnly;
+          pickerInstance.registerOnChange((value: any) => {
+            question.value = value.toISOString();
+          });
+          el.style.display = 'none';
         }
       }
       // Display of edit button for comment question

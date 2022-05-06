@@ -639,6 +639,9 @@
 		}
 	},
 	"kendo": {
+		"datepicker": {
+			"today": "******"
+		},
 		"editor": {
 			"addColumnAfter": "******",
 			"addColumnBefore": "******",
@@ -767,6 +770,11 @@
 			"stick": "******",
 			"unlock": "******",
 			"unstick": "******"
+		},
+		"timepicker": {
+			"now": "******",
+			"cancel": "******",
+			"accept": "******"
 		},
 		"upload": {
 			"dropFilesHere": "******",

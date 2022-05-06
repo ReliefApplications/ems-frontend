@@ -24,6 +24,13 @@
   }
 }
 
+// === DATE / TIME INPUTS ===
+::ng-deep .k-datepicker,
+::ng-deep .k-timepicker,
+::ng-deep .k-datetimepicker {
+  width: 100%;
+}
+
 ::ng-deep .sv_row {
   div {
     min-width: 0px !important;

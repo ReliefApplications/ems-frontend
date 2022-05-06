@@ -31,6 +31,17 @@ import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import { KendoTranslationService } from '@safe/builder';
 
+// Kendo datepicker for surveyjs
+import {
+  CalendarDOMService,
+  HoursService,
+  MinutesService,
+  MonthViewService,
+  TimePickerDOMService,
+} from '@progress/kendo-angular-dateinputs';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+
 localStorage.setItem('loaded', 'false');
 
 const REFRESH = new BehaviorSubject<boolean>(false);
@@ -185,6 +196,13 @@ export const httpTranslateLoader = (http: HttpClient) =>
       provide: MessageService,
       useClass: KendoTranslationService,
     },
+    PopupService,
+    ResizeBatchService,
+    CalendarDOMService,
+    TimePickerDOMService,
+    MonthViewService,
+    HoursService,
+    MinutesService,
   ],
   bootstrap: [AppComponent],
 })
