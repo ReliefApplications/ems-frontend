@@ -267,13 +267,16 @@ export class SafeGridService {
       value?: string;
       text?: string;
       hasOther?: boolean;
+      otherText?: string;
     }
   ): { value: string; text: string }[] {
     const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
     if (choicesByUrl.hasOther) {
       choices.push({
         [choicesByUrl.value || 'value']: 'other',
-        [choicesByUrl.text || 'text']: 'Other',
+        [choicesByUrl.text || 'text']: choicesByUrl.otherText
+          ? choicesByUrl.otherText
+          : 'Other',
       });
     }
     return choices
