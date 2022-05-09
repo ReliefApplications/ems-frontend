@@ -640,7 +640,21 @@
 	},
 	"kendo": {
 		"datepicker": {
-			"today": "******"
+			"today": "******",
+			"toggle": "******"
+		},
+		"datetimepicker": {
+			"dateTab": "******",
+			"timeTab": "******",
+			"dateTabLabel": "******",
+			"timeTabLabel": "******",
+			"today": "******",
+			"now": "******",
+			"cancel": "******",
+			"accept": "******",
+			"cancelLabel": "******",
+			"acceptLabel": "******",
+			"toggle": "******"
 		},
 		"editor": {
 			"addColumnAfter": "******",
@@ -772,9 +786,12 @@
 			"unstick": "******"
 		},
 		"timepicker": {
-			"now": "******",
+			"accept": "******",
 			"cancel": "******",
-			"accept": "******"
+			"acceptLabel": "******",
+			"cancelLabel": "******",
+			"now": "******",
+			"toggle": "******"
 		},
 		"upload": {
 			"dropFilesHere": "******",

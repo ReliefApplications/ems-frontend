@@ -38,9 +38,11 @@ import {
   MinutesService,
   MonthViewService,
   TimePickerDOMService,
+  TOUCH_ENABLED,
 } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
+import { touchEnabled } from '@progress/kendo-common';
 
 localStorage.setItem('loaded', 'false');
 
@@ -195,6 +197,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
     {
       provide: MessageService,
       useClass: KendoTranslationService,
+    },
+    {
+      provide: TOUCH_ENABLED,
+      useValue: [touchEnabled],
     },
     PopupService,
     ResizeBatchService,
