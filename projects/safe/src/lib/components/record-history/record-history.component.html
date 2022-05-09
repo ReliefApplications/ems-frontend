@@ -51,10 +51,7 @@
     </mat-form-field>
     <mat-form-field>
       <mat-label>{{ 'components.history.field.select' | translate }}</mat-label>
-      <mat-select
-        [value]="filterField"
-        (selectionChange)="applyFilter($event.value)"
-      >
+      <mat-select (selectionChange)="applyFilter($event.value)">
         <mat-option value="all">{{
           'components.history.field.all' | translate
         }}</mat-option>
@@ -117,7 +114,7 @@
           icon="update"
           class="revert-icon"
           (click)="onRevert(item)"
-          *ngIf="index > 0"
+          *ngIf="index > 0 && filterField === 'all'"
         >
           {{ 'components.history.preview' | translate }}
         </safe-button>

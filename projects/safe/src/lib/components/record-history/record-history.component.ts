@@ -127,7 +127,7 @@ export class SafeRecordHistoryComponent implements OnInit {
         if ((!current || current[key]) === null && after[key] !== null) {
           changes.push(
             '<p><span class="add-field">Add field</span> <b>' +
-              key +
+              this.getFieldTitle(key) +
               '</b> with value <b>' +
               after[key] +
               '</b> </p>'
@@ -147,7 +147,7 @@ export class SafeRecordHistoryComponent implements OnInit {
       } else if ((!current || current[key] === null) && after[key]) {
         changes.push(
           '<p><span class="add-field">Add field</span> <b>' +
-            key +
+            this.getFieldTitle(key) +
             '</b> with value <b>' +
             after[key] +
             '</b> </p>'
@@ -163,7 +163,9 @@ export class SafeRecordHistoryComponent implements OnInit {
   private addObject(current: any, key: string): string {
     const currentKeys = Object.keys(current[key]);
     let currentValuesHTML = '';
-    let element = `<p> <span class="add-field">Add field</span> <b> ${key} </b> with value  `;
+    let element = `<p> <span class="add-field">Add field</span> <b> ${this.getFieldTitle(
+      key
+    )} </b> with value  `;
     currentKeys.forEach((k) => {
       let currentValues;
       if (current[key][k] instanceof Object) {
@@ -180,7 +182,7 @@ export class SafeRecordHistoryComponent implements OnInit {
   private addField(key: string, current: any): string {
     return (
       '<p><span class="add-field">Add field</span> <b>' +
-      key +
+      this.getFieldTitle(key) +
       '</b> with value <b>' +
       current[key] +
       '</b> </p>'
@@ -191,7 +193,7 @@ export class SafeRecordHistoryComponent implements OnInit {
     if (after[key] === null) {
       return (
         '<p> <span  class="remove-field">Remove field</span> <b>' +
-        key +
+        this.getFieldTitle(key) +
         '</b> with value <b>' +
         current[key] +
         '</b> </p>'
@@ -199,7 +201,7 @@ export class SafeRecordHistoryComponent implements OnInit {
     } else {
       return (
         '<p> <span  class="modify-field">Change field</span> <b>' +
-        key +
+        this.getFieldTitle(key) +
         '</b> from <b>' +
         current[key] +
         '</b> to <b>' +
@@ -211,7 +213,9 @@ export class SafeRecordHistoryComponent implements OnInit {
 
   modifyObjects(after: any, current: any, key: string): string {
     const afterKeys = Object.keys(after[key] ? after[key] : current[key]);
-    let element = `<p> <span class="modify-field">Change field</span> <b> ${key} </b> from  `;
+    let element = `<p> <span class="modify-field">Change field</span> <b> ${this.getFieldTitle(
+      key
+    )} </b> from  `;
     let afterValuesHTML = '';
     let currentValuesHTML = '';
 
@@ -317,9 +321,8 @@ export class SafeRecordHistoryComponent implements OnInit {
   }
 
   applyFilter(filterField?: string): void {
-    if (filterField === undefined) {
-      filterField = this.filterField;
-    }
+    this.filterField = filterField || this.filterField;
+
     const startDate = new Date(this.filtersDate.startDate).getTime();
     const endDate = new Date(this.filtersDate.endDate).getTime();
 
@@ -332,10 +335,12 @@ export class SafeRecordHistoryComponent implements OnInit {
     );
 
     // filtering by field
-    if (filterField !== 'all')
+    if (this.filterField !== 'all')
       this.filterHistory = this.filterHistory.filter(
         (item) =>
-          !!item.touched.find((op: string) => `field-${op}` === filterField)
+          !!item.touched.find(
+            (op: string) => `field-${op}` === this.filterField
+          )
       );
   }
 
@@ -358,6 +363,8 @@ export class SafeRecordHistoryComponent implements OnInit {
     if (!this.record.form || !this.record.form.structure) return;
     const structure = JSON.parse(this.record.form.structure);
 
+    console.log(structure);
+
     if (!structure.pages || !structure.pages.length) return;
     for (const page of structure.pages) {
       this.sortedFields.push(...page.elements);
@@ -369,4 +376,15 @@ export class SafeRecordHistoryComponent implements OnInit {
       return compA.localeCompare(compB);
     });
   }
+
+  /**
+   * @param key field name
+   * @returns the field name or it's title, when avaiable
+   */
+  getFieldTitle(key: string): string {
+    const field = this.sortedFields.find((item) => item.name === key);
+    return field.title || field.name;
+  }
+
+  getFieldValue(key: string, value: any): any {}
 }
