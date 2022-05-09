@@ -1,7 +1,7 @@
 <kendo-chart
   #chart
   [categoryAxis]="categoryAxis"
-  [seriesColors]="options.palette"
+  [seriesColors]="options && options.palette"
 >
   <kendo-chart-title
     *ngIf="title"
