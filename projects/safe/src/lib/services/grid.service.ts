@@ -270,16 +270,8 @@ export class SafeGridService {
       otherText?: string;
     }
   ): { value: string; text: string }[] {
-    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
-    if (choicesByUrl.hasOther) {
-      choices.push({
-        [choicesByUrl.value || 'value']: 'other',
-        [choicesByUrl.text || 'text']: choicesByUrl.otherText
-          ? choicesByUrl.otherText
-          : 'Other',
-      });
-    }
-    return choices
+    let choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    choices = choices
       ? choices.map((x: any) => ({
           value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
           text: choicesByUrl.text
@@ -289,6 +281,13 @@ export class SafeGridService {
             : x,
         }))
       : [];
+    if (choicesByUrl.hasOther) {
+      choices.push({
+        value: 'other',
+        text: choicesByUrl.otherText ? choicesByUrl.otherText : 'Other',
+      });
+    }
+    return choices;
   }
 
   /**
