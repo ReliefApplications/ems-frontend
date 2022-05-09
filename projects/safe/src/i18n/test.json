@@ -924,6 +924,9 @@
 				"name": "******"
 			},
 			"new": "******",
+			"notifications": {
+				"savingFailed": "******"
+			},
 			"select": "******",
 			"template": "******"
 		},
