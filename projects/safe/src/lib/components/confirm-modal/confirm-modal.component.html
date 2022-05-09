@@ -2,5 +2,12 @@
 <mat-dialog-content *ngIf="content">{{ content }}</mat-dialog-content>
 <div mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>{{ cancelText }}</button>
-  <button mat-flat-button [color]="confirmColor" cdkFocusInitial [mat-dialog-close]="true">{{ confirmText }}</button>
+  <button
+    mat-flat-button
+    [color]="confirmColor"
+    cdkFocusInitial
+    [mat-dialog-close]="true"
+  >
+    {{ confirmText }}
+  </button>
 </div>

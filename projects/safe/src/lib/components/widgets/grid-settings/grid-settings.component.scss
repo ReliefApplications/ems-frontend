@@ -1,15 +1,15 @@
 .advanced-filtering {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .add-button {
-    width: min-content;
-    align-self: flex-end;
+  width: min-content;
+  align-self: flex-end;
 }
 
 .form-error {
-    color: red;
+  color: red;
 }

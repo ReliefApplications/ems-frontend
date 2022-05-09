@@ -1,13 +1,26 @@
 <h1 mat-dialog-title>New dashboard</h1>
 <div mat-dialog-content>
-    <form [formGroup]="dashboardForm">
-        <mat-form-field>
-            <mat-label>Name</mat-label>
-            <input matInput formControlName="name" type="text" placeholder="Enter a name"/>
-        </mat-form-field>
-    </form>
+  <form [formGroup]="dashboardForm">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        type="text"
+        placeholder="Enter a name"
+      />
+    </mat-form-field>
+  </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button [mat-dialog-close]="dashboardForm.value" cdkFocusInitial color="primary" [disabled]="!dashboardForm.valid">Create</button>
+  <button mat-button (click)="onClose()">Close</button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="dashboardForm.value"
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!dashboardForm.valid"
+  >
+    Create
+  </button>
 </div>

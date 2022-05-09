@@ -30,37 +30,35 @@ describe('SafeGridSettingsComponent', () => {
   let fixture: ComponentFixture<SafeGridSettingsComponent>;
   let controller: ApolloTestingController;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        providers: [
-          FormBuilder,
-          { provide: 'environment', useValue: environment },
-          OAuthService,
-          UrlHelperService,
-          OAuthLogger,
-          DateTimeProvider,
-          TranslateService,
-        ],
-        declarations: [SafeGridSettingsComponent],
-        imports: [
-          MatSnackBarModule,
-          HttpClientModule,
-          RouterTestingModule,
-          TranslateModule.forRoot({
-            loader: {
-              provide: TranslateLoader,
-              useClass: TranslateFakeLoader,
-            },
-          }),
-          MatAutocompleteModule,
-          ApolloTestingModule,
-        ],
-      }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        FormBuilder,
+        { provide: 'environment', useValue: environment },
+        OAuthService,
+        UrlHelperService,
+        OAuthLogger,
+        DateTimeProvider,
+        TranslateService,
+      ],
+      declarations: [SafeGridSettingsComponent],
+      imports: [
+        MatSnackBarModule,
+        HttpClientModule,
+        RouterTestingModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+        MatAutocompleteModule,
+        ApolloTestingModule,
+      ],
+    }).compileComponents();
 
-      controller = TestBed.inject(ApolloTestingController);
-    })
-  );
+    controller = TestBed.inject(ApolloTestingController);
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeGridSettingsComponent);
