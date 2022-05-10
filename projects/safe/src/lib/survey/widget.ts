@@ -570,12 +570,11 @@ export const init = (
   };
 
   /**
-   * It creates a picker instance according to the type of the question
+   * It creates a date, datetime or time picker instance based on the input type
    *
-   * @param question - this is the question object that is passed to
-   * the component.
-   * @param element - the element that the picker will be attached to
-   * @returns A PickerComponent or undefined
+   * @param inputType - The type of the input element.
+   * @param element - The element that the directive is attached to.
+   * @returns The picker instance, or null if the type is not allowed
    */
   const createPickerInstance = (
     inputType: string,
