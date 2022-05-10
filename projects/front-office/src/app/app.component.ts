@@ -1,8 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SafeAuthService, SafeFormService } from '@safe/builder';
+import {
+  SafeAuthService,
+  SafeDateTranslateService,
+  SafeFormService,
+} from '@safe/builder';
 import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
+import { DateAdapter } from '@angular/material/core';
 
 /**
  * Main component of Front-office.
@@ -29,10 +34,15 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private authService: SafeAuthService,
     private formService: SafeFormService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private adapter: DateAdapter<any>,
+    private dateTranslate: SafeDateTranslateService
   ) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang('en');
+    this.dateTranslate.getCurrentLang().subscribe((lang) => {
+      this.adapter.setLocale(lang);
+    });
   }
 
   /**
