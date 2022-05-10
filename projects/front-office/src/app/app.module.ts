@@ -31,6 +31,22 @@ import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import { KendoTranslationService } from '@safe/builder';
 
+// Kendo datepicker for surveyjs
+import {
+  CalendarDOMService,
+  CenturyViewService,
+  DecadeViewService,
+  HoursService,
+  MinutesService,
+  MonthViewService,
+  TimePickerDOMService,
+  TOUCH_ENABLED,
+  YearViewService,
+} from '@progress/kendo-angular-dateinputs';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+import { touchEnabled } from '@progress/kendo-common';
+
 localStorage.setItem('loaded', 'false');
 
 const REFRESH = new BehaviorSubject<boolean>(false);
@@ -187,6 +203,20 @@ const imports: any[] = [];
       provide: MessageService,
       useClass: KendoTranslationService,
     },
+    {
+      provide: TOUCH_ENABLED,
+      useValue: [touchEnabled],
+    },
+    PopupService,
+    ResizeBatchService,
+    CalendarDOMService,
+    TimePickerDOMService,
+    MonthViewService,
+    HoursService,
+    MinutesService,
+    YearViewService,
+    DecadeViewService,
+    CenturyViewService,
   ],
   bootstrap: [AppComponent],
 })
