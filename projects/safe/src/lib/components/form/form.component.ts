@@ -4,16 +4,17 @@ import {
   Component,
   ComponentFactory,
   ComponentFactoryResolver,
+  ElementRef,
   EventEmitter,
   Inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-angular';
-import { v4 as uuidv4 } from 'uuid';
 import {
   AddRecordMutationResponse,
   ADD_RECORD,
@@ -65,7 +66,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
-  public containerId: string;
+
+  @ViewChild('formContainer') formContainer!: ElementRef;
 
   environment: any;
 
@@ -94,9 +96,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private layoutService: SafeLayoutService,
     private resolver: ComponentFactoryResolver,
     private formBuilderService: SafeFormBuilderService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private el: ElementRef
   ) {
-    this.containerId = uuidv4();
     this.environment = environment;
   }
 
@@ -211,7 +213,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.survey.render(this.containerId);
+    this.survey.render(this.formContainer.nativeElement);
   }
 
   public reset(): void {
@@ -238,7 +240,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.survey?.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
-        'Saving failed, some fields require your attention.',
+        this.translate.instant('models.form.notifications.savingFailed'),
         { error: true }
       );
     }
@@ -352,7 +354,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.survey.locale = this.usedLocales.filter(
       (locale) => locale.text === ev
     )[0].value;
-    this.survey.render(this.containerId);
+    this.survey.render();
+    // this.survey.render(this.containerId);
   }
 
   private onClearFiles(survey: Survey.SurveyModel, options: any): void {

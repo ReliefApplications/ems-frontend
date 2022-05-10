@@ -193,7 +193,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     (this.intlService as CldrIntlService).localeId =
       this.dateTranslate.currentLang;
     this.dateTranslate.getCurrentLang().subscribe((lang) => {
-      console.log('Lang changed to', lang);
       (this.intlService as CldrIntlService).localeId = lang;
     });
   }

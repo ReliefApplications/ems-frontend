@@ -1,16 +1,30 @@
-<h1 mat-dialog-title>{{'models.resource.create' | translate }}</h1>
+<h1 mat-dialog-title>{{ 'models.resource.create' | translate }}</h1>
 <div mat-dialog-content>
-    <form [formGroup]="addForm">
-        <div class="form-group">
-            <mat-form-field>
-                <mat-label>{{'common.name' | translate}}</mat-label>
-                <input matInput formControlName="name" type="text" placeholder="Enter a name" />
-            </mat-form-field>
-        </div>
-    </form>
+  <form [formGroup]="addForm">
+    <div class="form-group">
+      <mat-form-field>
+        <mat-label>{{ 'common.name' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="name"
+          type="text"
+          placeholder="Enter a name"
+        />
+      </mat-form-field>
+    </div>
+  </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
-    <button mat-flat-button [mat-dialog-close]="addForm.value" cdkFocusInitial color="primary"
-        [disabled]="!addForm.valid">{{'common.create' | translate}}</button>
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="addForm.value"
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!addForm.valid"
+  >
+    {{ 'common.create' | translate }}
+  </button>
 </div>

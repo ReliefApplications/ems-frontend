@@ -10,7 +10,7 @@
         cdkDrag
         [cdkDragDisabled]="disabled"
         [value]="color"
-        (valueChange)="onColorChange(color, i)"
+        (valueChange)="onColorChange($event, i)"
         (close)="onClose($event)"
         [disabled]="disabled"
       ></kendo-colorpicker>

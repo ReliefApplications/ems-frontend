@@ -18,7 +18,6 @@ import { AddFormModule } from '../../../components/add-form/add-form.module';
 import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import {
@@ -48,7 +47,6 @@ import { TranslateModule } from '@ngx-translate/core';
     AddFormModule,
     MatFormFieldModule,
     MatDatepickerModule,
-    MatNativeDateModule,
     MatInputModule,
     MatSelectModule,
     MatDividerModule,

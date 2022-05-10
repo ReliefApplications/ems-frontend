@@ -8,7 +8,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
-import { MatNativeDateModule } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -25,7 +24,6 @@ import { SafeDateModule } from '../../pipes/date/date.module';
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatNativeDateModule,
     MatMenuModule,
     SafeButtonModule,
     TranslateModule,

@@ -24,7 +24,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { DuplicateApplicationModule } from '../../../components/duplicate-application/duplicate-application.module';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -52,7 +51,6 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeAccessModule,
     DuplicateApplicationModule,
     MatDatepickerModule,
-    MatNativeDateModule,
     MatDividerModule,
     SafeButtonModule,
     MatButtonModule,

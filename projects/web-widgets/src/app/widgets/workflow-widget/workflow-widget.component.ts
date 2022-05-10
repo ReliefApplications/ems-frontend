@@ -1,19 +1,24 @@
+import { OverlayContainer } from '@angular/cdk/overlay';
 import {
+  AfterViewInit,
   Component,
   ComponentRef,
   Input,
   OnInit,
   ViewChild,
   ViewContainerRef,
+  ViewEncapsulation,
 } from '@angular/core';
 import { SafeLayoutService } from '@safe/builder';
+import { AppOverlayContainer } from '../../utils/overlay-container';
 
 @Component({
   selector: 'app-workflow-widget',
   templateUrl: './workflow-widget.component.html',
   styleUrls: ['./workflow-widget.component.scss'],
+  encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class WorkflowWidgetComponent implements OnInit {
+export class WorkflowWidgetComponent implements OnInit, AfterViewInit {
   @Input() id = '';
 
   @ViewChild('rightSidenav', { read: ViewContainerRef })
@@ -21,7 +26,10 @@ export class WorkflowWidgetComponent implements OnInit {
 
   public showSidenav = false;
 
-  constructor(private layoutService: SafeLayoutService) {}
+  constructor(
+    private layoutService: SafeLayoutService,
+    private overlayContainer: OverlayContainer
+  ) {}
 
   ngOnInit(): void {
     this.layoutService.rightSidenav$.subscribe((view) => {
@@ -45,5 +53,11 @@ export class WorkflowWidgetComponent implements OnInit {
         }
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    const test: AppOverlayContainer = this
+      .overlayContainer as AppOverlayContainer;
+    test.updateContainer('workflow-widget');
   }
 }

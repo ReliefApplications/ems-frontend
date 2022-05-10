@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { SafePreviousButtonComponent } from './previous-button.component';
 
@@ -9,6 +10,7 @@ describe('SafePreviousButtonComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafePreviousButtonComponent],
+      imports: [RouterTestingModule],
     }).compileComponents();
   });
 

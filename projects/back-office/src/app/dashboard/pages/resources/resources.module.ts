@@ -11,7 +11,6 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   SafeButtonModule,
@@ -35,7 +34,6 @@ import { AddResourceModule } from '../../../components/add-resource/add-resource
     MatSortModule,
     MatInputModule,
     MatDatepickerModule,
-    MatNativeDateModule,
     MatFormFieldModule,
     FormsModule,
     SafeButtonModule,

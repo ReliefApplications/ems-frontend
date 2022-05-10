@@ -1,14 +1,16 @@
+@import 'projects/safe/src/lib/style/widgets.scss';
+
 :host {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidenav-container {
-    flex: 1;
+  flex: 1;
 }
 
 .sidenav-content {
-    min-height: 100%;
-    padding: 32px 24px;
+  min-height: 100%;
+  padding: 32px 24px;
 }

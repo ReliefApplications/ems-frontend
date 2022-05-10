@@ -4,6 +4,7 @@ import {
   FormControl,
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
+import { Subject } from 'rxjs';
 
 const CONTROL_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
@@ -30,6 +31,7 @@ export class SafePaletteControlComponent
   private onTouched!: any;
   private onChanged!: any;
 
+  public value: string[] = [];
   public colors: string[] = [];
   public disabled = false;
 
@@ -46,7 +48,8 @@ export class SafePaletteControlComponent
   }
 
   writeValue(value: string[]): void {
-    this.colors = value;
+    this.value = JSON.parse(JSON.stringify(value));
+    this.colors = JSON.parse(JSON.stringify(value));
   }
 
   setDisabledState(isDisabled: boolean): void {
@@ -54,16 +57,18 @@ export class SafePaletteControlComponent
   }
 
   onColorChange(e: any, i: number): void {
-    this.colors[i] = e;
+    this.onTouched();
+    this.value[i] = e;
   }
 
   onClose(e: any): void {
-    this.formControl.setValue(this.colors);
+    this.onChanged(this.value);
   }
 
   onReorder(e: any): void {
+    this.onTouched();
     this.colors[e.previousContainer.data.index] = e.container.data.item;
     this.colors[e.container.data.index] = e.previousContainer.data.item;
-    this.formControl.setValue(this.colors);
+    this.onChanged(this.colors);
   }
 }

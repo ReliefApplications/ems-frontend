@@ -15,13 +15,18 @@
             }}</mat-label>
             <input
               type="text"
-              [placeholder]="'components.queryBuilder.dataset.select' | translate"
+              [placeholder]="
+                'components.queryBuilder.dataset.select' | translate
+              "
               matInput
               formControlName="name"
               [matAutocomplete]="auto"
             />
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-              <mat-option *ngFor="let option of filteredQueries" [value]="option">
+              <mat-option
+                *ngFor="let option of filteredQueries"
+                [value]="option"
+              >
                 {{ option }}
               </mat-option>
             </mat-autocomplete>
@@ -75,7 +80,7 @@
         {{ 'components.widget.settings.grid.actions.add' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="showDetails">
-        {{'components.widget.settings.grid.actions.showDetails' | translate}}
+        {{ 'components.widget.settings.grid.actions.showDetails' | translate }}
       </mat-slide-toggle>
     </div>
     <!-- BUTTONS -->

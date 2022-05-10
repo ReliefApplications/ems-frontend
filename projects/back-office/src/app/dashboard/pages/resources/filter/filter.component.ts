@@ -1,8 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { DateAdapter } from '@angular/material/core';
-import { SafeDateTranslateService } from '@safe/builder';
 
 @Component({
   selector: 'app-filter',
@@ -15,11 +13,7 @@ export class FilterComponent implements OnInit {
   public show = false;
   @Output() filter = new EventEmitter<any>();
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private adapter: DateAdapter<any>,
-    private dateTranslate: SafeDateTranslateService
-  ) {}
+  constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
@@ -38,11 +32,6 @@ export class FilterComponent implements OnInit {
       .subscribe((value) => {
         this.form.controls.name.setValue(value);
       });
-
-    // get the correct date format
-    this.dateTranslate
-      .getCurrentLang()
-      .subscribe((lang) => this.adapter.setLocale(lang));
   }
 
   /**
