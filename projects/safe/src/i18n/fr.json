@@ -935,6 +935,9 @@
 				"name": "Nom du champ"
 			},
 			"new": "Nouveau formulaire",
+			"notifications": {
+				"savingFailed": "Échec de l'enregistrement, certains champs nécessitent votre attention."
+			},
 			"select": "Sélectionner un formulaire",
 			"template": "Modèle"
 		},

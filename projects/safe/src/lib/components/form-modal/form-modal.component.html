@@ -34,7 +34,7 @@
     </mat-tab-group>
   </div>
 </ng-container>
-<mat-dialog-content [id]="containerId"></mat-dialog-content>
+<mat-dialog-content #formContainer></mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button color="warn" (click)="onClose()">
     {{ 'common.cancel' | translate }}

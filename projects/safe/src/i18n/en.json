@@ -935,6 +935,9 @@
 				"name": "Field name"
 			},
 			"new": "New form",
+			"notifications": {
+				"savingFailed": "Saving failed, some fields require your attention."
+			},
 			"select": "Select a Form",
 			"template": "Template"
 		},

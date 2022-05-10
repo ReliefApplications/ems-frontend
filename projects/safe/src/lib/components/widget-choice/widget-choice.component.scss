@@ -40,7 +40,9 @@
   box-shadow: 0px 4px 4px rgba(47, 56, 62, 0.15);
   border-radius: 8px;
   height: 64px;
-  max-width: 568px;
+  width: fit-content;
+  overflow: auto;
+  max-width: 90%;
   margin: auto;
   pointer-events: auto;
   cursor: move;
