@@ -137,9 +137,16 @@ export const init = (
             if (question[editor.property.name]) {
               pickerInstance.value = new Date(question[editor.property.name]);
             }
-            pickerInstance.registerOnChange((value: Date | null) =>
-              editor.onChanged(value?.toISOString())
-            );
+            pickerInstance.registerOnChange((value: Date | null) => {
+              if (question.inputType === 'time' && value) {
+                // for time fields, translate the date to 01/01/1970
+                editor.onChanged(
+                  new Date(1970, 0, 1, value.getHours(), value.getMinutes())
+                );
+              } else {
+                editor.onChanged(value?.toISOString());
+              }
+            });
           }
         },
       };
@@ -172,7 +179,18 @@ export const init = (
           }
           pickerInstance.readonly = question.isReadOnly;
           pickerInstance.registerOnChange((value: Date | null) => {
-            question.value = value?.toISOString();
+            if (question.inputType === 'time' && value) {
+              // for time fields, translate the date to 01/01/1970
+              question.value = new Date(
+                1970,
+                0,
+                1,
+                value.getHours(),
+                value.getMinutes()
+              );
+            } else {
+              question.value = value?.toISOString();
+            }
           });
           el.style.display = 'none';
         }
