@@ -20,6 +20,10 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 - [ ] Test A
 - [ ] Test B
 
+## Sreenshots
+
+Please include screenshots of this change. If this issue is only back-end related, and does not involve any visual change of the platform, you can skip this part.
+
 # Checklist:
 
 - [ ] My code follows the style guidelines of this project
@@ -31,3 +35,4 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] New and existing unit tests pass locally with my changes
 - [ ] Any dependent changes have been merged and published in downstream modules
+- [ ] I have included screenshots describing my changes if relevant
