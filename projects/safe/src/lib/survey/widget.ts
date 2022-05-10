@@ -171,8 +171,8 @@ export const init = (
             pickerInstance.max = new Date(question.max);
           }
           pickerInstance.readonly = question.isReadOnly;
-          pickerInstance.registerOnChange((value: any) => {
-            question.value = value.toISOString();
+          pickerInstance.registerOnChange((value: Date | null) => {
+            question.value = value?.toISOString();
           });
           el.style.display = 'none';
         }
