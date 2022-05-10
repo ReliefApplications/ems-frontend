@@ -123,6 +123,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
    * Once template is ready, builds the map.
    */
   ngAfterViewInit(): void {
+    console.log(this.settings);
     // Calls the function wich draw the map.
     this.drawMap();
     // Gets the settings from the DB.
@@ -377,7 +378,15 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         }
         const obj = { id: item.id, data };
         this.data.push(obj);
-        const options = MARKER_OPTIONS;
+        const options = Object.assign({}, MARKER_OPTIONS);
+        this.settings.pointerRules.map((rule: any) => {
+          if (applyFilters(item, rule.filter)) {
+            options.color = rule.color;
+            options.fillColor = rule.color;
+            options.weight *= rule.size;
+            options.radius *= rule.size;
+          }
+        });
         Object.assign(options, { id: item.id });
         const marker = L.circleMarker([latitude, longitude], options);
         if (!this.markersCategories[item[this.categoryField]]) {

@@ -77,6 +77,9 @@ export class SafeFloatingOptionsComponent implements OnInit {
       });
       dialogRef.afterClosed().subscribe((res) => {
         if (res) {
+          if (this.widget.component === 'map') {
+            res.pointerRules = res.pointerRules.value;
+          }
           this.edit.emit({ type: 'data', id: this.widget.id, options: res });
         }
       });

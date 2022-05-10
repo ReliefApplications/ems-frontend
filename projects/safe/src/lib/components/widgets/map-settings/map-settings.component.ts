@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { SafeArcGISService } from '../../../services/arc-gis.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { createQueryForm } from './map-forms';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 
 /**
  * Settings component of map widget.
@@ -25,6 +26,7 @@ export class SafeMapSettingsComponent implements OnInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   public selectedFields: any[] = [];
+  public formatedSelectedFields: any[] = [];
 
   public basemaps: any[] = [
     'Sreets',
@@ -48,7 +50,8 @@ export class SafeMapSettingsComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private arcGisService: SafeArcGISService
+    private arcGisService: SafeArcGISService,
+    private queryBuilder: QueryBuilderService
   ) {}
 
   /**
@@ -56,6 +59,7 @@ export class SafeMapSettingsComponent implements OnInit {
    */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
+
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [tileSettings && tileSettings.title ? tileSettings.title : null],
@@ -93,7 +97,13 @@ export class SafeMapSettingsComponent implements OnInit {
           ? tileSettings.onlineLayers
           : [],
       ],
+      pointerRules: [
+        tileSettings && tileSettings.pointerRules
+          ? this.formatPointerRules(tileSettings.pointerRules)
+          : this.formBuilder.array([]),
+      ],
     });
+
     this.change.emit(this.tileForm);
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
@@ -101,6 +111,14 @@ export class SafeMapSettingsComponent implements OnInit {
 
     if (this.tileForm?.value.query.name) {
       this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
+      this.formatedSelectedFields = [];
+      this.queryBuilder
+        .getFields(this.tileForm?.value.query.name)
+        .map((val: any) => {
+          if (this.selectedFields.includes(val.name)) {
+            this.formatedSelectedFields.push(val);
+          }
+        });
     }
 
     const queryForm = this.tileForm.get('query') as FormGroup;
@@ -112,6 +130,14 @@ export class SafeMapSettingsComponent implements OnInit {
     });
     queryForm.valueChanges.subscribe((res) => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
+      this.formatedSelectedFields = [];
+      this.queryBuilder
+        .getFields(this.tileForm?.value.query.name)
+        .map((val: any) => {
+          if (this.selectedFields.includes(val.name)) {
+            this.formatedSelectedFields.push(val);
+          }
+        });
     });
 
     this.arcGisService.clearSelectedLayer();
@@ -210,5 +236,67 @@ export class SafeMapSettingsComponent implements OnInit {
       }
     });
     this.tileForm?.controls.onlineLayers.setValue(temp);
+  }
+
+  /**
+   * Selects a new layer.
+   *
+   * @param layer layer to select.
+   */
+  public addPointerRule(): void {
+    this.tileForm?.value.pointerRules.push(
+      this.formBuilder.group({
+        color: ['#0090d1'],
+        size: [1],
+        filter: this.formBuilder.group({
+          logic: ['and'],
+          filters: this.formBuilder.array([]),
+        }),
+      })
+    );
+  }
+
+  public removePointerRule(index: any): void {
+    this.tileForm?.value.pointerRules.removeAt(index);
+  }
+
+  private formatPointerRules(value: any[]): FormArray {
+    const formatedPointerRules = this.formBuilder.array([]);
+    value.map((val: any) => {
+      formatedPointerRules.push(
+        this.formBuilder.group({
+          color: [val.color],
+          size: [val.size],
+          filter: this.formBuilder.group({
+            logic: [val.filter.logic],
+            filters: this.formatFilters(val.filter.filters),
+          }),
+        })
+      );
+    });
+    return formatedPointerRules;
+  }
+
+  private formatFilters(filters: any[]): FormArray {
+    const formatedFilters = this.formBuilder.array([]);
+    filters.map((filter: any) => {
+      if (filter.filters && filter.logic) {
+        formatedFilters.push(
+          this.formBuilder.group({
+            filters: this.formatFilters(filter.filters),
+            logic: [filter.logic],
+          })
+        );
+      } else {
+        formatedFilters.push(
+          this.formBuilder.group({
+            field: [filter.field],
+            operator: [filter.operator],
+            value: [filter.value],
+          })
+        );
+      }
+    });
+    return formatedFilters;
   }
 }
