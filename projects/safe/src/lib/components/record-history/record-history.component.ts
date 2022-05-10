@@ -11,6 +11,8 @@ import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeRecordModalComponent } from '../record-modal/record-modal.component';
 import { SafeDownloadService } from '../../services/download.service';
+import { TranslateService } from '@ngx-translate/core';
+import { SafeDateTranslateService } from '../../services/date-translate.service';
 
 @Component({
   selector: 'safe-record-history',
@@ -38,7 +40,9 @@ export class SafeRecordHistoryComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private translate: TranslateService,
+    private dateFormat: SafeDateTranslateService
   ) {}
 
   ngOnInit(): void {
@@ -347,7 +351,14 @@ export class SafeRecordHistoryComponent implements OnInit {
   onDownload(type: string): void {
     const path = `download/form/records/${this.record.id}/history`;
     const fileName = `${this.record.id}.${type}`;
-    const queryString = new URLSearchParams({ type }).toString();
+    const queryString = new URLSearchParams({
+      type,
+      from: `${new Date(this.filtersDate.startDate).getTime()}`,
+      to: `${new Date(this.filtersDate.endDate).getTime()}`,
+      field: this.filterField.slice(6),
+      lng: this.translate.currentLang,
+      dateLocale: this.dateFormat.currentLang,
+    }).toString();
     this.downloadService.getFile(
       `${path}?${queryString}`,
       `text/${type};charset=utf-8;`,
