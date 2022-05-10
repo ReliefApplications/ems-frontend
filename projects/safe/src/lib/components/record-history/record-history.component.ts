@@ -327,8 +327,8 @@ export class SafeRecordHistoryComponent implements OnInit {
   applyFilter(filterField?: string): void {
     this.filterField = filterField || this.filterField;
 
-    const startDate = new Date(this.filtersDate.startDate).getTime();
-    const endDate = new Date(this.filtersDate.endDate).getTime();
+    const startDate = new Date(this.filtersDate.startDate).setHours(0, 0, 0, 0);
+    const endDate = new Date(this.filtersDate.endDate).setHours(23, 59, 59, 99);
 
     // filtering by date
     this.filterHistory = this.history.filter(
