@@ -644,16 +644,16 @@
 			"toggle": "******"
 		},
 		"datetimepicker": {
+			"accept": "******",
+			"acceptLabel": "******",
+			"cancel": "******",
+			"cancelLabel": "******",
 			"dateTab": "******",
-			"timeTab": "******",
 			"dateTabLabel": "******",
+			"now": "******",
+			"timeTab": "******",
 			"timeTabLabel": "******",
 			"today": "******",
-			"now": "******",
-			"cancel": "******",
-			"accept": "******",
-			"cancelLabel": "******",
-			"acceptLabel": "******",
 			"toggle": "******"
 		},
 		"editor": {
@@ -787,8 +787,8 @@
 		},
 		"timepicker": {
 			"accept": "******",
-			"cancel": "******",
 			"acceptLabel": "******",
+			"cancel": "******",
 			"cancelLabel": "******",
 			"now": "******",
 			"toggle": "******"

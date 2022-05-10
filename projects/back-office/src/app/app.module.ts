@@ -34,11 +34,14 @@ import { KendoTranslationService } from '@safe/builder';
 // Kendo datepicker for surveyjs
 import {
   CalendarDOMService,
+  CenturyViewService,
+  DecadeViewService,
   HoursService,
   MinutesService,
   MonthViewService,
   TimePickerDOMService,
   TOUCH_ENABLED,
+  YearViewService,
 } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
@@ -209,6 +212,9 @@ export const httpTranslateLoader = (http: HttpClient) =>
     MonthViewService,
     HoursService,
     MinutesService,
+    YearViewService,
+    DecadeViewService,
+    CenturyViewService,
   ],
   bootstrap: [AppComponent],
 })
