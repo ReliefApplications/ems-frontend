@@ -80,8 +80,8 @@ export class SafeSnackBarService {
   ): MatSnackBarRef<any> {
     config = {
       ...DEFAULT_SNACKBAR,
-      ...config,
       action: this.translate.instant('common.dismiss'),
+      ...config,
     };
     const snackBarRef = this.snackBar.openFromComponent(component, {
       duration: config.duration ? config.duration : undefined,
@@ -106,8 +106,8 @@ export class SafeSnackBarService {
   ): MatSnackBarRef<EmbeddedViewRef<any>> {
     config = {
       ...DEFAULT_SNACKBAR,
-      ...config,
       action: this.translate.instant('common.dismiss'),
+      ...config,
     };
     const snackBarRef = this.snackBar.openFromTemplate(template, {
       duration: config.duration ? config.duration : undefined,
