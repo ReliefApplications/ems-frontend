@@ -6,13 +6,11 @@ describe('SafeGridSettingsComponent', () => {
   let component: SafeGridSettingsComponent;
   let fixture: ComponentFixture<SafeGridSettingsComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [SafeGridSettingsComponent],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [SafeGridSettingsComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeGridSettingsComponent);
