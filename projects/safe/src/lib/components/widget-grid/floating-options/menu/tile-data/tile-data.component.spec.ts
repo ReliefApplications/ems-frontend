@@ -6,11 +6,13 @@ describe('SafeTileDataComponent', () => {
   let component: SafeTileDataComponent;
   let fixture: ComponentFixture<SafeTileDataComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [SafeTileDataComponent],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [SafeTileDataComponent],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeTileDataComponent);
