@@ -55,8 +55,8 @@ export class SafeSnackBarService {
   ): MatSnackBarRef<TextOnlySnackBar> {
     config = {
       ...DEFAULT_SNACKBAR,
-      ...config,
       action: this.translate.instant('common.dismiss'),
+      ...config,
     };
     const snackBarRef = this.snackBar.open(message, config.action, {
       duration: config.duration ? config.duration : undefined,
