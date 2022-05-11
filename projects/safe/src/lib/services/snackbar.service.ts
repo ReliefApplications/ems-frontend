@@ -6,12 +6,12 @@ import {
   MatSnackBarRef,
   TextOnlySnackBar,
 } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 
 /** Default snackbar definition */
 const DEFAULT_SNACKBAR = {
   error: false,
   duration: 5000,
-  action: 'Dismiss',
   data: null,
 };
 
@@ -37,7 +37,10 @@ export class SafeSnackBarService {
    *
    * @param snackBar Material snackbar service
    */
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(
+    private snackBar: MatSnackBar,
+    private translate: TranslateService
+  ) {}
 
   /**
    * Creates a snackbar message on top of the layout.
@@ -50,7 +53,11 @@ export class SafeSnackBarService {
     message: string,
     config?: SnackBar
   ): MatSnackBarRef<TextOnlySnackBar> {
-    config = { ...DEFAULT_SNACKBAR, ...config };
+    config = {
+      ...DEFAULT_SNACKBAR,
+      ...config,
+      action: this.translate.instant('common.dismiss'),
+    };
     const snackBarRef = this.snackBar.open(message, config.action, {
       duration: config.duration ? config.duration : undefined,
       horizontalPosition: 'center',
