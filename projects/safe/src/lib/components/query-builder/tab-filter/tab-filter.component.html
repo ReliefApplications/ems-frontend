@@ -119,18 +119,6 @@
                   type="string"
                 />
               </ng-container>
-              <ng-container
-                *ngIf="['Date', 'DateTime'].includes(selectedFields[i].type)"
-              >
-                <input
-                  matInput
-                  matTooltip="YYYY/MM/DD"
-                  [matTooltipPosition]="'above'"
-                  formControlName="value"
-                  type="text"
-                  placeholder="YYYY/MM/DD"
-                />
-              </ng-container>
               <ng-container *ngIf="selectedFields[i].type === 'JSON'">
                 <mat-select
                   formControlName="value"
@@ -152,6 +140,15 @@
                   >
                 </mat-select>
               </ng-container>
+              <!-- matDatepicker input must be direct child from mat-form-field -->
+              <input
+                *ngIf="['Date', 'DateTime'].includes(selectedFields[i].type)"
+                matInput [matDatepicker]="mypicker" formControlName="value">
+              <mat-datepicker-toggle
+                *ngIf="['Date', 'DateTime'].includes(selectedFields[i].type)"
+                matSuffix [for]="mypicker">
+              </mat-datepicker-toggle>
+              <mat-datepicker #mypicker></mat-datepicker>
             </mat-form-field>
           </ng-container>
           <safe-button

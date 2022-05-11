@@ -29,6 +29,7 @@ import { SafeQueryStyleComponent } from './tab-style/query-style/query-style.com
 import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/query-style-preview.component';
 import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
     LabelModule,
     SafeCheckboxTreeModule,
     SafeCoreGridModule,
+    MatDatepickerModule,
   ],
   exports: [
     SafeQueryBuilderComponent,
