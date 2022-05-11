@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ControlContainer } from '@angular/forms';
 
 import { SafeEmailTemplateComponent } from './email-template.component';
 
@@ -8,6 +9,7 @@ describe('SafeEmailTemplateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [ControlContainer],
       declarations: [SafeEmailTemplateComponent],
     }).compileComponents();
   });
