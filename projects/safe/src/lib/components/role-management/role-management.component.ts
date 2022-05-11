@@ -12,10 +12,12 @@ import {
   GetFormsQueryResponse,
   GetResourcesQueryResponse,
   GetRolesQueryResponse,
+  GetUsersGlobalQueryResponse,
   GET_CHANNELS,
   GET_FORMS,
   GET_RESOURCES,
   GET_ROLES,
+  GET_USERS_GLOBAL,
 } from '../../graphql/queries';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
@@ -111,7 +113,7 @@ export class SafeRoleManagementComponent implements OnInit {
   public roleForm?: FormGroup;
 
   // Summary tab
-  public users: string[] = this.role.users.map((val: any) => val.name);
+  public users: string[] = [];
 
   // Channels tab
   public channels: Channel[] = [];
@@ -163,7 +165,14 @@ export class SafeRoleManagementComponent implements OnInit {
           const roleId = params.get('id')!;
 
           if (this.inApp && application) {
-            this.currentRole = application.roles?.find((r) => r.id === roleId);
+            this.currentRole = application.roles?.find((role) => role.id === roleId);
+
+            // Get all the application users who have the current role, and try to display their names, or usernames, or display a default value if not found
+            this.users =
+              application.users
+                ?.filter((user) => user.roles && user.roles.find((role) => role.id === roleId))
+                .map((user) => user.name || user.username || 'no name nor username') ||
+              [];
             this.buildForm();
           } else {
             this.apollo
@@ -171,10 +180,24 @@ export class SafeRoleManagementComponent implements OnInit {
                 query: GET_ROLES,
               })
               .valueChanges.subscribe((roles) => {
+                console.log("roles");
+                console.log(roles);
                 this.currentRole = roles.data.roles.find(
-                  (r) => r.id === roleId
+                  (role) => role.id === roleId
                 );
                 this.buildForm();
+              });
+              this.apollo
+              .watchQuery<GetUsersGlobalQueryResponse>({
+                query: GET_USERS_GLOBAL,
+              })
+              .valueChanges.subscribe((users) => {
+                console.log("users");
+                console.log(users);
+                this.users =
+              users.data.users
+                .filter((user) => user.roles && user.roles.find((role) => role.id === roleId))
+                .map((user) => user.name || user.username || 'no name nor username available');
               });
           }
         });

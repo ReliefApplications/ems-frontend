@@ -398,6 +398,27 @@ export interface GetUsersQueryResponse {
   users: User[];
 }
 
+// === GET USERS GLOBAL ===
+export const GET_USERS_GLOBAL = gql`
+  query GetUsersGlobal {
+    users {
+      id
+      username
+      name
+      roles {
+        id
+        title
+      }
+      oid
+    }
+  }
+`;
+
+export interface GetUsersGlobalQueryResponse {
+  loading: boolean;
+  users: User[];
+}
+
 // === GET NOTIFICATIONS ===
 export const GET_NOTIFICATIONS = gql`
   query GetNotifications($first: Int, $afterCursor: ID) {
