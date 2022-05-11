@@ -78,7 +78,11 @@ export class SafeSnackBarService {
     component: ComponentType<any>,
     config?: SnackBar
   ): MatSnackBarRef<any> {
-    config = { ...DEFAULT_SNACKBAR, ...config };
+    config = {
+      ...DEFAULT_SNACKBAR,
+      ...config,
+      action: this.translate.instant('common.dismiss'),
+    };
     const snackBarRef = this.snackBar.openFromComponent(component, {
       duration: config.duration ? config.duration : undefined,
       horizontalPosition: 'center',
@@ -100,7 +104,11 @@ export class SafeSnackBarService {
     template: TemplateRef<any>,
     config?: SnackBar
   ): MatSnackBarRef<EmbeddedViewRef<any>> {
-    config = { ...DEFAULT_SNACKBAR, ...config };
+    config = {
+      ...DEFAULT_SNACKBAR,
+      ...config,
+      action: this.translate.instant('common.dismiss'),
+    };
     const snackBarRef = this.snackBar.openFromTemplate(template, {
       duration: config.duration ? config.duration : undefined,
       horizontalPosition: 'center',
