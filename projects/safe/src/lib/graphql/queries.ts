@@ -312,6 +312,7 @@ export const GET_RECORD_DETAILS = gql`
   query GetRecordDetails($id: ID!) {
     record(id: $id) {
       id
+      incrementalId
       data
       createdAt
       modifiedAt

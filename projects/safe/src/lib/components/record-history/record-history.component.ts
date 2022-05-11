@@ -350,7 +350,7 @@ export class SafeRecordHistoryComponent implements OnInit {
 
   onDownload(type: string): void {
     const path = `download/form/records/${this.record.id}/history`;
-    const fileName = `${this.record.id}.${type}`;
+    const fileName = `${this.record.incrementalId}.${type}`;
     const queryString = new URLSearchParams({
       type,
       from: `${new Date(this.filtersDate.startDate).getTime()}`,
