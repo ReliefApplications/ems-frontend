@@ -11,6 +11,21 @@
     gap: 10px;
 }
 
+mat-expansion-panel {
+    mat-expansion-panel-header {
+        font-size: 16px;
+    }
+
+    mat-list-item {
+        font-size: 14px;
+
+        &:hover {
+            cursor: pointer;
+            background-color: #dddddd54;
+        }
+    }
+}
+
 .users-area {
     display: flex;
     gap: 30px;

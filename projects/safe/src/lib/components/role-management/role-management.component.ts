@@ -11,13 +11,22 @@ import {
   GetChannelsQueryResponse,
   GetFormsQueryResponse,
   GetResourcesQueryResponse,
+  GetRolesQueryResponse,
   GET_CHANNELS,
   GET_FORMS,
   GET_RESOURCES,
+  GET_ROLES,
 } from '../../graphql/queries';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { SafeEditAccessComponent } from '../access/edit-access/edit-access.component';
+import { SafeApplicationService } from '../../services/application.service';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { Role } from '../../models/user.model';
 
-const role = {
+const mockRole = {
+  id: '',
   name: 'Wizard',
   description: 'Bibbidi-Bobbidi-Boo',
   canSeeRoles: false,
@@ -36,8 +45,6 @@ const role = {
   ],
   features: [],
   channels: [],
-  resources: [],
-  forms: [],
 };
 
 const mockFeatures = [
@@ -82,27 +89,29 @@ const SEARCH_DEBOUNCE_TIME = 500;
   styleUrls: ['./role-management.component.scss'],
 })
 export class SafeRoleManagementComponent implements OnInit {
+  public role: {
+    id: string;
+    name: string;
+    description: string;
+    canSeeRoles: boolean;
+    canSeeUsers: boolean;
+    users: { name: string }[];
+    features: string[];
+    channels: string[];
+  } = mockRole;
+
+  // Role properties
+  public currentRole?: Role;
+
   // Page status
-  @Input() public inApp = false;
+  @Input() public inApp: boolean = false;
+  @Input() public applicationId: string = '';
 
   // Final form to be updated
   public roleForm?: FormGroup;
 
-  // Selected objects
-  public selectedItems: {
-    channels: string[];
-    features: string[];
-    resources: string[];
-    forms: string[];
-  } = {
-    channels: role.channels,
-    features: role.features,
-    resources: role.resources,
-    forms: role.forms,
-  };
-
   // Summary tab
-  public users: string[] = role.users.map((val: any) => val.name);
+  public users: string[] = this.role.users.map((val: any) => val.name);
 
   // Channels tab
   public channels: Channel[] = [];
@@ -137,9 +146,40 @@ export class SafeRoleManagementComponent implements OnInit {
   public formsAndResourcesSearch = new FormControl('');
   private formsAndResourcesQueryFilter: any = {};
 
-  constructor(private formBuilder: FormBuilder, private apollo: Apollo) {}
+  private applicationSubscription?: Subscription;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private apollo: Apollo,
+    private dialog: MatDialog,
+    private applicationService: SafeApplicationService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
+    this.applicationSubscription =
+      this.applicationService.application$.subscribe((application) => {
+        this.route.paramMap.subscribe((params) => {
+          const roleId = params.get('id')!;
+
+          if (this.inApp && application) {
+            this.currentRole = application.roles?.find((r) => r.id === roleId);
+            this.buildForm();
+          } else {
+            this.apollo
+              .watchQuery<GetRolesQueryResponse>({
+                query: GET_ROLES,
+              })
+              .valueChanges.subscribe((roles) => {
+                this.currentRole = roles.data.roles.find(
+                  (r) => r.id === roleId
+                );
+                this.buildForm();
+              });
+          }
+        });
+      });
+
     this.apollo
       .watchQuery<GetChannelsQueryResponse>({
         query: GET_CHANNELS,
@@ -175,17 +215,6 @@ export class SafeRoleManagementComponent implements OnInit {
 
     this.updateFeatures();
 
-    this.roleForm = this.formBuilder.group({
-      name: [role.name, Validators.required],
-      features: [role.features],
-      channels: [role.channels],
-      resources: [role.resources],
-      forms: [role.forms],
-      description: new FormControl(role.description),
-      canSeeRoles: new FormControl(role.canSeeRoles),
-      canSeeUsers: new FormControl(role.canSeeUsers),
-    });
-
     this.formsAndResourcesSearch.valueChanges
       .pipe(debounceTime(SEARCH_DEBOUNCE_TIME), distinctUntilChanged())
       .subscribe((value) => {
@@ -196,6 +225,16 @@ export class SafeRoleManagementComponent implements OnInit {
         this.loadResources({ search: true });
         this.loadForms({ search: true });
       });
+  }
+
+  private buildForm() {
+    this.roleForm = this.formBuilder.group({
+      name: [this.currentRole?.title, Validators.required],
+      channels: [this.currentRole?.channels],
+      description: new FormControl(this.role.description),
+      canSeeRoles: new FormControl(this.role.canSeeRoles),
+      canSeeUsers: new FormControl(this.role.canSeeUsers),
+    });
   }
 
   /**
@@ -241,16 +280,11 @@ export class SafeRoleManagementComponent implements OnInit {
   /**
    * Adds or removes a feature from the list of selected features
    */
-  public onItemClick(
-    itemKey: 'channels' | 'features' | 'resources' | 'forms',
-    id: string
-  ) {
-    if (this.selectedItems[itemKey].includes(id)) {
-      this.selectedItems[itemKey] = this.selectedItems[itemKey].filter(
-        (item) => item !== id
-      );
+  public onItemClick(itemKey: 'channels' | 'features', id: string) {
+    if (this.role[itemKey].includes(id)) {
+      this.role[itemKey] = this.role[itemKey].filter((item) => item !== id);
     } else {
-      this.selectedItems[itemKey].push(id);
+      this.role[itemKey].push(id);
     }
   }
 
@@ -294,7 +328,7 @@ export class SafeRoleManagementComponent implements OnInit {
    * Adds selected features and channels, then it updates the role
    */
   public onSubmit(): void {
-    this.roleForm?.patchValue(this.selectedItems);
+    this.roleForm?.patchValue(this.role);
     console.log(this.roleForm?.value);
   }
 
@@ -364,5 +398,32 @@ export class SafeRoleManagementComponent implements OnInit {
         });
       },
     });
+  }
+
+  public onEditAccess(): void {
+    console.log('EDIT ACCESS');
+
+    /*
+    const dialogRef = this.dialog.open(SafeEditAccessComponent, {
+      data: {
+        access: this.access,
+      },
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        console.log('res');
+        console.log(res);
+      }
+    });
+    */
+  }
+
+  /**
+   * Destroys all the subscriptions of the page.
+   */
+  ngOnDestroy(): void {
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
   }
 }

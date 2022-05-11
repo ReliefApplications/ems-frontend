@@ -33,7 +33,7 @@
                 </div>
             </div>
         </mat-tab>
-        <mat-tab [label]="'Features'" *ngIf="!inApp">
+        <mat-tab [label]="'Features'">
             <div class="searchbar">
                 <mat-form-field appearance="outline">
                     <mat-icon matPrefix>search</mat-icon>
@@ -51,7 +51,7 @@
                     </mat-expansion-panel-header>
                     <div class="checkbox-area">
                         <mat-checkbox *ngFor="let feature of group.contents"
-                            [checked]="selectedItems.features.includes(feature.id)"
+                            [checked]="role.features.includes(feature.id)"
                             (click)="$event.preventDefault(); onItemClick('features', feature.id)">
                             {{feature.title}}
                         </mat-checkbox>
@@ -74,12 +74,11 @@
                         {{'common.resource.few' | translate}}
                     </mat-panel-title>
                 </mat-expansion-panel-header>
-                <div class="checkbox-area">
-                    <mat-checkbox *ngFor="let resource of resources" [checked]="selectedItems.resources.includes(resource.id)"
-                        (click)="$event.preventDefault(); onItemClick('resources', resource.id)">
+                <mat-list>
+                    <mat-list-item *ngFor="let resource of resources" (click)="onEditAccess()">
                         {{resource.name}}
-                    </mat-checkbox>
-                </div>
+                    </mat-list-item>
+                </mat-list>
                 <safe-button *ngIf="resourcesQueryInfo.hasNextPage" class="load-more-button" category="tertiary"
                     variant="primary" (click)="loadResources()" [loading]="!!resourcesQueryInfo.loading">Load more
                 </safe-button>
@@ -90,12 +89,11 @@
                         {{'common.form.few' | translate}}
                     </mat-panel-title>
                 </mat-expansion-panel-header>
-                <div class="checkbox-area">
-                    <mat-checkbox *ngFor="let form of forms" [checked]="selectedItems.forms.includes(form.id)"
-                        (click)="$event.preventDefault(); onItemClick('forms', form.id)">
+                <mat-list>
+                    <mat-list-item *ngFor="let form of forms" (click)="onEditAccess()">
                         {{form.name + (form.core? ' (core)' : '')}}
-                    </mat-checkbox>
-                </div>
+                    </mat-list-item>
+                </mat-list>
                 <safe-button *ngIf="formsQueryInfo.hasNextPage" class="load-more-button" category="tertiary"
                     variant="primary" (click)="loadForms()" [loading]="!!formsQueryInfo.loading">Load more
                 </safe-button>
@@ -119,7 +117,7 @@
                     </mat-expansion-panel-header>
                     <div class="checkbox-area">
                         <mat-checkbox *ngFor="let channel of application.channels"
-                            [checked]="selectedItems.channels.includes(channel.id)"
+                            [checked]="role.channels.includes(channel.id)"
                             (click)="$event.preventDefault(); onItemClick('channels', channel.id)">
                             {{channel.title}}
                         </mat-checkbox>
