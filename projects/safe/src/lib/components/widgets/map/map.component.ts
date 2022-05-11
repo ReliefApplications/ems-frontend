@@ -299,8 +299,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Loops throught clorophlets and add them to the map
-    if (this.settings.query.clorophlets) {
-      this.settings.query.clorophlets.map((value: any) => {
+    if (this.settings.clorophlets) {
+      this.settings.clorophlets.map((value: any) => {
         this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
           style: (feature: any): any => {
             let color = 'transparent';

@@ -86,7 +86,58 @@
         </mat-tab>
 
         <mat-tab label="Clorophlets">
-
+          <div class="filter-list" *ngFor="let clorophlet of tileForm.value.clorophlets.controls; let i = index;" [formGroup]="clorophlet">
+            <div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Name</mat-label>
+                    <input type="text" placeholder="Set a new name" matInput formControlName="name">
+                </mat-form-field>
+                <div class="deleteBtn">
+                    <safe-button icon="delete" category="primary" variant="danger" (click)="removeClorophlet(i)"></safe-button>
+                </div>
+            </div>
+            <div class="filter-buttons">
+              <safe-button type="button" (click)="fileInput.click()">{{
+                  clorophlet.value.geoJSONname ?
+                    clorophlet.value.geoJSONname :
+                      'Upload geoJSON'
+              }}</safe-button>
+              <input hidden #fileInput type="file" id="file{{i}}" accept=".json, .geojson" (change)="uploadGeoJSON(i)">
+            </div>
+            <div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Identifier</mat-label>
+                    <mat-select formControlName="place">
+                        <mat-option *ngFor="let field of selectedFields" [value]="field">{{ field }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="extraInput">
+                    <mat-label>GeoJSON Identifier</mat-label>
+                    <mat-select formControlName="geoJSONfield">
+                        <mat-option *ngFor="let field of geoJSONfields[i]" [value]="field">{{ field }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div>
+                <div *ngFor="let division of clorophlet.controls.divisions.controls; let f = index;"
+                class="filter-list" [formGroup]="division">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Color</mat-label>
+                        <h4></h4>
+                        <input type="color" matInput formControlName="color">
+                    </mat-form-field>
+                    <div class="deleteBtn">
+                        <safe-button icon="delete" category="primary" variant="danger" (click)="removeDivision(clorophlet, f)"></safe-button>
+                    </div>
+                    <safe-tab-filter [form]="division.controls.filter"
+                    [fields]="formatedSelectedFields"></safe-tab-filter>
+                </div>
+                <div>
+                    <safe-button category="tertiary" (click)="newDivision(clorophlet)">Add new division</safe-button>
+                </div>
+            </div>
+          </div>
+          <safe-button category="tertiary" (click)="addClorophlet()">Add new clorophlet</safe-button>
         </mat-tab>
 
         <mat-tab label="Online layers">

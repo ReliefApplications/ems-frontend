@@ -27,6 +27,7 @@ export class SafeMapSettingsComponent implements OnInit {
 
   public selectedFields: any[] = [];
   public formatedSelectedFields: any[] = [];
+  public geoJSONfields: any[] = [];
 
   public basemaps: any[] = [
     'Sreets',
@@ -100,6 +101,11 @@ export class SafeMapSettingsComponent implements OnInit {
       pointerRules: [
         tileSettings && tileSettings.pointerRules
           ? this.formatPointerRules(tileSettings.pointerRules)
+          : this.formBuilder.array([]),
+      ],
+      clorophlets: [
+        tileSettings && tileSettings.clorophlets
+          ? this.formatClorophlets(tileSettings.clorophlets)
           : this.formBuilder.array([]),
       ],
     });
@@ -239,9 +245,7 @@ export class SafeMapSettingsComponent implements OnInit {
   }
 
   /**
-   * Selects a new layer.
-   *
-   * @param layer layer to select.
+   * Adds a new pointer rule.
    */
   public addPointerRule(): void {
     this.tileForm?.value.pointerRules.push(
@@ -256,10 +260,21 @@ export class SafeMapSettingsComponent implements OnInit {
     );
   }
 
-  public removePointerRule(index: any): void {
+  /**
+   * Removes a pointer rule.
+   *
+   * @param index position of the pointer rule to delete.
+   */
+  public removePointerRule(index: number): void {
     this.tileForm?.value.pointerRules.removeAt(index);
   }
 
+  /**
+   * Transforms the pointer rules array to a it's reactive form.
+   *
+   * @param value pointer rules array.
+   * @returns formated pointer rules array.
+   */
   private formatPointerRules(value: any[]): FormArray {
     const formatedPointerRules = this.formBuilder.array([]);
     value.map((val: any) => {
@@ -277,6 +292,140 @@ export class SafeMapSettingsComponent implements OnInit {
     return formatedPointerRules;
   }
 
+  /**
+   * Adds a new clorophlet.
+   */
+  public addClorophlet(): void {
+    this.tileForm?.value.clorophlets.push(
+      this.formBuilder.group({
+        name: [''],
+        geoJSON: [''],
+        geoJSONname: [''],
+        geoJSONfield: [''],
+        place: [''],
+        divisions: this.formBuilder.array([]),
+      })
+    );
+    this.geoJSONfields.push([]);
+  }
+
+  /**
+   * Removes a clorophlets.
+   *
+   * @param index position of the clorophlet to delete.
+   */
+  public removeClorophlet(index: number): void {
+    this.tileForm?.value.clorophlets.removeAt(index);
+    this.geoJSONfields.splice(index, 1);
+  }
+
+  /**
+   * Adds a new division.
+   *
+   * @param form
+   */
+  public newDivision(form: any): void {
+    form.controls.divisions.push(
+      this.formBuilder.group({
+        color: [''],
+        filter: this.formBuilder.group({
+          logic: ['and'],
+          filters: this.formBuilder.array([]),
+        }),
+      })
+    );
+    console.log(form.value.divisions);
+  }
+
+  /**
+   * Removes a division in target form.
+   *
+   * @param form
+   * @param index
+   */
+  public removeDivision(form: any, index: number): void {
+    form.controls.divisions.removeAt(index);
+  }
+
+  /**
+   * Adds a GeoJSON file to the clorophlet.
+   *
+   * @param index clorophlet position.
+   */
+  public async uploadGeoJSON(i: number): Promise<void> {
+    const file = document.getElementById('file' + i) as HTMLInputElement;
+    if (file) {
+      if (file.files && file.files.length > 0) {
+        this.tileForm?.value.clorophlets.controls[i].patchValue({
+          geoJSONname: file.files[0].name,
+          geoJSON: await file.files[0].text(),
+        });
+        this.updateGeoJSONfields(
+          this.tileForm?.value.clorophlets.value[i].geoJSON,
+          i
+        );
+      }
+    }
+  }
+
+  /**
+   * Updates the geoJSON selectable fields.
+   *
+   * @param geoJSON geoJSON to check.
+   * @param index clorophlet position.
+   */
+  private updateGeoJSONfields(geoJSON: string, i: number): void {
+    const parsed = JSON.parse(geoJSON);
+    this.geoJSONfields[i] = [];
+    for (const property of Object.keys(parsed.features[0].properties)) {
+      this.geoJSONfields[i].push(property);
+    }
+  }
+
+  /**
+   * Transforms the pointer rules array to it's reactive form.
+   *
+   * @param value pointer rules array.
+   * @returns formated pointer rules array.
+   */
+  private formatClorophlets(value: any[]): FormArray {
+    const formatedClorophlets = this.formBuilder.array([]);
+    value.map((val: any, i: number) => {
+      const divisions = this.formBuilder.array([]);
+      val.divisions.map((division: any) => {
+        divisions.push(
+          this.formBuilder.group({
+            color: [division.color],
+            filter: this.formBuilder.group({
+              logic: [division.filter.logic],
+              filters: this.formatFilters(division.filter.filters),
+            }),
+          })
+        );
+      });
+      formatedClorophlets.push(
+        this.formBuilder.group({
+          name: [val.name],
+          geoJSON: [val.geoJSON],
+          geoJSONname: [val.geoJSONname],
+          geoJSONfield: [val.geoJSONfield],
+          place: [val.place],
+          divisions,
+        })
+      );
+      if (val.geoJSON) {
+        this.updateGeoJSONfields(val.geoJSON, i);
+      }
+    });
+    return formatedClorophlets;
+  }
+
+  /**
+   * Formats filters values to work with reactive forms.
+   *
+   * @param filters value of the filters.
+   * @returns formated filters array.
+   */
   private formatFilters(filters: any[]): FormArray {
     const formatedFilters = this.formBuilder.array([]);
     filters.map((filter: any) => {
