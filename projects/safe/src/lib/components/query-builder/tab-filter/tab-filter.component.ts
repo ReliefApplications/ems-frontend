@@ -91,19 +91,8 @@ const TYPES: any = {
   },
   // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   ID: {
-    defaultOperator: 'contains',
-    operators: [
-      'eq',
-      'neq',
-      'contains',
-      'doesnotcontain',
-      'startswith',
-      'endswith',
-      'isnull',
-      'isnotnull',
-      'isempty',
-      'isnotempty',
-    ],
+    defaultOperator: 'eq',
+    operators: ['eq', 'neq'],
   },
   // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   Boolean: {
