@@ -25,8 +25,8 @@
       mat-align-tabs="start"
       animationDuration="0ms">
 
-        <mat-tab label="Point layers">
-          <div class="info-text">Display pointers in the map for each entry of your data</div>
+        <mat-tab [label]="'components.widget.settings.map.layers.point.title' | translate">
+          <div class="info-text">{{ 'components.widget.settings.map.layers.point.info' | translate }}</div>
           <mat-form-field appearance="outline" style="width: 100%;">
             <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
             <mat-select formControlName="latitude">
@@ -44,7 +44,7 @@
             </mat-select>
           </mat-form-field>
           <mat-form-field appearance="outline" style="width: 100%;" class="margin-bottom">
-            <mat-label>{{ 'components.widget.settings.map.category' | translate }}</mat-label>
+            <mat-label>{{ 'components.widget.settings.map.layers.point.category' | translate }}</mat-label>
             <mat-select formControlName="category">
               <mat-option [value]="">{{ 'common.input.none' | translate }}</mat-option>
               <mat-option *ngFor="let field of selectedFields" [value]="field">
@@ -57,13 +57,13 @@
             ></mat-hint>
           </mat-form-field>
           <mat-label>
-            Pointer rules
+            {{ 'components.widget.settings.map.layers.point.rules' | translate }}
           </mat-label>
-          <div class="info-text">Customize the size and colors of your pointers</div>
+          <div class="info-text">{{ 'components.widget.settings.map.layers.point.rulesInfo' | translate }}</div>
           <div class="filter-list" *ngFor="let rule of tileForm.value.pointerRules.controls; let i = index;" [formGroup]="rule">
             <div>
               <mat-form-field appearance="outline">
-                  <mat-label>Size</mat-label>
+                  <mat-label>{{ 'components.widget.settings.map.layers.point.size' | translate }}</mat-label>
                   <input type="number" matInput formControlName="size" min="0" oninput="this.value = 
                   !!this.value && Math.abs(this.value) >= 0 ? Math.abs(this.value) : null">
               </mat-form-field>
@@ -76,7 +76,7 @@
             </div>
             <div>
               <mat-form-field appearance="outline">
-                <mat-label>Color</mat-label>
+                <mat-label>{{ 'components.widget.settings.map.layers.point.color' | translate }}</mat-label>
                 <h4></h4>
                 <input type="color" matInput formControlName="color">
               </mat-form-field>
@@ -84,38 +84,38 @@
             <safe-tab-filter [form]="rule.controls.filter"
             [fields]="formatedSelectedFields"></safe-tab-filter>
           </div>
-          <safe-button type='button' category="tertiary" (click)="addPointerRule()">Add new pointer rule</safe-button>
+          <safe-button type='button' category="tertiary" (click)="addPointerRule()">{{ 'components.widget.settings.map.layers.point.addNew' | translate }}</safe-button>
         </mat-tab>
 
-        <mat-tab label="Clorophlets">
-          <div class="info-text">Set up different clorophlets which will be displayed as layers in the map</div>
+        <mat-tab [label]="'components.widget.settings.map.layers.clorophlet.title' | translate">
+          <div class="info-text">{{ 'components.widget.settings.map.layers.clorophlet.info' | translate }}</div>
           <div class="filter-list" *ngFor="let clorophlet of tileForm.value.clorophlets.controls; let i = index;" [formGroup]="clorophlet">
             <div>
                 <mat-form-field appearance="outline">
-                    <mat-label>Name</mat-label>
-                    <input type="text" placeholder="Set a new name" matInput formControlName="name">
+                    <mat-label>{{ 'common.name' | translate }}</mat-label>
+                    <input type="text" [placeholder]="'common.placeholder.name' | translate" matInput formControlName="name">
                 </mat-form-field>
                 <div class="deleteBtn">
                     <safe-button icon="delete" category="primary" variant="danger" (click)="removeClorophlet(i)"></safe-button>
                 </div>
             </div>
             <div class="filter-buttons">
-              <safe-button type="button" (click)="fileInput.click()">{{
+              <safe-button category="tertiary" (click)="fileInput.click()">{{
                   clorophlet.value.geoJSONname ?
                     clorophlet.value.geoJSONname :
-                      'Upload geoJSON'
+                    ('common.uploadObject' | translate : {name: ('components.widget.settings.map.layers.clorophlet.geoJSON' | translate)})
               }}</safe-button>
               <input hidden #fileInput type="file" id="file{{i}}" accept=".json, .geojson" (change)="uploadGeoJSON(i)">
             </div>
             <div>
                 <mat-form-field appearance="outline">
-                    <mat-label>Identifier</mat-label>
+                    <mat-label>{{ 'components.widget.settings.map.layers.clorophlet.identifier' | translate }}</mat-label>
                     <mat-select formControlName="place">
                         <mat-option *ngFor="let field of selectedFields" [value]="field">{{ field }}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="extraInput">
-                    <mat-label>GeoJSON Identifier</mat-label>
+                    <mat-label>{{ 'components.widget.settings.map.layers.clorophlet.geoJSONidentifier' | translate }}</mat-label>
                     <mat-select formControlName="geoJSONfield">
                         <mat-option *ngFor="let field of geoJSONfields[i]" [value]="field">{{ field }}</mat-option>
                     </mat-select>
@@ -125,7 +125,7 @@
                 <div *ngFor="let division of clorophlet.controls.divisions.controls; let f = index;"
                 class="filter-list" [formGroup]="division">
                     <mat-form-field appearance="outline">
-                        <mat-label>Color</mat-label>
+                        <mat-label>{{ 'components.widget.settings.map.layers.point.color' | translate }}</mat-label>
                         <h4></h4>
                         <input type="color" matInput formControlName="color">
                     </mat-form-field>
@@ -136,17 +136,17 @@
                     [fields]="formatedSelectedFields"></safe-tab-filter>
                 </div>
                 <div>
-                    <safe-button category="tertiary" (click)="newDivision(clorophlet)">Add new division</safe-button>
+                    <safe-button category="tertiary" (click)="newDivision(clorophlet)">{{ 'components.widget.settings.map.layers.clorophlet.addNewDiv' | translate }}</safe-button>
                 </div>
             </div>
           </div>
-          <safe-button category="tertiary" (click)="addClorophlet()">Add new clorophlet</safe-button>
+          <safe-button category="tertiary" (click)="addClorophlet()">{{ 'components.widget.settings.map.layers.clorophlet.addNew' | translate }}</safe-button>
         </mat-tab>
 
-        <mat-tab label="Online layers">
-          <div class="info-text">Search for online layers in arcGIS online</div>
+        <mat-tab [label]="'components.widget.settings.map.layers.online.title' | translate">
+          <div class="info-text">{{ 'components.widget.settings.map.layers.online.info' | translate }}</div>
           <mat-form-field appearance="outline" style="width: 100%;">
-            <mat-label>{{ 'components.widget.settings.map.layers.select' | translate }}</mat-label>
+            <mat-label>{{ 'components.widget.settings.map.layers.online.select' | translate }}</mat-label>
             <input
               type="text"
               matInput
@@ -167,13 +167,13 @@
               </button>
             </div>
           </mat-form-field>
-          <h2
+          <mat-label
             *ngIf="
               tileForm.value.onlineLayers && tileForm.value.onlineLayers.length > 0
             "
           >
-            {{ 'components.widget.settings.map.layers.selected' | translate }}
-          </h2>
+            {{ 'components.widget.settings.map.layers.online.selected' | translate }}
+          </mat-label>
           <h3 *ngFor="let layer of tileForm.value.onlineLayers">
             {{ layer.title }}
             <safe-button

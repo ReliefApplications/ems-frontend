@@ -106,7 +106,7 @@ export class SafeMapSettingsComponent implements OnInit {
       clorophlets: [
         tileSettings && tileSettings.clorophlets
           ? this.formatClorophlets(tileSettings.clorophlets)
-          : this.formBuilder.array([]),
+          : this.formBuilder.array([], [Validators.required]),
       ],
     });
 
@@ -298,11 +298,11 @@ export class SafeMapSettingsComponent implements OnInit {
   public addClorophlet(): void {
     this.tileForm?.value.clorophlets.push(
       this.formBuilder.group({
-        name: [''],
-        geoJSON: [''],
-        geoJSONname: [''],
-        geoJSONfield: [''],
-        place: [''],
+        name: ['', [Validators.required]],
+        geoJSON: ['', [Validators.required]],
+        geoJSONname: ['', [Validators.required]],
+        geoJSONfield: ['', [Validators.required]],
+        place: ['', [Validators.required]],
         divisions: this.formBuilder.array([]),
       })
     );
@@ -405,11 +405,11 @@ export class SafeMapSettingsComponent implements OnInit {
       });
       formatedClorophlets.push(
         this.formBuilder.group({
-          name: [val.name],
-          geoJSON: [val.geoJSON],
-          geoJSONname: [val.geoJSONname],
-          geoJSONfield: [val.geoJSONfield],
-          place: [val.place],
+          name: [val.name, [Validators.required]],
+          geoJSON: [val.geoJSON, [Validators.required]],
+          geoJSONname: [val.geoJSONname, [Validators.required]],
+          geoJSONfield: [val.geoJSONfield, [Validators.required]],
+          place: [val.place, [Validators.required]],
           divisions,
         })
       );

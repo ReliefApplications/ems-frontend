@@ -588,12 +588,33 @@
             "basemap": "Base map",
             "zoom": "Default zoom"
           },
-          "category": "Map quick layers",
           "basemap": "Base map",
           "layers": {
-            "select": "Select a layer",
-            "title": "Additional layers",
-            "selected": "Selected layers"
+            "point": {
+              "title": "Marker layers",
+              "info": "Display markers in the map for each entry of your data",
+              "category": "Map quick layers",
+              "rules": "Marker rules",
+              "rulesInfo": "Customize the size and colors of your pointers",
+              "size": "Size",
+              "color": "Color",
+              "addNew": "Add new marker rule"
+            }, 
+            "clorophlet": {
+              "title": "Clorophlets",
+              "info": "Set up different clorophlets which will be displayed as layers in the map",
+              "geoJSON": "geoJSON",
+              "identifier": "Identifier",
+              "geoJSONidentifier": "geoJSON Identifier",
+              "addNew": "Add new clorophlet",
+              "addNewDiv": "Add new division"
+            },
+            "online": {
+              "title": "Online layers",
+              "info": "Search for online layers in arcGIS online",
+              "select": "Search layers",
+              "selected": "Selected layers"
+            }
           },
           "errors": {
             "latitude": "Invalid latitude, please select a number between -90 and 90",
