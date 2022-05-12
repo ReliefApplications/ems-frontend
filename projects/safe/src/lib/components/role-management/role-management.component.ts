@@ -25,7 +25,7 @@ import { SafeEditAccessComponent } from '../access/edit-access/edit-access.compo
 import { SafeApplicationService } from '../../services/application.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { Role } from '../../models/user.model';
+import { Permissions, Role } from '../../models/user.model';
 
 const mockRole = {
   id: '',
@@ -255,8 +255,8 @@ export class SafeRoleManagementComponent implements OnInit {
       name: [this.currentRole?.title, Validators.required],
       channels: [this.currentRole?.channels],
       description: new FormControl(this.role.description),
-      canSeeRoles: new FormControl(this.role.canSeeRoles),
-      canSeeUsers: new FormControl(this.role.canSeeUsers),
+      canSeeRoles: new FormControl(!!this.currentRole?.permissions?.find((p)=>(p.type === Permissions.canSeeRoles))),
+      canSeeUsers: new FormControl(!!this.currentRole?.permissions?.find((p)=>(p.type === Permissions.canSeeUsers))),
     });
   }
 
