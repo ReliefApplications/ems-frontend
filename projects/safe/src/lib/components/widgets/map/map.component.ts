@@ -301,32 +301,33 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Loops throught clorophlets and add them to the map
     if (this.settings.clorophlets) {
       this.settings.clorophlets.map((value: any) => {
-        this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
-          style: (feature: any): any => {
-            let color = 'transparent';
-            for (const field in res.data) {
-              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-                res.data[field].edges.map((entry: any) => {
-                  if (
-                    entry.node[value.place] ===
-                    feature.properties[value.geoJSONfield]
-                  ) {
-                    value.divisions.map((div: any) => {
-                      if (applyFilters(entry.node, div.filter)) {
-                        color = div.color;
-                      }
-                    });
-                  }
-                });
+        if (value.geoJSON && value.geoJSONfield && value.place)
+          this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
+            style: (feature: any): any => {
+              let color = 'transparent';
+              for (const field in res.data) {
+                if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+                  res.data[field].edges.map((entry: any) => {
+                    if (
+                      entry.node[value.place] ===
+                      feature.properties[value.geoJSONfield]
+                    ) {
+                      value.divisions.map((div: any) => {
+                        if (applyFilters(entry.node, div.filter)) {
+                          color = div.color;
+                        }
+                      });
+                    }
+                  });
+                }
               }
-            }
-            return {
-              fillColor: color,
-              stroke: false,
-              fillOpacity: 1,
-            };
-          },
-        }).addTo(this.map);
+              return {
+                fillColor: color,
+                stroke: false,
+                fillOpacity: 1,
+              };
+            },
+          }).addTo(this.map);
       });
     }
 

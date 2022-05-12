@@ -298,7 +298,7 @@ export class SafeMapSettingsComponent implements OnInit {
   public addClorophlet(): void {
     this.tileForm?.value.clorophlets.push(
       this.formBuilder.group({
-        name: ['', [Validators.required]],
+        name: ['New clorophlet', [Validators.required]],
         geoJSON: ['', [Validators.required]],
         geoJSONname: ['', [Validators.required]],
         geoJSONfield: ['', [Validators.required]],
@@ -327,7 +327,7 @@ export class SafeMapSettingsComponent implements OnInit {
   public newDivision(form: any): void {
     form.controls.divisions.push(
       this.formBuilder.group({
-        color: [''],
+        color: ['#0090d1'],
         filter: this.formBuilder.group({
           logic: ['and'],
           filters: this.formBuilder.array([]),
@@ -389,7 +389,10 @@ export class SafeMapSettingsComponent implements OnInit {
    * @returns formated pointer rules array.
    */
   private formatClorophlets(value: any[]): FormArray {
-    const formatedClorophlets = this.formBuilder.array([]);
+    const formatedClorophlets = this.formBuilder.array(
+      [],
+      [Validators.required]
+    );
     value.map((val: any, i: number) => {
       const divisions = this.formBuilder.array([]);
       val.divisions.map((division: any) => {
