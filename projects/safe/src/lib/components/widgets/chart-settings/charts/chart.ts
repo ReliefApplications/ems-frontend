@@ -63,11 +63,13 @@ export class Chart {
               palette.length > 0
                 ? palette
                 : JSON.parse(JSON.stringify(DEFAULT_PALETTE)),
-            disabled: !(palette.length > 0),
+            disabled: !get(settings, 'palette.enabled', false),
           },
         ],
       }),
     });
+
+    console.log(this.form);
 
     this.form.get('palette.enabled')?.valueChanges.subscribe((value) => {
       if (value) {
