@@ -27,9 +27,14 @@
                 </div>
                 <div class="users-area">
                     <h3>{{'common.user.few' | translate}}</h3>
-                    <div>
-                        <p *ngFor="let user of users">{{user}}</p>
+                    <div *ngIf="roleUsers.length; else noUsers">
+                        <p *ngFor="let user of roleUsers">{{user}}</p>
                     </div>
+                    <ng-template #noUsers>
+                        <div>
+                            <p>{{'common.user.none' | translate}}</p>
+                        </div>
+                    </ng-template>
                 </div>
             </div>
         </mat-tab>

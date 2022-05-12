@@ -113,7 +113,7 @@ export class SafeRoleManagementComponent implements OnInit {
   public roleForm?: FormGroup;
 
   // Summary tab
-  public users: string[] = [];
+  public roleUsers: string[] = [];
 
   // Channels tab
   public channels: Channel[] = [];
@@ -168,7 +168,7 @@ export class SafeRoleManagementComponent implements OnInit {
             this.currentRole = application.roles?.find((role) => role.id === roleId);
 
             // Get all the application users who have the current role, and try to display their names, or usernames, or display a default value if not found
-            this.users =
+            this.roleUsers =
               application.users
                 ?.filter((user) => user.roles && user.roles.find((role) => role.id === roleId))
                 .map((user) => user.name || user.username || 'no name nor username') ||
@@ -194,7 +194,7 @@ export class SafeRoleManagementComponent implements OnInit {
               .valueChanges.subscribe((users) => {
                 console.log("users");
                 console.log(users);
-                this.users =
+                this.roleUsers =
               users.data.users
                 .filter((user) => user.roles && user.roles.find((role) => role.id === roleId))
                 .map((user) => user.name || user.username || 'no name nor username available');
