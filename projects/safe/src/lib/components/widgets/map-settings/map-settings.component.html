@@ -26,6 +26,7 @@
       animationDuration="0ms">
 
         <mat-tab label="Point layers">
+          <div class="info-text">Display pointers in the map for each entry of your data</div>
           <mat-form-field appearance="outline" style="width: 100%;">
             <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
             <mat-select formControlName="latitude">
@@ -58,6 +59,7 @@
           <mat-label>
             Pointer rules
           </mat-label>
+          <div class="info-text">Customize the size and colors of your pointers</div>
           <div class="filter-list" *ngFor="let rule of tileForm.value.pointerRules.controls; let i = index;" [formGroup]="rule">
             <div>
               <mat-form-field appearance="outline">
@@ -86,6 +88,7 @@
         </mat-tab>
 
         <mat-tab label="Clorophlets">
+          <div class="info-text">Set up different clorophlets which will be displayed as layers in the map</div>
           <div class="filter-list" *ngFor="let clorophlet of tileForm.value.clorophlets.controls; let i = index;" [formGroup]="clorophlet">
             <div>
                 <mat-form-field appearance="outline">
@@ -141,6 +144,7 @@
         </mat-tab>
 
         <mat-tab label="Online layers">
+          <div class="info-text">Search for online layers in arcGIS online</div>
           <mat-form-field appearance="outline" style="width: 100%;">
             <mat-label>{{ 'components.widget.settings.map.layers.select' | translate }}</mat-label>
             <input
