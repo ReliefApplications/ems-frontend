@@ -35,7 +35,6 @@ export class SafeWidgetGridComponent implements OnInit {
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
-  maxRows = MAX_ROW_SPAN;
 
   // === EVENT EMITTER ===
   @Output() move: EventEmitter<any> = new EventEmitter();
