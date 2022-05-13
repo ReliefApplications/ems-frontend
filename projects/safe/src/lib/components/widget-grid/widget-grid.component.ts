@@ -14,7 +14,7 @@ import {
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
 
-const MAX_ROW_SPAN = 4;
+const MAX_ROW_SPAN = 8;
 
 const MAX_COL_SPAN = 8;
 
@@ -35,6 +35,7 @@ export class SafeWidgetGridComponent implements OnInit {
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
+  maxRows = MAX_ROW_SPAN;
 
   // === EVENT EMITTER ===
   @Output() move: EventEmitter<any> = new EventEmitter();

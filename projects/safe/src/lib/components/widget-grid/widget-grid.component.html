@@ -29,7 +29,11 @@
           ? colsNumber
           : widget.defaultCols
       "
-      [rowSpan]="!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows"
+      [rowSpan]="
+        !canUpdate && widgets.length === 1 && widget.defaultRows < 4
+          ? 4
+          : widget.defaultRows
+      "
     >
       <safe-floating-options
         *ngIf="canUpdate"
