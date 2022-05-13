@@ -225,6 +225,15 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 }
 
 .mat-row {
+  position: relative;
+  
+  .mat-row-link {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+  }
   .mat-cell {
     border-bottom: 1px solid #f2f3f5 !important;
     color: #3f3c3c;
@@ -264,12 +273,6 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     white-space: nowrap;
     text-overflow: ellipsis;
     margin: 0;
-  }
-}
-
-.clickable {
-  &:hover {
-    cursor: pointer;
   }
 }
 
