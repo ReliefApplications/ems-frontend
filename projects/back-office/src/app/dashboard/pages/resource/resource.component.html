@@ -263,14 +263,10 @@
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let element">
               <a fxFlexFill 
-                [ngClass]="{
-                  'mat-row-link': element.canCreateRecords && element.status === 'active'
-                }"
-                [routerLink]="
-                  element.canCreateRecords && element.status === 'active'
-                    ? ['/forms/answer', element.id]
-                    : []
-                "></a>
+                *ngIf="element.canCreateRecords && element.status === 'active'"
+                class="mat-row-link"
+                [routerLink]="['/forms/answer', element.id]">
+              </a>
               <safe-button
                 [isIcon]="true"
                 icon="more_vert"
