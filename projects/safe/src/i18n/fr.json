@@ -419,6 +419,14 @@
 			}
 		},
 		"history": {
+			"changes": {
+				"add": "Ajouter de la valeur",
+				"from": "de",
+				"modify": "Modifier la valeur",
+				"remove": "Supprimer la valeur",
+				"to": "à",
+				"withValue": "avec valeur"
+			},
 			"download": "Télécharger l'historique",
 			"field": {
 				"all": "Tous les champ",

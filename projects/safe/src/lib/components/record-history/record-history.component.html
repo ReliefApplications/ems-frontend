@@ -98,7 +98,7 @@
           *ngFor="
             let value of showMore ? item.changes : item.changes.slice(0, 4)
           "
-          [innerHTML]="value"
+          [innerHTML]="getHTMLFromChange(value)"
         ></div>
         <div class="full-history">
           <safe-button
