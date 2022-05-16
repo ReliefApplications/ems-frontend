@@ -9,18 +9,16 @@ describe('SafeChartComponent', () => {
   let component: SafeChartComponent;
   let fixture: ComponentFixture<SafeChartComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        providers: [
-          FormBuilder,
-          { provide: 'environment', useValue: environment },
-        ],
-        declarations: [SafeChartComponent],
-        imports: [HttpClientModule],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        FormBuilder,
+        { provide: 'environment', useValue: environment },
+      ],
+      declarations: [SafeChartComponent],
+      imports: [HttpClientModule],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeChartComponent);

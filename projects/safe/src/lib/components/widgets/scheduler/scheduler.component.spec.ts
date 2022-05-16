@@ -11,22 +11,20 @@ describe('SafeSchedulerComponent', () => {
   let component: SafeSchedulerComponent;
   let fixture: ComponentFixture<SafeSchedulerComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        providers: [TranslateService],
-        declarations: [SafeSchedulerComponent],
-        imports: [
-          TranslateModule.forRoot({
-            loader: {
-              provide: TranslateLoader,
-              useClass: TranslateFakeLoader,
-            },
-          }),
-        ],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      providers: [TranslateService],
+      declarations: [SafeSchedulerComponent],
+      imports: [
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeSchedulerComponent);
