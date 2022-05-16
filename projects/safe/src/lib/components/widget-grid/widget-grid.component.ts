@@ -14,10 +14,14 @@ import {
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
 
+/** Define maxc height of widgets */
 const MAX_ROW_SPAN = 4;
-
+/** Define max width of widgets */
 const MAX_COL_SPAN = 8;
 
+/**
+ * Widget Grid component. Widget grid is the content of the dashboard pages.
+ */
 @Component({
   selector: 'safe-widget-grid',
   templateUrl: './widget-grid.component.html',
