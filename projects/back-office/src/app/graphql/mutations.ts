@@ -40,7 +40,11 @@ export interface EditUserMutationResponse {
 // === ADD ROLE ===
 export const ADD_ROLE = gql`
   mutation addRole($title: String!, $description: String!, $application: ID) {
-    addRole(title: $title, description: $description, application: $application) {
+    addRole(
+      title: $title
+      description: $description
+      application: $application
+    ) {
       id
       title
       description

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -90,7 +90,7 @@ const SEARCH_DEBOUNCE_TIME = 500;
   templateUrl: './role-management.component.html',
   styleUrls: ['./role-management.component.scss'],
 })
-export class SafeRoleManagementComponent implements OnInit {
+export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   public role: {
     id: string;
     name: string;
@@ -162,17 +162,23 @@ export class SafeRoleManagementComponent implements OnInit {
     this.applicationSubscription =
       this.applicationService.application$.subscribe((application) => {
         this.route.paramMap.subscribe((params) => {
-          const roleId = params.get('id')!;
+          const roleId = params.get('id');
 
-          if (this.inApp && application) {
-            this.currentRole = application.roles?.find((role) => role.id === roleId);
+          if (this.inApp && application && roleId) {
+            this.currentRole = application.roles?.find(
+              (role) => role.id === roleId
+            );
 
             // Get all the application users who have the current role, and try to display their names, or usernames, or display a default value if not found
             this.roleUsers =
               application.users
-                ?.filter((user) => user.roles && user.roles.find((role) => role.id === roleId))
-                .map((user) => user.name || user.username || 'no name nor username') ||
-              [];
+                ?.filter(
+                  (user) =>
+                    user.roles && user.roles.find((role) => role.id === roleId)
+                )
+                .map(
+                  (user) => user.name || user.username || 'no name nor username'
+                ) || [];
             this.buildForm();
           } else {
             this.apollo
@@ -180,24 +186,28 @@ export class SafeRoleManagementComponent implements OnInit {
                 query: GET_ROLES,
               })
               .valueChanges.subscribe((roles) => {
-                console.log("roles");
-                console.log(roles);
                 this.currentRole = roles.data.roles.find(
                   (role) => role.id === roleId
                 );
                 this.buildForm();
               });
-              this.apollo
+            this.apollo
               .watchQuery<GetUsersGlobalQueryResponse>({
                 query: GET_USERS_GLOBAL,
               })
               .valueChanges.subscribe((users) => {
-                console.log("users");
-                console.log(users);
-                this.roleUsers =
-              users.data.users
-                .filter((user) => user.roles && user.roles.find((role) => role.id === roleId))
-                .map((user) => user.name || user.username || 'no name nor username available');
+                this.roleUsers = users.data.users
+                  .filter(
+                    (user) =>
+                      user.roles &&
+                      user.roles.find((role) => role.id === roleId)
+                  )
+                  .map(
+                    (user) =>
+                      user.name ||
+                      user.username ||
+                      'no name nor username available'
+                  );
               });
           }
         });
@@ -255,8 +265,16 @@ export class SafeRoleManagementComponent implements OnInit {
       name: [this.currentRole?.title, Validators.required],
       channels: [this.currentRole?.channels],
       description: [this.currentRole?.description, Validators.required],
-      canSeeRoles: new FormControl(!!this.currentRole?.permissions?.find((p)=>(p.type === Permissions.canSeeRoles))),
-      canSeeUsers: new FormControl(!!this.currentRole?.permissions?.find((p)=>(p.type === Permissions.canSeeUsers))),
+      canSeeRoles: new FormControl(
+        !!this.currentRole?.permissions?.find(
+          (p) => p.type === Permissions.canSeeRoles
+        )
+      ),
+      canSeeUsers: new FormControl(
+        !!this.currentRole?.permissions?.find(
+          (p) => p.type === Permissions.canSeeUsers
+        )
+      ),
     });
   }
 
