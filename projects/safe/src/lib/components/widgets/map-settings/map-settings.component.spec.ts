@@ -18,25 +18,23 @@ describe('SafeMapSettingsComponent', () => {
   let fixture: ComponentFixture<SafeMapSettingsComponent>;
   let controller: ApolloTestingController;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        providers: [FormBuilder, TranslateService],
-        declarations: [SafeMapSettingsComponent],
-        imports: [
-          TranslateModule.forRoot({
-            loader: {
-              provide: TranslateLoader,
-              useClass: TranslateFakeLoader,
-            },
-          }),
-          ApolloTestingModule,
-        ],
-      }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      providers: [FormBuilder, TranslateService],
+      declarations: [SafeMapSettingsComponent],
+      imports: [
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+        ApolloTestingModule,
+      ],
+    }).compileComponents();
 
-      controller = TestBed.inject(ApolloTestingController);
-    })
-  );
+    controller = TestBed.inject(ApolloTestingController);
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeMapSettingsComponent);
