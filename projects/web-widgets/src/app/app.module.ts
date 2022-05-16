@@ -217,7 +217,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
 export class AppModule implements DoBootstrap {
   constructor(private injector: Injector, private translate: TranslateService) {
     this.translate.addLangs(environment.availableLanguages);
-    this.translate.setDefaultLang('en');
+    this.translate.setDefaultLang(environment.availableLanguages[0]);
   }
 
   ngDoBootstrap(): void {
