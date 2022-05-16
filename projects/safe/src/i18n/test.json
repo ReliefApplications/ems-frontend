@@ -37,6 +37,7 @@
 		"delete": "******",
 		"deleteObject": "******",
 		"deleted": "******",
+		"descrition": "******",
 		"display": "******",
 		"downloadObject": "******",
 		"downloadTemplate": "******",
@@ -126,6 +127,7 @@
 			"loadMore": "******"
 		},
 		"placeholder": {
+			"description": "******",
 			"email": "******",
 			"name": "******",
 			"search": "******",

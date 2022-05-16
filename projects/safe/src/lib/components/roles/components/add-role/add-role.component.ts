@@ -21,6 +21,7 @@ export class SafeAddRoleComponent implements OnInit {
   ngOnInit(): void {
     this.roleForm = this.formBuilder.group({
       title: ['', Validators.required],
+      description: ['', Validators.required],
     });
   }
 

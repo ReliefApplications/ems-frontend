@@ -203,10 +203,11 @@ export interface AddPageMutationResponse {
 
 // === ADD ROLE ===
 export const ADD_ROLE = gql`
-  mutation addRole($title: String!, $application: ID) {
-    addRole(title: $title, application: $application) {
+  mutation addRole($title: String!, $description: String, $application: ID) {
+    addRole(title: $title, description: $description, application: $application) {
       id
       title
+      description
       permissions {
         id
         type
@@ -283,15 +284,18 @@ export const EDIT_ROLE = gql`
     $permissions: [ID]
     $channels: [ID]
     $title: String
+    $description: String
   ) {
     editRole(
       id: $id
       permissions: $permissions
       channels: $channels
       title: $title
+      description: $description
     ) {
       id
       title
+      description
       permissions {
         id
         type

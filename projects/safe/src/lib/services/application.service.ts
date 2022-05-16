@@ -478,6 +478,7 @@ export class SafeApplicationService {
           mutation: ADD_ROLE,
           variables: {
             title: role.title,
+            description: role.description,
             application: application.id,
           },
         })
@@ -516,12 +517,13 @@ export class SafeApplicationService {
             permissions: value.permissions,
             channels: value.channels,
             title: value.title,
+            description: value.description,
           },
         })
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
+              this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate.instant('common.role.one').toLowerCase(),
                 value: role.title,
               })
@@ -534,6 +536,7 @@ export class SafeApplicationService {
                     ...x,
                     permissions: res.data?.editRole.permissions,
                     channels: res.data?.editRole.channels,
+                    description: res.data?.editRole.description,
                   };
                 }
                 return x;
@@ -558,6 +561,13 @@ export class SafeApplicationService {
               }),
             };
             this.application.next(newApplication);
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.role.one').toLowerCase(),
+                value: role.title,
+              })
+            );
           }
         });
     }

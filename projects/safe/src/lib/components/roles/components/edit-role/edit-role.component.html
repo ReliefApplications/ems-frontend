@@ -7,6 +7,10 @@
                 <input matInput formControlName="title" type='text' />
             </mat-form-field>
             <mat-form-field>
+                <mat-label>{{'common.description' | translate}}</mat-label>
+                <input matInput formControlName="description" type='text' />
+            </mat-form-field>
+            <mat-form-field>
                 <mat-label>{{'components.role.update.permissions' | translate}}</mat-label>
                 <mat-select formControlName="permissions" multiple>
                     <mat-option *ngFor="let permission of permissions" [value]="permission.id">

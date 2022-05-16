@@ -359,6 +359,7 @@ export const GET_ROLES = gql`
     roles(application: $application) {
       id
       title
+      description
       permissions {
         id
         type
@@ -489,6 +490,7 @@ export const GET_APPLICATION_BY_ID = gql`
       roles {
         id
         title
+        description
         permissions {
           id
           type

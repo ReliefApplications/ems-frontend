@@ -37,6 +37,7 @@
 		"delete": "Delete",
 		"deleteObject": "Delete {{name}}",
 		"deleted": "Deleted",
+		"descrition": "Description",
 		"display": "Display",
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
@@ -126,6 +127,7 @@
 			"loadMore": "Load more"
 		},
 		"placeholder": {
+			"description": "Enter a description",
 			"email": "Enter email",
 			"name": "Enter a name",
 			"search": "Search...",

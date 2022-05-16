@@ -39,10 +39,11 @@ export interface EditUserMutationResponse {
 
 // === ADD ROLE ===
 export const ADD_ROLE = gql`
-  mutation addRole($title: String!, $application: ID) {
-    addRole(title: $title, application: $application) {
+  mutation addRole($title: String!, $description: String!, $application: ID) {
+    addRole(title: $title, description: $description, application: $application) {
       id
       title
+      description
       permissions {
         id
         type
@@ -59,10 +60,11 @@ export interface AddRoleMutationResponse {
 
 // === EDIT ROLE ===
 export const EDIT_ROLE = gql`
-  mutation editRole($id: ID!, $permissions: [ID]!) {
-    editRole(id: $id, permissions: $permissions) {
+  mutation editRole($id: ID!, $description: String, $permissions: [ID]!) {
+    editRole(id: $id, description: $description, permissions: $permissions) {
       id
       title
+      description
       usersCount
     }
   }

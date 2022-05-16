@@ -133,6 +133,7 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
               mutation: ADD_ROLE,
               variables: {
                 title: value.title,
+                description: value.description,
               },
             })
             .subscribe(
@@ -179,19 +180,18 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
                 permissions: value.permissions,
                 channels: value.channels,
                 title: value.title,
+                description: value.description,
               },
             })
             .subscribe((res) => {
+              const message = res.errors
+                ? 'common.notifications.objectNotUpdated'
+                : 'common.notifications.objectUpdated';
               this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate
-                      .instant('common.role.one')
-                      .toLowerCase(),
-                    value: role.title,
-                  }
-                )
+                this.translate.instant(message, {
+                  type: this.translate.instant('common.role.one').toLowerCase(),
+                  value: role.title,
+                })
               );
               this.getRoles();
             });

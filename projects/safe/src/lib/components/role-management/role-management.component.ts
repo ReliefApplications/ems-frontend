@@ -254,7 +254,7 @@ export class SafeRoleManagementComponent implements OnInit {
     this.roleForm = this.formBuilder.group({
       name: [this.currentRole?.title, Validators.required],
       channels: [this.currentRole?.channels],
-      description: new FormControl(this.role.description),
+      description: [this.currentRole?.description, Validators.required],
       canSeeRoles: new FormControl(!!this.currentRole?.permissions?.find((p)=>(p.type === Permissions.canSeeRoles))),
       canSeeUsers: new FormControl(!!this.currentRole?.permissions?.find((p)=>(p.type === Permissions.canSeeUsers))),
     });

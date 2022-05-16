@@ -73,6 +73,7 @@ export class SafeEditRoleComponent implements OnInit {
       });
     this.roleForm = this.formBuilder.group({
       title: [this.data.role.title, Validators.required],
+      description: [this.data.role.description, Validators.required],
       permissions: [
         this.data.role.permissions
           ? this.data.role.permissions.map((x) => x.id)
