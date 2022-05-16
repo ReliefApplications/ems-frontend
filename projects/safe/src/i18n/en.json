@@ -38,6 +38,7 @@
 		"delete": "Delete",
 		"deleteObject": "Delete {{name}}",
 		"deleted": "Deleted",
+		"dismiss": "Dismiss",
 		"display": "Display",
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
