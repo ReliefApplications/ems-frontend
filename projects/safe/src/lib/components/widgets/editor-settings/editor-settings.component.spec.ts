@@ -13,22 +13,20 @@ describe('SafeEditorSettingsComponent', () => {
   let component: SafeEditorSettingsComponent;
   let fixture: ComponentFixture<SafeEditorSettingsComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        providers: [FormBuilder, TranslateService],
-        declarations: [SafeEditorSettingsComponent],
-        imports: [
-          TranslateModule.forRoot({
-            loader: {
-              provide: TranslateLoader,
-              useClass: TranslateFakeLoader,
-            },
-          }),
-        ],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      providers: [FormBuilder, TranslateService],
+      declarations: [SafeEditorSettingsComponent],
+      imports: [
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeEditorSettingsComponent);
