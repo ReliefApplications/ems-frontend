@@ -51,7 +51,10 @@
     </mat-form-field>
     <mat-form-field>
       <mat-label>{{ 'components.history.field.select' | translate }}</mat-label>
-      <mat-select (selectionChange)="applyFilter($event.value)">
+      <mat-select
+        (selectionChange)="applyFilter($event.value)"
+        [value]="filterField"
+      >
         <mat-option value="all">{{
           'components.history.field.all' | translate
         }}</mat-option>
