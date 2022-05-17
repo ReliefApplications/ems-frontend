@@ -123,7 +123,6 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
             this.currentRole = application.roles?.find(
               (role) => role.id === roleId
             );
-
             // Get all the application users who have the current role, and try to display their names, or usernames, or display a default value if not found
             this.roleUsers =
               application.users
@@ -135,6 +134,11 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                   (user) => user.name || user.username || 'no name nor username'
                 ) || [];
             this.buildForm();
+
+            this.channels = (application.channels || []).map((channel) => {
+              return { ...channel, application: { name: application.name } };
+            });
+            this.updateApplicationsChannels();
 
             this.featuresRaw = application.pages || [];
             this.updateFeatures();
@@ -149,6 +153,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                 );
                 this.buildForm();
               });
+
             this.apollo
               .watchQuery<GetUsersGlobalQueryResponse>({
                 query: GET_USERS_GLOBAL,
@@ -167,17 +172,17 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                       'no name nor username available'
                   );
               });
+
+            this.apollo
+              .watchQuery<GetChannelsQueryResponse>({
+                query: GET_CHANNELS,
+              })
+              .valueChanges.subscribe((res) => {
+                this.channels = res.data.channels;
+                this.updateApplicationsChannels();
+              });
           }
         });
-      });
-
-    this.apollo
-      .watchQuery<GetChannelsQueryResponse>({
-        query: GET_CHANNELS,
-      })
-      .valueChanges.subscribe((res) => {
-        this.channels = res.data.channels;
-        this.updateApplicationsChannels();
       });
 
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
@@ -298,7 +303,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     this.applications = Array.from(
       new Set(this.channels.map((x: any) => x.application?.name))
     ).map((name) => ({
-      name: name ? name : 'Global',
+      name: name || 'Global',
       channels: this.channels.reduce((o: Channel[], channel: Channel) => {
         if (
           channel?.application?.name === name &&
