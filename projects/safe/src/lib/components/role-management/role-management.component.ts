@@ -135,9 +135,10 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                 ) || [];
             this.buildForm();
 
-            this.channels = (application.channels || []).map((channel) => {
-              return { ...channel, application: { name: application.name } };
-            });
+            this.channels = (application.channels || []).map((channel) => ({
+              ...channel,
+              application: { name: application.name },
+            }));
             this.updateApplicationsChannels();
 
             this.featuresRaw = application.pages || [];
