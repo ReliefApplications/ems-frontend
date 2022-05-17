@@ -38,7 +38,7 @@
                 </div>
             </div>
         </mat-tab>
-        <mat-tab [label]="'Features'">
+        <mat-tab [label]="'Features'" *ngIf="inApp">
             <div class="searchbar">
                 <mat-form-field appearance="outline">
                     <mat-icon matPrefix>search</mat-icon>
@@ -54,18 +54,21 @@
                             {{('common.' + group.type + '.few') | translate}}
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <div class="checkbox-area">
-                        <mat-checkbox *ngFor="let feature of group.contents"
-                            [checked]="role.features.includes(feature.id)"
-                            (click)="$event.preventDefault(); onItemClick('features', feature.id)">
-                            {{feature.title}}
-                        </mat-checkbox>
-                    </div>
+
+                    <mat-list>
+                        <mat-list-item *ngFor="let feature of group.contents">
+                            {{feature.name}}
+
+                            <mat-icon>{{feature.canSee ? "visibility" : "visibility_off"}}</mat-icon>
+                        </mat-list-item>
+                    </mat-list>
+
+
                 </mat-expansion-panel>
             </ng-container>
             <div class="spacer"></div>
         </mat-tab>
-        <mat-tab [label]="'Resources & Forms'" *ngIf="inApp">
+        <mat-tab [label]="'Resources'" *ngIf="inApp">
             <div class="searchbar">
                 <mat-form-field appearance="outline">
                     <mat-icon matPrefix>search</mat-icon>

@@ -20,67 +20,22 @@ import {
   GET_USERS_GLOBAL,
 } from '../../graphql/queries';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
-import { SafeEditAccessComponent } from '../access/edit-access/edit-access.component';
 import { SafeApplicationService } from '../../services/application.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Permissions, Role } from '../../models/user.model';
+import { Page } from '../../models/page.model';
 
 const mockRole = {
   id: '',
-  name: 'Wizard',
-  description: 'Bibbidi-Bobbidi-Boo',
+  name: '',
+  description: '',
   canSeeRoles: false,
-  canSeeUsers: true,
-  users: [
-    { name: 'Harry Potter' },
-    { name: 'Hermione Granger' },
-    { name: 'Ron Weasley' },
-    { name: 'Severus Snape' },
-    { name: 'Draco Malfoy' },
-    { name: 'Lord Voldemort' },
-    { name: 'Albus Dumbledore' },
-    { name: 'Neville Longbottom' },
-    { name: 'Ginny Weasley' },
-    { name: 'Luna Lovegood' },
-  ],
+  canSeeUsers: false,
+  users: [],
   features: [],
   channels: [],
 };
-
-const mockFeatures = [
-  {
-    title: 'Board 1',
-    type: 'dashboard',
-    id: 1,
-  },
-  {
-    title: 'Board 2',
-    type: 'dashboard',
-    id: 2,
-  },
-  {
-    title: 'Workflow 1',
-    type: 'workflow',
-    id: 3,
-  },
-  {
-    title: 'Workflow 2',
-    type: 'workflow',
-    id: 4,
-  },
-  {
-    title: 'Form 1',
-    type: 'form',
-    id: 5,
-  },
-  {
-    title: 'Form 2',
-    type: 'form',
-    id: 6,
-  },
-];
 
 const LOAD_ITEMS = 10;
 const SEARCH_DEBOUNCE_TIME = 500;
@@ -121,6 +76,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   public channelSearch = '';
 
   // Features tab
+  private featuresRaw: Page[] = [];
   public features: any[] = [];
   public featureSearch = '';
 
@@ -153,7 +109,6 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
-    private dialog: MatDialog,
     private applicationService: SafeApplicationService,
     private route: ActivatedRoute
   ) {}
@@ -180,6 +135,9 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                   (user) => user.name || user.username || 'no name nor username'
                 ) || [];
             this.buildForm();
+            
+            this.featuresRaw = application.pages || [];
+            this.updateFeatures();
           } else {
             this.apollo
               .watchQuery<GetRolesQueryResponse>({
@@ -246,8 +204,6 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
       this.forms = res.data.forms.edges.map((x) => x.node);
     });
 
-    this.updateFeatures();
-
     this.formsAndResourcesSearch.valueChanges
       .pipe(debounceTime(SEARCH_DEBOUNCE_TIME), distinctUntilChanged())
       .subscribe((value) => {
@@ -283,8 +239,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    */
   private updateFeatures() {
     this.features = [];
-
-    mockFeatures.map((feature: any) => {
+    this.featuresRaw.map((feature: any) => {
       let i: number = this.features.findIndex(
         (element) => element.type === feature.type
       );
@@ -297,7 +252,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
         i = this.features.length - 1;
       }
       if (
-        feature.title.toLowerCase().includes(this.featureSearch.toLowerCase())
+        feature.name.toLowerCase().includes(this.featureSearch.toLowerCase())
       ) {
         this.features[i].contents.push(feature);
       }
@@ -460,7 +415,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   }
 
   public onSaveAccess(event: any): void {
-    console.log("SAVE ACCESS");
+    console.log('SAVE ACCESS');
     console.log(event);
   }
 
