@@ -135,7 +135,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                   (user) => user.name || user.username || 'no name nor username'
                 ) || [];
             this.buildForm();
-            
+
             this.featuresRaw = application.pages || [];
             this.updateFeatures();
           } else {
