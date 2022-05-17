@@ -6,13 +6,11 @@ describe('SafeEditorComponent', () => {
   let component: SafeEditorComponent;
   let fixture: ComponentFixture<SafeEditorComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [SafeEditorComponent],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [SafeEditorComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeEditorComponent);

@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   Inject,
+  NgZone,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -97,7 +98,8 @@ export class SafeFormModalComponent implements OnInit {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private ngZone: NgZone
   ) {
     this.environment = environment;
   }
@@ -330,11 +332,15 @@ export class SafeFormModalComponent implements OnInit {
             this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, {
               error: true,
             });
-            this.dialogRef.close();
+            this.ngZone.run(() => {
+              this.dialogRef.close();
+            });
           } else {
-            this.dialogRef.close({
-              template: this.data.template,
-              data: res.data?.addRecord,
+            this.ngZone.run(() => {
+              this.dialogRef.close({
+                template: this.data.template,
+                data: res.data?.addRecord,
+              });
             });
           }
         });
