@@ -13,22 +13,20 @@ describe('SafeSchedulerSettingsComponent', () => {
   let component: SafeSchedulerSettingsComponent;
   let fixture: ComponentFixture<SafeSchedulerSettingsComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        providers: [FormBuilder, TranslateService],
-        declarations: [SafeSchedulerSettingsComponent],
-        imports: [
-          TranslateModule.forRoot({
-            loader: {
-              provide: TranslateLoader,
-              useClass: TranslateFakeLoader,
-            },
-          }),
-        ],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      providers: [FormBuilder, TranslateService],
+      declarations: [SafeSchedulerSettingsComponent],
+      imports: [
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeSchedulerSettingsComponent);

@@ -15,7 +15,8 @@
         [form]="$any(tileForm.controls.query)"
         [canExpand]="false"
       ></safe-query-builder>
-      <ng-container *ngIf="selectedFields.length > 0">
+    </div>
+      <!-- <ng-container *ngIf="selectedFields.length > 0">
         <mat-form-field appearance="outline">
           <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
           <mat-select formControlName="latitude">
@@ -50,8 +51,8 @@
           ></mat-hint>
         </mat-form-field>
       </ng-container>
-    </div>
-    <div class="form-group">
+    </div> -->
+    <!-- <div class="form-group">
       <div class="form-group-title">
         {{ 'components.widget.settings.map.layers.title' | translate }}
       </div>
@@ -95,7 +96,188 @@
           (click)="removeOnlineLayer(layer.id)"
         ></safe-button>
       </h3>
+    </div> -->
+
+
+    <div class="form-group">
+      <div class="form-group-title">
+        Layer Configuration
+      </div>
+      <mat-tab-group
+      mat-align-tabs="start"
+      animationDuration="0ms">
+
+        <mat-tab [label]="'components.widget.settings.map.layers.point.title' | translate">
+          <div class="info-text">{{ 'components.widget.settings.map.layers.point.info' | translate }}</div>
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
+            <mat-select formControlName="latitude">
+              <mat-option *ngFor="let field of selectedFields" [value]="field">
+                {{ field }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>{{ 'models.widget.map.longitude' | translate }}</mat-label>
+            <mat-select formControlName="longitude">
+              <mat-option *ngFor="let field of selectedFields" [value]="field">
+                {{ field }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="width: 100%;" class="margin-bottom">
+            <mat-label>{{ 'components.widget.settings.map.layers.point.category' | translate }}</mat-label>
+            <mat-select formControlName="category">
+              <mat-option [value]="">{{ 'common.input.none' | translate }}</mat-option>
+              <mat-option *ngFor="let field of selectedFields" [value]="field">
+                {{ field }}
+              </mat-option>
+            </mat-select>
+            <mat-hint
+              >{{ 'components.widget.settings.map.tooltip.category' | translate
+              }}<safe-icon icon="layers" [inline]="true" [size]="14"></safe-icon
+            ></mat-hint>
+          </mat-form-field>
+          <mat-label>
+            {{ 'components.widget.settings.map.layers.point.rules' | translate }}
+          </mat-label>
+          <div class="info-text">{{ 'components.widget.settings.map.layers.point.rulesInfo' | translate }}</div>
+          <div class="filter-list" *ngFor="let rule of tileForm.value.pointerRules.controls; let i = index;" [formGroup]="rule">
+            <div>
+              <mat-form-field appearance="outline">
+                  <mat-label>{{ 'components.widget.settings.map.layers.point.size' | translate }}</mat-label>
+                  <input type="number" matInput formControlName="size" min="0" oninput="this.value = 
+                  !!this.value && Math.abs(this.value) >= 0 ? Math.abs(this.value) : null">
+              </mat-form-field>
+              <safe-button
+                icon="delete"
+                category="primary"
+                variant="danger"
+                (click)="removePointerRule(i)"
+              ></safe-button>
+            </div>
+            <div>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'components.widget.settings.map.layers.point.color' | translate }}</mat-label>
+                <h4></h4>
+                <input type="color" matInput formControlName="color">
+              </mat-form-field>
+            </div>
+            <safe-tab-filter [form]="rule.controls.filter"
+            [fields]="formatedSelectedFields"></safe-tab-filter>
+          </div>
+          <safe-button type='button' category="tertiary" (click)="addPointerRule()">{{ 'components.widget.settings.map.layers.point.addNew' | translate }}</safe-button>
+        </mat-tab>
+
+        <mat-tab [label]="'components.widget.settings.map.layers.clorophlet.title' | translate">
+          <div class="info-text">{{ 'components.widget.settings.map.layers.clorophlet.info' | translate }}</div>
+          <div class="filter-list" *ngFor="let clorophlet of tileForm.value.clorophlets.controls; let i = index;" [formGroup]="clorophlet">
+            <div>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ 'common.name' | translate }}</mat-label>
+                    <input type="text" [placeholder]="'common.placeholder.name' | translate" matInput formControlName="name">
+                </mat-form-field>
+                <div class="deleteBtn">
+                    <safe-button icon="delete" category="primary" variant="danger" (click)="removeClorophlet(i)"></safe-button>
+                </div>
+            </div>
+            <div class="filter-buttons">
+              <safe-button category="tertiary" (click)="fileInput.click()">{{
+                  clorophlet.value.geoJSONname ?
+                    clorophlet.value.geoJSONname :
+                    ('common.uploadObject' | translate : {name: ('components.widget.settings.map.layers.clorophlet.geoJSON' | translate)})
+              }}</safe-button>
+              <input hidden #fileInput type="file" id="file{{i}}" accept=".json, .geojson" (change)="uploadGeoJSON(i)">
+            </div>
+            <div>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ 'components.widget.settings.map.layers.clorophlet.identifier' | translate }}</mat-label>
+                    <mat-select formControlName="place">
+                        <mat-option *ngFor="let field of selectedFields" [value]="field">{{ field }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="extraInput">
+                    <mat-label>{{ 'components.widget.settings.map.layers.clorophlet.geoJSONidentifier' | translate }}</mat-label>
+                    <mat-select formControlName="geoJSONfield">
+                        <mat-option *ngFor="let field of geoJSONfields[i]" [value]="field">{{ field }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <mat-label>Opacity</mat-label>
+            <mat-slider
+              thumbLabel
+              tickInterval="1"
+              formControlName="opacity"
+              [min]="0"
+              [max]="100"
+            ></mat-slider>
+            <div>
+                <div *ngFor="let division of clorophlet.controls.divisions.controls; let f = index;"
+                class="filter-list" [formGroup]="division">
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{ 'components.widget.settings.map.layers.point.color' | translate }}</mat-label>
+                        <h4></h4>
+                        <input type="color" matInput formControlName="color">
+                    </mat-form-field>
+                    <div class="deleteBtn">
+                        <safe-button icon="delete" category="primary" variant="danger" (click)="removeDivision(clorophlet, f)"></safe-button>
+                    </div>
+                    <safe-tab-filter [form]="division.controls.filter"
+                    [fields]="formatedSelectedFields"></safe-tab-filter>
+                </div>
+                <div>
+                    <safe-button category="tertiary" (click)="newDivision(clorophlet)">{{ 'components.widget.settings.map.layers.clorophlet.addNewDiv' | translate }}</safe-button>
+                </div>
+            </div>
+          </div>
+          <safe-button category="tertiary" (click)="addClorophlet()">{{ 'components.widget.settings.map.layers.clorophlet.addNew' | translate }}</safe-button>
+        </mat-tab>
+
+        <mat-tab [label]="'components.widget.settings.map.layers.online.title' | translate">
+          <div class="info-text">{{ 'components.widget.settings.map.layers.online.info' | translate }}</div>
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>{{ 'components.widget.settings.map.layers.online.select' | translate }}</mat-label>
+            <input
+              type="text"
+              matInput
+              [(ngModel)]="search"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="getContent($event)"
+              autocomplete="off"
+              placeholder="{{ 'common.placeholder.search' | translate }}"
+            />
+            <div *ngIf="availableLayers.length > 0" class="layer-list">
+              <button
+                *ngFor="let layer of availableLayers"
+                mat-button
+                (click)="addOnlineLayer(layer)"
+              >
+                {{ layer.title }}
+                <safe-badge *ngFor="let tag of layer.tags">{{ tag }}</safe-badge>
+              </button>
+            </div>
+          </mat-form-field>
+          <mat-label
+            *ngIf="
+              tileForm.value.onlineLayers && tileForm.value.onlineLayers.length > 0
+            "
+          >
+            {{ 'components.widget.settings.map.layers.online.selected' | translate }}
+          </mat-label>
+          <h3 *ngFor="let layer of tileForm.value.onlineLayers">
+            {{ layer.title }}
+            <safe-button
+              icon="delete"
+              category="primary"
+              variant="danger"
+              (click)="removeOnlineLayer(layer.id)"
+            ></safe-button>
+          </h3>
+
+        </mat-tab>
+      </mat-tab-group>
     </div>
+
     <div class="form-group">
       <div class="form-group-title">
         {{ 'components.widget.settings.map.display.title' | translate }}
