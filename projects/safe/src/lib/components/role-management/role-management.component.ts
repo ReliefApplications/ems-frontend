@@ -106,8 +106,8 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   public currentRole?: Role;
 
   // Page status
-  @Input() public inApp: boolean = false;
-  @Input() public applicationId: string = '';
+  @Input() public inApp = false;
+  @Input() public applicationId = '';
 
   // Final form to be updated
   public roleForm?: FormGroup;
@@ -457,6 +457,11 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
       }
     });
     */
+  }
+
+  public onSaveAccess(event: any): void {
+    console.log("SAVE ACCESS");
+    console.log(event);
   }
 
   /**
