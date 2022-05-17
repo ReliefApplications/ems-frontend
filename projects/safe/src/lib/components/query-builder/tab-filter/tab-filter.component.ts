@@ -92,21 +92,12 @@ const TYPES: any = {
   // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   ID: {
     defaultOperator: 'contains',
-    operators: [
-      'eq',
-      'neq',
-      'contains',
-      'doesnotcontain',
-      'startswith',
-    ],
+    operators: ['eq', 'neq', 'contains', 'doesnotcontain', 'startswith'],
   },
   // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   Form: {
     defaultOperator: 'eq',
-    operators: [
-      'eq',
-      'neq',
-    ],
+    operators: ['eq', 'neq'],
   },
   // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   Boolean: {
@@ -152,7 +143,7 @@ const AVAILABLE_TYPES = [
   'Time',
   'JSON',
   'ID',
-  'Form'
+  'Form',
 ];
 
 @Component({
