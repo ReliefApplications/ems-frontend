@@ -332,6 +332,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
                   // }
 
                   if (
+                    entry.node[value.place] &&
+                    feature.properties[value.geoJSONfield] &&
                     entry.node[value.place].toString() ===
                     feature.properties[value.geoJSONfield].toString()
                   ) {
