@@ -387,6 +387,12 @@
 					}
 				}
 			},
+			"modal": {
+				"update": {
+					"confirmUpdateRow": "Voulez-vous vraiment mettre à jour cette ligne ?",
+					"updateRow": "Mise à jour de la ligne"
+				}
+			},
 			"summary": {
 				"cache": {
 					"clear": "Vider le cache",

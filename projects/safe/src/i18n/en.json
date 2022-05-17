@@ -387,6 +387,12 @@
 					}
 				}
 			},
+			"modal": {
+				"update": {
+					"confirmUpdateRow": "Do you confirm the update of this row ?",
+					"updateRow": "Update row"
+				}
+			},
 			"summary": {
 				"cache": {
 					"clear": "Clear cache",

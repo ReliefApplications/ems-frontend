@@ -285,11 +285,13 @@ export class SafeFormModalComponent implements OnInit {
     if (this.data.askForConfirm) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: `Update row${rowsSelected > 1 ? 's' : ''}`,
-          content: `Do you confirm the update of ${rowsSelected} row${
-            rowsSelected > 1 ? 's' : ''
-          } ?`,
-          confirmText: 'Confirm',
+          title: this.translate.instant(
+            'components.form.modal.update.updateRow'
+          ),
+          content: this.translate.instant(
+            'components.form.modal.update.confirmUpdateRow'
+          ),
+          confirmText: this.translate.instant('common.confirm'),
           confirmColor: 'primary',
         },
       });

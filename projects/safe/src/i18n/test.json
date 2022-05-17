@@ -387,6 +387,12 @@
 					}
 				}
 			},
+			"modal": {
+				"update": {
+					"confirmUpdateRow": "******",
+					"updateRow": "******"
+				}
+			},
 			"summary": {
 				"cache": {
 					"clear": "******",
