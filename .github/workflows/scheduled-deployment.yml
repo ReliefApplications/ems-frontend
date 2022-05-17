@@ -11,8 +11,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - environment: OORT_ILO
-            ref: release-1.3.0-next
           #- environment: OORT_GUYANE
           #  ref: release-1.3.0-next
           - environment: OORT_PROD
