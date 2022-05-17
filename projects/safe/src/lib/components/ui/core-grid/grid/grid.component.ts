@@ -47,6 +47,8 @@ import { SafeDownloadService } from '../../../../services/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
+import { SafeSnackBarService } from 'projects/safe/src/public-api';
+import { TranslateService } from '@ngx-translate/core';
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
@@ -174,7 +176,9 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -485,6 +489,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * Saves edition.
    */
   public onSave(): void {
+    // eslint-disable-next-line no-underscore-dangle
+    const stringVal = this.data.data[0]._meta.formStructure;
     // Closes the editor, and saves the value locally
     if (this.formGroup.dirty) {
       this.action.emit({
@@ -493,8 +499,18 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         value: this.formGroup.value,
       });
     }
-    this.closeEditor();
-    this.action.emit({ action: 'save' });
+    if (this.checkRegexValidation(this.parseValidator(stringVal)) !== '') {
+      this.snackBar.openSnackBar(
+        this.checkRegexValidation(this.parseValidator(stringVal)),
+        {
+          error: true,
+          duration: 15000,
+        }
+      );
+    } else {
+      this.closeEditor();
+      this.action.emit({ action: 'save' });
+    }
   }
 
   /**
@@ -543,6 +559,80 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    */
   isEllipsisActive(e: any): boolean {
     return e.offsetWidth < e.scrollWidth;
+  }
+
+  /**
+   * Transform the validators to a more useful format
+   *
+   * @param stringVal Validator on string form
+   * @returns List of validators in JSON format with type and different values
+   */
+  parseValidator(stringVal: string) {
+    let listOfValidators: any[];
+    // eslint-disable-next-line prefer-const
+    listOfValidators = [];
+    const JSONval = JSON.parse(stringVal);
+    Object.keys(JSONval.pages).forEach((value1, key1) => {
+      Object.keys(JSONval.pages[value1].elements).forEach((value2, key2) => {
+        if (
+          typeof JSONval.pages[value1].elements[value2].validators !==
+          'undefined'
+        ) {
+          if (
+            JSONval.pages[value1].elements[value2].validators[0].type ===
+            'regex'
+          ) {
+            listOfValidators.push({
+              valueName: JSONval.pages[value1].elements[value2].valueName,
+              text: JSONval.pages[value1].elements[value2].validators[0].text,
+              regex: JSONval.pages[value1].elements[value2].validators[0].regex,
+              type: JSONval.pages[value1].elements[value2].validators[0].type,
+            });
+          }
+        }
+      });
+    });
+    return listOfValidators;
+  }
+
+  /**
+   * Checks if the data is coherent with the regex validators
+   *
+   * @param validator Validator in JSON format
+   * @returns error message to display
+   */
+  checkRegexValidation(validator: any) {
+    let errMessage: string;
+    // eslint-disable-next-line prefer-const
+    errMessage = '';
+    let row: number;
+    row = 0;
+    const data = this.data.data;
+    Object.keys(data).forEach((value1, key1) => {
+      Object.keys(data[key1]).forEach((value2, key2) => {
+        Object.keys(validator).forEach((value3, key3) => {
+          const regex = new RegExp(validator[value3].regex, 'g');
+          if (
+            value2 === validator[value3].valueName &&
+            regex.test(data[key1][value2]) !== true
+          ) {
+            row = +value1 + 1;
+            errMessage +=
+              this.translate.instant(
+                'components.widget.grid.errors.errorOnRow'
+              ) +
+              ' ' +
+              row +
+              ', ' +
+              validator[value3].valueName +
+              ' : ' +
+              validator[value3].text +
+              '\n';
+          }
+        });
+      });
+    });
+    return errMessage;
   }
 
   /**

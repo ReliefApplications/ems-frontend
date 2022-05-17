@@ -1,12 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  ContentType,
-  Step,
-  SafeSnackBarService,
-  Workflow,
-} from '@safe/builder';
+
 import { Subscription } from 'rxjs';
 import {
   GetWorkflowByIdQueryResponse,
@@ -14,6 +9,12 @@ import {
 } from '../../../graphql/queries';
 import { PreviewService } from '../../../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
+import {
+  ContentType,
+  SafeSnackBarService,
+  Step,
+  Workflow,
+} from 'projects/safe/src/public-api';
 
 @Component({
   selector: 'app-workflow',

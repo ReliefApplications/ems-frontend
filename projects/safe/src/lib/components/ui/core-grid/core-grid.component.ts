@@ -53,6 +53,7 @@ import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
 import { TranslateService } from '@ngx-translate/core';
+import { GET_FORM_BY_ID } from '../../../graphql/queries';
 
 const DEFAULT_FILE_NAME = 'Records';
 
@@ -462,6 +463,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         (res: any) => {
           this.loading = false;
           this.error = false;
+          //debugger
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               const nodes =
@@ -500,6 +502,33 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       data: this.items,
       total: this.totalCount,
     };
+    this.loadForm();
+  }
+
+  private async loadForm(): Promise<void> {
+    const query = this.queryBuilder.graphqlQuery(
+      this.settings.query.name,
+      'form'
+    );
+    const resource = await this.apollo
+      .query<any>({
+        query,
+      })
+      .toPromise();
+    resource.data[this.settings.query.name].edges.map(async (x: any) => {
+      const forms = await this.apollo
+        .query<any>({
+          query: GET_FORM_BY_ID,
+          variables: {
+            id: x.node.form,
+          },
+        })
+        .toPromise();
+      this.gridData.data.map(
+        // eslint-disable-next-line no-underscore-dangle
+        (elt: any) => (elt._meta.formStructure = forms.data.form.structure)
+      );
+    });
   }
 
   /**
