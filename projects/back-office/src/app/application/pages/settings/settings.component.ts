@@ -97,7 +97,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
           title: this.translate.instant('common.deleteObject', {
-            object: this.translate.instant('common.application.one'),
+            name: this.application?.name,
           }),
           content: this.translate.instant(
             'components.application.delete.confirmationMessage'

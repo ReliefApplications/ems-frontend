@@ -30,6 +30,11 @@
 		"createdOn": "Created on",
 		"delete": "Delete",
 		"deleteObject": "Delete {{name}}",
+<<<<<<< HEAD
+=======
+		"deleted": "Deleted",
+		"dismiss": "Dismiss",
+>>>>>>> release-1.3.0-next
 		"display": "Display",
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
