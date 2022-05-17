@@ -13,10 +13,10 @@ jobs:
         include:
           - environment: OORT_ILO
             ref: release-1.3.0-next
-          - environment: OORT_GUYANE
+          #- environment: OORT_GUYANE
+          #  ref: release-1.3.0-next
+          - environment: OORT_PROD
             ref: release-1.3.0-next
-          # - environment: OORT_PROD
-          #   ref: release-1.3.0-next
           - environment: OORT_DEV
             ref: release-1.3.0-next
     environment:
