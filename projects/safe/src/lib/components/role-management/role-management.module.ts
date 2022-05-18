@@ -12,6 +12,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { SafeIconModule } from '../ui/icon/icon.module';
 
 @NgModule({
   declarations: [SafeRoleManagementComponent],
@@ -29,6 +30,7 @@ import { MatListModule } from '@angular/material/list';
     MatExpansionModule,
     MatIconModule,
     MatListModule,
+    SafeIconModule
   ],
   exports: [SafeRoleManagementComponent],
 })

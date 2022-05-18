@@ -42,8 +42,8 @@
             <div class="searchbar">
                 <mat-form-field appearance="outline">
                     <mat-icon matPrefix>search</mat-icon>
-                    <input matInput type="search" [(ngModel)]="featureSearch" [ngModelOptions]="{standalone: true}"
-                        [placeholder]="'common.placeholder.search' | translate" (ngModelChange)="onFeatureSearch()">
+                    <input matInput type="search" [(ngModel)]="featuresSearch" [ngModelOptions]="{standalone: true}"
+                        [placeholder]="'common.placeholder.search' | translate" (ngModelChange)="onFeaturesSearch()">
                 </mat-form-field>
             </div>
             <ng-container *ngFor="let group of formattedFeatures | keyvalue">
@@ -57,9 +57,8 @@
 
                     <mat-list>
                         <mat-list-item *ngFor="let feature of group.value" (click)="changeFeatureVisibility(feature)">
-                            <mat-icon>{{feature.canSee ? "visibility" : "visibility_off"}}</mat-icon>
+                            <safe-icon icon="{{feature.canSee ? 'visibility' : 'visibility_off'}}" variant="{{feature.canSee ? 'primary' : 'grey'}}"></safe-icon>
                             {{feature.name}}
-
                         </mat-list-item>
                     </mat-list>
 
@@ -123,7 +122,7 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="checkbox-area">
-                        <mat-checkbox *ngFor="let channel of application.value">
+                        <mat-checkbox *ngFor="let channel of application.value" [checked]="isChannelSubscribed(channel)">
                             {{channel.title}}
                         </mat-checkbox>
                     </div>

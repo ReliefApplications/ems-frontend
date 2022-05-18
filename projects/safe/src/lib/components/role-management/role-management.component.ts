@@ -26,17 +26,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Permissions, Role } from '../../models/user.model';
 import { Page } from '../../models/page.model';
 
-const mockRole = {
-  id: '',
-  name: '',
-  description: '',
-  canSeeRoles: false,
-  canSeeUsers: false,
-  users: [],
-  features: [],
-  channels: [],
-};
-
 const LOAD_ITEMS = 10;
 const SEARCH_DEBOUNCE_TIME = 500;
 
@@ -46,26 +35,26 @@ const SEARCH_DEBOUNCE_TIME = 500;
   styleUrls: ['./role-management.component.scss'],
 })
 export class SafeRoleManagementComponent implements OnInit, OnDestroy {
-  // Role properties
-  public currentRole?: Role;
-
+  
   // Page status
   @Input() public inApp = false;
-  @Input() public applicationId = '';
 
-  // Final form to be updated
-  public roleForm?: FormGroup;
+  // Role
+  public currentRole?: Role;
 
   // Summary tab
   public roleUsers: string[] = [];
 
+  // Final form to be updated
+  public roleForm?: FormGroup;
+
   // Channels tab
-  public channelsRaw: Channel[] = [];
+  public channels: Channel[] = [];
   public channelsFormatted: { [key: string]: Channel[] } = {};
   public channelSearch = '';
 
   // Features tab
-  private featuresRaw: Page[] = [];
+  private features: Page[] = [];
   public formattedFeatures: {
     dashboard: Page[];
     form: Page[];
@@ -75,7 +64,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     form: [],
     workflow: [],
   };
-  public featureSearch = '';
+  public featuresSearch = '';
 
   // Resources tab
   public resources: any[] = [];
@@ -120,6 +109,8 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
             this.currentRole = application.roles?.find(
               (role) => role.id === roleId
             );
+            console.log('this.currentRole');
+            console.log(this.currentRole);
             // Get all the application users who have the current role, and try to display their names, or usernames, or display a default value if not found
             this.roleUsers =
               application.users
@@ -132,13 +123,13 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                 ) || [];
             this.buildForm();
 
-            this.channelsRaw = (application.channels || []).map((channel) => ({
+            this.channels = (application.channels || []).map((channel) => ({
               ...channel,
               application: { name: application.name },
             }));
             this.formatChannels();
 
-            this.featuresRaw = application.pages || [];
+            this.features = application.pages || [];
             this.formatFeatures();
           } else {
             this.apollo
@@ -149,6 +140,8 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                 this.currentRole = roles.data.roles.find(
                   (role) => role.id === roleId
                 );
+                console.log('this.currentRole');
+                console.log(this.currentRole);
                 this.buildForm();
               });
 
@@ -176,7 +169,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                 query: GET_CHANNELS,
               })
               .valueChanges.subscribe((res) => {
-                this.channelsRaw = res.data.channels;
+                this.channels = res.data.channels;
                 this.formatChannels();
               });
           }
@@ -219,6 +212,9 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Builds the role form
+   */
   private buildForm() {
     this.roleForm = this.formBuilder.group({
       name: [this.currentRole?.title, Validators.required],
@@ -237,21 +233,32 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Builds a features object that can be easily displayed on the template
+   */
   private formatFeatures(): void {
-    this.featuresRaw.forEach((feature) => {
+    this.formattedFeatures = {
+      dashboard: [],
+      form: [],
+      workflow: [],
+    };
+    this.features.forEach((feature) => {
       if (
         feature.type &&
         this.formattedFeatures[feature.type] &&
         feature.name &&
-        feature.name.toLowerCase().includes(this.featureSearch.toLowerCase())
+        feature.name.toLowerCase().includes(this.featuresSearch.toLowerCase())
       ) {
         this.formattedFeatures[feature.type].push(feature);
       }
     });
   }
 
+  /**
+   * Changes the visibility of a feature
+   */
   public changeFeatureVisibility(targetFeature: any) {
-    this.featuresRaw.forEach((feature) => {
+    this.features.forEach((feature) => {
       if (feature.id === targetFeature.id) {
         feature.canSee = !feature.canSee;
       }
@@ -274,17 +281,17 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Updates the feature list depending on the searchterm
+   * Updates the features list depending on the searchterm
    */
-  public onFeatureSearch() {
+  public onFeaturesSearch() {
     this.formatFeatures();
   }
 
   /**
-   * Moves channels in an array under corresponding applications
+   * Builds a channels object that can be easily displayed on the template
    */
   private formatChannels() {
-    this.channelsFormatted = this.channelsRaw.reduce((prev: any, curr) => {
+    this.channelsFormatted = this.channels.reduce((prev: any, curr) => {
       const appName = curr.application?.name || 'Global';
       const newElement = curr?.title
         ?.toLowerCase()
@@ -295,8 +302,12 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     }, {});
   }
 
+  public isChannelSubscribed(channel: Channel): boolean {
+    return !!this.currentRole?.channels?.find((c) => c.id === channel.id);
+  }
+
   /**
-   * Updates the channel list depending on the searchterm
+   * Updates the channels list depending on the searchterm
    */
   public onChannelSearch() {
     this.formatChannels();
