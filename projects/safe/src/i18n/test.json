@@ -74,6 +74,10 @@
 			"none": "******",
 			"one": "******"
 		},
+		"logout": {
+			"confirmationMessage": "******",
+			"titleMessage": "******"
+		},
 		"name": "******",
 		"newObject": "****** {{name}}",
 		"next": "******",
@@ -131,6 +135,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"row": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"save": "******",
 		"saveChanges": "******",
 		"searchObject": "****** {{name}}",
@@ -153,6 +162,7 @@
 		"title": "******",
 		"true": "******",
 		"update": "******",
+		"updateObject": "****** {{name}}",
 		"uploadObject": "****** {{name}}",
 		"user": {
 			"few": "******",
@@ -233,11 +243,16 @@
 		},
 		"application": {
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"duplicate": {
 				"name": {
 					"description": "******"
+				}
+			},
+			"pages": {
+				"delete": {
+					"confirmationMessage": "****** {{name}} ******"
 				}
 			},
 			"positionAttribute": {
@@ -245,6 +260,10 @@
 					"confirmationMessage": "****** {{name}} ******",
 					"title": "******"
 				}
+			},
+			"publish": {
+				"confirmationMessage": "****** {{aplication}} ******",
+				"titleMessage": "******"
 			},
 			"subscription": {
 				"modal": {
@@ -256,6 +275,10 @@
 						"listenTo": "******"
 					}
 				}
+			},
+			"unlock": {
+				"confirmationMessage": "****** {{application}} ******",
+				"titleMessage": "******"
 			},
 			"update": {
 				"placeholder": {
@@ -306,6 +329,9 @@
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
 			},
+			"deleteRow": {
+				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
@@ -327,6 +353,9 @@
 			"update": {
 				"exit": "******",
 				"exitMessage": "******"
+			},
+			"updateRow": {
+				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			}
 		},
 		"forms": {
@@ -463,6 +492,10 @@
 			},
 			"modal": {
 				"update": "******"
+			},
+			"recovery": {
+				"confirmationMessage": "****** {{date}} ******",
+				"titleMessage": "******"
 			}
 		},
 		"records": {
@@ -832,6 +865,10 @@
 			"chart": {
 				"defaultTitle": "******"
 			},
+			"delete": {
+				"confirmationMessage": "******",
+				"titleMessage": "******"
+			},
 			"map": {
 				"defaultTitle": "******",
 				"latitude": "******",
@@ -915,6 +952,9 @@
 		"workflow": {
 			"addStep": {
 				"selectType": "******"
+			},
+			"deleteStep": {
+				"confirmationMessage": "****** {{step}} ******"
 			},
 			"empty": {
 				"add": "******",
