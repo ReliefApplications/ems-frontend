@@ -525,7 +525,10 @@
 			"grid": {
 				"actions": {
 					"detail": "******",
-					"history": "******"
+					"history": "******",
+					"convert": "******",
+					"delete": "******",
+					"remove": "******"
 				},
 				"empty": "******",
 				"errors": {

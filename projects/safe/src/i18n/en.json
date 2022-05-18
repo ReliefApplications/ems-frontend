@@ -524,8 +524,11 @@
 			"expand": "Expand",
 			"grid": {
 				"actions": {
+					"convert": "Convert",
+					"delete": "Delete",
 					"detail": "Open detail",
-					"history": "Show history"
+					"history": "Show history",
+					"remove": "Remove from selection"
 				},
 				"empty": "No record detected",
 				"errors": {

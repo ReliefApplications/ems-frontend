@@ -7,20 +7,20 @@
     kendoButton
     (click)="action.emit({ action: 'convert', items: items })"
   >
-    Convert
+    {{ 'components.widget.grid.actions.convert' | translate }}
   </button>
   <button
     *ngIf="actions.delete && canDelete"
     kendoButton
     (click)="action.emit({ action: 'delete', items: items })"
   >
-    Delete
+    {{ 'components.widget.grid.actions.delete' | translate }}
   </button>
   <button
     *ngIf="actions.remove"
     kendoButton
     (click)="action.emit({ action: 'remove', items: items })"
   >
-    Remove from selection
+    {{ 'components.widget.grid.actions.remove' | translate }}
   </button>
 </ng-container>
