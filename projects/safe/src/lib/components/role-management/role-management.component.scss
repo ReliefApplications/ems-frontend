@@ -23,6 +23,10 @@ mat-expansion-panel {
             cursor: pointer;
             background-color: #dddddd54;
         }
+
+        mat-icon {
+            margin-right: 16px;
+        }
     }
 }
 

@@ -46,20 +46,20 @@
                         [placeholder]="'common.placeholder.search' | translate" (ngModelChange)="onFeatureSearch()">
                 </mat-form-field>
             </div>
-            <ng-container *ngFor="let group of features">
-                <mat-expansion-panel *ngIf="group.contents.length > 0">
+            <ng-container *ngFor="let group of formattedFeatures | keyvalue">
+                <mat-expansion-panel *ngIf="group.value.length > 0">
                     <mat-expansion-panel-header>
                         <mat-panel-title class="panel-header">
-                            <mat-icon *ngIf="group.icon.length > 0">{{group.icon}}</mat-icon>
-                            {{('common.' + group.type + '.few') | translate}}
+                            <mat-icon>{{getFeatureIcon(group.key)}}</mat-icon>
+                            {{('common.' + group.key + '.few') | translate}}
                         </mat-panel-title>
                     </mat-expansion-panel-header>
 
                     <mat-list>
-                        <mat-list-item *ngFor="let feature of group.contents">
+                        <mat-list-item *ngFor="let feature of group.value" (click)="changeFeatureVisibility(feature)">
+                            <mat-icon>{{feature.canSee ? "visibility" : "visibility_off"}}</mat-icon>
                             {{feature.name}}
 
-                            <mat-icon>{{feature.canSee ? "visibility" : "visibility_off"}}</mat-icon>
                         </mat-list-item>
                     </mat-list>
 
@@ -115,17 +115,15 @@
                         [placeholder]="'common.placeholder.search' | translate" (ngModelChange)="onChannelSearch()">
                 </mat-form-field>
             </div>
-            <ng-container *ngFor="let application of applications">
-                <mat-expansion-panel *ngIf="application.channels.length > 0">
+            <ng-container *ngFor="let application of channelsFormatted | keyvalue">
+                <mat-expansion-panel *ngIf="application.value.length > 0">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
-                            {{application.name}}
+                            {{application.key}}
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="checkbox-area">
-                        <mat-checkbox *ngFor="let channel of application.channels"
-                            [checked]="role.channels.includes(channel.id)"
-                            (click)="$event.preventDefault(); onItemClick('channels', channel.id)">
+                        <mat-checkbox *ngFor="let channel of application.value">
                             {{channel.title}}
                         </mat-checkbox>
                     </div>

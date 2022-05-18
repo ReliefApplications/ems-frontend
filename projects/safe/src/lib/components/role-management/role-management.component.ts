@@ -46,17 +46,6 @@ const SEARCH_DEBOUNCE_TIME = 500;
   styleUrls: ['./role-management.component.scss'],
 })
 export class SafeRoleManagementComponent implements OnInit, OnDestroy {
-  public role: {
-    id: string;
-    name: string;
-    description: string;
-    canSeeRoles: boolean;
-    canSeeUsers: boolean;
-    users: { name: string }[];
-    features: string[];
-    channels: string[];
-  } = mockRole;
-
   // Role properties
   public currentRole?: Role;
 
@@ -71,13 +60,21 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   public roleUsers: string[] = [];
 
   // Channels tab
-  public channels: Channel[] = [];
-  public applications: any[] = [];
+  public channelsRaw: Channel[] = [];
+  public channelsFormatted: { [key: string]: Channel[] } = {};
   public channelSearch = '';
 
   // Features tab
   private featuresRaw: Page[] = [];
-  public features: any[] = [];
+  public formattedFeatures: {
+    dashboard: Page[];
+    form: Page[];
+    workflow: Page[];
+  } = {
+    dashboard: [],
+    form: [],
+    workflow: [],
+  };
   public featureSearch = '';
 
   // Resources tab
@@ -135,14 +132,14 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                 ) || [];
             this.buildForm();
 
-            this.channels = (application.channels || []).map((channel) => ({
+            this.channelsRaw = (application.channels || []).map((channel) => ({
               ...channel,
               application: { name: application.name },
             }));
-            this.updateApplicationsChannels();
+            this.formatChannels();
 
             this.featuresRaw = application.pages || [];
-            this.updateFeatures();
+            this.formatFeatures();
           } else {
             this.apollo
               .watchQuery<GetRolesQueryResponse>({
@@ -179,8 +176,8 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                 query: GET_CHANNELS,
               })
               .valueChanges.subscribe((res) => {
-                this.channels = res.data.channels;
-                this.updateApplicationsChannels();
+                this.channelsRaw = res.data.channels;
+                this.formatChannels();
               });
           }
         });
@@ -240,33 +237,30 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Moves features in an array under corresponding groups
-   */
-  private updateFeatures() {
-    this.features = [];
-    this.featuresRaw.map((feature: any) => {
-      let i: number = this.features.findIndex(
-        (element) => element.type === feature.type
-      );
-      if (i < 0) {
-        this.features.push({
-          type: feature.type,
-          icon: this.getFeatureIcon(feature.type),
-          contents: [],
-        });
-        i = this.features.length - 1;
-      }
+  private formatFeatures(): void {
+    this.featuresRaw.forEach((feature) => {
       if (
+        feature.type &&
+        this.formattedFeatures[feature.type] &&
+        feature.name &&
         feature.name.toLowerCase().includes(this.featureSearch.toLowerCase())
       ) {
-        this.features[i].contents.push(feature);
+        this.formattedFeatures[feature.type].push(feature);
       }
     });
   }
 
+  public changeFeatureVisibility(targetFeature: any) {
+    this.featuresRaw.forEach((feature) => {
+      if (feature.id === targetFeature.id) {
+        feature.canSee = !feature.canSee;
+      }
+    });
+    this.formatFeatures();
+  }
+
   /** Gets type icon */
-  private getFeatureIcon(type: string): string {
+  public getFeatureIcon(type: string): string {
     switch (type) {
       case 'dashboard':
         return 'dashboard';
@@ -280,57 +274,40 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Adds or removes a feature from the list of selected features
-   */
-  public onItemClick(itemKey: 'channels' | 'features', id: string) {
-    if (this.role[itemKey].includes(id)) {
-      this.role[itemKey] = this.role[itemKey].filter((item) => item !== id);
-    } else {
-      this.role[itemKey].push(id);
-    }
-  }
-
-  /**
    * Updates the feature list depending on the searchterm
    */
   public onFeatureSearch() {
-    this.updateFeatures();
+    this.formatFeatures();
   }
 
   /**
    * Moves channels in an array under corresponding applications
    */
-  private updateApplicationsChannels() {
-    this.applications = Array.from(
-      new Set(this.channels.map((x: any) => x.application?.name))
-    ).map((name) => ({
-      name: name || 'Global',
-      channels: this.channels.reduce((o: Channel[], channel: Channel) => {
-        if (
-          channel?.application?.name === name &&
-          channel?.title
-            ?.toLowerCase()
-            .includes(this.channelSearch.toLowerCase())
-        ) {
-          o.push(channel);
-        }
-        return o;
-      }, []),
-    }));
+  private formatChannels() {
+    this.channelsFormatted = this.channelsRaw.reduce((prev: any, curr) => {
+      const appName = curr.application?.name || 'Global';
+      const newElement = curr?.title
+        ?.toLowerCase()
+        .includes(this.channelSearch.toLowerCase())
+        ? { [appName]: (prev[appName] || []).concat(curr) }
+        : {};
+      return { ...prev, ...newElement };
+    }, {});
   }
 
   /**
    * Updates the channel list depending on the searchterm
    */
   public onChannelSearch() {
-    this.updateApplicationsChannels();
+    this.formatChannels();
   }
 
   /**
    * Adds selected features and channels, then it updates the role
    */
   public onSubmit(): void {
-    this.roleForm?.patchValue(this.role);
+    //TODO Test this
+    this.roleForm?.patchValue(this.currentRole as { [key: string]: any });
     console.log(this.roleForm?.value);
   }
 
