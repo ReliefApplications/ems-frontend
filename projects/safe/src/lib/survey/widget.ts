@@ -467,6 +467,14 @@ export const init = (
           setGridInputs(instance, question);
         }
       });
+      instance.onRemoveSelection = (items: any[]): void => {
+        // get the id of items to remove
+        const ids: string[] = items.map((x) => (x.id ? x.id : x));
+        // remove them
+        question.value = question.value.filter((id: any) => !ids.includes(id));
+        // reload
+        setGridInputs(instance, question);
+      };
       return instance;
     }
     return null;
@@ -507,6 +515,7 @@ export const init = (
           convert: question.convert,
           update: question.update,
           inlineEdition: question.inlineEdition,
+          remove: true,
         },
       });
     }

@@ -20,6 +20,7 @@ export interface GridSettings {
     history?: boolean;
     convert?: boolean;
     update?: boolean;
+    remove?: boolean;
     inlineEdition?: boolean;
   };
   // showDetails?: boolean;

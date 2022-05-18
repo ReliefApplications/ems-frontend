@@ -115,6 +115,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     delete: false,
     history: false,
     convert: false,
+    remove: false,
     showDetails: true,
   };
   @Input() hasDetails = true;

@@ -213,6 +213,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     delete: false,
     history: false,
     convert: false,
+    remove: false,
     showDetails: true,
   };
 
@@ -257,6 +258,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       update: this.settings.actions?.update,
       delete: this.settings.actions?.delete,
       convert: this.settings.actions?.convert,
+      remove: this.settings.actions?.remove,
       showDetails:
         this.settings.actions &&
         typeof this.settings.actions?.showDetails !== 'undefined'
@@ -614,6 +616,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         }
         break;
       }
+      case 'remove': {
+        if (event.items) {
+          this.onRemoveSelection(event.items);
+        }
+        break;
+      }
       case 'resetLayout': {
         this.resetDefaultLayout();
         break;
@@ -762,6 +770,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
   }
+
+  /**
+   * Method to remove the items selected without deleting them in forms
+   * (see widgets.ts)
+   *
+   * @param items items to remove from the selected items
+   */
+  public onRemoveSelection(items: any[]): void {}
 
   /**
    * Opens a dialog component which provide tools to convert the selected record

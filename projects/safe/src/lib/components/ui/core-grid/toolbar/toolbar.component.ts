@@ -15,11 +15,17 @@ export class SafeGridToolbarComponent implements OnInit {
     delete: false,
     history: false,
     convert: false,
+    remove: false,
   };
   @Output() action = new EventEmitter();
 
   get display(): boolean {
-    return this.actions.delete || this.actions.update || this.actions.convert;
+    return (
+      this.actions.delete ||
+      this.actions.update ||
+      this.actions.convert ||
+      this.actions.remove
+    );
   }
 
   get canUpdate(): boolean {

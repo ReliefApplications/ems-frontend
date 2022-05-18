@@ -16,4 +16,11 @@
   >
     Delete
   </button>
+  <button
+    *ngIf="actions.remove"
+    kendoButton
+    (click)="action.emit({ action: 'remove', items: items })"
+  >
+    Remove from selection
+  </button>
 </ng-container>
