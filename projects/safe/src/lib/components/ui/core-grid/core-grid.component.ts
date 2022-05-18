@@ -216,6 +216,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     delete: false,
     history: false,
     convert: false,
+    export: true,
     showDetails: true,
   };
 
@@ -261,6 +262,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       update: this.settings.actions?.update,
       delete: this.settings.actions?.delete,
       convert: this.settings.actions?.convert,
+      export:
+        this.settings.actions &&
+        typeof this.settings.actions?.export !== 'undefined'
+          ? this.settings.actions?.export
+          : true,
       showDetails:
         this.settings.actions &&
         typeof this.settings.actions?.showDetails !== 'undefined'

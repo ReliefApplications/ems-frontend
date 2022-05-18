@@ -117,6 +117,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         update: [hasActions ? tileSettings.actions.update : true],
         inlineEdition: [hasActions ? tileSettings.actions.inlineEdition : true],
         addRecord: [hasActions ? tileSettings.actions.addRecord : false],
+        export: [hasActions ? tileSettings.actions.export : true],
         showDetails: [
           hasActions && typeof tileSettings.actions.showDetails !== 'undefined'
             ? tileSettings.actions.showDetails

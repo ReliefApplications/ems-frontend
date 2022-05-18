@@ -347,6 +347,20 @@ export const init = (
         visibleIndex: 3,
       });
       survey.Serializer.addProperty('resources', {
+        name: 'export:boolean',
+        displayName: 'Export records',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      survey.Serializer.addProperty('resources', {
         name: 'canSearch:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
