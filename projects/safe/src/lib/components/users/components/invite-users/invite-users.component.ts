@@ -111,11 +111,17 @@ export class SafeInviteUsersComponent implements OnInit {
       if (file && this.isValidFile(file)) {
         this.downloadService.uploadFile(this.data.uploadPath, file).subscribe(
           (res) => {
+            console.log(res);
             this.gridData.data = res;
           },
           (err) => {
             if (err.status === 400) {
               this.snackBar.openSnackBar(err.error, { error: true });
+              this.resetFileInput();
+            } else {
+              this.snackBar.openSnackBar(NOTIFICATIONS.userImportFail, {
+                error: true,
+              });
               this.resetFileInput();
             }
           }
