@@ -30,7 +30,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     MatExpansionModule,
     MatIconModule,
     MatListModule,
-    SafeIconModule
+    SafeIconModule,
   ],
   exports: [SafeRoleManagementComponent],
 })

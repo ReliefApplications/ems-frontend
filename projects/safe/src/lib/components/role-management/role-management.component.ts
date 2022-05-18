@@ -35,7 +35,6 @@ const SEARCH_DEBOUNCE_TIME = 500;
   styleUrls: ['./role-management.component.scss'],
 })
 export class SafeRoleManagementComponent implements OnInit, OnDestroy {
-  
   // Page status
   @Input() public inApp = false;
 
