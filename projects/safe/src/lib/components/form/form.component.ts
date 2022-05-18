@@ -462,7 +462,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onClear(): void {
-    this.survey.clear();
+    // If unicity of records is set up, do not clear but go back to latest saved version
+    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+      this.survey.data = this.form.uniqueRecord.data;
+      this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
+    } else {
+      this.survey.clear();
+    }
     this.temporaryFilesStorage = {};
     localStorage.removeItem(this.storageId);
     this.isFromCacheData = false;
