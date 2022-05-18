@@ -99,8 +99,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
           content: this.translate.instant(
             'components.application.delete.confirmationMessage'
           ),
-          confirmText: this.translate.instant('common.delete'),
-          cancelText: this.translate.instant('common.cancel'),
+          confirmText: this.translate.instant('components.confirmModal.delete'),
+          cancelText: this.translate.instant('components.confirmModal.cancel'),
           confirmColor: 'warn',
         },
       });

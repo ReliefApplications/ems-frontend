@@ -26,7 +26,6 @@
 		"child": "Child",
 		"clear": "Clear",
 		"close": "Close",
-		"confirm": "Confirm",
 		"create": "Create",
 		"createdOn": "Created on",
 		"delete": "Delete",
@@ -276,6 +275,12 @@
 			"dropdown": {
 				"select": "Notify on"
 			}
+		},
+		"confirmModal": {
+			"cancel": "Cancel",
+			"confirm": "Confirm",
+			"delete": "Delete",
+			"title": "Confirm"
 		},
 		"emailBuilder": {
 			"body": "Body",
