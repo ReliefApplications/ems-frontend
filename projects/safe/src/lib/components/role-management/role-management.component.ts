@@ -230,7 +230,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   private formatFeatures(): void {
     const newFormattedFeatures: any[] = [];
 
-    this.features.forEach((feature) => {
+    for (const feature of this.features) {
       if (
         feature.name &&
         feature.name.toLowerCase().includes(this.featuresSearch.toLowerCase())
@@ -253,7 +253,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
           .find((group) => group.type === feature.type)
           .features.push(feature);
       }
-    });
+    };
     this.formattedFeatures = newFormattedFeatures;
   }
 
@@ -268,11 +268,11 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    * Changes the visibility of a feature
    */
   public changeFeatureVisibility(targetFeature: any) {
-    this.features.forEach((feature) => {
+    for (const feature of this.features) {
       if (feature.id === targetFeature.id) {
         feature.canSee = !feature.canSee;
       }
-    });
+    }
     this.formatFeatures();
   }
 
