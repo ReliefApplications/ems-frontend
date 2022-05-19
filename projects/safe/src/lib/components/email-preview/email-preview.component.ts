@@ -4,6 +4,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import tinymce from 'tinymce/tinymce';
+import 'tinymce/themes/silver/theme';
+// import 'tinymce/plugins/paste';
+// import 'tinymce/plugins/link';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -52,8 +55,14 @@ export class SafeEmailPreviewComponent implements OnInit {
       html: this.data.html,
       files: [[]]
     });
-    tinymce.init({
-      selector: '#editor'
-    });
+    console.log(tinymce);
+    // tinymce.init({
+    //   selector: '#editor',
+    //   base_url: '/tinymce',
+    //   suffix: '.min'
+    //   // skin: false,
+    //   // skin_url: '/'
+    //   // plugins: ['paste', 'link']
+    // });
   }
 }
