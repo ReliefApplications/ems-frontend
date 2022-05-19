@@ -2,11 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
-
-import tinymce from 'tinymce/tinymce';
-import 'tinymce/themes/silver/theme';
-// import 'tinymce/plugins/paste';
-// import 'tinymce/plugins/link';
+import { RawEditorOptions } from 'tinymce/tinymce';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -29,6 +25,13 @@ export class SafeEmailPreviewComponent implements OnInit {
 
   /** mail is put in a form to use read-only inputs */
   public form!: FormGroup;
+
+  public editor: RawEditorOptions = {
+    base_url: '/tinymce',
+    suffix: '.min',
+    plugins: 'table',
+    toolbar: 'table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol'
+  };
 
   /**
    * Preview Email component.
@@ -55,14 +58,5 @@ export class SafeEmailPreviewComponent implements OnInit {
       html: this.data.html,
       files: [[]]
     });
-    console.log(tinymce);
-    // tinymce.init({
-    //   selector: '#editor',
-    //   base_url: '/tinymce',
-    //   suffix: '.min'
-    //   // skin: false,
-    //   // skin_url: '/'
-    //   // plugins: ['paste', 'link']
-    // });
   }
 }

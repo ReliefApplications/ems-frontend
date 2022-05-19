@@ -30,7 +30,8 @@
       "lodash/isNil": "lodash/isNil",
       "lodash/omitBy": "lodash/omitBy",
       "@progress/kendo-angular-common": "@progress/kendo-angular-common",
-      "@progress/kendo-angular-upload": "@progress/kendo-angular-upload"
+      "@progress/kendo-angular-upload": "@progress/kendo-angular-upload",
+      "@tinymce/tinymce-angular": "@tinymce/tinymce-angular"
     }
   }
 }
