@@ -46,17 +46,17 @@
                         [placeholder]="'common.placeholder.search' | translate" (ngModelChange)="onFeaturesSearch()">
                 </mat-form-field>
             </div>
-            <ng-container *ngFor="let group of formattedFeatures | keyvalue">
-                <mat-expansion-panel *ngIf="group.value.length > 0">
-                    <mat-expansion-panel-header>
+            <ng-container *ngFor="let group of formattedFeatures">
+                <mat-expansion-panel [expanded]="group.expanded">
+                    <mat-expansion-panel-header (click)="savePanelExpansion(group.type)">
                         <mat-panel-title class="panel-header">
-                            <mat-icon>{{getFeatureIcon(group.key)}}</mat-icon>
-                            {{('common.' + group.key + '.few') | translate}}
+                            <mat-icon>{{group.icon}}</mat-icon>
+                            {{('common.' + group.type + '.few') | translate}}
                         </mat-panel-title>
                     </mat-expansion-panel-header>
 
                     <mat-list>
-                        <mat-list-item *ngFor="let feature of group.value" (click)="changeFeatureVisibility(feature)">
+                        <mat-list-item *ngFor="let feature of group.features" (click)="changeFeatureVisibility(feature)">
                             <safe-icon icon="{{feature.canSee ? 'visibility' : 'visibility_off'}}" variant="{{feature.canSee ? 'primary' : 'grey'}}"></safe-icon>
                             {{feature.name}}
                         </mat-list-item>

@@ -54,15 +54,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
 
   // Features tab
   private features: Page[] = [];
-  public formattedFeatures: {
-    dashboard: Page[];
-    form: Page[];
-    workflow: Page[];
-  } = {
-    dashboard: [],
-    form: [],
-    workflow: [],
-  };
+  public formattedFeatures: any[] = [];
   public featuresSearch = '';
 
   // Resources tab
@@ -128,7 +120,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
             }));
             this.formatChannels();
 
-            this.features = application.pages || [];
+            this.features = JSON.parse(JSON.stringify(application.pages || []));
             this.formatFeatures();
           } else {
             this.apollo
@@ -236,21 +228,40 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    * Builds a features object that can be easily displayed on the template
    */
   private formatFeatures(): void {
-    this.formattedFeatures = {
-      dashboard: [],
-      form: [],
-      workflow: [],
-    };
+    const newFormattedFeatures: any[] = [];
+
     this.features.forEach((feature) => {
       if (
-        feature.type &&
-        this.formattedFeatures[feature.type] &&
         feature.name &&
         feature.name.toLowerCase().includes(this.featuresSearch.toLowerCase())
       ) {
-        this.formattedFeatures[feature.type].push(feature);
+        if (
+          feature.type &&
+          !newFormattedFeatures.find((group) => group.type === feature.type)
+        ) {
+          newFormattedFeatures.push({
+            type: feature.type,
+            icon: this.getFeatureIcon(feature.type),
+            expanded:
+              this.formattedFeatures.find(
+                (group) => group.type === feature.type
+              )?.expanded || false,
+            features: [],
+          });
+        }
+        newFormattedFeatures
+          .find((group) => group.type === feature.type)
+          .features.push(feature);
       }
     });
+    this.formattedFeatures = newFormattedFeatures;
+  }
+
+  public savePanelExpansion(groupType: string): void {
+    const targetGroup = this.formattedFeatures.find(
+      (group) => groupType === group.type
+    );
+    targetGroup.expanded = !targetGroup.expanded;
   }
 
   /**
