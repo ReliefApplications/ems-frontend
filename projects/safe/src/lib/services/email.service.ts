@@ -232,7 +232,7 @@ export class SafeEmailService {
               this.sendMail(
                 recipient,
                 subject,
-                value.html,
+                body,
                 filter,
                 query,
                 sortField,

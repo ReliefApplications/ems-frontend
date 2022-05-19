@@ -17,7 +17,6 @@ import { SafeFloatingButtonSettingsComponent } from './floating-button-settings/
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeButtonModule } from '../../ui/button/button.module';
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 @NgModule({
   declarations: [SafeGridSettingsComponent, SafeFloatingButtonSettingsComponent],
@@ -38,12 +37,8 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
     MatTooltipModule,
     MatTabsModule,
     MatChipsModule,
-    SafeButtonModule,
-    EditorModule
+    SafeButtonModule
   ],
-  exports: [SafeGridSettingsComponent],
-  providers: [
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }
-  ]
+  exports: [SafeGridSettingsComponent]
 })
 export class SafeGridSettingsModule { }

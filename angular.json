@@ -66,8 +66,7 @@
             "assets": [
               "projects/back-office/src/favicon.ico",
               "projects/back-office/src/assets",
-              "projects/back-office/src/web.config",
-              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
+              "projects/back-office/src/web.config"
             ],
             "styles": [
               {
@@ -85,9 +84,7 @@
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
-              "node_modules/select2/dist/js/select2.min.js",
-              "node_modules/tinymce/tinymce.js",
-              "node_modules/tinymce/themes/silver/theme.js"
+              "node_modules/select2/dist/js/select2.min.js"
             ],
             "allowedCommonJsDependencies": [
               "minimatch",
@@ -394,8 +391,7 @@
             "assets": [
               "projects/front-office/src/favicon.ico",
               "projects/front-office/src/assets",
-              "projects/front-office/src/web.config",
-              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
+              "projects/front-office/src/web.config"
             ],
             "styles": [
               {
@@ -413,9 +409,7 @@
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
-              "node_modules/select2/dist/js/select2.min.js",
-              "node_modules/tinymce/tinymce.js",
-              "node_modules/tinymce/themes/silver/theme.js"
+              "node_modules/select2/dist/js/select2.min.js"
             ],
             "allowedCommonJsDependencies": [
               "minimatch",
@@ -705,8 +699,7 @@
             "aot": true,
             "assets": [
               "projects/web-element/src/favicon.ico",
-              "projects/web-element/src/assets",
-              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
+              "projects/web-element/src/assets"
             ],
             "styles": [
               {
@@ -723,9 +716,7 @@
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
-              "node_modules/select2/dist/js/select2.min.js",
-              "node_modules/tinymce/tinymce.js",
-              "node_modules/tinymce/themes/silver/theme.js"
+              "node_modules/select2/dist/js/select2.min.js"
             ],
             "allowedCommonJsDependencies": [
               "minimatch",

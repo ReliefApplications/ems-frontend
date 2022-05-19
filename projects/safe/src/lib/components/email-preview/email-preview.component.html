@@ -18,7 +18,9 @@
       </mat-chip-list>
     </mat-form-field>
     <kendo-fileselect [multiple]="true" formControlName="files"></kendo-fileselect>
-    <editor [init]="editor" formControlName="html"></editor>
+    <div class="email-body-container">
+      <div class="email-body-preview" [innerHTML]="form.controls.html.value"></div>
+    </div>
   </form>
 </div>
 <div mat-dialog-actions align="end">
