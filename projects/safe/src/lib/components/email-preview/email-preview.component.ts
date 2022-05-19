@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
 import { RawEditorOptions } from 'tinymce/tinymce';
 
 /** Interface of Email Preview Modal Data */
@@ -45,8 +44,7 @@ export class SafeEmailPreviewComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<SafeEmailPreviewComponent>,
-    private formBuilder: FormBuilder,
-    private sanitizer: DomSanitizer
+    private formBuilder: FormBuilder
   ) {}
 
   /** Create the form from the dialog data, putting all fields as read-only */
