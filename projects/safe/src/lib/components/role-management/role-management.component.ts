@@ -41,21 +41,21 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   // Role
   public currentRole?: Role;
 
-  // Summary tab
+  // List of users with the current role assigned
   public roleUsers: string[] = [];
 
   // Final form to be updated
   public roleForm?: FormGroup;
 
-  // Channels tab
-  public channels: Channel[] = [];
-  public formattedChannels: any[] = [];
-  public channelsSearch = '';
-
   // Features tab
   private features: Page[] = [];
   public formattedFeatures: any[] = [];
   public featuresSearch = '';
+
+  // Channels tab
+  private channels: Channel[] = [];
+  public formattedChannels: any[] = [];
+  public channelsSearch = '';
 
   // Resources tab
   public resources: any[] = [];
@@ -96,13 +96,12 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
         this.route.paramMap.subscribe((params) => {
           const roleId = params.get('id');
 
+          // If we manage to fetch the application from service, get all the information from there
           if (this.inApp && application && roleId) {
             this.currentRole = application.roles?.find(
               (role) => role.id === roleId
             );
-            console.log('this.currentRole');
-            console.log(this.currentRole);
-            // Get all the application users who have the current role, and try to display their names, or usernames, or display a default value if not found
+
             this.roleUsers =
               application.users
                 ?.filter(
@@ -120,6 +119,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
             }));
             this.formatChannels();
 
+            // Deep-copying to avoir read-only "canSee" fields
             this.features = JSON.parse(JSON.stringify(application.pages || []));
             this.formatFeatures();
           } else {
@@ -131,8 +131,6 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                 this.currentRole = roles.data.roles.find(
                   (role) => role.id === roleId
                 );
-                console.log('this.currentRole');
-                console.log(this.currentRole);
                 this.buildForm();
               });
 
@@ -206,7 +204,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   /**
    * Builds the role form
    */
-  private buildForm() {
+  private buildForm(): void {
     this.roleForm = this.formBuilder.group({
       name: [this.currentRole?.title, Validators.required],
       channels: [this.currentRole?.channels],
@@ -257,6 +255,10 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     this.formattedFeatures = newFormattedFeatures;
   }
 
+  /**
+   * Save the expansion state of the panel so that it's not reset on search or selection
+   * @param groupType type of the features group
+   */
   public saveFeaturesPanelExpansion(groupType: string): void {
     const targetGroup = this.formattedFeatures.find(
       (group) => groupType === group.type
@@ -264,17 +266,10 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     targetGroup.expanded = !targetGroup.expanded;
   }
 
-  public saveChannelsPanelExpansion(groupName: string): void {
-    const targetGroup = this.formattedChannels.find(
-      (group) => groupName === group.name
-    );
-    targetGroup.expanded = !targetGroup.expanded;
-  }
-
   /**
    * Changes the visibility of a feature
    */
-  public changeFeatureVisibility(targetFeature: any) {
+  public changeFeatureVisibility(targetFeature: any): void {
     for (const feature of this.features) {
       if (feature.id === targetFeature.id) {
         feature.canSee = !feature.canSee;
@@ -283,7 +278,11 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     this.formatFeatures();
   }
 
-  /** Gets type icon */
+  /**
+   * Returns the mat-icon identifier corresponding to the features group's type 
+   * @param type type of the features group
+   * @returns the matching mat-icon identifier
+   */
   public getFeatureIcon(type: string): string {
     switch (type) {
       case 'dashboard':
@@ -300,14 +299,14 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   /**
    * Updates the features list depending on the searchterm
    */
-  public onFeaturesSearch() {
+  public onFeaturesSearch(): void {
     this.formatFeatures();
   }
 
   /**
    * Builds a channels object that can be easily displayed on the template
    */
-  private formatChannels() {
+  private formatChannels(): void {
     const newFormattedChannels = this.channels.reduce((prev: any, curr) => {
       const appName = curr.application?.name || 'Global';
       if (
@@ -330,14 +329,31 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     this.formattedChannels = newFormattedChannels;
   }
 
+  /**
+   * Save the expansion state of the panel so that it's not reset on search or selection
+   * @param groupName name of the channels group 
+   */
+  public saveChannelsPanelExpansion(groupName: string): void {
+    const targetGroup = this.formattedChannels.find(
+      (group) => groupName === group.name
+    );
+    targetGroup.expanded = !targetGroup.expanded;
+  }
+
+  /**
+   * Checks if the channel is already selected
+   * @param channel channel to check
+   * @returns a boolean indicating the selection state
+   */
   public isChannelSubscribed(channel: Channel): boolean {
+    // TODO try to improve this since it is called a lot of time
     return !!this.currentRole?.channels?.find((c) => c.id === channel.id);
   }
 
   /**
    * Updates the channels list depending on the searchterm
    */
-  public onChannelsSearch() {
+  public onChannelsSearch(): void {
     this.formatChannels();
   }
 
@@ -345,7 +361,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    * Adds selected features and channels, then it updates the role
    */
   public onSubmit(): void {
-    //TODO Test this
+    // TODO Test this
     this.roleForm?.patchValue(this.currentRole as { [key: string]: any });
     console.log(this.roleForm?.value);
   }
@@ -356,7 +372,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    * @param options object containing optional arguments
    * "search" is used if the query is a new search which means the previous results will not be used
    */
-  public loadResources(options?: { search: boolean }) {
+  public loadResources(options?: { search: boolean }): void {
     this.resourcesQueryInfo.loading = true;
     this.resourcesQuery.fetchMore({
       variables: {
@@ -390,7 +406,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    * @param options object containing optional arguments
    * "search" is used if the query is a new search which means the previous results will not be used
    */
-  public loadForms(options?: { search: boolean }) {
+  public loadForms(options?: { search: boolean }): void {
     this.formsQueryInfo.loading = true;
     this.formsQuery.fetchMore({
       variables: {
@@ -418,27 +434,12 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onEditAccess(): void {
-    console.log('EDIT ACCESS');
-
-    /*
-    const dialogRef = this.dialog.open(SafeEditAccessComponent, {
-      data: {
-        access: this.access,
-      },
-    });
-    dialogRef.afterClosed().subscribe((res) => {
-      if (res) {
-        console.log('res');
-        console.log(res);
-      }
-    });
-    */
-  }
-
-  public onSaveAccess(event: any): void {
-    console.log('SAVE ACCESS');
-    console.log(event);
+  /**
+   * Edits permissions of the selected form or resource
+   */
+  public onEditPermissions(): void {
+    // TODO implement this
+    console.log("Work in progress");
   }
 
   /**
