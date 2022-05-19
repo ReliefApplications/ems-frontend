@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 
+import tinymce from 'tinymce/tinymce';
+
 /** Interface of Email Preview Modal Data */
 interface DialogData {
   from: string;
@@ -47,8 +49,11 @@ export class SafeEmailPreviewComponent implements OnInit {
       from: [{value: this.data.from, disabled: true }],
       to: [{value: this.data.to, disabled: true }],
       subject: [{value: this.data.subject, disabled: true }],
-      html: [{value: this.sanitizer.bypassSecurityTrustHtml(this.data.html), disabled: true }],
+      html: this.data.html,
       files: [[]]
+    });
+    tinymce.init({
+      selector: '#editor'
     });
   }
 }
