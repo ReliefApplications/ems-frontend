@@ -1,47 +1,42 @@
-<h1 mat-dialog-title>
-  {{ 'components.widget.settings.grid.layouts.add.title' | translate }}
-</h1>
-<div mat-dialog-content>
-  <div class="add-layout-choice" *ngIf="!nextStep">
-    <!-- LOAD FROM EXISTING LAYOUT -->
+<div class="container">
+  <div class="header" [style]="!nextStep ? 'padding-top: 4px; padding-bottom: 12px;' : 'padding-bottom: 8px'">
     <safe-button
-      variant="primary"
-      category="tertiary"
-      (click)="nextStep = true"
-      >{{
-        'components.widget.settings.grid.layouts.add.choice.load' | translate
-      }}</safe-button
-    >
-    <!-- ADD A NEW LAYOUT -->
-    <safe-button variant="primary" category="tertiary" (click)="onCreate()">{{
-      'components.widget.settings.grid.layouts.add.choice.create' | translate
-    }}</safe-button>
+    *ngIf="nextStep"
+    [isIcon]="true"
+    icon="arrow_back"
+    (click)="nextStep = false"
+    ></safe-button>
+    <h1 mat-dialog-title>
+      {{ (!nextStep ? 'components.widget.settings.grid.layouts.add.title' : 'components.widget.settings.grid.layouts.add.choice.load') | translate }}
+    </h1>
   </div>
-  <div *ngIf="nextStep">
-    <div class="select-layout-header">
-      <safe-button
-        [isIcon]="true"
-        icon="arrow_back"
-        (click)="nextStep = false"
-      ></safe-button>
-      <div>
-        {{
+  <div mat-dialog-content>
+    <div class="add-layout-choice" *ngIf="!nextStep">
+      <!-- LOAD FROM EXISTING LAYOUT -->
+      <safe-button variant="primary" category="tertiary" (click)="nextStep = true">{{
           'components.widget.settings.grid.layouts.add.choice.load' | translate
-        }}
-      </div>
+        }}</safe-button>
+      <!-- ADD A NEW LAYOUT -->
+      <safe-button variant="primary" category="tertiary" (click)="onCreate()">{{
+        'components.widget.settings.grid.layouts.add.choice.create' | translate
+      }}</safe-button>
     </div>
-    <mat-form-field appearance="outline">
-      <mat-label>{{
-        'components.widget.settings.grid.layouts.add.select' | translate
-      }}</mat-label>
-      <mat-select (selectionChange)="onSelect($event)">
-        <mat-option *ngFor="let layout of layouts" [value]="layout.id">{{
-          layout.name
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div *ngIf="nextStep">
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.widget.settings.grid.layouts.add.select' | translate
+        }}</mat-label>
+        <mat-select (selectionChange)="onSelect($event)">
+          <mat-option *ngFor="let layout of layouts" [value]="layout.id">{{
+            layout.name
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </div>
-</div>
-<div mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Close</button>
+  <div mat-dialog-actions class="close-button">
+    <button mat-button mat-dialog-close>{{
+      'common.close' | translate  
+    }}</button>
+  </div>
 </div>

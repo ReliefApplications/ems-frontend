@@ -87,6 +87,7 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
         form: this.form,
         resource: this.resource,
       },
+      panelClass: 'small-dialog',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
