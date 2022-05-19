@@ -11,6 +11,7 @@ import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
+import { EDITOR_CONFIG } from '../../../../const/email';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
@@ -47,6 +48,9 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
   public emails: string[] = [];
   public factory?: ComponentFactory<any>;
+
+  /** tinymce editor */
+  public editor: any = EDITOR_CONFIG;
 
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
 
