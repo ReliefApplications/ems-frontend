@@ -48,7 +48,7 @@
             </div>
             <ng-container *ngFor="let group of formattedFeatures">
                 <mat-expansion-panel [expanded]="group.expanded">
-                    <mat-expansion-panel-header (click)="savePanelExpansion(group.type)">
+                    <mat-expansion-panel-header (click)="saveFeaturesPanelExpansion(group.type)">
                         <mat-panel-title class="panel-header">
                             <mat-icon>{{group.icon}}</mat-icon>
                             {{('common.' + group.type + '.few') | translate}}
@@ -110,19 +110,19 @@
             <div class="searchbar">
                 <mat-form-field appearance="outline">
                     <mat-icon matPrefix>search</mat-icon>
-                    <input matInput type="search" [(ngModel)]="channelSearch" [ngModelOptions]="{standalone: true}"
-                        [placeholder]="'common.placeholder.search' | translate" (ngModelChange)="onChannelSearch()">
+                    <input matInput type="search" [(ngModel)]="channelsSearch" [ngModelOptions]="{standalone: true}"
+                        [placeholder]="'common.placeholder.search' | translate" (ngModelChange)="onChannelsSearch()">
                 </mat-form-field>
             </div>
-            <ng-container *ngFor="let application of channelsFormatted | keyvalue">
-                <mat-expansion-panel *ngIf="application.value.length > 0">
-                    <mat-expansion-panel-header>
+            <ng-container *ngFor="let group of formattedChannels">
+                <mat-expansion-panel *ngIf="group.channels.length > 0" [expanded]="group.expanded">
+                    <mat-expansion-panel-header (click)="saveChannelsPanelExpansion(group.name)">
                         <mat-panel-title>
-                            {{application.key}}
+                            {{group.name}}
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="checkbox-area">
-                        <mat-checkbox *ngFor="let channel of application.value" [checked]="isChannelSubscribed(channel)">
+                        <mat-checkbox *ngFor="let channel of group.channels" [checked]="isChannelSubscribed(channel)">
                             {{channel.title}}
                         </mat-checkbox>
                     </div>

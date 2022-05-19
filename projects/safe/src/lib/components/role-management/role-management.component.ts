@@ -49,8 +49,8 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
 
   // Channels tab
   public channels: Channel[] = [];
-  public channelsFormatted: { [key: string]: Channel[] } = {};
-  public channelSearch = '';
+  public formattedChannels: any[] = [];
+  public channelsSearch = '';
 
   // Features tab
   private features: Page[] = [];
@@ -257,9 +257,16 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     this.formattedFeatures = newFormattedFeatures;
   }
 
-  public savePanelExpansion(groupType: string): void {
+  public saveFeaturesPanelExpansion(groupType: string): void {
     const targetGroup = this.formattedFeatures.find(
       (group) => groupType === group.type
+    );
+    targetGroup.expanded = !targetGroup.expanded;
+  }
+
+  public saveChannelsPanelExpansion(groupName: string): void {
+    const targetGroup = this.formattedChannels.find(
+      (group) => groupName === group.name
     );
     targetGroup.expanded = !targetGroup.expanded;
   }
@@ -301,15 +308,26 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    * Builds a channels object that can be easily displayed on the template
    */
   private formatChannels() {
-    this.channelsFormatted = this.channels.reduce((prev: any, curr) => {
+    const newFormattedChannels = this.channels.reduce((prev: any, curr) => {
       const appName = curr.application?.name || 'Global';
-      const newElement = curr?.title
-        ?.toLowerCase()
-        .includes(this.channelSearch.toLowerCase())
-        ? { [appName]: (prev[appName] || []).concat(curr) }
-        : {};
-      return { ...prev, ...newElement };
-    }, {});
+      if (
+        curr?.title?.toLowerCase().includes(this.channelsSearch.toLowerCase())
+      ) {
+        if (!prev.find((group: any) => group.name === appName)) {
+          prev.push({
+            name: appName,
+            expanded:
+              this.formattedChannels.find((group) => group.name === appName)
+                ?.expanded || false,
+            channels: [],
+          });
+        }
+        prev.find((group: any) => group.name === appName).channels.push(curr);
+      }
+      return prev;
+    }, []);
+
+    this.formattedChannels = newFormattedChannels;
   }
 
   public isChannelSubscribed(channel: Channel): boolean {
@@ -319,7 +337,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   /**
    * Updates the channels list depending on the searchterm
    */
-  public onChannelSearch() {
+  public onChannelsSearch() {
     this.formatChannels();
   }
 
