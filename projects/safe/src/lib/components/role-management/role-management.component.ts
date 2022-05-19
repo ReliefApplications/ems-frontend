@@ -257,6 +257,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
 
   /**
    * Save the expansion state of the panel so that it's not reset on search or selection
+   *
    * @param groupType type of the features group
    */
   public saveFeaturesPanelExpansion(groupType: string): void {
@@ -279,7 +280,8 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Returns the mat-icon identifier corresponding to the features group's type 
+   * Returns the mat-icon identifier corresponding to the features group's type
+   *
    * @param type type of the features group
    * @returns the matching mat-icon identifier
    */
@@ -331,7 +333,8 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
 
   /**
    * Save the expansion state of the panel so that it's not reset on search or selection
-   * @param groupName name of the channels group 
+   *
+   * @param groupName name of the channels group
    */
   public saveChannelsPanelExpansion(groupName: string): void {
     const targetGroup = this.formattedChannels.find(
@@ -342,6 +345,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
 
   /**
    * Checks if the channel is already selected
+   *
    * @param channel channel to check
    * @returns a boolean indicating the selection state
    */
@@ -439,7 +443,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    */
   public onEditPermissions(): void {
     // TODO implement this
-    console.log("Work in progress");
+    console.log('Work in progress');
   }
 
   /**
