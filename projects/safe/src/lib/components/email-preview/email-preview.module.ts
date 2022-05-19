@@ -8,6 +8,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { UploadsModule } from '@progress/kendo-angular-upload';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 /**
  * Preview Email Component Module.
@@ -23,8 +24,12 @@ import { UploadsModule } from '@progress/kendo-angular-upload';
     MatInputModule,
     MatDialogModule,
     MatChipsModule,
-    UploadsModule
+    UploadsModule,
+    EditorModule
   ],
   exports: [SafeEmailPreviewComponent],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }
+  ]
 })
 export class SafeEmailPreviewModule {}
