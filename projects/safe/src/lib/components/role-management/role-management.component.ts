@@ -253,7 +253,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
           .find((group) => group.type === feature.type)
           .features.push(feature);
       }
-    };
+    }
     this.formattedFeatures = newFormattedFeatures;
   }
 
