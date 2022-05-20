@@ -312,10 +312,7 @@
             <mat-tab>
               <ng-template mat-tab-label> Default </ng-template>
               <ng-template matTabContent>
-                <safe-email-template
-                  formControlName="bodyText"
-                  style="height: 400px"
-                ></safe-email-template>
+                <editor [init]="editor" formControlName="bodyText"></editor>
                 <mat-checkbox formControlName="export">{{
                   'components.widget.settings.grid.buttons.callback.export'
                     | translate
@@ -332,10 +329,10 @@
             <mat-tab>
               <ng-template mat-tab-label> Without record </ng-template>
               <ng-template matTabContent>
-                <safe-email-template
+                <editor
+                  [init]="editor"
                   formControlName="bodyTextAlternate"
-                  style="height: 400px"
-                ></safe-email-template>
+                ></editor>
               </ng-template>
             </mat-tab>
           </mat-tab-group>
