@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { EDITOR_CONFIG } from '../../const/email';
+import { MAIL_EDITOR_CONFIG } from '../../const/email';
 // import { RawEditorOptions } from 'tinymce/tinymce';
 
 /** Interface of Email Preview Modal Data */
@@ -26,7 +26,7 @@ export class SafeEmailPreviewComponent implements OnInit {
   public form!: FormGroup;
 
   /** tinymce editor */
-  public editor: any = EDITOR_CONFIG;
+  public editor: any = MAIL_EDITOR_CONFIG;
 
   /**
    * Preview Email component.

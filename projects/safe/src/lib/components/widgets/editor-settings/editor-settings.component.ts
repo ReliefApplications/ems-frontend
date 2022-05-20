@@ -4,10 +4,10 @@ import {
   Output,
   EventEmitter,
   Input,
-  ViewChild,
   AfterViewInit,
 } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { EDITOR_CONFIG } from '../../../const/editor';
 
 @Component({
   selector: 'safe-editor-settings',
@@ -27,8 +27,8 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
-  // === TEMPLATE REFERENCE TO THE KENDO EDITOR ===
-  @ViewChild('editor') public editor: any;
+  /** tinymce editor */
+  public editor: any = EDITOR_CONFIG;
 
   constructor(private formBuilder: FormBuilder) {}
 
@@ -48,15 +48,6 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
-    });
-  }
-
-  /*  Update the text of the editor.
-   */
-  updateText(): void {
-    this.tileForm?.setValue({
-      ...this.tileForm?.value,
-      text: this.editor.value,
     });
   }
 }
