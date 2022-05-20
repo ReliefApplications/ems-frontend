@@ -25,11 +25,11 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
     MatDialogModule,
     MatChipsModule,
     UploadsModule,
-    EditorModule
+    EditorModule,
   ],
   exports: [SafeEmailPreviewComponent],
   providers: [
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }
-  ]
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+  ],
 })
 export class SafeEmailPreviewModule {}

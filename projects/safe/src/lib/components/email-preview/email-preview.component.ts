@@ -25,7 +25,7 @@ export class SafeEmailPreviewComponent implements OnInit {
   /** mail is put in a form to use read-only inputs */
   public form!: FormGroup;
 
-    /** tinymce editor */
+  /** tinymce editor */
   public editor: any = EDITOR_CONFIG;
 
   /**

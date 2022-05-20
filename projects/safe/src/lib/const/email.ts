@@ -17,5 +17,5 @@ export const EDITOR_CONFIG = {
     'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
   toolbar_mode: 'sliding',
   contextmenu: 'link image imagetools table',
-  content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }'
+  content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
 };
