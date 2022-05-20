@@ -21,12 +21,7 @@
       [multiple]="true"
       formControlName="files"
     ></kendo-fileselect>
-    <div class="email-body-container">
-      <div
-        class="email-body-preview"
-        [innerHTML]="form.controls.html.value"
-      ></div>
-    </div>
+    <editor [init]="editor" formControlName="html"></editor>
   </form>
 </div>
 <div mat-dialog-actions align="end">
