@@ -1,11 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewChild,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -32,7 +26,7 @@ import {
 } from '../../../graphql/mutations';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
@@ -44,7 +38,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.scss'],
 })
-export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ApplicationsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
@@ -61,7 +55,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   public filter: any;
 
   // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  private sort = {};
 
   public pageInfo = {
     pageIndex: 0,
@@ -101,7 +95,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.applicationsQuery.valueChanges.subscribe((res) => {
       this.cachedApplications = res.data.applications.edges.map((x) => x.node);
-      this.newApplications = this.cachedApplications.slice(0, 5);
+      if (!this.newApplications.length)
+        this.newApplications = this.cachedApplications.slice(0, 5);
       this.applications.data = this.cachedApplications.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
@@ -208,10 +203,23 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Sets the sort in the view.
+   * Handles sort event and updates the table
+   *
+   * @param sortState The sort event
    */
-  ngAfterViewInit(): void {
-    this.applications.sort = this.sort || null;
+  onSort(sortState: Sort) {
+    this.sort = !!sortState.direction
+      ? {
+          [sortState.active]: sortState.direction,
+        }
+      : {};
+    this.cachedApplications = [];
+    this.pageInfo.pageIndex = 0;
+    this.applicationsQuery.refetch({
+      first: this.pageInfo.pageSize,
+      filter: this.filter,
+      sort: this.sort,
+    });
   }
 
   /**

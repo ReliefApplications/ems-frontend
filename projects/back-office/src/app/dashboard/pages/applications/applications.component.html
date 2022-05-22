@@ -18,7 +18,12 @@
   <!-- APPLICATIONS TABLE -->
   <ng-container>
     <h2>{{ 'pages.applications.all' | translate }}</h2>
-    <table mat-table [dataSource]="applications" matSort>
+    <table
+      mat-table
+      [dataSource]="applications"
+      matSort
+      (matSortChange)="onSort($event)"
+    >
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>
@@ -76,7 +81,7 @@
 
       <ng-container matColumnDef="usersCount">
         <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+          <span class="headerTitle">
             {{ 'common.user.few' | translate }}
           </span>
         </th>

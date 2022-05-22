@@ -1,11 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  AfterViewInit,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
@@ -30,7 +24,7 @@ import {
 } from '../../../graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -40,7 +34,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './forms.component.html',
   styleUrls: ['./forms.component.scss'],
 })
-export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
+export class FormsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
@@ -62,7 +56,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   private authSubscription?: Subscription;
 
   // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  private sort = {};
 
   // === FILTERING ===
   public filter: any;
@@ -194,10 +188,23 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * Sets the sort in the view.
+   * Handles sort event and updates the table
+   *
+   * @param sortState The sort event
    */
-  ngAfterViewInit(): void {
-    this.forms.sort = this.sort || null;
+  onSort(sortState: Sort) {
+    this.cachedForms = [];
+    this.pageInfo.pageIndex = 0;
+    this.sort = !!sortState.direction
+      ? {
+          [sortState.active]: sortState.direction,
+        }
+      : {};
+    this.formsQuery.refetch({
+      first: this.pageInfo.pageSize,
+      filter: this.filter,
+      sort: this.sort,
+    });
   }
 
   /**

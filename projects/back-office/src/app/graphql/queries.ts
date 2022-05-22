@@ -118,8 +118,18 @@ export const GET_FORM_NAMES = gql`
 `;
 
 export const GET_SHORT_FORMS = gql`
-  query GetShortForms($first: Int, $afterCursor: ID, $filter: JSON) {
-    forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
+  query GetShortForms(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sort: JSON
+  ) {
+    forms(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sort: $sort
+    ) {
       edges {
         node {
           id
@@ -427,8 +437,18 @@ export const GET_RESOURCES = gql`
 `;
 
 export const GET_RESOURCES_EXTENDED = gql`
-  query GetResourcesExtended($first: Int, $afterCursor: ID, $filter: JSON) {
-    resources(first: $first, afterCursor: $afterCursor, filter: $filter) {
+  query GetResourcesExtended(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sort: JSON
+  ) {
+    resources(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sort: $sort
+    ) {
       edges {
         node {
           id
@@ -545,8 +565,18 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-  query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
-    applications(first: $first, afterCursor: $afterCursor, filter: $filter) {
+  query GetApplications(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sort: JSON
+  ) {
+    applications(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sort: $sort
+    ) {
       edges {
         node {
           id

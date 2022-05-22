@@ -19,7 +19,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import { AddResourceComponent } from '../../../components/add-resource/add-resource.component';
 
@@ -30,7 +30,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './resources.component.html',
   styleUrls: ['./resources.component.scss'],
 })
-export class ResourcesComponent implements OnInit, AfterViewInit {
+export class ResourcesComponent implements OnInit {
   // === DATA ===
   public loading = true;
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -39,7 +39,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   public resources = new MatTableDataSource<Resource>([]);
 
   // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  private sort = {};
 
   // === FILTERING ===
   public filter: any;
@@ -162,10 +162,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    this.resources.sort = this.sort || null;
-  }
-
   /**
    * Removes a resource.
    *
@@ -217,6 +213,26 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
             }
           });
       }
+    });
+  }
+
+  /**
+   * Handles sort event and updates the table
+   *
+   * @param sortState The sort event
+   */
+  onSort(sortState: Sort) {
+    this.sort = !!sortState.direction
+      ? {
+          [sortState.active]: sortState.direction,
+        }
+      : {};
+    this.cachedResources = [];
+    this.pageInfo.pageIndex = 0;
+    this.resourcesQuery.refetch({
+      first: this.pageInfo.pageSize,
+      filter: this.filter,
+      sort: this.sort,
     });
   }
 

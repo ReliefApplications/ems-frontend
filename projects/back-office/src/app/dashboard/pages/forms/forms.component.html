@@ -17,7 +17,12 @@
     </div>
   </div>
 
-  <table mat-table [dataSource]="forms" matSort>
+  <table
+    mat-table
+    [dataSource]="forms"
+    matSort
+    (matSortChange)="onSort($event)"
+  >
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
