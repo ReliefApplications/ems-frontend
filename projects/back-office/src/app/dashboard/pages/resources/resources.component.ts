@@ -32,6 +32,7 @@ const DEFAULT_PAGE_SIZE = 10;
 export class ResourcesComponent implements OnInit, AfterViewInit {
   // === DATA ===
   public loading = true;
+  public filterLoading = false;
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   displayedColumns: string[] = ['name', 'createdAt', 'recordsCount', 'actions'];
   public cachedResources: Resource[] = [];
@@ -139,6 +140,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
    * @param filter filter event.
    */
   onFilter(filter: any): void {
+    this.filterLoading = true;
     this.filter = filter;
     this.cachedResources = [];
     this.pageInfo.pageIndex = 0;
@@ -148,6 +150,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
         filter: this.filter,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
+        this.filterLoading = false;
         if (!fetchMoreResult) {
           return prev;
         }

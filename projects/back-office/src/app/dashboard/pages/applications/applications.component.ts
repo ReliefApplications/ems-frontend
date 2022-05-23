@@ -47,6 +47,7 @@ const DEFAULT_PAGE_SIZE = 10;
 export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   // === DATA ===
   public loading = true;
+  public filterLoading = false;
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   private newApplicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   public applications = new MatTableDataSource<Application>([]);
@@ -201,6 +202,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param filter filter event.
    */
   onFilter(filter: any): void {
+    this.filterLoading = true;
     this.filter = filter;
     this.cachedApplications = [];
     this.pageInfo.pageIndex = 0;
@@ -210,6 +212,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         filter: this.filter,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
+        this.filterLoading = false;
         if (!fetchMoreResult) {
           return prev;
         }

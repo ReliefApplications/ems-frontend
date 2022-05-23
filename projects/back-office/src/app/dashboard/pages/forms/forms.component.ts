@@ -42,6 +42,7 @@ const DEFAULT_PAGE_SIZE = 10;
 export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   // === DATA ===
   public loading = true;
+  public filterLoading = false;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   public displayedColumns = [
     'name',
@@ -170,6 +171,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param filter filter event.
    */
   onFilter(filter: any): void {
+    this.filterLoading = true;
     this.filter = filter;
     this.cachedForms = [];
     this.pageInfo.pageIndex = 0;
@@ -179,6 +181,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
         filter: this.filter,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
+        this.filterLoading = false;
         if (!fetchMoreResult) {
           return prev;
         }

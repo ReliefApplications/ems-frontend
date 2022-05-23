@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -11,11 +11,14 @@ export class FilterComponent implements OnInit {
   public form!: FormGroup;
   public search = new FormControl('');
   public show = false;
+  public spinnerDiameter = 24;
   @Output() filter = new EventEmitter<any>();
+  @Input() loading = false;
 
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
+    this.setDiameter();
     this.form = this.formBuilder.group({
       name: [''],
       startDate: [null],
@@ -27,9 +30,9 @@ export class FilterComponent implements OnInit {
       .subscribe((value) => {
         this.emitFilter(value);
       });
-    // this way we can wait for 2s before sending an update
+    // this way we can wait for 0.2s before sending an update
     this.search.valueChanges
-      .pipe(debounceTime(2000), distinctUntilChanged())
+      .pipe(debounceTime(200), distinctUntilChanged())
       .subscribe((value) => {
         this.form.controls.name.setValue(value);
       });
@@ -80,5 +83,19 @@ export class FilterComponent implements OnInit {
    */
   clearDateFilter(): void {
     this.form.setValue({ ...this.form.value, startDate: null, endDate: null });
+  }
+
+  /**
+   * Sets the diameter of the loading spinner based
+   * on the current font-size
+   */
+  setDiameter() {
+    const input = document.getElementById('custom-search');
+    if (input) {
+      const fontSize = window
+        .getComputedStyle(input, null)
+        .getPropertyValue('font-size');
+      this.spinnerDiameter = parseFloat(fontSize) * 1.5;
+    }
   }
 }
