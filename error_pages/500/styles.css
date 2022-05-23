@@ -1,0 +1,145 @@
+* {
+    box-sizing: border-box;
+    --size: min(calc(2rem + 3vw + 3vh), 17vw);
+}
+
+body {
+    font-size: 14px;
+    margin: 0;
+    overflow: hidden;
+}
+
+
+/* IMAGES */
+
+#top-left-corner {
+    position: absolute;
+    height: var(--size);
+    left: 25%;
+    top: calc(0.6 * var(--size));
+    animation: 5s ease-in-out 1s infinite alternate clouds;
+}
+
+#bottom-left-corner {
+    position: absolute;
+    height: calc(6.6 * var(--size));
+    left: 0;
+    bottom: 0;
+    margin-bottom: 3rem;
+}
+
+#top-right-corner {
+    position: absolute;
+    height: calc(1.5 * var(--size));
+    right: 0;
+    top: 20%;
+    animation: 5s ease-in-out 4s infinite alternate clouds;
+}
+
+#bottom-right-corner {
+    position: absolute;
+    height: var(--size);
+    right: 20%;
+    bottom: var(--size);
+    animation: 5s ease-in-out 7s infinite alternate clouds;
+}
+
+
+/* TEXTS */
+
+.text {
+    /* block */
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    width: calc(10rem + 30vw + 10vh);
+    overflow: scroll;
+    /* text */
+    color: rgba(0, 0, 0, 1);
+    font-family: Nunito;
+    font-weight: 700;
+    font-size: calc(0.7rem + 0.5vw);
+    line-height: 1.5;
+}
+
+.text .error-code {
+    background-image: linear-gradient(rgba(83, 54, 145, 1), rgba(50, 28, 95, 1));
+    background-clip: text;
+    color: transparent;
+    font-family: Noto Sans;
+    font-weight: 700;
+    font-size: 15.6em;
+    line-height: 0.8;
+    margin: 0;
+    margin-left: -10px;
+}
+
+.text .title {
+    font-size: 1.5em;
+}
+
+.text a {
+    color: #906AE0;
+    text-decoration: none;
+}
+
+
+/* FOR MOBILE SCREENS */
+
+@media screen and ((max-width: 850px) or (max-height: 500px)) {
+    #bottom-right-corner {
+        display: none;
+    }
+    .text {
+        width: 80%;
+        text-align: right;
+    }
+    .text .error-code {
+        font-size: 10em;
+    }
+    .text .title {
+        font-size: 1.2em;
+    }
+}
+
+
+/* ANIMATIONS */
+
+#dog-tail {
+    animation: 0.7s ease-in-out infinite alternate dogtail;
+}
+@keyframes dogtail {
+    from {
+        rotate: -0.6deg;
+    }
+    to {
+        rotate: 0.1deg;
+    }
+}
+
+#head {
+    animation: 4s ease-in-out infinite doghead;
+}
+@keyframes doghead {
+    from {
+        transform: translateY(0);
+    }
+    5% {
+        transform: translateY(-10px);
+    }
+    10% {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes clouds {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(20px);
+    }
+}
