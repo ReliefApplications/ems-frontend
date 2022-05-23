@@ -11,14 +11,12 @@ export class FilterComponent implements OnInit {
   public form!: FormGroup;
   public search = new FormControl('');
   public show = false;
-  public spinnerDiameter = 24;
   @Output() filter = new EventEmitter<any>();
   @Input() loading = false;
 
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
-    this.setDiameter();
     this.form = this.formBuilder.group({
       name: [''],
       startDate: [null],
@@ -83,19 +81,5 @@ export class FilterComponent implements OnInit {
    */
   clearDateFilter(): void {
     this.form.setValue({ ...this.form.value, startDate: null, endDate: null });
-  }
-
-  /**
-   * Sets the diameter of the loading spinner based
-   * on the current font-size
-   */
-  setDiameter() {
-    const input = document.getElementById('custom-search');
-    if (input) {
-      const fontSize = window
-        .getComputedStyle(input, null)
-        .getPropertyValue('font-size');
-      this.spinnerDiameter = parseFloat(fontSize) * 1.5;
-    }
   }
 }
