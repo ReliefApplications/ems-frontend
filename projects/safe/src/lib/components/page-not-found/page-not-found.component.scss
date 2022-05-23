@@ -1,0 +1,62 @@
+// @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap');
+
+.content {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  max-width: 80%;
+  margin: auto;
+  align-items: center;
+}
+
+.text {
+  /* block */
+  padding: 2.5em;
+  width: 30em;
+  max-width:50%;
+  /* text */
+  color: rgba(0, 0, 0, 1);
+  font-family: Nunito;
+  font-weight: 500;
+  font-size: calc(0.7rem + 0.5vw);
+  line-height: 1.5;
+
+  .error-code {
+    width: calc(100% + 5em);
+    margin: 0 -2.5em 5% -2.5em;
+  }
+
+  p {
+    font-size: 1.5em;
+    margin-bottom: 5%;
+  }
+
+  a {
+    color: #906AE0;
+    display: block;
+    padding: 1em 2em;
+    border-radius: 100px;
+    border: 2px solid #906AE0;
+    text-decoration: none;
+    width: max-content;
+  }
+}
+
+.drawing {
+  /* block */
+  width: 50%;
+  max-height: 80%;
+}
+
+@media screen and (max-width: 750px) {
+  .content {
+    flex-direction: column;
+  }
+  .text {
+    max-width: 90%;
+  }
+  .drawing {
+    width: 90%;
+  }
+}
