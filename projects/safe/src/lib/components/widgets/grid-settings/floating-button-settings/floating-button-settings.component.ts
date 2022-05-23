@@ -25,7 +25,7 @@ import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
-import { MAIL_EDITOR_CONFIG } from '../../../../const/email';
+import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
@@ -62,7 +62,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   public factory?: ComponentFactory<any>;
 
   /** tinymce editor */
-  public editor: any = MAIL_EDITOR_CONFIG;
+  public editor: any = EMAIL_EDITOR_CONFIG;
 
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
 

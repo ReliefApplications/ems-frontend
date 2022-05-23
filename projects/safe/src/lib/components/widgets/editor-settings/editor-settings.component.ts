@@ -7,15 +7,16 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { EDITOR_CONFIG } from '../../../const/editor';
+import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
 
+/**
+ * Modal content for the settings of the editor widgets.
+ */
 @Component({
   selector: 'safe-editor-settings',
   templateUrl: './editor-settings.component.html',
   styleUrls: ['./editor-settings.component.scss'],
 })
-/*  Modal content for the settings of the editor widgets.
- */
 export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
@@ -28,11 +29,17 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   /** tinymce editor */
-  public editor: any = EDITOR_CONFIG;
+  public editor: any = WIDGET_EDITOR_CONFIG;
 
+  /**
+   * Modal content for the settings of the editor widgets.
+   *
+   * @param formBuilder Angular Form Builder
+   */
   constructor(private formBuilder: FormBuilder) {}
 
-  /*  Build the settings form, using the widget saved parameters.
+  /**
+   * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
     this.tileForm = this.formBuilder.group({
@@ -43,7 +50,8 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
     this.change.emit(this.tileForm);
   }
 
-  /*  Detect the form changes to emit the new configuration.
+  /**
+   * Detect the form changes to emit the new configuration.
    */
   ngAfterViewInit(): void {
     this.tileForm?.valueChanges.subscribe(() => {
