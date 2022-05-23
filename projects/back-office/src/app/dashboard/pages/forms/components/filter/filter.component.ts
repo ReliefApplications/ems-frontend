@@ -31,7 +31,7 @@ export class FilterComponent implements OnInit {
       });
     // this way we can wait for 0.2s before sending an update
     this.search.valueChanges
-      .pipe(debounceTime(200), distinctUntilChanged())
+      .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value) => {
         this.form.controls.name.setValue(value);
       });
