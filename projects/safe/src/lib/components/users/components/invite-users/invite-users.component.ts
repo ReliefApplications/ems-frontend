@@ -111,7 +111,6 @@ export class SafeInviteUsersComponent implements OnInit {
       if (file && this.isValidFile(file)) {
         this.downloadService.uploadFile(this.data.uploadPath, file).subscribe(
           (res) => {
-            console.log(res);
             this.gridData.data = res;
           },
           (err) => {
