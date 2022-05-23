@@ -1,3 +1,15 @@
+/** Language tinymce keys paired with the default ones */
+export const LANGUAGE_PAIRS = [
+  {
+    key: 'en',
+    tinymceKey: 'en_US',
+  },
+  {
+    key: 'fr',
+    tinymceKey: 'fr_FR',
+  },
+];
+
 /** Editor tinymce configuration. */
 export const EDITOR_CONFIG = {
   base_url: '/tinymce',

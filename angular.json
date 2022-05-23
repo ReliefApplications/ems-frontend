@@ -75,7 +75,12 @@
               "projects/back-office/src/favicon.ico",
               "projects/back-office/src/assets",
               "projects/back-office/src/web.config",
-              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
+              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinyMCE/",
+                "output": "/tinymce/langs"
+              }
             ],
             "styles": [
               {
@@ -496,7 +501,12 @@
               "projects/front-office/src/favicon.ico",
               "projects/front-office/src/assets",
               "projects/front-office/src/web.config",
-              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
+              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinyMCE/",
+                "output": "/tinymce/langs"
+              }
             ],
             "styles": [
               {
@@ -901,7 +911,12 @@
               },
               "projects/web-widgets/src/favicon.ico",
               "projects/web-widgets/src/assets",
-              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
+              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinyMCE",
+                "output": "/tinymce/langs"
+              }
             ],
             "styles": [
               "projects/web-widgets/src/styles.scss",

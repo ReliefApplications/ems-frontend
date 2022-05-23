@@ -25,7 +25,7 @@ import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
-import { EDITOR_CONFIG } from '../../../../const/email';
+import { EDITOR_CONFIG, LANGUAGE_PAIRS } from '../../../../const/email';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
@@ -79,7 +79,14 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     private queryBuilder: QueryBuilderService,
     private componentFactoryResolver: ComponentFactoryResolver,
     public dialog: MatDialog
-  ) {}
+  ) {
+    this.editor.language = localStorage.getItem('lang');
+    LANGUAGE_PAIRS.map((val: any) => {
+      if (this.editor.language === val.key) {
+        this.editor.language = val.tinymceKey;
+      }
+    });
+  }
 
   ngOnInit(): void {
     if (
