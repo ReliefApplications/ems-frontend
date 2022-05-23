@@ -25,7 +25,11 @@ import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
-import { EDITOR_CONFIG, EDITOR_LANGUAGE_PAIRS } from '../../../../const/email';
+import {
+  EMAIL_EDITOR_CONFIG,
+  EDITOR_LANGUAGE_PAIRS,
+} from '../../../../const/tinymce.const';
+import { TranslateService } from '@ngx-translate/core';
 
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
@@ -62,7 +66,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   public factory?: ComponentFactory<any>;
 
   /** tinymce editor */
-  public editor: any = EDITOR_CONFIG;
+  public editor: any = EMAIL_EDITOR_CONFIG;
 
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
 
@@ -78,14 +82,17 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
     private componentFactoryResolver: ComponentFactoryResolver,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private translate: TranslateService
   ) {
-    this.editor.language = localStorage.getItem('lang');
-    EDITOR_LANGUAGE_PAIRS.map((val: any) => {
-      if (this.editor.language === val.key) {
-        this.editor.language = val.tinymceKey;
-      }
-    });
+    // Set the editor language
+    const lang = this.translate.currentLang;
+    const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
+    if (editorLang) {
+      this.editor.language = editorLang.tinymceKey;
+    } else {
+      this.editor.language = 'en';
+    }
   }
 
   ngOnInit(): void {
