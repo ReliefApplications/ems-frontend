@@ -104,6 +104,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.pageInfo.length = res.data.forms.totalCount;
       this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
       this.loading = res.loading;
+      this.filterLoading = false;
     });
 
     this.authSubscription = this.authService.user$.subscribe(() => {
@@ -181,7 +182,6 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
         filter: this.filter,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
-        this.filterLoading = false;
         if (!fetchMoreResult) {
           return prev;
         }

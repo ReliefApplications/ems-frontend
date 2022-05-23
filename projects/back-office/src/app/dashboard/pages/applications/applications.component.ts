@@ -121,6 +121,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
+      this.filterLoading = false;
     });
     this.newApplicationsQuery.valueChanges.subscribe((res) => {
       this.newApplications = res.data.applications.edges
@@ -212,7 +213,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         filter: this.filter,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
-        this.filterLoading = false;
         if (!fetchMoreResult) {
           return prev;
         }

@@ -79,6 +79,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       this.pageInfo.length = res.data.resources.totalCount;
       this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
       this.loading = res.loading;
+      this.filterLoading = false;
     });
   }
 
@@ -150,7 +151,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
         filter: this.filter,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
-        this.filterLoading = false;
         if (!fetchMoreResult) {
           return prev;
         }
