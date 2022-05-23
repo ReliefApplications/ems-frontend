@@ -1,5 +1,5 @@
 /** Language tinymce keys paired with the default ones */
-export const LANGUAGE_PAIRS = [
+export const EDITOR_LANGUAGE_PAIRS = [
   {
     key: 'en',
     tinymceKey: 'en_US',

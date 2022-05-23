@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { EDITOR_CONFIG, LANGUAGE_PAIRS } from '../../const/email';
+import { EDITOR_CONFIG, EDITOR_LANGUAGE_PAIRS } from '../../const/email';
 // import { RawEditorOptions } from 'tinymce/tinymce';
 
 /** Interface of Email Preview Modal Data */
@@ -43,7 +43,7 @@ export class SafeEmailPreviewComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {
     this.editor.language = localStorage.getItem('lang');
-    LANGUAGE_PAIRS.map((val: any) => {
+    EDITOR_LANGUAGE_PAIRS.map((val: any) => {
       if (this.editor.language === val.key) {
         this.editor.language = val.tinymceKey;
       }

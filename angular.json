@@ -78,7 +78,7 @@
               { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
               {
                 "glob": "**/*",
-                "input": "projects/safe/src/i18n/tinyMCE/",
+                "input": "projects/safe/src/i18n/tinymce/",
                 "output": "/tinymce/langs"
               }
             ],
@@ -504,7 +504,7 @@
               { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
               {
                 "glob": "**/*",
-                "input": "projects/safe/src/i18n/tinyMCE/",
+                "input": "projects/safe/src/i18n/tinymce/",
                 "output": "/tinymce/langs"
               }
             ],
@@ -914,7 +914,7 @@
               { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
               {
                 "glob": "**/*",
-                "input": "projects/safe/src/i18n/tinyMCE",
+                "input": "projects/safe/src/i18n/tinymce",
                 "output": "/tinymce/langs"
               }
             ],
