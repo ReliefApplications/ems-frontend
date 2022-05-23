@@ -1,6 +1,9 @@
 <div class="resources-header">
   <!-- FILTERING -->
-  <app-filter (filter)="onFilter($event)"></app-filter>
+  <app-filter
+    (filter)="onFilter($event)"
+    [loading]="filterLoading"
+  ></app-filter>
   <!-- ACTIONS -->
   <div class="actions">
     <safe-button
