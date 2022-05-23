@@ -630,7 +630,7 @@
 				},
 				"empty": "No record detected",
 				"errors": {
-					"errorOnRow": "Cannot save, error on row",
+					"errorOnRow": "Cannot save (row",
 					"invalid": "Invalid grid configuration",
 					"missingDataset": "Select a dataset in settings"
 				},

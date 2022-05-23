@@ -568,37 +568,30 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @returns List of validators in JSON format with type and different values
    */
   parseValidator(stringVal: string) {
-    let listOfValidators: any[];
-    // eslint-disable-next-line prefer-const
-    listOfValidators = [];
+    const listOfValidators: any[] = [];
     const JSONval = JSON.parse(stringVal);
-    Object.keys(JSONval.pages).forEach((value1, key1) => {
-      Object.keys(JSONval.pages[value1].elements).forEach((value2, key2) => {
-        if (
-          typeof JSONval.pages[value1].elements[value2].validators !==
-          'undefined'
-        ) {
-          if (
-            JSONval.pages[value1].elements[value2].validators[0].type ===
-            'regex'
-          ) {
-            listOfValidators.push({
-              valueName: JSONval.pages[value1].elements[value2].valueName,
-              text: JSONval.pages[value1].elements[value2].validators[0].text,
-              regex: JSONval.pages[value1].elements[value2].validators[0].regex,
-              type: JSONval.pages[value1].elements[value2].validators[0].type,
-            });
+    for (const page of JSONval.pages) {
+      for (const element of page.elements) {
+        if (typeof element.validators !== 'undefined') {
+          const dict: any = { valueName: element.valueName };
+          for (const validator of element.validators) {
+            for (const key in validator) {
+              if (validator.hasOwnProperty(key)) {
+                dict[key] = validator[key];
+              }
+            }
           }
+          listOfValidators.push(dict);
         }
-      });
-    });
+      }
+    }
     return listOfValidators;
   }
 
   /**
    * Checks if the data is coherent with the regex validators
    *
-   * @param validator Validator in JSON format
+   * @param validator Validator with its attri
    * @returns error message to display
    */
   checkRegexValidation(validator: any) {
@@ -611,28 +604,51 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     Object.keys(data).forEach((value1, key1) => {
       Object.keys(data[key1]).forEach((value2, key2) => {
         Object.keys(validator).forEach((value3, key3) => {
-          const regex = new RegExp(validator[value3].regex, 'g');
-          if (
-            value2 === validator[value3].valueName &&
-            regex.test(data[key1][value2]) !== true
-          ) {
-            row = +value1 + 1;
-            errMessage +=
-              this.translate.instant(
-                'components.widget.grid.errors.errorOnRow'
-              ) +
-              ' ' +
-              row +
-              ', ' +
-              validator[value3].valueName +
-              ' : ' +
-              validator[value3].text +
-              '\n';
+          switch (validator[value3].type) {
+            case 'regex':
+              const regex = new RegExp(validator[value3].regex, 'g');
+              if (
+                value2 === validator[value3].valueName &&
+                regex.test(data[key1][value2]) !== true
+              ) {
+                row = +value1 + 1;
+                errMessage += this.writeErrorMessage(row, validator[value3]);
+              }
+              break;
+            case 'numeric':
+              if (
+                value2 === validator[value3].valueName &&
+                (data[key1][value2] < validator[value3].minValue ||
+                  data[key1][value2] > validator[value3].maxValue)
+              ) {
+                row = +value1 + 1;
+                errMessage += this.writeErrorMessage(row, validator[value3]);
+              }
           }
         });
       });
     });
     return errMessage;
+  }
+
+  /**
+   * Writes an error message regarding the validator
+   *
+   * @param row Row where the error is
+   * @param validatorValue Value of the validator for this row
+   * @returns error message to display
+   */
+  writeErrorMessage(row: number, validatorValue: any) {
+    return (
+      this.translate.instant('components.widget.grid.errors.errorOnRow') +
+      ' ' +
+      row +
+      ', ' +
+      validatorValue.valueName +
+      ') : ' +
+      validatorValue.text +
+      '\n'
+    );
   }
 
   /**

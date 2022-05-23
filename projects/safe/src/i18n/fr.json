@@ -630,7 +630,7 @@
 				},
 				"empty": "Aucun enregistrement détecté",
 				"errors": {
-					"errorOnRow": "Sauvegarde impossible, erreur au rang",
+					"errorOnRow": "Sauvegarde impossible (rang",
 					"invalid": "Configuration de grille invalide",
 					"missingDataset": "Sélectionner un jeu de données dans les jeux de données"
 				},
