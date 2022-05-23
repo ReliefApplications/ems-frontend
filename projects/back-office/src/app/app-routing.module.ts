@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { SafePageNotFoundComponent } from '@safe/builder';
 import { AccessGuard } from './guards/access.guard';
 import { AuthGuard } from './guards/auth.guard';
 
@@ -47,8 +48,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: '404',
+    component: SafePageNotFoundComponent,
+  },
+  {
     path: '**',
-    redirectTo: 'applications',
+    redirectTo: '404',
     pathMatch: 'full',
   },
 ];
