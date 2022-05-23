@@ -49,6 +49,7 @@ import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
 import { SafeSnackBarService } from 'projects/safe/src/public-api';
 import { TranslateService } from '@ngx-translate/core';
+import * as Survey from 'survey-angular';
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
@@ -499,9 +500,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         value: this.formGroup.value,
       });
     }
-    if (this.checkRegexValidation(this.parseValidator(stringVal)) !== '') {
+
+    if (this.checkValidation(this.parseValidator(stringVal)) !== '') {
       this.snackBar.openSnackBar(
-        this.checkRegexValidation(this.parseValidator(stringVal)),
+        this.checkValidation(this.parseValidator(stringVal)),
         {
           error: true,
           duration: 15000,
@@ -567,7 +569,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param stringVal Validator on string form
    * @returns List of validators in JSON format with type and different values
    */
-  parseValidator(stringVal: string) {
+  parseValidator(stringVal: string):any {
     const listOfValidators: any[] = [];
     const JSONval = JSON.parse(stringVal);
     for (const page of JSONval.pages) {
@@ -594,25 +596,22 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param validator Validator with its attri
    * @returns error message to display
    */
-  checkRegexValidation(validator: any) {
-    let errMessage: string;
-    // eslint-disable-next-line prefer-const
-    errMessage = '';
-    let row: number;
-    row = 0;
+  checkValidation(validator: any): string {
+    let errMessage = '';
+    let row = 0;
     const data = this.data.data;
     Object.keys(data).forEach((value1, key1) => {
       Object.keys(data[key1]).forEach((value2, key2) => {
         Object.keys(validator).forEach((value3, key3) => {
           switch (validator[value3].type) {
             case 'regex':
-              const regex = new RegExp(validator[value3].regex, 'g');
-              if (
-                value2 === validator[value3].valueName &&
-                regex.test(data[key1][value2]) !== true
-              ) {
+              if (value2 === validator[value3].valueName) {
                 row = +value1 + 1;
-                errMessage += this.writeErrorMessage(row, validator[value3]);
+                errMessage += this.validateRegex(
+                  validator[value3].regex,
+                  data[key1][value2],
+                  this.writeErrorMessage(row, validator[value3])
+                );
               }
               break;
             case 'numeric':
@@ -624,11 +623,56 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
                 row = +value1 + 1;
                 errMessage += this.writeErrorMessage(row, validator[value3]);
               }
+              break;
+            case 'email':
+              if (value2 === validator[value3].valueName) {
+                row = +value1 + 1;
+                errMessage += this.validateEmail(
+                  data[key1][value2],
+                  this.writeErrorMessage(row, validator[value3])
+                );
+              }
           }
         });
       });
     });
     return errMessage;
+  }
+
+  /**
+   * Uses the SurveyJS e-mail validator to return an error message if necessary
+   *
+   * @param value Value to check
+   * @param errText Error message to display if error
+   * @returns Error message to display
+   */
+  validateEmail(value: any, errText: string): string {
+    const emailValidator = new Survey.EmailValidator();
+    const res = emailValidator.validate(value, errText);
+    if (res === null) {
+      return '';
+    } else {
+      return res.error.text;
+    }
+  }
+
+  /**
+   * Uses the SurveyJS regex validator to return an error message if necessary
+   *
+   * @param regex Regular expression used to check the value
+   * @param value Value to check
+   * @param errText Error message to display if error
+   * @returns Error message to display
+   */
+  validateRegex(regex: any, value: any, errText: string) {
+    const regexValidator = new Survey.RegexValidator(regex);
+    regexValidator.text = errText;
+    const res = regexValidator.validate(value);
+    if (res === null) {
+      return '';
+    } else {
+      return res.error.text;
+    }
   }
 
   /**
@@ -638,7 +682,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param validatorValue Value of the validator for this row
    * @returns error message to display
    */
-  writeErrorMessage(row: number, validatorValue: any) {
+  writeErrorMessage(row: number, validatorValue: any) : string {
     return (
       this.translate.instant('components.widget.grid.errors.errorOnRow') +
       ' ' +
