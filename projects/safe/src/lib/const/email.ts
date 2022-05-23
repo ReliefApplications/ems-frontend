@@ -19,5 +19,5 @@ export const EDITOR_CONFIG = {
   toolbar_mode: 'sliding',
   contextmenu: 'link image imagetools table',
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
-  file_browser_callback: false // removes possibility to upload files
+  file_browser_callback: false, // removes possibility to upload files
 };
