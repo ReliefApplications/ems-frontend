@@ -34,6 +34,7 @@ export class Chart {
     const legend = settings ? settings.legend : null;
     const title = settings ? settings.title : null;
     const palette: string[] = get(settings, 'palette.value', []);
+    const axes = settings ? settings.axes : null;
 
     // build form
     this.form = this.fb.group({
@@ -66,6 +67,20 @@ export class Chart {
             disabled: !get(settings, 'palette.enabled', false),
           },
         ],
+      }),
+      axes: this.fb.group({
+        y: this.fb.group({
+          enableMin: [axes ? axes.y.enableMin : false],
+          min: [axes ? axes.y.min : 0],
+          enableMax: [axes ? axes.y.enableMax : false],
+          max: [axes ? axes.y.max : 100],
+        }),
+        x: this.fb.group({
+          enableMin: [axes ? axes.x.enableMin : false],
+          min: [axes ? axes.x.min : 0],
+          enableMax: [axes ? axes.x.enableMax : false],
+          max: [axes ? axes.x.max : 100],
+        }),
       }),
     });
 

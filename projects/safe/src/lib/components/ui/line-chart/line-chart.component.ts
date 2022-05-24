@@ -24,6 +24,7 @@ interface ChartSeries {
 
 interface ChartOptions {
   palette: string[];
+  axes: any;
 }
 
 @Component({
@@ -40,6 +41,7 @@ export class SafeLineChartComponent implements OnInit {
 
   @Input() options: ChartOptions = {
     palette: [],
+    axes: null,
   };
 
   @ViewChild('chart')

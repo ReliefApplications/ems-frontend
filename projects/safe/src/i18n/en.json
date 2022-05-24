@@ -666,6 +666,7 @@
 			},
 			"settings": {
 				"chart": {
+					"axes": "Axes",
 					"legend": "Legend",
 					"orientation": "Orientation",
 					"palette": {
