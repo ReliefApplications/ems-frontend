@@ -602,6 +602,7 @@ export const init = (
           convert: question.convert,
           update: question.update,
           inlineEdition: question.inlineEdition,
+          export: question.export,
         },
       });
     }
