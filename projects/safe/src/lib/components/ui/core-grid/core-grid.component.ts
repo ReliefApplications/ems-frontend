@@ -49,6 +49,7 @@ import { Form } from '../../../models/form.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
+import get from 'lodash/get';
 import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
@@ -257,21 +258,15 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(): void {
     // define row actions
     this.actions = {
-      add: this.settings.actions?.addRecord && this.settings.template,
-      history: this.settings.actions?.history,
-      update: this.settings.actions?.update,
-      delete: this.settings.actions?.delete,
-      convert: this.settings.actions?.convert,
-      export:
-        this.settings.actions &&
-        typeof this.settings.actions?.export !== 'undefined'
-          ? this.settings.actions?.export
-          : true,
-      showDetails:
-        this.settings.actions &&
-        typeof this.settings.actions?.showDetails !== 'undefined'
-          ? this.settings.actions?.showDetails
-          : true,
+      add:
+        get(this.settings, 'actions?.addRecord', false) &&
+        this.settings.template,
+      history: get(this.settings, 'actions.history', false),
+      update: get(this.settings, 'actions.update', false),
+      delete: get(this.settings, 'actions.delete', false),
+      convert: get(this.settings, 'actions.convert', false),
+      export: get(this.settings, 'actions.export', true),
+      showDetails: get(this.settings, 'actions.showDetails', true),
     };
     this.editable = this.settings.actions?.inlineEdition;
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
