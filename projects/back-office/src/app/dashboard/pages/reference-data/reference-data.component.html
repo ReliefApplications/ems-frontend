@@ -96,7 +96,7 @@
     </div>
     <!-- CSV Input for static type -->
     <div *ngIf="type === 'static'" class="form-group-row">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" style="flex: 2">
         <mat-label>{{ 'pages.referenceData.csv' | translate }}</mat-label>
         <textarea
           #csvData
@@ -113,6 +113,7 @@
         {{ 'pages.referenceData.validateCsv' | translate }}
       </safe-button>
     </div>
+    <mat-spinner diameter="45" class="page-loader" *ngIf="csvLoading"></mat-spinner>
     <div class="form-group-row">
       <!-- Path -->
       <mat-form-field
@@ -132,7 +133,7 @@
       <mat-form-field
         style="flex: 2"
         appearance="outline"
-        *ngIf="type && valueFields.length > 0"
+        *ngIf="!csvLoading && type && valueFields.length > 0"
       >
         <mat-label>{{
           'pages.referenceData.valueField' | translate
@@ -166,7 +167,7 @@
       >
     </div>
     <!-- Kendo grid to preview data on static type -->
-    <div *ngIf="csvValue && type === 'static'">
+    <div *ngIf="!csvLoading && csvValue && type === 'static'">
       <kendo-grid [data]="newData">
         <kendo-grid-column *ngFor="let field of valueFields" [field]="field">{{
           field
@@ -175,6 +176,7 @@
     </div>
   </form>
   <safe-button
+    class="save-button"
     category="secondary"
     variant="primary"
     (click)="onSave()"

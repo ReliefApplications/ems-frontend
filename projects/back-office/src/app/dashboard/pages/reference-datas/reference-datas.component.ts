@@ -51,8 +51,8 @@ export class ReferenceDatasComponent
   private referenceDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
   displayedColumns = [
     'name',
-    'apiConfiguration',
     'type',
+    'apiConfiguration',
     'modifiedAt',
     'actions',
   ];
