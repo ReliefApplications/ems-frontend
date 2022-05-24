@@ -901,6 +901,10 @@
 		"forms": {
 			"title": "Available forms"
 		},
+		"pageNotFound": {
+			"homeButton": "Back Home",
+			"message": "Sorry, this planet does not exist!"
+		},
 		"profile": {
 			"title": "Your profile"
 		},

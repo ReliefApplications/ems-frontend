@@ -1,5 +1,9 @@
-// @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap');
+
+@use 'sass:math';
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap');
+
+// place of elements
 
 .content {
   display: flex;
@@ -33,13 +37,19 @@
   }
 
   a {
-    color: #906AE0;
+    $link-color: #906AE0;
+    color: $link-color;
     display: block;
     padding: 1em 2em;
     border-radius: 100px;
-    border: 2px solid #906AE0;
+    border: 2px solid $link-color;
     text-decoration: none;
     width: max-content;
+
+    &:hover {
+      background-color: $link-color;
+      color: white;
+    }
   }
 }
 
@@ -58,5 +68,86 @@
   }
   .drawing {
     width: 90%;
+  }
+}
+
+
+// animations
+
+.glitches {
+  $animationDuration: 0.15s;
+  animation: $animationDuration ease-in-out infinite alternate glitches;
+
+  $max: 5;
+  @for $i from 0 to $max {
+    &:nth-child(#{$max}n+#{$i}) {
+      animation-delay: math.div(- 2 * $i * $animationDuration, $max);
+    }
+  }
+}
+@keyframes glitches {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(4px);
+  }
+}
+
+#cloud1 {
+  animation: 5s ease-in-out -1s infinite alternate cloud1;
+}
+@keyframes cloud1 {
+  from {transform: translateX(0);}
+  to {transform: translateX(-20px);}
+}
+#cloud2 {
+  animation: 5s ease-in-out -3s infinite alternate cloud2;
+}
+@keyframes cloud2 {
+  from {transform: translateX(0);}
+  to {transform: translateX(20px);}
+}
+
+#flying-saucer {
+  transform-box: fill-box;
+  transform-origin: center center;
+  animation: 6s ease-in-out infinite alternate verticalTranslation,
+             4s ease-in-out infinite alternate rotation;
+}
+#dog {
+  transform-box: fill-box;
+  transform-origin: center center;
+  animation: 5s ease-in-out infinite alternate verticalTranslation,
+             3s ease-in-out infinite alternate rotation;
+}
+@keyframes verticalTranslation {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(20px);
+  }
+}
+@keyframes rotation {
+  from {
+    rotate: -1.2deg;
+  }
+  to {
+    rotate: 1.2deg;
+  }
+}
+
+#shadow {
+  transform-box: fill-box;
+  transform-origin: center center;
+  animation: 5s ease-in-out infinite alternate growing;
+}
+@keyframes growing {
+  from {
+    scale: 0.8;
+  }
+  to {
+    scale: 1;
   }
 }

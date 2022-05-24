@@ -901,6 +901,10 @@
 		"forms": {
 			"title": "******"
 		},
+		"pageNotFound": {
+			"homeButton": "******",
+			"message": "******"
+		},
 		"profile": {
 			"title": "******"
 		},
