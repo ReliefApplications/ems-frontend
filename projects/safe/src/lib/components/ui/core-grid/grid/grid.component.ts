@@ -506,7 +506,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         this.checkValidation(this.parseValidator(stringVal)),
         {
           error: true,
-          duration: 15000,
+          duration: 10000,
         }
       );
     } else {
@@ -569,7 +569,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param stringVal Validator on string form
    * @returns List of validators in JSON format with type and different values
    */
-  parseValidator(stringVal: string):any {
+  parseValidator(stringVal: string): any {
     const listOfValidators: any[] = [];
     const JSONval = JSON.parse(stringVal);
     for (const page of JSONval.pages) {
@@ -615,13 +615,14 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
               }
               break;
             case 'numeric':
-              if (
-                value2 === validator[value3].valueName &&
-                (data[key1][value2] < validator[value3].minValue ||
-                  data[key1][value2] > validator[value3].maxValue)
-              ) {
+              if (value2 === validator[value3].valueName) {
                 row = +value1 + 1;
-                errMessage += this.writeErrorMessage(row, validator[value3]);
+                errMessage += this.validateNumeric(
+                  data[key1][value2],
+                  this.writeErrorMessage(row, validator[value3]),
+                  validator[value3].minValue,
+                  validator[value3].maxValue
+                );
               }
               break;
             case 'email':
@@ -632,11 +633,82 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
                   this.writeErrorMessage(row, validator[value3])
                 );
               }
+              break;
+            case 'text':
+              if (value2 === validator[value3].valueName) {
+                row = +value1 + 1;
+                errMessage += this.validateText(
+                  data[key1][value2],
+                  this.writeErrorMessage(row, validator[value3]),
+                  validator[value3].maxLength,
+                  validator[value3].minLength,
+                  validator[value3].allowDigits
+                );
+              }
           }
         });
       });
     });
     return errMessage;
+  }
+
+  /**
+   * Uses the SurveyJS text validator to return an error message if necessary
+   *
+   * @param value Value to check
+   * @param errText Error message to display if error
+   * @param maxLength Maximum length of the text
+   * @param minLength Minimum length of the text
+   * @param allowDigits Wether or not the text should contain digits
+   * @returns Error message to display
+   */
+  validateText(
+    value: any,
+    errText: string,
+    maxLength: number,
+    minLength?: number,
+    allowDigits?: boolean
+  ) {
+    const textValidator = new Survey.TextValidator();
+    textValidator.maxLength = maxLength;
+    textValidator.text = errText;
+    if (minLength !== undefined) {
+      textValidator.minLength = minLength;
+    }
+    if (allowDigits !== undefined) {
+      textValidator.allowDigits = allowDigits;
+    }
+    const res = textValidator.validate(value);
+    if (res === null || res.error === null) {
+      return '';
+    } else {
+      return res.error.text;
+    }
+  }
+
+  /**
+   * Uses the SurveyJS numeric validator to return an error message if necessary
+   *
+   * @param value Value to check
+   * @param errText Error message to display if error
+   * @param minValue Value that our value to check should be superior to
+   * @param maxValue Value that our value to check should be inferior to
+   * @returns Error message to display
+   */
+  validateNumeric(
+    value: any,
+    errText: string,
+    minValue: number,
+    maxValue: number
+  ) {
+    const numericValidator = new Survey.NumericValidator(minValue, maxValue);
+    numericValidator.text = errText;
+    const res = numericValidator.validate(value);
+    if (res === null || res.error === null) {
+      return '';
+    } else {
+      return res.error.text;
+    }
   }
 
   /**
@@ -648,8 +720,9 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    */
   validateEmail(value: any, errText: string): string {
     const emailValidator = new Survey.EmailValidator();
-    const res = emailValidator.validate(value, errText);
-    if (res === null) {
+    emailValidator.text = errText;
+    const res = emailValidator.validate(value);
+    if (res === null || res.error === null) {
       return '';
     } else {
       return res.error.text;
@@ -668,7 +741,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     const regexValidator = new Survey.RegexValidator(regex);
     regexValidator.text = errText;
     const res = regexValidator.validate(value);
-    if (res === null) {
+    if (res === null || res.error === null) {
       return '';
     } else {
       return res.error.text;
@@ -682,7 +755,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param validatorValue Value of the validator for this row
    * @returns error message to display
    */
-  writeErrorMessage(row: number, validatorValue: any) : string {
+  writeErrorMessage(row: number, validatorValue: any): string {
     return (
       this.translate.instant('components.widget.grid.errors.errorOnRow') +
       ' ' +
