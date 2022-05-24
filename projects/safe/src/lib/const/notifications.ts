@@ -67,4 +67,5 @@ export const NOTIFICATIONS = {
   pingResponseReceived: 'Received positive response from ping request.',
   pingResponseError: 'ERROR during the PING request.',
   aggregationError: 'Aggregation failed to execute.',
+  userImportFail: 'The user import has failed',
 };

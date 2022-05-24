@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
+import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -24,6 +24,9 @@ export class SafeEmailPreviewComponent implements OnInit {
   /** mail is put in a form to use read-only inputs */
   public form!: FormGroup;
 
+  /** tinymce editor */
+  public editor: any = EMAIL_EDITOR_CONFIG;
+
   /**
    * Preview Email component.
    * Modal in read-only mode.
@@ -36,8 +39,7 @@ export class SafeEmailPreviewComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<SafeEmailPreviewComponent>,
-    private formBuilder: FormBuilder,
-    private sanitizer: DomSanitizer
+    private formBuilder: FormBuilder
   ) {}
 
   /** Create the form from the dialog data, putting all fields as read-only */
@@ -46,12 +48,7 @@ export class SafeEmailPreviewComponent implements OnInit {
       from: [{ value: this.data.from, disabled: true }],
       to: [{ value: this.data.to, disabled: true }],
       subject: [{ value: this.data.subject, disabled: true }],
-      html: [
-        {
-          value: this.sanitizer.bypassSecurityTrustHtml(this.data.html),
-          disabled: true,
-        },
-      ],
+      html: this.data.html,
       files: [[]],
     });
   }
