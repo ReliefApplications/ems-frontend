@@ -438,6 +438,14 @@ body {
   }
 }
 
+.preferences-dialog {
+  width: 90%;
+  max-width: 850px !important;
+  mat-dialog-container {
+    width: 100%;
+  }
+}
+
 .no-padding-dialog {
   mat-dialog-container {
     padding: unset;
@@ -516,7 +524,6 @@ mat-tab-group[vertical] {
       display: flex;
       flex-direction: column!important;
       position: relative;
-      padding-right: 32px;
 
       .mat-tab-label {
         justify-content: left;
@@ -536,7 +543,7 @@ mat-tab-group[vertical] {
         left: calc(100% - 2px);
         height: 100%;
         width: 2px;
-        background-color: $primary;
+        background-color: none !important;
       }
     }
 
