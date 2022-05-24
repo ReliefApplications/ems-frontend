@@ -23,11 +23,11 @@ export class SafeGridToolbarComponent implements OnInit {
   }
 
   get canUpdate(): boolean {
-    return !this.items.some((x) => x.canUpdate);
+    return !this.items.some((x) => !x.canUpdate);
   }
 
   get canDelete(): boolean {
-    return !this.items.some((x) => x.canDelete);
+    return !this.items.some((x) => !x.canDelete);
   }
 
   constructor() {}

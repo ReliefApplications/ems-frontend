@@ -326,13 +326,13 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     if (deselectedRows.length > 0) {
       this.selectedRows = [
         ...this.selectedRows.filter(
-          (x) => !deselectedRows.some((y) => x === y.dataItem.id)
+          (x) => !deselectedRows.some((y) => x === y.dataItem)
         ),
       ];
     }
     if (selectedRows.length > 0) {
       this.selectedRows = this.selectedRows.concat(
-        selectedRows.map((x) => x.dataItem.id)
+        selectedRows.map((x) => x.dataItem)
       );
     }
     this.selectionChange.emit(selection);
@@ -345,7 +345,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @returns selected status of the row.
    */
   public isRowSelected = (row: RowArgs) =>
-    this.selectedRows.includes(row.dataItem.id);
+    this.selectedRows.includes(row.dataItem);
 
   // === LAYOUT ===
   /**
