@@ -47,7 +47,7 @@
     text-decoration: none;
     width: max-content;
 
-    &:hover {
+    &:hover, &:focus {
       background-color: $link-color;
       color: white;
     }
@@ -75,39 +75,19 @@
 
 // animations
 
-.glitches {
-  $animationDuration: 0.15s;
-  animation: $animationDuration ease-in-out infinite alternate glitches;
-
-  $max: 5;
-  @for $i from 0 to $max {
-    &:nth-child(#{$max}n+#{$i}) {
-      animation-delay: math.div(- 2 * $i * $animationDuration, $max);
-    }
-  }
-}
-@keyframes glitches {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(4px);
-  }
-}
-
 #cloud1 {
   animation: 5s ease-in-out -1s infinite alternate cloud1;
 }
 @keyframes cloud1 {
   from {transform: translateX(0);}
-  to {transform: translateX(-20px);}
+  to {transform: translateX(-30px);}
 }
 #cloud2 {
   animation: 5s ease-in-out -3s infinite alternate cloud2;
 }
 @keyframes cloud2 {
   from {transform: translateX(0);}
-  to {transform: translateX(20px);}
+  to {transform: translateX(30px);}
 }
 
 #flying-saucer {
@@ -152,3 +132,22 @@
     scale: 1;
   }
 }
+
+// .error-code .glitches {
+//   $animationDuration: 0.15s;
+//   animation: $animationDuration ease-in-out infinite alternate glitches;
+//   $max: 5;
+//   @for $i from 0 to $max {
+//     &:nth-child(#{$max}n+#{$i}) {
+//       animation-delay: math.div(- 2 * $i * $animationDuration, $max);
+//     }
+//   }
+// }
+// @keyframes glitches {
+//   from {
+//     transform: translateX(-2px);
+//   }
+//   to {
+//     transform: translateX(2px);
+//   }
+// }
