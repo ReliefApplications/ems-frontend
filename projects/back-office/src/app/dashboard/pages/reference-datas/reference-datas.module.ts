@@ -13,7 +13,11 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
-import { SafeButtonModule, SafeSkeletonTableModule } from '@safe/builder';
+import {
+  SafeButtonModule,
+  SafeDateModule,
+  SafeSkeletonTableModule,
+} from '@safe/builder';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -40,6 +44,7 @@ import { AddReferenceDataComponent } from './add-reference-data/add-reference-da
     MatPaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
+    SafeDateModule,
   ],
   exports: [ReferenceDatasComponent],
 })

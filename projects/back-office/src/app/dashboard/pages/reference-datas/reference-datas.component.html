@@ -56,6 +56,15 @@
     <td mat-cell *matCellDef="let element">{{ element.type }}</td>
   </ng-container>
 
+  <ng-container matColumnDef="modifiedAt">
+    <th mat-header-cell *matHeaderCellDef>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'common.modifiedOn' | translate }}
+      </span>
+    </th>
+    <td mat-cell *matCellDef="let element">{{ element.modifiedAt | safeDate: 'medium'}}</td>
+  </ng-container>
+
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">

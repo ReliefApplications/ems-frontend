@@ -173,13 +173,13 @@
         }}</kendo-grid-column>
       </kendo-grid>
     </div>
-    <safe-button
-      category="secondary"
-      variant="primary"
-      (click)="onSave()"
-      [disabled]="referenceForm.invalid || !referenceForm.dirty"
-    >
-      {{ 'common.save' | translate }}
-    </safe-button>
   </form>
+  <safe-button
+    category="secondary"
+    variant="primary"
+    (click)="onSave()"
+    [disabled]="referenceForm.invalid || !referenceForm.dirty"
+  >
+    {{ 'common.save' | translate }}
+  </safe-button>
 </ng-container>

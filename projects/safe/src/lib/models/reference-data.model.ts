@@ -14,6 +14,7 @@ export enum referenceDataType {
 export interface ReferenceData {
   id?: string;
   name?: string;
+  modifiedAt?: Date;
   type?: referenceDataType;
   apiConfiguration?: ApiConfiguration;
   query?: string;
