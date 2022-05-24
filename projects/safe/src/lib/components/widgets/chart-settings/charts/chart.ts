@@ -34,6 +34,7 @@ export class Chart {
     const legend = settings ? settings.legend : null;
     const title = settings ? settings.title : null;
     const palette: string[] = get(settings, 'palette.value', []);
+    const axes = settings ? settings.axes : null;
 
     // build form
     this.form = this.fb.group({
@@ -67,15 +68,96 @@ export class Chart {
           },
         ],
       }),
+      axes: this.fb.group({
+        y: this.fb.group({
+          enableMin: [get(axes, 'y.enableMin', false)],
+          min: [
+            {
+              value: get(axes, 'y.enableMin', false)
+                ? get(axes, 'y.min', null)
+                : null,
+              disabled: !get(axes, 'y.enableMin', false),
+            },
+          ],
+          enableMax: [get(axes, 'y.enableMax', false)],
+          max: [
+            {
+              value: get(axes, 'y.enableMax', false)
+                ? get(axes, 'y.max', null)
+                : null,
+              disabled: !get(axes, 'y.enableMax', false),
+            },
+          ],
+        }),
+        x: this.fb.group({
+          enableMin: [get(axes, 'x.enableMin', false)],
+          min: [
+            {
+              value: get(axes, 'x.enableMin', false)
+                ? get(axes, 'x.min', null)
+                : null,
+              disabled: !get(axes, 'x.enableMin', false),
+            },
+          ],
+          enableMax: [get(axes, 'x.enableMax', false)],
+          max: [
+            {
+              value: get(axes, 'x.enableMax', false)
+                ? get(axes, 'x.max', null)
+                : null,
+              disabled: !get(axes, 'x.enableMax', false),
+            },
+          ],
+        }),
+      }),
     });
 
-    console.log(this.form);
-
+    // Update of palette
     this.form.get('palette.enabled')?.valueChanges.subscribe((value) => {
       if (value) {
         this.form.get('palette.value')?.enable();
       } else {
         this.form.get('palette.value')?.disable();
+      }
+    });
+
+    // Update of y axis
+    this.form.get('axes.y.enableMin')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.form.get('axes.y.min')?.setValue(0);
+        this.form.get('axes.y.min')?.enable();
+      } else {
+        this.form.get('axes.y.min')?.setValue(null);
+        this.form.get('axes.y.min')?.disable();
+      }
+    });
+    this.form.get('axes.y.enableMax')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.form.get('axes.y.max')?.setValue(100);
+        this.form.get('axes.y.max')?.enable();
+      } else {
+        this.form.get('axes.y.max')?.setValue(null);
+        this.form.get('axes.y.max')?.disable();
+      }
+    });
+
+    // Update of x axis
+    this.form.get('axes.x.enableMin')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.form.get('axes.x.min')?.setValue(0);
+        this.form.get('axes.x.min')?.enable();
+      } else {
+        this.form.get('axes.x.min')?.setValue(null);
+        this.form.get('axes.x.min')?.disable();
+      }
+    });
+    this.form.get('axes.x.enableMax')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.form.get('axes.x.max')?.setValue(100);
+        this.form.get('axes.x.max')?.enable();
+      } else {
+        this.form.get('axes.x.max')?.setValue(null);
+        this.form.get('axes.x.max')?.disable();
       }
     });
   }

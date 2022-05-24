@@ -17,6 +17,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"auto": "******",
 		"back": "******",
 		"cancel": "******",
 		"channel": {
@@ -666,6 +667,7 @@
 			},
 			"settings": {
 				"chart": {
+					"axes": "******",
 					"legend": "******",
 					"orientation": "******",
 					"palette": {

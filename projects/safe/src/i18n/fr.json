@@ -17,6 +17,7 @@
 			"none": "Aucune application",
 			"one": "Application"
 		},
+		"auto": "Automatique",
 		"back": "Retour",
 		"cancel": "Annuler",
 		"channel": {
@@ -666,6 +667,7 @@
 			},
 			"settings": {
 				"chart": {
+					"axes": "Axes",
 					"legend": "Légende",
 					"orientation": "Orientation",
 					"palette": {
