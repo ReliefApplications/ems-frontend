@@ -150,7 +150,15 @@ export class SafeReferenceDataService {
         break;
       }
       case referenceDataType.static: {
-        items = referenceData.data;
+        const cacheTimestamp = localStorage.getItem(cacheKey + TIMESTAMP_KEY);
+        const modifiedAt = referenceData.modifiedAt || '';
+        if (!cacheTimestamp || cacheTimestamp < modifiedAt) {
+          items = referenceData.data;
+          localForage.setItem(cacheKey, items);
+          localStorage.setItem(cacheKey + TIMESTAMP_KEY, modifiedAt);
+        } else {
+          items = await localForage.getItem(cacheKey);
+        }
         break;
       }
       default: {
