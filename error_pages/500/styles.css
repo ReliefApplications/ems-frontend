@@ -17,7 +17,7 @@ body {
     height: var(--size);
     left: 25%;
     top: calc(0.6 * var(--size));
-    animation: 5s ease-in-out 1s infinite alternate clouds;
+    animation: 5s ease-in-out 0s infinite alternate clouds;
 }
 
 #bottom-left-corner {
@@ -33,7 +33,7 @@ body {
     height: calc(1.5 * var(--size));
     right: 0;
     top: 20%;
-    animation: 5s ease-in-out 4s infinite alternate clouds;
+    animation: 5s ease-in-out -3s infinite alternate clouds;
 }
 
 #bottom-right-corner {
@@ -41,7 +41,7 @@ body {
     height: var(--size);
     right: 20%;
     bottom: var(--size);
-    animation: 5s ease-in-out 7s infinite alternate clouds;
+    animation: 5s ease-in-out -6s infinite alternate clouds;
 }
 
 
@@ -107,32 +107,30 @@ body {
 /* ANIMATIONS */
 
 #dog-tail {
+    transform-box: fill-box;
+    transform-origin: bottom right;
     animation: 0.7s ease-in-out infinite alternate dogtail;
 }
 @keyframes dogtail {
     from {
-        rotate: -0.6deg;
+        rotate: -2deg;
     }
     to {
-        rotate: 0.1deg;
+        rotate: 3deg;
     }
 }
 
 #head {
-    animation: 4s ease-in-out infinite doghead;
+    transform-box: fill-box;
+    transform-origin: bottom center;
+    animation: 5s ease-in-out infinite alternate balance;
 }
-@keyframes doghead {
+@keyframes balance {
     from {
-        transform: translateY(0);
-    }
-    5% {
-        transform: translateY(-10px);
-    }
-    10% {
-        transform: translateY(0);
+        rotate: -1deg;
     }
     to {
-        transform: translateY(0);
+        rotate: 1deg;
     }
 }
 
@@ -141,6 +139,6 @@ body {
         transform: translateX(0);
     }
     to {
-        transform: translateX(20px);
+        transform: translateX(calc(var(--size) / 4));
     }
 }
