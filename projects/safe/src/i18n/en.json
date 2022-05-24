@@ -682,6 +682,7 @@
 						"add": "Add new records",
 						"convert": "Convert records",
 						"delete": "Delete records",
+						"export": "Export records",
 						"inline": "Inline edition",
 						"show": "Show history",
 						"showDetails": "Show record details",

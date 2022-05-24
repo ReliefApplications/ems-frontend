@@ -666,6 +666,7 @@
 			},
 			"settings": {
 				"chart": {
+					"axes": "Axes",
 					"legend": "Légende",
 					"orientation": "Orientation",
 					"palette": {
@@ -681,6 +682,7 @@
 						"add": "Ajouter de nouveaux enregistrements",
 						"convert": "Convertir des enregistrements",
 						"delete": "Supprimer les enregistrements",
+						"export": "Exporter les enregistrements",
 						"inline": "Modifier par ligne",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",

@@ -666,6 +666,7 @@
 			},
 			"settings": {
 				"chart": {
+					"axes": "******",
 					"legend": "******",
 					"orientation": "******",
 					"palette": {
@@ -681,6 +682,7 @@
 						"add": "******",
 						"convert": "******",
 						"delete": "******",
+						"export": "******",
 						"inline": "******",
 						"show": "******",
 						"showDetails": "******",
