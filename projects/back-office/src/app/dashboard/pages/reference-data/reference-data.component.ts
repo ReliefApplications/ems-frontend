@@ -122,11 +122,11 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
             if (res.data.referenceData) {
               this.referenceData = res.data.referenceData;
               this.csvValue =
-                this.referenceData?.data.length > 0
+                this.referenceData?.data && this.referenceData?.data.length > 0
                   ? this.convertToCSV(this.referenceData?.data)
                   : '';
               this.newData =
-                this.referenceData?.data.length > 0
+                this.referenceData?.data && this.referenceData?.data.length > 0
                   ? this.referenceData?.data
                   : [];
               this.referenceForm = this.formBuilder.group({
@@ -144,6 +144,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
                 query: [this.referenceData?.query],
                 path: [this.referenceData?.path],
                 data: [this.referenceData?.data],
+                graphQLFilter: [this.referenceData?.graphQLFilter],
               });
               this.valueFields = this.referenceForm?.get('fields')?.value;
               this.loadApiConfigurations(
@@ -289,6 +290,10 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
         },
         this.referenceForm.value.query !== this.referenceData?.query && {
           query: this.referenceForm.value.query,
+        },
+        this.referenceForm.value.graphQLFilter !==
+          this.referenceData?.graphQLFilter && {
+          graphQLFilter: this.referenceForm.value.graphQLFilter,
         }
       );
     } else {

@@ -977,12 +977,14 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
       type
       apiConfiguration {
         name
+        graphQLEndpoint
       }
       query
       fields
       valueField
       path
       data
+      graphQLFilter
     }
   }
 `;

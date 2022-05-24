@@ -1004,6 +1004,7 @@ export const EDIT_REFERENCE_DATA = gql`
     $valueField: String
     $path: String
     $data: JSON
+    $graphQLFilter: String
     $permissions: JSON
   ) {
     editReferenceData(
@@ -1016,6 +1017,7 @@ export const EDIT_REFERENCE_DATA = gql`
       valueField: $valueField
       path: $path
       data: $data
+      graphQLFilter: $graphQLFilter
       permissions: $permissions
     ) {
       id

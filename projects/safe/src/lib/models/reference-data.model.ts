@@ -21,6 +21,7 @@ export interface ReferenceData {
   valueField?: string;
   path?: string;
   data?: any;
+  graphQLFilter?: string;
   permissions?: any;
   canSee?: boolean;
   canUpdate?: boolean;

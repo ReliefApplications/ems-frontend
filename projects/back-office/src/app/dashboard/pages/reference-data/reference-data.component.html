@@ -144,6 +144,27 @@
         </mat-select>
       </mat-form-field>
     </div>
+    <div class="form-group-row" *ngIf="type === 'graphql'">
+      <mat-form-field style="flex: 10" appearance="outline">
+        <mat-label
+          >{{ 'pages.referenceData.graphQLFilter' | translate }}
+        </mat-label>
+        <input
+          matInput
+          formControlName="graphQLFilter"
+          type="text"
+          [placeholder]="
+            'pages.referenceData.placeholder.graphQLFilter' | translate
+          "
+        />
+      </mat-form-field>
+      <mat-icon
+        style="flex: 1"
+        class="info-icon"
+        [matTooltip]="'pages.referenceData.tooltip.graphQLFilter' | translate"
+        >info</mat-icon
+      >
+    </div>
     <!-- Kendo grid to preview data on static type -->
     <div *ngIf="csvValue && type === 'static'">
       <kendo-grid [data]="newData">
