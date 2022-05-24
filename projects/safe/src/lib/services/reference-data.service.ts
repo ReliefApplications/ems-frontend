@@ -13,6 +13,9 @@ import {
 } from '../graphql/queries';
 import { SafeApiProxyService } from './api-proxy.service';
 
+const TIMESTAMP_KEY = '_timestamp';
+const LAST_UPDATE_CODE = '$$LAST_UPDATE';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -48,15 +51,16 @@ export class SafeReferenceDataService {
     newItems = false
   ): string {
     let query = '{ ' + (referenceData.query || '');
-    // if (newItems) {
-    //   // eslint-disable-next-line prettier/prettier
-    //   let filter = 'filter:"modifieddate > \\\"$$TODAY\\\":datetime"'; // TO REMOVE WITH FIELD OF REF DATA
-    //   if (filter.includes('$$TODAY')) {
-    //     const today = new Date().toISOString().split('T')[0];
-    //     filter = filter.split('$$TODAY').join(today);
-    //   }
-    //   query += '(' + filter + ')';
-    // }
+    if (newItems && referenceData.graphQLFilter) {
+      let filter = `${referenceData.graphQLFilter}`;
+      if (filter.includes(LAST_UPDATE_CODE)) {
+        const lastUpdate =
+          localStorage.getItem(referenceData.id + TIMESTAMP_KEY) ||
+          this.formatDateSQL(new Date(0));
+        filter = filter.split(LAST_UPDATE_CODE).join(lastUpdate);
+      }
+      query += '(' + filter + ')';
+    }
     query += ' { ';
     for (const field of referenceData.fields || []) {
       query += field + ' ';
@@ -104,11 +108,10 @@ export class SafeReferenceDataService {
       case referenceDataType.graphql: {
         const isCached = (await localForage.keys()).includes(cacheKey);
         // Fetch items
-        const graphqlEndpoint = '/graphql'; // TO-DO: get it from apiConfiguration
         const url =
           this.apiProxy.baseUrl +
           referenceData.apiConfiguration?.name +
-          graphqlEndpoint;
+          referenceData.apiConfiguration?.graphQLEndpoint;
         const body = { query: this.buildGraphQLQuery(referenceData, isCached) };
         const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
         items = referenceData.path ? get(data, referenceData.path) : data;
@@ -131,6 +134,10 @@ export class SafeReferenceDataService {
           items = cache || [];
         }
         localForage.setItem(cacheKey, items);
+        localStorage.setItem(
+          cacheKey + TIMESTAMP_KEY,
+          this.formatDateSQL(new Date())
+        );
         break;
       }
       case referenceDataType.rest: {
@@ -152,5 +159,37 @@ export class SafeReferenceDataService {
       }
     }
     return this.buildChoices(items, valueField, displayField);
+  }
+
+  /**
+   * Pad a number to 2 digits string.
+   *
+   * @param num number to pad
+   * @returns 2 digits string.
+   */
+  private padTo2Digits(num: number): string {
+    return num.toString().padStart(2, '0');
+  }
+
+  /**
+   * Format a date to YYYY-MM-DD HH:MM:SS.
+   *
+   * @param date date to format.
+   * @returns String formatted to YYYY-MM-DD HH:MM:SS.
+   */
+  private formatDateSQL(date: Date): string {
+    return (
+      [
+        date.getFullYear(),
+        this.padTo2Digits(date.getMonth() + 1),
+        this.padTo2Digits(date.getDate()),
+      ].join('-') +
+      ' ' +
+      [
+        this.padTo2Digits(date.getHours()),
+        this.padTo2Digits(date.getMinutes()),
+        this.padTo2Digits(date.getSeconds()),
+      ].join(':')
+    );
   }
 }
