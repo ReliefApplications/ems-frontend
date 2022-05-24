@@ -1,5 +1,6 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { ChartComponent } from '@progress/kendo-angular-charts';
+import get from 'lodash/get';
 
 interface ChartTitle {
   visible: boolean;
@@ -24,7 +25,12 @@ interface ChartSeries {
 
 interface ChartOptions {
   palette: string[];
-  axes: any;
+  axes?: {
+    y?: {
+      min?: number;
+      max?: number;
+    };
+  };
 }
 
 @Component({
@@ -32,7 +38,7 @@ interface ChartOptions {
   templateUrl: './column-chart.component.html',
   styleUrls: ['./column-chart.component.scss'],
 })
-export class SafeColumnChartComponent implements OnInit {
+export class SafeColumnChartComponent implements OnInit, OnChanges {
   @Input() title: ChartTitle | undefined;
 
   @Input() legend: ChartLegend | undefined;
@@ -41,17 +47,28 @@ export class SafeColumnChartComponent implements OnInit {
 
   @Input() options: ChartOptions = {
     palette: [],
-    axes: null,
   };
 
   @Input() gap = 2;
 
   @Input() spacing = 0.25;
 
+  public min: number | undefined;
+
+  public max: number | undefined;
+
   @ViewChild('chart')
   public chart?: ChartComponent;
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.min = get(this.options, 'axes.x.min');
+    this.max = get(this.options, 'axes.x.max');
+  }
+
+  ngOnChanges(): void {
+    this.min = get(this.options, 'axes.x.min');
+    this.max = get(this.options, 'axes.x.max');
+  }
 }
