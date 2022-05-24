@@ -36,6 +36,7 @@ import { MatSort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
+import { TranslateService } from '@ngx-translate/core';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -84,7 +85,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private previewService: PreviewService
+    private previewService: PreviewService,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -235,9 +237,15 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Delete application',
-        content: `Do you confirm the deletion of the application ${element.name} ?`,
-        confirmText: 'Delete',
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.application.one'),
+        }),
+        content: this.translate.instant(
+          'components.application.delete.confirmationMessage',
+          { name: element.name }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
         confirmColor: 'warn',
       },
     });

@@ -7,7 +7,6 @@
       "apollo-angular": "apollo-angular",
       "@progress/kendo-file-saver": "@progress/kendo-file-saver",
       "@progress/kendo-angular-charts": "@progress/kendo-angular-charts",
-      "@progress/kendo-angular-editor": "@progress/kendo-angular-editor",
       "@progress/kendo-angular-toolbar": "@progress/kendo-angular-toolbar",
       "survey-knockout": "survey-knockout",
       "survey-angular": "survey-angular",
