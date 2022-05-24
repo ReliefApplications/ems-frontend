@@ -63,12 +63,12 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
   constructor() {}
 
   ngOnInit(): void {
-    this.min = get(this.options, 'axes.x.min');
-    this.max = get(this.options, 'axes.x.max');
+    this.min = get(this.options, 'axes.y.min');
+    this.max = get(this.options, 'axes.y.max');
   }
 
   ngOnChanges(): void {
-    this.min = get(this.options, 'axes.x.min');
-    this.max = get(this.options, 'axes.x.max');
+    this.min = get(this.options, 'axes.y.min');
+    this.max = get(this.options, 'axes.y.max');
   }
 }
