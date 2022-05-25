@@ -13,7 +13,8 @@ import {
 } from '../graphql/queries';
 import { SafeApiProxyService } from './api-proxy.service';
 
-const TIMESTAMP_KEY = '_timestamp';
+const LAST_MODIFIED_KEY = '_last_modified';
+const LAST_REQUEST_KEY = '_last_request';
 const LAST_UPDATE_CODE = '$$LAST_UPDATE';
 
 @Injectable({
@@ -55,7 +56,7 @@ export class SafeReferenceDataService {
       let filter = `${referenceData.graphQLFilter}`;
       if (filter.includes(LAST_UPDATE_CODE)) {
         const lastUpdate =
-          localStorage.getItem(referenceData.id + TIMESTAMP_KEY) ||
+          localStorage.getItem(referenceData.id + LAST_REQUEST_KEY) ||
           this.formatDateSQL(new Date(0));
         filter = filter.split(LAST_UPDATE_CODE).join(lastUpdate);
       }
@@ -90,7 +91,7 @@ export class SafeReferenceDataService {
 
   /**
    * Asynchronously fetch choices from ReferenceData and return them in the right format for a selectable questions.
-   * Include caching for graphQL requests to optimise number of requests.
+   * Include caching for requests to optimise number of requests.
    *
    * @param referenceDataID ReferenceData ID.
    * @param displayField Field used for display in the question.
@@ -100,12 +101,56 @@ export class SafeReferenceDataService {
     referenceDataID: string,
     displayField: string
   ): Promise<{ value: string | number; text: string }[]> {
+    // Initialisation
+    let items: any;
     const referenceData = await this.loadReferenceData(referenceDataID);
     const cacheKey = referenceData.id || '';
     const valueField = referenceData.valueField || 'id';
-    let items: any;
-    switch (referenceData.type) {
-      case referenceDataType.graphql: {
+    const cacheTimestamp = localStorage.getItem(cacheKey + LAST_MODIFIED_KEY);
+    const modifiedAt = referenceData.modifiedAt || '';
+
+    // Check if referenceData has changed. In this case, refresh choices instead of using cached ones.
+    if (!cacheTimestamp || cacheTimestamp < modifiedAt) {
+      switch (referenceData.type) {
+        case referenceDataType.graphql: {
+          const url =
+            this.apiProxy.baseUrl +
+            referenceData.apiConfiguration?.name +
+            referenceData.apiConfiguration?.graphQLEndpoint;
+          const body = { query: this.buildGraphQLQuery(referenceData, false) };
+          const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
+          items = referenceData.path ? get(data, referenceData.path) : data;
+          items = referenceData.query ? items[referenceData.query] : items;
+          localStorage.setItem(
+            cacheKey + LAST_REQUEST_KEY,
+            this.formatDateSQL(new Date())
+          );
+          break;
+        }
+        case referenceDataType.rest: {
+          const url =
+            this.apiProxy.baseUrl +
+            referenceData.apiConfiguration?.name +
+            referenceData.query;
+          const data = await this.apiProxy.promisedRequestWithHeaders(url);
+          items = referenceData.path ? get(data, referenceData.path) : data;
+          break;
+        }
+        case referenceDataType.static: {
+          items = referenceData.data;
+          break;
+        }
+        default: {
+          items = referenceData.data;
+          break;
+        }
+      }
+      // Cache items and timestamp
+      localForage.setItem(cacheKey, items);
+      localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
+    } else {
+      // If referenceData has not changed, use cached value and check for updates for graphQL.
+      if (referenceData.type === referenceDataType.graphql) {
         const isCached = (await localForage.keys()).includes(cacheKey);
         // Fetch items
         const url =
@@ -135,35 +180,12 @@ export class SafeReferenceDataService {
         }
         localForage.setItem(cacheKey, items);
         localStorage.setItem(
-          cacheKey + TIMESTAMP_KEY,
+          cacheKey + LAST_REQUEST_KEY,
           this.formatDateSQL(new Date())
         );
-        break;
-      }
-      case referenceDataType.rest: {
-        const url =
-          this.apiProxy.baseUrl +
-          referenceData.apiConfiguration?.name +
-          referenceData.query;
-        const data = await this.apiProxy.promisedRequestWithHeaders(url);
-        items = referenceData.path ? get(data, referenceData.path) : data;
-        break;
-      }
-      case referenceDataType.static: {
-        const cacheTimestamp = localStorage.getItem(cacheKey + TIMESTAMP_KEY);
-        const modifiedAt = referenceData.modifiedAt || '';
-        if (!cacheTimestamp || cacheTimestamp < modifiedAt) {
-          items = referenceData.data;
-          localForage.setItem(cacheKey, items);
-          localStorage.setItem(cacheKey + TIMESTAMP_KEY, modifiedAt);
-        } else {
-          items = await localForage.getItem(cacheKey);
-        }
-        break;
-      }
-      default: {
-        items = referenceData.data;
-        break;
+      } else {
+        // If referenceData has not changed, use cached value for non graphQL.
+        items = await localForage.getItem(cacheKey);
       }
     }
     return this.buildChoices(items, valueField, displayField);
