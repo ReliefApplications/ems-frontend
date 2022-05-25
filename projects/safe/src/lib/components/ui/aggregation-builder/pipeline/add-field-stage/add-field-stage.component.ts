@@ -14,6 +14,7 @@ export class SafeAddFieldStageComponent implements OnInit {
   @Input() form!: FormArray;
   @Input() fields: any[] = [];
   @Input() operators: any;
+  @Input() displayName = true;
 
   constructor() {}
 
@@ -23,7 +24,7 @@ export class SafeAddFieldStageComponent implements OnInit {
    * Adds new addField configuration to the pipeline.
    */
   public addField() {
-    this.form.push(addFieldsForm(null));
+    this.form.push(addFieldsForm(null, this.displayName));
   }
 
   /**

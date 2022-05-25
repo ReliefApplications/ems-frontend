@@ -1,11 +1,21 @@
-<safe-field-dropdown
-  [fieldControl]="$any($any(form).controls.groupBy)"
-  [fields]="fields"
-></safe-field-dropdown>
+<div class="group-by">
+  <safe-field-dropdown
+    [fieldControl]="$any($any(form).controls.groupBy)"
+    [fields]="fields"
+  ></safe-field-dropdown>
+  <safe-expressions
+    *ngIf="displayDateOperators"
+    [fields]="fields"
+    [form]="$any(form.get('groupByExpression'))"
+    [operators]="$any(dateOperators)"
+    [displayField]="false"
+  ></safe-expressions>
+</div>
 <div>
   <safe-add-field-stage
     [fields]="fields"
     [form]="addFields"
     [operators]="operators"
+    [displayName]="false"
   ></safe-add-field-stage>
 </div>

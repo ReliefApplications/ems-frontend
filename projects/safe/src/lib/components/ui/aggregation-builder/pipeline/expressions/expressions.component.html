@@ -11,7 +11,9 @@
   </mat-form-field>
   <safe-field-dropdown
     *ngIf="
-      form.value.operator && !noFieldOperators.includes(form.value.operator)
+      displayField &&
+      form.value.operator &&
+      !noFieldOperators.includes(form.value.operator)
     "
     [fieldControl]="$any(form.controls.field)"
     [fields]="fields"
