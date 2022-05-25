@@ -7,6 +7,7 @@ import { init as initResourceComponent } from './components/resource';
 import { init as initResourcesComponent } from './components/resources';
 import { init as initOwnerComponent } from './components/owner';
 import { init as initUsersComponent } from './components/users';
+import { init as initTagboxComponent } from './components/tagbox';
 import addCustomFunctions from '../utils/custom-functions';
 import { init as initCustomWidget } from './widget';
 import { Apollo } from 'apollo-angular';
@@ -42,6 +43,7 @@ export const initCustomWidgets = (
   initResourcesComponent(survey, domService, apollo, dialog, formBuilder);
   initOwnerComponent(survey, domService, apollo, dialog, formBuilder);
   initUsersComponent(survey, domService, apollo, dialog, formBuilder);
+  initTagboxComponent(survey);
   initCustomWidget(survey, domService, dialog, environment);
   addCustomFunctions(survey, authService, apollo);
 };
