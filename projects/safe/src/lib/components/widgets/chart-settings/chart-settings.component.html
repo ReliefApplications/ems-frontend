@@ -171,6 +171,31 @@
                 ></safe-palette-control>
               </div>
             </mat-expansion-panel>
+            <mat-expansion-panel formGroupName="labels" *ngIf="type.name === 'donut' || type.name === 'pie'">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Labels
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="form-group">
+                <mat-slide-toggle formControlName="visible">
+                  Show labels
+                </mat-slide-toggle>
+                <mat-form-field appearance="outline">
+                  <mat-label>{{
+                    'components.widget.settings.chart.type' | translate
+                  }}</mat-label>
+                  <mat-select formControlName="show">
+                    <mat-option value="value">
+                      Value
+                    </mat-option>
+                    <mat-option value="percentage">
+                      Percentage
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </mat-expansion-panel>
           </mat-accordion>
         </mat-tab>
         <mat-tab [label]="'common.preview' | translate">

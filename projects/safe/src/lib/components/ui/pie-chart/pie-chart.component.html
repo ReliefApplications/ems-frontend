@@ -21,6 +21,13 @@
       [data]="item.data"
       field="field"
       categoryField="category"
-    ></kendo-chart-series-item>
+    >
+      <kendo-chart-series-item-labels
+        *ngIf="labels && labels.visible"
+        position="outsideEnd"
+        color="#000"
+        [content]="labels.show === 'percentage' ? labelPercent : labelContent"
+      ></kendo-chart-series-item-labels>
+    </kendo-chart-series-item>
   </kendo-chart-series>
 </kendo-chart>

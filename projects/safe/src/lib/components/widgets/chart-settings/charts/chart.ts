@@ -33,6 +33,7 @@ export class Chart {
     this.fb = new FormBuilder();
     const legend = settings ? settings.legend : null;
     const title = settings ? settings.title : null;
+    const labels = settings ? settings.labels : null;
     const palette: string[] = get(settings, 'palette.value', []);
 
     // build form
@@ -66,6 +67,10 @@ export class Chart {
             disabled: !get(settings, 'palette.enabled', false),
           },
         ],
+      }),
+      labels: this.fb.group({
+        visible: [labels ? labels.visible : false],
+        show: [labels ? labels.show : 'value'],
       }),
     });
 

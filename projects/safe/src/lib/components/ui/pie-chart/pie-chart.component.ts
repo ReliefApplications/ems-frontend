@@ -21,6 +21,11 @@ interface ChartSeries {
   }[];
 }
 
+interface ChartLabels {
+  visible: boolean;
+  show: string;
+}
+
 interface ChartOptions {
   palette: string[];
 }
@@ -37,12 +42,22 @@ export class SafePieChartComponent implements OnInit {
 
   @Input() series: ChartSeries[] = [];
 
+  @Input() labels: ChartLabels | undefined;
+
   @Input() options: ChartOptions = {
     palette: [],
   };
 
   @ViewChild('chart')
   public chart?: ChartComponent;
+
+  public labelContent(e: any): string {
+    return e.category;
+  }
+
+  public labelPercent(e: any): string {
+    return (parseFloat(e.percentage) * 100).toFixed(2) + '%';
+  }
 
   constructor() {}
 
