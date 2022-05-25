@@ -1,4 +1,3 @@
-
 .header {
   display: flex;
   flex-direction: row;
@@ -6,28 +5,35 @@
   justify-content: space-between;
   align-items: top;
 
-  .filters{
-    .top, .advanced {
-        display: flex;
-        flex-direction: row;
-        align-items: top;
-        gap: 16px;
-        flex-wrap: wrap;
+  .filters {
+    .top,
+    .advanced {
+      display: flex;
+      flex-direction: row;
+      align-items: top;
+      gap: 16px;
+      flex-wrap: wrap;
     }
     mat-form-field {
-        margin-top: -0.25em;
+      margin-top: -0.25em;
 
-        #custom-search {
-            position: relative;
-            top: -0.15em;
-        }
+      #custom-search {
+        position: relative;
+        top: -0.15em;
+      }
     }
-    ::ng-deep .mat-form-field-flex > .mat-form-field-infix { padding: 0.42em 0px !important;}
-    ::ng-deep .mat-form-field-label-wrapper { top: -1.4em; }
+    ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+      padding: 0.42em 0px !important;
+    }
+    ::ng-deep .mat-form-field-label-wrapper {
+      top: -1.4em;
+    }
 
-    ::ng-deep .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
-        transform: translateY(-1.1em) scale(.75);
-        width: 133.33333%;
+    ::ng-deep
+      .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
+      .mat-form-field-label {
+      transform: translateY(-1.1em) scale(0.75);
+      width: 133.33333%;
     }
   }
 

@@ -90,6 +90,16 @@ const TYPES: any = {
     ],
   },
   // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
+  ID: {
+    defaultOperator: 'contains',
+    operators: ['eq', 'neq', 'contains', 'doesnotcontain', 'startswith'],
+  },
+  // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
+  Form: {
+    defaultOperator: 'eq',
+    operators: ['eq', 'neq'],
+  },
+  // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   Boolean: {
     defaultOperator: 'eq',
     operators: ['eq'],
@@ -132,6 +142,8 @@ const AVAILABLE_TYPES = [
   'DateTime',
   'Time',
   'JSON',
+  'ID',
+  'Form',
 ];
 
 @Component({
@@ -187,7 +199,7 @@ export class SafeTabFilterComponent implements OnInit {
       if (x.field) {
         const field = this.fields.find((y) => y.name === x.field);
         if (field && field.type && AVAILABLE_TYPES.includes(field.type.name)) {
-          const type = field.type.name;
+          const type = field.name === 'form' ? 'Form' : field.type.name;
           this.selectedFields.splice(index, 1, {
             name: field.name,
             type,
@@ -311,7 +323,7 @@ export class SafeTabFilterComponent implements OnInit {
     if (e.value) {
       const field = this.fields.find((x) => x.name === e.value);
       if (field && field.type && AVAILABLE_TYPES.includes(field.type.name)) {
-        const type = field.type.name;
+        const type = field.name === 'form' ? 'Form' : field.type.name;
         const operator = TYPES[type].defaultOperator;
         this.filters.at(index).get('operator')?.setValue(operator);
         this.filters.at(index).get('value')?.setValue(null);

@@ -129,9 +129,7 @@
         <ng-container *ngIf="field.meta">
           <!-- FILTER ( dropdown / radiogroup ) -->
           <ng-container
-            *ngIf="
-              field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'
-            "
+            *ngIf="['dropdown', 'radiogroup'].includes(field.meta.type)"
           >
             <ng-template
               kendoGridFilterMenuTemplate
@@ -187,7 +185,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                matTooltip="Open in full width"
+                [matTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -214,10 +212,15 @@
                 class="textbox"
                 *ngIf="['datetime', 'datetime-local'].includes(field.meta.type)"
               >
-                {{ getPropertyValue(dataItem, field.name) | date: 'short' }}
+                {{
+                  getPropertyValue(dataItem, field.name)
+                    | date: 'dd/MM/yyyy, h:mm a'
+                }}
               </div>
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'date'">
-                {{ getPropertyValue(dataItem, field.name) | date: 'shortDate' }}
+                {{
+                  getPropertyValue(dataItem, field.name) | date: 'dd/MM/yyyy'
+                }}
               </div>
             </div>
           </ng-template>
@@ -234,7 +237,7 @@
             >
               <a
                 class="url-container textbox"
-                href="{{ getPropertyValue(dataItem, field.name) }}"
+                href="{{ getUrl(getPropertyValue(dataItem, field.name)) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -248,7 +251,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                matTooltip="Open in full width"
+                [matTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -268,6 +271,30 @@
                 [(ngModel)]="dataItem[field.name]"
                 disabled
               />
+            </div>
+          </ng-template>
+          <!-- DISPLAY ( number ) -->
+          <ng-template
+            #refSpan
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="field.meta.type === 'numeric'"
+          >
+            <div
+              class="translate textbox-container"
+              [style]="getStyle(dataItem, field.name)"
+            >
+              <div #refSpan class="textbox">
+                {{ getPropertyValue(dataItem, field.name) }}
+              </div>
+              <button
+                kendoButton
+                *ngIf="isEllipsisActive(refSpan)"
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name)"
+                [look]="'flat'"
+                [matTooltip]="'common.openFullScreen' | translate"
+              ></button>
             </div>
           </ng-template>
           <!-- DISPLAY ( color ) -->
@@ -290,7 +317,9 @@
                 #refSpan
                 class="textbox external-link"
                 *ngIf="dataItem[field.name].length > 0"
-                matTooltip="Open detail"
+                [matTooltip]="
+                  'components.widget.grid.actions.detail' | translate
+                "
                 (click)="
                   action.emit({
                     action: 'details',
@@ -312,13 +341,11 @@
               </div>
             </div>
           </ng-template>
-          <!-- DISPLAY ( dropdown / radiogroup ) -->
+          <!-- DISPLAY ( dropdown / radiogroup / form ) -->
           <ng-template
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="
-              field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'
-            "
+            *ngIf="['dropdown', 'radiogroup'].includes(field.meta.type)"
           >
             <div
               class="textbox-container"
@@ -730,7 +757,7 @@
     </ng-container>
     <!-- ROW DETAILS -->
     <kendo-grid-column
-      *ngIf="hasDetails"
+      *ngIf="hasDetails && actions.showDetails"
       [columnMenu]="false"
       [width]="54"
       [resizable]="false"
@@ -743,7 +770,7 @@
           [icon]="'detail-section'"
           [look]="'flat'"
           (click)="action.emit({ action: 'details', items: dataItem })"
-          matTooltip="Open detail"
+          [matTooltip]="'components.widget.grid.actions.detail' | translate"
         ></button>
       </ng-template>
     </kendo-grid-column>

@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BehaviorSubject } from 'rxjs';
 
-import { SafeCheckboxTreeComponent } from './checkbox-tree.component';
+import {
+  SafeCheckboxTreeComponent,
+  TreeItemNode,
+} from './checkbox-tree.component';
 
 describe('SafeCheckboxTreeComponent', () => {
   let component: SafeCheckboxTreeComponent;
@@ -15,6 +19,19 @@ describe('SafeCheckboxTreeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeCheckboxTreeComponent);
     component = fixture.componentInstance;
+    component.checklist = {
+      data: [],
+      dataChange: new BehaviorSubject<TreeItemNode[]>([]),
+      initialize: () => {},
+      buildFileTree: (
+        obj: { [key: string]: any },
+        level: number,
+        prefix?: string | undefined
+      ) => {
+        const rst: TreeItemNode[] = [];
+        return rst;
+      },
+    };
     fixture.detectChanges();
   });
 

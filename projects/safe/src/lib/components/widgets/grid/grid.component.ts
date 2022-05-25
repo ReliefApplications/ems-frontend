@@ -42,6 +42,7 @@ import { GridLayout } from '../../ui/core-grid/models/grid-layout.model';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
+import { TranslateService } from '@ngx-translate/core';
 
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
 
@@ -91,7 +92,8 @@ export class SafeGridWidgetComponent implements OnInit {
     private safeAuthService: SafeAuthService,
     private emailService: SafeEmailService,
     private queryBuilder: QueryBuilderService,
-    private gridLayoutService: SafeGridLayoutService
+    private gridLayoutService: SafeGridLayoutService,
+    private translate: TranslateService
   ) {
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -184,7 +186,7 @@ export class SafeGridWidgetComponent implements OnInit {
     // Attaches the records to another one.
     if (options.attachToRecord && this.grid.selectedRows.length > 0) {
       await this.promisedAttachToRecord(
-        this.grid.selectedItems,
+        this.grid.selectedRows,
         options.targetForm,
         options.targetFormField,
         options.targetFormQuery
@@ -293,9 +295,13 @@ export class SafeGridWidgetComponent implements OnInit {
       } else {
         const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
           data: {
-            title: `Close workflow`,
+            title: this.translate.instant(
+              'components.widget.settings.grid.buttons.callback.workflow.close'
+            ),
             content: options.confirmationText,
-            confirmText: 'Yes',
+            confirmText: this.translate.instant(
+              'components.confirmModal.confirm'
+            ),
             confirmColor: 'primary',
           },
         });

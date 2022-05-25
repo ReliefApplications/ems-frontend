@@ -1,5 +1,5 @@
-@use "~@angular/material" as mat;
-@import "variables.scss";
+@use '~@angular/material' as mat;
+@import 'variables.scss';
 @include mat.core();
 
 .sv_main {
@@ -126,7 +126,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 
   .safe-add-application {
-    background-color:  mat.get-color-from-palette($primary, 50);
+    background-color: mat.get-color-from-palette($primary, 50);
 
     span {
       color: mat.get-color-from-palette($primary);
@@ -302,6 +302,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 
     .form-group-row {
       display: flex;
+      gap: 8px;
     }
 
     .form-group-title {
@@ -349,7 +350,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   overflow: hidden;
 }
 
@@ -475,4 +476,9 @@ body {
   color: mat.get-color-from-palette($safe-warn) !important;
 }
 
-@import "theme.scss";
+@import 'theme.scss';
+
+// === TINYMCE ===
+.tox-editor-header *, .tox-tinymce-aux * {
+  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+}

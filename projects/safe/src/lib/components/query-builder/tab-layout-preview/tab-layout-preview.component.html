@@ -1,0 +1,12 @@
+<div class="form-group">
+  <div class="info-text">
+    {{ 'components.form.layout.update.preview.description' | translate }}
+  </div>
+  <safe-core-grid
+    [defaultLayout]="data?.defaultLayout || {}"
+    [settings]="gridSettings"
+    style="height: 410px"
+    (layoutChanged)="onGridLayoutChange($event)"
+  >
+  </safe-core-grid>
+</div>

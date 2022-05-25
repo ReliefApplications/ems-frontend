@@ -18,24 +18,24 @@
   <safe-button
     [isIcon]="true"
     icon="history"
-    matTooltip="Display history"
+    [matTooltip]="'components.widget.grid.actions.history' | translate"
     (click)="showHistory.emit()"
   ></safe-button>
   <div>
     <span>{{
-      'date.created'
+      'components.form.summary.createdBy'
         | translate
           : {
               user: record.createdBy?.name || 'unknown',
-              date: (record.createdAt | date: 'dd/MM/yy, h:mm a')
+              date: (record.createdAt | date: 'dd/MM/yyyy, h:mm a')
             }
     }}</span>
     <span *ngIf="record.modifiedAt">{{
-      'date.modified'
+      'components.form.summary.modifiedBy'
         | translate
           : {
               user: record.modifiedBy?.name || 'unknown',
-              date: (record.modifiedAt | date: 'dd/MM/yy, h:mm a')
+              date: (record.modifiedAt | date: 'dd/MM/yyyy, h:mm a')
             }
     }}</span>
   </div>

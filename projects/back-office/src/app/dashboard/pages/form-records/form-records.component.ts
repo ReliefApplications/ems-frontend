@@ -74,6 +74,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   };
 
   @ViewChild('xlsxFile') xlsxFile: any;
+  public showUpload = false;
 
   constructor(
     private apollo: Apollo,
@@ -236,8 +237,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
               name: element.name,
             }
           ),
-          confirmText: this.translate.instant('common.delete'),
-          cancelText: this.translate.instant('common.cancel'),
+          confirmText: this.translate.instant('components.confirmModal.delete'),
+          cancelText: this.translate.instant('components.confirmModal.cancel'),
           confirmColor: 'warn',
         },
       });
@@ -281,9 +282,14 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant(
+          'components.record.recovery.titleMessage'
+        ),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });
@@ -356,24 +362,36 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Take file from upload event and call upload method.
+   *
+   * @param event Upload event.
+   */
   onFileChange(event: any): void {
-    const file = event.target.files[0];
+    const file = event.files[0].rawFile;
     this.uploadFileData(file);
   }
 
+  /**
+   * Upload file and indicate status of request.
+   *
+   * @param file file to upload.
+   */
   uploadFileData(file: any): void {
     const path = `upload/form/records/${this.id}`;
     this.downloadService.uploadFile(path, file).subscribe(
       (res) => {
-        this.xlsxFile.nativeElement.value = '';
+        // this.xlsxFile.clearFiles();
         if (res.status === 'OK') {
           this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
           this.getFormData();
+          this.showUpload = false;
         }
       },
       (error: any) => {
         this.snackBar.openSnackBar(error.error, { error: true });
-        this.xlsxFile.nativeElement.value = '';
+        // this.xlsxFile.clearFiles();
+        this.showUpload = false;
       }
     );
   }

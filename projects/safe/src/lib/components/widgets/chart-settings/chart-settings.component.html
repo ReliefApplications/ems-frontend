@@ -8,7 +8,9 @@
       </mat-form-field>
       <ng-container formGroupName="chart" *ngIf="chartForm">
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'components.widget.settings.chart.type' | translate }}</mat-label>
+          <mat-label>{{
+            'components.widget.settings.chart.type' | translate
+          }}</mat-label>
           <mat-select formControlName="type">
             <mat-select-trigger>
               <img class="chart-icon" [src]="type.icon" />{{
@@ -54,7 +56,11 @@
               }}</mat-slide-toggle>
               <ng-container *ngIf="chartForm.value.legend.visible">
                 <div>
-                  <h3>{{ 'components.widget.settings.chart.position' | translate }}</h3>
+                  <h3>
+                    {{
+                      'components.widget.settings.chart.position' | translate
+                    }}
+                  </h3>
                   <div>
                     <safe-button
                       icon="{{ position.icon }}"
@@ -75,7 +81,11 @@
                   </div>
                 </div>
                 <div>
-                  <h3>{{ 'components.widget.settings.chart.orientation' | translate }}</h3>
+                  <h3>
+                    {{
+                      'components.widget.settings.chart.orientation' | translate
+                    }}
+                  </h3>
                   <div>
                     <safe-button
                       icon="{{ orientation.icon }}"
@@ -109,12 +119,18 @@
               <ng-container *ngIf="chartForm.value.title.visible">
                 <div>
                   <mat-form-field appearance="outline">
-                    <mat-label>{{ 'components.widget.settings.chart.text' | translate }}</mat-label>
+                    <mat-label>{{
+                      'components.widget.settings.chart.text' | translate
+                    }}</mat-label>
                     <input matInput formControlName="text" />
                   </mat-form-field>
                 </div>
                 <div>
-                  <h3>{{ 'components.widget.settings.chart.position' | translate }}</h3>
+                  <h3>
+                    {{
+                      'components.widget.settings.chart.position' | translate
+                    }}
+                  </h3>
                   <div>
                     <safe-button
                       icon="{{ position.icon }}"

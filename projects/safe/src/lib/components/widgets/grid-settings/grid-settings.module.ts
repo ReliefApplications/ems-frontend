@@ -20,6 +20,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutsParametersModule } from './layouts-parameters/layouts-parameters.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,11 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     TranslateModule,
     LayoutsParametersModule,
     MatAutocompleteModule,
+    EditorModule,
   ],
   exports: [SafeGridSettingsComponent],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+  ],
 })
 export class SafeGridSettingsModule {}

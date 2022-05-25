@@ -27,7 +27,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 // TRANSLATOR
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
+import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
+import { MessageService } from '@progress/kendo-angular-l10n';
+import { KendoTranslationService } from '@safe/builder';
 
 localStorage.setItem('loaded', 'false');
 
@@ -178,6 +180,14 @@ export const httpTranslateLoader = (http: HttpClient) =>
       useFactory: initializeAuth,
       multi: true,
       deps: [OAuthService],
+    },
+    {
+      provide: MessageService,
+      useClass: KendoTranslationService,
+    },
+    {
+      provide: OAuthStorage,
+      useValue: localStorage,
     },
   ],
   bootstrap: [AppComponent],

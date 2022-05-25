@@ -30,6 +30,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
+import { SafePreferencesModalComponent } from '../preferences-modal/preferences-modal.component';
 
 @Component({
   selector: 'safe-layout',
@@ -59,7 +60,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   filteredNavGroups: any[] = [];
 
-  currentLanguage = '';
   languages: string[] = [];
 
   // === NOTIFICATIONS ===
@@ -79,6 +79,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   public theme: any;
 
   public showSidenav = false;
+  public showPreferences = false;
 
   public otherOffice = '';
   private environment: any;
@@ -99,9 +100,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.largeDevice = window.innerWidth > 1024;
     this.account = this.authService.account;
     this.environment = environment;
-    this.currentLanguage = this.translate.defaultLang;
     this.languages = this.translate.getLangs();
     this.theme = this.environment.theme;
+    this.showPreferences = environment.availableLanguages.length > 1;
   }
 
   ngOnInit(): void {
@@ -242,9 +243,11 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.authService.canLogout.value) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: `Exit without saving changes`,
-          content: `There are unsaved changes on your form. Are you sure you want to logout?`,
-          confirmText: 'Confirm',
+          title: this.translate.instant('common.logout.titleMessage'),
+          content: this.translate.instant('common.logout.confirmationMessage'),
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
           confirmColor: 'primary',
         },
       });
@@ -262,6 +265,23 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   onOpenProfile(): void {
     this.router.navigate([this.profileRoute]);
+  }
+
+  /**
+   * Opens the preferences modal and deals with the resulting form
+   */
+  onOpenPreferences(): void {
+    const dialogRef = this.dialog.open(SafePreferencesModalComponent, {
+      data: {
+        languages: this.languages,
+      },
+      width: '100%',
+    });
+    dialogRef.afterClosed().subscribe((form) => {
+      if (form && form.touched) {
+        this.setLanguage(form.value.language);
+      }
+    });
   }
 
   onSwitchOffice(): void {
@@ -293,6 +313,25 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    */
   setLanguage(language: string) {
     this.translate.use(language);
-    this.currentLanguage = language;
+    window.localStorage.setItem('lang', language);
+  }
+
+  /**
+   * Get the current active language. First it checks if there is one already
+   * set, else it takes the default one.
+   *
+   * @returns language id of the language
+   */
+  getLanguage(): string {
+    // select the langage saved (or default if not)
+    let language = window.localStorage.getItem('lang');
+    if (!language || !this.languages.includes(language)) {
+      language = this.translate.defaultLang;
+    }
+    // if not default language, change langage of the interface
+    if (language !== this.translate.defaultLang) {
+      this.translate.use(language);
+    }
+    return language;
   }
 }
