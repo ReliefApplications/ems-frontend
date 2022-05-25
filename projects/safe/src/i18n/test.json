@@ -630,7 +630,8 @@
 				},
 				"empty": "******",
 				"errors": {
-					"errorOnRow": "******",
+					"errorOnRow": "****** {{row}} ****** {{column}} ****** {{text}}",
+					"fieldRequired": "****** {{name}} ******",
 					"invalid": "******",
 					"missingDataset": "******"
 				},

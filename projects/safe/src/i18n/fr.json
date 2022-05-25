@@ -630,7 +630,8 @@
 				},
 				"empty": "Aucun enregistrement détecté",
 				"errors": {
-					"errorOnRow": "Sauvegarde impossible (rang",
+					"errorOnRow": "Sauvegarde impossible (rang {{row}}, colonne {{column}}) : {{text}}",
+					"fieldRequired": "Le champ {{name}} est obligatoire",
 					"invalid": "Configuration de grille invalide",
 					"missingDataset": "Sélectionner un jeu de données dans les jeux de données"
 				},

@@ -500,10 +500,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         value: this.formGroup.value,
       });
     }
-    const expressionValidator = new Survey.ExpressionValidator(
-      '{essai}=1 and {essai2}=2'
-    );
-
     //Opens a snack bar if the validators from the form are not respected
     if (this.checkValidation(this.parseValidator(stringVal)) !== '') {
       this.snackBar.openSnackBar(
@@ -556,16 +552,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // === UTILITIES ===
-  /**
-   * Checks if element overflows
-   *
-   * @param e Component resizing event.
-   * @returns True if overflows.
-   */
-  isEllipsisActive(e: any): boolean {
-    return e.offsetWidth < e.scrollWidth;
-  }
+  // === VALIDATION ===
 
   /**
    * Transform the validators to a more useful format
@@ -579,15 +566,17 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     for (const page of JSONval.pages) {
       for (const element of page.elements) {
         if (typeof element.validators !== 'undefined') {
-          const dict: any = { valueName: element.valueName };
+          //Create an object that will contain the attributes of the validator
+          const validatorObject: any = { valueName: element.valueName };
+          validatorObject.isRequired = element.isRequired;
           for (const validator of element.validators) {
             for (const key in validator) {
               if (validator.hasOwnProperty(key)) {
-                dict[key] = validator[key];
+                validatorObject[key] = validator[key];
               }
             }
           }
-          listOfValidators.push(dict);
+          listOfValidators.push(validatorObject);
         }
       }
     }
@@ -608,7 +597,16 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       Object.keys(data[key1]).forEach((value2, key2) => {
         Object.keys(validator).forEach((value3, key3) => {
           if (value2 === validator[value3].valueName) {
+            //Check if the field is required and if the cell did not became empty
+            if (validator[value3].isRequired && data[key1][value2] === '') {
+              errMessage +=
+                this.translate.instant(
+                  'components.widget.grid.errors.fieldRequired',
+                  { name: validator[value3].valueName }
+                ) + '\n';
+            }
             row = +value1 + 1;
+            //Use different validation functions regarding the type of validator
             switch (validator[value3].type) {
               case 'regex':
                 errMessage += this.validateRegex(
@@ -786,21 +784,28 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   /**
    * Writes an error message regarding the validator
    *
-   * @param row Row where the error is
+   * @param rowNumber Row where the error is
    * @param validatorValue Value of the validator for this row
    * @returns error message to display
    */
-  writeErrorMessage(row: number, validatorValue: any): string {
+  writeErrorMessage(rowNumber: number, validatorValue: any): string {
     return (
-      this.translate.instant('components.widget.grid.errors.errorOnRow') +
-      ' ' +
-      row +
-      ', ' +
-      validatorValue.valueName +
-      ') : ' +
-      validatorValue.text +
-      '\n'
+      this.translate.instant('components.widget.grid.errors.errorOnRow', {
+        row: rowNumber,
+        column: validatorValue.valueName,
+        text: validatorValue.text,
+      }) + '\n'
     );
+  }
+  // === UTILITIES ===
+  /**
+   * Checks if element overflows
+   *
+   * @param e Component resizing event.
+   * @returns True if overflows.
+   */
+  isEllipsisActive(e: any): boolean {
+    return e.offsetWidth < e.scrollWidth;
   }
 
   /**
