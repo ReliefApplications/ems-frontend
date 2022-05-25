@@ -410,6 +410,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
         }
         this.referenceForm?.get('fields')?.setValue(this.valueFields);
         this.referenceForm?.get('fields')?.updateValueAndValidity();
+        this.referenceForm?.markAsDirty();
         // Reset the input value
         if (input) {
           input.value = '';
@@ -434,6 +435,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     }
     this.referenceForm?.get('fields')?.setValue(this.valueFields);
     this.referenceForm?.get('fields')?.updateValueAndValidity();
+    this.referenceForm?.markAsDirty();
   }
 
   /**
