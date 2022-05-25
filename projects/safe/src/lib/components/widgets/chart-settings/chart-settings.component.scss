@@ -26,3 +26,12 @@
     min-width: 300px;
   }
 }
+
+.axis-container {
+  display: flex;
+  gap: 8px;
+
+  mat-slide-toggle {
+    margin-top: 15px;
+  }
+}
