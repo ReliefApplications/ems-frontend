@@ -500,7 +500,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         value: this.formGroup.value,
       });
     }
-
     if (this.checkValidation(this.parseValidator(stringVal)) !== '') {
       this.snackBar.openSnackBar(
         this.checkValidation(this.parseValidator(stringVal)),
@@ -593,7 +592,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   /**
    * Checks if the data is coherent with the regex validators
    *
-   * @param validator Validator with its attri
+   * @param validator Validator with its attributes
    * @returns error message to display
    */
   checkValidation(validator: any): string {
@@ -603,40 +602,31 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     Object.keys(data).forEach((value1, key1) => {
       Object.keys(data[key1]).forEach((value2, key2) => {
         Object.keys(validator).forEach((value3, key3) => {
-          switch (validator[value3].type) {
-            case 'regex':
-              if (value2 === validator[value3].valueName) {
-                row = +value1 + 1;
+          if (value2 === validator[value3].valueName) {
+            row = +value1 + 1;
+            switch (validator[value3].type) {
+              case 'regex':
                 errMessage += this.validateRegex(
                   validator[value3].regex,
                   data[key1][value2],
                   this.writeErrorMessage(row, validator[value3])
                 );
-              }
-              break;
-            case 'numeric':
-              if (value2 === validator[value3].valueName) {
-                row = +value1 + 1;
+                break;
+              case 'numeric':
                 errMessage += this.validateNumeric(
                   data[key1][value2],
                   this.writeErrorMessage(row, validator[value3]),
                   validator[value3].minValue,
                   validator[value3].maxValue
                 );
-              }
-              break;
-            case 'email':
-              if (value2 === validator[value3].valueName) {
-                row = +value1 + 1;
+                break;
+              case 'email':
                 errMessage += this.validateEmail(
                   data[key1][value2],
                   this.writeErrorMessage(row, validator[value3])
                 );
-              }
-              break;
-            case 'text':
-              if (value2 === validator[value3].valueName) {
-                row = +value1 + 1;
+                break;
+              case 'text':
                 errMessage += this.validateText(
                   data[key1][value2],
                   this.writeErrorMessage(row, validator[value3]),
@@ -644,12 +634,40 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
                   validator[value3].minLength,
                   validator[value3].allowDigits
                 );
-              }
+                break;
+              case 'expression':
+                errMessage += this.validateExpression(
+                  validator[value3].expression,
+                  validator[value3].valueName,
+                  data[key1][value2],
+                  this.writeErrorMessage(row, validator[value3])
+                );
+                break;
+            }
           }
         });
       });
     });
     return errMessage;
+  }
+
+  validateExpression(
+    expression: string,
+    valueName: string,
+    value: any,
+    errText: string
+  ) {
+    const expressionValidator = new Survey.ExpressionValidator(expression);
+    expressionValidator.text = errText;
+    //For the validation to work with this SurveyJS validator, we have to put the value in an object
+    const dict: any = {};
+    dict[valueName] = value;
+    const res = expressionValidator.validate('', errText, dict);
+    if (res === null || res.error === null) {
+      return '';
+    } else {
+      return res.error.text;
+    }
   }
 
   /**
