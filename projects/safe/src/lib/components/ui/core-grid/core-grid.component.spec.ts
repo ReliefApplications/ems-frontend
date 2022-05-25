@@ -22,6 +22,12 @@ import {
 } from 'apollo-angular/testing';
 import { GET_QUERY_TYPES } from '../../../graphql/queries';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 describe('SafeCoreGridComponent', () => {
   let component: SafeCoreGridComponent;
@@ -40,6 +46,7 @@ describe('SafeCoreGridComponent', () => {
         DateTimeProvider,
         FormBuilder,
         QueryBuilderService,
+        TranslateService,
       ],
       declarations: [SafeCoreGridComponent],
       imports: [
@@ -47,6 +54,12 @@ describe('SafeCoreGridComponent', () => {
         MatDialogModule,
         RouterTestingModule,
         MatSnackBarModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
         ApolloTestingModule,
       ],
     }).compileComponents();
