@@ -672,6 +672,11 @@
 						"enable": "Use Custom Palette",
 						"title": "Color palette"
 					},
+					"labels": {
+						"title": "Labels",
+						"show": "Show labels",
+						"percentage": "Percentage"
+					},
 					"position": "Position",
 					"text": "Text",
 					"type": "Chart Type"
