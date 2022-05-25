@@ -126,12 +126,17 @@ export const addStage = (value: any): FormGroup => {
   }
 };
 
-export const mappingFields = (widgetType: string): string[] =>
+export const mappingFields = (widgetType: string): string[] => {
   // if (WIDGET_TYPES.some((x) => x.id === widgetType)) {
   //   return ['xAxis', 'yAxis'];
   // }
   // return [];
-  ['xAxis', 'yAxis'];
+  const fields = ['xAxis', 'yAxis'];
+  if (widgetType === 'bar-chart' || widgetType === 'column-chart') {
+    fields.push('series');
+  }
+  return fields;
+};
 
 /**
  * Generates a new aggregation form.

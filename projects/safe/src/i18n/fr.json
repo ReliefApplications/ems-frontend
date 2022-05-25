@@ -249,6 +249,7 @@
 			"fieldName": "Nom du champ",
 			"groupBy": "Regrouper par",
 			"mapping": {
+				"series": "Séries",
 				"xAxis": "Axe X",
 				"yAxis": "Axe Y"
 			},

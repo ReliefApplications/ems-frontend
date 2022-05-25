@@ -249,6 +249,7 @@
 			"fieldName": "******",
 			"groupBy": "******",
 			"mapping": {
+				"series": "******",
 				"xAxis": "******",
 				"yAxis": "******"
 			},
