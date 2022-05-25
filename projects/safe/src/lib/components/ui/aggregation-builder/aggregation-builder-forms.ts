@@ -2,6 +2,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import get from 'lodash/get';
 
 const formBuilder = new FormBuilder();
 
@@ -15,10 +16,10 @@ const formBuilder = new FormBuilder();
 export const expressionForm = (value: any, validators = true): FormGroup =>
   formBuilder.group({
     operator: [
-      value && value.operator ? value.operator : '',
+      get(value, 'operator', ''),
       validators ? Validators.required : null,
     ],
-    field: [value && value.field ? value.field : ''],
+    field: [get(value, 'field', '')],
   });
 
 /**
@@ -30,13 +31,8 @@ export const expressionForm = (value: any, validators = true): FormGroup =>
  */
 export const addFieldsForm = (value: any, validators = true): FormGroup =>
   formBuilder.group({
-    name: [
-      value && value.name ? value.name : '',
-      validators ? Validators.required : null,
-    ],
-    expression: expressionForm(
-      value && value.expression ? value.expression : false
-    ),
+    name: [get(value, 'name', ''), validators ? Validators.required : null],
+    expression: expressionForm(get(value, 'expression', false)),
   });
 
 /**
@@ -57,14 +53,8 @@ export const addStage = (value: any): FormGroup => {
       return formBuilder.group({
         type: [PipelineStage.SORT],
         form: formBuilder.group({
-          field: [
-            value.form && value.form.field ? value.form.field : '',
-            Validators.required,
-          ],
-          order: [
-            value.form && value.form.order ? value.form.order : 'asc',
-            Validators.required,
-          ],
+          field: [get(value, 'form.field', ''), Validators.required],
+          order: [get(value, 'form.order', 'asc'), Validators.required],
         }),
       });
     }
@@ -72,20 +62,15 @@ export const addStage = (value: any): FormGroup => {
       return formBuilder.group({
         type: [PipelineStage.GROUP],
         form: formBuilder.group({
-          groupBy: [
-            value.form && value.form.groupBy ? value.form.groupBy : '',
-            Validators.required,
-          ],
+          groupBy: [get(value, 'form.groupBy', ''), Validators.required],
           groupByExpression: expressionForm(
-            value.form && value.form.groupByExpression
-              ? value.form.groupByExpression
-              : false,
+            get(value, 'form.groupByExpression', false),
             false
           ),
           addFields: formBuilder.array(
-            value.form && value.form.addFields
-              ? value.form.addFields.map((x: any) => addFieldsForm(x, false))
-              : []
+            get(value, 'form.addFields', []).map((x: any) =>
+              addFieldsForm(x, false)
+            )
           ),
         }),
       });
@@ -105,10 +90,7 @@ export const addStage = (value: any): FormGroup => {
       return formBuilder.group({
         type: [PipelineStage.UNWIND],
         form: formBuilder.group({
-          field: [
-            value.form && value.form.field ? value.form.field : '',
-            Validators.required,
-          ],
+          field: [get(value, 'form.field', ''), Validators.required],
         }),
       });
     }
@@ -116,10 +98,7 @@ export const addStage = (value: any): FormGroup => {
       const formGroup = formBuilder.group({
         type: [PipelineStage.CUSTOM],
         form: formBuilder.group({
-          raw: [
-            value.form && value.form.raw ? value.form.raw : '',
-            Validators.required,
-          ],
+          raw: [get(value, 'form.raw', ''), Validators.required],
         }),
       });
       formGroup
@@ -132,10 +111,7 @@ export const addStage = (value: any): FormGroup => {
       return formBuilder.group({
         type: [PipelineStage.CUSTOM],
         form: formBuilder.group({
-          raw: [
-            value.form && value.form.raw ? value.form.raw : '',
-            Validators.required,
-          ],
+          raw: [get(value, 'form.raw', ''), Validators.required],
         }),
       });
     }
@@ -161,14 +137,8 @@ export const createAggregationForm = (
   widgetType: string
 ): FormGroup =>
   formBuilder.group({
-    dataSource: [
-      value && value.dataSource ? value.dataSource : null,
-      Validators.required,
-    ],
-    sourceFields: [
-      value && value.sourceFields ? value.sourceFields : [],
-      Validators.required,
-    ],
+    dataSource: [get(value, 'dataSource', null), Validators.required],
+    sourceFields: [get(value, 'sourceFields', []), Validators.required],
     pipeline: formBuilder.array(
       value && value.pipeline && value.pipeline.length
         ? value.pipeline.map((x: any) => addStage(x))

@@ -234,10 +234,16 @@ export class AggregationBuilderService {
         }
       }
     }
-    console.log('FIELDS', fields);
     return fields.sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
   }
 
+  /**
+   * Adds fields in list of fields.
+   *
+   * @param fields list of fields.
+   * @param form form value
+   * @param initialFields initial list of fields
+   */
   private addFields(fields: any[], form: any, initialFields: any[]): void {
     for (const addField of form) {
       fields.push({
@@ -257,6 +263,13 @@ export class AggregationBuilderService {
     }
   }
 
+  /**
+   * Gets a field in list of fields.
+   *
+   * @param fieldName name of field to search
+   * @param fields list of fields
+   * @returns field
+   */
   public findField(fieldName: string, fields: any[]): any {
     let outField = fields.find((x) => x.name === fieldName);
     if (!outField && fieldName.includes('.')) {

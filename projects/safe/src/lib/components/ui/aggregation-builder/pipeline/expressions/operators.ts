@@ -32,7 +32,7 @@ export enum MathOperators {
 /**
  * Enum of available default operators.
  */
-export const DefaultOperators = {
+export const DEFAULT_OPERATORS = {
   ...DateOperators,
   ...MathOperators,
 };
