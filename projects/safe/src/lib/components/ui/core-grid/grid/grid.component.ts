@@ -500,12 +500,17 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         value: this.formGroup.value,
       });
     }
+    const expressionValidator = new Survey.ExpressionValidator(
+      '{essai}=1 and {essai2}=2'
+    );
+
+    //Opens a snack bar if the validators from the form are not respected
     if (this.checkValidation(this.parseValidator(stringVal)) !== '') {
       this.snackBar.openSnackBar(
         this.checkValidation(this.parseValidator(stringVal)),
         {
           error: true,
-          duration: 10000,
+          duration: 8000,
         }
       );
     } else {
@@ -636,10 +641,22 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
                 );
                 break;
               case 'expression':
+                const values: any = {};
+                for (const columnIndex in data[key1]) {
+                  //Check if columnIndex exists and if the name of the column is contained in the expression to check
+                  //If so, we add it to the values object
+                  if (
+                    data[key1].hasOwnProperty(columnIndex) &&
+                    validator[value3].expression.includes(
+                      '{' + columnIndex + '}'
+                    )
+                  ) {
+                    values[columnIndex] = data[key1][columnIndex];
+                  }
+                }
                 errMessage += this.validateExpression(
                   validator[value3].expression,
-                  validator[value3].valueName,
-                  data[key1][value2],
+                  values,
                   this.writeErrorMessage(row, validator[value3])
                 );
                 break;
@@ -651,18 +668,18 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     return errMessage;
   }
 
-  validateExpression(
-    expression: string,
-    valueName: string,
-    value: any,
-    errText: string
-  ) {
+  /**
+   * Uses the SurveyJS expression validator to return an error message if necessary
+   *
+   * @param expression Expression used to check the data
+   * @param values Object whose values we need to check
+   * @param errText Error message to display if error
+   * @returns Error message to display
+   */
+  validateExpression(expression: string, values: any, errText: string) {
     const expressionValidator = new Survey.ExpressionValidator(expression);
     expressionValidator.text = errText;
-    //For the validation to work with this SurveyJS validator, we have to put the value in an object
-    const dict: any = {};
-    dict[valueName] = value;
-    const res = expressionValidator.validate('', errText, dict);
+    const res = expressionValidator.validate('', errText, values);
     if (res === null || res.error === null) {
       return '';
     } else {
