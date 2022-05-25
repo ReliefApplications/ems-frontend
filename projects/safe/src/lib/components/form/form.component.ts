@@ -488,9 +488,12 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant('components.record.recovery.title'),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });
