@@ -666,16 +666,16 @@
 			},
 			"settings": {
 				"chart": {
+					"labels": {
+						"percentage": "Percentage",
+						"show": "Show labels",
+						"title": "Labels"
+					},
 					"legend": "Legend",
 					"orientation": "Orientation",
 					"palette": {
 						"enable": "Use Custom Palette",
 						"title": "Color palette"
-					},
-					"labels": {
-						"title": "Labels",
-						"show": "Show labels",
-						"percentage": "Percentage"
 					},
 					"position": "Position",
 					"text": "Text",

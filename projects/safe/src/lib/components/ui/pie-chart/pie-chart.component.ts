@@ -60,17 +60,22 @@ export class SafePieChartComponent implements OnInit {
     if (this.labels) {
       if (this.labels.showCategory && this.labels.showValue) {
         if (this.labels.valueType === 'value') {
-          this.labelContent = (e: any): string => {return e.category + '\n' + e.value};
+          this.labelContent = (e: any): string => e.category + '\n' + e.value;
         } else if (this.labels.valueType === 'percentage') {
-          this.labelContent = (e: any): string => {return e.category + '\n' + (parseFloat(e.percentage) * 100).toFixed(2) + '%'};
+          this.labelContent = (e: any): string =>
+            e.category +
+            '\n' +
+            (parseFloat(e.percentage) * 100).toFixed(2) +
+            '%';
         }
       } else if (this.labels.showCategory) {
-        this.labelContent = (e: any): string => {return e.category};
+        this.labelContent = (e: any): string => e.category;
       } else {
         if (this.labels.valueType === 'value') {
-          this.labelContent = (e: any): string => {return e.value};
+          this.labelContent = (e: any): string => e.value;
         } else if (this.labels.valueType === 'percentage') {
-          this.labelContent = (e: any): string => {return (parseFloat(e.percentage) * 100).toFixed(2) + '%'};
+          this.labelContent = (e: any): string =>
+            (parseFloat(e.percentage) * 100).toFixed(2) + '%';
         }
       }
     }
