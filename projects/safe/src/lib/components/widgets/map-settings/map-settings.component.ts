@@ -26,6 +26,7 @@ export class SafeMapSettingsComponent implements OnInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   public selectedFields: any[] = [];
+  public allFields: any[] = [];
   public formatedSelectedFields: any[] = [];
   public geoJSONfields: any[] = [];
 
