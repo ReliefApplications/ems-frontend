@@ -61,7 +61,18 @@
       animationDuration="0ms"
       *ngIf="form.getRawValue().name"
     >
-      <mat-tab [label]="'components.queryBuilder.fields.title' | translate">
+      <mat-tab [label]="'components.widget.settings.map.popup' | translate" *ngIf="isMap">
+        <ng-template matTabContent>
+          <safe-tab-fields
+          *ngIf="availableFields.length > 0"
+          [form]="$any(form.controls.fields)"
+          [fields]="availableFields"
+          [factory]="factory"
+          [isMap]="isMap"
+          ></safe-tab-fields>
+        </ng-template>
+      </mat-tab>
+      <mat-tab [label]="'components.queryBuilder.fields.title' | translate" *ngIf="!isMap">
         <ng-template matTabContent>
           <safe-tab-fields
             *ngIf="availableFields.length > 0"

@@ -148,8 +148,6 @@ export class SafeMapSettingsComponent implements OnInit {
         });
     });
 
-    console.log(tileSettings.latitude);
-
     this.arcGisService.clearSelectedLayer();
     this.arcGisService.searchLayers('');
 

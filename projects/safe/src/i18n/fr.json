@@ -504,7 +504,10 @@
 				"title": "Filtre"
 			},
 			"hint": {
-				"fields": "Sélectionnez des points de donnée ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
+				"fields": {
+					"default": "Sélectionnez des points de donnée ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
+					"popup": "Sélectionnez des points de donnée ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché au clic sur un marqueur"
+				},
 				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
 				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
 			},
@@ -808,6 +811,7 @@
 							"title": "Calque de marqueurs"
 						}
 					},
+					"popup": "Pop-up",
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
 						"default": {

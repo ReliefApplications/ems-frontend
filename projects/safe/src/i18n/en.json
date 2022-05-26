@@ -504,7 +504,10 @@
 				"title": "Filter"
 			},
 			"hint": {
-				"fields": "Select data points below and drag them to 'selected fields' on the right",
+				"fields": {
+					"default": "Select data points below and drag them to 'selected fields' on the right",
+					"popup": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker"
+				},
 				"sortingDisabled": "Sorting fields is disabled when search is active",
 				"style": "Styling rules make records with important information stand out. When a record matches more than one rule, the first rule is used."
 			},
@@ -808,6 +811,7 @@
 							"title": "Marker layers"
 						}
 					},
+					"popup": "Pop-up",
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
 						"default": {

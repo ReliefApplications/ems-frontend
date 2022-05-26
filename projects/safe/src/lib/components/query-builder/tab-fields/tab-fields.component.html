@@ -1,5 +1,8 @@
-<div class="info-text">
-  {{ 'components.queryBuilder.hint.fields' | translate }}
+<div class="info-text" *ngIf="isMap">
+  {{ 'components.queryBuilder.hint.fields.popup' | translate }}
+</div>
+<div class="info-text" *ngIf="!isMap">
+  {{ 'components.queryBuilder.hint.fields.default' | translate }}
 </div>
 <div cdkDropListGroup class="field-wrapper" [ngClass]="{ hidden: fieldForm }">
   <div class="field-container" *ngIf="!fieldForm">

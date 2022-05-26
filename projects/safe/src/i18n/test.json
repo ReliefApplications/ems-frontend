@@ -504,7 +504,10 @@
 				"title": "******"
 			},
 			"hint": {
-				"fields": "******",
+				"fields": {
+					"default": "******",
+					"popup": "******"
+				},
 				"sortingDisabled": "******",
 				"style": "******"
 			},
@@ -808,6 +811,7 @@
 							"title": "******"
 						}
 					},
+					"popup": "******",
 					"tooltip": {
 						"category": "******",
 						"default": {

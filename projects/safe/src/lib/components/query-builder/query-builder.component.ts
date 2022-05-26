@@ -52,6 +52,7 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() templates: Form[] = [];
   @Input() queryName? = '';
   @Input() layoutPreviewData: LayoutPreviewData | null = null;
+  @Input() isMap = false;
 
   // === FIELD EDITION ===
   public isField = false;

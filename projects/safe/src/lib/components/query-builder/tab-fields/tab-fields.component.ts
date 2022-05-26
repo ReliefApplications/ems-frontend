@@ -24,6 +24,8 @@ import { addNewField } from '../query-builder-forms';
 export class SafeTabFieldsComponent implements OnInit, OnChanges {
   @Input() form: FormArray = new FormArray([]);
   @Input() fields: any[] = [];
+  @Input() isMap = false;
+
   // === TEMPLATE REFERENCE ===
   @Input() factory?: ComponentFactory<any>;
   @ViewChild('childTemplate', { read: ViewContainerRef })
