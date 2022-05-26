@@ -169,9 +169,14 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Delete page',
-        content: `Do you confirm the deletion of the page ${item.name} ?`,
-        confirmText: 'Delete',
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.page.one'),
+        }),
+        content: this.translate.instant(
+          'components.application.pages.delete.confirmationMessage',
+          { name: item.name }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       },
     });

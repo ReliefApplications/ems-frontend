@@ -462,7 +462,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onClear(): void {
-    this.survey.clear();
+    // If unicity of records is set up, do not clear but go back to latest saved version
+    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+      this.survey.data = this.form.uniqueRecord.data;
+      this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
+    } else {
+      this.survey.clear();
+    }
     this.temporaryFilesStorage = {};
     localStorage.removeItem(this.storageId);
     this.isFromCacheData = false;
@@ -482,9 +488,12 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant('components.record.recovery.title'),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });

@@ -37,6 +37,7 @@
       "survey-creator": "survey-creator",
       "survey-knockout": "survey-knockout",
       "surveyjs-widgets": "surveyjs-widgets",
+      "@tinymce/tinymce-angular": "@tinymce/tinymce-angular",
       "uuid": "uuid"
     }
   }
