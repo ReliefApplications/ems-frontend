@@ -1,21 +1,13 @@
 {
   "root": true,
-  "ignorePatterns": [
-    "projects/**/*"
-  ],
+  "parser": "@typescript-eslint/parser",
+
   "overrides": [
     {
-      "files": [
-        "*.ts"
-      ],
-      "plugins": [
-        "prettier"
-      ],
+      "files": ["*.ts"],
+      "plugins": ["prettier", "jsdoc"],
       "parserOptions": {
-        "project": [
-          "tsconfig.json",
-          "e2e/tsconfig.json"
-        ],
+        "project": ["tsconfig.json", "e2e/tsconfig.json"],
         "createDefaultProgram": true
       },
       "extends": [
@@ -23,28 +15,45 @@
         "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
         "plugin:@angular-eslint/template/process-inline-templates",
         "plugin:storybook/recommended",
-        "prettier"
+        "prettier",
+        "plugin:jsdoc/recommended"
       ],
       "rules": {
         "prettier/prettier": 2,
         "@typescript-eslint/naming-convention": [
           1,
           {
-            "selector": [
-              "enumMember"
-            ],
+            "selector": ["enumMember"],
             "format": ["camelCase", "UPPER_CASE"]
           }
-        ]
+        ],
+        "jsdoc/require-jsdoc": [
+          1,
+          {
+            "exemptEmptyConstructors": false,
+            "contexts": [
+              "TSInterfaceDeclaration",
+              "TSEnumDeclaration",
+              "Program > VariableDeclaration[kind='const']",
+              "ExportNamedDeclaration > VariableDeclaration > VariableDeclarator > ArrowFunctionExpression",
+              "MethodDefinition[key.name!=/^ngOn(Init|Destroy|Changes)|ngDoCheck|ngAfter(ContentInit|ContentChecked|ViewInit|ViewChecked)$/]"
+            ],
+            "require": {
+              "ClassDeclaration": true,
+              "FunctionDeclaration": true,
+              "ClassExpression": true,
+              "FunctionExpression": true
+            }
+          }
+        ],
+        "jsdoc/require-param-type": 0,
+        "jsdoc/require-property-type": 0,
+        "jsdoc/require-returns-type": 0
       }
     },
     {
-      "files": [
-        "*.html"
-      ],
-      "extends": [
-        "plugin:@angular-eslint/template/recommended"
-      ],
+      "files": ["*.html"],
+      "extends": ["plugin:@angular-eslint/template/recommended"],
       "rules": {}
     }
   ]
