@@ -52,6 +52,13 @@ export class SafePieChartComponent implements OnInit {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
+  /**
+   * The function which returns the Chart series label content.
+   * Content is defined on the component init.
+   *
+   * @param e - Event which with the specific label data
+   * @return Returns a string which will be used as the label content
+   */
   public labelContent: ((e: any) => string) | null = null;
 
   constructor() {}
@@ -70,7 +77,7 @@ export class SafePieChartComponent implements OnInit {
         }
       } else if (this.labels.showCategory) {
         this.labelContent = (e: any): string => e.category;
-      } else {
+      } else if (this.labels.showValue) {
         if (this.labels.valueType === 'value') {
           this.labelContent = (e: any): string => e.value;
         } else if (this.labels.valueType === 'percentage') {

@@ -667,8 +667,10 @@
 			"settings": {
 				"chart": {
 					"labels": {
+						"valueType": "Value type",
 						"percentage": "Percentage",
-						"show": "Show labels",
+						"showCategory": "Show category labels",
+						"showValue": "Show value labels",
 						"title": "Labels"
 					},
 					"legend": "Legend",

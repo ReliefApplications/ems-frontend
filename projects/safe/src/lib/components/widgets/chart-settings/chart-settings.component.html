@@ -179,21 +179,21 @@
               </mat-expansion-panel-header>
               <div class="form-group">
                 <mat-slide-toggle formControlName="showCategory">{{
-                  "Show category labels"
+                  'components.widget.settings.chart.labels.showCategory' | translate
                 }}</mat-slide-toggle>
                 <mat-slide-toggle formControlName="showValue">{{
-                  "Show value labels"
+                  'components.widget.settings.chart.labels.showValue' | translate
                 }}</mat-slide-toggle>
                 <mat-form-field appearance="outline" *ngIf="chartForm.value.labels.showValue">
                   <mat-label>{{
-                    "Value type"
+                    'components.widget.settings.chart.labels.valueType' | translate
                   }}</mat-label>
                   <mat-select formControlName="valueType">
                     <mat-option value="value">{{
-                      "Value"
+                      'common.value.one' | translate
                     }}</mat-option>
                     <mat-option value="percentage">{{
-                      "Percentage"
+                      'components.widget.settings.chart.labels.percentage' | translate
                     }}</mat-option>
                   </mat-select>
                 </mat-form-field>

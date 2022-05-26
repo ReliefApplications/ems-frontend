@@ -51,6 +51,13 @@ export class SafeDonutChartComponent implements OnInit {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
+  /**
+   * The function which returns the Chart series label content.
+   * Content is defined on the component init.
+   *
+   * @param e - Event which with the specific label data
+   * @return Returns a string which will be used as the label content
+   */
   public labelContent: ((e: any) => string) | null = null;
 
   constructor() {}
