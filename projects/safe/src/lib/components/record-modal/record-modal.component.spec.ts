@@ -19,6 +19,12 @@ import {
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_RECORD_BY_ID } from '../../graphql/queries';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 describe('SafeRecordModalComponent', () => {
   let component: SafeRecordModalComponent;
@@ -35,12 +41,19 @@ describe('SafeRecordModalComponent', () => {
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
+        TranslateService,
       ],
       declarations: [SafeRecordModalComponent],
       imports: [
         MatDialogModule,
         HttpClientModule,
         MatSnackBarModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
         ApolloTestingModule,
       ],
     }).compileComponents();

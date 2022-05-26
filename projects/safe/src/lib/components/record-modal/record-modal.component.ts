@@ -30,6 +30,7 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 interface DialogData {
   recordId: string;
@@ -74,7 +75,8 @@ export class SafeRecordModalComponent implements OnInit {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
-    private formBuilderService: SafeFormBuilderService
+    private formBuilderService: SafeFormBuilderService,
+    private translate: TranslateService
   ) {
     this.containerId = uuidv4();
     if (this.data.compareTo) {
@@ -272,9 +274,14 @@ export class SafeRecordModalComponent implements OnInit {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant(
+          'components.record.recovery.titleMessage'
+        ),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });
