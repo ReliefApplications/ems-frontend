@@ -15,6 +15,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../ui/icon/icon.module';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [SafeMapSettingsComponent],
@@ -35,6 +36,7 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
     SafeButtonModule,
     TranslateModule,
     MatTooltipModule,
+    MatTabsModule,
   ],
   exports: [SafeMapSettingsComponent],
 })

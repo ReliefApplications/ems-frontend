@@ -77,6 +77,11 @@ export class SafeFloatingOptionsComponent implements OnInit {
       });
       dialogRef.afterClosed().subscribe((res) => {
         if (res) {
+          if (this.widget.component === 'map') {
+            console.log(res, res.clorophlets.value);
+            res.pointerRules = res.pointerRules.value;
+            res.clorophlets = res.clorophlets.value;
+          }
           this.edit.emit({ type: 'data', id: this.widget.id, options: res });
         }
       });

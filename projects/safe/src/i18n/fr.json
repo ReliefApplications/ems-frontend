@@ -782,9 +782,31 @@
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
 					},
 					"layers": {
-						"select": "Sélectionnez une couche",
-						"selected": "Couches sélectionnées",
-						"title": "Couches additionnelles"
+						"clorophlet": {
+							"addNew": "Ajouter nouvelle choroplèthe",
+							"addNewDiv": "Ajouter nouvelle division",
+							"geoJSON": "geoJSON",
+							"geoJSONidentifier": "Identifiant geoJSON",
+							"identifier": "Identifiant",
+							"info": "Créer différentes choroplèthes qui seront affichée en tant que calques sur la carte",
+							"title": "Choroplèthe"
+						},
+						"online": {
+							"info": "Chercher pour des calques en ligne sur ArcGIS online",
+							"select": "Chercher des calques",
+							"selected": "Calques sélectionnées",
+							"title": "Calques en ligne"
+						},
+						"point": {
+							"addNew": "Ajouter une nouvelle règle de marqueur",
+							"category": "Calques rapides",
+							"color": "Couleur",
+							"info": "Affiche les marqueurs sur la carte pour chaque entrée de votre donnée",
+							"rules": "Règles d'affichage des marqueurs",
+							"rulesInfo": "Customisez la taille et la couleur de vos marqueurs",
+							"size": "Taille",
+							"title": "Calque de marqueurs"
+						}
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",

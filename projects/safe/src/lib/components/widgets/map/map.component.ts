@@ -309,34 +309,36 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             for (const field in res.data) {
               if (Object.prototype.hasOwnProperty.call(res.data, field)) {
                 res.data[field].edges.map((entry: any) => {
-                  //Converts the fields from the geoJSON to the type of the value from the resource
-                  //For now, we only take two cases into account : if it is a numeric value or not (we'll treat it as a string)
-                  if (typeof entry.node[value.place] === 'number') {
-                    if (
-                      typeof feature.properties[value.geoJSONfield] !== 'number'
-                    ) {
-                      feature.properties[value.geoJSONfield] = parseFloat(
-                        feature.properties[value.geoJSONfield].toString()
-                      );
-                      if (isNaN(feature.properties[value.geoJSONfield])) {
-                        console.error(
-                          'The GeoJSON identifier chosen cannot be converted to match the type of the other identifier'
-                        );
-                      }
-                    }
-                    //else we do not need to convert anything
-                  }
-                  //In case the identifier is not a number, we convert both identifiers to string to compare them
-                  else {
-                    feature.properties[value.geoJSONfield] =
-                      feature.properties[value.geoJSONfield].toString();
-                    entry.node[value.place] =
-                      entry.node[value.place].toString();
-                  }
+                  // //Converts the fields from the geoJSON to the type of the value from the resource
+                  // //For now, we only take two cases into account : if it is a numeric value or not (we'll treat it as a string)
+                  // if (typeof entry.node[value.place] === 'number') {
+                  //   if (
+                  //     typeof feature.properties[value.geoJSONfield] !== 'number'
+                  //   ) {
+                  //     feature.properties[value.geoJSONfield] = parseFloat(
+                  //       feature.properties[value.geoJSONfield].toString()
+                  //     );
+                  //     if (isNaN(feature.properties[value.geoJSONfield])) {
+                  //       console.error(
+                  //         'The GeoJSON identifier chosen cannot be converted to match the type of the other identifier'
+                  //       );
+                  //     }
+                  //   }
+                  //   //else we do not need to convert anything
+                  // }
+                  // //In case the identifier is not a number, we convert both identifiers to string to compare them
+                  // else {
+                  //   feature.properties[value.geoJSONfield] =
+                  //     feature.properties[value.geoJSONfield].toString();
+                  //   entry.node[value.place] =
+                  //     entry.node[value.place].toString();
+                  // }
 
                   if (
-                    entry.node[value.place] ===
-                    feature.properties[value.geoJSONfield]
+                    entry.node[value.place] &&
+                    feature.properties[value.geoJSONfield] &&
+                    entry.node[value.place].toString() ===
+                      feature.properties[value.geoJSONfield].toString()
                   ) {
                     value.divisions.map((div: any) => {
                       if (applyFilters(entry.node, div.filter)) {
@@ -407,7 +409,15 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         }
         const obj = { id: item.id, data };
         this.data.push(obj);
-        const options = MARKER_OPTIONS;
+        const options = Object.assign({}, MARKER_OPTIONS);
+        this.settings.pointerRules.map((rule: any) => {
+          if (applyFilters(item, rule.filter)) {
+            options.color = rule.color;
+            options.fillColor = rule.color;
+            options.weight *= rule.size;
+            options.radius *= rule.size;
+          }
+        });
         Object.assign(options, { id: item.id });
         const marker = L.circleMarker([latitude, longitude], options);
         if (!this.markersCategories[item[this.categoryField]]) {

@@ -782,9 +782,31 @@
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
 					},
 					"layers": {
-						"select": "Select a layer",
-						"selected": "Selected layers",
-						"title": "Additional layers"
+						"clorophlet": {
+							"addNew": "Add new choropleth",
+							"addNewDiv": "Add new division",
+							"geoJSON": "geoJSON",
+							"geoJSONidentifier": "geoJSON Identifier",
+							"identifier": "Identifier",
+							"info": "Set up different choropleth which will be displayed as layers in the map",
+							"title": "Choropleth"
+						},
+						"online": {
+							"info": "Search for online layers in arcGIS online",
+							"select": "Search layers",
+							"selected": "Selected layers",
+							"title": "Online layers"
+						},
+						"point": {
+							"addNew": "Add new marker rule",
+							"category": "Map quick layers",
+							"color": "Color",
+							"info": "Display markers in the map for each entry of your data",
+							"rules": "Marker rules",
+							"rulesInfo": "Customize the size and colors of your pointers",
+							"size": "Size",
+							"title": "Marker layers"
+						}
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",

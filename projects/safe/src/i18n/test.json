@@ -782,9 +782,31 @@
 						"longitude": "******"
 					},
 					"layers": {
-						"select": "******",
-						"selected": "******",
-						"title": "******"
+						"clorophlet": {
+							"addNew": "******",
+							"addNewDiv": "******",
+							"geoJSON": "******",
+							"geoJSONidentifier": "******",
+							"identifier": "******",
+							"info": "******",
+							"title": "******"
+						},
+						"online": {
+							"info": "******",
+							"select": "******",
+							"selected": "******",
+							"title": "******"
+						},
+						"point": {
+							"addNew": "******",
+							"category": "******",
+							"color": "******",
+							"info": "******",
+							"rules": "******",
+							"rulesInfo": "******",
+							"size": "******",
+							"title": "******"
+						}
 					},
 					"tooltip": {
 						"category": "******",
