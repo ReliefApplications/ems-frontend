@@ -231,13 +231,20 @@ export class QueryBuilderService {
    * @param settings Widget settings.
    * @returns GraphQL query.
    */
-  public buildQuery(settings: any): any {
+  public buildQuery(settings: any, additionalFields?: string): any {
     const builtQuery = settings.query;
     if (builtQuery?.fields?.length > 0) {
-      const fields = ['canUpdate\ncanDelete\n'].concat(
-        this.buildFields(builtQuery.fields)
-      );
-      return this.graphqlQuery(builtQuery.name, fields);
+      if (additionalFields === undefined) {
+        const fields = ['canUpdate\ncanDelete\n'].concat(
+          this.buildFields(builtQuery.fields)
+        );
+        return this.graphqlQuery(builtQuery.name, fields);
+      } else {
+        const fields = ['canUpdate\ncanDelete\n' + additionalFields].concat(
+          this.buildFields(builtQuery.fields)
+        );
+        return this.graphqlQuery(builtQuery.name, fields);
+      }
     } else {
       return null;
     }

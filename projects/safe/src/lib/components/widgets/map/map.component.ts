@@ -127,7 +127,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.drawMap();
     // Gets the settings from the DB.
     if (this.settings.query) {
-      const builtQuery = this.queryBuilder.buildQuery(this.settings);
+      const builtQuery = this.queryBuilder.buildQuery(
+        this.settings,
+        'latitude\nlongitude'
+      );
       this.dataQuery = this.apollo.watchQuery<any>({
         query: builtQuery,
         variables: {

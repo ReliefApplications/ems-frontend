@@ -4,6 +4,7 @@ import { SafeArcGISService } from '../../../services/arc-gis.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { createQueryForm } from './map-forms';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 
 /**
  * Settings component of map widget.
@@ -25,6 +26,7 @@ export class SafeMapSettingsComponent implements OnInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   public selectedFields: any[] = [];
+  public allFields: any[] = [];
 
   public basemaps: any[] = [
     'Sreets',
@@ -48,7 +50,8 @@ export class SafeMapSettingsComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private arcGisService: SafeArcGISService
+    private arcGisService: SafeArcGISService,
+    private queryBuilder: QueryBuilderService
   ) {}
 
   /**
@@ -101,6 +104,9 @@ export class SafeMapSettingsComponent implements OnInit {
 
     if (this.tileForm?.value.query.name) {
       this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
+      this.allFields = this.queryBuilder.getFields(
+        this.tileForm?.controls.query.value.name
+      );
     }
 
     const queryForm = this.tileForm.get('query') as FormGroup;
@@ -113,6 +119,8 @@ export class SafeMapSettingsComponent implements OnInit {
     queryForm.valueChanges.subscribe((res) => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
     });
+
+    console.log(tileSettings.latitude);
 
     this.arcGisService.clearSelectedLayer();
     this.arcGisService.searchLayers('');
