@@ -22,8 +22,9 @@ interface ChartSeries {
 }
 
 interface ChartLabels {
-  visible: boolean;
-  show: string;
+  showCategory: boolean;
+  showValue: boolean;
+  valueType: string;
 }
 interface ChartOptions {
   palette: string[];
@@ -50,15 +51,27 @@ export class SafeDonutChartComponent implements OnInit {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
-  public labelContent(e: any): string {
-    return e.category;
-  }
-
-  public labelPercent(e: any): string {
-    return (parseFloat(e.percentage) * 100).toFixed(2) + '%';
-  }
+  public labelContent: ((e: any) => string) | null = null;
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.labels) {
+      if (this.labels.showCategory && this.labels.showValue) {
+        if (this.labels.valueType === 'value') {
+          this.labelContent = (e: any): string => {return e.category + '\n' + e.value};
+        } else if (this.labels.valueType === 'percentage') {
+          this.labelContent = (e: any): string => {return e.category + '\n' + (parseFloat(e.percentage) * 100).toFixed(2) + '%'};
+        }
+      } else if (this.labels.showCategory) {
+        this.labelContent = (e: any): string => {return e.category};
+      } else if (this.labels.showValue) {
+        if (this.labels.valueType === 'value') {
+          this.labelContent = (e: any): string => {return e.value};
+        } else if (this.labels.valueType === 'percentage') {
+          this.labelContent = (e: any): string => {return (parseFloat(e.percentage) * 100).toFixed(2) + '%'};
+        }
+      }
+    }
+  }
 }

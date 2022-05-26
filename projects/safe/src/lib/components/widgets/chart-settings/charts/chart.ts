@@ -69,8 +69,9 @@ export class Chart {
         ],
       }),
       labels: this.fb.group({
-        visible: [labels ? labels.visible : false],
-        show: [labels ? labels.show : 'value'],
+        showCategory: [labels ? labels.showCategory : false],
+        showValue: [labels ? labels.showValue : false],
+        valueType: [labels ? labels.valueType : 'value'],
       }),
     });
 

@@ -23,10 +23,10 @@
       categoryField="category"
     >
       <kendo-chart-series-item-labels
-        *ngIf="labels && labels.visible"
+        *ngIf="labelContent"
         position="outsideEnd"
         color="#000"
-        [content]="labels.show === 'percentage' ? labelPercent : labelContent"
+        [content]="labelContent"
       ></kendo-chart-series-item-labels>
     </kendo-chart-series-item>
   </kendo-chart-series>
