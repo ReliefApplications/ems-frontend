@@ -5,6 +5,7 @@
     "entryFile": "src/public-api.ts",
     "umdModuleIds": {
       "@esri/arcgis-rest-auth": "@esri/arcgis-rest-auth",
+      "@esri/arcgis-rest-request": "@esri/arcgis-rest-request",
       "@ngx-translate/core": "@ngx-translate/core",
       "@progress/kendo-angular-buttons": "@progress/kendo-angular-buttons",
       "@progress/kendo-angular-charts": "@progress/kendo-angular-charts",
