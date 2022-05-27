@@ -153,8 +153,8 @@ const TEMPLATE: Story<SafeSeriesMappingComponent> = (args) => ({
     mappingForm: createAggregationForm(
       {
         mapping: {
-          xAxis: 'date',
-          yAxis: 'follow',
+          category: 'date',
+          value: 'follow',
         },
       },
       'column'

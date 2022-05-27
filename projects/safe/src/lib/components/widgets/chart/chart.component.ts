@@ -15,6 +15,7 @@ import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.compon
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import get from 'lodash/get';
+import { groupBy, GroupResult } from '@progress/kendo-data-query';
 
 const DEFAULT_FILE_NAME = 'chartS';
 
@@ -119,11 +120,11 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
             this.settings.chart.type
           )
         ) {
-          this.series = [
-            {
-              data: JSON.parse(JSON.stringify(res.data.recordsAggregation)),
-            },
-          ];
+          // create series by the series-item key
+          this.series = groupBy(
+            JSON.parse(JSON.stringify(res.data.recordsAggregation)),
+            [{ field: 'seriesItem' }]
+          ) as GroupResult[];
         } else {
           this.series = res.data.recordsAggregation;
         }

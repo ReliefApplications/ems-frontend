@@ -131,9 +131,9 @@ export const mappingFields = (widgetType: string): string[] => {
   //   return ['xAxis', 'yAxis'];
   // }
   // return [];
-  const fields = ['xAxis', 'yAxis'];
-  if (widgetType === 'bar-chart' || widgetType === 'column-chart') {
-    fields.push('series');
+  const fields = ['category', 'value'];
+  if (['bar-chart', 'column-chart', 'line-chart'].includes(widgetType)) {
+    fields.push('seriesItem');
   }
   return fields;
 };
@@ -171,7 +171,7 @@ export const createAggregationForm = (
               value && value.mapping && value.mapping[key]
                 ? value.mapping[key]
                 : '',
-              Validators.required,
+              key !== 'seriesItem' ? Validators.required : {},
             ],
           }),
         {}

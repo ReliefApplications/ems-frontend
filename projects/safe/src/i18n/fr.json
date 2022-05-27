@@ -249,9 +249,9 @@
 			"fieldName": "Nom du champ",
 			"groupBy": "Regrouper par",
 			"mapping": {
-				"series": "Séries",
-				"xAxis": "Axe X",
-				"yAxis": "Axe Y"
+				"category": "Catégorie",
+				"seriesItem": "Série",
+				"value": "Valeur"
 			},
 			"operator": "Opérateur",
 			"operators": {

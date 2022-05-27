@@ -249,9 +249,9 @@
 			"fieldName": "******",
 			"groupBy": "******",
 			"mapping": {
-				"series": "******",
-				"xAxis": "******",
-				"yAxis": "******"
+				"category": "******",
+				"seriesItem": "******",
+				"value": "******"
 			},
 			"operator": "******",
 			"operators": {

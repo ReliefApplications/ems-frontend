@@ -18,8 +18,8 @@
     <kendo-chart-series-item
       *ngFor="let item of series"
       type="pie"
-      [data]="item.data"
-      field="field"
+      [data]="item.items"
+      field="value"
       categoryField="category"
     ></kendo-chart-series-item>
   </kendo-chart-series>

@@ -22,10 +22,11 @@
     <kendo-chart-series-item
       *ngFor="let item of series"
       type="line"
-      [data]="item.data"
-      field="field"
+      [data]="item.items"
+      field="value"
       categoryField="category"
       [color]="item.color"
+      [name]="item.value || ''"
     ></kendo-chart-series-item>
   </kendo-chart-series>
 </kendo-chart>

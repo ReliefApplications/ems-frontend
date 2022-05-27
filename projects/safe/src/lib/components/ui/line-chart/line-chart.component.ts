@@ -14,10 +14,11 @@ interface ChartLegend {
 }
 
 interface ChartSeries {
+  value?: string;
   color?: string;
-  data: {
+  items: {
     category: any;
-    field: any;
+    value: any;
     color?: string;
   }[];
 }

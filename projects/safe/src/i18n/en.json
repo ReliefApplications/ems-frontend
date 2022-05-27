@@ -249,9 +249,9 @@
 			"fieldName": "Field name",
 			"groupBy": "Group by",
 			"mapping": {
-				"series": "Series",
-				"xAxis": "X Axis",
-				"yAxis": "Y Axis"
+				"category": "Category",
+				"seriesItem": "Serie",
+				"value": "Value"
 			},
 			"operator": "Operator",
 			"operators": {

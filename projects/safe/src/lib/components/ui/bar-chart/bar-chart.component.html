@@ -18,12 +18,12 @@
     <kendo-chart-series-item
       *ngFor="let item of series"
       type="bar"
-      field="field"
+      field="value"
       categoryField="category"
       [gap]="gap"
       [spacing]="spacing"
-      [data]="item.data"
-      [name]="item.name || ''"
+      [data]="item.items"
+      [name]="item.value || ''"
       [color]="item.color"
     ></kendo-chart-series-item>
   </kendo-chart-series>

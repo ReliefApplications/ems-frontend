@@ -14,9 +14,9 @@ interface ChartLegend {
 }
 
 interface ChartSeries {
-  data: {
+  items: {
     category: any;
-    field: any;
+    value: any;
     color?: string;
   }[];
 }
