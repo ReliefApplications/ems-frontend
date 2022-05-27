@@ -212,42 +212,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       ],
     }).addTo(this.map);
 
-    // Adds legend to the map
-    // Styling is in the global style file
-    const legendControl = L.control({ position: 'bottomright' });
-
-    legendControl.onAdd = function (map: any) {
-      this.div = L.DomUtil.create('div', 'legend');
-      return this.div;
-    };
-
-    legendControl.update = function (data: any) {
-      const div = this.div;
-
-      div.innerHTML = '';
-      data.query.clorophlets.map((clorophlet: any) => {
-        let labels = '';
-        clorophlet.divisions.map((division: any) => {
-          if (division.label.length > 0) {
-            labels +=
-              '<i style="background:' +
-              division.color +
-              '"></i>' +
-              division.label +
-              '<br>';
-          }
-        });
-        if (labels.length > 0) {
-          div.innerHTML +=
-            '<div><h4>' + clorophlet.name + '</h4>' + labels + '<div>';
-        }
-      });
-    };
-
-    legendControl.addTo(this.map);
-
-    legendControl.update(this.settings);
-
     const results = L.layerGroup().addTo(this.map);
 
     searchControl.on('results', (data: any) => {
@@ -264,6 +228,46 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         marker.openPopup();
       }
     });
+
+    // Adds legend to the map
+    // Styling is in the global style file
+    const legendControl = L.control({ position: 'bottomright' });
+
+    legendControl.onAdd = function (map: any) {
+      this.div = L.DomUtil.create('div', 'legend');
+      return this.div;
+    };
+
+    legendControl.update = function (data: any) {
+      const div = this.div;
+
+      div.innerHTML = '';
+      data.query?.clorophlets?.map((clorophlet: any) => {
+        let labels = '';
+        clorophlet.divisions.map((division: any) => {
+          if (division.label.length > 0) {
+            labels +=
+              '<i style="background:' +
+              division.color +
+              '"></i>' +
+              division.label +
+              '<br>';
+          }
+        });
+        if (labels.length > 0) {
+          div.innerHTML +=
+            '<div><h4>' + clorophlet.name + '</h4>' + labels + '<div>';
+        }
+      });
+      if (div.innerHTML.length === 0) {
+        div.style.display = 'none';
+      }
+    };
+
+    legendControl.addTo(this.map);
+
+    legendControl.update(this.settings);
+
     // Categories
     this.categoryField = this.settings.category;
   }
@@ -360,7 +364,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
               fillOpacity: value.opacity / 100 || 1,
               weight: 0.5,
               opacity: 1,
-              color: 'white',
+              color: color === 'transparent' ? 'transparent' : 'white',
             };
           },
         }).addTo(this.map);
