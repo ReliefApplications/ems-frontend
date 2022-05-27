@@ -72,7 +72,8 @@ export class SafeTabClorophletComponent implements OnInit {
   public newDivision(form: any): void {
     form.controls.divisions.push(
       this.formBuilder.group({
-        color: [''],
+        label: [''],
+        color: ['#ffffff'],
         filter: this.formBuilder.group({
           logic: ['and'],
           filters: this.formBuilder.array([]),
