@@ -698,6 +698,13 @@
 			"settings": {
 				"chart": {
 					"axes": "******",
+					"labels": {
+						"percentage": "******",
+						"showCategory": "******",
+						"showValue": "******",
+						"title": "******",
+						"valueType": "******"
+					},
 					"legend": "******",
 					"orientation": "******",
 					"palette": {
