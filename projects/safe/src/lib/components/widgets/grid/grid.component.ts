@@ -294,9 +294,13 @@ export class SafeGridWidgetComponent implements OnInit {
       } else {
         const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
           data: {
-            title: `Close workflow`,
+            title: this.translate.instant(
+              'components.widget.settings.grid.buttons.callback.workflow.close'
+            ),
             content: options.confirmationText,
-            confirmText: 'Yes',
+            confirmText: this.translate.instant(
+              'components.confirmModal.confirm'
+            ),
             confirmColor: 'primary',
           },
         });

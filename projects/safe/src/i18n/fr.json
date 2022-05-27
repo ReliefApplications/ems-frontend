@@ -17,6 +17,7 @@
 			"none": "Aucune application",
 			"one": "Application"
 		},
+		"auto": "Automatique",
 		"back": "Retour",
 		"cancel": "Annuler",
 		"channel": {
@@ -27,7 +28,6 @@
 		"child": "Enfant",
 		"clear": "Annuler",
 		"close": "Fermer",
-		"confirm": "Confirmer",
 		"create": "Créer",
 		"createdOn": "Date de création",
 		"dashboard": {
@@ -192,6 +192,11 @@
 			"none": "Aucun rôle",
 			"one": "Rôle"
 		},
+		"row": {
+			"few": "Rangées",
+			"none": "Auncune rangée",
+			"one": "Rangée"
+		},
 		"save": "Sauvegarder",
 		"saveChanges": "Sauvegarder les changements",
 		"searchObject": "Rechercher {{name}}",
@@ -214,6 +219,7 @@
 		"title": "Titre",
 		"true": "Vrai",
 		"update": "Mettre à jour",
+		"updateObject": "Mettre à jour {{name}}",
 		"uploadObject": "Importer {{name}}",
 		"user": {
 			"few": "Utilisateurs",
@@ -306,6 +312,11 @@
 					"description": "Veuillez entrer une description pour cette application."
 				}
 			},
+			"pages": {
+				"delete": {
+					"confirmationMessage": "Voulez-vous vraiment supprimer la page {{name}}?"
+				}
+			},
 			"positionAttribute": {
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer l'attribut de position {{name}} ?",
@@ -350,6 +361,12 @@
 				"select": "Notifier sur"
 			}
 		},
+		"confirmModal": {
+			"cancel": "Annuler",
+			"confirm": "Confirmer",
+			"delete": "Supprimer",
+			"title": "Confirmer"
+		},
 		"emailBuilder": {
 			"body": "Corps du texte",
 			"distribution": "Liste de distribution",
@@ -373,6 +390,9 @@
 			},
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer le formulaire {{name}} ?"
+			},
+			"deleteRow": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?"
 			},
 			"layout": {
 				"delete": {
@@ -398,6 +418,9 @@
 			"update": {
 				"exit": "Quitter sans sauvegarder les changements",
 				"exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, voulez-vous vraiment quitter cette page ?"
+			},
+			"updateRow": {
+				"confirmationMessage": "Souhaitez-vous mettre à jour {{quantity}} {{rowText}}?"
 			}
 		},
 		"formBuilder": {
@@ -422,6 +445,10 @@
 		"history": {
 			"download": "Télécharger l'historique",
 			"preview": "Prévisualiser et revenir"
+		},
+		"logout": {
+			"confirmationMessage": "Le formulaire contient des éléments non sauvegardés. Voulez-vous vous vraiment déconnecter ?",
+			"title": "Quitter la plateforme sans sauvegarder"
 		},
 		"notifications": {
 			"readAll": "Tout marquer comme lu"
@@ -544,6 +571,10 @@
 			},
 			"modal": {
 				"update": "Sauvegarder et fermer"
+			},
+			"recovery": {
+				"confirmationMessage": "Souhaitez-vous appliquer les données du {{date}} à l'enregistrement ?",
+				"title": "Récupération de données"
 			}
 		},
 		"records": {
@@ -666,6 +697,14 @@
 			},
 			"settings": {
 				"chart": {
+					"axes": "Axes",
+					"labels": {
+						"percentage": "Pourcentage",
+						"showCategory": "Afficher la catégorie",
+						"showValue": "Afficher la valeur",
+						"title": "Labels",
+						"valueType": "Type de valeur"
+					},
 					"legend": "Légende",
 					"orientation": "Orientation",
 					"palette": {
@@ -971,7 +1010,8 @@
 		},
 		"user": {
 			"notifications": {
-				"rolesUpdated": "Les rôles de {{username}} ont été modifiés."
+				"rolesUpdated": "Les rôles de {{username}} ont été modifiés.",
+				"userImportFail": "L'importation d'utilisateurs a échoué."
 			},
 			"username": "Nom d'utilisateur"
 		},
@@ -979,6 +1019,10 @@
 			"add": "Ajouter un widget",
 			"chart": {
 				"defaultTitle": "Widget Graphique"
+			},
+			"delete": {
+				"confirmationMessage": "Souhaitez-vous supprimer le widget ?",
+				"title": "Supprimer le widget"
 			},
 			"map": {
 				"defaultTitle": "Widget Carte",
@@ -1097,6 +1141,9 @@
 		"workflow": {
 			"addStep": {
 				"selectType": "Sélectionner quel type d'étape vous voulez créer."
+			},
+			"deleteStep": {
+				"confirmationMessage": "Souhaitez-vous supprimer définitivement l'étape {{step}} ?"
 			},
 			"empty": {
 				"add": "Ajoutez des étapes",

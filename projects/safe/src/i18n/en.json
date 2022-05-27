@@ -17,6 +17,7 @@
 			"none": "No application",
 			"one": "Application"
 		},
+		"auto": "Auto",
 		"back": "Back",
 		"cancel": "Cancel",
 		"channel": {
@@ -27,7 +28,6 @@
 		"child": "Child",
 		"clear": "Clear",
 		"close": "Close",
-		"confirm": "Confirm",
 		"create": "Create",
 		"createdOn": "Created on",
 		"dashboard": {
@@ -192,6 +192,11 @@
 			"none": "No role",
 			"one": "Role"
 		},
+		"row": {
+			"few": "Rows",
+			"none": "No row",
+			"one": "Row"
+		},
 		"save": "Save",
 		"saveChanges": "Save changes",
 		"searchObject": "Search {{name}}",
@@ -214,6 +219,7 @@
 		"title": "Title",
 		"true": "True",
 		"update": "Update",
+		"updateObject": "Update {{name}}",
 		"uploadObject": "Upload {{name}}",
 		"user": {
 			"few": "Users",
@@ -299,11 +305,16 @@
 		},
 		"application": {
 			"delete": {
-				"confirmationMessage": "Do you confirm the deletion of this application?"
+				"confirmationMessage": "Do you confirm the deletion of the application {{name}}?"
 			},
 			"duplicate": {
 				"name": {
 					"description": "Please enter a description for the application"
+				}
+			},
+			"pages": {
+				"delete": {
+					"confirmationMessage": "Do you confirm the deletion of the page {{name}}?"
 				}
 			},
 			"positionAttribute": {
@@ -328,7 +339,7 @@
 				}
 			},
 			"unlock": {
-				"confirmationMessage": "Do you want to unlock {{name}} edition?",
+				"confirmationMessage": "Do you want to unlock edition of {{name}}?",
 				"title": "Unlock edition"
 			},
 			"update": {
@@ -349,6 +360,12 @@
 			"dropdown": {
 				"select": "Notify on"
 			}
+		},
+		"confirmModal": {
+			"cancel": "Cancel",
+			"confirm": "Confirm",
+			"delete": "Delete",
+			"title": "Confirm"
 		},
 		"emailBuilder": {
 			"body": "Body",
@@ -374,6 +391,9 @@
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the form {{name}}?"
 			},
+			"deleteRow": {
+				"confirmationMessage": "Do you confirm the deletion of {{quantity}} {{rowText}}?"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"
@@ -398,6 +418,9 @@
 			"update": {
 				"exit": "Exit without saving changes",
 				"exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
+			},
+			"updateRow": {
+				"confirmationMessage": "Do you confirm the update of {{quantity}} {{rowText}}?"
 			}
 		},
 		"formBuilder": {
@@ -422,6 +445,10 @@
 		"history": {
 			"download": "Download history",
 			"preview": "Preview and revert"
+		},
+		"logout": {
+			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
+			"title": "Exit without saving changes"
 		},
 		"notifications": {
 			"readAll": "Mark all as read"
@@ -544,6 +571,10 @@
 			},
 			"modal": {
 				"update": "Save and close"
+			},
+			"recovery": {
+				"confirmationMessage": "Do you confirm recovery the data from {{date}} to the current register?",
+				"title": "Recovery data"
 			}
 		},
 		"records": {
@@ -666,12 +697,13 @@
 			},
 			"settings": {
 				"chart": {
+					"axes": "Axes",
 					"labels": {
-						"valueType": "Value type",
 						"percentage": "Percentage",
 						"showCategory": "Show category labels",
 						"showValue": "Show value labels",
-						"title": "Labels"
+						"title": "Labels",
+						"valueType": "Value type"
 					},
 					"legend": "Legend",
 					"orientation": "Orientation",
@@ -978,7 +1010,8 @@
 		},
 		"user": {
 			"notifications": {
-				"rolesUpdated": "{{username}} roles updated."
+				"rolesUpdated": "{{username}} roles updated.",
+				"userImportFail": "The user import has failed"
 			},
 			"username": "Username"
 		},
@@ -986,6 +1019,10 @@
 			"add": "Add a Widget",
 			"chart": {
 				"defaultTitle": "Chart Widget"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the widget?",
+				"title": "Delete Widget"
 			},
 			"map": {
 				"defaultTitle": "Map Widget",
@@ -1104,6 +1141,9 @@
 		"workflow": {
 			"addStep": {
 				"selectType": "Select which type of step you want to create"
+			},
+			"deleteStep": {
+				"confirmationMessage": "Are you sure you want to delete {{step}}?\n This action cannot be undone."
 			},
 			"empty": {
 				"add": "Add steps",

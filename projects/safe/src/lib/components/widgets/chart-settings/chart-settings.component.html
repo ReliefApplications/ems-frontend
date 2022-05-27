@@ -171,6 +171,7 @@
                 ></safe-palette-control>
               </div>
             </mat-expansion-panel>
+            <!-- === LABELS === -->
             <mat-expansion-panel formGroupName="labels" *ngIf="type.name === 'donut' || type.name === 'pie'">
               <mat-expansion-panel-header>
                 <mat-panel-title>{{
@@ -198,6 +199,50 @@
                   </mat-select>
                 </mat-form-field>
               </div>
+            </mat-expansion-panel>
+            <!-- === AXES PARAMETERS === -->
+            <mat-expansion-panel formGroupName="axes" *ngIf="['bar', 'column'].includes(type.name)">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ 'components.widget.settings.chart.axes' | translate }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <!-- === X AXIS PARAMETERS === -->
+              <ng-container formGroupName="x" *ngIf="['bar'].includes(type.name)">
+                <h3>{{ 'components.aggregationBuilder.mapping.xAxis' | translate }}</h3>
+                <div class="axis-container">
+                  <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
+                  <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ 'components.aggregationBuilder.operators.min' | translate }}</mat-label>
+                    <input matInput formControlName="min" type="number" [placeholder]="'common.auto' | translate" />
+                  </mat-form-field>
+                </div>
+                <div class="axis-container">
+                  <mat-slide-toggle formControlName="enableMax"></mat-slide-toggle>
+                  <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ 'components.aggregationBuilder.operators.max' | translate }}</mat-label>
+                    <input matInput formControlName="max" type="number" [placeholder]="'common.auto' | translate" />
+                  </mat-form-field>
+                </div>
+              </ng-container>
+              <!-- === Y AXIS PARAMETERS === -->
+              <ng-container formGroupName="y" *ngIf="['column'].includes(type.name)">
+                <h3>{{ 'components.aggregationBuilder.mapping.yAxis' | translate }}</h3>
+                <div class="axis-container">
+                  <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
+                  <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ 'components.aggregationBuilder.operators.min' | translate }}</mat-label>
+                    <input matInput formControlName="min" type="number" [placeholder]="'common.auto' | translate" />
+                  </mat-form-field>
+                </div>
+                <div class="axis-container">
+                  <mat-slide-toggle formControlName="enableMax"></mat-slide-toggle>
+                  <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>{{ 'components.aggregationBuilder.operators.max' | translate }}</mat-label>
+                    <input matInput formControlName="max" type="number" [placeholder]="'common.auto' | translate" />
+                  </mat-form-field>
+                </div>
+              </ng-container>
             </mat-expansion-panel>
           </mat-accordion>
         </mat-tab>
