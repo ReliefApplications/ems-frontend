@@ -171,5 +171,14 @@ export class Chart {
         this.form.get('axes.x.max')?.disable();
       }
     });
+
+    // Update of labels
+    this.form.get('labels.showValue')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.form.get('labels.valueType')?.enable();
+      } else {
+        this.form.get('labels.valueType')?.disable();
+      }
+    });
   }
 }

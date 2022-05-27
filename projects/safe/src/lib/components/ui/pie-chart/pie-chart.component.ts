@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ChartComponent } from '@progress/kendo-angular-charts';
+import get from 'lodash/get';
 
 interface ChartTitle {
   visible: boolean;
@@ -29,6 +30,7 @@ interface ChartLabels {
 
 interface ChartOptions {
   palette: string[];
+  labels?: ChartLabels;
 }
 
 @Component({
@@ -42,8 +44,6 @@ export class SafePieChartComponent implements OnInit {
   @Input() legend: ChartLegend | undefined;
 
   @Input() series: ChartSeries[] = [];
-
-  @Input() labels: ChartLabels | undefined;
 
   @Input() options: ChartOptions = {
     palette: [],
@@ -64,25 +64,48 @@ export class SafePieChartComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    if (this.labels) {
-      if (this.labels.showCategory && this.labels.showValue) {
-        if (this.labels.valueType === 'value') {
-          this.labelContent = (e: any): string => e.category + '\n' + e.value;
-        } else if (this.labels.valueType === 'percentage') {
-          this.labelContent = (e: any): string =>
-            e.category +
-            '\n' +
-            (parseFloat(e.percentage) * 100).toFixed(2) +
-            '%';
+    this.setLabelContent();
+  }
+
+  /**
+   * Set label content method.
+   */
+  private setLabelContent(): void {
+    const showCategory = get(this.options, 'labels.showCategory', false);
+    const showValue = get(this.options, 'labels.showValue', false);
+    const valueType = get(this.options, 'labels.valueType', 'value');
+
+    if (showCategory) {
+      if (showValue) {
+        switch (valueType) {
+          case 'percentage': {
+            this.labelContent = (e: any): string =>
+              e.category +
+              '\n' +
+              (parseFloat(e.percentage) * 100).toFixed(2) +
+              '%';
+            break;
+          }
+          default: {
+            this.labelContent = (e: any): string => e.category + '\n' + e.value;
+            break;
+          }
         }
-      } else if (this.labels.showCategory) {
+      } else {
         this.labelContent = (e: any): string => e.category;
-      } else if (this.labels.showValue) {
-        if (this.labels.valueType === 'value') {
-          this.labelContent = (e: any): string => e.value;
-        } else if (this.labels.valueType === 'percentage') {
-          this.labelContent = (e: any): string =>
-            (parseFloat(e.percentage) * 100).toFixed(2) + '%';
+      }
+    } else {
+      if (showValue) {
+        switch (valueType) {
+          case 'percentage': {
+            this.labelContent = (e: any): string =>
+              (parseFloat(e.percentage) * 100).toFixed(2) + '%';
+            break;
+          }
+          default: {
+            this.labelContent = (e: any): string => e.value;
+            break;
+          }
         }
       }
     }
