@@ -425,6 +425,14 @@
 				"or": "******",
 				"title": "******"
 			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"usePicker": "******",
+						"useExpression": "******"
+					}
+				}
+			},
 			"hint": {
 				"fields": "******",
 				"style": "******"

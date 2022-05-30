@@ -142,14 +142,35 @@
                   >
                 </mat-select>
               </ng-container>
+              <ng-container
+                *ngIf="
+                  ['Date', 'DateTime'].includes(selectedFields[i].type) &&
+                  $any(filters.at(i)).get('useExpression')?.value
+                "
+              >
+                <input
+                  matInput
+                  matTooltip="YYYY/MM/DD"
+                  [matTooltipPosition]="'above'"
+                  formControlName="value"
+                  type="text"
+                  placeholder="YYYY/MM/DD"
+                />
+              </ng-container>
               <input
-                *ngIf="['Date', 'DateTime'].includes(selectedFields[i].type)"
+                *ngIf="
+                  ['Date', 'DateTime'].includes(selectedFields[i].type) &&
+                  !$any(filters.at(i)).get('useExpression')?.value
+                "
                 matInput
                 [matDatepicker]="datePicker"
                 formControlName="value"
               />
               <mat-datepicker-toggle
-                *ngIf="['Date', 'DateTime'].includes(selectedFields[i].type)"
+                *ngIf="
+                  ['Date', 'DateTime'].includes(selectedFields[i].type) &&
+                  !$any(filters.at(i)).get('useExpression')?.value
+                "
                 matSuffix
                 [for]="datePicker"
               >
@@ -157,6 +178,19 @@
               <mat-datepicker #datePicker></mat-datepicker>
             </mat-form-field>
           </ng-container>
+          <safe-button
+            *ngIf="['Date', 'DateTime'].includes(selectedFields[i].type)"
+            [isIcon]="true"
+            icon="change_circle_outline"
+            variant="primary"
+            (click)="onChangeEditor(i)"
+            [matTooltip]="
+              ($any(filters.at(i)).get('useExpression')?.value
+                ? 'components.queryBuilder.tooltip.filter.date.usePicker'
+                : 'components.queryBuilder.tooltip.filter.date.useExpression') | translate
+            "
+          >
+          </safe-button>
           <safe-button
             [isIcon]="true"
             icon="delete"
