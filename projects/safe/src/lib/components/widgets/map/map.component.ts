@@ -238,7 +238,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     // Defines the method which will be called when the legend control is added to the map
     this.legendControl.onAdd = function (map: any) {
-      this.div = L.DomUtil.create('div', 'legend');
+      this.div = L.DomUtil.create('div', 'map-legend-container');
       return this.div;
     };
 
@@ -248,43 +248,64 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       div.innerHTML = '';
       data.query?.clorophlets?.map((clorophlet: any) => {
         const layer = overlays[clorophlet.name];
-        let labels = '';
-        clorophlet.divisions.map((division: any, i: number) => {
-          labels +=
-            '<i style="background:' +
-            division.color +
-            '"></i>' +
-            (division.label.length > 0
-              ? division.label
-              : 'Division ' + (i + 1)) +
-            '<br>';
-        });
 
-        if (labels.length > 0) {
-          const legendItemDiv = L.DomUtil.create('div', 'legend-div', div);
-          legendItemDiv.innerHTML =
-            '<h4>' +
-            clorophlet.name +
-            '</h4><div class="labels">' +
-            labels +
-            '</div>';
-          const showIcon = L.DomUtil.create('input', 'showIcon', legendItemDiv);
-          showIcon.setAttribute('type', 'checkbox');
-          showIcon.setAttribute('checked', 'true');
+        if (clorophlet.divisions.length > 0) {
+          // Generates header of legend
+          const legendLayerDiv = L.DomUtil.create('div', 'map-legend', div);
+          const legendLayerHeader = L.DomUtil.create(
+            'div',
+            'map-legend-header',
+            legendLayerDiv
+          );
+          legendLayerHeader.innerHTML = `<h4>${clorophlet.name}</h4>`;
           L.DomEvent.on(
-            showIcon,
+            legendLayerHeader,
             'click',
             () => {
               if (map.hasLayer(layer)) {
-                L.DomUtil.addClass(legendItemDiv, 'legend-hide');
+                L.DomUtil.addClass(legendLayerDiv, 'map-legend-hide');
                 map.removeLayer(layer);
               } else {
                 map.addLayer(layer);
-                L.DomUtil.removeClass(legendItemDiv, 'legend-hide');
+                L.DomUtil.removeClass(legendLayerDiv, 'map-legend-hide');
               }
             },
             this
           );
+          // Generates divisions legend
+          clorophlet.divisions.map((division: any, i: number) => {
+            const legendDivisionDiv = L.DomUtil.create(
+              'div',
+              'map-legend-division',
+              legendLayerDiv
+            );
+            legendDivisionDiv.innerHTML =
+              '<i style="background:' +
+              division.color +
+              '"></i>' +
+              (division.label.length > 0
+                ? division.label
+                : 'Division ' + (i + 1)) +
+              '<br>';
+          });
+
+          // const showIcon = L.DomUtil.create('input', 'showIcon', legendItemDiv);
+          // showIcon.setAttribute('type', 'checkbox');
+          // showIcon.setAttribute('checked', 'true');
+          // L.DomEvent.on(
+          //   showIcon,
+          //   'click',
+          //   () => {
+          //     if (map.hasLayer(layer)) {
+          //       L.DomUtil.addClass(legendItemDiv, 'legend-hide');
+          //       map.removeLayer(layer);
+          //     } else {
+          //       map.addLayer(layer);
+          //       L.DomUtil.removeClass(legendItemDiv, 'legend-hide');
+          //     }
+          //   },
+          //   this
+          // );
         }
       });
       if (div.innerHTML.length === 0) {
