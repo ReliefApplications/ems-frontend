@@ -87,7 +87,9 @@
               </ng-container>
               <ng-container
                 *ngIf="
-                  ['String', 'Time', 'ID', 'Form'].includes(selectedFields[i].type)
+                  ['String', 'Time', 'ID', 'Form'].includes(
+                    selectedFields[i].type
+                  )
                 "
               >
                 <mat-select
@@ -140,15 +142,19 @@
                   >
                 </mat-select>
               </ng-container>
-              <!-- matDatepicker input must be direct child from mat-form-field -->
               <input
                 *ngIf="['Date', 'DateTime'].includes(selectedFields[i].type)"
-                matInput [matDatepicker]="mypicker" formControlName="value">
+                matInput
+                [matDatepicker]="datePicker"
+                formControlName="value"
+              />
               <mat-datepicker-toggle
                 *ngIf="['Date', 'DateTime'].includes(selectedFields[i].type)"
-                matSuffix [for]="mypicker">
+                matSuffix
+                [for]="datePicker"
+              >
               </mat-datepicker-toggle>
-              <mat-datepicker #mypicker></mat-datepicker>
+              <mat-datepicker #datePicker></mat-datepicker>
             </mat-form-field>
           </ng-container>
           <safe-button
