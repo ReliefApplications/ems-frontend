@@ -508,7 +508,7 @@ body {
 }
 
 // === LEAFLET ===
-.legend {
+.map-legend-container {
   padding: 6px 8px;
   font: 14px/16px Arial, Helvetica, sans-serif;
   background: white;
@@ -520,10 +520,13 @@ body {
   flex-direction: column;
   gap: 4px;
 
-  div {
+  .map-legend {
+    position: relative;
+
     h4 {
       margin: 0;
       opacity: 0.8;
+      cursor: pointer;
     }
     
     i {
@@ -532,6 +535,14 @@ body {
       float: left;
       margin-right: 8px;
       opacity: 0.7;
+    }
+  }
+
+  .map-legend-hide {
+    opacity: 0.4;
+    
+    .map-legend-division {
+      display: none;
     }
   }
 }
