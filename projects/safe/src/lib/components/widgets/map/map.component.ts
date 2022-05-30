@@ -232,15 +232,17 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    // Adds legend to the map
+    // Creates a legend control
     // Styling is in the global style file
     this.legendControl = L.control({ position: 'bottomright' });
 
+    // Defines the method which will be called when the legend control is added to the map
     this.legendControl.onAdd = function (map: any) {
       this.div = L.DomUtil.create('div', 'legend');
       return this.div;
     };
 
+    // Defines a method to be able to update the legend control once it is already added to the map
     this.legendControl.update = function (map: any, data: any, overlays: any) {
       const div = this.div;
       div.innerHTML = '';
@@ -290,6 +292,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       }
     };
 
+    // Adds the legend control to the map
     this.legendControl.addTo(this.map);
 
     // Categories
