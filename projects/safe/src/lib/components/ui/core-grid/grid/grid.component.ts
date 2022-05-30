@@ -95,7 +95,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   @Input() blank = false;
 
   // === EXPORT ===
-  @Input() exportable = true;
   public exportSettings = EXPORT_SETTINGS;
   @Output() export = new EventEmitter();
 
@@ -115,7 +114,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     delete: false,
     history: false,
     convert: false,
-    showDetails: true,
+    export: false,
+    showDetails: false,
   };
   @Input() hasDetails = true;
   @Output() action = new EventEmitter();

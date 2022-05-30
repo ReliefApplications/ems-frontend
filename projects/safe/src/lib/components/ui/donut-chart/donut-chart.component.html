@@ -21,6 +21,14 @@
       [data]="item.items"
       field="value"
       categoryField="category"
-    ></kendo-chart-series-item>
+      [autoFit]="true"
+    >
+      <kendo-chart-series-item-labels
+        *ngIf="labelContent"
+        position="outsideEnd"
+        color="#000"
+        [content]="labelContent"
+      ></kendo-chart-series-item-labels>
+    </kendo-chart-series-item>
   </kendo-chart-series>
 </kendo-chart>

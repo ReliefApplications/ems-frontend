@@ -246,9 +246,13 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.authService.canLogout.value) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: `Exit without saving changes`,
-          content: `There are unsaved changes on your form. Are you sure you want to logout?`,
-          confirmText: 'Confirm',
+          title: this.translate.instant('components.logout.title'),
+          content: this.translate.instant(
+            'components.logout.confirmationMessage'
+          ),
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
           confirmColor: 'primary',
         },
       });

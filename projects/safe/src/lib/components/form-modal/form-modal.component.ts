@@ -285,11 +285,25 @@ export class SafeFormModalComponent implements OnInit {
     if (this.data.askForConfirm) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: `Update row${rowsSelected > 1 ? 's' : ''}`,
-          content: `Do you confirm the update of ${rowsSelected} row${
-            rowsSelected > 1 ? 's' : ''
-          } ?`,
-          confirmText: 'Confirm',
+          title: this.translate.instant('common.updateObject', {
+            name:
+              rowsSelected > 1
+                ? this.translate.instant('common.row.few')
+                : this.translate.instant('common.row.one'),
+          }),
+          content: this.translate.instant(
+            'components.form.updateRow.confirmationMessage',
+            {
+              quantity: rowsSelected,
+              rowtext:
+                rowsSelected > 1
+                  ? this.translate.instant('common.row.few')
+                  : this.translate.instant('common.row.one'),
+            }
+          ),
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
           confirmColor: 'primary',
         },
       });
@@ -654,9 +668,12 @@ export class SafeFormModalComponent implements OnInit {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant('components.record.recovery.title'),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });

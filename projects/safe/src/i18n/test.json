@@ -17,6 +17,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"auto": "******",
 		"back": "******",
 		"cancel": "******",
 		"channel": {
@@ -27,7 +28,6 @@
 		"child": "******",
 		"clear": "******",
 		"close": "******",
-		"confirm": "******",
 		"create": "******",
 		"createdOn": "******",
 		"dashboard": {
@@ -192,6 +192,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"row": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"save": "******",
 		"saveChanges": "******",
 		"searchObject": "****** {{name}}",
@@ -214,6 +219,7 @@
 		"title": "******",
 		"true": "******",
 		"update": "******",
+		"updateObject": "****** {{name}}",
 		"uploadObject": "****** {{name}}",
 		"user": {
 			"few": "******",
@@ -300,11 +306,16 @@
 		},
 		"application": {
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"duplicate": {
 				"name": {
 					"description": "******"
+				}
+			},
+			"pages": {
+				"delete": {
+					"confirmationMessage": "****** {{name}} ******"
 				}
 			},
 			"positionAttribute": {
@@ -351,6 +362,12 @@
 				"select": "******"
 			}
 		},
+		"confirmModal": {
+			"cancel": "******",
+			"confirm": "******",
+			"delete": "******",
+			"title": "******"
+		},
 		"emailBuilder": {
 			"body": "******",
 			"distribution": "******",
@@ -374,6 +391,9 @@
 			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
+			},
+			"deleteRow": {
+				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			},
 			"layout": {
 				"delete": {
@@ -399,6 +419,9 @@
 			"update": {
 				"exit": "******",
 				"exitMessage": "******"
+			},
+			"updateRow": {
+				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			}
 		},
 		"formBuilder": {
@@ -423,6 +446,10 @@
 		"history": {
 			"download": "******",
 			"preview": "******"
+		},
+		"logout": {
+			"confirmationMessage": "******",
+			"title": "******"
 		},
 		"notifications": {
 			"readAll": "******"
@@ -545,6 +572,10 @@
 			},
 			"modal": {
 				"update": "******"
+			},
+			"recovery": {
+				"confirmationMessage": "****** {{date}} ******",
+				"title": "******"
 			}
 		},
 		"records": {
@@ -667,6 +698,14 @@
 			},
 			"settings": {
 				"chart": {
+					"axes": "******",
+					"labels": {
+						"percentage": "******",
+						"showCategory": "******",
+						"showValue": "******",
+						"title": "******",
+						"valueType": "******"
+					},
 					"legend": "******",
 					"orientation": "******",
 					"palette": {
@@ -682,6 +721,7 @@
 						"add": "******",
 						"convert": "******",
 						"delete": "******",
+						"export": "******",
 						"inline": "******",
 						"show": "******",
 						"showDetails": "******",
@@ -971,7 +1011,8 @@
 		},
 		"user": {
 			"notifications": {
-				"rolesUpdated": "{{username}} ******"
+				"rolesUpdated": "{{username}} ******",
+				"userImportFail": "******"
 			},
 			"username": "******"
 		},
@@ -979,6 +1020,10 @@
 			"add": "******",
 			"chart": {
 				"defaultTitle": "******"
+			},
+			"delete": {
+				"confirmationMessage": "******",
+				"title": "******"
 			},
 			"map": {
 				"defaultTitle": "******",
@@ -1097,6 +1142,9 @@
 		"workflow": {
 			"addStep": {
 				"selectType": "******"
+			},
+			"deleteStep": {
+				"confirmationMessage": "****** {{step}} ******"
 			},
 			"empty": {
 				"add": "******",

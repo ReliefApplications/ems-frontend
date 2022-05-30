@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 interface DialogData {
   title?: string;
@@ -15,28 +16,26 @@ interface DialogData {
   styleUrls: ['./confirm-modal.component.scss'],
 })
 export class SafeConfirmModalComponent implements OnInit {
-  public title = 'Confirm';
-  public content = '';
-  public cancelText = 'Cancel';
-  public confirmText = 'Confirm';
-  public confirmColor = 'primary';
+  public title: string;
+  public content: string;
+  public cancelText: string;
+  public confirmText: string;
+  public confirmColor: string;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
-    if (data.title) {
-      this.title = data.title;
-    }
-    if (data.content) {
-      this.content = data.content;
-    }
-    if (data.cancelText) {
-      this.cancelText = data.cancelText;
-    }
-    if (data.confirmText) {
-      this.confirmText = data.confirmText;
-    }
-    if (data.confirmColor) {
-      this.confirmColor = data.confirmColor;
-    }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private translate: TranslateService
+  ) {
+    this.title =
+      data.title || this.translate.instant('components.confirmModal.title');
+    this.cancelText =
+      data.cancelText ||
+      this.translate.instant('components.confirmModal.cancel');
+    this.confirmText =
+      data.confirmText ||
+      this.translate.instant('components.confirmModal.confirm');
+    this.content = data.content || '';
+    this.confirmColor = data.confirmColor || 'primary';
   }
 
   ngOnInit(): void {}
