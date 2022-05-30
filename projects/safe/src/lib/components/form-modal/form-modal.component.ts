@@ -225,6 +225,7 @@ export class SafeFormModalComponent implements OnInit {
     this.survey.render(this.containerId);
     this.setPages();
     this.survey.onComplete.add(this.onComplete);
+    setTimeout(() => {}, 100);
   }
 
   /**
@@ -284,7 +285,7 @@ export class SafeFormModalComponent implements OnInit {
             'components.form.updateRow.confirmationMessage',
             {
               quantity: rowsSelected,
-              rowtext:
+              rowText:
                 rowsSelected > 1
                   ? this.translate.instant('common.row.few')
                   : this.translate.instant('common.row.one'),
