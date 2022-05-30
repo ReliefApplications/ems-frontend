@@ -75,6 +75,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private overlays: IMarkersLayerValue = {};
   private layerControl: any;
 
+  // === LEGEND ===
+  private legendControl: any;
+
   // === RECORDS ===
   private selectedItem: Record | null = null;
   private data: any[] = [];
@@ -231,32 +234,55 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     // Adds legend to the map
     // Styling is in the global style file
-    const legendControl = L.control({ position: 'bottomright' });
+    this.legendControl = L.control({ position: 'bottomright' });
 
-    legendControl.onAdd = function (map: any) {
+    this.legendControl.onAdd = function (map: any) {
       this.div = L.DomUtil.create('div', 'legend');
       return this.div;
     };
 
-    legendControl.update = function (data: any) {
+    this.legendControl.update = function (map: any, data: any, overlays: any) {
       const div = this.div;
-
       div.innerHTML = '';
       data.query?.clorophlets?.map((clorophlet: any) => {
+        const layer = overlays[clorophlet.name];
         let labels = '';
-        clorophlet.divisions.map((division: any) => {
-          if (division.label.length > 0) {
-            labels +=
-              '<i style="background:' +
-              division.color +
-              '"></i>' +
-              division.label +
-              '<br>';
-          }
+        clorophlet.divisions.map((division: any, i: number) => {
+          labels +=
+            '<i style="background:' +
+            division.color +
+            '"></i>' +
+            (division.label.length > 0
+              ? division.label
+              : 'Division ' + (i + 1)) +
+            '<br>';
         });
+
         if (labels.length > 0) {
-          div.innerHTML +=
-            '<div><h4>' + clorophlet.name + '</h4>' + labels + '<div>';
+          const legendItemDiv = L.DomUtil.create('div', 'legend-div', div);
+          legendItemDiv.innerHTML =
+            '<h4>' +
+            clorophlet.name +
+            '</h4><div class="labels">' +
+            labels +
+            '</div>';
+          const showIcon = L.DomUtil.create('input', 'showIcon', legendItemDiv);
+          showIcon.setAttribute('type', 'checkbox');
+          showIcon.setAttribute('checked', 'true');
+          L.DomEvent.on(
+            showIcon,
+            'click',
+            () => {
+              if (map.hasLayer(layer)) {
+                L.DomUtil.addClass(legendItemDiv, 'legend-hide');
+                map.removeLayer(layer);
+              } else {
+                map.addLayer(layer);
+                L.DomUtil.removeClass(legendItemDiv, 'legend-hide');
+              }
+            },
+            this
+          );
         }
       });
       if (div.innerHTML.length === 0) {
@@ -264,9 +290,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       }
     };
 
-    legendControl.addTo(this.map);
-
-    legendControl.update(this.settings);
+    this.legendControl.addTo(this.map);
 
     // Categories
     this.categoryField = this.settings.category;
@@ -297,6 +321,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         this.selectedItem = null;
         this.markersLayer.clearLayers();
         this.setLayers(res);
+        this.legendControl.update(this.map, this.settings, this.overlays);
       }
     );
   }
@@ -340,34 +365,36 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Loops throught clorophlets and add them to the map
     if (this.settings.query.clorophlets) {
       this.settings.query.clorophlets.map((value: any) => {
-        this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
-          style: (feature: any): any => {
-            let color = 'transparent';
-            for (const field in res.data) {
-              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-                res.data[field].edges.map((entry: any) => {
-                  if (
-                    entry.node[value.place].toString() ===
-                    feature.properties[value.geoJSONfield].toString()
-                  ) {
-                    value.divisions.map((div: any) => {
-                      if (applyFilters(entry.node, div.filter)) {
-                        color = div.color;
-                      }
-                    });
-                  }
-                });
+        if (value.divisions.length > 0) {
+          this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
+            style: (feature: any): any => {
+              let color = 'transparent';
+              for (const field in res.data) {
+                if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+                  res.data[field].edges.map((entry: any) => {
+                    if (
+                      entry.node[value.place].toString() ===
+                      feature.properties[value.geoJSONfield].toString()
+                    ) {
+                      value.divisions.map((div: any) => {
+                        if (applyFilters(entry.node, div.filter)) {
+                          color = div.color;
+                        }
+                      });
+                    }
+                  });
+                }
               }
-            }
-            return {
-              fillColor: color,
-              fillOpacity: value.opacity / 100 || 1,
-              weight: 0.5,
-              opacity: 1,
-              color: color === 'transparent' ? 'transparent' : 'white',
-            };
-          },
-        }).addTo(this.map);
+              return {
+                fillColor: color,
+                fillOpacity: value.opacity / 100 || 1,
+                weight: 0.5,
+                opacity: 1,
+                color: color === 'transparent' ? 'transparent' : 'white',
+              };
+            },
+          }).addTo(this.map);
+        }
       });
     }
 
