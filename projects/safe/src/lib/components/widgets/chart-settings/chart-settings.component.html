@@ -41,6 +41,7 @@
           </ng-template>
           <safe-aggregation-builder
             [aggregationForm]="aggregationForm"
+            [charType]="type.name"
           ></safe-aggregation-builder>
         </mat-tab>
         <mat-tab [label]="'common.display' | translate">
@@ -209,7 +210,7 @@
               </mat-expansion-panel-header>
               <!-- === X AXIS PARAMETERS === -->
               <ng-container formGroupName="x" *ngIf="['bar'].includes(type.name)">
-                <h3>{{ 'components.aggregationBuilder.mapping.xAxis' | translate }}</h3>
+                <h3>{{ 'components.aggregationBuilder.mapping.value' | translate }}</h3>
                 <div class="axis-container">
                   <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
                   <mat-form-field appearance="outline" floatLabel="always">
@@ -227,7 +228,7 @@
               </ng-container>
               <!-- === Y AXIS PARAMETERS === -->
               <ng-container formGroupName="y" *ngIf="['column'].includes(type.name)">
-                <h3>{{ 'components.aggregationBuilder.mapping.yAxis' | translate }}</h3>
+                <h3>{{ 'components.aggregationBuilder.mapping.value' | translate }}</h3>
                 <div class="axis-container">
                   <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
                   <mat-form-field appearance="outline" floatLabel="always">

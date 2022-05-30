@@ -158,31 +158,34 @@ export class AggregationBuilderService {
       switch (stage.type) {
         case PipelineStage.GROUP: {
           if (stage.form.groupBy) {
-            let groupByField = fields.find(
-              (x) => x.name === stage.form.groupBy
-            );
-            if (!groupByField && stage.form.groupBy.includes('.')) {
-              const fieldArray = stage.form.groupBy.split('.');
-              const parent = fieldArray.shift();
-              const sub = fieldArray.pop();
-              groupByField = fields.reduce((o, field) => {
-                if (
-                  field.name === parent &&
-                  field.fields.some((x: any) => x.name === sub)
-                ) {
-                  const newField = { ...field };
-                  newField.fields = field.fields.filter(
-                    (x: any) => x.name === sub
-                  );
-                  return newField;
-                }
-                return o;
-              }, null);
+            const newFields = [];
+            for (const groupByName of ['groupBy', 'groupBySeries']) {
+              let groupByField = fields.find(
+                (x) => x.name === stage.form[groupByName]
+              );
+              if (!groupByField && stage.form[groupByName].includes('.')) {
+                const fieldArray = stage.form[groupByName].split('.');
+                const parent = fieldArray.shift();
+                const sub = fieldArray.pop();
+                groupByField = fields.reduce((o, field) => {
+                  if (
+                    field.name === parent &&
+                    field.fields.some((x: any) => x.name === sub)
+                  ) {
+                    const newField = { ...field };
+                    newField.fields = field.fields.filter(
+                      (x: any) => x.name === sub
+                    );
+                    return newField;
+                  }
+                  return o;
+                }, null);
+              }
+              if (groupByField) {
+                newFields.push(groupByField);
+              }
             }
-            fields = [];
-            if (groupByField) {
-              fields.push(groupByField);
-            }
+            fields = newFields;
           }
           if (stage.form.addFields) {
             this.addFields(fields, stage.form.addFields, initialFields);

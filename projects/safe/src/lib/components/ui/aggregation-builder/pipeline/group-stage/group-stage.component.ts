@@ -13,7 +13,9 @@ import { Accumulators } from '../expressions/operators';
 export class SafeGroupStageComponent implements OnInit {
   @Input() form!: AbstractControl;
   @Input() fields: any[] = [];
+  @Input() charType!: string;
   public operators = Accumulators;
+  public showGroupByStages = false;
 
   get formGroup() {
     return this.form as FormGroup;
@@ -25,5 +27,16 @@ export class SafeGroupStageComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (
+      ['bar', 'column', 'line'].includes(this.charType) &&
+      this.formGroup.controls.groupBySeries.value
+    ) {
+      this.revealGroupByStages();
+    }
+  }
+
+  revealGroupByStages() {
+    this.showGroupByStages = true;
+  }
 }

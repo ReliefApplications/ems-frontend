@@ -66,6 +66,11 @@ export const addStage = (value: any): FormGroup => {
             value.form && value.form.groupBy ? value.form.groupBy : '',
             Validators.required,
           ],
+          groupBySeries: [
+            value.form && value.form.groupBySeries
+              ? value.form.groupBySeries
+              : '',
+          ],
           addFields: formBuilder.array(
             value.form && value.form.addFields
               ? value.form.addFields.map((x: any) => addFieldsForm(x))

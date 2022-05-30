@@ -144,11 +144,20 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
             this.settings.chart.type
           )
         ) {
+          // copy recordsAggregation
+          const recordsAggregation = JSON.parse(
+            JSON.stringify(res.data.recordsAggregation)
+          );
+          // unwind category object for groupBy aggregations
+          for (const record of recordsAggregation) {
+            if (record.category.category) {
+              Object.assign(record, record.category);
+            }
+          }
           // create series by the series-item key
-          this.series = groupBy(
-            JSON.parse(JSON.stringify(res.data.recordsAggregation)),
-            [{ field: 'seriesItem' }]
-          ) as GroupResult[];
+          this.series = groupBy(recordsAggregation, [
+            { field: 'seriesItem' },
+          ]) as GroupResult[];
         } else {
           this.series = res.data.recordsAggregation;
         }

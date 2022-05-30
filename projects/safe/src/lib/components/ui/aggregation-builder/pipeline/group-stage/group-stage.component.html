@@ -1,7 +1,23 @@
-<safe-field-dropdown
-  [fieldControl]="$any($any(form).controls.groupBy)"
-  [fields]="fields"
-></safe-field-dropdown>
+<p>Group by</p>
+<div>
+  <safe-field-dropdown
+    [fieldControl]="$any(form).controls.groupBy"
+    [fields]="fields"
+  ></safe-field-dropdown>
+  <safe-field-dropdown *ngIf="showGroupByStages"
+    [fieldControl]="$any(form).controls.groupBySeries"
+    [fields]="fields"
+    [nullable]="true"
+  ></safe-field-dropdown>
+  <safe-button
+    *ngIf="!showGroupByStages && ['bar', 'column', 'line'].includes(charType)"
+    class="add-button"
+    [isIcon]="true"
+    icon="add"
+    (click)="revealGroupByStages()"
+  ></safe-button>
+</div>
+<p>And calculate</p>
 <div>
   <safe-add-field-stage
     [fields]="fields"

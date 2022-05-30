@@ -24,6 +24,7 @@ const ITEMS_PER_PAGE = 10;
 export class SafeAggregationBuilderComponent implements OnInit {
   // === REACTIVE FORM ===
   @Input() aggregationForm: FormGroup = new FormGroup({});
+  @Input() charType!: string;
 
   // === DATA ===
   private forms = new BehaviorSubject<Form[]>([]);

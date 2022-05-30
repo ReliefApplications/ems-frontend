@@ -22,6 +22,7 @@ export class SafePipelineComponent implements OnInit {
   // === DATA ===
   @Input() public fields$!: Observable<any[]>;
   @Input() public metaFields$!: Observable<any[]>;
+  @Input() charType!: string;
   public metaFields: any[] = [];
   public initialFields: any[] = [];
   public fieldsPerStage: any[] = [];

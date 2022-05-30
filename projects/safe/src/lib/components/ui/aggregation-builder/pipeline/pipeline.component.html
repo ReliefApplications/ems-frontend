@@ -46,6 +46,7 @@
         <safe-group-stage
           [form]="$any(stageForm).controls.form"
           [fields]="fieldsPerStage[index]"
+          [charType]="charType"
         ></safe-group-stage>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.ADD_FIELDS">
