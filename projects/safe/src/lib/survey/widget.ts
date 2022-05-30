@@ -178,6 +178,7 @@ export const init = (
             pickerInstance.max = new Date(question.max);
           }
           pickerInstance.readonly = question.isReadOnly;
+          pickerInstance.disabled = question.isReadOnly;
           pickerInstance.registerOnChange((value: Date | null) => {
             if (question.inputType === 'time' && value) {
               // for time fields, translate the date to 01/01/1970

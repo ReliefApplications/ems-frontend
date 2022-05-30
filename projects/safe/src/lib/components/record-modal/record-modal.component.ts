@@ -153,7 +153,7 @@ export class SafeRecordModalComponent implements OnInit {
     this.survey.showNavigationButtons = 'none';
     this.survey.showProgressBar = 'off';
     this.survey.render(this.containerId);
-    setTimeout(() => {}, 500);
+    setTimeout(() => {}, 100);
     this.setPages();
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
