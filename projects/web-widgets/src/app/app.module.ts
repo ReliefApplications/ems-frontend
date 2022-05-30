@@ -29,7 +29,7 @@ import { environment } from '../environments/environment';
 import { BehaviorSubject } from 'rxjs';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
-import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
+import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import {
   TranslateLoader,
   TranslateModule,
@@ -194,6 +194,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
     {
       provide: MessageService,
       useClass: KendoTranslationService,
+    },
+    {
+      provide: OAuthStorage,
+      useValue: localStorage,
     },
   ],
 })

@@ -38,6 +38,7 @@ import { NOTIFICATIONS } from '../../const/notifications';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Interface of Dialog data.
@@ -90,7 +91,8 @@ export class SafeFormModalComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
-    private formBuilderService: SafeFormBuilderService
+    private formBuilderService: SafeFormBuilderService,
+    private translate: TranslateService
   ) {
     this.containerId = uuidv4();
     this.environment = environment;
@@ -223,6 +225,7 @@ export class SafeFormModalComponent implements OnInit {
     this.survey.render(this.containerId);
     this.setPages();
     this.survey.onComplete.add(this.onComplete);
+    setTimeout(() => {}, 100);
   }
 
   /**
@@ -272,11 +275,25 @@ export class SafeFormModalComponent implements OnInit {
     if (this.data.askForConfirm) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: `Update row${rowsSelected > 1 ? 's' : ''}`,
-          content: `Do you confirm the update of ${rowsSelected} row${
-            rowsSelected > 1 ? 's' : ''
-          } ?`,
-          confirmText: 'Confirm',
+          title: this.translate.instant('common.updateObject', {
+            name:
+              rowsSelected > 1
+                ? this.translate.instant('common.row.few')
+                : this.translate.instant('common.row.one'),
+          }),
+          content: this.translate.instant(
+            'components.form.updateRow.confirmationMessage',
+            {
+              quantity: rowsSelected,
+              rowText:
+                rowsSelected > 1
+                  ? this.translate.instant('common.row.few')
+                  : this.translate.instant('common.row.one'),
+            }
+          ),
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
           confirmColor: 'primary',
         },
       });
@@ -637,9 +654,14 @@ export class SafeFormModalComponent implements OnInit {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant(
+          'components.record.recovery.titleMessage'
+        ),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });

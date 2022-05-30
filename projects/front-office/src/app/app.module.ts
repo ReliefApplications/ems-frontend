@@ -27,7 +27,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 // TRANSLATOR
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
+import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import { KendoTranslationService } from '@safe/builder';
 
@@ -203,6 +203,11 @@ const imports: any[] = [];
       provide: MessageService,
       useClass: KendoTranslationService,
     },
+    {
+      provide: OAuthStorage,
+      useValue: localStorage,
+    },
+    // TODO: check
     {
       provide: TOUCH_ENABLED,
       useValue: [touchEnabled],

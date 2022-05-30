@@ -20,7 +20,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutsParametersModule } from './layouts-parameters/layouts-parameters.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { SafeEmailTemplateModule } from '../../email-template/email-template.module';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 @NgModule({
   declarations: [
@@ -48,8 +48,11 @@ import { SafeEmailTemplateModule } from '../../email-template/email-template.mod
     TranslateModule,
     LayoutsParametersModule,
     MatAutocompleteModule,
-    SafeEmailTemplateModule,
+    EditorModule,
   ],
   exports: [SafeGridSettingsComponent],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+  ],
 })
 export class SafeGridSettingsModule {}
