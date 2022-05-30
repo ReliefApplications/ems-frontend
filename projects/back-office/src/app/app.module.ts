@@ -20,7 +20,7 @@ import { environment } from '../environments/environment';
 
 // Config
 import { BehaviorSubject } from 'rxjs';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 
@@ -200,6 +200,11 @@ export const httpTranslateLoader = (http: HttpClient) =>
     {
       provide: MessageService,
       useClass: KendoTranslationService,
+    },
+    // only used to force date language in 1.2.0, remove in 1.3.0
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'en-GB',
     },
     {
       provide: OAuthStorage,

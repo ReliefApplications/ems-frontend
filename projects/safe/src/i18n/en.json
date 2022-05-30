@@ -458,6 +458,14 @@
 				"operator": "Operator",
 				"or": "Or",
 				"title": "Style"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "Use Expression editor",
+						"usePicker": "Use Date picker"
+					}
+				}
 			}
 		},
 		"record": {
