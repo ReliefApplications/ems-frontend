@@ -11,6 +11,10 @@ import { SafeRecordHistoryModalModule } from '../record-history-modal/record-his
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * SafeRecordModalModule is a class used to manage all the modules and components
+ * related to the modals editing the records.
+ */
 @NgModule({
   declarations: [SafeRecordModalComponent],
   imports: [

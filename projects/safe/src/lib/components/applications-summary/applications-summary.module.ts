@@ -11,6 +11,10 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * SafeApplicationsSummaryModule is a class used to manage all the modules and components
+ * related to the applications summary block on the home page.
+ */
 @NgModule({
   declarations: [
     SafeApplicationsSummaryComponent,

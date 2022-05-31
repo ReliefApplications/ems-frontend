@@ -9,6 +9,10 @@ import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * SafeFormModule is a class used to manage all the modules and components
+ * related to the form display.
+ */
 @NgModule({
   declarations: [SafeFormComponent],
   imports: [
