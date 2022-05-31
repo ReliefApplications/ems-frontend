@@ -8,6 +8,7 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 
 /**
  * SafeFormModule is a class used to manage all the modules and components
@@ -24,6 +25,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeIconModule,
     SafeRecordSummaryModule,
     TranslateModule,
+    DateInputModule,
   ],
   exports: [SafeFormComponent],
 })

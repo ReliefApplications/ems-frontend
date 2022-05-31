@@ -458,6 +458,14 @@
 				"operator": "******",
 				"or": "******",
 				"title": "******"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "******",
+						"usePicker": "******"
+					}
+				}
 			}
 		},
 		"record": {
@@ -677,6 +685,23 @@
 		}
 	},
 	"kendo": {
+		"datepicker": {
+			"today": "******",
+			"toggle": "******"
+		},
+		"datetimepicker": {
+			"accept": "******",
+			"acceptLabel": "******",
+			"cancel": "******",
+			"cancelLabel": "******",
+			"dateTab": "******",
+			"dateTabLabel": "******",
+			"now": "******",
+			"timeTab": "******",
+			"timeTabLabel": "******",
+			"today": "******",
+			"toggle": "******"
+		},
 		"editor": {
 			"addColumnAfter": "******",
 			"addColumnBefore": "******",
@@ -805,6 +830,14 @@
 			"stick": "******",
 			"unlock": "******",
 			"unstick": "******"
+		},
+		"timepicker": {
+			"accept": "******",
+			"acceptLabel": "******",
+			"cancel": "******",
+			"cancelLabel": "******",
+			"now": "******",
+			"toggle": "******"
 		},
 		"upload": {
 			"dropFilesHere": "******",

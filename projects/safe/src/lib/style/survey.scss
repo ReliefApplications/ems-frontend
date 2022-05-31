@@ -11,6 +11,7 @@
   color: red;
 }
 
+// === QUESTION CONTENT ===
 ::ng-deep .safe-qst-content {
   display: flex;
   flex-direction: column;
@@ -21,6 +22,18 @@
     order: 2;
     padding: 0 0 0 8px !important;
     margin: 8px 0 !important;
+  }
+
+  // === DATE / TIME INPUTS ===
+  .k-datepicker, .k-timepicker, .k-datetimepicker {
+    width: 100%;
+  }
+}
+
+::ng-deep svd-property-editor {
+  // === DATE / TIME INPUTS ===
+  .k-datepicker, .k-timepicker, .k-datetimepicker {
+    width: 100%;
   }
 }
 

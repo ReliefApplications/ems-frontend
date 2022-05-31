@@ -232,6 +232,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.survey.render(this.containerId);
+    setTimeout(() => {}, 100);
   }
 
   /**
@@ -243,6 +244,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     this.survey.render();
+    setTimeout(() => {}, 100);
     this.surveyActive = true;
   }
 
@@ -516,6 +518,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFromCacheData = false;
     this.storageDate = undefined;
     this.survey.render();
+    setTimeout(() => {}, 100);
   }
 
   ngOnDestroy(): void {

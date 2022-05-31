@@ -458,6 +458,14 @@
 				"operator": "Operator",
 				"or": "Or",
 				"title": "Style"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "Use Expression editor",
+						"usePicker": "Use Date picker"
+					}
+				}
 			}
 		},
 		"record": {
@@ -677,6 +685,23 @@
 		}
 	},
 	"kendo": {
+		"datepicker": {
+			"today": "Today",
+			"toggle": "Choose a date"
+		},
+		"datetimepicker": {
+			"accept": "Accept",
+			"acceptLabel": "Accept",
+			"cancel": "Cancel",
+			"cancelLabel": "Cancel",
+			"dateTab": "Date",
+			"dateTabLabel": "Date",
+			"now": "Now",
+			"timeTab": "Time",
+			"timeTabLabel": "Time",
+			"today": "Today",
+			"toggle": "Choose a date and a time"
+		},
 		"editor": {
 			"addColumnAfter": "Add column after",
 			"addColumnBefore": "Add column before",
@@ -805,6 +830,14 @@
 			"stick": "Stick",
 			"unlock": "Unlock",
 			"unstick": "Unstick"
+		},
+		"timepicker": {
+			"accept": "Accept",
+			"acceptLabel": "Accept",
+			"cancel": "Cancel",
+			"cancelLabel": "Cancel",
+			"now": "Now",
+			"toggle": "Choose a time"
 		},
 		"upload": {
 			"dropFilesHere": "Drop files here to upload",
