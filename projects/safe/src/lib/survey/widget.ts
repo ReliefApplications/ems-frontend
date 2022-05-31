@@ -135,16 +135,16 @@ export const init = (
           );
           if (pickerInstance) {
             if (question[editor.property.name]) {
-              pickerInstance.value = new Date(question[editor.property.name]);
+              pickerInstance.value = getDateDisplay(
+                question[editor.property.name],
+                question.inputType
+              );
             }
             pickerInstance.registerOnChange((value: Date | null) => {
-              if (question.inputType === 'time' && value) {
-                // for time fields, translate the date to 01/01/1970
-                editor.onChanged(
-                  new Date(1970, 0, 1, value.getHours(), value.getMinutes())
-                );
+              if (value) {
+                editor.onChanged(setDateValue(value, question.inputType));
               } else {
-                editor.onChanged(value?.toISOString());
+                editor.onChanged(null);
               }
             });
           }
@@ -169,28 +169,30 @@ export const init = (
         );
         if (pickerInstance) {
           if (question.value) {
-            pickerInstance.value = new Date(question.value);
+            pickerInstance.value = getDateDisplay(
+              question.value,
+              question.inputType
+            );
           }
           if (question.min) {
-            pickerInstance.min = new Date(question.min);
+            pickerInstance.min = getDateDisplay(
+              question.min,
+              question.inputType
+            );
           }
           if (question.max) {
-            pickerInstance.max = new Date(question.max);
+            pickerInstance.max = getDateDisplay(
+              question.max,
+              question.inputType
+            );
           }
           pickerInstance.readonly = question.isReadOnly;
           pickerInstance.disabled = question.isReadOnly;
           pickerInstance.registerOnChange((value: Date | null) => {
-            if (question.inputType === 'time' && value) {
-              // for time fields, translate the date to 01/01/1970
-              question.value = new Date(
-                1970,
-                0,
-                1,
-                value.getHours(),
-                value.getMinutes()
-              );
+            if (value) {
+              question.value = setDateValue(value, question.inputType);
             } else {
-              question.value = value?.toISOString();
+              question.value = null;
             }
           });
           el.style.display = 'none';
@@ -403,6 +405,40 @@ export const init = (
         question.maxSize = 7340032;
       }
     },
+  };
+
+  /**
+   * Get date for input display.
+   *
+   * @param value question value
+   * @param inputType question input type
+   * @returns formatted date
+   */
+  const getDateDisplay = (value: any, inputType: string): Date => {
+    const date = new Date(value);
+    if (inputType === 'time') {
+      return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+    } else {
+      return date;
+    }
+  };
+
+  /**
+   * Set date for question / parameter value
+   *
+   * @param value input value
+   * @param inputType question input type
+   * @returns formatted date
+   */
+  const setDateValue = (value: Date, inputType: string): Date | string => {
+    if (inputType === 'time') {
+      // for time fields, translate the date to UTC
+      return new Date(
+        Date.UTC(1970, 0, 1, value.getHours(), value.getMinutes())
+      );
+    } else {
+      return value.toISOString();
+    }
   };
 
   const buildSearchButton = (
