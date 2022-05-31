@@ -32,7 +32,9 @@ export class SafeQueryStyleComponent implements OnInit {
   @Output() closeEdition = new EventEmitter<any>();
 
   checklist!: ChecklistDatabase;
-
+  /**
+   * Constructor for the query style component
+   */
   constructor() {}
 
   ngOnInit(): void {

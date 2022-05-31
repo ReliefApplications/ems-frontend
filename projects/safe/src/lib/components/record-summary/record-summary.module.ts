@@ -6,6 +6,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 
+/**
+ * SafeRecordSummaryModule is the module related to the records information summary.
+ */
 @NgModule({
   declarations: [SafeRecordSummaryComponent],
   imports: [

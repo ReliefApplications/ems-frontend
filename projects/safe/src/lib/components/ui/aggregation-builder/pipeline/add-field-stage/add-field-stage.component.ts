@@ -15,7 +15,9 @@ export class SafeAddFieldStageComponent implements OnInit {
   @Input() fields: any[] = [];
   @Input() operators: any;
   @Input() displayName = true;
-
+  /**
+   * Constructor for the fields aggregation pipeline stage
+   */
   constructor() {}
 
   ngOnInit(): void {}
