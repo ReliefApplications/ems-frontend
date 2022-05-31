@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { isDate } from 'lodash';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
@@ -204,6 +205,13 @@ export class SafeTabFilterComponent implements OnInit {
             name: field.name,
             type,
           });
+          if (['Date', 'DateTime'].includes(type)) {
+            const valueAsDate = new Date(x.value);
+            if (isDate(valueAsDate) && isNaN(valueAsDate.getTime())) {
+              const formGroup = this.filters.at(index) as FormGroup;
+              formGroup.get('useExpression')?.setValue(true);
+            }
+          }
         } else {
           this.selectedFields.splice(index, 1, {});
         }
@@ -273,6 +281,14 @@ export class SafeTabFilterComponent implements OnInit {
     this.form.controls[filterName].setValue('today()');
   }
 
+  onChangeEditor(index: number): void {
+    const formGroup = this.filters.at(index) as FormGroup;
+    formGroup
+      .get('useExpression')
+      ?.setValue(!formGroup.get('useExpression')?.value);
+    formGroup.get('value')?.setValue(null);
+  }
+
   onKey(e: any, filterName: string): void {
     if (e.target.value === '') {
       this.inputs = '';
@@ -314,6 +330,7 @@ export class SafeTabFilterComponent implements OnInit {
       field: '',
       operator: 'eq',
       value: null,
+      useExpression: false,
     });
     this.filters.push(filter);
     this.selectedFields.push({});

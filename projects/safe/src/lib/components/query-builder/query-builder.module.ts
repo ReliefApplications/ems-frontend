@@ -32,6 +32,7 @@ import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { MatSliderModule } from '@angular/material/slider';
     SafeCheckboxTreeModule,
     SafeCoreGridModule,
     MatSliderModule,
+    MatDatepickerModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

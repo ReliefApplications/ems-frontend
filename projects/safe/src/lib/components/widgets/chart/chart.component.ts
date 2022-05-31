@@ -114,6 +114,11 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
             : null,
         },
       },
+      labels: {
+        showCategory: get(this.settings, 'chart.labels.showCategory', false),
+        showValue: get(this.settings, 'chart.labels.showValue', false),
+        valueType: get(this.settings, 'chart.labels.valueType', 'value'),
+      },
     };
   }
 

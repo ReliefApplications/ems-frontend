@@ -33,6 +33,7 @@ export class Chart {
     this.fb = new FormBuilder();
     const legend = settings ? settings.legend : null;
     const title = settings ? settings.title : null;
+    const labels = settings ? settings.labels : null;
     const palette: string[] = get(settings, 'palette.value', []);
     const axes = settings ? settings.axes : null;
 
@@ -65,6 +66,16 @@ export class Chart {
                 ? palette
                 : JSON.parse(JSON.stringify(DEFAULT_PALETTE)),
             disabled: !get(settings, 'palette.enabled', false),
+          },
+        ],
+      }),
+      labels: this.fb.group({
+        showCategory: [get(labels, 'showCategory', false)],
+        showValue: [get(labels, 'showValue', false)],
+        valueType: [
+          {
+            value: get(labels, 'valueType', 'value'),
+            disabled: !get(labels, 'showValue', false),
           },
         ],
       }),
@@ -158,6 +169,15 @@ export class Chart {
       } else {
         this.form.get('axes.x.max')?.setValue(null);
         this.form.get('axes.x.max')?.disable();
+      }
+    });
+
+    // Update of labels
+    this.form.get('labels.showValue')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.form.get('labels.valueType')?.enable();
+      } else {
+        this.form.get('labels.valueType')?.disable();
       }
     });
   }
