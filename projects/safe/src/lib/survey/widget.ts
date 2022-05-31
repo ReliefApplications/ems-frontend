@@ -129,23 +129,33 @@ export const init = (
       const dateEditor = {
         render: (editor: any, htmlElement: any) => {
           const question = editor.object;
-          const pickerInstance = createPickerInstance(
-            question.inputType,
-            htmlElement
-          );
-          if (question[editor.property.name]) {
-            pickerInstance.value = getDateDisplay(
-              question[editor.property.name],
-              question.inputType
+          const updatePickerInstance = () => {
+            htmlElement.querySelector('.k-widget')?.remove();
+            const pickerInstance = createPickerInstance(
+              question.inputType,
+              htmlElement
             );
-          }
-          pickerInstance.registerOnChange((value: Date | null) => {
-            if (value) {
-              editor.onChanged(setDateValue(value, question.inputType));
-            } else {
-              editor.onChanged(null);
+            if (question[editor.property.name]) {
+              pickerInstance.value = getDateDisplay(
+                question[editor.property.name],
+                question.inputType
+              );
             }
-          });
+            pickerInstance.registerOnChange((value: Date | null) => {
+              if (value) {
+                editor.onChanged(setDateValue(value, question.inputType));
+              } else {
+                editor.onChanged(null);
+              }
+            });
+          };
+          question.registerFunctionOnPropertyValueChanged(
+            'inputType',
+            updatePickerInstance,
+            // eslint-disable-next-line no-underscore-dangle
+            editor.property_.name // a unique key to distinguish multiple date properties
+          );
+          updatePickerInstance();
         },
       };
       SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
@@ -202,7 +212,8 @@ export const init = (
         };
         question.registerFunctionOnPropertyValueChanged(
           'inputType',
-          updateTextInput
+          updateTextInput,
+          el.id // a unique key to distinguish fields
         );
         updateTextInput();
       }
