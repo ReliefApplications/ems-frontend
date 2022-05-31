@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { ChartComponent } from '@progress/kendo-angular-charts';
+import { ChartComponent, SeriesStack } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
 interface ChartTitle {
@@ -31,6 +31,7 @@ interface ChartOptions {
       max?: number;
     };
   };
+  stack: boolean | SeriesStack;
 }
 
 @Component({
@@ -47,6 +48,7 @@ export class SafeBarChartComponent implements OnInit, OnChanges {
 
   @Input() options: ChartOptions = {
     palette: [],
+    stack: false,
   };
 
   @Input() gap = 2;

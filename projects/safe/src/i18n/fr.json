@@ -713,6 +713,11 @@
 						"title": "Palette de couleurs"
 					},
 					"position": "Position",
+					"stack": {
+						"activateStack": "Afficher les séries en piles",
+						"stackTo100": "Afficher des piles de 100%",
+						"title": "Options d'empilement"
+					},
 					"text": "Texte",
 					"type": "Graphique"
 				},

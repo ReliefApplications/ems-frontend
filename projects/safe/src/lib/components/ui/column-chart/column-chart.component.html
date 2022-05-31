@@ -25,6 +25,7 @@
     <kendo-chart-series-item
       *ngFor="let item of series"
       type="column"
+      [stack]="options.stack"
       [data]="item.items"
       [gap]="gap"
       [spacing]="spacing"

@@ -22,6 +22,7 @@
     <kendo-chart-series-item
       *ngFor="let item of series"
       type="bar"
+      [stack]="options.stack"
       field="value"
       categoryField="category"
       [gap]="gap"

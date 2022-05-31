@@ -713,6 +713,11 @@
 						"title": "Color palette"
 					},
 					"position": "Position",
+					"stack": {
+						"activateStack": "Display series as stacked",
+						"stackTo100": "Display 100% stacked series",
+						"title": "Stack Options"
+					},
 					"text": "Text",
 					"type": "Chart Type"
 				},

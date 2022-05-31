@@ -210,7 +210,6 @@
               </mat-expansion-panel-header>
               <!-- === X AXIS PARAMETERS === -->
               <ng-container formGroupName="x" *ngIf="['bar'].includes(type.name)">
-                <h3>{{ 'components.aggregationBuilder.mapping.value' | translate }}</h3>
                 <div class="axis-container">
                   <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
                   <mat-form-field appearance="outline" floatLabel="always">
@@ -228,7 +227,6 @@
               </ng-container>
               <!-- === Y AXIS PARAMETERS === -->
               <ng-container formGroupName="y" *ngIf="['column'].includes(type.name)">
-                <h3>{{ 'components.aggregationBuilder.mapping.value' | translate }}</h3>
                 <div class="axis-container">
                   <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
                   <mat-form-field appearance="outline" floatLabel="always">
@@ -244,6 +242,22 @@
                   </mat-form-field>
                 </div>
               </ng-container>
+            </mat-expansion-panel>
+            <!-- === SERIES AND STACKS PARAMETERS === -->
+            <mat-expansion-panel formGroupName="stack" *ngIf="['bar', 'column'].includes(type.name)">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ 'components.widget.settings.chart.stack.title' | translate }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="form-group">
+                <mat-slide-toggle formControlName="activateStack">{{
+                  'components.widget.settings.chart.stack.activateStack' | translate
+                }}</mat-slide-toggle>
+                <mat-slide-toggle formControlName="stackTo100">{{
+                  'components.widget.settings.chart.stack.stackTo100' | translate
+                }}</mat-slide-toggle>
+              </div>
             </mat-expansion-panel>
           </mat-accordion>
         </mat-tab>

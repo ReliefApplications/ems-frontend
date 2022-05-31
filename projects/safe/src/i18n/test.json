@@ -713,6 +713,11 @@
 						"title": "******"
 					},
 					"position": "******",
+					"stack": {
+						"activateStack": "******",
+						"stackTo100": "******",
+						"title": "******"
+					},
 					"text": "******",
 					"type": "******"
 				},

@@ -36,6 +36,7 @@ export class Chart {
     const labels = settings ? settings.labels : null;
     const palette: string[] = get(settings, 'palette.value', []);
     const axes = settings ? settings.axes : null;
+    const stack = settings ? settings.stack : null;
 
     // build form
     this.form = this.fb.group({
@@ -121,6 +122,15 @@ export class Chart {
           ],
         }),
       }),
+      stack: this.fb.group({
+        activateStack: [get(stack, 'activateStack', false)],
+        stackTo100: [
+          {
+            value: get(stack, 'stackTo100', false),
+            disabled: !get(stack, 'activateStack', false),
+          },
+        ],
+      }),
     });
 
     // Update of palette
@@ -178,6 +188,15 @@ export class Chart {
         this.form.get('labels.valueType')?.enable();
       } else {
         this.form.get('labels.valueType')?.disable();
+      }
+    });
+
+    // Update of stack properties
+    this.form.get('stack.activateStack')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.form.get('stack.stackTo100')?.enable();
+      } else {
+        this.form.get('stack.stackTo100')?.disable();
       }
     });
   }
