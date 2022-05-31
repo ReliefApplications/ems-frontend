@@ -4,6 +4,7 @@ import { PipelineStage } from './pipeline/pipeline-stage.enum';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import get from 'lodash/get';
 
+/** Creating a new instance of the FormBuilder class. */
 const formBuilder = new FormBuilder();
 
 /**
@@ -118,6 +119,12 @@ export const addStage = (value: any): FormGroup => {
   }
 };
 
+/**
+ * Exports the mapping fields
+ *
+ * @param widgetType - The type of widget you want to create.
+ * @returns The x and y axis
+ */
 export const mappingFields = (widgetType: string): string[] =>
   // if (WIDGET_TYPES.some((x) => x.id === widgetType)) {
   //   return ['xAxis', 'yAxis'];
@@ -163,8 +170,8 @@ export const createAggregationForm = (
 /**
  * Checks that the control value is a valid JSON.
  *
- * @param control
- * @returns
+ * @param control the control value
+ * @returns null if the control value is a valid JSON, an error otherwise
  */
 const jsonValidator = (control: AbstractControl): ValidationErrors | null => {
   try {

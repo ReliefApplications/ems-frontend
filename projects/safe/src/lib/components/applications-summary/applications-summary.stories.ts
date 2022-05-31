@@ -15,12 +15,19 @@ export default {
   argTypes: {},
 } as Meta;
 
+/**
+ * Defines a template for the component SafeApplicationsSummaryComponent to use as a playground
+ *
+ * @param args the properties of the instance of SafeApplicationsSummaryComponent
+ * @returns the template
+ */
 const TEMPLATE: Story<SafeApplicationsSummaryComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
+/** Exports a default template with mock properties */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.args = {
   canCreate: true,

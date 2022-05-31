@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 
+/**
+ * This component is used to preview the style of a query
+ */
 @Component({
   selector: 'safe-query-style-preview',
   templateUrl: './query-style-preview.component.html',
@@ -8,7 +11,9 @@ import { Component, Input, OnInit } from '@angular/core';
 export class SafeQueryStylePreviewComponent implements OnInit {
   @Input() style: any;
   public htmlStyle: any;
-
+  /**
+   * Constructor for the query style preview component
+   */
   constructor() {}
 
   ngOnInit(): void {
