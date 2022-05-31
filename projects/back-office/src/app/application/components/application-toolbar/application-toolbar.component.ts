@@ -9,6 +9,7 @@ import {
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-application-toolbar',
@@ -28,7 +29,8 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     private applicationService: SafeApplicationService,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -59,9 +61,14 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   onUnlock(): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Unlock edition',
-        content: `Do you want to unlock ${this.application?.name}'s edition ?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant(
+          'components.application.unlock.titleMessage'
+        ),
+        content: this.translate.instant(
+          'components.application.unlock.confirmationMessage',
+          { application: this.application?.name }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });
@@ -81,9 +88,16 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     } else {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: `Publish application`,
-          content: `Do you confirm the publication of ${this.application?.name} ?`,
-          confirmText: 'Confirm',
+          title: this.translate.instant(
+            'components.application.publish.titleMessage'
+          ),
+          content: this.translate.instant(
+            'components.application.publish.confirmationMessage',
+            { application: this.application?.name }
+          ),
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
           confirmColor: 'primary',
         },
       });

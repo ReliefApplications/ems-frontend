@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { isDate } from 'lodash';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
@@ -92,18 +93,12 @@ const TYPES: any = {
   // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   ID: {
     defaultOperator: 'contains',
-    operators: [
-      'eq',
-      'neq',
-      'contains',
-      'doesnotcontain',
-      'startswith',
-      'endswith',
-      'isnull',
-      'isnotnull',
-      'isempty',
-      'isnotempty',
-    ],
+    operators: ['eq', 'neq', 'contains', 'doesnotcontain', 'startswith'],
+  },
+  // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
+  Form: {
+    defaultOperator: 'eq',
+    operators: ['eq', 'neq'],
   },
   // eslint-disable-next-line id-blacklist, @typescript-eslint/naming-convention
   Boolean: {
@@ -149,6 +144,7 @@ const AVAILABLE_TYPES = [
   'Time',
   'JSON',
   'ID',
+  'Form',
 ];
 
 @Component({
@@ -204,11 +200,18 @@ export class SafeTabFilterComponent implements OnInit {
       if (x.field) {
         const field = this.fields.find((y) => y.name === x.field);
         if (field && field.type && AVAILABLE_TYPES.includes(field.type.name)) {
-          const type = field.type.name;
+          const type = field.name === 'form' ? 'Form' : field.type.name;
           this.selectedFields.splice(index, 1, {
             name: field.name,
             type,
           });
+          if (['Date', 'DateTime'].includes(type)) {
+            const valueAsDate = new Date(x.value);
+            if (isDate(valueAsDate) && isNaN(valueAsDate.getTime())) {
+              const formGroup = this.filters.at(index) as FormGroup;
+              formGroup.get('useExpression')?.setValue(true);
+            }
+          }
         } else {
           this.selectedFields.splice(index, 1, {});
         }
@@ -278,6 +281,14 @@ export class SafeTabFilterComponent implements OnInit {
     this.form.controls[filterName].setValue('today()');
   }
 
+  onChangeEditor(index: number): void {
+    const formGroup = this.filters.at(index) as FormGroup;
+    formGroup
+      .get('useExpression')
+      ?.setValue(!formGroup.get('useExpression')?.value);
+    formGroup.get('value')?.setValue(null);
+  }
+
   onKey(e: any, filterName: string): void {
     if (e.target.value === '') {
       this.inputs = '';
@@ -319,6 +330,7 @@ export class SafeTabFilterComponent implements OnInit {
       field: '',
       operator: 'eq',
       value: null,
+      useExpression: false,
     });
     this.filters.push(filter);
     this.selectedFields.push({});
@@ -328,7 +340,7 @@ export class SafeTabFilterComponent implements OnInit {
     if (e.value) {
       const field = this.fields.find((x) => x.name === e.value);
       if (field && field.type && AVAILABLE_TYPES.includes(field.type.name)) {
-        const type = field.type.name;
+        const type = field.name === 'form' ? 'Form' : field.type.name;
         const operator = TYPES[type].defaultOperator;
         this.filters.at(index).get('operator')?.setValue(operator);
         this.filters.at(index).get('value')?.setValue(null);

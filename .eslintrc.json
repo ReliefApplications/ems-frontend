@@ -9,7 +9,8 @@
         "*.ts"
       ],
       "plugins": [
-        "prettier"
+        "prettier",
+        "jsdoc"
       ],
       "parserOptions": {
         "project": [
@@ -23,7 +24,8 @@
         "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
         "plugin:@angular-eslint/template/process-inline-templates",
         "plugin:storybook/recommended",
-        "prettier"
+        "prettier",
+        "plugin:jsdoc/recommended"
       ],
       "rules": {
         "prettier/prettier": 2,
@@ -35,7 +37,29 @@
             ],
             "format": ["camelCase", "UPPER_CASE"]
           }
-        ]
+        ],
+        "jsdoc/require-jsdoc": [
+          1,
+          {
+            "exemptEmptyConstructors": false,
+            "contexts": [
+              "TSInterfaceDeclaration",
+              "TSEnumDeclaration",
+              "Program > VariableDeclaration[kind='const']",
+              "ExportNamedDeclaration > VariableDeclaration > VariableDeclarator > ArrowFunctionExpression",
+              "MethodDefinition[key.name!=/^ngOn(Init|Destroy|Changes)|ngDoCheck|ngAfter(ContentInit|ContentChecked|ViewInit|ViewChecked)$/]"
+            ],
+            "require": {
+              "ClassDeclaration": true,
+              "FunctionDeclaration": true,
+              "ClassExpression": true,
+              "FunctionExpression": true
+            }
+          }
+        ],
+        "jsdoc/require-param-type": 0,
+        "jsdoc/require-property-type": 0,
+        "jsdoc/require-returns-type": 0
       }
     },
     {
