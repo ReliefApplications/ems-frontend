@@ -313,7 +313,6 @@ export class SafeTabFilterComponent implements OnInit {
     this.form.controls[filterName].setValue('today()');
   }
 
-
   onChangeEditor(index: number): void {
     const formGroup = this.filters.at(index) as FormGroup;
     formGroup
@@ -321,7 +320,7 @@ export class SafeTabFilterComponent implements OnInit {
       ?.setValue(!formGroup.get('useExpression')?.value);
     formGroup.get('value')?.setValue(null);
   }
-  
+
   /**
    * Handles the onKey event
    *
