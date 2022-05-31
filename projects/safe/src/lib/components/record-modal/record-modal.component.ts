@@ -147,6 +147,9 @@ export class SafeRecordModalComponent implements AfterViewInit {
         this.selectedTabIndex = survey.currentPageNo;
       }
     );
+    this.survey.onUpdateQuestionCssClasses.add(
+      (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
+    );
     this.survey.data = this.record.data;
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
     this.survey.mode = 'display';
@@ -154,6 +157,7 @@ export class SafeRecordModalComponent implements AfterViewInit {
     this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showProgressBar = 'off';
     this.survey.render(this.formContainer.nativeElement);
+    setTimeout(() => {}, 100);
     this.setPages();
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
@@ -199,6 +203,10 @@ export class SafeRecordModalComponent implements AfterViewInit {
             options.htmlElement.style.background = '#EBB2B2';
           }
         }
+      );
+      this.surveyNext.onUpdateQuestionCssClasses.add(
+        (survey: Survey.SurveyModel, options: any) =>
+          this.onSetCustomCss(options)
       );
       this.surveyNext.render(this.formContainerNext.nativeElement);
     }
@@ -324,5 +332,16 @@ export class SafeRecordModalComponent implements AfterViewInit {
           autoFocus: false,
         });
       });
+  }
+
+  /**
+   * Add custom CSS classes to the survey elements.
+   *
+   * @param survey current survey.
+   * @param options survey options.
+   */
+  private onSetCustomCss(options: any): void {
+    const classes = options.cssClasses;
+    classes.content += 'safe-qst-content';
   }
 }

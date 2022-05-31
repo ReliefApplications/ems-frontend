@@ -4,6 +4,7 @@ import { SafeFormBuilderComponent } from './form-builder.component';
 import { SafeFormModalModule } from '../form-modal/form-modal.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
+import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 
 @NgModule({
   declarations: [SafeFormBuilderComponent],
@@ -12,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeFormModalModule,
     MatDialogModule,
     TranslateModule,
+    DateInputModule,
   ],
   exports: [SafeFormBuilderComponent],
 })

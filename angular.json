@@ -315,40 +315,6 @@
                 ]
               }
             },
-            "oort-ilo": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/back-office/src/environments/environment.ts",
-                  "with": "projects/back-office/src/environments/environment.oort.ilo.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "deployUrl": "/admin/",
-              "baseHref": "/admin/",
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "12mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ],
-              "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
-              }
-            },
             "oort-prod": {
               "fileReplacements": [
                 {
@@ -732,38 +698,6 @@
                 ]
               }
             },
-            "oort-ilo": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/front-office/src/environments/environment.ts",
-                  "with": "projects/front-office/src/environments/environment.oort.ilo.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "12mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ],
-              "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
-              }
-            },
             "oort-prod": {
               "fileReplacements": [
                 {
@@ -949,7 +883,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "15mb"
+                  "maximumError": "12mb"
                 },
                 {
                   "type": "anyComponentStyle",

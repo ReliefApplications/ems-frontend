@@ -717,7 +717,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           'components.form.deleteRow.confirmationMessage',
           {
             quantity: rowsSelected,
-            rowtext:
+            rowText:
               rowsSelected > 1
                 ? this.translate.instant('common.row.few')
                 : this.translate.instant('common.row.one'),
