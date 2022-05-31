@@ -425,14 +425,6 @@
 				"or": "******",
 				"title": "******"
 			},
-			"tooltip": {
-				"filter": {
-					"date": {
-						"usePicker": "******",
-						"useExpression": "******"
-					}
-				}
-			},
 			"hint": {
 				"fields": "******",
 				"style": "******"
@@ -466,6 +458,14 @@
 				"operator": "******",
 				"or": "******",
 				"title": "******"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "******",
+						"usePicker": "******"
+					}
+				}
 			}
 		},
 		"record": {
