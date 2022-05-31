@@ -23,6 +23,10 @@ interface ChartSeries {
   }[];
 }
 
+interface ChartLabels {
+  showValue: boolean;
+}
+
 interface ChartOptions {
   palette: string[];
   axes?: {
@@ -31,6 +35,7 @@ interface ChartOptions {
       max?: number;
     };
   };
+  labels?: ChartLabels;
 }
 
 @Component({
@@ -60,15 +65,23 @@ export class SafeBarChartComponent implements OnInit, OnChanges {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
+  public labels: any;
+
   constructor() {}
 
   ngOnInit(): void {
     this.min = get(this.options, 'axes.x.min');
     this.max = get(this.options, 'axes.x.max');
+    this.labels = {
+      visible: get(this.options, 'labels.showValue'),
+    };
   }
 
   ngOnChanges(): void {
     this.min = get(this.options, 'axes.x.min');
     this.max = get(this.options, 'axes.x.max');
+    this.labels = {
+      visible: get(this.options, 'labels.showValue'),
+    };
   }
 }
