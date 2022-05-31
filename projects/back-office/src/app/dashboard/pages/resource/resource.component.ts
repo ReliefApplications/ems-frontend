@@ -263,8 +263,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
               name: element.name,
             }
           ),
-          confirmText: this.translate.instant('common.delete'),
-          cancelText: this.translate.instant('common.cancel'),
+          confirmText: this.translate.instant('components.confirmModal.delete'),
+          cancelText: this.translate.instant('components.confirmModal.cancel'),
         },
       });
       dialogRef.afterClosed().subscribe((value) => {
@@ -527,8 +527,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
             name: layout.name,
           }
         ),
-        confirmText: this.translate.instant('common.delete'),
-        cancelText: this.translate.instant('common.cancel'),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

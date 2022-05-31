@@ -39,6 +39,7 @@ import { SafeLayoutService } from '../../services/layout.service';
 import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'safe-form',
@@ -93,7 +94,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private resolver: ComponentFactoryResolver,
-    private formBuilderService: SafeFormBuilderService
+    private formBuilderService: SafeFormBuilderService,
+    private translate: TranslateService
   ) {
     this.containerId = uuidv4();
     this.environment = environment;
@@ -207,6 +209,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.survey.render(this.containerId);
+    setTimeout(() => {}, 100);
   }
 
   public reset(): void {
@@ -215,6 +218,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     this.survey.render();
+    setTimeout(() => {}, 100);
     this.surveyActive = true;
   }
 
@@ -456,6 +460,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFromCacheData = false;
     this.storageDate = undefined;
     this.survey.render();
+    setTimeout(() => {}, 100);
   }
 
   ngOnDestroy(): void {
@@ -470,9 +475,14 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant(
+          'components.record.recovery.titleMessage'
+        ),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });

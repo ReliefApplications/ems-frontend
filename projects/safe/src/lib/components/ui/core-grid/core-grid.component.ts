@@ -53,6 +53,7 @@ import isEqual from 'lodash/isEqual';
 import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
+import { TranslateService } from '@ngx-translate/core';
 
 const DEFAULT_FILE_NAME = 'Records';
 
@@ -228,7 +229,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
     private safeAuthService: SafeAuthService,
-    private gridService: SafeGridService
+    private gridService: SafeGridService,
+    private translate: TranslateService
   ) {
     this.apiUrl = environment.apiUrl;
     this.isAdmin =
@@ -738,11 +740,23 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     const rowsSelected = items.length;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Delete row${rowsSelected > 1 ? 's' : ''}`,
-        content: `Do you confirm the deletion of ${
-          rowsSelected > 1 ? 'these ' + rowsSelected : 'this'
-        } row${rowsSelected > 1 ? 's' : ''} ?`,
-        confirmText: 'Delete',
+        title: this.translate.instant('common.deleteObject', {
+          name:
+            rowsSelected > 1
+              ? this.translate.instant('common.row.few')
+              : this.translate.instant('common.row.one'),
+        }),
+        content: this.translate.instant(
+          'components.form.deleteRow.confirmationMessage',
+          {
+            quantity: rowsSelected,
+            rowText:
+              rowsSelected > 1
+                ? this.translate.instant('common.row.few')
+                : this.translate.instant('common.row.one'),
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       },
     });
@@ -845,9 +859,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant(
+          'components.record.recovery.titleMessage'
+        ),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });

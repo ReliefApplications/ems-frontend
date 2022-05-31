@@ -30,6 +30,7 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 interface DialogData {
   recordId: string;
@@ -74,7 +75,8 @@ export class SafeRecordModalComponent implements OnInit {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
-    private formBuilderService: SafeFormBuilderService
+    private formBuilderService: SafeFormBuilderService,
+    private translate: TranslateService
   ) {
     this.containerId = uuidv4();
     if (this.data.compareTo) {
@@ -142,12 +144,16 @@ export class SafeRecordModalComponent implements OnInit {
         this.selectedTabIndex = survey.currentPageNo;
       }
     );
+    this.survey.onUpdateQuestionCssClasses.add(
+      (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
+    );
     this.survey.data = this.record.data;
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
     this.survey.mode = 'display';
     this.survey.showNavigationButtons = 'none';
     this.survey.showProgressBar = 'off';
     this.survey.render(this.containerId);
+    setTimeout(() => {}, 100);
     this.setPages();
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
@@ -192,6 +198,10 @@ export class SafeRecordModalComponent implements OnInit {
             options.htmlElement.style.background = '#EBB2B2';
           }
         }
+      );
+      this.surveyNext.onUpdateQuestionCssClasses.add(
+        (survey: Survey.SurveyModel, options: any) =>
+          this.onSetCustomCss(options)
       );
       this.surveyNext.render(this.containerNextId);
     }
@@ -265,9 +275,14 @@ export class SafeRecordModalComponent implements OnInit {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant(
+          'components.record.recovery.titleMessage'
+        ),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });
@@ -312,5 +327,16 @@ export class SafeRecordModalComponent implements OnInit {
           autoFocus: false,
         });
       });
+  }
+
+  /**
+   * Add custom CSS classes to the survey elements.
+   *
+   * @param survey current survey.
+   * @param options survey options.
+   */
+  private onSetCustomCss(options: any): void {
+    const classes = options.cssClasses;
+    classes.content += 'safe-qst-content';
   }
 }
