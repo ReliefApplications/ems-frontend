@@ -25,7 +25,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Build Shared Library
-        run: npm run build -- --prod safe
+        run: npm run build -- --configuration=prod safe
       - name: Build Back-office
         run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
       - name: Build Front-office
