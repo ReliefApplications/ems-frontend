@@ -71,7 +71,6 @@ export class SafeDonutChartComponent implements OnInit {
    * Set label content method.
    */
   private setLabelContent(): void {
-    console.log(this.options);
     const showCategory = get(this.options, 'labels.showCategory', false);
     const showValue = get(this.options, 'labels.showValue', false);
     const valueType = get(this.options, 'labels.valueType', 'value');
