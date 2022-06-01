@@ -5,20 +5,23 @@ import * as L from 'leaflet';
  *
  * @param survey survey class.
  */
-export const init = (
-  survey: any,
-): void => {
+export const init = (survey: any): void => {
   const widget = {
     name: 'geolocation',
     title: 'Geolocation',
     category: 'Question Library',
-    widgetIsLoaded() {
-      return true;
-    },
-    isFit(question: any) {
-      return question.getType() === 'geolocation';
-    },
-    activatedByChanged(activatedBy: any) {
+    /**
+     *
+     */
+    widgetIsLoaded: () => true,
+    /**
+     * @param question
+     */
+    isFit: (question: any) => question.getType() === 'geolocation',
+    /**
+     * @param activatedBy
+     */
+    activatedByChanged: (activatedBy: any) => {
       survey.JsonObject.metaData.addClass('geolocation', [], null, 'text');
       survey.JsonObject.metaData.addProperties('geolocation', [
         { name: 'buttonText', default: 'Click Me' },
@@ -27,7 +30,11 @@ export const init = (
     isDefaultRender: false,
     htmlTemplate:
       "<div><input /><div id='map' style='height: 500px; margin-top: 7px;' /></div>",
-    afterRender(question: any, el: any) {
+    /**
+     * @param question
+     * @param el
+     */
+    afterRender: (question: any, el: any) => {
       const map = L.map('map', { zoomControl: false }).setView([0, 0], 3);
       L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: 'Map',
@@ -43,7 +50,7 @@ export const init = (
       text.inputType = question.inputType;
       text.placeholder = question.placeHolder;
       const button = el.getElementsByTagName('div')[0];
-      map.on('click', function (e: any) {
+      map.on('click', (e: any) => {
         question.value =
           'lat: ' +
           e.latlng.lat.toFixed(6) +
@@ -51,13 +58,22 @@ export const init = (
           'lng: ' +
           e.latlng.lng.toFixed(6);
       });
-      text.onchange = function () {
+      /**
+       *
+       */
+      text.onchange = () => {
         question.value = text.value;
       };
-      const onValueChangedCallback = function () {
+      /**
+       *
+       */
+      const onValueChangedCallback = () => {
         text.value = question.value ? question.value : '';
       };
-      const onReadOnlyChangedCallback = function () {
+      /**
+       *
+       */
+      const onReadOnlyChangedCallback = () => {
         if (question.isReadOnly) {
           text.setAttribute('disabled', 'disabled');
           button.setAttribute('disabled', 'disabled');
@@ -71,7 +87,11 @@ export const init = (
       onValueChangedCallback();
       onReadOnlyChangedCallback();
     },
-    willUnmount(question: any, el: any) {},
+    /**
+     * @param question
+     * @param el
+     */
+    willUnmount: (question: any, el: any) => {},
   };
 
   survey.CustomWidgetCollection.Instance.addCustomWidget(widget, 'customtype');
