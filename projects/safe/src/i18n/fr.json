@@ -782,20 +782,31 @@
 					}
 				},
 				"map": {
+					"basemap": "Fond de carte",
+					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
 					"display": {
+						"basemap": "Fond de carte",
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",
-						"title": "Affichage par défaut"
+						"title": "Affichage par défaut",
+						"zoom": "Zoom par défaut"
 					},
 					"errors": {
 						"latitude": "Latitude incorrecte, merci de sélectionner un nombre entre -90 et 90",
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
 					},
+					"layers": {
+						"select": "Sélectionnez une couche",
+						"selected": "Couches sélectionnées",
+						"title": "Couches additionnelles"
+					},
 					"tooltip": {
+						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
 						"default": {
 							"latitude": "Sélectionnez une latitude par défaut autour de laquelle vous souhaitez centrer la carte",
-							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte"
+							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte",
+							"zoom": "Sélectionnez un zoom par défaut"
 						}
 					}
 				}

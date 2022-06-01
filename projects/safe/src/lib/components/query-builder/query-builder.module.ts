@@ -18,6 +18,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatRadioModule } from '@angular/material/radio';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { SafeTabClorophletComponent } from './tab-clorophlet/tab-clorophlet.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
@@ -31,6 +32,7 @@ import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     SafeTabFieldsComponent,
     SafeTabSortComponent,
     SafeTabFilterComponent,
+    SafeTabClorophletComponent,
     SafeTabStyleComponent,
     SafeTabLayoutPreviewComponent,
     SafeQueryStyleListComponent,
@@ -69,6 +72,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     SafeCheckboxTreeModule,
     SafeCoreGridModule,
     MatDatepickerModule,
+    MatSliderModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

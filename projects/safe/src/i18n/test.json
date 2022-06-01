@@ -782,20 +782,31 @@
 					}
 				},
 				"map": {
+					"basemap": "******",
+					"category": "******",
 					"dataset": "******",
 					"display": {
+						"basemap": "******",
 						"latitude": "******",
 						"longitude": "******",
-						"title": "******"
+						"title": "******",
+						"zoom": "******"
 					},
 					"errors": {
 						"latitude": "******",
 						"longitude": "******"
 					},
+					"layers": {
+						"select": "******",
+						"selected": "******",
+						"title": "******"
+					},
 					"tooltip": {
+						"category": "******",
 						"default": {
 							"latitude": "******",
-							"longitude": "******"
+							"longitude": "******",
+							"zoom": "******"
 						}
 					}
 				}

@@ -89,8 +89,9 @@
               },
               "projects/back-office/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
-              "./node_modules/leaflet/dist/leaflet.css",
+              "node_modules/survey-angular/survey.min.css",
               "node_modules/survey-creator/survey-creator.min.css",
+              "./node_modules/leaflet/dist/leaflet.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/select2/dist/css/select2.min.css"
@@ -481,9 +482,8 @@
               },
               "projects/front-office/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
-              "./node_modules/leaflet/dist/leaflet.css",
-              "node_modules/survey-angular/survey.css",
-              "node_modules/survey-creator/survey-creator.css",
+              "node_modules/survey-angular/survey.min.css",
+              "node_modules/survey-creator/survey-creator.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/select2/dist/css/select2.min.css"
@@ -855,7 +855,6 @@
             "styles": [
               "projects/web-widgets/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
-              "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-angular/survey.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",

@@ -782,20 +782,31 @@
 					}
 				},
 				"map": {
+					"basemap": "Base map",
+					"category": "Map quick layers",
 					"dataset": "Data set selection",
 					"display": {
+						"basemap": "Base map",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
-						"title": "Default display"
+						"title": "Default display",
+						"zoom": "Default zoom"
 					},
 					"errors": {
 						"latitude": "Invalid latitude, please select a number between -90 and 90",
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
 					},
+					"layers": {
+						"select": "Select a layer",
+						"selected": "Selected layers",
+						"title": "Additional layers"
+					},
 					"tooltip": {
+						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
 						"default": {
 							"latitude": "Select a default latitude to center the map around",
-							"longitude": "Select a default longitude to center the map around"
+							"longitude": "Select a default longitude to center the map around",
+							"zoom": "Select a default zoom for the map display"
 						}
 					}
 				}

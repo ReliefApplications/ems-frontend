@@ -1,12 +1,22 @@
 import { Apollo } from 'apollo-angular';
-import { Component, AfterViewInit, Input, OnDestroy } from '@angular/core';
-import * as L from 'leaflet';
-import 'leaflet.markercluster';
-
+import {
+  Component,
+  AfterViewInit,
+  Input,
+  OnDestroy,
+  Inject,
+} from '@angular/core';
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { applyFilters } from './filter';
 
+// Declares L to be able to use Leaflet from CDN
+// Leaflet
+import 'leaflet.markercluster';
+declare let L: any;
+
+/** Default marker */
 const MARKER_OPTIONS = {
   color: '#0090d1',
   opacity: 0.25,
@@ -16,49 +26,86 @@ const MARKER_OPTIONS = {
   radius: 6,
 };
 
+/** Declares an interface that will be used in the cluster markers layers */
+interface IMarkersLayerValue {
+  [name: string]: any;
+}
+
+/**
+ * Map Widget component.
+ */
 @Component({
   selector: 'safe-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
 })
-/*  Map widget using Leaflet.
- */
 export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === MAP ===
   public mapId: string;
   private map: any;
-  private southWest = L.latLng(-89.98155760646617, -180);
-  private northEast = L.latLng(89.99346179538875, 180);
+  private southWest = L.latLng(-89.98155760646617, -1000);
+  private northEast = L.latLng(89.99346179538875, 1000);
   private bounds = L.latLngBounds(this.southWest, this.northEast);
+  public esriApiKey: string;
+
+  // === BASEMAPS ===
+  /** Available basemaps */
+  private basemapLayers: any = {
+    Streets: 'ArcGIS:Streets',
+    Navigation: 'ArcGIS:Navigation',
+    Topographic: 'ArcGIS:Topographic',
+    'Light Gray': 'ArcGIS:LightGray',
+    'Dark Gray': 'ArcGIS:DarkGray',
+    'Streets Relief': 'ArcGIS:StreetsRelief',
+    Imagery: 'ArcGIS:Imagery',
+    ChartedTerritory: 'ArcGIS:ChartedTerritory',
+    ColoredPencil: 'ArcGIS:ColoredPencil',
+    Nova: 'ArcGIS:Nova',
+    Midcentury: 'ArcGIS:Midcentury',
+    OSM: 'OSM:Standard',
+    'OSM:Streets': 'OSM:Streets',
+  };
 
   // === MARKERS ===
   private markersLayer: any;
   private markersLayerGroup: any;
   private popupMarker: any;
+  private markersCategories: IMarkersLayerValue = [];
+  private categoryNames: string[] = [];
+  private overlays: IMarkersLayerValue = {};
+  private layerControl: any;
 
   // === RECORDS ===
   private selectedItem: Record | null = null;
   private data: any[] = [];
   private dataQuery: any;
   private dataSubscription?: Subscription;
-
   private displayFields: string[] = [];
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() settings: any = null;
 
+  // This will be substituted when the querry returns the catgory tippe
+  private categoryField = '';
+
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
 
   constructor(
+    @Inject('environment') environment: any,
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService
   ) {
+    this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
   }
 
-  /*  Generation of an unique id for the map ( in case multiple widgets use map ).
+  /**
+   * Generation of an unique id for the map ( in case multiple widgets use map ).
+   *
+   * @param parts number of parts
+   * @returns unique id
    */
   private generateUniqueId(parts: number = 4): string {
     const stringArr: string[] = [];
@@ -72,10 +119,13 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     return stringArr.join('-');
   }
 
-  /*  Once template is ready, build the map.
+  /**
+   * Once template is ready, builds the map.
    */
   ngAfterViewInit(): void {
+    // Calls the function wich draw the map.
     this.drawMap();
+    // Gets the settings from the DB.
     if (this.settings.query) {
       const builtQuery = this.queryBuilder.buildQuery(this.settings);
       this.dataQuery = this.apollo.watchQuery<any>({
@@ -84,6 +134,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           first: 100,
         },
       });
+      // Handles the settings data and changes the map accordingly.
       this.getData();
     }
 
@@ -96,7 +147,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => this.map.invalidateSize(), 100);
   }
 
-  /*  Create the map with all useful parameters
+  /**
+   * Creates the map with all useful parameters.
    */
   private drawMap(): void {
     const centerLong = this.settings.centerLong
@@ -106,22 +158,30 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       ? Number(this.settings.centerLat)
       : 0;
 
-    this.map = L.map(this.mapId, { zoomControl: false }).setView(
-      [centerLat, centerLong],
-      this.settings.zoom || 3
-    );
+    // Creates map
+    this.map = L.map(this.mapId, {
+      zoomControl: false,
+      minZoom: 2,
+      maxZoom: 18,
+      worldCopyJump: true,
+    }).setView([centerLat, centerLong], this.settings.zoom || 3);
 
+    // Adds a zoom control
     L.control
       .zoom({
         position: 'bottomleft',
       })
       .addTo(this.map);
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: 'Map',
-      noWrap: true,
-      minZoom: 1,
+    const basemap = this.basemapLayers[this.settings.basemap]
+      ? this.basemapLayers[this.settings.basemap]
+      : this.basemapLayers.OSM;
+    // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
+    L.esri.Vector.vectorBasemapLayer(basemap, {
+      apiKey: this.esriApiKey,
     }).addTo(this.map);
+
+    // Popup at marker click
     this.markersLayerGroup = L.featureGroup().addTo(this.map);
     this.markersLayerGroup.on('click', (event: any) => {
       this.selectedItem = this.data.find(
@@ -133,10 +193,87 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         .addTo(this.map);
     });
 
+    // Adds layer contorl
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
+
+    // Adds searchbar
+    const searchControl = L.esri.Geocoding.geosearch({
+      position: 'topleft',
+      placeholder: 'Enter an address or place e.g. 1 York St',
+      useMapBounds: false,
+      providers: [
+        L.esri.Geocoding.arcgisOnlineProvider({
+          apikey: this.esriApiKey,
+          nearby: {
+            lat: -33.8688,
+            lng: 151.2093,
+          },
+        }),
+      ],
+    }).addTo(this.map);
+
+    const results = L.layerGroup().addTo(this.map);
+
+    searchControl.on('results', (data: any) => {
+      results.clearLayers();
+      for (let i = data.results.length - 1; i >= 0; i--) {
+        const lat = Math.round(data.results[i].latlng.lat * 100000) / 100000;
+        const lng = Math.round(data.results[i].latlng.lng * 100000) / 100000;
+        const marker = L.circleMarker(data.results[i].latlng, MARKER_OPTIONS);
+        marker.bindPopup(`
+          <p>${data.results[i].properties.ShortLabel}</br>
+          <b>${'latitude: '}</b>${lat}</br>
+          <b>${'longitude: '}</b>${lng}</p>`);
+        results.addLayer(marker);
+        marker.openPopup();
+      }
+    });
+
+    // Adds legend to the map
+    // Styling is in the global style file
+    const legendControl = L.control({ position: 'bottomright' });
+
+    legendControl.onAdd = function (map: any) {
+      this.div = L.DomUtil.create('div', 'legend');
+      return this.div;
+    };
+
+    legendControl.update = function (data: any) {
+      const div = this.div;
+
+      div.innerHTML = '';
+      data.query?.clorophlets?.map((clorophlet: any) => {
+        let labels = '';
+        clorophlet.divisions.map((division: any) => {
+          if (division.label.length > 0) {
+            labels +=
+              '<i style="background:' +
+              division.color +
+              '"></i>' +
+              division.label +
+              '<br>';
+          }
+        });
+        if (labels.length > 0) {
+          div.innerHTML +=
+            '<div><h4>' + clorophlet.name + '</h4>' + labels + '<div>';
+        }
+      });
+      if (div.innerHTML.length === 0) {
+        div.style.display = 'none';
+      }
+    };
+
+    legendControl.addTo(this.map);
+
+    legendControl.update(this.settings);
+
+    // Categories
+    this.categoryField = this.settings.category;
   }
 
-  /*  Load the data, using widget parameters.
+  /**
+   * Loads the data, using widget parameters.
    */
   private getData(): void {
     this.map.closePopup(this.popupMarker);
@@ -153,23 +290,123 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           ('0' + today.getHours()).slice(-2) +
           ':' +
           ('0' + today.getMinutes()).slice(-2);
+        // Empties all variables used in map
         this.data = [];
+        this.categoryNames = [];
+        this.markersCategories = [];
         this.selectedItem = null;
         this.markersLayer.clearLayers();
-        for (const field in res.data) {
-          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            res.data[field].edges.map((x: any) =>
-              this.drawMarkers(myIcon, x.node)
-            );
-          }
-        }
+        this.setLayers(res);
       }
     );
   }
 
-  /*  Draw markers on the map if the record has coordinates
+  /**
+   * Adds each layer to the map.
+   *
+   * @param res data query result
    */
-  private drawMarkers(icon: any, item: any): void {
+  private setLayers(res: any): void {
+    // Removes map layers
+    if (this.layerControl) {
+      this.layerControl.remove();
+    }
+
+    // Loops throught fields to get all custom markers
+    for (const field in res.data) {
+      if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+        res.data[field].edges.map((x: any) => {
+          // Gets all markers categories
+          if (!this.categoryNames.includes(x.node[this.settings.category])) {
+            this.categoryNames.push(x.node[this.settings.category]);
+          }
+          // Draws all markers
+          this.drawMarker(x.node);
+        });
+      }
+    }
+
+    // Add custom marker categories for each
+    if (this.categoryNames.length !== 0) {
+      this.categoryNames.map((name: string) => {
+        this.overlays[name ? name : 'Markers'] = L.featureGroup
+          .subGroup(this.markersLayer, this.markersCategories[name])
+          .addTo(this.map);
+      });
+    } else {
+      this.overlays.markers = L.featureGroup(this.markersLayer).addTo(this.map);
+    }
+
+    // Loops throught clorophlets and add them to the map
+    if (this.settings.query.clorophlets) {
+      this.settings.query.clorophlets.map((value: any) => {
+        this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
+          style: (feature: any): any => {
+            let color = 'transparent';
+            for (const field in res.data) {
+              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+                res.data[field].edges.map((entry: any) => {
+                  if (
+                    entry.node[value.place].toString() ===
+                    feature.properties[value.geoJSONfield].toString()
+                  ) {
+                    value.divisions.map((div: any) => {
+                      if (applyFilters(entry.node, div.filter)) {
+                        color = div.color;
+                      }
+                    });
+                  }
+                });
+              }
+            }
+            return {
+              fillColor: color,
+              fillOpacity: value.opacity / 100 || 1,
+              weight: 0.5,
+              opacity: 1,
+              color: color === 'transparent' ? 'transparent' : 'white',
+            };
+          },
+        }).addTo(this.map);
+      });
+    }
+
+    // Loops throught online layers and add them to the map
+    if (this.settings.onlineLayers) {
+      this.settings.onlineLayers.map((layer: any) => {
+        this.overlays[layer.title] = L.esri.featureLayer({
+          url: layer.url + '/0',
+          simplifyFactor: 1,
+          apikey: this.esriApiKey,
+        });
+        this.overlays[layer.title].metadata((error: any) => {
+          if (!error) {
+            this.overlays[layer.title].addTo(this.map);
+          } else {
+            console.log('Error at loadind "' + layer.title + '"');
+            console.log(error);
+          }
+        });
+      });
+    }
+
+    // Set ups layer control if more that one layer is added
+    if (
+      this.categoryNames.length !== 0 ||
+      this.settings.onlineLayers.length !== 0
+    ) {
+      this.layerControl = L.control
+        .layers(null, this.overlays, { collapsed: true })
+        .addTo(this.map);
+    }
+  }
+
+  /**
+   * Draws markers on the map if the record has coordinates.
+   *
+   * @param item item to draw
+   */
+  private drawMarker(item: any): void {
     const latitude = Number(item[this.settings.latitude]);
     const longitude = Number(item[this.settings.longitude]);
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
@@ -185,11 +422,17 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         const options = MARKER_OPTIONS;
         Object.assign(options, { id: item.id });
         const marker = L.circleMarker([latitude, longitude], options);
-        this.markersLayer.addLayer(marker);
+        if (!this.markersCategories[item[this.categoryField]]) {
+          this.markersCategories[item[this.categoryField]] = [];
+        }
+        this.markersCategories[item[this.categoryField]].push(marker);
       }
     }
   }
 
+  /**
+   * Removes subscriptions of the component.
+   */
   public ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();

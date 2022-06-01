@@ -32,14 +32,86 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{
+            'components.widget.settings.map.category' | translate
+          }}</mat-label>
+          <mat-select formControlName="category">
+            <mat-option [value]="">{{
+              'common.input.none' | translate
+            }}</mat-option>
+            <mat-option *ngFor="let field of selectedFields" [value]="field">
+              {{ field }}
+            </mat-option>
+          </mat-select>
+          <mat-hint
+            >{{ 'components.widget.settings.map.tooltip.category' | translate
+            }}<safe-icon icon="layers" [inline]="true" [size]="14"></safe-icon
+          ></mat-hint>
+        </mat-form-field>
       </ng-container>
+    </div>
+    <div class="form-group">
+      <div class="form-group-title">
+        {{ 'components.widget.settings.map.layers.title' | translate }}
+      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.widget.settings.map.layers.select' | translate
+        }}</mat-label>
+        <input
+          type="text"
+          matInput
+          [(ngModel)]="search"
+          [ngModelOptions]="{ standalone: true }"
+          (ngModelChange)="getContent($event)"
+          autocomplete="off"
+          placeholder="{{ 'common.placeholder.search' | translate }}"
+        />
+        <div *ngIf="availableLayers.length > 0" class="layer-list">
+          <button
+            *ngFor="let layer of availableLayers"
+            mat-button
+            (click)="addOnlineLayer(layer)"
+          >
+            {{ layer.title }}
+            <safe-badge *ngFor="let tag of layer.tags">{{ tag }}</safe-badge>
+          </button>
+        </div>
+      </mat-form-field>
+      <h2
+        *ngIf="
+          tileForm.value.onlineLayers && tileForm.value.onlineLayers.length > 0
+        "
+      >
+        {{ ''components.widget.settings.map.layers.selected' | translate }}
+      </h2>
+      <h3 *ngFor="let layer of tileForm.value.onlineLayers">
+        {{ layer.title }}
+        <safe-button
+          icon="delete"
+          category="primary"
+          variant="danger"
+          (click)="removeOnlineLayer(layer.id)"
+        ></safe-button>
+      </h3>
     </div>
     <div class="form-group">
       <div class="form-group-title">
         {{ 'components.widget.settings.map.display.title' | translate }}
       </div>
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.widget.settings.map.display.basemap' | translate
+        }}</mat-label>
+        <mat-select formControlName="basemap" placeholder="OSM">
+          <mat-option *ngFor="let map of basemaps" [value]="map">
+            {{ map }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
       <mat-label>
-        {{ 'models.widget.map.zoom' | translate }}
+        {{ 'components.widget.settings.map.display.zoom' | translate }}
         <safe-icon
           icon="info"
           [matTooltip]="

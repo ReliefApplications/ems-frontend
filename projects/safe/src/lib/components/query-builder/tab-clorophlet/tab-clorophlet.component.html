@@ -1,0 +1,117 @@
+<div class="filter-list" *ngFor="let item of form.controls; index as i">
+  <form [formGroup]="$any(item)">
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input
+          type="text"
+          placeholder="Set a new name"
+          matInput
+          formControlName="name"
+        />
+      </mat-form-field>
+      <div class="deleteBtn">
+        <safe-button
+          icon="delete"
+          category="primary"
+          variant="danger"
+          (click)="removeClorophlet(i)"
+        ></safe-button>
+      </div>
+    </div>
+    <div class="filter-buttons" *ngIf="item.value.name">
+      <safe-button category="tertiary" (click)="fileInput.click()">{{
+        $any(form.controls)[i].controls.geoJSONname.value
+          ? $any(form.controls)[i].controls.geoJSONname.value
+          : 'Upload geoJSON'
+      }}</safe-button>
+      <input
+        hidden
+        #fileInput
+        type="file"
+        id="file{{ i }}"
+        accept=".json, .geojson"
+        (change)="uploadGeoJSON(i)"
+      />
+    </div>
+    <div *ngIf="item.value.geoJSONname">
+      <mat-form-field appearance="outline">
+        <mat-label>Identifier</mat-label>
+        <mat-select formControlName="place">
+          <mat-option
+            *ngFor="let field of selectableFields"
+            [value]="field.name"
+            >{{ field.name }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="extraInput">
+        <mat-label>GeoJSON Identifier</mat-label>
+        <mat-select formControlName="geoJSONfield">
+          <mat-option *ngFor="let field of geoJSONfields[i]" [value]="field">{{
+            field
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <mat-label>Opacity</mat-label>
+    <mat-slider
+      thumbLabel
+      tickInterval="1"
+      formControlName="opacity"
+      [min]="0"
+      [max]="100"
+    ></mat-slider>
+    <div *ngIf="item.value.place && item.value.geoJSONname">
+      <div formArrayName="divisions">
+        <div
+          *ngFor="
+            let division of $any(form.controls[i]).controls.divisions.controls;
+            let f = index
+          "
+          class="filter-list"
+          [formGroupName]="f"
+        >
+          <div>
+            <mat-form-field appearance="outline">
+              <mat-label>Label</mat-label>
+              <input type="text" matInput formControlName="label" />
+            </mat-form-field>
+            <div class="deleteBtn">
+              <safe-button
+                icon="delete"
+                category="primary"
+                variant="danger"
+                (click)="removeDivision(item, f)"
+              ></safe-button>
+            </div>
+          </div>
+          <div>
+            <mat-form-field appearance="outline">
+              <mat-label>Color</mat-label>
+              <h4></h4>
+              <input type="color" matInput formControlName="color" />
+            </mat-form-field>
+          </div>
+          <safe-tab-filter
+            [form]="
+              $any(form.controls[i]).controls.divisions.controls[f].controls
+                .filter
+            "
+            [fields]="selectableFields"
+          ></safe-tab-filter>
+        </div>
+      </div>
+      <div>
+        <safe-button category="tertiary" (click)="newDivision(item)"
+          >Add new division</safe-button
+        >
+      </div>
+    </div>
+  </form>
+</div>
+<div class="filter-buttons">
+  <safe-button category="tertiary" (click)="newClorophlet()"
+    >Add new clorophlet</safe-button
+  >
+</div>
