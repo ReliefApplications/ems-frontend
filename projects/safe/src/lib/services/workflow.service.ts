@@ -50,6 +50,7 @@ export class SafeWorkflowService {
    * @param id workflow id.
    */
   loadWorkflow(id: any): void {
+    this.workflow.next(null);
     this.apollo
       .query<GetWorkflowByIdQueryResponse>({
         query: GET_WORKFLOW_BY_ID,
@@ -113,7 +114,7 @@ export class SafeWorkflowService {
     } else {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectNotFound', {
-          value: this.translate.instant('common.workflow.one').toLowerCase(),
+          name: this.translate.instant('common.workflow.one').toLowerCase(),
         }),
         { error: true }
       );
@@ -139,8 +140,8 @@ export class SafeWorkflowService {
         }),
       };
       this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectNotUpdated', {
-          type: this.translate.instant('common.step.one').toLowerCase(),
+        this.translate.instant('common.notifications.objectUpdated', {
+          type: this.translate.instant('common.step.one'),
           value: step.name,
         })
       );

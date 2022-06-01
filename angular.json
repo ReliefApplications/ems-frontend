@@ -74,7 +74,13 @@
               },
               "projects/back-office/src/favicon.ico",
               "projects/back-office/src/assets",
-              "projects/back-office/src/web.config"
+              "projects/back-office/src/web.config",
+              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinymce/",
+                "output": "/tinymce/langs"
+              }
             ],
             "styles": [
               {
@@ -91,7 +97,9 @@
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
-              "node_modules/select2/dist/js/select2.min.js"
+              "node_modules/select2/dist/js/select2.min.js",
+              "node_modules/tinymce/tinymce.js",
+              "node_modules/tinymce/themes/silver/theme.js"
             ],
             "allowedCommonJsDependencies": [
               "minimatch",
@@ -100,7 +108,8 @@
               "survey-knockout",
               "surveyjs-widgets",
               "subscriptions-transport-ws",
-              "zen-observable"
+              "zen-observable",
+              "lodash"
             ]
           },
           "configurations": {
@@ -121,8 +130,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -155,8 +164,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -189,8 +198,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -223,8 +232,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -257,8 +266,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -291,42 +300,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ],
-              "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
-              }
-            },
-            "oort-ilo": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/back-office/src/environments/environment.ts",
-                  "with": "projects/back-office/src/environments/environment.oort.ilo.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "deployUrl": "/admin/",
-              "baseHref": "/admin/",
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -359,8 +334,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -491,7 +466,13 @@
               },
               "projects/front-office/src/favicon.ico",
               "projects/front-office/src/assets",
-              "projects/front-office/src/web.config"
+              "projects/front-office/src/web.config",
+              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinymce/",
+                "output": "/tinymce/langs"
+              }
             ],
             "styles": [
               {
@@ -509,7 +490,9 @@
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
-              "node_modules/select2/dist/js/select2.min.js"
+              "node_modules/select2/dist/js/select2.min.js",
+              "node_modules/tinymce/tinymce.js",
+              "node_modules/tinymce/themes/silver/theme.js"
             ],
             "allowedCommonJsDependencies": [
               "minimatch",
@@ -518,7 +501,8 @@
               "survey-knockout",
               "surveyjs-widgets",
               "subscriptions-transport-ws",
-              "zen-observable"
+              "zen-observable",
+              "lodash"
             ]
           },
           "configurations": {
@@ -539,8 +523,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -571,8 +555,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -603,8 +587,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -635,8 +619,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -667,8 +651,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -699,40 +683,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ],
-              "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
-              }
-            },
-            "oort-ilo": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/front-office/src/environments/environment.ts",
-                  "with": "projects/front-office/src/environments/environment.oort.ilo.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -763,8 +715,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -885,7 +837,6 @@
             "main": "projects/web-widgets/src/main.ts",
             "polyfills": "projects/web-widgets/src/polyfills.ts",
             "tsConfig": "projects/web-widgets/tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
@@ -893,7 +844,13 @@
                 "output": "/assets/i18n/"
               },
               "projects/web-widgets/src/favicon.ico",
-              "projects/web-widgets/src/assets"
+              "projects/web-widgets/src/assets",
+              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinymce",
+                "output": "/tinymce/langs"
+              }
             ],
             "styles": [
               "projects/web-widgets/src/styles.scss",
@@ -906,7 +863,18 @@
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
-              "node_modules/select2/dist/js/select2.min.js"
+              "node_modules/select2/dist/js/select2.min.js",
+              "node_modules/tinymce/tinymce.js",
+              "node_modules/tinymce/themes/silver/theme.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "minimatch",
+              "hammerjs",
+              "survey-creator",
+              "survey-knockout",
+              "surveyjs-widgets",
+              "subscriptions-transport-ws",
+              "zen-observable"
             ]
           },
           "configurations": {
@@ -914,13 +882,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 }
               ],
               "stylePreprocessorOptions": {
@@ -946,8 +914,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -1009,7 +977,6 @@
             "polyfills": "projects/web-widgets/src/polyfills.ts",
             "tsConfig": "projects/web-widgets/tsconfig.spec.json",
             "karmaConfig": "projects/web-widgets/karma.conf.js",
-            "inlineStyleLanguage": "scss",
             "assets": [
               "projects/web-widgets/src/favicon.ico",
               "projects/web-widgets/src/assets"

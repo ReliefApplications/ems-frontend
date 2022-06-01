@@ -185,7 +185,7 @@ export class SafeGridWidgetComponent implements OnInit {
     // Attaches the records to another one.
     if (options.attachToRecord && this.grid.selectedRows.length > 0) {
       await this.promisedAttachToRecord(
-        this.grid.selectedItems,
+        this.grid.selectedRows,
         options.targetForm,
         options.targetFormField,
         options.targetFormQuery
@@ -294,9 +294,13 @@ export class SafeGridWidgetComponent implements OnInit {
       } else {
         const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
           data: {
-            title: `Close workflow`,
+            title: this.translate.instant(
+              'components.widget.settings.grid.buttons.callback.workflow.close'
+            ),
             content: options.confirmationText,
-            confirmText: 'Yes',
+            confirmText: this.translate.instant(
+              'components.confirmModal.confirm'
+            ),
             confirmColor: 'primary',
           },
         });

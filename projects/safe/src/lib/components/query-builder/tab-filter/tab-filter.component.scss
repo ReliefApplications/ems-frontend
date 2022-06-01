@@ -1,24 +1,24 @@
 .filter-header {
-    display: flex;
-    align-items: baseline;
+  display: flex;
+  align-items: baseline;
 }
 
 .filter-row {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .filter-list {
-    margin-left: 24px;
-    border-left: 2px solid gray;
-    padding-left: 24px;
-    padding-bottom: 16px;
+  margin-left: 24px;
+  border-left: 2px solid gray;
+  padding-left: 24px;
+  padding-bottom: 16px;
 }
 
 .filter-buttons {
-    padding: 8px 0;
-    safe-button:first-child {
-        margin-right: 8px;
-    }
+  padding: 8px 0;
+  safe-button:first-child {
+    margin-right: 8px;
+  }
 }

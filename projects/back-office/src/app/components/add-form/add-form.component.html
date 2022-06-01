@@ -1,52 +1,104 @@
-<h1 mat-dialog-title>{{'common.newObject' | translate: { name: 'common.form.one' | translate } }}</h1>
+<h1 mat-dialog-title>{{ 'models.form.new' | translate }}</h1>
 <div mat-dialog-content>
-    <form [formGroup]="addForm">
-        <div class="form-group">
+  <form [formGroup]="addForm">
+    <div class="form-group">
+      <mat-form-field>
+        <mat-label>{{ 'common.name' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="name"
+          type="text"
+          placeholder="Enter a name"
+        />
+      </mat-form-field>
+      <mat-radio-group formControlName="binding" class="form-radio-group">
+        <mat-radio-button value="newForm">{{
+          'components.form.create.choice.blank' | translate
+        }}</mat-radio-button>
+        <mat-radio-button value="newResource">{{
+          'components.form.create.choice.resource' | translate
+        }}</mat-radio-button>
+        <mat-radio-button value="fromResource">{{
+          'components.form.create.choice.inherit' | translate
+        }}</mat-radio-button>
+      </mat-radio-group>
+      <ng-container *ngIf="addForm.controls.binding.value === 'fromResource'">
+        <mat-form-field>
+          <mat-label>{{
+            'components.form.create.template.title' | translate
+          }}</mat-label>
+          <mat-select
+            #resourceSelect
+            formControlName="resource"
+            (openedChange)="onOpenSelect($event)"
+            (selectionChange)="getResource($event)"
+          >
+            <mat-option
+              *ngFor="let resource of resources$ | async"
+              [value]="resource.id"
+            >
+              {{ resource.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <ng-container *ngIf="addForm.controls.resource.value !== null">
+          <div class="info-row">
+            <mat-slide-toggle
+              formControlName="inheritsTemplate"
+              class="form-slide-toggle"
+              >{{
+                'components.form.create.choice.template' | translate
+              }}</mat-slide-toggle
+            >
+            <mat-icon
+              class="info-icon"
+              [matTooltip]="
+                'components.form.create.template.tooltip' | translate
+              "
+              >info</mat-icon
+            >
+          </div>
+          <ng-container *ngIf="addForm.controls.inheritsTemplate.value">
             <mat-form-field>
-                <mat-label>{{'common.name' | translate}}</mat-label>
-                <input matInput formControlName="name" type="text" placeholder="Enter a name" />
+              <mat-label>{{
+                'components.form.create.template.from' | translate
+              }}</mat-label>
+              <mat-select
+                formControlName="template"
+                [placeholder]="
+                  'components.form.create.template.placeholder' | translate
+                "
+              >
+                <mat-option
+                  *ngFor="let template of templates"
+                  [value]="template.id"
+                >
+                  {{ template.name }}
+                  <mat-chip-list *ngIf="template.core" class="core-form">
+                    <mat-chip class="primary-chip" disabled>{{
+                      'models.form.core' | translate
+                    }}</mat-chip>
+                  </mat-chip-list>
+                </mat-option>
+              </mat-select>
             </mat-form-field>
-            <mat-radio-group formControlName="binding" class="form-radio-group">
-                <mat-radio-button value="newForm">{{'components.form.create.choice.blank' | translate}}</mat-radio-button>
-                <mat-radio-button value="newResource">{{'components.form.create.choice.resource' | translate}}</mat-radio-button>
-                <mat-radio-button value="fromResource">{{'components.form.create.choice.inherit' | translate}}</mat-radio-button>
-            </mat-radio-group>
-            <ng-container *ngIf="addForm.controls.binding.value === 'fromResource'">
-                <mat-form-field>
-                    <mat-label>{{'components.form.create.template.title' | translate}}</mat-label>
-                    <mat-select #resourceSelect formControlName="resource" (openedChange)="onOpenSelect($event)"
-                        (selectionChange)="getResource($event)">
-                        <mat-option *ngFor="let resource of resources$ | async" [value]="resource.id">
-                            {{resource.name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <ng-container *ngIf="addForm.controls.resource.value !== null">
-                    <div class="info-row">
-                        <mat-slide-toggle formControlName="inheritsTemplate" class="form-slide-toggle">{{'components.form.create.choice.template' | translate}}</mat-slide-toggle>
-                        <mat-icon class="info-icon"
-                            [matTooltip]="'components.form.create.template.tooltip' | translate">info</mat-icon>
-                    </div>
-                    <ng-container *ngIf="addForm.controls.inheritsTemplate.value">
-                        <mat-form-field>
-                            <mat-label>{{'forms.fromTemplate' | translate}}</mat-label>
-                            <mat-select formControlName="template" [placeholder]="'components.form.create.template.placeholder' | translate">
-                                <mat-option *ngFor="let template of templates" [value]="template.id">
-                                    {{template.name}}
-                                    <mat-chip-list *ngIf="template.core" class="core-form">
-                                        <mat-chip class="primary-chip" disabled>{{'models.form.core' | translate}}</mat-chip>
-                                    </mat-chip-list>
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </ng-container>
-                </ng-container>
-            </ng-container>
-        </div>
-    </form>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+  </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
-    <button mat-flat-button [mat-dialog-close]="addForm.value" cdkFocusInitial color="primary"
-        [disabled]="!addForm.valid">{{'common.create' | translate}}</button>
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="addForm.value"
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!addForm.valid"
+  >
+    {{ 'common.create' | translate }}
+  </button>
 </div>

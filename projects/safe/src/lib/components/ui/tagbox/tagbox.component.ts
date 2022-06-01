@@ -43,9 +43,11 @@ export class SafeTagboxComponent implements OnInit {
       this.choicesEmpty = choices.length === 0;
       this.selectedChoices = this.choicesEmpty
         ? []
-        : this.parentControl.value.map((value: string) =>
-            choices.find((choice) => value === choice[this.valueKey])
-          );
+        : this.parentControl.value
+            .map((value: string) =>
+              choices.find((choice) => value === choice[this.valueKey])
+            )
+            .filter((x: any) => x);
       this.availableChoices.next(
         choices.filter(
           (choice) =>

@@ -18,7 +18,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { SafePreferencesModalModule } from '../preferences-modal/preferences-modal.module';
+import { SafeDateModule } from '../../pipes/date/date.module';
 
+/**
+ * SafeLayoutModule is a class used to manage all the modules and components
+ * related to the main layout of the platform.
+ */
 @NgModule({
   declarations: [SafeLayoutComponent],
   imports: [
@@ -40,6 +46,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
     TranslateModule,
     SafeSearchMenuModule,
     OverlayModule,
+    SafePreferencesModalModule,
+    SafeDateModule,
   ],
   exports: [SafeLayoutComponent],
 })

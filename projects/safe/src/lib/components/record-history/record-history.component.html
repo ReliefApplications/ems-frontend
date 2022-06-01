@@ -1,28 +1,62 @@
 <div class="history-header">
   <div>
-    <h2>{{'common.history' | translate}}</h2>
-    <safe-button [isIcon]="true" icon="close" style="float: right" (click)="onCancel()">
+    <h2>{{ 'common.history' | translate }}</h2>
+    <safe-button
+      [isIcon]="true"
+      icon="close"
+      style="float: right"
+      (click)="onCancel()"
+    >
     </safe-button>
   </div>
   <div style="clear: both">
     <mat-form-field>
-      <mat-date-range-input (click)="rangePicker.open()" [rangePicker]="rangePicker">
-        <input #startDate (dateInput)="filtersDate['startDate'] = $event.value" matStartDate placeholder="Start date"
-          readonly>
-        <input #endDate (dateInput)="filtersDate['endDate'] = $event.value" matEndDate placeholder="End date" readonly>
+      <mat-date-range-input
+        (click)="rangePicker.open()"
+        [rangePicker]="rangePicker"
+      >
+        <input
+          #startDate
+          (dateInput)="filtersDate['startDate'] = $event.value"
+          matStartDate
+          placeholder="Start date"
+          readonly
+        />
+        <input
+          #endDate
+          (dateInput)="filtersDate['endDate'] = $event.value"
+          matEndDate
+          placeholder="End date"
+          readonly
+        />
       </mat-date-range-input>
-      <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="rangePicker"
+      ></mat-datepicker-toggle>
       <mat-date-range-picker #rangePicker>
         <mat-date-range-picker-actions>
-          <safe-button matDateRangePickerCancel (click)="clearDateFilter()">{{'common.clear' | translate}}</safe-button>
-          <safe-button category="secondary" variant="primary" matDateRangePickerApply (click)="applyFilter()">{{'common.filter.apply' | translate}}</safe-button>
+          <safe-button matDateRangePickerCancel (click)="clearDateFilter()">{{
+            'common.clear' | translate
+          }}</safe-button>
+          <safe-button
+            category="secondary"
+            variant="primary"
+            matDateRangePickerApply
+            (click)="applyFilter()"
+            >{{ 'common.filter.apply' | translate }}</safe-button
+          >
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
   </div>
   <div class="actions">
-    <safe-button category="secondary" variant="primary" [matMenuTriggerFor]="menu">
-      {{'components.history.download' | translate}}
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [matMenuTriggerFor]="menu"
+    >
+      {{ 'components.history.download' | translate }}
     </safe-button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onDownload('csv')">.csv</button>
@@ -31,25 +65,45 @@
   </div>
 </div>
 <div class="history-container">
-  <ng-container *ngFor="let item of filterHistory; let index=index">
+  <ng-container *ngFor="let item of filterHistory; let index = index">
     <mat-expansion-panel (closed)="showMore = false">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <span class="history-date">{{item.created | date:'dd/MM/yyyy'}}</span>
-          {{item.created | date:'HH:mm'}}
-          <span class="history-user" *ngIf="item.createdBy">{{item.createdBy}}</span>
+          <span class="history-date">{{
+            item.created | safeDate: 'shortDate'
+          }}</span>
+          {{ item.created | safeDate: 'shortTime' }}
+          <span class="history-user" *ngIf="item.createdBy">{{
+            item.createdBy
+          }}</span>
         </mat-panel-title>
       </mat-expansion-panel-header>
 
       <ng-template matExpansionPanelContent>
-        <div class="changes-content" *ngFor="let value of showMore ? item.changes : item.changes.slice(0, 4)"
-          [innerHTML]="value"></div>
+        <div
+          class="changes-content"
+          *ngFor="
+            let value of showMore ? item.changes : item.changes.slice(0, 4)
+          "
+          [innerHTML]="value"
+        ></div>
         <div class="full-history">
-          <safe-button variant="primary" *ngIf="!showMore && item.changes.length > 4"
-            (click)="showMore = true">{{'common.pagination.loadMore' | translate}} ({{item.changes.length - 4}})</safe-button>
+          <safe-button
+            variant="primary"
+            *ngIf="!showMore && item.changes.length > 4"
+            (click)="showMore = true"
+            >{{ 'common.pagination.loadMore' | translate }} ({{
+              item.changes.length - 4
+            }})</safe-button
+          >
         </div>
-        <safe-button icon="update" class="revert-icon" (click)="onRevert(item)" *ngIf="index > 0">
-          {{'components.history.preview' | translate}}
+        <safe-button
+          icon="update"
+          class="revert-icon"
+          (click)="onRevert(item)"
+          *ngIf="index > 0"
+        >
+          {{ 'components.history.preview' | translate }}
         </safe-button>
       </ng-template>
     </mat-expansion-panel>

@@ -1,7 +1,9 @@
 <h1 mat-dialog-title>
   {{
-    (data.pullJob ? 'common.editObject' : 'common.newObject')
-      | translate: { name: 'common.pullJob.one' | translate }
+    data.pullJob
+      ? ('common.editObject'
+        | translate: { name: 'common.pullJob.one' | translate })
+      : ('models.pullJob.new' | translate)
   }}
 </h1>
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
@@ -169,8 +171,8 @@
               matInput
               formControlName="rawMapping"
               placeholder="Please enter a JSON for the data mapping between the API and the Form."
-              [matTextareaAutosize]="true"
-              [matAutosizeMinRows]="2"
+              [cdkTextareaAutosize]="true"
+              [cdkAutosizeMinRows]="2"
             ></textarea>
           </mat-form-field>
         </ng-container>

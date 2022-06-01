@@ -1,20 +1,20 @@
 .safe-add-application {
-    width: 192px;
-    height: 192px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    border-radius: 8px;
+  width: 192px;
+  height: 192px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 8px;
 
-    safe-icon {
-        margin-top: 72px;
-    }
+  safe-icon {
+    margin-top: 72px;
+  }
 
-    span {
-        font-weight: 500;
-        margin-bottom: 12px;
-        font-size: 20px;
-    }
+  span {
+    font-weight: 500;
+    margin-bottom: 12px;
+    font-size: 20px;
+  }
 }

@@ -6,13 +6,11 @@ describe('ShareUrlComponent', () => {
   let component: ShareUrlComponent;
   let fixture: ComponentFixture<ShareUrlComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ShareUrlComponent],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [ShareUrlComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ShareUrlComponent);

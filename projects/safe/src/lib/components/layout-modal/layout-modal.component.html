@@ -7,7 +7,9 @@
   [matTooltip]="'common.close' | translate"
 >
 </safe-button>
-<h1 mat-dialog-title>{{ 'components.widget.settings.grid.layouts.add.choice.create' | translate }}</h1>
+<h1 mat-dialog-title>
+  {{ 'components.widget.settings.grid.layouts.add.choice.create' | translate }}
+</h1>
 <div mat-dialog-content class="mat-dialog-content" *ngIf="form">
   <form [formGroup]="form">
     <div class="form-group">
@@ -22,20 +24,10 @@
         [form]="$any(form.controls.query)"
         [templates]="templates"
         [queryName]="data.queryName"
+        [layoutPreviewData]="{form, defaultLayout: data.layout?.display}"
       ></safe-query-builder>
     </div>
   </form>
-  <div class="form-group">
-    <div class="form-group-title">{{ 'common.preview' | translate }}</div>
-    <div class="info-text">{{'components.form.layout.update.preview.description' | translate}}</div>
-    <safe-core-grid
-      [defaultLayout]="data.layout?.display || {}"
-      [settings]="gridSettings"
-      style="height: 410px"
-      (layoutChanged)="onGridLayoutChange($event)"
-    >
-    </safe-core-grid>
-  </div>
 </div>
 <div mat-dialog-actions class="mat-dialog-actions" align="end">
   <button mat-button (click)="onClose()">

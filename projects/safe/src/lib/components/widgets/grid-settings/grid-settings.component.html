@@ -7,37 +7,44 @@
         <mat-label>{{ 'common.title' | translate }}</mat-label>
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
+      <ng-container formGroupName="query">
+        <div class="form-group-row">
+          <mat-form-field appearance="outline">
+            <mat-label>{{
+              'components.queryBuilder.dataset.select' | translate
+            }}</mat-label>
+            <input
+              type="text"
+              [placeholder]="
+                'components.queryBuilder.dataset.select' | translate
+              "
+              matInput
+              formControlName="name"
+              [matAutocomplete]="auto"
+            />
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+              <mat-option
+                *ngFor="let option of filteredQueries"
+                [value]="option"
+              >
+                {{ option }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'models.form.template' | translate }}</mat-label>
+            <mat-select formControlName="template">
+              <mat-option>-</mat-option>
+              <mat-option
+                *ngFor="let template of templates"
+                [value]="template.id"
+                >{{ template.name }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </ng-container>
     </div>
-    <ng-container formGroupName="query">
-      <mat-form-field appearance="outline">
-        <mat-label>{{
-          'components.queryBuilder.dataset.select' | translate
-        }}</mat-label>
-        <input
-          type="text"
-          [placeholder]="'components.queryBuilder.dataset.select' | translate"
-          matInput
-          formControlName="name"
-          [matAutocomplete]="auto"
-        />
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-          <mat-option *ngFor="let option of filteredQueries" [value]="option">
-            {{ option }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'models.form.template' | translate }}</mat-label>
-        <mat-select formControlName="template">
-          <mat-option>-</mat-option>
-          <mat-option
-            *ngFor="let template of templates"
-            [value]="template.id"
-            >{{ template.name }}</mat-option
-          >
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
     <!-- SELECTION OF LAYOUTS -->
     <div class="form-group" *ngIf="queryName">
       <div class="form-group-title">
@@ -72,6 +79,12 @@
       <mat-slide-toggle formControlName="addRecord">
         {{ 'components.widget.settings.grid.actions.add' | translate }}
       </mat-slide-toggle>
+      <mat-slide-toggle formControlName="export">
+        {{ 'components.widget.settings.grid.actions.export' | translate }}
+      </mat-slide-toggle>
+      <mat-slide-toggle formControlName="showDetails">
+        {{ 'components.widget.settings.grid.actions.showDetails' | translate }}
+      </mat-slide-toggle>
     </div>
     <!-- BUTTONS -->
     <div class="form-group">
@@ -103,7 +116,8 @@
               {{
                 floatingButton.value.name.length > 0
                   ? floatingButton.value.name
-                  : ('components.widget.settings.grid.buttons.defaultName' | translate)
+                  : ('components.widget.settings.grid.buttons.defaultName'
+                    | translate)
               }}
               <safe-icon
                 *ngIf="floatingButton.invalid"

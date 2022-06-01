@@ -29,7 +29,10 @@
       variant="primary"
       [matMenuTriggerFor]="menu"
     >
-      {{'common.downloadObject' | translate: { name: 'common.record.few' | translate } }}
+      {{
+        'common.downloadObject'
+          | translate: { name: 'common.record.few' | translate }
+      }}
     </safe-button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onDownload('csv')">.csv</button>
@@ -39,24 +42,28 @@
       icon="file_upload"
       category="secondary"
       variant="primary"
-      matTooltip="File should contain one record per row. Header row contains the names of data fields."
-      [matMenuTriggerFor]="matUploadMenu"
+      [matTooltip]="'components.records.upload.hint' | translate"
+      (click)="showUpload = !showUpload"
+      cdkOverlayOrigin
+      #uploadTrigger="cdkOverlayOrigin"
       style="margin-left: 1rem"
     >
-      {{'common.uploadObject' | translate: { name: 'common.record.few' | translate } }}
+      {{
+        'common.uploadObject'
+          | translate: { name: 'common.record.few' | translate }
+      }}
     </safe-button>
-    <mat-menu #matUploadMenu="matMenu">
-      <button mat-menu-item (click)="onDownloadTemplate()">
-        {{ 'common.downloadTemplate' | translate }}
-      </button>
-      <input
-        #xlsxFile
-        type="file"
-        data-max-size="5120"
-        accept=".xlsx"
-        (change)="onFileChange($event)"
-      />
-    </mat-menu>
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="uploadTrigger"
+      [cdkConnectedOverlayOpen]="showUpload"
+    >
+      <app-upload-menu
+        (close)="showUpload = false"
+        (upload)="onFileChange($event)"
+        (download)="onDownloadTemplate()"
+      ></app-upload-menu>
+    </ng-template>
   </div>
 </div>
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>

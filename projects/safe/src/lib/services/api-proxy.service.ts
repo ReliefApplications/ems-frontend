@@ -23,7 +23,20 @@ export class SafeApiProxyService {
     @Inject('environment') environment: any,
     private http: HttpClient
   ) {
-    this.baseUrl = environment.apiUrl;
+    this.baseUrl = environment.apiUrl + '/proxy/';
+  }
+
+  /**
+   * Build headers with the authentication token to API url.
+   */
+  private buildHeaders(): HttpHeaders {
+    const token = localStorage.getItem('idtoken');
+    return new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'Content-Type': 'application/json',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Authorization: `Bearer ${token}`,
+    });
   }
 
   /**
@@ -31,33 +44,38 @@ export class SafeApiProxyService {
    */
   public buildPingRequest(name: string | undefined, pingUrl: string): any {
     if (name) {
-      const url = `${this.baseUrl}/${name}${pingUrl}`;
-      const token = localStorage.getItem('idtoken');
-      const headers = new HttpHeaders({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        'Content-Type': 'application/json',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: `Bearer ${token}`,
-      });
+      const url = `${this.baseUrl}${name}${pingUrl}`;
+      const headers = this.buildHeaders();
       return this.http.get(url, { headers });
     }
     return null;
   }
 
   /**
-   * Builds a http request
+   * Builds a get http request
    *
    * @param url URL string
    * @returns http request
    */
   public promisedRequestWithHeaders(url: string): Promise<any> {
-    const token = localStorage.getItem('idtoken');
-    const headers = new HttpHeaders({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'Content-Type': 'application/json',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Authorization: `Bearer ${token}`,
-    });
+    const headers = this.buildHeaders();
     return this.http.get(url, { headers }).toPromise();
+  }
+
+  /**
+   * Builds a post http request
+   *
+   * @param url URL string.
+   * @param body body of the request.
+   * @param options standard http otions.
+   * @returns Promised http request
+   */
+  public buildPostRequest(
+    url: string,
+    body: any,
+    options: any = {}
+  ): Promise<ArrayBuffer> {
+    const headers = this.buildHeaders();
+    return this.http.post(url, body, { ...options, headers }).toPromise();
   }
 }

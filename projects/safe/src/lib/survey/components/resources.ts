@@ -274,7 +274,7 @@ export const init = (
             // return !hasUniqueRecord(obj.resource);
           }
         },
-        visibleIndex: 3,
+        visibleIndex: 2,
       });
       survey.Serializer.addProperty('resources', {
         name: 'canDelete:boolean',
@@ -335,6 +335,20 @@ export const init = (
       survey.Serializer.addProperty('resources', {
         name: 'inlineEdition:boolean',
         displayName: 'Inline edition',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      survey.Serializer.addProperty('resources', {
+        name: 'export:boolean',
+        displayName: 'Export records',
         category: 'Custom Questions',
         dependsOn: 'resource',
         visibleIf: (obj: any) => {

@@ -12,18 +12,22 @@ import {
 } from '../../../../graphql/queries';
 import { Permission, Role } from '../../../../models/user.model';
 
+/**
+ * This interface is used to describe the structure of the data that will be passed to the dialog modal.
+ */
 interface DialogData {
   role: Role;
   application: boolean;
 }
 
+/**
+ * This component is used to display a modal to edit the properties of a role.
+ */
 @Component({
   selector: 'safe-edit-role',
   templateUrl: './edit-role.component.html',
   styleUrls: ['./edit-role.component.scss'],
 })
-/*  Modal to add a role.
- */
 export class SafeEditRoleComponent implements OnInit {
   // === DATA ===
   public permissions: Permission[] = [];
@@ -32,6 +36,15 @@ export class SafeEditRoleComponent implements OnInit {
   // === REACTIVE FORM ===
   roleForm: FormGroup = new FormGroup({});
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param formBuilder This is the Angular FormBuilder class. It's used to build forms.
+   * @param dialogRef This is the reference of the dialog modal that will be opened.
+   * @param data This is the data that is passed to the dialog when it is opened.
+   * @param apollo This is the Apollo service that is used to make GraphQL queries and mutations.
+   */
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeEditRoleComponent>,
@@ -39,7 +52,8 @@ export class SafeEditRoleComponent implements OnInit {
     private apollo: Apollo
   ) {}
 
-  /*  Load permissions and build the form.
+  /**
+   * Loads permissions and builds the form.
    */
   ngOnInit(): void {
     this.apollo
@@ -86,7 +100,8 @@ export class SafeEditRoleComponent implements OnInit {
     });
   }
 
-  /*  Close the modal without sending any data.
+  /**
+   * Closes the modal without sending any data.
    */
   onClose(): void {
     this.dialogRef.close();

@@ -62,13 +62,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translateService: TranslateService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
     this.formActive = false;
     this.routeSubscription = this.route.params.subscribe((params) => {
+      this.loading = true;
       this.id = params.id;
       this.workflowService.loadWorkflow(this.id);
     });
@@ -111,6 +112,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.workflow = workflow;
           this.canUpdate = this.workflow.canUpdate || false;
         } else {
+          this.loading = true;
           this.steps = [];
         }
       }
@@ -198,11 +200,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.activeStep >= 0 ? this.steps[this.activeStep] : null;
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: 'Delete step',
-          content:
-            `Are you sure you want to delete ${step.name}?` +
-            `\n This action cannot be undone.`,
-          confirmText: 'Delete',
+          title: this.translate.instant('common.deleteObject', {
+            name: this.translate.instant('common.step.one'),
+          }),
+          content: this.translate.instant(
+            'pages.workflow.deleteStep.confirmationMessage',
+            { step: step.name }
+          ),
+          confirmText: this.translate.instant('components.confirmModal.delete'),
           confirmColor: 'warn',
         },
       });
@@ -218,12 +223,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             .subscribe((res) => {
               if (res.data) {
                 this.snackBar.openSnackBar(
-                  this.translateService.instant(
-                    'common.notifications.objectDeleted',
-                    {
-                      value: this.translateService.instant('common.step.one'),
-                    }
-                  )
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.step.one'),
+                  })
                 );
                 this.steps = this.steps.filter(
                   (x) => x.id !== res.data?.deleteStep.id
@@ -282,12 +284,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            this.translateService.instant(
-              'common.notifications.objectReordered',
-              {
-                type: this.translateService.instant('common.step.one'),
-              }
-            )
+            this.translate.instant('common.notifications.objectReordered', {
+              type: this.translate.instant('common.step.one'),
+            })
           );
           if (currentStep) {
             const index = steps.findIndex((x) => x.id === currentStep.id);
@@ -296,13 +295,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.steps = steps;
         } else {
           this.snackBar.openSnackBar(
-            this.translateService.instant(
-              'common.notifications.objectNotEdited',
-              {
-                type: this.translateService.instant('common.workflow.one'),
-                error: res.errors ? res.errors[0].message : '',
-              }
-            )
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.workflow.one'),
+              error: res.errors ? res.errors[0].message : '',
+            })
           );
         }
       });
@@ -317,16 +313,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else if (this.activeStep + 1 === this.steps.length) {
       this.onOpenStep(0);
       this.snackBar.openSnackBar(
-        this.translateService.instant(
-          'models.workflow.notifications.goToStep',
-          {
-            step: this.steps[0].name,
-          }
-        )
+        this.translate.instant('models.workflow.notifications.goToStep', {
+          step: this.steps[0].name,
+        })
       );
     } else {
       this.snackBar.openSnackBar(
-        this.translateService.instant(
+        this.translate.instant(
           'models.workflow.notifications.cannotGoToNextStep'
         ),
         { error: true }

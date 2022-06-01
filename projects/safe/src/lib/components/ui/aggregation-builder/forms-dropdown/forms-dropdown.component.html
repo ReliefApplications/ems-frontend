@@ -1,10 +1,29 @@
 <mat-form-field appearance="outline">
-  <mat-label>{{'components.aggregationBuilder.dataset.select' | translate}}</mat-label>
-  <input type="text" [placeholder]="'common.placeholder.search' | translate" matInput [formControl]="sourceFormControl" [matAutocomplete]="auto">
-  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayName.bind(this)" (opened)="onOpen($event)" (closed)="onClose($event)">
+  <mat-label>{{
+    'components.aggregationBuilder.dataset.select' | translate
+  }}</mat-label>
+  <input
+    type="text"
+    [placeholder]="'common.placeholder.search' | translate"
+    matInput
+    [formControl]="sourceFormControl"
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete
+    autoActiveFirstOption
+    #auto="matAutocomplete"
+    [displayWith]="displayName.bind(this)"
+    (opened)="onOpen($event)"
+    (closed)="onClose($event)"
+  >
     <mat-option *ngFor="let form of filteredForms" [value]="form.id">
-      {{form.name}}
-      <safe-icon *ngIf="form.core" icon="storage" variant="primary" [size]="20"></safe-icon>
+      {{ form.name }}
+      <safe-icon
+        *ngIf="form.core"
+        icon="storage"
+        variant="primary"
+        [size]="20"
+      ></safe-icon>
     </mat-option>
   </mat-autocomplete>
 </mat-form-field>

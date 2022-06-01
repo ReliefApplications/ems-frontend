@@ -1,16 +1,16 @@
 .advanced-filtering {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .map-default-settings {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 
-    mat-form-field {
-        flex: 1;
-    }
+  mat-form-field {
+    flex: 1;
+  }
 }

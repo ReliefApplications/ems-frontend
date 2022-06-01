@@ -162,9 +162,7 @@ export class FormComponent implements OnInit, OnDestroy {
               this.translateService.instant(
                 'common.notifications.objectNotUpdated',
                 {
-                  type: this.translateService
-                    .instant('common.step.one')
-                    .toLowerCase(),
+                  type: this.translateService.instant('common.step.one'),
                   error: res.errors[0].message,
                 }
               ),

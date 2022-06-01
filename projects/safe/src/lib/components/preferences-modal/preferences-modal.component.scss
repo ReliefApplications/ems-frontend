@@ -1,0 +1,10 @@
+:host {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+mat-dialog-content {
+  flex-grow: 1;
+  max-height: initial;
+}

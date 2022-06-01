@@ -1,5 +1,12 @@
 import { Apollo } from 'apollo-angular';
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
@@ -7,7 +14,6 @@ import {
 } from '@angular/material/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import { v4 as uuidv4 } from 'uuid';
 import * as Survey from 'survey-angular';
 import {
   GetRecordByIdQueryResponse,
@@ -31,6 +37,9 @@ import { RecordHistoryModalComponent } from '../record-history-modal/record-hist
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Interface that describes the structure of the data that will be shown in the dialog
+ */
 interface DialogData {
   recordId: string;
   locale?: string;
@@ -39,12 +48,15 @@ interface DialogData {
   template?: string;
 }
 
+/**
+ * Component used to display a modal to modify a record
+ */
 @Component({
   selector: 'safe-record-modal',
   templateUrl: './record-modal.component.html',
   styleUrls: ['./record-modal.component.scss'],
 })
-export class SafeRecordModalComponent implements OnInit {
+export class SafeRecordModalComponent implements AfterViewInit {
   // === DATA ===
   public loading = true;
   public form?: Form;
@@ -56,15 +68,37 @@ export class SafeRecordModalComponent implements OnInit {
   private pages = new BehaviorSubject<any[]>([]);
   public canEdit: boolean | undefined = false;
 
-  public containerId: string;
-  public containerNextId = '';
+  @ViewChild('formContainer', { static: false })
+  formContainer!: ElementRef;
+  @ViewChild('formContainerNext', { static: false })
+  formContainerNext!: ElementRef;
 
   environment: any;
 
+  /**
+   * Getter for the different pages of the form
+   *
+   * @returns The pages as an observable
+   */
   public get pages$(): Observable<any[]> {
     return this.pages.asObservable();
   }
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param dialogRef This is the reference to the dialog that is being opened.
+   * @param data This is the data that is passed to the modal when it is opened.
+   * @param environment This is the environment in which we run the application.
+   * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
+   * @param dialog This is the Material dialog service
+   * @param downloadService This is the service that is used to download files
+   * @param authService This is the service that handles the authentication of the user
+   * @param snackBar This is the service that allows you to display a snackbar message to the user.
+   * @param formBuilderService This is the service that will be used to build forms.
+   * @param translate This is the service that allows us to translate the text in the modal.
+   */
   constructor(
     public dialogRef: MatDialogRef<SafeRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -77,14 +111,10 @@ export class SafeRecordModalComponent implements OnInit {
     private formBuilderService: SafeFormBuilderService,
     private translate: TranslateService
   ) {
-    this.containerId = uuidv4();
-    if (this.data.compareTo) {
-      this.containerNextId = uuidv4();
-    }
     this.environment = environment;
   }
 
-  async ngOnInit(): Promise<void> {
+  async ngAfterViewInit(): Promise<void> {
     this.canEdit = this.data.canUpdate;
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
     defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
@@ -143,12 +173,17 @@ export class SafeRecordModalComponent implements OnInit {
         this.selectedTabIndex = survey.currentPageNo;
       }
     );
+    this.survey.onUpdateQuestionCssClasses.add(
+      (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
+    );
     this.survey.data = this.record.data;
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
     this.survey.mode = 'display';
     this.survey.showNavigationButtons = 'none';
+    this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showProgressBar = 'off';
-    this.survey.render(this.containerId);
+    this.survey.render(this.formContainer.nativeElement);
+    setTimeout(() => {}, 100);
     this.setPages();
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
@@ -162,6 +197,7 @@ export class SafeRecordModalComponent implements OnInit {
       this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';
       this.surveyNext.mode = 'display';
       this.surveyNext.showNavigationButtons = 'none';
+      this.surveyNext.focusFirstQuestionAutomatic = false;
       this.surveyNext.showProgressBar = 'off';
       // Set list of updated questions
       const updatedQuestions: string[] = [];
@@ -194,11 +230,20 @@ export class SafeRecordModalComponent implements OnInit {
           }
         }
       );
-      this.surveyNext.render(this.containerNextId);
+      this.surveyNext.onUpdateQuestionCssClasses.add(
+        (survey: Survey.SurveyModel, options: any) =>
+          this.onSetCustomCss(options)
+      );
+      this.surveyNext.render(this.formContainerNext.nativeElement);
     }
     this.loading = false;
   }
 
+  /**
+   * Shows a page of the form
+   *
+   * @param i Index of the page to show
+   */
   public onShowPage(i: number): void {
     this.survey.currentPageNo = i;
     this.selectedTabIndex = i;
@@ -207,7 +252,11 @@ export class SafeRecordModalComponent implements OnInit {
     }
   }
 
-  /* Download the file.
+  /**
+   * Download the file.
+   *
+   * @param survey The survey from which we download the file
+   * @param options Options regarding the download
    */
   private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
     const xhr = new XMLHttpRequest();
@@ -235,10 +284,16 @@ export class SafeRecordModalComponent implements OnInit {
     xhr.send();
   }
 
+  /**
+   * Handles the edition of the record and closes the dialog
+   */
   public onEdit(): void {
     this.dialogRef.close(true);
   }
 
+  /**
+   * Set the pages of the form
+   */
   private setPages(): void {
     const pages = [];
     if (this.survey) {
@@ -258,6 +313,12 @@ export class SafeRecordModalComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  /**
+   * Open a dialog modal to confirm the recovery of data
+   *
+   * @param record The record whose data we need to recover
+   * @param version The version to recover
+   */
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
     const date = new Date(parseInt(version.created, 0));
@@ -266,9 +327,12 @@ export class SafeRecordModalComponent implements OnInit {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant('components.record.recovery.title'),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });
@@ -315,5 +379,16 @@ export class SafeRecordModalComponent implements OnInit {
           autoFocus: false,
         });
       });
+  }
+
+  /**
+   * Add custom CSS classes to the survey elements.
+   *
+   * @param survey current survey.
+   * @param options survey options.
+   */
+  private onSetCustomCss(options: any): void {
+    const classes = options.cssClasses;
+    classes.content += 'safe-qst-content';
   }
 }

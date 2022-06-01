@@ -1,1 +1,1184 @@
-{"common":{"add":"******","child":"******","aggregation":{"few":"******","none":"******","one":"******"},"apiConfiguration":{"few":"******","none":"******","one":"******"},"application":{"few":"******","none":"******","one":"******"},"back":"******","cancel":"******","channel":{"few":"******","none":"******","one":"******"},"dashboard":{"few":"******","none":"******","one":"******"},"clear":"******","close":"******","confirm":"******","create":"******","createdOn":"******","delete":"******","deleteObject":"******","display":"******","downloadObject":"******","downloadTemplate":"******","duplicate":"******","share":"******","edit":"******","editObject":"******","email":{"few":"******","none":"******","one":"******"},"export":"******","exportObject":"******","false":"******","field":{"few":"******","none":"******","one":"******"},"filter":{"apply":"******","clear":"******","hide":"******","show":"******"},"form":{"few":"******","none":"******","one":"******"},"general":"******","history":"******","id":"******","input":{"dateRange":"******","none":"******","rawJson":"******"},"layout":{"few":"******","none":"******","one":"******"},"modifiedOn":"******","name":"******","newObject":"******","next":"******","pagination":{"loadMore":"******","empty":"******"},"placeholder":{"email":"******","name":"******","search":"******","title":"******"},"platform":{"backOffice":"******"},"positionAttribute":{"few":"******","none":"******","one":"******"},"positionCategory":{"few":"******","none":"******","one":"******"},"preview":"******","previous":"******","publish":"******","pullJob":{"few":"******","none":"******","one":"******"},"record":{"few":"******","none":"******","one":"******"},"resource":{"few":"******","none":"******","one":"******"},"role":{"few":"******","none":"******","one":"******"},"save":"******","saveChanges":"******","searchObject":"******","select":"******","settings":"******","status":"******","status_active":"******","status_archived":"******","status_pending":"******","deleted":"******","step":{"few":"******","none":"******","one":"******"},"subscription":{"few":"******","none":"******","one":"******"},"title":"******","true":"******","update":"******","uploadObject":"******","user":{"few":"******","none":"******","one":"******"},"value":{"few":"******","none":"******","one":"******"},"page":{"few":"******","none":"******","one":"******"},"workflow":{"few":"******","none":"******","one":"******"},"label":"******","viewObject":"******","notifications":{"accessNotProvided":"******","objectLocked":"******","objectNotCreated":"******","objectCreated":"******","objectUpdated":"******","objectNotUpdated":"******","objectDeleted":"******","objectNotDeleted":"******","objectReordered":"******","objectNotDuplicated":"******","objectDuplicated":"******","copiedToClipboard":"******","objectInvited":"******","objectNotInvited":"******","objectNotFound":"******","platformAccessNotGranted":"******","readAll":"******","alreadyExists":"******","loadedFromCache":"******","unlocked":"******","accessDenied":"******","statusUpdated":"******","noOpened":"******","formatInvalid":"******","dataRecovered":"******"},"errors":{"objectDuplicated":"******"}},"components":{"access":{"canDelete":"******","canSee":"******","canUpdate":"******","description":"******","title":"******"},"aggregationBuilder":{"addField":"******","addStage":"******","dataset":{"select":"******"},"fieldName":"******","groupBy":"******","mapping":{"xAxis":"******","yAxis":"******"},"operator":"******","operators":{"add":"******","avg":"******","count":"******","day":"******","first":"******","last":"******","max":"******","min":"******","month":"******","multiply":"******","sum":"******","week":"******","year":"******"},"sourceFields":"******","stages":{"addFields":"******","custom":"******","filter":"******","group":"******","sort":"******","unwind":"******"},"tooltip":{"addFields":"******","custom":"******","filter":"******","group":"******","sort":"******","unwind":"******"}},"apiConfiguration":{"create":{"errors":{"name":"******"}},"delete":{"confirmationMessage":"******","title":"******"}},"application":{"delete":{"confirmationMessage":"******"},"duplicate":{"name":{"description":"******"}},"positionAttribute":{"delete":{"confirmationMessage":"******","title":"******"}},"subscription":{"modal":{"hint":{"listenTo":"******"},"listenTo":"******","placeholder":{"listenTo":"******"}}},"update":{"placeholder":{"description":"******"}}},"applications":{"dropdown":{"select":"******"}},"channel":{"delete":{"confirmationMessage":"******"},"dropdown":{"select":"******"}},"emailBuilder":{"body":"******","distribution":"******","fields":"******","subject":"******"},"form":{"create":{"choice":{"blank":"******","inherit":"******","resource":"******","template":"******"},"template":{"from":"******","placeholder":"******","title":"******","tooltip":"******"}},"delete":{"confirmationMessage":"******"},"layout":{"update":{"preview":{"description":"******"}}},"summary":{"cache":{"clear":"******","load":"******"},"createdBy":"******","modifiedBy":"******"},"update":{"exit":"******","exitMessage":"******"}},"forms":{"isCore":"******","parent":"******"},"header":{"goToPlatform":"******","logout":"******","sidenav":{"collapse":"******","show":"******"}},"history":{"download":"******","preview":"******"},"notifications":{"readAll":"******"},"queryBuilder":{"dataset":{"select":"******"},"fields":{"available":"******","search":"******","selected":"******","title":"******"},"filter":{"and":"******","logic":"******","new":"******","newGroup":"******","operator":"******","or":"******","title":"******"},"hint":{"fields":"******","style":"******"},"sort":{"ascending":"******","descending":"******","field":"******","order":"******","title":"******"},"style":{"and":"******","edit":{"appliesTo":"******","background":{"color":"******"},"criteria":"******","fields":"******","name":"******","selectedColumns":"******","text":{"color":"******","style":"******"},"wholeRow":"******"},"logic":"******","new":"******","operator":"******","or":"******","title":"******"}},"record":{"attach":{"confirm":"******","selectTarget":"******"},"convert":{"choice":{"copy":"******","overwrite":"******"},"result":{"force":"******","smooth":"******"},"select":"******"},"delete":{"confirmationMessage":"******","permanently":"******"},"dropdown":{"select":"******"},"history":{"revert":"******","version":{"current":"******","old":"******"}},"modal":{"update":"******"}},"records":{"showActive":"******","showArchived":"******"},"resource":{"delete":{"confirmationMessage":"******"},"dropdown":{"select":"******"}},"role":{"add":{"title":"******"},"delete":{"confirmationMessage":"******","title":"******"},"impersonate":{"title":"******"},"update":{"permissions":"******","title":"******"}},"user":{"delete":{"confirmationMessage":"******","title":"******"},"invite":{"confirm":"******","role":{"description":"******"}},"update":{"title":"******"}},"users":{"invite":{"add":"******","confirm":"******","description":"******"}},"widget":{"expand":"******","grid":{"empty":"******","errors":{"invalid":"******","missingDataset":"******"},"export":{"columns":{"choice":{"all":"******","visible":"******"},"title":"******"},"dataset":{"choice":{"all":"******","selected":"******"},"title":"******"},"format":{"title":"******"}},"filter":{"toggle":"******"},"item":{"few":"******","none":"******","one":"******"},"layout":{"reset":"******"}},"settings":{"chart":{"legend":"******","orientation":"******","position":"******","text":"******","type":"******"},"grid":{"actions":{"add":"******","convert":"******","delete":"******","inline":"******","show":"******","title":"******","update":"******"},"buttons":{"callback":{"attach":"******","displayField":"******","export":"******","modify":"******","modifyField":"******","modifyValue":"******","notify":{"message":"******"},"prefill":"******","save":"******","selectDisplay":"******","sendMail":"******","workflow":{"close":"******","confirm":"******","next":"******"}},"create":"******","enable":"******","title":"******","defaultName":"******","tooltip":{"attach":"******","notify":"******","publish":"******"}},"hint":{"buttons":"******"},"layouts":{"add":{"choice":{"create":"******","load":"******"},"select":"******"},"title":"******"}},"map":{"dataset":"******","display":{"latitude":"******","longitude":"******","title":"******"}},"errors":{"invalid":"******","missingDataset":"******"},"item":{"none":"******","one":"******","few":"******"}}},"pullJob":{"modal":{"placeholder":{"url":"******","path":"******","schedule":"******"},"hint":{"url":"******","path":"******","schedule":"******"},"mapping":"******","switch":"******","identifier":"******"},"delete":{"title":"******","confirmationMessage":"******"}}},"models":{"apiConfiguration":{"authType":"******"},"pullJob":{"url":"******","path":"******","schedule":"******"},"application":{"description":"******","id":"******","setAsFavorite":"******","subscription":{"create":"******"},"notifications":{"published":"******","updated":"******"}},"channel":{"create":"******"},"form":{"core":"******","create":"******","field":{"label":"******"},"select":"******","template":"******"},"page":{"add":"******"},"record":{"convert":"******","restore":"******","notifications":{"uploadSuccessful":"******","conversionIncomplete":"******","rowsAdded":"******"}},"resource":{"create":"******"},"role":{"create":"******"},"user":{"username":"******","notifications":{"rolesUpdated":"******"}},"widget":{"add":"******","chart":{"defaultTitle":"******"},"map":{"defaultTitle":"******","latitude":"******","longitude":"******","zoom":"******"},"scheduler":{"defaultTitle":"******"}},"workflow":{"notifications":{"cannotGoToNextStep":"******","goToStep":"******"}}},"pages":{"administration":{"title":"******"},"apiConfiguration":{"authentication":"******","baseUrl":"******","clientId":"******","host":"******","ping":"******","pingUrl":"******","placeholder":{"baseUrl":"******","clientId":"******","pingUrl":"******","scope":"******","secret":"******","token":"******","tokenUrl":"******"},"scope":"******","secret":"******","token":"******","tokenUrl":"******","notifications":{"authTokenFetched":"******","pingReceived":"******","pingFailed":"******"}},"apiConfigurations":{"create":"******"},"appBuilder":{"title":"******"},"application":{"addPage":{"form":{"title":"******"},"selectType":"******"},"empty":{"add":"******","create":"******","customize":"******"},"positionAttributes":{"create":"******","title":"******"},"settings":{"actions":"******"}},"applications":{"all":"******","goTo":"******","recent":"******","title":"******"},"formBuilder":{"title":"******"},"forms":{"title":"******"},"profile":{"title":"******","notifications":{"updated":"******"}},"pullJobs":{"create":"******"},"worklow":{"addStep":{"selectType":"******"},"empty":{"add":"******","customize":"******"}}}}
+{
+	"common": {
+		"access": "******",
+		"add": "******",
+		"aggregation": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"apiConfiguration": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"application": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"auto": "******",
+		"back": "******",
+		"cancel": "******",
+		"channel": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"child": "******",
+		"clear": "******",
+		"close": "******",
+		"create": "******",
+		"createdOn": "******",
+		"dashboard": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"delete": "******",
+		"deleteObject": "****** {{name}}",
+		"deleted": "******",
+		"dismiss": "******",
+		"display": "******",
+		"downloadObject": "****** {{name}}",
+		"downloadTemplate": "******",
+		"duplicate": "******",
+		"edit": "******",
+		"editObject": "****** {{name}}",
+		"email": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"errors": {
+			"objectDuplicated": "{{type}} ****** {{value}} ******"
+		},
+		"export": "******",
+		"exportObject": "****** {{name}}",
+		"false": "******",
+		"field": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"filter": {
+			"apply": "******",
+			"clear": "******",
+			"empty": "******",
+			"hide": "******",
+			"show": "******"
+		},
+		"form": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"general": "******",
+		"history": "******",
+		"id": "******",
+		"input": {
+			"dateRange": "******",
+			"none": "******",
+			"rawJson": "******"
+		},
+		"label": "******",
+		"layout": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"modifiedOn": "******",
+		"name": "******",
+		"next": "******",
+		"notifications": {
+			"accessDenied": "****** {{type}} ******",
+			"accessNotProvided": "****** {{type}} ****** {{error}}",
+			"alreadyExists": "****** {{type}} ****** {{value}} ******",
+			"copiedToClipboard": "******",
+			"dataRecovered": "******",
+			"email": {
+				"error": "******",
+				"processing": "******",
+				"ready": "******",
+				"sent": "******"
+			},
+			"file": {
+				"download": {
+					"error": "******",
+					"processing": "******",
+					"ready": "******"
+				},
+				"upload": {
+					"error": "******",
+					"processing": "******",
+					"ready": "******"
+				}
+			},
+			"formatInvalid": "****** {{format}} ******",
+			"loadedFromCache": "{{type}} ******",
+			"noOpened": "****** {{value}} ******",
+			"objectCreated": "{{value}} ****** {{type}} ******",
+			"objectDeleted": "{{value}} ******",
+			"objectDuplicated": "****** {{type}} ****** {{value}} ******",
+			"objectInvited": "{{name}} ******",
+			"objectLocked": "{{name}} ******",
+			"objectNotCreated": "****** {{type}} ****** {{error}}",
+			"objectNotDeleted": "{{value}} ****** {{error}}",
+			"objectNotDuplicated": "****** {{type}} ****** {{error}}",
+			"objectNotFound": "{{name}} ******",
+			"objectNotInvited": "{{name}} ******",
+			"objectNotUpdated": "{{type}} ****** {{error}}",
+			"objectReordered": "{{type}} ******",
+			"objectUpdated": "{{value}} ****** {{type}} ******",
+			"platformAccessNotGranted": "******",
+			"readAll": "******",
+			"statusUpdated": "****** {{value}} ******",
+			"unlocked": "{{value}} ******"
+		},
+		"openFullScreen": "******",
+		"page": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"pagination": {
+			"empty": "******",
+			"loadMore": "******"
+		},
+		"placeholder": {
+			"email": "******",
+			"name": "******",
+			"search": "******",
+			"title": "******"
+		},
+		"platform": {
+			"backOffice": "******"
+		},
+		"positionAttribute": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"positionCategory": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"preview": "******",
+		"previous": "******",
+		"publish": "******",
+		"pullJob": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"record": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"referenceData": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"resource": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"role": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"row": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"save": "******",
+		"saveChanges": "******",
+		"searchObject": "****** {{name}}",
+		"select": "******",
+		"settings": "******",
+		"status": "******",
+		"status_active": "******",
+		"status_archived": "******",
+		"status_pending": "******",
+		"step": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"subscription": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"title": "******",
+		"true": "******",
+		"update": "******",
+		"updateObject": "****** {{name}}",
+		"uploadObject": "****** {{name}}",
+		"user": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"value": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"viewObject": "****** {{name}}",
+		"workflow": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		}
+	},
+	"components": {
+		"access": {
+			"canDelete": "******",
+			"canSee": "******",
+			"canUpdate": "******",
+			"description": "******",
+			"title": "******"
+		},
+		"aggregationBuilder": {
+			"addField": "******",
+			"addStage": "******",
+			"dataset": {
+				"select": "******"
+			},
+			"fieldName": "******",
+			"groupBy": "******",
+			"mapping": {
+				"xAxis": "******",
+				"yAxis": "******"
+			},
+			"operator": "******",
+			"operators": {
+				"add": "******",
+				"avg": "******",
+				"count": "******",
+				"day": "******",
+				"first": "******",
+				"last": "******",
+				"max": "******",
+				"min": "******",
+				"month": "******",
+				"multiply": "******",
+				"sum": "******",
+				"week": "******",
+				"year": "******"
+			},
+			"sourceFields": "******",
+			"stages": {
+				"addFields": "******",
+				"custom": "******",
+				"filter": "******",
+				"group": "******",
+				"sort": "******",
+				"unwind": "******"
+			},
+			"tooltip": {
+				"addFields": "******",
+				"custom": "******",
+				"filter": "******",
+				"group": "******",
+				"sort": "******",
+				"unwind": "******"
+			}
+		},
+		"apiConfiguration": {
+			"create": {
+				"errors": {
+					"name": "******"
+				}
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			}
+		},
+		"application": {
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******"
+			},
+			"duplicate": {
+				"name": {
+					"description": "******"
+				}
+			},
+			"pages": {
+				"delete": {
+					"confirmationMessage": "****** {{name}} ******"
+				}
+			},
+			"positionAttribute": {
+				"delete": {
+					"confirmationMessage": "****** {{name}} ******",
+					"title": "******"
+				}
+			},
+			"publish": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			},
+			"subscription": {
+				"modal": {
+					"hint": {
+						"listenTo": "******"
+					},
+					"listenTo": "******",
+					"placeholder": {
+						"listenTo": "******"
+					}
+				}
+			},
+			"unlock": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			},
+			"update": {
+				"placeholder": {
+					"description": "******"
+				}
+			}
+		},
+		"applications": {
+			"dropdown": {
+				"select": "******"
+			}
+		},
+		"channel": {
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******"
+			},
+			"dropdown": {
+				"select": "******"
+			}
+		},
+		"confirmModal": {
+			"cancel": "******",
+			"confirm": "******",
+			"delete": "******",
+			"title": "******"
+		},
+		"emailBuilder": {
+			"body": "******",
+			"distribution": "******",
+			"fields": "******",
+			"subject": "******"
+		},
+		"form": {
+			"create": {
+				"choice": {
+					"blank": "******",
+					"inherit": "******",
+					"resource": "******",
+					"template": "******"
+				},
+				"template": {
+					"from": "******",
+					"placeholder": "******",
+					"title": "******",
+					"tooltip": "******"
+				}
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******"
+			},
+			"deleteRow": {
+				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
+			},
+			"layout": {
+				"delete": {
+					"confirmationMessage": "****** {{name}} ******"
+				},
+				"errors": {
+					"invalid": "******"
+				},
+				"update": {
+					"preview": {
+						"description": "******"
+					}
+				}
+			},
+			"summary": {
+				"cache": {
+					"clear": "******",
+					"load": "****** {{date}}"
+				},
+				"createdBy": "****** {{user}} ****** {{date}}",
+				"modifiedBy": "****** {{user}} ****** {{date}}"
+			},
+			"update": {
+				"exit": "******",
+				"exitMessage": "******"
+			},
+			"updateRow": {
+				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
+			}
+		},
+		"formBuilder": {
+			"errors": {
+				"invalidRelatedName": "****** {{name}} ****** {{question}} ****** {{page}} ******",
+				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
+				"missingTemplate": "****** {{question}} ****** {{page}} ******"
+			}
+		},
+		"forms": {
+			"isCore": "******",
+			"parent": "******"
+		},
+		"header": {
+			"goToPlatform": "******",
+			"logout": "******",
+			"sidenav": {
+				"collapse": "******",
+				"show": "******"
+			}
+		},
+		"history": {
+			"download": "******",
+			"preview": "******"
+		},
+		"logout": {
+			"confirmationMessage": "******",
+			"title": "******"
+		},
+		"notifications": {
+			"readAll": "******"
+		},
+		"preferences": {
+			"dateFormat": "******",
+			"language": "******",
+			"title": "******"
+		},
+		"pullJob": {
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			},
+			"modal": {
+				"hint": {
+					"path": "******",
+					"schedule": "******",
+					"url": "******"
+				},
+				"identifier": "******",
+				"mapping": "******",
+				"placeholder": {
+					"path": "******",
+					"schedule": "******",
+					"url": "******"
+				},
+				"switch": "******"
+			}
+		},
+		"queryBuilder": {
+			"dataset": {
+				"select": "******"
+			},
+			"errors": {
+				"field": {
+					"invalid": "******"
+				}
+			},
+			"fields": {
+				"available": "******",
+				"search": "******",
+				"selected": "******",
+				"title": "******"
+			},
+			"filter": {
+				"and": "******",
+				"logic": "******",
+				"new": "******",
+				"newGroup": "******",
+				"operator": "******",
+				"or": "******",
+				"title": "******"
+			},
+			"hint": {
+				"fields": "******",
+				"sortingDisabled": "******",
+				"style": "******"
+			},
+			"sort": {
+				"ascending": "******",
+				"descending": "******",
+				"field": "******",
+				"order": "******",
+				"title": "******"
+			},
+			"style": {
+				"and": "******",
+				"edit": {
+					"appliesTo": "******",
+					"background": {
+						"color": "******"
+					},
+					"criteria": "******",
+					"fields": "******",
+					"name": "******",
+					"selectedColumns": "******",
+					"text": {
+						"color": "******",
+						"style": "******"
+					},
+					"wholeRow": "******"
+				},
+				"logic": "******",
+				"new": "******",
+				"operator": "******",
+				"or": "******",
+				"title": "******"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "******",
+						"usePicker": "******"
+					}
+				}
+			}
+		},
+		"record": {
+			"attach": {
+				"confirm": "******",
+				"selectTarget": "****** {{name}} ******"
+			},
+			"convert": {
+				"choice": {
+					"copy": "******",
+					"overwrite": "******"
+				},
+				"result": {
+					"force": "******",
+					"smooth": "******"
+				},
+				"select": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"permanently": "******"
+			},
+			"dropdown": {
+				"select": "******"
+			},
+			"history": {
+				"revert": "******",
+				"version": {
+					"current": "******",
+					"old": "******"
+				}
+			},
+			"modal": {
+				"update": "******"
+			},
+			"recovery": {
+				"confirmationMessage": "****** {{date}} ******",
+				"title": "******"
+			}
+		},
+		"records": {
+			"showActive": "******",
+			"showArchived": "******",
+			"upload": {
+				"hint": "******"
+			}
+		},
+		"referenceData": {
+			"create": {
+				"errors": {
+					"name": "******"
+				},
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			},
+			"dropdown": {
+				"select": "******"
+			}
+		},
+		"resource": {
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******"
+			},
+			"dropdown": {
+				"select": "******"
+			}
+		},
+		"role": {
+			"add": {
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			},
+			"impersonate": {
+				"title": "******"
+			},
+			"update": {
+				"permissions": "******",
+				"title": "******"
+			}
+		},
+		"user": {
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			},
+			"invite": {
+				"confirm": "******",
+				"role": {
+					"description": "******"
+				}
+			},
+			"update": {
+				"title": "******"
+			}
+		},
+		"users": {
+			"invite": {
+				"add": "******",
+				"confirm": "******",
+				"description": "******"
+			}
+		},
+		"widget": {
+			"chart": {
+				"errors": {
+					"aggregation": {
+						"invalid": "******"
+					}
+				}
+			},
+			"expand": "******",
+			"grid": {
+				"actions": {
+					"detail": "******",
+					"history": "******"
+				},
+				"empty": "******",
+				"errors": {
+					"invalid": "******",
+					"missingDataset": "******"
+				},
+				"export": {
+					"columns": {
+						"choice": {
+							"all": "******",
+							"visible": "******"
+						},
+						"title": "******"
+					},
+					"dataset": {
+						"choice": {
+							"all": "******",
+							"selected": "******"
+						},
+						"title": "******"
+					},
+					"format": {
+						"title": "******"
+					}
+				},
+				"filter": {
+					"toggle": "******"
+				},
+				"item": {
+					"few": "{{count}} ******",
+					"none": "******",
+					"one": "{{count}} ******"
+				},
+				"layout": {
+					"reset": "******"
+				}
+			},
+			"settings": {
+				"chart": {
+					"axes": "******",
+					"labels": {
+						"percentage": "******",
+						"showCategory": "******",
+						"showValue": "******",
+						"title": "******",
+						"valueType": "******"
+					},
+					"legend": "******",
+					"orientation": "******",
+					"palette": {
+						"enable": "******",
+						"title": "******"
+					},
+					"position": "******",
+					"text": "******",
+					"type": "******"
+				},
+				"grid": {
+					"actions": {
+						"add": "******",
+						"convert": "******",
+						"delete": "******",
+						"export": "******",
+						"inline": "******",
+						"show": "******",
+						"showDetails": "******",
+						"title": "******",
+						"update": "******"
+					},
+					"buttons": {
+						"callback": {
+							"attach": "******",
+							"displayField": "******",
+							"export": "******",
+							"modify": "******",
+							"modifyField": "******",
+							"modifyValue": "******",
+							"notify": {
+								"message": "******"
+							},
+							"prefill": "******",
+							"save": "******",
+							"selectDisplay": "******",
+							"sendMail": "******",
+							"workflow": {
+								"close": "******",
+								"confirm": "******",
+								"next": "******"
+							}
+						},
+						"create": "******",
+						"defaultName": "******",
+						"enable": "******",
+						"title": "******",
+						"tooltip": {
+							"attach": "******",
+							"notify": "******",
+							"publish": "******"
+						}
+					},
+					"hint": {
+						"buttons": "******"
+					},
+					"layouts": {
+						"add": {
+							"choice": {
+								"create": "******",
+								"load": "******"
+							},
+							"select": "******",
+							"title": "******"
+						},
+						"title": "******"
+					}
+				},
+				"map": {
+					"dataset": "******",
+					"display": {
+						"latitude": "******",
+						"longitude": "******",
+						"title": "******"
+					},
+					"errors": {
+						"latitude": "******",
+						"longitude": "******"
+					},
+					"tooltip": {
+						"default": {
+							"latitude": "******",
+							"longitude": "******"
+						}
+					}
+				}
+			}
+		}
+	},
+	"kendo": {
+		"datepicker": {
+			"today": "******",
+			"toggle": "******"
+		},
+		"datetimepicker": {
+			"accept": "******",
+			"acceptLabel": "******",
+			"cancel": "******",
+			"cancelLabel": "******",
+			"dateTab": "******",
+			"dateTabLabel": "******",
+			"now": "******",
+			"timeTab": "******",
+			"timeTabLabel": "******",
+			"today": "******",
+			"toggle": "******"
+		},
+		"editor": {
+			"addColumnAfter": "******",
+			"addColumnBefore": "******",
+			"addRowAfter": "******",
+			"addRowBefore": "******",
+			"alignCenter": "******",
+			"alignJustify": "******",
+			"alignLeft": "******",
+			"alignRight": "******",
+			"backColor": "******",
+			"bold": "******",
+			"cleanFormatting": "******",
+			"createLink": "******",
+			"deleteColumn": "******",
+			"deleteRow": "******",
+			"deleteTable": "******",
+			"dialogApply": "******",
+			"dialogCancel": "******",
+			"dialogInsert": "******",
+			"dialogUpdate": "******",
+			"fileText": "******",
+			"fileTitle": "******",
+			"fileWebAddress": "******",
+			"fontFamily": "******",
+			"fontSize": "******",
+			"foreColor": "******",
+			"format": "******",
+			"imageAltText": "******",
+			"imageHeight": "******",
+			"imageWebAddress": "******",
+			"imageWidth": "******",
+			"indent": "******",
+			"insertFile": "******",
+			"insertImage": "******",
+			"insertOrderedList": "******",
+			"insertTable": "******",
+			"insertUnorderedList": "******",
+			"italic": "******",
+			"linkOpenInNewWindow": "******",
+			"linkText": "******",
+			"linkTitle": "******",
+			"linkWebAddress": "******",
+			"outdent": "******",
+			"print": "******",
+			"redo": "******",
+			"selectAll": "******",
+			"strikethrough": "******",
+			"subscript": "******",
+			"superscript": "******",
+			"underline": "******",
+			"undo": "******",
+			"unlink": "******",
+			"viewSource": "******"
+		},
+		"fileselect": {
+			"dropFilesHere": "******",
+			"select": "******"
+		},
+		"grid": {
+			"columnMenu": "******",
+			"columns": "******",
+			"columnsApply": "******",
+			"columnsReset": "******",
+			"detailCollapse": "******",
+			"detailExpand": "******",
+			"filter": "******",
+			"filterAfterOperator": "******",
+			"filterAfterOrEqualOperator": "******",
+			"filterAndLogic": "******",
+			"filterBeforeOperator": "******",
+			"filterBeforeOrEqualOperator": "******",
+			"filterBooleanAll": "******",
+			"filterClearButton": "******",
+			"filterContainsOperator": "******",
+			"filterDateToday": "******",
+			"filterDateToggle": "******",
+			"filterEndsWithOperator": "******",
+			"filterEqOperator": "******",
+			"filterFilterButton": "******",
+			"filterGtOperator": "******",
+			"filterGteOperator": "******",
+			"filterInputLabel": "******",
+			"filterIsEmptyOperator": "******",
+			"filterIsFalse": "******",
+			"filterIsNotEmptyOperator": "******",
+			"filterIsNotNullOperator": "******",
+			"filterIsNullOperator": "******",
+			"filterIsTrue": "******",
+			"filterLtOperator": "******",
+			"filterLteOperator": "******",
+			"filterMenuLogicDropDownLabel": "******",
+			"filterMenuOperatorsDropDownLabel": "******",
+			"filterMenuTitle": "******",
+			"filterNotContainsOperator": "******",
+			"filterNotEqOperator": "******",
+			"filterNumericDecrement": "******",
+			"filterNumericIncrement": "******",
+			"filterOrLogic": "******",
+			"filterStartsWithOperator": "******",
+			"gridLabel": "******",
+			"groupCollapse": "******",
+			"groupExpand": "******",
+			"groupPanelEmpty": "******",
+			"loading": "******",
+			"lock": "******",
+			"noRecords": "******",
+			"pagerFirstPage": "******",
+			"pagerItems": "******",
+			"pagerItemsPerPage": "******",
+			"pagerLabel": "******",
+			"pagerLastPage": "******",
+			"pagerNextPage": "******",
+			"pagerOf": "******",
+			"pagerPage": "******",
+			"pagerPageNumberInputTitle": "******",
+			"pagerPreviousPage": "******",
+			"selectAllCheckboxLabel": "******",
+			"selectionCheckboxLabel": "******",
+			"setColumnPosition": "******",
+			"sortAscending": "******",
+			"sortDescending": "******",
+			"sortable": "******",
+			"sortedAscending": "******",
+			"sortedDefault": "******",
+			"sortedDescending": "******",
+			"stick": "******",
+			"unlock": "******",
+			"unstick": "******"
+		},
+		"timepicker": {
+			"accept": "******",
+			"acceptLabel": "******",
+			"cancel": "******",
+			"cancelLabel": "******",
+			"now": "******",
+			"toggle": "******"
+		},
+		"upload": {
+			"dropFilesHere": "******",
+			"select": "******"
+		}
+	},
+	"models": {
+		"apiConfiguration": {
+			"authType": "******",
+			"new": "******"
+		},
+		"application": {
+			"description": "******",
+			"id": "******",
+			"new": "******",
+			"notifications": {
+				"published": "{{value}} ******",
+				"updated": "******"
+			},
+			"setAsFavorite": "******",
+			"subscription": {
+				"create": "******"
+			}
+		},
+		"channel": {
+			"create": "******",
+			"new": "******"
+		},
+		"dashboard": {
+			"share": "******"
+		},
+		"form": {
+			"core": "******",
+			"create": "******",
+			"field": {
+				"label": "******",
+				"name": "******"
+			},
+			"new": "******",
+			"notifications": {
+				"savingFailed": "******"
+			},
+			"select": "******",
+			"template": "******"
+		},
+		"page": {
+			"add": "******"
+		},
+		"positionAttribute": {
+			"new": "******"
+		},
+		"pullJob": {
+			"new": "******",
+			"path": "******",
+			"schedule": "******",
+			"url": "******"
+		},
+		"record": {
+			"convert": "******",
+			"new": "******",
+			"notifications": {
+				"conversionIncomplete": "******",
+				"rowsAdded": "****** {{length}} ****** {{field}} ****** {{value}} ******",
+				"uploadSuccessful": "******"
+			},
+			"restore": "******"
+		},
+		"referenceData": {
+			"add": "******"
+		},
+		"resource": {
+			"create": "******"
+		},
+		"role": {
+			"create": "******"
+		},
+		"step": {
+			"new": "******"
+		},
+		"subscription": {
+			"new": "******"
+		},
+		"user": {
+			"notifications": {
+				"rolesUpdated": "{{username}} ******",
+				"userImportFail": "******"
+			},
+			"username": "******"
+		},
+		"widget": {
+			"add": "******",
+			"chart": {
+				"defaultTitle": "******"
+			},
+			"delete": {
+				"confirmationMessage": "******",
+				"title": "******"
+			},
+			"map": {
+				"defaultTitle": "******",
+				"latitude": "******",
+				"longitude": "******",
+				"zoom": "******"
+			},
+			"scheduler": {
+				"defaultTitle": "******"
+			}
+		},
+		"workflow": {
+			"notifications": {
+				"cannotGoToNextStep": "******",
+				"goToStep": "****** {{step}} ******"
+			}
+		}
+	},
+	"pages": {
+		"administration": {
+			"title": "******"
+		},
+		"apiConfiguration": {
+			"authentication": "******",
+			"baseUrl": "******",
+			"clientId": "******",
+			"graphQL": {
+				"endpoint": "******",
+				"title": "******"
+			},
+			"host": "******",
+			"notifications": {
+				"authTokenFetched": "******",
+				"pingFailed": "******",
+				"pingReceived": "******"
+			},
+			"ping": "******",
+			"pingUrl": "******",
+			"placeholder": {
+				"baseUrl": "******",
+				"clientId": "******",
+				"graphQLEndpoint": "******",
+				"pingUrl": "******",
+				"scope": "******",
+				"secret": "******",
+				"token": "******",
+				"tokenUrl": "******"
+			},
+			"scope": "******",
+			"secret": "******",
+			"token": "******",
+			"tokenUrl": "******"
+		},
+		"apiConfigurations": {
+			"create": "******"
+		},
+		"appBuilder": {
+			"title": "******"
+		},
+		"application": {
+			"addPage": {
+				"form": {
+					"title": "******"
+				},
+				"selectType": "******"
+			},
+			"empty": {
+				"add": "******",
+				"create": "******",
+				"customize": "******"
+			},
+			"positionAttributes": {
+				"create": "******",
+				"title": "******"
+			},
+			"settings": {
+				"actions": "******"
+			}
+		},
+		"applications": {
+			"all": "******",
+			"goTo": "******",
+			"recent": "******",
+			"title": "******"
+		},
+		"formBuilder": {
+			"title": "******"
+		},
+		"forms": {
+			"title": "******"
+		},
+		"profile": {
+			"notifications": {
+				"updated": "******"
+			},
+			"title": "******"
+		},
+		"pullJobs": {
+			"create": "******"
+		},
+		"referenceData": {
+			"csv": "******",
+			"errors": {
+				"name": "******"
+			},
+			"fields": "******",
+			"path": "******",
+			"placeholder": {
+				"csv": "******"
+			},
+			"queryName": "******",
+			"type": "******",
+			"validateCsv": "******",
+			"valueField": "******"
+		},
+		"workflow": {
+			"addStep": {
+				"selectType": "******"
+			},
+			"deleteStep": {
+				"confirmationMessage": "****** {{step}} ******"
+			},
+			"empty": {
+				"add": "******",
+				"customize": "******"
+			}
+		}
+	}
+}

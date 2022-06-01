@@ -1,28 +1,23 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 import { Layout } from '../../models/layout.model';
 import {
   createDisplayForm,
   createQueryForm,
 } from '../query-builder/query-builder-forms';
 
-const DEFAULT_GRID_SETTINGS = {
-  actions: {
-    delete: false,
-    history: true,
-    convert: false,
-    update: false,
-    inlineEdition: false,
-  },
-};
-
+/**
+ * Interface describing the structure of the data displayed in the dialog
+ */
 interface DialogData {
   layout?: Layout;
   queryName?: string;
 }
 
+/**
+ * Component used to display modals regarding layouts
+ */
 @Component({
   selector: 'safe-layout-modal',
   templateUrl: './layout-modal.component.html',
@@ -33,8 +28,14 @@ export class SafeLayoutModalComponent implements OnInit {
   public form?: FormGroup;
   private queryName = '';
   public templates: any[] = [];
-  public gridSettings: GridSettings = DEFAULT_GRID_SETTINGS;
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is created
+   *
+   * @param formBuilder This is the service used to build forms.
+   * @param dialogRef This is the reference of the dialog that will be opened.
+   * @param data This is the data that is passed to the modal when it is opened.
+   */
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeLayoutModalComponent>,
@@ -48,21 +49,6 @@ export class SafeLayoutModalComponent implements OnInit {
       display: createDisplayForm(this.data.layout?.display),
     });
     this.queryName = this.form.get('query')?.value.name;
-    this.form.get('query')?.valueChanges.subscribe((value) => {
-      this.gridSettings = {
-        ...this.form?.getRawValue(),
-        ...DEFAULT_GRID_SETTINGS,
-      };
-    });
-  }
-
-  /**
-   * Updates layout parameters.
-   *
-   * @param value new value
-   */
-  onGridLayoutChange(value: any): void {
-    this.form?.get('display')?.setValue(value);
   }
 
   /**

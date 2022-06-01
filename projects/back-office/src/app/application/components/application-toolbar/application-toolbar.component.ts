@@ -29,7 +29,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translateService: TranslateService
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -60,9 +60,13 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   onUnlock(): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Unlock edition',
-        content: `Do you want to unlock ${this.application?.name}'s edition ?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant('components.application.unlock.title'),
+        content: this.translate.instant(
+          'components.application.unlock.confirmationMessage',
+          {
+            name: this.application?.name,
+          }
+        ),
         confirmColor: 'primary',
       },
     });
@@ -77,16 +81,20 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   onPublish(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
-        this.translateService.instant('common.notifications.objectLocked', {
+        this.translate.instant('common.notifications.objectLocked', {
           name: this.application?.name,
         })
       );
     } else {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: `Publish application`,
-          content: `Do you confirm the publication of ${this.application?.name} ?`,
-          confirmText: 'Confirm',
+          title: this.translate.instant('components.application.publish.title'),
+          content: this.translate.instant(
+            'components.application.publish.confirmationMessage',
+            {
+              name: this.application?.name,
+            }
+          ),
           confirmColor: 'primary',
         },
       });

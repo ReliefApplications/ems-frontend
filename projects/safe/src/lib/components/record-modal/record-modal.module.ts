@@ -10,7 +10,12 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeDateModule } from '../../pipes/date/date.module';
 
+/**
+ * SafeRecordModalModule is a class used to manage all the modules and components
+ * related to the modals editing the records.
+ */
 @NgModule({
   declarations: [SafeRecordModalComponent],
   imports: [
@@ -24,6 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeRecordHistoryModalModule,
     SafeRecordSummaryModule,
     TranslateModule,
+    SafeDateModule,
   ],
   exports: [SafeRecordModalComponent],
 })

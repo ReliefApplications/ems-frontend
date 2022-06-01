@@ -16,6 +16,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeSearchMenuModule } from '@safe/builder';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
 @NgModule({
   declarations: [WorkflowComponent],
@@ -35,6 +36,7 @@ import { MatMenuModule } from '@angular/material/menu';
     SafeSearchMenuModule,
     MatIconModule,
     MatMenuModule,
+    IndicatorsModule,
   ],
   exports: [WorkflowComponent],
 })

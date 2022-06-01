@@ -8,6 +8,7 @@ import { SafeEmailPreviewComponent } from '../components/email-preview/email-pre
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../utils/prettify';
 import { Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 const flatDeep = (arr: any[]): any[] =>
   arr.reduce(
@@ -40,7 +41,8 @@ export class SafeEmailService {
     @Inject('environment') environment: any,
     private http: HttpClient,
     private snackBar: SafeSnackBarService,
-    private dialog: MatDialog // private translate: TranslateService
+    private dialog: MatDialog,
+    private translate: TranslateService
   ) {
     this.sendUrl = environment.apiUrl + '/email/';
     this.previewUrl = environment.apiUrl + '/email/preview/';
@@ -92,8 +94,9 @@ export class SafeEmailService {
       {
         duration: 0,
         data: {
-          message: 'Sending email...',
-          // message: this.translate.instant('email.processing'),
+          message: this.translate.instant(
+            'common.notifications.email.processing'
+          ),
           loading: true,
         },
       }
@@ -131,16 +134,14 @@ export class SafeEmailService {
       .subscribe(
         (res) => {
           snackBarRef.instance.data = {
-            message: 'Email sent',
-            // message: this.translate.instant('email.sent'),
+            message: this.translate.instant('common.notifications.email.sent'),
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
         () => {
           snackBarRef.instance.data = {
-            message: 'Something went wrong during the email sending',
-            // message: this.translate.instant('email.error'),
+            message: this.translate.instant('common.notifications.email.error'),
             loading: false,
             error: true,
           };
@@ -180,8 +181,9 @@ export class SafeEmailService {
       {
         duration: 0,
         data: {
-          message: 'Generating email...',
-          // message: this.translate.instant('email.processing'),
+          message: this.translate.instant(
+            'common.notifications.email.processing'
+          ),
           loading: true,
         },
       }
@@ -210,8 +212,7 @@ export class SafeEmailService {
       .subscribe(
         (res) => {
           snackBarRef.instance.data = {
-            message: 'Email ready',
-            // message: this.translate.instant('email.sent'),
+            message: this.translate.instant('common.notifications.email.ready'),
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
@@ -226,7 +227,7 @@ export class SafeEmailService {
               this.sendMail(
                 recipient,
                 subject,
-                body,
+                value.html,
                 filter,
                 query,
                 sortField,
@@ -239,8 +240,7 @@ export class SafeEmailService {
         },
         () => {
           snackBarRef.instance.data = {
-            message: 'Something went wrong during the email creation',
-            // message: this.translate.instant('email.error'),
+            message: this.translate.instant('common.notifications.email.error'),
             loading: false,
             error: true,
           };

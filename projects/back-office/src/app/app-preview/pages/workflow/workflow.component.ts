@@ -55,6 +55,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.role = role;
     });
     this.routeSubscription = this.route.params.subscribe((params) => {
+      this.loading = true;
       this.id = params.id;
       this.apollo
         .watchQuery<GetWorkflowByIdQueryResponse>({

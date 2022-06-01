@@ -12,7 +12,12 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeDateModule } from '../../pipes/date/date.module';
 
+/**
+ * SafeRecordHistoryModule is a class used to manage all the modules and components
+ * related to the history of records.
+ */
 @NgModule({
   declarations: [SafeRecordHistoryComponent],
   imports: [
@@ -28,6 +33,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatMenuModule,
     SafeButtonModule,
     TranslateModule,
+    SafeDateModule,
   ],
   exports: [SafeRecordHistoryComponent],
 })

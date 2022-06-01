@@ -1,0 +1,1184 @@
+{
+	"common": {
+		"access": "Accès",
+		"add": "Ajouter",
+		"aggregation": {
+			"few": "Aggrégations",
+			"none": "Aucune aggrégation",
+			"one": "Aggrégation"
+		},
+		"apiConfiguration": {
+			"few": "Configurations d'API",
+			"none": "Aucune configuration d'API",
+			"one": "Configuration d'API"
+		},
+		"application": {
+			"few": "Applications",
+			"none": "Aucune application",
+			"one": "Application"
+		},
+		"auto": "Automatique",
+		"back": "Retour",
+		"cancel": "Annuler",
+		"channel": {
+			"few": "Canaux de diffusion",
+			"none": "Aucun canal de diffusion",
+			"one": "Canal de diffusion"
+		},
+		"child": "Enfant",
+		"clear": "Annuler",
+		"close": "Fermer",
+		"create": "Créer",
+		"createdOn": "Date de création",
+		"dashboard": {
+			"few": "Tableaux de bord",
+			"none": "Aucun tableau de bord",
+			"one": "Tableau de bord"
+		},
+		"delete": "Supprimer",
+		"deleteObject": "Supprimer {{name}}",
+		"deleted": "Supprimé",
+		"dismiss": "Fermer",
+		"display": "Afficher",
+		"downloadObject": "Télécharger {{name}}",
+		"downloadTemplate": "Télécharger le modèle",
+		"duplicate": "Dupliquer",
+		"edit": "Modifier",
+		"editObject": "Modifier {{name}}",
+		"email": {
+			"few": "Emails",
+			"none": "Pas d'email",
+			"one": "Email"
+		},
+		"errors": {
+			"objectDuplicated": "{{type}} {{value}} existe déjà."
+		},
+		"export": "Exporter",
+		"exportObject": "Exporter {{name}}",
+		"false": "Faux",
+		"field": {
+			"few": "Champs",
+			"none": "Aucun champ",
+			"one": "Champ"
+		},
+		"filter": {
+			"apply": "Appliquer",
+			"clear": "Supprimer le filtre",
+			"empty": "Aucun résultat",
+			"hide": "Cacher le filtre",
+			"show": "Afficher le filtre"
+		},
+		"form": {
+			"few": "Formulaires",
+			"none": "Aucun formulaire",
+			"one": "Formulaire"
+		},
+		"general": "Général",
+		"history": "Historique",
+		"id": "Id",
+		"input": {
+			"dateRange": "Intervalle de dates",
+			"none": "-- Aucun --",
+			"rawJson": "JSON brut"
+		},
+		"label": "Etiquette",
+		"layout": {
+			"few": "Mises en page",
+			"none": "Aucune mise en page",
+			"one": "Mise en page"
+		},
+		"modifiedOn": "Modifié le ",
+		"name": "Nom",
+		"next": "Suivant",
+		"notifications": {
+			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
+			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
+			"alreadyExists": "Cet objet {{type}} {{value}} existe déjà dans cette application.",
+			"copiedToClipboard": "Copié !",
+			"dataRecovered": "Les données ont été récupérées !",
+			"email": {
+				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
+				"processing": "Envoi en cours...",
+				"ready": "E-mail prêt",
+				"sent": "E-mail envoyé"
+			},
+			"file": {
+				"download": {
+					"error": "Un problème est survenu lors du téléchargement",
+					"processing": "Téléchargement du fichier en cours...",
+					"ready": "Votre fichier est prêt"
+				},
+				"upload": {
+					"error": "Un problème est survenu lors de l'import",
+					"processing": "Fichier en cours d'importation...",
+					"ready": "Fichier importé"
+				}
+			},
+			"formatInvalid": "Veuillez importer un fichier de format .{{format}}.",
+			"loadedFromCache": "Objet de type {{type}} chargé depuis le cache.",
+			"noOpened": "Aucun objet {{value}} n'a été ouvert.",
+			"objectCreated": "{{value}} {{type}} créé.",
+			"objectDeleted": "{{value}} supprimé.",
+			"objectDuplicated": "L'objet {{type}} {{value}} a été dupliqué avec succès.",
+			"objectInvited": "{{name}} a été invité.",
+			"objectLocked": "L'édition de {{name}} a été bloquée par un autre utilisateur.",
+			"objectNotCreated": "L'objet de type {{type}} n'a pas pu être créé. {{error}}",
+			"objectNotDeleted": "L'objet {{value}} n'a pas pu être supprimé. {{error}}",
+			"objectNotDuplicated": "L'objet de type {{type}} n'a pas pu être dupliqué. {{error}}",
+			"objectNotFound": "{{name}} n'a pas été trouvé.",
+			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
+			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
+			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
+			"objectUpdated": "{{value}} {{type}} a été modifié.",
+			"platformAccessNotGranted": "Vous n'avez pas d'accès valide à cette plateforme.",
+			"readAll": "Tout marqué comme lu",
+			"statusUpdated": "Statut mis à jour par {{value}}.",
+			"unlocked": "L'édition de l'objet {{value}} a été débloquée par un autre utilisateur."
+		},
+		"openFullScreen": "Ouvrir en plein écran",
+		"page": {
+			"few": "Pages",
+			"none": "Aucune page",
+			"one": "Page"
+		},
+		"pagination": {
+			"empty": "Aucun résultat",
+			"loadMore": "Charger plus"
+		},
+		"placeholder": {
+			"email": "Entrez un email",
+			"name": "Entrez un nom",
+			"search": "Rechercher...",
+			"title": "Entrez un titre"
+		},
+		"platform": {
+			"backOffice": "Back-Office"
+		},
+		"positionAttribute": {
+			"few": "Attributs de position",
+			"none": "Aucun attribut de position",
+			"one": "Attribut de position"
+		},
+		"positionCategory": {
+			"few": "Catégories de position",
+			"none": "Aucune catégorie de position",
+			"one": "Catégories de position"
+		},
+		"preview": "Prévisualisation",
+		"previous": "Précédent",
+		"publish": "Publier",
+		"pullJob": {
+			"few": "Tâches planifiées",
+			"none": "Aucune tâche planifiée",
+			"one": "Tâche planifiée"
+		},
+		"record": {
+			"few": "Enregistrements",
+			"none": "Pas d'enregistrement",
+			"one": "Enregistrement"
+		},
+		"referenceData": {
+			"few": "Références de données",
+			"none": "Aucune référence de données",
+			"one": "Référence de données"
+		},
+		"resource": {
+			"few": "Ressources",
+			"none": "Aucune ressource",
+			"one": "Ressource"
+		},
+		"role": {
+			"few": "Rôles",
+			"none": "Aucun rôle",
+			"one": "Rôle"
+		},
+		"row": {
+			"few": "Rangées",
+			"none": "Auncune rangée",
+			"one": "Rangée"
+		},
+		"save": "Sauvegarder",
+		"saveChanges": "Sauvegarder les changements",
+		"searchObject": "Rechercher {{name}}",
+		"select": "Sélectionner",
+		"settings": "Paramètres",
+		"status": "Statut",
+		"status_active": "Actif",
+		"status_archived": "Archivé",
+		"status_pending": "Inactif",
+		"step": {
+			"few": "Etape",
+			"none": "Aucune étape",
+			"one": "Etape"
+		},
+		"subscription": {
+			"few": "Abonnements",
+			"none": "Aucun abonnement",
+			"one": "Abonnement"
+		},
+		"title": "Titre",
+		"true": "Vrai",
+		"update": "Mettre à jour",
+		"updateObject": "Mettre à jour {{name}}",
+		"uploadObject": "Importer {{name}}",
+		"user": {
+			"few": "Utilisateurs",
+			"none": "Aucun utilisateur",
+			"one": "Utilisateur"
+		},
+		"value": {
+			"few": "Valeurs",
+			"none": "Aucune valeur",
+			"one": "Valeur"
+		},
+		"viewObject": "Voir {{name}}",
+		"workflow": {
+			"few": "Workflows",
+			"none": "Aucun workflow",
+			"one": "Workflow"
+		}
+	},
+	"components": {
+		"access": {
+			"canDelete": "Peut supprimer",
+			"canSee": "Peut voir",
+			"canUpdate": "Peut modifier",
+			"description": "Modifier les permissions d'accès",
+			"title": "Accès"
+		},
+		"aggregationBuilder": {
+			"addField": "Ajouter un champ",
+			"addStage": "Ajouter une étape",
+			"dataset": {
+				"select": "Sélectionner la source de données"
+			},
+			"fieldName": "Nom du champ",
+			"groupBy": "Regrouper par",
+			"mapping": {
+				"xAxis": "Axe X",
+				"yAxis": "Axe Y"
+			},
+			"operator": "Opérateur",
+			"operators": {
+				"add": "Ajouter",
+				"avg": "Moyenne",
+				"count": "Compte",
+				"day": "Jour",
+				"first": "Premier",
+				"last": "Dernier",
+				"max": "Maximum",
+				"min": "Minimum",
+				"month": "Mois",
+				"multiply": "Multiplier",
+				"sum": "Somme",
+				"week": "Semaine",
+				"year": "Année"
+			},
+			"sourceFields": "Sélectionner les champs",
+			"stages": {
+				"addFields": "Ajouter des champs",
+				"custom": "Personnaliser",
+				"filter": "Filtrer",
+				"group": "Grouper",
+				"sort": "Trier",
+				"unwind": "Dissocier"
+			},
+			"tooltip": {
+				"addFields": "Ajouter de nouveaux champs au document.",
+				"custom": "Définit une fonction ou une expression d'aggrégation personnalisée en JavaScript.",
+				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
+				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
+				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
+				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
+			}
+		},
+		"apiConfiguration": {
+			"create": {
+				"errors": {
+					"name": "Seules les lettres, les tirets et les tirets bas sont acceptés."
+				}
+			},
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer la configuration d'API {{name}} ?",
+				"title": "Supprimer la configuration d'API"
+			}
+		},
+		"application": {
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer cette application ?"
+			},
+			"duplicate": {
+				"name": {
+					"description": "Veuillez entrer une description pour cette application."
+				}
+			},
+			"pages": {
+				"delete": {
+					"confirmationMessage": "Voulez-vous vraiment supprimer la page {{name}}?"
+				}
+			},
+			"positionAttribute": {
+				"delete": {
+					"confirmationMessage": "Voulez-vous vraiment supprimer l'attribut de position {{name}} ?",
+					"title": "Supprimer l'attribut de position"
+				}
+			},
+			"publish": {
+				"confirmationMessage": "Confirmer la publication de l'application {{name}} ?",
+				"title": "Publier l'application"
+			},
+			"subscription": {
+				"modal": {
+					"hint": {
+						"listenTo": "Clé de routage de l'agent de messages"
+					},
+					"listenTo": "Écouter",
+					"placeholder": {
+						"listenTo": "Sélectionner une clé de routage"
+					}
+				}
+			},
+			"unlock": {
+				"confirmationMessage": "Voulez-vous déverrouiller l'édition de {{name}} ?",
+				"title": "Déverrouiller l'édition"
+			},
+			"update": {
+				"placeholder": {
+					"description": "Veuillez entrer une description pour l'application."
+				}
+			}
+		},
+		"applications": {
+			"dropdown": {
+				"select": "Depuis les applications"
+			}
+		},
+		"channel": {
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer le canal {{name}} ?"
+			},
+			"dropdown": {
+				"select": "Notifier sur"
+			}
+		},
+		"confirmModal": {
+			"cancel": "Annuler",
+			"confirm": "Confirmer",
+			"delete": "Supprimer",
+			"title": "Confirmer"
+		},
+		"emailBuilder": {
+			"body": "Corps du texte",
+			"distribution": "Liste de distribution",
+			"fields": "Sélectionner les champs à écrire dans le corps du texte",
+			"subject": "Objet"
+		},
+		"form": {
+			"create": {
+				"choice": {
+					"blank": "Créer un formulaire vide",
+					"inherit": "Copier un modèle de ressources existant",
+					"resource": "Créer une nouvelle ressource",
+					"template": "Commencer depuis un modèle existant"
+				},
+				"template": {
+					"from": "Depuis le modèle",
+					"placeholder": "Choisir un modèle existant",
+					"title": "Depuis la ressource",
+					"tooltip": "Si aucun modèle n'est sélectionné, la structure principale sera chargée"
+				}
+			},
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer le formulaire {{name}} ?"
+			},
+			"deleteRow": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?"
+			},
+			"layout": {
+				"delete": {
+					"confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"
+				},
+				"errors": {
+					"invalid": "Le formulaire est invalide"
+				},
+				"update": {
+					"preview": {
+						"description": "Réorganise, trie, filtre et cache des colonnes pour changer l'affichage par défaut de la mise en page"
+					}
+				}
+			},
+			"summary": {
+				"cache": {
+					"clear": "Vider le cache",
+					"load": "Charger depuis le cache {{date}}"
+				},
+				"createdBy": "Créé par {{user}} le {{date}}",
+				"modifiedBy": "Modifié pour la dernière fois par {{user}} le {{date}}"
+			},
+			"update": {
+				"exit": "Quitter sans sauvegarder les changements",
+				"exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, voulez-vous vraiment quitter cette page ?"
+			},
+			"updateRow": {
+				"confirmationMessage": "Souhaitez-vous mettre à jour {{quantity}} {{rowText}}?"
+			}
+		},
+		"formBuilder": {
+			"errors": {
+				"invalidRelatedName": "Le nom lié fourni ({{name}}) pour la question {{question}} à la page {{page}} est invalide. Veuillez entrer un nom lié valide (au format snake_case) pour sauvegarder le formulaire.",
+				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
+				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
+			}
+		},
+		"forms": {
+			"isCore": "Est un formulaire source",
+			"parent": "Formulaire parent"
+		},
+		"header": {
+			"goToPlatform": "Naviguer vers",
+			"logout": "Se déconnecter",
+			"sidenav": {
+				"collapse": "Cacher la barre latérale",
+				"show": "Afficher la barre latérale"
+			}
+		},
+		"history": {
+			"download": "Télécharger l'historique",
+			"preview": "Prévisualiser et revenir"
+		},
+		"logout": {
+			"confirmationMessage": "Le formulaire contient des éléments non sauvegardés. Voulez-vous vous vraiment déconnecter ?",
+			"title": "Quitter la plateforme sans sauvegarder"
+		},
+		"notifications": {
+			"readAll": "Tout marquer comme lu"
+		},
+		"preferences": {
+			"dateFormat": "Format de date et heure",
+			"language": "Langage",
+			"title": "Préférences"
+		},
+		"pullJob": {
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer la tâche {{name}} ?",
+				"title": "Supprimer la tâche"
+			},
+			"modal": {
+				"hint": {
+					"path": "Entrer le chemin pour extraire la donnée de la réponse",
+					"schedule": "Entrez une expression CRON pour planifier la tâche",
+					"url": "Entrez l'URL après l'hôte pour atteindre la donnée spécifique"
+				},
+				"identifier": "Identificateurs uniques",
+				"mapping": "Correspondance",
+				"placeholder": {
+					"path": "Entrez le chemin d'accès...",
+					"schedule": "Entrez l'horaire planifié...",
+					"url": "Entrer l'URL..."
+				},
+				"switch": "Changer de mode"
+			}
+		},
+		"queryBuilder": {
+			"dataset": {
+				"select": "Sélectionner un jeu de données"
+			},
+			"errors": {
+				"field": {
+					"invalid": "Champ invalide. Veuillez cliquer pour le retirer."
+				}
+			},
+			"fields": {
+				"available": "Champs disponibles",
+				"search": "Rechercher des champs...",
+				"selected": "Champs sélectionnés",
+				"title": "Champs"
+			},
+			"filter": {
+				"and": "Et",
+				"logic": "Logique de filtre",
+				"new": "Ajouter un nouveau filtre",
+				"newGroup": "Ajouter un nouveau groupe de filtres",
+				"operator": "Opérateur",
+				"or": "Ou",
+				"title": "Filtre"
+			},
+			"hint": {
+				"fields": "Sélectionnez des points de donnée ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
+				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
+				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
+			},
+			"sort": {
+				"ascending": "Croissant",
+				"descending": "Décroissant",
+				"field": "Filtrer le champ",
+				"order": "Ordre de tri",
+				"title": "Tri"
+			},
+			"style": {
+				"and": "Et",
+				"edit": {
+					"appliesTo": "Appliquer le style à",
+					"background": {
+						"color": "Couleur de fond"
+					},
+					"criteria": "Critère",
+					"fields": "Champ",
+					"name": "Nom de la règle",
+					"selectedColumns": "Seulement les colonnes sélectionnées.",
+					"text": {
+						"color": "Couleur du texte",
+						"style": "Style du texte"
+					},
+					"wholeRow": "Ligne entière"
+				},
+				"logic": "Filtre de style",
+				"new": "Ajouter une règle de style",
+				"operator": "Opérateur",
+				"or": "Ou",
+				"title": "Style"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "Utiliser une expression",
+						"usePicker": "Choisir une date"
+					}
+				}
+			}
+		},
+		"record": {
+			"attach": {
+				"confirm": "Attacher",
+				"selectTarget": "Sélectionner la cible {{name}}"
+			},
+			"convert": {
+				"choice": {
+					"copy": "Copier l'enregistrement source",
+					"overwrite": "Écraser l'enregistrement source"
+				},
+				"result": {
+					"force": "Les champs suivants seront ignorés :",
+					"smooth": "Conversion OK"
+				},
+				"select": "Convertir en"
+			},
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer l'enregistrement {{name}} ?",
+				"permanently": "Supprimer de manière permanente"
+			},
+			"dropdown": {
+				"select": "Sélectionner un enregistrement"
+			},
+			"history": {
+				"revert": "Revenir à l'enregistrement précédent",
+				"version": {
+					"current": "Version actuelle",
+					"old": "Ancienne version"
+				}
+			},
+			"modal": {
+				"update": "Sauvegarder et fermer"
+			},
+			"recovery": {
+				"confirmationMessage": "Souhaitez-vous appliquer les données du {{date}} à l'enregistrement ?",
+				"title": "Récupération de données"
+			}
+		},
+		"records": {
+			"showActive": "Voir les enregistrements actifs",
+			"showArchived": "Voir les enregistrements archivés",
+			"upload": {
+				"hint": "Le fichier doit contenir uniquement un enregistrement par ligne. La ligne d'en-tête contient les noms des champs de données."
+			}
+		},
+		"referenceData": {
+			"create": {
+				"errors": {
+					"name": "Seules les lettres, les tirets et les tirets bas sont acceptés."
+				},
+				"title": "Nouvelle référence de données"
+			},
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer la référence de données {{name}} ?",
+				"title": "Supprimer la référence de données"
+			},
+			"dropdown": {
+				"select": "Depuis la référence de données"
+			}
+		},
+		"resource": {
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer la ressource {{name}} ?"
+			},
+			"dropdown": {
+				"select": "Depuis la ressource"
+			}
+		},
+		"role": {
+			"add": {
+				"title": "Ajouter un nouveau rôle"
+			},
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer le rôle {{name}} ?",
+				"title": "Supprimer le rôle"
+			},
+			"impersonate": {
+				"title": "Choix du rôle à simuler"
+			},
+			"update": {
+				"permissions": "Permissions",
+				"title": "Modifier les permissions des rôles et les canaux de diffusion"
+			}
+		},
+		"user": {
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer l'utilisateur {{name}} ?",
+				"title": "Supprimer l'utilisateur"
+			},
+			"invite": {
+				"confirm": "Inviter",
+				"role": {
+					"description": "Sélectionner le rôle à assigner"
+				}
+			},
+			"update": {
+				"title": "Modifier l'utilisateur"
+			}
+		},
+		"users": {
+			"invite": {
+				"add": "Ajouter un nouvel utilisateur",
+				"confirm": "Inviter des utilisateurs",
+				"description": "Sélectionner des utilisateurs existants, inviter de nouveaux utilisateurs ou en importer depuis un fichier Excel"
+			}
+		},
+		"widget": {
+			"chart": {
+				"errors": {
+					"aggregation": {
+						"invalid": "Aggrégation invalide"
+					}
+				}
+			},
+			"expand": "Étendre",
+			"grid": {
+				"actions": {
+					"detail": "Ouvrir le détail",
+					"history": "Voir l'historique"
+				},
+				"empty": "Aucun enregistrement détecté",
+				"errors": {
+					"invalid": "Configuration de grille invalide",
+					"missingDataset": "Sélectionner un jeu de données dans les jeux de données"
+				},
+				"export": {
+					"columns": {
+						"choice": {
+							"all": "Toutes les colonnes disponibles",
+							"visible": "Toutes les colonnes visibles"
+						},
+						"title": "Sélectionner les colonnes à exporter"
+					},
+					"dataset": {
+						"choice": {
+							"all": "Tous les enregistrements visibles",
+							"selected": "Seulement les enregistrements visibles"
+						},
+						"title": "Sélectionner les enregistrements à exporter"
+					},
+					"format": {
+						"title": "Sélectionner le format d'export"
+					}
+				},
+				"filter": {
+					"toggle": "Activer la visibilité du filtre"
+				},
+				"item": {
+					"few": "{{count}} éléments",
+					"none": "Aucun élément",
+					"one": "{{count}} élément"
+				},
+				"layout": {
+					"reset": "Réinitialiser la mise en page par défaut"
+				}
+			},
+			"settings": {
+				"chart": {
+					"axes": "Axes",
+					"labels": {
+						"percentage": "Pourcentage",
+						"showCategory": "Afficher la catégorie",
+						"showValue": "Afficher la valeur",
+						"title": "Labels",
+						"valueType": "Type de valeur"
+					},
+					"legend": "Légende",
+					"orientation": "Orientation",
+					"palette": {
+						"enable": "Configurer la palette",
+						"title": "Palette de couleurs"
+					},
+					"position": "Position",
+					"text": "Texte",
+					"type": "Graphique"
+				},
+				"grid": {
+					"actions": {
+						"add": "Ajouter de nouveaux enregistrements",
+						"convert": "Convertir des enregistrements",
+						"delete": "Supprimer les enregistrements",
+						"export": "Exporter les enregistrements",
+						"inline": "Modifier par ligne",
+						"show": "Voir l'historique",
+						"showDetails": "Afficher les détails des enregistrements",
+						"title": "Actions activées",
+						"update": "Modifier les enregistrements"
+					},
+					"buttons": {
+						"callback": {
+							"attach": "Attacher à l'enregistrement",
+							"displayField": "Afficher le champ",
+							"export": "Exporter le jeu de données sélectionné",
+							"modify": "Modifier automatiquement les lignes sélectionnées",
+							"modifyField": "Champ à modifier",
+							"modifyValue": "Value to attribute",
+							"notify": {
+								"message": "Message de notification"
+							},
+							"prefill": "Préremplir le formulaire avec les données sélectionnées",
+							"save": "Sauvegarder automatiquement",
+							"selectDisplay": "Sélectionner les champs affichés",
+							"sendMail": "Envoyer le mail",
+							"workflow": {
+								"close": "Fermer le workflow",
+								"confirm": "Message de confirmation",
+								"next": "Aller à l'étape suivante"
+							}
+						},
+						"create": "Ajouter un bouton",
+						"defaultName": "Bouton d'action",
+						"enable": "Activer",
+						"title": "Bouton d'action rapide",
+						"tooltip": {
+							"attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",
+							"notify": "Si activé, vous devez fournir un canal de diffusion et un message.Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Le message fourni est utilisé pour définir l'action de la notification.",
+							"publish": "Si activé, vous devez fournir un canal de diffusion. Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Quiconque écoutant sur ce canal pourra recevoir ces enregistrements."
+						}
+					},
+					"hint": {
+						"buttons": "Les boutons d'action rapides apparaitront dans le widget et vous permettront de réaliser chacune des actions ci-dessous"
+					},
+					"layouts": {
+						"add": {
+							"choice": {
+								"create": "Créer une nouvelle mise en page",
+								"load": "Charger une mise en page existante"
+							},
+							"select": "Sélectionner une mise en page",
+							"title": "Ajouter une nouvelle mise en page"
+						},
+						"title": "Mise en page de la grille"
+					}
+				},
+				"map": {
+					"dataset": "Sélection du jeu de données",
+					"display": {
+						"latitude": "Latitude du centre de la carte",
+						"longitude": "Longitude du centre de la carte",
+						"title": "Affichage par défaut"
+					},
+					"errors": {
+						"latitude": "Latitude incorrecte, merci de sélectionner un nombre entre -90 et 90",
+						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
+					},
+					"tooltip": {
+						"default": {
+							"latitude": "Sélectionnez une latitude par défaut autour de laquelle vous souhaitez centrer la carte",
+							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte"
+						}
+					}
+				}
+			}
+		}
+	},
+	"kendo": {
+		"datepicker": {
+			"today": "Aujourd'hui",
+			"toggle": "Sélectionnez une date"
+		},
+		"datetimepicker": {
+			"accept": "Accepter",
+			"acceptLabel": "Accepter",
+			"cancel": "Annuler",
+			"cancelLabel": "Annuler",
+			"dateTab": "Date",
+			"dateTabLabel": "Date",
+			"now": "Maintenant",
+			"timeTab": "Heure",
+			"timeTabLabel": "Heure",
+			"today": "Aujourd'hui",
+			"toggle": "Sélectionnez une date et une heure"
+		},
+		"editor": {
+			"addColumnAfter": "Nouvelle colonne à droite",
+			"addColumnBefore": "Nouvelle colonne à gauche",
+			"addRowAfter": "Nouvelle ligne en bas",
+			"addRowBefore": "Nouvelle ligne en haut",
+			"alignCenter": "Centrer",
+			"alignJustify": "Justifier",
+			"alignLeft": "Aligner à gauche",
+			"alignRight": "Aligner à droite",
+			"backColor": "Couleur de fond",
+			"bold": "Gras",
+			"cleanFormatting": "Supprimer le format",
+			"createLink": "Nouveau lien",
+			"deleteColumn": "Supprimer la colonne",
+			"deleteRow": "Supprimer la ligne",
+			"deleteTable": "Supprimer la table",
+			"dialogApply": "Appliquer",
+			"dialogCancel": "Annuler",
+			"dialogInsert": "Insérer",
+			"dialogUpdate": "Modifier",
+			"fileText": "Texte",
+			"fileTitle": "Titre",
+			"fileWebAddress": "Adresse Web",
+			"fontFamily": "Sélectionnez une police de caractère",
+			"fontSize": "Sélectionnez la taille de police",
+			"foreColor": "Couleur",
+			"format": "Format",
+			"imageAltText": "Texte alternatif",
+			"imageHeight": "Hauteur (px)",
+			"imageWebAddress": "Adresse Web",
+			"imageWidth": "Largeur (px)",
+			"indent": "Augmenter le retrait",
+			"insertFile": "Nouveau fichier",
+			"insertImage": "Nouvelle image",
+			"insertOrderedList": "Nouvelle liste ordonnée",
+			"insertTable": "Nouvelle table",
+			"insertUnorderedList": "Nouvelle liste non-ordonnée",
+			"italic": "Italique",
+			"linkOpenInNewWindow": "Ouvrir dans une nouvelle fenêtre",
+			"linkText": "Texte",
+			"linkTitle": "Titre",
+			"linkWebAddress": "Adresse Web",
+			"outdent": "Diminuer le retrait",
+			"print": "Imprimer",
+			"redo": "Répéter",
+			"selectAll": "Tout sélectionner",
+			"strikethrough": "Barrer",
+			"subscript": "Indice",
+			"superscript": "Exposant",
+			"underline": "Souligner",
+			"undo": "Annuler",
+			"unlink": "Supprimer le lien",
+			"viewSource": "Voir la source"
+		},
+		"fileselect": {
+			"dropFilesHere": "Déposez les fichiers ici pour les sélectionner",
+			"select": "Choisir des fichiers..."
+		},
+		"grid": {
+			"columnMenu": "'Menu de la colonne {columnName}'",
+			"columns": "Colonnes",
+			"columnsApply": "Appliquer",
+			"columnsReset": "Réinitialiser",
+			"detailCollapse": "Réduire",
+			"detailExpand": "Etendre",
+			"filter": "Filtrer",
+			"filterAfterOperator": "Est après",
+			"filterAfterOrEqualOperator": "Est après ou égal à",
+			"filterAndLogic": "Et",
+			"filterBeforeOperator": "Est avant",
+			"filterBeforeOrEqualOperator": "Est avant ou égal à",
+			"filterBooleanAll": "(Tous)",
+			"filterClearButton": "Effacer",
+			"filterContainsOperator": "Contient",
+			"filterDateToday": "Aujourd'hui",
+			"filterDateToggle": "Afficher/masquer le calendrier",
+			"filterEndsWithOperator": "Termine par",
+			"filterEqOperator": "Est égal à",
+			"filterFilterButton": "Filtrer",
+			"filterGtOperator": "Est plus grand que",
+			"filterGteOperator": "Est plus grand que ou égal à",
+			"filterInputLabel": "'Filtrer {columnName}'",
+			"filterIsEmptyOperator": "Est vide",
+			"filterIsFalse": "est faux",
+			"filterIsNotEmptyOperator": "Est non-vide",
+			"filterIsNotNullOperator": "Est non-nul",
+			"filterIsNullOperator": "Est nul",
+			"filterIsTrue": "est vrai",
+			"filterLtOperator": "Est plus petit que",
+			"filterLteOperator": "Est plus petit que ou égal à",
+			"filterMenuLogicDropDownLabel": "'Logique de filtre sur {columnName}'",
+			"filterMenuOperatorsDropDownLabel": "'Opérateurs de filtre sur {columnName}'",
+			"filterMenuTitle": "'Menu de filtre sur {columnName}'",
+			"filterNotContainsOperator": "Ne contient pas",
+			"filterNotEqOperator": "Est différent de",
+			"filterNumericDecrement": "Décrémenter la valeur",
+			"filterNumericIncrement": "Incrémenter la valeur",
+			"filterOrLogic": "Ou",
+			"filterStartsWithOperator": "Commence par",
+			"gridLabel": "Table de données",
+			"groupCollapse": "Réduire le groupe",
+			"groupExpand": "Etendre le groupe",
+			"groupPanelEmpty": "Faites glisser un en-tête de colonne et déposez-le ici pour grouper par cette colonne",
+			"loading": "Chargement",
+			"lock": "Verrouiller",
+			"noRecords": "Aucun enregistrement disponible",
+			"pagerFirstPage": "Aller à la première page",
+			"pagerItems": "éléments",
+			"pagerItemsPerPage": "éléments par page",
+			"pagerLabel": "'Navigation de page, page {currentPage} sur {totalPages}'",
+			"pagerLastPage": "Aller à la dernière page",
+			"pagerNextPage": "Aller à la page suivante",
+			"pagerOf": "sur",
+			"pagerPage": "Page",
+			"pagerPageNumberInputTitle": "Numéro de page",
+			"pagerPreviousPage": "Aller à la page précédente",
+			"selectAllCheckboxLabel": "Tout sélectionner",
+			"selectionCheckboxLabel": "Sélectionner la ligne",
+			"setColumnPosition": "Définir la position de la colonne",
+			"sortAscending": "Trier par ordre croissant",
+			"sortDescending": "Trier par ordre décroissant",
+			"sortable": "Triable",
+			"sortedAscending": "Trié par ordre croissant",
+			"sortedDefault": "Non trié",
+			"sortedDescending": "Trié par ordre décroissant",
+			"stick": "Epingler",
+			"unlock": "Déverrouiller",
+			"unstick": "Désépingler"
+		},
+		"timepicker": {
+			"accept": "Accepter",
+			"acceptLabel": "Accepter",
+			"cancel": "Annuler",
+			"cancelLabel": "Annuler",
+			"now": "Maintenant",
+			"toggle": "Sélectionner une heure"
+		},
+		"upload": {
+			"dropFilesHere": "Déposez les fichiers ici pour les importer",
+			"select": "Sélectionner les fichiers..."
+		}
+	},
+	"models": {
+		"apiConfiguration": {
+			"authType": "Type d'authentification",
+			"new": "Nouvelle configuration d'API"
+		},
+		"application": {
+			"description": "Description",
+			"id": "ID de l'application",
+			"new": "Nouvelle application",
+			"notifications": {
+				"published": "L'application {{value}} a été publiée.",
+				"updated": "Application modifiée."
+			},
+			"setAsFavorite": "Ajouter aux favoris",
+			"subscription": {
+				"create": "Créer un abonnement"
+			}
+		},
+		"channel": {
+			"create": "Créer un canal de diffusion",
+			"new": "Nouveau canal de diffusion"
+		},
+		"dashboard": {
+			"share": "Partager le tableau de bord"
+		},
+		"form": {
+			"core": "Source",
+			"create": "Créer un formulaire",
+			"field": {
+				"label": "Étiquette",
+				"name": "Nom du champ"
+			},
+			"new": "Nouveau formulaire",
+			"notifications": {
+				"savingFailed": "Échec de l'enregistrement, certains champs nécessitent votre attention."
+			},
+			"select": "Sélectionner un formulaire",
+			"template": "Modèle"
+		},
+		"page": {
+			"add": "Ajouter une page"
+		},
+		"positionAttribute": {
+			"new": "Nouvel attribut de position"
+		},
+		"pullJob": {
+			"new": "Nouvelle tâche planifiée",
+			"path": "Chemin",
+			"schedule": "Horaire planifié",
+			"url": "Url"
+		},
+		"record": {
+			"convert": "Convertir",
+			"new": "Nouvel enregistrement",
+			"notifications": {
+				"conversionIncomplete": "Il n'y a pas de correspondance entre le(s) enregistrement(s) sélectionné(s) et certains champs de ce formulaire.",
+				"rowsAdded": "{{length}} ligne(s) ont été ajoutées à {{field}} dans l'enregistrement {{value}}.",
+				"uploadSuccessful": "Enregistrements importés avec succès"
+			},
+			"restore": "Restaurer"
+		},
+		"referenceData": {
+			"add": "Ajouter une référence de données"
+		},
+		"resource": {
+			"create": "Créer une ressource"
+		},
+		"role": {
+			"create": "Créer un rôle"
+		},
+		"step": {
+			"new": "Nouvelle étape"
+		},
+		"subscription": {
+			"new": "Nouvel abonnement"
+		},
+		"user": {
+			"notifications": {
+				"rolesUpdated": "Les rôles de {{username}} ont été modifiés.",
+				"userImportFail": "L'importation d'utilisateurs a échoué."
+			},
+			"username": "Nom d'utilisateur"
+		},
+		"widget": {
+			"add": "Ajouter un widget",
+			"chart": {
+				"defaultTitle": "Widget Graphique"
+			},
+			"delete": {
+				"confirmationMessage": "Souhaitez-vous supprimer le widget ?",
+				"title": "Supprimer le widget"
+			},
+			"map": {
+				"defaultTitle": "Widget Carte",
+				"latitude": "Latitude",
+				"longitude": "Longitude",
+				"zoom": "Zoom"
+			},
+			"scheduler": {
+				"defaultTitle": "Widget Calendrier"
+			}
+		},
+		"workflow": {
+			"notifications": {
+				"cannotGoToNextStep": "Impossible de passer à l'étape suivante",
+				"goToStep": "De retour à l'étape {{step}}."
+			}
+		}
+	},
+	"pages": {
+		"administration": {
+			"title": "Administration"
+		},
+		"apiConfiguration": {
+			"authentication": "Paramètres d'authentification",
+			"baseUrl": "Point d'arrivée principal",
+			"clientId": "ID Client",
+			"graphQL": {
+				"endpoint": "Point d'accès GraphQL",
+				"title": "Paramètres de GraphQL"
+			},
+			"host": "Paramètres de l'hôte",
+			"notifications": {
+				"authTokenFetched": "Jeton d'authentification récupéré, faîtes un autre ping pour obtenir la vraie réponse.",
+				"pingFailed": "La requête ping a échoué.",
+				"pingReceived": "La requête ping a reçu une réponse positive."
+			},
+			"ping": "Essayer avec ces paramètres",
+			"pingUrl": "Extension ping",
+			"placeholder": {
+				"baseUrl": "URL de base pour l'API",
+				"clientId": "Entrez l'ID Client",
+				"graphQLEndpoint": "Extension GraphQL",
+				"pingUrl": "Entrez l'URL de l'extension ping",
+				"scope": "Entrer le scope",
+				"secret": "Entrer le client secret",
+				"token": "Entrez le jeton d'accès pour l'authentification",
+				"tokenUrl": "Entrez l'URL du jeton d'accès"
+			},
+			"scope": "Scope",
+			"secret": "Client Secret",
+			"token": "Jeton d'accès",
+			"tokenUrl": "URL du jeton d'accès"
+		},
+		"apiConfigurations": {
+			"create": "Créer une configuration d'API"
+		},
+		"appBuilder": {
+			"title": "Création de site"
+		},
+		"application": {
+			"addPage": {
+				"form": {
+					"title": "Formulaires disponibles"
+				},
+				"selectType": "Sélectionnez le type de page que vous voulez créer"
+			},
+			"empty": {
+				"add": "Ajouter une page",
+				"create": "Cliquez sur créer pour terminer le processus",
+				"customize": "Personnalisez chacune des pages créées"
+			},
+			"positionAttributes": {
+				"create": "Créer une catégorie de position",
+				"title": "Attributs"
+			},
+			"settings": {
+				"actions": "Actions"
+			}
+		},
+		"applications": {
+			"all": "Toutes les applications",
+			"goTo": "Aller vers la liste d'applications",
+			"recent": "Applications récentes",
+			"title": "Mes applications"
+		},
+		"formBuilder": {
+			"title": "Paramètres avancés"
+		},
+		"forms": {
+			"title": "Formulaires disponibles"
+		},
+		"profile": {
+			"notifications": {
+				"updated": "Préférences sauvegardées."
+			},
+			"title": "Votre profil"
+		},
+		"pullJobs": {
+			"create": "Créer une tâche planifiée"
+		},
+		"referenceData": {
+			"csv": "Fichier CSV d'entrée",
+			"errors": {
+				"name": "Seules les lettres, les tirets et les tirets bas sont acceptés"
+			},
+			"fields": "Champs",
+			"path": "Chemin",
+			"placeholder": {
+				"csv": "Insérer le CSV ici"
+			},
+			"queryName": "Nom de la requête",
+			"type": "Type",
+			"validateCsv": "Valider le CSV",
+			"valueField": "Champ de valeur"
+		},
+		"workflow": {
+			"addStep": {
+				"selectType": "Sélectionner quel type d'étape vous voulez créer."
+			},
+			"deleteStep": {
+				"confirmationMessage": "Souhaitez-vous supprimer définitivement l'étape {{step}} ?"
+			},
+			"empty": {
+				"add": "Ajoutez des étapes",
+				"customize": "Personnalisez chacune des étapes créées."
+			}
+		}
+	}
+}

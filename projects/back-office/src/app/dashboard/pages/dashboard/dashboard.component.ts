@@ -342,12 +342,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*  Display the ShareUrl modal with the route to access the dashboard.
+  /**
+   * Display the ShareUrl modal with the route to access the dashboard.
    */
   public onShare(): void {
+    const url = `${window.origin}/share/${this.dashboard?.id}`;
     const dialogRef = this.dialog.open(ShareUrlComponent, {
       data: {
-        url: window.location,
+        url,
       },
     });
     dialogRef.afterClosed().subscribe();

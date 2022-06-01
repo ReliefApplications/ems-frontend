@@ -18,7 +18,7 @@
     <span
       >{{ 'common.modifiedOn' | translate }}:
       {{
-        application.modifiedAt ?? application.createdAt | date: 'mediumDate'
+        application.modifiedAt ?? application.createdAt | safeDate: 'mediumDate'
       }}</span
     >
     <safe-button

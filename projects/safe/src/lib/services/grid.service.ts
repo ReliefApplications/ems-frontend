@@ -3,11 +3,16 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { prettifyLabel } from '../utils/prettify';
 import get from 'lodash/get';
 import { SafeApiProxyService } from './api-proxy.service';
+import { MULTISELECT_TYPES } from '../components/ui/core-grid/grid/grid.constants';
 
-/** List of multi select question types */
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
 /** List of disabled fields */
-const DISABLED_FIELDS = ['id', 'incrementalId', 'createdAt', 'modifiedAt'];
+const DISABLED_FIELDS = [
+  'id',
+  'incrementalId',
+  'createdAt',
+  'modifiedAt',
+  'form',
+];
 /** Transforms a list with nested lists into a flat list */
 const flatDeep = (arr: any[]): any[] =>
   arr.reduce(
@@ -261,16 +266,11 @@ export class SafeGridService {
       value?: string;
       text?: string;
       hasOther?: boolean;
+      otherText?: string;
     }
   ): { value: string; text: string }[] {
-    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
-    if (choicesByUrl.hasOther) {
-      choices.push({
-        [choicesByUrl.value || 'value']: 'other',
-        [choicesByUrl.text || 'text']: 'Other',
-      });
-    }
-    return choices
+    let choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
+    choices = choices
       ? choices.map((x: any) => ({
           value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
           text: choicesByUrl.text
@@ -280,6 +280,13 @@ export class SafeGridService {
             : x,
         }))
       : [];
+    if (choicesByUrl.hasOther) {
+      choices.push({
+        value: 'other',
+        text: choicesByUrl.otherText ? choicesByUrl.otherText : 'Other',
+      });
+    }
+    return choices;
   }
 
   /**

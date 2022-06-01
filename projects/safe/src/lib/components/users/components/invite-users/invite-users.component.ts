@@ -12,6 +12,7 @@ import { SafeAddUserComponent } from '../add-user/add-user.component';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { SafeDownloadService } from '../../../../services/download.service';
 import { TranslateService } from '@ngx-translate/core';
+import { UploadEvent } from '@progress/kendo-angular-upload';
 
 interface DialogData {
   roles: Role[];
@@ -99,28 +100,45 @@ export class SafeInviteUsersComponent implements OnInit {
   /**
    * Uploads a list of users as xlsx file.
    *
-   * @param $event Event of file upload.
+   * @param e Event of file upload.
    */
-  onUpload($event: any): void {
-    const files = $event.target.files;
-    if (files[0] && this.isValidFile(files[0])) {
-      this.downloadService.uploadFile(this.data.uploadPath, files[0]).subscribe(
-        (res) => {
-          this.gridData.data = this.gridData.data.concat(res);
-        },
-        () => {
+  onUpload(e: UploadEvent): void {
+    e.preventDefault();
+    this.gridData.data = [];
+    if (e.files.length > 0) {
+      const file = e.files[0].rawFile;
+      if (file && this.isValidFile(file)) {
+        this.downloadService.uploadFile(this.data.uploadPath, file).subscribe(
+          (res) => {
+            this.gridData.data = this.gridData.data.concat(res);
+          },
+          (err) => {
+            if (err.status === 400) {
+              this.snackBar.openSnackBar(err.error, { error: true });
+              this.resetFileInput();
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'models.user.notifications.userImportFail'
+                ),
+                {
+                  error: true,
+                }
+              );
+              this.resetFileInput();
+            }
+          }
+        );
+      } else {
+        if (e.files.length > 1) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.formatInvalid', {
+              format: 'xlsx',
+            }),
+            { error: true }
+          );
           this.resetFileInput();
         }
-      );
-    } else {
-      if (files.length > 0) {
-        this.snackBar.openSnackBar(
-          this.translate.instant('notification.formatInvalid', {
-            format: 'xlsx',
-          }),
-          { error: true }
-        );
-        this.resetFileInput();
       }
     }
   }
@@ -132,7 +150,7 @@ export class SafeInviteUsersComponent implements OnInit {
     this.downloadService.getFile(
       this.data.downloadPath,
       `text/xlsx;charset=utf-8;`,
-      'users.xlsx'
+      'users_template.xlsx'
     );
   }
 
@@ -140,7 +158,7 @@ export class SafeInviteUsersComponent implements OnInit {
    * Deletes the file.
    */
   private resetFileInput(): void {
-    this.fileReader.nativeElement.value = '';
+    this.fileReader.clearFiles();
   }
 
   /**

@@ -9,6 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AddLayoutModule } from '../add-layout/add-layout.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeLayoutModalModule } from '../../../layout-modal/layout-modal.module';
+import { SafeDateModule } from '../../../../pipes/date/date.module';
 
 @NgModule({
   declarations: [LayoutsParametersComponent],
@@ -22,6 +23,7 @@ import { SafeLayoutModalModule } from '../../../layout-modal/layout-modal.module
     SafeButtonModule,
     AddLayoutModule,
     SafeLayoutModalModule,
+    SafeDateModule,
   ],
   exports: [LayoutsParametersComponent],
 })

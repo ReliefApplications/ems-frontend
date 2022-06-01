@@ -1,6 +1,9 @@
 <div class="forms-header">
   <!-- FILTERING -->
-  <app-filter (filter)="onFilter($event)"></app-filter>
+  <app-filter
+    (filter)="onFilter($event)"
+    [loading]="filterLoading"
+  ></app-filter>
   <!-- ACTIONS -->
   <div class="actions">
     <safe-button
@@ -31,7 +34,9 @@
         {{ 'common.createdOn' | translate }}
       </span>
     </th>
-    <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
+    <td mat-cell *matCellDef="let element">
+      {{ element.createdAt | safeDate }}
+    </td>
   </ng-container>
 
   <ng-container matColumnDef="status">
@@ -143,7 +148,10 @@
         <ng-container *ngIf="element.canSee">
           <button mat-menu-item [routerLink]="['/forms/records', element.id]">
             <mat-icon>plagiarism</mat-icon>
-            {{ 'common.view' | translate }}
+            {{
+              'common.viewObject'
+                | translate: { name: 'common.record.few' | translate }
+            }}
           </button>
         </ng-container>
         <ng-container *ngIf="element.canDelete">
@@ -173,12 +181,12 @@
   *ngIf="loading"
   [columns]="[
     'common.name',
-    'table.date',
+    'common.createdOn',
     'common.status',
-    'table.history',
-    'table.records',
-    'table.core',
-    'table.parent'
+    'common.history',
+    'common.record.few',
+    'components.forms.isCore',
+    'components.forms.parent'
   ]"
   [actions]="true"
 >

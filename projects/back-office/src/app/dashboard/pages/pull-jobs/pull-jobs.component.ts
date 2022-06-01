@@ -221,8 +221,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               name: element.name,
             }
           ),
-          confirmText: this.translate.instant('common.delete'),
-          cancelText: this.translate.instant('common.cancel'),
+          confirmText: this.translate.instant('components.confirmModal.delete'),
+          cancelText: this.translate.instant('components.confirmModal.cancel'),
           confirmColor: 'warn',
         },
       });
@@ -316,11 +316,10 @@ export class PullJobsComponent implements OnInit, OnDestroy {
                 if (res.data?.editPullJob) {
                   this.snackBar.openSnackBar(
                     this.translate.instant(
-                      'common.notifications.objectNotUpdated',
+                      'common.notifications.objectUpdated',
                       {
-                        type: this.translate
-                          .instant('common.pullJob.one')
-                          .toLowerCase(),
+                        type: this.translate.instant('common.pullJob.one')
+                          .toLowerCase,
                         value: value.name,
                       }
                     )

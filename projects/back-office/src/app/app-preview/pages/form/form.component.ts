@@ -84,13 +84,13 @@ export class FormComponent implements OnInit {
           .valueChanges.subscribe((res) => {
             this.page = res.data.page;
             this.apollo
-              .watchQuery<GetFormByIdQueryResponse>({
+              .query<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
                   id: this.page.content,
                 },
               })
-              .valueChanges.subscribe((res2) => {
+              .subscribe((res2) => {
                 if (res2.data) {
                   this.form = res2.data.form;
                 }

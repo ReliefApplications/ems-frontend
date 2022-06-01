@@ -73,7 +73,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectLocked', {
-          value: this.application?.name,
+          name: this.application?.name,
         })
       );
     } else {
@@ -90,18 +90,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectLocked', {
-          value: this.application?.name,
+          name: this.application?.name,
         })
       );
     } else {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
           title: this.translate.instant('common.deleteObject', {
-            object: this.translate.instant('common.application.one'),
+            name: this.translate.instant('common.application.one'),
           }),
-          content: this.translate.instant('components.application.delete'),
-          confirmText: this.translate.instant('common.delete'),
-          cancelText: this.translate.instant('common.cancel'),
+          content: this.translate.instant(
+            'components.application.delete.confirmationMessage',
+            { name: this.application?.name }
+          ),
+          confirmText: this.translate.instant('components.confirmModal.delete'),
+          cancelText: this.translate.instant('components.confirmModal.cancel'),
           confirmColor: 'warn',
         },
       });

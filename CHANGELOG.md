@@ -2,60 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [1.2.0](https://github.com/ReliefApplications/oort-frontend/compare/v1.1.2...v1.2.0) (2022-02-24)
+### [1.1.4](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.3...v1.1.4) (2022-04-12)
 
+### [1.1.3](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.2...v1.1.3) (2022-04-12)
 
-### Features
-
-* add addField stage [#24823](https://github.com/ReliefApplications/oort-frontend/issues/24823) ([d705171](https://github.com/ReliefApplications/oort-frontend/commits/d705171c2992fbf043581393d29c6fb5df8c4d27))
-* add custom stage [#24823](https://github.com/ReliefApplications/oort-frontend/issues/24823) ([ce0b569](https://github.com/ReliefApplications/oort-frontend/commits/ce0b569bb176f4ddb15d7b400934c0f2a01ef31c))
-* add forms dropdown component for agg builder ([605e232](https://github.com/ReliefApplications/oort-frontend/commits/605e232a299973190c7cb273af3179ed4d5e6c86))
-* add group by stage [#24823](https://github.com/ReliefApplications/oort-frontend/issues/24823) ([b23bbed](https://github.com/ReliefApplications/oort-frontend/commits/b23bbed63e36ff4e81b609ba8a79f95b5808976a))
-* add keycloak connection ([b9d4616](https://github.com/ReliefApplications/oort-frontend/commits/b9d4616aa6cde9dc6010bb059a62925dc0cb4688))
-* add mapping, preview, charts integration ([efb9f8d](https://github.com/ReliefApplications/oort-frontend/commits/efb9f8de828d7deebf99781affe11d0c235dffaf))
-* add pipeline with sort and filter steps ([383a398](https://github.com/ReliefApplications/oort-frontend/commits/383a3984abca7455d7fb15106d8fa87ab63a5553))
-* add route to test aggregation builder in BO ([5e37e79](https://github.com/ReliefApplications/oort-frontend/commits/5e37e79901e0a8e020d78f1fc3f6f8be48d2b68b))
-* add tagbox component ([9dff351](https://github.com/ReliefApplications/oort-frontend/commits/9dff351d96de3d1da04857c7f4e8e696b00a73b3))
-* add unwind stage [#24823](https://github.com/ReliefApplications/oort-frontend/issues/24823) ([95a3322](https://github.com/ReliefApplications/oort-frontend/commits/95a3322d199ebe36715d19bf807752f73469aca1))
-* can select all records of a grid [#16603](https://github.com/ReliefApplications/oort-frontend/issues/16603) ([d57d2e6](https://github.com/ReliefApplications/oort-frontend/commits/d57d2e69dd6cd323e30a0a12e4fc166c32377088))
-* finish integration of agg builder in charts ([106adc0](https://github.com/ReliefApplications/oort-frontend/commits/106adc0e0b2d26fda7f1869e9e08a244a8525b2e))
-* integrate tagbox in aggregation builder ([4c9f062](https://github.com/ReliefApplications/oort-frontend/commits/4c9f062f55a7127563a60cbb8bb78eba5f270e9c))
-* keycloak connection ([a06fcd0](https://github.com/ReliefApplications/oort-frontend/commits/a06fcd08171cdf5a172f12221cc679fbc15a7891))
-* popover to get application list ([74dc9f0](https://github.com/ReliefApplications/oort-frontend/commits/74dc9f0262382945e56ad329349a894525f3e485))
-* select all for emails [#16603](https://github.com/ReliefApplications/oort-frontend/issues/16603) ([765b569](https://github.com/ReliefApplications/oort-frontend/commits/765b569058e0d6cf791e5584a8f04e8080361524))
-* select all with all actions except prefill [#16603](https://github.com/ReliefApplications/oort-frontend/issues/16603) ([53f9dfd](https://github.com/ReliefApplications/oort-frontend/commits/53f9dfd9c371fdcd2735f4014fe81ffc97c7453f))
-
-
-### Bug Fixes
-
-* bug when changing source [#24823](https://github.com/ReliefApplications/oort-frontend/issues/24823) ([53ceaf3](https://github.com/ReliefApplications/oort-frontend/commits/53ceaf32b7eec864c77a42b461671f4e5989dc03))
-* issue where translated html would show 'yes' ([c28ad9d](https://github.com/ReliefApplications/oort-frontend/commits/c28ad9d9262547ea0d2401b44c73b71bd69ba5c8))
-* pager of grid is invisible ([625299a](https://github.com/ReliefApplications/oort-frontend/commits/625299a900c3c79c0d37d311d3a8734ebc5101a0))
-* remove artifacts of aggregation builder page ([530b094](https://github.com/ReliefApplications/oort-frontend/commits/530b094b0d9915d4b00dace3e7db3602441841be))
-* store only selected fields name ([2918c68](https://github.com/ReliefApplications/oort-frontend/commits/2918c68213261d8abdb801d895853cae39e6299b))
-* time inputs now have correct value on grid [#24068](https://github.com/ReliefApplications/oort-frontend/issues/24068) ([d4fcac1](https://github.com/ReliefApplications/oort-frontend/commits/d4fcac1424adabed23b5e4c601543049e50e5a0b))
-
-## [1.2.0](https://github.com/ReliefApplications/oort-frontend/compare/v1.1.2-alpha.0...v1.2.0) (2022-01-12)
-
-
-### Features
-
-* add avatar ui ([bd794d2](https://github.com/ReliefApplications/oort-frontend/commits/bd794d287466b13a6035703c91d39451e325d220))
-* Authentication with keycloak ([c27ee58](https://github.com/ReliefApplications/oort-frontend/commits/c27ee58a5c423dd5d7d4d35f34b4c67ef3d8a323))
-* can edit position attributes ([4dfe89c](https://github.com/ReliefApplications/oort-frontend/commits/4dfe89c862948feebe01c4062aee4140daf0c79a))
-* update msal package and fix related bugs Now refreshs properly after token expiracy. Now sends token request only once and use cached one then. [#10687](https://github.com/ReliefApplications/oort-frontend/issues/10687) ([ea8a8c6](https://github.com/ReliefApplications/oort-frontend/commits/ea8a8c627423d19438d01ac063c8fc8836b04a28))
-
-
-### Bug Fixes
-
-* Bug whith protected resources scope [#10687](https://github.com/ReliefApplications/oort-frontend/issues/10687) ([40db481](https://github.com/ReliefApplications/oort-frontend/commits/40db4815f54123fd9e0282d62cc1da1018bc020d))
-* build size error ([8758a13](https://github.com/ReliefApplications/oort-frontend/commits/8758a13dcebbb8e0e5b9e9a6dc172d376a0e49b0))
-* form modal now looks like the record modal ([1ccaea2](https://github.com/ReliefApplications/oort-frontend/commits/1ccaea258e9fe0af6cd811b72ef96591830a4ad0))
-* issue where cache policy would prevent some updates to appear in the grids [#18827](https://github.com/ReliefApplications/oort-frontend/issues/18827) ([0ca3ede](https://github.com/ReliefApplications/oort-frontend/commits/0ca3edefc3f6f00dfe6f62416da3eb559ecd1d9c))
-* issue where closing modal about rows / cols of a widget without saving would leave them as 0 [#18403](https://github.com/ReliefApplications/oort-frontend/issues/18403) ([d68e5c7](https://github.com/ReliefApplications/oort-frontend/commits/d68e5c724968d6e5e3715a7451b2d344f1b7a986))
-* lint issues of web element project ([4c3a77c](https://github.com/ReliefApplications/oort-frontend/commits/4c3a77c11c9abe7f7169e4a7d1995ead78436e0d))
-* prevents current edited row in grid to be closed without saving changes [#11796](https://github.com/ReliefApplications/oort-frontend/issues/11796) ([307b98e](https://github.com/ReliefApplications/oort-frontend/commits/307b98ec90001e6debbd3440c1078067c0732480))
-* silent check sso and put credentials in env ([3b16b32](https://github.com/ReliefApplications/oort-frontend/commits/3b16b32d93ea455a6c22c2cd1de5dd5233936e21))
+* add attachment in email ([8e03407](https://github.com/ReliefApplications/emrs-safe-frontend/commits/8e03407f9a8a5273c164e751caad9114baacc7f0))
+* email from back' [#25833](https://github.com/ReliefApplications/oort-frontend/issues/25833) ([7f516b9](https://github.com/ReliefApplications/emrs-safe-frontend/commits/7f516b92cced8a71569b86ab421ebe4013786b44))
+* grid now generates files with timestamp in the name [#25831](https://github.com/ReliefApplications/oort-frontend/issues/25831) ([a2c991e](https://github.com/ReliefApplications/emrs-safe-frontend/commits/a2c991e4c2562e512013e462a3cd84809dced0e1))
+* preview email [#27626](https://github.com/ReliefApplications/oort-frontend/issues/27626) ([5c50267](https://github.com/ReliefApplications/emrs-safe-frontend/commits/5c502677cf839d8243ff71bc1ae12dca617a1367))
 
 ### [1.1.2](https://github.com/ReliefApplications/emrs-safe-frontend/compare/v1.1.2-alpha.0...v1.1.2) (2022-02-23)
 

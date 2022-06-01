@@ -11,86 +11,74 @@ export class DashboardComponent implements OnInit {
   public title = 'Back-office';
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
-  public navGroups = [
-    {
-      name: 'Site builder',
-      navItems: [
-        // Commented in order to prevent confusion about dashboards
-        // {
-        //   name: 'My dashboards',
-        //   path: '/dashboards',
-        //   icon: 'dashboard',
-        // },
-        {
-          name: 'My applications',
-          path: '/applications',
-          icon: 'apps',
-        },
-      ],
-    },
-    {
-      name: 'Advanced settings',
-      navItems: [
-        {
-          name: 'Forms',
-          path: '/forms',
-          icon: 'poll',
-        },
-        {
-          name: 'Resources',
-          path: '/resources',
-          icon: 'storage',
-        },
-      ],
-    },
-    {
-      name: 'Administration',
-      navItems: [
-        {
-          name: 'Users',
-          path: '/settings/users',
-          icon: 'supervisor_account',
-        },
-        {
-          name: 'Roles',
-          path: '/settings/roles',
-          icon: 'admin_panel_settings',
-        },
-        {
-          name: 'API Configurations',
-          path: '/settings/apiconfigurations',
-          icon: 'settings_input_composite',
-        },
-        {
-          name: 'Pull jobs',
-          path: '/settings/pulljobs',
-          icon: 'cloud_download',
-        },
-      ],
-    },
-  ];
+  public navGroups: any[] = [];
 
-  constructor(translate: TranslateService) {
-    translate.stream('ID').subscribe(() => {
-      this.navGroups[0].name = translate.instant('pages.appBuilder.title');
-      this.navGroups[0].navItems[0].name = translate.instant(
-        'pages.applications.title'
-      );
-      this.navGroups[1].name = translate.instant('pages.formBuilder.title');
-      this.navGroups[1].navItems[0].name = translate.instant('common.form.few');
-      this.navGroups[1].navItems[1].name = translate.instant(
-        'common.resource.few'
-      );
-      this.navGroups[2].name = translate.instant('pages.administration.title');
-      this.navGroups[2].navItems[0].name = translate.instant('common.user.few');
-      this.navGroups[2].navItems[1].name = translate.instant('common.role.few');
-      this.navGroups[2].navItems[2].name = translate.instant(
-        'common.apiConfiguration.few'
-      );
-      this.navGroups[2].navItems[3].name =
-        translate.instant('common.pullJob.few');
+  constructor(private translate: TranslateService) {
+    this.setNavGroups();
+    translate.onLangChange.subscribe(() => {
+      this.setNavGroups();
     });
   }
 
   ngOnInit(): void {}
+
+  setNavGroups(): void {
+    this.navGroups = [
+      {
+        name: this.translate.instant('pages.appBuilder.title'),
+        navItems: [
+          {
+            name: this.translate.instant('pages.applications.title'),
+            path: '/applications',
+            icon: 'apps',
+          },
+        ],
+      },
+      {
+        name: this.translate.instant('pages.formBuilder.title'),
+        navItems: [
+          {
+            name: this.translate.instant('common.form.few'),
+            path: '/forms',
+            icon: 'poll',
+          },
+          {
+            name: this.translate.instant('common.resource.few'),
+            path: '/resources',
+            icon: 'storage',
+          },
+          {
+            name: this.translate.instant('common.referenceData.few'),
+            path: '/referencedata',
+            icon: 'cloud_download',
+          },
+        ],
+      },
+      {
+        name: this.translate.instant('pages.administration.title'),
+        navItems: [
+          {
+            name: this.translate.instant('common.user.few'),
+            path: '/settings/users',
+            icon: 'supervisor_account',
+          },
+          {
+            name: this.translate.instant('common.role.few'),
+            path: '/settings/roles',
+            icon: 'admin_panel_settings',
+          },
+          {
+            name: this.translate.instant('common.apiConfiguration.few'),
+            path: '/settings/apiconfigurations',
+            icon: 'settings_input_composite',
+          },
+          {
+            name: this.translate.instant('common.pullJob.few'),
+            path: '/settings/pulljobs',
+            icon: 'cloud_download',
+          },
+        ],
+      },
+    ];
+  }
 }

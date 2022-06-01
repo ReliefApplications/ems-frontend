@@ -11,11 +11,17 @@
 documentation/*
 documentation.json
 
+# Widgets
+# widgets/*
+
 # Dependencies
 /node_modules
 
 # Storybook
 storybook-static/*
+
+# Widgets
+# /widgets
 
 # Profiling files
 chrome-profiler-events*.json
@@ -39,6 +45,7 @@ speed-measure-plugin*.json
 .history/*
 
 # misc
+/.angular/cache
 /.sass-cache
 /connect.lock
 /coverage

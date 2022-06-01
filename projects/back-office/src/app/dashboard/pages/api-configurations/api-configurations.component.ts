@@ -27,7 +27,7 @@ import {
   AddApiConfigurationMutationResponse,
   ADD_API_CONFIGURATIION,
   DeleteApiConfigurationMutationResponse,
-  DELETE_API_CONFIGURATIION,
+  DELETE_API_CONFIGURATION,
 } from '../../../graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -225,7 +225,9 @@ export class ApiConfigurationsComponent
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
-                      type: this.translate.instant('table.APIConf'),
+                      type: this.translate.instant(
+                        'common.apiConfiguration.one'
+                      ),
                       error: res.errors[0].message,
                     }
                   ),
@@ -267,8 +269,8 @@ export class ApiConfigurationsComponent
             name: element.name,
           }
         ),
-        confirmText: this.translate.instant('common.delete'),
-        cancelText: this.translate.instant('common.cancel'),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
         confirmColor: 'warn',
       },
     });
@@ -276,7 +278,7 @@ export class ApiConfigurationsComponent
       if (value) {
         this.apollo
           .mutate<DeleteApiConfigurationMutationResponse>({
-            mutation: DELETE_API_CONFIGURATIION,
+            mutation: DELETE_API_CONFIGURATION,
             variables: {
               id: element.id,
             },
@@ -285,7 +287,7 @@ export class ApiConfigurationsComponent
             if (res && !res.errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('table.APIConf'),
+                  value: this.translate.instant('common.apiConfiguration.one'),
                 })
               );
               this.dataSource.data = this.dataSource.data.filter(

@@ -270,15 +270,15 @@ export class SafeApplicationService {
           if (res.errors) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.application.onelication'),
+                type: this.translate.instant('common.application.one'),
                 error: res.errors[0].message,
               })
             );
           } else {
             this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
+              this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate
-                  .instant('common.application.onelication')
+                  .instant('common.application.one')
                   .toLowerCase(),
                 value: value.name,
               })
@@ -693,7 +693,7 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
+              this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate.instant('common.role.one').toLowerCase(),
                 value: role.title,
               })
@@ -813,6 +813,7 @@ export class SafeApplicationService {
                     ids.length > 1 ? 'common.user.few' : 'common.user.one'
                   )
                   .toLowerCase(),
+                error: '',
               }),
               { error: true }
             );
@@ -864,7 +865,13 @@ export class SafeApplicationService {
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotInvited', {
-                name: this.translate.instant('common.user.few').toLowerCase(),
+                name: this.translate
+                  .instant(
+                    res.data?.addUsers.length
+                      ? 'common.user.few'
+                      : 'common.user.one'
+                  )
+                  .toLowerCase(),
               }),
               { error: true }
             );
@@ -898,7 +905,7 @@ export class SafeApplicationService {
           if (res.data) {
             const newUser = res.data.editUser;
             this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
+              this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate.instant('common.role.few').toLowerCase(),
                 value: user.username,
               })
@@ -1029,7 +1036,7 @@ export class SafeApplicationService {
             );
           } else {
             this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
+              this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate.instant('common.positionCategory.one'),
                 value: value.title,
               })
@@ -1108,7 +1115,7 @@ export class SafeApplicationService {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
+            this.translate.instant('common.notifications.objectUpdated', {
               type: this.translate.instant('common.channel.one'),
               value: title,
             })
@@ -1265,7 +1272,7 @@ export class SafeApplicationService {
           if (res.data) {
             const subscription = res.data.editSubscription;
             this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
+              this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate
                   .instant('common.subscription.one')
                   .toLowerCase(),

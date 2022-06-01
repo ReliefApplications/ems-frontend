@@ -27,7 +27,32 @@ import { MatDialogModule } from '@angular/material/dialog';
 // TRANSLATOR
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
+import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
+import { MessageService } from '@progress/kendo-angular-l10n';
+import { KendoTranslationService } from '@safe/builder';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import localeEn from '@angular/common/locales/en';
+
+// Register local translations for dates
+registerLocaleData(localeFr);
+registerLocaleData(localeEn);
+
+// Kendo datepicker for surveyjs
+import {
+  CalendarDOMService,
+  CenturyViewService,
+  DecadeViewService,
+  HoursService,
+  MinutesService,
+  MonthViewService,
+  TimePickerDOMService,
+  TOUCH_ENABLED,
+  YearViewService,
+} from '@progress/kendo-angular-dateinputs';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+import { touchEnabled } from '@progress/kendo-common';
 
 localStorage.setItem('loaded', 'false');
 
@@ -174,6 +199,29 @@ export const httpTranslateLoader = (http: HttpClient) =>
       multi: true,
       deps: [OAuthService],
     },
+    {
+      provide: MessageService,
+      useClass: KendoTranslationService,
+    },
+    {
+      provide: OAuthStorage,
+      useValue: localStorage,
+    },
+    // TODO: check
+    {
+      provide: TOUCH_ENABLED,
+      useValue: [touchEnabled],
+    },
+    PopupService,
+    ResizeBatchService,
+    CalendarDOMService,
+    TimePickerDOMService,
+    MonthViewService,
+    HoursService,
+    MinutesService,
+    YearViewService,
+    DecadeViewService,
+    CenturyViewService,
   ],
   bootstrap: [AppComponent],
 })

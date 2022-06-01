@@ -26,24 +26,22 @@
     <div class="versions-info" *ngIf="data.compareTo">
       <div class="version-info">
         <div>{{ 'components.record.history.version.old' | translate }}</div>
-        <span>{{ data.compareTo.createdAt | date: 'dd/MM/yy, h:mm a' }}</span>
+        <span>{{ data.compareTo.createdAt | safeDate: 'short' }}</span>
       </div>
       <div class="version-info">
         <div>{{ 'components.record.history.version.current' | translate }}</div>
-        <span>{{ record.modifiedAt | date: 'dd/MM/yy, h:mm a' }}</span>
+        <span>{{ record.modifiedAt | safeDate: 'short' }}</span>
       </div>
     </div>
   </div>
 </ng-container>
 <mat-dialog-content>
   <ng-container *ngIf="!data.compareTo">
-    <div [id]="containerId"></div>
+    <div #formContainer class="form-container"></div>
   </ng-container>
   <ng-container *ngIf="data.compareTo">
-    <mat-grid-list cols="2" rowHeight="2:1">
-      <mat-grid-tile [id]="containerNextId"> </mat-grid-tile>
-      <mat-grid-tile [id]="containerId"> </mat-grid-tile>
-    </mat-grid-list>
+    <div #formContainerNext class="form-container"></div>
+    <div #formContainer class="form-container"></div>
   </ng-container>
 </mat-dialog-content>
 <mat-dialog-actions align="end" *ngIf="!loading && data.compareTo">
@@ -80,6 +78,8 @@
     {{ 'common.next' | translate }}
   </button>
   <button *ngIf="canEdit" mat-flat-button color="primary" (click)="onEdit()">
-    {{'common.editObject' | translate: { name: 'common.record.few' | translate } }}
+    {{
+      'common.editObject' | translate: { name: 'common.record.few' | translate }
+    }}
   </button>
 </mat-dialog-actions>

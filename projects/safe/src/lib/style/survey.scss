@@ -11,16 +11,33 @@
   color: red;
 }
 
+// === QUESTION CONTENT ===
 ::ng-deep .safe-qst-content {
   display: flex;
   flex-direction: column;
 
-  .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
+  .sv_q_erbox:not([style*='display: none']):not([style*='display:none']) {
     background-color: transparent;
     border: none;
     order: 2;
     padding: 0 0 0 8px !important;
     margin: 8px 0 !important;
+  }
+
+  // === DATE / TIME INPUTS ===
+  .k-datepicker,
+  .k-timepicker,
+  .k-datetimepicker {
+    width: 100%;
+  }
+}
+
+::ng-deep svd-property-editor {
+  // === DATE / TIME INPUTS ===
+  .k-datepicker,
+  .k-timepicker,
+  .k-datetimepicker {
+    width: 100%;
   }
 }
 

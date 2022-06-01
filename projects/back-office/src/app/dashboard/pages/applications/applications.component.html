@@ -1,6 +1,9 @@
 <ng-container>
   <!-- FILTERING -->
-  <app-filter (filter)="onFilter($event)"></app-filter>
+  <app-filter
+    (filter)="onFilter($event)"
+    [loading]="filterLoading"
+  ></app-filter>
 
   <!-- NEW APPLICATIONS -->
   <h2>{{ 'pages.applications.recent' | translate }}</h2>
@@ -34,7 +37,7 @@
         </span>
       </th>
       <td mat-cell *matCellDef="let element">
-        {{ element.createdAt | date }}
+        {{ element.createdAt | safeDate }}
       </td>
     </ng-container>
 
@@ -132,7 +135,12 @@
   </table>
   <safe-skeleton-table
     *ngIf="loading"
-    [columns]="['common.name', 'table.date', 'common.status', 'common.user.few']"
+    [columns]="[
+      'common.name',
+      'common.createdOn',
+      'common.status',
+      'common.user.few'
+    ]"
     [actions]="true"
   >
   </safe-skeleton-table>

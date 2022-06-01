@@ -1,13 +1,36 @@
-<kendo-chart #chart>
-    <kendo-chart-title *ngIf="title" [visible]="title.visible" [text]="title.text" [position]="title.position">
-    </kendo-chart-title>
-    <kendo-chart-legend *ngIf="legend" [visible]='legend.visible' [position]='legend.position'
-        [orientation]='legend.orientation'>
-    </kendo-chart-legend>
-    <kendo-chart-tooltip format='{0}'></kendo-chart-tooltip>
-    <kendo-chart-series>
-        <kendo-chart-series-item *ngFor='let item of series' type="column" [data]="item.data" [gap]="gap"
-            [spacing]="spacing" field="field" categoryField="category" [name]="item.name || ''" [color]="item.color">
-        </kendo-chart-series-item>
-    </kendo-chart-series>
+<kendo-chart #chart [seriesColors]="options && options.palette">
+  <kendo-chart-value-axis>
+    <kendo-chart-value-axis-item [min]="min" [max]="max">
+    </kendo-chart-value-axis-item>
+  </kendo-chart-value-axis>
+  <kendo-chart-title
+    *ngIf="title"
+    [visible]="title.visible"
+    [text]="title.text"
+    [position]="title.position"
+  >
+  </kendo-chart-title>
+  <kendo-chart-legend
+    *ngIf="legend"
+    [visible]="legend.visible"
+    [position]="legend.position"
+    [orientation]="legend.orientation"
+  >
+  </kendo-chart-legend>
+  <kendo-chart-tooltip format="{0}"></kendo-chart-tooltip>
+  <kendo-chart-series>
+    <kendo-chart-series-item
+      *ngFor="let item of series"
+      type="column"
+      [data]="item.data"
+      [gap]="gap"
+      [spacing]="spacing"
+      field="field"
+      categoryField="category"
+      [name]="item.name || ''"
+      [color]="item.color"
+      [labels]="labels"
+    >
+    </kendo-chart-series-item>
+  </kendo-chart-series>
 </kendo-chart>

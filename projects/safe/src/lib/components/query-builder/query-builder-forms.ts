@@ -1,6 +1,8 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import get from 'lodash/get';
 import { prettifyLabel } from '../../utils/prettify';
 
+/** Creating a new instance of the FormBuilder class. */
 const formBuilder = new FormBuilder();
 
 /**
@@ -26,6 +28,7 @@ export const createFilterGroup = (filter: any, fields: any): FormGroup => {
           field: filter.field,
           operator: filter.operator || 'eq',
           value: Array.isArray(filter.value) ? [filter.value] : filter.value,
+          useExpression: get(filter, 'useExpression', false),
         });
       }
     }
@@ -106,6 +109,7 @@ export const createQueryForm = (value: any, validators = true): FormGroup =>
   formBuilder.group({
     name: [value ? value.name : '', validators ? Validators.required : null],
     template: [value ? value.template : '', null],
+    pageSize: [value?.pageSize || 10],
     fields: formBuilder.array(
       value && value.fields ? value.fields.map((x: any) => addNewField(x)) : [],
       validators ? Validators.required : null
