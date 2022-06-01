@@ -10,6 +10,10 @@ import { SafeRecordSummaryModule } from '../record-summary/record-summary.module
 import { TranslateModule } from '@ngx-translate/core';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 
+/**
+ * SafeFormModule is a class used to manage all the modules and components
+ * related to the form display.
+ */
 @NgModule({
   declarations: [SafeFormComponent],
   imports: [

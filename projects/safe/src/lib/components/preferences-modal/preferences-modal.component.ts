@@ -29,11 +29,12 @@ export class SafePreferencesModalComponent implements OnInit {
   currDateFormat: string;
 
   /**
-   * Preferences Modal.
+   * Preferences Modal constructor
    *
-   * @param data modal data
-   * @param formBuilder Angular form builder
-   * @param translate Angular translate service
+   * @param data Data that will be passed to the modal
+   * @param formBuilder This is the service that will be used to build forms.
+   * @param translate This is the Angular service that translates text
+   * @param dateTranslate Shared service for Date Translation
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: PreferencesDialogData,

@@ -22,12 +22,19 @@ export default {
   },
 } as Meta;
 
+/**
+ * Defines a template for the component SafeRecordSummaryComponent to use as a playground
+ *
+ * @param args the properties of the instance of SafeRecordSummaryComponent
+ * @returns the template
+ */
 const TEMPLATE: Story<SafeRecordSummaryComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
+/** Exports a default template with mock properties */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.args = {
   record: {
@@ -43,11 +50,13 @@ DEFAULT.args = {
   cacheDate: new Date(),
 };
 
+/** Exports a template with properties that model information only stored in the cache */
 export const CACHE_ONLY = TEMPLATE.bind({});
 CACHE_ONLY.args = {
   cacheDate: new Date(),
 };
 
+/** Exports a template with properties that model information not stored in the cache */
 export const WITHOUT_CACHE = TEMPLATE.bind({});
 WITHOUT_CACHE.args = {
   record: {

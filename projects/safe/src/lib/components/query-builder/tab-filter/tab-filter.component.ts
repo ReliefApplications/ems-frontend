@@ -4,6 +4,9 @@ import { isDate } from 'lodash';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
+/**
+ * Defines the operators available for filtering
+ */
 const OPERATORS: any = {
   eq: {
     value: 'eq',
@@ -62,7 +65,9 @@ const OPERATORS: any = {
     label: 'Ends with',
   },
 };
-
+/**
+ * Defines the operators allowed for each type
+ */
 const TYPES: any = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Int: {
@@ -134,6 +139,9 @@ const TYPES: any = {
   },
 };
 
+/**
+ * Defines the data types available
+ */
 const AVAILABLE_TYPES = [
   'Int',
   'Float',
@@ -147,6 +155,9 @@ const AVAILABLE_TYPES = [
   'Form',
 ];
 
+/**
+ * Component for displaying the filtering options
+ */
 @Component({
   selector: 'safe-tab-filter',
   templateUrl: './tab-filter.component.html',
@@ -167,12 +178,25 @@ export class SafeTabFilterComponent implements OnInit {
 
   public operators: any = OPERATORS;
 
+  /**
+   * Getter for the filters
+   *
+   * @returns The filters in an array
+   */
   get filters(): FormArray {
     return this.form.get('filters') as FormArray;
   }
 
   private inputs = '';
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param formBuilder This is the service that will be used to build forms.
+   * @param queryBuilder This is the service that will be used to build the query.
+   * @param apiProxyService This is the service that will be used to make the API call.
+   */
   constructor(
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService,
@@ -258,6 +282,9 @@ export class SafeTabFilterComponent implements OnInit {
    *
    * @param res Result of http request.
    * @param choicesByUrl Choices By Url property.
+   * @param choicesByUrl.path Path of the choice
+   * @param choicesByUrl.value Value of the choice
+   * @param choicesByUrl.text Text of the choice
    * @returns list of choices.
    */
   private extractChoices(
@@ -277,6 +304,11 @@ export class SafeTabFilterComponent implements OnInit {
       : [];
   }
 
+  /**
+   * Set the current date to today
+   *
+   * @param filterName Name of the filter to set the date to
+   */
   setCurrentDate(filterName: string): void {
     this.form.controls[filterName].setValue('today()');
   }
@@ -289,6 +321,12 @@ export class SafeTabFilterComponent implements OnInit {
     formGroup.get('value')?.setValue(null);
   }
 
+  /**
+   * Handles the onKey event
+   *
+   * @param e Event to handle
+   * @param filterName Name of the filter where the user typed
+   */
   onKey(e: any, filterName: string): void {
     if (e.target.value === '') {
       this.inputs = '';
@@ -325,6 +363,9 @@ export class SafeTabFilterComponent implements OnInit {
     }
   }
 
+  /**
+   * Adds a filter
+   */
   onAddFilter(): void {
     const filter = this.formBuilder.group({
       field: '',
@@ -336,6 +377,12 @@ export class SafeTabFilterComponent implements OnInit {
     this.selectedFields.push({});
   }
 
+  /**
+   * Handles the setting of a field
+   *
+   * @param e The event to handle
+   * @param index The index of the field to set
+   */
   onSetField(e: any, index: number): void {
     if (e.value) {
       const field = this.fields.find((x) => x.name === e.value);
@@ -356,16 +403,29 @@ export class SafeTabFilterComponent implements OnInit {
     }
   }
 
+  /**
+   * Deletes a filter
+   *
+   * @param index The index of the filter to delete
+   */
   onDeleteFilter(index: number): void {
     this.filters.removeAt(index);
     this.selectedFields.splice(index, 1);
   }
 
+  /**
+   * Deletes a filter group
+   *
+   * @param index The index of the filter group to delete
+   */
   onDeleteFilterGroup(index: number): void {
     this.filters.removeAt(index);
     this.selectedFields.splice(index, 1);
   }
 
+  /**
+   * Adds a filter group
+   */
   onAddFilterGroup(): void {
     const filter = this.formBuilder.group({
       logic: 'and',

@@ -43,10 +43,11 @@
           {
             "exemptEmptyConstructors": false,
             "contexts": [
+              "ExportDefaultDeclaration > ArrowFunctionExpression",
               "TSInterfaceDeclaration",
               "TSEnumDeclaration",
               "Program > VariableDeclaration[kind='const']",
-              "ExportNamedDeclaration > VariableDeclaration > VariableDeclarator > ArrowFunctionExpression",
+              "ExportNamedDeclaration[declaration.kind='const']",
               "MethodDefinition[key.name!=/^ngOn(Init|Destroy|Changes)|ngDoCheck|ngAfter(ContentInit|ContentChecked|ViewInit|ViewChecked)$/]"
             ],
             "require": {
@@ -59,6 +60,7 @@
         ],
         "jsdoc/require-param-type": 0,
         "jsdoc/require-property-type": 0,
+        "jsdoc/require-description": 1,
         "jsdoc/require-returns-type": 0
       }
     },
