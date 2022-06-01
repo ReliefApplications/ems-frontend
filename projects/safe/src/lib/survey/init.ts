@@ -7,6 +7,7 @@ import { init as initResourceComponent } from './components/resource';
 import { init as initResourcesComponent } from './components/resources';
 import { init as initOwnerComponent } from './components/owner';
 import { init as initUsersComponent } from './components/users';
+import { init as initGeolocationComponent } from './components/geolocation';
 import { init as initCustomWidget } from './widget';
 import addCustomFunctions from '../utils/custom-functions';
 import { Apollo } from 'apollo-angular';
@@ -45,6 +46,7 @@ export const initCustomWidgets = (
   initResourcesComponent(survey, domService, apollo, dialog, formBuilder);
   initOwnerComponent(survey, domService, apollo, dialog, formBuilder);
   initUsersComponent(survey, domService, apollo, dialog, formBuilder);
+  initGeolocationComponent(survey);
   initCustomWidget(
     survey,
     domService,
