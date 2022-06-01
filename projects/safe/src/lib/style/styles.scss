@@ -479,6 +479,7 @@ body {
 @import 'theme.scss';
 
 // === TINYMCE ===
-.tox-editor-header *, .tox-tinymce-aux * {
-  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+.tox-editor-header *,
+.tox-tinymce-aux * {
+  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
 }
