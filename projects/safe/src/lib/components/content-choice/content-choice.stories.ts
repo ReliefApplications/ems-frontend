@@ -14,7 +14,12 @@ export default {
   ],
   title: 'UI/Content Type Choice',
 } as Meta;
-
+/**
+ * Defines a template for the component SafeContentChoiceComponent to use as a playground
+ *
+ * @param args the properties of the instance of SafeContentChoiceComponent
+ * @returns the template
+ */
 const TEMPLATE: Story<SafeContentChoiceComponent> = (args) => ({
   template:
     '<safe-content-choice [formControl]="type" [contentTypes]="contentTypes"></safe-content-choice>',
@@ -24,6 +29,7 @@ const TEMPLATE: Story<SafeContentChoiceComponent> = (args) => ({
   },
 });
 
+/** Default template to export */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.args = {
   contentTypes: CONTENT_TYPES,

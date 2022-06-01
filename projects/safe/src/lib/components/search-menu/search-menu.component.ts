@@ -28,11 +28,13 @@ export class SafeSearchMenuComponent implements OnInit {
   public searchResults: any = [];
   public search = '';
 
+  /** Listening to the click event on the component and setting the show variable to true. */
   @HostListener('click')
   clickInside() {
     this.show = true;
   }
 
+  /** Listening to the click event outside and setting the show variable to false. */
   @HostListener('document:click')
   clickout() {
     if (!this.show) {
@@ -41,12 +43,21 @@ export class SafeSearchMenuComponent implements OnInit {
     this.show = false;
   }
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created
+   *
+   * @param eRef Unused ElementRef
+   */
   constructor(private eRef: ElementRef) {}
 
   ngOnInit(): void {
     this.searchResults = this.data.slice(0, 5);
   }
 
+  /**
+   * Updates searchResults on search
+   */
   onSearch() {
     this.searchResults = [];
     const search = this.search.toLowerCase();
@@ -55,6 +66,11 @@ export class SafeSearchMenuComponent implements OnInit {
       .slice(0, 5);
   }
 
+  /**
+   * Handles the click on application
+   *
+   * @param app Item that the user clicked on
+   */
   onClick(app: any) {
     this.open.emit(app);
     this.close.emit();

@@ -7,7 +7,9 @@ import { TranslateService } from '@ngx-translate/core';
 interface PreferencesDialogData {
   languages: string[];
 }
-
+/**
+ * List of available languages with their names and keys
+ */
 const AVAILABLE_LANGUAGES = [
   {
     name: 'English',
@@ -36,11 +38,12 @@ export class SafePreferencesModalComponent implements OnInit {
   currLang: string;
 
   /**
-   * Preferences Modal.
+   * Preferences Modal constructor
    *
-   * @param data modal data
-   * @param formBuilder Angular form builder
-   * @param translate Angular translate service
+   * @param environment This is the environment in which we run the application
+   * @param data Data that will be passed to the modal
+   * @param formBuilder This is the service that will be used to build forms.
+   * @param translate This is the Angular service that translates text
    */
   constructor(
     @Inject('environment') environment: any,

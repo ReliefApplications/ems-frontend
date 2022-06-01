@@ -2,6 +2,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { prettifyLabel } from '../../utils/prettify';
 
+/** Creating a new instance of the FormBuilder class. */
 const formBuilder = new FormBuilder();
 
 /**

@@ -34,7 +34,6 @@ export class SafeEmailPreviewComponent implements OnInit {
    * @param data injected dialog data
    * @param dialogRef Dialog reference
    * @param formBuilder Angular Form Builder
-   * @param sanitizer Angular DOM sanitizer
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,

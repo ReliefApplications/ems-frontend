@@ -30,7 +30,9 @@ export class SafeTabLayoutPreviewComponent implements OnInit, OnDestroy {
   @Input() data: LayoutPreviewData | null = null;
   public gridSettings: GridSettings = DEFAULT_GRID_SETTINGS;
   private subscription: any;
-
+  /**
+   * The constructor for the preview of the grid widget
+   */
   constructor() {}
 
   /** Update grid actions, listening to form changes */

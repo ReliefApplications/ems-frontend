@@ -2,6 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Application } from '../../../../models/application.model';
 
+/**
+ * This interface describes the data structure of the status of the application
+ */
 interface IStatus {
   name: string;
   short: string;
@@ -9,6 +12,9 @@ interface IStatus {
   focusColor: string;
 }
 
+/**
+ * This component is used to display the summary cards for with the information for each application on the home page
+ */
 @Component({
   selector: 'safe-application-summary',
   templateUrl: './application-summary.component.html',
@@ -42,10 +48,21 @@ export class SafeApplicationSummaryComponent implements OnInit {
     },
   ];
 
+  /**
+   * Getter for the status of the application
+   *
+   * @returns the status of the application
+   */
   get status(): IStatus | undefined {
     return this.statuses.find((x) => x.name === this.application.status);
   }
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param translate the translating service
+   */
   constructor(translate: TranslateService) {
     this.statuses[0].short = translate
       .instant('common.status_active')[0]
