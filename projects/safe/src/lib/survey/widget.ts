@@ -129,25 +129,36 @@ export const init = (
       const dateEditor = {
         render: (editor: any, htmlElement: any) => {
           const question = editor.object;
-          const pickerInstance = createPickerInstance(
-            question.inputType,
-            htmlElement
-          );
-          if (pickerInstance) {
-            if (question[editor.property.name]) {
-              pickerInstance.value = getDateDisplay(
-                question[editor.property.name],
-                question.inputType
-              );
-            }
-            pickerInstance.registerOnChange((value: Date | null) => {
-              if (value) {
-                editor.onChanged(setDateValue(value, question.inputType));
-              } else {
-                editor.onChanged(null);
+          const updatePickerInstance = () => {
+            htmlElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
+            const pickerInstance = createPickerInstance(
+              question.inputType,
+              htmlElement
+            );
+            if (pickerInstance) {
+              if (question[editor.property.name]) {
+                pickerInstance.value = getDateDisplay(
+                  question[editor.property.name],
+                  question.inputType
+                );
               }
-            });
-          }
+              pickerInstance.registerOnChange((value: Date | null) => {
+                if (value) {
+                  editor.onChanged(setDateValue(value, question.inputType));
+                } else {
+                  editor.onChanged(null);
+                }
+              });
+            }
+          };
+          question.registerFunctionOnPropertyValueChanged(
+            'inputType',
+            updatePickerInstance,
+            // eslint-disable-next-line no-underscore-dangle
+            editor.property_.name // a unique key to distinguish multiple date properties
+          );
+          // Init
+          updatePickerInstance();
         },
       };
       SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
@@ -157,46 +168,60 @@ export const init = (
     },
     isDefaultRender: true,
     afterRender: (question: any, el: any): void => {
-      // use kendo date picker for date fields
-      if (
-        ['date', 'datetime', 'datetime-local', 'time'].includes(
-          question.inputType
-        )
-      ) {
-        const pickerInstance = createPickerInstance(
-          question.inputType,
-          el.parentElement
-        );
-        if (pickerInstance) {
-          if (question.value) {
-            pickerInstance.value = getDateDisplay(
-              question.value,
+      // add kendo date pickers for text inputs with dates types
+      if (question.getType() === 'text') {
+        const updateTextInput = () => {
+          el.parentElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
+          if (
+            ['date', 'datetime', 'datetime-local', 'time'].includes(
               question.inputType
+            )
+          ) {
+            const pickerInstance = createPickerInstance(
+              question.inputType,
+              el.parentElement
             );
-          }
-          if (question.min) {
-            pickerInstance.min = getDateDisplay(
-              question.min,
-              question.inputType
-            );
-          }
-          if (question.max) {
-            pickerInstance.max = getDateDisplay(
-              question.max,
-              question.inputType
-            );
-          }
-          pickerInstance.readonly = question.isReadOnly;
-          pickerInstance.disabled = question.isReadOnly;
-          pickerInstance.registerOnChange((value: Date | null) => {
-            if (value) {
-              question.value = setDateValue(value, question.inputType);
-            } else {
-              question.value = null;
+            if (pickerInstance) {
+              if (question.value) {
+                pickerInstance.value = getDateDisplay(
+                  question.value,
+                  question.inputType
+                );
+              }
+              if (question.min) {
+                pickerInstance.min = getDateDisplay(
+                  question.min,
+                  question.inputType
+                );
+              }
+              if (question.max) {
+                pickerInstance.max = getDateDisplay(
+                  question.max,
+                  question.inputType
+                );
+              }
+              pickerInstance.readonly = question.isReadOnly;
+              pickerInstance.disabled = question.isReadOnly;
+              pickerInstance.registerOnChange((value: Date | null) => {
+                if (value) {
+                  question.value = setDateValue(value, question.inputType);
+                } else {
+                  question.value = null;
+                }
+              });
+              el.style.display = 'none';
             }
-          });
-          el.style.display = 'none';
-        }
+          } else {
+            el.style.display = 'initial';
+          }
+        };
+        question.registerFunctionOnPropertyValueChanged(
+          'inputType',
+          updateTextInput,
+          el.id // a unique key to distinguish fields
+        );
+        // Init
+        updateTextInput();
       }
       // Display of edit button for comment question
       if (question.getType() === 'comment' && question.allowEdition) {
@@ -221,23 +246,22 @@ export const init = (
         };
       }
       // Display of tooltip
-      if (question.tooltip) {
-        const header =
-          el.parentElement.parentElement.querySelector('.sv_q_title');
-        if (header) {
-          header.title = question.tooltip;
-          const span = document.createElement('span');
-          span.innerText = 'help';
-          span.className = 'material-icons';
-          span.style.fontSize = '1em';
-          span.style.cursor = 'pointer';
-          span.style.color = '#008DC9';
-          header.appendChild(span);
+      const header =
+        el.parentElement.parentElement.querySelector('.sv_q_title');
+      if (header) {
+        header.title = question.tooltip;
+        const span = document.createElement('span');
+        span.innerText = 'help';
+        span.className = 'material-icons';
+        span.style.fontSize = '1em';
+        span.style.cursor = 'pointer';
+        span.style.color = '#008DC9';
+        header.appendChild(span);
+        span.style.display = !question.tooltip ? 'none' : '';
+        question.registerFunctionOnPropertyValueChanged('tooltip', () => {
           span.style.display = !question.tooltip ? 'none' : '';
-          question.registerFunctionOnPropertyValueChanged('tooltip', () => {
-            span.style.display = !question.tooltip ? 'none' : '';
-          });
-        }
+          header.title = question.tooltip;
+        });
       }
       // Display of add button for resource question
       if (question.getType() === 'resource') {
@@ -632,7 +656,7 @@ export const init = (
    * @returns The picker instance, or null if the type is not allowed
    */
   const createPickerInstance = (
-    inputType: string,
+    inputType: 'date' | 'datetime' | 'datetime-local' | 'time',
     element: any
   ):
     | DatePickerComponent
