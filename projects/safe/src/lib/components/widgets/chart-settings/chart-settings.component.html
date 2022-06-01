@@ -179,67 +179,134 @@
                 }}</mat-panel-title>
               </mat-expansion-panel-header>
               <div class="form-group">
-                <mat-slide-toggle formControlName="showCategory" *ngIf="type.name === 'donut' || type.name === 'pie'">{{
-                  'components.widget.settings.chart.labels.showCategory' | translate
-                }}</mat-slide-toggle>
+                <mat-slide-toggle
+                  formControlName="showCategory"
+                  *ngIf="type.name === 'donut' || type.name === 'pie'"
+                  >{{
+                    'components.widget.settings.chart.labels.showCategory'
+                      | translate
+                  }}</mat-slide-toggle
+                >
                 <mat-slide-toggle formControlName="showValue">{{
-                  'components.widget.settings.chart.labels.showValue' | translate
+                  'components.widget.settings.chart.labels.showValue'
+                    | translate
                 }}</mat-slide-toggle>
-                <mat-form-field appearance="outline" *ngIf="chartForm.value.labels.showValue && (type.name === 'donut' || type.name === 'pie')">
+                <mat-form-field
+                  appearance="outline"
+                  *ngIf="
+                    chartForm.value.labels.showValue &&
+                    (type.name === 'donut' || type.name === 'pie')
+                  "
+                >
                   <mat-label>{{
-                    'components.widget.settings.chart.labels.valueType' | translate
+                    'components.widget.settings.chart.labels.valueType'
+                      | translate
                   }}</mat-label>
                   <mat-select formControlName="valueType">
                     <mat-option value="value">{{
                       'common.value.one' | translate
                     }}</mat-option>
                     <mat-option value="percentage">{{
-                      'components.widget.settings.chart.labels.percentage' | translate
+                      'components.widget.settings.chart.labels.percentage'
+                        | translate
                     }}</mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
             </mat-expansion-panel>
             <!-- === AXES PARAMETERS === -->
-            <mat-expansion-panel formGroupName="axes" *ngIf="['bar', 'column'].includes(type.name)">
+            <mat-expansion-panel
+              formGroupName="axes"
+              *ngIf="['bar', 'column'].includes(type.name)"
+            >
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   {{ 'components.widget.settings.chart.axes' | translate }}
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <!-- === X AXIS PARAMETERS === -->
-              <ng-container formGroupName="x" *ngIf="['bar'].includes(type.name)">
-                <h3>{{ 'components.aggregationBuilder.mapping.xAxis' | translate }}</h3>
+              <ng-container
+                formGroupName="x"
+                *ngIf="['bar'].includes(type.name)"
+              >
+                <h3>
+                  {{
+                    'components.aggregationBuilder.mapping.xAxis' | translate
+                  }}
+                </h3>
                 <div class="axis-container">
-                  <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
+                  <mat-slide-toggle
+                    formControlName="enableMin"
+                  ></mat-slide-toggle>
                   <mat-form-field appearance="outline" floatLabel="always">
-                    <mat-label>{{ 'components.aggregationBuilder.operators.min' | translate }}</mat-label>
-                    <input matInput formControlName="min" type="number" [placeholder]="'common.auto' | translate" />
+                    <mat-label>{{
+                      'components.aggregationBuilder.operators.min' | translate
+                    }}</mat-label>
+                    <input
+                      matInput
+                      formControlName="min"
+                      type="number"
+                      [placeholder]="'common.auto' | translate"
+                    />
                   </mat-form-field>
                 </div>
                 <div class="axis-container">
-                  <mat-slide-toggle formControlName="enableMax"></mat-slide-toggle>
+                  <mat-slide-toggle
+                    formControlName="enableMax"
+                  ></mat-slide-toggle>
                   <mat-form-field appearance="outline" floatLabel="always">
-                    <mat-label>{{ 'components.aggregationBuilder.operators.max' | translate }}</mat-label>
-                    <input matInput formControlName="max" type="number" [placeholder]="'common.auto' | translate" />
+                    <mat-label>{{
+                      'components.aggregationBuilder.operators.max' | translate
+                    }}</mat-label>
+                    <input
+                      matInput
+                      formControlName="max"
+                      type="number"
+                      [placeholder]="'common.auto' | translate"
+                    />
                   </mat-form-field>
                 </div>
               </ng-container>
               <!-- === Y AXIS PARAMETERS === -->
-              <ng-container formGroupName="y" *ngIf="['column'].includes(type.name)">
-                <h3>{{ 'components.aggregationBuilder.mapping.yAxis' | translate }}</h3>
+              <ng-container
+                formGroupName="y"
+                *ngIf="['column'].includes(type.name)"
+              >
+                <h3>
+                  {{
+                    'components.aggregationBuilder.mapping.yAxis' | translate
+                  }}
+                </h3>
                 <div class="axis-container">
-                  <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
+                  <mat-slide-toggle
+                    formControlName="enableMin"
+                  ></mat-slide-toggle>
                   <mat-form-field appearance="outline" floatLabel="always">
-                    <mat-label>{{ 'components.aggregationBuilder.operators.min' | translate }}</mat-label>
-                    <input matInput formControlName="min" type="number" [placeholder]="'common.auto' | translate" />
+                    <mat-label>{{
+                      'components.aggregationBuilder.operators.min' | translate
+                    }}</mat-label>
+                    <input
+                      matInput
+                      formControlName="min"
+                      type="number"
+                      [placeholder]="'common.auto' | translate"
+                    />
                   </mat-form-field>
                 </div>
                 <div class="axis-container">
-                  <mat-slide-toggle formControlName="enableMax"></mat-slide-toggle>
+                  <mat-slide-toggle
+                    formControlName="enableMax"
+                  ></mat-slide-toggle>
                   <mat-form-field appearance="outline" floatLabel="always">
-                    <mat-label>{{ 'components.aggregationBuilder.operators.max' | translate }}</mat-label>
-                    <input matInput formControlName="max" type="number" [placeholder]="'common.auto' | translate" />
+                    <mat-label>{{
+                      'components.aggregationBuilder.operators.max' | translate
+                    }}</mat-label>
+                    <input
+                      matInput
+                      formControlName="max"
+                      type="number"
+                      [placeholder]="'common.auto' | translate"
+                    />
                   </mat-form-field>
                 </div>
               </ng-container>
