@@ -130,24 +130,26 @@ export const init = (
         render: (editor: any, htmlElement: any) => {
           const question = editor.object;
           const updatePickerInstance = () => {
-            htmlElement.querySelector('.k-widget')?.remove();
+            htmlElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
             const pickerInstance = createPickerInstance(
               question.inputType,
               htmlElement
             );
-            if (question[editor.property.name]) {
-              pickerInstance.value = getDateDisplay(
-                question[editor.property.name],
-                question.inputType
-              );
-            }
-            pickerInstance.registerOnChange((value: Date | null) => {
-              if (value) {
-                editor.onChanged(setDateValue(value, question.inputType));
-              } else {
-                editor.onChanged(null);
+            if (pickerInstance) {
+              if (question[editor.property.name]) {
+                pickerInstance.value = getDateDisplay(
+                  question[editor.property.name],
+                  question.inputType
+                );
               }
-            });
+              pickerInstance.registerOnChange((value: Date | null) => {
+                if (value) {
+                  editor.onChanged(setDateValue(value, question.inputType));
+                } else {
+                  editor.onChanged(null);
+                }
+              });
+            }
           };
           question.registerFunctionOnPropertyValueChanged(
             'inputType',
@@ -155,6 +157,7 @@ export const init = (
             // eslint-disable-next-line no-underscore-dangle
             editor.property_.name // a unique key to distinguish multiple date properties
           );
+          // Init
           updatePickerInstance();
         },
       };
@@ -168,7 +171,7 @@ export const init = (
       // add kendo date pickers for text inputs with dates types
       if (question.getType() === 'text') {
         const updateTextInput = () => {
-          el.parentElement.querySelector('.k-widget')?.remove();
+          el.parentElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
           if (
             ['date', 'datetime', 'datetime-local', 'time'].includes(
               question.inputType
@@ -178,34 +181,36 @@ export const init = (
               question.inputType,
               el.parentElement
             );
-            if (question.value) {
-              pickerInstance.value = getDateDisplay(
-                question.value,
-                question.inputType
-              );
-            }
-            if (question.min) {
-              pickerInstance.min = getDateDisplay(
-                question.min,
-                question.inputType
-              );
-            }
-            if (question.max) {
-              pickerInstance.max = getDateDisplay(
-                question.max,
-                question.inputType
-              );
-            }
-            pickerInstance.readonly = question.isReadOnly;
-            pickerInstance.disabled = question.isReadOnly;
-            pickerInstance.registerOnChange((value: Date | null) => {
-              if (value) {
-                question.value = setDateValue(value, question.inputType);
-              } else {
-                question.value = null;
+            if (pickerInstance) {
+              if (question.value) {
+                pickerInstance.value = getDateDisplay(
+                  question.value,
+                  question.inputType
+                );
               }
-            });
-            el.style.display = 'none';
+              if (question.min) {
+                pickerInstance.min = getDateDisplay(
+                  question.min,
+                  question.inputType
+                );
+              }
+              if (question.max) {
+                pickerInstance.max = getDateDisplay(
+                  question.max,
+                  question.inputType
+                );
+              }
+              pickerInstance.readonly = question.isReadOnly;
+              pickerInstance.disabled = question.isReadOnly;
+              pickerInstance.registerOnChange((value: Date | null) => {
+                if (value) {
+                  question.value = setDateValue(value, question.inputType);
+                } else {
+                  question.value = null;
+                }
+              });
+              el.style.display = 'none';
+            }
           } else {
             el.style.display = 'initial';
           }
@@ -215,6 +220,7 @@ export const init = (
           updateTextInput,
           el.id // a unique key to distinguish fields
         );
+        // Init
         updateTextInput();
       }
       // Display of edit button for comment question
@@ -652,7 +658,11 @@ export const init = (
   const createPickerInstance = (
     inputType: 'date' | 'datetime' | 'datetime-local' | 'time',
     element: any
-  ): DatePickerComponent | DateTimePickerComponent | TimePickerComponent => {
+  ):
+    | DatePickerComponent
+    | DateTimePickerComponent
+    | TimePickerComponent
+    | null => {
     switch (inputType) {
       case 'date':
         const datePicker = domService.appendComponentToBody(
@@ -680,6 +690,8 @@ export const init = (
         const timePickerInstance: TimePickerComponent = timePicker.instance;
         timePickerInstance.format = 'HH:mm';
         return timePickerInstance;
+      default:
+        return null;
     }
   };
 
