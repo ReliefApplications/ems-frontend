@@ -8,6 +8,9 @@ import {
 } from '@angular/core';
 import { Application } from '../../models/application.model';
 
+/**
+ * This component is used to display the most recent applications and a button to create a new application
+ */
 @Component({
   selector: 'safe-applications-summary',
   templateUrl: './applications-summary.component.html',
@@ -24,6 +27,10 @@ export class SafeApplicationsSummaryComponent implements OnInit {
   @Output() clone = new EventEmitter<Application>();
   @Output() editAccess = new EventEmitter<Application>();
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   */
   constructor() {}
 
   ngOnInit(): void {}

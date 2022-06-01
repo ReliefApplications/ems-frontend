@@ -10,6 +10,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+
+/**
+ * SafePreferencesModalModule is a class used to manage all the modules and components
+ * related to the preferences modal
+ */
 @NgModule({
   declarations: [SafePreferencesModalComponent],
   imports: [

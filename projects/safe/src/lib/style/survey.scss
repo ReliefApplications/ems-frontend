@@ -25,14 +25,18 @@
   }
 
   // === DATE / TIME INPUTS ===
-  .k-datepicker, .k-timepicker, .k-datetimepicker {
+  .k-datepicker,
+  .k-timepicker,
+  .k-datetimepicker {
     width: 100%;
   }
 }
 
 ::ng-deep svd-property-editor {
   // === DATE / TIME INPUTS ===
-  .k-datepicker, .k-timepicker, .k-datetimepicker {
+  .k-datepicker,
+  .k-timepicker,
+  .k-datetimepicker {
     width: 100%;
   }
 }
