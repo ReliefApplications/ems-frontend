@@ -9,6 +9,12 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 describe('SafeConfirmModalComponent', () => {
   let component: SafeConfirmModalComponent;
@@ -18,11 +24,21 @@ describe('SafeConfirmModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
+        TranslateService,
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: {} },
       ],
       declarations: [SafeConfirmModalComponent],
-      imports: [MatDialogModule, ApolloTestingModule],
+      imports: [
+        MatDialogModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+        ApolloTestingModule,
+      ],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);

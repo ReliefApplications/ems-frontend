@@ -13,7 +13,9 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
 import { Form } from '../../models/form.model';
 
-/* Commented types are not yet implemented.
+/**
+ * Array containing the different types of questions.
+ * Commented types are not yet implemented.
  */
 const QUESTION_TYPES = [
   'text',
@@ -39,7 +41,8 @@ const QUESTION_TYPES = [
   'tagbox',
 ];
 
-/* Allowed properties for a core question in a child form.
+/**
+ * Allowed properties for a core question in a child form.
  */
 const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'width',
@@ -68,6 +71,9 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
 
 const CORE_FIELD_CLASS = 'core-question';
 
+/**
+ * Component used to build forms in applications
+ */
 @Component({
   selector: 'safe-form-builder',
   templateUrl: './form-builder.component.html',
@@ -84,6 +90,14 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
   environment: any;
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param environment This is the environment in which we are running the application, it changes the theme of the form builder (color etc.)
+   * @param dialog This is the Angular Material Dialog service used to display dialog modals
+   * @param snackBar This is the service that will be used to display the snackbar.
+   */
   constructor(
     @Inject('environment') environment: any,
     public dialog: MatDialog,
@@ -209,6 +223,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     );
   }
 
+  /**
+   * Set a theme for the form builder depending on the environment
+   */
   setCustomTheme(): void {
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
     defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
@@ -229,7 +246,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     SurveyCreator.StylesManager.applyTheme();
   }
 
-  /*  Custom SurveyJS method, save the form when edited.
+  /**
+   * Custom SurveyJS method, save the form when edited.
    */
   saveMySurvey = () => {
     this.validateValueNames()
@@ -241,7 +259,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       });
   };
 
-  /*  Making sure that value names are existent and snake case, to not cause backend problems.
+  /**
+   * Makes sure that value names are existent and snake case, to not cause backend problems.
    */
   private async validateValueNames(): Promise<void> {
     const object = JSON.parse(this.surveyCreator.text);
@@ -255,6 +274,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.text = JSON.stringify(object);
   }
 
+  /**
+   * Takes a string and converts it to snake case.
+   *
+   * @param text The text to convert
+   * @returns The text in snake case
+   */
   private toSnakeCase(text: string): string {
     return text
       .replace(/\W+/g, ' ')
@@ -263,11 +288,21 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       .join('_');
   }
 
+  /**
+   * Checks if a string is already in snake case
+   *
+   * @param text The text to check
+   * @returns True if the text is in snake case, false otherwise
+   */
   private isSnakeCase(text: string): any {
     return text.match(/^[a-z]+[a-z0-9_]+$/);
   }
 
-  /*  Recursively set the question names of the form.
+  /**
+   * Recursively set the question names of the form.
+   *
+   * @param element The element of the form whose name we need to set
+   * @param page The page of the form
    */
   private setQuestionNames(element: any, page: any): void {
     if (element.type === 'panel') {
@@ -315,6 +350,19 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
               ' on page ' +
               page.name +
               ' is invalid. Please conform to snake_case.'
+          );
+        }
+      }
+      // if choices object exists, checks for duplicate values
+      if (element.choices) {
+        const values = element.choices.map(
+          (choice: { value: string; text: string }) => choice.value || choice
+        );
+        const distinctValues = [...new Set(values)];
+
+        if (values.length > distinctValues.length) {
+          throw new Error(
+            `Please provide unique values for each of the choices of question: ${element.valueName}`
           );
         }
       }
@@ -389,7 +437,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   /**
    * Add custom CSS classes to the survey elements.
    *
-   * @param survey current survey.
    * @param options survey options.
    */
   private onSetCustomCss(options: any): void {

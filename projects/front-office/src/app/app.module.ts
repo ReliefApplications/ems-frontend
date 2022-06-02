@@ -31,8 +31,25 @@ import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import { KendoTranslationService } from '@safe/builder';
 
+// Kendo datepicker for surveyjs
+import {
+  CalendarDOMService,
+  CenturyViewService,
+  DecadeViewService,
+  HoursService,
+  MinutesService,
+  MonthViewService,
+  TimePickerDOMService,
+  TOUCH_ENABLED,
+  YearViewService,
+} from '@progress/kendo-angular-dateinputs';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+import { touchEnabled } from '@progress/kendo-common';
+
 localStorage.setItem('loaded', 'false');
 
+/** Behavior subject to know if platform needs to refresh */
 const REFRESH = new BehaviorSubject<boolean>(false);
 
 /**
@@ -80,6 +97,7 @@ export const provideApollo = (httpLink: HttpLink): any => {
     },
   });
 
+  /** GraphQL Query Definition */
   interface Definition {
     kind: string;
     operation?: string;
@@ -122,6 +140,14 @@ export const provideApollo = (httpLink: HttpLink): any => {
   };
 };
 
+/**
+ * Initialize authentication in the platform.
+ * Configuration in environment file.
+ * Use oAuth
+ *
+ * @param oauth OAuth Service
+ * @returns oAuth configuration
+ */
 const initializeAuth =
   (oauth: OAuthService): any =>
   () => {
@@ -137,8 +163,9 @@ const initializeAuth =
 export const httpTranslateLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http);
 
-const imports: any[] = [];
-
+/**
+ * Main module of Front-Office project.
+ */
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -191,9 +218,29 @@ const imports: any[] = [];
       provide: OAuthStorage,
       useValue: localStorage,
     },
+    // TODO: check
+    {
+      provide: TOUCH_ENABLED,
+      useValue: [touchEnabled],
+    },
+    PopupService,
+    ResizeBatchService,
+    CalendarDOMService,
+    TimePickerDOMService,
+    MonthViewService,
+    HoursService,
+    MinutesService,
+    YearViewService,
+    DecadeViewService,
+    CenturyViewService,
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {
+  /**
+   * Main module of Front-Office project.
+   *
+   * @param apollo Apollo GraphQL client
+   */
   constructor(private apollo: Apollo) {}
 }

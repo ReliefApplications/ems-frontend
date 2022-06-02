@@ -13,6 +13,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * SafeRecordHistoryModule is a class used to manage all the modules and components
+ * related to the history of records.
+ */
 @NgModule({
   declarations: [SafeRecordHistoryComponent],
   imports: [

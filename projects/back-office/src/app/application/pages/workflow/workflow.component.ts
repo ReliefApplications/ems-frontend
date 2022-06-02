@@ -22,6 +22,7 @@ import {
   EditWorkflowMutationResponse,
   EDIT_WORKFLOW,
 } from '../../../graphql/mutations';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-workflow',
@@ -56,7 +57,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -176,11 +178,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.activeStep >= 0 ? this.steps[this.activeStep] : null;
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: 'Delete step',
-          content:
-            `Are you sure you want to delete ${step.name}?` +
-            `\n This action cannot be undone.`,
-          confirmText: 'Delete',
+          title: this.translate.instant('common.deleteObject', {
+            name: this.translate.instant('common.step.one'),
+          }),
+          content: this.translate.instant(
+            'pages.workflow.deleteStep.confirmationMessage',
+            { step: step.name }
+          ),
+          confirmText: this.translate.instant('components.confirmModal.delete'),
           confirmColor: 'warn',
         },
       });

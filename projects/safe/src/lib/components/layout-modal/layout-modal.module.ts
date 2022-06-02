@@ -12,6 +12,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 
+/**
+ * SafeLayoutModalModule is a class used to manage all the modules and components
+ * related to the layout modals.
+ */
 @NgModule({
   declarations: [SafeLayoutModalComponent],
   imports: [

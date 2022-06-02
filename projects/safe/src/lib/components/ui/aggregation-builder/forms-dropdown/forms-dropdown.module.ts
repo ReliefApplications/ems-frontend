@@ -9,6 +9,9 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeIconModule } from '../../icon/icon.module';
 
+/**
+ * SafeRecordSummaryModule is the module related to the selection of forms by a dropdown menu.
+ */
 @NgModule({
   declarations: [SafeFormsDropdownComponent],
   imports: [

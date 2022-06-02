@@ -3,9 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { prettifyLabel } from '../utils/prettify';
 import get from 'lodash/get';
 import { SafeApiProxyService } from './api-proxy.service';
+import { MULTISELECT_TYPES } from '../components/ui/core-grid/grid/grid.constants';
 
-/** List of multi select question types */
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
 /** List of disabled fields */
 const DISABLED_FIELDS = [
   'id',

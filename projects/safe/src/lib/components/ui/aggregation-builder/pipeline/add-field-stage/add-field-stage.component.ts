@@ -14,7 +14,10 @@ export class SafeAddFieldStageComponent implements OnInit {
   @Input() form!: FormArray;
   @Input() fields: any[] = [];
   @Input() operators: any;
-
+  @Input() displayName = true;
+  /**
+   * Constructor for the fields aggregation pipeline stage
+   */
   constructor() {}
 
   ngOnInit(): void {}
@@ -23,7 +26,7 @@ export class SafeAddFieldStageComponent implements OnInit {
    * Adds new addField configuration to the pipeline.
    */
   public addField() {
-    this.form.push(addFieldsForm(null));
+    this.form.push(addFieldsForm(null, this.displayName));
   }
 
   /**
