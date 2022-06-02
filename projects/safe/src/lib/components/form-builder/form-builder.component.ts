@@ -360,7 +360,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         );
         const distinctValues = [...new Set(values)];
 
-        if (values.length > distinctValues.length){
+        if (values.length > distinctValues.length) {
           throw new Error(
             `Please provide unique values for each of the choices of question: ${element.valueName}`
           );
