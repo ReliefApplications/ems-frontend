@@ -271,13 +271,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       }
       // if choices object exists, checks for duplicate values
       if (element.choices) {
-        console.log(element.choices);
         const values = element.choices.map(
           (choice: { value: string; text: string }) => choice.value || choice
         );
-        console.log(values);
         const distinctValues = [...new Set(values)];
-        console.log(distinctValues);
 
         if (values.length > distinctValues.length){
           throw new Error(
