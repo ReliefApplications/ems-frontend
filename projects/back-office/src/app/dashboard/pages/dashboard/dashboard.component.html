@@ -54,9 +54,9 @@
         >
           <safe-search-menu
             [currentApplicationId]="applicationId"
-            [applications]="appList"
+            [applications]="applications"
             (close)="showAppMenu = false"
-            (open)="onDup($event)"
+            (open)="onDuplicate($event)"
           ></safe-search-menu>
         </ng-template>
       </div>

@@ -48,9 +48,10 @@
         [cdkConnectedOverlayOpen]="showAppMenu"
       >
         <safe-search-menu
-          [applications]="appList"
+          [currentApplicationId]="applicationId"
+          [applications]="applications"
           (close)="showAppMenu = false"
-          (open)="onDup($event)"
+          (open)="onDuplicate($event)"
         ></safe-search-menu>
       </ng-template>
     </div>

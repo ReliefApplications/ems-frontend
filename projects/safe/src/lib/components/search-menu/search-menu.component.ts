@@ -6,6 +6,7 @@ import {
   OnInit,
   Output,
   ElementRef,
+  TemplateRef,
 } from '@angular/core';
 import { Application } from '../../models/application.model';
 
@@ -20,6 +21,7 @@ import { Application } from '../../models/application.model';
 export class SafeSearchMenuComponent implements OnInit {
   @Input() currentApplicationId: string | undefined = '';
   @Input() applications: Application[] = [];
+  @Input() headerTemplate?: TemplateRef<any>;
   private show = true;
 
   // eslint-disable-next-line @angular-eslint/no-output-native

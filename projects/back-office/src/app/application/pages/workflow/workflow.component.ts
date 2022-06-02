@@ -12,6 +12,7 @@ import {
   SafeApplicationService,
   SafeWorkflowService,
   SafeAuthService,
+  Application,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import {
@@ -35,6 +36,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   // === WORKFLOW ===
   public id = '';
+  public applicationId?: string;
   public workflow?: Workflow;
   private workflowSubscription?: Subscription;
   public steps: Step[] = [];
@@ -52,7 +54,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   // === DUP APP SELECTION ===
   public showAppMenu = false;
-  public appList = [];
+  public applications: Application[] = [];
 
   constructor(
     private apollo: Apollo,
@@ -110,6 +112,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }
           }
           this.workflow = workflow;
+          this.applicationId = this.workflow.page?.application?.id;
           this.canUpdate = this.workflow.canUpdate || false;
         } else {
           this.loading = true;
@@ -172,8 +175,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       });
   }
 
-  public onDup(event: any): void {
-    this.applicationService.dupPage('workflow', this.workflow, event.id);
+  /**
+   * Duplicate page, in a new ( or same ) application
+   *
+   * @param event duplication event
+   */
+  public onDuplicate(event: any): void {
+    if (this.workflow?.page?.id) {
+      this.applicationService.duplicatePage(this.workflow?.page?.id, event.id);
+    }
   }
 
   public onAppSelection(): void {
@@ -181,7 +191,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     const authSubscription = this.authService.user$.subscribe(
       (user: any | null) => {
         if (user) {
-          this.appList = user.applications;
+          this.applications = user.applications;
         }
       }
     );

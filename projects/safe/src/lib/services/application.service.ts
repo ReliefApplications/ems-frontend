@@ -46,18 +46,12 @@ import {
   EDIT_CHANNEL,
   ToggleApplicationLockMutationResponse,
   TOGGLE_APPLICATION_LOCK,
-  EDIT_DASHBOARD,
-  EditDashboardMutationResponse,
-  ADD_STEP,
-  AddStepMutationResponse,
-  EDIT_PAGE,
-  EditPageMutationResponse,
+  duplicatePageMutationResponse,
+  DUPLICATE_PAGE,
 } from '../graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
-  GetDashboardByIdQueryResponse,
   GET_APPLICATION_BY_ID,
-  GET_DASHBOARD_BY_ID,
 } from '../graphql/queries';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
 import {
@@ -409,7 +403,6 @@ export class SafeApplicationService {
    * @param page updated page
    */
   updatePageName(page: Page): void {
-    console.log(page);
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       const newApplication = {
@@ -475,97 +468,22 @@ export class SafeApplicationService {
   }
 
   /**
-   * Duplicates page to the indicated application.
+   * Duplicates page in the indicated application.
    *
-   * @param type type of the page to duplicate
-   * @param page page which will be duplicated
-   * @param appId id of the application where it shoul be duplicated
+   * @param pageId page id which will be duplicated
+   * @param applicationId id of the application where it shoul be duplicated
    */
-  dupPage(type: string, page: any, appId: string): void {
-    // Adds a new page of the passed type on the passed app id
+  duplicatePage(pageId: string, applicationId: string): void {
     this.apollo
-      .mutate<AddPageMutationResponse>({
-        mutation: ADD_PAGE,
+      .mutate<duplicatePageMutationResponse>({
+        mutation: DUPLICATE_PAGE,
         variables: {
-          type,
-          application: appId,
+          id: pageId,
+          application: applicationId,
         },
       })
-      .subscribe((res: any) => {
-        // If the page is a dashboard it will update it with the content of the original one
-        if (type === 'dashboard') {
-          this.apollo
-            .mutate<EditDashboardMutationResponse>({
-              mutation: EDIT_DASHBOARD,
-              variables: {
-                id: res.data?.addPage.content,
-                structure: page.structure,
-                name: page.name + ' Copy',
-              },
-            })
-            .subscribe(() => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectCreated', {
-                  type: this.translate.instant('common.page.one').toLowerCase(),
-                  value: res.data.addPage.name,
-                })
-              );
-              if (this.application.value?.id === appId) {
-                res.data.addPage.name = page.name + ' Copy';
-                const newApplication = {
-                  ...this.application.value,
-                  pages: this.application.value.pages?.concat([
-                    res.data.addPage,
-                  ]),
-                };
-                this.application.next(newApplication);
-              }
-              this.router.navigate([
-                `/applications/${appId}/${type}/${res.data.addPage.content}`,
-              ]);
-            });
-          // If the page is a workflow it will add each step type and edit them to have the original contents
-        } else if (type === 'workflow') {
-          this.apollo
-            .mutate<EditPageMutationResponse>({
-              mutation: EDIT_PAGE,
-              variables: {
-                id: res.data?.addPage.content,
-                name: page.name + ' Copy',
-              },
-            })
-            .subscribe((response: any) => {
-              this.stepClone(
-                page.steps,
-                page.steps.length - 1,
-                res.data.addPage.content
-              ).then(() => {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate
-                      .instant('common.page.one')
-                      .toLowerCase(),
-                    value: res.data.addPage.name,
-                  })
-                );
-                if (this.application.value?.id === appId) {
-                  res.data.addPage.name = page.name + ' Copy';
-                  const newApplication = {
-                    ...this.application.value,
-                    pages: this.application.value.pages?.concat([
-                      res.data.addPage,
-                    ]),
-                  };
-                  this.application.next(newApplication);
-                }
-                this.router.navigate([
-                  `/applications/${appId}/${type}/${res.data.addPage.content}`,
-                ]);
-              });
-            });
-        }
-        // Displays an error if the operation fails
-        if (!res.data?.addPage) {
+      .subscribe((res) => {
+        if (res.errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotCreated', {
               type: this.translate.instant('common.page.one').toLowerCase(),
@@ -573,68 +491,27 @@ export class SafeApplicationService {
             }),
             { error: true }
           );
+        } else {
+          if (res.data?.duplicatePage) {
+            const newPage = res.data.duplicatePage;
+            this.translate.instant('common.notifications.objectCreated', {
+              type: this.translate.instant('common.page.one').toLowerCase(),
+              value: newPage?.name,
+            });
+            const application = this.application.getValue();
+            if (applicationId === application?.id) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.concat([newPage]),
+              };
+              this.application.next(newApplication);
+            }
+            this.router.navigate([
+              `/applications/${applicationId}/${newPage?.type}/${newPage?.content}`,
+            ]);
+          }
         }
       });
-  }
-
-  private async stepClone(
-    steps: any[],
-    position: number,
-    workflow: any
-  ): Promise<void> {
-    return new Promise((resolve) => {
-      if (position >= 0) {
-        this.stepClone(steps, position - 1, workflow).then(() => {
-          this.apollo
-            .mutate<AddStepMutationResponse>({
-              mutation: ADD_STEP,
-              variables: {
-                type: steps[position].type,
-                content: steps[position].content,
-                workflow,
-              },
-            })
-            .subscribe((res: any) => {
-              if (steps[position].type === 'dashboard') {
-                this.apollo
-                  .query<GetDashboardByIdQueryResponse>({
-                    query: GET_DASHBOARD_BY_ID,
-                    variables: {
-                      id: steps[position].content,
-                    },
-                  })
-                  .subscribe((dashboard) => {
-                    this.apollo
-                      .mutate<EditDashboardMutationResponse>({
-                        mutation: EDIT_DASHBOARD,
-                        variables: {
-                          id: res.data?.addStep.content,
-                          structure: dashboard.data.dashboard.structure,
-                          name: steps[position].name,
-                        },
-                      })
-                      .subscribe(() => {});
-                  });
-              } else {
-              }
-              resolve();
-              // console.log(res);
-              // if (steps[position].type === 'dashboard') {
-              //   this.apollo
-              //     .mutate<EditDashboardMutationResponse>({
-              //       mutation: EDIT_DASHBOARD,
-              //       variables: {
-              //         id: res.data?.addStep.content,
-              //         name: steps[position].name,
-              //       }
-              //     }).subscribe(() => {})
-              // }
-            });
-        });
-      } else {
-        resolve();
-      }
-    });
   }
 
   /**
