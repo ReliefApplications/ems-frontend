@@ -96,8 +96,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
     private gridLayoutService: SafeGridLayoutService
   ) {}
 
-  /*  Load data from the id of the resource passed as a parameter.
-   */
+  /** Load data from the id of the resource passed as a parameter. */
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
@@ -299,8 +298,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       });
   }
 
-  /*  Delete a form if authorized.
-   */
+  /** Delete a form if authorized. */
   deleteForm(id: any, e: any): void {
     e.stopPropagation();
     this.apollo

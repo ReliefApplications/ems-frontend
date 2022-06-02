@@ -14,8 +14,7 @@ import {
   templateUrl: './scheduler.component.html',
   styleUrls: ['./scheduler.component.scss'],
 })
-/*  Scheduler widget using KendoUI.
- */
+/** Scheduler widget using KendoUI. */
 export class SafeSchedulerComponent implements OnInit {
   // === SCHEDULER ===
   private currentYear = new Date().getFullYear();
@@ -32,8 +31,7 @@ export class SafeSchedulerComponent implements OnInit {
 
   constructor(private apollo: Apollo) {}
 
-  /*  Load the data.
-   */
+  /** Load the data. */
   ngOnInit(): void {
     if (this.settings.source) {
       this.getRecords();
@@ -42,8 +40,7 @@ export class SafeSchedulerComponent implements OnInit {
     }
   }
 
-  /*  Load the data, using widget parameters.
-   */
+  /** Load the data, using widget parameters. */
   private getRecords(): void {
     if (!this.settings.from || this.settings.from === 'resource') {
       this.apollo
@@ -118,8 +115,7 @@ export class SafeSchedulerComponent implements OnInit {
     }
   }
 
-  /*  Correction applied to data, to have correct format.
-   */
+  /** Correction applied to data, to have correct format. */
   private parseAdjust(eventDate: string): Date {
     const date = new Date(eventDate);
     date.setFullYear(this.currentYear);

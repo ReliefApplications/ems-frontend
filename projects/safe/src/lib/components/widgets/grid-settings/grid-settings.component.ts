@@ -86,8 +86,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     private queryBuilder: QueryBuilderService
   ) {}
 
-  /*  Build the settings form, using the widget saved parameters.
-   */
+  /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     const hasActions = !!tileSettings && !!tileSettings.actions;

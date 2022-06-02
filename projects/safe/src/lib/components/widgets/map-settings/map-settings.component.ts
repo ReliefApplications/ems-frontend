@@ -8,8 +8,7 @@ import { createQueryForm } from '../../query-builder/query-builder-forms';
   templateUrl: './map-settings.component.html',
   styleUrls: ['./map-settings.component.scss'],
 })
-/*  Modal content for the settings of the map widgets.
- */
+/** Modal content for the settings of the map widgets. */
 export class SafeMapSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
@@ -28,8 +27,7 @@ export class SafeMapSettingsComponent implements OnInit {
     private queryBuilder: QueryBuilderService
   ) {}
 
-  /*  Build the settings form, using the widget saved parameters.
-   */
+  /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     this.tileForm = this.formBuilder.group({

@@ -21,8 +21,7 @@ const MARKER_OPTIONS = {
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
 })
-/*  Map widget using Leaflet.
- */
+/** Map widget using Leaflet. */
 export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === MAP ===
   public mapId: string;
@@ -58,7 +57,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.mapId = this.generateUniqueId();
   }
 
-  /*  Generation of an unique id for the map ( in case multiple widgets use map ).
+  /** Generation of an unique id for the map ( in case multiple widgets use map ).
    */
   private generateUniqueId(parts: number = 4): string {
     const stringArr: string[] = [];
@@ -72,8 +71,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     return stringArr.join('-');
   }
 
-  /*  Once template is ready, build the map.
-   */
+  /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
     this.drawMap();
     if (this.settings.query) {
@@ -96,8 +94,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => this.map.invalidateSize(), 100);
   }
 
-  /*  Create the map with all useful parameters
-   */
+  /** Create the map with all useful parameters */
   private drawMap(): void {
     const centerLong = this.settings.centerLong
       ? Number(this.settings.centerLong)
@@ -136,8 +133,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
   }
 
-  /*  Load the data, using widget parameters.
-   */
+  /** Load the data, using widget parameters. */
   private getData(): void {
     this.map.closePopup(this.popupMarker);
     this.popupMarker = null;
@@ -167,8 +163,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     );
   }
 
-  /*  Draw markers on the map if the record has coordinates
-   */
+  /** Draw markers on the map if the record has coordinates */
   private drawMarkers(icon: any, item: any): void {
     const latitude = Number(item[this.settings.latitude]);
     const longitude = Number(item[this.settings.longitude]);

@@ -53,9 +53,8 @@ const routes: Routes = [
   },
 ];
 
-/*  Root module of Routing. Separate the front into three modules: 'auth', 'dashboard' and 'application'.
-    Use lazy loading for performance.
-*/
+/** Root module of Routing. Separate the front into three modules: 'auth', 'dashboard' and 'application'.
+    Use lazy loading for performance. */
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {

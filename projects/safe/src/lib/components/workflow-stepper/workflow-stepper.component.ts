@@ -35,8 +35,7 @@ export class SafeWorkflowStepperComponent implements OnInit {
     }
   }
 
-  /* Drop a step dragged into the list
-   */
+  /** Drop a step dragged into the list */
   dropStep(event: CdkDragDrop<string[]>): void {
     this.dragging = false;
     const reorderedSteps = this.steps.slice();

@@ -53,8 +53,7 @@ const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
 })
-/*  Grid widget using KendoUI.
- */
+/** Grid widget using KendoUI. */
 export class SafeGridWidgetComponent implements OnInit {
   // === TEMPLATE REFERENCE ===
   @ViewChild(SafeCoreGridComponent)
@@ -378,8 +377,7 @@ export class SafeGridWidgetComponent implements OnInit {
     return date;
   }
 
-  /* Open a modal to select which record we want to attach the rows to and perform the attach.
-   */
+  /** Open a modal to select which record we want to attach the rows to and perform the attach. */
   private async promisedAttachToRecord(
     // come from 'attach to record' button from grid component
     selectedRecords: string[],
