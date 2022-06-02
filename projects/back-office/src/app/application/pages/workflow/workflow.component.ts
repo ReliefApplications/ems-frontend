@@ -11,6 +11,8 @@ import {
   ContentType,
   SafeApplicationService,
   SafeWorkflowService,
+  SafeAuthService,
+  Application,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import {
@@ -34,6 +36,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   // === WORKFLOW ===
   public id = '';
+  public applicationId?: string;
   public workflow?: Workflow;
   private workflowSubscription?: Subscription;
   public steps: Step[] = [];
@@ -49,6 +52,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   // === ROUTE ===
   private routeSubscription?: Subscription;
 
+  // === DUP APP SELECTION ===
+  public showAppMenu = false;
+  public applications: Application[] = [];
+
   constructor(
     private apollo: Apollo,
     private workflowService: SafeWorkflowService,
@@ -57,6 +64,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService,
     private translate: TranslateService
   ) {}
 
@@ -104,6 +112,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }
           }
           this.workflow = workflow;
+          this.applicationId = this.workflow.page?.application?.id;
           this.canUpdate = this.workflow.canUpdate || false;
         } else {
           this.loading = true;
@@ -164,6 +173,29 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           permissions: res.data?.editPage.permissions,
         };
       });
+  }
+
+  /**
+   * Duplicate page, in a new ( or same ) application
+   *
+   * @param event duplication event
+   */
+  public onDuplicate(event: any): void {
+    if (this.workflow?.page?.id) {
+      this.applicationService.duplicatePage(this.workflow?.page?.id, event.id);
+    }
+  }
+
+  public onAppSelection(): void {
+    this.showAppMenu = !this.showAppMenu;
+    const authSubscription = this.authService.user$.subscribe(
+      (user: any | null) => {
+        if (user) {
+          this.applications = user.applications;
+        }
+      }
+    );
+    authSubscription.unsubscribe();
   }
 
   /**

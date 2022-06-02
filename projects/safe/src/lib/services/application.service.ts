@@ -46,6 +46,8 @@ import {
   EDIT_CHANNEL,
   ToggleApplicationLockMutationResponse,
   TOGGLE_APPLICATION_LOCK,
+  duplicatePageMutationResponse,
+  DUPLICATE_PAGE,
 } from '../graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
@@ -463,6 +465,53 @@ export class SafeApplicationService {
           }
         });
     }
+  }
+
+  /**
+   * Duplicates page in the indicated application.
+   *
+   * @param pageId page id which will be duplicated
+   * @param applicationId id of the application where it shoul be duplicated
+   */
+  duplicatePage(pageId: string, applicationId: string): void {
+    this.apollo
+      .mutate<duplicatePageMutationResponse>({
+        mutation: DUPLICATE_PAGE,
+        variables: {
+          id: pageId,
+          application: applicationId,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotCreated', {
+              type: this.translate.instant('common.page.one').toLowerCase(),
+              error: res.errors ? res.errors[0].message : '',
+            }),
+            { error: true }
+          );
+        } else {
+          if (res.data?.duplicatePage) {
+            const newPage = res.data.duplicatePage;
+            this.translate.instant('common.notifications.objectCreated', {
+              type: this.translate.instant('common.page.one').toLowerCase(),
+              value: newPage?.name,
+            });
+            const application = this.application.getValue();
+            if (applicationId === application?.id) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.concat([newPage]),
+              };
+              this.application.next(newApplication);
+            }
+            this.router.navigate([
+              `/applications/${applicationId}/${newPage?.type}/${newPage?.content}`,
+            ]);
+          }
+        }
+      });
   }
 
   /**

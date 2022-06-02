@@ -63,7 +63,7 @@
 
 .dashboard-name-container {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 
@@ -78,6 +78,17 @@
   .dashboard-name:hover {
     background-color: #dddddd54;
   }
+  .dashboard-icons-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+}
+
+.name-edit-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .share-button {

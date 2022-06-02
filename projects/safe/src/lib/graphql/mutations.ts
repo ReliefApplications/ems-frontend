@@ -866,3 +866,26 @@ export interface deleteLayoutMutationResponse {
   loading: boolean;
   deleteLayout: Layout;
 }
+
+// === PAGES ===
+/** Duplicate page mutation, used by Application service. */
+export const DUPLICATE_PAGE = gql`
+  mutation duplicatePage($id: ID!, $application: ID!) {
+    duplicatePage(id: $id, application: $application) {
+      id
+      name
+      type
+      content
+      createdAt
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
+/** Interface of duplicate page mutation. */
+export interface duplicatePageMutationResponse {
+  loading: boolean;
+  duplicatePage: Page;
+}

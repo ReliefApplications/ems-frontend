@@ -1,3 +1,7 @@
+<ng-container
+  *ngIf="headerTemplate"
+  [ngTemplateOutlet]="headerTemplate"
+></ng-container>
 <mat-form-field appearance="outline">
   <input
     matInput
@@ -9,13 +13,24 @@
   <mat-icon matSuffix>search</mat-icon>
 </mat-form-field>
 <div class="application-list">
-  <safe-button
-    *ngFor="let item of searchResults"
-    [block]="true"
-    (click)="onClick(item)"
-    >{{ item.name }}</safe-button
-  >
+  <div *ngIf="currentApplication">
+    <safe-button
+      [block]="true"
+      variant="primary"
+      (click)="onClick(currentApplication)"
+      >{{ currentApplication.name }}</safe-button
+    >
+  </div>
+  <mat-divider *ngIf="currentApplication"></mat-divider>
+  <div class="search-application-list">
+    <safe-button
+      *ngFor="let item of searchResults"
+      [block]="true"
+      (click)="onClick(item)"
+      >{{ item.name }}</safe-button
+    >
+  </div>
+  <p *ngIf="searchResults.length === 0">
+    {{ 'common.filter.empty' | translate }}
+  </p>
 </div>
-<p *ngIf="searchResults.length === 0">
-  {{ 'common.filter.empty' | translate }}
-</p>
