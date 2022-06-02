@@ -6,16 +6,23 @@
     <!-- LOAD FROM EXISTING LAYOUT -->
     <safe-button
       variant="primary"
-      category="tertiary"
+      category="secondary"
+      [block]="true"
       (click)="nextStep = true"
       >{{
         'components.widget.settings.grid.layouts.add.choice.load' | translate
       }}</safe-button
     >
     <!-- ADD A NEW LAYOUT -->
-    <safe-button variant="primary" category="tertiary" (click)="onCreate()">{{
-      'components.widget.settings.grid.layouts.add.choice.create' | translate
-    }}</safe-button>
+    <safe-button
+      variant="primary"
+      category="tertiary"
+      [block]="true"
+      (click)="onCreate()"
+      >{{
+        'components.widget.settings.grid.layouts.add.choice.create' | translate
+      }}</safe-button
+    >
   </div>
   <div *ngIf="nextStep">
     <div class="select-layout-header">

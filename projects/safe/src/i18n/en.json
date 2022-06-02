@@ -670,6 +670,9 @@
 							"select": "Select a layout",
 							"title": "Add a layout"
 						},
+						"edit": {
+							"title": "Layout configuration"
+						},
 						"title": "Grid layouts"
 					}
 				},
