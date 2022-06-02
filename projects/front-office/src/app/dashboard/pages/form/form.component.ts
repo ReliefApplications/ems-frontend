@@ -185,6 +185,8 @@ export class FormComponent implements OnInit, OnDestroy {
    * Updates status of the page.
    *
    * @param e completion event
+   * @param e.completed is form completed
+   * @param e.hideNewRecord is it needed to hide new record button
    */
   onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;
