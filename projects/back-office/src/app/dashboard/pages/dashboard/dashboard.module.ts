@@ -21,6 +21,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { SafeSearchMenuModule } from '@safe/builder';
+import { SafeIconModule } from 'projects/safe/src/lib/components/ui/icon/icon.module';
 
 @NgModule({
   declarations: [DashboardComponent, ShareUrlComponent],
@@ -42,7 +45,10 @@ import { TranslateModule } from '@ngx-translate/core';
     ClipboardModule,
     SafeRecordHistoryModule,
     SafeButtonModule,
+    SafeIconModule,
     TranslateModule,
+    OverlayModule,
+    SafeSearchMenuModule,
     SafeSkeletonModule,
   ],
   exports: [DashboardComponent],

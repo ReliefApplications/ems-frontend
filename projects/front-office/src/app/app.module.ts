@@ -56,6 +56,7 @@ import { touchEnabled } from '@progress/kendo-common';
 
 localStorage.setItem('loaded', 'false');
 
+/** Behavior subject to know if platform needs to refresh */
 const REFRESH = new BehaviorSubject<boolean>(false);
 
 /**
@@ -103,6 +104,7 @@ export const provideApollo = (httpLink: HttpLink): any => {
     },
   });
 
+  /** GraphQL Query Definition */
   interface Definition {
     kind: string;
     operation?: string;
@@ -145,6 +147,14 @@ export const provideApollo = (httpLink: HttpLink): any => {
   };
 };
 
+/**
+ * Initialize authentication in the platform.
+ * Configuration in environment file.
+ * Use oAuth
+ *
+ * @param oauth OAuth Service
+ * @returns oAuth configuration
+ */
 const initializeAuth =
   (oauth: OAuthService): any =>
   () => {
@@ -160,6 +170,9 @@ const initializeAuth =
 export const httpTranslateLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http);
 
+/**
+ * Main module of Front-Office project.
+ */
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -226,5 +239,8 @@ export const httpTranslateLoader = (http: HttpClient) =>
   bootstrap: [AppComponent],
 })
 export class AppModule {
+  /**
+   * Main module of Front-Office project.
+   */
   constructor() {}
 }
