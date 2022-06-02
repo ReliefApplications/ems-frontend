@@ -75,7 +75,11 @@
               "projects/back-office/src/favicon.ico",
               "projects/back-office/src/assets",
               "projects/back-office/src/web.config",
-              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              },
               {
                 "glob": "**/*",
                 "input": "projects/safe/src/i18n/tinymce/",
@@ -140,9 +144,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "azure-dev": {
@@ -174,9 +176,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "azure-uat": {
@@ -208,9 +208,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "azure-prod": {
@@ -242,9 +240,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "oort-dev": {
@@ -276,9 +272,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "oort-guyane": {
@@ -310,9 +304,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "oort-prod": {
@@ -344,9 +336,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "development": {
@@ -357,9 +347,7 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             }
           },
@@ -467,7 +455,11 @@
               "projects/front-office/src/favicon.ico",
               "projects/front-office/src/assets",
               "projects/front-office/src/web.config",
-              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              },
               {
                 "glob": "**/*",
                 "input": "projects/safe/src/i18n/tinymce/",
@@ -533,9 +525,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "azure-dev": {
@@ -565,9 +555,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "azure-uat": {
@@ -597,9 +585,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "azure-prod": {
@@ -629,9 +615,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "oort-dev": {
@@ -661,9 +645,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "oort-guyane": {
@@ -693,9 +675,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "oort-prod": {
@@ -725,9 +705,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "development": {
@@ -738,9 +716,7 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             }
           },
@@ -845,7 +821,11 @@
               },
               "projects/web-widgets/src/favicon.ico",
               "projects/web-widgets/src/assets",
-              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" },
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              },
               {
                 "glob": "**/*",
                 "input": "projects/safe/src/i18n/tinymce",
@@ -892,9 +872,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               },
               "fileReplacements": [
                 {
@@ -924,9 +902,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               },
               "fileReplacements": [
                 {
@@ -944,9 +920,7 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             }
           },
@@ -981,9 +955,7 @@
               "projects/web-widgets/src/favicon.ico",
               "projects/web-widgets/src/assets"
             ],
-            "styles": [
-              "projects/web-widgets/src/styles.scss"
-            ],
+            "styles": ["projects/web-widgets/src/styles.scss"],
             "scripts": []
           }
         },
@@ -994,6 +966,33 @@
               "projects/web-widgets/**/*.ts",
               "projects/web-widgets/**/*.html"
             ]
+          }
+        }
+      }
+    },
+    "storybook": {
+      "projectType": "application",
+      "root": "stories",
+      "sourceRoot": "stories",
+      "architect": {
+        "build": {
+          "builder": "@storybook/angular:start-storybook",
+          "options": {
+            "tsConfig": ".storybook/tsconfig.json",
+            "styles": [
+              {
+                "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
+                "inject": true
+              },
+              "projects/back-office/src/styles.scss",
+              "projects/safe/src/lib/style/styles.scss",
+              "./node_modules/leaflet/dist/leaflet.css",
+              "node_modules/survey-creator/survey-creator.min.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "node_modules/select2/dist/css/select2.min.css"
+            ],
+            "scripts": []
           }
         }
       }

@@ -1,0 +1,11 @@
+<div
+  *ngIf="open"
+  class="safe-alert safe-alert-content-{{ variant }}"
+  [ngClass]="{ 'close-alert': closing }"
+>
+  <div class="safe-alert-content">
+    <ng-content></ng-content>
+  </div>
+
+  <button *ngIf="closable" (click)="close()">×</button>
+</div>
