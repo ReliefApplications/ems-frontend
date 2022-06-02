@@ -1,28 +1,16 @@
+.add-layout-choice {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+}
 
-.container {
-  position: relative;
+.select-layout-header {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+mat-form-field {
   width: 100%;
-  height: 100%;
-  
-  .header {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-
-    h1 {
-      margin: 0;
-    }
-  }
-
-  .add-layout-choice {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .close-button {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-  }
 }
