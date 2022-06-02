@@ -353,6 +353,19 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           );
         }
       }
+      // if choices object exists, checks for duplicate values
+      if (element.choices) {
+        const values = element.choices.map(
+          (choice: { value: string; text: string }) => choice.value || choice
+        );
+        const distinctValues = [...new Set(values)];
+
+        if (values.length > distinctValues.length){
+          throw new Error(
+            `Please provide unique values for each of the choices of question: ${element.valueName}`
+          );
+        }
+      }
       if (element.type === 'multipletext') {
         element.items = element.items.map((e: any) => {
           if (!e.name && !e.title) {
