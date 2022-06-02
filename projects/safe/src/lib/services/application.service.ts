@@ -70,10 +70,11 @@ import { SafeAuthService } from './auth.service';
 export class SafeApplicationService {
   /** Current application */
   private application = new BehaviorSubject<Application | null>(null);
-  /** Current application as observable */
+  /** @returns Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();
   }
+
   /** Application query subscription */
   private applicationSubscription?: Subscription;
   /** Notifications query subscription */
@@ -82,17 +83,19 @@ export class SafeApplicationService {
   private lockSubscription?: Subscription;
   /** Current environment */
   private environment: any;
-  /** Path to download application users */
+
+  /** @returns Path to download application users */
   get usersDownloadPath(): string {
     const id = this.application.getValue()?.id;
     return `download/application/${id}/invite`;
   }
-  /** Path to upload application users */
+  /** @returns Path to upload application users */
   get usersUploadPath(): string {
     const id = this.application.getValue()?.id;
     return `upload/application/${id}/invite`;
   }
-  /** Edit status of the application */
+
+  /** @returns Edit status of the application */
   get isUnlocked(): boolean {
     const application = this.application.getValue();
     if (application) {
@@ -810,6 +813,7 @@ export class SafeApplicationService {
    * Adds a new channel to the application.
    *
    * @param channel new channel
+   * @param channel.title title of the channel
    */
   addChannel(channel: { title: string }): void {
     const application = this.application.getValue();
@@ -908,6 +912,10 @@ export class SafeApplicationService {
    * Adds a new subscription to the application.
    *
    * @param subscription new subscription
+   * @param subscription.routingKey routing key of the subscription
+   * @param subscription.title title of the subscription
+   * @param subscription.convertTo the format in which we want to convert
+   * @param subscription.channel the channel where to send subscriptions
    */
   addSubscription(subscription: {
     routingKey: string;
