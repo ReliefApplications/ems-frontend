@@ -69,6 +69,11 @@ export class SafePreferencesModalComponent implements OnInit {
       // initializes select field with current date language format
       dateFormat: [this.currDateFormat, Validators.required],
     });
+    this.preferencesForm
+      .get('language')
+      ?.valueChanges.subscribe((lang: any) => {
+        this.translate.use(lang);
+      });
   }
 
   /**

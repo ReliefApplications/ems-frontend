@@ -474,6 +474,16 @@ body {
   }
 }
 
+.preferences-dialog {
+  width: 90%;
+  max-width: 750px !important;
+
+  mat-dialog-container {
+    width: 100%;
+    position: relative;
+  }
+}
+
 .no-padding-dialog {
   mat-dialog-container {
     padding: unset;
@@ -537,6 +547,55 @@ body {
 }
 
 @import 'theme.scss';
+
+
+// === VERTICAL TABS ===
+mat-tab-group[vertical] {
+  display: flex;
+  flex-direction: row!important;
+
+  & > .mat-tab-header {
+    border-bottom: none;
+
+    .mat-tab-labels {
+      display: flex;
+      flex-direction: column!important;
+      position: relative;
+
+      .mat-tab-label {
+        justify-content: left;
+        border-radius: 7px;
+        transition: all 0.1s ease;
+
+        &.mat-tab-label-active:not(.cdk-keyboard-focused) {
+          opacity: 1; 
+          background-color: #f5f5f5;
+        }
+      }
+        
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: calc(100% - 2px);
+        height: 100%;
+        width: 2px;
+        background-color: none !important;
+      }
+    }
+
+    .mat-ink-bar {
+      display: none;
+    }
+      
+  }
+
+  & > .mat-tab-body-wrapper {
+    width: 100%;
+    margin-left: 32px;
+  }
+}
+
 
 // === TINYMCE ===
 .tox-editor-header *,

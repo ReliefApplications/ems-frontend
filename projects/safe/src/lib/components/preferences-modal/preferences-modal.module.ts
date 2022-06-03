@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
 
 /**
  * SafePreferencesModalModule is a class used to manage all the modules and components
@@ -29,6 +30,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatFormFieldModule,
     TranslateModule,
     MatSelectModule,
+    MatTabsModule,
   ],
   exports: [SafePreferencesModalComponent],
 })
