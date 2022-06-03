@@ -1,5 +1,5 @@
-@use '@angular/material' as mat;
-@import 'variables.scss';
+@use "@angular/material" as mat;
+@import "variables.scss";
 @include mat.core();
 
 .sv_main {
@@ -70,6 +70,7 @@ $safe-palette-warn: (
   // 500
   lighter: #ff766f,
   darker: #9b001d,
+  50: #fae9e9,
   200: #e9a2a2,
   // 200
   // For slide toggle,
@@ -142,6 +143,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
+// === CHIP STYLING ===
 @mixin chip($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
@@ -168,6 +170,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
+// === BUTTON STYLING ===
 @mixin button($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
@@ -196,8 +199,40 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-// img-choice
-// img-selected
+// === ALERT STYLING ===
+@mixin alert($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+
+  .safe-alert {
+    &-default {
+      $variant-color: #f1f1f1;
+      background-color: $variant-color;
+      color: darken($variant-color, 30%);
+    }
+
+    &-primary {
+      background-color: mat.get-color-from-palette($primary, 50);
+      color: mat.get-color-from-palette($primary);
+    }
+
+    &-danger {
+      background-color: mat.get-color-from-palette($warn, 50);
+      color: mat.get-color-from-palette($warn);
+    }
+
+    &-success {
+      background-color: rgba(149, 221, 101, 0.2);
+      color: rgb(149, 221, 101);
+    }
+
+    &-warning {
+      background-color: rgba(244, 174, 82, 0.2);
+      color: rgb(244, 174, 82);
+    }
+  }
+}
 
 // === GLOBAL STYLES ==
 .mat-table {
@@ -357,8 +392,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     }
   }
 
-  mat-expansion-panel:not(.mat-expanded)
-    + mat-expansion-panel:not(.mat-expanded) {
+  mat-expansion-panel:not(.mat-expanded) + mat-expansion-panel:not(.mat-expanded) {
     border-top: 0;
   }
 }
@@ -366,6 +400,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 @include mat.all-component-themes($safe-theme);
 @include chip($safe-theme);
 @include button($safe-theme);
+@include alert($safe-theme);
 @include custom-theme($safe-theme);
 
 html,
@@ -374,7 +409,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   overflow: hidden;
 }
 
@@ -500,10 +535,10 @@ body {
   color: mat.get-color-from-palette($safe-warn) !important;
 }
 
-@import 'theme.scss';
+@import "theme.scss";
 
 // === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {
-  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
+  font-family: Roboto, "Helvetica Neue", sans-serif !important;
 }

@@ -1,7 +1,6 @@
-<ng-container
-  *ngIf="headerTemplate"
-  [ngTemplateOutlet]="headerTemplate"
-></ng-container>
+<div class="application-list-header" *ngIf="headerTemplate">
+  <ng-container [ngTemplateOutlet]="headerTemplate"></ng-container>
+</div>
 <mat-form-field appearance="outline">
   <input
     matInput

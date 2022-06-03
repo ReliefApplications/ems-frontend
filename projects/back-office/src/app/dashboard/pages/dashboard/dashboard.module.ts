@@ -8,6 +8,7 @@ import {
   SafeWidgetGridModule,
   SafeButtonModule,
   SafeSkeletonModule,
+  SafeAlertModule,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -50,6 +51,7 @@ import { SafeIconModule } from 'projects/safe/src/lib/components/ui/icon/icon.mo
     OverlayModule,
     SafeSearchMenuModule,
     SafeSkeletonModule,
+    SafeAlertModule,
   ],
   exports: [DashboardComponent],
 })

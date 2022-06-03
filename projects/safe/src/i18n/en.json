@@ -1005,7 +1005,10 @@
 			"template": "Template"
 		},
 		"page": {
-			"add": "Add a Page"
+			"add": "Add a Page",
+			"tooltip": {
+				"duplicate": "Select the application you want to put the copy in"
+			}
 		},
 		"positionAttribute": {
 			"new": "New position attribute"
