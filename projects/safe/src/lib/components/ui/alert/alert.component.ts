@@ -16,26 +16,26 @@ import { AlertVariant } from './alert-variant.enum';
 })
 export class SafeAlertComponent implements OnChanges {
   @Input() variant: AlertVariant | string = AlertVariant.DEFAULT;
-  @Input() closable = true;
+  @Input() closable = false;
 
-  @Output() closed = new EventEmitter<Event>();
+  // eslint-disable-next-line @angular-eslint/no-output-native
+  @Output() close = new EventEmitter<Event>();
 
   // alert is being displayed
-  open = true;
+  display = true;
 
   // alert is in closing animation
   closing = false;
 
   ngOnChanges(_: SimpleChanges): void {
-    this.open = true;
     this.closing = false;
   }
 
   /** Closes the alert and emits an event */
-  close() {
+  onClose() {
     setTimeout(() => {
-      this.open = false;
-      this.closed.emit();
+      this.display = false;
+      this.close.emit();
     }, 300);
     this.closing = true;
   }

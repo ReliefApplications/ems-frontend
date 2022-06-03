@@ -44,6 +44,7 @@ const TEMPLATE_WITH_TEXT: Story<SafeAlertComponent> = (args) => ({
 
 /** Default args */
 export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   variant: AlertVariant.DEFAULT,
   closable: true,

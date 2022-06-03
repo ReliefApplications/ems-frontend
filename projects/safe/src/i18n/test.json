@@ -1005,7 +1005,10 @@
 			"template": "******"
 		},
 		"page": {
-			"add": "******"
+			"add": "******",
+			"tooltip": {
+				"duplicate": "******"
+			}
 		},
 		"positionAttribute": {
 			"new": "******"

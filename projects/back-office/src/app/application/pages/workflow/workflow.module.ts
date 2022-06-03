@@ -4,6 +4,7 @@ import { WorkflowRoutingModule } from './workflow-routing.module';
 import { WorkflowComponent } from './workflow.component';
 import {
   SafeAccessModule,
+  SafeAlertModule,
   SafeButtonModule,
   SafeWorkflowStepperModule,
 } from '@safe/builder';
@@ -37,6 +38,7 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     MatIconModule,
     MatMenuModule,
     IndicatorsModule,
+    SafeAlertModule,
   ],
   exports: [WorkflowComponent],
 })

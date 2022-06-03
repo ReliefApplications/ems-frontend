@@ -1,58 +1,25 @@
-
-  $spacing-left: 0.8em;
-  $spacing-right: 0.8em;
+$spacing-left: 0.8em;
+$spacing-right: 0.8em;
 
 .safe-alert-content {
-
   flex-grow: 1;
   padding: $spacing-left $spacing-right;
-
-  &-default {
-    $variant-color: #f1f1f1;
-    background-color: $variant-color;
-    color: darken($variant-color, 30%);
-  }
-  
-  &-primary {
-    background-color: rgba(0, 141, 201, 0.1);
-    color: rgb(0, 141, 201);
-  }
-  
-  &-danger {
-    background-color: rgba(241, 67, 67, 0.19);
-    color: rgb(241, 67, 67);
-  }
-  &-success {
-    background-color: rgba(149, 221, 101, 0.2);
-    color: rgb(149, 221, 101);
-  }
-  &-warning {
-    background-color: rgba(244, 174, 82, 0.2);
-    color: rgb(244, 174, 82);
-  }
-
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .safe-alert {
   display: flex;
-  border-radius: 0.3em;
+  border-radius: 8px;
   opacity: 1;
 
-  button {
-    font-weight: 100;
-    background: none;
-    border: none;
-    font-size: 2em;
-    padding-right: $spacing-right;
-    color: hsl(0, 0%, 0%, 0.5)
-  }
-
-  button:hover{
-    cursor: pointer;
+  safe-button {
+    align-self: center;
   }
 }
 
-.close-alert{
+.close-alert {
   animation: close-sequence 300ms ease-in-out forwards;
 }
 

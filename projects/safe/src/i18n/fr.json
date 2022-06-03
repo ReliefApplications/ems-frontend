@@ -1005,7 +1005,10 @@
 			"template": "Modèle"
 		},
 		"page": {
-			"add": "Ajouter une page"
+			"add": "Ajouter une page",
+			"tooltip": {
+				"duplicate": "Sélectionner l'application où copier la page"
+			}
 		},
 		"positionAttribute": {
 			"new": "Nouvel attribut de position"
