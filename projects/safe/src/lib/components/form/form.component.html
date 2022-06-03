@@ -22,6 +22,7 @@
   </kendo-dropdownlist>
 </div>
 <mat-tab-group
+  *ngIf="survey.pageCount > 1"
   animationDuration="0ms"
   [selectedIndex]="selectedTabIndex"
   (selectedIndexChange)="onShowPage($event)"
@@ -46,12 +47,14 @@
 <!-- <div [id]="containerId"></div> -->
 <div *ngIf="surveyActive" class="survey-navigation">
   <safe-button
+    *ngIf="survey.pageCount > 1"
     [disabled]="survey.isFirstPage"
     variant="primary"
     (click)="survey.prevPage()"
     >{{ 'common.previous' | translate }}</safe-button
   >
   <safe-button
+    *ngIf="survey.pageCount > 1"
     [disabled]="survey.isLastPage"
     variant="primary"
     (click)="survey.nextPage()"
