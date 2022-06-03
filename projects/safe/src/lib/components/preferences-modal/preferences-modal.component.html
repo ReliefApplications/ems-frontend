@@ -12,15 +12,12 @@
       <mat-tab>
         <ng-template mat-tab-label>
           <div class="tab-label">
-            <safe-icon icon="language" [size]='18'></safe-icon>
-            <span>Location</span>
+            <safe-icon icon="language" [size]="18"></safe-icon>
+            <span>{{ 'components.preferences.language' | translate }}</span>
           </div>
         </ng-template>
-        <!-- LANGUAGE SELECTION -->
         <div class="form-group">
-          <h3 style="font-weight: 500">
-            {{ 'components.preferences.language' | translate }}
-          </h3>
+          <!-- LANGUAGE SELECTION -->
           <mat-form-field appearance="outline">
             <mat-label>{{
               'components.preferences.language' | translate
@@ -31,12 +28,7 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-        </div>
-        <!-- DATE LANGUAGE SELECTION -->
-        <div class="form-group">
-          <h3 style="font-weight: 500">
-            {{ 'components.preferences.dateFormat' | translate }}
-          </h3>
+          <!-- DATE LANGUAGE SELECTION -->
           <mat-form-field appearance="outline">
             <mat-label>{{
               'components.preferences.dateFormat' | translate
@@ -51,14 +43,6 @@
             </mat-select>
           </mat-form-field>
         </div>
-      </mat-tab>
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <div class="tab-label">
-            <safe-icon icon="settings" [size]='18'></safe-icon>
-            <span>Others</span>
-          </div>
-        </ng-template>
       </mat-tab>
     </mat-tab-group>
   </form>

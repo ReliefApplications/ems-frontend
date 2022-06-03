@@ -440,9 +440,11 @@ body {
 
 .preferences-dialog {
   width: 90%;
-  max-width: 850px !important;
+  max-width: 750px !important;
+
   mat-dialog-container {
     width: 100%;
+    position: relative;
   }
 }
 

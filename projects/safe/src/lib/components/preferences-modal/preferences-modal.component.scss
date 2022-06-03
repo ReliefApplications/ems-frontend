@@ -1,13 +1,14 @@
 :host {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  position: relative;
+  // display: flex;
+  // height: 100%;
+  // flex-direction: column;
+  // position: relative;
 }
 
 mat-dialog-content {
-  flex-grow: 1;
-  max-height: initial;
+  padding-left: 0;
+  // flex-grow: 1;
+  // max-height: initial;
 }
 
 .close-settings {
