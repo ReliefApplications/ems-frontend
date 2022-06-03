@@ -152,6 +152,7 @@ const DEFAULT_FIELDS = [
 ];
 
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   label: 'Select fields',
   choices$: new BehaviorSubject(DEFAULT_FIELDS).asObservable().pipe(delay(500)),
@@ -162,6 +163,7 @@ DEFAULT.args = {
 };
 
 export const INITIAL_SOURCE = TEMPLATE.bind({});
+DEFAULT.storyName = 'Initial source';
 INITIAL_SOURCE.args = {
   ...DEFAULT.args,
   parentControl: new FormControl(['follow', 'date']),

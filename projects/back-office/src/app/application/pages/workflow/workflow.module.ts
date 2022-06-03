@@ -12,6 +12,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { SafeSearchMenuModule } from '@safe/builder';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
 @NgModule({
@@ -28,6 +32,10 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     SafeButtonModule,
     SafeWorkflowStepperModule,
     TranslateModule,
+    OverlayModule,
+    SafeSearchMenuModule,
+    MatIconModule,
+    MatMenuModule,
     IndicatorsModule,
   ],
   exports: [WorkflowComponent],

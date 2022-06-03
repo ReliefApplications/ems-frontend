@@ -475,7 +475,7 @@
               "projects/safe/src/lib/style/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-angular/survey.css",
-              "node_modules/survey-creator/survey-creator.css",
+              "node_modules/survey-creator/survey-creator.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/select2/dist/css/select2.min.css"
@@ -979,12 +979,33 @@
           "builder": "@storybook/angular:start-storybook",
           "options": {
             "tsConfig": ".storybook/tsconfig.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/front-office/src/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              }
+            ],
             "styles": [
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              },
               {
                 "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
                 "inject": true
               },
-              "projects/back-office/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-creator/survey-creator.min.css",

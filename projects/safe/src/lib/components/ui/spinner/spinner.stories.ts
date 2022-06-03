@@ -38,6 +38,7 @@ const TEMPLATE: Story<SafeSpinnerComponent> = (args) => ({
 });
 
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   size: SpinnerSize.MEDIUM,
   variant: SpinnerVariant.DEFAULT,

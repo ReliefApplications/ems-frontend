@@ -27,4 +27,5 @@ const TEMPLATE: Story<SafePreviousButtonComponent> = (args) => ({
 
 /** Exports a default template */
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {};

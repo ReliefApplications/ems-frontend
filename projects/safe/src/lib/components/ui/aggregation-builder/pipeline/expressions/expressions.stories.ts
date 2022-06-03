@@ -77,4 +77,5 @@ const TEMPLATE: Story<SafeExpressionsComponent> = (args) => ({
 });
 
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {};

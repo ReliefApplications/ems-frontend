@@ -29,6 +29,7 @@ const TEMPLATE: Story<SafeApplicationsSummaryComponent> = (args) => ({
 
 /** Exports a default template with mock properties */
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   canCreate: true,
   applications: [

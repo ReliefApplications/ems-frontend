@@ -28,12 +28,14 @@ const TEMPLATE: Story<SafeWidgetChoiceComponent> = (args) => ({
 });
 
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   floating: false,
   widgetTypes: WIDGET_TYPES as IWidgetType[],
 };
 
 export const FLOATING = TEMPLATE.bind({});
+DEFAULT.storyName = 'Floating';
 FLOATING.args = {
   ...DEFAULT.args,
   floating: true,
