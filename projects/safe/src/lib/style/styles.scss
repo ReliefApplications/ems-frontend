@@ -548,18 +548,17 @@ body {
 
 @import 'theme.scss';
 
-
 // === VERTICAL TABS ===
 mat-tab-group[vertical] {
   display: flex;
-  flex-direction: row!important;
+  flex-direction: row !important;
 
   & > .mat-tab-header {
     border-bottom: none;
 
     .mat-tab-labels {
       display: flex;
-      flex-direction: column!important;
+      flex-direction: column !important;
       position: relative;
 
       .mat-tab-label {
@@ -568,13 +567,13 @@ mat-tab-group[vertical] {
         transition: all 0.1s ease;
 
         &.mat-tab-label-active:not(.cdk-keyboard-focused) {
-          opacity: 1; 
+          opacity: 1;
           background-color: #f5f5f5;
         }
       }
-        
+
       &::after {
-        content: "";
+        content: '';
         position: absolute;
         top: 0;
         left: calc(100% - 2px);
@@ -587,7 +586,6 @@ mat-tab-group[vertical] {
     .mat-ink-bar {
       display: none;
     }
-      
   }
 
   & > .mat-tab-body-wrapper {
@@ -595,7 +593,6 @@ mat-tab-group[vertical] {
     margin-left: 32px;
   }
 }
-
 
 // === TINYMCE ===
 .tox-editor-header *,
