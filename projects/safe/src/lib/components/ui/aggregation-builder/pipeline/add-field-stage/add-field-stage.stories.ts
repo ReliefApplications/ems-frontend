@@ -83,4 +83,5 @@ const TEMPLATE: Story<SafeAddFieldStageComponent> = (args) => ({
 
 /** Exports a default template */
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {};

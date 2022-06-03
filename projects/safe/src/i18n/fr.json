@@ -778,6 +778,9 @@
 							"select": "Sélectionner une mise en page",
 							"title": "Ajouter une nouvelle mise en page"
 						},
+						"edit": {
+							"title": "Configuration de la mise en page"
+						},
 						"title": "Mise en page de la grille"
 					}
 				},

@@ -87,6 +87,7 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
         form: this.form,
         resource: this.resource,
       },
+      width: '400px',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
