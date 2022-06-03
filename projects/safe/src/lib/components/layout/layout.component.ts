@@ -33,6 +33,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafePreferencesModalComponent } from '../preferences-modal/preferences-modal.component';
 import { SafeDateTranslateService } from '../../services/date-translate.service';
 
+/**
+ * Component for the main layout of the platform
+ */
 @Component({
   selector: 'safe-layout',
   templateUrl: './layout.component.html',
@@ -89,6 +92,18 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   // === APP SEARCH ===
   public showAppMenu = false;
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param environment This is the environment in which we are running the application
+   * @param router The Angular Router service
+   * @param authService This is the service that handles authentication
+   * @param notificationService This is the service that handles the notifications.
+   * @param layoutService This is the service that handles the layout of the application.
+   * @param dialog This is the dialog service provided by Angular Material
+   * @param translate This is the Angular service that translates text
+   */
   constructor(
     @Inject('environment') environment: any,
     private router: Router,
@@ -157,7 +172,8 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /* Load the user and update availables navGroups accordingly
+  /**
+   * Load the user and update availables navGroups accordingly
    */
   private loadUserAndUpdateLayout(): void {
     if (this.userSubscription) {
@@ -210,25 +226,38 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /*  Go back to previous view
+  /**
+   * Go back to previous view
    */
   goBack(): void {
     this.router.navigate(['../../'], { relativeTo: this.route });
   }
 
-  /*  Change the display depending on windows size.
+  /**
+   * Change the display depending on windows size.
+   *
+   * @param event Event that implies a change in window size
    */
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
     this.largeDevice = event.target.innerWidth > 1024;
   }
 
-  /* Emit the application to open
+  /**
+   * Emit the application to open
+   *
+   * @param application The application that needs to be opened
    */
   onOpenApplication(application: Application): void {
     this.openApplication.emit(application);
   }
 
+  /**
+   * Handles the click event
+   *
+   * @param callback Callback that defines the action to perform on click
+   * @param event Event that happends with the click
+   */
   onClick(callback: () => any, event: any): void {
     callback();
     event.preventDefault();
@@ -240,15 +269,20 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     this.reorder.emit(group.navItems);
   }
 
-  /*  Call logout method of authService.
+  /**
+   * Call logout method of authService.
    */
   logout(): void {
     if (!this.authService.canLogout.value) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: `Exit without saving changes`,
-          content: `There are unsaved changes on your form. Are you sure you want to logout?`,
-          confirmText: 'Confirm',
+          title: this.translate.instant('components.logout.title'),
+          content: this.translate.instant(
+            'components.logout.confirmationMessage'
+          ),
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
           confirmColor: 'primary',
         },
       });
@@ -264,6 +298,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Shows options when opening user profile
+   */
   onOpenProfile(): void {
     this.router.navigate([this.profileRoute]);
   }
@@ -288,6 +325,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  /**
+   * Switches to back or front-office
+   */
   onSwitchOffice(): void {
     if (this.environment.module === 'backoffice') {
       window.location.href = this.environment.frontOfficeUri;
@@ -296,16 +336,29 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Load more notifications
+   *
+   * @param e Event
+   */
   public onLoadMoreNotifications(e: any): void {
     e.stopPropagation();
     this.notificationService.fetchMore();
     this.loadingNotifications = true;
   }
 
+  /**
+   * Marks all the notifications as read
+   */
   onMarkAllNotificationsAsRead(): void {
     this.notificationService.markAllAsSeen();
   }
 
+  /**
+   * Marks notification as seen when clicking on it
+   *
+   * @param notification The notification that was clicked on
+   */
   onNotificationClick(notification: Notification): void {
     this.notificationService.markAsSeen(notification);
   }

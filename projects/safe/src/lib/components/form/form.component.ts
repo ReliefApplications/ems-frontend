@@ -41,6 +41,9 @@ import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.compon
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * This component is used to display forms
+ */
 @Component({
   selector: 'safe-form',
   templateUrl: './form.component.html',
@@ -82,10 +85,30 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
+  /**
+   * Getter for the pages of the form
+   *
+   * @returns the pages as an Observable
+   */
   public get pages$(): Observable<any[]> {
     return this.pages.asObservable();
   }
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param environment This is the environment in which we run the application
+   * @param dialog This is the Angular Material Dialog service.
+   * @param apollo This is the Apollo client that is used to make GraphQL requests.
+   * @param snackBar This is the service that allows you to show a snackbar message to the user.
+   * @param downloadService This is a service that allows you to download files
+   * @param authService This is the service that handles authentication.
+   * @param layoutService This is the service that will be used to create the layout of the form.
+   * @param resolver This is used to create the component dynamically
+   * @param formBuilderService This is the service that will be used to build forms.
+   * @param translate This is the service used to translate text
+   */
   constructor(
     @Inject('environment') environment: any,
     public dialog: MatDialog,
@@ -214,17 +237,25 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.survey.render(this.formContainer.nativeElement);
+    setTimeout(() => {}, 100);
   }
 
+  /**
+   * Reset the survey to empty
+   */
   public reset(): void {
     this.survey.clear();
     this.temporaryFilesStorage = {};
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     this.survey.render();
+    setTimeout(() => {}, 100);
     this.surveyActive = true;
   }
 
+  /**
+   * Handles the value change event when the user completes the survey
+   */
   public valueChange(): void {
     localStorage.setItem(
       this.storageId,
@@ -247,9 +278,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * Creates the record, or update it if provided.
-   *
-   * @param survey Survey instance.
+   * Creates the record when it is complete, or update it if provided.
    */
   public onComplete = async () => {
     let mutation: any;
@@ -348,20 +377,32 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Change language of the form.
    *
-   * @param ev language event
+   * @param lang selected language
    */
-  setLanguage(ev: string): void {
+  setLanguage(lang: string): void {
     this.survey.locale = this.usedLocales.filter(
-      (locale) => locale.text === ev
+      (locale) => locale.text === lang
     )[0].value;
     this.survey.render();
     // this.survey.render(this.containerId);
   }
 
+  /**
+   * Handles the clear files event
+   *
+   * @param survey The survey in which the files were cleared
+   * @param options Options regarding the clearing of the files
+   */
   private onClearFiles(survey: Survey.SurveyModel, options: any): void {
     options.callback('success');
   }
 
+  /**
+   * Handles the upload of files event
+   *
+   * @param survey The survey to which the files were added
+   * @param options Options regarding the upload
+   */
   private onUploadFiles(survey: Survey.SurveyModel, options: any): void {
     if (this.temporaryFilesStorage[options.name] !== undefined) {
       this.temporaryFilesStorage[options.name].concat(options.files);
@@ -394,6 +435,12 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  /**
+   * Handles the dowload of files event
+   *
+   * @param survey The survey from which the files were downloaded
+   * @param options Options regarding the download
+   */
   private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
     if (
       options.content.indexOf('base64') !== -1 ||
@@ -431,7 +478,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Add custom CSS classes to the survey elements.
    *
-   * @param survey current survey.
    * @param options survey options.
    */
   private onSetCustomCss(options: any): void {
@@ -439,6 +485,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     classes.content += 'safe-qst-content';
   }
 
+  /**
+   * Set the pages for the survey
+   */
   private setPages(): void {
     const pages = [];
     if (this.survey) {
@@ -451,6 +500,11 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.pages.next(pages);
   }
 
+  /**
+   * Handles the show page event
+   *
+   * @param i Index of the page
+   */
   public onShowPage(i: number): void {
     if (this.survey) {
       this.survey.currentPageNo = i;
@@ -461,6 +515,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selectedTabIndex = i;
   }
 
+  /**
+   * Closes the survey and empties the temporary and local storage
+   */
   public onClear(): void {
     // If unicity of records is set up, do not clear but go back to latest saved version
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
@@ -474,12 +531,19 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFromCacheData = false;
     this.storageDate = undefined;
     this.survey.render();
+    setTimeout(() => {}, 100);
   }
 
   ngOnDestroy(): void {
     localStorage.removeItem(this.storageId);
   }
 
+  /**
+   * Open a dialog modal to confirm the recovery of data
+   *
+   * @param record The record whose data we need to recover
+   * @param version The version to recover
+   */
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
     const date = new Date(parseInt(version.created, 0));
@@ -488,9 +552,12 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant('components.record.recovery.title'),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });

@@ -49,6 +49,7 @@ import { Form } from '../../../models/form.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
+import get from 'lodash/get';
 import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
@@ -216,6 +217,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     delete: false,
     history: false,
     convert: false,
+    export: true,
     showDetails: true,
   };
 
@@ -256,16 +258,15 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(): void {
     // define row actions
     this.actions = {
-      add: this.settings.actions?.addRecord && this.settings.template,
-      history: this.settings.actions?.history,
-      update: this.settings.actions?.update,
-      delete: this.settings.actions?.delete,
-      convert: this.settings.actions?.convert,
-      showDetails:
-        this.settings.actions &&
-        typeof this.settings.actions?.showDetails !== 'undefined'
-          ? this.settings.actions?.showDetails
-          : true,
+      add:
+        get(this.settings, 'actions?.addRecord', false) &&
+        this.settings.template,
+      history: get(this.settings, 'actions.history', false),
+      update: get(this.settings, 'actions.update', false),
+      delete: get(this.settings, 'actions.delete', false),
+      convert: get(this.settings, 'actions.convert', false),
+      export: get(this.settings, 'actions.export', true),
+      showDetails: get(this.settings, 'actions.showDetails', true),
     };
     this.editable = this.settings.actions?.inlineEdition;
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
@@ -511,45 +512,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.updatedItems = [];
   }
 
-  // === SELECTION ===
-
-  /**
-   * Handles selection change event.
-   *
-   * @param selection Selection event.
-   */
-  public onSelectionChange(selection: SelectionEvent): void {
-    const deselectedRows = selection.deselectedRows || [];
-    const selectedRows = selection.selectedRows || [];
-    if (deselectedRows.length > 0) {
-      this.selectedRows = [
-        ...this.selectedRows.filter(
-          (x) => !deselectedRows.some((y) => x === y.dataItem.id)
-        ),
-      ];
-    }
-    if (selectedRows.length > 0) {
-      this.selectedRows = this.selectedRows.concat(
-        selectedRows.map((x) => x.dataItem.id)
-      );
-    }
-    this.selectionChange.emit(selection);
-  }
-
-  /**
-   * Initializes selected rows from input.
-   */
-  private initSelectedRows(): void {
-    this.selectedRowsIndex = [];
-    if (this.selectedRows.length > 0) {
-      this.gridData.data.forEach((row: any, index: number) => {
-        if (this.selectedRows.includes(row.id)) {
-          this.selectedRowsIndex.push(index + this.skip);
-        }
-      });
-    }
-  }
-
   // === GRID ACTIONS ===
   /**
    * Handles grid actions.
@@ -745,11 +707,23 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     const rowsSelected = items.length;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Delete row${rowsSelected > 1 ? 's' : ''}`,
-        content: `Do you confirm the deletion of ${
-          rowsSelected > 1 ? 'these ' + rowsSelected : 'this'
-        } row${rowsSelected > 1 ? 's' : ''} ?`,
-        confirmText: 'Delete',
+        title: this.translate.instant('common.deleteObject', {
+          name:
+            rowsSelected > 1
+              ? this.translate.instant('common.row.few')
+              : this.translate.instant('common.row.one'),
+        }),
+        content: this.translate.instant(
+          'components.form.deleteRow.confirmationMessage',
+          {
+            quantity: rowsSelected,
+            rowText:
+              rowsSelected > 1
+                ? this.translate.instant('common.row.few')
+                : this.translate.instant('common.row.one'),
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       },
     });
@@ -852,9 +826,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant('components.record.recovery.title'),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });

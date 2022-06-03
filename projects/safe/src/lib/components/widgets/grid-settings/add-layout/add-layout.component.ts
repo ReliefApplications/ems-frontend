@@ -50,9 +50,15 @@ export class AddLayoutComponent implements OnInit {
    */
   public onCreate(): void {
     const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
+      disableClose: true,
       data: {
         queryName: this.resource?.queryName || this.form?.queryName,
       },
+      position: {
+        bottom: '0',
+        right: '0',
+      },
+      panelClass: 'tile-settings-dialog',
     });
     dialogRef.afterClosed().subscribe((layout) => {
       if (layout) {

@@ -21,6 +21,10 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { SafePreferencesModalModule } from '../preferences-modal/preferences-modal.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
 
+/**
+ * SafeLayoutModule is a class used to manage all the modules and components
+ * related to the main layout of the platform.
+ */
 @NgModule({
   declarations: [SafeLayoutComponent],
   imports: [

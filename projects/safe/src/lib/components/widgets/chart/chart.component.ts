@@ -96,6 +96,29 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
       palette: get(this.settings, 'chart.palette.enabled', false)
         ? get(this.settings, 'chart.palette.value', null)
         : null,
+      axes: {
+        x: {
+          min: get(this.settings, 'chart.axes.x.enableMin')
+            ? get(this.settings, 'chart.axes.x.min')
+            : null,
+          max: get(this.settings, 'chart.axes.x.enableMax')
+            ? get(this.settings, 'chart.axes.x.max')
+            : null,
+        },
+        y: {
+          min: get(this.settings, 'chart.axes.y.enableMin')
+            ? get(this.settings, 'chart.axes.y.min')
+            : null,
+          max: get(this.settings, 'chart.axes.y.enableMax')
+            ? get(this.settings, 'chart.axes.y.max')
+            : null,
+        },
+      },
+      labels: {
+        showCategory: get(this.settings, 'chart.labels.showCategory', false),
+        showValue: get(this.settings, 'chart.labels.showValue', false),
+        valueType: get(this.settings, 'chart.labels.valueType', 'value'),
+      },
     };
   }
 
