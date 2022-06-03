@@ -98,6 +98,7 @@ const DEFAULT_FORMS = [
 ];
 
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   forms$: new BehaviorSubject<Form[]>(DEFAULT_FORMS)
     .asObservable()
@@ -106,6 +107,7 @@ DEFAULT.args = {
 };
 
 export const INITIAL_SOURCE = TEMPLATE.bind({});
+DEFAULT.storyName = 'Initial source';
 INITIAL_SOURCE.args = {
   ...DEFAULT.args,
   sourceControl: new FormControl('613b6c052921406adbfb54bd'),

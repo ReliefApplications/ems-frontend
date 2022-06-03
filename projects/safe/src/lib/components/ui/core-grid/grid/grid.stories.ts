@@ -184,6 +184,7 @@ const DEFAULT_FIELDS = [
 ];
 
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   fields: DEFAULT_FIELDS,
   data: {
@@ -194,6 +195,7 @@ DEFAULT.args = {
 };
 
 export const EMPTY = TEMPLATE.bind({});
+DEFAULT.storyName = 'Empty';
 EMPTY.args = {
   fields: DEFAULT_FIELDS,
   data: {
@@ -203,6 +205,7 @@ EMPTY.args = {
 };
 
 export const ERROR = TEMPLATE.bind({});
+DEFAULT.storyName = 'With error';
 ERROR.args = {
   fields: DEFAULT_FIELDS,
   error: true,
@@ -213,12 +216,14 @@ ERROR.args = {
 };
 
 export const LOADING = TEMPLATE.bind({});
+DEFAULT.storyName = 'Loading';
 LOADING.args = {
   ...DEFAULT.args,
   loading: true,
 };
 
 export const FIXED = TEMPLATE.bind({});
+DEFAULT.storyName = 'Fixed size';
 FIXED.args = {
   ...DEFAULT.args,
   resizable: false,
@@ -236,6 +241,7 @@ const MULTI_SELECT_DATA = [
 ];
 
 export const MULTI_SELECT_INPUTS = TEMPLATE.bind({});
+DEFAULT.storyName = 'With multi select inputs';
 MULTI_SELECT_INPUTS.args = {
   ...DEFAULT.args,
   fields: [
@@ -337,6 +343,7 @@ const COMPLEX_DATA = [
 ];
 
 export const COMPLEX_INPUTS = TEMPLATE.bind({});
+DEFAULT.storyName = 'With complex inputs';
 COMPLEX_INPUTS.args = {
   ...DEFAULT.args,
   fields: [
