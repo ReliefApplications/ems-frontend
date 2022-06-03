@@ -1,5 +1,5 @@
-@use "@angular/material" as mat;
-@import "variables.scss";
+@use '@angular/material' as mat;
+@import 'variables.scss';
 @include mat.core();
 
 .sv_main {
@@ -392,7 +392,8 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     }
   }
 
-  mat-expansion-panel:not(.mat-expanded) + mat-expansion-panel:not(.mat-expanded) {
+  mat-expansion-panel:not(.mat-expanded)
+    + mat-expansion-panel:not(.mat-expanded) {
     border-top: 0;
   }
 }
@@ -409,7 +410,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   overflow: hidden;
 }
 
@@ -535,10 +536,10 @@ body {
   color: mat.get-color-from-palette($safe-warn) !important;
 }
 
-@import "theme.scss";
+@import 'theme.scss';
 
 // === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {
-  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
 }
