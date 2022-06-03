@@ -2,6 +2,9 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Step } from '../../models/step.model';
 
+/**
+ * Component for workflow stepper
+ */
 @Component({
   selector: 'safe-workflow-stepper',
   templateUrl: './workflow-stepper.component.html',
@@ -17,14 +20,21 @@ export class SafeWorkflowStepperComponent implements OnInit {
   @Output() reorderSteps = new EventEmitter<Step[]>();
   public dragging = false;
 
+  /** Constructor */
   constructor() {}
 
   ngOnInit(): void {}
 
+  /** Activate draging */
   onDragStart(): void {
     this.dragging = true;
   }
 
+  /**
+   * Open a step on click
+   *
+   * @param index Index of the step
+   */
   onStep(index: number): void {
     if (this.dragging) {
       this.dragging = false;
@@ -35,7 +45,11 @@ export class SafeWorkflowStepperComponent implements OnInit {
     }
   }
 
-  /** Drop a step dragged into the list */
+  /**
+   * Drop a step dragged into the list.
+   *
+   * @param event Drag and drop on mouse release event
+   */
   dropStep(event: CdkDragDrop<string[]>): void {
     this.dragging = false;
     const reorderedSteps = this.steps.slice();

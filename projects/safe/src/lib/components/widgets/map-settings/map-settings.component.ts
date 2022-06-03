@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { createQueryForm } from '../../query-builder/query-builder-forms';
 
+/** Component for the map widget settings */
 @Component({
   selector: 'safe-map-settings',
   templateUrl: './map-settings.component.html',
@@ -22,6 +23,12 @@ export class SafeMapSettingsComponent implements OnInit {
 
   public selectedFields: any[] = [];
 
+  /**
+   * Constructor of the component
+   *
+   * @param formBuilder Create the formbuilder
+   * @param queryBuilder The queryBuilder service
+   */
   constructor(
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService
@@ -74,6 +81,12 @@ export class SafeMapSettingsComponent implements OnInit {
     });
   }
 
+  /**
+   * Flatten an array
+   *
+   * @param {any[]} arr - any[] - the array to be flattened
+   * @returns the array with all the nested arrays flattened.
+   */
   private flatDeep(arr: any[]): any[] {
     return arr.reduce(
       (acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val),
@@ -81,6 +94,17 @@ export class SafeMapSettingsComponent implements OnInit {
     );
   }
 
+  /**
+   * It takes an array of fields, and returns an array of strings that represent
+   * the fields
+   *
+   * @param {any[]} fields - any[] - this is the array of fields that we want to
+   * flatten
+   * @param {string} [prefix] - The prefix is the name of the parent object. For
+   * example, if you have a field called "user" and it's an object, the prefix will
+   * be "user".
+   * @returns An array of strings.
+   */
   private getFields(fields: any[], prefix?: string): any[] {
     return this.flatDeep(
       fields

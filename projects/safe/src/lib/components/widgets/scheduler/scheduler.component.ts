@@ -9,6 +9,7 @@ import {
   GET_FORM_BY_ID,
 } from '../../../graphql/queries';
 
+/** Component for scheduler widget */
 @Component({
   selector: 'safe-scheduler',
   templateUrl: './scheduler.component.html',
@@ -29,6 +30,11 @@ export class SafeSchedulerComponent implements OnInit {
   @Input() header = true;
   @Input() settings: any = null;
 
+  /**
+   * Constructor of the class
+   *
+   * @param apollo Apollo client
+   */
   constructor(private apollo: Apollo) {}
 
   /** Load the data. */
@@ -115,7 +121,12 @@ export class SafeSchedulerComponent implements OnInit {
     }
   }
 
-  /** Correction applied to data, to have correct format. */
+  /**
+   * Correction applied to data, to have correct format.
+   *
+   * @param eventDate A date as a string
+   * @returns The same date transpose to the current year as Date object
+   */
   private parseAdjust(eventDate: string): Date {
     const date = new Date(eventDate);
     date.setFullYear(this.currentYear);

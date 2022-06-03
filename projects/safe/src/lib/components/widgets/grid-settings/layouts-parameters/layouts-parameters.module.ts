@@ -10,6 +10,7 @@ import { AddLayoutModule } from '../add-layout/add-layout.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeLayoutModalModule } from '../../../layout-modal/layout-modal.module';
 
+/** Module for layout component in grid widget settings */
 @NgModule({
   declarations: [LayoutsParametersComponent],
   imports: [

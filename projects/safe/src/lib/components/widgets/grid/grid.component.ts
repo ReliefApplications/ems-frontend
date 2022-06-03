@@ -44,10 +44,12 @@ import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
-
+/** Regex for the pattern "today()-[number of days to substract]" */
 const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
 
+/** Component for the grid widget */
 @Component({
   selector: 'safe-grid-widget',
   templateUrl: './grid.component.html',
@@ -81,6 +83,21 @@ export class SafeGridWidgetComponent implements OnInit {
   // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
   public factory?: ComponentFactory<any>;
 
+  /**
+   * Heavy constructor for the grid widget component
+   *
+   * @param environment Environment variables
+   * @param apollo The apollo client
+   * @param dialog Material dialogs service
+   * @param resolver A resolver for component factory
+   * @param snackBar The safe snack bar service
+   * @param workflowService The safe wofkflow service
+   * @param safeAuthService The safe authentification service
+   * @param emailService The safe email service
+   * @param queryBuilder The query builder service
+   * @param gridLayoutService The safe grid layout service
+   * @param translate The translate service
+   */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
@@ -118,6 +135,12 @@ export class SafeGridWidgetComponent implements OnInit {
     }
   }
 
+  /**
+   * Send changes on multiple records to the backend
+   *
+   * @param items A list of item representing the changes for each record
+   * @returns A list of promise with the result of the request
+   */
   private promisedChanges(items: any[]): Promise<any>[] {
     const promises: Promise<any>[] = [];
     for (const item of items) {
@@ -377,9 +400,17 @@ export class SafeGridWidgetComponent implements OnInit {
     return date;
   }
 
-  /** Open a modal to select which record we want to attach the rows to and perform the attach. */
+  /**
+   * Open a modal to select which record we want to attach the rows to and
+   * perform the attach.
+   * The inputs comes from 'attach to record' button from grid component
+   *
+   * @param selectedRecords The list of selected records
+   * @param targetForm The targetted form
+   * @param targetFormField The form field
+   * @param targetFormQuery The form query
+   */
   private async promisedAttachToRecord(
-    // come from 'attach to record' button from grid component
     selectedRecords: string[],
     targetForm: Form,
     targetFormField: string,

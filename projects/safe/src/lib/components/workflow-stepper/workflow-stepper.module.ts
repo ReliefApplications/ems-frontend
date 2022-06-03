@@ -11,6 +11,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Module for workflow stepper component
+ */
 @NgModule({
   declarations: [
     SafeWorkflowStepperComponent,

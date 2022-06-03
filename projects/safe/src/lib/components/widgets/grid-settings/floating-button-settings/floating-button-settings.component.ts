@@ -27,15 +27,23 @@ import { QueryBuilderService } from '../../../../services/query-builder.service'
 import { MatDialog } from '@angular/material/dialog';
 import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 
+/** List fo diabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
+/** Key codes of separators */
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
+/**
+ * Function that create a function which returns an object with the separator keys
+ *
+ * @returns A function which returns an object with the separtor keys
+ */
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function codesFactory(): () => any {
   const codes = () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE });
   return codes;
 }
 
+/** Component for floating button settings */
 @Component({
   selector: 'safe-floating-button-settings',
   templateUrl: './floating-button-settings.component.html',
@@ -66,12 +74,23 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
 
+  /** @returns The list of fields which are of type scalar and not disabled */
   get scalarFields(): any[] {
     return this.fields.filter(
       (x) => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name)
     );
   }
 
+  /**
+   * Constructor of the component
+   *
+   * @param formBuilder The form builder
+   * @param router The router service
+   * @param workflowService The workflow service
+   * @param queryBuilder The query builder service
+   * @param componentFactoryResolver The factory for creating a component
+   * @param dialog The material dialog service
+   */
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
@@ -268,6 +287,13 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Check if 2 fields have the same name
+   *
+   * @param field1 A field, with a name attribute
+   * @param field2 A field, with a name attribute
+   * @returns True if the name are equals, False if not or if field2 is null
+   */
   compareFields(field1: any, field2: any): boolean {
     if (field2) {
       return field1.name === field2.name;
@@ -276,14 +302,23 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** @returns An array of the modifications on button form */
   get modificationsArray(): FormArray {
     return this.buttonForm?.get('modifications') as FormArray;
   }
 
+  /**
+   * Delete a modification
+   *
+   * @param index The index of the modification
+   */
   onDeleteModification(index: number): void {
     this.modificationsArray.removeAt(index);
   }
 
+  /**
+   * Create a new modification
+   */
   onAddModification(): void {
     this.modificationsArray.push(
       this.formBuilder.group({
@@ -293,6 +328,9 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Delete all the invalid modifications
+   */
   private deleteInvalidModifications(): void {
     const modifications = this.buttonForm?.get('modifications') as FormArray;
     for (let i = 0; i < modifications.value.length; i++) {
@@ -304,10 +342,18 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Emit the event to delete the button
+   */
   public emitDeleteButton(): void {
     this.deleteButton.emit(true);
   }
 
+  /**
+   * Add the inputs emails to the distribution list
+   *
+   * @param event The event triggered when we exit the input
+   */
   add(event: MatChipInputEvent | any): void {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
@@ -336,6 +382,11 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Remove an email from the distribution list
+   *
+   * @param email The email to remove
+   */
   remove(email: string): void {
     const index = this.emails.indexOf(email);
     if (index >= 0) {
