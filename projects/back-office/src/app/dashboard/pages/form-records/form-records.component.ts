@@ -87,8 +87,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     private translate: TranslateService
   ) {}
 
-  /*  Load the records, using the form id passed as a parameter.
-   */
+  /** Load the records, using the form id passed as a parameter. */
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(
       SafeRecordHistoryComponent
@@ -121,8 +120,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
     this.recordsSubscription = this.recordsQuery.valueChanges.subscribe(
       (res) => {
-        this.cachedRecords = res.data.form.records.edges.map(
-          (x: any) => x.node
+        this.cachedRecords.push(
+          ...res.data.form.records.edges.map((x: any) => x.node)
         );
         this.dataSource = this.cachedRecords.slice(
           ITEMS_PER_PAGE * this.pageInfo.pageIndex,
@@ -168,31 +167,13 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     this.pageInfo.pageIndex = e.pageIndex;
     if (
       e.pageIndex > e.previousPageIndex &&
-      e.length > this.cachedRecords.length
+      e.length > this.cachedRecords.length &&
+      ITEMS_PER_PAGE * this.pageInfo.pageIndex >= this.cachedRecords.length
     ) {
-      this.recordsQuery.fetchMore({
-        variables: {
-          id: this.id,
-          first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            form: {
-              records: {
-                edges: [
-                  ...prev.form.records.edges,
-                  ...fetchMoreResult.form.records.edges,
-                ],
-                pageInfo: fetchMoreResult.form.records.pageInfo,
-                totalCount: fetchMoreResult.form.records.totalCount,
-              },
-            },
-          });
-        },
+      this.recordsQuery.refetch({
+        id: this.id,
+        first: ITEMS_PER_PAGE,
+        afterCursor: this.pageInfo.endCursor,
       });
     } else {
       this.dataSource = this.cachedRecords.slice(
