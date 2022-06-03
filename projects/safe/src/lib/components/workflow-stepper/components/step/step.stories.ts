@@ -23,6 +23,7 @@ const TEMPLATE: Story<SafeStepComponent> = (args) => ({
 });
 
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   step: {
     name: 'Dashboard',
