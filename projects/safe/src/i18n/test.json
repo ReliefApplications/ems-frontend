@@ -356,6 +356,9 @@
 			},
 			"updateRow": {
 				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
+			},
+			"display": {
+				"submissionMessage": "******"
 			}
 		},
 		"forms": {
@@ -974,7 +977,24 @@
 			"title": "******"
 		},
 		"formBuilder": {
-			"title": "******"
+			"title": "******",
+			"questionsCategories": {
+				"core": "******"
+			},
+			"errors": {
+				"notSnakecase": "****** {{name}} ****** {{page}} ******",
+				"missingName": "****** {{page}} ******",
+				"choices": {
+					"duplicateValues": "****** {{question}}"
+				},
+				"multipletext": {
+					"missingNames": "****** {{question}}"
+				},
+				"resource": {
+					"invalidaRelatedName": "****** {{relatedName}} ****** {{page}} ******",
+					"missingRelatedName": "****** {{question}} ****** {{page}} ******"
+				}
+			}
 		},
 		"forms": {
 			"title": "******"
