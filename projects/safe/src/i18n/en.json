@@ -333,7 +333,7 @@
 				"confirmationMessage": "Do you confirm the deletion of {{quantity}} {{rowText}}?"
 			},
 			"display": {
-				"submissionMessage": "The form has successfully been submitted.x"
+				"submissionMessage": "The form has successfully been submitted."
 			},
 			"layout": {
 				"delete": {

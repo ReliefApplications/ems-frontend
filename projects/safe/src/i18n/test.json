@@ -332,6 +332,9 @@
 			"deleteRow": {
 				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			},
+			"display": {
+				"submissionMessage": "******"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
@@ -356,9 +359,6 @@
 			},
 			"updateRow": {
 				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
-			},
-			"display": {
-				"submissionMessage": "******"
 			}
 		},
 		"forms": {
@@ -977,24 +977,24 @@
 			"title": "******"
 		},
 		"formBuilder": {
-			"title": "******",
-			"questionsCategories": {
-				"core": "******"
-			},
 			"errors": {
-				"notSnakecase": "****** {{name}} ****** {{page}} ******",
-				"missingName": "****** {{page}} ******",
 				"choices": {
 					"duplicateValues": "****** {{question}}"
 				},
+				"missingName": "****** {{page}} ******",
 				"multipletext": {
 					"missingNames": "****** {{question}}"
 				},
+				"notSnakecase": "****** {{name}} ****** {{page}} ******",
 				"resource": {
 					"invalidaRelatedName": "****** {{relatedName}} ****** {{page}} ******",
 					"missingRelatedName": "****** {{question}} ****** {{page}} ******"
 				}
-			}
+			},
+			"questionsCategories": {
+				"core": "******"
+			},
+			"title": "******"
 		},
 		"forms": {
 			"title": "******"
