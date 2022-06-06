@@ -28,7 +28,7 @@ import { environment } from '../environments/environment';
 import { BehaviorSubject } from 'rxjs';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
-import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
+import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import {
   TranslateLoader,
   TranslateModule,
@@ -212,12 +212,16 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       provide: MessageService,
       useClass: KendoTranslationService,
     },
+    {
+      provide: OAuthStorage,
+      useValue: localStorage,
+    },
   ],
 })
 export class AppModule implements DoBootstrap {
   constructor(private injector: Injector, private translate: TranslateService) {
     this.translate.addLangs(environment.availableLanguages);
-    this.translate.setDefaultLang('en');
+    this.translate.setDefaultLang(environment.availableLanguages[0]);
   }
 
   ngDoBootstrap(): void {

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 
 import { SafeGroupStageComponent } from './group-stage.component';
 
@@ -15,6 +16,7 @@ describe('SafeGroupStageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeGroupStageComponent);
     component = fixture.componentInstance;
+    component.form = new FormGroup({});
     fixture.detectChanges();
   });
 

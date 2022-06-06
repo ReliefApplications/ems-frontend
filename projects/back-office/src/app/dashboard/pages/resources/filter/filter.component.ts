@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -12,6 +12,7 @@ export class FilterComponent implements OnInit {
   public search = new FormControl('');
   public show = false;
   @Output() filter = new EventEmitter<any>();
+  @Input() loading = false;
 
   constructor(private formBuilder: FormBuilder) {}
 
@@ -26,9 +27,9 @@ export class FilterComponent implements OnInit {
       .subscribe((value) => {
         this.emitFilter(value);
       });
-    // this way we can wait for 2s before sending an update
+    // this way we can wait for 0.2s before sending an update
     this.search.valueChanges
-      .pipe(debounceTime(2000), distinctUntilChanged())
+      .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value) => {
         this.form.controls.name.setValue(value);
       });

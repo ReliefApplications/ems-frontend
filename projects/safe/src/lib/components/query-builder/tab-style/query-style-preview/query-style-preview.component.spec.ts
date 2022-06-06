@@ -15,6 +15,17 @@ describe('SafeQueryStylePreviewComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeQueryStylePreviewComponent);
     component = fixture.componentInstance;
+    component.style = {
+      background: {
+        color: '',
+      },
+      text: {
+        color: '',
+        bold: false,
+        underline: false,
+        italic: false,
+      },
+    };
     fixture.detectChanges();
   });
 

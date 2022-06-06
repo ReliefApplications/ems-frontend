@@ -1,4 +1,7 @@
+import { HttpClientModule } from '@angular/common/http';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormBuilder } from '@angular/forms';
+import { environment } from 'projects/back-office/src/environments/environment';
 
 import { SafeChartComponent } from './chart.component';
 
@@ -8,13 +11,28 @@ describe('SafeChartComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
+      providers: [
+        FormBuilder,
+        { provide: 'environment', useValue: environment },
+      ],
       declarations: [SafeChartComponent],
+      imports: [HttpClientModule],
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeChartComponent);
     component = fixture.componentInstance;
+    component.settings = {
+      title: '',
+      chart: {
+        type: {
+          name: '',
+          icon: '',
+          class: null,
+        },
+      },
+    };
     fixture.detectChanges();
   });
 

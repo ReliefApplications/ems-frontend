@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @import 'variables.scss';
 @include mat.core();
 
@@ -70,6 +70,7 @@ $safe-palette-warn: (
   // 500
   lighter: #ff766f,
   darker: #9b001d,
+  50: #fae9e9,
   200: #e9a2a2,
   // 200
   // For slide toggle,
@@ -95,6 +96,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   .snack-error {
     background-color: mat.get-color-from-palette($warn);
     color: white;
+    white-space: pre-wrap;
 
     .mat-simple-snackbar-action {
       color: white;
@@ -142,6 +144,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
+// === CHIP STYLING ===
 @mixin chip($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
@@ -168,6 +171,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
+// === BUTTON STYLING ===
 @mixin button($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
@@ -196,8 +200,40 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-// img-choice
-// img-selected
+// === ALERT STYLING ===
+@mixin alert($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+
+  .safe-alert {
+    &-default {
+      $variant-color: #f1f1f1;
+      background-color: $variant-color;
+      color: darken($variant-color, 30%);
+    }
+
+    &-primary {
+      background-color: mat.get-color-from-palette($primary, 50);
+      color: mat.get-color-from-palette($primary);
+    }
+
+    &-danger {
+      background-color: mat.get-color-from-palette($warn, 50);
+      color: mat.get-color-from-palette($warn);
+    }
+
+    &-success {
+      background-color: rgba(149, 221, 101, 0.2);
+      color: rgb(149, 221, 101);
+    }
+
+    &-warning {
+      background-color: rgba(244, 174, 82, 0.2);
+      color: rgb(244, 174, 82);
+    }
+  }
+}
 
 // === GLOBAL STYLES ==
 .mat-table {
@@ -366,6 +402,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 @include mat.all-component-themes($safe-theme);
 @include chip($safe-theme);
 @include button($safe-theme);
+@include alert($safe-theme);
 @include custom-theme($safe-theme);
 
 html,
@@ -438,6 +475,16 @@ body {
   }
 }
 
+.preferences-dialog {
+  width: 90%;
+  max-width: 750px !important;
+
+  mat-dialog-container {
+    width: 100%;
+    position: relative;
+  }
+}
+
 .no-padding-dialog {
   mat-dialog-container {
     padding: unset;
@@ -501,3 +548,55 @@ body {
 }
 
 @import 'theme.scss';
+
+// === VERTICAL TABS ===
+mat-tab-group[vertical] {
+  display: flex;
+  flex-direction: row !important;
+
+  & > .mat-tab-header {
+    border-bottom: none;
+
+    .mat-tab-labels {
+      display: flex;
+      flex-direction: column !important;
+      position: relative;
+
+      .mat-tab-label {
+        justify-content: left;
+        border-radius: 7px;
+        transition: all 0.1s ease;
+
+        &.mat-tab-label-active:not(.cdk-keyboard-focused) {
+          opacity: 1;
+          background-color: #f5f5f5;
+        }
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: calc(100% - 2px);
+        height: 100%;
+        width: 2px;
+        background-color: none !important;
+      }
+    }
+
+    .mat-ink-bar {
+      display: none;
+    }
+  }
+
+  & > .mat-tab-body-wrapper {
+    width: 100%;
+    margin-left: 32px;
+  }
+}
+
+// === TINYMCE ===
+.tox-editor-header *,
+.tox-tinymce-aux * {
+  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
+}

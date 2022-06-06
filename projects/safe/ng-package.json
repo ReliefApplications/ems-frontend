@@ -2,41 +2,6 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/safe",
   "lib": {
-    "entryFile": "src/public-api.ts",
-    "umdModuleIds": {
-      "@ngx-translate/core": "@ngx-translate/core",
-      "@progress/kendo-angular-buttons": "@progress/kendo-angular-buttons",
-      "@progress/kendo-angular-charts": "@progress/kendo-angular-charts",
-      "@progress/kendo-angular-common": "@progress/kendo-angular-common",
-      "@progress/kendo-angular-dateinputs": "@progress/kendo-angular-dateinputs",
-      "@progress/kendo-angular-dropdowns": "@progress/kendo-angular-dropdowns",
-      "@progress/kendo-angular-editor": "@progress/kendo-angular-editor",
-      "@progress/kendo-angular-grid": "@progress/kendo-angular-grid",
-      "@progress/kendo-angular-indicators": "@progress/kendo-angular-indicators",
-      "@progress/kendo-angular-inputs": "@progress/kendo-angular-inputs",
-      "@progress/kendo-angular-l10n": "@progress/kendo-angular-l10n",
-      "@progress/kendo-angular-label": "@progress/kendo-angular-label",
-      "@progress/kendo-angular-layout": "@progress/kendo-angular-layout",
-      "@progress/kendo-angular-popup": "@progress/kendo-angular-popup",
-      "@progress/kendo-angular-scheduler": "@progress/kendo-angular-scheduler",
-      "@progress/kendo-angular-toolbar": "@progress/kendo-angular-toolbar",
-      "@progress/kendo-angular-upload": "@progress/kendo-angular-upload",
-      "@progress/kendo-data-query": "@progress/kendo-data-query",
-      "@progress/kendo-file-saver": "@progress/kendo-file-saver",
-      "angular-oauth2-oidc": "angular-oauth2-oidc",
-      "apollo-angular": "apollo-angular",
-      "leaflet": "leaflet",
-      "localforage": "localforage",
-      "lodash/get": "lodash/get",
-      "lodash/isEqual": "lodash/isEqual",
-      "lodash/isNil": "lodash/isNil",
-      "lodash/omitBy": "lodash/omitBy",
-      "lodash/random": "lodash/random",
-      "survey-angular": "survey-angular",
-      "survey-creator": "survey-creator",
-      "survey-knockout": "survey-knockout",
-      "surveyjs-widgets": "surveyjs-widgets",
-      "uuid": "uuid"
-    }
+    "entryFile": "src/public-api.ts"
   }
 }

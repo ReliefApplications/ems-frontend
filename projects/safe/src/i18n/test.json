@@ -17,6 +17,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"auto": "******",
 		"back": "******",
 		"cancel": "******",
 		"channel": {
@@ -27,7 +28,6 @@
 		"child": "******",
 		"clear": "******",
 		"close": "******",
-		"confirm": "******",
 		"create": "******",
 		"createdOn": "******",
 		"dashboard": {
@@ -38,6 +38,7 @@
 		"delete": "******",
 		"deleteObject": "****** {{name}}",
 		"deleted": "******",
+		"dismiss": "******",
 		"display": "******",
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
@@ -191,6 +192,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"row": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"save": "******",
 		"saveChanges": "******",
 		"searchObject": "****** {{name}}",
@@ -213,6 +219,7 @@
 		"title": "******",
 		"true": "******",
 		"update": "******",
+		"updateObject": "****** {{name}}",
 		"uploadObject": "****** {{name}}",
 		"user": {
 			"few": "******",
@@ -298,11 +305,16 @@
 		},
 		"application": {
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"duplicate": {
 				"name": {
 					"description": "******"
+				}
+			},
+			"pages": {
+				"delete": {
+					"confirmationMessage": "****** {{name}} ******"
 				}
 			},
 			"positionAttribute": {
@@ -349,6 +361,12 @@
 				"select": "******"
 			}
 		},
+		"confirmModal": {
+			"cancel": "******",
+			"confirm": "******",
+			"delete": "******",
+			"title": "******"
+		},
 		"emailBuilder": {
 			"body": "******",
 			"distribution": "******",
@@ -372,6 +390,9 @@
 			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
+			},
+			"deleteRow": {
+				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			},
 			"layout": {
 				"delete": {
@@ -397,6 +418,9 @@
 			"update": {
 				"exit": "******",
 				"exitMessage": "******"
+			},
+			"updateRow": {
+				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			}
 		},
 		"formBuilder": {
@@ -433,6 +457,10 @@
 				"select": "******"
 			},
 			"preview": "******"
+		},
+		"logout": {
+			"confirmationMessage": "******",
+			"title": "******"
 		},
 		"notifications": {
 			"readAll": "******"
@@ -521,6 +549,14 @@
 				"operator": "******",
 				"or": "******",
 				"title": "******"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "******",
+						"usePicker": "******"
+					}
+				}
 			}
 		},
 		"record": {
@@ -555,6 +591,10 @@
 			},
 			"modal": {
 				"update": "******"
+			},
+			"recovery": {
+				"confirmationMessage": "****** {{date}} ******",
+				"title": "******"
 			}
 		},
 		"records": {
@@ -642,7 +682,8 @@
 				"empty": "******",
 				"errors": {
 					"invalid": "******",
-					"missingDataset": "******"
+					"missingDataset": "******",
+					"validationFailed": "****** {{index}} ****** {{question}} ****** {{error}}"
 				},
 				"export": {
 					"columns": {
@@ -677,6 +718,14 @@
 			},
 			"settings": {
 				"chart": {
+					"axes": "******",
+					"labels": {
+						"percentage": "******",
+						"showCategory": "******",
+						"showValue": "******",
+						"title": "******",
+						"valueType": "******"
+					},
 					"legend": "******",
 					"orientation": "******",
 					"palette": {
@@ -692,6 +741,7 @@
 						"add": "******",
 						"convert": "******",
 						"delete": "******",
+						"export": "******",
 						"inline": "******",
 						"show": "******",
 						"showDetails": "******",
@@ -741,6 +791,9 @@
 							"select": "******",
 							"title": "******"
 						},
+						"edit": {
+							"title": "******"
+						},
 						"title": "******"
 					}
 				},
@@ -767,7 +820,21 @@
 	},
 	"kendo": {
 		"datepicker": {
-			"today": "******"
+			"today": "******",
+			"toggle": "******"
+		},
+		"datetimepicker": {
+			"accept": "******",
+			"acceptLabel": "******",
+			"cancel": "******",
+			"cancelLabel": "******",
+			"dateTab": "******",
+			"dateTabLabel": "******",
+			"now": "******",
+			"timeTab": "******",
+			"timeTabLabel": "******",
+			"today": "******",
+			"toggle": "******"
 		},
 		"editor": {
 			"addColumnAfter": "******",
@@ -898,6 +965,14 @@
 			"unlock": "******",
 			"unstick": "******"
 		},
+		"timepicker": {
+			"accept": "******",
+			"acceptLabel": "******",
+			"cancel": "******",
+			"cancelLabel": "******",
+			"now": "******",
+			"toggle": "******"
+		},
 		"upload": {
 			"dropFilesHere": "******",
 			"select": "******"
@@ -936,11 +1011,17 @@
 				"name": "******"
 			},
 			"new": "******",
+			"notifications": {
+				"savingFailed": "******"
+			},
 			"select": "******",
 			"template": "******"
 		},
 		"page": {
-			"add": "******"
+			"add": "******",
+			"tooltip": {
+				"duplicate": "******"
+			}
 		},
 		"positionAttribute": {
 			"new": "******"
@@ -978,7 +1059,8 @@
 		},
 		"user": {
 			"notifications": {
-				"rolesUpdated": "{{username}} ******"
+				"rolesUpdated": "{{username}} ******",
+				"userImportFail": "******"
 			},
 			"username": "******"
 		},
@@ -986,6 +1068,10 @@
 			"add": "******",
 			"chart": {
 				"defaultTitle": "******"
+			},
+			"delete": {
+				"confirmationMessage": "******",
+				"title": "******"
 			},
 			"map": {
 				"defaultTitle": "******",
@@ -1104,6 +1190,9 @@
 		"workflow": {
 			"addStep": {
 				"selectType": "******"
+			},
+			"deleteStep": {
+				"confirmationMessage": "****** {{step}} ******"
 			},
 			"empty": {
 				"add": "******",

@@ -30,7 +30,12 @@ import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/
 import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
+/**
+ * SafeQueryBuilderModule is a class used to manage all the modules and components
+ * related to the query builder.
+ */
 @NgModule({
   declarations: [
     SafeQueryBuilderComponent,
@@ -67,6 +72,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     LabelModule,
     SafeCheckboxTreeModule,
     SafeCoreGridModule,
+    MatDatepickerModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

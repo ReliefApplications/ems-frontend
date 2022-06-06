@@ -4,7 +4,12 @@ import { SafeFormBuilderComponent } from './form-builder.component';
 import { SafeFormModalModule } from '../form-modal/form-modal.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
+import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 
+/**
+ * SafeFormBuilderModule is a class used to manage all the modules and components
+ * related to the form builder.
+ */
 @NgModule({
   declarations: [SafeFormBuilderComponent],
   imports: [
@@ -12,6 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeFormModalModule,
     MatDialogModule,
     TranslateModule,
+    DateInputModule,
   ],
   exports: [SafeFormBuilderComponent],
 })

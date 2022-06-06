@@ -41,7 +41,7 @@
       [cdkConnectedOverlayOpen]="showAppMenu"
     >
       <safe-search-menu
-        [data]="this.applications"
+        [applications]="this.applications"
         (close)="showAppMenu = false"
         (open)="onOpenApplication($event)"
       ></safe-search-menu>
@@ -147,6 +147,8 @@
                   routerLinkActive="active-link"
                   (click)="largeDevice ? null : nav.toggle()"
                   [class]="item.class ? item.class : ''"
+                  [matTooltip]="item.name"
+                  matTooltipShowDelay="1000"
                 >
                   <ng-container *ngIf="item.isAddPage">
                     <safe-button
@@ -163,12 +165,7 @@
                     <mat-icon mat-list-icon class="nav-icon">
                       {{ item.icon }}
                     </mat-icon>
-                    <div
-                      mat-line
-                      class="nav-text"
-                      [matTooltip]="item.name"
-                      [matTooltipShowDelay]="1000"
-                    >
+                    <div mat-line class="nav-text">
                       {{ item.name }}
                     </div>
                   </ng-container>

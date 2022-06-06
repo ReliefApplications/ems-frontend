@@ -1,4 +1,4 @@
-<kendo-chart #chart [seriesColors]="options.palette">
+<kendo-chart #chart [seriesColors]="options && options.palette">
   <kendo-chart-title
     *ngIf="title"
     [visible]="title.visible"
@@ -21,6 +21,14 @@
       [data]="item.data"
       field="field"
       categoryField="category"
-    ></kendo-chart-series-item>
+      [autoFit]="true"
+    >
+      <kendo-chart-series-item-labels
+        *ngIf="labelContent"
+        position="outsideEnd"
+        color="#000"
+        [content]="labelContent"
+      ></kendo-chart-series-item-labels>
+    </kendo-chart-series-item>
   </kendo-chart-series>
 </kendo-chart>

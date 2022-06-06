@@ -1,10 +1,29 @@
 :host {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
+  // display: flex;
+  // height: 100%;
+  // flex-direction: column;
+  // position: relative;
 }
 
 mat-dialog-content {
-  flex-grow: 1;
-  max-height: initial;
+  padding-left: 0;
+  // flex-grow: 1;
+  // max-height: initial;
+}
+
+.close-settings {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.tab-label {
+  display: flex;
+  gap: 6px;
+  align-content: center;
+  align-items: center;
+
+  safe-icon {
+    height: 20px;
+  }
 }

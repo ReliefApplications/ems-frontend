@@ -15,6 +15,7 @@ describe('SafeStepComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeStepComponent);
     component = fixture.componentInstance;
+    component.step = { type: undefined };
     fixture.detectChanges();
   });
 

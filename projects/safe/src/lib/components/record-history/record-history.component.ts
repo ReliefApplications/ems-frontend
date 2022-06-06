@@ -34,6 +34,9 @@ const getValueType = (
   return 'primitive';
 };
 
+/**
+ * This is a component to access the history of a record
+ */
 @Component({
   selector: 'safe-record-history',
   templateUrl: './record-history.component.html',
@@ -57,7 +60,13 @@ export class SafeRecordHistoryComponent implements OnInit {
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
-
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created
+   *
+   * @param dialog This is the Material dialog service that we will use to open the dialog.
+   * @param downloadService This is the service that will be used to download files
+   */
   constructor(
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
@@ -86,6 +95,9 @@ export class SafeRecordHistoryComponent implements OnInit {
       });
   }
 
+  /**
+   * Handles the cancelling of the edition of the history
+   */
   onCancel(): void {
     this.cancel.emit(true);
   }
@@ -179,6 +191,11 @@ export class SafeRecordHistoryComponent implements OnInit {
     return res;
   }
 
+  /**
+   * Handles the revertion of items
+   *
+   * @param item The item to revert
+   */
   onRevert(item: any): void {
     const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
@@ -199,6 +216,9 @@ export class SafeRecordHistoryComponent implements OnInit {
     });
   }
 
+  /**
+   * Clears the date filter, empties it
+   */
   clearDateFilter(): void {
     this.filtersDate.startDate = '';
     this.filtersDate.endDate = '';
@@ -240,6 +260,11 @@ export class SafeRecordHistoryComponent implements OnInit {
     }
   }
 
+  /**
+   * Handles the download event
+   *
+   * @param type Type of document to download
+   */
   onDownload(type: string): void {
     const path = `download/form/records/${this.record.id}/history`;
     const fileName = `${this.record.incrementalId}.${type}`;

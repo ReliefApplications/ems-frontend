@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeEmailTemplateComponent } from './email-template.component';
+import { SafeAlertComponent } from './alert.component';
 
-describe('SafeEmailTemplateComponent', () => {
-  let component: SafeEmailTemplateComponent;
-  let fixture: ComponentFixture<SafeEmailTemplateComponent>;
+describe('SafeAlertComponent', () => {
+  let component: SafeAlertComponent;
+  let fixture: ComponentFixture<SafeAlertComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeEmailTemplateComponent],
+      declarations: [SafeAlertComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeEmailTemplateComponent);
+    fixture = TestBed.createComponent(SafeAlertComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
