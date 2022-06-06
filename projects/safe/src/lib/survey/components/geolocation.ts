@@ -39,14 +39,27 @@ export const init = (survey: any): void => {
      */
     activatedByChanged: (activatedBy: any) => {
       survey.JsonObject.metaData.addClass('geolocation', [], null, 'text');
-      survey.JsonObject.metaData.addProperties('geolocation', [
-        { name: 'buttonText', default: 'Click Me' },
-      ]);
     },
     isDefaultRender: false,
     htmlTemplate:
-      "<div><input /><div id='map' style='height: 500px; margin-top: 7px;'/></div>",
+      "<div class='surveyjs-geolocation'>" +
+      "<div class='container'>" +
+      "<div class='left'>" +
+      '<span>Address</span>' +
+      '<input />' +
+      '<span>Latitude</span>' +
+      '<input />' +
+      '<span>Longitude</span>' +
+      '<input />' +
+      '</div>' +
+      "<div class='right'>" +
+      "<div id='map'/>" +
+      '</div>' +
+      '</div>' +
+      '</div>',
     /**
+     * Initializes the map and sets up all the logic that it needs
+     *
      * @param question
      * @param el
      */
@@ -59,9 +72,7 @@ export const init = (survey: any): void => {
       }).setView([0, 0], 3);
 
       let marker: any = null;
-      // map.addLayer(marker);
 
-      // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
       L.esri.Vector.vectorBasemapLayer('OSM:Standard', {
         apiKey: API_KEY,
       }).addTo(map);
@@ -87,59 +98,111 @@ export const init = (survey: any): void => {
         ],
       }).addTo(map);
 
-      searchControl.on('results', (e: any) => {
-        question.value = e.text;
+      const setValuesAndMarker = (adrs: string, lat: any, lng: any) => {
+        question.value = {
+          address: adrs,
+          lat,
+          lng,
+        };
         if (marker) {
           map.removeLayer(marker);
         }
-        marker = L.circleMarker(e.latlng, MARKER_OPTIONS);
+        marker = L.circleMarker({ lat, lng }, MARKER_OPTIONS);
         marker.addTo(map);
+      };
+
+      const address = el.getElementsByTagName('input')[0];
+      const latitude = el.getElementsByTagName('input')[1];
+      const longitude = el.getElementsByTagName('input')[2];
+      const button = el.getElementsByTagName('div')[0];
+
+      searchControl.on('results', (e: any) => {
+        setValuesAndMarker(
+          e.text,
+          e.latlng.lat.toFixed(6),
+          e.latlng.lng.toFixed(6)
+        );
       });
 
-      const text = el.getElementsByTagName('input')[0];
-      text.inputType = question.inputType;
-      text.placeholder = question.placeHolder;
-      const button = el.getElementsByTagName('div')[0];
-      map.on('click', (e: any) => {
-        const geocodeService = L.esri.Geocoding.geocodeService({
+      latitude.addEventListener('input', () => {
+        const latlng = {
+          lat: latitude.value,
+          lng: longitude.value,
+        };
+        L.esri.Geocoding.geocodeService({
           apikey: API_KEY,
-        });
-        geocodeService
+        })
+          .reverse()
+          .latlng(latlng)
+          .run((error: any, result: any) => {
+            if (error) {
+              return;
+            }
+            setValuesAndMarker(
+              result.address.Match_addr,
+              latitude.value,
+              longitude.value
+            );
+            map.setView(latlng, 6);
+          });
+      });
+      longitude.addEventListener('input', () => {
+        const latlng = {
+          lat: latitude.value,
+          lng: longitude.value,
+        };
+        L.esri.Geocoding.geocodeService({
+          apikey: API_KEY,
+        })
+          .reverse()
+          .latlng(latlng)
+          .run((error: any, result: any) => {
+            if (error) {
+              return;
+            }
+            setValuesAndMarker(
+              result.address.Match_addr,
+              latitude.value,
+              longitude.value
+            );
+            map.setView(latlng, 6);
+          });
+      });
+
+      map.on('click', (e: any) => {
+        L.esri.Geocoding.geocodeService({
+          apikey: API_KEY,
+        })
           .reverse()
           .latlng(e.latlng)
           .run((error: any, result: any) => {
             if (error) {
               return;
             }
-            question.value = result.address.Match_addr;
-            if (marker) {
-              map.removeLayer(marker);
-            }
-            marker = L.circleMarker(e.latlng, MARKER_OPTIONS);
-            marker.addTo(map);
+            setValuesAndMarker(
+              result.address.Match_addr,
+              e.latlng.lat.toFixed(6),
+              e.latlng.lng.toFixed(6)
+            );
           });
       });
       /**
        *
        */
-      text.onchange = () => {
-        question.value = text.value;
-      };
-      /**
-       *
-       */
       const onValueChangedCallback = () => {
-        text.value = question.value ? question.value : '';
+        address.value = question.value ? question.value.address : '';
+        latitude.value = question.value ? question.value.lat : '';
+        longitude.value = question.value ? question.value.lng : '';
       };
       /**
        *
        */
       const onReadOnlyChangedCallback = () => {
         if (question.isReadOnly) {
-          text.setAttribute('disabled', 'disabled');
+          address.setAttribute('disabled', 'disabled');
           button.setAttribute('disabled', 'disabled');
         } else {
-          text.removeAttribute('disabled');
+          address.removeAttribute('disabled');
           button.removeAttribute('disabled');
         }
       };

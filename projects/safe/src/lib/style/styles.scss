@@ -535,3 +535,50 @@ body {
     }
   }
 }
+
+// === SURVEY_JS GEOLOCATION ===
+.surveyjs-geolocation {
+  .container {
+    position: relative;
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+
+    .left {
+      width: 35%;
+
+      input {
+        margin-bottom: 7px;
+      }
+    }
+    .right {
+      width: 65%;
+      padding-left: 15px;
+      height: 400px;
+
+      #map {
+        height: 100%;
+
+        .geocoder-control-input {
+          height: 34px !important;
+          line-height: 30px !important;
+          border: 2px solid rgba(0,0,0,0.3) !important;
+        }
+      }
+    }
+  }
+  @media (max-width: 800px) {
+    .container {
+      flex-direction: column;
+      gap: 7px;
+
+      .left {
+        width: 100%;
+      }
+      .right {
+        width: 100%;
+        padding: 0;
+      }
+    }
+  }
+}
