@@ -670,7 +670,8 @@
 				"empty": "Aucun enregistrement détecté",
 				"errors": {
 					"invalid": "Configuration de grille invalide",
-					"missingDataset": "Sélectionner un jeu de données dans les jeux de données"
+					"missingDataset": "Sélectionner un jeu de données dans les jeux de données",
+					"validationFailed": "Sauvegarde échouée, la ligne {{index}} est invalide\n{{question}}: {{error}}"
 				},
 				"export": {
 					"columns": {
