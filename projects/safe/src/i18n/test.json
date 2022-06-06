@@ -332,6 +332,9 @@
 			"deleteRow": {
 				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			},
+			"display": {
+				"submissionMessage": "******"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
@@ -974,6 +977,23 @@
 			"title": "******"
 		},
 		"formBuilder": {
+			"errors": {
+				"choices": {
+					"valueDuplicated": "****** {{question}}"
+				},
+				"missingName": "****** {{page}} ******",
+				"multipletext": {
+					"missingName": "****** {{question}}"
+				},
+				"snakecase": "****** {{name}} ****** {{page}} ******",
+				"resource": {
+					"invalidRelatedName": "****** {{relatedName}} ****** {{page}} ******",
+					"missingRelatedName": "****** {{question}} ****** {{page}} ******"
+				}
+			},
+			"questionsCategories": {
+				"core": "******"
+			},
 			"title": "******"
 		},
 		"forms": {
