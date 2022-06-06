@@ -985,11 +985,11 @@
 				"multipletext": {
 					"missingName": "****** {{question}}"
 				},
-				"snakecase": "****** {{name}} ****** {{page}} ******",
 				"resource": {
 					"invalidRelatedName": "****** {{relatedName}} ****** {{page}} ******",
 					"missingRelatedName": "****** {{question}} ****** {{page}} ******"
-				}
+				},
+				"snakecase": "****** {{name}} ****** {{page}} ******"
 			},
 			"questionsCategories": {
 				"core": "******"

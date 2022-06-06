@@ -48,6 +48,7 @@ const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
 export class FormRecordsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
+  public loadingMore = false;
   private recordsQuery!: QueryRef<GetFormRecordsQueryResponse>;
   public id = '';
   public form: any;
@@ -120,8 +121,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
     this.recordsSubscription = this.recordsQuery.valueChanges.subscribe(
       (res) => {
-        this.cachedRecords = res.data.form.records.edges.map(
-          (x: any) => x.node
+        this.cachedRecords.push(
+          ...res.data.form.records.edges.map((x: any) => x.node)
         );
         this.dataSource = this.cachedRecords.slice(
           ITEMS_PER_PAGE * this.pageInfo.pageIndex,
@@ -129,6 +130,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         );
         this.pageInfo.length = res.data.form.records.totalCount;
         this.pageInfo.endCursor = res.data.form.records.pageInfo.endCursor;
+        this.loadingMore = false;
       }
     );
 
@@ -167,31 +169,14 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     this.pageInfo.pageIndex = e.pageIndex;
     if (
       e.pageIndex > e.previousPageIndex &&
-      e.length > this.cachedRecords.length
+      e.length > this.cachedRecords.length &&
+      ITEMS_PER_PAGE * this.pageInfo.pageIndex >= this.cachedRecords.length
     ) {
-      this.recordsQuery.fetchMore({
-        variables: {
-          id: this.id,
-          first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            form: {
-              records: {
-                edges: [
-                  ...prev.form.records.edges,
-                  ...fetchMoreResult.form.records.edges,
-                ],
-                pageInfo: fetchMoreResult.form.records.pageInfo,
-                totalCount: fetchMoreResult.form.records.totalCount,
-              },
-            },
-          });
-        },
+      this.loadingMore = true;
+      this.recordsQuery.refetch({
+        id: this.id,
+        first: ITEMS_PER_PAGE,
+        afterCursor: this.pageInfo.endCursor,
       });
     } else {
       this.dataSource = this.cachedRecords.slice(
