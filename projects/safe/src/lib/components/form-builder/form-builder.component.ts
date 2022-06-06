@@ -318,7 +318,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           element.valueName = this.toSnakeCase(element.title);
           if (!this.isSnakeCase(element.valueName)) {
             throw new Error(
-              this.translate.instant('pages.formBuilder.errors.notSnakecase', {
+              this.translate.instant('pages.formBuilder.errors.snakecase', {
                 name: element.valueName,
                 page: page.name,
               })
@@ -328,7 +328,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           element.valueName = this.toSnakeCase(element.name);
           if (!this.isSnakeCase(element.valueName)) {
             throw new Error(
-              this.translate.instant('pages.formBuilder.errors.notSnakecase', {
+              this.translate.instant('pages.formBuilder.errors.snakecase', {
                 name: element.valueName,
                 page: page.name,
               })
@@ -344,7 +344,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       } else {
         if (!this.isSnakeCase(element.valueName)) {
           throw new Error(
-            this.translate.instant('pages.formBuilder.errors.notSnakecase', {
+            this.translate.instant('pages.formBuilder.errors.snakecase', {
               name: element.valueName,
               page: page.name,
             })
@@ -361,7 +361,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         if (values.length > distinctValues.length) {
           throw new Error(
             this.translate.instant(
-              'pages.formBuilder.errors.choices.duplicateValues',
+              'pages.formBuilder.errors.choices.valueDuplicated',
               {
                 question: element.valueName,
               }
@@ -374,7 +374,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           if (!e.name && !e.title) {
             throw new Error(
               this.translate.instant(
-                'pages.formBuilder.errors.multipletext.missingNames',
+                'pages.formBuilder.errors.multipletext.missingName',
                 {
                   question: element.valueName,
                 }
@@ -423,7 +423,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           if (!this.isSnakeCase(element.relatedName)) {
             throw new Error(
               this.translate.instant(
-                'pages.formBuilder.errors.resource.invalidaRelatedName',
+                'pages.formBuilder.errors.resource.invalidRelatedName',
                 {
                   relatedName: element.relatedName,
                   page: page.name,
