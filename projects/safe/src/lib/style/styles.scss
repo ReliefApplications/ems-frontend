@@ -96,6 +96,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   .snack-error {
     background-color: mat.get-color-from-palette($warn);
     color: white;
+    white-space: pre-wrap;
 
     .mat-simple-snackbar-action {
       color: white;

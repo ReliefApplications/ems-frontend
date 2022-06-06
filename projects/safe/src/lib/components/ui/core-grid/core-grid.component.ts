@@ -38,7 +38,9 @@ import {
   EDIT_RECORD,
 } from '../../../graphql/mutations';
 import {
+  GetFormByIdQueryResponse,
   GetRecordDetailsQueryResponse,
+  GET_FORM_BY_ID,
   GET_RECORD_DETAILS,
 } from '../../../graphql/queries';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
@@ -54,6 +56,7 @@ import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
 import { TranslateService } from '@ngx-translate/core';
+import * as Survey from 'survey-angular';
 
 const DEFAULT_FILE_NAME = 'Records';
 
@@ -126,6 +129,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public formGroup: FormGroup = new FormGroup({});
   public loading = false;
   public error = false;
+  private templateStructure = '';
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -328,6 +332,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.loading = false;
       this.error = true;
     }
+    this.loadTemplate();
   }
 
   /**
@@ -337,6 +342,24 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
+  }
+
+  /**
+   * Get template structure, for inline edition validation.
+   */
+  private async loadTemplate(): Promise<void> {
+    this.apollo
+      .query<GetFormByIdQueryResponse>({
+        query: GET_FORM_BY_ID,
+        variables: {
+          id: this.settings.template,
+        },
+      })
+      .subscribe((res) => {
+        if (res.data.form.structure) {
+          this.templateStructure = res.data.form.structure;
+        }
+      });
   }
 
   // === GRID FIELDS ===
@@ -396,7 +419,50 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onSaveChanges(): void {
     if (this.hasChanges) {
-      Promise.all(this.promisedChanges()).then(() => this.reloadData());
+      let hasError = false;
+      let error = '';
+      let questionWithError = '';
+      let index = -1;
+      const survey = new Survey.Model(this.templateStructure);
+      survey.locale = this.translate.currentLang;
+      for (const item of this.updatedItems) {
+        survey.data = item;
+        survey.completeLastPage();
+        if (survey.hasErrors()) {
+          hasError = true;
+          const questions = survey.getAllQuestions();
+          for (const question of questions) {
+            if (question.hasErrors()) {
+              index = this.items.findIndex((x) => x.id === item.id);
+              questionWithError = question.name;
+              error = question.getAllErrors()[0].getText();
+              break;
+            }
+          }
+          if (error) {
+            break;
+          }
+        }
+      }
+      if (!hasError) {
+        Promise.all(this.promisedChanges()).then(() => this.reloadData());
+      } else {
+        // Open snackbar to indicate the error
+        this.snackBar.openSnackBar(
+          this.translate.instant(
+            'components.widget.grid.errors.validationFailed',
+            {
+              index,
+              question: questionWithError,
+              error,
+            }
+          ),
+          {
+            error: true,
+            duration: 8000,
+          }
+        );
+      }
     }
   }
 

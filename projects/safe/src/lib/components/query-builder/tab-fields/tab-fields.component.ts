@@ -77,7 +77,6 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
    * @param event The event involved in the drop
    */
   drop(event: CdkDragDrop<string[]>): void {
-    console.log(event);
     if (event.previousContainer === event.container) {
       // Move into same list of fields
       moveItemInArray(

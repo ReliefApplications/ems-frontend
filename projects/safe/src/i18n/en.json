@@ -670,7 +670,8 @@
 				"empty": "No record detected",
 				"errors": {
 					"invalid": "Invalid grid configuration",
-					"missingDataset": "Select a dataset in settings"
+					"missingDataset": "Select a dataset in settings",
+					"validationFailed": "Unable to save records due to row {{index}} validation error\n{{question}}: {{error}}"
 				},
 				"export": {
 					"columns": {

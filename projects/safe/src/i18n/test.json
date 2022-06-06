@@ -670,7 +670,8 @@
 				"empty": "******",
 				"errors": {
 					"invalid": "******",
-					"missingDataset": "******"
+					"missingDataset": "******",
+					"validationFailed": "****** {{index}} ****** {{question}} ****** {{error}}"
 				},
 				"export": {
 					"columns": {
