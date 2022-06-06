@@ -444,16 +444,16 @@
 		},
 		"history": {
 			"changes": {
-				"add": "Ajouter de la valeur",
+				"add": "Ajout",
 				"from": "de",
-				"modify": "Modifier la valeur",
-				"remove": "Supprimer la valeur",
+				"modify": "Modification",
+				"remove": "Suppression",
 				"to": "à",
 				"withValue": "avec valeur"
 			},
 			"download": "Télécharger l'historique",
 			"field": {
-				"all": "Tous les champ",
+				"all": "Tous les champs",
 				"select": "Sélectionner un champ"
 			},
 			"preview": "Prévisualiser et revenir"

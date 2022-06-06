@@ -4,14 +4,6 @@
   height: 100%;
   position: relative;
   width: 328px;
-
-  &::ng-deep.mat-form-field-flex{
-    background-color: transparent;
-  }
-
-  &::ng-deep.mat-form-field-appearance-fill .mat-form-field-flex{
-    padding: 0;
-  }
 }
 
 .history-header {

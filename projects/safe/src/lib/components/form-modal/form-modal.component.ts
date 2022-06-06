@@ -704,25 +704,16 @@ export class SafeFormModalComponent implements OnInit {
    * Opens the history of the record in a modal.
    */
   public onShowHistory(): void {
-    this.apollo
-      .query<GetRecordDetailsQueryResponse>({
-        query: GET_RECORD_DETAILS,
-        variables: {
-          id: this.record?.id,
+    this.dialog.open(RecordHistoryModalComponent, {
+      data: {
+        id: this.record?.id,
+        revert: (item: any, dialog: any) => {
+          this.confirmRevertDialog(this.record, item);
         },
-      })
-      .subscribe((res) => {
-        this.dialog.open(RecordHistoryModalComponent, {
-          data: {
-            record: res.data.record,
-            revert: (item: any, dialog: any) => {
-              this.confirmRevertDialog(res.data.record, item);
-            },
-          },
-          panelClass: 'no-padding-dialog',
-          autoFocus: false,
-        });
-      });
+      },
+      panelClass: 'no-padding-dialog',
+      autoFocus: false,
+    });
   }
 
   /**

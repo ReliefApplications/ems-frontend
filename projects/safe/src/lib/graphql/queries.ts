@@ -303,6 +303,23 @@ export const GET_RECORD_BY_ID = gql`
   }
 `;
 
+export const GET_RECORD_BY_ID_FOR_HISTORY = gql`
+  query GetRecordByIfForHistory($id: ID!) {
+    record(id: $id) {
+      id
+      incrementalId
+      form {
+        id
+        fields
+        resource {
+          id
+          fields
+        }
+      }
+    }
+  }
+`;
+
 export interface GetRecordByIdQueryResponse {
   loading: boolean;
   record: Record;
@@ -313,7 +330,6 @@ export const GET_RECORD_DETAILS = gql`
   query GetRecordDetails($id: ID!) {
     record(id: $id) {
       id
-      incrementalId
       data
       createdAt
       modifiedAt

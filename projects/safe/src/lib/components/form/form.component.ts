@@ -586,24 +586,15 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public onShowHistory(): void {
     if (this.record) {
-      this.apollo
-        .query<GetRecordDetailsQueryResponse>({
-          query: GET_RECORD_DETAILS,
-          variables: {
-            id: this.record.id,
+      this.layoutService.setRightSidenav({
+        factory: this.factory,
+        inputs: {
+          id: this.record.id,
+          revert: (item: any, dialog: any) => {
+            this.confirmRevertDialog(this.record, item);
           },
-        })
-        .subscribe((res) => {
-          this.layoutService.setRightSidenav({
-            factory: this.factory,
-            inputs: {
-              record: res.data.record,
-              revert: (item: any, dialog: any) => {
-                this.confirmRevertDialog(res.data.record, item);
-              },
-            },
-          });
-        });
+        },
+      });
     }
   }
 }

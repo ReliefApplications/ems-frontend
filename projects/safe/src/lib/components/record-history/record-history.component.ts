@@ -15,7 +15,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeDateTranslateService } from '../../services/date-translate.service';
 import { Apollo } from 'apollo-angular';
 import {
+  GetRecordByIdQueryResponse,
   GetRecordHistoryByIdResponse,
+  GET_RECORD_BY_ID,
+  GET_RECORD_BY_ID_FOR_HISTORY,
   GET_RECORD_HISTORY_BY_ID,
 } from '../../graphql/queries';
 import { Change, RecordHistory } from '../../models/recordsHistory';
@@ -43,11 +46,12 @@ const getValueType = (
   styleUrls: ['./record-history.component.scss'],
 })
 export class SafeRecordHistoryComponent implements OnInit {
-  @Input() record: Record = {};
+  @Input() id = '';
   @Input() revert: any;
   @Input() template?: string;
   @Output() cancel = new EventEmitter();
 
+  public record!: Record;
   public history: RecordHistory = [];
   public filterHistory: RecordHistory = [];
   public loading = true;
@@ -55,18 +59,12 @@ export class SafeRecordHistoryComponent implements OnInit {
   public displayedColumns: string[] = ['position'];
   public filtersDate = { startDate: '', endDate: '' };
   public sortedFields: any[] = [];
-  public filterField = 'all';
+  public filterField: string | null = null;
 
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
-  /**
-   * The constructor function is a special function that is called when a new instance of the class is
-   * created
-   *
-   * @param dialog This is the Material dialog service that we will use to open the dialog.
-   * @param downloadService This is the service that will be used to download files
-   */
+
   constructor(
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
@@ -76,13 +74,31 @@ export class SafeRecordHistoryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.sortFields();
+    // this.sortFields();
+
+    this.apollo
+      .query<GetRecordByIdQueryResponse>({
+        query: GET_RECORD_BY_ID_FOR_HISTORY,
+        variables: {
+          id: this.id,
+        },
+      })
+      .subscribe((res) => {
+        this.record = res.data.record;
+        if (this.record.form?.resource) {
+          this.sortedFields = this.sortFields(
+            this.record.form?.resource?.fields || []
+          );
+        } else {
+          this.sortedFields = this.sortFields(this.record.form?.fields || []);
+        }
+      });
 
     this.apollo
       .query<GetRecordHistoryByIdResponse>({
         query: GET_RECORD_HISTORY_BY_ID,
         variables: {
-          id: this.record.id,
+          id: this.id,
           lang: this.translate.currentLang,
         },
       })
@@ -199,7 +215,7 @@ export class SafeRecordHistoryComponent implements OnInit {
   onRevert(item: any): void {
     const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
-        recordId: this.record.id,
+        recordId: this.id,
         locale: 'en',
         compareTo: this.record.versions?.find((x) => x.id === item.id),
         template: this.template,
@@ -261,20 +277,20 @@ export class SafeRecordHistoryComponent implements OnInit {
   }
 
   /**
-   * Handles the download event
+   * Handle the download event. Send a request to the server to get excel / csv file.
    *
    * @param type Type of document to download
    */
   onDownload(type: string): void {
-    const path = `download/form/records/${this.record.id}/history`;
+    const path = `download/form/records/${this.id}/history`;
     const fileName = `${this.record.incrementalId}.${type}`;
     const queryString = new URLSearchParams({
       type,
       from: `${new Date(this.filtersDate.startDate).getTime()}`,
       to: `${new Date(this.filtersDate.endDate).getTime()}`,
-      field: this.filterField.slice(6),
       lng: this.translate.currentLang,
       dateLocale: this.dateFormat.currentLang,
+      ...(this.filterField && { field: this.filterField.slice(6) }),
     }).toString();
     this.downloadService.getFile(
       `${path}?${queryString}`,
@@ -287,19 +303,11 @@ export class SafeRecordHistoryComponent implements OnInit {
    * Parses the structure of the record and sorts the fields
    * based on their names or lables, if available
    */
-  sortFields() {
-    if (!this.record.form || !this.record.form.structure) return;
-    const structure = JSON.parse(this.record.form.structure);
-
-    if (!structure.pages || !structure.pages.length) return;
-    for (const page of structure.pages) {
-      this.sortedFields.push(...page.elements);
-    }
-
-    this.sortedFields.sort((a, b) => {
-      const compA = a.title || a.name;
-      const compB = b.title || b.name;
-      return compA.localeCompare(compB);
+  sortFields(fields: any[]) {
+    return fields.sort((a, b) => {
+      const compA: string = a.title || a.name;
+      const compB: string = b.title || b.name;
+      return compA > compB ? 1 : -1;
     });
   }
 }
