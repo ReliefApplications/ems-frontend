@@ -89,6 +89,7 @@ export * from './lib/components/ui/button/public-api';
 export * from './lib/components/ui/alert/public-api';
 export * from './lib/components/ui/aggregation-builder/public-api';
 export * from './lib/components/ui/tagbox/public-api';
+export * from './lib/components/ui/icon/public-api';
 
 // === PAGES ===
 export * from './lib/pages/profile/public-api';
