@@ -7,6 +7,7 @@ import {
   SafeAlertModule,
   SafeButtonModule,
   SafeWorkflowStepperModule,
+  SafeIconModule,
 } from '@safe/builder';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -39,6 +40,7 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     MatMenuModule,
     IndicatorsModule,
     SafeAlertModule,
+    SafeIconModule,
   ],
   exports: [WorkflowComponent],
 })
