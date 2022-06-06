@@ -10,6 +10,8 @@ import { Workflow } from '../models/workflow.model';
 import { Dashboard } from '../models/dashboard.model';
 
 // === GET PROFILE ===
+
+/** Graphql request for getting profile of the current user */
 export const GET_PROFILE = gql`
   {
     me {
@@ -48,12 +50,15 @@ export const GET_PROFILE = gql`
   }
 `;
 
+/** Model for GetProfileQueryResponse object */
 export interface GetProfileQueryResponse {
   loading: boolean;
   me: User;
 }
 
 // === GET FORM BY ID ===
+
+/** Graphql request for getting the form structure by its id */
 export const GET_FORM_STRUCTURE = gql`
   query GetFormById($id: ID!) {
     form(id: $id) {
@@ -63,6 +68,7 @@ export const GET_FORM_STRUCTURE = gql`
   }
 `;
 
+/** Graphql request for getting the meta fields of a grid by form id */
 export const GET_GRID_FORM_META = gql`
   query GetFormAsTemplate($id: ID!) {
     form(id: $id) {
@@ -80,6 +86,7 @@ export const GET_GRID_FORM_META = gql`
   }
 `;
 
+/** Graphql request for getting form data by its id */
 export const GET_FORM_BY_ID = gql`
   query GetFormById($id: ID!) {
     form(id: $id) {
@@ -97,6 +104,7 @@ export const GET_FORM_BY_ID = gql`
   }
 `;
 
+/** Model for GetFormByIdQueryResponse object */
 export interface GetFormByIdQueryResponse {
   loading: boolean;
   form: Form;
@@ -104,6 +112,7 @@ export interface GetFormByIdQueryResponse {
 
 // === GET RELATED FORMS FROM RESOURCE ===
 
+/** Graphql request for getting resource meta date for a grid */
 export const GET_GRID_RESOURCE_META = gql`
   query GetGridResourceMeta($resource: ID!) {
     resource(id: $resource) {
@@ -130,6 +139,9 @@ export const GET_GRID_RESOURCE_META = gql`
   }
 `;
 
+// === GET RESOURCE BY ID ===
+
+/** Graphql request for getting the name of a resource by its id */
 export const GET_SHORT_RESOURCE_BY_ID = gql`
   query GetShortResourceById($id: ID!) {
     resource(id: $id) {
@@ -139,7 +151,7 @@ export const GET_SHORT_RESOURCE_BY_ID = gql`
   }
 `;
 
-// === GET RESOURCE BY ID ===
+/** Graphql request for getting data of a resource by its id */
 export const GET_RESOURCE_BY_ID = gql`
   query GetResourceById($id: ID!, $filter: JSON, $display: Boolean) {
     resource(id: $id) {
@@ -195,6 +207,7 @@ export const GET_RESOURCE_BY_ID = gql`
   }
 `;
 
+/** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceByIdQueryResponse {
   loading: boolean;
   resource: Resource;
@@ -202,6 +215,7 @@ export interface GetResourceByIdQueryResponse {
 
 // === GET FORMS ===
 
+/** Graphql request for getting forms */
 export const GET_FORMS = gql`
   query GetFormNames($first: Int, $afterCursor: ID, $filter: JSON) {
     forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
@@ -225,6 +239,7 @@ export const GET_FORMS = gql`
   }
 `;
 
+/** Model for GetFormsQueryResponse object */
 export interface GetFormsQueryResponse {
   loading: boolean;
   forms: {
@@ -241,6 +256,8 @@ export interface GetFormsQueryResponse {
 }
 
 // === GET RESOURCES ===
+
+/** Graphql request for getting resources */
 export const GET_RESOURCES = gql`
   query GetResources($first: Int, $afterCursor: ID) {
     resources(first: $first, afterCursor: $afterCursor) {
@@ -260,6 +277,7 @@ export const GET_RESOURCES = gql`
   }
 `;
 
+/** Model for GetResourcesQueryResponse object */
 export interface GetResourcesQueryResponse {
   loading: boolean;
   resources: {
@@ -277,6 +295,7 @@ export interface GetResourcesQueryResponse {
 
 // === GET RECORD BY ID ===
 
+/** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
   query GetRecordById($id: ID!) {
     record(id: $id) {
@@ -301,12 +320,15 @@ export const GET_RECORD_BY_ID = gql`
   }
 `;
 
+/** Model for GetRecordByIdQueryResponse object */
 export interface GetRecordByIdQueryResponse {
   loading: boolean;
   record: Record;
 }
 
 // === GET RECORD DETAILS ===
+
+/** Graphql request for getting record details by its id */
 export const GET_RECORD_DETAILS = gql`
   query GetRecordDetails($id: ID!) {
     record(id: $id) {
@@ -348,12 +370,15 @@ export const GET_RECORD_DETAILS = gql`
   }
 `;
 
+/** Model for GetRecordDetailsQueryResponse object */
 export interface GetRecordDetailsQueryResponse {
   loading: boolean;
   record: Record;
 }
 
 // === GET ROLES ===
+
+/** Graphql request for getting roles (optionnally by an application id) */
 export const GET_ROLES = gql`
   query GetRoles($application: ID) {
     roles(application: $application) {
@@ -376,12 +401,15 @@ export const GET_ROLES = gql`
   }
 `;
 
+/** Model for GetRolesQueryResponse object */
 export interface GetRolesQueryResponse {
   loading: boolean;
   roles: Role[];
 }
 
 // === GET USERS ===
+
+/** Graphql request for getting users (optionnally by a list of application ids) */
 export const GET_USERS = gql`
   query GetUsers($applications: [ID]) {
     users(applications: $applications) {
@@ -393,12 +421,15 @@ export const GET_USERS = gql`
   }
 `;
 
+/** Model for GetUsersQueryResponse object */
 export interface GetUsersQueryResponse {
   loading: boolean;
   users: User[];
 }
 
 // === GET NOTIFICATIONS ===
+
+/** Graphql request for getting notifications */
 export const GET_NOTIFICATIONS = gql`
   query GetNotifications($first: Int, $afterCursor: ID) {
     notifications(first: $first, afterCursor: $afterCursor) {
@@ -431,6 +462,7 @@ export const GET_NOTIFICATIONS = gql`
   }
 `;
 
+/** Model for GetNotificationsQueryResponse object */
 export interface GetNotificationsQueryResponse {
   loading: boolean;
   notifications: {
@@ -447,6 +479,8 @@ export interface GetNotificationsQueryResponse {
 }
 
 // === GET APPLICATION BY ID ===
+
+/** Graphql request for getting application data by its id */
 export const GET_APPLICATION_BY_ID = gql`
   query GetApplicationById($id: ID!, $asRole: ID) {
     application(id: $id, asRole: $asRole) {
@@ -555,12 +589,15 @@ export const GET_APPLICATION_BY_ID = gql`
   }
 `;
 
+/** Model for GetApplicationByIdQueryResponse object */
 export interface GetApplicationByIdQueryResponse {
   loading: boolean;
   application: Application;
 }
 
 // === GET APPLICATIONS ===
+
+/** Graphql request for getting the list of applications */
 export const GET_APPLICATIONS = gql`
   query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
     applications(first: $first, afterCursor: $afterCursor, filter: $filter) {
@@ -579,6 +616,8 @@ export const GET_APPLICATIONS = gql`
     }
   }
 `;
+
+/** Model for GetApplicationsQueryResponse object */
 export interface GetApplicationsQueryResponse {
   loading: boolean;
   applications: {
@@ -595,6 +634,8 @@ export interface GetApplicationsQueryResponse {
 }
 
 // === GET ROLES FROM APPLICATION ===
+
+/** Graphql request for getting roles of applications by the application ids */
 export const GET_ROLES_FROM_APPLICATIONS = gql`
   query GetRolesFromApplications($applications: [ID]!) {
     rolesFromApplications(applications: $applications) {
@@ -604,12 +645,15 @@ export const GET_ROLES_FROM_APPLICATIONS = gql`
   }
 `;
 
+/** Model for GetRolesFromApplicationsQueryResponse object */
 export interface GetRolesFromApplicationsQueryResponse {
   loading: boolean;
   rolesFromApplications: Role[];
 }
 
 // === GET PERMISSIONS ===
+
+/** Graphql request for getting permissions */
 export const GET_PERMISSIONS = gql`
   query GetPermissions($application: Boolean) {
     permissions(application: $application) {
@@ -620,12 +664,15 @@ export const GET_PERMISSIONS = gql`
   }
 `;
 
+/** Model for GetPermissionsQueryResponse object */
 export interface GetPermissionsQueryResponse {
   loading: boolean;
   permissions: Permission[];
 }
 
 // === GET QUERY TYPES ===
+
+/** Graphql request for getting query types */
 export const GET_QUERY_TYPES = gql`
   query GetQueryTypes {
     __schema {
@@ -710,6 +757,7 @@ export const GET_QUERY_TYPES = gql`
 `;
 
 // TODO: check type of __schema
+/** Model for GetQueryTypes object */
 export interface GetQueryTypes {
   loading: boolean;
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -717,6 +765,8 @@ export interface GetQueryTypes {
 }
 
 // === GET TYPE ===
+
+/** Graphql request for getting type info by its name */
 export const GET_TYPE = gql`
   query GetType($name: String!) {
     __type(name: $name) {
@@ -740,6 +790,7 @@ export const GET_TYPE = gql`
   }
 `;
 
+/** Model for GetType object */
 export interface GetType {
   loading: boolean;
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -747,6 +798,8 @@ export interface GetType {
 }
 
 // === GET CHANNELS ===
+
+/** Graphql request for getting channels (optionnally by an application id) */
 export const GET_CHANNELS = gql`
   query getChannels($application: ID) {
     channels(application: $application) {
@@ -760,12 +813,15 @@ export const GET_CHANNELS = gql`
   }
 `;
 
+/** Model for GetChannelsQueryResponse object */
 export interface GetChannelsQueryResponse {
   loading: boolean;
   channels: Channel[];
 }
 
 // === GET WORKFLOW BY ID ===
+
+/** Graphql request for getting workflow by its id */
 export const GET_WORKFLOW_BY_ID = gql`
   query GetWorkflowById($id: ID!, $asRole: ID) {
     workflow(id: $id, asRole: $asRole) {
@@ -822,12 +878,15 @@ export const GET_WORKFLOW_BY_ID = gql`
   }
 `;
 
+/** Model for GetWorkflowByIdQueryResponse object */
 export interface GetWorkflowByIdQueryResponse {
   loading: boolean;
   workflow: Workflow;
 }
 
 // === GET DASHBOARD BY ID ===
+
+/** Graphql request for getting a dashboard by its id */
 export const GET_DASHBOARD_BY_ID = gql`
   query GetDashboardById($id: ID!) {
     dashboard(id: $id) {
@@ -875,11 +934,12 @@ export const GET_DASHBOARD_BY_ID = gql`
   }
 `;
 
+/** Model for GetDashboardByIdQueryResponse object */
 export interface GetDashboardByIdQueryResponse {
   loading: boolean;
   dashboard: Dashboard;
 }
-
+/** graphql request for getting records of a resource by its id */
 export const GET_RESOURCE_RECORDS = gql`
   query GetResourceRecords(
     $id: ID!
@@ -915,7 +975,7 @@ export const GET_RESOURCE_RECORDS = gql`
     }
   }
 `;
-
+/** Modelf for GetResouceRecordsQueryResponse object */
 export interface GetResourceRecordsQueryResponse {
   loading: boolean;
   resource: {

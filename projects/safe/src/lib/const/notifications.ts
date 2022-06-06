@@ -1,5 +1,4 @@
-/*  Notifications
- */
+/** Notifications */
 export const NOTIFICATIONS = {
   appPublished: (name: any): string => `Application ${name} published.`,
   userInvalidActions: (action: any): string => `User could not be ${action}.`,

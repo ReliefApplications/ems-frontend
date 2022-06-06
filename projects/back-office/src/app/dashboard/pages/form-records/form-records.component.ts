@@ -87,8 +87,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     private translate: TranslateService
   ) {}
 
-  /*  Load the records, using the form id passed as a parameter.
-   */
+  /** Load the records, using the form id passed as a parameter. */
   ngOnInit(): void {
     this.factory = this.resolver.resolveComponentFactory(
       SafeRecordHistoryComponent
@@ -311,8 +310,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* Opens the history of the record on the right side of the screen.
-   */
+  /** Opens the history of the record on the right side of the screen. */
   public onViewHistory(id: string): void {
     this.apollo
       .query<GetRecordDetailsQueryResponse>({

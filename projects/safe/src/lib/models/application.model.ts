@@ -5,8 +5,7 @@ import { Subscription } from './subscription.model';
 import { PositionAttributeCategory } from './position-attribute-category.model';
 import { status } from './form.model';
 
-/*  Model for Application object.
- */
+/** Model for Application object. */
 export interface Application {
   id?: string;
   name?: string;
