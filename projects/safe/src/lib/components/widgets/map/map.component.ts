@@ -7,6 +7,7 @@ import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
+/** Default options for the marker */
 const MARKER_OPTIONS = {
   color: '#0090d1',
   opacity: 0.25,
@@ -16,13 +17,13 @@ const MARKER_OPTIONS = {
   radius: 6,
 };
 
+/** Component for the map widget */
 @Component({
   selector: 'safe-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
 })
-/*  Map widget using Leaflet.
- */
+/** Map widget using Leaflet. */
 export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === MAP ===
   public mapId: string;
@@ -51,6 +52,12 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
 
+  /**
+   * Constructor of the map widget component
+   *
+   * @param apollo Apollo client
+   * @param queryBuilder The querybuilder service
+   */
   constructor(
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService
@@ -58,7 +65,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.mapId = this.generateUniqueId();
   }
 
-  /*  Generation of an unique id for the map ( in case multiple widgets use map ).
+  /**
+   * Generation of an unique id for the map (in case multiple widgets use map).
+   *
+   * @param parts Number of parts in the id (seperated by dashes "-")
+   * @returns A random unique id
    */
   private generateUniqueId(parts: number = 4): string {
     const stringArr: string[] = [];
@@ -72,8 +83,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     return stringArr.join('-');
   }
 
-  /*  Once template is ready, build the map.
-   */
+  /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
     this.drawMap();
     if (this.settings.query) {
@@ -96,8 +106,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => this.map.invalidateSize(), 100);
   }
 
-  /*  Create the map with all useful parameters
-   */
+  /** Create the map with all useful parameters */
   private drawMap(): void {
     const centerLong = this.settings.centerLong
       ? Number(this.settings.centerLong)
@@ -136,8 +145,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
   }
 
-  /*  Load the data, using widget parameters.
-   */
+  /** Load the data, using widget parameters. */
   private getData(): void {
     this.map.closePopup(this.popupMarker);
     this.popupMarker = null;
@@ -167,7 +175,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     );
   }
 
-  /*  Draw markers on the map if the record has coordinates
+  /**
+   * Draw markers on the map if the record has coordinates.
+   *
+   * @param icon The icon to use for the marker
+   * @param item Data to use for disaplying the marker
    */
   private drawMarkers(icon: any, item: any): void {
     const latitude = Number(item[this.settings.latitude]);

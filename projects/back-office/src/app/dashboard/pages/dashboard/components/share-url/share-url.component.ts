@@ -8,8 +8,7 @@ import { SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
   templateUrl: './share-url.component.html',
   styleUrls: ['./share-url.component.css'],
 })
-/*  Modal content to display an url.
- */
+/** Modal content to display an url. */
 export class ShareUrlComponent implements OnInit {
   constructor(
     public snackBar: SafeSnackBarService,
@@ -23,8 +22,7 @@ export class ShareUrlComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  /*  Copy in clipboard the value displayed.
-   */
+  /** Copy in clipboard the value displayed. */
   onCopy(): void {
     this.clipboard.copy(this.data.url);
     this.snackBar.openSnackBar(NOTIFICATIONS.copied);

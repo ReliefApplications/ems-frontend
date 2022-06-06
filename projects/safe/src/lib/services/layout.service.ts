@@ -12,7 +12,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class SafeLayoutService {
   /** Current right sidenav */
   private rightSidenav = new BehaviorSubject<any>(null);
-  /** Current right sidenav as observable */
+  /** @returns Current right sidenav as observable */
   get rightSidenav$(): Observable<any> {
     return this.rightSidenav.asObservable();
   }

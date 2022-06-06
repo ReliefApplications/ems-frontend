@@ -74,8 +74,7 @@ export class WorkflowComponent implements OnInit, OnChanges {
     }
   }
 
-  /* Get data from within selected step
-   */
+  /** Get data from within selected step */
   onActivate(elementRef: any): void {
     if (elementRef.goToNextStep) {
       elementRef.goToNextStep.subscribe((event: any) => {

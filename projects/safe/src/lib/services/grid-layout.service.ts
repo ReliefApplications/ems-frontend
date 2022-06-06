@@ -24,6 +24,12 @@ import { Layout } from '../models/layout.model';
   providedIn: 'root',
 })
 export class SafeGridLayoutService {
+  /**
+   * Constructor the SafeGridLayoutService
+   *
+   * @param snackBar The snackbar service
+   * @param apollo The apollo service
+   */
   constructor(private snackBar: SafeSnackBarService, private apollo: Apollo) {}
 
   /**
@@ -101,6 +107,14 @@ export class SafeGridLayoutService {
     });
   }
 
+  /**
+   * Create a new layout
+   *
+   * @param value the value of the layout
+   * @param resource resource the layout is attached to ( optional )
+   * @param form form the layout is attached to ( optional )
+   * @returns Mutation observable
+   */
   public addLayout(value: Layout, resource?: string, form?: string) {
     return this.apollo.mutate<AddLayoutMutationResponse>({
       mutation: ADD_LAYOUT,
@@ -112,6 +126,14 @@ export class SafeGridLayoutService {
     });
   }
 
+  /**
+   * Delete a layout
+   *
+   * @param layout layout to edit
+   * @param resource resource the layout is attached to ( optional )
+   * @param form form the layout is attached to ( optional )
+   * @returns Mutation observable
+   */
   public deleteLayout(layout: Layout, resource?: string, form?: string) {
     return this.apollo.mutate<deleteLayoutMutationResponse>({
       mutation: DELETE_LAYOUT,

@@ -43,8 +43,7 @@ export class AddFormComponent implements OnInit {
     private apollo: Apollo
   ) {}
 
-  /*  Load the resources and build the form.
-   */
+  /** Load the resources and build the form. */
   ngOnInit(): void {
     this.addForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -69,9 +68,8 @@ export class AddFormComponent implements OnInit {
     });
   }
 
-  /*  Called on resource input change.
-    Load the templates linked to that resource.
-  */
+  /** Called on resource input change.
+    Load the templates linked to that resource. */
   getResource(e: any): void {
     this.apollo
       .query<GetResourceByIdQueryResponse>({
@@ -85,8 +83,7 @@ export class AddFormComponent implements OnInit {
       });
   }
 
-  /*  Close the modal without sending any data.
-   */
+  /** Close the modal without sending any data. */
   onClose(): void {
     this.dialogRef.close();
   }

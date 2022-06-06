@@ -22,8 +22,7 @@ const DEFAULT_FILE_NAME = 'chart.png';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-/*  Chart widget using KendoUI.
- */
+/** Chart widget using KendoUI. */
 export class SafeChartComponent implements OnChanges, OnDestroy {
   // === DATA ===
   public loading = true;
@@ -50,8 +49,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
 
   constructor(private aggregationBuilder: AggregationBuilderService) {}
 
-  /*  Detect changes of the settings to reload the data.
-   */
+  /** Detect changes of the settings to reload the data. */
   ngOnChanges(changes: SimpleChanges): void {
     this.loading = true;
     this.dataQuery = this.aggregationBuilder.buildAggregation(
@@ -78,8 +76,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
       });
   }
 
-  /*  Load the data, using widget parameters.
-   */
+  /** Load the data, using widget parameters. */
   private getData(): void {
     this.dataSubscription = this.dataQuery.subscribe((res: any) => {
       if (res.errors) {

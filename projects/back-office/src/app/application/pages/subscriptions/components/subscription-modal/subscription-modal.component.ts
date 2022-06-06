@@ -142,8 +142,7 @@ export class SubscriptionModalComponent implements OnInit {
       : applications;
   }
 
-  /*  Close the modal without sending any data.
-   */
+  /** Close the modal without sending any data. */
   onClose(): void {
     this.dialogRef.close();
   }

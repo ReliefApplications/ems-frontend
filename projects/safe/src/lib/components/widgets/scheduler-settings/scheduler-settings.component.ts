@@ -13,13 +13,13 @@ import {
   GET_FORM_BY_ID,
 } from '../../../graphql/queries';
 
+/** A component for the scheduler settings */
 @Component({
   selector: 'safe-scheduler-settings',
   templateUrl: './scheduler-settings.component.html',
   styleUrls: ['./scheduler-settings.component.scss'],
 })
-/*  Modal content for the settings of the scheduler widgets.
- */
+/** Modal content for the settings of the scheduler widgets. */
 export class SafeSchedulerSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
   tileForm: FormGroup = new FormGroup({});
@@ -36,10 +36,15 @@ export class SafeSchedulerSettingsComponent implements OnInit {
   public fields: any[] = [];
   public forms: any[] = [];
 
+  /**
+   * Constructor of the scheduler settings component
+   *
+   * @param formBuilder The form builder
+   * @param apollo The apollo client
+   */
   constructor(private formBuilder: FormBuilder, private apollo: Apollo) {}
 
-  /*  Build the settings form, using the widget saved parameters.
-   */
+  /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     this.tileForm = this.formBuilder.group({
@@ -93,7 +98,11 @@ export class SafeSchedulerSettingsComponent implements OnInit {
     }
   }
 
-  /*  Load the list of resources or forms.
+  /**
+   * Load the list of resources or forms.
+   *
+   * @param {any} e An event or any object with a value attribute
+   * @param {boolean} init Indicating if we must init the sources (optional)
    */
   getSources(e: any, init?: boolean): void {
     // if (e.value === 'resource') {
@@ -127,7 +136,10 @@ export class SafeSchedulerSettingsComponent implements OnInit {
     // }
   }
 
-  /*  Load a resource or a form.
+  /**
+   * Load a resource or a form.
+   *
+   * @param e An event or any object with a value attribute
    */
   getSource(e: any): void {
     if (this.tileForm.controls.from.value === 'resource') {

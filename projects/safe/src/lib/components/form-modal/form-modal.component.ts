@@ -281,8 +281,7 @@ export class SafeFormModalComponent implements OnInit {
       ? this.data.recordId.length
       : 1;
 
-    /* we can send to backend empty data if they are not required
-     */
+    /** we can send to backend empty data if they are not required */
     const questions = survey.getAllQuestions();
     const data = survey.data;
     for (const field in questions) {
