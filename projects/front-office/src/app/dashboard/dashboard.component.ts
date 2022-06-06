@@ -247,6 +247,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   /**
    * Checks if route page is valid.
+   *
+   * @param app application to check pages of
+   * @returns Is page valid or not
    */
   private validPage(app: any): boolean {
     if (

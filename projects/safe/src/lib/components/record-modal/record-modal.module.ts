@@ -12,6 +12,10 @@ import { SafeRecordSummaryModule } from '../record-summary/record-summary.module
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../pipes/date/date.module';
 
+/**
+ * SafeRecordModalModule is a class used to manage all the modules and components
+ * related to the modals editing the records.
+ */
 @NgModule({
   declarations: [SafeRecordModalComponent],
   imports: [

@@ -9,6 +9,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 
+/**
+ * SafeCheckboxTreeModule is a class used to manage all the modules and components
+ * related to the checkbox trees.
+ */
 @NgModule({
   declarations: [SafeCheckboxTreeComponent],
   imports: [

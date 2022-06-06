@@ -30,7 +30,7 @@
       searchable ||
       reorderable ||
       actions.add ||
-      exportable ||
+      actions.export ||
       editable ||
       filterable ||
       admin ||
@@ -54,7 +54,7 @@
     >
       {{ 'common.add' | translate }}
     </button>
-    <button *ngIf="exportable" kendoButton (click)="onExport()">
+    <button *ngIf="actions.export" kendoButton (click)="onExport()">
       {{ 'common.export' | translate }}
     </button>
     <ng-container *ngIf="editable">

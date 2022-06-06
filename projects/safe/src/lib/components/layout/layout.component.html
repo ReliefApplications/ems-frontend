@@ -41,7 +41,7 @@
       [cdkConnectedOverlayOpen]="showAppMenu"
     >
       <safe-search-menu
-        [data]="this.applications"
+        [applications]="this.applications"
         (close)="showAppMenu = false"
         (open)="onOpenApplication($event)"
       ></safe-search-menu>

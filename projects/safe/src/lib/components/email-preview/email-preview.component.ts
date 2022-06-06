@@ -1,7 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
+import {
+  EMAIL_EDITOR_CONFIG,
+  EDITOR_LANGUAGE_PAIRS,
+} from '../../const/tinymce.const';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -24,6 +28,9 @@ export class SafeEmailPreviewComponent implements OnInit {
   /** mail is put in a form to use read-only inputs */
   public form!: FormGroup;
 
+  /** tinymce editor */
+  public editor: any = EMAIL_EDITOR_CONFIG;
+
   /**
    * Preview Email component.
    * Modal in read-only mode.
@@ -31,14 +38,23 @@ export class SafeEmailPreviewComponent implements OnInit {
    * @param data injected dialog data
    * @param dialogRef Dialog reference
    * @param formBuilder Angular Form Builder
-   * @param sanitizer Angular DOM sanitizer
+   * @param translate Angular translate service
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<SafeEmailPreviewComponent>,
     private formBuilder: FormBuilder,
-    private sanitizer: DomSanitizer
-  ) {}
+    private translate: TranslateService
+  ) {
+    // Set the editor language
+    const lang = this.translate.currentLang;
+    const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
+    if (editorLang) {
+      this.editor.language = editorLang.tinymceKey;
+    } else {
+      this.editor.language = 'en';
+    }
+  }
 
   /** Create the form from the dialog data, putting all fields as read-only */
   ngOnInit(): void {
@@ -46,12 +62,7 @@ export class SafeEmailPreviewComponent implements OnInit {
       from: [{ value: this.data.from, disabled: true }],
       to: [{ value: this.data.to, disabled: true }],
       subject: [{ value: this.data.subject, disabled: true }],
-      html: [
-        {
-          value: this.sanitizer.bypassSecurityTrustHtml(this.data.html),
-          disabled: true,
-        },
-      ],
+      html: this.data.html,
       files: [[]],
     });
   }

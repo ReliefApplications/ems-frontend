@@ -3,14 +3,20 @@
   padding: 0 4px 8px;
   border-radius: 4px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  width: 200px;
+  width: 250px;
   display: flex;
   flex-direction: column;
+}
+
+.application-list-header {
+  margin-top: 4px;
 }
 
 .application-list {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  margin-top: -15px; // to remove margin of mat-form-field
 }
 
 p {

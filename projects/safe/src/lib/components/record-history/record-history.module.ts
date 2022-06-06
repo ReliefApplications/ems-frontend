@@ -14,6 +14,10 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../pipes/date/date.module';
 
+/**
+ * SafeRecordHistoryModule is a class used to manage all the modules and components
+ * related to the history of records.
+ */
 @NgModule({
   declarations: [SafeRecordHistoryComponent],
   imports: [

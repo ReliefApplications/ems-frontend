@@ -17,6 +17,7 @@
 			"none": "No application",
 			"one": "Application"
 		},
+		"auto": "Auto",
 		"back": "Back",
 		"cancel": "Cancel",
 		"channel": {
@@ -27,7 +28,6 @@
 		"child": "Child",
 		"clear": "Clear",
 		"close": "Close",
-		"confirm": "Confirm",
 		"create": "Create",
 		"createdOn": "Created on",
 		"dashboard": {
@@ -192,6 +192,11 @@
 			"none": "No role",
 			"one": "Role"
 		},
+		"row": {
+			"few": "Rows",
+			"none": "No row",
+			"one": "Row"
+		},
 		"save": "Save",
 		"saveChanges": "Save changes",
 		"searchObject": "Search {{name}}",
@@ -214,6 +219,7 @@
 		"title": "Title",
 		"true": "True",
 		"update": "Update",
+		"updateObject": "Update {{name}}",
 		"uploadObject": "Upload {{name}}",
 		"user": {
 			"few": "Users",
@@ -299,11 +305,16 @@
 		},
 		"application": {
 			"delete": {
-				"confirmationMessage": "Do you confirm the deletion of this application?"
+				"confirmationMessage": "Do you confirm the deletion of the application {{name}}?"
 			},
 			"duplicate": {
 				"name": {
 					"description": "Please enter a description for the application"
+				}
+			},
+			"pages": {
+				"delete": {
+					"confirmationMessage": "Do you confirm the deletion of the page {{name}}?"
 				}
 			},
 			"positionAttribute": {
@@ -328,7 +339,7 @@
 				}
 			},
 			"unlock": {
-				"confirmationMessage": "Do you want to unlock {{name}} edition?",
+				"confirmationMessage": "Do you want to unlock edition of {{name}}?",
 				"title": "Unlock edition"
 			},
 			"update": {
@@ -349,6 +360,12 @@
 			"dropdown": {
 				"select": "Notify on"
 			}
+		},
+		"confirmModal": {
+			"cancel": "Cancel",
+			"confirm": "Confirm",
+			"delete": "Delete",
+			"title": "Confirm"
 		},
 		"emailBuilder": {
 			"body": "Body",
@@ -374,6 +391,9 @@
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the form {{name}}?"
 			},
+			"deleteRow": {
+				"confirmationMessage": "Do you confirm the deletion of {{quantity}} {{rowText}}?"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"
@@ -398,6 +418,9 @@
 			"update": {
 				"exit": "Exit without saving changes",
 				"exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
+			},
+			"updateRow": {
+				"confirmationMessage": "Do you confirm the update of {{quantity}} {{rowText}}?"
 			}
 		},
 		"formBuilder": {
@@ -422,6 +445,10 @@
 		"history": {
 			"download": "Download history",
 			"preview": "Preview and revert"
+		},
+		"logout": {
+			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
+			"title": "Exit without saving changes"
 		},
 		"notifications": {
 			"readAll": "Mark all as read"
@@ -510,6 +537,14 @@
 				"operator": "Operator",
 				"or": "Or",
 				"title": "Style"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "Use Expression editor",
+						"usePicker": "Use Date picker"
+					}
+				}
 			}
 		},
 		"record": {
@@ -544,6 +579,10 @@
 			},
 			"modal": {
 				"update": "Save and close"
+			},
+			"recovery": {
+				"confirmationMessage": "Do you confirm recovery the data from {{date}} to the current register?",
+				"title": "Recovery data"
 			}
 		},
 		"records": {
@@ -668,6 +707,14 @@
 			},
 			"settings": {
 				"chart": {
+					"axes": "Axes",
+					"labels": {
+						"percentage": "Percentage",
+						"showCategory": "Show category labels",
+						"showValue": "Show value labels",
+						"title": "Labels",
+						"valueType": "Value type"
+					},
 					"legend": "Legend",
 					"orientation": "Orientation",
 					"palette": {
@@ -683,6 +730,7 @@
 						"add": "Add new records",
 						"convert": "Convert records",
 						"delete": "Delete records",
+						"export": "Export records",
 						"inline": "Inline edition",
 						"show": "Show history",
 						"showDetails": "Show record details",
@@ -732,6 +780,9 @@
 							"select": "Select a layout",
 							"title": "Add new layout"
 						},
+						"edit": {
+							"title": "Layout configuration"
+						},
 						"title": "Grid layouts"
 					}
 				},
@@ -758,7 +809,21 @@
 	},
 	"kendo": {
 		"datepicker": {
-			"today": "Today"
+			"today": "Today",
+			"toggle": "Choose a date"
+		},
+		"datetimepicker": {
+			"accept": "Accept",
+			"acceptLabel": "Accept",
+			"cancel": "Cancel",
+			"cancelLabel": "Cancel",
+			"dateTab": "Date",
+			"dateTabLabel": "Date",
+			"now": "Now",
+			"timeTab": "Time",
+			"timeTabLabel": "Time",
+			"today": "Today",
+			"toggle": "Choose a date and a time"
 		},
 		"editor": {
 			"addColumnAfter": "Add column after",
@@ -889,6 +954,14 @@
 			"unlock": "Unlock",
 			"unstick": "Unstick"
 		},
+		"timepicker": {
+			"accept": "Accept",
+			"acceptLabel": "Accept",
+			"cancel": "Cancel",
+			"cancelLabel": "Cancel",
+			"now": "Now",
+			"toggle": "Choose a time"
+		},
 		"upload": {
 			"dropFilesHere": "Drop files here to upload",
 			"select": "Select files..."
@@ -934,7 +1007,10 @@
 			"template": "Template"
 		},
 		"page": {
-			"add": "Add a Page"
+			"add": "Add a Page",
+			"tooltip": {
+				"duplicate": "Select the application you want to put the copy in"
+			}
 		},
 		"positionAttribute": {
 			"new": "New position attribute"
@@ -972,7 +1048,8 @@
 		},
 		"user": {
 			"notifications": {
-				"rolesUpdated": "{{username}} roles updated."
+				"rolesUpdated": "{{username}} roles updated.",
+				"userImportFail": "The user import has failed"
 			},
 			"username": "Username"
 		},
@@ -980,6 +1057,10 @@
 			"add": "Add a Widget",
 			"chart": {
 				"defaultTitle": "Chart Widget"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the widget?",
+				"title": "Delete Widget"
 			},
 			"map": {
 				"defaultTitle": "Map Widget",
@@ -1098,6 +1179,9 @@
 		"workflow": {
 			"addStep": {
 				"selectType": "Select which type of step you want to create"
+			},
+			"deleteStep": {
+				"confirmationMessage": "Are you sure you want to delete {{step}}?\n This action cannot be undone."
 			},
 			"empty": {
 				"add": "Add steps",
