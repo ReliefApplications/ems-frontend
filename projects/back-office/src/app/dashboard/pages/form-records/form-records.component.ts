@@ -292,8 +292,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* Opens the history of the record on the right side of the screen.
-   */
+  /** Opens the history of the record on the right side of the screen. */
   public onViewHistory(id: string): void {
     this.apollo
       .query<GetRecordDetailsQueryResponse>({

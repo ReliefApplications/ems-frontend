@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
 
+/** Module for map settings component */
 @NgModule({
   declarations: [SafeMapSettingsComponent],
   imports: [

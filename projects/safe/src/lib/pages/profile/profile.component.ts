@@ -47,6 +47,7 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
    * @param formBuilder Angular form builder
+   * @param translate Translation service
    */
   constructor(
     private apollo: Apollo,

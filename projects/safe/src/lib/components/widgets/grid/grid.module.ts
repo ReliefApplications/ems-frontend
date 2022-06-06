@@ -9,6 +9,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { SafeEmailPreviewModule } from '../../email-preview/email-preview.module';
 
+/** Module for grid widget component */
 @NgModule({
   declarations: [SafeGridWidgetComponent],
   imports: [

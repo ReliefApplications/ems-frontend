@@ -36,6 +36,7 @@ const TEMPLATE: Story<SafeRecordSummaryComponent> = (args) => ({
 
 /** Exports a default template with mock properties */
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   record: {
     createdBy: {
@@ -52,12 +53,14 @@ DEFAULT.args = {
 
 /** Exports a template with properties that model information only stored in the cache */
 export const CACHE_ONLY = TEMPLATE.bind({});
+DEFAULT.storyName = 'Cache only';
 CACHE_ONLY.args = {
   cacheDate: new Date(),
 };
 
 /** Exports a template with properties that model information not stored in the cache */
 export const WITHOUT_CACHE = TEMPLATE.bind({});
+DEFAULT.storyName = 'Without cache';
 WITHOUT_CACHE.args = {
   record: {
     createdBy: {

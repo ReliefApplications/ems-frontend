@@ -9,14 +9,12 @@ export class PreviewService {
 
   constructor() {}
 
-  /* Set role which will be used to load the application preview
-   */
+  /** Set role which will be used to load the application preview */
   setRole(id: string): void {
     this.roleId.next(id);
   }
 
-  /*  Return the roleId as an Observable.
-   */
+  /** Return the roleId as an Observable. */
   get roleId$(): Observable<string> {
     return this.roleId.asObservable();
   }

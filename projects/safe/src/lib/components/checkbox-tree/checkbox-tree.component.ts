@@ -127,7 +127,7 @@ export class SafeCheckboxTreeComponent implements OnInit {
 
   /** The selection for checklist */
   checklistSelection = new SelectionModel<TreeItemFlatNode>(
-    true /* multiple */
+    true /** multiple */
   );
 
   @Input() checklist!: ChecklistDatabase;

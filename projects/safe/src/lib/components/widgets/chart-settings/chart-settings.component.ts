@@ -28,8 +28,7 @@ import {
     { provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory },
   ],
 })
-/*  Modal content for the settings of the chart widgets.
- */
+/** Modal content for the settings of the chart widgets. */
 export class SafeChartSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
@@ -69,8 +68,7 @@ export class SafeChartSettingsComponent implements OnInit {
     private aggregationBuilder: AggregationBuilderService
   ) {}
 
-  /*  Build the settings form, using the widget saved parameters.
-   */
+  /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     const chartSettings = tileSettings.chart;

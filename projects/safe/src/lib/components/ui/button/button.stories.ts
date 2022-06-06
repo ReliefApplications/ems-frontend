@@ -77,6 +77,7 @@ const TEMPLATE_WITHOUT_TEXT: Story<SafeButtonComponent> = (args) => ({
 });
 
 export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   category: ButtonCategory.PRIMARY,
   size: ButtonSize.MEDIUM,
@@ -84,12 +85,14 @@ DEFAULT.args = {
 };
 
 export const ICON_AND_TEXT = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.storyName = 'Icon and text';
 ICON_AND_TEXT.args = {
   ...DEFAULT.args,
   icon: 'home',
 };
 
 export const ICON = TEMPLATE_WITHOUT_TEXT.bind({});
+DEFAULT.storyName = 'Icon only';
 ICON.args = {
   ...DEFAULT.args,
   isIcon: true,
