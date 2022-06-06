@@ -1,15 +1,15 @@
 import { MatDialog } from '@angular/material/dialog';
-import { SafeFormModalComponent } from '../components/form-modal/form-modal.component';
-import { DomService } from '../services/dom.service';
-import { SafeResourceGridModalComponent } from '../components/search-resource-grid-modal/search-resource-grid-modal.component';
+import { SafeFormModalComponent } from '../../components/form-modal/form-modal.component';
+import { DomService } from '../../services/dom.service';
+import { SafeResourceGridModalComponent } from '../../components/search-resource-grid-modal/search-resource-grid-modal.component';
 import { FormGroup } from '@angular/forms';
 import { ChoicesRestful } from 'survey-angular';
-import { SafeButtonComponent } from '../components/ui/button/button.component';
-import { ButtonSize } from '../components/ui/button/button-size.enum';
-import { ButtonCategory } from '../components/ui/button/button-category.enum';
+import { SafeButtonComponent } from '../../components/ui/button/button.component';
+import { ButtonSize } from '../../components/ui/button/button-size.enum';
+import { ButtonCategory } from '../../components/ui/button/button-category.enum';
 import { EmbeddedViewRef } from '@angular/core';
-import { SafeRecordDropdownComponent } from '../components/record-dropdown/record-dropdown.component';
-import { SafeCoreGridComponent } from '../components/ui/core-grid/core-grid.component';
+import { SafeRecordDropdownComponent } from '../../components/record-dropdown/record-dropdown.component';
+import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import {
   DatePickerComponent,
   DateTimePickerComponent,
@@ -528,7 +528,7 @@ export const init = (
           panelClass: 'full-screen-modal',
           autoFocus: false,
         });
-        dialogRef.afterClosed().subscribe((res) => {
+        dialogRef.afterClosed().subscribe((res: any) => {
           if (res) {
             // TODO: call reload method
             // if (question.displayAsGrid && gridComponent) {

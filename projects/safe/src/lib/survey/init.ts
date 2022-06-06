@@ -7,8 +7,11 @@ import { init as initResourceComponent } from './components/resource';
 import { init as initResourcesComponent } from './components/resources';
 import { init as initOwnerComponent } from './components/owner';
 import { init as initUsersComponent } from './components/users';
+import { init as initTextWidget } from './widgets/text-widget';
+import { init as initCommentWidget } from './widgets/comment-widget';
+import { init as initResourceWidget } from './widgets/resource-widget';
+import { init as initResourcesWidget } from './widgets/resources-widget';
 import addCustomFunctions from '../utils/custom-functions';
-import { init as initCustomWidget } from './widget';
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { DomService } from '../services/dom.service';
@@ -36,12 +39,17 @@ export const initCustomWidgets = (
   environment: any
 ): void => {
   survey.settings.commentPrefix = '_comment';
-  // supportCreatorV2
+  // load widgets (custom questions)
   widgets.select2tagbox(survey);
+  initCommentWidget(survey);
+  initTextWidget(survey, domService);
+  initResourceWidget(survey, domService, dialog, environment);
+  initResourcesWidget(survey, domService, dialog, environment);
+  // load components (pre-filled questions)
   initResourceComponent(survey, domService, apollo, dialog, formBuilder);
   initResourcesComponent(survey, domService, apollo, dialog, formBuilder);
   initOwnerComponent(survey, domService, apollo, dialog, formBuilder);
   initUsersComponent(survey, domService, apollo, dialog, formBuilder);
-  initCustomWidget(survey, domService, dialog, environment);
+  // load internal functions
   addCustomFunctions(survey, authService, apollo);
 };
