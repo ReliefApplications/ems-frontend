@@ -48,6 +48,7 @@ const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
 export class FormRecordsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
+  public loadingMore = false;
   private recordsQuery!: QueryRef<GetFormRecordsQueryResponse>;
   public id = '';
   public form: any;
@@ -129,6 +130,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         );
         this.pageInfo.length = res.data.form.records.totalCount;
         this.pageInfo.endCursor = res.data.form.records.pageInfo.endCursor;
+        this.loadingMore = false;
       }
     );
 
@@ -170,6 +172,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       e.length > this.cachedRecords.length &&
       ITEMS_PER_PAGE * this.pageInfo.pageIndex >= this.cachedRecords.length
     ) {
+      this.loadingMore = true;
       this.recordsQuery.refetch({
         id: this.id,
         first: ITEMS_PER_PAGE,
