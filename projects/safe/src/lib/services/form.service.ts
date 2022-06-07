@@ -50,7 +50,8 @@ export class SafeFormService {
       formBuilder,
       authService,
       environment,
-      referenceDataService
+      referenceDataService,
+      environment.esriApiKey
     );
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
@@ -63,7 +64,8 @@ export class SafeFormService {
       formBuilder,
       authService,
       environment,
-      referenceDataService
+      referenceDataService,
+      environment.esriApiKey
     );
   }
 }

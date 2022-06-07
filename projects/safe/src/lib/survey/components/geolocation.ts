@@ -11,17 +11,12 @@ const MARKER_OPTIONS = {
 };
 
 /**
- *
- */
-const API_KEY =
-  'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg';
-
-/**
  * Inits the users component.
  *
  * @param survey survey class.
+ * @param esriApiKey
  */
-export const init = (survey: any): void => {
+export const init = (survey: any, esriApiKey: string): void => {
   const widget = {
     name: 'geolocation',
     title: 'Geolocation',
@@ -74,7 +69,7 @@ export const init = (survey: any): void => {
       let marker: any = null;
 
       L.esri.Vector.vectorBasemapLayer('OSM:Standard', {
-        apiKey: API_KEY,
+        apiKey: esriApiKey,
       }).addTo(map);
 
       L.control
@@ -89,7 +84,7 @@ export const init = (survey: any): void => {
         useMapBounds: false,
         providers: [
           L.esri.Geocoding.arcgisOnlineProvider({
-            apikey: API_KEY,
+            apikey: esriApiKey,
             nearby: {
               lat: -33.8688,
               lng: 151.2093,
@@ -114,7 +109,6 @@ export const init = (survey: any): void => {
       const address = el.getElementsByTagName('input')[0];
       const latitude = el.getElementsByTagName('input')[1];
       const longitude = el.getElementsByTagName('input')[2];
-      const button = el.getElementsByTagName('div')[0];
 
       searchControl.on('results', (e: any) => {
         setValuesAndMarker(
@@ -125,15 +119,11 @@ export const init = (survey: any): void => {
       });
 
       latitude.addEventListener('input', () => {
-        const latlng = {
-          lat: latitude.value,
-          lng: longitude.value,
-        };
         L.esri.Geocoding.geocodeService({
-          apikey: API_KEY,
+          apikey: esriApiKey,
         })
           .reverse()
-          .latlng(latlng)
+          .latlng({ lat: latitude.value, lng: longitude.value })
           .run((error: any, result: any) => {
             if (error) {
               return;
@@ -143,19 +133,16 @@ export const init = (survey: any): void => {
               latitude.value,
               longitude.value
             );
-            map.setView(latlng, 6);
+            map.setView({ lat: latitude.value, lng: longitude.value }, 6);
           });
       });
+
       longitude.addEventListener('input', () => {
-        const latlng = {
-          lat: latitude.value,
-          lng: longitude.value,
-        };
         L.esri.Geocoding.geocodeService({
-          apikey: API_KEY,
+          apikey: esriApiKey,
         })
           .reverse()
-          .latlng(latlng)
+          .latlng({ lat: latitude.value, lng: longitude.value })
           .run((error: any, result: any) => {
             if (error) {
               return;
@@ -165,13 +152,13 @@ export const init = (survey: any): void => {
               latitude.value,
               longitude.value
             );
-            map.setView(latlng, 6);
+            map.setView({ lat: latitude.value, lng: longitude.value }, 6);
           });
       });
 
       map.on('click', (e: any) => {
         L.esri.Geocoding.geocodeService({
-          apikey: API_KEY,
+          apikey: esriApiKey,
         })
           .reverse()
           .latlng(e.latlng)
@@ -187,7 +174,7 @@ export const init = (survey: any): void => {
           });
       });
       /**
-       *
+       * Sets all the values with the updated data
        */
       const onValueChangedCallback = () => {
         address.value = question.value ? question.value.address : '';
@@ -195,15 +182,17 @@ export const init = (survey: any): void => {
         longitude.value = question.value ? question.value.lng : '';
       };
       /**
-       *
+       * Disable all inputs in readOnly mode
        */
       const onReadOnlyChangedCallback = () => {
         if (question.isReadOnly) {
           address.setAttribute('disabled', 'disabled');
-          button.setAttribute('disabled', 'disabled');
+          latitude.setAttribute('disabled', 'disabled');
+          longitude.setAttribute('disabled', 'disabled');
         } else {
           address.removeAttribute('disabled');
-          button.removeAttribute('disabled');
+          latitude.removeAttribute('disabled');
+          longitude.removeAttribute('disabled');
         }
       };
       question.readOnlyChangedCallback = onReadOnlyChangedCallback;

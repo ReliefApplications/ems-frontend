@@ -37,7 +37,8 @@ export const initCustomWidgets = (
   formBuilder: FormBuilder,
   authService: SafeAuthService,
   environment: any,
-  referenceDataService: SafeReferenceDataService
+  referenceDataService: SafeReferenceDataService,
+  esriApiKey: string
 ): void => {
   survey.settings.commentPrefix = '_comment';
   // supportCreatorV2
@@ -46,7 +47,7 @@ export const initCustomWidgets = (
   initResourcesComponent(survey, domService, apollo, dialog, formBuilder);
   initOwnerComponent(survey, domService, apollo, dialog, formBuilder);
   initUsersComponent(survey, domService, apollo, dialog, formBuilder);
-  initGeolocationComponent(survey);
+  initGeolocationComponent(survey, esriApiKey);
   initCustomWidget(
     survey,
     domService,
