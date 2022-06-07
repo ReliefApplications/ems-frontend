@@ -20,8 +20,7 @@ interface DialogData {
   templateUrl: './tile-data.component.html',
   styleUrls: ['./tile-data.component.scss'],
 })
-/*  Modal content to edit the settings of a component.
- */
+/** Modal content to edit the settings of a component. */
 export class SafeTileDataComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
   tileForm?: FormGroup;
@@ -38,8 +37,7 @@ export class SafeTileDataComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {}
 
-  /*  Once the template is ready, inject the settings component linked to the widget type passed as a parameter.
-   */
+  /** Once the template is ready, inject the settings component linked to the widget type passed as a parameter. */
   ngAfterViewInit(): void {
     const factory = this.componentFactoryResolver.resolveComponentFactory(
       this.data.template

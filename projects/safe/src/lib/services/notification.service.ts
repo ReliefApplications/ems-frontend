@@ -29,18 +29,21 @@ const ITEMS_PER_PAGE = 10;
 export class SafeNotificationService {
   /** Current notifications */
   private notifications = new BehaviorSubject<Notification[]>([]);
-  /** Current notifications as observable */
+  /** @returns Current notifications as observable */
   get notifications$(): Observable<Notification[]> {
     return this.notifications.asObservable();
   }
+
   /** Notifications query */
   public notificationsQuery!: QueryRef<GetNotificationsQueryResponse>;
+
   /** Is there more notifications to load */
   private hasNextPage = new BehaviorSubject<boolean>(true);
-  /** Is there more notifcations to load as observable */
+  /** @returns Is there more notifcations to load as observable */
   get hasNextPage$(): Observable<boolean> {
     return this.hasNextPage.asObservable();
   }
+
   /** Stores if notifications where loaded previously */
   private firstLoad = true;
   /** Stores previous id */

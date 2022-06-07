@@ -15,12 +15,19 @@ export default {
   argTypes: {},
 } as Meta;
 
+/**
+ * Template for story component
+ *
+ * @param args Properties
+ * @returns A story component
+ */
 const TEMPLATE: Story<SafeAddStepComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
+/** Story component */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {};

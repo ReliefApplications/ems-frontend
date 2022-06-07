@@ -4,6 +4,7 @@ import { SafeSchedulerComponent } from './scheduler.component';
 import { SchedulerModule } from '@progress/kendo-angular-scheduler';
 import { TranslateModule } from '@ngx-translate/core';
 
+/** Module for scheduler  component */
 @NgModule({
   declarations: [SafeSchedulerComponent],
   imports: [CommonModule, SchedulerModule, TranslateModule],

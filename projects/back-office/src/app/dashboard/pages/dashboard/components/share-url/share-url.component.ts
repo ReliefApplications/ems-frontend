@@ -9,8 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './share-url.component.html',
   styleUrls: ['./share-url.component.css'],
 })
-/*  Modal content to display an url.
- */
+/** Modal content to display an url. */
 export class ShareUrlComponent implements OnInit {
   constructor(
     public snackBar: SafeSnackBarService,

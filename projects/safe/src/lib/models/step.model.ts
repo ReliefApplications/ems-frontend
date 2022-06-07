@@ -1,8 +1,7 @@
 import { Workflow } from './workflow.model';
 import { ContentType } from './page.model';
 
-/*  Model for Step object.
- */
+/** Model for Step object. */
 export interface Step {
   id?: string;
   name?: string;

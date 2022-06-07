@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
 
-/*  Divide the dashboard module into three modules:
+/** Divide the dashboard module into three modules:
     * forms and resources
     * dashboards
     * users

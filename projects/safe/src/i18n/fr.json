@@ -394,6 +394,9 @@
 			"deleteRow": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?"
 			},
+			"display": {
+				"submissionMessage": "Le formulaire a été sauvegardé."
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"
@@ -1158,6 +1161,23 @@
 			"title": "Mes applications"
 		},
 		"formBuilder": {
+			"errors": {
+				"choices": {
+					"valueDuplicated": "Veuillez configurer des valeurs uniques pour les choix de la question : {{question}}"
+				},
+				"missingName": "Nom manquant pour un élément de la page : {{page}}. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire.",
+				"multipletext": {
+					"missingName": "Veuillez configurer un nom ou titre pour chaque champ de text de la question : {{question}}"
+				},
+				"resource": {
+					"invalidRelatedName": "Le nom relatif {{relatedName}} de la page {{page}} est invalide. Veuillez configurer un nom au format snake_case.",
+					"missingRelatedName": "Nom relatif manquant pour la question {{question}} de la page {{page}}. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
+				},
+				"snakecase": "Le nom de valeur {{name}} de la page {{page}} est invalide. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
+			},
+			"questionsCategories": {
+				"core": "Bibliothèque de questions"
+			},
 			"title": "Paramètres avancés"
 		},
 		"forms": {

@@ -263,8 +263,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.router.navigate(['./add-step'], { relativeTo: this.route });
   }
 
-  /* Get data from within selected step
-   */
+  /** Get data from within selected step */
   onActivate(elementRef: any): void {
     if (elementRef.goToNextStep) {
       elementRef.goToNextStep.subscribe((event: any) => {

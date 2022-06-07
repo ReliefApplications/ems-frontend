@@ -98,6 +98,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param environment This is the environment in which we are running the application, it changes the theme of the form builder (color etc.)
    * @param dialog This is the Angular Material Dialog service used to display dialog modals
    * @param snackBar This is the service that will be used to display the snackbar.
+   * @param translate Angular translate service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -136,13 +137,13 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.rightContainerActiveItem('toolbox');
     if (!this.form.structure) {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
-      this.surveyCreator.survey.completedHtml =
-        '<h3>The form has successfully been submitted.</h3>';
     }
     this.surveyCreator.toolbox.changeCategories(
       QUESTION_TYPES.map((x) => ({
         name: x,
-        category: 'Question Library',
+        category: this.translate.instant(
+          'pages.formBuilder.questionsCategories.core'
+        ),
       }))
     );
 
@@ -207,8 +208,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       this.surveyCreator.text = this.form.structure || '';
       if (!this.form.structure) {
         this.surveyCreator.survey.showQuestionNumbers = 'off';
-        this.surveyCreator.survey.completedHtml =
-          '<h3>The form has successfully been submitted.</h3>';
       }
       // skip if form is core
       if (!this.form.core) {
@@ -324,39 +323,36 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           element.valueName = this.toSnakeCase(element.title);
           if (!this.isSnakeCase(element.valueName)) {
             throw new Error(
-              'The value name ' +
-                element.valueName +
-                ' on page ' +
-                page.name +
-                ' is invalid. Please conform to snake_case.'
+              this.translate.instant('pages.formBuilder.errors.snakecase', {
+                name: element.valueName,
+                page: page.name,
+              })
             );
           }
         } else if (element.name) {
           element.valueName = this.toSnakeCase(element.name);
           if (!this.isSnakeCase(element.valueName)) {
             throw new Error(
-              'The value name ' +
-                element.valueName +
-                ' on page ' +
-                page.name +
-                ' is invalid. Please conform to snake_case.'
+              this.translate.instant('pages.formBuilder.errors.snakecase', {
+                name: element.valueName,
+                page: page.name,
+              })
             );
           }
         } else {
           throw new Error(
-            'Missing value name for an element on page ' +
-              page.name +
-              '. Please provide a valid data value name (snake_case) to save the form.'
+            this.translate.instant('pages.formBuilder.errors.missingName', {
+              page: page.name,
+            })
           );
         }
       } else {
         if (!this.isSnakeCase(element.valueName)) {
           throw new Error(
-            'The value name ' +
-              element.valueName +
-              ' on page ' +
-              page.name +
-              ' is invalid. Please conform to snake_case.'
+            this.translate.instant('pages.formBuilder.errors.snakecase', {
+              name: element.valueName,
+              page: page.name,
+            })
           );
         }
       }
@@ -369,7 +365,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
         if (values.length > distinctValues.length) {
           throw new Error(
-            `Please provide unique values for each of the choices of question: ${element.valueName}`
+            this.translate.instant(
+              'pages.formBuilder.errors.choices.valueDuplicated',
+              {
+                question: element.valueName,
+              }
+            )
           );
         }
       }
@@ -377,7 +378,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         element.items = element.items.map((e: any) => {
           if (!e.name && !e.title) {
             throw new Error(
-              `Please provide name or title for each text of question: ${element.valueName}`
+              this.translate.instant(
+                'pages.formBuilder.errors.multipletext.missingName',
+                {
+                  question: element.valueName,
+                }
+              )
             );
           }
           return {

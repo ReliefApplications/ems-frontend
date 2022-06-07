@@ -394,6 +394,9 @@
 			"deleteRow": {
 				"confirmationMessage": "Do you confirm the deletion of {{quantity}} {{rowText}}?"
 			},
+			"display": {
+				"submissionMessage": "The form has successfully been submitted."
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"
@@ -1158,6 +1161,23 @@
 			"title": "My applications"
 		},
 		"formBuilder": {
+			"errors": {
+				"choices": {
+					"valueDuplicated": "Please provide unique values for each of the choices of question: {{question}}"
+				},
+				"missingName": "Missing value name for an element on page {{page}}. Please provide a valid data value name (snake_case) to save the form.",
+				"multipletext": {
+					"missingName": "Please provide name or title for each text of question: {{question}}"
+				},
+				"resource": {
+					"invalidRelatedName": "The related name {{relatedName}} on page {{page}} is invalid. Please conform to snake_case.",
+					"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake_case) to save the form."
+				},
+				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
+			},
+			"questionsCategories": {
+				"core": "Question Library"
+			},
 			"title": "Advanced settings"
 		},
 		"forms": {
