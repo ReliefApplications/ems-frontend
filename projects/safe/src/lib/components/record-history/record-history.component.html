@@ -60,7 +60,7 @@
         }}</mat-option>
         <mat-option
           *ngFor="let field of sortedFields"
-          value="field-{{ field.name }}"
+          value="{{ field.name }}"
           >{{ field.title || field.name }}</mat-option
         >
       </mat-select>
@@ -117,7 +117,7 @@
           icon="update"
           class="revert-icon"
           (click)="onRevert(item)"
-          *ngIf="index > 0 && filterField === 'all'"
+          *ngIf="index > 0 && filterField === null"
         >
           {{ 'components.history.preview' | translate }}
         </safe-button>

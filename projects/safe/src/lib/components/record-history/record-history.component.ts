@@ -243,8 +243,17 @@ export class SafeRecordHistoryComponent implements OnInit {
     this.endDate.value = '';
   }
 
+  /**
+   * Triggers when the selected date and field filters are changed
+   * and filters the history accordingly
+   *
+   * @param filterField the name of the field being filtered, if any
+   */
   applyFilter(filterField?: string): void {
-    this.filterField = filterField || this.filterField;
+    // undefined => function called from date change
+    // null => 'All fields' selected
+    // other => Field name for filter
+    if (filterField !== undefined) this.filterField = filterField || null;
 
     const startDate = this.filtersDate.startDate
       ? new Date(this.filtersDate.startDate)
@@ -266,14 +275,11 @@ export class SafeRecordHistoryComponent implements OnInit {
     });
 
     // filtering by field
-    if (this.filterField !== 'all') {
+    if (this.filterField !== null)
       this.filterHistory = this.filterHistory.filter(
         (version) =>
-          !!version.changes.find(
-            (change) => this.filterField === `field-${change.field}`
-          )
+          !!version.changes.find((change) => this.filterField === change.field)
       );
-    }
   }
 
   /**
@@ -302,12 +308,16 @@ export class SafeRecordHistoryComponent implements OnInit {
   /**
    * Parses the structure of the record and sorts the fields
    * based on their names or lables, if available
+   *
+   * @param fields Array of fields
+   * @returns sorted array of fields
    */
   sortFields(fields: any[]) {
-    return fields.sort((a, b) => {
+    const unsortedFields = [...fields];
+    return unsortedFields.sort((a, b) => {
       const compA: string = a.title || a.name;
       const compB: string = b.title || b.name;
-      return compA > compB ? 1 : -1;
+      return compA.toLowerCase() > compB.toLowerCase() ? 1 : -1;
     });
   }
 }
