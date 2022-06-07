@@ -102,11 +102,7 @@ export const init = (survey: any, esriApiKey: string): void => {
       const longitude = el.getElementsByTagName('input')[2];
 
       searchControl.on('results', (e: any) => {
-        setValues(
-          e.text,
-          e.latlng.lat.toFixed(6),
-          e.latlng.lng.toFixed(6)
-        );
+        setValues(e.text, e.latlng.lat.toFixed(6), e.latlng.lng.toFixed(6));
       });
 
       latitude.addEventListener('input', () => {
