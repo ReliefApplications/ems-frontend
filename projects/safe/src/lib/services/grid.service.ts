@@ -82,7 +82,7 @@ export class SafeGridService {
               {
                 disabled: true,
                 hidden: options.hidden,
-                filter: f.type === 'User',
+                filter: prefix ? false : options.filter,
               }
             );
           }
