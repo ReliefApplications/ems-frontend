@@ -93,13 +93,8 @@ export const init = (survey: any, esriApiKey: string): void => {
         ],
       }).addTo(map);
 
-      const setValuesAndMarker = (adrs: string, lat: any, lng: any) => {
+      const setValues = (adrs: string, lat: any, lng: any) => {
         question.value = adrs + ', lat: ' + lat + ', lng: ' + lng;
-        if (marker) {
-          map.removeLayer(marker);
-        }
-        marker = L.circleMarker({ lat, lng }, MARKER_OPTIONS);
-        marker.addTo(map);
       };
 
       const address = el.getElementsByTagName('input')[0];
@@ -107,7 +102,7 @@ export const init = (survey: any, esriApiKey: string): void => {
       const longitude = el.getElementsByTagName('input')[2];
 
       searchControl.on('results', (e: any) => {
-        setValuesAndMarker(
+        setValues(
           e.text,
           e.latlng.lat.toFixed(6),
           e.latlng.lng.toFixed(6)
@@ -124,12 +119,11 @@ export const init = (survey: any, esriApiKey: string): void => {
             if (error) {
               return;
             }
-            setValuesAndMarker(
+            setValues(
               result.address.Match_addr,
               latitude.value,
               longitude.value
             );
-            map.setView({ lat: latitude.value, lng: longitude.value }, 6);
           });
       });
 
@@ -143,12 +137,11 @@ export const init = (survey: any, esriApiKey: string): void => {
             if (error) {
               return;
             }
-            setValuesAndMarker(
+            setValues(
               result.address.Match_addr,
               latitude.value,
               longitude.value
             );
-            map.setView({ lat: latitude.value, lng: longitude.value }, 6);
           });
       });
 
@@ -162,7 +155,7 @@ export const init = (survey: any, esriApiKey: string): void => {
             if (error) {
               return;
             }
-            setValuesAndMarker(
+            setValues(
               result.address.Match_addr,
               e.latlng.lat.toFixed(6),
               e.latlng.lng.toFixed(6)
