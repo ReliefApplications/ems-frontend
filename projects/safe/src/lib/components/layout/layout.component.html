@@ -163,7 +163,9 @@
                     <mat-icon mat-list-icon class="nav-icon">
                       {{ item.icon }}
                     </mat-icon>
-                    <div mat-line class="nav-text"
+                    <div
+                      mat-line
+                      class="nav-text"
                       [matTooltip]="item.name"
                       matTooltipShowDelay="1000"
                       matTooltipPosition="right"
@@ -180,11 +182,10 @@
                     (click)="onClick(item.action.callback, $event)"
                   >
                     <mat-icon
-                    matTooltip="{{ item.action.toolTip }}"
-                    matTooltipPosition="left"
-                    >{{
-                      item.action.icon
-                    }}</mat-icon>
+                      matTooltip="{{ item.action.toolTip }}"
+                      matTooltipPosition="left"
+                      >{{ item.action.icon }}</mat-icon
+                    >
                   </button>
                   <button
                     mat-icon-button
