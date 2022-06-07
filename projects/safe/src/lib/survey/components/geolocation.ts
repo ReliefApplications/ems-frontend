@@ -94,11 +94,7 @@ export const init = (survey: any, esriApiKey: string): void => {
       }).addTo(map);
 
       const setValuesAndMarker = (adrs: string, lat: any, lng: any) => {
-        question.value = {
-          address: adrs,
-          lat,
-          lng,
-        };
+        question.value = adrs + ', lat: ' + lat + ', lng: ' + lng;
         if (marker) {
           map.removeLayer(marker);
         }
@@ -177,9 +173,26 @@ export const init = (survey: any, esriApiKey: string): void => {
        * Sets all the values with the updated data
        */
       const onValueChangedCallback = () => {
-        address.value = question.value ? question.value.address : '';
-        latitude.value = question.value ? question.value.lat : '';
-        longitude.value = question.value ? question.value.lng : '';
+        address.value = question.value.slice(
+          0,
+          question.value.indexOf(', lat: ')
+        );
+        latitude.value = question.value.slice(
+          question.value.indexOf(', lat: ') + 7,
+          question.value.indexOf(', lng: ')
+        );
+        longitude.value = question.value.slice(
+          question.value.indexOf(', lng: ') + 7
+        );
+        if (marker) {
+          map.removeLayer(marker);
+        }
+        marker = L.circleMarker(
+          { lat: latitude.value, lng: longitude.value },
+          MARKER_OPTIONS
+        );
+        marker.addTo(map);
+        map.setView({ lat: latitude.value, lng: longitude.value });
       };
       /**
        * Disable all inputs in readOnly mode
