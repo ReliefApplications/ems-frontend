@@ -9,6 +9,7 @@ import { Channel } from '../models/channel.model';
 import { Workflow } from '../models/workflow.model';
 import { Dashboard } from '../models/dashboard.model';
 import { ReferenceData } from '../models/reference-data.model';
+import { RecordHistory } from '../models/recordsHistory';
 
 // === GET PROFILE ===
 export const GET_PROFILE = gql`
@@ -297,6 +298,19 @@ export const GET_RECORD_BY_ID = gql`
         permissions {
           recordsUnicity
         }
+      }
+    }
+  }
+`;
+
+export const GET_RECORD_BY_ID_FOR_HISTORY = gql`
+  query GetRecordByIfForHistory($id: ID!) {
+    record(id: $id) {
+      id
+      incrementalId
+      form {
+        id
+        fields
       }
     }
   }
@@ -999,4 +1013,25 @@ export const GET_SHORT_REFERENCE_DATA_BY_ID = gql`
 export interface GetReferenceDataByIdQueryResponse {
   loading: boolean;
   referenceData: ReferenceData;
+}
+
+export const GET_RECORD_HISTORY_BY_ID = gql`
+  query GetRecordHistoryByID($id: ID!, $lang: String) {
+    recordHistory(id: $id, lang: $lang) {
+      created
+      createdBy
+      changes {
+        type
+        field
+        displayName
+        old
+        new
+      }
+    }
+  }
+`;
+
+export interface GetRecordHistoryByIdResponse {
+  loading: boolean;
+  recordHistory: RecordHistory;
 }

@@ -443,7 +443,19 @@
 			}
 		},
 		"history": {
+			"changes": {
+				"add": "Ajout",
+				"from": "de",
+				"modify": "Modification",
+				"remove": "Suppression",
+				"to": "à",
+				"withValue": "avec valeur"
+			},
 			"download": "Télécharger l'historique",
+			"field": {
+				"all": "Tous les champs",
+				"select": "Sélectionner un champ"
+			},
 			"preview": "Prévisualiser et revenir"
 		},
 		"logout": {

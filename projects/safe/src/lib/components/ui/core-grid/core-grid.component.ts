@@ -854,28 +854,19 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Opens the history of the record on the right side of the screen.
    *
-   * @param id id of record to get history of.
+   * @param item record to get history of.
    */
   public onViewHistory(item: any): void {
-    this.apollo
-      .query<GetRecordDetailsQueryResponse>({
-        query: GET_RECORD_DETAILS,
-        variables: {
-          id: item.id,
+    this.layoutService.setRightSidenav({
+      factory: this.factory,
+      inputs: {
+        id: item.id,
+        revert: (record: any, dialog: any) => {
+          this.confirmRevertDialog(item, record);
         },
-      })
-      .subscribe((res) => {
-        this.layoutService.setRightSidenav({
-          factory: this.factory,
-          inputs: {
-            record: res.data.record,
-            revert: (record: any, dialog: any) => {
-              this.confirmRevertDialog(res.data.record, record);
-            },
-            template: this.settings.template || null,
-          },
-        });
-      });
+        template: this.settings.template || null,
+      },
+    });
   }
 
   /**

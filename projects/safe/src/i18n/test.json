@@ -443,7 +443,19 @@
 			}
 		},
 		"history": {
+			"changes": {
+				"add": "******",
+				"from": "******",
+				"modify": "******",
+				"remove": "******",
+				"to": "******",
+				"withValue": "******"
+			},
 			"download": "******",
+			"field": {
+				"all": "******",
+				"select": "******"
+			},
 			"preview": "******"
 		},
 		"logout": {

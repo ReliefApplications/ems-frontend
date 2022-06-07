@@ -12,6 +12,7 @@ interface Version {
  */
 export interface Record {
   id?: string;
+  incrementalId?: string;
   createdAt?: Date;
   modifiedAt?: Date;
   deleted?: boolean;

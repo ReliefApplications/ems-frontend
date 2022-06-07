@@ -19,15 +19,12 @@ import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
 } from '../../../graphql/queries';
-import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   Component,
   OnInit,
   ViewChild,
   Input,
   Output,
-  ComponentFactory,
-  ComponentFactoryResolver,
   EventEmitter,
   Inject,
 } from '@angular/core';
@@ -37,7 +34,6 @@ import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose
 import { SafeAuthService } from '../../../services/auth.service';
 import { SafeEmailService } from '../../../services/email.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
-import { GridLayout } from '../../ui/core-grid/models/grid-layout.model';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
@@ -78,14 +74,10 @@ export class SafeGridWidgetComponent implements OnInit {
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
-  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
-  public factory?: ComponentFactory<any>;
-
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
@@ -100,9 +92,6 @@ export class SafeGridWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.gridSettings = { ...this.settings };
-    this.factory = this.resolver.resolveComponentFactory(
-      SafeRecordHistoryComponent
-    );
     if (this.settings.resource) {
       this.gridLayoutService
         .getLayouts(this.settings.resource, this.settings.layouts)
