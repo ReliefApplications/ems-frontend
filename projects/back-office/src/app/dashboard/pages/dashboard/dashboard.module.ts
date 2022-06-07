@@ -8,6 +8,9 @@ import {
   SafeWidgetGridModule,
   SafeButtonModule,
   SafeSkeletonModule,
+  SafeAlertModule,
+  SafeSearchMenuModule,
+  SafeIconModule,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -22,8 +25,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { SafeSearchMenuModule } from '@safe/builder';
-import { SafeIconModule } from 'projects/safe/src/lib/components/ui/icon/icon.module';
 
 @NgModule({
   declarations: [DashboardComponent, ShareUrlComponent],
@@ -50,6 +51,7 @@ import { SafeIconModule } from 'projects/safe/src/lib/components/ui/icon/icon.mo
     OverlayModule,
     SafeSearchMenuModule,
     SafeSkeletonModule,
+    SafeAlertModule,
   ],
   exports: [DashboardComponent],
 })

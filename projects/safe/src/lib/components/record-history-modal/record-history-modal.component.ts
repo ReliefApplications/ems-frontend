@@ -10,7 +10,7 @@ import { Record } from '../../models/record.model';
  * This interface describes the structure of the data that will be displayed in the dialog modal
  */
 interface DialogData {
-  record: Record;
+  id: string;
   revert: any;
 }
 

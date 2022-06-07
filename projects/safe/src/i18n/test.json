@@ -394,6 +394,9 @@
 			"deleteRow": {
 				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			},
+			"display": {
+				"submissionMessage": "******"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
@@ -443,7 +446,19 @@
 			}
 		},
 		"history": {
+			"changes": {
+				"add": "******",
+				"from": "******",
+				"modify": "******",
+				"remove": "******",
+				"to": "******",
+				"withValue": "******"
+			},
 			"download": "******",
+			"field": {
+				"all": "******",
+				"select": "******"
+			},
 			"preview": "******"
 		},
 		"logout": {
@@ -670,7 +685,8 @@
 				"empty": "******",
 				"errors": {
 					"invalid": "******",
-					"missingDataset": "******"
+					"missingDataset": "******",
+					"validationFailed": "****** {{index}} ****** {{question}} ****** {{error}}"
 				},
 				"export": {
 					"columns": {
@@ -776,6 +792,9 @@
 								"load": "******"
 							},
 							"select": "******",
+							"title": "******"
+						},
+						"edit": {
 							"title": "******"
 						},
 						"title": "******"
@@ -1013,7 +1032,10 @@
 			"template": "******"
 		},
 		"page": {
-			"add": "******"
+			"add": "******",
+			"tooltip": {
+				"duplicate": "******"
+			}
 		},
 		"positionAttribute": {
 			"new": "******"
@@ -1150,6 +1172,23 @@
 			"title": "******"
 		},
 		"formBuilder": {
+			"errors": {
+				"choices": {
+					"valueDuplicated": "****** {{question}}"
+				},
+				"missingName": "****** {{page}} ******",
+				"multipletext": {
+					"missingName": "****** {{question}}"
+				},
+				"resource": {
+					"invalidRelatedName": "****** {{relatedName}} ****** {{page}} ******",
+					"missingRelatedName": "****** {{question}} ****** {{page}} ******"
+				},
+				"snakecase": "****** {{name}} ****** {{page}} ******"
+			},
+			"questionsCategories": {
+				"core": "******"
+			},
 			"title": "******"
 		},
 		"forms": {

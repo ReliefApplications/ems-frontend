@@ -1,6 +1,4 @@
 import { gql } from 'apollo-angular';
-
-import { Form } from '../models/form.model';
 import { Notification } from '../models/notification.model';
 import { Record } from '../models/record.model';
 import { User, Role } from '../models/user.model';
@@ -14,6 +12,8 @@ import { Dashboard } from '../models/dashboard.model';
 import { Layout } from '../models/layout.model';
 
 // === EDIT RECORD ===
+
+/** Graphql request for editing a record by its id */
 export const EDIT_RECORD = gql`
   mutation editRecord(
     $id: ID!
@@ -34,12 +34,15 @@ export const EDIT_RECORD = gql`
   }
 `;
 
+/** Model for EditRecordMutationResponse object */
 export interface EditRecordMutationResponse {
   loading: boolean;
   editRecord: Record;
 }
 
 // === EDIT RECORDS ===
+
+/** Graphql request for editing multiple records by their ids */
 export const EDIT_RECORDS = gql`
   mutation editRecords($ids: [ID]!, $data: JSON!, $template: ID) {
     editRecords(ids: $ids, data: $data, template: $template) {
@@ -51,12 +54,15 @@ export const EDIT_RECORDS = gql`
   }
 `;
 
+/** Model for EditRecordsMutationResponse object */
 export interface EditRecordsMutationResponse {
   loading: boolean;
   editRecords: Record[];
 }
 
 // === CONVERT RECORD ===
+
+/** Graphql request for converting a record with its id and its form id */
 export const CONVERT_RECORD = gql`
   mutation convertRecord($id: ID!, $form: ID!, $copyRecord: Boolean!) {
     convertRecord(id: $id, form: $form, copyRecord: $copyRecord) {
@@ -67,12 +73,15 @@ export const CONVERT_RECORD = gql`
   }
 `;
 
+/** Model for ConvertRecordMutationResponse object */
 export interface ConvertRecordMutationResponse {
   loading: boolean;
   convertRecord: Record;
 }
 
 // === ADD RECORD ===
+
+/** Graphql request for adding a new record to a form */
 export const ADD_RECORD = gql`
   mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
     addRecord(form: $form, data: $data) {
@@ -97,24 +106,30 @@ export const ADD_RECORD = gql`
   }
 `;
 
+/** Model for AddRecordMutationResponse object */
 export interface AddRecordMutationResponse {
   loading: boolean;
   addRecord: Record;
 }
 
 // === UPLOAD FILE ===
+
+/** Graphql request for uploading a file to a form */
 export const UPLOAD_FILE = gql`
   mutation uploadFile($file: Upload!, $form: ID!) {
     uploadFile(file: $file, form: $form)
   }
 `;
 
+/** Model for UploadFileMutationResponse object */
 export interface UploadFileMutationResponse {
   loading: boolean;
   uploadFile: string;
 }
 
 // === EDIT USER ===
+
+/** Graphql request for editing roles of a user by its id */
 export const EDIT_USER = gql`
   mutation editUser(
     $id: ID!
@@ -150,12 +165,15 @@ export const EDIT_USER = gql`
   }
 `;
 
+/** Model for EditUserMutationResponse object */
 export interface EditUserMutationResponse {
   loading: boolean;
   editUser: User;
 }
 
 // === EDIT USER PROFILE ===
+
+/** Graphql request for editing the user profile */
 export const EDIT_USER_PROFILE = gql`
   mutation editUserProfile($profile: UserProfileInputType!) {
     editUserProfile(profile: $profile) {
@@ -175,12 +193,15 @@ export const EDIT_USER_PROFILE = gql`
   }
 `;
 
+/** Model for EditUserProfileMutationResponse object */
 export interface EditUserProfileMutationResponse {
   loading: boolean;
   editUserProfile: User;
 }
 
 // === ADD PAGE ===
+
+/** Graphql request for adding a new page of a given type to an application */
 export const ADD_PAGE = gql`
   mutation addPage($type: ContentEnumType!, $content: ID, $application: ID!) {
     addPage(type: $type, content: $content, application: $application) {
@@ -196,12 +217,15 @@ export const ADD_PAGE = gql`
   }
 `;
 
+/** Model for AddPageMutationResponse object */
 export interface AddPageMutationResponse {
   loading: boolean;
   addPage: Page;
 }
 
 // === ADD ROLE ===
+
+/** Graphql request for adding a new role to an application */
 export const ADD_ROLE = gql`
   mutation addRole($title: String!, $application: ID) {
     addRole(title: $title, application: $application) {
@@ -216,11 +240,13 @@ export const ADD_ROLE = gql`
   }
 `;
 
+/** Model for AddRoleMutationResponse object */
 export interface AddRoleMutationResponse {
   loading: boolean;
   addRole: Role;
 }
 
+/** Graphql request for adding a role to a user */
 export const ADD_ROLE_TO_USERS = gql`
   mutation addRoleToUsers(
     $usernames: [String]!
@@ -244,11 +270,13 @@ export const ADD_ROLE_TO_USERS = gql`
   }
 `;
 
+/** Model for AddRoleToUsersMutationResponse object */
 export interface AddRoleToUsersMutationResponse {
   loading: boolean;
   addRoleToUsers: User[];
 }
 
+/** Graphql request for adding users to an application */
 export const ADD_USERS = gql`
   mutation addUsers($users: [UserInputType]!, $application: ID) {
     addUsers(users: $users, application: $application) {
@@ -271,12 +299,15 @@ export const ADD_USERS = gql`
   }
 `;
 
+/** Model for AddUsersMutationResponse object */
 export interface AddUsersMutationResponse {
   loading: boolean;
   addUsers: User[];
 }
 
 // === EDIT ROLE ===
+
+/** Graphql request for editing a role by its id */
 export const EDIT_ROLE = gql`
   mutation editRole(
     $id: ID!
@@ -309,12 +340,15 @@ export const EDIT_ROLE = gql`
   }
 `;
 
+/** Model for EditRoleMutationResponse object */
 export interface EditRoleMutationResponse {
   loading: boolean;
   editRole: Role;
 }
 
 // === DELETE ROLE ===
+
+/** Graphql request for deleting a role by its id */
 export const DELETE_ROLE = gql`
   mutation deleteRole($id: ID!) {
     deleteRole(id: $id) {
@@ -323,24 +357,30 @@ export const DELETE_ROLE = gql`
   }
 `;
 
+/** Model for DeleteRoleMutationResponse object */
 export interface DeleteRoleMutationResponse {
   loading: boolean;
   deleteRole: Role;
 }
 
 // === DELETE USER ===
+
+/** Graphql request for deleting multiple users by their ids */
 export const DELETE_USERS = gql`
   mutation deleteUsers($ids: [ID]!) {
     deleteUsers(ids: $ids)
   }
 `;
 
+/** Model for DeleteUsersMutationResponse object */
 export interface DeleteUsersMutationResponse {
   loading: boolean;
   deleteUsers: number;
 }
 
 // === DELETE USER FROM APPLICATION ===
+
+/** Graphql request for removing multiple users from an application  */
 export const DELETE_USERS_FROM_APPLICATION = gql`
   mutation deleteUsersFromApplication($ids: [ID]!, $application: ID!) {
     deleteUsersFromApplication(ids: $ids, application: $application) {
@@ -356,12 +396,15 @@ export const DELETE_USERS_FROM_APPLICATION = gql`
   }
 `;
 
+/** Model for DeleteUsersFromApplicationMutationResponse object */
 export interface DeleteUsersFromApplicationMutationResponse {
   loading: boolean;
   deleteUsersFromApplication: User[];
 }
 
 // === ADD POSITION ===
+
+/** Graphql request for adding a new position attribute category to an application */
 export const ADD_POSITION_ATTRIBUTE_CATEGORY = gql`
   mutation addPositionAttributeCategory($title: String!, $application: ID!) {
     addPositionAttributeCategory(title: $title, application: $application) {
@@ -371,12 +414,15 @@ export const ADD_POSITION_ATTRIBUTE_CATEGORY = gql`
   }
 `;
 
+/** Model for AddPositionAttributeCategoryMutationResponse object */
 export interface AddPositionAttributeCategoryMutationResponse {
   loading: boolean;
   addPositionAttributeCategory: PositionAttributeCategory;
 }
 
 // === DELETE POSITION ===
+
+/** Graphql request for deleting a position attribute category from an application */
 export const DELETE_POSITION_ATTRIBUTE_CATEGORY = gql`
   mutation deletePositionAttributeCategory($id: ID!, $application: ID!) {
     deletePositionAttributeCategory(id: $id, application: $application) {
@@ -385,12 +431,15 @@ export const DELETE_POSITION_ATTRIBUTE_CATEGORY = gql`
   }
 `;
 
+/** Model for DeletePositionAttributeCategoryMutationResponse object */
 export interface DeletePositionAttributeCategoryMutationResponse {
   loading: boolean;
   deletePositionAttributeCategory: PositionAttributeCategory;
 }
 
 // === EDIT POSITION ===
+
+/** Graphql request for editing position attribute category in an application */
 export const EDIT_POSITION_ATTRIBUTE_CATEGORY = gql`
   mutation editPositionAttributeCategory(
     $id: ID!
@@ -408,11 +457,15 @@ export const EDIT_POSITION_ATTRIBUTE_CATEGORY = gql`
   }
 `;
 
+/** Model for EditPositionAttributeCategoryMutationResponse object */
 export interface EditPositionAttributeCategoryMutationResponse {
   loading: boolean;
   editPositionAttributeCategory: PositionAttributeCategory;
 }
+
 // === DELETE PAGE ===
+
+/** Graphql request for deleting a page by its id */
 export const DELETE_PAGE = gql`
   mutation deletePage($id: ID!) {
     deletePage(id: $id) {
@@ -421,11 +474,13 @@ export const DELETE_PAGE = gql`
   }
 `;
 
+/** Model for DeletePageMutationResponse object */
 export interface DeletePageMutationResponse {
   loading: boolean;
   deletePage: Page;
 }
 
+/** Graphql request for editing an application by its id */
 export const EDIT_APPLICATION = gql`
   mutation editApplication(
     $id: ID!
@@ -483,12 +538,15 @@ export const EDIT_APPLICATION = gql`
   }
 `;
 
+/** Model for EditApplicationMutationResponse object */
 export interface EditApplicationMutationResponse {
   loading: boolean;
   editApplication: Application;
 }
 
 // === SEE NOTIFICATION ===
+
+/** Graphql request for marking a notification as seen */
 export const SEE_NOTIFICATION = gql`
   mutation seeNotification($id: ID!) {
     seeNotification(id: $id) {
@@ -511,24 +569,30 @@ export const SEE_NOTIFICATION = gql`
   }
 `;
 
+/** Model for SeeNotificationMutationResponse object */
 export interface SeeNotificationMutationResponse {
   loading: boolean;
   seeNotification: Notification;
 }
 
 // === SEE ALL NOTIFICATION ===
+
+/** Graphql request for marking multiple notifications as seen */
 export const SEE_NOTIFICATIONS = gql`
   mutation seeNotifications($ids: [ID]!) {
     seeNotifications(ids: $ids)
   }
 `;
 
+/** Model for SeeNotificationsMutationResponse object */
 export interface SeeNotificationsMutationResponse {
   loading: boolean;
   seeNotifications: boolean;
 }
 
 // === ADD CHANNEL ===
+
+/** Graphql request for adding a new channel to an application */
 export const ADD_CHANNEL = gql`
   mutation addChannel($title: String!, $application: ID!) {
     addChannel(title: $title, application: $application) {
@@ -547,12 +611,15 @@ export const ADD_CHANNEL = gql`
   }
 `;
 
+/** Model for AddChannelMutationResponse object */
 export interface AddChannelMutationResponse {
   loading: boolean;
   addChannel: Channel;
 }
 
 // === EDIT CHANNEL ===
+
+/** Graphql request for editing a channel by its id */
 export const EDIT_CHANNEL = gql`
   mutation editChannel($id: ID!, $title: String!) {
     editChannel(id: $id, title: $title) {
@@ -562,12 +629,15 @@ export const EDIT_CHANNEL = gql`
   }
 `;
 
+/** Model for EditChannelMutationResponse object */
 export interface EditChannelMutationResponse {
   loading: boolean;
   editChannel: Channel;
 }
 
 // === DELETE CHANNEL ===
+
+/** Graphql request for deleting a channel */
 export const DELETE_CHANNEL = gql`
   mutation deleteChannel($id: ID!) {
     deleteChannel(id: $id) {
@@ -577,12 +647,15 @@ export const DELETE_CHANNEL = gql`
   }
 `;
 
+/** Model for DeleteChannelMutationResponse object */
 export interface DeleteChannelMutationResponse {
   loading: boolean;
   deleteChannel: Channel;
 }
 
 // === PUBLISH NOTIFICATION ===
+
+/** Graphql request for publishing a new notification onto a a channel */
 export const PUBLISH_NOTIFICATION = gql`
   mutation publishNotification(
     $action: String!
@@ -610,24 +683,30 @@ export const PUBLISH_NOTIFICATION = gql`
   }
 `;
 
+/** Model for PublishNotificationMutationResponse object */
 export interface PublishNotificationMutationResponse {
   loading: boolean;
   publishNotification: Notification;
 }
 
 // === PUBLISH RECORDS ===
+
+/** Graphql request for publishing rows to a channel */
 export const PUBLISH = gql`
   mutation publish($ids: [ID]!, $channel: ID!) {
     publish(ids: $ids, channel: $channel)
   }
 `;
 
+/** Model for PublishMutationResponse object */
 export interface PublishMutationResponse {
   loading: boolean;
   publish: boolean;
 }
 
 // === DELETE RECORD ===
+
+/** Graphql request for deleting a record by its id */
 export const DELETE_RECORD = gql`
   mutation deleteRecord($id: ID!) {
     deleteRecord(id: $id) {
@@ -636,24 +715,30 @@ export const DELETE_RECORD = gql`
   }
 `;
 
+/** Model for DeleteRecordMutationResponse object */
 export interface DeleteRecordMutationResponse {
   loading: boolean;
   deleteRecord: Record;
 }
 
 // === DELETE RECORD ===
+
+/** Graphl request for deleting multiple records by their ids */
 export const DELETE_RECORDS = gql`
   mutation deleteRecords($ids: [ID]!) {
     deleteRecords(ids: $ids)
   }
 `;
 
+/** Model for DeleteRecordsMutationResponse object */
 export interface DeleteRecordsMutationResponse {
   loading: boolean;
   deleteRecords: number;
 }
 
 // === ADD SUBSCRIPTION ===
+
+/** Graphql request for adding a new subscription to an application */
 export const ADD_SUBSCRIPTION = gql`
   mutation addSubscription(
     $application: ID!
@@ -683,12 +768,15 @@ export const ADD_SUBSCRIPTION = gql`
   }
 `;
 
+/** Model for AddSubscriptionMutationResponse object */
 export interface AddSubscriptionMutationResponse {
   loading: boolean;
   addSubscription: Subscription;
 }
 
 // === EDIT SUBSCRIPTION ===
+
+/** Graphql resuest for editing a subscription in an application */
 export const EDIT_SUBSCRIPTION = gql`
   mutation editSubscription(
     $applicationId: ID!
@@ -720,12 +808,15 @@ export const EDIT_SUBSCRIPTION = gql`
   }
 `;
 
+/** Model for EditSubscriptionMutationResponse object */
 export interface EditSubscriptionMutationResponse {
   loading: boolean;
   editSubscription: Subscription;
 }
 
 // === DELETE SUBSCRIPTION ===
+
+/** Grahql request for deleting a subscription from an application */
 export const DELETE_SUBSCRIPTION = gql`
   mutation deleteSubscription($applicationId: ID!, $routingKey: String!) {
     deleteSubscription(applicationId: $applicationId, routingKey: $routingKey) {
@@ -734,12 +825,14 @@ export const DELETE_SUBSCRIPTION = gql`
   }
 `;
 
+/** Model for DeleteSubscriptionMutationResponse object */
 export interface DeleteSubscriptionMutationResponse {
   loading: boolean;
   deleteSubscription: Subscription;
 }
 
 // === ADD STEP ===
+/** Graphql request for adding a new step of a given type to a workflow */
 export const ADD_STEP = gql`
   mutation addStep($type: String!, $content: ID, $workflow: ID!) {
     addStep(type: $type, content: $content, workflow: $workflow) {
@@ -752,12 +845,15 @@ export const ADD_STEP = gql`
   }
 `;
 
+/** Model for AddStepMutationResponse object */
 export interface AddStepMutationResponse {
   loading: boolean;
   addStep: Step;
 }
 
 // === TOGGLE APPLICATION LOCK ===
+
+/** Graphql request for toggling the application lock state */
 export const TOGGLE_APPLICATION_LOCK = gql`
   mutation toggleApplicationLock($id: ID!, $lock: Boolean!) {
     toggleApplicationLock(id: $id, lock: $lock) {
@@ -768,12 +864,15 @@ export const TOGGLE_APPLICATION_LOCK = gql`
   }
 `;
 
+/** Model for ToggleApplicationLockMutationResponse object */
 export interface ToggleApplicationLockMutationResponse {
   loading: boolean;
   toggleApplicationLock: Application;
 }
 
 // === EDIT DASHBOARD ===
+
+/** Graphql request for editing a dashboard by its id */
 export const EDIT_DASHBOARD = gql`
   mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
     editDashboard(id: $id, structure: $structure, name: $name) {
@@ -808,11 +907,13 @@ export const EDIT_DASHBOARD = gql`
   }
 `;
 
+/** Model for EditiDashboardMutationResponse object */
 export interface EditDashboardMutationResponse {
   loading: boolean;
   editDashboard: Dashboard;
 }
 
+/** Graphql request for adding a new layout with a given type */
 export const ADD_LAYOUT = gql`
   mutation addLayout($resource: ID, $form: ID, $layout: LayoutInputType!) {
     addLayout(resource: $resource, form: $form, layout: $layout) {
@@ -825,11 +926,13 @@ export const ADD_LAYOUT = gql`
   }
 `;
 
+/** Model for AddLayoutMutationResponse object */
 export interface AddLayoutMutationResponse {
   loading: boolean;
   addLayout: Layout;
 }
 
+/** Grahql request for editing a layout by its id */
 export const EDIT_LAYOUT = gql`
   mutation editLayout(
     $resource: ID
@@ -847,11 +950,13 @@ export const EDIT_LAYOUT = gql`
   }
 `;
 
+/** Model for EditLayoutMutationResponse object */
 export interface EditLayoutMutationResponse {
   loading: boolean;
   editLayout: Layout;
 }
 
+/** Graphql request for deleting a layout by its id */
 export const DELETE_LAYOUT = gql`
   mutation deleteLayout($resource: ID, $form: ID, $id: ID!) {
     deleteLayout(resource: $resource, form: $form, id: $id) {
@@ -862,6 +967,7 @@ export const DELETE_LAYOUT = gql`
   }
 `;
 
+/** Model for deleteLayoutMutationResponse object */
 export interface deleteLayoutMutationResponse {
   loading: boolean;
   deleteLayout: Layout;

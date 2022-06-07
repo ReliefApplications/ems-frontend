@@ -6,8 +6,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-/*  Text widget using KendoUI.
- */
+/** Text widget using KendoUI. */
 export class SafeEditorComponent implements OnInit {
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -19,8 +18,7 @@ export class SafeEditorComponent implements OnInit {
 
   constructor(private sanitizer: DomSanitizer) {}
 
-  /*  Sanitize the text.
-   */
+  /** Sanitize the text. */
   ngOnInit(): void {
     this.safeText = this.sanitizer.bypassSecurityTrustHtml(this.text);
   }

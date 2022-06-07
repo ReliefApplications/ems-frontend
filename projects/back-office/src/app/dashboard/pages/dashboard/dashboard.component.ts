@@ -145,8 +145,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.closeDashboard();
   }
 
-  /*  Add a new widget to the dashboard.
-   */
+  /** Add a new widget to the dashboard. */
   onAdd(e: any): void {
     const tile = JSON.parse(JSON.stringify(e));
     tile.id = this.generatedTiles;
@@ -202,8 +201,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*  Remove a widget from the dashboard.
-   */
+  /** Remove a widget from the dashboard. */
   onDeleteTile(e: any): void {
     this.tiles = this.tiles.filter((x) => x.id !== e.id);
     this.autoSaveChanges();
@@ -224,8 +222,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.autoSaveChanges();
   }
 
-  /*  Save the dashboard changes in the database.
-   */
+  /** Save the dashboard changes in the database. */
   private autoSaveChanges(): void {
     this.apollo
       .mutate<EditDashboardMutationResponse>({
@@ -246,8 +243,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       );
   }
 
-  /*  Edit the permissions layer.
-   */
+  /** Edit the permissions layer. */
   saveAccess(e: any): void {
     if (this.router.url.includes('/workflow/')) {
       this.apollo
@@ -292,8 +288,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*  Update the name of the dashboard and the step or page linked to it.
-   */
+  /** Update the name of the dashboard and the step or page linked to it. */
   saveName(): void {
     const { dashboardName } = this.dashboardNameForm.value;
     this.toggleFormActive();
@@ -343,9 +338,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Display the ShareUrl modal with the route to access the dashboard.
-   */
+  /** Display the ShareUrl modal with the route to access the dashboard. */
   public onShare(): void {
     const url = `${window.origin}/share/${this.dashboard?.id}`;
     const dialogRef = this.dialog.open(ShareUrlComponent, {

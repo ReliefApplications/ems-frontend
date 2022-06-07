@@ -60,8 +60,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     private router: Router
   ) {}
 
-  /*  Load the resources.
-   */
+  /** Load the resources. */
   ngOnInit(): void {
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES_EXTENDED,

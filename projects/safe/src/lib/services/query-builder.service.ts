@@ -20,13 +20,14 @@ const USER_FIELDS = ['id', 'name', 'username'];
 export class QueryBuilderService {
   /** Available forms / resources queries */
   private availableQueries = new BehaviorSubject<any[]>([]);
-  /** Available forms / resources queries as observalbe */
+  /** @returns Available forms / resources queries as observalbe */
   get availableQueries$(): Observable<any> {
     return this.availableQueries.asObservable();
   }
+
   /** Available forms / resources types */
   private availableTypes = new BehaviorSubject<any[]>([]);
-  /** Available forms / resources types as observable */
+  /** @returns Available forms / resources types as observable */
   get availableTypes$(): Observable<any> {
     return this.availableTypes.asObservable();
   }

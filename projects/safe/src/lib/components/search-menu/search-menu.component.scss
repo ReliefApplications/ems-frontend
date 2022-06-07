@@ -8,6 +8,10 @@
   flex-direction: column;
 }
 
+.application-list-header {
+  margin-top: 4px;
+}
+
 .application-list {
   display: flex;
   flex-direction: column;
@@ -18,4 +22,8 @@
 p {
   text-align: center;
   opacity: 0.5;
+}
+
+safe-button {
+  display: block;
 }

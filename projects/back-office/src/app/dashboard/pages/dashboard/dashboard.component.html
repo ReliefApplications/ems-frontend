@@ -47,12 +47,20 @@
           </button>
         </mat-menu>
 
+        <ng-template #searchMenuHeaderTemplate>
+          <safe-alert
+            ><safe-icon icon="info"></safe-icon>
+            {{ 'models.page.tooltip.duplicate' | translate }}
+          </safe-alert>
+        </ng-template>
+
         <ng-template
           cdkConnectedOverlay
           [cdkConnectedOverlayOrigin]="appMenuTrigger"
           [cdkConnectedOverlayOpen]="showAppMenu"
         >
           <safe-search-menu
+            [headerTemplate]="searchMenuHeaderTemplate"
             [currentApplicationId]="applicationId"
             [applications]="applications"
             (close)="showAppMenu = false"

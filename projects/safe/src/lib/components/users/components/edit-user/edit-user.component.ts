@@ -33,8 +33,7 @@ export class SafeEditUserComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
-  /*  Load the roles and build the form.
-   */
+  /** Load the roles and build the form. */
   ngOnInit(): void {
     if (this.data.positionAttributeCategories) {
       this.positionAttributeCategories = this.data.positionAttributeCategories;
@@ -60,8 +59,7 @@ export class SafeEditUserComponent implements OnInit {
     });
   }
 
-  /*  Close the modal without sending any data.
-   */
+  /** Close the modal without sending any data. */
   onClose(): void {
     this.dialogRef.close();
   }

@@ -1,0 +1,30 @@
+$spacing-left: 0.8em;
+$spacing-right: 0.8em;
+
+.safe-alert-content {
+  flex-grow: 1;
+  padding: $spacing-left $spacing-right;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.safe-alert {
+  display: flex;
+  border-radius: 8px;
+  opacity: 1;
+
+  safe-button {
+    align-self: center;
+  }
+}
+
+.close-alert {
+  animation: close-sequence 300ms ease-in-out forwards;
+}
+
+@keyframes close-sequence {
+  100% {
+    opacity: 0;
+  }
+}

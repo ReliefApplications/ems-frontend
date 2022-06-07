@@ -52,9 +52,8 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
       );
   }
 
-  /* Display the AddSubscription modal.
-    Create a new subscription linked to this application on close.
-  */
+  /** Display the AddSubscription modal.
+    Create a new subscription linked to this application on close. */
   onAdd(): void {
     const dialogRef = this.dialog.open(SubscriptionModalComponent, {
       width: '400px',

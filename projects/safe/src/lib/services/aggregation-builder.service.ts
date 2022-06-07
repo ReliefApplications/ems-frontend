@@ -25,11 +25,14 @@ export class AggregationBuilderService {
    * The aggregation is flexible.
    *
    * @param apollo Apollo client
+   * @param gridService The grid service
    */
   constructor(private apollo: Apollo, private gridService: SafeGridService) {}
 
   /**
-   * Returns an observable with all the data needed for the preview grid.
+   * Get the data for grid preview as an observable.
+   *
+   * @returns An observable with all the data needed for the preview grid.
    */
   public getPreviewGrid(): Observable<any> {
     return this.gridSubject.asObservable();
@@ -38,9 +41,10 @@ export class AggregationBuilderService {
   /**
    * Initializes preview grid using pipeline parameters.
    *
-   * @param aggregation form.
+   * @param aggregationForm The form for the aggregation
    * @param pipeline Array of stages.
-   * @param selected fields before aggregation.
+   * @param selectedFields Fields before aggregation.
+   * @param metaFields List of meta fields
    */
   public initGrid(
     aggregationForm: any,
@@ -99,7 +103,7 @@ export class AggregationBuilderService {
    * Formats fields so they are aligned with the queryBuilder format.
    *
    * @param fields Raw fields to format.
-   * @return formatted fields.
+   * @returns formatted fields.
    */
   public formatFields(fields: any[]): any[] {
     return fields.map((field: any) => {

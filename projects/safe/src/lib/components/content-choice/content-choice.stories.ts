@@ -31,6 +31,7 @@ const TEMPLATE: Story<SafeContentChoiceComponent> = (args) => ({
 
 /** Default template to export */
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   contentTypes: CONTENT_TYPES,
 };

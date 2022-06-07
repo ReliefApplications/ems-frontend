@@ -1,7 +1,6 @@
-<ng-container
-  *ngIf="headerTemplate"
-  [ngTemplateOutlet]="headerTemplate"
-></ng-container>
+<div class="application-list-header" *ngIf="headerTemplate">
+  <ng-container [ngTemplateOutlet]="headerTemplate"></ng-container>
+</div>
 <mat-form-field appearance="outline">
   <input
     matInput
@@ -27,6 +26,9 @@
       *ngFor="let item of searchResults"
       [block]="true"
       (click)="onClick(item)"
+      [matTooltip]="item.name"
+      matTooltipShowDelay="800"
+      matTooltipPosition="right"
       >{{ item.name }}</safe-button
     >
   </div>

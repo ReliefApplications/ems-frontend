@@ -313,12 +313,14 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         languages: this.languages,
       },
-      width: '100%',
+      panelClass: 'preferences-dialog',
     });
     dialogRef.afterClosed().subscribe((form) => {
       if (form && form.touched) {
         this.setLanguage(form.value.language);
         this.dateTranslate.use(form.value.dateFormat);
+      } else if (!form) {
+        this.setLanguage(this.getLanguage());
       }
     });
   }

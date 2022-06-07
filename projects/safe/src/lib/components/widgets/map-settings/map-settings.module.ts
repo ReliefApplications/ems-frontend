@@ -16,6 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 
+/** Module for map settings component */
 @NgModule({
   declarations: [SafeMapSettingsComponent],
   imports: [

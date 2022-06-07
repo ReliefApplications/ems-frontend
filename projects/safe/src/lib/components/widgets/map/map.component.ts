@@ -16,7 +16,7 @@ import { applyFilters } from './filter';
 import 'leaflet.markercluster';
 declare let L: any;
 
-/** Default marker */
+/** Default options for the marker */
 const MARKER_OPTIONS = {
   color: '#0090d1',
   opacity: 0.25,
@@ -31,9 +31,8 @@ interface IMarkersLayerValue {
   [name: string]: any;
 }
 
-/**
- * Map Widget component.
- */
+
+/** Component for the map widget */
 @Component({
   selector: 'safe-map',
   templateUrl: './map.component.html',
@@ -95,6 +94,12 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
 
+  /**
+   * Constructor of the map widget component
+   *
+   * @param apollo Apollo client
+   * @param queryBuilder The querybuilder service
+   */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
@@ -105,10 +110,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Generation of an unique id for the map ( in case multiple widgets use map ).
+   * Generation of an unique id for the map (in case multiple widgets use map).
    *
-   * @param parts number of parts
-   * @returns unique id
+   * @param parts Number of parts in the id (seperated by dashes "-")
+   * @returns A random unique id
    */
   private generateUniqueId(parts: number = 4): string {
     const stringArr: string[] = [];
@@ -122,9 +127,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     return stringArr.join('-');
   }
 
-  /**
-   * Once template is ready, builds the map.
-   */
+  /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
     // Calls the function wich draw the map.
     this.drawMap();
@@ -150,9 +153,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => this.map.invalidateSize(), 100);
   }
 
-  /**
-   * Creates the map with all useful parameters.
-   */
+  /** Create the map with all useful parameters */
   private drawMap(): void {
     const centerLong = this.settings.centerLong
       ? Number(this.settings.centerLong)
@@ -320,9 +321,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.categoryField = this.settings.category;
   }
 
-  /**
-   * Loads the data, using widget parameters.
-   */
+  /** Load the data, using widget parameters. */
   private getData(): void {
     this.map.closePopup(this.popupMarker);
     this.popupMarker = null;
