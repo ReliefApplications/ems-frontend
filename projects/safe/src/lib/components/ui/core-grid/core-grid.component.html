@@ -16,6 +16,7 @@
   [actions]="actions"
   [editable]="editable"
   [hasChanges]="hasChanges"
+  (selectionChange)="onSelectionChange($event)"
   [admin]="admin"
   (columnChange)="onColumnChange()"
   (searchChange)="onSearchChange($event)"

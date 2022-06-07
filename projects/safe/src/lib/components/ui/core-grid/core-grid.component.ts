@@ -578,6 +578,45 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.updatedItems = [];
   }
 
+  // === SELECTION ===
+
+  /**
+   * Handles selection change event, updating the selected fields
+   *
+   * @param selection Selection event.
+   */
+  public onSelectionChange(selection: SelectionEvent): void {
+    const deselectedRows = selection.deselectedRows || [];
+    const selectedRows = selection.selectedRows || [];
+    if (deselectedRows.length > 0) {
+      this.selectedRows = [
+        ...this.selectedRows.filter(
+          (x) => !deselectedRows.some((y) => x === y.dataItem.id)
+        ),
+      ];
+    }
+    if (selectedRows.length > 0) {
+      this.selectedRows = this.selectedRows.concat(
+        selectedRows.map((x) => x.dataItem.id)
+      );
+    }
+    this.selectionChange.emit(selection);
+  }
+
+  /**
+   * Initializes selected rows from input.
+   */
+  private initSelectedRows(): void {
+    this.selectedRowsIndex = [];
+    if (this.selectedRows.length > 0) {
+      this.gridData.data.forEach((row: any, index: number) => {
+        if (this.selectedRows.includes(row.id)) {
+          this.selectedRowsIndex.push(index + this.skip);
+        }
+      });
+    }
+  }
+
   // === GRID ACTIONS ===
   /**
    * Handles grid actions.
