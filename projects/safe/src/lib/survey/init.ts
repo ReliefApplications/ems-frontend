@@ -9,8 +9,7 @@ import { init as initOwnerComponent } from './components/owner';
 import { init as initUsersComponent } from './components/users';
 import { init as initTextWidget } from './widgets/text-widget';
 import { init as initCommentWidget } from './widgets/comment-widget';
-import { init as initResourceWidget } from './widgets/resource-widget';
-import { init as initResourcesWidget } from './widgets/resources-widget';
+import { initCustomProperties } from './custom-properties';
 import addCustomFunctions from '../utils/custom-functions';
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
@@ -21,7 +20,7 @@ import { SafeAuthService } from '../services/auth.service';
 /**
  * Executes all init methods of custom SurveyJS.
  *
- * @param survey surveyjs or surveyjs creator
+ * @param Survey surveyjs or surveyjs creator library
  * @param domService Shared DOM service, used to inject components on the go
  * @param dialog dialog service
  * @param apollo apollo service
@@ -29,8 +28,8 @@ import { SafeAuthService } from '../services/auth.service';
  * @param authService custom auth service
  * @param environment injected environment
  */
-export const initCustomWidgets = (
-  survey: any,
+export const initCustomSurvey = (
+  Survey: any,
   domService: DomService,
   dialog: MatDialog,
   apollo: Apollo,
@@ -38,18 +37,18 @@ export const initCustomWidgets = (
   authService: SafeAuthService,
   environment: any
 ): void => {
-  survey.settings.commentPrefix = '_comment';
+  Survey.settings.commentPrefix = '_comment';
   // load widgets (custom questions)
-  widgets.select2tagbox(survey);
-  initCommentWidget(survey);
-  initTextWidget(survey, domService);
-  initResourceWidget(survey, domService, dialog, environment);
-  initResourcesWidget(survey, domService, dialog, environment);
+  widgets.select2tagbox(Survey);
+  initCommentWidget(Survey);
+  initTextWidget(Survey, domService);
   // load components (pre-filled questions)
-  initResourceComponent(survey, domService, apollo, dialog, formBuilder);
-  initResourcesComponent(survey, domService, apollo, dialog, formBuilder);
-  initOwnerComponent(survey, domService, apollo, dialog, formBuilder);
-  initUsersComponent(survey, domService, apollo, dialog, formBuilder);
+  initResourceComponent(Survey, domService, apollo, dialog, formBuilder);
+  initResourcesComponent(Survey, domService, apollo, dialog, formBuilder);
+  initOwnerComponent(Survey, domService, apollo);
+  initUsersComponent(Survey, domService, apollo);
+  // load custom properties
+  initCustomProperties(Survey, domService, environment);
   // load internal functions
-  addCustomFunctions(survey, authService, apollo);
+  addCustomFunctions(Survey, authService, apollo);
 };

@@ -9,7 +9,9 @@ import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-d
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
+import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom.service';
+import { buildSearchButton, buildAddButton } from './utils';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -30,14 +32,14 @@ export const resourceConditions = [
 /**
  * Inits the resources question component for survey.
  *
- * @param survey Survey instance
+ * @param Survey Survey library
  * @param domService Shared DOM service
  * @param apollo Apollo client
  * @param dialog Material dialog service
  * @param formBuilder Angular form service
  */
 export const init = (
-  survey: any,
+  Survey: any,
   domService: DomService,
   apollo: Apollo,
   dialog: MatDialog,
@@ -79,7 +81,7 @@ export const init = (
     },
     resourceFieldsName: [] as any[],
     onInit: (): void => {
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'resource',
         category: 'Custom Questions',
         type: 'resourcesDropdown',
@@ -105,7 +107,7 @@ export const init = (
         resourceEditor
       );
 
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'displayField',
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -135,7 +137,7 @@ export const init = (
         },
       });
 
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'relatedName',
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -152,7 +154,7 @@ export const init = (
       });
 
       // Build set available grid fields button
-      survey.JsonObject.metaData.addProperty('resources', {
+      Survey.JsonObject.metaData.addProperty('resources', {
         name: 'Search resource table',
         type: 'resourcesFields',
         isRequired: true,
@@ -219,7 +221,7 @@ export const init = (
         availableFieldsEditor
       );
 
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'test service',
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
@@ -250,7 +252,7 @@ export const init = (
           }
         },
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'displayAsGrid:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -263,7 +265,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'addRecord:boolean',
         displayName: 'Add new records',
         category: 'Custom Questions',
@@ -278,7 +280,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'canDelete:boolean',
         displayName: 'Delete records',
         category: 'Custom Questions',
@@ -292,7 +294,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'history:boolean',
         displayName: 'Show history',
         category: 'Custom Questions',
@@ -306,7 +308,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'convert:boolean',
         displayName: 'Convert records',
         category: 'Custom Questions',
@@ -320,7 +322,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'update:boolean',
         dislayName: 'Update records',
         category: 'Custom Questions',
@@ -334,7 +336,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'inlineEdition:boolean',
         displayName: 'Inline edition',
         category: 'Custom Questions',
@@ -348,7 +350,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'canSearch:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -363,7 +365,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
@@ -394,7 +396,7 @@ export const init = (
           }
         },
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'prefillWithCurrentRecord:boolean',
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
@@ -407,7 +409,7 @@ export const init = (
         },
         visibleIndex: 8,
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'selectQuestion:dropdown',
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
@@ -436,7 +438,7 @@ export const init = (
         },
       });
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         name: 'gridFieldsSettings',
         dependsOn: 'resource',
         visibleIf: (obj: any) => {
@@ -446,7 +448,7 @@ export const init = (
           return false;
         },
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         type: 'string',
         name: 'staticValue',
         category: 'Filter by Questions',
@@ -455,7 +457,7 @@ export const init = (
           obj.selectQuestion === '#staticValue' && obj.displayField,
         visibleIndex: 3,
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         type: 'dropdown',
         name: 'filterBy',
         category: 'Filter by Questions',
@@ -475,7 +477,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         type: 'dropdown',
         name: 'filterCondition',
         category: 'Filter by Questions',
@@ -498,7 +500,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         category: 'Filter by Questions',
         type: 'selectResourceText',
         name: 'selectResourceText',
@@ -521,7 +523,7 @@ export const init = (
         selectResourceText
       );
 
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         category: 'Filter by Questions',
         type: 'customFilter',
         name: 'customFilterEl',
@@ -531,7 +533,7 @@ export const init = (
         visibleIndex: 3,
       });
 
-      survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resources', {
         category: 'Filter by Questions',
         type: 'text',
         name: 'customFilter',
@@ -699,14 +701,63 @@ export const init = (
       }
     },
     onAfterRender: (question: any, el: any): void => {
+      // hide tagbox if grid view is enable
       if (question.displayAsGrid) {
-        // hide tagbox if grid view is enable
         const element = el.getElementsByTagName('select')[0].parentElement;
         element.style.display = 'none';
       }
+      // Display the add button | grid for resources question
+      if (question.resource) {
+        const parentElement = el.querySelector('.safe-qst-content');
+        const gridComponent = buildRecordsGrid(
+          question,
+          parentElement.firstChild
+        );
+
+        if (question.survey.mode !== 'display') {
+          const actionsButtons = document.createElement('div');
+          actionsButtons.id = 'actionsButtons';
+          actionsButtons.style.display = 'flex';
+          actionsButtons.style.marginBottom = '0.5em';
+
+          const searchBtn = buildSearchButton(
+            question,
+            question.gridFieldsSettings,
+            true,
+            dialog
+          );
+          actionsButtons.appendChild(searchBtn);
+
+          const addBtn = buildAddButton(question, true, dialog, gridComponent);
+          actionsButtons.appendChild(addBtn);
+
+          parentElement.insertBefore(actionsButtons, parentElement.firstChild);
+          // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+
+          question.registerFunctionOnPropertyValueChanged(
+            'gridFieldsSettings',
+            () => {
+              searchBtn.style.display = question.gridFieldsSettings
+                ? ''
+                : 'none';
+            }
+          );
+          question.registerFunctionOnPropertyValueChanged('canSearch', () => {
+            searchBtn.style.display = question.canSearch ? '' : 'none';
+          });
+          question.registerFunctionOnPropertyValueChanged('addTemplate', () => {
+            addBtn.style.display =
+              question.addRecord && question.addTemplate ? '' : 'none';
+          });
+          question.registerFunctionOnPropertyValueChanged('addRecord', () => {
+            addBtn.style.display =
+              question.addRecord && question.addTemplate ? '' : 'none';
+          });
+        }
+      }
     },
   };
-  survey.ComponentCollection.Instance.add(component);
+  Survey.ComponentCollection.Instance.add(component);
 
   const setAdvanceFilter = (value: string, question: string | any) => {
     const field = typeof question !== 'string' ? question.filterBy : question;
@@ -723,5 +774,66 @@ export const init = (
         }
       });
     }
+  };
+
+  const buildRecordsGrid = (question: any, el: any): any => {
+    let instance: SafeCoreGridComponent;
+    if (question.displayAsGrid) {
+      const grid = domService.appendComponentToBody(
+        SafeCoreGridComponent,
+        el.parentElement
+      );
+      instance = grid.instance;
+      setGridInputs(instance, question);
+      question.survey.onValueChanged.add((_: any, options: any) => {
+        if (options.name === question.name) {
+          setGridInputs(instance, question);
+        }
+      });
+      return instance;
+    }
+    return null;
+  };
+
+  /**
+   * Sets the inputs of the grid.
+   *
+   * @param instance grid instance.
+   * @param question survey question.
+   */
+  const setGridInputs = (
+    instance: SafeCoreGridComponent,
+    question: any
+  ): void => {
+    instance.multiSelect = true;
+    const query = question.gridFieldsSettings || {};
+    const settings = {
+      query: {
+        ...query,
+        filter: {
+          logic: 'and',
+          filters: [
+            {
+              field: 'ids',
+              operator: 'eq',
+              value: question.value || [],
+            },
+          ],
+        },
+      },
+    };
+    if (!question.readOnlyGrid) {
+      Object.assign(settings, {
+        actions: {
+          delete: question.canDelete,
+          history: question.history,
+          convert: question.convert,
+          update: question.update,
+          inlineEdition: question.inlineEdition,
+        },
+      });
+    }
+    instance.settings = settings;
+    instance.ngOnChanges();
   };
 };

@@ -7,24 +7,24 @@ import {
 import * as SurveyCreator from 'survey-creator';
 
 /**
- * Custom definition for the text question. Allowed support for dates.
+ * Custom definition for overriding the text question. Allowed support for dates.
  *
- * @param survey Survey instance
+ * @param Survey Survey library
  * @param domService Shared DOM service
  */
-export const init = (survey: any, domService: DomService): void => {
+export const init = (Survey: any, domService: DomService): void => {
   const widget = {
     name: 'text-widget',
     widgetIsLoaded: (): boolean => true,
     isFit: (question: any): boolean => question.getType() === 'text',
     init: (): void => {
       // hide the min and max property for date, datetime and time types
-      survey.Serializer.getProperty('text', 'min').visibleIf = (obj: any) =>
+      Survey.Serializer.getProperty('text', 'min').visibleIf = (obj: any) =>
         ['number', 'month', 'week'].includes(obj.inputType || '');
-      survey.Serializer.getProperty('text', 'max').visibleIf = (obj: any) =>
+      Survey.Serializer.getProperty('text', 'max').visibleIf = (obj: any) =>
         ['number', 'month', 'week'].includes(obj.inputType || '');
       // create new min and max properties for date, datetime and time types
-      survey.Serializer.addProperty('text', {
+      Survey.Serializer.addProperty('text', {
         name: 'dateMin',
         type: 'date',
         category: 'general',
@@ -44,7 +44,7 @@ export const init = (survey: any, domService: DomService): void => {
           obj.setPropertyValue('min', value);
         },
       });
-      survey.Serializer.addProperty('text', {
+      Survey.Serializer.addProperty('text', {
         name: 'dateMax',
         type: 'date',
         category: 'general',
@@ -244,5 +244,8 @@ export const init = (survey: any, domService: DomService): void => {
     }
   };
 
-  survey.CustomWidgetCollection.Instance.addCustomWidget(widget);
+  Survey.CustomWidgetCollection.Instance.addCustomWidget(
+    widget,
+    'customwidget'
+  );
 };

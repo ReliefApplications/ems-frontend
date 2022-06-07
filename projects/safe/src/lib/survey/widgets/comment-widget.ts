@@ -1,15 +1,15 @@
 /**
- * Custom definition for the comment question. Add edit functionnality.
+ * Custom definition for overrriding the comment question. Add edit functionnality.
  *
- * @param survey Survey instance
+ * @param Survey Survey library
  */
-export const init = (survey: any): void => {
+export const init = (Survey: any): void => {
   const widget = {
     name: 'comment-widget',
     widgetIsLoaded: (): boolean => true,
     isFit: (question: any): boolean => question.getType() === 'comment',
     init: (): void => {
-      survey.Serializer.addProperty('comment', {
+      Survey.Serializer.addProperty('comment', {
         name: 'allowEdition:boolean',
         type: 'boolean',
         dependsOn: ['readOnly'],
@@ -51,5 +51,8 @@ export const init = (survey: any): void => {
     },
   };
 
-  survey.CustomWidgetCollection.Instance.addCustomWidget(widget);
+  Survey.CustomWidgetCollection.Instance.addCustomWidget(
+    widget,
+    'customwidget'
+  );
 };
