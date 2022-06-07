@@ -759,6 +759,12 @@ export const init = (
   };
   Survey.ComponentCollection.Instance.add(component);
 
+  /**
+   * Set an advance filter
+   *
+   * @param value Value of the filter
+   * @param question The question object
+   */
   const setAdvanceFilter = (value: string, question: string | any) => {
     const field = typeof question !== 'string' ? question.filterBy : question;
     if (!filters.some((x: any) => x.field === field)) {
@@ -776,6 +782,14 @@ export const init = (
     }
   };
 
+  /**
+   * Build the grid with the records
+   *
+   * @param question The resources question
+   * @param el The html element in which we want to build the grid
+   * @returns The SafeCoreGridComponent, or null if the displayAsGrid property
+   * of the question object is false
+   */
   const buildRecordsGrid = (question: any, el: any): any => {
     let instance: SafeCoreGridComponent;
     if (question.displayAsGrid) {

@@ -12,6 +12,8 @@ import { EmbeddedViewRef } from '@angular/core';
  * @param environment Current environment
  */
 export const initCustomProperties = (Survey: any, environment: any): void => {
+  // change the prefix for comments
+  Survey.settings.commentPrefix = '_comment';
   // add tooltip property
   Survey.Serializer.addProperty('question', {
     name: 'tooltip:text',
@@ -37,6 +39,7 @@ export const initCustomProperties = (Survey: any, environment: any): void => {
       options.request.setRequestHeader('Authorization', `Bearer ${token}`);
     }
   };
+  // add the onCompleteExpression property to the survey
   Survey.Serializer.addProperty('survey', {
     name: 'onCompleteExpression:expression',
     type: 'expression',
@@ -54,10 +57,11 @@ export const initCustomProperties = (Survey: any, environment: any): void => {
 export const renderCustomProperties =
   (domService: DomService): ((survey: any, options: any) => void) =>
   (_: any, options: { question: any; htmlElement: any }): void => {
+    // get the question and the html element of the question
     const el = options.htmlElement;
     const question = options.question;
 
-    // Display of tooltip
+    // Display the tooltip
     const header = el.parentElement.parentElement.querySelector('.sv_q_title');
     if (header) {
       header.title = question.tooltip;

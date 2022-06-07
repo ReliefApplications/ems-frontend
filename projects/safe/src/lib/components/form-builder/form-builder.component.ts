@@ -199,11 +199,17 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       });
       // Highlight core fields
       this.addCustomClassToCoreFields(coreFields);
-
-      this.surveyCreator.survey.onAfterRenderQuestion.add(
-        renderCustomProperties(this.domService)
-      );
     }
+
+    // add the rendering of custom properties
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      renderCustomProperties(this.domService)
+    );
+    this.surveyCreator.onTestSurveyCreated.add((_, options) =>
+      options.survey.onAfterRenderQuestion.add(
+        renderCustomProperties(this.domService)
+      )
+    );
   }
 
   ngOnChanges(): void {

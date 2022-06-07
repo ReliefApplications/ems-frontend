@@ -37,7 +37,6 @@ export const initCustomSurvey = (
   authService: SafeAuthService,
   environment: any
 ): void => {
-  Survey.settings.commentPrefix = '_comment';
   // load widgets (aka custom questions)
   widgets.select2tagbox(Survey);
   initCommentWidget(Survey);
