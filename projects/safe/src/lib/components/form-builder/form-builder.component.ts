@@ -13,6 +13,8 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
 import { Form } from '../../models/form.model';
 import { TranslateService } from '@ngx-translate/core';
+import { renderCustomProperties } from '../../survey/custom-properties';
+import { DomService } from '../../services/dom.service';
 
 /**
  * Array containing the different types of questions.
@@ -99,12 +101,14 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param dialog This is the Angular Material Dialog service used to display dialog modals
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
+   * @param domService The dom service
    */
   constructor(
     @Inject('environment') environment: any,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private domService: DomService
   ) {
     this.environment = environment;
   }
@@ -195,6 +199,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       });
       // Highlight core fields
       this.addCustomClassToCoreFields(coreFields);
+
+      this.surveyCreator.survey.onAfterRenderQuestion.add(
+        renderCustomProperties(this.domService)
+      );
     }
   }
 

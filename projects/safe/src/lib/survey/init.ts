@@ -38,17 +38,17 @@ export const initCustomSurvey = (
   environment: any
 ): void => {
   Survey.settings.commentPrefix = '_comment';
-  // load widgets (custom questions)
+  // load widgets (aka custom questions)
   widgets.select2tagbox(Survey);
   initCommentWidget(Survey);
   initTextWidget(Survey, domService);
-  // load components (pre-filled questions)
+  // load components (same as widgets, but with less configuration options)
   initResourceComponent(Survey, domService, apollo, dialog, formBuilder);
   initResourcesComponent(Survey, domService, apollo, dialog, formBuilder);
   initOwnerComponent(Survey, domService, apollo);
   initUsersComponent(Survey, domService, apollo);
   // load custom properties
-  initCustomProperties(Survey, domService, environment);
+  initCustomProperties(Survey, environment);
   // load internal functions
   addCustomFunctions(Survey, authService, apollo);
 };
