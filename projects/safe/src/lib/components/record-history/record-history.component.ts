@@ -17,7 +17,6 @@ import { Apollo } from 'apollo-angular';
 import {
   GetRecordByIdQueryResponse,
   GetRecordHistoryByIdResponse,
-  GET_RECORD_BY_ID,
   GET_RECORD_BY_ID_FOR_HISTORY,
   GET_RECORD_HISTORY_BY_ID,
 } from '../../graphql/queries';
@@ -85,13 +84,7 @@ export class SafeRecordHistoryComponent implements OnInit {
       })
       .subscribe((res) => {
         this.record = res.data.record;
-        if (this.record.form?.resource) {
-          this.sortedFields = this.sortFields(
-            this.record.form?.resource?.fields || []
-          );
-        } else {
-          this.sortedFields = this.sortFields(this.record.form?.fields || []);
-        }
+        this.sortedFields = this.sortFields(this.record.form?.fields || []);
       });
 
     this.apollo
@@ -296,7 +289,7 @@ export class SafeRecordHistoryComponent implements OnInit {
       to: `${new Date(this.filtersDate.endDate).getTime()}`,
       lng: this.translate.currentLang,
       dateLocale: this.dateFormat.currentLang,
-      ...(this.filterField && { field: this.filterField.slice(6) }),
+      ...(this.filterField && { field: this.filterField }),
     }).toString();
     this.downloadService.getFile(
       `${path}?${queryString}`,
