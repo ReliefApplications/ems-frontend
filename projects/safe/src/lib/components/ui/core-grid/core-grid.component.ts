@@ -602,6 +602,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // === GRID ACTIONS ===
+
   /**
    * Handles grid actions.
    *
