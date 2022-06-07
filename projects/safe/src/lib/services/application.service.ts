@@ -46,6 +46,8 @@ import {
   EDIT_CHANNEL,
   ToggleApplicationLockMutationResponse,
   TOGGLE_APPLICATION_LOCK,
+  duplicatePageMutationResponse,
+  DUPLICATE_PAGE,
 } from '../graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
@@ -70,10 +72,11 @@ import { TranslateService } from '@ngx-translate/core';
 export class SafeApplicationService {
   /** Current application */
   private application = new BehaviorSubject<Application | null>(null);
-  /** Current application as observable */
+  /** @returns Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();
   }
+
   /** Application query subscription */
   private applicationSubscription?: Subscription;
   /** Notifications query subscription */
@@ -82,17 +85,19 @@ export class SafeApplicationService {
   private lockSubscription?: Subscription;
   /** Current environment */
   private environment: any;
-  /** Path to download application users */
+
+  /** @returns Path to download application users */
   get usersDownloadPath(): string {
     const id = this.application.getValue()?.id;
     return `download/application/${id}/invite`;
   }
-  /** Path to upload application users */
+  /** @returns Path to upload application users */
   get usersUploadPath(): string {
     const id = this.application.getValue()?.id;
     return `upload/application/${id}/invite`;
   }
-  /** Edit status of the application */
+
+  /** @returns Edit status of the application */
   get isUnlocked(): boolean {
     const application = this.application.getValue();
     if (application) {
@@ -463,6 +468,53 @@ export class SafeApplicationService {
           }
         });
     }
+  }
+
+  /**
+   * Duplicates page in the indicated application.
+   *
+   * @param pageId page id which will be duplicated
+   * @param applicationId id of the application where it shoul be duplicated
+   */
+  duplicatePage(pageId: string, applicationId: string): void {
+    this.apollo
+      .mutate<duplicatePageMutationResponse>({
+        mutation: DUPLICATE_PAGE,
+        variables: {
+          id: pageId,
+          application: applicationId,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotCreated', {
+              type: this.translate.instant('common.page.one').toLowerCase(),
+              error: res.errors ? res.errors[0].message : '',
+            }),
+            { error: true }
+          );
+        } else {
+          if (res.data?.duplicatePage) {
+            const newPage = res.data.duplicatePage;
+            this.translate.instant('common.notifications.objectCreated', {
+              type: this.translate.instant('common.page.one').toLowerCase(),
+              value: newPage?.name,
+            });
+            const application = this.application.getValue();
+            if (applicationId === application?.id) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.concat([newPage]),
+              };
+              this.application.next(newApplication);
+            }
+            this.router.navigate([
+              `/applications/${applicationId}/${newPage?.type}/${newPage?.content}`,
+            ]);
+          }
+        }
+      });
   }
 
   /**
@@ -892,6 +944,7 @@ export class SafeApplicationService {
    * Adds a new channel to the application.
    *
    * @param channel new channel
+   * @param channel.title title of the channel
    */
   addChannel(channel: { title: string }): void {
     const application = this.application.getValue();
@@ -1000,6 +1053,10 @@ export class SafeApplicationService {
    * Adds a new subscription to the application.
    *
    * @param subscription new subscription
+   * @param subscription.routingKey routing key of the subscription
+   * @param subscription.title title of the subscription
+   * @param subscription.convertTo the format in which we want to convert
+   * @param subscription.channel the channel where to send subscriptions
    */
   addSubscription(subscription: {
     routingKey: string;

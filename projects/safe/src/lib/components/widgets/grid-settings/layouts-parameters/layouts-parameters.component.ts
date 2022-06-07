@@ -26,6 +26,12 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
   allLayouts: Layout[] = [];
   columns: string[] = ['name', 'createdAt', '_actions'];
 
+  /**
+   * Constructor of the layout parameters component
+   *
+   * @param dialog Material Dialog Service
+   * @param gridLayoutService The safe grid layout service
+   */
   constructor(
     private dialog: MatDialog,
     private gridLayoutService: SafeGridLayoutService
@@ -87,6 +93,7 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
         form: this.form,
         resource: this.resource,
       },
+      width: '400px',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -106,6 +113,8 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
 
   /**
    * Edits existing layout.
+   *
+   * @param layout The layout to edit
    */
   onEditLayout(layout: Layout): void {
     const dialogRef = this.dialog.open(SafeLayoutModalComponent, {

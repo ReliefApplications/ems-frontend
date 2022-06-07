@@ -13,6 +13,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * SafeConvertModalModule is a class used to manage all the modules and components
+ * related to the modals for the configuration of the convertion in grids.
+ */
 @NgModule({
   declarations: [SafeConvertModalComponent],
   imports: [

@@ -32,25 +32,35 @@ export class TreeItemFlatNode {
 export class ChecklistDatabase {
   dataChange = new BehaviorSubject<TreeItemNode[]>([]);
 
+  /**
+   * Getter for the value of the data
+   *
+   * @returns the value of the data (a node of a tree item)
+   */
   get data(): TreeItemNode[] {
     return this.dataChange.value;
   }
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param data Json object
+   */
   constructor(data: any) {
     this.initialize(data);
   }
 
+  /**
+   * Builds the tree nodes from Json object.
+   * The result is a list of `TodoItemNode` with nestedfile node as children. And notify the change.
+   *
+   * @param data Json object
+   */
   initialize(data: any) {
-    // Build the tree nodes from Json object. The result is a list of `TodoItemNode` with nested
-    //     file node as children.
-    // And notify the change.
     this.dataChange.next(this.buildFileTree(data, 0));
   }
 
-  /**
-   * Build the file structure tree. The `value` is the Json object, or a sub-tree of a Json object.
-   * The return value is the list of `TodoItemNode`.
-   */
   buildFileTree(
     obj: { [key: string]: any },
     level: number,
@@ -88,6 +98,9 @@ export class ChecklistDatabase {
   // }
 }
 
+/**
+ *
+ */
 @Component({
   selector: 'safe-checkbox-tree',
   templateUrl: './checkbox-tree.component.html',
@@ -114,7 +127,7 @@ export class SafeCheckboxTreeComponent implements OnInit {
 
   /** The selection for checklist */
   checklistSelection = new SelectionModel<TreeItemFlatNode>(
-    true /* multiple */
+    true /** multiple */
   );
 
   @Input() checklist!: ChecklistDatabase;
@@ -122,6 +135,9 @@ export class SafeCheckboxTreeComponent implements OnInit {
 
   @Output() valueChange = new EventEmitter<TreeItemFlatNode[]>();
 
+  /**
+   *
+   */
   constructor() {
     this.treeFlattener = new MatTreeFlattener(
       this.transformer,
@@ -162,6 +178,10 @@ export class SafeCheckboxTreeComponent implements OnInit {
 
   /**
    * Transformer to convert nested node to flat node. Record the nodes in maps for later use.
+   *
+   * @param node Node to flatten
+   * @param level Level of nesting
+   * @returns The flattened node
    */
   transformer = (node: TreeItemNode, level: number) => {
     const existingNode = this.nestedNodeMap.get(node);
@@ -178,7 +198,12 @@ export class SafeCheckboxTreeComponent implements OnInit {
     return flatNode;
   };
 
-  /** Whether all the descendants of the node are selected. */
+  /**
+   * Whether all the descendants of the node are selected.
+   *
+   * @param node The node whose descendants needs to be checked
+   * @returns true if all the descendants of the node are selected, false otherwise
+   */
   descendantsAllSelected(node: TreeItemFlatNode): boolean {
     const descendants = this.treeControl.getDescendants(node);
     const descAllSelected =
@@ -187,7 +212,12 @@ export class SafeCheckboxTreeComponent implements OnInit {
     return descAllSelected;
   }
 
-  /** Whether part of the descendants are selected */
+  /**
+   * Whether part of the descendants are selected
+   *
+   * @param node The node whose descendants needs to be checked
+   * @returns true if some descendants of the node are selected, false otherwise
+   */
   descendantsPartiallySelected(node: TreeItemFlatNode): boolean {
     const descendants = this.treeControl.getDescendants(node);
     const result = descendants.some((child) =>
@@ -196,7 +226,11 @@ export class SafeCheckboxTreeComponent implements OnInit {
     return result && !this.descendantsAllSelected(node);
   }
 
-  /** Toggle the tree item selection. Select/deselect all the descendants node */
+  /**
+   * Toggle the tree item selection. Select/deselect all the descendants node
+   *
+   * @param node The node whose descendants needs to be selected/deselected
+   */
   todoItemSelectionToggle(node: TreeItemFlatNode): void {
     this.checklistSelection.toggle(node);
     const descendants = this.treeControl.getDescendants(node);
@@ -210,14 +244,22 @@ export class SafeCheckboxTreeComponent implements OnInit {
     this.checkAllParentsSelection(node);
   }
 
-  /** Toggle a leaf to-do item selection. Check all the parents to see if they changed */
+  /**
+   * Toggle a leaf to-do item selection. Check all the parents to see if they changed
+   *
+   * @param node The leaf to-do item selected, whose parents need to be checked
+   */
   todoLeafItemSelectionToggle(node: TreeItemFlatNode): void {
     this.checklistSelection.toggle(node);
     this.checkAllParentsSelection(node);
     this.valueChange.emit(this.checklistSelection.selected);
   }
 
-  /* Checks all the parents when a leaf node is selected/unselected */
+  /**
+   * Checks all the parents when a leaf node is selected/unselected
+   *
+   * @param node The node whose parents we are checking
+   */
   checkAllParentsSelection(node: TreeItemFlatNode): void {
     let parent: TreeItemFlatNode | null = this.getParentNode(node);
     while (parent) {
@@ -226,7 +268,11 @@ export class SafeCheckboxTreeComponent implements OnInit {
     }
   }
 
-  /** Check root node checked state and change it accordingly */
+  /**
+   * Check root node checked state and change it accordingly
+   *
+   * @param node The root node
+   */
   checkRootNodeSelection(node: TreeItemFlatNode): void {
     const nodeSelected = this.checklistSelection.isSelected(node);
     const descendants = this.treeControl.getDescendants(node);
@@ -240,7 +286,12 @@ export class SafeCheckboxTreeComponent implements OnInit {
     }
   }
 
-  /* Get the parent node of a node */
+  /**
+   * Get the parent node of a node
+   *
+   * @param node The node from which we get the parents
+   * @returns the parent node if it exists, otherwise null
+   */
   getParentNode(node: TreeItemFlatNode): TreeItemFlatNode | null {
     const currentLevel = this.getLevel(node);
 

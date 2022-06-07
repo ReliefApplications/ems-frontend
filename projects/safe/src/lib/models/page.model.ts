@@ -47,7 +47,8 @@ export const CONTENT_TYPES: IContentType[] = [
   },
 ];
 
-/*  Model for Page object.
+/**
+ * Model for Page object.
  */
 export interface Page {
   id?: string;

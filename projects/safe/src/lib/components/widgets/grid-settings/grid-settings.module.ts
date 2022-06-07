@@ -22,6 +22,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
+/** Module for the grid widget settings component */
 @NgModule({
   declarations: [
     SafeGridSettingsComponent,

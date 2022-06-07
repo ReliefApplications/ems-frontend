@@ -9,6 +9,9 @@ import {
 import { FormArray, FormGroup, Validators } from '@angular/forms';
 import { createStyleForm } from '../query-builder-forms';
 
+/**
+ * Component to display the styling menu
+ */
 @Component({
   selector: 'safe-tab-style',
   templateUrl: './tab-style.component.html',
@@ -25,11 +28,19 @@ export class SafeTabStyleComponent implements OnInit {
   @ViewChild('childTemplate', { read: ViewContainerRef })
   childTemplate?: ViewContainerRef;
 
+  /**
+   * Getter for the styles
+   *
+   * @returns The styles in an array
+   */
   get styles$(): FormArray {
     return this.form.get('style') as FormArray;
   }
   public fieldForm: FormGroup | null = null;
 
+  /**
+   * Constructor for the styling component
+   */
   constructor() {}
 
   ngOnInit(): void {}
@@ -67,6 +78,11 @@ export class SafeTabStyleComponent implements OnInit {
     this.editedStyleForm = null;
   }
 
+  /**
+   * Handles the application of a style to fields
+   *
+   * @param value Wether the style is required or not
+   */
   public onApplyTo(value: boolean): void {
     if (value) {
       this.fieldForm?.get('fields')?.setValidators(Validators.required);

@@ -77,10 +77,19 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public form: Form | null = null;
   public resource: Resource | null = null;
 
+  /** @returns List of the floating buttons */
   get floatingButtons(): FormArray {
     return (this.tileForm?.controls.floatingButtons as FormArray) || null;
   }
 
+  /**
+   * Constructor of the grid settings component
+   *
+   * @param formBuilder The form builder of Angular
+   * @param apollo The apollo client
+   * @param applicationService The application service
+   * @param queryBuilder The query builder service
+   */
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
@@ -88,8 +97,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     private queryBuilder: QueryBuilderService
   ) {}
 
-  /*  Build the settings form, using the widget saved parameters.
-   */
+  /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     this.tileForm = this.formBuilder.group({

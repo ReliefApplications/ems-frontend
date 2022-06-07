@@ -23,9 +23,14 @@ interface ChartSeries {
   }[];
 }
 
+interface ChartLabels {
+  showValue: boolean;
+}
+
 interface ChartOptions {
   palette: string[];
   axes: any;
+  labels?: ChartLabels;
 }
 
 @Component({
@@ -57,15 +62,23 @@ export class SafeLineChartComponent implements OnInit, OnChanges {
     maxDivisions: 10,
   };
 
+  public labels: any;
+
   constructor() {}
 
   ngOnInit(): void {
     this.min = get(this.options, 'axes.x.min');
     this.max = get(this.options, 'axes.x.max');
+    this.labels = {
+      visible: get(this.options, 'labels.showValue'),
+    };
   }
 
   ngOnChanges(): void {
     this.min = get(this.options, 'axes.x.min');
     this.max = get(this.options, 'axes.x.max');
+    this.labels = {
+      visible: get(this.options, 'labels.showValue'),
+    };
   }
 }

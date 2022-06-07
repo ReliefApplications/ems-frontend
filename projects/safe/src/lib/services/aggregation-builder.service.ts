@@ -25,11 +25,14 @@ export class AggregationBuilderService {
    * The aggregation is flexible.
    *
    * @param apollo Apollo client
+   * @param gridService The grid service
    */
   constructor(private apollo: Apollo, private gridService: SafeGridService) {}
 
   /**
-   * Returns an observable with all the data needed for the preview grid.
+   * Get the data for grid preview as an observable.
+   *
+   * @returns An observable with all the data needed for the preview grid.
    */
   public getPreviewGrid(): Observable<any> {
     return this.gridSubject.asObservable();
@@ -38,9 +41,10 @@ export class AggregationBuilderService {
   /**
    * Initializes preview grid using pipeline parameters.
    *
-   * @param aggregation form.
+   * @param aggregationForm The form for the aggregation
    * @param pipeline Array of stages.
-   * @param selected fields before aggregation.
+   * @param selectedFields Fields before aggregation.
+   * @param metaFields List of meta fields
    */
   public initGrid(
     aggregationForm: any,
@@ -99,7 +103,7 @@ export class AggregationBuilderService {
    * Formats fields so they are aligned with the queryBuilder format.
    *
    * @param fields Raw fields to format.
-   * @return formatted fields.
+   * @returns formatted fields.
    */
   public formatFields(fields: any[]): any[] {
     return fields.map((field: any) => {
@@ -158,31 +162,31 @@ export class AggregationBuilderService {
       switch (stage.type) {
         case PipelineStage.GROUP: {
           if (stage.form.groupBy) {
-            let groupByField = fields.find(
-              (x) => x.name === stage.form.groupBy
-            );
-            if (!groupByField && stage.form.groupBy.includes('.')) {
-              const fieldArray = stage.form.groupBy.split('.');
-              const parent = fieldArray.shift();
-              const sub = fieldArray.pop();
-              groupByField = fields.reduce((o, field) => {
-                if (
-                  field.name === parent &&
-                  field.fields.some((x: any) => x.name === sub)
-                ) {
-                  const newField = { ...field };
-                  newField.fields = field.fields.filter(
-                    (x: any) => x.name === sub
-                  );
-                  return newField;
-                }
-                return o;
-              }, null);
-            }
+            let groupByField = this.findField(stage.form.groupBy, fields);
             fields = [];
             if (groupByField) {
-              fields.push(groupByField);
+              // Change field type because of automatic unwind
+              const newField = Object.assign({}, groupByField);
+              newField.type = { ...groupByField.type };
+              if (stage.form.groupBy.includes('.')) {
+                const fieldArray = stage.form.groupBy.split('.');
+                const sub = fieldArray.pop();
+                newField.type.kind = 'OBJECT';
+                newField.fields = newField.fields.map((x: any) =>
+                  x.name === sub
+                    ? {
+                        ...x,
+                        type: { ...x.type, kind: 'SCALAR', name: 'String' },
+                      }
+                    : x
+                );
+              } else {
+                newField.type.kind = 'SCALAR';
+                newField.type.name = 'String';
+              }
+              groupByField = newField;
             }
+            fields.push(groupByField);
           }
           if (stage.form.addFields) {
             this.addFields(fields, stage.form.addFields, initialFields);
@@ -238,10 +242,17 @@ export class AggregationBuilderService {
     return fields.sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
   }
 
+  /**
+   * Adds fields in list of fields.
+   *
+   * @param fields list of fields.
+   * @param form form value
+   * @param initialFields initial list of fields
+   */
   private addFields(fields: any[], form: any, initialFields: any[]): void {
     for (const addField of form) {
       fields.push({
-        name: addField.name,
+        name: addField.name ? addField.name : addField.expression.operator,
         type: {
           name:
             addField.expression.operator === Accumulators.AVG
@@ -255,5 +266,35 @@ export class AggregationBuilderService {
         },
       });
     }
+  }
+
+  /**
+   * Gets a field in list of fields.
+   *
+   * @param fieldName name of field to search
+   * @param fields list of fields
+   * @returns field
+   */
+  public findField(fieldName: string, fields: any[]): any {
+    let outField = fields.find((x) => x.name === fieldName);
+    if (!outField && fieldName.includes('.')) {
+      const fieldArray = fieldName.split('.');
+      const parent = fieldArray.shift();
+      const sub = fieldArray.pop();
+      outField = fields.reduce((o, field) => {
+        if (
+          field.name === parent &&
+          field.fields.some((x: any) => x.name === sub)
+        ) {
+          const newField = { ...field };
+          newField.fields = field.fields.filter((x: any) => x.name === sub);
+          return newField;
+        }
+        return o;
+      }, null);
+    } else {
+      outField = { ...outField };
+    }
+    return outField;
   }
 }

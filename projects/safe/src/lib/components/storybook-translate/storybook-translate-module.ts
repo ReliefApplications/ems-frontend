@@ -7,11 +7,8 @@ import {
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
+/** An unused configuration constant set to undefined*/
 const CONFIG = undefined;
-
-/**
-  A utility module adding I18N support for Storybook stories
- **/
 
 /**
  * Sets up translator.
@@ -21,6 +18,9 @@ const CONFIG = undefined;
  */
 export const httpTranslateLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http);
+/**
+ * A utility module adding I18N support for Storybook stories
+ */
 @NgModule({
   imports: [
     HttpClientModule,
@@ -35,6 +35,12 @@ export const httpTranslateLoader = (http: HttpClient) =>
   ],
 })
 export class StorybookTranslateModule {
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created
+   *
+   * @param translateService The translate service that will be used to translate the text.
+   */
   constructor(translateService: TranslateService) {
     translateService.setDefaultLang('en');
     translateService.use('en');

@@ -61,22 +61,26 @@
   <button mat-button color="warn" (click)="onClose()">
     {{ 'common.close' | translate }}
   </button>
-  <button
-    *ngIf="!survey.isFirstPage"
-    mat-button
-    color="primary"
-    (click)="survey.prevPage()"
-  >
-    {{ 'common.previous' | translate }}
-  </button>
-  <button
-    *ngIf="!survey.isLastPage"
-    mat-button
-    color="primary"
-    (click)="survey.nextPage()"
-  >
-    {{ 'common.next' | translate }}
-  </button>
+  <ng-container *ngIf="pages$ | async as pages">
+    <button
+      *ngIf="pages.length > 1"
+      [disabled]="survey.isFirstPage"
+      mat-button
+      color="primary"
+      (click)="survey.prevPage()"
+    >
+      {{ 'common.previous' | translate }}
+    </button>
+    <button
+      *ngIf="pages.length > 1"
+      [disabled]="survey.isLastPage"
+      mat-button
+      color="primary"
+      (click)="survey.nextPage()"
+    >
+      {{ 'common.next' | translate }}
+    </button>
+  </ng-container>
   <button *ngIf="canEdit" mat-flat-button color="primary" (click)="onEdit()">
     {{
       'common.editObject' | translate: { name: 'common.record.few' | translate }

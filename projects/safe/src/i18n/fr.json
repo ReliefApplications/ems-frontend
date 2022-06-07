@@ -394,6 +394,9 @@
 			"deleteRow": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?"
 			},
+			"display": {
+				"submissionMessage": "Le formulaire a été sauvegardé."
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"
@@ -443,7 +446,19 @@
 			}
 		},
 		"history": {
+			"changes": {
+				"add": "Ajout",
+				"from": "de",
+				"modify": "Modification",
+				"remove": "Suppression",
+				"to": "à",
+				"withValue": "avec valeur"
+			},
 			"download": "Télécharger l'historique",
+			"field": {
+				"all": "Tous les champs",
+				"select": "Sélectionner un champ"
+			},
 			"preview": "Prévisualiser et revenir"
 		},
 		"logout": {
@@ -537,6 +552,14 @@
 				"operator": "Opérateur",
 				"or": "Ou",
 				"title": "Style"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "Utiliser une expression",
+						"usePicker": "Choisir une date"
+					}
+				}
 			}
 		},
 		"record": {
@@ -662,7 +685,8 @@
 				"empty": "Aucun enregistrement détecté",
 				"errors": {
 					"invalid": "Configuration de grille invalide",
-					"missingDataset": "Sélectionner un jeu de données dans les jeux de données"
+					"missingDataset": "Sélectionner un jeu de données dans les jeux de données",
+					"validationFailed": "Sauvegarde échouée, la ligne {{index}} est invalide\n{{question}}: {{error}}"
 				},
 				"export": {
 					"columns": {
@@ -698,6 +722,13 @@
 			"settings": {
 				"chart": {
 					"axes": "Axes",
+					"labels": {
+						"percentage": "Pourcentage",
+						"showCategory": "Afficher la catégorie",
+						"showValue": "Afficher la valeur",
+						"title": "Labels",
+						"valueType": "Type de valeur"
+					},
 					"legend": "Légende",
 					"orientation": "Orientation",
 					"palette": {
@@ -763,6 +794,9 @@
 							"select": "Sélectionner une mise en page",
 							"title": "Ajouter une nouvelle mise en page"
 						},
+						"edit": {
+							"title": "Configuration de la mise en page"
+						},
 						"title": "Mise en page de la grille"
 					}
 				},
@@ -789,7 +823,21 @@
 	},
 	"kendo": {
 		"datepicker": {
-			"today": "Aujourd'hui"
+			"today": "Aujourd'hui",
+			"toggle": "Sélectionnez une date"
+		},
+		"datetimepicker": {
+			"accept": "Accepter",
+			"acceptLabel": "Accepter",
+			"cancel": "Annuler",
+			"cancelLabel": "Annuler",
+			"dateTab": "Date",
+			"dateTabLabel": "Date",
+			"now": "Maintenant",
+			"timeTab": "Heure",
+			"timeTabLabel": "Heure",
+			"today": "Aujourd'hui",
+			"toggle": "Sélectionnez une date et une heure"
 		},
 		"editor": {
 			"addColumnAfter": "Nouvelle colonne à droite",
@@ -920,6 +968,14 @@
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
 		},
+		"timepicker": {
+			"accept": "Accepter",
+			"acceptLabel": "Accepter",
+			"cancel": "Annuler",
+			"cancelLabel": "Annuler",
+			"now": "Maintenant",
+			"toggle": "Sélectionner une heure"
+		},
 		"upload": {
 			"dropFilesHere": "Déposez les fichiers ici pour les importer",
 			"select": "Sélectionner les fichiers..."
@@ -965,7 +1021,10 @@
 			"template": "Modèle"
 		},
 		"page": {
-			"add": "Ajouter une page"
+			"add": "Ajouter une page",
+			"tooltip": {
+				"duplicate": "Sélectionner l'application où copier la page"
+			}
 		},
 		"positionAttribute": {
 			"new": "Nouvel attribut de position"
@@ -1102,6 +1161,23 @@
 			"title": "Mes applications"
 		},
 		"formBuilder": {
+			"errors": {
+				"choices": {
+					"valueDuplicated": "Veuillez configurer des valeurs uniques pour les choix de la question : {{question}}"
+				},
+				"missingName": "Nom manquant pour un élément de la page : {{page}}. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire.",
+				"multipletext": {
+					"missingName": "Veuillez configurer un nom ou titre pour chaque champ de text de la question : {{question}}"
+				},
+				"resource": {
+					"invalidRelatedName": "Le nom relatif {{relatedName}} de la page {{page}} est invalide. Veuillez configurer un nom au format snake_case.",
+					"missingRelatedName": "Nom relatif manquant pour la question {{question}} de la page {{page}}. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
+				},
+				"snakecase": "Le nom de valeur {{name}} de la page {{page}} est invalide. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
+			},
+			"questionsCategories": {
+				"core": "Bibliothèque de questions"
+			},
 			"title": "Paramètres avancés"
 		},
 		"forms": {
