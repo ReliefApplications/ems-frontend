@@ -91,6 +91,23 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() settings: any = null;
+  @Input() export = true;
+
+  /**
+   * Get filename from the date and widget title
+   *
+   * @returns filename
+   */
+  get fileName(): string {
+    const today = new Date();
+    const formatDate = `${today.toLocaleString('en-us', {
+      month: 'short',
+      day: 'numeric',
+    })} ${today.getFullYear()}`;
+    return `${
+      this.settings.title ? this.settings.title : 'Map'
+    } ${formatDate}.png`;
+  }
 
   // This will be substituted when the querry returns the catgory tippe
   private categoryField = '';
@@ -337,16 +354,19 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   /**
    *
    */
-  public printMap() {
+  public onExport() {
     const customSize = {
       width: document.getElementById(this.mapId)?.clientWidth,
       height: document.getElementById(this.mapId)?.clientHeight,
       className: 'customSizeClass',
     };
 
+    const exportValue = this.export;
+
     this.map.removeControl(this.searchControl);
     this.map.removeControl(this.zoomControl);
     this.map.removeControl(this.layerControl);
+    this.export = false;
 
     const basePrintLayer = L.tileLayer(
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -360,7 +380,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       hideControlContainer: false,
     }).addTo(this.map);
 
-    printPlugin.printMap('customSizeClass', 'MyFileName');
+    printPlugin.printMap('customSizeClass', this.fileName);
 
     setTimeout(() => {
       this.map.removeLayer(basePrintLayer);
@@ -368,6 +388,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.searchControl.addTo(this.map);
       this.zoomControl.addTo(this.map);
       this.layerControl.addTo(this.map);
+      this.export = exportValue;
     }, 5000);
   }
 
@@ -483,7 +504,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           if (!error) {
             this.overlays[layer.title].addTo(this.map);
           } else {
-            console.log('Error at loadind "' + layer.title + '"');
+            console.log('Error at loading "' + layer.title + '"');
             console.log(error);
           }
         });

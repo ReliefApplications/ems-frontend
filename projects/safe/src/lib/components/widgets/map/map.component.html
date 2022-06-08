@@ -1,4 +1,12 @@
 <div class="widget-container">
+  <safe-button
+    *ngIf="export"
+    [isIcon]="true"
+    icon="get_app"
+    class="export-button"
+    (click)="onExport()"
+  >
+  </safe-button>
   <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
     <span class="widget-title" [title]="settings ? settings.title : ''">{{
       settings && settings.title
@@ -11,5 +19,4 @@
       Last update: {{ lastUpdate }}
     </p>
   </div>
-  <button (click)="printMap()">Print</button>
 </div>
