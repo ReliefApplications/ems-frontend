@@ -288,19 +288,21 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.pageSize = this.settings.query.pageSize;
     }
     // Builds custom query.
-    const builtQuery = this.queryBuilder.buildQuery(this.settings);
-    this.dataQuery = this.apollo.watchQuery<any>({
-      query: builtQuery,
-      variables: {
-        first: this.pageSize,
-        filter: this.queryFilter,
-        sortField: this.sortField,
-        sortOrder: this.sortOrder,
-        styles: this.style,
-      },
-      fetchPolicy: 'network-only',
-      nextFetchPolicy: 'cache-first',
-    });
+    if (!this.dataSubscription) {
+      const builtQuery = this.queryBuilder.buildQuery(this.settings);
+      this.dataQuery = this.apollo.watchQuery<any>({
+        query: builtQuery,
+        variables: {
+          first: this.pageSize,
+          filter: this.queryFilter,
+          sortField: this.sortField,
+          sortOrder: this.sortOrder,
+          styles: this.style,
+        },
+        fetchPolicy: 'network-only',
+        nextFetchPolicy: 'cache-first',
+      });
+    }
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
     if (this.metaQuery) {
       this.loading = true;
@@ -348,18 +350,19 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Get template structure, for inline edition validation.
    */
   private async loadTemplate(): Promise<void> {
-    this.apollo
-      .query<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.settings.template,
-        },
-      })
-      .subscribe((res) => {
-        if (res.data.form.structure) {
-          this.templateStructure = res.data.form.structure;
-        }
-      });
+    if (this.settings.template)
+      this.apollo
+        .query<GetFormByIdQueryResponse>({
+          query: GET_FORM_BY_ID,
+          variables: {
+            id: this.settings.template,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data.form.structure) {
+            this.templateStructure = res.data.form.structure;
+          }
+        });
   }
 
   // === GRID FIELDS ===
