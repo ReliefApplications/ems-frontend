@@ -139,10 +139,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   public selectableSettings = SELECTABLE_SETTINGS;
   @Input() selectedRows: string[] = [];
   @Output() selectionChange = new EventEmitter();
-  // get selectedItems(): any[] {
-  //   return this.grid?.data.
-  //   filter((x) => this.selectedRows.includes(x.id));
-  // }
+  get selectedItems(): any[] {
+    console.log(this.data.data);
+    return [];
+  }
 
   // === FILTER ===
   @Input() filterable = true;
