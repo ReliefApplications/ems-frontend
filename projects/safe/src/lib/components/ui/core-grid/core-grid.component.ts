@@ -578,6 +578,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.updatedItems = [];
   }
 
+  // === SELECTION ===
+
   /**
    * Handle selection change event.
    *
@@ -599,20 +601,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       );
     }
     this.selectionChange.emit(selection);
-  }
-
-  /**
-   * Initializes selected rows from input.
-   */
-  private initSelectedRows(): void {
-    this.selectedRowsIndex = [];
-    if (this.selectedRows.length > 0) {
-      this.gridData.data.forEach((row: any, index: number) => {
-        if (this.selectedRows.includes(row.id)) {
-          this.selectedRowsIndex.push(index + this.skip);
-        }
-      });
-    }
   }
 
   // === GRID ACTIONS ===
