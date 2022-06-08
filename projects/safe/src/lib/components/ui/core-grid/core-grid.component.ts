@@ -9,6 +9,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -259,7 +260,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Detects changes of the settings to (re)load the data.
    */
-  ngOnChanges(): void {
+  ngOnChanges(changes?: SimpleChanges): void {
+    if (changes?.settings) {
+      this.configureGrid();
+    }
+  }
+
+  public configureGrid(): void {
     // define row actions
     this.actions = {
       add:
@@ -288,21 +295,19 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.pageSize = this.settings.query.pageSize;
     }
     // Builds custom query.
-    if (!this.dataSubscription) {
-      const builtQuery = this.queryBuilder.buildQuery(this.settings);
-      this.dataQuery = this.apollo.watchQuery<any>({
-        query: builtQuery,
-        variables: {
-          first: this.pageSize,
-          filter: this.queryFilter,
-          sortField: this.sortField,
-          sortOrder: this.sortOrder,
-          styles: this.style,
-        },
-        fetchPolicy: 'network-only',
-        nextFetchPolicy: 'cache-first',
-      });
-    }
+    const builtQuery = this.queryBuilder.buildQuery(this.settings);
+    this.dataQuery = this.apollo.watchQuery<any>({
+      query: builtQuery,
+      variables: {
+        first: this.pageSize,
+        filter: this.queryFilter,
+        sortField: this.sortField,
+        sortOrder: this.sortOrder,
+        styles: this.style,
+      },
+      fetchPolicy: 'network-only',
+      nextFetchPolicy: 'cache-first',
+    });
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
     if (this.metaQuery) {
       this.loading = true;
