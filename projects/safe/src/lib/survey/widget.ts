@@ -692,7 +692,6 @@ export const init = (
       setGridInputs(instance, question);
       question.survey.onValueChanged.add((_: any, options: any) => {
         if (options.name === question.name) {
-          console.log('there');
           setGridInputs(instance, question);
         }
       });
