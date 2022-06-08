@@ -96,13 +96,15 @@
       </mat-expansion-panel-header>
 
       <ng-template matExpansionPanelContent>
-        <div
-          class="changes-content"
-          *ngFor="
-            let value of showMore ? item.changes : item.changes.slice(0, 4)
-          "
-          [innerHTML]="getHTMLFromChange(value)"
-        ></div>
+        <div *ngFor="
+          let value of showMore ? item.changes : item.changes.slice(0, 4)"
+        >
+          <div
+            class="changes-content"
+            *ngIf="!filterField || value.field === filterField"
+            [innerHTML]="getHTMLFromChange(value)"
+          ></div>
+        </div>
         <div class="full-history">
           <safe-button
             variant="primary"

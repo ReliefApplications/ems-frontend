@@ -114,7 +114,7 @@ export class SafeRecordHistoryComponent implements OnInit {
       })
       .subscribe((res) => {
         this.history = res.data.recordHistory.filter(
-          (recordHistoryItem) => recordHistoryItem.changes.length
+          (item) => item.changes.length
         );
         this.filterHistory = this.history;
         this.loading = false;
@@ -227,9 +227,8 @@ export class SafeRecordHistoryComponent implements OnInit {
       data: {
         recordId: this.id,
         locale: 'en',
-        compareTo: this.history.find(
-          (recordHistory) => recordHistory.version?.id === version.id
-        )?.version,
+        compareTo: this.history.find((item) => item.version?.id === version.id)
+          ?.version,
         template: this.template,
       },
       height: '98%',
@@ -287,11 +286,12 @@ export class SafeRecordHistoryComponent implements OnInit {
     });
 
     // filtering by field
-    if (this.filterField !== null)
+    if (this.filterField !== null) {
       this.filterHistory = this.filterHistory.filter(
-        (version) =>
-          !!version.changes.find((change) => this.filterField === change.field)
+        (item) =>
+          !!item.changes.find((change) => this.filterField === change.field)
       );
+    }
   }
 
   /**
