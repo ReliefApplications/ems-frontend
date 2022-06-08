@@ -262,7 +262,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
-    const date = new Date(parseInt(version.created, 0));
+    const date = new Date(parseInt(version.createdAt, 0));
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
@@ -311,10 +311,9 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         this.layoutService.setRightSidenav({
           factory: this.factory,
           inputs: {
-            record: res.data.record,
-            revert: (item: any, dialog: any) => {
-              this.confirmRevertDialog(res.data.record, item);
-            },
+            id: res.data.record.id,
+            revert: (version: any) =>
+              this.confirmRevertDialog(res.data.record, version),
           },
         });
       });

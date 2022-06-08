@@ -21,7 +21,15 @@ import {
   GET_RECORD_HISTORY_BY_ID,
 } from '../../graphql/queries';
 import { Change, RecordHistory } from '../../models/recordsHistory';
+import { Version } from '../../models/form.model';
 
+/**
+ * Return the type of the old value if existing, else the type of the new value.
+ *
+ * @param oldVal The previous value
+ * @param newVal The next value
+ * @returns The type of the value: primitive, object or array
+ */
 const getValueType = (
   oldVal: any,
   newVal: any
@@ -45,8 +53,8 @@ const getValueType = (
   styleUrls: ['./record-history.component.scss'],
 })
 export class SafeRecordHistoryComponent implements OnInit {
-  @Input() id = '';
-  @Input() revert: any;
+  @Input() id!: string;
+  @Input() revert!: (version: Version) => void;
   @Input() template?: string;
   @Output() cancel = new EventEmitter();
 
@@ -64,6 +72,15 @@ export class SafeRecordHistoryComponent implements OnInit {
   startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
+  /**
+   * Constructor of the record history component
+   *
+   * @param dialog The material dialog service
+   * @param downloadService The download service
+   * @param translate The translation service
+   * @param dateFormat The dateTranslation service
+   * @param apollo The apollo client
+   */
   constructor(
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
@@ -97,7 +114,7 @@ export class SafeRecordHistoryComponent implements OnInit {
       })
       .subscribe((res) => {
         this.history = res.data.recordHistory.filter(
-          (version) => version.changes.length
+          (recordHistoryItem) => recordHistoryItem.changes.length
         );
         this.filterHistory = this.history;
         this.loading = false;
@@ -201,16 +218,18 @@ export class SafeRecordHistoryComponent implements OnInit {
   }
 
   /**
-   * Handles the revertion of items
+   * Handles the revertion of the record to a previous version
    *
-   * @param item The item to revert
+   * @param version The version to revert
    */
-  onRevert(item: any): void {
+  onRevert(version: any): void {
     const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
         recordId: this.id,
         locale: 'en',
-        compareTo: this.record.versions?.find((x) => x.id === item.id),
+        compareTo: this.history.find(
+          (recordHistory) => recordHistory.version?.id === version.id
+        )?.version,
         template: this.template,
       },
       height: '98%',
@@ -220,7 +239,7 @@ export class SafeRecordHistoryComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.revert(item);
+        this.revert(version);
       }
     });
   }
@@ -259,7 +278,7 @@ export class SafeRecordHistoryComponent implements OnInit {
 
     // filtering by date
     this.filterHistory = this.history.filter((item) => {
-      const createdAt = new Date(item.created);
+      const createdAt = new Date(item.createdAt);
       return (
         !startDate ||
         !endDate ||

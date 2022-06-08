@@ -81,14 +81,14 @@
   </div>
 </div>
 <div class="history-container">
-  <ng-container *ngFor="let item of filterHistory; let index = index">
+  <ng-container *ngFor="let item of filterHistory">
     <mat-expansion-panel (closed)="showMore = false">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <span class="history-date">{{
-            item.created | safeDate: 'shortDate'
+            item.createdAt | safeDate: 'shortDate'
           }}</span>
-          {{ item.created | safeDate: 'shortTime' }}
+          {{ item.createdAt | safeDate: 'shortTime' }}
           <span class="history-user" *ngIf="item.createdBy">{{
             item.createdBy
           }}</span>
@@ -116,8 +116,8 @@
         <safe-button
           icon="update"
           class="revert-icon"
-          (click)="onRevert(item)"
-          *ngIf="index > 0 && filterField === null"
+          (click)="onRevert(item.version)"
+          *ngIf="item.version"
         >
           {{ 'components.history.preview' | translate }}
         </safe-button>
