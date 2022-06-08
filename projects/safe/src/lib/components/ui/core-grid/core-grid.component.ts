@@ -263,7 +263,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     // define row actions
     this.actions = {
       add:
-        get(this.settings, 'actions?.addRecord', false) &&
+        get(this.settings, 'actions.addRecord', false) &&
         this.settings.template,
       history: get(this.settings, 'actions.history', false),
       update: get(this.settings, 'actions.update', false),
