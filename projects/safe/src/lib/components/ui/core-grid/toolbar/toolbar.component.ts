@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'safe-grid-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
 })
-export class SafeGridToolbarComponent implements OnInit, OnChanges {
+export class SafeGridToolbarComponent implements OnInit {
   // === DATA ===
   @Input() items: any[] = [];
 
@@ -32,11 +32,5 @@ export class SafeGridToolbarComponent implements OnInit, OnChanges {
 
   constructor() {}
 
-  ngOnInit(): void {
-    console.log(this.items);
-  }
-
-  ngOnChanges(): void {
-    console.log(this.items);
-  }
+  ngOnInit(): void {}
 }
