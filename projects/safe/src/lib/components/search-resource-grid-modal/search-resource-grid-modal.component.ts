@@ -69,6 +69,7 @@ export class SafeResourceGridModalComponent implements OnInit {
     } else {
       this.selectedRows = selection.selectedRows.map((x: any) => x.dataItem.id);
     }
+    console.log(this.selectedRows);
   }
 
   closeModal(saveChanges: boolean = true): void {
