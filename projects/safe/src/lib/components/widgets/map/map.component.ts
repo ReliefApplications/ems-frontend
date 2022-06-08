@@ -14,6 +14,7 @@ import { applyFilters } from './filter';
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
 import 'leaflet.markercluster';
+import 'leaflet-easyprint';
 declare let L: any;
 
 /** Default options for the marker */
@@ -30,7 +31,6 @@ const MARKER_OPTIONS = {
 interface IMarkersLayerValue {
   [name: string]: any;
 }
-
 
 /** Component for the map widget */
 @Component({
@@ -65,6 +65,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     'OSM:Streets': 'OSM:Streets',
   };
 
+  // === CONTROLS ===
+  private layerControl: any;
+  private searchControl: any;
+  private zoomControl: any;
+
   // === MARKERS ===
   private markersLayer: any;
   private markersLayerGroup: any;
@@ -72,7 +77,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private markersCategories: IMarkersLayerValue = [];
   private categoryNames: string[] = [];
   private overlays: IMarkersLayerValue = {};
-  private layerControl: any;
 
   // === LEGEND ===
   private legendControl: any;
@@ -97,6 +101,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   /**
    * Constructor of the map widget component
    *
+   * @param environment
    * @param apollo Apollo client
    * @param queryBuilder The querybuilder service
    */
@@ -171,7 +176,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
 
     // Adds a zoom control
-    L.control
+    this.zoomControl = L.control
       .zoom({
         position: 'bottomleft',
       })
@@ -201,7 +206,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
 
     // Adds searchbar
-    const searchControl = L.esri.Geocoding.geosearch({
+    this.searchControl = L.esri.Geocoding.geosearch({
       position: 'topleft',
       placeholder: 'Enter an address or place e.g. 1 York St',
       useMapBounds: false,
@@ -218,7 +223,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     const results = L.layerGroup().addTo(this.map);
 
-    searchControl.on('results', (data: any) => {
+    this.searchControl.on('results', (data: any) => {
       results.clearLayers();
       for (let i = data.results.length - 1; i >= 0; i--) {
         const lat = Math.round(data.results[i].latlng.lat * 100000) / 100000;
@@ -238,12 +243,20 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.legendControl = L.control({ position: 'bottomright' });
 
     // Defines the method which will be called when the legend control is added to the map
+    /**
+     * @param map
+     */
     this.legendControl.onAdd = function (map: any) {
       this.div = L.DomUtil.create('div', 'map-legend-container');
       return this.div;
     };
 
     // Defines a method to be able to update the legend control once it is already added to the map
+    /**
+     * @param map
+     * @param data
+     * @param overlays
+     */
     this.legendControl.update = function (map: any, data: any, overlays: any) {
       const div = this.div;
       div.innerHTML = '';
@@ -319,6 +332,43 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     // Categories
     this.categoryField = this.settings.category;
+  }
+
+  /**
+   *
+   */
+  public printMap() {
+    const customSize = {
+      width: document.getElementById(this.mapId)?.clientWidth,
+      height: document.getElementById(this.mapId)?.clientHeight,
+      className: 'customSizeClass',
+    };
+
+    this.map.removeControl(this.searchControl);
+    this.map.removeControl(this.zoomControl);
+    this.map.removeControl(this.layerControl);
+
+    const basePrintLayer = L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {}
+    ).addTo(this.map);
+
+    const printPlugin = L.easyPrint({
+      sizeModes: [customSize],
+      exportOnly: true,
+      hidden: true,
+      hideControlContainer: false,
+    }).addTo(this.map);
+
+    printPlugin.printMap('customSizeClass', 'MyFileName');
+
+    setTimeout(() => {
+      this.map.removeLayer(basePrintLayer);
+      this.map.removeControl(printPlugin);
+      this.searchControl.addTo(this.map);
+      this.zoomControl.addTo(this.map);
+      this.layerControl.addTo(this.map);
+    }, 5000);
   }
 
   /** Load the data, using widget parameters. */
