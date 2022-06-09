@@ -259,10 +259,32 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Detects changes of the settings to (re)load the data.
+   *
+   * @param changes angular SimpleChanges object
    */
   ngOnChanges(changes?: SimpleChanges): void {
     if (changes?.settings) {
-      this.configureGrid();
+      const settings = [
+        ...new Set([
+          ...(changes.settings.currentValue
+            ? Object.keys(changes.settings.currentValue)
+            : []),
+          ...(changes.settings.previousValue
+            ? Object.keys(changes.settings.previousValue)
+            : []),
+        ]),
+      ];
+
+      const diffSettings = settings.filter((setting) => {
+        if (changes.settings.firstChange) return true;
+        return !isEqual(
+          changes.settings.currentValue[setting],
+          changes.settings.previousValue[setting]
+        );
+      });
+
+      if (diffSettings.length !== 1 || diffSettings[0] !== 'display')
+        this.configureGrid();
     }
   }
 
