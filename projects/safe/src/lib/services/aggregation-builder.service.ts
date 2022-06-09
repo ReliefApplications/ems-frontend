@@ -1,4 +1,4 @@
-import { Apollo, gql, QueryRef } from 'apollo-angular';
+import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { PipelineStage } from '../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
 import { Accumulators } from '../components/ui/aggregation-builder/pipeline/expressions/operators';
@@ -6,7 +6,6 @@ import { Observable, Subject } from 'rxjs';
 import { addNewField } from '../components/query-builder/query-builder-forms';
 import { ApolloQueryResult } from '@apollo/client';
 import { SafeGridService } from './grid.service';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Shared aggregation service.
@@ -161,33 +160,36 @@ export class AggregationBuilderService {
     for (const stage of pipeline) {
       switch (stage.type) {
         case PipelineStage.GROUP: {
-          if (stage.form.groupBy) {
-            let groupByField = this.findField(stage.form.groupBy, fields);
-            fields = [];
-            if (groupByField) {
-              // Change field type because of automatic unwind
-              const newField = Object.assign({}, groupByField);
-              newField.type = { ...groupByField.type };
-              if (stage.form.groupBy.includes('.')) {
-                const fieldArray = stage.form.groupBy.split('.');
-                const sub = fieldArray.pop();
-                newField.type.kind = 'OBJECT';
-                newField.fields = newField.fields.map((x: any) =>
-                  x.name === sub
-                    ? {
-                        ...x,
-                        type: { ...x.type, kind: 'SCALAR', name: 'String' },
-                      }
-                    : x
-                );
-              } else {
-                newField.type.kind = 'SCALAR';
-                newField.type.name = 'String';
+          const newFields = [];
+          for (const rule of stage.form.groupBy) {
+            if (rule.field) {
+              let groupByField = this.findField(rule.field, fields);
+              if (groupByField) {
+                // Change field type because of automatic unwind
+                const newField = Object.assign({}, groupByField);
+                newField.type = { ...groupByField.type };
+                if (rule.field.includes('.')) {
+                  const fieldArray = rule.field.split('.');
+                  const sub = fieldArray.pop();
+                  newField.type.kind = 'OBJECT';
+                  newField.fields = newField.fields.map((x: any) =>
+                    x.name === sub
+                      ? {
+                          ...x,
+                          type: { ...x.type, kind: 'SCALAR', name: 'String' },
+                        }
+                      : x
+                  );
+                } else {
+                  newField.type.kind = 'SCALAR';
+                  newField.type.name = 'String';
+                }
+                groupByField = newField;
               }
-              groupByField = newField;
+              newFields.push(groupByField);
             }
-            fields.push(groupByField);
           }
+          fields = newFields;
           if (stage.form.addFields) {
             this.addFields(fields, stage.form.addFields, initialFields);
           }
@@ -276,6 +278,7 @@ export class AggregationBuilderService {
    * @returns field
    */
   public findField(fieldName: string, fields: any[]): any {
+    console.log(fieldName);
     let outField = fields.find((x) => x.name === fieldName);
     if (!outField && fieldName.includes('.')) {
       const fieldArray = fieldName.split('.');

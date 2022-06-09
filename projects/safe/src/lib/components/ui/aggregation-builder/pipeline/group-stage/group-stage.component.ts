@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { isEmpty } from 'lodash';
 import { AggregationBuilderService } from '../../../../../services/aggregation-builder.service';
+import { groupByRuleForm } from '../../aggregation-builder-forms';
 import { Accumulators, DateOperators } from '../expressions/operators';
 
 /**
@@ -27,21 +28,33 @@ export class SafeGroupStageComponent implements OnInit {
     return this.formGroup.controls.addFields as FormArray;
   }
 
+  get groupBy() {
+    return this.formGroup.controls.groupBy as FormArray;
+  }
+
   constructor(private aggregationBuilder: AggregationBuilderService) {}
 
   ngOnInit(): void {
-    const groupBy = this.form.value.groupBy;
-    if (groupBy) {
-      this.displayDateOperators = this.isDateField(groupBy);
-    }
-    this.form.get('groupBy')?.valueChanges.subscribe((fieldName) => {
-      if (fieldName) {
-        this.displayDateOperators = this.isDateField(fieldName);
-        if (!this.displayDateOperators) {
-          this.form.get('groupByExpression')?.get('operator')?.setValue(null);
-        }
-      }
-    });
+    // const groupBy = this.form.value.groupBy;
+    // if (groupBy) {
+    //   this.displayDateOperators = this.isDateField(groupBy);
+    // }
+    // this.form.get('groupBy')?.valueChanges.subscribe((fieldName) => {
+    //   if (fieldName) {
+    //     this.displayDateOperators = this.isDateField(fieldName);
+    //     if (!this.displayDateOperators) {
+    //       this.form.get('groupByExpression')?.get('operator')?.setValue(null);
+    //     }
+    //   }
+    // });
+  }
+
+  public onAddRule(): void {
+    this.groupBy.push(groupByRuleForm(null));
+  }
+
+  public onDeleteRule(index: number): void {
+    this.groupBy.removeAt(index);
   }
 
   /**

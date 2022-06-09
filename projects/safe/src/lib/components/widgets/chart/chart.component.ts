@@ -15,6 +15,7 @@ import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.compon
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import get from 'lodash/get';
+import groupBy from 'lodash/groupBy';
 
 /** Default file name for export */
 const DEFAULT_FILE_NAME = 'charts';
@@ -155,11 +156,23 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
             this.settings.chart.type
           )
         ) {
-          this.series = [
-            {
-              data: JSON.parse(JSON.stringify(res.data.recordsAggregation)),
-            },
-          ];
+          const aggregationData = JSON.parse(
+            JSON.stringify(res.data.recordsAggregation)
+          );
+          console.log(this.settings.chart.aggregation);
+          if (get(this.settings, 'chart.aggregation.mapping.series', null)) {
+            const groups = groupBy(aggregationData, 'series');
+            this.series = Object.keys(groups).map((key) => ({
+              name: key,
+              data: groups[key],
+            }));
+          } else {
+            this.series = [
+              {
+                data: aggregationData,
+              },
+            ];
+          }
         } else {
           this.series = res.data.recordsAggregation;
         }

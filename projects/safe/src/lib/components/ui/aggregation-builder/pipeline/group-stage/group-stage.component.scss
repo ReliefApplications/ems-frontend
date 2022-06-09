@@ -1,4 +1,10 @@
 .group-by {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 8px;
+
+  .group-by-rule {
+    display: flex;
+    align-items: center;
+  }
 }

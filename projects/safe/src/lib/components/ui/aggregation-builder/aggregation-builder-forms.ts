@@ -37,6 +37,18 @@ export const addFieldsForm = (value: any, validators = true): FormGroup =>
   });
 
 /**
+ * Create a groupBy rule form.
+ *
+ * @param value initial value
+ * @returns GroupBy rule form group.
+ */
+export const groupByRuleForm = (value: any): FormGroup =>
+  formBuilder.group({
+    field: [get(value, 'field', ''), Validators.required],
+    expression: expressionForm(get(value, 'expression', false), false),
+  });
+
+/**
  * Builds a stage form from its initial value.
  *
  * @param value Initial value of the form.
@@ -63,12 +75,9 @@ export const addStage = (value: any): FormGroup => {
       return formBuilder.group({
         type: [PipelineStage.GROUP],
         form: formBuilder.group({
-          groupBy: [get(value, 'form.groupBy', ''), Validators.required],
-          groupByExpression: expressionForm(
-            get(value, 'form.groupByExpression', false),
-            false
+          groupBy: formBuilder.array(
+            get(value, 'form.groupBy', [{}]).map((x: any) => groupByRuleForm(x))
           ),
-          groupBySeries: [get(value, 'form.groupBySeries', '')],
           addFields: formBuilder.array(
             get(value, 'form.addFields', []).map((x: any) =>
               addFieldsForm(x, false)
