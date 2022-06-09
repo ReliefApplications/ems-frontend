@@ -9,6 +9,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -259,11 +260,17 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Detects changes of the settings to (re)load the data.
    */
-  ngOnChanges(): void {
+  ngOnChanges(changes?: SimpleChanges): void {
+    if (changes?.settings) {
+      this.configureGrid();
+    }
+  }
+
+  public configureGrid(): void {
     // define row actions
     this.actions = {
       add:
-        get(this.settings, 'actions?.addRecord', false) &&
+        get(this.settings, 'actions.addRecord', false) &&
         this.settings.template,
       history: get(this.settings, 'actions.history', false),
       update: get(this.settings, 'actions.update', false),
@@ -348,18 +355,19 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Get template structure, for inline edition validation.
    */
   private async loadTemplate(): Promise<void> {
-    this.apollo
-      .query<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.settings.template,
-        },
-      })
-      .subscribe((res) => {
-        if (res.data.form.structure) {
-          this.templateStructure = res.data.form.structure;
-        }
-      });
+    if (this.settings.template)
+      this.apollo
+        .query<GetFormByIdQueryResponse>({
+          query: GET_FORM_BY_ID,
+          variables: {
+            id: this.settings.template,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data.form.structure) {
+            this.templateStructure = res.data.form.structure;
+          }
+        });
   }
 
   // === GRID FIELDS ===
@@ -578,7 +586,33 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.updatedItems = [];
   }
 
+  // === SELECTION ===
+
+  /**
+   * Handle selection change event.
+   *
+   * @param selection Selection event.
+   */
+  public onSelectionChange(selection: SelectionEvent): void {
+    const deselectedRows = selection.deselectedRows || [];
+    const selectedRows = selection.selectedRows || [];
+    if (deselectedRows.length > 0) {
+      this.selectedRows = [
+        ...this.selectedRows.filter(
+          (x) => !deselectedRows.some((y) => x === y.dataItem.id)
+        ),
+      ];
+    }
+    if (selectedRows.length > 0) {
+      this.selectedRows = this.selectedRows.concat(
+        selectedRows.map((x) => x.dataItem.id)
+      );
+    }
+    this.selectionChange.emit(selection);
+  }
+
   // === GRID ACTIONS ===
+
   /**
    * Handles grid actions.
    *

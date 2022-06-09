@@ -740,7 +740,7 @@ export const init = (
       });
     }
     instance.settings = settings;
-    instance.ngOnChanges();
+    instance.configureGrid();
   };
 
   /**
