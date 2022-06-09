@@ -21,7 +21,6 @@ export class SafeArrayFilterComponent
   @Input() public field = '';
   @Input() public filter: any;
   @Input() public data: any[] = [];
-  public choices: any[] = [];
   @Input() public textField = '';
   @Input() public valueField = '';
 
@@ -31,6 +30,35 @@ export class SafeArrayFilterComponent
       [this.valueField]: null,
     };
   }
+
+  public choices: any[] = [];
+  public op: any[] = [
+    {
+      text: 'Is equal to',
+      value: 'eq',
+    },
+    {
+      text: 'Is not equal to',
+      value: 'neq',
+    },
+    {
+      text: 'Contains',
+      value: 'contains',
+    },
+    {
+      text: 'Does not contain',
+      value: 'doesnotcontain',
+    },
+    {
+      text: 'Is empty',
+      value: 'isempty',
+    },
+    {
+      text: 'Is not empty',
+      value: 'isnotempty',
+    },
+  ];
+  public selectedOperator = "contains";
 
   constructor(filterService: FilterService) {
     super(filterService);
@@ -46,15 +74,32 @@ export class SafeArrayFilterComponent
         ? this.removeFilter(this.valueField)
         : this.updateFilter({
             field: this.field,
-            operator: 'contains',
+            operator: this.selectedOperator,
             value,
           })
     );
+  }
+
+  public onChangeOperator(value: any): void {
+    this.selectedOperator = value.value;
+    if (this.selectedValue) {
+      this.onChange(this.selectedValue);
+    }
   }
 
   public handleFilter(value: string): void {
     this.choices = this.data.filter(
       (x) => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1
     );
+  }
+
+  /** Clears any set filters */
+  public onClear() {
+    this.selectedOperator = 'contains';
+    this.filter = {
+      filters: [],
+      logic: 'and',
+    };
+    this.applyFilter(this.filter);
   }
 }
