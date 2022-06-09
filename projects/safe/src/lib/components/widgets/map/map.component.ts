@@ -352,7 +352,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   *
+   * Exports the map as a png image
    */
   public onExport() {
     const customSize = {
