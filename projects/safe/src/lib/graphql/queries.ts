@@ -257,6 +257,30 @@ export interface GetFormsQueryResponse {
   };
 }
 
+/** Graphql request for getting forms list with query name*/
+export const GET_FORMS_AND_QUERY_NAMES = gql`
+  query GetFormsAndQueryNames {
+    forms(getAll: true) {
+      edges {
+        node {
+          name
+          queryName
+        }
+      }
+    }
+  }
+`;
+
+/** Model for GetFormsAndQueryNamesQueryResponse object */
+export interface GetFormsAndQueryNamesQueryResponse {
+  loading: boolean;
+  forms: {
+    edges: {
+      node: Form;
+    }[];
+  };
+}
+
 // === GET RESOURCES ===
 
 /** Graphql request for getting resources */

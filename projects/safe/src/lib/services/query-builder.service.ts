@@ -1,7 +1,12 @@
 import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
+import {
+  GetFormsAndQueryNamesQueryResponse,
+  GetQueryTypes,
+  GET_FORMS_AND_QUERY_NAMES,
+  GET_QUERY_TYPES,
+} from '../graphql/queries';
 import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
 
@@ -43,18 +48,19 @@ export class QueryBuilderService {
    */
   constructor(private apollo: Apollo, private formBuilder: FormBuilder) {
     this.apollo
+      .query<GetFormsAndQueryNamesQueryResponse>({
+        query: GET_FORMS_AND_QUERY_NAMES,
+      })
+      .subscribe((res) => {
+        this.availableQueries.next(res.data.forms.edges);
+      });
+    this.apollo
       .query<GetQueryTypes>({
         query: GET_QUERY_TYPES,
       })
       .subscribe((res) => {
         // eslint-disable-next-line no-underscore-dangle
         this.availableTypes.next(res.data.__schema.types);
-        this.availableQueries.next(
-          // eslint-disable-next-line no-underscore-dangle
-          res.data.__schema.queryType.fields.filter((x: any) =>
-            x.name.startsWith('all')
-          )
-        );
         // eslint-disable-next-line no-underscore-dangle
         this.userFields = res.data.__schema.types
           .find((x: any) => x.name === 'User')
@@ -71,8 +77,8 @@ export class QueryBuilderService {
   public getFields(queryName: string): any[] {
     const query = this.availableQueries
       .getValue()
-      .find((x) => x.name === queryName);
-    const typeName = query?.type?.name.replace('Connection', '') || '';
+      .find((x) => x.node.queryName === queryName);
+    const typeName = query?.node?.queryName.replace('all', '') || '';
     const type = this.availableTypes
       .getValue()
       .find((x) => x.name === typeName);
@@ -329,7 +335,9 @@ export class QueryBuilderService {
    * @returns Apollo query.
    */
   public sourceQuery(queryName: string): any {
-    const queries = this.availableQueries.getValue().map((x) => x.name);
+    const queries = this.availableQueries
+      .getValue()
+      .map((x) => x.node.queryName);
     if (queries.includes(queryName)) {
       const query = gql`
         query GetCustomSourceQuery {

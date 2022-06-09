@@ -25,9 +25,9 @@
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
               <mat-option
                 *ngFor="let option of filteredQueries"
-                [value]="option"
+                [value]="option.name"
               >
-                {{ option }}
+                {{ option.name }}
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>

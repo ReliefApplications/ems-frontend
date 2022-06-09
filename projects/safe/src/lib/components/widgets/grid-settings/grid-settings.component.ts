@@ -138,7 +138,10 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     this.availableQueries = this.queryBuilder.availableQueries$;
     this.availableQueries.subscribe((res) => {
       if (res && res.length > 0) {
-        this.allQueries = res.map((x) => x.name);
+        this.allQueries = res.map((x) => ({
+          name: x.node.name,
+          query: x.node.queryName,
+        }));
         this.filteredQueries = this.filterQueries(
           this.tileForm?.value.query.name
         );
@@ -151,11 +154,12 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     this.queryName = this.tileForm.get('query')?.value.name;
     this.getQueryMetaData();
 
-    this.tileForm.get('query.name')?.valueChanges.subscribe((name) => {
-      if (name) {
+    this.tileForm?.get('query.name')?.valueChanges.subscribe((name) => {
+      const queryName = this.allQueries.find((x) => x.name === name)?.query;
+      if (queryName) {
         // Check if the query changed to clean modifications and fields for email in floating button
-        if (name !== this.queryName) {
-          this.queryName = name;
+        if (queryName !== this.queryName) {
+          this.queryName = queryName;
           this.tileForm?.get('layouts')?.setValue([]);
           this.tileForm?.get('query.template')?.setValue(null);
           this.tileForm?.get('query.template')?.enable();
@@ -390,6 +394,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
    */
   private filterQueries(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.allQueries.filter((x) => x.toLowerCase().includes(filterValue));
+    return this.allQueries.filter((x) =>
+      x.name.toLowerCase().includes(filterValue)
+    );
   }
 }
