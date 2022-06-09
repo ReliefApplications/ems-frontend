@@ -80,7 +80,21 @@
     </mat-menu>
   </div>
 </div>
-<div class="history-container">
+
+<div class="history-container" *ngIf="loading">
+  <ng-container *ngFor="let _ of [].constructor(4)">
+    <mat-expansion-panel closed>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <kendo-skeleton width="50%"></kendo-skeleton>
+          <kendo-skeleton class="history-user" width="30%" height="2em"></kendo-skeleton>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+    </mat-expansion-panel>
+  </ng-container>
+</div>
+
+<div class="history-container" *ngIf="!loading">
   <ng-container *ngFor="let item of filterHistory">
     <mat-expansion-panel (closed)="showMore = false">
       <mat-expansion-panel-header>
