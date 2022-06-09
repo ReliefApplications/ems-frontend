@@ -68,6 +68,7 @@ export const addStage = (value: any): FormGroup => {
             get(value, 'form.groupByExpression', false),
             false
           ),
+          groupBySeries: [get(value, 'form.groupBySeries', '')],
           addFields: formBuilder.array(
             get(value, 'form.addFields', []).map((x: any) =>
               addFieldsForm(x, false)
@@ -125,12 +126,18 @@ export const addStage = (value: any): FormGroup => {
  * @param widgetType - The type of widget you want to create.
  * @returns The x and y axis
  */
-export const mappingFields = (widgetType: string): string[] =>
-  // if (WIDGET_TYPES.some((x) => x.id === widgetType)) {
-  //   return ['xAxis', 'yAxis'];
-  // }
-  // return [];
-  ['xAxis', 'yAxis'];
+export const mappingFields = (
+  widgetType: string
+): { name: string; required: boolean }[] => {
+  const fields = [
+    { name: 'category', required: true },
+    { name: 'field', required: true },
+  ];
+  if (['bar', 'column', 'line'].includes(widgetType)) {
+    fields.push({ name: 'series', required: false });
+  }
+  return fields;
+};
 
 /**
  * Generates a new aggregation form.
@@ -153,13 +160,11 @@ export const createAggregationForm = (
     ),
     mapping: formBuilder.group(
       mappingFields(widgetType).reduce(
-        (o, key) =>
+        (o, field) =>
           Object.assign(o, {
-            [key]: [
-              value && value.mapping && value.mapping[key]
-                ? value.mapping[key]
-                : '',
-              Validators.required,
+            [field.name]: [
+              get(value, `mapping.${field.name}`, ''),
+              field.required ? Validators.required : null,
             ],
           }),
         {}

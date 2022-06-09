@@ -255,8 +255,9 @@
 			"fieldName": "Field name",
 			"groupBy": "Group by",
 			"mapping": {
-				"xAxis": "X Axis",
-				"yAxis": "Y Axis"
+				"category": "Category",
+				"field": "Value",
+				"series": "Series"
 			},
 			"operator": "Operator",
 			"operators": {
@@ -737,7 +738,9 @@
 					},
 					"position": "Position",
 					"text": "Text",
-					"type": "Chart Type"
+					"type": "Chart Type",
+					"xAxis": "X Axis",
+					"yAxis": "Y Axis"
 				},
 				"grid": {
 					"actions": {

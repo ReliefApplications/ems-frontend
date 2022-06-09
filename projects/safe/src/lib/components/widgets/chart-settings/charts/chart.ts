@@ -44,8 +44,8 @@ export class Chart {
         Validators.required,
       ],
       aggregation: createAggregationForm(
-        settings ? settings.aggregation : null,
-        settings ? `${settings.type}-chart` : ''
+        get(settings, 'aggregation', null),
+        get(settings, 'type', '')
       ),
       legend: this.fb.group({
         visible: [legend ? legend.visible : true],

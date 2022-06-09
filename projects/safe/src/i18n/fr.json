@@ -255,8 +255,9 @@
 			"fieldName": "Nom du champ",
 			"groupBy": "Regrouper par",
 			"mapping": {
-				"xAxis": "Axe X",
-				"yAxis": "Axe Y"
+				"category": "Categorie",
+				"field": "Valeur",
+				"series": "Séries"
 			},
 			"operator": "Opérateur",
 			"operators": {
@@ -737,7 +738,9 @@
 					},
 					"position": "Position",
 					"text": "Texte",
-					"type": "Graphique"
+					"type": "Graphique",
+					"xAxis": "Axe X",
+					"yAxis": "Axe Y"
 				},
 				"grid": {
 					"actions": {
