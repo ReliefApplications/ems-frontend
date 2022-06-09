@@ -4,6 +4,9 @@ import {
   FilterService,
 } from '@progress/kendo-angular-grid';
 
+/**
+ * Safe-dropdown-filter component
+ */
 @Component({
   selector: 'safe-dropdown-filter',
   templateUrl: './dropdown-filter.component.html',
@@ -13,6 +16,9 @@ export class SafeDropdownFilterComponent
   extends BaseFilterCellComponent
   implements OnInit
 {
+  /**
+   * Returns the selected value
+   */
   public get selectedValue(): any {
     const filter = this.filterByField(this.field);
     return filter ? filter.value : null;
@@ -24,6 +30,9 @@ export class SafeDropdownFilterComponent
   @Input() public textField = '';
   @Input() public valueField = '';
 
+  /**
+   * Returns the default item
+   */
   public get defaultItem(): any {
     return {
       [this.textField]: 'Select item...',
@@ -42,8 +51,13 @@ export class SafeDropdownFilterComponent
       value: 'neq',
     },
   ];
-  public selectedOperator = "eq";
+  public selectedOperator = 'eq';
 
+  /**
+   * Contructor for safe-dropdown-filter
+   *
+   * @param filterService
+   */
   constructor(filterService: FilterService) {
     super(filterService);
   }
@@ -53,6 +67,11 @@ export class SafeDropdownFilterComponent
     console.log(this.choices, this.operators);
   }
 
+  /**
+   * Updates the filter on item selection
+   *
+   * @param value
+   */
   public onChange(value: any): void {
     this.applyFilter(
       value === null
@@ -65,6 +84,11 @@ export class SafeDropdownFilterComponent
     );
   }
 
+  /**
+   * Updates de operation used in filtering
+   *
+   * @param value
+   */
   public onChangeOperator(value: any): void {
     this.selectedOperator = value.value;
     if (this.selectedValue) {
@@ -72,7 +96,9 @@ export class SafeDropdownFilterComponent
     }
   }
 
-  /** Clears any set filters */
+  /**
+   * Clears any set filters
+   */
   public onClear() {
     this.selectedOperator = 'eq';
     this.filter = {
@@ -82,6 +108,11 @@ export class SafeDropdownFilterComponent
     this.applyFilter(this.filter);
   }
 
+  /**
+   * Handles filtering
+   *
+   * @param value
+   */
   public handleFilter(value: string): void {
     this.choices = this.data.filter(
       (x) => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1
