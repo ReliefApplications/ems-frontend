@@ -21,7 +21,7 @@ To read more about the project, and how to setup the back-end, please refer to t
 
 # General
 
-The project is seperated into three sub-projects:
+The project is seperated into four sub-projects:
 - back-office, an application accessible to administrators
 - front-office, an application that would depend on the logged user
 - safe, a library shared by both other projects
@@ -88,14 +88,30 @@ You can drag and drop the index.html file of this subfolder directly in a browse
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-It is needed to use the `--project` flag in order to serve a specific project.
-
-For example, in order to serve the *back-office* application, the command is:
+To launch the dev server of a project, run:
+```bash
+ng serve <project-name>
 ```
-ng serve --project=safe
-```
+Navigate to [http://localhost:4200/](http://localhost:4200/). The app will automatically reload if you change any of the source files.
+
+By default, if you omit the `<project-name>`, it will run the `back-office` project.
+
+### Running both front-office and back-office
+If you want to run the dev server of the back-office and front-office at the same time:
+* in the `back-office` project:
+    * in the `environment.ts` file, update the `frontOfficeUri` property to `http://localhost:4201/`
+* in the `front-office` project:
+    * in the `environment.ts` file, update the following properties:
+        - `redirectUri`: `'http://localhost:4201/'`
+        - `postLogoutRedirectUri`: `'http://localhost:4201/auth/'`
+        - `frontOfficeUri`: `'http://localhost:4201/'`
+    * in the `protractor.conf.js` file, update the `baseUrl` property to `http://localhost:4201/`
+* in the `backend` local repository, add `http://localhost:4201` to the list of `ALLOWED_ORIGINS` in your `.env` file
+* finally run:
+    ```bash
+    ng serve back-office
+    ng serve front-office --port 4201
+    ```
 
 ## Code scaffolding
 

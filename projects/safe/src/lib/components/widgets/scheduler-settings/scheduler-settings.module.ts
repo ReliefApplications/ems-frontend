@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 
+/** Module for the scheduler settings component */
 @NgModule({
   declarations: [SafeSchedulerSettingsComponent],
   imports: [

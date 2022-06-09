@@ -1,6 +1,7 @@
 import { Form } from './form.model';
 import { User } from './user.model';
 
+/** Model for version attributes. */
 interface Version {
   id?: string;
   createdAt?: Date;
@@ -8,8 +9,7 @@ interface Version {
   createdBy?: User;
 }
 
-/*  Model for Record object.
- */
+/** Model for Record object. */
 export interface Record {
   id?: string;
   createdAt?: Date;
@@ -24,6 +24,7 @@ export interface Record {
   canDelete?: boolean;
 }
 
+/** Model for RecordConnection object */
 export interface RecordConnection {
   totalCount?: number;
   edges?: {
