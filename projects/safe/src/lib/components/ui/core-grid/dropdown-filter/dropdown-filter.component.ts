@@ -55,7 +55,9 @@ export class SafeDropdownFilterComponent
   /** Clears any set filters */
   public onClear() {
     this.filter = {
-      filters: [],
+      filters: this.filter.filters.filter(
+        (filter: any) => filter.field !== this.field
+      ),
       logic: 'and',
     };
     this.applyFilter(this.filter);
