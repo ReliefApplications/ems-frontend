@@ -170,10 +170,6 @@ export const EDIT_RESOURCE = gql`
       id
       name
       createdAt
-      records {
-        id
-        data(display: true)
-      }
       fields
       forms {
         id
