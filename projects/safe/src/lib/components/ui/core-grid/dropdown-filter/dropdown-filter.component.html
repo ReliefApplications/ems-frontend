@@ -9,3 +9,6 @@
   (filterChange)="handleFilter($event)"
 >
 </kendo-dropdownlist>
+<button kendoButton *ngIf="selectedValue" (click)="onClear()">
+  <span class="k-icon k-i-filter-clear"></span>
+</button>
