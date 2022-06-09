@@ -287,10 +287,18 @@ export class SafeRecordHistoryComponent implements OnInit {
 
     // filtering by field
     if (this.filterField !== null) {
-      this.filterHistory = this.filterHistory.filter(
-        (item) =>
-          !!item.changes.find((change) => this.filterField === change.field)
-      );
+      this.filterHistory = this.filterHistory
+        .filter(
+          (item) =>
+            !!item.changes.find((change) => this.filterField === change.field)
+        )
+        .map((item) => {
+          const newItem = Object.assign({}, item);
+          newItem.changes = item.changes.filter(
+            (change) => change.field === this.filterField
+          );
+          return newItem;
+        });
     }
   }
 
