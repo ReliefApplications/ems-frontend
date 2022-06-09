@@ -176,6 +176,7 @@
         </table>
       </div>
       <mat-paginator
+        [disabled]="loadingMore"
         [pageSize]="pageInfo.pageSize"
         [length]="pageInfo.length"
         aria-label="Select page of records"
