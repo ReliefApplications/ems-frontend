@@ -34,11 +34,12 @@ export class Chart {
 
   constructor(settings?: any) {
     this.fb = new FormBuilder();
-    const legend = settings ? settings.legend : null;
-    const title = settings ? settings.title : null;
-    const labels = settings ? settings.labels : null;
+    const legend = get(settings, 'legend', null);
+    const title = get(settings, 'title', null);
+    const labels = get(settings, 'labels', null);
     const palette: string[] = get(settings, 'palette.value', []);
-    const axes = settings ? settings.axes : null;
+    const axes = get(settings, 'axes', null);
+    const stack = get(settings, 'stack', null);
 
     // build form
     this.form = this.fb.group({
@@ -124,6 +125,15 @@ export class Chart {
           ],
         }),
       }),
+      stack: this.fb.group({
+        enable: [get(stack, 'enable', false)],
+        usePercentage: [
+          {
+            value: get(stack, 'usePercentage', false),
+            disabled: !get(stack, 'enable', false),
+          },
+        ],
+      }),
     });
 
     this.form.get('type')?.valueChanges.subscribe((value) => {
@@ -190,6 +200,15 @@ export class Chart {
         this.form.get('labels.valueType')?.enable();
       } else {
         this.form.get('labels.valueType')?.disable();
+      }
+    });
+
+    // Update of stack properties
+    this.form.get('stack.enable')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.form.get('stack.usePercentage')?.enable();
+      } else {
+        this.form.get('stack.usePercentage')?.disable();
       }
     });
   }

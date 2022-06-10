@@ -740,6 +740,13 @@
 						"title": "Palette de couleurs"
 					},
 					"position": "Position",
+					"series": {
+						"stack": {
+							"enable": "Empiler les séries",
+							"usePercentage": "Utiliser des pourcentages"
+						},
+						"title": "Séries"
+					},
 					"text": "Texte",
 					"type": "Graphique",
 					"xAxis": "Axe X",

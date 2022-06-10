@@ -134,6 +134,11 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
         showValue: get(this.settings, 'chart.labels.showValue', false),
         valueType: get(this.settings, 'chart.labels.valueType', 'value'),
       },
+      stack: get(this.settings, 'chart.stack.enable', false)
+        ? get(this.settings, 'chart.stack.usePercentage', false)
+          ? { type: '100%' }
+          : { type: 'normal' }
+        : false,
     };
   }
 
