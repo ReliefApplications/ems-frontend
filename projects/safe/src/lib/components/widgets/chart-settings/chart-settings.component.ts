@@ -3,7 +3,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
-import { BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { scrollFactory } from '../../../utils/scroll-factory';
@@ -53,7 +53,7 @@ export class SafeChartSettingsComponent implements OnInit {
   public settings: any;
   public grid: any;
 
-  private reload = new BehaviorSubject<boolean>(false);
+  private reload = new Subject<boolean>();
   public reload$ = this.reload.asObservable();
 
   public get chartForm(): FormGroup {

@@ -247,13 +247,16 @@
 			"title": "******"
 		},
 		"aggregationBuilder": {
+			"accumulators": "******",
 			"addField": "******",
+			"addRule": "******",
 			"addStage": "******",
 			"dataset": {
 				"select": "******"
 			},
 			"fieldName": "******",
 			"groupBy": "******",
+			"groupingRules": "******",
 			"mapping": {
 				"category": "******",
 				"field": "******",

@@ -18,43 +18,82 @@ export class SafeGroupStageComponent implements OnInit {
   @Input() fields: any[] = [];
   public operators = Accumulators;
   public dateOperators = DateOperators;
-  public displayDateOperators = false;
+  public usedDateFields: string[] = [];
 
-  get formGroup() {
+  /**
+   * Form as form group.
+   *
+   * @returns form group
+   */
+  get formGroup(): FormGroup {
     return this.form as FormGroup;
   }
 
-  get addFields() {
+  /**
+   * AddFields form as form array
+   *
+   * @returns form array
+   */
+  get addFields(): FormArray {
     return this.formGroup.controls.addFields as FormArray;
   }
 
-  get groupBy() {
+  /**
+   * GroupBy form as form array
+   *
+   * @returns form array
+   */
+  get groupBy(): FormArray {
     return this.formGroup.controls.groupBy as FormArray;
   }
 
+  /**
+   * Group Stage pipeline component.
+   *
+   * @param aggregationBuilder Shared aggregation builder service
+   */
   constructor(private aggregationBuilder: AggregationBuilderService) {}
 
   ngOnInit(): void {
-    // const groupBy = this.form.value.groupBy;
-    // if (groupBy) {
-    //   this.displayDateOperators = this.isDateField(groupBy);
-    // }
-    // this.form.get('groupBy')?.valueChanges.subscribe((fieldName) => {
-    //   if (fieldName) {
-    //     this.displayDateOperators = this.isDateField(fieldName);
-    //     if (!this.displayDateOperators) {
-    //       this.form.get('groupByExpression')?.get('operator')?.setValue(null);
-    //     }
-    //   }
-    // });
+    this.getDateFields(this.groupBy.value);
+    this.groupBy.valueChanges.subscribe((value) => {
+      this.getDateFields(value);
+    });
   }
 
+  /**
+   * Create a new groupBy rule
+   */
   public onAddRule(): void {
     this.groupBy.push(groupByRuleForm(null));
   }
 
+  /**
+   * Delete groupBy rule at specified index
+   *
+   * @param index index of rule to remove
+   */
   public onDeleteRule(index: number): void {
     this.groupBy.removeAt(index);
+  }
+
+  /**
+   * Retrieve list of date fields from groupBy rules
+   *
+   * @param value value of the groupBy form
+   */
+  private getDateFields(value: any[]): void {
+    const fields = [];
+    for (const [index, rule] of value.entries()) {
+      if (this.isDateField(rule.field)) {
+        fields.push(rule.field);
+      } else {
+        this.groupBy
+          .at(index)
+          .patchValue({ expression: { operator: null } }, { emitEvent: false });
+      }
+    }
+    this.usedDateFields = fields;
   }
 
   /**

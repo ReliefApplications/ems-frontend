@@ -247,13 +247,16 @@
 			"title": "Access"
 		},
 		"aggregationBuilder": {
+			"accumulators": "Accumulators",
 			"addField": "Add field",
+			"addRule": "Add rule",
 			"addStage": "Add stage",
 			"dataset": {
 				"select": "Select the data source"
 			},
 			"fieldName": "Field name",
 			"groupBy": "Group by",
+			"groupingRules": "Grouping rules",
 			"mapping": {
 				"category": "Category",
 				"field": "Value",
