@@ -36,3 +36,12 @@
   >
   </safe-editor>
 </ng-container>
+<ng-container *ngIf="widget.component === 'summaryCard'">
+  <safe-summary-card
+    class="widget-content"
+    [header]="header"
+    [title]="widget.settings.title"
+    [text]="widget.settings.text"
+  >
+  </safe-summary-card>
+</ng-container>

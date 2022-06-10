@@ -1,0 +1,27 @@
+<safe-button
+  class="close-settings"
+  [isIcon]="true"
+  icon="close"
+  variant="danger"
+  (click)="onClose()"
+  [matTooltip]="'common.close' | translate"
+>
+</safe-button>
+<h1 mat-dialog-title>{{ 'common.settings' | translate }}</h1>
+<div mat-dialog-content class="mat-dialog-content">
+  <template #settingsContainer></template>
+</div>
+<div mat-dialog-actions class="mat-dialog-actions" align="end">
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    (click)="onSubmit()"
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!tileForm || !tileForm.valid"
+  >
+    {{ 'common.save' | translate }}
+  </button>
+</div>
