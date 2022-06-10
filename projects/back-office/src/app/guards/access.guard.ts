@@ -6,11 +6,8 @@ import {
   UrlTree,
   Router,
 } from '@angular/router';
-import {
-  SafeAuthService,
-  SafeSnackBarService,
-  NOTIFICATIONS,
-} from '@safe/builder';
+import { TranslateService } from '@ngx-translate/core';
+import { SafeAuthService, SafeSnackBarService } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -24,7 +21,8 @@ export class AccessGuard implements CanActivate {
   constructor(
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   canActivate(
@@ -43,7 +41,9 @@ export class AccessGuard implements CanActivate {
             return true;
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.accessNotProvided('platform'),
+              this.translate.instant(
+                'common.notifications.platformAccessNotGranted'
+              ),
               { error: true }
             );
             this.authService.logout();

@@ -6,7 +6,8 @@ import {
   DuplicateApplicationMutationResponse,
   DUPLICATE_APPLICATION,
 } from '../../graphql/mutations';
-import { Application, SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
+import { Application, SafeSnackBarService } from '@safe/builder';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-duplicate-application',
@@ -22,6 +23,7 @@ export class DuplicateApplicationComponent implements OnInit {
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<DuplicateApplicationComponent>,
+    private translateService: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.currentApp = data;
@@ -45,11 +47,27 @@ export class DuplicateApplicationComponent implements OnInit {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotDuplicated('App', res.errors[0].message)
+            this.translateService.instant(
+              'common.notifications.objectNotDuplicated',
+              {
+                type: this.translateService
+                  .instant('common.application.one')
+                  .toLowerCase(),
+                error: res.errors[0].message,
+              }
+            )
           );
         } else {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectDuplicated('App', this.currentApp.name)
+            this.translateService.instant(
+              'common.notifications.objectDuplicated',
+              {
+                type: this.translateService
+                  .instant('common.application.one')
+                  .toLowerCase(),
+                value: this.currentApp.name,
+              }
+            )
           );
           this.dialogRef.close(res.data?.duplicateApplication);
         }

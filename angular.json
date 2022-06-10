@@ -79,6 +79,11 @@
                 "glob": "**/*",
                 "input": "node_modules/tinymce",
                 "output": "/tinymce/"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinymce/",
+                "output": "/tinymce/langs"
               }
             ],
             "styles": [
@@ -454,6 +459,11 @@
                 "glob": "**/*",
                 "input": "node_modules/tinymce",
                 "output": "/tinymce/"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinymce/",
+                "output": "/tinymce/langs"
               }
             ],
             "styles": [
@@ -465,7 +475,7 @@
               "projects/safe/src/lib/style/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-angular/survey.css",
-              "node_modules/survey-creator/survey-creator.css",
+              "node_modules/survey-creator/survey-creator.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/select2/dist/css/select2.min.css"
@@ -815,6 +825,11 @@
                 "glob": "**/*",
                 "input": "node_modules/tinymce",
                 "output": "/tinymce/"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinymce",
+                "output": "/tinymce/langs"
               }
             ],
             "styles": [
@@ -852,8 +867,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 }
               ],
               "stylePreprocessorOptions": {
@@ -982,6 +997,11 @@
               }
             ],
             "styles": [
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              },
               {
                 "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
                 "inject": true

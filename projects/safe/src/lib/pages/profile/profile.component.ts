@@ -3,7 +3,6 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
-import { NOTIFICATIONS } from '../../const/notifications';
 import {
   EditUserProfileMutationResponse,
   EDIT_USER_PROFILE,
@@ -92,7 +91,9 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.profileSaved);
+          this.snackBar.openSnackBar(
+            this.translate.instant('pages.profile.notifications.updated')
+          );
           this.user.name = res.data.editUserProfile.name;
         }
       });
@@ -120,7 +121,9 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
         })
         .subscribe((res) => {
           if (res.data) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.profileSaved);
+            this.snackBar.openSnackBar(
+              this.translate.instant('pages.profile.notifications.updated')
+            );
             this.user.favoriteApp = res.data.editUserProfile.favoriteApp;
           }
         });

@@ -19,7 +19,6 @@ import {
   PermissionsManagement,
   PermissionType,
   SafeConfirmModalComponent,
-  NOTIFICATIONS,
   Form,
 } from '@safe/builder';
 import {
@@ -43,6 +42,7 @@ const DEFAULT_PAGE_SIZE = 10;
 export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   // === DATA ===
   public loading = true;
+  public filterLoading = false;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   public displayedColumns = [
     'name',
@@ -104,6 +104,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.pageInfo.length = res.data.forms.totalCount;
       this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
       this.loading = res.loading;
+      this.filterLoading = false;
     });
 
     this.authSubscription = this.authService.user$.subscribe(() => {
@@ -136,6 +137,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.loading = true;
       this.formsQuery.fetchMore({
         variables: {
           first,
@@ -170,6 +172,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param filter filter event.
    */
   onFilter(filter: any): void {
+    this.filterLoading = true;
     this.filter = filter;
     this.cachedForms = [];
     this.pageInfo.pageIndex = 0;
@@ -247,13 +250,23 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
           })
           .subscribe((res: any) => {
             if (!res.errors) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('form'));
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.form.one'),
+                })
+              );
               this.forms.data = this.forms.data.filter(
                 (x) => x.id !== form.id && form.id !== x.resource?.coreForm?.id
               );
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectNotDeleted('form', res.errors[0].message),
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate.instant('common.form.one'),
+                    error: res.errors[0].message,
+                  }
+                ),
                 { error: true }
               );
             }
@@ -290,7 +303,15 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate
+                        .instant('common.form.one')
+                        .toLowerCase(),
+                      error: res.errors[0].message,
+                    }
+                  ),
                   { error: true }
                 );
               } else {

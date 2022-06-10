@@ -6,7 +6,6 @@ import {
   status,
   SafeConfirmModalComponent,
   SafeSnackBarService,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -95,6 +94,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       e.pageIndex > e.previousPageIndex &&
       e.length > this.cachedPullJobs.length
     ) {
+      this.loading = true;
       this.pullJobsQuery.fetchMore({
         variables: {
           first: ITEMS_PER_PAGE,
@@ -178,7 +178,15 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               .subscribe((res) => {
                 if (res.data?.addPullJob) {
                   this.snackBar.openSnackBar(
-                    NOTIFICATIONS.objectCreated('pull job', value.name)
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate
+                          .instant('common.pullJob.one')
+                          .toLowerCase(),
+                        value: value.name,
+                      }
+                    )
                   );
                   if (this.cachedPullJobs.length === this.pageInfo.length) {
                     this.cachedPullJobs = this.cachedPullJobs.concat([
@@ -230,7 +238,9 @@ export class PullJobsComponent implements OnInit, OnDestroy {
             .subscribe((res) => {
               if (res.data?.deletePullJob) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectDeleted('Pull job')
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.pullJob.one'),
+                  })
                 );
                 this.cachedPullJobs = this.cachedPullJobs.filter(
                   (x) => x.id !== res.data?.deletePullJob.id
@@ -305,7 +315,14 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               .subscribe((res) => {
                 if (res.data?.editPullJob) {
                   this.snackBar.openSnackBar(
-                    NOTIFICATIONS.objectEdited('pull job', value.name)
+                    this.translate.instant(
+                      'common.notifications.objectUpdated',
+                      {
+                        type: this.translate.instant('common.pullJob.one')
+                          .toLowerCase,
+                        value: value.name,
+                      }
+                    )
                   );
                   this.cachedPullJobs = this.cachedPullJobs.map(
                     (pullJob: PullJob) => {

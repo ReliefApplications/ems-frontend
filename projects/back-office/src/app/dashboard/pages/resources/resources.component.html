@@ -1,83 +1,91 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
-  <div class="resources-header">
-    <!-- FILTERING -->
-    <app-filter (filter)="onFilter($event)"></app-filter>
-    <!-- ACTIONS -->
-    <div class="actions">
-      <safe-button
-        icon="add"
-        category="secondary"
-        variant="primary"
-        (click)="onAdd()"
-      >
-        {{ 'models.resource.create' | translate }}
-      </safe-button>
-    </div>
+<div class="resources-header">
+  <!-- FILTERING -->
+  <app-filter
+    (filter)="onFilter($event)"
+    [loading]="filterLoading"
+  ></app-filter>
+  <!-- ACTIONS -->
+  <div class="actions">
+    <safe-button
+      icon="add"
+      category="secondary"
+      variant="primary"
+      (click)="onAdd()"
+    >
+      {{ 'models.resource.create' | translate }}
+    </safe-button>
   </div>
+</div>
 
-  <table mat-table [dataSource]="resources" matSort>
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{ 'common.name' | translate }}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-    </ng-container>
+<table *ngIf="!loading" mat-table [dataSource]="resources" matSort>
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'common.name' | translate }}
+      </span>
+    </th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
 
-    <ng-container matColumnDef="createdAt">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{ 'common.createdOn' | translate }}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
-    </ng-container>
+  <ng-container matColumnDef="createdAt">
+    <th mat-header-cell *matHeaderCellDef>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'common.createdOn' | translate }}
+      </span>
+    </th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.createdAt | safeDate }}
+    </td>
+  </ng-container>
 
-    <ng-container matColumnDef="recordsCount">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{ 'common.record.few' | translate }}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">{{ element.recordsCount }}</td>
-    </ng-container>
+  <ng-container matColumnDef="recordsCount">
+    <th mat-header-cell *matHeaderCellDef>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'common.record.few' | translate }}
+      </span>
+    </th>
+    <td mat-cell *matCellDef="let element">{{ element.recordsCount }}</td>
+  </ng-container>
 
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let element">
-        <safe-button
-          [isIcon]="true"
-          icon="more_vert"
-          [matMenuTriggerFor]="menu"
-          (click)="$event.stopPropagation()"
-          [disabled]="!element.canDelete"
-        >
-        </safe-button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onDelete(element)">
-            <mat-icon>delete</mat-icon>
-            {{ 'common.delete' | translate }}
-          </button>
-        </mat-menu>
-      </td>
-    </ng-container>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <safe-button
+        [isIcon]="true"
+        icon="more_vert"
+        [matMenuTriggerFor]="menu"
+        (click)="$event.stopPropagation()"
+        [disabled]="!element.canDelete"
+      >
+      </safe-button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="onDelete(element)">
+          <mat-icon>delete</mat-icon>
+          {{ 'common.delete' | translate }}
+        </button>
+      </mat-menu>
+    </td>
+  </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      class="clickable"
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      [routerLink]="['/resources', row.id]"
-    ></tr>
-  </table>
-  <mat-paginator
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [length]="pageInfo.length"
-    aria-label="Select page of applications"
-    (page)="onPage($event)"
-  >
-  </mat-paginator>
-</ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    class="clickable"
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    [routerLink]="['/resources', row.id]"
+  ></tr>
+</table>
+<safe-skeleton-table
+  *ngIf="loading"
+  [columns]="['common.name', 'common.createdOn', 'common.record.few']"
+  [actions]="true"
+>
+</safe-skeleton-table>
+<mat-paginator
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [length]="pageInfo.length"
+  aria-label="Select page of applications"
+  (page)="onPage($event)"
+>
+</mat-paginator>

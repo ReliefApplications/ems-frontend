@@ -1,5 +1,6 @@
 {
 	"common": {
+		"access": "******",
 		"add": "******",
 		"aggregation": {
 			"few": "******",
@@ -16,6 +17,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"auto": "******",
 		"back": "******",
 		"cancel": "******",
 		"channel": {
@@ -28,8 +30,15 @@
 		"close": "******",
 		"create": "******",
 		"createdOn": "******",
+		"dashboard": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"delete": "******",
 		"deleteObject": "****** {{name}}",
+		"deleted": "******",
+		"dismiss": "******",
 		"display": "******",
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
@@ -40,6 +49,9 @@
 			"few": "******",
 			"none": "******",
 			"one": "******"
+		},
+		"errors": {
+			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
 		"export": "******",
 		"exportObject": "****** {{name}}",
@@ -69,25 +81,59 @@
 			"none": "******",
 			"rawJson": "******"
 		},
+		"label": "******",
 		"layout": {
 			"few": "******",
 			"none": "******",
 			"one": "******"
 		},
-		"logout": {
-			"confirmationMessage": "******",
-			"titleMessage": "******"
-		},
+		"modifiedOn": "******",
 		"name": "******",
-		"newObject": "****** {{name}}",
 		"next": "******",
 		"notifications": {
+			"accessDenied": "****** {{type}} ******",
+			"accessNotProvided": "****** {{type}} ****** {{error}}",
+			"alreadyExists": "****** {{type}} ****** {{value}} ******",
+			"copiedToClipboard": "******",
+			"dataRecovered": "******",
 			"email": {
 				"error": "******",
 				"processing": "******",
 				"ready": "******",
 				"sent": "******"
-			}
+			},
+			"file": {
+				"download": {
+					"error": "******",
+					"processing": "******",
+					"ready": "******"
+				},
+				"upload": {
+					"error": "******",
+					"processing": "******",
+					"ready": "******"
+				}
+			},
+			"formatInvalid": "****** {{format}} ******",
+			"loadedFromCache": "{{type}} ******",
+			"noOpened": "****** {{value}} ******",
+			"objectCreated": "{{value}} ****** {{type}} ******",
+			"objectDeleted": "{{value}} ******",
+			"objectDuplicated": "****** {{type}} ****** {{value}} ******",
+			"objectInvited": "{{name}} ******",
+			"objectLocked": "{{name}} ******",
+			"objectNotCreated": "****** {{type}} ****** {{error}}",
+			"objectNotDeleted": "{{value}} ****** {{error}}",
+			"objectNotDuplicated": "****** {{type}} ****** {{error}}",
+			"objectNotFound": "{{name}} ******",
+			"objectNotInvited": "{{name}} ******",
+			"objectNotUpdated": "{{type}} ****** {{error}}",
+			"objectReordered": "{{type}} ******",
+			"objectUpdated": "{{value}} ****** {{type}} ******",
+			"platformAccessNotGranted": "******",
+			"readAll": "******",
+			"statusUpdated": "****** {{value}} ******",
+			"unlocked": "{{value}} ******"
 		},
 		"openFullScreen": "******",
 		"page": {
@@ -96,6 +142,7 @@
 			"one": "******"
 		},
 		"pagination": {
+			"empty": "******",
 			"loadMore": "******"
 		},
 		"placeholder": {
@@ -112,6 +159,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"positionCategory": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"preview": "******",
 		"previous": "******",
 		"publish": "******",
@@ -121,6 +173,11 @@
 			"one": "******"
 		},
 		"record": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"referenceData": {
 			"few": "******",
 			"none": "******",
 			"one": "******"
@@ -174,7 +231,12 @@
 			"none": "******",
 			"one": "******"
 		},
-		"viewObject": "****** {{name}}"
+		"viewObject": "****** {{name}}",
+		"workflow": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		}
 	},
 	"components": {
 		"access": {
@@ -185,16 +247,20 @@
 			"title": "******"
 		},
 		"aggregationBuilder": {
+			"accumulators": "******",
 			"addField": "******",
+			"addRule": "******",
 			"addStage": "******",
 			"dataset": {
 				"select": "******"
 			},
 			"fieldName": "******",
 			"groupBy": "******",
+			"groupingRules": "******",
 			"mapping": {
-				"xAxis": "******",
-				"yAxis": "******"
+				"category": "******",
+				"field": "******",
+				"series": "******"
 			},
 			"operator": "******",
 			"operators": {
@@ -262,8 +328,8 @@
 				}
 			},
 			"publish": {
-				"confirmationMessage": "****** {{aplication}} ******",
-				"titleMessage": "******"
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
 			},
 			"subscription": {
 				"modal": {
@@ -277,8 +343,8 @@
 				}
 			},
 			"unlock": {
-				"confirmationMessage": "****** {{application}} ******",
-				"titleMessage": "******"
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
 			},
 			"update": {
 				"placeholder": {
@@ -339,6 +405,9 @@
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
 				},
+				"errors": {
+					"invalid": "******"
+				},
 				"update": {
 					"preview": {
 						"description": "******"
@@ -361,6 +430,13 @@
 				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			}
 		},
+		"formBuilder": {
+			"errors": {
+				"invalidRelatedName": "****** {{name}} ****** {{question}} ****** {{page}} ******",
+				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
+				"missingTemplate": "****** {{question}} ****** {{page}} ******"
+			}
+		},
 		"forms": {
 			"isCore": "******",
 			"parent": "******"
@@ -374,13 +450,30 @@
 			}
 		},
 		"history": {
+			"changes": {
+				"add": "******",
+				"from": "******",
+				"modify": "******",
+				"remove": "******",
+				"to": "******",
+				"withValue": "******"
+			},
 			"download": "******",
+			"field": {
+				"all": "******",
+				"select": "******"
+			},
 			"preview": "******"
+		},
+		"logout": {
+			"confirmationMessage": "******",
+			"title": "******"
 		},
 		"notifications": {
 			"readAll": "******"
 		},
 		"preferences": {
+			"dateFormat": "******",
 			"language": "******",
 			"title": "******"
 		},
@@ -409,13 +502,14 @@
 			"dataset": {
 				"select": "******"
 			},
-			"error": {
+			"errors": {
 				"field": {
 					"invalid": "******"
 				}
 			},
 			"fields": {
 				"available": "******",
+				"search": "******",
 				"selected": "******",
 				"title": "******"
 			},
@@ -430,6 +524,7 @@
 			},
 			"hint": {
 				"fields": "******",
+				"sortingDisabled": "******",
 				"style": "******"
 			},
 			"sort": {
@@ -506,7 +601,7 @@
 			},
 			"recovery": {
 				"confirmationMessage": "****** {{date}} ******",
-				"titleMessage": "******"
+				"title": "******"
 			}
 		},
 		"records": {
@@ -514,6 +609,21 @@
 			"showArchived": "******",
 			"upload": {
 				"hint": "******"
+			}
+		},
+		"referenceData": {
+			"create": {
+				"errors": {
+					"name": "******"
+				},
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			},
+			"dropdown": {
+				"select": "******"
 			}
 		},
 		"resource": {
@@ -579,7 +689,8 @@
 				"empty": "******",
 				"errors": {
 					"invalid": "******",
-					"missingDataset": "******"
+					"missingDataset": "******",
+					"validationFailed": "****** {{index}} ****** {{question}} ****** {{error}}"
 				},
 				"export": {
 					"columns": {
@@ -614,17 +725,39 @@
 			},
 			"settings": {
 				"chart": {
+					"axes": "******",
+					"labels": {
+						"percentage": "******",
+						"showCategory": "******",
+						"showValue": "******",
+						"title": "******",
+						"valueType": "******"
+					},
 					"legend": "******",
 					"orientation": "******",
+					"palette": {
+						"enable": "******",
+						"title": "******"
+					},
 					"position": "******",
+					"series": {
+						"stack": {
+							"enable": "******",
+							"usePercentage": "******"
+						},
+						"title": "******"
+					},
 					"text": "******",
-					"type": "******"
+					"type": "******",
+					"xAxis": "******",
+					"yAxis": "******"
 				},
 				"grid": {
 					"actions": {
 						"add": "******",
 						"convert": "******",
 						"delete": "******",
+						"export": "******",
 						"inline": "******",
 						"show": "******",
 						"showDetails": "******",
@@ -653,6 +786,7 @@
 							}
 						},
 						"create": "******",
+						"defaultName": "******",
 						"enable": "******",
 						"title": "******",
 						"tooltip": {
@@ -685,6 +819,16 @@
 						"latitude": "******",
 						"longitude": "******",
 						"title": "******"
+					},
+					"errors": {
+						"latitude": "******",
+						"longitude": "******"
+					},
+					"tooltip": {
+						"default": {
+							"latitude": "******",
+							"longitude": "******"
+						}
 					}
 				}
 			}
@@ -852,18 +996,25 @@
 	},
 	"models": {
 		"apiConfiguration": {
-			"authType": "******"
+			"authType": "******",
+			"new": "******"
 		},
 		"application": {
 			"description": "******",
 			"id": "******",
+			"new": "******",
+			"notifications": {
+				"published": "{{value}} ******",
+				"updated": "******"
+			},
 			"setAsFavorite": "******",
 			"subscription": {
 				"create": "******"
 			}
 		},
 		"channel": {
-			"create": "******"
+			"create": "******",
+			"new": "******"
 		},
 		"dashboard": {
 			"share": "******"
@@ -875,20 +1026,40 @@
 				"label": "******",
 				"name": "******"
 			},
+			"new": "******",
+			"notifications": {
+				"savingFailed": "******"
+			},
 			"select": "******",
 			"template": "******"
 		},
 		"page": {
-			"add": "******"
+			"add": "******",
+			"tooltip": {
+				"duplicate": "******"
+			}
+		},
+		"positionAttribute": {
+			"new": "******"
 		},
 		"pullJob": {
+			"new": "******",
 			"path": "******",
 			"schedule": "******",
 			"url": "******"
 		},
 		"record": {
 			"convert": "******",
+			"new": "******",
+			"notifications": {
+				"conversionIncomplete": "******",
+				"rowsAdded": "****** {{length}} ****** {{field}} ****** {{value}} ******",
+				"uploadSuccessful": "******"
+			},
 			"restore": "******"
+		},
+		"referenceData": {
+			"add": "******"
 		},
 		"resource": {
 			"create": "******"
@@ -896,7 +1067,17 @@
 		"role": {
 			"create": "******"
 		},
+		"step": {
+			"new": "******"
+		},
+		"subscription": {
+			"new": "******"
+		},
 		"user": {
+			"notifications": {
+				"rolesUpdated": "{{username}} ******",
+				"userImportFail": "******"
+			},
 			"username": "******"
 		},
 		"widget": {
@@ -906,7 +1087,7 @@
 			},
 			"delete": {
 				"confirmationMessage": "******",
-				"titleMessage": "******"
+				"title": "******"
 			},
 			"map": {
 				"defaultTitle": "******",
@@ -916,6 +1097,12 @@
 			},
 			"scheduler": {
 				"defaultTitle": "******"
+			}
+		},
+		"workflow": {
+			"notifications": {
+				"cannotGoToNextStep": "******",
+				"goToStep": "****** {{step}} ******"
 			}
 		}
 	},
@@ -927,12 +1114,22 @@
 			"authentication": "******",
 			"baseUrl": "******",
 			"clientId": "******",
+			"graphQL": {
+				"endpoint": "******",
+				"title": "******"
+			},
 			"host": "******",
+			"notifications": {
+				"authTokenFetched": "******",
+				"pingFailed": "******",
+				"pingReceived": "******"
+			},
 			"ping": "******",
 			"pingUrl": "******",
 			"placeholder": {
 				"baseUrl": "******",
 				"clientId": "******",
+				"graphQLEndpoint": "******",
 				"pingUrl": "******",
 				"scope": "******",
 				"secret": "******",
@@ -1000,10 +1197,28 @@
 			"title": "******"
 		},
 		"profile": {
+			"notifications": {
+				"updated": "******"
+			},
 			"title": "******"
 		},
 		"pullJobs": {
 			"create": "******"
+		},
+		"referenceData": {
+			"csv": "******",
+			"errors": {
+				"name": "******"
+			},
+			"fields": "******",
+			"path": "******",
+			"placeholder": {
+				"csv": "******"
+			},
+			"queryName": "******",
+			"type": "******",
+			"validateCsv": "******",
+			"valueField": "******"
 		},
 		"workflow": {
 			"addStep": {

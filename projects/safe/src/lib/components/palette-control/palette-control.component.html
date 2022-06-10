@@ -1,0 +1,19 @@
+<div class="palette-control" cdkDropListGroup>
+  <ng-container *ngFor="let color of colors; let i = index">
+    <div
+      cdkDropList
+      cdkDropListOrientation="horizontal"
+      [cdkDropListData]="{ item: color, index: i }"
+      (cdkDropListDropped)="onReorder($event)"
+    >
+      <kendo-colorpicker
+        cdkDrag
+        [cdkDragDisabled]="disabled"
+        [value]="color"
+        (valueChange)="onColorChange($event, i)"
+        (close)="onClose($event)"
+        [disabled]="disabled"
+      ></kendo-colorpicker>
+    </div>
+  </ng-container>
+</div>

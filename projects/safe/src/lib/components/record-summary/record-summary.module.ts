@@ -4,6 +4,7 @@ import { SafeRecordSummaryComponent } from './record-summary.component';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeDateModule } from '../../pipes/date/date.module';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 
 /**
@@ -16,6 +17,7 @@ import { DateInputModule } from '@progress/kendo-angular-dateinputs';
     SafeButtonModule,
     MatTooltipModule,
     TranslateModule,
+    SafeDateModule,
     DateInputModule,
   ],
   exports: [SafeRecordSummaryComponent],

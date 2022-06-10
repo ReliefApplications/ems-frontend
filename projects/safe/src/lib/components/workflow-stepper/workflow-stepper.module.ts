@@ -10,6 +10,7 @@ import { SafeButtonModule } from '../ui/button/public-api';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
 /**
  * Module for workflow stepper component
@@ -29,6 +30,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeIconModule,
     SafeButtonModule,
     TranslateModule,
+    IndicatorsModule,
   ],
   exports: [
     SafeWorkflowStepperComponent,

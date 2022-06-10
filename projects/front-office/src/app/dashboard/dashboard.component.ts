@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
   User,
@@ -10,7 +11,6 @@ import {
   Permission,
   Permissions,
   ContentType,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -59,7 +59,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -97,7 +98,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.permissions = user.permissions || [];
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.accessNotProvided('platform'),
+              this.translate.instant(
+                'common.notifications.platformAccessNotGranted'
+              ),
               { error: true }
             );
           }

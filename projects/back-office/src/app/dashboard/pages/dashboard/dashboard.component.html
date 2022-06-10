@@ -1,69 +1,112 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading && dashboard">
-  <!-- HEADER -->
-  <div *ngIf="!formActive" class="dashboard-name-container">
-    <h1 class="dashboard-name" (click)="toggleFormActive()">
-      {{ dashboard.name }}
-    </h1>
-    <safe-access
-      [access]="dashboard.permissions"
-      [application]="applicationId"
-      (save)="saveAccess($event)"
-      *ngIf="
-        dashboard.page
-          ? dashboard.page.canUpdate
-          : dashboard.step
-          ? dashboard.step.canUpdate
-          : false
-      "
-    >
-    </safe-access>
-    <safe-button
-      [isIcon]="true"
-      icon="share"
-      matTooltipPosition="above"
-      [matTooltip]="'models.dashboard.share' | translate"
-      class="share-button"
-      (click)="onShare()"
-    >
-    </safe-button>
-  </div>
-  <!-- NAME EDITION -->
-  <ng-container *ngIf="formActive">
-    <form
-      [formGroup]="dashboardNameForm"
-      (ngSubmit)="saveName()"
-      class="dashboard-name-container"
-    >
-      <mat-form-field>
-        <mat-label>{{ 'common.name' | translate }}</mat-label>
-        <input matInput formControlName="dashboardName" type="string" />
-      </mat-form-field>
-      <safe-button
-        type="submit"
-        [isIcon]="true"
-        icon="save"
-        variant="primary"
-        [disabled]="!dashboardNameForm.valid"
+<ng-container
+  *safeSkeleton="
+    loading;
+    repeat: 1;
+    height: '32px';
+    width: '120px';
+    shape: 'rectangle'
+  "
+>
+  <ng-container *ngIf="dashboard">
+    <!-- HEADER -->
+    <div *ngIf="!formActive" class="dashboard-name-container">
+      <h1 class="dashboard-name" (click)="toggleFormActive()">
+        {{ dashboard.name }}
+      </h1>
+      <div class="dashboard-icons-container">
+        <safe-access
+          [access]="dashboard.permissions"
+          [application]="applicationId"
+          (save)="saveAccess($event)"
+          *ngIf="
+            dashboard.page
+              ? dashboard.page.canUpdate
+              : dashboard.step
+              ? dashboard.step.canUpdate
+              : false
+          "
+        >
+        </safe-access>
+        <safe-button
+          [isIcon]="true"
+          icon="more_vert"
+          class="share-button"
+          [matMenuTriggerFor]="menu"
+          cdkOverlayOrigin
+          #appMenuTrigger="cdkOverlayOrigin"
+        >
+        </safe-button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="onAppSelection()">
+            <mat-icon>file_copy</mat-icon>
+            {{ 'common.duplicate' | translate }}
+          </button>
+          <button mat-menu-item (click)="onShare()">
+            <mat-icon>share</mat-icon>
+            {{ 'models.dashboard.share' | translate }}
+          </button>
+        </mat-menu>
+
+        <ng-template #searchMenuHeaderTemplate>
+          <safe-alert
+            ><safe-icon icon="info"></safe-icon>
+            {{ 'models.page.tooltip.duplicate' | translate }}
+          </safe-alert>
+        </ng-template>
+
+        <ng-template
+          cdkConnectedOverlay
+          [cdkConnectedOverlayOrigin]="appMenuTrigger"
+          [cdkConnectedOverlayOpen]="showAppMenu"
+        >
+          <safe-search-menu
+            [headerTemplate]="searchMenuHeaderTemplate"
+            [currentApplicationId]="applicationId"
+            [applications]="applications"
+            (close)="showAppMenu = false"
+            (open)="onDuplicate($event)"
+          ></safe-search-menu>
+        </ng-template>
+      </div>
+    </div>
+    <!-- NAME EDITION -->
+    <ng-container *ngIf="formActive">
+      <form
+        [formGroup]="dashboardNameForm"
+        (ngSubmit)="saveName()"
+        class="name-edit-container"
       >
-      </safe-button>
-      <safe-button
-        mat-icon-button
-        [isIcon]="true"
-        icon="close"
-        variant="danger"
-        (click)="toggleFormActive()"
-      >
-      </safe-button>
-    </form>
+        <mat-form-field>
+          <mat-label>{{ 'common.name' | translate }}</mat-label>
+          <input matInput formControlName="dashboardName" type="string" />
+        </mat-form-field>
+        <safe-button
+          type="submit"
+          [isIcon]="true"
+          icon="save"
+          variant="primary"
+          [disabled]="!dashboardNameForm.valid"
+        >
+        </safe-button>
+        <safe-button
+          mat-icon-button
+          [isIcon]="true"
+          icon="close"
+          variant="danger"
+          (click)="toggleFormActive()"
+        >
+        </safe-button>
+      </form>
+    </ng-container>
   </ng-container>
-  <safe-widget-grid
-    [widgets]="tiles"
-    [canUpdate]="dashboard.canUpdate || false"
-    (move)="onMove($event)"
-    (edit)="onEditTile($event)"
-    (delete)="onDeleteTile($event)"
-    (goToNextStep)="goToNextStep.emit($event)"
-    (add)="onAdd($event)"
-  ></safe-widget-grid>
 </ng-container>
+<safe-widget-grid
+  [loading]="loading"
+  [widgets]="tiles"
+  [canUpdate]="dashboard?.canUpdate || false"
+  (move)="onMove($event)"
+  (edit)="onEditTile($event)"
+  (delete)="onDeleteTile($event)"
+  (goToNextStep)="goToNextStep.emit($event)"
+  (add)="onAdd($event)"
+></safe-widget-grid>

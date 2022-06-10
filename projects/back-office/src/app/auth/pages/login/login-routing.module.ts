@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login.component';
 
+/**
+ * List of routes of Login Module.
+ */
 const routes: Routes = [
   {
     path: '',
@@ -9,6 +12,9 @@ const routes: Routes = [
   },
 ];
 
+/**
+ * Routing module of Login Module.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

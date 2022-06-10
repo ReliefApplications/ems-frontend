@@ -41,20 +41,24 @@
     </ng-template>
   </mat-tab>
 </mat-tab-group>
-<div [id]="containerId"></div>
+<div #formContainer></div>
 <div *ngIf="surveyActive" class="survey-navigation">
-  <safe-button
-    [disabled]="survey.isFirstPage"
-    variant="primary"
-    (click)="survey.prevPage()"
-    >{{ 'common.previous' | translate }}</safe-button
-  >
-  <safe-button
-    [disabled]="survey.isLastPage"
-    variant="primary"
-    (click)="survey.nextPage()"
-    >{{ 'common.next' | translate }}</safe-button
-  >
+  <ng-container *ngIf="pages$ | async as pages">
+    <safe-button
+      *ngIf="pages.length > 1"
+      [disabled]="survey.isFirstPage"
+      variant="primary"
+      (click)="survey.prevPage()"
+      >{{ 'common.previous' | translate }}</safe-button
+    >
+    <safe-button
+      *ngIf="pages.length > 1"
+      [disabled]="survey.isLastPage"
+      variant="primary"
+      (click)="survey.nextPage()"
+      >{{ 'common.next' | translate }}</safe-button
+    >
+  </ng-container>
   <safe-button variant="primary" category="secondary" (click)="submit()">{{
     'common.save' | translate
   }}</safe-button>

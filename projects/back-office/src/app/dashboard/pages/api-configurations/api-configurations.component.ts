@@ -11,7 +11,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ApiConfiguration,
-  NOTIFICATIONS,
   PermissionsManagement,
   PermissionType,
   SafeAuthService,
@@ -28,7 +27,7 @@ import {
   AddApiConfigurationMutationResponse,
   ADD_API_CONFIGURATIION,
   DeleteApiConfigurationMutationResponse,
-  DELETE_API_CONFIGURATIION,
+  DELETE_API_CONFIGURATION,
 } from '../../../graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -134,6 +133,7 @@ export class ApiConfigurationsComponent
       if (e.pageSize > this.pageInfo.pageSize) {
         neededSize -= this.pageInfo.pageSize;
       }
+      this.loading = true;
       this.apiConfigurationsQuery.fetchMore({
         variables: {
           first: neededSize,
@@ -222,9 +222,14 @@ export class ApiConfigurationsComponent
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectNotCreated(
-                    'apiConfiguration',
-                    res.errors[0].message
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate.instant(
+                        'common.apiConfiguration.one'
+                      ),
+                      error: res.errors[0].message,
+                    }
                   ),
                   { error: true }
                 );
@@ -273,7 +278,7 @@ export class ApiConfigurationsComponent
       if (value) {
         this.apollo
           .mutate<DeleteApiConfigurationMutationResponse>({
-            mutation: DELETE_API_CONFIGURATIION,
+            mutation: DELETE_API_CONFIGURATION,
             variables: {
               id: element.id,
             },
@@ -281,7 +286,9 @@ export class ApiConfigurationsComponent
           .subscribe((res) => {
             if (res && !res.errors) {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectDeleted('API Configuration')
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.apiConfiguration.one'),
+                })
               );
               this.dataSource.data = this.dataSource.data.filter(
                 (x) => x.id !== element.id

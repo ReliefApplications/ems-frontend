@@ -15,8 +15,9 @@ import {
   SafeSnackBarService,
   SafeApplicationService,
   SafeWorkflowService,
-  NOTIFICATIONS,
   SafeDashboardService,
+  SafeAuthService,
+  Application,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
@@ -32,6 +33,7 @@ import {
   GET_DASHBOARD_BY_ID,
 } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -59,6 +61,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
+  // === DUP APP SELECTION ===
+  public showAppMenu = false;
+  public applications: Application[] = [];
+
   constructor(
     private applicationService: SafeApplicationService,
     private workflowService: SafeWorkflowService,
@@ -67,7 +73,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private dashboardService: SafeDashboardService
+    private dashboardService: SafeDashboardService,
+    private translateService: TranslateService,
+    private authService: SafeAuthService
   ) {}
 
   ngOnInit(): void {
@@ -108,7 +116,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
               this.loading = res.loading;
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.accessNotProvided('dashboard'),
+                this.translateService.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translateService
+                      .instant('common.dashboard.one')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
               this.router.navigate(['/applications']);
@@ -294,9 +310,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.workflowService.updateStepName(res.data.editStep);
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectNotUpdated(
-                'step',
-                res.errors ? res.errors[0].message : ''
+              this.translateService.instant(
+                'common.notifications.objectNotUpdated',
+                {
+                  type: this.translateService.instant('common.step.one'),
+                  error: res.errors ? res.errors[0].message : '',
+                }
               )
             );
           }
@@ -321,11 +340,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   /** Display the ShareUrl modal with the route to access the dashboard. */
   public onShare(): void {
+    const url = `${window.origin}/share/${this.dashboard?.id}`;
     const dialogRef = this.dialog.open(ShareUrlComponent, {
       data: {
-        url: window.location,
+        url,
       },
     });
     dialogRef.afterClosed().subscribe();
+  }
+
+  /**
+   * Duplicate page, in a new ( or same ) application
+   *
+   * @param event duplication event
+   */
+  public onDuplicate(event: any): void {
+    if (this.dashboard?.page?.id) {
+      this.applicationService.duplicatePage(this.dashboard?.page?.id, event.id);
+    }
+  }
+
+  public onAppSelection(): void {
+    this.showAppMenu = !this.showAppMenu;
+    const authSubscription = this.authService.user$.subscribe(
+      (user: any | null) => {
+        if (user) {
+          this.applications = user.applications;
+        }
+      }
+    );
+    authSubscription.unsubscribe();
   }
 }

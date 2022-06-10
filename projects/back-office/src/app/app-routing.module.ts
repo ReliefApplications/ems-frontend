@@ -3,6 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { AccessGuard } from './guards/access.guard';
 import { AuthGuard } from './guards/auth.guard';
 
+/**
+ * List of top level routes of the Back-Office.
+ */
 const routes: Routes = [
   {
     path: 'auth',
@@ -53,8 +56,10 @@ const routes: Routes = [
   },
 ];
 
-/** Root module of Routing. Separate the front into three modules: 'auth', 'dashboard' and 'application'.
-    Use lazy loading for performance. */
+/**
+ * Root module of Routing. Separate the front into three modules: 'auth', 'dashboard' and 'application'.
+ * Use lazy loading for performance.
+ */
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {

@@ -17,6 +17,7 @@ import { Application } from '../../models/application.model';
   styleUrls: ['./applications-summary.component.scss'],
 })
 export class SafeApplicationsSummaryComponent implements OnInit {
+  @Input() loading = false;
   @Input() canCreate = false;
   @Input() applications: Application[] = [];
   @Output() add = new EventEmitter();

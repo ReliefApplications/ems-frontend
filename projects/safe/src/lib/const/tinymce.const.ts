@@ -1,3 +1,11 @@
+/** Language tinymce keys paired with the default ones */
+export const EDITOR_LANGUAGE_PAIRS: { key: string; tinymceKey: string }[] = [
+  {
+    key: 'fr',
+    tinymceKey: 'fr_FR',
+  },
+];
+
 /** Widget Editor tinymce configuration. */
 export const WIDGET_EDITOR_CONFIG = {
   base_url: '/tinymce',

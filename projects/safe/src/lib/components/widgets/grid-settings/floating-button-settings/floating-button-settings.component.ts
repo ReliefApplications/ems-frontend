@@ -25,7 +25,11 @@ import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
-import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
+import {
+  EMAIL_EDITOR_CONFIG,
+  EDITOR_LANGUAGE_PAIRS,
+} from '../../../../const/tinymce.const';
+import { TranslateService } from '@ngx-translate/core';
 
 /** List fo diabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
@@ -97,8 +101,18 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
     private componentFactoryResolver: ComponentFactoryResolver,
-    public dialog: MatDialog
-  ) {}
+    public dialog: MatDialog,
+    private translate: TranslateService
+  ) {
+    // Set the editor language
+    const lang = this.translate.currentLang;
+    const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
+    if (editorLang) {
+      this.editor.language = editorLang.tinymceKey;
+    } else {
+      this.editor.language = 'en';
+    }
+  }
 
   ngOnInit(): void {
     if (

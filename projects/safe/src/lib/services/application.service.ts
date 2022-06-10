@@ -46,13 +46,14 @@ import {
   EDIT_CHANNEL,
   ToggleApplicationLockMutationResponse,
   TOGGLE_APPLICATION_LOCK,
+  duplicatePageMutationResponse,
+  DUPLICATE_PAGE,
 } from '../graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
   GET_APPLICATION_BY_ID,
 } from '../graphql/queries';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
-import { NOTIFICATIONS } from '../const/notifications';
 import {
   ApplicationEditedSubscriptionResponse,
   ApplicationUnlockedSubscriptionResponse,
@@ -60,6 +61,7 @@ import {
   APPLICATION_UNLOCKED_SUBSCRIPTION,
 } from '../graphql/subscriptions';
 import { SafeAuthService } from './auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -101,7 +103,9 @@ export class SafeApplicationService {
     if (application) {
       if (application?.locked && !application.lockedByUser) {
         this.snackBar.openSnackBar(
-          NOTIFICATIONS.objectIsLocked(application.name)
+          this.translate.instant('common.notifications.objectLocked', {
+            value: application.name,
+          })
         );
         return false;
       }
@@ -123,7 +127,8 @@ export class SafeApplicationService {
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {
     this.environment = environment;
   }
@@ -149,7 +154,9 @@ export class SafeApplicationService {
         if (res.data.application.locked) {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectIsLocked(res.data.application.name)
+              this.translate.instant('common.notifications.objectLocked', {
+                value: res.data.application.name,
+              })
             );
           }
         }
@@ -162,10 +169,13 @@ export class SafeApplicationService {
         },
       })
       .subscribe(() => {
-        const snackBar = this.snackBar.openSnackBar(NOTIFICATIONS.appEdited, {
-          action: 'Reload',
-          duration: 0,
-        });
+        const snackBar = this.snackBar.openSnackBar(
+          this.translate.instant('models.application.notifications.updated'),
+          {
+            action: 'Reload',
+            duration: 0,
+          }
+        );
         snackBar.onAction().subscribe(() => window.location.reload());
       });
     this.lockSubscription = this.apollo
@@ -256,14 +266,19 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectNotUpdated(
-                'Application',
-                res.errors[0].message
-              )
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.application.one'),
+                error: res.errors[0].message,
+              })
             );
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectEdited('application', value.name)
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate
+                  .instant('common.application.one')
+                  .toLowerCase(),
+                value: value.name,
+              })
             );
             if (res.data?.editApplication) {
               const newApplication = {
@@ -296,7 +311,12 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.appPublished(res.data.editApplication.name)
+              this.translate.instant(
+                'models.application.notifications.published',
+                {
+                  value: res.data.editApplication.name,
+                }
+              )
             );
             this.router.navigate(['/applications']);
           }
@@ -321,7 +341,11 @@ export class SafeApplicationService {
         })
         .subscribe((res) => {
           if (res.data) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Page'));
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.page.one'),
+              })
+            );
             const app = this.application.getValue();
             if (app) {
               const newApplication = {
@@ -335,10 +359,10 @@ export class SafeApplicationService {
             }
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectNotDeleted(
-                'page',
-                res.errors ? res.errors[0].message : ''
-              ),
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: this.translate.instant('common.page.one').toLowerCase(),
+                error: res.errors ? res.errors[0].message : '',
+              }),
               { error: true }
             );
           }
@@ -363,7 +387,11 @@ export class SafeApplicationService {
           },
         })
         .subscribe((res) => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Pages'));
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectReordered', {
+              type: this.translate.instant('common.page.few').toLowerCase(),
+            })
+          );
           this.application.next({
             ...application,
             ...{ pages: res.data?.editApplication.pages },
@@ -413,7 +441,10 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data?.addPage) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated('page', res.data.addPage.name)
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate.instant('common.page.one').toLowerCase(),
+                value: res.data.addPage.name,
+              })
             );
             const content = res.data.addPage.content;
             const newApplication = {
@@ -428,15 +459,62 @@ export class SafeApplicationService {
             ]);
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectNotCreated(
-                'page',
-                res.errors ? res.errors[0].message : ''
-              ),
+              this.translate.instant('common.notifications.objectNotCreated', {
+                type: this.translate.instant('common.page.one').toLowerCase(),
+                error: res.errors ? res.errors[0].message : '',
+              }),
               { error: true }
             );
           }
         });
     }
+  }
+
+  /**
+   * Duplicates page in the indicated application.
+   *
+   * @param pageId page id which will be duplicated
+   * @param applicationId id of the application where it shoul be duplicated
+   */
+  duplicatePage(pageId: string, applicationId: string): void {
+    this.apollo
+      .mutate<duplicatePageMutationResponse>({
+        mutation: DUPLICATE_PAGE,
+        variables: {
+          id: pageId,
+          application: applicationId,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotCreated', {
+              type: this.translate.instant('common.page.one').toLowerCase(),
+              error: res.errors ? res.errors[0].message : '',
+            }),
+            { error: true }
+          );
+        } else {
+          if (res.data?.duplicatePage) {
+            const newPage = res.data.duplicatePage;
+            this.translate.instant('common.notifications.objectCreated', {
+              type: this.translate.instant('common.page.one').toLowerCase(),
+              value: newPage?.name,
+            });
+            const application = this.application.getValue();
+            if (applicationId === application?.id) {
+              const newApplication = {
+                ...application,
+                pages: application.pages?.concat([newPage]),
+              };
+              this.application.next(newApplication);
+            }
+            this.router.navigate([
+              `/applications/${applicationId}/${newPage?.type}/${newPage?.content}`,
+            ]);
+          }
+        }
+      });
   }
 
   /**
@@ -458,7 +536,10 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated(role.title, 'role')
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate.instant('common.role.one').toLowerCase(),
+                value: role.title,
+              })
             );
             const newApplication = {
               ...application,
@@ -492,7 +573,10 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectEdited('role', role.title)
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.role.one').toLowerCase(),
+                value: role.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -547,7 +631,11 @@ export class SafeApplicationService {
           },
         })
         .subscribe((res) => {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted(role.title));
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectDeleted', {
+              value: role.title,
+            })
+          );
           const newApplication = {
             ...application,
             roles: application.roles?.filter((x) => x.id !== role.id),
@@ -580,7 +668,15 @@ export class SafeApplicationService {
               (x) => x.id
             );
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.usersActions('deleted', deletedUsers.length)
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate
+                  .instant(
+                    deletedUsers.length > 1
+                      ? 'common.user.few'
+                      : 'common.user.one'
+                  )
+                  .toLowerCase(),
+              })
             );
             const newApplication = {
               ...application,
@@ -591,7 +687,14 @@ export class SafeApplicationService {
             this.application.next(newApplication);
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.userInvalidActions('deleted'),
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: this.translate
+                  .instant(
+                    ids.length > 1 ? 'common.user.few' : 'common.user.one'
+                  )
+                  .toLowerCase(),
+                error: '',
+              }),
               { error: true }
             );
           }
@@ -624,10 +727,15 @@ export class SafeApplicationService {
         .subscribe((res: any) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.usersActions(
-                'invited',
-                res.data.addRoleToUsers.length
-              )
+              this.translate.instant('common.notifications.objectInvited', {
+                name: this.translate
+                  .instant(
+                    res.data?.addUsers.length
+                      ? 'common.user.few'
+                      : 'common.user.one'
+                  )
+                  .toLowerCase(),
+              })
             );
             const newApplication = {
               ...application,
@@ -636,7 +744,15 @@ export class SafeApplicationService {
             this.application.next(newApplication);
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.userInvalidActions('invited'),
+              this.translate.instant('common.notifications.objectNotInvited', {
+                name: this.translate
+                  .instant(
+                    res.data?.addUsers.length
+                      ? 'common.user.few'
+                      : 'common.user.one'
+                  )
+                  .toLowerCase(),
+              }),
               { error: true }
             );
           }
@@ -669,7 +785,10 @@ export class SafeApplicationService {
           if (res.data) {
             const newUser = res.data.editUser;
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectEdited('roles', user.username)
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.role.few').toLowerCase(),
+                value: user.username,
+              })
             );
             const index = application?.users?.indexOf(user);
             if (application?.users && index) {
@@ -707,7 +826,12 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated(category.title, 'position category')
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate
+                  .instant('common.positionCategory.one')
+                  .toLowerCase(),
+                value: category.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -741,7 +865,9 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectDeleted(category.title)
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: category.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -780,15 +906,20 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectAlreadyExists(
-                'position category',
-                value.title
-              ),
+              this.translate.instant('common.errors.objectDuplicated', {
+                type: this.translate
+                  .instant('common.positionCategory.one')
+                  .toLowerCase(),
+                value: value.title,
+              }),
               { error: true }
             );
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectEdited('position category', value.title)
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.positionCategory.one'),
+                value: value.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -829,7 +960,12 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated('channel', channel.title)
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate
+                  .instant('common.channel.one')
+                  .toLowerCase(),
+                value: channel.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -860,7 +996,10 @@ export class SafeApplicationService {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectEdited('Channel', title)
+            this.translate.instant('common.notifications.objectUpdated', {
+              type: this.translate.instant('common.channel.one'),
+              value: title,
+            })
           );
           const newApplication: Application = {
             ...application,
@@ -894,7 +1033,9 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectDeleted(channel.title)
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: channel.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -939,7 +1080,12 @@ export class SafeApplicationService {
         .subscribe((res) => {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated('subscription', subscription.title)
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate
+                  .instant('common.subscription.one')
+                  .toLowerCase(),
+                value: subscription.title,
+              })
             );
             const newApplication: Application = {
               ...application,
@@ -971,7 +1117,9 @@ export class SafeApplicationService {
         })
         .subscribe((res) => {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectDeleted('Subscription')
+            this.translate.instant('common.notifications.objectDeleted', {
+              value: this.translate.instant('common.subscription.one'),
+            })
           );
           const newApplication = {
             ...application,
@@ -1009,7 +1157,12 @@ export class SafeApplicationService {
           if (res.data) {
             const subscription = res.data.editSubscription;
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectEdited('subscription', value.title)
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate
+                  .instant('common.subscription.one')
+                  .toLowerCase(),
+                value: value.title,
+              })
             );
             const newApplication = {
               ...application,

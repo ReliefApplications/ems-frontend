@@ -107,6 +107,11 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     private translate: TranslateService
   ) {
     this.environment = environment;
+    // translate the editor in the same language as the interface
+    SurveyCreator.localization.currentLocale = this.translate.currentLang;
+    this.translate.onLangChange.subscribe(() => {
+      SurveyCreator.localization.currentLocale = this.translate.currentLang;
+    });
   }
 
   ngOnInit(): void {
@@ -423,9 +428,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           if (!this.isSnakeCase(element.relatedName)) {
             throw new Error(
               this.translate.instant(
-                'pages.formBuilder.errors.resource.invalidRelatedName',
+                'components.formBuilder.errors.invalidRelatedName',
                 {
-                  relatedName: element.relatedName,
+                  name: element.relatedName,
+                  question: element.name,
                   page: page.name,
                 }
               )
@@ -434,9 +440,21 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         } else {
           throw new Error(
             this.translate.instant(
-              'pages.formBuilder.errors.resource.missingRelatedName',
+              'components.formBuilder.errors.missingRelatedName',
               {
-                question: element.relatedName,
+                question: element.name,
+                page: page.name,
+              }
+            )
+          );
+        }
+
+        if (element.addRecord && !element.addTemplate) {
+          throw new Error(
+            this.translate.instant(
+              'components.formBuilder.errors.missingTemplate',
+              {
+                question: element.name,
                 page: page.name,
               }
             )

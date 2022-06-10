@@ -8,7 +8,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
-import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
+import {
+  SafeConfirmModalModule,
+  SafeButtonModule,
+  SafeSkeletonTableModule,
+  SafeDateModule,
+} from '@safe/builder';
 import { AddFormModule } from '../../../components/add-form/add-form.module';
 import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -50,6 +55,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeButtonModule,
     MatPaginatorModule,
     TranslateModule,
+    SafeSkeletonTableModule,
+    SafeDateModule,
   ],
   exports: [FormsComponent],
 })

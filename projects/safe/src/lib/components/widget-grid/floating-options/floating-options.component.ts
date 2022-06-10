@@ -87,7 +87,7 @@ export class SafeFloatingOptionsComponent implements OnInit {
     if (item.name === 'Delete') {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: this.translate.instant('models.widget.delete.titleMessage'),
+          title: this.translate.instant('models.widget.delete.title'),
           content: this.translate.instant(
             'models.widget.delete.confirmationMessage'
           ),

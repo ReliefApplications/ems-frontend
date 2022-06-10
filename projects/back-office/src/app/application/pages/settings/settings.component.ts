@@ -7,7 +7,6 @@ import {
   SafeApplicationService,
   SafeConfirmModalComponent,
   SafeSnackBarService,
-  NOTIFICATIONS,
   SafeAuthService,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
@@ -73,7 +72,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
   onDuplicate(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
-        NOTIFICATIONS.objectIsLocked(this.application?.name)
+        this.translate.instant('common.notifications.objectLocked', {
+          name: this.application?.name,
+        })
       );
     } else {
       this.dialog.open(DuplicateApplicationComponent, {
@@ -88,7 +89,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
   onDelete(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
-        NOTIFICATIONS.objectIsLocked(this.application?.name)
+        this.translate.instant('common.notifications.objectLocked', {
+          name: this.application?.name,
+        })
       );
     } else {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
@@ -117,7 +120,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
             })
             .subscribe((res) => {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectDeleted('Application')
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.application.one'),
+                })
               );
               this.applications.data = this.applications.data.filter(
                 (x) => x.id !== res.data?.deleteApplication.id

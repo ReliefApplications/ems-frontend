@@ -41,7 +41,7 @@
       [cdkConnectedOverlayOpen]="showAppMenu"
     >
       <safe-search-menu
-        [data]="this.applications"
+        [applications]="this.applications"
         (close)="showAppMenu = false"
         (open)="onOpenApplication($event)"
       ></safe-search-menu>
@@ -103,7 +103,7 @@
         (click)="onNotificationClick(notification)"
         *ngFor="let notification of notifications"
       >
-        {{ notification.action }} - {{ notification.createdAt | date }}
+        {{ notification.action }} - {{ notification.createdAt | safeDate }}
       </button>
     </div>
     <safe-button
@@ -167,7 +167,8 @@
                       mat-line
                       class="nav-text"
                       [matTooltip]="item.name"
-                      [matTooltipShowDelay]="1000"
+                      matTooltipShowDelay="1000"
+                      matTooltipPosition="right"
                     >
                       {{ item.name }}
                     </div>
@@ -180,9 +181,11 @@
                     *ngIf="item.action"
                     (click)="onClick(item.action.callback, $event)"
                   >
-                    <mat-icon matTooltip="{{ item.action.toolTip }}">{{
-                      item.action.icon
-                    }}</mat-icon>
+                    <mat-icon
+                      matTooltip="{{ item.action.toolTip }}"
+                      matTooltipPosition="left"
+                      >{{ item.action.icon }}</mat-icon
+                    >
                   </button>
                   <button
                     mat-icon-button

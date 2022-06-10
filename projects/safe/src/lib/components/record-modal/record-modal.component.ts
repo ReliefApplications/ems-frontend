@@ -1,5 +1,12 @@
 import { Apollo } from 'apollo-angular';
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
@@ -7,7 +14,6 @@ import {
 } from '@angular/material/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import { v4 as uuidv4 } from 'uuid';
 import * as Survey from 'survey-angular';
 import {
   GetRecordByIdQueryResponse,
@@ -25,7 +31,6 @@ import {
   EDIT_RECORD,
   EditRecordMutationResponse,
 } from '../../graphql/mutations';
-import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
@@ -51,7 +56,7 @@ interface DialogData {
   templateUrl: './record-modal.component.html',
   styleUrls: ['./record-modal.component.scss'],
 })
-export class SafeRecordModalComponent implements OnInit {
+export class SafeRecordModalComponent implements AfterViewInit {
   // === DATA ===
   public loading = true;
   public form?: Form;
@@ -63,8 +68,10 @@ export class SafeRecordModalComponent implements OnInit {
   private pages = new BehaviorSubject<any[]>([]);
   public canEdit: boolean | undefined = false;
 
-  public containerId: string;
-  public containerNextId = '';
+  @ViewChild('formContainer', { static: false })
+  formContainer!: ElementRef;
+  @ViewChild('formContainerNext', { static: false })
+  formContainerNext!: ElementRef;
 
   environment: any;
 
@@ -104,14 +111,10 @@ export class SafeRecordModalComponent implements OnInit {
     private formBuilderService: SafeFormBuilderService,
     private translate: TranslateService
   ) {
-    this.containerId = uuidv4();
-    if (this.data.compareTo) {
-      this.containerNextId = uuidv4();
-    }
     this.environment = environment;
   }
 
-  async ngOnInit(): Promise<void> {
+  async ngAfterViewInit(): Promise<void> {
     this.canEdit = this.data.canUpdate;
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
     defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
@@ -177,8 +180,9 @@ export class SafeRecordModalComponent implements OnInit {
     this.survey.locale = this.data.locale ? this.data.locale : 'en';
     this.survey.mode = 'display';
     this.survey.showNavigationButtons = 'none';
+    this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showProgressBar = 'off';
-    this.survey.render(this.containerId);
+    this.survey.render(this.formContainer.nativeElement);
     setTimeout(() => {}, 100);
     this.setPages();
     if (this.data.compareTo) {
@@ -193,6 +197,7 @@ export class SafeRecordModalComponent implements OnInit {
       this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';
       this.surveyNext.mode = 'display';
       this.surveyNext.showNavigationButtons = 'none';
+      this.surveyNext.focusFirstQuestionAutomatic = false;
       this.surveyNext.showProgressBar = 'off';
       // Set list of updated questions
       const updatedQuestions: string[] = [];
@@ -229,7 +234,7 @@ export class SafeRecordModalComponent implements OnInit {
         (survey: Survey.SurveyModel, options: any) =>
           this.onSetCustomCss(options)
       );
-      this.surveyNext.render(this.containerNextId);
+      this.surveyNext.render(this.formContainerNext.nativeElement);
     }
     this.loading = false;
   }
@@ -322,9 +327,7 @@ export class SafeRecordModalComponent implements OnInit {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant(
-          'components.record.recovery.titleMessage'
-        ),
+        title: this.translate.instant('components.record.recovery.title'),
         content: this.translate.instant(
           'components.record.recovery.confirmationMessage',
           { date: formatDate }
@@ -344,7 +347,9 @@ export class SafeRecordModalComponent implements OnInit {
             },
           })
           .subscribe((res) => {
-            this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.dataRecovered')
+            );
             this.dialogRef.close();
           });
       }
@@ -355,25 +360,16 @@ export class SafeRecordModalComponent implements OnInit {
    * Opens the history of the record in a modal.
    */
   public onShowHistory(): void {
-    this.apollo
-      .query<GetRecordDetailsQueryResponse>({
-        query: GET_RECORD_DETAILS,
-        variables: {
-          id: this.record.id,
+    this.dialog.open(RecordHistoryModalComponent, {
+      data: {
+        id: this.record.id,
+        revert: (item: any, dialog: any) => {
+          this.confirmRevertDialog(this.record, item);
         },
-      })
-      .subscribe((res) => {
-        this.dialog.open(RecordHistoryModalComponent, {
-          data: {
-            record: res.data.record,
-            revert: (item: any, dialog: any) => {
-              this.confirmRevertDialog(res.data.record, item);
-            },
-          },
-          panelClass: 'no-padding-dialog',
-          autoFocus: false,
-        });
-      });
+      },
+      panelClass: 'no-padding-dialog',
+      autoFocus: false,
+    });
   }
 
   /**

@@ -42,14 +42,17 @@ export class SafeMapSettingsComponent implements OnInit {
       title: [tileSettings && tileSettings.title ? tileSettings.title : null],
       query: createQueryForm(tileSettings.query),
       latitude: [
-        tileSettings && tileSettings.latitude ? tileSettings.latitude : null,
-        Validators.required,
+        tileSettings && tileSettings.latitude ? tileSettings.latitude : 0,
+        [Validators.min(-90), Validators.max(90)],
       ],
       longitude: [
-        tileSettings && tileSettings.longitude ? tileSettings.longitude : null,
-        Validators.required,
+        tileSettings && tileSettings.longitude ? tileSettings.longitude : 0,
+        [Validators.min(-180), Validators.max(180)],
       ],
-      zoom: [tileSettings && tileSettings.zoom ? tileSettings.zoom : null],
+      zoom: [
+        tileSettings && tileSettings.zoom ? tileSettings.zoom : 0,
+        [Validators.min(0), Validators.max(10)],
+      ],
       centerLong: [
         tileSettings && tileSettings.centerLong
           ? tileSettings.centerLong

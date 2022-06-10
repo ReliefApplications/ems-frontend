@@ -19,6 +19,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 
 /**
  * SafeRolesModule is a class used to manage all the modules and components
@@ -49,6 +50,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatDividerModule,
     SafeButtonModule,
     TranslateModule,
+    SafeSkeletonTableModule,
   ],
   exports: [SafeRolesComponent],
 })

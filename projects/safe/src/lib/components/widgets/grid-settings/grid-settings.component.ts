@@ -29,8 +29,10 @@ import { Observable } from 'rxjs';
 import { Overlay } from '@angular/cdk/overlay';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { scrollFactory } from '../../../utils/scroll-factory';
-import { Layout } from '../../../models/layout.model';
 import { Resource } from '../../../models/resource.model';
+import get from 'lodash/get';
+
+const DEFAULT_ACTION_NAME = 'Action';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -98,7 +100,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
-    const hasActions = !!tileSettings && !!tileSettings.actions;
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [
@@ -117,17 +118,14 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         tileSettings && tileSettings.resource ? tileSettings.resource : null,
       ],
       actions: this.formBuilder.group({
-        delete: [hasActions ? tileSettings.actions.delete : true],
-        history: [hasActions ? tileSettings.actions.history : true],
-        convert: [hasActions ? tileSettings.actions.convert : true],
-        update: [hasActions ? tileSettings.actions.update : true],
-        inlineEdition: [hasActions ? tileSettings.actions.inlineEdition : true],
-        addRecord: [hasActions ? tileSettings.actions.addRecord : false],
-        showDetails: [
-          hasActions && typeof tileSettings.actions.showDetails !== 'undefined'
-            ? tileSettings.actions.showDetails
-            : true,
-        ],
+        delete: [get(tileSettings, 'actions.delete', true)],
+        history: [get(tileSettings, 'actions.history', true)],
+        convert: [get(tileSettings, 'actions.convert', true)],
+        update: [get(tileSettings, 'actions.update', true)],
+        inlineEdition: [get(tileSettings, 'actions.inlineEdition', true)],
+        addRecord: [get(tileSettings, 'actions.addRecord', false)],
+        export: [get(tileSettings, 'actions.export', true)],
+        showDetails: [get(tileSettings, 'actions.showDetails', true)],
       }),
       floatingButtons: this.formBuilder.array(
         tileSettings.floatingButtons && tileSettings.floatingButtons.length
@@ -225,7 +223,10 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   private createFloatingButtonForm(value: any): FormGroup {
     const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
-      name: [value && value.name ? value.name : 'Next'],
+      name: [
+        value && value.name ? value.name : DEFAULT_ACTION_NAME,
+        Validators.required,
+      ],
       selectAll: [value && value.selectAll ? value.selectAll : false],
       selectPage: [value && value.selectPage ? value.selectPage : false],
       goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],

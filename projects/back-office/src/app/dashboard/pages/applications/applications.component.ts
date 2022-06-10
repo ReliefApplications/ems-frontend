@@ -16,7 +16,6 @@ import {
   SafeAuthService,
   SafeConfirmModalComponent,
   SafeSnackBarService,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import {
   GetApplicationsQueryResponse,
@@ -48,7 +47,9 @@ const DEFAULT_PAGE_SIZE = 10;
 export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   // === DATA ===
   public loading = true;
+  public filterLoading = false;
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
+  private newApplicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   public applications = new MatTableDataSource<Application>([]);
   public cachedApplications: Application[] = [];
   public displayedColumns = [
@@ -100,10 +101,19 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           first: DEFAULT_PAGE_SIZE,
         },
       });
+    // new query for card
 
+    this.newApplicationsQuery =
+      this.apollo.watchQuery<GetApplicationsQueryResponse>({
+        query: GET_APPLICATIONS,
+        variables: {
+          first: DEFAULT_PAGE_SIZE,
+          sortField: 'modifiedAt',
+          sortOrder: 'desc',
+        },
+      });
     this.applicationsQuery.valueChanges.subscribe((res) => {
       this.cachedApplications = res.data.applications.edges.map((x) => x.node);
-      this.newApplications = this.cachedApplications.slice(0, 5);
       this.applications.data = this.cachedApplications.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
@@ -111,6 +121,12 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
+      this.filterLoading = false;
+    });
+    this.newApplicationsQuery.valueChanges.subscribe((res) => {
+      this.newApplications = res.data.applications.edges
+        .map((x) => x.node)
+        .slice(0, 5);
     });
     this.authSubscription = this.authService.user$.subscribe(() => {
       this.canAdd =
@@ -149,6 +165,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.loading = true;
       this.applicationsQuery.fetchMore({
         variables: {
           first,
@@ -186,6 +203,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param filter filter event.
    */
   onFilter(filter: any): void {
+    this.filterLoading = true;
     this.filter = filter;
     this.cachedApplications = [];
     this.pageInfo.pageIndex = 0;
@@ -261,7 +279,9 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectDeleted('Application')
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.application.one'),
+              })
             );
             this.applications.data = this.applications.data.filter(
               (x) => x.id !== res.data?.deleteApplication.id
@@ -286,16 +306,23 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors?.length) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotCreated('App', res.errors[0].message),
+            this.translate.instant('common.notifications.objectNotCreated', {
+              type: this.translate
+                .instant('common.application.one')
+                .toLowerCase(),
+              error: res.errors[0].message,
+            }),
             { error: true }
           );
         } else {
           if (res.data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated(
-                res.data.addApplication.name,
-                'application'
-              )
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate
+                  .instant('common.application.one')
+                  .toLowerCase(),
+                value: res.data.addApplication.name,
+              })
             );
             const id = res.data.addApplication.id;
             this.router.navigate(['/applications', id]);
@@ -322,7 +349,10 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((res) => {
         if (res.data) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectEdited('access', element.name)
+            this.translate.instant('common.notifications.objectUpdated', {
+              type: this.translate.instant('action.access').toLowerCase(),
+              value: element.name,
+            })
           );
           const index = this.applications.data.findIndex(
             (x) => x.id === element.id

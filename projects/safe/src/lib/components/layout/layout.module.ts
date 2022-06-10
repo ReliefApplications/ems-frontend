@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafePreferencesModalModule } from '../preferences-modal/preferences-modal.module';
+import { SafeDateModule } from '../../pipes/date/date.module';
 
 /**
  * SafeLayoutModule is a class used to manage all the modules and components
@@ -46,6 +47,7 @@ import { SafePreferencesModalModule } from '../preferences-modal/preferences-mod
     SafeSearchMenuModule,
     OverlayModule,
     SafePreferencesModalModule,
+    SafeDateModule,
   ],
   exports: [SafeLayoutComponent],
 })

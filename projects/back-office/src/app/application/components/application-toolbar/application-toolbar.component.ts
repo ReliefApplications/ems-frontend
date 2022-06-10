@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   Application,
-  NOTIFICATIONS,
   SafeApplicationService,
   SafeConfirmModalComponent,
   SafeSnackBarService,
@@ -61,14 +60,13 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   onUnlock(): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant(
-          'components.application.unlock.titleMessage'
-        ),
+        title: this.translate.instant('components.application.unlock.title'),
         content: this.translate.instant(
           'components.application.unlock.confirmationMessage',
-          { application: this.application?.name }
+          {
+            name: this.application?.name,
+          }
         ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });
@@ -83,20 +81,19 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   onPublish(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
-        NOTIFICATIONS.objectIsLocked(this.application?.name)
+        this.translate.instant('common.notifications.objectLocked', {
+          name: this.application?.name,
+        })
       );
     } else {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: this.translate.instant(
-            'components.application.publish.titleMessage'
-          ),
+          title: this.translate.instant('components.application.publish.title'),
           content: this.translate.instant(
             'components.application.publish.confirmationMessage',
-            { application: this.application?.name }
-          ),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
+            {
+              name: this.application?.name,
+            }
           ),
           confirmColor: 'primary',
         },

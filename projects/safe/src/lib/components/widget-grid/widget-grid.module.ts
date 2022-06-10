@@ -20,6 +20,7 @@ import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeIconModule } from '../ui/icon/icon.module';
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     SafeIconModule,
     SafeWidgetChoiceModule,
     LayoutModule,
+    IndicatorsModule,
   ],
   exports: [SafeWidgetGridComponent],
 })

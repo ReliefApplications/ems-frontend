@@ -1,5 +1,12 @@
 import { Apollo } from 'apollo-angular';
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  NgZone,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
@@ -26,7 +33,6 @@ import {
   EDIT_RECORDS,
   EditRecordsMutationResponse,
 } from '../../graphql/mutations';
-import { v4 as uuidv4 } from 'uuid';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar.service';
@@ -34,7 +40,6 @@ import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NOTIFICATIONS } from '../../const/notifications';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
@@ -70,7 +75,6 @@ export class SafeFormModalComponent implements OnInit {
   public form?: Form;
   public record?: Record;
 
-  public containerId: string;
   public modifiedAt: Date | null = null;
 
   private isMultiEdition = false;
@@ -80,6 +84,8 @@ export class SafeFormModalComponent implements OnInit {
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
+
+  @ViewChild('formContainer') formContainer!: ElementRef;
 
   environment: any;
 
@@ -117,9 +123,9 @@ export class SafeFormModalComponent implements OnInit {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private ngZone: NgZone
   ) {
-    this.containerId = uuidv4();
     this.environment = environment;
   }
 
@@ -189,9 +195,12 @@ export class SafeFormModalComponent implements OnInit {
                 this.storedMergedData[resourcesField.name] =
                   this.data.prefillRecords.map((x) => x.id);
               } else {
-                this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, {
-                  error: true,
-                });
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'models.record.notifications.conversionIncomplete'
+                  ),
+                  { error: true }
+                );
               }
             }
           })
@@ -250,7 +259,9 @@ export class SafeFormModalComponent implements OnInit {
       };
     }
     this.survey.showNavigationButtons = false;
-    this.survey.render(this.containerId);
+    this.survey.focusFirstQuestionAutomatic = false;
+    this.survey.render(this.formContainer.nativeElement);
+    // this.survey.render(this.containerId);
     this.setPages();
     this.survey.onComplete.add(this.onComplete);
     setTimeout(() => {}, 100);
@@ -264,7 +275,7 @@ export class SafeFormModalComponent implements OnInit {
       this.survey?.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
-        'Saving failed, some fields require your attention.',
+        this.translate.instant('models.form.notifications.savingFailed'),
         { error: true }
       );
     }
@@ -363,11 +374,15 @@ export class SafeFormModalComponent implements OnInit {
             this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, {
               error: true,
             });
-            this.dialogRef.close();
+            this.ngZone.run(() => {
+              this.dialogRef.close();
+            });
           } else {
-            this.dialogRef.close({
-              template: this.data.template,
-              data: res.data?.addRecord,
+            this.ngZone.run(() => {
+              this.dialogRef.close({
+                template: this.data.template,
+                data: res.data?.addRecord,
+              });
             });
           }
         });
@@ -688,25 +703,16 @@ export class SafeFormModalComponent implements OnInit {
    * Opens the history of the record in a modal.
    */
   public onShowHistory(): void {
-    this.apollo
-      .query<GetRecordDetailsQueryResponse>({
-        query: GET_RECORD_DETAILS,
-        variables: {
-          id: this.record?.id,
+    this.dialog.open(RecordHistoryModalComponent, {
+      data: {
+        id: this.record?.id,
+        revert: (item: any, dialog: any) => {
+          this.confirmRevertDialog(this.record, item);
         },
-      })
-      .subscribe((res) => {
-        this.dialog.open(RecordHistoryModalComponent, {
-          data: {
-            record: res.data.record,
-            revert: (item: any, dialog: any) => {
-              this.confirmRevertDialog(res.data.record, item);
-            },
-          },
-          panelClass: 'no-padding-dialog',
-          autoFocus: false,
-        });
-      });
+      },
+      panelClass: 'no-padding-dialog',
+      autoFocus: false,
+    });
   }
 
   /**
@@ -723,9 +729,7 @@ export class SafeFormModalComponent implements OnInit {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant(
-          'components.record.recovery.titleMessage'
-        ),
+        title: this.translate.instant('components.record.recovery.title'),
         content: this.translate.instant(
           'components.record.recovery.confirmationMessage',
           { date: formatDate }
@@ -745,7 +749,9 @@ export class SafeFormModalComponent implements OnInit {
             },
           })
           .subscribe((res) => {
-            this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.dataRecovered')
+            );
             this.dialog.closeAll();
           });
       }

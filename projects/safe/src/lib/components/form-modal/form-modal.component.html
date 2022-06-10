@@ -34,27 +34,31 @@
     </mat-tab-group>
   </div>
 </ng-container>
-<mat-dialog-content [id]="containerId"></mat-dialog-content>
+<mat-dialog-content #formContainer></mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button color="warn" (click)="onClose()">
     {{ 'common.cancel' | translate }}
   </button>
-  <button
-    [disabled]="!survey || survey.isFirstPage"
-    mat-button
-    color="primary"
-    (click)="survey && survey.prevPage()"
-  >
-    {{ 'common.previous' | translate }}
-  </button>
-  <button
-    [disabled]="!survey || survey.isLastPage"
-    mat-button
-    color="primary"
-    (click)="survey && survey.nextPage()"
-  >
-    {{ 'common.next' | translate }}
-  </button>
+  <ng-container *ngIf="pages$ | async as pages">
+    <button
+      *ngIf="pages.length > 1"
+      [disabled]="!survey || survey.isFirstPage"
+      mat-button
+      color="primary"
+      (click)="survey && survey.prevPage()"
+    >
+      {{ 'common.previous' | translate }}
+    </button>
+    <button
+      *ngIf="pages.length > 1"
+      [disabled]="!survey || survey.isLastPage"
+      mat-button
+      color="primary"
+      (click)="survey && survey.nextPage()"
+    >
+      {{ 'common.next' | translate }}
+    </button>
+  </ng-container>
   <button mat-flat-button color="primary" (click)="submit()">
     {{ 'components.record.modal.update' | translate }}
   </button>

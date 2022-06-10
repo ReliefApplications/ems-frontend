@@ -38,22 +38,63 @@
       <div class="form-group-title">
         {{ 'components.widget.settings.map.display.title' | translate }}
       </div>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'models.widget.map.zoom' | translate }}</mat-label>
-        <input type="number" matInput formControlName="zoom" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>
-          {{ 'components.widget.settings.map.display.latitude' | translate }}
-        </mat-label>
-        <input type="string" matInput formControlName="centerLat" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>
-          {{ 'components.widget.settings.map.display.longitude' | translate }}
-        </mat-label>
-        <input type="string" matInput formControlName="centerLong" />
-      </mat-form-field>
+      <mat-label>
+        {{ 'models.widget.map.zoom' | translate }}
+        <safe-icon
+          icon="info"
+          [matTooltip]="
+            'components.widget.settings.map.display.latitude' | translate
+          "
+          [inline]="true"
+          [size]="16"
+          variant="grey"
+        ></safe-icon>
+      </mat-label>
+      <mat-slider
+        thumbLabel
+        tickInterval="1"
+        formControlName="zoom"
+        [min]="0"
+        [max]="10"
+      ></mat-slider>
+      <div class="map-default-settings">
+        <mat-form-field appearance="outline">
+          <mat-label>
+            {{ 'components.widget.settings.map.display.latitude' | translate }}
+          </mat-label>
+          <input type="number" matInput formControlName="centerLat" />
+          <safe-icon
+            matSuffix
+            icon="info"
+            variant="grey"
+            [matTooltip]="
+              'components.widget.settings.map.tooltip.default.latitude'
+                | translate
+            "
+          ></safe-icon>
+          <mat-error *ngIf="tileForm.controls.centerLat.errors">
+            {{ 'components.widget.settings.map.errors.latitude' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>
+            {{ 'components.widget.settings.map.display.longitude' | translate }}
+          </mat-label>
+          <input type="number" matInput formControlName="centerLong" />
+          <safe-icon
+            matSuffix
+            icon="info"
+            variant="grey"
+            [matTooltip]="
+              'components.widget.settings.map.tooltip.default.longitude'
+                | translate
+            "
+          ></safe-icon>
+          <mat-error *ngIf="tileForm.controls.centerLat.errors">
+            {{ 'components.widget.settings.map.errors.longitude' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
     </div>
   </form>
 </ng-container>

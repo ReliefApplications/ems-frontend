@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-/** Contain only one page, 'login'.
-    All routes starting with '/auth' should redirect to 'login' page.
-*/
+/**
+ * List of routes of authentication module.
+ * Only contains 'login' page.
+ * All routes starting with '/auth' should redirect to 'login' page.
+ */
 export const routes = [
   {
     path: '',

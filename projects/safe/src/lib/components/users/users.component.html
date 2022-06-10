@@ -86,7 +86,9 @@
     </safe-button>
   </div>
 </div>
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+
+<!-- <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner> -->
+
 <table *ngIf="!loading" mat-table [dataSource]="users" matSort>
   <!-- Checkbox Column -->
   <ng-container matColumnDef="select">
@@ -140,18 +142,22 @@
 
   <ng-container matColumnDef="attributes" *ngIf="applicationService">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header> Attributes </span>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'common.positionAttribute.few' | translate }}
+      </span>
     </th>
     <td mat-cell *matCellDef="let element">
       <span *ngFor="let attribute of element.positionAttributes">
-        {{ attribute.value }},</span
-      >
+        {{ attribute.value }},
+      </span>
     </td>
   </ng-container>
 
   <ng-container matColumnDef="oid">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header> Authentication ID </span>
+      <span class="headerTitle" mat-sort-header>
+        {{ 'common.id' | translate }}
+      </span>
     </th>
     <td mat-cell *matCellDef="let element">{{ element.oid }}</td>
   </ng-container>
@@ -183,3 +189,16 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
+
+<safe-skeleton-table
+  *ngIf="loading"
+  [columns]="[
+    'common.name',
+    'models.user.username',
+    'common.id',
+    'common.role.one'
+  ]"
+  [actions]="true"
+  [checkbox]="true"
+>
+</safe-skeleton-table>

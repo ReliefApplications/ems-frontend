@@ -1,21 +1,43 @@
-<div class="group-by">
-  <safe-field-dropdown
-    [fieldControl]="$any($any(form).controls.groupBy)"
-    [fields]="fields"
-  ></safe-field-dropdown>
-  <safe-expressions
-    *ngIf="displayDateOperators"
-    [fields]="fields"
-    [form]="$any(form.get('groupByExpression'))"
-    [operators]="$any(dateOperators)"
-    [displayField]="false"
-  ></safe-expressions>
-</div>
 <div>
-  <safe-add-field-stage
-    [fields]="fields"
-    [form]="addFields"
-    [operators]="operators"
-    [displayName]="false"
-  ></safe-add-field-stage>
+  <h3>{{'components.aggregationBuilder.groupingRules' | translate }}</h3>
+  <div class="group-by">
+    <div
+      class="group-by-rule"
+      *ngFor="let rule of groupBy.controls; let i = index"
+    >
+      <safe-field-dropdown
+        [fieldControl]="$any(rule).controls.field"
+        [fields]="fields"
+      ></safe-field-dropdown>
+      <safe-expressions
+        *ngIf="usedDateFields.includes(rule.value.field)"
+        [fields]="fields"
+        [form]="$any(rule).controls.expression"
+        [operators]="$any(dateOperators)"
+        [displayField]="false"
+      ></safe-expressions>
+      <safe-button
+        *ngIf="i > 0"
+        (click)="onDeleteRule(i)"
+        [isIcon]="true"
+        icon="delete"
+        variant="danger"
+      ></safe-button>
+    </div>
+    <safe-button icon="add" category="tertiary" (click)="onAddRule()"
+      >{{'components.aggregationBuilder.addRule' | translate}}</safe-button
+    >
+  </div>
+</div>
+
+<div>
+  <h3>{{'components.aggregationBuilder.accumulators' | translate }}</h3>
+  <div>
+    <safe-add-field-stage
+      [fields]="fields"
+      [form]="addFields"
+      [operators]="operators"
+      [displayName]="false"
+    ></safe-add-field-stage>
+  </div>
 </div>

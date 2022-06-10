@@ -23,7 +23,6 @@ import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SelectionModel } from '@angular/cdk/collections';
-import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
 import { SafeAuthService } from '../../services/auth.service';
 import { SafeDownloadService } from '../../services/download.service';
@@ -54,6 +53,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   @Input() roles: Role[] = [];
   @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
   @Input() applicationService?: SafeApplicationService;
+  @Input() loading = true;
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns: string[] = [];
@@ -67,7 +67,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   public showFilters = false;
 
   selection = new SelectionModel<User>(true, []);
-  loading = false;
 
   constructor(
     private apollo: Apollo,
@@ -128,17 +127,33 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
           .subscribe((res) => {
             if (!res.errors) {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.usersActions(
-                  'invited',
-                  res?.data?.addUsers.length
-                )
+                this.translate.instant('common.notifications.objectInvited', {
+                  name: this.translate
+                    .instant(
+                      res.data?.addUsers.length
+                        ? 'common.user.few'
+                        : 'common.user.one'
+                    )
+                    .toLowerCase(),
+                })
               );
               this.users.data = this.users.data.concat(
                 res?.data?.addUsers || []
               );
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.userInvalidActions('invited'),
+                this.translate.instant(
+                  'common.notifications.objectNotInvited',
+                  {
+                    name: this.translate
+                      .instant(
+                        res.data?.addUsers.length
+                          ? 'common.user.few'
+                          : 'common.user.one'
+                      )
+                      .toLowerCase(),
+                  }
+                ),
                 { error: true }
               );
             }
@@ -173,7 +188,12 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
             .subscribe((res) => {
               if (res.data) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.userRolesUpdated(user.username)
+                  this.translate.instant(
+                    'models.user.notifications.rolesUpdated',
+                    {
+                      username: user.username,
+                    }
+                  )
                 );
                 this.users.data = this.users.data.map((x) => {
                   if (x.id === user.id) {
@@ -244,14 +264,32 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               this.loading = false;
               if (res.data?.deleteUsers) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.usersActions('deleted', res.data.deleteUsers)
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate
+                      .instant(
+                        res.data.deleteUsers > 1
+                          ? 'common.user.few'
+                          : 'common.user.one'
+                      )
+                      .toLowerCase(),
+                  })
                 );
                 this.users.data = this.users.data.filter(
                   (u) => !ids.includes(u.id)
                 );
               } else {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.userInvalidActions('deleted'),
+                  this.translate.instant(
+                    'common.notifications.objectNotDeleted',
+                    {
+                      value: this.translate
+                        .instant(
+                          ids.length > 1 ? 'common.user.few' : 'common.user.one'
+                        )
+                        .toLowerCase(),
+                      error: '',
+                    }
+                  ),
                   { error: true }
                 );
               }

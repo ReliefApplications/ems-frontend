@@ -19,26 +19,21 @@ import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
 } from '../../../graphql/queries';
-import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   Component,
   OnInit,
   ViewChild,
   Input,
   Output,
-  ComponentFactory,
-  ComponentFactoryResolver,
   EventEmitter,
   Inject,
 } from '@angular/core';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeWorkflowService } from '../../../services/workflow.service';
 import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
-import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeAuthService } from '../../../services/auth.service';
 import { SafeEmailService } from '../../../services/email.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
-import { GridLayout } from '../../ui/core-grid/models/grid-layout.model';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
@@ -80,16 +75,12 @@ export class SafeGridWidgetComponent implements OnInit {
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
-  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
-  public factory?: ComponentFactory<any>;
-
   /**
    * Heavy constructor for the grid widget component
    *
    * @param environment Environment variables
    * @param apollo The apollo client
    * @param dialog Material dialogs service
-   * @param resolver A resolver for component factory
    * @param snackBar The safe snack bar service
    * @param workflowService The safe wofkflow service
    * @param safeAuthService The safe authentification service
@@ -102,7 +93,6 @@ export class SafeGridWidgetComponent implements OnInit {
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
@@ -117,9 +107,6 @@ export class SafeGridWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.gridSettings = { ...this.settings };
-    this.factory = this.resolver.resolveComponentFactory(
-      SafeRecordHistoryComponent
-    );
     if (this.settings.resource) {
       this.gridLayoutService
         .getLayouts(this.settings.resource, this.settings.layouts)
@@ -357,8 +344,10 @@ export class SafeGridWidgetComponent implements OnInit {
         update[modification.field.name] = this.getDateForFilter(
           modification.value
         );
-      } else {
-        update[modification.field.name] = modification.value;
+      } else if (['Time'].includes(modification.field.type.name)) {
+        update[modification.field.name] = this.getTimeForFilter(
+          modification.value
+        );
       }
     }
     return this.apollo
@@ -398,6 +387,29 @@ export class SafeGridWidgetComponent implements OnInit {
       date = new Date(value);
     }
     return date;
+  }
+
+  /**
+   * Gets from input time value a time value display.
+   *
+   * @param value record value
+   * @returns calculated time
+   */
+  private getTimeForFilter(value: any): string {
+    if (value === 'now()') {
+      const time = new Date()
+        .toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        .split(/:| /);
+      if (
+        (time[2] === 'PM' && time[0] !== '12') ||
+        (time[2] === 'AM' && time[0] === '12')
+      ) {
+        time[0] = (parseInt(time[0], 10) + 12).toString();
+      }
+      return time[0] + ':' + time[1];
+    } else {
+      return value;
+    }
   }
 
   /**
@@ -461,10 +473,13 @@ export class SafeGridWidgetComponent implements OnInit {
                 const record = res2.data.editRecord;
                 if (record) {
                   this.snackBar.openSnackBar(
-                    NOTIFICATIONS.addRowsToRecord(
-                      selectedRecords.length,
-                      key,
-                      record.data[targetFormField]
+                    this.translate.instant(
+                      'models.record.notifications.rowsAdded',
+                      {
+                        field: record.data[targetFormField],
+                        length: selectedRecords.length,
+                        value: key,
+                      }
                     )
                   );
                   this.dialog.open(SafeFormModalComponent, {

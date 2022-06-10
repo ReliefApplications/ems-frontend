@@ -14,19 +14,25 @@ import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
 import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
+import get from 'lodash/get';
+import groupBy from 'lodash/groupBy';
 
-const DEFAULT_FILE_NAME = 'chart.png';
+/** Default file name for export */
+const DEFAULT_FILE_NAME = 'charts';
 
+/**
+ * Chart widget using KendoUI.
+ */
 @Component({
   selector: 'safe-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-/** Chart widget using KendoUI. */
 export class SafeChartComponent implements OnChanges, OnDestroy {
   // === DATA ===
   public loading = true;
   public series: any[] = [];
+  public options: any = null;
   private dataQuery: any;
   private dataSubscription?: Subscription;
 
@@ -38,6 +44,21 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   @Input() export = true;
   @Input() settings: any = null;
 
+  /**
+   * Get filename from the date and widget title
+   * @returns filename
+   */
+  get fileName(): string {
+    const today = new Date();
+    const formatDate = `${today.toLocaleString('en-us', {
+      month: 'short',
+      day: 'numeric',
+    })} ${today.getFullYear()}`;
+    return `${
+      this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
+    } ${formatDate}.png`;
+  }
+
   // === CHART ===
   @ViewChild('chartWrapper')
   private chartWrapper?:
@@ -47,21 +68,30 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     | SafeBarChartComponent
     | SafeColumnChartComponent;
 
+  /**
+   * Chart widget using KendoUI.
+   *
+   * @param aggregationBuilder Share aggregation builder service
+   */
   constructor(private aggregationBuilder: AggregationBuilderService) {}
 
   /** Detect changes of the settings to reload the data. */
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.loading = true;
     this.dataQuery = this.aggregationBuilder.buildAggregation(
       this.settings.chart.aggregation
     );
     if (this.dataQuery) {
+      this.getOptions();
       this.getData();
     } else {
       this.loading = false;
     }
   }
 
+  /**
+   * Export chart as image
+   */
   public onExport(): void {
     this.chartWrapper?.chart
       ?.exportImage({
@@ -69,11 +99,47 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
         height: 800,
       })
       .then((dataURI: string) => {
-        saveAs(
-          dataURI,
-          this.settings.title ? `${this.settings.title}.png` : DEFAULT_FILE_NAME
-        );
+        saveAs(dataURI, this.fileName);
       });
+  }
+
+  /**
+   * Get chart options from settings
+   */
+  public getOptions(): void {
+    this.options = {
+      palette: get(this.settings, 'chart.palette.enabled', false)
+        ? get(this.settings, 'chart.palette.value', null)
+        : null,
+      axes: {
+        x: {
+          min: get(this.settings, 'chart.axes.x.enableMin')
+            ? get(this.settings, 'chart.axes.x.min')
+            : null,
+          max: get(this.settings, 'chart.axes.x.enableMax')
+            ? get(this.settings, 'chart.axes.x.max')
+            : null,
+        },
+        y: {
+          min: get(this.settings, 'chart.axes.y.enableMin')
+            ? get(this.settings, 'chart.axes.y.min')
+            : null,
+          max: get(this.settings, 'chart.axes.y.enableMax')
+            ? get(this.settings, 'chart.axes.y.max')
+            : null,
+        },
+      },
+      labels: {
+        showCategory: get(this.settings, 'chart.labels.showCategory', false),
+        showValue: get(this.settings, 'chart.labels.showValue', false),
+        valueType: get(this.settings, 'chart.labels.valueType', 'value'),
+      },
+      stack: get(this.settings, 'chart.stack.enable', false)
+        ? get(this.settings, 'chart.stack.usePercentage', false)
+          ? { type: '100%' }
+          : { type: 'normal' }
+        : false,
+    };
   }
 
   /** Load the data, using widget parameters. */
@@ -95,11 +161,22 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
             this.settings.chart.type
           )
         ) {
-          this.series = [
-            {
-              data: JSON.parse(JSON.stringify(res.data.recordsAggregation)),
-            },
-          ];
+          const aggregationData = JSON.parse(
+            JSON.stringify(res.data.recordsAggregation)
+          );
+          if (get(this.settings, 'chart.aggregation.mapping.series', null)) {
+            const groups = groupBy(aggregationData, 'series');
+            this.series = Object.keys(groups).map((key) => ({
+              name: key,
+              data: groups[key],
+            }));
+          } else {
+            this.series = [
+              {
+                data: aggregationData,
+              },
+            ];
+          }
         } else {
           this.series = res.data.recordsAggregation;
         }
@@ -109,6 +186,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     });
   }
 
+  /** Remove subscriptions */
   ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();

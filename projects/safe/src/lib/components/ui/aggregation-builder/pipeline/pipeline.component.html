@@ -1,4 +1,8 @@
-<mat-accordion cdkDropList (cdkDropListDropped)="drop($event)">
+<mat-accordion
+  cdkDropList
+  (cdkDropListDropped)="drop($event)"
+  class="collapsible-form-group"
+>
   <mat-expansion-panel
     cdkDrag
     *ngFor="let stageForm of pipelineForm.controls; let index = index"
@@ -10,8 +14,9 @@
             | translate
         }}
         <safe-icon
-          class="info"
+          class="info-tooltip"
           [size]="18"
+          variant="grey"
           [matTooltip]="
             'components.aggregationBuilder.tooltip.' + stageForm.value.type
               | translate

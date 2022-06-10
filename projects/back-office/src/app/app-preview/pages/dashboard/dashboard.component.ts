@@ -15,10 +15,10 @@ import {
 import {
   Dashboard,
   SafeSnackBarService,
-  NOTIFICATIONS,
   SafeDashboardService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,7 +44,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private dashboardService: SafeDashboardService
+    private dashboardService: SafeDashboardService,
+    private translateService: TranslateService
   ) {}
 
   /**
@@ -52,6 +53,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
+      this.loading = true;
       this.id = params.id;
       this.apollo
         .watchQuery<GetDashboardByIdQueryResponse>({
@@ -71,7 +73,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
               this.loading = res.loading;
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.accessNotProvided('dashboard'),
+                this.translateService.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translateService
+                      .instant('common.dashboard.one')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
               this.router.navigate(['/dashboards']);

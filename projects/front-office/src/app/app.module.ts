@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Apollo
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
+import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
 import { getMainDefinition } from '@apollo/client/utilities';
@@ -30,6 +30,13 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import { KendoTranslationService } from '@safe/builder';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import localeEn from '@angular/common/locales/en';
+
+// Register local translations for dates
+registerLocaleData(localeFr);
+registerLocaleData(localeEn);
 
 // Kendo datepicker for surveyjs
 import {
@@ -186,12 +193,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
         deps: [HttpClient],
       },
     }),
-    OAuthModule.forRoot({
-      resourceServer: {
-        allowedUrls: ['http://localhost:9090/api'],
-        sendAccessToken: true,
-      },
-    }),
+    OAuthModule.forRoot(),
   ],
   providers: [
     {
@@ -239,8 +241,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
 export class AppModule {
   /**
    * Main module of Front-Office project.
-   *
-   * @param apollo Apollo GraphQL client
    */
-  constructor(private apollo: Apollo) {}
+  constructor() {}
 }

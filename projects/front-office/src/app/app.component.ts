@@ -31,7 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private translate: TranslateService
   ) {
     this.translate.addLangs(environment.availableLanguages);
-    this.translate.setDefaultLang('en');
+    this.translate.setDefaultLang(environment.availableLanguages[0]);
   }
 
   /**

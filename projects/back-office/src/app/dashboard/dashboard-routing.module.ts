@@ -23,6 +23,25 @@ export const routes = [
           import('./pages/profile/profile.module').then((m) => m.ProfileModule),
       },
       {
+        path: 'referencedata',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('./pages/reference-datas/reference-datas.module').then(
+                (m) => m.ReferenceDatasModule
+              ),
+          },
+          {
+            path: ':id',
+            loadChildren: () =>
+              import('./pages/reference-data/reference-data.module')
+                .then()
+                .then((m) => m.ReferenceDataModule),
+          },
+        ],
+      },
+      {
         path: 'forms',
         children: [
           {

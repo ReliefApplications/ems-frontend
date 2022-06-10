@@ -10,7 +10,6 @@ import {
   SafeApplicationService,
   SafeAuthService,
   SafeSnackBarService,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
@@ -20,6 +19,7 @@ import {
   GetFormsQueryResponse,
 } from '../../../graphql/queries';
 import { MatSelect } from '@angular/material/select';
+import { TranslateService } from '@ngx-translate/core';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -56,7 +56,8 @@ export class AddPageComponent implements OnInit, OnDestroy {
     private applicationService: SafeApplicationService,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -163,14 +164,30 @@ export class AddPageComponent implements OnInit, OnDestroy {
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
+                  this.translateService.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translateService
+                        .instant('common.form.one')
+                        .toLowerCase(),
+                      error: res.errors[0].message,
+                    }
+                  ),
                   { error: true }
                 );
               } else {
                 const id = res.data?.addForm.id || '';
                 this.pageForm.controls.content.setValue(id);
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectCreated('page', value.name)
+                  this.translateService.instant(
+                    'common.notifications.objectCreated',
+                    {
+                      type: this.translateService
+                        .instant('common.page.one')
+                        .toLowerCase(),
+                      value: value.name,
+                    }
+                  )
                 );
 
                 this.onSubmit();

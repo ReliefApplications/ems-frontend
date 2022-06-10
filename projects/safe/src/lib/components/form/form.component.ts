@@ -4,16 +4,17 @@ import {
   Component,
   ComponentFactory,
   ComponentFactoryResolver,
+  ElementRef,
   EventEmitter,
   Inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-angular';
-import { v4 as uuidv4 } from 'uuid';
 import {
   AddRecordMutationResponse,
   ADD_RECORD,
@@ -29,7 +30,6 @@ import { LANGUAGES } from '../../utils/languages';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
-import { NOTIFICATIONS } from '../../const/notifications';
 import { SafeAuthService } from '../../services/auth.service';
 import {
   GET_RECORD_DETAILS,
@@ -69,7 +69,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
-  public containerId: string;
+
+  @ViewChild('formContainer') formContainer!: ElementRef;
 
   environment: any;
 
@@ -94,7 +95,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   *The constructor function is a special function that is called when a new instance of the class is
+   * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
    * @param environment This is the environment in which we run the application
@@ -118,9 +119,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private layoutService: SafeLayoutService,
     private resolver: ComponentFactoryResolver,
     private formBuilderService: SafeFormBuilderService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private el: ElementRef
   ) {
-    this.containerId = uuidv4();
     this.environment = environment;
   }
 
@@ -177,7 +178,11 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       : undefined;
     this.isFromCacheData = !!cachedData;
     if (this.isFromCacheData) {
-      this.snackBar.openSnackBar(NOTIFICATIONS.objectLoadedFromCache('Record'));
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.loadedFromCache', {
+          type: this.translate.instant('common.record.one'),
+        })
+      );
     }
 
     if (cachedData) {
@@ -206,10 +211,10 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.surveyLanguage = (LANGUAGES as any)[code];
       this.survey.locale = code;
     } else {
-      // TODO: check
       this.survey.locale = 'en';
     }
 
+    this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showNavigationButtons = false;
     this.setPages();
     this.survey.onComplete.add(this.onComplete);
@@ -237,7 +242,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.survey.render(this.containerId);
+    this.survey.render(this.formContainer.nativeElement);
     setTimeout(() => {}, 100);
   }
 
@@ -272,7 +277,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.survey?.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
-        'Saving failed, some fields require your attention.',
+        this.translate.instant('models.form.notifications.savingFailed'),
         { error: true }
       );
     }
@@ -378,12 +383,14 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Change language of the form.
    *
-   * @param ev The environment language
+   * @param lang selected language
    */
-  setLanguage(ev: string): void {
+  setLanguage(lang: string): void {
     this.survey.locale = this.usedLocales.filter(
-      (locale) => locale.text === ev
+      (locale) => locale.text === lang
     )[0].value;
+    this.survey.render();
+    // this.survey.render(this.containerId);
   }
 
   /**
@@ -518,7 +525,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * Closes the survey and empties the temporary and local storage
    */
   public onClear(): void {
-    this.survey.clear();
+    // If unicity of records is set up, do not clear but go back to latest saved version
+    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+      this.survey.data = this.form.uniqueRecord.data;
+      this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
+    } else {
+      this.survey.clear();
+    }
     this.temporaryFilesStorage = {};
     localStorage.removeItem(this.storageId);
     this.isFromCacheData = false;
@@ -545,9 +558,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant(
-          'components.record.recovery.titleMessage'
-        ),
+        title: this.translate.instant('components.record.recovery.title'),
         content: this.translate.instant(
           'components.record.recovery.confirmationMessage',
           { date: formatDate }
@@ -568,7 +579,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
           })
           .subscribe((res) => {
             this.layoutService.setRightSidenav(null);
-            this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.dataRecovered')
+            );
           });
       }
     });
@@ -579,24 +592,15 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public onShowHistory(): void {
     if (this.record) {
-      this.apollo
-        .query<GetRecordDetailsQueryResponse>({
-          query: GET_RECORD_DETAILS,
-          variables: {
-            id: this.record.id,
+      this.layoutService.setRightSidenav({
+        factory: this.factory,
+        inputs: {
+          id: this.record.id,
+          revert: (item: any, dialog: any) => {
+            this.confirmRevertDialog(this.record, item);
           },
-        })
-        .subscribe((res) => {
-          this.layoutService.setRightSidenav({
-            factory: this.factory,
-            inputs: {
-              record: res.data.record,
-              revert: (item: any, dialog: any) => {
-                this.confirmRevertDialog(res.data.record, item);
-              },
-            },
-          });
-        });
+        },
+      });
     }
   }
 }

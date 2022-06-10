@@ -30,7 +30,7 @@
       searchable ||
       reorderable ||
       actions.add ||
-      exportable ||
+      actions.export ||
       editable ||
       filterable ||
       admin ||
@@ -54,7 +54,7 @@
     >
       {{ 'common.add' | translate }}
     </button>
-    <button *ngIf="exportable" kendoButton (click)="onExport()">
+    <button *ngIf="actions.export" kendoButton (click)="onExport()">
       {{ 'common.export' | translate }}
     </button>
     <ng-container *ngIf="editable">
@@ -90,7 +90,7 @@
     </ng-container>
     <safe-grid-toolbar
       [actions]="actions"
-      [items]="selectedRows"
+      [items]="selectedItems"
       (action)="action.emit($event)"
     >
     </safe-grid-toolbar>
@@ -205,39 +205,61 @@
               [style]="getStyle(dataItem, field.name)"
             >
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'time'">
-                {{ getPropertyValue(dataItem, field.name) | date: 'shortTime' }}
+                {{
+                  getPropertyValue(dataItem, field.name) | safeDate: 'shortTime'
+                }}
               </div>
               <div
                 #refSpan
                 class="textbox"
                 *ngIf="['datetime', 'datetime-local'].includes(field.meta.type)"
               >
-                {{
-                  getPropertyValue(dataItem, field.name)
-                    | date: 'dd/MM/yyyy, h:mm a'
-                }}
+                {{ getPropertyValue(dataItem, field.name) | safeDate: 'short' }}
               </div>
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'date'">
                 {{
-                  getPropertyValue(dataItem, field.name) | date: 'dd/MM/yyyy'
+                  getPropertyValue(dataItem, field.name) | safeDate: 'shortDate'
                 }}
               </div>
             </div>
           </ng-template>
-          <!-- DISPLAY ( url ) -->
+          <!-- DISPLAY ( url / email / tel ) -->
           <ng-template
             #refSpan
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="field.meta.type === 'url'"
+            *ngIf="['url', 'tel', 'email'].includes(field.meta.type)"
           >
             <div
               class="textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
               <a
+                *ngIf="field.meta.type === 'url'"
                 class="url-container textbox"
                 href="{{ getUrl(getPropertyValue(dataItem, field.name)) }}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div #refSpan>
+                  {{ getPropertyValue(dataItem, field.name) }}
+                </div>
+              </a>
+              <a
+                *ngIf="field.meta.type === 'email'"
+                class="url-container textbox"
+                href="mailto:{{ getPropertyValue(dataItem, field.name) }}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div #refSpan>
+                  {{ getPropertyValue(dataItem, field.name) }}
+                </div>
+              </a>
+              <a
+                *ngIf="field.meta.type === 'tel'"
+                class="url-container textbox"
+                href="tel:{{ getPropertyValue(dataItem, field.name) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -362,10 +384,8 @@
           let-formGroup="formGroup"
           *ngIf="field.editor === 'text'"
         >
-          <!-- EDITION ( text / comment / url ) -->
-          <ng-container
-            *ngIf="field.meta.type === 'text' || field.meta.type === 'url'"
-          >
+          <!-- EDITION ( text / comment ) -->
+          <ng-container *ngIf="field.meta.type === 'text'">
             <textarea
               rows="2"
               [formControl]="formGroup.get(field.name)"
@@ -373,6 +393,17 @@
               [name]="field.name"
               class="k-textbox"
             ></textarea>
+          </ng-container>
+          <!-- EDITION ( url / email / tel ) -->
+          <ng-container
+            *ngIf="['url', 'email', 'tel'].includes(field.meta.type)"
+          >
+            <input
+              [formControl]="formGroup.get(field.name)"
+              kendoGridFocusable
+              [name]="field.name"
+              class="k-textbox"
+            />
           </ng-container>
           <!-- EDITION ( color ) -->
           <ng-container *ngIf="field.meta.type === 'color'">

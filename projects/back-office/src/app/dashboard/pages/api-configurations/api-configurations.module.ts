@@ -16,7 +16,7 @@ import {
 } from '@angular/forms';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { SafeButtonModule } from '@safe/builder';
+import { SafeButtonModule, SafeSkeletonTableModule } from '@safe/builder';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -43,6 +43,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatPaginatorModule,
     TranslateModule,
+    SafeSkeletonTableModule,
   ],
   exports: [ApiConfigurationsComponent],
 })

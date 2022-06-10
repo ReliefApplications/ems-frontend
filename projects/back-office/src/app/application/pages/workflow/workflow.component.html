@@ -1,55 +1,108 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading && workflow">
-  <!-- HEADER -->
-  <div *ngIf="!formActive" class="workflow-name-container">
+<!-- HEADER -->
+<div *ngIf="!formActive" class="workflow-name-container">
+  <ng-container *ngIf="loading">
+    <kendo-skeleton
+      shape="rectangle"
+      animation="pulse"
+      width="100px"
+      height="24px"
+    ></kendo-skeleton>
+    <safe-button
+      [isIcon]="true"
+      icon="admin_panel_settings"
+      matTooltipPosition="above"
+      [disabled]="true"
+    >
+    </safe-button>
+  </ng-container>
+  <ng-container *ngIf="!loading && workflow">
     <h1 class="workflow-name" (click)="toggleFormActive()">
       {{ workflow.name }}
     </h1>
-    <safe-access
-      [access]="workflow.permissions"
-      [application]="workflow.page?.application?.id"
-      (save)="saveAccess($event)"
-      *ngIf="workflow.page?.canUpdate || false"
-    ></safe-access>
-  </div>
-  <!-- NAME EDITION -->
-  <ng-container *ngIf="formActive">
-    <form
-      [formGroup]="workflowNameForm"
-      (ngSubmit)="saveName()"
-      class="workflow-name-container"
-    >
-      <mat-form-field>
-        <mat-label>{{ 'common.name' | translate }}</mat-label>
-        <input matInput formControlName="workflowName" type="string" />
-      </mat-form-field>
-      <safe-button
-        type="submit"
-        [isIcon]="true"
-        icon="save"
-        variant="primary"
-        [disabled]="!workflowNameForm.valid"
-      >
-      </safe-button>
+    <div class="workflow-icons-container">
+      <safe-access
+        [access]="workflow.permissions"
+        [application]="workflow.page?.application?.id"
+        (save)="saveAccess($event)"
+        *ngIf="workflow.page?.canUpdate || false"
+      ></safe-access>
       <safe-button
         [isIcon]="true"
-        icon="close"
-        variant="danger"
-        (click)="toggleFormActive()"
+        icon="more_vert"
+        class="share-button"
+        [matMenuTriggerFor]="menu"
+        cdkOverlayOrigin
+        #appMenuTrigger="cdkOverlayOrigin"
       >
       </safe-button>
-    </form>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="onAppSelection()">
+          <mat-icon>file_copy</mat-icon>
+          {{ 'common.duplicate' | translate }}
+        </button>
+      </mat-menu>
+
+      <ng-template #searchMenuHeaderTemplate>
+        <safe-alert
+          ><safe-icon icon="info"></safe-icon>
+          {{ 'models.page.tooltip.duplicate' | translate }}
+        </safe-alert>
+      </ng-template>
+
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="appMenuTrigger"
+        [cdkConnectedOverlayOpen]="showAppMenu"
+      >
+        <safe-search-menu
+          [headerTemplate]="searchMenuHeaderTemplate"
+          [currentApplicationId]="applicationId"
+          [applications]="applications"
+          (close)="showAppMenu = false"
+          (open)="onDuplicate($event)"
+        ></safe-search-menu>
+      </ng-template>
+    </div>
   </ng-container>
-  <!-- STEPS -->
-  <safe-workflow-stepper
-    [steps]="steps"
-    [canUpdate]="canUpdate"
-    (add)="onAddStep()"
-    (openStep)="onOpenStep($event)"
-    (delete)="onDeleteStep($event)"
-    (reorderSteps)="onReorderSteps($event)"
-    [activeStep]="activeStep"
+</div>
+<!-- NAME EDITION -->
+<ng-container *ngIf="formActive">
+  <form
+    [formGroup]="workflowNameForm"
+    (ngSubmit)="saveName()"
+    class="name-edit-container"
   >
-  </safe-workflow-stepper>
+    <mat-form-field>
+      <mat-label>{{ 'common.name' | translate }}</mat-label>
+      <input matInput formControlName="workflowName" type="string" />
+    </mat-form-field>
+    <safe-button
+      type="submit"
+      [isIcon]="true"
+      icon="save"
+      variant="primary"
+      [disabled]="!workflowNameForm.valid"
+    >
+    </safe-button>
+    <safe-button
+      [isIcon]="true"
+      icon="close"
+      variant="danger"
+      (click)="toggleFormActive()"
+    >
+    </safe-button>
+  </form>
 </ng-container>
+<!-- STEPS -->
+<safe-workflow-stepper
+  [loading]="loading"
+  [steps]="steps"
+  [canUpdate]="canUpdate"
+  (add)="onAddStep()"
+  (openStep)="onOpenStep($event)"
+  (delete)="onDeleteStep($event)"
+  (reorderSteps)="onReorderSteps($event)"
+  [activeStep]="activeStep"
+>
+</safe-workflow-stepper>
 <router-outlet (activate)="onActivate($event)"></router-outlet>

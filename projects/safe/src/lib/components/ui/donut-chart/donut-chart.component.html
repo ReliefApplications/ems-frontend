@@ -1,4 +1,4 @@
-<kendo-chart #chart>
+<kendo-chart #chart [seriesColors]="options && options.palette">
   <kendo-chart-title
     *ngIf="title"
     [visible]="title.visible"
@@ -16,11 +16,19 @@
   <kendo-chart-tooltip format="{0}"></kendo-chart-tooltip>
   <kendo-chart-series>
     <kendo-chart-series-item
-      *ngFor="let item of series"
+      *ngFor="let serie of series"
       type="donut"
-      [data]="item.data"
+      [data]="serie.data"
       field="field"
       categoryField="category"
-    ></kendo-chart-series-item>
+      [autoFit]="true"
+    >
+      <kendo-chart-series-item-labels
+        *ngIf="labelContent"
+        position="outsideEnd"
+        color="#000"
+        [content]="labelContent"
+      ></kendo-chart-series-item-labels>
+    </kendo-chart-series-item>
   </kendo-chart-series>
 </kendo-chart>

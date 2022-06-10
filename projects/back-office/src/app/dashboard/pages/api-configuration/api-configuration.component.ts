@@ -6,10 +6,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import {
   ApiConfiguration,
   authType,
-  NOTIFICATIONS,
   SafeSnackBarService,
   SafeApiProxyService,
   status,
@@ -54,7 +54,8 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private apiProxy: SafeApiProxyService
+    private apiProxy: SafeApiProxyService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -89,6 +90,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
                 settings: this.buildSettingsForm(
                   this.apiConfiguration?.authType || ''
                 ),
+                graphQLEndpoint: this.apiConfiguration?.graphQLEndpoint,
               });
               this.apiForm.get('authType')?.valueChanges.subscribe((value) => {
                 this.apiForm.controls.settings.clearValidators();
@@ -98,7 +100,15 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
               this.loading = res.data.loading;
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.accessNotProvided('resource'),
+                this.translateService.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translateService
+                      .instant('common.resource.one')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
               this.router.navigate(['/settings/apiconfigurations']);
@@ -209,6 +219,10 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       this.apiForm.value.endpoint !== this.apiConfiguration?.endpoint && {
         endpoint: this.apiForm.value.endpoint,
       },
+      this.apiForm.value.graphQLEndpoint !==
+        this.apiConfiguration?.graphQLEndpoint && {
+        graphQLEndpoint: this.apiForm.value.graphQLEndpoint,
+      },
       this.apiForm.value.pingUrl !== this.apiConfiguration?.pingUrl && {
         pingUrl: this.apiForm.value.pingUrl,
       },
@@ -224,9 +238,14 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotUpdated(
-              'ApiConfiguration',
-              res.errors[0].message
+            this.translateService.instant(
+              'common.notifications.objectNotUpdated',
+              {
+                type: this.translateService.instant(
+                  'common.apiConfiguration.one'
+                ),
+                error: res.errors[0].message,
+              }
             ),
             { error: true }
           );
@@ -249,14 +268,25 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       ?.subscribe((res: any) => {
         if (res) {
           if (res.access_token) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseAuthToken);
+            this.snackBar.openSnackBar(
+              this.translateService.instant(
+                'pages.apiConfiguration.notifications.authTokenFetched'
+              )
+            );
           } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseReceived);
+            this.snackBar.openSnackBar(
+              this.translateService.instant(
+                'pages.apiConfiguration.notifications.pingReceived'
+              )
+            );
           }
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseError, {
-            error: true,
-          });
+          this.snackBar.openSnackBar(
+            this.translateService.instant(
+              'pages.apiConfiguration.notifications.pingFailed'
+            ),
+            { error: true }
+          );
         }
       });
   }

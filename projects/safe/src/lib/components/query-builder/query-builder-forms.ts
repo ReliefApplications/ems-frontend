@@ -109,6 +109,7 @@ export const createQueryForm = (value: any, validators = true): FormGroup =>
   formBuilder.group({
     name: [value ? value.name : '', validators ? Validators.required : null],
     template: [value ? value.template : '', null],
+    pageSize: [value?.pageSize || 10],
     fields: formBuilder.array(
       value && value.fields ? value.fields.map((x: any) => addNewField(x)) : [],
       validators ? Validators.required : null

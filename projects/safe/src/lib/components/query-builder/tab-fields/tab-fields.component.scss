@@ -2,10 +2,11 @@
   display: flex;
   margin-top: 16px;
   overflow: auto;
+  margin-bottom: 40px;
 
-  &:not(.hidden) {
-    height: 500px;
-  }
+  // &:not(.hidden) {
+  //   height: 600px;
+  // }
 }
 
 .field-container {
@@ -88,4 +89,14 @@
   padding: 16px;
   border-radius: 8px;
   border: 1px solid #dfe1e5;
+}
+
+// mat-form-field {
+//   width: 100%;
+// }
+
+.floating-info {
+  position: absolute;
+  bottom: 40px;
+  right: 12px;
 }

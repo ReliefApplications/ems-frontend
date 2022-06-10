@@ -7,7 +7,11 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
+import { TranslateService } from '@ngx-translate/core';
+import {
+  EDITOR_LANGUAGE_PAIRS,
+  WIDGET_EDITOR_CONFIG,
+} from '../../../const/tinymce.const';
 
 /**
  * Modal content for the settings of the editor widgets.
@@ -36,7 +40,19 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
    *
    * @param formBuilder Angular Form Builder
    */
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private translate: TranslateService
+  ) {
+    // Set the editor language
+    const lang = this.translate.currentLang;
+    const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
+    if (editorLang) {
+      this.editor.language = editorLang.tinymceKey;
+    } else {
+      this.editor.language = 'en';
+    }
+  }
 
   /**
    * Build the settings form, using the widget saved parameters.

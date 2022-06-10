@@ -1,76 +1,8 @@
-:host {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-.buttons-row {
-  display: flex;
-  justify-content: center;
-  margin: 32px 0;
-}
-
-.login-wrapper {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-
-  h1 {
-    font-size: xxx-large;
-    color: rgb(95, 95, 95);
-  }
-
-  .form-group-title {
-    color: rgb(153, 153, 153);
-  }
-}
-
-.login-logo {
+mat-spinner {
   position: absolute;
-  left: 5px;
-  top: 5px;
-
-  img {
-    width: 100px;
-    margin-right: 16px;
-  }
-}
-
-.side-bar-picture {
-  height: inherit;
-  width: auto;
-  background-size: cover;
-}
-
-.login-panel {
-  flex: 1;
-  height: 100%;
-  width: 50%;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  align-items: center;
-
-  &.left {
-    min-width: 400px;
-  }
-
-  &.right {
-    background-image: url('/assets/login-background.jpg');
-    background-size: cover;
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  .right {
-    display: none;
-  }
-  .login-panel {
-    width: 100%;
-  }
-  // .login-logo {
-  //     display: none;
-  // }
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
 }

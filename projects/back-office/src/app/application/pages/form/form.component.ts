@@ -11,7 +11,6 @@ import {
   SafeApplicationService,
   SafeSnackBarService,
   SafeWorkflowService,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import {
   GetFormByIdQueryResponse,
@@ -28,6 +27,7 @@ import {
   EDIT_PAGE,
 } from '../../../graphql/mutations';
 import { switchMap } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-form',
@@ -63,7 +63,8 @@ export class FormComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -157,13 +158,27 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectNotUpdated('step', res.errors[0].message),
+              this.translateService.instant(
+                'common.notifications.objectNotUpdated',
+                {
+                  type: this.translateService.instant('common.step.one'),
+                  error: res.errors[0].message,
+                }
+              ),
               { error: true }
             );
           } else {
             if (res.data) {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectEdited('step', tabName)
+                this.translateService.instant(
+                  'common.notifications.objectUpdated',
+                  {
+                    type: this.translateService
+                      .instant('common.step.one')
+                      .toLowerCase(),
+                    value: tabName,
+                  }
+                )
               );
               this.step = { ...this.step, name: res.data.editStep.name };
               this.workflowService.updateStepName(res.data.editStep);
@@ -182,13 +197,29 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectNotUpdated('page', res.errors[0].message),
+              this.translateService.instant(
+                'common.notifications.objectNotUpdated',
+                {
+                  type: this.translateService
+                    .instant('common.page.one')
+                    .toLowerCase(),
+                  error: res.errors[0].message,
+                }
+              ),
               { error: true }
             );
           } else {
             if (res.data) {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectEdited('page', tabName)
+                this.translateService.instant(
+                  'common.notifications.objectUpdated',
+                  {
+                    type: this.translateService
+                      .instant('common.page.one')
+                      .toLowerCase(),
+                    value: tabName,
+                  }
+                )
               );
               const newPage = { ...this.page, name: res.data.editPage.name };
               this.page = newPage;

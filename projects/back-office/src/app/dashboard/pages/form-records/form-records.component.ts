@@ -29,7 +29,6 @@ import {
   SafeRecordHistoryComponent,
   SafeLayoutService,
   SafeConfirmModalComponent,
-  NOTIFICATIONS,
   SafeSnackBarService,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
@@ -153,7 +152,10 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         if (res.errors) {
           // TO-DO: Check why it's not working as intended.
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.accessNotProvided('records', res.errors[0].message),
+            this.translate.instant('common.notifications.accessNotProvided', {
+              type: this.translate.instant('common.record.one').toLowerCase(),
+              error: res.errors[0].message,
+            }),
             { error: true }
           );
         }
@@ -266,9 +268,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: this.translate.instant(
-          'components.record.recovery.titleMessage'
-        ),
+        title: this.translate.instant('components.record.recovery.title'),
         content: this.translate.instant(
           'components.record.recovery.confirmationMessage',
           { date: formatDate }
@@ -289,7 +289,9 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
           })
           .subscribe((res) => {
             this.layoutService.setRightSidenav(null);
-            this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.dataRecovered')
+            );
           });
       }
     });
@@ -366,7 +368,11 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       (res) => {
         // this.xlsxFile.clearFiles();
         if (res.status === 'OK') {
-          this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'models.record.notifications.uploadSuccessful'
+            )
+          );
           this.getFormData();
           this.showUpload = false;
         }

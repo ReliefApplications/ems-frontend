@@ -8,9 +8,11 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { SafeIconModule } from '../../ui/icon/icon.module';
 
 /** Module for map settings component */
 @NgModule({
@@ -24,10 +26,12 @@ import { TranslateModule } from '@ngx-translate/core';
     MatRadioModule,
     MatSelectModule,
     MatButtonModule,
-    MatIconModule,
+    MatSliderModule,
+    SafeIconModule,
     TextFieldModule,
     SafeQueryBuilderModule,
     TranslateModule,
+    MatTooltipModule,
   ],
   exports: [SafeMapSettingsComponent],
 })

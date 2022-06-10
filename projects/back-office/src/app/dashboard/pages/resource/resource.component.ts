@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   SafeDownloadService,
   SafeSnackBarService,
-  NOTIFICATIONS,
   SafeConfirmModalComponent,
   Record,
   Form,
@@ -164,7 +163,12 @@ export class ResourceComponent implements OnInit, OnDestroy {
             this.loading = res.loading;
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.accessNotProvided('resource'),
+              this.translate.instant('common.notifications.accessNotProvided', {
+                type: this.translate
+                  .instant('common.resource.one')
+                  .toLowerCase(),
+                error: '',
+              }),
               { error: true }
             );
             this.router.navigate(['/resources']);
@@ -278,7 +282,11 @@ export class ResourceComponent implements OnInit, OnDestroy {
         },
       })
       .subscribe((res) => {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Record'));
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectDeleted', {
+            value: this.translate.instant('common.record.one'),
+          })
+        );
         this.dataSourceRecords = this.dataSourceRecords.filter(
           (x) => x.id !== id
         );
@@ -296,7 +304,11 @@ export class ResourceComponent implements OnInit, OnDestroy {
         },
       })
       .subscribe((res) => {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Form'));
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectDeleted', {
+            value: this.translate.instant('common.form.one'),
+          })
+        );
         this.dataSourceForms = this.dataSourceForms.filter((x) => x.id !== id);
       });
   }
@@ -375,7 +387,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
       (res) => {
         this.xlsxFile.clearFiles();
         if (res.status === 'OK') {
-          this.snackBar.openSnackBar(NOTIFICATIONS.recordUploadSuccess);
           this.getResourceData();
           this.showUpload = false;
         }

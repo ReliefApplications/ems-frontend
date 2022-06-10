@@ -157,16 +157,18 @@
             'components.widget.settings.grid.buttons.callback.attach'
               | translate
           }}</mat-checkbox>
-          <mat-icon
-            class="info-icon"
+          <safe-icon
+            style="padding-left: 2px"
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [inline]="true"
             [matTooltip]="
               'components.widget.settings.grid.buttons.tooltip.attach'
                 | translate
             "
             matTooltipPosition="right"
-          >
-            info
-          </mat-icon>
+          ></safe-icon>
         </span>
         <div *ngIf="buttonForm.value.attachToRecord" class="sub-parameters">
           <mat-form-field appearance="outline">
@@ -210,16 +212,18 @@
           <mat-checkbox formControlName="notify">{{
             'components.channel.dropdown.select' | translate
           }}</mat-checkbox>
-          <mat-icon
-            class="info-icon"
+          <safe-icon
+            style="padding-left: 2px"
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [inline]="true"
             [matTooltip]="
               'components.widget.settings.grid.buttons.tooltip.notify'
                 | translate
             "
             matTooltipPosition="right"
-          >
-            info
-          </mat-icon>
+          ></safe-icon>
         </span>
         <div *ngIf="buttonForm.value.notify" class="sub-parameters">
           <mat-form-field appearance="outline">
@@ -247,16 +251,18 @@
           <mat-checkbox formControlName="publish">{{
             'common.publish' | translate
           }}</mat-checkbox>
-          <mat-icon
-            class="info-icon"
+          <safe-icon
+            style="padding-left: 2px"
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [inline]="true"
             [matTooltip]="
               'components.widget.settings.grid.buttons.tooltip.publish'
                 | translate
             "
             matTooltipPosition="right"
-          >
-            info
-          </mat-icon>
+          ></safe-icon>
         </span>
         <div *ngIf="buttonForm.value.publish" class="sub-parameters">
           <mat-form-field appearance="outline">
@@ -286,7 +292,7 @@
                 (removed)="remove(email)"
               >
                 {{ email }}
-                <mat-icon matChipRemove>cancel</mat-icon>
+                <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
               </mat-chip>
               <input
                 #emailInput

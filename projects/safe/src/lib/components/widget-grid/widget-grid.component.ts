@@ -14,10 +14,14 @@ import {
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
 
+/** Define maxc height of widgets */
 const MAX_ROW_SPAN = 4;
-
+/** Define max width of widgets */
 const MAX_COL_SPAN = 8;
 
+/**
+ * Widget Grid component. Widget grid is the content of the dashboard pages.
+ */
 @Component({
   selector: 'safe-widget-grid',
   templateUrl: './widget-grid.component.html',
@@ -25,6 +29,10 @@ const MAX_COL_SPAN = 8;
 })
 export class SafeWidgetGridComponent implements OnInit {
   public widgetTypes: any[] = WIDGET_TYPES;
+
+  @Input() loading = false;
+  /** Skeletons for loading */
+  public skeletons: { colSpan: number; rowSpan: number }[] = [];
 
   @Input() widgets: any[] = [];
   @Input() canUpdate = false;
@@ -49,12 +57,14 @@ export class SafeWidgetGridComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: any): void {
     this.colsNumber = this.setColsNumber(event.target.innerWidth);
+    this.skeletons = this.getSkeletons();
   }
 
   constructor(public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
+    this.skeletons = this.getSkeletons();
   }
 
   /**
@@ -166,5 +176,27 @@ export class SafeWidgetGridComponent implements OnInit {
         rows: e.newRowSpan,
       },
     });
+  }
+
+  /**
+   * Generates a list of skeletongs, for loading.
+   *
+   * @returns List of skeletons.
+   */
+  private getSkeletons(): { colSpan: number; rowSpan: number }[] {
+    const skeletons = [];
+    let remainingColsNumber = this.colsNumber;
+    for (let i = 0; i < 10; i++) {
+      const colSpan = Math.floor(Math.random() * remainingColsNumber) + 1;
+      remainingColsNumber -= colSpan;
+      if (remainingColsNumber === 0) {
+        remainingColsNumber = this.colsNumber;
+      }
+      skeletons.push({
+        colSpan,
+        rowSpan: Math.floor(Math.random() * MAX_ROW_SPAN) + 1,
+      });
+    }
+    return skeletons;
   }
 }

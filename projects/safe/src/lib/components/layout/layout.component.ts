@@ -31,6 +31,7 @@ import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafePreferencesModalComponent } from '../preferences-modal/preferences-modal.component';
+import { SafeDateTranslateService } from '../../services/date-translate.service';
 
 /**
  * Component for the main layout of the platform
@@ -110,12 +111,14 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     private notificationService: SafeNotificationService,
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dateTranslate: SafeDateTranslateService
   ) {
     this.largeDevice = window.innerWidth > 1024;
     this.account = this.authService.account;
     this.environment = environment;
     this.languages = this.translate.getLangs();
+    this.getLanguage();
     this.theme = this.environment.theme;
     this.showPreferences = environment.availableLanguages.length > 1;
   }
@@ -273,8 +276,10 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.authService.canLogout.value) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: this.translate.instant('common.logout.titleMessage'),
-          content: this.translate.instant('common.logout.confirmationMessage'),
+          title: this.translate.instant('components.logout.title'),
+          content: this.translate.instant(
+            'components.logout.confirmationMessage'
+          ),
           confirmText: this.translate.instant(
             'components.confirmModal.confirm'
           ),
@@ -308,11 +313,14 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         languages: this.languages,
       },
-      width: '100%',
+      panelClass: 'preferences-dialog',
     });
     dialogRef.afterClosed().subscribe((form) => {
       if (form && form.touched) {
         this.setLanguage(form.value.language);
+        this.dateTranslate.use(form.value.dateFormat);
+      } else if (!form) {
+        this.setLanguage(this.getLanguage());
       }
     });
   }
@@ -362,7 +370,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    */
   setLanguage(language: string) {
     this.translate.use(language);
-    window.localStorage.setItem('lang', language);
+    localStorage.setItem('lang', language);
   }
 
   /**
@@ -373,7 +381,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    */
   getLanguage(): string {
     // select the langage saved (or default if not)
-    let language = window.localStorage.getItem('lang');
+    let language = localStorage.getItem('lang');
     if (!language || !this.languages.includes(language)) {
       language = this.translate.defaultLang;
     }

@@ -14,7 +14,6 @@ import {
   Resource,
   SafeConfirmModalComponent,
   SafeSnackBarService,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -33,6 +32,7 @@ const DEFAULT_PAGE_SIZE = 10;
 export class ResourcesComponent implements OnInit, AfterViewInit {
   // === DATA ===
   public loading = true;
+  public filterLoading = false;
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   displayedColumns: string[] = ['name', 'createdAt', 'recordsCount', 'actions'];
   public cachedResources: Resource[] = [];
@@ -78,6 +78,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       this.pageInfo.length = res.data.resources.totalCount;
       this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
       this.loading = res.loading;
+      this.filterLoading = false;
     });
   }
 
@@ -101,6 +102,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.loading = true;
       this.resourcesQuery.fetchMore({
         variables: {
           first,
@@ -138,6 +140,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
    * @param filter filter event.
    */
   onFilter(filter: any): void {
+    this.filterLoading = true;
     this.filter = filter;
     this.cachedResources = [];
     this.pageInfo.pageIndex = 0;
@@ -203,13 +206,22 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
                 (x) => x.id !== resource.id
               );
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectDeleted('resource')
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate
+                    .instant('common.resource.one')
+                    .toLowerCase(),
+                })
               );
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectNotDeleted(
-                  'resource',
-                  res.errors[0].message
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate
+                      .instant('common.resource.one')
+                      .toLowerCase(),
+                    error: res.errors[0].message,
+                  }
                 ),
                 { error: true }
               );
@@ -243,7 +255,15 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate
+                        .instant('common.form.one')
+                        .toLowerCase(),
+                      error: res.errors[0].message,
+                    }
+                  ),
                   { error: true }
                 );
               } else {

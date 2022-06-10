@@ -9,7 +9,6 @@ import {
   PermissionType,
   SafeAuthService,
   SafeSnackBarService,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import {
   DeleteDashboardMutationResponse,
@@ -22,6 +21,7 @@ import {
   GET_DASHBOARDS,
 } from '../../../graphql/queries';
 import { AddDashboardComponent } from './components/add-dashboard/add-dashboard.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboards',
@@ -43,7 +43,8 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private router: Router,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private translateService: TranslateService
   ) {}
 
   /** Load the data and check if user can add new dashboards. */
@@ -84,7 +85,14 @@ export class DashboardsComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Dashboard'));
+          this.snackBar.openSnackBar(
+            this.translateService.instant(
+              'common.notifications.objectDeleted',
+              {
+                value: this.translateService.instant('common.dashboard.one'),
+              }
+            )
+          );
           this.dashboards = this.dashboards.filter(
             (x) => x.id !== res.data?.deleteDashboard.id
           );
@@ -107,7 +115,15 @@ export class DashboardsComponent implements OnInit, OnDestroy {
           })
           .subscribe((res) => {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated('dashboard', value.name)
+              this.translateService.instant(
+                'common.notifications.objectCreated',
+                {
+                  type: this.translateService
+                    .instant('common.dashboard.one')
+                    .toLowerCase(),
+                  value: value.name,
+                }
+              )
             );
             const id = res.data?.addDashboard.id;
             this.router.navigate(['/dashboards', id]);

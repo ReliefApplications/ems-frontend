@@ -9,7 +9,7 @@
     >
     </safe-button>
   </div>
-  <div style="clear: both">
+  <div style="clear: both; display: flex; flex-direction: column">
     <mat-form-field>
       <mat-date-range-input
         (click)="rangePicker.open()"
@@ -49,6 +49,22 @@
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{ 'components.history.field.select' | translate }}</mat-label>
+      <mat-select
+        (selectionChange)="applyFilter($event.value)"
+        [value]="filterField"
+      >
+        <mat-option value="">{{
+          'components.history.field.all' | translate
+        }}</mat-option>
+        <mat-option
+          *ngFor="let field of sortedFields"
+          value="{{ field.name }}"
+          >{{ field.title || field.name }}</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
   </div>
   <div class="actions">
     <safe-button
@@ -70,9 +86,9 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <span class="history-date">{{
-            item.created | date: 'dd/MM/yyyy'
+            item.created | safeDate: 'shortDate'
           }}</span>
-          {{ item.created | date: 'h:mm a' }}
+          {{ item.created | safeDate: 'shortTime' }}
           <span class="history-user" *ngIf="item.createdBy">{{
             item.createdBy
           }}</span>
@@ -85,7 +101,7 @@
           *ngFor="
             let value of showMore ? item.changes : item.changes.slice(0, 4)
           "
-          [innerHTML]="value"
+          [innerHTML]="getHTMLFromChange(value)"
         ></div>
         <div class="full-history">
           <safe-button
@@ -101,7 +117,7 @@
           icon="update"
           class="revert-icon"
           (click)="onRevert(item)"
-          *ngIf="index > 0"
+          *ngIf="index > 0 && filterField === null"
         >
           {{ 'components.history.preview' | translate }}
         </safe-button>

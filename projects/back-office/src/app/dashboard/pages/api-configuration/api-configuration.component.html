@@ -192,6 +192,24 @@
         </ng-container>
       </ng-container>
     </div>
+
+    <h1>{{ 'pages.apiConfiguration.graphQL.title' | translate }}</h1>
+    <div class="form-group">
+      <mat-form-field appearance="outline" style="flex: 2">
+        <mat-label>
+          {{ 'pages.apiConfiguration.graphQL.endpoint' | translate }}
+        </mat-label>
+        <input
+          matInput
+          formControlName="graphQLEndpoint"
+          type="text"
+          [placeholder]="
+            'pages.apiConfiguration.placeholder.graphQLEndpoint' | translate
+          "
+        />
+      </mat-form-field>
+    </div>
+
     <safe-button
       category="secondary"
       variant="primary"

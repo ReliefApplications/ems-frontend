@@ -8,6 +8,8 @@ import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
 import { Workflow } from '../models/workflow.model';
 import { Dashboard } from '../models/dashboard.model';
+import { ReferenceData } from '../models/reference-data.model';
+import { RecordHistory } from '../models/recordsHistory';
 
 // === GET PROFILE ===
 
@@ -315,6 +317,20 @@ export const GET_RECORD_BY_ID = gql`
         permissions {
           recordsUnicity
         }
+      }
+    }
+  }
+`;
+
+/** GraphQL query definition for getting record details for history purpose */
+export const GET_RECORD_BY_ID_FOR_HISTORY = gql`
+  query GetRecordByIfForHistory($id: ID!) {
+    record(id: $id) {
+      id
+      incrementalId
+      form {
+        id
+        fields
       }
     }
   }
@@ -991,4 +1007,92 @@ export interface GetResourceRecordsQueryResponse {
       totalCount: number;
     };
   };
+}
+
+// === GET REFERENCE DATAS ===
+export const GET_REFERENCE_DATAS = gql`
+  query GetReferenceDatas($first: Int, $afterCursor: ID) {
+    referenceDatas(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+export interface GetReferenceDatasQueryResponse {
+  loading: boolean;
+  referenceDatas: {
+    edges: {
+      node: ReferenceData;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
+}
+
+export const GET_REFERENCE_DATA_BY_ID = gql`
+  query GetShortReferenceDataById($id: ID!) {
+    referenceData(id: $id) {
+      id
+      name
+      type
+      apiConfiguration {
+        name
+      }
+      query
+      fields
+      valueField
+      path
+      data
+    }
+  }
+`;
+
+export const GET_SHORT_REFERENCE_DATA_BY_ID = gql`
+  query GetShortReferenceDataById($id: ID!) {
+    referenceData(id: $id) {
+      id
+      name
+    }
+  }
+`;
+
+export interface GetReferenceDataByIdQueryResponse {
+  loading: boolean;
+  referenceData: ReferenceData;
+}
+
+export const GET_RECORD_HISTORY_BY_ID = gql`
+  query GetRecordHistoryByID($id: ID!, $lang: String) {
+    recordHistory(id: $id, lang: $lang) {
+      created
+      createdBy
+      changes {
+        type
+        field
+        displayName
+        old
+        new
+      }
+    }
+  }
+`;
+
+export interface GetRecordHistoryByIdResponse {
+  loading: boolean;
+  recordHistory: RecordHistory;
 }
