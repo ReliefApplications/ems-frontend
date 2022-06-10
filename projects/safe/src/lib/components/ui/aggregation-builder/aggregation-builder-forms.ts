@@ -132,7 +132,7 @@ export const addStage = (value: any): FormGroup => {
 /**
  * Exports the mapping fields
  *
- * @param widgetType - The type of widget you want to create.
+ * @param widgetType type of chart widget
  * @returns The x and y axis
  */
 export const mappingFields = (
@@ -149,10 +149,31 @@ export const mappingFields = (
 };
 
 /**
+ * Create mapping form ( category / field / series )
+ *
+ * @param value current form value
+ * @param widgetType type of chart widget
+ * @returns New mapping form
+ */
+export const createMappingForm = (value: any, widgetType: string): FormGroup =>
+  formBuilder.group(
+    mappingFields(widgetType).reduce(
+      (o, field) =>
+        Object.assign(o, {
+          [field.name]: [
+            get(value, field.name, ''),
+            field.required ? Validators.required : null,
+          ],
+        }),
+      {}
+    )
+  );
+
+/**
  * Generates a new aggregation form.
  *
  * @param value initial value
- * @param widgetType type of widget
+ * @param widgetType type of chart widget
  * @returns New aggregation form
  */
 export const createAggregationForm = (
@@ -167,18 +188,7 @@ export const createAggregationForm = (
         ? value.pipeline.map((x: any) => addStage(x))
         : []
     ),
-    mapping: formBuilder.group(
-      mappingFields(widgetType).reduce(
-        (o, field) =>
-          Object.assign(o, {
-            [field.name]: [
-              get(value, `mapping.${field.name}`, ''),
-              field.required ? Validators.required : null,
-            ],
-          }),
-        {}
-      )
-    ),
+    mapping: createMappingForm(get(value, 'mapping', null), widgetType),
   });
 
 /**

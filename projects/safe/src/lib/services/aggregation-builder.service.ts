@@ -278,7 +278,6 @@ export class AggregationBuilderService {
    * @returns field
    */
   public findField(fieldName: string, fields: any[]): any {
-    console.log(fieldName);
     let outField = fields.find((x) => x.name === fieldName);
     if (!outField && fieldName.includes('.')) {
       const fieldArray = fieldName.split('.');

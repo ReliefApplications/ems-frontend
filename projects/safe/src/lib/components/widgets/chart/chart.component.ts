@@ -159,7 +159,6 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
           const aggregationData = JSON.parse(
             JSON.stringify(res.data.recordsAggregation)
           );
-          console.log(this.settings.chart.aggregation);
           if (get(this.settings, 'chart.aggregation.mapping.series', null)) {
             const groups = groupBy(aggregationData, 'series');
             this.series = Object.keys(groups).map((key) => ({
