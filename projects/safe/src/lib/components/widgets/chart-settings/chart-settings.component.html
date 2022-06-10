@@ -40,6 +40,7 @@
             ></safe-icon>
           </ng-template>
           <safe-aggregation-builder
+            [reload$]="reload$"
             [aggregationForm]="aggregationForm"
           ></safe-aggregation-builder>
         </mat-tab>
@@ -231,7 +232,7 @@
               >
                 <h3>
                   {{
-                    'components.aggregationBuilder.mapping.xAxis' | translate
+                    'components.widget.settings.chart.xAxis' | translate
                   }}
                 </h3>
                 <div class="axis-container">
@@ -274,7 +275,7 @@
               >
                 <h3>
                   {{
-                    'components.aggregationBuilder.mapping.yAxis' | translate
+                    'components.widget.settings.chart.yAxis' | translate
                   }}
                 </h3>
                 <div class="axis-container">

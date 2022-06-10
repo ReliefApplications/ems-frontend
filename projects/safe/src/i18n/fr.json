@@ -247,16 +247,20 @@
 			"title": "Accès"
 		},
 		"aggregationBuilder": {
+			"accumulators": "Accumulateurs",
 			"addField": "Ajouter un champ",
+			"addRule": "Ajouter une règle",
 			"addStage": "Ajouter une étape",
 			"dataset": {
 				"select": "Sélectionner la source de données"
 			},
 			"fieldName": "Nom du champ",
 			"groupBy": "Regrouper par",
+			"groupingRules": "Grouper par",
 			"mapping": {
-				"xAxis": "Axe X",
-				"yAxis": "Axe Y"
+				"category": "Categorie",
+				"field": "Valeur",
+				"series": "Séries"
 			},
 			"operator": "Opérateur",
 			"operators": {
@@ -737,7 +741,9 @@
 					},
 					"position": "Position",
 					"text": "Texte",
-					"type": "Graphique"
+					"type": "Graphique",
+					"xAxis": "Axe X",
+					"yAxis": "Axe Y"
 				},
 				"grid": {
 					"actions": {

@@ -1,6 +1,9 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
-import { createAggregationForm } from '../../../ui/aggregation-builder/aggregation-builder-forms';
+import {
+  createAggregationForm,
+  createMappingForm,
+} from '../../../ui/aggregation-builder/aggregation-builder-forms';
 
 const DEFAULT_PALETTE = [
   '#ff6358',
@@ -44,8 +47,8 @@ export class Chart {
         Validators.required,
       ],
       aggregation: createAggregationForm(
-        settings ? settings.aggregation : null,
-        settings ? `${settings.type}-chart` : ''
+        get(settings, 'aggregation', null),
+        get(settings, 'type', '')
       ),
       legend: this.fb.group({
         visible: [legend ? legend.visible : true],
@@ -121,6 +124,15 @@ export class Chart {
           ],
         }),
       }),
+    });
+
+    this.form.get('type')?.valueChanges.subscribe((value) => {
+      const mapping = this.form.get('aggregation.mapping');
+      const aggregation = this.form.get('aggregation') as FormGroup;
+      aggregation.setControl(
+        'mapping',
+        createMappingForm(mapping?.value, value)
+      );
     });
 
     // Update of palette
