@@ -740,6 +740,13 @@
 						"title": "Color palette"
 					},
 					"position": "Position",
+					"series": {
+						"stack": {
+							"enable": "Plot series",
+							"usePercentage": "Use percentage"
+						},
+						"title": "Series"
+					},
 					"text": "Text",
 					"type": "Chart Type",
 					"xAxis": "X Axis",

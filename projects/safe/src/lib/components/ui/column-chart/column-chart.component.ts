@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { ChartComponent } from '@progress/kendo-angular-charts';
+import { ChartComponent, SeriesStack } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
 interface ChartTitle {
@@ -36,6 +36,7 @@ interface ChartOptions {
     };
   };
   labels?: ChartLabels;
+  stack: boolean | SeriesStack;
 }
 
 @Component({
@@ -52,6 +53,7 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
 
   @Input() options: ChartOptions = {
     palette: [],
+    stack: false,
   };
 
   @Input() gap = 2;
@@ -61,6 +63,8 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
   public min: number | undefined;
 
   public max: number | undefined;
+
+  public stack: boolean | SeriesStack = false;
 
   @ViewChild('chart')
   public chart?: ChartComponent;
@@ -75,6 +79,7 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
     this.labels = {
       visible: get(this.options, 'labels.showValue'),
     };
+    this.stack = this.series.length > 1 ? get(this.options, 'stack') : false;
   }
 
   ngOnChanges(): void {
@@ -83,5 +88,6 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
     this.labels = {
       visible: get(this.options, 'labels.showValue'),
     };
+    this.stack = this.series.length > 1 ? get(this.options, 'stack') : false;
   }
 }
