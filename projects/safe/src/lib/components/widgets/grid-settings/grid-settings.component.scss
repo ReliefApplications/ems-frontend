@@ -9,3 +9,14 @@
   width: min-content;
   align-self: flex-end;
 }
+
+.tab-label {
+  display: flex;
+  gap: 6px;
+  align-content: center;
+  align-items: center;
+
+  safe-icon {
+    height: 26.5px;
+  }
+}

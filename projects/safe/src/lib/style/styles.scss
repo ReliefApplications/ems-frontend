@@ -337,6 +337,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 
 .form-group {
   &:not(td) {
+    padding-left: 32px;
     display: flex;
     flex-direction: column;
 
@@ -350,7 +351,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     }
 
     .form-group-title {
-      font-weight: bold;
+      font-weight: 500;
       font-size: 16px;
       margin-bottom: 12px;
       border-bottom: 1px solid darkgray;
@@ -591,7 +592,18 @@ mat-tab-group[vertical] {
 
   & > .mat-tab-body-wrapper {
     width: 100%;
-    margin-left: 32px;
+
+    & > .mat-tab-body {
+      & > .mat-tab-body-content {
+        transition: all ease 200ms;
+      }
+      & > .mat-tab-body-content[style*="transform: translate3d(100%, 0px, 0px)"] {
+        transform: translate3d(0px, 100%, 0px) !important;
+      }
+      & > .mat-tab-body-content[style*="transform: translate3d(-100%, 0px, 0px)"] {
+        transform: translate3d(0px, -100%, 0px) !important;
+      }
+    }
   }
 }
 
