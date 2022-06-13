@@ -777,6 +777,8 @@
 							},
 							"prefill": "Pre-fill form with selected data",
 							"save": "Auto-save",
+							"selectAllRecords": "Select all records",
+							"selectAllRecordsActivePage": "Select all records on the active page",
 							"selectDisplay": "Select displayed fields",
 							"sendMail": "Send mail",
 							"workflow": {
