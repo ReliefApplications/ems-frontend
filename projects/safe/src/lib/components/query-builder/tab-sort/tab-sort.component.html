@@ -5,9 +5,19 @@
     }}</mat-label>
     <mat-select formControlName="field">
       <mat-option>{{ 'common.input.none' | translate }}</mat-option>
-      <mat-option *ngFor="let field of fields" [value]="field.name">
-        {{ field.name }}
-      </mat-option>
+      <ng-container *ngFor="let field of fields">
+        <mat-option *ngIf="field.type.kind === 'SCALAR'" [value]="field.name">
+          {{ field.name }}
+        </mat-option>
+        <mat-optgroup *ngIf="field.type.kind !== 'SCALAR'" [label]="field.name">
+          <mat-option
+            *ngFor="let subField of field.type.fields"
+            [value]="field.name + '.' + subField.name"
+          >
+            {{ subField.name }}
+          </mat-option>
+        </mat-optgroup>
+      </ng-container>
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="outline" *ngIf="form.value.field">

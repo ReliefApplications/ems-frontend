@@ -46,15 +46,22 @@
               (selectionChange)="onSetField($event, i)"
             >
               <ng-container *ngFor="let field of fields">
-                <mat-option *ngIf="field.type.kind === 'SCALAR'" [value]="field.name">{{
-                  field.name
-                }}</mat-option>
-                <mat-optgroup *ngIf="field.type.kind !== 'SCALAR'" [label]="field.name">
+                <mat-option
+                  *ngIf="field.type.kind === 'SCALAR'"
+                  [value]="field.name"
+                >
+                  {{ field.name }}
+                </mat-option>
+                <mat-optgroup 
+                  *ngIf="field.type.kind !== 'SCALAR'"
+                  [label]="field.name"
+                >
                   <mat-option
                     *ngFor="let subField of field.type.fields"
                     [value]="field.name + '.' + subField.name"
-                    >{{ subField.name }}</mat-option
                   >
+                    {{ subField.name }}
+                  </mat-option>
                 </mat-optgroup>
               </ng-container>
             </mat-select>

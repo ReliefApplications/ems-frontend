@@ -222,7 +222,12 @@ export class SafeTabFilterComponent implements OnInit {
     }
     this.form.value?.filters.forEach((x: any, index: number) => {
       if (x.field) {
-        const field = this.fields.find((y) => y.name === x.field);
+        let field = this.fields.find((y) => y.name === x.field.split('.')[0]);
+        if (field.type.kind === 'OBJECT') {
+          field = field.type.fields.find(
+            (y: any) => y.name === x.field.split('.')[1]
+          );
+        }
         if (field && field.type && AVAILABLE_TYPES.includes(field.type.name)) {
           const type = field.name === 'form' ? 'Form' : field.type.name;
           this.selectedFields.splice(index, 1, {
@@ -385,7 +390,12 @@ export class SafeTabFilterComponent implements OnInit {
    */
   onSetField(e: any, index: number): void {
     if (e.value) {
-      const field = this.fields.find((x) => x.name === e.value);
+      let field = this.fields.find((x) => x.name === e.value.split('.')[0]);
+      if (field.type.kind === 'OBJECT') {
+        field = field.type.fields.find(
+          (x: any) => x.name === e.value.split('.')[1]
+        );
+      }
       if (field && field.type && AVAILABLE_TYPES.includes(field.type.name)) {
         const type = field.name === 'form' ? 'Form' : field.type.name;
         const operator = TYPES[type].defaultOperator;
