@@ -44,9 +44,11 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     console.log(this.tile);
     const cards: any[] = [];
-    this.tile.settings.cards.map((card: any) => {
-      cards.push(this.formBuilder.group(card));
-    });
+    if (this.tile.settings.cards && this.tile.settings.cards.length > 1) {
+      this.tile.settings.cards.map((card: any) => {
+        cards.push(this.formBuilder.group(card));
+      });
+    }
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: this.tile.settings.title,
