@@ -47,7 +47,9 @@ export class SafeQueryBuilderComponent implements OnInit {
    * @returns the available scalar fields
    */
   get availableScalarFields(): any[] {
-    return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
+    return this.availableFields.filter(
+      (x) => x.type.kind === 'SCALAR' || x.type.kind === 'OBJECT'
+    );
   }
 
   @Input() form?: FormGroup;
