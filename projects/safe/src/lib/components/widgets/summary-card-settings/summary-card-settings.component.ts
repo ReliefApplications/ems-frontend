@@ -11,10 +11,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeTileDataComponent } from '../../widget-grid/floating-options/menu/tile-data/tile-data.component';
 import { SafeCardSettingsComponent } from './card-settings/card-settings.component';
 
+/**
+ *
+ */
 @Component({
   selector: 'safe-summary-card-settings',
   templateUrl: './summary-card-settings.component.html',
-  styleUrls: ['./summary-card-settings.component.scss']
+  styleUrls: ['./summary-card-settings.component.scss'],
 })
 export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
@@ -31,11 +34,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * Modal content for the settings of the editor widgets.
    *
    * @param formBuilder Angular Form Builder
+   * @param dialog
    */
-  constructor(
-    private formBuilder: FormBuilder,
-    private dialog: MatDialog
-  ) { }
+  constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
 
   /**
    * Build the settings form, using the widget saved parameters.
@@ -45,11 +46,11 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     const cards: any[] = [];
     this.tile.settings.cards.map((card: any) => {
       cards.push(this.formBuilder.group(card));
-    })
+    });
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: this.tile.settings.title,
-      cards: this.formBuilder.array(cards)
+      cards: this.formBuilder.array(cards),
     });
     this.change.emit(this.tileForm);
     console.log(this.tileForm);
@@ -64,21 +65,29 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   *
+   */
   addCard() {
-    (this.tileForm?.controls.cards as any).push(this.formBuilder.group({title: 'New card'}));
+    (this.tileForm?.controls.cards as any).push(
+      this.formBuilder.group({ title: 'New card' })
+    );
   }
 
+  /**
+   * @param i
+   */
   removeCard(i: number) {
     (this.tileForm?.controls.cards as any).removeAt(i);
   }
 
+  /**
+   * @param i
+   */
   openCardSettings(i: number) {
-    console.log(i);
     const dialogRef = this.dialog.open(SafeCardSettingsComponent, {
       disableClose: true,
-      data: {
-        tileform: this.tileForm
-      },
+      data: this.tileForm?.value.cards[i],
       position: {
         bottom: '0',
         right: '0',
@@ -86,8 +95,11 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       panelClass: 'tile-settings-dialog',
     });
 
-    dialogRef.afterClosed().subscribe((result: any) => {
-      console.log(`Dialog result: ${result}`);
+    dialogRef.afterClosed().subscribe((res: any) => {
+      if (res) {
+        (this.tileForm?.controls.cards as any).controls[i].setValue(res);
+        console.log(res);
+      }
     });
   }
 }

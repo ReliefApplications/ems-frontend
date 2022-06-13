@@ -9,6 +9,9 @@ import { SafeSchedulerModule } from '../widgets/scheduler/scheduler.module';
 import { SafeSummaryCardModule } from '../widgets/summary-card/summary-card.module';
 import 'hammerjs';
 
+/**
+ *
+ */
 @NgModule({
   declarations: [SafeWidgetComponent],
   imports: [
@@ -18,7 +21,7 @@ import 'hammerjs';
     SafeGridWidgetModule,
     SafeMapModule,
     SafeSchedulerModule,
-    SafeSummaryCardModule
+    SafeSummaryCardModule,
   ],
   exports: [SafeWidgetComponent],
 })

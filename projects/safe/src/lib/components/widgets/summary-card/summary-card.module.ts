@@ -1,7 +1,7 @@
 import { LayoutModule } from '@progress/kendo-angular-layout';
-import { NgModule } from "@angular/core";
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeSummaryCardComponent } from "./summary-card.component";
+import { SafeSummaryCardComponent } from './summary-card.component';
 
 /** Module for scheduler  component */
 @NgModule({

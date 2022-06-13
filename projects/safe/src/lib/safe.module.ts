@@ -86,9 +86,8 @@ import { SafeCardSettingsModule } from './components/widgets/summary-card-settin
     SafeIconModule,
     SafeSummaryCardModule,
     SafeSummaryCardSettingsModule,
-    SafeCardSettingsModule
+    SafeCardSettingsModule,
   ],
-  declarations: [
-  ],
+  declarations: [],
 })
 export class SafeModule {}
