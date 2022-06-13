@@ -1,14 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
+/**
+ * Text widget component using KendoUI
+ */
 @Component({
   selector: 'safe-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-/**
- * Text widget using KendoUI
- */
 export class SafeEditorComponent implements OnInit {
   // === WIDGET CONFIGURATION ===
   @Input() header = true;

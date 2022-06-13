@@ -18,6 +18,12 @@ export default {
   },
 } as Meta;
 
+/**
+ * Template for the story component
+ *
+ * @param args Properties
+ * @returns A story component
+ */
 const TEMPLATE: Story<SafeWidgetGridComponent> = (args) => ({
   props: {
     ...args,
@@ -25,6 +31,7 @@ const TEMPLATE: Story<SafeWidgetGridComponent> = (args) => ({
   },
 });
 
+/** List of default widgets */
 const defaultWidgets = [
   {
     id: 0,
@@ -61,6 +68,7 @@ const defaultWidgets = [
   },
 ];
 
+/** Export a story component */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {
@@ -68,6 +76,7 @@ DEFAULT.args = {
   widgets: defaultWidgets,
 };
 
+/** Export a story component */
 export const EMPTY = TEMPLATE.bind({});
 EMPTY.storyName = 'Empty grid';
 EMPTY.args = {

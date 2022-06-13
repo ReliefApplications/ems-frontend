@@ -22,6 +22,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { SafeGridModule } from '../../../components/ui/core-grid/grid/grid.module';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 
+/** Module for the chart settings component */
 @NgModule({
   declarations: [SafeChartSettingsComponent],
   imports: [
