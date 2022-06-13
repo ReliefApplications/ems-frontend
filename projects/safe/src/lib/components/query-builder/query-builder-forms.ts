@@ -13,25 +13,22 @@ const formBuilder = new FormBuilder();
  * @returns Filter form
  */
 export const createFilterGroup = (filter: any, fields: any): FormGroup => {
-  if (filter) {
-    if (filter.filters) {
-      const filters = filter.filters.map((x: any) =>
-        createFilterGroup(x, fields)
-      );
-      return formBuilder.group({
-        logic: filter.logic || 'and',
-        filters: formBuilder.array(filters),
-      });
-    } else {
-      if (filter.field) {
-        return formBuilder.group({
-          field: filter.field,
-          operator: filter.operator || 'eq',
-          value: Array.isArray(filter.value) ? [filter.value] : filter.value,
-          useExpression: get(filter, 'useExpression', false),
-        });
-      }
-    }
+  if (filter.filters) {
+    const filters = filter.filters.map((x: any) =>
+      createFilterGroup(x, fields)
+    );
+    return formBuilder.group({
+      logic: filter.logic || 'and',
+      filters: formBuilder.array(filters),
+    });
+  }
+  if (filter.field) {
+    return formBuilder.group({
+      field: filter.field,
+      operator: filter.operator || 'eq',
+      value: Array.isArray(filter.value) ? [filter.value] : filter.value,
+      useExpression: get(filter, 'useExpression', false),
+    });
   }
   return formBuilder.group({
     logic: 'and',
