@@ -69,7 +69,18 @@ export class SafeDropdownFilterComponent
 
   ngOnInit(): void {
     this.choices = this.data.slice();
-    console.log(this.choices, this.operators);
+    this.translate.onLangChange.subscribe(() => {
+      this.op = [
+        {
+          text: this.translate.instant('kendo.grid.filterEqOperator'),
+          value: 'eq',
+        },
+        {
+          text: this.translate.instant('kendo.grid.filterNotEqOperator'),
+          value: 'neq',
+        },
+      ];
+    });
   }
 
   /**

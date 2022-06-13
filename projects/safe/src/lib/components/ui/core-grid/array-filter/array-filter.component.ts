@@ -85,6 +85,34 @@ export class SafeArrayFilterComponent
 
   ngOnInit(): void {
     this.choices = this.data.slice();
+    this.translate.onLangChange.subscribe(() => {
+      this.op = [
+        {
+          text: this.translate.instant('kendo.grid.filterEqOperator'),
+          value: 'eq',
+        },
+        {
+          text: this.translate.instant('kendo.grid.filterNotEqOperator'),
+          value: 'neq',
+        },
+        {
+          text: this.translate.instant('kendo.grid.filterContainsOperator'),
+          value: 'contains',
+        },
+        {
+          text: this.translate.instant('kendo.grid.filterNotContainsOperator'),
+          value: 'doesnotcontain',
+        },
+        {
+          text: this.translate.instant('kendo.grid.filterIsEmptyOperator'),
+          value: 'isempty',
+        },
+        {
+          text: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
+          value: 'isnotempty',
+        },
+      ];
+    });
   }
 
   /**
