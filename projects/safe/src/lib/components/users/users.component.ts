@@ -2,8 +2,10 @@ import { Apollo } from 'apollo-angular';
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -29,6 +31,7 @@ import { SafeDownloadService } from '../../services/download.service';
 import { Application } from '../../models/application.model';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application.service';
+import { PageEvent } from '@angular/material/paginator';
 
 const ADMIN_COLUMNS = ['select', 'name', 'username', 'oid', 'roles', 'actions'];
 
@@ -54,6 +57,14 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
   @Input() applicationService?: SafeApplicationService;
   @Input() loading = true;
+  @Input() pageInfo!: {
+    pageIndex: number;
+    pageSize: number;
+    length: number;
+    endCursor: string;
+  };
+
+  @Output() page = new EventEmitter<PageEvent>();
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns: string[] = [];
@@ -370,5 +381,14 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
         fileName
       );
     }
+  }
+
+  /**
+   * Emits an page event
+   *
+   * @param e The page event
+   */
+  onPage(e: PageEvent) {
+    this.page.emit(e);
   }
 }

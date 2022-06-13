@@ -202,3 +202,11 @@
   [checkbox]="true"
 >
 </safe-skeleton-table>
+<mat-paginator
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [length]="pageInfo.length"
+  aria-label="Select page of users"
+  (page)="onPage($event)"
+>
+</mat-paginator>

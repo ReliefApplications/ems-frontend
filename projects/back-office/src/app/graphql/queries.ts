@@ -18,27 +18,47 @@ import {
 } from '@safe/builder';
 
 // === GET USERS ===
+
 export const GET_USERS = gql`
-  {
-    users {
-      id
-      username
-      name
-      roles {
-        id
-        title
-        application {
+  query GetUsers($first: Int, $afterCursor: ID) {
+    users(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
           id
+          username
+          name
+          roles {
+            id
+            title
+            application {
+              id
+            }
+          }
+          oid
         }
       }
-      oid
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;
 
 export interface GetUsersQueryResponse {
   loading: boolean;
-  users: User[];
+  users: {
+    edges: {
+      node: User;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
 }
 
 // === GET ROLES ===

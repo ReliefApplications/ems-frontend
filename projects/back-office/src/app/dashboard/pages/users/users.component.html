@@ -1,1 +1,7 @@
-<safe-users [loading]="loading" [users]="users" [roles]="roles"></safe-users>
+<safe-users
+  [loading]="loading"
+  [users]="users"
+  [roles]="roles"
+  [pageInfo]="pageInfo"
+  (page)="onPage($event)"
+></safe-users>

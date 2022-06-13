@@ -23,6 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [SafeUsersComponent, SafeEditUserComponent],
@@ -50,6 +51,7 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     SafeInviteUsersModule,
     TranslateModule,
     SafeSkeletonTableModule,
+    MatPaginatorModule,
   ],
   exports: [SafeUsersComponent],
 })
