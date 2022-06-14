@@ -829,6 +829,31 @@
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
 					},
 					"layers": {
+						"clorophlet": {
+							"addNew": "Ajouter un clorophlet",
+							"addNewDiv": "Ajouter une division",
+							"geoJSON": "geoJSON",
+							"geoJSONidentifier": "geoJSON Identifiant",
+							"identifier": "Identifiant",
+							"info": "Configurer des clorophlets en tant que couches pour la carte",
+							"title": "Clorophlets"
+						},
+						"online": {
+							"info": "Charger des couches depuis arcGIS online",
+							"select": "Chercher des couches",
+							"selected": "Couches sélectionnées",
+							"title": "Couches en ligne"
+						},
+						"point": {
+							"addNew": "Ajouter une nouvelle règle",
+							"category": "Couches rapides",
+							"color": "Couleur",
+							"info": "Afficher des marqueurs sur la carte pour chaque enregistrement",
+							"rules": "Règles de marquarge",
+							"rulesInfo": "Configurer la taille et la couleur des marqueurs",
+							"size": "Taille",
+							"title": "Marqueurs"
+						},
 						"select": "Sélectionnez une couche",
 						"selected": "Couches sélectionnées",
 						"title": "Couches additionnelles"

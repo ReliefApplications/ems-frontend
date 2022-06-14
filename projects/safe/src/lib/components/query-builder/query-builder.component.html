@@ -95,19 +95,9 @@
           </safe-tab-filter>
         </ng-template>
       </mat-tab>
-      <mat-tab label="Clorophlets" *ngIf="form.get('clorophlets')">
-        <ng-template matTabContent>
-          <safe-tab-clorophlet
-            [form]="$any(form.controls.clorophlets)"
-            [fields]="availableScalarFields"
-            [selectedFields]="form.value.fields"
-          >
-          </safe-tab-clorophlet>
-        </ng-template>
-      </mat-tab>
       <mat-tab
         [label]="'components.queryBuilder.style.title' | translate"
-        *ngIf="form.get('style')"
+        *ngIf="showStyle && form.get('style')"
       >
         <ng-template matTabContent>
           <safe-tab-style

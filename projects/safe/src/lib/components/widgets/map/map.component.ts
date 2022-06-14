@@ -31,7 +31,6 @@ interface IMarkersLayerValue {
   [name: string]: any;
 }
 
-
 /** Component for the map widget */
 @Component({
   selector: 'safe-map',
@@ -247,7 +246,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.legendControl.update = function (map: any, data: any, overlays: any) {
       const div = this.div;
       div.innerHTML = '';
-      data.query?.clorophlets?.map((clorophlet: any) => {
+      data.clorophlets?.map((clorophlet: any) => {
         const layer = overlays[clorophlet.name];
 
         if (clorophlet.divisions.length > 0) {
@@ -386,8 +385,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Loops throught clorophlets and add them to the map
-    if (this.settings.query.clorophlets) {
-      this.settings.query.clorophlets.map((value: any) => {
+    if (this.settings.clorophlets) {
+      this.settings.clorophlets.map((value: any) => {
         if (value.divisions.length > 0) {
           this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
             style: (feature: any): any => {
@@ -396,8 +395,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
                 if (Object.prototype.hasOwnProperty.call(res.data, field)) {
                   res.data[field].edges.map((entry: any) => {
                     if (
+                      entry.node[value.place] &&
+                      feature.properties[value.geoJSONfield] &&
                       entry.node[value.place].toString() ===
-                      feature.properties[value.geoJSONfield].toString()
+                        feature.properties[value.geoJSONfield].toString()
                     ) {
                       value.divisions.map((div: any) => {
                         if (applyFilters(entry.node, div.filter)) {
@@ -433,8 +434,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           if (!error) {
             this.overlays[layer.title].addTo(this.map);
           } else {
-            console.log('Error at loadind "' + layer.title + '"');
-            console.log(error);
+            console.error(error);
           }
         });
       });
@@ -469,7 +469,15 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         }
         const obj = { id: item.id, data };
         this.data.push(obj);
-        const options = MARKER_OPTIONS;
+        const options = Object.assign({}, MARKER_OPTIONS);
+        this.settings.markerRules?.map((rule: any) => {
+          if (applyFilters(item, rule.filter)) {
+            options.color = rule.color;
+            options.fillColor = rule.color;
+            options.weight *= rule.size;
+            options.radius *= rule.size;
+          }
+        });
         Object.assign(options, { id: item.id });
         const marker = L.circleMarker([latitude, longitude], options);
         if (!this.markersCategories[item[this.categoryField]]) {
