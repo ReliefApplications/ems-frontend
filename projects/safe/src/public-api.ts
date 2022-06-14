@@ -63,6 +63,7 @@ export * from './lib/components/widgets/scheduler-settings/public-api';
 export * from './lib/components/widgets/summary-card/public-api';
 export * from './lib/components/widgets/summary-card-settings/public-api';
 export * from './lib/components/widgets/summary-card-settings/card-settings/public-api';
+export * from './lib/components/widgets/summary-card-settings/card-creation-modal/public-api';
 export * from './lib/components/widget/public-api';
 export * from './lib/components/widget-grid/public-api';
 export * from './lib/components/confirm-modal/public-api';

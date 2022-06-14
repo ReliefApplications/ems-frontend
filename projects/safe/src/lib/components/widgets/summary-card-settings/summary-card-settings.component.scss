@@ -1,0 +1,45 @@
+.settings {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+
+  mat-radio-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+}
+
+kendo-tilelayout {
+  grid-auto-flow: row;
+  background-color: unset;
+
+  kendo-tilelayout-item {
+    border: none;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 2px 5px 0 rgba(134, 134, 134, 0.2);
+
+    .widget-options,
+    .widget-handle {
+      position: absolute;
+      color: darkgray;
+      z-index: 1100;
+    }
+
+    .widget-options {
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 40px;
+    }
+
+    .widget-handle {
+      left: 8px;
+      top: 8px;
+      cursor: grab;
+      pointer-events: none;
+    }
+  }
+}
+

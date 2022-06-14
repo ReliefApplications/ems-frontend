@@ -7,6 +7,12 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeButtonModule } from '../../ui/button/button.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatRadioModule } from '@angular/material/radio';
+import { SafeIconModule } from '../../ui/icon/icon.module';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 
 /** Module for scheduler  component */
 @NgModule({
@@ -20,6 +26,12 @@ import { SafeButtonModule } from '../../ui/button/button.module';
     TranslateModule,
     LayoutModule,
     SafeButtonModule,
+    MatTooltipModule,
+    MatRadioModule,
+    SafeIconModule,
+    MatMenuModule,
+    MatIconModule,
+    MatDividerModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

@@ -818,25 +818,25 @@
 						}
 					}
 				},
-        "summaryCard": {
-          "card": {
-            "title": "Card settings",
-            "dataSource": {
-              "title": "Data source"
-            },
-            "valueSelector": {
-              "title": "Value selector"
-            },
-            "display": {
-              "title": "Display",
-              "header": "Header"
-            },
-            "textEditor": {
-              "title": "Text editor"
-            },
-            "preview": {}
-          }
-        }
+				"summaryCard": {
+					"card": {
+						"dataSource": {
+							"title": "Data source"
+						},
+						"display": {
+							"header": "Header",
+							"title": "Display"
+						},
+						"preview": {},
+						"textEditor": {
+							"title": "Text editor"
+						},
+						"title": "Card settings",
+						"valueSelector": {
+							"title": "Value selector"
+						}
+					}
+				}
 			}
 		}
 	},

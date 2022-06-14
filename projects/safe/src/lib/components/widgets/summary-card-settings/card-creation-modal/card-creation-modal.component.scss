@@ -1,0 +1,15 @@
+.close-settings {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+mat-radio-group {
+  display: flex;
+  gap: 12px;
+}
+
+.explanation {
+  opacity: 0.6;
+  margin-top: 16px;
+}
