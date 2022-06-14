@@ -306,7 +306,6 @@ export class SafeMapSettingsComponent implements OnInit {
    * Adds a new clorophlet.
    */
   public addClorophlet(): void {
-    console.log(this.tileForm?.value);
     this.tileForm?.value.clorophlets.push(
       this.formBuilder.group({
         name: ['New clorophlet', [Validators.required]],
@@ -339,6 +338,7 @@ export class SafeMapSettingsComponent implements OnInit {
   public newDivision(form: any): void {
     form.controls.divisions.push(
       this.formBuilder.group({
+        label: [''],
         color: ['#0090d1'],
         filter: this.formBuilder.group({
           logic: ['and'],
@@ -346,7 +346,6 @@ export class SafeMapSettingsComponent implements OnInit {
         }),
       })
     );
-    console.log(form.value.divisions);
   }
 
   /**
@@ -410,6 +409,7 @@ export class SafeMapSettingsComponent implements OnInit {
       val.divisions.map((division: any) => {
         divisions.push(
           this.formBuilder.group({
+            label: [division.label],
             color: [division.color],
             filter: this.formBuilder.group({
               logic: [division.filter.logic],
