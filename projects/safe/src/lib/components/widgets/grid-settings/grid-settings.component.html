@@ -4,13 +4,11 @@
       <!-- MAIN PARAMETERS / SELECTION OF LAYOUTS -->
       <mat-tab>
         <ng-template mat-tab-label>
-          <div class="tab-label">
-            <safe-icon icon="preview" [size]="25"></safe-icon>
-            <span>{{ 'common.general' | translate }}</span>
-          </div>
+          <safe-icon icon="preview" [size]="24"></safe-icon>
+          <span>{{ 'common.general' | translate }}</span>
         </ng-template>
         <div class="form-group">
-          <div class="form-group-title">{{ 'common.general' | translate }}</div>
+          <h2>{{ 'common.general' | translate }}</h2>
           <mat-form-field appearance="outline">
             <mat-label>{{ 'common.title' | translate }}</mat-label>
             <input matInput formControlName="title" type="string" />
@@ -54,9 +52,9 @@
           </ng-container>
         </div>
         <div class="form-group" *ngIf="queryName">
-          <div class="form-group-title">
+          <h2>
             {{ 'components.widget.settings.grid.layouts.title' | translate }}
-          </div>
+          </h2>
           <safe-layouts-parameters
             [form]="form"
             [resource]="resource"
@@ -67,15 +65,15 @@
       <!-- AVAILABLE ACTIONS -->
       <mat-tab>
         <ng-template mat-tab-label>
-          <div class="tab-label">
-            <safe-icon icon="toggle_on" [size]="25"></safe-icon>
-            <span>{{ 'components.widget.settings.grid.actions.title' | translate }}</span>
-          </div>
+          <safe-icon icon="toggle_on" [size]="24"></safe-icon>
+          <span>{{
+            'components.widget.settings.grid.actions.title' | translate
+          }}</span>
         </ng-template>
         <div formGroupName="actions" class="form-group">
-          <div class="form-group-title">
+          <h2>
             {{ 'components.widget.settings.grid.actions.title' | translate }}
-          </div>
+          </h2>
           <mat-slide-toggle formControlName="delete">
             {{ 'components.widget.settings.grid.actions.delete' | translate }}
           </mat-slide-toggle>
@@ -107,15 +105,15 @@
       <!-- BUTTONS -->
       <mat-tab>
         <ng-template mat-tab-label>
-          <div class="tab-label">
-            <safe-icon icon="bolt" [size]="25"></safe-icon>
-            <span>{{ 'components.widget.settings.grid.buttons.title' | translate }}</span>
-          </div>
+          <safe-icon icon="bolt" [size]="24"></safe-icon>
+          <span>{{
+            'components.widget.settings.grid.buttons.title' | translate
+          }}</span>
         </ng-template>
         <div class="form-group">
-          <div class="form-group-title">
+          <h2>
             {{ 'components.widget.settings.grid.buttons.title' | translate }}
-          </div>
+          </h2>
           <div class="info-text">
             {{ 'components.widget.settings.grid.hint.buttons' | translate }}
           </div>

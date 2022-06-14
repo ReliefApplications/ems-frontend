@@ -10,13 +10,11 @@
   align-self: flex-end;
 }
 
-.tab-label {
+form {
   display: flex;
-  gap: 6px;
-  align-content: center;
-  align-items: center;
+  height: 100%;
 
-  safe-icon {
-    height: 26.5px;
+  mat-tab-group {
+    flex: 1;
   }
 }
