@@ -30,8 +30,13 @@
       categoryField="category"
       [name]="serie.name || ''"
       [color]="serie.color"
-      [labels]="labels"
     >
+      <kendo-chart-series-item-labels
+        *ngIf="labelContent"
+        position="outsideEnd"
+        color="#000"
+        [content]="labelContent"
+      ></kendo-chart-series-item-labels>
     </kendo-chart-series-item>
   </kendo-chart-series>
 </kendo-chart>
