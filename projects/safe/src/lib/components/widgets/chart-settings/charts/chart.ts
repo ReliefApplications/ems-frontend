@@ -79,7 +79,11 @@ export class Chart {
         valueType: [
           {
             value: get(labels, 'valueType', 'value'),
-            disabled: !get(labels, 'showValue', false),
+            disabled:
+              !get(labels, 'showValue', false) ||
+              (['bar', 'column'].includes(get(settings, 'type', '')) &&
+                (!get(stack, 'usePercentage', false) ||
+                  !get(stack, 'enable', false))),
           },
         ],
       }),
@@ -197,7 +201,13 @@ export class Chart {
     // Update of labels
     this.form.get('labels.showValue')?.valueChanges.subscribe((value) => {
       if (value) {
-        this.form.get('labels.valueType')?.enable();
+        if (['bar', 'column'].includes(this.form.get('type')?.value)) {
+          if (
+            this.form.get('stack.usePercentage')?.value &&
+            this.form.get('stack.enable')?.value
+          )
+            this.form.get('labels.valueType')?.enable();
+        } else this.form.get('labels.valueType')?.enable();
       } else {
         this.form.get('labels.valueType')?.disable();
       }
@@ -209,6 +219,30 @@ export class Chart {
         this.form.get('stack.usePercentage')?.enable();
       } else {
         this.form.get('stack.usePercentage')?.disable();
+      }
+    });
+
+    // update label value type based on stack settings
+    this.form.get('stack.usePercentage')?.valueChanges.subscribe((value) => {
+      if (value) {
+        if (this.form.get('labels.showValue'))
+          this.form.get('labels.valueType')?.enable();
+      } else {
+        this.form.get('labels.valueType')?.setValue('value');
+        this.form.get('labels.valueType')?.disable();
+      }
+    });
+
+    this.form.get('stack.enable')?.valueChanges.subscribe((value) => {
+      if (value) {
+        if (
+          this.form.get('stack.usePercentage')?.value &&
+          this.form.get('labels.showValue')
+        )
+          this.form.get('labels.valueType')?.enable();
+      } else {
+        this.form.get('labels.valueType')?.setValue('value');
+        this.form.get('labels.valueType')?.disable();
       }
     });
   }

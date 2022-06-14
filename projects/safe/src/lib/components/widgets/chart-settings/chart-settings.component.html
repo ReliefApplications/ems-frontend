@@ -199,7 +199,9 @@
                   appearance="outline"
                   *ngIf="
                     chartForm.value.labels.showValue &&
-                    (type.name === 'donut' || type.name === 'pie')
+                    (['donut', 'pie'].includes(type.name) ||
+                      (['bar', 'column'].includes(type.name) &&
+                        aggregationForm.value.mapping.series))
                   "
                 >
                   <mat-label>{{
@@ -314,7 +316,10 @@
             <!-- === SERIES AND STACKS PARAMETERS === -->
             <mat-expansion-panel
               formGroupName="stack"
-              *ngIf="['bar', 'column'].includes(type.name) && aggregationForm.value.mapping.series"
+              *ngIf="
+                ['bar', 'column'].includes(type.name) &&
+                aggregationForm.value.mapping.series
+              "
             >
               <mat-expansion-panel-header>
                 <mat-panel-title>
