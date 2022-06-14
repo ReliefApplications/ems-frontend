@@ -470,7 +470,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         const obj = { id: item.id, data };
         this.data.push(obj);
         const options = Object.assign({}, MARKER_OPTIONS);
-        this.settings.pointerRules?.map((rule: any) => {
+        this.settings.markerRules?.map((rule: any) => {
           if (applyFilters(item, rule.filter)) {
             options.color = rule.color;
             options.fillColor = rule.color;

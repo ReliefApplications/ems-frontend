@@ -3,7 +3,12 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { SafeArcGISService } from '../../../services/arc-gis.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { createQueryForm } from './map-forms';
+import {
+  clorophletForm,
+  divisionForm,
+  mapform,
+  markerRuleForm,
+} from './map-forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
 /** Component for the map widget settings */
@@ -48,11 +53,23 @@ export class SafeMapSettingsComponent implements OnInit {
   public availableLayers: any[] = [];
 
   /**
-   * Constructor of the component
+   * Get marker rules as form array
    *
-   * @param formBuilder Create the formbuilder
-   * @param arcGisService Shared ArcGIS service, enables to use esri features
+   * @returns Markers rules as form array
    */
+  get markerRules(): FormArray {
+    return this.tileForm?.get('markerRules') as FormArray;
+  }
+
+  /**
+   * Get clorophlets as form array.
+   *
+   * @returns Clorophlets as form array
+   */
+  get clorophlets(): FormArray {
+    return this.tileForm?.get('clorophlets') as FormArray;
+  }
+
   constructor(
     private formBuilder: FormBuilder,
     private arcGisService: SafeArcGISService,
@@ -61,55 +78,16 @@ export class SafeMapSettingsComponent implements OnInit {
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    const tileSettings = this.tile.settings;
-    this.tileForm = this.formBuilder.group({
-      id: this.tile.id,
-      title: [tileSettings && tileSettings.title ? tileSettings.title : null],
-      query: createQueryForm(tileSettings.query),
-      latitude: [
-        tileSettings && tileSettings.latitude ? tileSettings.latitude : 0,
-        [Validators.min(-90), Validators.max(90)],
-      ],
-      longitude: [
-        tileSettings && tileSettings.longitude ? tileSettings.longitude : 0,
-        [Validators.min(-180), Validators.max(180)],
-      ],
-      zoom: [
-        tileSettings && tileSettings.zoom ? tileSettings.zoom : 0,
-        [Validators.min(0), Validators.max(10)],
-      ],
-      category: [
-        tileSettings && tileSettings.category ? tileSettings.category : null,
-      ],
-      basemap: [
-        tileSettings && tileSettings.basemap ? tileSettings.basemap : null,
-      ],
-      centerLong: [
-        tileSettings && tileSettings.centerLong
-          ? tileSettings.centerLong
-          : null,
-        [Validators.min(-180), Validators.max(180)],
-      ],
-      centerLat: [
-        tileSettings && tileSettings.centerLat ? tileSettings.centerLat : null,
-        [Validators.min(-90), Validators.max(90)],
-      ],
-      onlineLayers: [
-        tileSettings && tileSettings.onlineLayers
-          ? tileSettings.onlineLayers
-          : [],
-      ],
-      pointerRules: [
-        tileSettings && tileSettings.pointerRules
-          ? this.formatPointerRules(tileSettings.pointerRules)
-          : this.formBuilder.array([]),
-      ],
-      clorophlets: [
-        tileSettings && tileSettings.clorophlets
-          ? this.formatClorophlets(tileSettings.clorophlets)
-          : this.formBuilder.array([], [Validators.required]),
-      ],
+    this.tileForm = mapform(this.tile.id, this.tile.settings);
+
+    this.clorophlets.value.map((x: any, i: number) => {
+      if (x.geoJSON) {
+        this.updateGeoJSONfields(x.geoJSON, i);
+      } else {
+        this.geoJSONfields.push([]);
+      }
     });
+
     this.change.emit(this.tileForm);
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
@@ -254,69 +232,29 @@ export class SafeMapSettingsComponent implements OnInit {
     this.tileForm?.controls.onlineLayers.setValue(temp);
   }
 
+  // === MARKERS ===
   /**
-   * Adds a new pointer rule.
+   * Adds a new marker rule.
    */
-  public addPointerRule(): void {
-    this.tileForm?.value.pointerRules.push(
-      this.formBuilder.group({
-        color: ['#0090d1'],
-        size: [1],
-        filter: this.formBuilder.group({
-          logic: ['and'],
-          filters: this.formBuilder.array([]),
-        }),
-      })
-    );
+  public addMarkerRule(): void {
+    this.markerRules.push(markerRuleForm());
   }
 
   /**
-   * Removes a pointer rule.
+   * Removes a marker rule.
    *
-   * @param index position of the pointer rule to delete.
+   * @param index position of the marker rule to delete.
    */
-  public removePointerRule(index: number): void {
-    this.tileForm?.value.pointerRules.removeAt(index);
+  public removeMarkerRule(index: number): void {
+    this.markerRules.removeAt(index);
   }
 
-  /**
-   * Transforms the pointer rules array to a it's reactive form.
-   *
-   * @param value pointer rules array.
-   * @returns formated pointer rules array.
-   */
-  private formatPointerRules(value: any[]): FormArray {
-    const formatedPointerRules = this.formBuilder.array([]);
-    value.map((val: any) => {
-      formatedPointerRules.push(
-        this.formBuilder.group({
-          color: [val.color],
-          size: [val.size],
-          filter: this.formBuilder.group({
-            logic: [val.filter.logic],
-            filters: this.formatFilters(val.filter.filters),
-          }),
-        })
-      );
-    });
-    return formatedPointerRules;
-  }
-
+  // === CLOROPHLETS ===
   /**
    * Adds a new clorophlet.
    */
   public addClorophlet(): void {
-    this.tileForm?.value.clorophlets.push(
-      this.formBuilder.group({
-        name: ['New clorophlet', [Validators.required]],
-        geoJSON: ['', [Validators.required]],
-        geoJSONname: ['', [Validators.required]],
-        geoJSONfield: ['', [Validators.required]],
-        opacity: [100],
-        place: ['', [Validators.required]],
-        divisions: this.formBuilder.array([]),
-      })
-    );
+    this.clorophlets.push(clorophletForm());
     this.geoJSONfields.push([]);
   }
 
@@ -326,36 +264,29 @@ export class SafeMapSettingsComponent implements OnInit {
    * @param index position of the clorophlet to delete.
    */
   public removeClorophlet(index: number): void {
-    this.tileForm?.value.clorophlets.removeAt(index);
+    this.clorophlets.removeAt(index);
     this.geoJSONfields.splice(index, 1);
   }
 
   /**
    * Adds a new division.
    *
-   * @param form
+   * @param form clorophlet to add a new division for
    */
-  public newDivision(form: any): void {
-    form.controls.divisions.push(
-      this.formBuilder.group({
-        label: [''],
-        color: ['#0090d1'],
-        filter: this.formBuilder.group({
-          logic: ['and'],
-          filters: this.formBuilder.array([]),
-        }),
-      })
-    );
+  public addDivision(form: any): void {
+    const divisions = form.get('divisions') as FormArray;
+    divisions.push(divisionForm());
   }
 
   /**
    * Removes a division in target form.
    *
-   * @param form
-   * @param index
+   * @param form clorophlet to remove a division in
+   * @param index index of division to remove
    */
   public removeDivision(form: any, index: number): void {
-    form.controls.divisions.removeAt(index);
+    const divisions = form.get('divisions') as FormArray;
+    divisions.removeAt(index);
   }
 
   /**
@@ -367,14 +298,11 @@ export class SafeMapSettingsComponent implements OnInit {
     const file = document.getElementById('file' + i) as HTMLInputElement;
     if (file) {
       if (file.files && file.files.length > 0) {
-        this.tileForm?.value.clorophlets.controls[i].patchValue({
+        this.clorophlets.at(i).patchValue({
           geoJSONname: file.files[0].name,
           geoJSON: await file.files[0].text(),
         });
-        this.updateGeoJSONfields(
-          this.tileForm?.value.clorophlets.value[i].geoJSON,
-          i
-        );
+        this.updateGeoJSONfields(this.clorophlets.at(i).value.geoJSON, i);
       }
     }
   }
@@ -391,77 +319,5 @@ export class SafeMapSettingsComponent implements OnInit {
     for (const property of Object.keys(parsed.features[0].properties)) {
       this.geoJSONfields[i].push(property);
     }
-  }
-
-  /**
-   * Transforms the pointer rules array to it's reactive form.
-   *
-   * @param value pointer rules array.
-   * @returns formated pointer rules array.
-   */
-  private formatClorophlets(value: any[]): FormArray {
-    const formatedClorophlets = this.formBuilder.array(
-      [],
-      [Validators.required]
-    );
-    value.map((val: any, i: number) => {
-      const divisions = this.formBuilder.array([]);
-      val.divisions.map((division: any) => {
-        divisions.push(
-          this.formBuilder.group({
-            label: [division.label],
-            color: [division.color],
-            filter: this.formBuilder.group({
-              logic: [division.filter.logic],
-              filters: this.formatFilters(division.filter.filters),
-            }),
-          })
-        );
-      });
-      formatedClorophlets.push(
-        this.formBuilder.group({
-          name: [val.name, [Validators.required]],
-          geoJSON: [val.geoJSON, [Validators.required]],
-          geoJSONname: [val.geoJSONname, [Validators.required]],
-          geoJSONfield: [val.geoJSONfield, [Validators.required]],
-          opacity: [val.opacity],
-          place: [val.place, [Validators.required]],
-          divisions,
-        })
-      );
-      if (val.geoJSON) {
-        this.updateGeoJSONfields(val.geoJSON, i);
-      }
-    });
-    return formatedClorophlets;
-  }
-
-  /**
-   * Formats filters values to work with reactive forms.
-   *
-   * @param filters value of the filters.
-   * @returns formated filters array.
-   */
-  private formatFilters(filters: any[]): FormArray {
-    const formatedFilters = this.formBuilder.array([]);
-    filters.map((filter: any) => {
-      if (filter.filters && filter.logic) {
-        formatedFilters.push(
-          this.formBuilder.group({
-            filters: this.formatFilters(filter.filters),
-            logic: [filter.logic],
-          })
-        );
-      } else {
-        formatedFilters.push(
-          this.formBuilder.group({
-            field: [filter.field],
-            operator: [filter.operator],
-            value: [filter.value],
-          })
-        );
-      }
-    });
-    return formatedFilters;
   }
 }
