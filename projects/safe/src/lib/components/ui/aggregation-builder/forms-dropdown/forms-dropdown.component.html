@@ -1,7 +1,8 @@
 <mat-form-field appearance="outline">
-  <mat-label>{{
+  <mat-label *ngIf="!label">{{
     'components.aggregationBuilder.dataset.select' | translate
   }}</mat-label>
+  <mat-label *ngIf="label">{{ label }}</mat-label>
   <input
     type="text"
     [placeholder]="'common.placeholder.search' | translate"

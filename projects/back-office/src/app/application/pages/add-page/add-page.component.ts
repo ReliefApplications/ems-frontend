@@ -16,6 +16,7 @@ import { AddFormComponent } from '../../../components/add-form/add-form.componen
 import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
 import {
   GET_FORM_NAMES,
+  GET_FORMS,
   GetFormsQueryResponse,
 } from '../../../graphql/queries';
 import { MatSelect } from '@angular/material/select';
@@ -38,7 +39,8 @@ export class AddPageComponent implements OnInit, OnDestroy {
     endCursor: '',
     hasNextPage: true,
   };
-  private loading = true;
+  public loading = true;
+  private loadingMore = false;
 
   @ViewChild('formSelect') formSelect?: MatSelect;
 
@@ -70,7 +72,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
       const contentControl = this.pageForm.controls.content;
       if (type === ContentType.form) {
         this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
-          query: GET_FORM_NAMES,
+          query: GET_FORMS,
           variables: {
             first: ITEMS_PER_PAGE,
           },
@@ -80,7 +82,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
         this.formsQuery.valueChanges.subscribe((res) => {
           this.forms.next(res.data.forms.edges.map((x) => x.node));
           this.pageInfo = res.data.forms.pageInfo;
-          this.loading = res.loading;
+          this.loadingMore = res.loading;
         });
         contentControl.setValidators([Validators.required]);
         contentControl.updateValueAndValidity();
@@ -201,57 +203,63 @@ export class AddPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Adds scroll listener to select.
-   *
-   * @param e open select event.
-   */
-  onOpenSelect(e: any): void {
-    if (e && this.formSelect) {
-      const panel = this.formSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
-      );
-    }
-  }
-
-  /**
-   * Fetches more forms on scroll.
-   *
-   * @param e scroll event.
-   */
-  private loadOnScroll(e: any): void {
-    if (
-      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
-      50
-    ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
-        this.loading = true;
-        this.formsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return Object.assign({}, prev, {
-              forms: {
-                edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
-                pageInfo: fetchMoreResult.forms.pageInfo,
-                totalCount: fetchMoreResult.forms.totalCount,
-              },
-            });
-          },
-        });
-      }
-    }
-  }
-
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
+  }
+
+  public onScrollDataSource(value: boolean): void {
+    if (!this.loadingMore && this.pageInfo.hasNextPage) {
+      this.loadingMore = true;
+      this.fetchMoreDataSources(value);
+    }
+  }
+
+  public onFilterDataSource(value: string): void {
+    if (!this.loadingMore) {
+      this.loadingMore = true;
+      this.fetchMoreDataSources(false, value);
+    }
+  }
+
+  public fetchMoreDataSources(nextPage: boolean = false, filter: string = '') {
+    const variables: any = {
+      first: ITEMS_PER_PAGE,
+    };
+    variables.filter = {
+      logic: 'and',
+      filters: [
+        {
+          field: 'name',
+          operator: 'contains',
+          value: filter,
+        },
+      ],
+    };
+    if (nextPage) {
+      variables.afterCursor = this.pageInfo.endCursor;
+    }
+    this.formsQuery.fetchMore({
+      variables,
+      updateQuery: (prev, { fetchMoreResult }) => {
+        console.log('fetchMoreResult', fetchMoreResult);
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign({}, prev, {
+          forms: {
+            edges: prev.forms.edges.concat(
+              fetchMoreResult.forms.edges.filter(
+                (x) => !prev.forms.edges.some((y) => y.node.id === x.node.id)
+              )
+            ),
+            pageInfo: fetchMoreResult.forms.pageInfo,
+            totalCount: fetchMoreResult.forms.totalCount,
+          },
+        });
+      },
+    });
+    console.log(this.forms$);
   }
 }
