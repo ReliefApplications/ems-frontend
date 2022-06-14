@@ -144,7 +144,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "azure-dev": {
@@ -176,7 +178,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "azure-uat": {
@@ -208,7 +212,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "azure-prod": {
@@ -240,7 +246,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "oort-dev": {
@@ -272,7 +280,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
               }
             },
             "oort-guyane": {
@@ -304,7 +314,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
               }
             },
             "oort-prod": {
@@ -336,7 +348,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
               }
             },
             "development": {
@@ -347,7 +361,9 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             }
           },
@@ -525,7 +541,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "azure-dev": {
@@ -555,7 +573,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "azure-uat": {
@@ -585,7 +605,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "azure-prod": {
@@ -615,7 +637,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "oort-dev": {
@@ -645,7 +669,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
               }
             },
             "oort-guyane": {
@@ -675,7 +701,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
               }
             },
             "oort-prod": {
@@ -705,7 +733,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
               }
             },
             "development": {
@@ -716,7 +746,9 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             }
           },
@@ -872,7 +904,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               },
               "fileReplacements": [
                 {
@@ -902,7 +936,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               },
               "fileReplacements": [
                 {
@@ -920,7 +956,9 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             }
           },
@@ -955,7 +993,9 @@
               "projects/web-widgets/src/favicon.ico",
               "projects/web-widgets/src/assets"
             ],
-            "styles": ["projects/web-widgets/src/styles.scss"],
+            "styles": [
+              "projects/web-widgets/src/styles.scss"
+            ],
             "scripts": []
           }
         },
@@ -1012,6 +1052,167 @@
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/select2/dist/css/select2.min.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    },
+    "public-dashboards": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/public-dashboards",
+      "sourceRoot": "projects/public-dashboards/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/public-dashboards",
+            "index": "projects/public-dashboards/src/index.html",
+            "main": "projects/public-dashboards/src/main.ts",
+            "polyfills": "projects/public-dashboards/src/polyfills.ts",
+            "tsConfig": "projects/public-dashboards/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
+              "projects/public-dashboards/src/favicon.ico",
+              "projects/public-dashboards/src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinymce",
+                "output": "/tinymce/langs"
+              }
+            ],
+            "styles": [
+              {
+                "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
+                "inject": true
+              },
+              "projects/public-dashboards/src/styles.scss",
+              "projects/safe/src/lib/style/styles.scss",
+              "./node_modules/leaflet/dist/leaflet.css",
+              "node_modules/survey-angular/survey.css",
+              "node_modules/survey-creator/survey-creator.min.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "node_modules/select2/dist/css/select2.min.css"
+            ],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/select2/dist/js/select2.min.js",
+              "node_modules/tinymce/tinymce.js",
+              "node_modules/tinymce/themes/silver/theme.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "minimatch",
+              "hammerjs",
+              "survey-creator",
+              "survey-knockout",
+              "surveyjs-widgets",
+              "subscriptions-transport-ws",
+              "zen-observable",
+              "lodash"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/public-dashboards/src/environments/environment.ts",
+                  "with": "projects/public-dashboards/src/environments/environment.prod.ts"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              },
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
+              }
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "public-dashboards:build:development"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "public-dashboards:build:production"
+            },
+            "development": {
+              "browserTarget": "public-dashboards:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "public-dashboards:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/public-dashboards/src/test.ts",
+            "polyfills": "projects/public-dashboards/src/polyfills.ts",
+            "tsConfig": "projects/public-dashboards/tsconfig.spec.json",
+            "karmaConfig": "projects/public-dashboards/karma.conf.js",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
+              "projects/public-dashboards/src/favicon.ico",
+              "projects/public-dashboards/src/assets",
+              "projects/public-dashboards/src/web.config"
+            ],
+            "styles": [
+              "projects/public-dashboards/src/styles.scss",
+              "node_modules/survey-angular/survey.css",
+              "node_modules/survey-creator/survey-creator.css"
             ],
             "scripts": []
           }

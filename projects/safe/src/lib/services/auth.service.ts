@@ -126,16 +126,22 @@ export class SafeAuthService {
   /**
    * Initiate the login sequence
    *
+   * @param shouldLog Specify wether the app require authentication and we must adapt the flow.
    * @returns A promise that resolves to void.
    */
-  public initLoginSequence(): Promise<void> {
-    return this.oauthService
-      .loadDiscoveryDocumentAndLogin()
-      .then(() => this.isDoneLoading.next(true))
-      .catch(() => {
-        console.error('issue when loading file');
-        this.isDoneLoading.next(false);
-      });
+  public initLoginSequence(shouldLog = true): Promise<void> | undefined {
+    if (shouldLog) {
+      return this.oauthService
+        .loadDiscoveryDocumentAndLogin()
+        .then(() => this.isDoneLoading.next(true))
+        .catch(() => {
+          console.error('issue when loading file');
+          this.isDoneLoading.next(false);
+        });
+    } else {
+      console.log('Should not log');
+      return;
+    }
   }
 
   /**
