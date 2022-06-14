@@ -9,12 +9,12 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Channel } from '../../models/channel.model';
 import {
   GetChannelsQueryResponse,
-  GetFormsQueryResponse,
+  GetPermissionsQueryResponse,
   GetResourcesQueryResponse,
   GetRolesQueryResponse,
   GetUsersGlobalQueryResponse,
   GET_CHANNELS,
-  GET_FORMS,
+  GET_PERMISSIONS,
   GET_RESOURCES,
   GET_ROLES,
   GET_USERS_GLOBAL,
@@ -23,8 +23,11 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeApplicationService } from '../../services/application.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { Permissions, Role } from '../../models/user.model';
+import { Permission, Permissions, Role } from '../../models/user.model';
 import { Page } from '../../models/page.model';
+import _ from 'lodash';
+import { SafeSnackBarService } from '../../services/snackbar.service';
+import { TranslateService } from '@ngx-translate/core';
 
 const LOAD_ITEMS = 10;
 const SEARCH_DEBOUNCE_TIME = 500;
@@ -67,30 +70,40 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     loading?: boolean;
   } = {};
 
-  // Forms tab
-  public forms: any[] = [];
-
-  private formsQuery!: QueryRef<GetFormsQueryResponse>;
-  public formsQueryInfo: {
-    endCursor?: string;
-    hasNextPage?: boolean;
-    loading?: boolean;
-  } = {};
-
   // Resources and forms search functionality
-  public formsAndResourcesSearch = new FormControl('');
-  private formsAndResourcesQueryFilter: any = {};
+  public resourcesSearch = new FormControl('');
+  private resourcesQueryFilter: any = {};
 
   private applicationSubscription?: Subscription;
+
+  private permissionsSubscription?: Subscription;
+  private canSeeUsersPermission?: Permission;
+  private canSeeRolesPermission?: Permission;
 
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: SafeSnackBarService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
+    this.permissionsSubscription = this.apollo
+      .watchQuery<GetPermissionsQueryResponse>({
+        query: GET_PERMISSIONS,
+        variables: { application: this.inApp },
+      })
+      .valueChanges.subscribe((res) => {
+        this.canSeeUsersPermission = res.data.permissions.find(
+          (p) => p.type === Permissions.canSeeUsers
+        );
+        this.canSeeRolesPermission = res.data.permissions.find(
+          (p) => p.type === Permissions.canSeeRoles
+        );
+      });
+
     this.applicationSubscription =
       this.applicationService.application$.subscribe((application) => {
         this.route.paramMap.subscribe((params) => {
@@ -98,8 +111,9 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
 
           // If we manage to fetch the application from service, get all the information from there
           if (this.inApp && application && roleId) {
-            this.currentRole = application.roles?.find(
-              (role) => role.id === roleId
+            // Deep cloning so that some fields are not read-only
+            this.currentRole = _.cloneDeep(
+              application.roles?.find((role) => role.id === roleId)
             );
 
             this.roleUsers =
@@ -120,7 +134,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
             this.formatChannels();
 
             // Deep-copying to avoir read-only "canSee" fields
-            this.features = JSON.parse(JSON.stringify(application.pages || []));
+            this.features = _.cloneDeep(application.pages || []);
             this.formatFeatures();
           } else {
             this.apollo
@@ -128,8 +142,9 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                 query: GET_ROLES,
               })
               .valueChanges.subscribe((roles) => {
-                this.currentRole = roles.data.roles.find(
-                  (role) => role.id === roleId
+                // Deep cloning so that some fields are not read-only
+                this.currentRole = _.cloneDeep(
+                  roles.data.roles.find((role) => role.id === roleId)
                 );
                 this.buildForm();
               });
@@ -177,27 +192,14 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
       this.resources = res.data.resources.edges.map((x) => x.node);
     });
 
-    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
-      query: GET_FORMS,
-      variables: { first: LOAD_ITEMS },
-    });
-    this.formsQuery.valueChanges.subscribe((res) => {
-      this.formsQueryInfo = {
-        ...res.data.forms.pageInfo,
-        loading: res.loading,
-      };
-      this.forms = res.data.forms.edges.map((x) => x.node);
-    });
-
-    this.formsAndResourcesSearch.valueChanges
+    this.resourcesSearch.valueChanges
       .pipe(debounceTime(SEARCH_DEBOUNCE_TIME), distinctUntilChanged())
       .subscribe((value) => {
-        this.formsAndResourcesQueryFilter = {
+        this.resourcesQueryFilter = {
           logic: 'and',
           filters: [{ field: 'name', operator: 'contains', value }],
         };
         this.loadResources({ search: true });
-        this.loadForms({ search: true });
       });
   }
 
@@ -209,14 +211,14 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
       name: [this.currentRole?.title, Validators.required],
       channels: [this.currentRole?.channels],
       description: [this.currentRole?.description, Validators.required],
-      canSeeRoles: new FormControl(
-        !!this.currentRole?.permissions?.find(
-          (p) => p.type === Permissions.canSeeRoles
-        )
-      ),
       canSeeUsers: new FormControl(
         !!this.currentRole?.permissions?.find(
-          (p) => p.type === Permissions.canSeeUsers
+          (p) => p.id === this.canSeeUsersPermission?.id
+        )?.id
+      ),
+      canSeeRoles: new FormControl(
+        !!this.currentRole?.permissions?.find(
+          (p) => p.id === this.canSeeRolesPermission?.id
         )
       ),
     });
@@ -343,6 +345,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     targetGroup.expanded = !targetGroup.expanded;
   }
 
+  // TODO There is a weird synchronization bug with this, the first click doesn't update the "checked" value. I cannot figure out what it is sorry...
   /**
    * Checks if the channel is already selected
    *
@@ -352,6 +355,25 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   public isChannelSubscribed(channel: Channel): boolean {
     // TODO try to improve this since it is called a lot of time
     return !!this.currentRole?.channels?.find((c) => c.id === channel.id);
+  }
+
+  /**
+   * Adds or remove a channel from the selection
+   *
+   * @param channel channel to check
+   * @returns a boolean indicating the selection state
+   */
+  public toggleChannelSubscription(channel: Channel): void {
+    if (!!this.currentRole?.channels?.find((c) => c.id === channel.id)) {
+      this.currentRole.channels = this.currentRole.channels.filter(
+        (c) => c.id !== channel.id
+      );
+    } else {
+      this.currentRole?.channels?.push(channel);
+    }
+    console.log('this.currentRole?.channels');
+    console.log(this.currentRole?.channels);
+    this.isChannelSubscribed(channel);
   }
 
   /**
@@ -365,9 +387,9 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    * Adds selected features and channels, then it updates the role
    */
   public onSubmit(): void {
-    // TODO Test this
-    this.roleForm?.patchValue(this.currentRole as { [key: string]: any });
-    console.log(this.roleForm?.value);
+    console.log('******************** ON SUBMIT ********************');
+    console.log('TO IMPLEMENT');
+    console.log('******************** SUBMIT DONE ********************');
   }
 
   /**
@@ -381,7 +403,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     this.resourcesQuery.fetchMore({
       variables: {
         first: LOAD_ITEMS,
-        filter: this.formsAndResourcesQueryFilter,
+        filter: this.resourcesQueryFilter,
         ...(!options?.search && {
           afterCursor: this.resourcesQueryInfo.endCursor,
         }), // If the query is from a search, don't take into account the cursor
@@ -405,43 +427,34 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Load the list of forms
-   *
-   * @param options object containing optional arguments
-   * "search" is used if the query is a new search which means the previous results will not be used
+   * Manage canSeeRoles and canSeeUsers permission toggling
    */
-  public loadForms(options?: { search: boolean }): void {
-    this.formsQueryInfo.loading = true;
-    this.formsQuery.fetchMore({
-      variables: {
-        first: LOAD_ITEMS,
-        filter: this.formsAndResourcesQueryFilter,
-        ...(!options?.search && {
-          afterCursor: this.formsQueryInfo.endCursor, // If the query is from a search, don't take into account the cursor
-        }),
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          forms: {
-            edges: [
-              ...(options?.search ? [] : prev.forms.edges), // If the query is from a search, don't take into account the previous results
-              ...fetchMoreResult.forms.edges,
-            ],
-            pageInfo: fetchMoreResult.forms.pageInfo,
-            totalCount: fetchMoreResult.forms.totalCount,
-          },
-        });
-      },
-    });
+  public onTogglePermission(permission: string): void {
+    const targetPermission =
+      this.canSeeUsersPermission?.type === permission
+        ? this.canSeeUsersPermission
+        : this.canSeeRolesPermission;
+    if (
+      targetPermission &&
+      this.currentRole?.permissions?.find((p) => p.id === targetPermission.id)
+    ) {
+      this.currentRole.permissions = this.currentRole.permissions.filter(
+        (p) => p.id !== targetPermission.id
+      );
+    } else if (targetPermission) {
+      this.currentRole?.permissions?.push(targetPermission);
+    } else {
+      this.snackBar.openSnackBar(
+        this.translateService.instant('components.role.update.error'),
+        { error: true }
+      );
+    }
   }
 
   /**
    * Edits permissions of the selected form or resource
    */
-  public onEditPermissions(): void {
+  public onEditResourcePermissions(): void {
     // TODO implement this
     console.log('Work in progress');
   }

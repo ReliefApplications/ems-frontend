@@ -18,10 +18,10 @@
                         </textarea>
                 </mat-form-field>
                 <div class="checkbox-area">
-                    <mat-checkbox formControlName="canSeeRoles">
+                    <mat-checkbox formControlName="canSeeRoles" (change)="onTogglePermission('can_see_roles')">
                         {{'components.role.permissions.canSeeRoles' | translate}}
                     </mat-checkbox>
-                    <mat-checkbox formControlName="canSeeUsers">
+                    <mat-checkbox formControlName="canSeeUsers" (change)="onTogglePermission('can_see_users')">
                         {{'components.role.permissions.canSeeUsers' | translate}}
                     </mat-checkbox>
                 </div>
@@ -56,8 +56,10 @@
                     </mat-expansion-panel-header>
 
                     <mat-list>
-                        <mat-list-item *ngFor="let feature of group.features" (click)="changeFeatureVisibility(feature)">
-                            <safe-icon icon="{{feature.canSee ? 'visibility' : 'visibility_off'}}" variant="{{feature.canSee ? 'primary' : 'grey'}}"></safe-icon>
+                        <mat-list-item *ngFor="let feature of group.features"
+                            (click)="changeFeatureVisibility(feature)">
+                            <safe-icon icon="{{feature.canSee ? 'visibility' : 'visibility_off'}}"
+                                variant="{{feature.canSee ? 'primary' : 'grey'}}"></safe-icon>
                             {{feature.name}}
                         </mat-list-item>
                     </mat-list>
@@ -70,38 +72,23 @@
             <div class="searchbar">
                 <mat-form-field appearance="outline">
                     <mat-icon matPrefix>search</mat-icon>
-                    <input matInput [formControl]="formsAndResourcesSearch" type="search"
+                    <input matInput [formControl]="resourcesSearch" type="search"
                         [placeholder]="'common.placeholder.search' | translate">
                 </mat-form-field>
             </div>
-            <mat-expansion-panel>
+            <mat-expansion-panel [expanded]="true">
                 <mat-expansion-panel-header>
                     <mat-panel-title class=" panel-header">
                         {{'common.resource.few' | translate}}
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <mat-list>
-                    <mat-list-item *ngFor="let resource of resources" (click)="onEditPermissions()">
+                    <mat-list-item *ngFor="let resource of resources" (click)="onEditResourcePermissions()">
                         {{resource.name}}
                     </mat-list-item>
                 </mat-list>
                 <safe-button *ngIf="resourcesQueryInfo.hasNextPage" class="load-more-button" category="tertiary"
                     variant="primary" (click)="loadResources()" [loading]="!!resourcesQueryInfo.loading">Load more
-                </safe-button>
-            </mat-expansion-panel>
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title class="panel-header">
-                        {{'common.form.few' | translate}}
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <mat-list>
-                    <mat-list-item *ngFor="let form of forms" (click)="onEditPermissions()">
-                        {{form.name + (form.core? ' (core)' : '')}}
-                    </mat-list-item>
-                </mat-list>
-                <safe-button *ngIf="formsQueryInfo.hasNextPage" class="load-more-button" category="tertiary"
-                    variant="primary" (click)="loadForms()" [loading]="!!formsQueryInfo.loading">Load more
                 </safe-button>
             </mat-expansion-panel>
             <div class="spacer"></div>
@@ -122,7 +109,8 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="checkbox-area">
-                        <mat-checkbox *ngFor="let channel of group.channels" [checked]="isChannelSubscribed(channel)">
+                        <mat-checkbox *ngFor="let channel of group.channels"
+                            (change)="toggleChannelSubscription(channel)" [checked]="isChannelSubscribed(channel)">
                             {{channel.title}}
                         </mat-checkbox>
                     </div>

@@ -535,6 +535,7 @@
 				"canSeeUsers": "Can see users"
 			},
 			"update": {
+				"error": "Error while updating permissions",
 				"permissions": "Permissions",
 				"title": "Update role permissions and channels"
 			}

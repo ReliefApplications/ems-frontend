@@ -536,7 +536,8 @@
 			},
 			"update": {
 				"permissions": "******",
-				"title": "******"
+				"title": "******",
+				"error": "******"
 			}
 		},
 		"user": {
