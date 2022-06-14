@@ -19,7 +19,7 @@ export class SafeDashboardService {
   public availableWidgets = WIDGET_TYPES;
   /** Current dashboard */
   private dashboard = new BehaviorSubject<Dashboard | null>(null);
-  /** Current dashboard as observable */
+  /** @returns Current dashboard as observable */
   get dashboard$(): Observable<Dashboard | null> {
     return this.dashboard.asObservable();
   }

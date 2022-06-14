@@ -10,6 +10,7 @@ import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { isMongoId } from '../../../utils/is-mongo-id';
 
+/** A constant that is used to set the number of items per page. */
 const ITEMS_PER_PAGE = 10;
 
 /**
@@ -24,6 +25,8 @@ const ITEMS_PER_PAGE = 10;
 export class SafeAggregationBuilderComponent implements OnInit {
   // === REACTIVE FORM ===
   @Input() aggregationForm: FormGroup = new FormGroup({});
+
+  @Input() reload$!: Observable<boolean>;
 
   // === DATA ===
   private forms = new BehaviorSubject<Form[]>([]);
@@ -53,11 +56,23 @@ export class SafeAggregationBuilderComponent implements OnInit {
   private mappingFields = new BehaviorSubject<any[]>([]);
   public mappingFields$!: Observable<any[]>;
   public gridFields: any[] = [];
-
+  /**
+   * Getter for the pipeline of the aggregation form
+   *
+   * @returns the pipelines in a FormArray
+   */
   get pipelineForm(): FormArray {
     return this.aggregationForm.get('pipeline') as FormArray;
   }
 
+  /**
+   * Constructor for the aggregation builder
+   *
+   * @param apollo This is the Apollo client that will be used to make the GraphQL query.
+   * @param queryBuilder This is a service that is used to build queries.
+   * @param aggregationBuilder This is the service that will be used to build the aggregation query.
+   * @param gridService This is a service used to communicate with the grids
+   */
   constructor(
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService,
@@ -149,6 +164,13 @@ export class SafeAggregationBuilderComponent implements OnInit {
           )
         );
       });
+
+    this.reload$.subscribe(() => {
+      this.loading = true;
+      setTimeout(() => {
+        this.loading = false;
+      }, 1000);
+    });
   }
 
   /**
@@ -264,6 +286,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
    * Fetches more data sources using filtering and pagination.
    *
    * @param nextPage boolean to indicate if we must fetch the next page.
+   * @param filter the data sources fetched must respect this filter
    */
   public fetchMoreDataSources(nextPage: boolean = false, filter: string = '') {
     const variables: any = {

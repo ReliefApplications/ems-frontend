@@ -247,16 +247,20 @@
 			"title": "Access"
 		},
 		"aggregationBuilder": {
+			"accumulators": "Accumulators",
 			"addField": "Add field",
+			"addRule": "Add rule",
 			"addStage": "Add stage",
 			"dataset": {
 				"select": "Select the data source"
 			},
 			"fieldName": "Field name",
 			"groupBy": "Group by",
+			"groupingRules": "Grouping rules",
 			"mapping": {
-				"xAxis": "X Axis",
-				"yAxis": "Y Axis"
+				"category": "Category",
+				"field": "Value",
+				"series": "Series"
 			},
 			"operator": "Operator",
 			"operators": {
@@ -394,6 +398,9 @@
 			"deleteRow": {
 				"confirmationMessage": "Do you confirm the deletion of {{quantity}} {{rowText}}?"
 			},
+			"display": {
+				"submissionMessage": "The form has successfully been submitted."
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"
@@ -443,7 +450,19 @@
 			}
 		},
 		"history": {
+			"changes": {
+				"add": "Add value",
+				"from": "from",
+				"modify": "Change value",
+				"remove": "Delete value",
+				"to": "to",
+				"withValue": "with value"
+			},
 			"download": "Download history",
+			"field": {
+				"all": "All fields",
+				"select": "Select a field"
+			},
 			"preview": "Preview and revert"
 		},
 		"logout": {
@@ -537,6 +556,14 @@
 				"operator": "Operator",
 				"or": "Or",
 				"title": "Style"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "Use Expression editor",
+						"usePicker": "Use Date picker"
+					}
+				}
 			}
 		},
 		"record": {
@@ -662,7 +689,8 @@
 				"empty": "No record detected",
 				"errors": {
 					"invalid": "Invalid grid configuration",
-					"missingDataset": "Select a dataset in settings"
+					"missingDataset": "Select a dataset in settings",
+					"validationFailed": "Unable to save records due to row {{index}} validation error\n{{question}}: {{error}}"
 				},
 				"export": {
 					"columns": {
@@ -698,6 +726,13 @@
 			"settings": {
 				"chart": {
 					"axes": "Axes",
+					"labels": {
+						"percentage": "Percentage",
+						"showCategory": "Show category labels",
+						"showValue": "Show value labels",
+						"title": "Labels",
+						"valueType": "Value type"
+					},
 					"legend": "Legend",
 					"orientation": "Orientation",
 					"palette": {
@@ -705,8 +740,17 @@
 						"title": "Color palette"
 					},
 					"position": "Position",
+					"series": {
+						"stack": {
+							"enable": "Plot series",
+							"usePercentage": "Use percentage"
+						},
+						"title": "Series"
+					},
 					"text": "Text",
-					"type": "Chart Type"
+					"type": "Chart Type",
+					"xAxis": "X Axis",
+					"yAxis": "Y Axis"
 				},
 				"grid": {
 					"actions": {
@@ -762,6 +806,9 @@
 							},
 							"select": "Select a layout",
 							"title": "Add new layout"
+						},
+						"edit": {
+							"title": "Layout configuration"
 						},
 						"title": "Grid layouts"
 					}
@@ -822,7 +869,21 @@
 	},
 	"kendo": {
 		"datepicker": {
-			"today": "Today"
+			"today": "Today",
+			"toggle": "Choose a date"
+		},
+		"datetimepicker": {
+			"accept": "Accept",
+			"acceptLabel": "Accept",
+			"cancel": "Cancel",
+			"cancelLabel": "Cancel",
+			"dateTab": "Date",
+			"dateTabLabel": "Date",
+			"now": "Now",
+			"timeTab": "Time",
+			"timeTabLabel": "Time",
+			"today": "Today",
+			"toggle": "Choose a date and a time"
 		},
 		"editor": {
 			"addColumnAfter": "Add column after",
@@ -953,6 +1014,14 @@
 			"unlock": "Unlock",
 			"unstick": "Unstick"
 		},
+		"timepicker": {
+			"accept": "Accept",
+			"acceptLabel": "Accept",
+			"cancel": "Cancel",
+			"cancelLabel": "Cancel",
+			"now": "Now",
+			"toggle": "Choose a time"
+		},
 		"upload": {
 			"dropFilesHere": "Drop files here to upload",
 			"select": "Select files..."
@@ -998,7 +1067,10 @@
 			"template": "Template"
 		},
 		"page": {
-			"add": "Add a Page"
+			"add": "Add a Page",
+			"tooltip": {
+				"duplicate": "Select the application you want to put the copy in"
+			}
 		},
 		"positionAttribute": {
 			"new": "New position attribute"
@@ -1135,6 +1207,23 @@
 			"title": "My applications"
 		},
 		"formBuilder": {
+			"errors": {
+				"choices": {
+					"valueDuplicated": "Please provide unique values for each of the choices of question: {{question}}"
+				},
+				"missingName": "Missing value name for an element on page {{page}}. Please provide a valid data value name (snake_case) to save the form.",
+				"multipletext": {
+					"missingName": "Please provide name or title for each text of question: {{question}}"
+				},
+				"resource": {
+					"invalidRelatedName": "The related name {{relatedName}} on page {{page}} is invalid. Please conform to snake_case.",
+					"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake_case) to save the form."
+				},
+				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
+			},
+			"questionsCategories": {
+				"core": "Question Library"
+			},
 			"title": "Advanced settings"
 		},
 		"forms": {

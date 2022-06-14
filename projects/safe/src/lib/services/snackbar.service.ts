@@ -96,7 +96,7 @@ export class SafeSnackBarService {
   /**
    * Creates a snackbar including a component on top of the layout.
    *
-   * @param component component to show inside the snackbar.
+   * @param template component template to show inside the snackbar.
    * @param config additional configuration of the message ( duration / color / error ).
    * @returns snackbar message reference.
    */

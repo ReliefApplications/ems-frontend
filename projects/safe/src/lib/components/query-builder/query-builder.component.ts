@@ -41,7 +41,11 @@ export class SafeQueryBuilderComponent implements OnInit {
 
   public allQueries: any[] = [];
   public filteredQueries: any[] = [];
-
+  /**
+   * Getter for the available scalar fields
+   *
+   * @returns the available scalar fields
+   */
   get availableScalarFields(): any[] {
     return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
   }
@@ -57,6 +61,14 @@ export class SafeQueryBuilderComponent implements OnInit {
   public isField = false;
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param componentFactoryResolver This is used to create a component dynamically.
+   * @param formBuilder This is the Angular FormBuilder service.
+   * @param queryBuilder This is the service that will be used to build the query.
+   */
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
     private formBuilder: FormBuilder,

@@ -17,6 +17,7 @@ const createDivisionFormArray = (divisions: any[]): any[] => {
   divisions.map((value: any) => {
     fomrArray.push(
       formBuilder.group({
+        label: value.label,
         color: value.color,
         filter: createFilterGroup(value.filter, null),
       })

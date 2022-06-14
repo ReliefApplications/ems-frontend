@@ -18,8 +18,7 @@ export class HistoryComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  /*  Emit a version.
-   */
+  /** Emit a version. */
   openVersion(version: any): void {
     this.open.emit(version);
   }

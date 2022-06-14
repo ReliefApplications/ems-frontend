@@ -247,16 +247,20 @@
 			"title": "******"
 		},
 		"aggregationBuilder": {
+			"accumulators": "******",
 			"addField": "******",
+			"addRule": "******",
 			"addStage": "******",
 			"dataset": {
 				"select": "******"
 			},
 			"fieldName": "******",
 			"groupBy": "******",
+			"groupingRules": "******",
 			"mapping": {
-				"xAxis": "******",
-				"yAxis": "******"
+				"category": "******",
+				"field": "******",
+				"series": "******"
 			},
 			"operator": "******",
 			"operators": {
@@ -394,6 +398,9 @@
 			"deleteRow": {
 				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			},
+			"display": {
+				"submissionMessage": "******"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
@@ -443,7 +450,19 @@
 			}
 		},
 		"history": {
+			"changes": {
+				"add": "******",
+				"from": "******",
+				"modify": "******",
+				"remove": "******",
+				"to": "******",
+				"withValue": "******"
+			},
 			"download": "******",
+			"field": {
+				"all": "******",
+				"select": "******"
+			},
 			"preview": "******"
 		},
 		"logout": {
@@ -537,6 +556,14 @@
 				"operator": "******",
 				"or": "******",
 				"title": "******"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "******",
+						"usePicker": "******"
+					}
+				}
 			}
 		},
 		"record": {
@@ -662,7 +689,8 @@
 				"empty": "******",
 				"errors": {
 					"invalid": "******",
-					"missingDataset": "******"
+					"missingDataset": "******",
+					"validationFailed": "****** {{index}} ****** {{question}} ****** {{error}}"
 				},
 				"export": {
 					"columns": {
@@ -698,6 +726,13 @@
 			"settings": {
 				"chart": {
 					"axes": "******",
+					"labels": {
+						"percentage": "******",
+						"showCategory": "******",
+						"showValue": "******",
+						"title": "******",
+						"valueType": "******"
+					},
 					"legend": "******",
 					"orientation": "******",
 					"palette": {
@@ -705,8 +740,17 @@
 						"title": "******"
 					},
 					"position": "******",
+					"series": {
+						"stack": {
+							"enable": "******",
+							"usePercentage": "******"
+						},
+						"title": "******"
+					},
 					"text": "******",
-					"type": "******"
+					"type": "******",
+					"xAxis": "******",
+					"yAxis": "******"
 				},
 				"grid": {
 					"actions": {
@@ -763,6 +807,9 @@
 							"select": "******",
 							"title": "******"
 						},
+						"edit": {
+							"title": "******"
+						},
 						"title": "******"
 					}
 				},
@@ -782,9 +829,31 @@
 						"longitude": "******"
 					},
 					"layers": {
-						"select": "******",
-						"selected": "******",
-						"title": "******"
+						"clorophlet": {
+							"addNew": "******",
+							"addNewDiv": "******",
+							"geoJSON": "******",
+							"geoJSONidentifier": "******",
+							"identifier": "******",
+							"info": "******",
+							"title": "******"
+						},
+						"online": {
+							"info": "******",
+							"select": "******",
+							"selected": "******",
+							"title": "******"
+						},
+						"point": {
+							"addNew": "******",
+							"category": "******",
+							"color": "******",
+							"info": "******",
+							"rules": "******",
+							"rulesInfo": "******",
+							"size": "******",
+							"title": "******"
+						}
 					},
 					"tooltip": {
 						"category": "******",
@@ -800,7 +869,21 @@
 	},
 	"kendo": {
 		"datepicker": {
-			"today": "******"
+			"today": "******",
+			"toggle": "******"
+		},
+		"datetimepicker": {
+			"accept": "******",
+			"acceptLabel": "******",
+			"cancel": "******",
+			"cancelLabel": "******",
+			"dateTab": "******",
+			"dateTabLabel": "******",
+			"now": "******",
+			"timeTab": "******",
+			"timeTabLabel": "******",
+			"today": "******",
+			"toggle": "******"
 		},
 		"editor": {
 			"addColumnAfter": "******",
@@ -931,6 +1014,14 @@
 			"unlock": "******",
 			"unstick": "******"
 		},
+		"timepicker": {
+			"accept": "******",
+			"acceptLabel": "******",
+			"cancel": "******",
+			"cancelLabel": "******",
+			"now": "******",
+			"toggle": "******"
+		},
 		"upload": {
 			"dropFilesHere": "******",
 			"select": "******"
@@ -976,7 +1067,10 @@
 			"template": "******"
 		},
 		"page": {
-			"add": "******"
+			"add": "******",
+			"tooltip": {
+				"duplicate": "******"
+			}
 		},
 		"positionAttribute": {
 			"new": "******"
@@ -1113,6 +1207,23 @@
 			"title": "******"
 		},
 		"formBuilder": {
+			"errors": {
+				"choices": {
+					"valueDuplicated": "****** {{question}}"
+				},
+				"missingName": "****** {{page}} ******",
+				"multipletext": {
+					"missingName": "****** {{question}}"
+				},
+				"resource": {
+					"invalidRelatedName": "****** {{relatedName}} ****** {{page}} ******",
+					"missingRelatedName": "****** {{question}} ****** {{page}} ******"
+				},
+				"snakecase": "****** {{name}} ****** {{page}} ******"
+			},
+			"questionsCategories": {
+				"core": "******"
+			},
 			"title": "******"
 		},
 		"forms": {

@@ -52,6 +52,15 @@ export class SafeDropdownFilterComponent
     );
   }
 
+  /** Clears any set filters */
+  public onClear() {
+    this.filter = {
+      filters: [],
+      logic: 'and',
+    };
+    this.applyFilter(this.filter);
+  }
+
   public handleFilter(value: string): void {
     this.choices = this.data.filter(
       (x) => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1

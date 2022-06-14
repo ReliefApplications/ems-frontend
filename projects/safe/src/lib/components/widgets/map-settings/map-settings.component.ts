@@ -6,9 +6,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { createQueryForm } from './map-forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
-/**
- * Settings component of map widget.
- */
+/** Component for the map widget settings */
 @Component({
   selector: 'safe-map-settings',
   templateUrl: './map-settings.component.html',
@@ -49,15 +47,19 @@ export class SafeMapSettingsComponent implements OnInit {
   private searchChanged: Subject<string> = new Subject<string>();
   public availableLayers: any[] = [];
 
+  /**
+   * Constructor of the component
+   *
+   * @param formBuilder Create the formbuilder
+   * @param arcGisService Shared ArcGIS service, enables to use esri features
+   */
   constructor(
     private formBuilder: FormBuilder,
     private arcGisService: SafeArcGISService,
     private queryBuilder: QueryBuilderService
   ) {}
 
-  /**
-   * Builds the settings form, using the widget saved parameters.
-   */
+  /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     this.tileForm = this.formBuilder.group({
@@ -177,10 +179,10 @@ export class SafeMapSettingsComponent implements OnInit {
   }
 
   /**
-   * Utility to have a flat copy of an array.
+   * Flatten an array
    *
-   * @param arr array to flatten
-   * @returns flat copy of the array
+   * @param {any[]} arr - any[] - the array to be flattened
+   * @returns the array with all the nested arrays flattened.
    */
   private flatDeep(arr: any[]): any[] {
     return arr.reduce(
@@ -190,11 +192,15 @@ export class SafeMapSettingsComponent implements OnInit {
   }
 
   /**
-   * Gets flat copy of the fields.
+   * Take an array of fields, and return an array of strings that represent
+   * the fields
    *
-   * @param fields form fields
-   * @param prefix object prefix
-   * @returns flap copy of fields
+   * @param {any[]} fields - any[] - this is the array of fields that we want to
+   * flatten
+   * @param {string} [prefix] - The prefix is the name of the parent object. For
+   * example, if you have a field called "user" and it's an object, the prefix will
+   * be "user".
+   * @returns An array of strings.
    */
   private getFields(fields: any[], prefix?: string): any[] {
     return this.flatDeep(
@@ -215,6 +221,8 @@ export class SafeMapSettingsComponent implements OnInit {
 
   /**
    * Get Search layers content.
+   *
+   * @param search search text value
    */
   public getContent(search: string): void {
     this.searchChanged.next(search);

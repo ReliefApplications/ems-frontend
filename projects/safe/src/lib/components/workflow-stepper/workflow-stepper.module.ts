@@ -12,6 +12,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
+/**
+ * Module for workflow stepper component
+ */
 @NgModule({
   declarations: [
     SafeWorkflowStepperComponent,

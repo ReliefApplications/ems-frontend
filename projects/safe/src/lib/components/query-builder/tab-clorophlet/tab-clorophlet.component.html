@@ -72,18 +72,26 @@
           class="filter-list"
           [formGroupName]="f"
         >
-          <mat-form-field appearance="outline">
-            <mat-label>Color</mat-label>
-            <h4></h4>
-            <input type="color" matInput formControlName="color" />
-          </mat-form-field>
-          <div class="deleteBtn">
-            <safe-button
-              icon="delete"
-              category="primary"
-              variant="danger"
-              (click)="removeDivision(item, f)"
-            ></safe-button>
+          <div>
+            <mat-form-field appearance="outline">
+              <mat-label>Label</mat-label>
+              <input type="text" matInput formControlName="label" />
+            </mat-form-field>
+            <div class="deleteBtn">
+              <safe-button
+                icon="delete"
+                category="primary"
+                variant="danger"
+                (click)="removeDivision(item, f)"
+              ></safe-button>
+            </div>
+          </div>
+          <div>
+            <mat-form-field appearance="outline">
+              <mat-label>Color</mat-label>
+              <h4></h4>
+              <input type="color" matInput formControlName="color" />
+            </mat-form-field>
           </div>
           <safe-tab-filter
             [form]="

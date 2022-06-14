@@ -1,6 +1,9 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
-import { createAggregationForm } from '../../../ui/aggregation-builder/aggregation-builder-forms';
+import {
+  createAggregationForm,
+  createMappingForm,
+} from '../../../ui/aggregation-builder/aggregation-builder-forms';
 
 const DEFAULT_PALETTE = [
   '#ff6358',
@@ -31,10 +34,12 @@ export class Chart {
 
   constructor(settings?: any) {
     this.fb = new FormBuilder();
-    const legend = settings ? settings.legend : null;
-    const title = settings ? settings.title : null;
+    const legend = get(settings, 'legend', null);
+    const title = get(settings, 'title', null);
+    const labels = get(settings, 'labels', null);
     const palette: string[] = get(settings, 'palette.value', []);
-    const axes = settings ? settings.axes : null;
+    const axes = get(settings, 'axes', null);
+    const stack = get(settings, 'stack', null);
 
     // build form
     this.form = this.fb.group({
@@ -43,8 +48,8 @@ export class Chart {
         Validators.required,
       ],
       aggregation: createAggregationForm(
-        settings ? settings.aggregation : null,
-        settings ? `${settings.type}-chart` : ''
+        get(settings, 'aggregation', null),
+        get(settings, 'type', '')
       ),
       legend: this.fb.group({
         visible: [legend ? legend.visible : true],
@@ -65,6 +70,20 @@ export class Chart {
                 ? palette
                 : JSON.parse(JSON.stringify(DEFAULT_PALETTE)),
             disabled: !get(settings, 'palette.enabled', false),
+          },
+        ],
+      }),
+      labels: this.fb.group({
+        showCategory: [get(labels, 'showCategory', false)],
+        showValue: [get(labels, 'showValue', false)],
+        valueType: [
+          {
+            value: get(labels, 'valueType', 'value'),
+            disabled:
+              !get(labels, 'showValue', false) ||
+              (['bar', 'column'].includes(get(settings, 'type', '')) &&
+                (!get(stack, 'usePercentage', false) ||
+                  !get(stack, 'enable', false))),
           },
         ],
       }),
@@ -110,6 +129,24 @@ export class Chart {
           ],
         }),
       }),
+      stack: this.fb.group({
+        enable: [get(stack, 'enable', false)],
+        usePercentage: [
+          {
+            value: get(stack, 'usePercentage', false),
+            disabled: !get(stack, 'enable', false),
+          },
+        ],
+      }),
+    });
+
+    this.form.get('type')?.valueChanges.subscribe((value) => {
+      const mapping = this.form.get('aggregation.mapping');
+      const aggregation = this.form.get('aggregation') as FormGroup;
+      aggregation.setControl(
+        'mapping',
+        createMappingForm(mapping?.value, value)
+      );
     });
 
     // Update of palette
@@ -158,6 +195,54 @@ export class Chart {
       } else {
         this.form.get('axes.x.max')?.setValue(null);
         this.form.get('axes.x.max')?.disable();
+      }
+    });
+
+    // Update of labels
+    this.form.get('labels.showValue')?.valueChanges.subscribe((value) => {
+      if (value) {
+        if (['bar', 'column'].includes(this.form.get('type')?.value)) {
+          if (
+            this.form.get('stack.usePercentage')?.value &&
+            this.form.get('stack.enable')?.value
+          )
+            this.form.get('labels.valueType')?.enable();
+        } else this.form.get('labels.valueType')?.enable();
+      } else {
+        this.form.get('labels.valueType')?.disable();
+      }
+    });
+
+    // Update of stack properties
+    this.form.get('stack.enable')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.form.get('stack.usePercentage')?.enable();
+      } else {
+        this.form.get('stack.usePercentage')?.disable();
+      }
+    });
+
+    // update label value type based on stack settings
+    this.form.get('stack.usePercentage')?.valueChanges.subscribe((value) => {
+      if (value) {
+        if (this.form.get('labels.showValue'))
+          this.form.get('labels.valueType')?.enable();
+      } else {
+        this.form.get('labels.valueType')?.setValue('value');
+        this.form.get('labels.valueType')?.disable();
+      }
+    });
+
+    this.form.get('stack.enable')?.valueChanges.subscribe((value) => {
+      if (value) {
+        if (
+          this.form.get('stack.usePercentage')?.value &&
+          this.form.get('labels.showValue')
+        )
+          this.form.get('labels.valueType')?.enable();
+      } else {
+        this.form.get('labels.valueType')?.setValue('value');
+        this.form.get('labels.valueType')?.disable();
       }
     });
   }

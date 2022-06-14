@@ -1,6 +1,6 @@
 .workflow-name-container {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 
@@ -15,6 +15,21 @@
   .workflow-name:hover {
     background-color: #dddddd54;
   }
+  .workflow-icons-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+}
+.share-button {
+  color: #a9a9a9 !important;
+  margin-left: -6px;
+}
+
+.name-edit-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 safe-workflow-stepper {

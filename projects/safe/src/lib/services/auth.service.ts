@@ -12,6 +12,7 @@ import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { filter, map } from 'rxjs/operators';
 
+/** Defining the interface for the account object. */
 export interface Account {
   name: string;
   username: string;
@@ -26,13 +27,14 @@ export interface Account {
 export class SafeAuthService {
   /** Current user */
   public user = new BehaviorSubject<User | null>(null);
-  /** Current user as observable */
+  /** @returns Current user as observable */
   get user$(): Observable<User | null> {
     return this.user.asObservable();
   }
+
   /** Current account info */
   public account: Account | null = null;
-  /** Current user value */
+  /** @returns Current user value */
   get userValue(): User | null {
     return this.user.getValue();
   }
@@ -54,6 +56,7 @@ export class SafeAuthService {
    * Shared authentication service.
    *
    * @param apollo Apollo client
+   * @param oauthService OAuth authentification service
    */
   constructor(private apollo: Apollo, private oauthService: OAuthService) {
     this.oauthService.events.subscribe(() => {
@@ -107,8 +110,9 @@ export class SafeAuthService {
   }
 
   /**
-   * Checkes if user is admin.
-   * If user profile is empty, tries to get it.
+   * Checkes if user is admin. If user profile is empty, tries to get it.
+   *
+   * @returns A boolean value.
    */
   get userIsAdmin(): boolean {
     const user = this.user.getValue();
@@ -119,6 +123,11 @@ export class SafeAuthService {
     }
   }
 
+  /**
+   * Initiate the login sequence
+   *
+   * @returns A promise that resolves to void.
+   */
   public initLoginSequence(): Promise<void> {
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()

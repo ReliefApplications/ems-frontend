@@ -142,8 +142,7 @@ export class FormComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*  Update the name of the tab.
-   */
+  /** Update the name of the tab. */
   saveName(): void {
     const { tabName } = this.tabNameForm.value;
     this.toggleFormActive();
@@ -231,8 +230,7 @@ export class FormComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*  Edit the permissions layer.
-   */
+  /** Edit the permissions layer. */
   saveAccess(e: any): void {
     if (this.isStep) {
       this.apollo

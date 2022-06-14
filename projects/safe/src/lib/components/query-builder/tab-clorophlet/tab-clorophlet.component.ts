@@ -23,7 +23,11 @@ export class SafeTabClorophletComponent implements OnInit {
   ngOnInit(): void {
     this.selectedFields.map((selectedField: any) => {
       this.fields.map((field: any) => {
-        if (selectedField.label.toLowerCase() === field.name.toLowerCase()) {
+        if (
+          selectedField.label &&
+          selectedField.label.replace(/\s|_/g, '').toLowerCase() ===
+            field.name.replace(/\s|_/g, '').toLowerCase()
+        ) {
           this.selectableFields.push(field);
         }
       });
@@ -72,7 +76,8 @@ export class SafeTabClorophletComponent implements OnInit {
   public newDivision(form: any): void {
     form.controls.divisions.push(
       this.formBuilder.group({
-        color: [''],
+        label: [''],
+        color: ['#ffffff'],
         filter: this.formBuilder.group({
           logic: ['and'],
           filters: this.formBuilder.array([]),

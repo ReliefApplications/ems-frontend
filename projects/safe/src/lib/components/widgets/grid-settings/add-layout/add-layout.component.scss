@@ -1,3 +1,9 @@
+.add-layout-choice {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+}
+
 .select-layout-header {
   display: flex;
   gap: 16px;
@@ -5,7 +11,6 @@
   align-items: center;
 }
 
-.add-layout-choice {
-  display: flex;
-  gap: 48px;
+mat-form-field {
+  width: 100%;
 }

@@ -31,6 +31,7 @@ export default {
   },
 } as Meta;
 
+/** Defining the default fields that are available in the storybook */
 const DEFAULT_FIELDS = [
   {
     name: 'date',
@@ -60,8 +61,15 @@ const DEFAULT_FIELDS = [
   },
 ];
 
+/** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
 
+/**
+ * Defines a template for the component SafeAddFieldStageComponent to use as/in a playground
+ *
+ * @param args the properties of the instance of SafeAddFieldStageComponent
+ * @returns the template
+ */
 const TEMPLATE: Story<SafeAddFieldStageComponent> = (args) => ({
   template:
     '<safe-add-field-stage [form]=form [fields]=fields [operators]=operators></safe-add-field-stage>',
@@ -73,5 +81,7 @@ const TEMPLATE: Story<SafeAddFieldStageComponent> = (args) => ({
   },
 });
 
+/** Exports a default template */
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {};

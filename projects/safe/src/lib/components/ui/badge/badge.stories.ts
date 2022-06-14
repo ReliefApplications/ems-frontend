@@ -47,12 +47,14 @@ const TEMPLATE_WITH_TEXT: Story<SafeBadgeComponent> = (args) => ({
 });
 
 export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   size: BadgeSize.MEDIUM,
   variant: BadgeVariant.DEFAULT,
 };
 
 export const ICON = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.storyName = 'With icon';
 ICON.args = {
   ...DEFAULT.args,
   icon: 'home',

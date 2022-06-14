@@ -20,7 +20,7 @@ import { environment } from '../environments/environment';
 
 // Config
 import { BehaviorSubject } from 'rxjs';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 
@@ -37,6 +37,22 @@ import localeEn from '@angular/common/locales/en';
 // Register local translations for dates
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
+
+// Kendo datepicker for surveyjs
+import {
+  CalendarDOMService,
+  CenturyViewService,
+  DecadeViewService,
+  HoursService,
+  MinutesService,
+  MonthViewService,
+  TimePickerDOMService,
+  TOUCH_ENABLED,
+  YearViewService,
+} from '@progress/kendo-angular-dateinputs';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+import { touchEnabled } from '@progress/kendo-common';
 
 localStorage.setItem('loaded', 'false');
 
@@ -187,10 +203,30 @@ export const httpTranslateLoader = (http: HttpClient) =>
       provide: MessageService,
       useClass: KendoTranslationService,
     },
+    // only used to force date language in 1.2.0, remove in 1.3.0
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'en-GB',
+    },
     {
       provide: OAuthStorage,
       useValue: localStorage,
     },
+    // TODO: check
+    {
+      provide: TOUCH_ENABLED,
+      useValue: [touchEnabled],
+    },
+    PopupService,
+    ResizeBatchService,
+    CalendarDOMService,
+    TimePickerDOMService,
+    MonthViewService,
+    HoursService,
+    MinutesService,
+    YearViewService,
+    DecadeViewService,
+    CenturyViewService,
   ],
   bootstrap: [AppComponent],
 })

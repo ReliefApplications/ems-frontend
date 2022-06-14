@@ -72,8 +72,7 @@ export class FormBuilderComponent implements OnInit {
     private translate: TranslateService
   ) {}
 
-  /* Shows modal confirmation before leave the page if has changes on form
-   */
+  /** Shows modal confirmation before leave the page if has changes on form */
   canDeactivate(): Observable<boolean> | boolean {
     if (this.hasChanges) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
@@ -166,8 +165,7 @@ export class FormBuilderComponent implements OnInit {
     }
   }
 
-  /* Save the form
-   */
+  /** Save the form */
   public onSave(structure: any): void {
     if (!this.form?.id) {
       alert('not valid');
@@ -217,8 +215,7 @@ export class FormBuilderComponent implements OnInit {
     }
   }
 
-  /*  Update the status of the form.
-   */
+  /** Update the status of the form. */
   public updateStatus(e: any): void {
     const statusModal = this.dialog.open(SafeStatusModalComponent, {
       disableClose: true,
@@ -257,8 +254,7 @@ export class FormBuilderComponent implements OnInit {
       });
   }
 
-  /*  Available in previous version to change the template.
-   */
+  /** Available in previous version to change the template. */
   setTemplate(id: string): void {
     this.apollo
       .watchQuery<GetFormByIdQueryResponse>({
@@ -272,8 +268,7 @@ export class FormBuilderComponent implements OnInit {
       });
   }
 
-  /*  Available in previous version to change the version.
-   */
+  /** Available in previous version to change the version. */
   public onOpenVersion(e: any): void {
     this.activeVersion = e;
     this.structure = this.activeVersion.data;
@@ -281,8 +276,7 @@ export class FormBuilderComponent implements OnInit {
     // this.surveyCreator.saveSurveyFunc = null;
   }
 
-  /*  Available in previous version to change the version.
-   */
+  /** Available in previous version to change the version. */
   public resetActiveVersion(): void {
     this.activeVersion = null;
     this.structure = this.form?.structure;
@@ -290,8 +284,7 @@ export class FormBuilderComponent implements OnInit {
     // this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
   }
 
-  /*  Edit the form name.
-   */
+  /** Edit the form name. */
   public saveName(): void {
     const statusModal = this.dialog.open(SafeStatusModalComponent, {
       disableClose: true,
@@ -333,8 +326,7 @@ export class FormBuilderComponent implements OnInit {
       });
   }
 
-  /*  Edit the permissions layer.
-   */
+  /** Edit the permissions layer. */
   saveAccess(e: any): void {
     const statusModal = this.dialog.open(SafeStatusModalComponent, {
       disableClose: true,

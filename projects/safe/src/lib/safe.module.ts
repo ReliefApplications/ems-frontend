@@ -37,7 +37,9 @@ import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackba
 import { SafeSkeletonTableModule } from './components/skeleton/skeleton-table/skeleton-table.module';
 import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
 import { SafeDateModule } from './pipes/date/date.module';
+import { SafeIconModule } from './components/ui/icon/icon.module';
 
+/** Main module for the safe project */
 @NgModule({
   exports: [
     SafeLayoutModule,
@@ -78,6 +80,7 @@ import { SafeDateModule } from './pipes/date/date.module';
     SafeSkeletonTableModule,
     SafeSkeletonModule,
     SafeDateModule,
+    SafeIconModule,
   ],
 })
 export class SafeModule {}

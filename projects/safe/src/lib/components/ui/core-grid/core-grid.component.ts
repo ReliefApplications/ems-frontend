@@ -9,6 +9,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -38,7 +39,9 @@ import {
   EDIT_RECORD,
 } from '../../../graphql/mutations';
 import {
+  GetFormByIdQueryResponse,
   GetRecordDetailsQueryResponse,
+  GET_FORM_BY_ID,
   GET_RECORD_DETAILS,
 } from '../../../graphql/queries';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
@@ -54,6 +57,7 @@ import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
 import { TranslateService } from '@ngx-translate/core';
+import * as Survey from 'survey-angular';
 
 const DEFAULT_FILE_NAME = 'Records';
 
@@ -126,6 +130,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public formGroup: FormGroup = new FormGroup({});
   public loading = false;
   public error = false;
+  private templateStructure = '';
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -255,11 +260,17 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Detects changes of the settings to (re)load the data.
    */
-  ngOnChanges(): void {
+  ngOnChanges(changes?: SimpleChanges): void {
+    if (changes?.settings) {
+      this.configureGrid();
+    }
+  }
+
+  public configureGrid(): void {
     // define row actions
     this.actions = {
       add:
-        get(this.settings, 'actions?.addRecord', false) &&
+        get(this.settings, 'actions.addRecord', false) &&
         this.settings.template,
       history: get(this.settings, 'actions.history', false),
       update: get(this.settings, 'actions.update', false),
@@ -328,6 +339,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.loading = false;
       this.error = true;
     }
+    this.loadTemplate();
   }
 
   /**
@@ -337,6 +349,25 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
+  }
+
+  /**
+   * Get template structure, for inline edition validation.
+   */
+  private async loadTemplate(): Promise<void> {
+    if (this.settings.template)
+      this.apollo
+        .query<GetFormByIdQueryResponse>({
+          query: GET_FORM_BY_ID,
+          variables: {
+            id: this.settings.template,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data.form.structure) {
+            this.templateStructure = res.data.form.structure;
+          }
+        });
   }
 
   // === GRID FIELDS ===
@@ -396,7 +427,50 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onSaveChanges(): void {
     if (this.hasChanges) {
-      Promise.all(this.promisedChanges()).then(() => this.reloadData());
+      let hasError = false;
+      let error = '';
+      let questionWithError = '';
+      let index = -1;
+      const survey = new Survey.Model(this.templateStructure);
+      survey.locale = this.translate.currentLang;
+      for (const item of this.updatedItems) {
+        survey.data = item;
+        survey.completeLastPage();
+        if (survey.hasErrors()) {
+          hasError = true;
+          const questions = survey.getAllQuestions();
+          for (const question of questions) {
+            if (question.hasErrors()) {
+              index = this.items.findIndex((x) => x.id === item.id);
+              questionWithError = question.name;
+              error = question.getAllErrors()[0].getText();
+              break;
+            }
+          }
+          if (error) {
+            break;
+          }
+        }
+      }
+      if (!hasError) {
+        Promise.all(this.promisedChanges()).then(() => this.reloadData());
+      } else {
+        // Open snackbar to indicate the error
+        this.snackBar.openSnackBar(
+          this.translate.instant(
+            'components.widget.grid.errors.validationFailed',
+            {
+              index,
+              question: questionWithError,
+              error,
+            }
+          ),
+          {
+            error: true,
+            duration: 8000,
+          }
+        );
+      }
     }
   }
 
@@ -512,7 +586,33 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.updatedItems = [];
   }
 
+  // === SELECTION ===
+
+  /**
+   * Handle selection change event.
+   *
+   * @param selection Selection event.
+   */
+  public onSelectionChange(selection: SelectionEvent): void {
+    const deselectedRows = selection.deselectedRows || [];
+    const selectedRows = selection.selectedRows || [];
+    if (deselectedRows.length > 0) {
+      this.selectedRows = [
+        ...this.selectedRows.filter(
+          (x) => !deselectedRows.some((y) => x === y.dataItem.id)
+        ),
+      ];
+    }
+    if (selectedRows.length > 0) {
+      this.selectedRows = this.selectedRows.concat(
+        selectedRows.map((x) => x.dataItem.id)
+      );
+    }
+    this.selectionChange.emit(selection);
+  }
+
   // === GRID ACTIONS ===
+
   /**
    * Handles grid actions.
    *
@@ -717,7 +817,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           'components.form.deleteRow.confirmationMessage',
           {
             quantity: rowsSelected,
-            rowtext:
+            rowText:
               rowsSelected > 1
                 ? this.translate.instant('common.row.few')
                 : this.translate.instant('common.row.one'),
@@ -788,28 +888,19 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Opens the history of the record on the right side of the screen.
    *
-   * @param id id of record to get history of.
+   * @param item record to get history of.
    */
   public onViewHistory(item: any): void {
-    this.apollo
-      .query<GetRecordDetailsQueryResponse>({
-        query: GET_RECORD_DETAILS,
-        variables: {
-          id: item.id,
+    this.layoutService.setRightSidenav({
+      factory: this.factory,
+      inputs: {
+        id: item.id,
+        revert: (record: any, dialog: any) => {
+          this.confirmRevertDialog(item, record);
         },
-      })
-      .subscribe((res) => {
-        this.layoutService.setRightSidenav({
-          factory: this.factory,
-          inputs: {
-            record: res.data.record,
-            revert: (record: any, dialog: any) => {
-              this.confirmRevertDialog(res.data.record, record);
-            },
-            template: this.settings.template || null,
-          },
-        });
-      });
+        template: this.settings.template || null,
+      },
+    });
   }
 
   /**

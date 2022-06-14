@@ -2,7 +2,8 @@ import { Layout } from './layout.model';
 import { Record } from './record.model';
 import { Resource } from './resource.model';
 
-/* Model for FormVersion object.
+/**
+ * Model for FormVersion object.
  */
 export interface Version {
   id?: string;
@@ -10,7 +11,8 @@ export interface Version {
   data?: string;
 }
 
-/*  Enum of status.
+/**
+ * Enum of status.
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export enum status {
@@ -19,7 +21,8 @@ export enum status {
   archived = 'archived',
 }
 
-/* Model for Form object.
+/**
+ * Model for Form object.
  */
 export interface Form {
   id?: string;

@@ -56,9 +56,14 @@ interface DialogData {
   prefillData?: any;
   askForConfirm?: boolean;
 }
-
+/**
+ * Defines the default Dialog data
+ */
 const DEFAULT_DIALOG_DATA = { askForConfirm: true };
 
+/**
+ * Component that displays a form in a modal
+ */
 @Component({
   selector: 'safe-form-modal',
   templateUrl: './form-modal.component.html',
@@ -84,10 +89,30 @@ export class SafeFormModalComponent implements OnInit {
 
   environment: any;
 
+  /**
+   * Getter for the pages property
+   *
+   * @returns pages as an Observable
+   */
   public get pages$(): Observable<any[]> {
     return this.pages.asObservable();
   }
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param data This is the data that is passed to the modal when it is opened.
+   * @param environment This is the environment in which we run the application
+   * @param dialog This is the Angular Material Dialog service.
+   * @param dialogRef This is the reference to the dialog.
+   * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
+   * @param snackBar This is the service that allows you to display a snackbar.
+   * @param downloadService This is the service that is used to download files.
+   * @param authService This is the service that handles authentication.
+   * @param formBuilderService This is the service that will be used to build forms.
+   * @param translate This is the service that allows us to translate the text in our application.
+   */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     @Inject('environment') environment: any,
@@ -186,6 +211,9 @@ export class SafeFormModalComponent implements OnInit {
     this.loading = false;
   }
 
+  /**
+   * Initializes the form
+   */
   private initSurvey(): void {
     this.survey = this.formBuilderService.createSurvey(
       this.form?.structure || ''
@@ -236,6 +264,7 @@ export class SafeFormModalComponent implements OnInit {
     // this.survey.render(this.containerId);
     this.setPages();
     this.survey.onComplete.add(this.onComplete);
+    setTimeout(() => {}, 100);
   }
 
   /**
@@ -263,8 +292,7 @@ export class SafeFormModalComponent implements OnInit {
       ? this.data.recordId.length
       : 1;
 
-    /* we can send to backend empty data if they are not required
-     */
+    /** we can send to backend empty data if they are not required */
     const questions = survey.getAllQuestions();
     const data = survey.data;
     for (const field in questions) {
@@ -295,7 +323,7 @@ export class SafeFormModalComponent implements OnInit {
             'components.form.updateRow.confirmationMessage',
             {
               quantity: rowsSelected,
-              rowtext:
+              rowText:
                 rowsSelected > 1
                   ? this.translate.instant('common.row.few')
                   : this.translate.instant('common.row.one'),
@@ -414,6 +442,11 @@ export class SafeFormModalComponent implements OnInit {
       });
   }
 
+  /**
+   * Upload asynchronously files to create questions in the form
+   *
+   * @param survey The form in which the files will be updated
+   */
   private async uploadFiles(survey: any): Promise<void> {
     const data = survey.data;
     const questionsToUpload = Object.keys(this.temporaryFilesStorage);
@@ -442,10 +475,22 @@ export class SafeFormModalComponent implements OnInit {
     }
   }
 
+  /**
+   * Handles the clearing of files
+   *
+   * @param survey The form in which there used to be files
+   * @param options Options regarding the files
+   */
   private onClearFiles(survey: Survey.SurveyModel, options: any): void {
     options.callback('success');
   }
 
+  /**
+   * Handles the uploading of files event
+   *
+   * @param survey The survey to which the files were uploaded
+   * @param options Options regarding the upload
+   */
   private onUploadFiles(survey: Survey.SurveyModel, options: any): void {
     if (this.temporaryFilesStorage[options.name] !== undefined) {
       this.temporaryFilesStorage[options.name].concat(options.files);
@@ -478,6 +523,9 @@ export class SafeFormModalComponent implements OnInit {
     });
   }
 
+  /**
+   * Set the pages of the form
+   */
   private setPages(): void {
     const pages = [];
     if (this.survey) {
@@ -490,6 +538,11 @@ export class SafeFormModalComponent implements OnInit {
     this.pages.next(pages);
   }
 
+  /**
+   * Handles the show page event
+   *
+   * @param i The index of the page
+   */
   public onShowPage(i: number): void {
     if (this.survey) {
       this.survey.currentPageNo = i;
@@ -497,6 +550,12 @@ export class SafeFormModalComponent implements OnInit {
     this.selectedTabIndex = i;
   }
 
+  /**
+   * Handles the downloading of a file event
+   *
+   * @param survey The survey from which the files were downloaded
+   * @param options Options regarding the download
+   */
   private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
     if (
       options.content.indexOf('base64') !== -1 ||
@@ -531,6 +590,12 @@ export class SafeFormModalComponent implements OnInit {
     }
   }
 
+  /**
+   * Merge records
+   *
+   * @param records Records to merge
+   * @returns The merged records
+   */
   private mergedData(records: Record[]): any {
     const data: any = {};
     // Loop on source fields
@@ -602,7 +667,6 @@ export class SafeFormModalComponent implements OnInit {
   /**
    * Add custom CSS classes to the survey elements.
    *
-   * @param survey current survey.
    * @param options survey options.
    */
   private onSetCustomCss(options: any): void {
@@ -639,27 +703,24 @@ export class SafeFormModalComponent implements OnInit {
    * Opens the history of the record in a modal.
    */
   public onShowHistory(): void {
-    this.apollo
-      .query<GetRecordDetailsQueryResponse>({
-        query: GET_RECORD_DETAILS,
-        variables: {
-          id: this.record?.id,
+    this.dialog.open(RecordHistoryModalComponent, {
+      data: {
+        id: this.record?.id,
+        revert: (item: any, dialog: any) => {
+          this.confirmRevertDialog(this.record, item);
         },
-      })
-      .subscribe((res) => {
-        this.dialog.open(RecordHistoryModalComponent, {
-          data: {
-            record: res.data.record,
-            revert: (item: any, dialog: any) => {
-              this.confirmRevertDialog(res.data.record, item);
-            },
-          },
-          panelClass: 'no-padding-dialog',
-          autoFocus: false,
-        });
-      });
+      },
+      panelClass: 'no-padding-dialog',
+      autoFocus: false,
+    });
   }
 
+  /**
+   * Open a dialog modal to confirm the recovery of data
+   *
+   * @param record The record whose data we need to recover
+   * @param version The version to recover
+   */
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
     const date = new Date(parseInt(version.created, 0));

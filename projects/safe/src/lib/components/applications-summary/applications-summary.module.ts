@@ -13,6 +13,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonModule } from '../../directives/skeleton/skeleton.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
 
+/**
+ * SafeApplicationsSummaryModule is a class used to manage all the modules and components
+ * related to the applications summary block on the home page.
+ */
 @NgModule({
   declarations: [
     SafeApplicationsSummaryComponent,

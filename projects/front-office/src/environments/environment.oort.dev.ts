@@ -1,6 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/oort/oort.dev';
 
+/** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
   issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
   redirectUri: 'https://oort-dev.oortcloud.tech/',
@@ -11,9 +12,7 @@ const authConfig: AuthConfig = {
   showDebugInformation: true,
 };
 
-/**
- * Environment file of OORT development platform.
- */
+/** Environment configuration */
 export const environment = {
   production: true,
   apiUrl: 'https://oort-dev.oortcloud.tech/api',

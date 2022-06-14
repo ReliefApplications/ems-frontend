@@ -122,16 +122,14 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*  Unsubscribe from the apollo subscription if needed
-   */
+  /** Unsubscribe from the apollo subscription if needed */
   ngOnDestroy(): void {
     if (this.apolloSubscription) {
       this.apolloSubscription.unsubscribe();
     }
   }
 
-  /*  Create the settings form depending on the authType
-   */
+  /** Create the settings form depending on the authType */
   private buildSettingsForm(type: string): FormGroup {
     if (type === authType.serviceToService) {
       return this.formBuilder.group({
@@ -178,8 +176,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     return this.formBuilder.group({});
   }
 
-  /*  Edit the permissions layer.
-   */
+  /** Edit the permissions layer. */
   saveAccess(e: any): void {
     if (this.apolloSubscription) {
       this.apolloSubscription.unsubscribe();
@@ -201,8 +198,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       });
   }
 
-  /*  Edit the API Configuration using apiForm changes
-   */
+  /** Edit the API Configuration using apiForm changes */
   onSave(): void {
     if (this.apolloSubscription) {
       this.apolloSubscription.unsubscribe();
@@ -265,8 +261,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       });
   }
 
-  /*  Send a ping request to test the configuration
-   */
+  /** Send a ping request to test the configuration */
   onPing(): void {
     this.apiProxy
       .buildPingRequest(this.apiConfiguration?.name, this.apiForm.value.pingUrl)

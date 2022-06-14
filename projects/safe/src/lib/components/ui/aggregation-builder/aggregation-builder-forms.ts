@@ -2,31 +2,50 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import get from 'lodash/get';
 
+/** Creating a new instance of the FormBuilder class. */
 const formBuilder = new FormBuilder();
+
+/**
+ * Creates an expression form.
+ *
+ * @param value initial value
+ * @param validators boolean to set validators or not (default true)
+ * @returns Expression form group.
+ */
+export const expressionForm = (value: any, validators = true): FormGroup =>
+  formBuilder.group({
+    operator: [
+      get(value, 'operator', ''),
+      validators ? Validators.required : null,
+    ],
+    field: [get(value, 'field', '')],
+  });
 
 /**
  * Creates a addFields stage form.
  *
  * @param value initial value
+ * @param validators boolean to set validators or not (default true)
  * @returns Stage form group.
  */
-export const addFieldsForm = (value: any): FormGroup =>
+export const addFieldsForm = (value: any, validators = true): FormGroup =>
   formBuilder.group({
-    name: [value && value.name ? value.name : '', Validators.required],
-    expression: formBuilder.group({
-      operator: [
-        value && value.expression && value.expression.operator
-          ? value.expression.operator
-          : '',
-        Validators.required,
-      ],
-      field: [
-        value && value.expression && value.expression.field
-          ? value.expression.field
-          : '',
-      ],
-    }),
+    name: [get(value, 'name', ''), validators ? Validators.required : null],
+    expression: expressionForm(get(value, 'expression', false)),
+  });
+
+/**
+ * Create a groupBy rule form.
+ *
+ * @param value initial value
+ * @returns GroupBy rule form group.
+ */
+export const groupByRuleForm = (value: any): FormGroup =>
+  formBuilder.group({
+    field: [get(value, 'field', ''), Validators.required],
+    expression: expressionForm(get(value, 'expression', false), false),
   });
 
 /**
@@ -47,14 +66,8 @@ export const addStage = (value: any): FormGroup => {
       return formBuilder.group({
         type: [PipelineStage.SORT],
         form: formBuilder.group({
-          field: [
-            value.form && value.form.field ? value.form.field : '',
-            Validators.required,
-          ],
-          order: [
-            value.form && value.form.order ? value.form.order : 'asc',
-            Validators.required,
-          ],
+          field: [get(value, 'form.field', ''), Validators.required],
+          order: [get(value, 'form.order', 'asc'), Validators.required],
         }),
       });
     }
@@ -62,14 +75,13 @@ export const addStage = (value: any): FormGroup => {
       return formBuilder.group({
         type: [PipelineStage.GROUP],
         form: formBuilder.group({
-          groupBy: [
-            value.form && value.form.groupBy ? value.form.groupBy : '',
-            Validators.required,
-          ],
+          groupBy: formBuilder.array(
+            get(value, 'form.groupBy', [{}]).map((x: any) => groupByRuleForm(x))
+          ),
           addFields: formBuilder.array(
-            value.form && value.form.addFields
-              ? value.form.addFields.map((x: any) => addFieldsForm(x))
-              : []
+            get(value, 'form.addFields', []).map((x: any) =>
+              addFieldsForm(x, false)
+            )
           ),
         }),
       });
@@ -89,10 +101,7 @@ export const addStage = (value: any): FormGroup => {
       return formBuilder.group({
         type: [PipelineStage.UNWIND],
         form: formBuilder.group({
-          field: [
-            value.form && value.form.field ? value.form.field : '',
-            Validators.required,
-          ],
+          field: [get(value, 'form.field', ''), Validators.required],
         }),
       });
     }
@@ -100,10 +109,7 @@ export const addStage = (value: any): FormGroup => {
       const formGroup = formBuilder.group({
         type: [PipelineStage.CUSTOM],
         form: formBuilder.group({
-          raw: [
-            value.form && value.form.raw ? value.form.raw : '',
-            Validators.required,
-          ],
+          raw: [get(value, 'form.raw', ''), Validators.required],
         }),
       });
       formGroup
@@ -116,28 +122,58 @@ export const addStage = (value: any): FormGroup => {
       return formBuilder.group({
         type: [PipelineStage.CUSTOM],
         form: formBuilder.group({
-          raw: [
-            value.form && value.form.raw ? value.form.raw : '',
-            Validators.required,
-          ],
+          raw: [get(value, 'form.raw', ''), Validators.required],
         }),
       });
     }
   }
 };
 
-export const mappingFields = (widgetType: string): string[] =>
-  // if (WIDGET_TYPES.some((x) => x.id === widgetType)) {
-  //   return ['xAxis', 'yAxis'];
-  // }
-  // return [];
-  ['xAxis', 'yAxis'];
+/**
+ * Exports the mapping fields
+ *
+ * @param widgetType type of chart widget
+ * @returns The x and y axis
+ */
+export const mappingFields = (
+  widgetType: string
+): { name: string; required: boolean }[] => {
+  const fields = [
+    { name: 'category', required: true },
+    { name: 'field', required: true },
+  ];
+  if (['bar', 'column', 'line'].includes(widgetType)) {
+    fields.push({ name: 'series', required: false });
+  }
+  return fields;
+};
+
+/**
+ * Create mapping form ( category / field / series )
+ *
+ * @param value current form value
+ * @param widgetType type of chart widget
+ * @returns New mapping form
+ */
+export const createMappingForm = (value: any, widgetType: string): FormGroup =>
+  formBuilder.group(
+    mappingFields(widgetType).reduce(
+      (o, field) =>
+        Object.assign(o, {
+          [field.name]: [
+            get(value, field.name, ''),
+            field.required ? Validators.required : null,
+          ],
+        }),
+      {}
+    )
+  );
 
 /**
  * Generates a new aggregation form.
  *
  * @param value initial value
- * @param widgetType type of widget
+ * @param widgetType type of chart widget
  * @returns New aggregation form
  */
 export const createAggregationForm = (
@@ -145,40 +181,21 @@ export const createAggregationForm = (
   widgetType: string
 ): FormGroup =>
   formBuilder.group({
-    dataSource: [
-      value && value.dataSource ? value.dataSource : null,
-      Validators.required,
-    ],
-    sourceFields: [
-      value && value.sourceFields ? value.sourceFields : [],
-      Validators.required,
-    ],
+    dataSource: [get(value, 'dataSource', null), Validators.required],
+    sourceFields: [get(value, 'sourceFields', []), Validators.required],
     pipeline: formBuilder.array(
       value && value.pipeline && value.pipeline.length
         ? value.pipeline.map((x: any) => addStage(x))
         : []
     ),
-    mapping: formBuilder.group(
-      mappingFields(widgetType).reduce(
-        (o, key) =>
-          Object.assign(o, {
-            [key]: [
-              value && value.mapping && value.mapping[key]
-                ? value.mapping[key]
-                : '',
-              Validators.required,
-            ],
-          }),
-        {}
-      )
-    ),
+    mapping: createMappingForm(get(value, 'mapping', null), widgetType),
   });
 
 /**
  * Checks that the control value is a valid JSON.
  *
- * @param control
- * @returns
+ * @param control the control value
+ * @returns null if the control value is a valid JSON, an error otherwise
  */
 const jsonValidator = (control: AbstractControl): ValidationErrors | null => {
   try {

@@ -17,6 +17,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatTabsModule } from '@angular/material/tabs';
 
+/** Module for map settings component */
 @NgModule({
   declarations: [SafeMapSettingsComponent],
   imports: [
