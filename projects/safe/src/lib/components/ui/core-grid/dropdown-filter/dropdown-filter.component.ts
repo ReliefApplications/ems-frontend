@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import {
   BaseFilterCellComponent,
   FilterService,
@@ -43,11 +44,11 @@ export class SafeDropdownFilterComponent
   public choices: any[] = [];
   public op: any[] = [
     {
-      text: 'Is equal to',
+      text: this.translate.instant('kendo.grid.filterEqOperator'),
       value: 'eq',
     },
     {
-      text: 'Is not equal to',
+      text: this.translate.instant('kendo.grid.filterNotEqOperator'),
       value: 'neq',
     },
   ];
@@ -57,14 +58,29 @@ export class SafeDropdownFilterComponent
    * Contructor for safe-dropdown-filter
    *
    * @param filterService
+   * @param translate
    */
-  constructor(filterService: FilterService) {
+  constructor(
+    filterService: FilterService,
+    public translate: TranslateService
+  ) {
     super(filterService);
   }
 
   ngOnInit(): void {
     this.choices = this.data.slice();
-    console.log(this.choices, this.operators);
+    this.translate.onLangChange.subscribe(() => {
+      this.op = [
+        {
+          text: this.translate.instant('kendo.grid.filterEqOperator'),
+          value: 'eq',
+        },
+        {
+          text: this.translate.instant('kendo.grid.filterNotEqOperator'),
+          value: 'neq',
+        },
+      ];
+    });
   }
 
   /**

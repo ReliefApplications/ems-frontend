@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import {
   BaseFilterCellComponent,
   FilterService,
@@ -43,27 +44,27 @@ export class SafeArrayFilterComponent
   public choices: any[] = [];
   public op: any[] = [
     {
-      text: 'Is equal to',
+      text: this.translate.instant('kendo.grid.filterEqOperator'),
       value: 'eq',
     },
     {
-      text: 'Is not equal to',
+      text: this.translate.instant('kendo.grid.filterNotEqOperator'),
       value: 'neq',
     },
     {
-      text: 'Contains',
+      text: this.translate.instant('kendo.grid.filterContainsOperator'),
       value: 'contains',
     },
     {
-      text: 'Does not contain',
+      text: this.translate.instant('kendo.grid.filterNotContainsOperator'),
       value: 'doesnotcontain',
     },
     {
-      text: 'Is empty',
+      text: this.translate.instant('kendo.grid.filterIsEmptyOperator'),
       value: 'isempty',
     },
     {
-      text: 'Is not empty',
+      text: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
       value: 'isnotempty',
     },
   ];
@@ -73,13 +74,45 @@ export class SafeArrayFilterComponent
    * Contructor for safe-array-filter
    *
    * @param filterService Filter service
+   * @param translate
    */
-  constructor(filterService: FilterService) {
+  constructor(
+    filterService: FilterService,
+    public translate: TranslateService
+  ) {
     super(filterService);
   }
 
   ngOnInit(): void {
     this.choices = this.data.slice();
+    this.translate.onLangChange.subscribe(() => {
+      this.op = [
+        {
+          text: this.translate.instant('kendo.grid.filterEqOperator'),
+          value: 'eq',
+        },
+        {
+          text: this.translate.instant('kendo.grid.filterNotEqOperator'),
+          value: 'neq',
+        },
+        {
+          text: this.translate.instant('kendo.grid.filterContainsOperator'),
+          value: 'contains',
+        },
+        {
+          text: this.translate.instant('kendo.grid.filterNotContainsOperator'),
+          value: 'doesnotcontain',
+        },
+        {
+          text: this.translate.instant('kendo.grid.filterIsEmptyOperator'),
+          value: 'isempty',
+        },
+        {
+          text: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
+          value: 'isnotempty',
+        },
+      ];
+    });
   }
 
   /**
