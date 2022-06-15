@@ -42,6 +42,7 @@
         {{ 'models.widget.map.zoom' | translate }}
         <safe-icon
           icon="info"
+          [matTooltipHideDelay]="500"
           [matTooltip]="
             'components.widget.settings.map.display.latitude' | translate
           "
@@ -67,6 +68,7 @@
             matSuffix
             icon="info"
             variant="grey"
+            [matTooltipHideDelay]="500"
             [matTooltip]="
               'components.widget.settings.map.tooltip.default.latitude'
                 | translate
@@ -85,6 +87,7 @@
             matSuffix
             icon="info"
             variant="grey"
+            [matTooltipHideDelay]="500"
             [matTooltip]="
               'components.widget.settings.map.tooltip.default.longitude'
                 | translate

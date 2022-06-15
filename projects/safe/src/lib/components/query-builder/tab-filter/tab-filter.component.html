@@ -184,6 +184,7 @@
             icon="change_circle_outline"
             variant="primary"
             (click)="onChangeEditor(i)"
+            [matTooltipHideDelay]="500"
             [matTooltip]="
               ($any(filters.at(i)).get('useExpression')?.value
                 ? 'components.queryBuilder.tooltip.filter.date.usePicker'

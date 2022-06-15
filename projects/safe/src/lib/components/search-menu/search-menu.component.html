@@ -26,6 +26,7 @@
       *ngFor="let item of searchResults"
       [block]="true"
       (click)="onClick(item)"
+      [matTooltipHideDelay]="500"
       [matTooltip]="item.name"
       matTooltipShowDelay="800"
       matTooltipPosition="right"

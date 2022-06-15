@@ -49,6 +49,7 @@
         icon="file_upload"
         category="secondary"
         variant="primary"
+        [matTooltipHideDelay]="500"
         [matTooltip]="'components.records.upload.hint' | translate"
         (click)="showUpload = !showUpload"
         cdkOverlayOrigin
@@ -111,6 +112,7 @@
                   <button
                     mat-menu-item
                     [routerLink]="['./update', element.id]"
+                    [matTooltipHideDelay]="500"
                     [matTooltip]="'Edit as ' + element.form.name"
                     matTooltipPosition="above"
                     [matTooltipDisabled]="resource.forms.length <= 1"

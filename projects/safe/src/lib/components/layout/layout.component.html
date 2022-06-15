@@ -3,6 +3,7 @@
     [isIcon]="true"
     icon="menu"
     (click)="nav.toggle()"
+    [matTooltipHideDelay]="500"
     [matTooltip]="
       (nav.opened
         ? 'components.header.sidenav.collapse'
@@ -16,6 +17,7 @@
     icon="keyboard_backspace"
     (click)="goBack()"
     *ngIf="route"
+    [matTooltipHideDelay]="500"
     [matTooltip]="'pages.applications.goTo' | translate"
   >
   </safe-button>
@@ -166,6 +168,7 @@
                     <div
                       mat-line
                       class="nav-text"
+                      [matTooltipHideDelay]="500"
                       [matTooltip]="item.name"
                       matTooltipShowDelay="1000"
                       matTooltipPosition="right"

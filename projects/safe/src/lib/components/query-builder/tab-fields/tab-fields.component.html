@@ -94,6 +94,7 @@
                 class="field-error"
                 *ngIf="!field.type"
                 (click)="onDelete(index)"
+                [matTooltipHideDelay]="500"
                 [matTooltip]="
                   'components.queryBuilder.errors.field.invalid' | translate
                 "
@@ -116,6 +117,7 @@
         icon="info"
         variant="grey"
         [size]="32"
+        [matTooltipHideDelay]="500"
         [matTooltip]="
           'components.queryBuilder.hint.sortingDisabled' | translate
         "

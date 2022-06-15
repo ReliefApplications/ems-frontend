@@ -3,6 +3,7 @@
     *ngIf="!record"
     [isIcon]="true"
     icon="restart_alt"
+    [matTooltipHideDelay]="500"
     [matTooltip]="'components.form.summary.cache.clear' | translate"
     (click)="clear.emit()"
   ></safe-button>
@@ -18,6 +19,7 @@
   <safe-button
     [isIcon]="true"
     icon="history"
+    [matTooltipHideDelay]="500"
     [matTooltip]="'components.widget.grid.actions.history' | translate"
     (click)="showHistory.emit()"
   ></safe-button>

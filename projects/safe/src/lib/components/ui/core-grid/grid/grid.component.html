@@ -67,6 +67,7 @@
     </ng-container>
     <button
       *ngIf="filterable"
+      [matTooltipHideDelay]="500"
       [matTooltip]="'components.widget.grid.filter.toggle' | translate"
       kendoButton
       icon="eye"
@@ -185,6 +186,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
+                [matTooltipHideDelay]="500"
                 [matTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
@@ -273,6 +275,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
+                [matTooltipHideDelay]="500"
                 [matTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
@@ -315,6 +318,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
+                [matTooltipHideDelay]="500"
                 [matTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
@@ -339,6 +343,7 @@
                 #refSpan
                 class="textbox external-link"
                 *ngIf="dataItem[field.name].length > 0"
+                [matTooltipHideDelay]="500"
                 [matTooltip]="
                   'components.widget.grid.actions.detail' | translate
                 "
@@ -560,6 +565,7 @@
             icon="file-data"
             *ngFor="let file of dataItem[field.name]"
             [look]="'flat'"
+            [matTooltipHideDelay]="500"
             [matTooltip]="file.name"
             (click)="onDownload(file)"
           ></button>
@@ -801,6 +807,7 @@
           [icon]="'detail-section'"
           [look]="'flat'"
           (click)="action.emit({ action: 'details', items: dataItem })"
+          [matTooltipHideDelay]="500"
           [matTooltip]="'components.widget.grid.actions.detail' | translate"
         ></button>
       </ng-template>

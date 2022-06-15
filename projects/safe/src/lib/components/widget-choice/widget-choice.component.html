@@ -25,6 +25,7 @@
       class="safe-widget-type"
       *ngFor="let type of widgetTypes"
       (click)="onSelect(type)"
+      [matTooltipHideDelay]="500"
       [matTooltip]="type.name"
       matTooltipPosition="above"
       (mouseover)="hovered = type.id"
