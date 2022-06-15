@@ -8,10 +8,10 @@
     </div>
     <div class="settings">
       <mat-radio-group aria-label="Select an option" formControlName="isDynamic">
-        <mat-radio-button [value]="false">Static</mat-radio-button>
-        <mat-radio-button [value]="true">Dynamic</mat-radio-button>
+        <mat-radio-button [value]="false">{{ 'components.widget.settings.summaryCard.static' | translate }}</mat-radio-button>
+        <mat-radio-button [value]="true">{{ 'components.widget.settings.summaryCard.dynamic' | translate }}</mat-radio-button>
       </mat-radio-group>
-      <safe-button (click)="addCard()" icon="add">Add a card</safe-button>
+      <safe-button (click)="addCard()" icon="add">{{ 'components.widget.settings.summaryCard.addCard' | translate }}</safe-button>
     </div>
     <kendo-tilelayout
       [columns]="colsNumber"
@@ -36,12 +36,12 @@
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="openCardSettings(i)">
             <mat-icon>insert_chart</mat-icon>
-            <span>Settings</span>
+            <span>{{ 'common.settings' | translate }}</span>
           </button>
           <mat-divider></mat-divider>
           <button mat-menu-item (click)="removeCard(i)">
             <mat-icon>delete</mat-icon>
-            <span>Delete</span>
+            <span>{{ 'common.delete' | translate }}</span>
           </button>
         </mat-menu>
         <safe-icon *ngIf="!tileForm.value.isDynamic" icon="drag_indicator" class="widget-handle">

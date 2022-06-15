@@ -819,13 +819,20 @@
 					}
 				},
 				"summaryCard": {
+          "static": "Static",
+          "dynamic": "Dynamic",
+          "addCard": "Add a card",
+          "cardCreation": {
+            "info": "This is a placeholder for an explanation",
+            "startTemplate": "Start from template",
+            "startBlank": "Start from blank"
+          },
 					"card": {
 						"dataSource": {
 							"title": "Data source"
 						},
 						"display": {
-							"header": "Header",
-							"title": "Display"
+							"header": "Header"
 						},
 						"preview": {},
 						"textEditor": {

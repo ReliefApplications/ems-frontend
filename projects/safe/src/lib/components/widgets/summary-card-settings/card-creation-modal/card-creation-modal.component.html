@@ -7,15 +7,15 @@
   [matTooltip]="'common.close' | translate"
 >
 </safe-button>
-<h1 mat-dialog-title>Add a new card</h1>
+<h1 mat-dialog-title>{{ 'components.widget.settings.summaryCard.addCard' | translate }}</h1>
 <div mat-dialog-content class="mat-dialog-content">
   <mat-radio-group aria-label="Select an option" [value]="false" (change)="radioChange($event)">
-    <mat-radio-button [value]="false">Static</mat-radio-button>
-    <mat-radio-button [value]="true">Dynamic</mat-radio-button>
+    <mat-radio-button [value]="false">{{ 'components.widget.settings.summaryCard.static' | translate }}</mat-radio-button>
+    <mat-radio-button [value]="true">{{ 'components.widget.settings.summaryCard.dynamic' | translate }}</mat-radio-button>
   </mat-radio-group>
-  <p class="explanation">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Donec adipiscing tristique risus nec feugiat in. Sit amet justo donec enim. Nibh tortor id aliquet lectus proin nibh nisl condimentum id. Bibendum enim facilisis gravida neque convallis.</p>
-  <h2>Start from template</h2>
-  <h2 style="margin: 0">Start from blank</h2>
+  <p class="explanation">{{ 'components.widget.settings.summaryCard.cardCreation.info' | translate }}</p>
+  <h2>{{ 'components.widget.settings.summaryCard.cardCreation.startTemplate' | translate }}</h2>
+  <h2 style="margin: 0">{{ 'components.widget.settings.summaryCard.cardCreation.startBlank' | translate }}</h2>
   <safe-button (click)="onSubmit()" icon="add" [isIcon]="true"></safe-button>
 </div>
 <div mat-dialog-actions class="mat-dialog-actions" align="end">

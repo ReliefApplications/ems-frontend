@@ -25,6 +25,11 @@ export class SafeFloatingOptionsComponent implements OnInit {
   // === AVAILABLE ACTIONS ===
   public items: any[] = [];
 
+  /**
+   * @param dialog
+   * @param dashboardService
+   * @param translate
+   */
   constructor(
     public dialog: MatDialog,
     private dashboardService: SafeDashboardService,
@@ -62,7 +67,6 @@ export class SafeFloatingOptionsComponent implements OnInit {
    */
   onClick(item: any): void {
     if (item.name === 'Settings') {
-      console.log(this.widget);
       const dialogRef = this.dialog.open(SafeTileDataComponent, {
         disableClose: true,
         data: {
@@ -74,7 +78,8 @@ export class SafeFloatingOptionsComponent implements OnInit {
           bottom: '0',
           right: '0',
         },
-        panelClass: this.widget.component = 'summary-card' ? 'tile-settings-dialog-with-tile-layout' : 'tile-settings-dialog',
+        panelClass: (this.widget.component =
+          'tile-settings-dialog-with-tile-layout'),
       });
       dialogRef.afterClosed().subscribe((res) => {
         if (res) {
