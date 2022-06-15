@@ -102,29 +102,33 @@
                 ></safe-button>
               </div>
             </div>
-            <mat-form-field appearance="outline">
-              <mat-label>{{
-                'components.widget.settings.map.layers.point.size' | translate
-              }}</mat-label>
-              <input
-                type="number"
-                matInput
-                formControlName="size"
-                min="1"
-                max="10"
-              />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>{{
-                'components.widget.settings.map.layers.point.color' | translate
-              }}</mat-label>
-              <h4></h4>
-              <input type="color" matInput formControlName="color" />
-            </mat-form-field>
-            <safe-tab-filter
-              [form]="$any(rule).controls.filter"
-              [fields]="formatedSelectedFields"
-            ></safe-tab-filter>
+            <div>
+              <mat-form-field appearance="outline">
+                <mat-label>{{
+                  'components.widget.settings.map.layers.point.size' | translate
+                }}</mat-label>
+                <input
+                  type="number"
+                  matInput
+                  formControlName="size"
+                  min="1"
+                  max="10"
+                />
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field appearance="outline">
+                <mat-label>{{
+                  'components.widget.settings.map.layers.point.color' | translate
+                }}</mat-label>
+                <h4></h4>
+                <input type="color" matInput formControlName="color" />
+              </mat-form-field>
+              <safe-tab-filter
+                [form]="$any(rule).controls.filter"
+                [fields]="formatedSelectedFields"
+              ></safe-tab-filter>
+            </div>
           </div>
           <safe-button
             type="button"

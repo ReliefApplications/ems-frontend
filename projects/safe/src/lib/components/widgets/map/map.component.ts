@@ -96,6 +96,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   /**
    * Constructor of the map widget component
    *
+   * @param environment
    * @param apollo Apollo client
    * @param queryBuilder The querybuilder service
    */
@@ -236,14 +237,30 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Styling is in the global style file
     this.legendControl = L.control({ position: 'bottomright' });
 
-    // Defines the method which will be called when the legend control is added to the map
+    /**
+     * Defines the method which will be called when the legend control is added to the map
+     *
+     * @param map
+     */
     this.legendControl.onAdd = function (map: any) {
       this.div = L.DomUtil.create('div', 'map-legend-container');
       return this.div;
     };
 
-    // Defines a method to be able to update the legend control once it is already added to the map
-    this.legendControl.update = function (map: any, data: any, overlays: any) {
+    /**
+     * Defines a method to be able to update the legend control once it is already added to the map
+     *
+     * @param map
+     * @param data
+     * @param overlays
+     * @param markersNames
+     */
+    this.legendControl.update = function (
+      map: any,
+      data: any,
+      overlays: any,
+      markersNames: string[]
+    ) {
       const div = this.div;
       div.innerHTML = '';
       data.clorophlets?.map((clorophlet: any) => {
@@ -308,6 +325,45 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           // );
         }
       });
+      if (data.markerRules && data.markerRules.length > 0) {
+        const legendLayerDiv = L.DomUtil.create('div', 'map-legend', div);
+        const legendLayerHeader = L.DomUtil.create(
+          'div',
+          'map-legend-header',
+          legendLayerDiv
+        );
+        legendLayerHeader.innerHTML = `<h4>Markers</h4>`;
+        L.DomEvent.on(
+          legendLayerHeader,
+          'click',
+          () => {
+            markersNames.map((marker: string) => {
+              const layer = overlays[marker];
+              if (map.hasLayer(layer)) {
+                L.DomUtil.addClass(legendLayerDiv, 'map-legend-hide');
+                map.removeLayer(layer);
+              } else {
+                map.addLayer(layer);
+                L.DomUtil.removeClass(legendLayerDiv, 'map-legend-hide');
+              }
+            });
+          },
+          this
+        );
+        data.markerRules?.map((rule: any, i: number) => {
+          const legendDivisionDiv = L.DomUtil.create(
+            'div',
+            'map-legend-division',
+            legendLayerDiv
+          );
+          legendDivisionDiv.innerHTML =
+            '<i style="background:' +
+            rule.color +
+            '"></i>' +
+            (rule.label.length > 0 ? rule.label : 'Rule ' + (i + 1)) +
+            '<br>';
+        });
+      }
       if (div.innerHTML.length === 0) {
         div.style.display = 'none';
       }
@@ -343,7 +399,12 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         this.selectedItem = null;
         this.markersLayer.clearLayers();
         this.setLayers(res);
-        this.legendControl.update(this.map, this.settings, this.overlays);
+        this.legendControl.update(
+          this.map,
+          this.settings,
+          this.overlays,
+          Object.keys(this.markersCategories)
+        );
       }
     );
   }
