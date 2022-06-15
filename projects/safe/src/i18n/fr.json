@@ -777,6 +777,8 @@
 							},
 							"prefill": "Préremplir le formulaire avec les données sélectionnées",
 							"save": "Sauvegarder automatiquement",
+							"selectAllRecords": "Sélectionner tous les enregistrements",
+							"selectAllRecordsActivePage": "Sélectionner tous les enregistrements sur la page active",
 							"selectDisplay": "Sélectionner les champs affichés",
 							"sendMail": "Envoyer le mail",
 							"workflow": {

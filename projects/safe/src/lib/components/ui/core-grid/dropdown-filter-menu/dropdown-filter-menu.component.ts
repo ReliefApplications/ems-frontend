@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { FilterService } from '@progress/kendo-angular-grid';
 
 @Component({
@@ -31,27 +32,27 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
 
   public logics = [
     {
-      text: 'Or',
+      text: this.translate.instant('kendo.grid.filterOrLogic'),
       value: 'or',
     },
     {
-      text: 'And',
+      text: this.translate.instant('kendo.grid.filterAndLogic'),
       value: 'and',
     },
   ];
 
   public operators = [
     {
-      text: 'Is equal to',
+      text: this.translate.instant('kendo.grid.filterEqOperator'),
       value: 'eq',
     },
     {
-      text: 'Is not equal to',
+      text: this.translate.instant('kendo.grid.filterNotEqOperator'),
       value: 'neq',
     },
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private translate: TranslateService) {}
 
   ngOnInit(): void {
     this.choices1 = this.data.slice();
