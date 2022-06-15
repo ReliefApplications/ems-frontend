@@ -82,6 +82,7 @@
 			"rawJson": "Raw JSON"
 		},
 		"label": "Label",
+		"layers": "Layers",
 		"layout": {
 			"few": "Layouts",
 			"none": "No layout",

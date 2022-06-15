@@ -96,7 +96,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   /**
    * Constructor of the map widget component
    *
-   * @param environment
+   * @param environment platform environment
    * @param apollo Apollo client
    * @param queryBuilder The querybuilder service
    */
@@ -238,9 +238,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.legendControl = L.control({ position: 'bottomright' });
 
     /**
-     * Defines the method which will be called when the legend control is added to the map
+     *  Defines the method which will be called when the legend control is added to the map
      *
-     * @param map
+     * @param map current leaflet map
+     * @returns legend container
      */
     this.legendControl.onAdd = function (map: any) {
       this.div = L.DomUtil.create('div', 'map-legend-container');
@@ -250,10 +251,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     /**
      * Defines a method to be able to update the legend control once it is already added to the map
      *
-     * @param map
-     * @param data
-     * @param overlays
-     * @param markersNames
+     * @param map current leaflet map
+     * @param data current map data
+     * @param overlays list of overlays
+     * @param markersNames list of markers
      */
     this.legendControl.update = function (
       map: any,
@@ -263,6 +264,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     ) {
       const div = this.div;
       div.innerHTML = '';
+      // Create legend for clorophlets
       data.clorophlets?.map((clorophlet: any) => {
         const layer = overlays[clorophlet.name];
 
@@ -325,6 +327,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           // );
         }
       });
+      // Create legend for markers
       if (data.markerRules && data.markerRules.length > 0) {
         const legendLayerDiv = L.DomUtil.create('div', 'map-legend', div);
         const legendLayerHeader = L.DomUtil.create(

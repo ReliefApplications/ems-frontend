@@ -7,14 +7,8 @@ import {
 } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
-// Apollo
+// Http
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { APOLLO_OPTIONS } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular/http';
-import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
-import { getMainDefinition } from '@apollo/client/utilities';
-import { WebSocketLink } from '@apollo/client/link/ws';
-import { setContext } from '@apollo/client/link/context';
 import { AppComponent } from './app.component';
 import { ApplicationWidgetComponent } from './widgets/application-widget/application-widget.component';
 import { ApplicationWidgetModule } from './widgets/application-widget/application-widget.module';
@@ -25,7 +19,6 @@ import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
 import { WorkflowWidgetComponent } from './widgets/workflow-widget/workflow-widget.component';
 import { WorkflowWidgetModule } from './widgets/workflow-widget/workflow-widget.module';
 import { environment } from '../environments/environment';
-import { BehaviorSubject } from 'rxjs';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
@@ -42,98 +35,17 @@ import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
 import { AppOverlayContainer } from './utils/overlay-container';
-
-localStorage.setItem('loaded', 'false');
-
-const REFRESH = new BehaviorSubject<boolean>(false);
+// Apollo / GraphQL
+import { GraphQLModule } from './graphql.module';
 
 /**
- * Configuration of the Apollo client.
+ * Initialize authentication in the platform.
+ * Configuration in environment file.
+ * Use oAuth
  *
- * @param httpLink Apollo http link
- * @returns void
+ * @param oauth OAuth Service
+ * @returns oAuth configuration
  */
-export const provideApollo = (httpLink: HttpLink): any => {
-  const basic = setContext((operation, context) => ({
-    headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Accept: 'charset=utf-8',
-    },
-  }));
-
-  const auth = setContext((operation, context) => {
-    // Get the authentication token from local storage if it exists
-    const token = localStorage.getItem('idtoken');
-    return {
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  });
-
-  const http = httpLink.create({ uri: `${environment.apiUrl}/graphql` });
-
-  const ws = new WebSocketLink({
-    uri: `${environment.subscriptionApiUrl}/graphql`,
-    options: {
-      reconnect: true,
-      connectionParams: {
-        authToken: localStorage.getItem('idtoken'),
-      },
-      connectionCallback: (error) => {
-        if (localStorage.getItem('loaded') === 'true') {
-          // location.reload();
-          REFRESH.next(true);
-          localStorage.setItem('loaded', 'false');
-        }
-        localStorage.setItem('loaded', 'true');
-      },
-    },
-  });
-
-  interface Definition {
-    kind: string;
-    operation?: string;
-  }
-
-  const link = ApolloLink.from([
-    basic,
-    auth,
-    split(
-      ({ query }) => {
-        const { kind, operation }: Definition = getMainDefinition(query);
-        return kind === 'OperationDefinition' && operation === 'subscription';
-      },
-      ws,
-      http
-    ),
-  ]);
-
-  // Cache is not currently used, due to fetchPolicy values
-  const cache = new InMemoryCache();
-
-  return {
-    link,
-    cache,
-    defaultOptions: {
-      watchQuery: {
-        fetchPolicy: 'network-only',
-        // fetchPolicy: 'cache-and-network',
-        errorPolicy: 'ignore',
-      },
-      query: {
-        fetchPolicy: 'network-only',
-        // fetchPolicy: 'cache-and-network',
-        errorPolicy: 'all',
-      },
-      mutate: {
-        errorPolicy: 'all',
-      },
-    },
-  };
-};
-
 const initializeAuth =
   (oauth: OAuthService): any =>
   () => {
@@ -179,17 +91,12 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     FormWidgetModule,
     WorkflowWidgetModule,
     ApplicationWidgetModule,
+    GraphQLModule,
   ],
   providers: [
     {
       provide: 'environment',
       useValue: environment,
-    },
-    {
-      // TODO: added default options to solve cache issues, cache solution can be added at the query / mutation level.
-      provide: APOLLO_OPTIONS,
-      useFactory: provideApollo,
-      deps: [HttpLink],
     },
     {
       provide: APP_INITIALIZER,
