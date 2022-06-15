@@ -53,7 +53,7 @@
   margin-bottom: 20px;
 }
 
-input[type="color"] {
+input[type='color'] {
   position: absolute;
   width: 100%;
   top: 9%;
@@ -62,10 +62,10 @@ input[type="color"] {
   border: none;
   cursor: pointer;
 }
-input[type="color"]::-webkit-color-swatch-wrapper {
+input[type='color']::-webkit-color-swatch-wrapper {
   padding: 0;
 }
-input[type="color"]::-webkit-color-swatch {
+input[type='color']::-webkit-color-swatch {
   border: none;
   border-radius: 4px;
 }
