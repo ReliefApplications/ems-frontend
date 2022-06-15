@@ -580,16 +580,6 @@ mat-tab-group[vertical] {
           }
         }
       }
-
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: calc(100% - 2px);
-        height: 100%;
-        width: 2px;
-        background-color: none !important;
-      }
     }
 
     .mat-ink-bar {

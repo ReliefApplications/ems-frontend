@@ -82,6 +82,7 @@
 			"rawJson": "JSON brut"
 		},
 		"label": "Etiquette",
+		"layers": "Couches",
 		"layout": {
 			"few": "Mises en page",
 			"none": "Aucune mise en page",
