@@ -47,4 +47,5 @@ jobs:
           commit_message: Prettify
           commit_options: '--no-verify'
           push_options: '--no-verify'
+          file_pattern: *.scss *.html
 
