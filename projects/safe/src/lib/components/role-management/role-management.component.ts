@@ -9,11 +9,13 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Channel } from '../../models/channel.model';
 import {
   GetChannelsQueryResponse,
+  GetFormsQueryResponse,
   GetPermissionsQueryResponse,
   GetResourcesQueryResponse,
   GetRolesQueryResponse,
   GetUsersGlobalQueryResponse,
   GET_CHANNELS,
+  GET_FORMS,
   GET_PERMISSIONS,
   GET_RESOURCES,
   GET_ROLES,
@@ -71,9 +73,19 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     loading?: boolean;
   } = {};
 
+  // Forms tab
+  public forms: any[] = [];
+
+  private formsQuery!: QueryRef<GetFormsQueryResponse>;
+  public formsQueryInfo: {
+    endCursor?: string;
+    hasNextPage?: boolean;
+    loading?: boolean;
+  } = {};
+
   // Resources and forms search functionality
-  public resourcesSearch = new FormControl('');
-  private resourcesQueryFilter: any = {};
+  public formsAndResourcesSearch = new FormControl('');
+  private formsAndResourcesQueryFilter: any = {};
 
   private applicationSubscription?: Subscription;
 
@@ -193,14 +205,27 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
       this.resources = res.data.resources.edges.map((x) => x.node);
     });
 
-    this.resourcesSearch.valueChanges
+    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+      query: GET_FORMS,
+      variables: { first: LOAD_ITEMS },
+    });
+    this.formsQuery.valueChanges.subscribe((res) => {
+      this.formsQueryInfo = {
+        ...res.data.forms.pageInfo,
+        loading: res.loading,
+      };
+      this.forms = res.data.forms.edges.map((x) => x.node);
+    });
+
+    this.formsAndResourcesSearch.valueChanges
       .pipe(debounceTime(SEARCH_DEBOUNCE_TIME), distinctUntilChanged())
       .subscribe((value) => {
-        this.resourcesQueryFilter = {
+        this.formsAndResourcesQueryFilter = {
           logic: 'and',
           filters: [{ field: 'name', operator: 'contains', value }],
         };
         this.loadResources({ search: true });
+        this.loadForms({ search: true });
       });
   }
 
@@ -389,6 +414,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    */
   public onSubmit(): void {
     /******************************* UPDATING THE ROLE *******************************/
+    /* Saves title, description, permissions, channels */
     if (!this.currentRole) {
       this.snackBar.openSnackBar(
         this.translateService.instant('components.role.update.error')
@@ -438,17 +464,13 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     }
     /***************************** END UPDATING THE ROLE *****************************/
 
-    /******************************* UPDATING THE FEATURES *******************************/
+    /***************************** UPDATING THE FEATURES *****************************/
 
-    /***************************** END UPDATING THE FEATURES *****************************/
+    /*************************** END UPDATING THE FEATURES ***************************/
 
-    /******************************* UPDATING THE RESOURCES *******************************/
+    /***************************** UPDATING THE RESOURCES ****************************/
 
-    /***************************** END UPDATING THE RESOURCES *****************************/
-
-    /******************************* UPDATING THE CHANNELS *******************************/
-
-    /***************************** END UPDATING THE CHANNELS *****************************/
+    /*************************** END UPDATING THE RESOURCES **************************/
   }
 
   /**
@@ -462,7 +484,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     this.resourcesQuery.fetchMore({
       variables: {
         first: LOAD_ITEMS,
-        filter: this.resourcesQueryFilter,
+        filter: this.formsAndResourcesQueryFilter,
         ...(!options?.search && {
           afterCursor: this.resourcesQueryInfo.endCursor,
         }), // If the query is from a search, don't take into account the cursor
@@ -484,6 +506,42 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
       },
     });
   }
+
+
+  /**
+   * Load the list of forms
+   *
+   * @param options object containing optional arguments
+   * "search" is used if the query is a new search which means the previous results will not be used
+   */
+  public loadForms(options?: { search: boolean }): void {
+    this.formsQueryInfo.loading = true;
+    this.formsQuery.fetchMore({
+      variables: {
+        first: LOAD_ITEMS,
+        filter: this.formsAndResourcesQueryFilter,
+        ...(!options?.search && {
+          afterCursor: this.formsQueryInfo.endCursor, // If the query is from a search, don't take into account the cursor
+        }),
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign({}, prev, {
+          forms: {
+            edges: [
+              ...(options?.search ? [] : prev.forms.edges), // If the query is from a search, don't take into account the previous results
+              ...fetchMoreResult.forms.edges,
+            ],
+            pageInfo: fetchMoreResult.forms.pageInfo,
+            totalCount: fetchMoreResult.forms.totalCount,
+          },
+        });
+      },
+    });
+  }
+
 
   /**
    * Manage canSeeRoles and canSeeUsers permission toggling
@@ -508,14 +566,6 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
         { error: true }
       );
     }
-  }
-
-  /**
-   * Edits permissions of the selected form or resource
-   */
-  public onEditResourcePermissions(): void {
-    // TODO implement this
-    console.log('Work in progress');
   }
 
   /**

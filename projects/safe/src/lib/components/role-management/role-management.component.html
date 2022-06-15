@@ -72,23 +72,38 @@
             <div class="searchbar">
                 <mat-form-field appearance="outline">
                     <mat-icon matPrefix>search</mat-icon>
-                    <input matInput [formControl]="resourcesSearch" type="search"
+                    <input matInput [formControl]="formsAndResourcesSearch" type="search"
                         [placeholder]="'common.placeholder.search' | translate">
                 </mat-form-field>
             </div>
-            <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel>
                 <mat-expansion-panel-header>
                     <mat-panel-title class=" panel-header">
                         {{'common.resource.few' | translate}}
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <mat-list>
-                    <mat-list-item *ngFor="let resource of resources" (click)="onEditResourcePermissions()">
+                    <mat-list-item *ngFor="let resource of resources">
                         {{resource.name}}
                     </mat-list-item>
                 </mat-list>
                 <safe-button *ngIf="resourcesQueryInfo.hasNextPage" class="load-more-button" category="tertiary"
                     variant="primary" (click)="loadResources()" [loading]="!!resourcesQueryInfo.loading">Load more
+                </safe-button>
+            </mat-expansion-panel>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title class="panel-header">
+                        {{'common.form.few' | translate}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-list>
+                    <mat-list-item *ngFor="let form of forms">
+                        {{form.name + (form.core? ' (core)' : '')}}
+                    </mat-list-item>
+                </mat-list>
+                <safe-button *ngIf="formsQueryInfo.hasNextPage" class="load-more-button" category="tertiary"
+                    variant="primary" (click)="loadForms()" [loading]="!!formsQueryInfo.loading">Load more
                 </safe-button>
             </mat-expansion-panel>
             <div class="spacer"></div>
