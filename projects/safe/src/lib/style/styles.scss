@@ -605,10 +605,12 @@ mat-tab-group[vertical] {
         transition: all ease 200ms;
         padding-left: 32px;
       }
-      & > .mat-tab-body-content[style*="transform: translate3d(100%, 0px, 0px)"] {
+      &
+        > .mat-tab-body-content[style*='transform: translate3d(100%, 0px, 0px)'] {
         transform: translate3d(0px, 100%, 0px) !important;
       }
-      & > .mat-tab-body-content[style*="transform: translate3d(-100%, 0px, 0px)"] {
+      &
+        > .mat-tab-body-content[style*='transform: translate3d(-100%, 0px, 0px)'] {
         transform: translate3d(0px, -100%, 0px) !important;
       }
     }

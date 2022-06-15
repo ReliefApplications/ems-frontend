@@ -1,5 +1,5 @@
 <div>
-  <h3>{{'components.aggregationBuilder.groupingRules' | translate }}</h3>
+  <h3>{{ 'components.aggregationBuilder.groupingRules' | translate }}</h3>
   <div class="group-by">
     <div
       class="group-by-rule"
@@ -24,14 +24,14 @@
         variant="danger"
       ></safe-button>
     </div>
-    <safe-button icon="add" category="tertiary" (click)="onAddRule()"
-      >{{'components.aggregationBuilder.addRule' | translate}}</safe-button
-    >
+    <safe-button icon="add" category="tertiary" (click)="onAddRule()">{{
+      'components.aggregationBuilder.addRule' | translate
+    }}</safe-button>
   </div>
 </div>
 
 <div>
-  <h3>{{'components.aggregationBuilder.accumulators' | translate }}</h3>
+  <h3>{{ 'components.aggregationBuilder.accumulators' | translate }}</h3>
   <div>
     <safe-add-field-stage
       [fields]="fields"
