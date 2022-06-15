@@ -62,6 +62,7 @@ export class SafeFloatingOptionsComponent implements OnInit {
    */
   onClick(item: any): void {
     if (item.name === 'Settings') {
+      console.log(this.widget);
       const dialogRef = this.dialog.open(SafeTileDataComponent, {
         disableClose: true,
         data: {
@@ -73,7 +74,7 @@ export class SafeFloatingOptionsComponent implements OnInit {
           bottom: '0',
           right: '0',
         },
-        panelClass: 'tile-settings-dialog',
+        panelClass: this.widget.component = 'summary-card' ? 'tile-settings-dialog-with-tile-layout' : 'tile-settings-dialog',
       });
       dialogRef.afterClosed().subscribe((res) => {
         if (res) {
