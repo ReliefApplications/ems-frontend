@@ -20,9 +20,7 @@ export class SafeCardCreationModalComponent implements OnInit {
    * @param dialogRef
    * @param formBuilder
    */
-  constructor(
-    public dialogRef: MatDialogRef<SafeCardCreationModalComponent>
-  ) {}
+  constructor(public dialogRef: MatDialogRef<SafeCardCreationModalComponent>) {}
 
   ngOnInit(): void {}
 
