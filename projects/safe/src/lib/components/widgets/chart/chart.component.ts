@@ -20,14 +20,14 @@ import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
  */
 const DEFAULT_FILE_NAME = 'chart.png';
 
+/**
+ * Chart widget component using KendoUI
+ */
 @Component({
   selector: 'safe-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-/**
- * Chart widget using KendoUI
- */
 export class SafeChartComponent implements OnChanges, OnDestroy {
   // === DATA ===
   public loading = true;

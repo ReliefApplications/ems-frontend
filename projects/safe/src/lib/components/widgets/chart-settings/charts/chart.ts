@@ -1,10 +1,16 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { createAggregationForm } from '../../../ui/aggregation-builder/aggregation-builder-forms';
 
+/** Class for the chart object */
 export class Chart {
   public form: FormGroup;
   private fb: FormBuilder;
 
+  /**
+   * The constructor for a chart
+   *
+   * @param settings The settings of the chart
+   */
   constructor(settings?: any) {
     this.fb = new FormBuilder();
     const legend = settings ? settings.legend : null;

@@ -7,6 +7,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Module for the safeEditorSetting component
+ */
 @NgModule({
   declarations: [SafeEditorSettingsComponent],
   imports: [

@@ -9,6 +9,9 @@ import { SafeLayoutModule } from '../../../layout/layout.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 
+/**
+ * Module for the addLayout component
+ */
 @NgModule({
   declarations: [AddLayoutComponent],
   imports: [
