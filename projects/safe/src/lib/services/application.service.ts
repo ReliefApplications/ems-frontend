@@ -536,6 +536,7 @@ export class SafeApplicationService {
                     ...x,
                     permissions: res.data?.editRole.permissions,
                     channels: res.data?.editRole.channels,
+                    title: res.data?.editRole.title,
                     description: res.data?.editRole.description,
                   };
                 }

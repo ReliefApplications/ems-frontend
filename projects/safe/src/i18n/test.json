@@ -535,9 +535,9 @@
 				"canSeeUsers": "******"
 			},
 			"update": {
+				"error": "******",
 				"permissions": "******",
-				"title": "******",
-				"error": "******"
+				"title": "******"
 			}
 		},
 		"user": {

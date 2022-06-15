@@ -1,4 +1,4 @@
-<h1>{{roleForm?.get('name')?.value}}</h1>
+<h1>{{currentRole?.title}}</h1>
 <form [formGroup]="roleForm" *ngIf="roleForm" (ngSubmit)="onSubmit()">
     <mat-tab-group>
         <mat-tab [label]="'Summary'">
@@ -7,7 +7,7 @@
                     <mat-label>
                         {{'common.name' | translate}}
                     </mat-label>
-                    <input matInput formControlName="name" type='text' />
+                    <input matInput formControlName="title" type='text' />
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>
@@ -120,6 +120,7 @@
         </mat-tab>
 
     </mat-tab-group>
-    <safe-button variant="primary" category="secondary" type="submit">{{ 'common.saveChanges' | translate }}
+    <safe-button variant="primary" category="secondary"
+        type="submit">{{ 'common.saveChanges' | translate }}
     </safe-button>
 </form>

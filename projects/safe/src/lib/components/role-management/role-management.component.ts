@@ -28,6 +28,7 @@ import { Page } from '../../models/page.model';
 import _ from 'lodash';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
+import { EditRoleMutationResponse, EDIT_ROLE } from '../../graphql/mutations';
 
 const LOAD_ITEMS = 10;
 const SEARCH_DEBOUNCE_TIME = 500;
@@ -208,7 +209,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    */
   private buildForm(): void {
     this.roleForm = this.formBuilder.group({
-      name: [this.currentRole?.title, Validators.required],
+      title: [this.currentRole?.title, Validators.required],
       channels: [this.currentRole?.channels],
       description: [this.currentRole?.description, Validators.required],
       canSeeUsers: new FormControl(
@@ -387,9 +388,67 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    * Adds selected features and channels, then it updates the role
    */
   public onSubmit(): void {
-    console.log('******************** ON SUBMIT ********************');
-    console.log('TO IMPLEMENT');
-    console.log('******************** SUBMIT DONE ********************');
+    /******************************* UPDATING THE ROLE *******************************/
+    if (!this.currentRole) {
+      this.snackBar.openSnackBar(
+        this.translateService.instant('components.role.update.error')
+      );
+      return;
+    }
+
+    const updateRole = {
+      ...this.currentRole,
+      channels: this.currentRole.channels?.map((c) => c.id),
+      permissions: this.currentRole.permissions?.map((p) => p.id),
+      ...(this.roleForm?.value.title && { title: this.roleForm?.value.title }),
+      ...(this.roleForm?.value.description && {
+        description: this.roleForm?.value.description,
+      }),
+    };
+
+    if (this.inApp) {
+      this.applicationService.editRole(this.currentRole, updateRole);
+    } else {
+      this.apollo
+        .mutate<EditRoleMutationResponse>({
+          mutation: EDIT_ROLE,
+          variables: {
+            id: updateRole.id,
+            permissions: updateRole.permissions,
+            channels: updateRole.channels,
+            title: updateRole.title,
+            description: updateRole.description,
+          },
+        })
+        .subscribe((res) => {
+          const message = res.errors
+            ? 'common.notifications.objectNotUpdated'
+            : 'common.notifications.objectUpdated';
+          this.snackBar.openSnackBar(
+            this.translateService.instant(message, {
+              type: this.translateService
+                .instant('common.role.one')
+                .toLowerCase(),
+              value: this.currentRole?.title,
+            })
+          );
+
+          this.currentRole = _.cloneDeep(res.data?.editRole);
+        });
+    }
+    /***************************** END UPDATING THE ROLE *****************************/
+
+    /******************************* UPDATING THE FEATURES *******************************/
+
+    /***************************** END UPDATING THE FEATURES *****************************/
+
+    /******************************* UPDATING THE RESOURCES *******************************/
+
+    /***************************** END UPDATING THE RESOURCES *****************************/
+
+    /******************************* UPDATING THE CHANNELS *******************************/
+
+    /***************************** END UPDATING THE CHANNELS *****************************/
   }
 
   /**
@@ -463,8 +522,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
    * Destroys all the subscriptions of the page.
    */
   ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
+    this.applicationSubscription?.unsubscribe();
+    this.permissionsSubscription?.unsubscribe();
   }
 }
