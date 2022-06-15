@@ -39,7 +39,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
     endCursor: '',
     hasNextPage: true,
   };
-  public loading = true;
+  private loading = true;
   private loadingMore = false;
 
   @ViewChild('formSelect') formSelect?: MatSelect;
@@ -209,21 +209,37 @@ export class AddPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Fetches next page of forms to add to list.
+   *
+   * @param value boolean that decides wether a next page of forms should be fetched
+   */
   public onScrollDataSource(value: boolean): void {
     if (!this.loadingMore && this.pageInfo.hasNextPage) {
       this.loadingMore = true;
-      this.fetchMoreDataSources(value);
+      this.fetchMoreForms(value);
     }
   }
 
-  public onFilterDataSource(value: string): void {
+  /**
+   * Filters forms by name
+   *
+   * @param filter string used to filter.
+   */
+  public onFilterDataSource(filter: string): void {
     if (!this.loadingMore) {
       this.loadingMore = true;
-      this.fetchMoreDataSources(false, value);
+      this.fetchMoreForms(false, filter);
     }
   }
 
-  public fetchMoreDataSources(nextPage: boolean = false, filter: string = '') {
+  /**
+   * Fetches more forms using filtering and pagination.
+   *
+   * @param nextPage boolean to indicate if we must fetch the next page.
+   * @param filter the forms fetched must respect this filter
+   */
+  public fetchMoreForms(nextPage: boolean = false, filter: string = '') {
     const variables: any = {
       first: ITEMS_PER_PAGE,
     };
@@ -243,7 +259,6 @@ export class AddPageComponent implements OnInit, OnDestroy {
     this.formsQuery.fetchMore({
       variables,
       updateQuery: (prev, { fetchMoreResult }) => {
-        console.log('fetchMoreResult', fetchMoreResult);
         if (!fetchMoreResult) {
           return prev;
         }
@@ -260,6 +275,5 @@ export class AddPageComponent implements OnInit, OnDestroy {
         });
       },
     });
-    console.log(this.forms$);
   }
 }
