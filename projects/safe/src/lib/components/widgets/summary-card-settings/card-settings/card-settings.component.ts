@@ -10,7 +10,7 @@ interface DialogData {
 }
 
 /**
- *
+ * Used for changing the settings of a card in the summary-card widget
  */
 @Component({
   selector: 'safe-card-settings',
@@ -21,6 +21,8 @@ export class SafeCardSettingsComponent implements OnInit {
   public form: any;
 
   /**
+   * Contructor for safe-card-settings component
+   *
    * @param dialogRef
    * @param formBuilder
    * @param data
@@ -31,6 +33,9 @@ export class SafeCardSettingsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
+  /**
+   * Creates a formGroup with the data provided in the modal creation
+   */
   ngOnInit(): void {
     this.form = this.formBuilder.group(this.data);
   }
@@ -43,7 +48,7 @@ export class SafeCardSettingsComponent implements OnInit {
   }
 
   /**
-   * Closes the modal sending tile form value.
+   * Closes the modal sending the form data.
    */
   onSubmit(): void {
     this.dialogRef.close(this.form.value);

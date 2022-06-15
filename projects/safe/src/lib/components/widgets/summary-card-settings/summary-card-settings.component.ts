@@ -120,7 +120,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   *
+   * Creates a new card
    */
   addCard() {
     const dialogRef = this.dialog.open(SafeCardCreationModalComponent, {
@@ -142,6 +142,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Removes an specific card from the data
+   *
    * @param i
    */
   removeCard(i: number) {
@@ -149,6 +151,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Opens a settings modal for an specific card
+   *
    * @param i
    */
   openCardSettings(i: number) {

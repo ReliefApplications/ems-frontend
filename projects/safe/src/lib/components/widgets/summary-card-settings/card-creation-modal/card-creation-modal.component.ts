@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 
 /**
- *
+ * The component is used on a card creation in the summary-card widget
  */
 @Component({
   selector: 'safe-card-creation-modal',
@@ -16,12 +15,13 @@ export class SafeCardCreationModalComponent implements OnInit {
   };
 
   /**
+   * Constructor for safe-card-creation-modal contructor
+   *
    * @param dialogRef
    * @param formBuilder
    */
   constructor(
-    public dialogRef: MatDialogRef<SafeCardCreationModalComponent>,
-    public formBuilder: FormBuilder
+    public dialogRef: MatDialogRef<SafeCardCreationModalComponent>
   ) {}
 
   ngOnInit(): void {}
@@ -34,13 +34,15 @@ export class SafeCardCreationModalComponent implements OnInit {
   }
 
   /**
-   * Closes the modal sending tile form value.
+   * Closes the modal sending the modal data.
    */
   onSubmit(): void {
     this.dialogRef.close(this.data);
   }
 
   /**
+   * Changes the isDynamic property on radio component change
+   *
    * @param event
    */
   radioChange(event: any): void {
