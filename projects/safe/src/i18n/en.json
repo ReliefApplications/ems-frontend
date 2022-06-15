@@ -819,14 +819,7 @@
 					}
 				},
 				"summaryCard": {
-          "static": "Static",
-          "dynamic": "Dynamic",
-          "addCard": "Add a card",
-          "cardCreation": {
-            "info": "This is a placeholder for an explanation",
-            "startTemplate": "Start from template",
-            "startBlank": "Start from blank"
-          },
+					"addCard": "Add a card",
 					"card": {
 						"dataSource": {
 							"title": "Data source"
@@ -842,7 +835,14 @@
 						"valueSelector": {
 							"title": "Value selector"
 						}
-					}
+					},
+					"cardCreation": {
+						"info": "This is a placeholder for an explanation",
+						"startBlank": "Start from blank",
+						"startTemplate": "Start from template"
+					},
+					"dynamic": "Dynamic",
+					"static": "Static"
 				}
 			}
 		}

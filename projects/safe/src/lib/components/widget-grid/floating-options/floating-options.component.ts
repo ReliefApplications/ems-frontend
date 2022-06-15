@@ -78,8 +78,7 @@ export class SafeFloatingOptionsComponent implements OnInit {
           bottom: '0',
           right: '0',
         },
-        panelClass: (this.widget.component =
-          'tile-settings-dialog-with-tile-layout'),
+        panelClass: 'tile-settings-dialog-with-tile-layout',
       });
       dialogRef.afterClosed().subscribe((res) => {
         if (res) {
