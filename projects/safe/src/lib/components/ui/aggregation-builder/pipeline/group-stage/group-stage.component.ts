@@ -85,7 +85,7 @@ export class SafeGroupStageComponent implements OnInit {
   private getDateFields(value: any[]): void {
     const fields = [];
     for (const [index, rule] of value.entries()) {
-      if (this.isDateField(rule.field)) {
+      if (rule.field && this.isDateField(rule.field)) {
         fields.push(rule.field);
       } else {
         this.groupBy
