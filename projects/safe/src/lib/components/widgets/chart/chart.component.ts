@@ -3,7 +3,6 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { saveAs } from '@progress/kendo-file-saver';
@@ -16,6 +15,8 @@ import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.com
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import get from 'lodash/get';
 import groupBy from 'lodash/groupBy';
+import { TranslateService } from '@ngx-translate/core';
+import { cloneDeep } from 'lodash';
 
 /** Default file name for export */
 const DEFAULT_FILE_NAME = 'charts';
@@ -72,8 +73,12 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
    * Chart widget using KendoUI.
    *
    * @param aggregationBuilder Share aggregation builder service
+   * @param translate Shared translation service
    */
-  constructor(private aggregationBuilder: AggregationBuilderService) {}
+  constructor(
+    private aggregationBuilder: AggregationBuilderService,
+    private translate: TranslateService
+  ) {}
 
   /** Detect changes of the settings to reload the data. */
   ngOnChanges(): void {
@@ -145,6 +150,15 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   /** Load the data, using widget parameters. */
   private getData(): void {
     this.dataSubscription = this.dataQuery.subscribe((res: any) => {
+      const recordsAggregation = cloneDeep(res.data.recordsAggregation);
+      const nullGroupIndex = res.data.recordsAggregation.findIndex(
+        (x: any) => x.category === null
+      );
+      if (nullGroupIndex >= 0)
+        recordsAggregation[nullGroupIndex].category = this.translate.instant(
+          'components.widget.chart.groupedByNull'
+        );
+
       if (res.errors) {
         this.loading = false;
         this.hasError = true;
@@ -162,7 +176,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
           )
         ) {
           const aggregationData = JSON.parse(
-            JSON.stringify(res.data.recordsAggregation)
+            JSON.stringify(recordsAggregation)
           );
           if (get(this.settings, 'chart.aggregation.mapping.series', null)) {
             const groups = groupBy(aggregationData, 'series');
@@ -178,7 +192,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
             ];
           }
         } else {
-          this.series = res.data.recordsAggregation;
+          this.series = recordsAggregation;
         }
         this.loading = res.loading;
         this.dataSubscription?.unsubscribe();

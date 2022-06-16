@@ -679,7 +679,8 @@
 					"aggregation": {
 						"invalid": "Aggrégation invalide"
 					}
-				}
+				},
+				"groupedByNull": "Non spécifié"
 			},
 			"expand": "Étendre",
 			"grid": {
