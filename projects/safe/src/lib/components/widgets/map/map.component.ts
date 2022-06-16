@@ -87,9 +87,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   @Input() header = true;
   @Input() settings: any = null;
 
-  // This will be substituted when the querry returns the catgory tippe
-  private categoryField = '';
-
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
 
@@ -131,6 +128,20 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     // Calls the function wich draw the map.
     this.drawMap();
+
+    // Popup at marker click
+    this.markersLayerGroup = L.featureGroup().addTo(this.map);
+    this.markersLayerGroup.on('click', (event: any) => {
+      this.selectedItem = this.data.find(
+        (x) => x.id === event.layer.options.id
+      );
+      this.popupMarker = L.popup({})
+        .setLatLng([event.latlng.lat, event.latlng.lng])
+        .setContent(this.selectedItem ? this.selectedItem.data : '')
+        .addTo(this.map);
+    });
+    this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
+
     // Gets the settings from the DB.
     if (this.settings.query) {
       const builtQuery = this.queryBuilder.buildQuery(this.settings);
@@ -147,13 +158,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.displayFields =
       this.settings.query?.fields.map((f: any) => f.name) || [];
 
-    this.map.setMaxBounds(this.bounds);
-    this.map.setZoom(this.settings.zoom);
-
     setTimeout(() => this.map.invalidateSize(), 100);
   }
 
-  /** Create the map with all useful parameters */
+  /** Creates the map and adds all the controls we use */
   private drawMap(): void {
     const centerLong = this.settings.centerLong
       ? Number(this.settings.centerLong)
@@ -162,221 +170,28 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       ? Number(this.settings.centerLat)
       : 0;
 
-    // Creates map
     this.map = L.map(this.mapId, {
       zoomControl: false,
       minZoom: 2,
       maxZoom: 18,
       worldCopyJump: true,
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
+    this.map.setMaxBounds(this.bounds);
+    this.map.setZoom(this.settings.zoom);
 
-    // Adds a zoom control
-    L.control
-      .zoom({
-        position: 'bottomleft',
-      })
-      .addTo(this.map);
-
+    // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     const basemap = this.basemapLayers[this.settings.basemap]
       ? this.basemapLayers[this.settings.basemap]
       : this.basemapLayers.OSM;
-    // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     L.esri.Vector.vectorBasemapLayer(basemap, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
 
-    // Popup at marker click
-    this.markersLayerGroup = L.featureGroup().addTo(this.map);
-    this.markersLayerGroup.on('click', (event: any) => {
-      this.selectedItem = this.data.find(
-        (x) => x.id === event.layer.options.id
-      );
-      this.popupMarker = L.popup({})
-        .setLatLng([event.latlng.lat, event.latlng.lng])
-        .setContent(this.selectedItem ? this.selectedItem.data : '')
-        .addTo(this.map);
-    });
 
-    // Adds layer contorl
-    this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
-
-    // Adds searchbar
-    const searchControl = L.esri.Geocoding.geosearch({
-      position: 'topleft',
-      placeholder: 'Enter an address or place e.g. 1 York St',
-      useMapBounds: false,
-      providers: [
-        L.esri.Geocoding.arcgisOnlineProvider({
-          apikey: this.esriApiKey,
-          nearby: {
-            lat: -33.8688,
-            lng: 151.2093,
-          },
-        }),
-      ],
-    }).addTo(this.map);
-
-    const results = L.layerGroup().addTo(this.map);
-
-    searchControl.on('results', (data: any) => {
-      results.clearLayers();
-      for (let i = data.results.length - 1; i >= 0; i--) {
-        const lat = Math.round(data.results[i].latlng.lat * 100000) / 100000;
-        const lng = Math.round(data.results[i].latlng.lng * 100000) / 100000;
-        const marker = L.circleMarker(data.results[i].latlng, MARKER_OPTIONS);
-        marker.bindPopup(`
-          <p>${data.results[i].properties.ShortLabel}</br>
-          <b>${'latitude: '}</b>${lat}</br>
-          <b>${'longitude: '}</b>${lng}</p>`);
-        results.addLayer(marker);
-        marker.openPopup();
-      }
-    });
-
-    // Creates a legend control
-    // Styling is in the global style file
-    this.legendControl = L.control({ position: 'bottomright' });
-
-    /**
-     *  Defines the method which will be called when the legend control is added to the map
-     *
-     * @param map current leaflet map
-     * @returns legend container
-     */
-    this.legendControl.onAdd = function (map: any) {
-      this.div = L.DomUtil.create('div', 'map-legend-container');
-      return this.div;
-    };
-
-    /**
-     * Defines a method to be able to update the legend control once it is already added to the map
-     *
-     * @param map current leaflet map
-     * @param data current map data
-     * @param overlays list of overlays
-     * @param markersNames list of markers
-     */
-    this.legendControl.update = function (
-      map: any,
-      data: any,
-      overlays: any,
-      markersNames: string[]
-    ) {
-      const div = this.div;
-      div.innerHTML = '';
-      // Create legend for clorophlets
-      data.clorophlets?.map((clorophlet: any) => {
-        const layer = overlays[clorophlet.name];
-
-        if (clorophlet.divisions.length > 0) {
-          // Generates header of legend
-          const legendLayerDiv = L.DomUtil.create('div', 'map-legend', div);
-          const legendLayerHeader = L.DomUtil.create(
-            'div',
-            'map-legend-header',
-            legendLayerDiv
-          );
-          legendLayerHeader.innerHTML = `<h4>${clorophlet.name}</h4>`;
-          L.DomEvent.on(
-            legendLayerHeader,
-            'click',
-            () => {
-              if (map.hasLayer(layer)) {
-                L.DomUtil.addClass(legendLayerDiv, 'map-legend-hide');
-                map.removeLayer(layer);
-              } else {
-                map.addLayer(layer);
-                L.DomUtil.removeClass(legendLayerDiv, 'map-legend-hide');
-              }
-            },
-            this
-          );
-          // Generates divisions legend
-          clorophlet.divisions.map((division: any, i: number) => {
-            const legendDivisionDiv = L.DomUtil.create(
-              'div',
-              'map-legend-division',
-              legendLayerDiv
-            );
-            legendDivisionDiv.innerHTML =
-              '<i style="background:' +
-              division.color +
-              '"></i>' +
-              (division.label.length > 0
-                ? division.label
-                : 'Division ' + (i + 1)) +
-              '<br>';
-          });
-
-          // const showIcon = L.DomUtil.create('input', 'showIcon', legendItemDiv);
-          // showIcon.setAttribute('type', 'checkbox');
-          // showIcon.setAttribute('checked', 'true');
-          // L.DomEvent.on(
-          //   showIcon,
-          //   'click',
-          //   () => {
-          //     if (map.hasLayer(layer)) {
-          //       L.DomUtil.addClass(legendItemDiv, 'legend-hide');
-          //       map.removeLayer(layer);
-          //     } else {
-          //       map.addLayer(layer);
-          //       L.DomUtil.removeClass(legendItemDiv, 'legend-hide');
-          //     }
-          //   },
-          //   this
-          // );
-        }
-      });
-      // Create legend for markers
-      if (data.markerRules && data.markerRules.length > 0) {
-        const legendLayerDiv = L.DomUtil.create('div', 'map-legend', div);
-        const legendLayerHeader = L.DomUtil.create(
-          'div',
-          'map-legend-header',
-          legendLayerDiv
-        );
-        legendLayerHeader.innerHTML = `<h4>Markers</h4>`;
-        L.DomEvent.on(
-          legendLayerHeader,
-          'click',
-          () => {
-            markersNames.map((marker: string) => {
-              const layer = marker === 'undefined' ? overlays.Markers : overlays[marker];
-              if (map.hasLayer(layer)) {
-                L.DomUtil.addClass(legendLayerDiv, 'map-legend-hide');
-                map.removeLayer(layer);
-              } else {
-                map.addLayer(layer);
-                L.DomUtil.removeClass(legendLayerDiv, 'map-legend-hide');
-              }
-            });
-          },
-          this
-        );
-        data.markerRules?.map((rule: any, i: number) => {
-          const legendDivisionDiv = L.DomUtil.create(
-            'div',
-            'map-legend-division',
-            legendLayerDiv
-          );
-          legendDivisionDiv.innerHTML =
-            '<i style="background:' +
-            rule.color +
-            '"></i>' +
-            (rule.label.length > 0 ? rule.label : 'Rule ' + (i + 1)) +
-            '<br>';
-        });
-      }
-      if (div.innerHTML.length === 0) {
-        div.style.display = 'none';
-      }
-    };
-
-    // Adds the legend control to the map
-    this.legendControl.addTo(this.map);
-
-    // Categories
-    this.categoryField = this.settings.category;
+    // Adds all used controls to the map
+    L.control.zoom({ position: 'bottomleft', }).addTo(this.map);
+    this.getSearchbarControl().addTo(this.map);
+    this.legendControl = this.getLegendControl().addTo(this.map);
   }
 
   /** Load the data, using widget parameters. */
@@ -544,12 +359,184 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         });
         Object.assign(options, { id: item.id });
         const marker = L.circleMarker([latitude, longitude], options);
-        if (!this.markersCategories[item[this.categoryField]]) {
-          this.markersCategories[item[this.categoryField]] = [];
+        if (!this.markersCategories[item[this.settings.category]]) {
+          this.markersCategories[item[this.settings.category]] = [];
         }
-        this.markersCategories[item[this.categoryField]].push(marker);
+        this.markersCategories[item[this.settings.category]].push(marker);
       }
     }
+  }
+
+  /**
+   * Returns a custom legend control.
+   *
+   * @returns Returns the custom control
+   */
+   private getLegendControl(): any {
+
+    // Creates a legend control
+    // Styling is in the global style file
+    const legendControl = L.control({ position: 'bottomright' });
+
+    /**
+     *  Defines the method which will be called when the legend control is added to the map
+     *
+     * @param map current leaflet map
+     * @returns legend container
+     */
+    legendControl.onAdd = function (map: any) {
+      this.div = L.DomUtil.create('div', 'map-legend-container');
+      return this.div;
+    };
+
+    /**
+     * Defines a method to be able to update the legend control once it is already added to the map
+     *
+     * @param map current leaflet map
+     * @param data current map data
+     * @param overlays list of overlays
+     * @param markersNames list of markers
+     */
+    legendControl.update = function (
+      map: any,
+      data: any,
+      overlays: any,
+      markersNames: string[]
+    ) {
+      const div = this.div;
+      div.innerHTML = '';
+      // Create legend for clorophlets
+      data.clorophlets?.map((clorophlet: any) => {
+        const layer = overlays[clorophlet.name];
+
+        if (clorophlet.divisions.length > 0) {
+          // Generates header of legend
+          const legendLayerDiv = L.DomUtil.create('div', 'map-legend', div);
+          const legendLayerHeader = L.DomUtil.create(
+            'div',
+            'map-legend-header',
+            legendLayerDiv
+          );
+          legendLayerHeader.innerHTML = `<h4>${clorophlet.name}</h4>`;
+          L.DomEvent.on(
+            legendLayerHeader,
+            'click',
+            () => {
+              if (map.hasLayer(layer)) {
+                L.DomUtil.addClass(legendLayerDiv, 'map-legend-hide');
+                map.removeLayer(layer);
+              } else {
+                map.addLayer(layer);
+                L.DomUtil.removeClass(legendLayerDiv, 'map-legend-hide');
+              }
+            },
+            this
+          );
+          // Generates divisions legend
+          clorophlet.divisions.map((division: any, i: number) => {
+            const legendDivisionDiv = L.DomUtil.create(
+              'div',
+              'map-legend-division',
+              legendLayerDiv
+            );
+            legendDivisionDiv.innerHTML =
+              '<i style="background:' +
+              division.color +
+              '"></i>' +
+              (division.label.length > 0
+                ? division.label
+                : 'Division ' + (i + 1)) +
+              '<br>';
+          });
+        }
+      });
+      // Create legend for markers
+      if (data.markerRules && data.markerRules.length > 0) {
+        const legendLayerDiv = L.DomUtil.create('div', 'map-legend', div);
+        const legendLayerHeader = L.DomUtil.create(
+          'div',
+          'map-legend-header',
+          legendLayerDiv
+        );
+        legendLayerHeader.innerHTML = `<h4>Markers</h4>`;
+        L.DomEvent.on(
+          legendLayerHeader,
+          'click',
+          () => {
+            markersNames.map((marker: string) => {
+              const layer = marker === 'undefined' ? overlays.Markers : overlays[marker];
+              if (map.hasLayer(layer)) {
+                L.DomUtil.addClass(legendLayerDiv, 'map-legend-hide');
+                map.removeLayer(layer);
+              } else {
+                map.addLayer(layer);
+                L.DomUtil.removeClass(legendLayerDiv, 'map-legend-hide');
+              }
+            });
+          },
+          this
+        );
+        data.markerRules?.map((rule: any, i: number) => {
+          const legendDivisionDiv = L.DomUtil.create(
+            'div',
+            'map-legend-division',
+            legendLayerDiv
+          );
+          legendDivisionDiv.innerHTML =
+            '<i style="background:' +
+            rule.color +
+            '"></i>' +
+            (rule.label.length > 0 ? rule.label : 'Rule ' + (i + 1)) +
+            '<br>';
+        });
+      }
+      if (div.innerHTML.length === 0) {
+        div.style.display = 'none';
+      }
+    };
+
+    return legendControl;
+  }
+
+  /**
+   * Creates a custom searchbar control with esri geocoding
+   *
+   * @returns Returns the custom control
+   */
+  private getSearchbarControl(): any {
+    const searchControl = L.esri.Geocoding.geosearch({
+      position: 'topleft',
+      placeholder: 'Enter an address or place e.g. 1 York St',
+      useMapBounds: false,
+      providers: [
+        L.esri.Geocoding.arcgisOnlineProvider({
+          apikey: this.esriApiKey,
+          nearby: {
+            lat: -33.8688,
+            lng: 151.2093,
+          },
+        }),
+      ],
+    })
+
+    const results = L.layerGroup().addTo(this.map);
+
+    searchControl.on('results', (data: any) => {
+      results.clearLayers();
+      for (let i = data.results.length - 1; i >= 0; i--) {
+        const lat = Math.round(data.results[i].latlng.lat * 100000) / 100000;
+        const lng = Math.round(data.results[i].latlng.lng * 100000) / 100000;
+        const marker = L.circleMarker(data.results[i].latlng, MARKER_OPTIONS);
+        marker.bindPopup(`
+          <p>${data.results[i].properties.ShortLabel}</br>
+          <b>${'latitude: '}</b>${lat}</br>
+          <b>${'longitude: '}</b>${lng}</p>`);
+        results.addLayer(marker);
+        marker.openPopup();
+      }
+    });
+
+    return searchControl;
   }
 
   /**
