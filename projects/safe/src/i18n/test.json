@@ -247,16 +247,20 @@
 			"title": "******"
 		},
 		"aggregationBuilder": {
+			"accumulators": "******",
 			"addField": "******",
+			"addRule": "******",
 			"addStage": "******",
 			"dataset": {
 				"select": "******"
 			},
 			"fieldName": "******",
 			"groupBy": "******",
+			"groupingRules": "******",
 			"mapping": {
-				"xAxis": "******",
-				"yAxis": "******"
+				"category": "******",
+				"field": "******",
+				"series": "******"
 			},
 			"operator": "******",
 			"operators": {
@@ -736,8 +740,17 @@
 						"title": "******"
 					},
 					"position": "******",
+					"series": {
+						"stack": {
+							"enable": "******",
+							"usePercentage": "******"
+						},
+						"title": "******"
+					},
 					"text": "******",
-					"type": "******"
+					"type": "******",
+					"xAxis": "******",
+					"yAxis": "******"
 				},
 				"grid": {
 					"actions": {
@@ -764,6 +777,8 @@
 							},
 							"prefill": "******",
 							"save": "******",
+							"selectAllRecords": "******",
+							"selectAllRecordsActivePage": "******",
 							"selectDisplay": "******",
 							"sendMail": "******",
 							"workflow": {
