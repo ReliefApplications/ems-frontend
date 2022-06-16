@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 
-/** Module for scheduler  component */
+/** Card Settings Module */
 @NgModule({
   declarations: [SafeCardSettingsComponent],
   imports: [

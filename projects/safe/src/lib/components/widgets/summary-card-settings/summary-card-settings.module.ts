@@ -9,7 +9,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeCardSettingsModule } from './card-settings/card-settings.module';
 
-/** Module for scheduler  component */
+/** Summary Card Settings Module */
 @NgModule({
   declarations: [SafeSummaryCardSettingsComponent],
   imports: [
