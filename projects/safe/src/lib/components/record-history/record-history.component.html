@@ -1,4 +1,5 @@
 <div class="history-header">
+  <!-- HEADER -->
   <div>
     <h2>{{ 'common.history' | translate }}</h2>
     <safe-button
@@ -9,6 +10,7 @@
     >
     </safe-button>
   </div>
+  <!-- FILTER -->
   <div style="clear: both; display: flex; flex-direction: column">
     <mat-form-field>
       <mat-date-range-input
@@ -66,6 +68,7 @@
       </mat-select>
     </mat-form-field>
   </div>
+  <!-- ACTIONS -->
   <div class="actions">
     <safe-button
       category="secondary"
@@ -80,7 +83,7 @@
     </mat-menu>
   </div>
 </div>
-
+<!-- LOADING -->
 <div class="history-container" *ngIf="loading">
   <ng-container *ngFor="let _ of [].constructor(4)">
     <mat-expansion-panel closed>
@@ -93,7 +96,7 @@
     </mat-expansion-panel>
   </ng-container>
 </div>
-
+<!-- HISTORY CHANGES -->
 <div class="history-container" *ngIf="!loading">
   <ng-container *ngFor="let item of filterHistory">
     <mat-expansion-panel (closed)="showMore = false">
@@ -138,4 +141,8 @@
       </ng-template>
     </mat-expansion-panel>
   </ng-container>
+  <div *ngIf="filterHistory.length === 0" class="empty-history">
+    <safe-icon icon="folder_open"></safe-icon>
+    <h3>{{ 'components.history.empty' | translate }}</h3>
+  </div>
 </div>

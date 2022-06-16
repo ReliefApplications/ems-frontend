@@ -20,8 +20,6 @@ import {
   GET_RECORD_BY_ID,
   GetFormByIdQueryResponse,
   GET_FORM_STRUCTURE,
-  GetRecordDetailsQueryResponse,
-  GET_RECORD_DETAILS,
 } from '../../graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeDownloadService } from '../../services/download.service';
@@ -36,6 +34,7 @@ import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import isEqual from 'lodash/isEqual';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -208,12 +207,8 @@ export class SafeRecordModalComponent implements AfterViewInit {
       for (const question of allQuestions) {
         const valueNext = this.surveyNext.data[question];
         const value = this.survey.data[question];
-        if (!valueNext && !value) {
-          continue;
-        } else {
-          if (valueNext !== value) {
-            updatedQuestions.push(question);
-          }
+        if (!isEqual(value, valueNext)) {
+          updatedQuestions.push(question);
         }
       }
       this.survey.onAfterRenderQuestion.add(

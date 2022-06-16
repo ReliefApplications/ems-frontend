@@ -459,6 +459,7 @@
 				"withValue": "with value"
 			},
 			"download": "Download history",
+			"empty": "No activity detected",
 			"field": {
 				"all": "All fields",
 				"select": "Select a field"
