@@ -26,6 +26,8 @@ export class SafeAggregationBuilderComponent implements OnInit {
   // === REACTIVE FORM ===
   @Input() aggregationForm: FormGroup = new FormGroup({});
 
+  @Input() reload$!: Observable<boolean>;
+
   // === DATA ===
   private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
@@ -162,6 +164,13 @@ export class SafeAggregationBuilderComponent implements OnInit {
           )
         );
       });
+
+    this.reload$.subscribe(() => {
+      this.loading = true;
+      setTimeout(() => {
+        this.loading = false;
+      }, 1000);
+    });
   }
 
   /**
