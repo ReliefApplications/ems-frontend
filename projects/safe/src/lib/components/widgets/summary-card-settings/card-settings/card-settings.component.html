@@ -1,0 +1,49 @@
+<safe-button
+  class="close-settings"
+  [isIcon]="true"
+  icon="close"
+  variant="danger"
+  (click)="onClose()"
+  [matTooltip]="'common.close' | translate"
+>
+</safe-button>
+<h1 mat-dialog-title>{{ 'components.widget.settings.summaryCard.card.title' | translate }}</h1>
+<div mat-dialog-content class="mat-dialog-content">
+  <form [formGroup]="form">
+    <mat-tab-group>
+      <mat-tab [label]="'components.widget.settings.summaryCard.card.dataSource.title' | translate">
+
+      </mat-tab>
+      <mat-tab [label]="'components.widget.settings.summaryCard.card.valueSelector.title' | translate">
+
+      </mat-tab>
+      <mat-tab [label]="'common.display' | translate">
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>Header</mat-label>
+            <input matInput formControlName="title" type="string" />
+          </mat-form-field>
+        </div>
+      </mat-tab>
+      <mat-tab [label]="'components.widget.settings.summaryCard.card.textEditor.title' | translate">
+
+      </mat-tab>
+      <mat-tab [label]="'common.preview' | translate">
+
+      </mat-tab>
+    </mat-tab-group>
+  </form>
+</div>
+<div mat-dialog-actions class="mat-dialog-actions" align="end">
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    (click)="onSubmit()"
+    cdkFocusInitial
+    color="primary"
+  >
+    {{ 'common.save' | translate }}
+  </button>
+</div>

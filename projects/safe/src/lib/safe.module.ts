@@ -38,6 +38,7 @@ import { SafeSkeletonTableModule } from './components/skeleton/skeleton-table/sk
 import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
 import { SafeDateModule } from './pipes/date/date.module';
 import { SafeIconModule } from './components/ui/icon/icon.module';
+import { SafeSummaryCardSettingsModule } from './components/widgets/summary-card-settings/summary-card-settings.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -46,17 +47,17 @@ import { SafeIconModule } from './components/ui/icon/icon.module';
     SafeAccessModule,
     SafeFormModule,
     SafeFormBuilderModule,
-    SafeChartModule,
+    // SafeChartModule,
     SafeChartSettingsModule,
-    SafeEditorModule,
+    // SafeEditorModule,
     SafeEditorSettingsModule,
-    SafeGridWidgetModule,
+    // SafeGridWidgetModule,
     SafeGridSettingsModule,
-    SafeMapModule,
+    // SafeMapModule,
     SafeMapSettingsModule,
-    SafeSchedulerModule,
-    SafeSchedulerSettingsModule,
-    SafeWidgetModule,
+    // SafeSchedulerModule,
+    // SafeSchedulerSettingsModule,
+    // SafeWidgetModule,
     SafeWidgetGridModule,
     SafeConfirmModalModule,
     SafeStatusModalModule,
@@ -81,6 +82,8 @@ import { SafeIconModule } from './components/ui/icon/icon.module';
     SafeSkeletonModule,
     SafeDateModule,
     SafeIconModule,
+    SafeSummaryCardSettingsModule,
   ],
+  declarations: [],
 })
 export class SafeModule {}

@@ -832,6 +832,25 @@
 							"longitude": "Select a default longitude to center the map around"
 						}
 					}
+				},
+				"summaryCard": {
+					"card": {
+						"dataSource": {
+							"title": "Data source"
+						},
+						"display": {
+							"header": "Header",
+							"title": "Display"
+						},
+						"preview": {},
+						"textEditor": {
+							"title": "Text editor"
+						},
+						"title": "Card settings",
+						"valueSelector": {
+							"title": "Value selector"
+						}
+					}
 				}
 			}
 		}

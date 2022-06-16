@@ -1,0 +1,20 @@
+<ng-container *ngIf="tileForm">
+  <form [formGroup]="tileForm">
+    <div class="form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'common.title' | translate }}</mat-label>
+        <input matInput formControlName="title" type="string" />
+      </mat-form-field>
+    </div>
+    <safe-button (click)="addCard()">Add card</safe-button>
+    <kendo-tilelayout [columns]="1">
+      <kendo-tilelayout-item *ngFor="let card of cards.controls; let i = index" [col]="1">
+        <kendo-tilelayout-item-header class="widget-header">
+          <span class="widget-title" [title]="card.value.title">{{ card.value.title }}</span>
+          <safe-button (click)="openCardSettings(i)">settings</safe-button>
+          <safe-button (click)="removeCard(i)">x</safe-button>
+        </kendo-tilelayout-item-header>
+      </kendo-tilelayout-item>
+    </kendo-tilelayout>
+  </form>
+</ng-container>

@@ -832,6 +832,25 @@
 							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte"
 						}
 					}
+				},
+				"summaryCard": {
+					"card": {
+						"dataSource": {
+							"title": "Source de données"
+						},
+						"display": {
+							"header": "Title",
+							"title": "Affichage"
+						},
+						"preview": {},
+						"textEditor": {
+							"title": "Éditeur de texte"
+						},
+						"title": "Paramètres de carte",
+						"valueSelector": {
+							"title": "Selection de valeur"
+						}
+					}
 				}
 			}
 		}

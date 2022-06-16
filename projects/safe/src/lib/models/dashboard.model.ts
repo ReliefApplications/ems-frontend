@@ -4,7 +4,7 @@ import { SafeChartSettingsComponent } from '../components/widgets/chart-settings
 import { SafeGridSettingsComponent } from '../components/widgets/grid-settings/grid-settings.component';
 import { SafeMapSettingsComponent } from '../components/widgets/map-settings/map-settings.component';
 import { SafeEditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
-
+import { SafeSummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
 /** Model for IWidgetType object */
 export interface IWidgetType {
   id: string;
@@ -144,6 +144,18 @@ export const WIDGET_TYPES = [
     minRow: 1,
     component: 'editor',
     settingsTemplate: SafeEditorSettingsComponent,
+  },
+  {
+    id: 'summaryCard',
+    name: 'Summary card',
+    icon: '/assets/placeholder.svg',
+    color: 'red',
+    settings: { title: 'Summary Card' },
+    defaultCols: 3,
+    defaultRows: 3,
+    minRow: 1,
+    component: 'summaryCard',
+    settingsTemplate: SafeSummaryCardSettingsComponent,
   },
 ];
 
