@@ -161,13 +161,9 @@ const DEFAULT_FIELDS = [
 ];
 
 /**
- *
+ * Sets the template as the default state of the component
  */
 export const DEFAULT = TEMPLATE.bind({});
-
-/**
- *
- */
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   label: 'Select fields',
@@ -179,13 +175,9 @@ DEFAULT.args = {
 };
 
 /**
- *
+ * Sets the template as the initial source of the component
  */
 export const INITIAL_SOURCE = TEMPLATE.bind({});
-
-/**
- *
- */
 DEFAULT.storyName = 'Initial source';
 INITIAL_SOURCE.args = {
   ...DEFAULT.args,

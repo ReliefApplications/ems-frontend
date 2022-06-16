@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /**
- *
+ * Module declaration for safe-tagbox component
  */
 @NgModule({
   declarations: [SafeTagboxComponent],

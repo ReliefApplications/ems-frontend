@@ -3,7 +3,7 @@ import { SpinnerSize } from './spinner-size.enum';
 import { SpinnerVariant } from './spinner-variant.enum';
 
 /**
- *
+ * Custom spinner component used when loading more complex components
  */
 @Component({
   selector: 'safe-spinner',

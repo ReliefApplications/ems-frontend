@@ -10,7 +10,7 @@ import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 
 /**
- *
+ * Custom tagbox component to use in the app
  */
 @Component({
   selector: 'safe-tagbox',

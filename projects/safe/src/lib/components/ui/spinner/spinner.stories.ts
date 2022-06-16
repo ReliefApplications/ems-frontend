@@ -44,7 +44,7 @@ const TEMPLATE: Story<SafeSpinnerComponent> = (args) => ({
 });
 
 /**
- *
+ * Sets the template as the default state of the component
  */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';

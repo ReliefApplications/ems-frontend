@@ -31,7 +31,7 @@ interface ChartSeries {
 }
 
 /**
- *
+ * Uses kendo chart to render the data as a pie chart
  */
 @Component({
   selector: 'safe-pie-chart',

@@ -4,7 +4,7 @@ import { SafeSpinnerComponent } from './spinner.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 /**
- *
+ * Module declaration for safe-spinner component
  */
 @NgModule({
   declarations: [SafeSpinnerComponent],

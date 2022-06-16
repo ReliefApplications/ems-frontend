@@ -32,7 +32,7 @@ interface ChartSeries {
 }
 
 /**
- *
+ * Uses kendo chart to render the data as a line chart
  */
 @Component({
   selector: 'safe-line-chart',
