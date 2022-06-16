@@ -4,6 +4,9 @@ import { SafeLineChartComponent } from './line-chart.component';
 import { ChartsModule } from '@progress/kendo-angular-charts';
 import 'hammerjs';
 
+/**
+ *
+ */
 @NgModule({
   declarations: [SafeLineChartComponent],
   imports: [CommonModule, ChartsModule],
