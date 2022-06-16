@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeButtonModule } from '../../ui/button/button.module';
+import { SafeCardSettingsModule } from './card-settings/card-settings.module';
 
 /** Module for scheduler  component */
 @NgModule({
@@ -20,6 +21,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
     TranslateModule,
     LayoutModule,
     SafeButtonModule,
+    SafeCardSettingsModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })
