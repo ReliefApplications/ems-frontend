@@ -341,7 +341,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           'click',
           () => {
             markersNames.map((marker: string) => {
-              const layer = overlays[marker];
+              const layer = marker! ? overlays.Markers : overlays[marker];
               if (map.hasLayer(layer)) {
                 L.DomUtil.addClass(legendLayerDiv, 'map-legend-hide');
                 map.removeLayer(layer);
