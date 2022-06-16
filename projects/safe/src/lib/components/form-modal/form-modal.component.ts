@@ -703,16 +703,17 @@ export class SafeFormModalComponent implements OnInit {
    * Opens the history of the record in a modal.
    */
   public onShowHistory(): void {
-    this.dialog.open(RecordHistoryModalComponent, {
-      data: {
-        id: this.record?.id,
-        revert: (item: any, dialog: any) => {
-          this.confirmRevertDialog(this.record, item);
+    if (this.record) {
+      this.dialog.open(RecordHistoryModalComponent, {
+        data: {
+          id: this.record.id,
+          revert: (version: any) =>
+            this.confirmRevertDialog(this.record, version),
         },
-      },
-      panelClass: 'no-padding-dialog',
-      autoFocus: false,
-    });
+        panelClass: 'no-padding-dialog',
+        autoFocus: false,
+      });
+    }
   }
 
   /**
@@ -723,7 +724,7 @@ export class SafeFormModalComponent implements OnInit {
    */
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
-    const date = new Date(parseInt(version.created, 0));
+    const date = new Date(parseInt(version.createdAt, 0));
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;

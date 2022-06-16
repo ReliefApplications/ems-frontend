@@ -1,3 +1,5 @@
+import { Version } from './form.model';
+
 /**
  * Interface for change objects
  */
@@ -13,7 +15,8 @@ export interface Change {
  * Type for record history objects
  */
 export type RecordHistory = {
-  created: Date;
+  createdAt: Date;
   createdBy: string;
   changes: Change[];
+  version?: Version;
 }[];
