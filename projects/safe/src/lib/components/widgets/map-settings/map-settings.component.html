@@ -1,38 +1,36 @@
 <ng-container *ngIf="tileForm">
-  <form [formGroup]="tileForm">
-    <mat-tab-group mat-align-tabs="start" animationDuration="0ms" vertical>
-      <!-- GENERAL SETTINGS -->
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <safe-icon icon="preview" [size]="24"></safe-icon>
-          <span>{{ 'common.general' | translate }}</span>
-        </ng-template>
-        <ng-template matTabContent>
-          <safe-map-general></safe-map-general>
-        </ng-template>
-      </mat-tab>
-      <!-- LAYERS CONFIGURATION -->
-      <mat-tab [label]="'Layers'">
-        <ng-template mat-tab-label>
-          <safe-icon icon="layers" [size]="24"></safe-icon>
-          <span>{{ 'common.layers' | translate }}</span>
-        </ng-template>
-        <ng-template matTabContent>
-          <safe-map-layers></safe-map-layers>
-        </ng-template>
-      </mat-tab>
-      <!-- MAP PARAMETERS -->
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <safe-icon icon="map" [size]="24"></safe-icon>
-          <span>{{
-            'components.widget.settings.map.properties.title' | translate
-          }}</span>
-        </ng-template>
-        <ng-template matTabContent>
-          <safe-map-properties></safe-map-properties>
-        </ng-template>
-      </mat-tab>
-    </mat-tab-group>
-  </form>
+  <mat-tab-group mat-align-tabs="start" animationDuration="0ms" vertical>
+    <!-- GENERAL SETTINGS -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon icon="preview" [size]="24"></safe-icon>
+        <span>{{ 'common.general' | translate }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <safe-map-general [form]="tileForm"></safe-map-general>
+      </ng-template>
+    </mat-tab>
+    <!-- LAYERS CONFIGURATION -->
+    <mat-tab [label]="'Layers'">
+      <ng-template mat-tab-label>
+        <safe-icon icon="layers" [size]="24"></safe-icon>
+        <span>{{ 'common.layers' | translate }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <safe-map-layers></safe-map-layers>
+      </ng-template>
+    </mat-tab>
+    <!-- MAP PARAMETERS -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon icon="map" [size]="24"></safe-icon>
+        <span>{{
+          'components.widget.settings.map.properties.title' | translate
+        }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <safe-map-properties></safe-map-properties>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
 </ng-container>

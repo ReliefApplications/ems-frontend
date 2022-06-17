@@ -17,7 +17,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SafeAlertModule } from '../../ui/alert/alert.module';
-import { MapGeneralModule } from './map-general/map-general.module';
+import { SafeMapGeneralModule } from './map-general/map-general.module';
 import { MapLayersModule } from './map-layers/map-layers.module';
 import { MapPropertiesModule } from './map-properties/map-properties.module';
 
@@ -28,22 +28,22 @@ import { MapPropertiesModule } from './map-properties/map-properties.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatSliderModule,
+    // MatFormFieldModule,
+    // MatInputModule,
+    // MatRadioModule,
+    // MatSelectModule,
+    // MatButtonModule,
+    // MatSliderModule,
     SafeIconModule,
-    TextFieldModule,
-    SafeQueryBuilderModule,
-    SafeBadgeModule,
-    SafeButtonModule,
+    // TextFieldModule,
+    // SafeQueryBuilderModule,
+    // SafeBadgeModule,
+    // SafeButtonModule,
     TranslateModule,
-    MatTooltipModule,
+    // MatTooltipModule,
     MatTabsModule,
-    SafeAlertModule,
-    MapGeneralModule,
+    // SafeAlertModule,
+    SafeMapGeneralModule,
     MapLayersModule,
     MapPropertiesModule,
   ],

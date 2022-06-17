@@ -1,15 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
+/**
+ * General settings of the map widget:
+ * - title
+ * - query
+ */
 @Component({
   selector: 'safe-map-general',
   templateUrl: './map-general.component.html',
-  styleUrls: ['./map-general.component.scss']
+  styleUrls: ['./map-general.component.scss'],
 })
 export class MapGeneralComponent implements OnInit {
+  @Input() form!: FormGroup;
 
-  constructor() { }
+  /**
+   * General settings of the map widget:
+   * - title
+   * - query
+   */
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }
