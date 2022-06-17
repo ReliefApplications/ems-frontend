@@ -22,7 +22,7 @@
       [label]="'components.widget.settings.map.layers.online.title' | translate"
     >
       <ng-template matTabContent>
-        <safe-map-online-layers></safe-map-online-layers>
+        <safe-map-online-layers [layers]="onlineLayers"></safe-map-online-layers>
       </ng-template>
     </mat-tab>
   </mat-tab-group>
@@ -326,66 +326,6 @@
             | translate
         }}</safe-button
       >
-    </mat-tab>
-    <mat-tab
-      [label]="
-        'components.widget.settings.map.layers.online.title' | translate
-      "
-    >
-      <div class="info-text">
-        {{
-          'components.widget.settings.map.layers.online.info'
-            | translate
-        }}
-      </div>
-      <mat-form-field appearance="outline" style="width: 100%">
-        <mat-label>{{
-          'components.widget.settings.map.layers.online.select'
-            | translate
-        }}</mat-label>
-        <input
-          type="text"
-          matInput
-          [(ngModel)]="search"
-          [ngModelOptions]="{ standalone: true }"
-          (ngModelChange)="getContent($event)"
-          autocomplete="off"
-          placeholder="{{ 'common.placeholder.search' | translate }}"
-        />
-        <div *ngIf="availableLayers.length > 0" class="layer-list">
-          <button
-            *ngFor="let layer of availableLayers"
-            mat-button
-            (click)="addOnlineLayer(layer)"
-          >
-            {{ layer.title }}
-            <safe-badge *ngFor="let tag of layer.tags">{{
-              tag
-            }}</safe-badge>
-          </button>
-        </div>
-      </mat-form-field>
-      <mat-label
-        *ngIf="
-          tileForm.value.onlineLayers &&
-          tileForm.value.onlineLayers.length > 0
-        "
-      >
-        {{
-          'components.widget.settings.map.layers.online.selected'
-            | translate
-        }}
-      </mat-label>
-      <h3 *ngFor="let layer of tileForm.value.onlineLayers">
-        {{ layer.title }}
-        <safe-button
-          [isIcon]="true"
-          icon="delete"
-          category="primary"
-          variant="danger"
-          (click)="removeOnlineLayer(layer.id)"
-        ></safe-button>
-      </h3>
     </mat-tab>
   </mat-tab-group>
 </div> -->

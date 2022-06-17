@@ -32,26 +32,6 @@ export class SafeMapSettingsComponent implements OnInit {
   public formatedSelectedFields: any[] = [];
   public geoJSONfields: any[] = [];
 
-  public basemaps: any[] = [
-    'Sreets',
-    'Navigation',
-    'Topographic',
-    'Light Gray',
-    'Dark Gray',
-    'Streets Relief',
-    'Imagery',
-    'ChartedTerritory',
-    'ColoredPencil',
-    'Nova',
-    'Midcentury',
-    'OSM',
-    'OSM:Streets',
-  ];
-
-  public search = '';
-  private searchChanged: Subject<string> = new Subject<string>();
-  public availableLayers: any[] = [];
-
   /**
    * Get marker rules as form array
    *
@@ -127,33 +107,6 @@ export class SafeMapSettingsComponent implements OnInit {
           }
         });
     });
-
-    this.arcGisService.clearSelectedLayer();
-    this.arcGisService.searchLayers('');
-
-    this.arcGisService.availableLayers$.subscribe((suggestions) => {
-      this.availableLayers = suggestions;
-    });
-
-    this.arcGisService.selectedLayer$.subscribe((item) => {
-      if (item.id) {
-        const temp: any[] = [];
-        this.tileForm?.value.onlineLayers.map((layer: any) => {
-          temp.push(layer);
-        });
-        temp.push(item);
-        this.tileForm?.controls.onlineLayers.setValue(temp);
-      }
-    });
-
-    this.searchChanged
-      .pipe(
-        debounceTime(300), // wait 300ms after the last event before emitting last event
-        distinctUntilChanged()
-      ) // only emit if value is different from previous value
-      .subscribe((search) => {
-        this.arcGisService.searchLayers(search);
-      });
   }
 
   /**
@@ -195,41 +148,6 @@ export class SafeMapSettingsComponent implements OnInit {
           }
         })
     );
-  }
-
-  /**
-   * Get Search layers content.
-   *
-   * @param search search text value
-   */
-  public getContent(search: string): void {
-    this.searchChanged.next(search);
-  }
-
-  /**
-   * Selects a new layer.
-   *
-   * @param layer layer to select.
-   */
-  public addOnlineLayer(layer: any): void {
-    this.search = '';
-    this.arcGisService.searchLayers('');
-    this.arcGisService.getLayer(layer.id);
-  }
-
-  /**
-   * Removes a layer.
-   *
-   * @param id id of layer to remove
-   */
-  public removeOnlineLayer(id: any): void {
-    const temp: any[] = [];
-    this.tileForm?.value.onlineLayers.map((layer: any) => {
-      if (layer.id !== id) {
-        temp.push(layer);
-      }
-    });
-    this.tileForm?.controls.onlineLayers.setValue(temp);
   }
 
   // === MARKERS ===

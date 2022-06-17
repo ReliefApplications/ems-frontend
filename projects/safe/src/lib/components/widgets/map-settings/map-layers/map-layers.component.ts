@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'safe-map-layers',
@@ -7,6 +7,10 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./map-layers.component.scss'],
 })
 export class MapLayersComponent implements OnInit {
+  get onlineLayers(): FormControl {
+    return this.form.get('onlineLayers') as FormControl;
+  }
+
   @Input() form!: FormGroup;
 
   constructor() {}
