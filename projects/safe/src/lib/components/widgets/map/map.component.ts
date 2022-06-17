@@ -32,7 +32,7 @@ interface IMarkersLayerValue {
 }
 
 /** Available basemaps */
-const basemapLayers: any = {
+const BASEMAP_LAYERS: any = {
   Streets: 'ArcGIS:Streets',
   Navigation: 'ArcGIS:Navigation',
   Topographic: 'ArcGIS:Topographic',
@@ -162,9 +162,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }).setView([centerLat, centerLong], this.settings.zoom || 3);
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
-    const basemap = basemapLayers[this.settings.basemap]
-      ? basemapLayers[this.settings.basemap]
-      : basemapLayers.OSM;
+    const basemap = BASEMAP_LAYERS[this.settings.basemap]
+      ? BASEMAP_LAYERS[this.settings.basemap]
+      : BASEMAP_LAYERS.OSM;
     L.esri.Vector.vectorBasemapLayer(basemap, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
@@ -273,7 +273,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Set ups a layer control with the new layers.
-    console.log(this.overlays.length);
     if (Object.keys(this.overlays).length > 0) {
       this.layerControl = L.control
         .layers(null, this.overlays, { collapsed: true })
