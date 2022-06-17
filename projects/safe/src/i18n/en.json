@@ -855,7 +855,7 @@
 						"basemap": "Base map",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
-						"title": "Default display",
+						"title": "Map Parameters",
 						"zoom": "Default zoom"
 					},
 					"tooltip": {
