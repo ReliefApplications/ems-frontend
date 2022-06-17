@@ -10,6 +10,9 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 
+/**
+ * Module of Map Properties of Map Widget.
+ */
 @NgModule({
   declarations: [MapPropertiesComponent],
   imports: [

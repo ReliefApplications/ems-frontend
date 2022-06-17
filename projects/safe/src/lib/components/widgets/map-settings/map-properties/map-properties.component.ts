@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
+/** List of basemap that can be used by the widget */
 const BASEMAPS: string[] = [
   'Sreets',
   'Navigation',
@@ -17,20 +18,23 @@ const BASEMAPS: string[] = [
   'OSM:Streets',
 ];
 
+/**
+ * Map Properties of Map widget.
+ */
 @Component({
   selector: 'safe-map-properties',
   templateUrl: './map-properties.component.html',
-  styleUrls: ['./map-properties.component.scss']
+  styleUrls: ['./map-properties.component.scss'],
 })
 export class MapPropertiesComponent implements OnInit {
-
   @Input() form!: FormGroup;
 
   public basemaps = BASEMAPS;
 
-  constructor() { }
+  /**
+   * Map Properties of Map widget.
+   */
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }
