@@ -820,13 +820,6 @@
 					"basemap": "******",
 					"category": "******",
 					"dataset": "******",
-					"display": {
-						"basemap": "******",
-						"latitude": "******",
-						"longitude": "******",
-						"title": "******",
-						"zoom": "******"
-					},
 					"errors": {
 						"latitude": "******",
 						"longitude": "******"
@@ -857,6 +850,13 @@
 							"size": "******",
 							"title": "******"
 						}
+					},
+					"properties": {
+						"basemap": "******",
+						"latitude": "******",
+						"longitude": "******",
+						"title": "******",
+						"zoom": "******"
 					},
 					"tooltip": {
 						"category": "******",

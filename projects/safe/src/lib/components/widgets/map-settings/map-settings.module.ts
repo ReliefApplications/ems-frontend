@@ -16,6 +16,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatTabsModule } from '@angular/material/tabs';
+import { SafeAlertModule } from '../../ui/alert/alert.module';
+import { MapGeneralModule } from './map-general/map-general.module';
+import { MapLayersModule } from './map-layers/map-layers.module';
+import { MapPropertiesModule } from './map-properties/map-properties.module';
 
 /** Module for map settings component */
 @NgModule({
@@ -38,6 +42,10 @@ import { MatTabsModule } from '@angular/material/tabs';
     TranslateModule,
     MatTooltipModule,
     MatTabsModule,
+    SafeAlertModule,
+    MapGeneralModule,
+    MapLayersModule,
+    MapPropertiesModule,
   ],
   exports: [SafeMapSettingsComponent],
 })

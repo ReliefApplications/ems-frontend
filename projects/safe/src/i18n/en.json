@@ -820,13 +820,6 @@
 					"basemap": "Base map",
 					"category": "Map quick layers",
 					"dataset": "Data set selection",
-					"display": {
-						"basemap": "Base map",
-						"latitude": "Map center latitude",
-						"longitude": "Map center longitude",
-						"title": "Default display",
-						"zoom": "Default zoom"
-					},
 					"errors": {
 						"latitude": "Invalid latitude, please select a number between -90 and 90",
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
@@ -857,6 +850,13 @@
 							"size": "Size",
 							"title": "Marker layers"
 						}
+					},
+					"properties": {
+						"basemap": "Base map",
+						"latitude": "Map center latitude",
+						"longitude": "Map center longitude",
+						"title": "Default display",
+						"zoom": "Default zoom"
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",

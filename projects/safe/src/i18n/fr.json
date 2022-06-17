@@ -820,13 +820,6 @@
 					"basemap": "Fond de carte",
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
-					"display": {
-						"basemap": "Fond de carte",
-						"latitude": "Latitude du centre de la carte",
-						"longitude": "Longitude du centre de la carte",
-						"title": "Affichage par défaut",
-						"zoom": "Zoom par défaut"
-					},
 					"errors": {
 						"latitude": "Latitude incorrecte, merci de sélectionner un nombre entre -90 et 90",
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
@@ -860,6 +853,13 @@
 						"select": "Sélectionnez une couche",
 						"selected": "Couches sélectionnées",
 						"title": "Couches additionnelles"
+					},
+					"properties": {
+						"basemap": "Fond de carte",
+						"latitude": "Latitude du centre de la carte",
+						"longitude": "Longitude du centre de la carte",
+						"title": "Affichage par défaut",
+						"zoom": "Zoom par défaut"
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
