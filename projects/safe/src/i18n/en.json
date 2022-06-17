@@ -828,6 +828,10 @@
 						"clorophlet": {
 							"addNew": "Add new clorophlet",
 							"addNewDiv": "Add new division",
+							"division": {
+								"add": "Add new division",
+								"title": "Divisions"
+							},
 							"geoJSON": "geoJSON",
 							"geoJSONidentifier": "geoJSON Identifier",
 							"identifier": "Identifier",

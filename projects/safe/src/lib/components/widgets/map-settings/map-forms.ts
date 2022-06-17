@@ -19,7 +19,7 @@ const DEFAULT_CLOROPHLET = {
 };
 /** Default division value */
 const DEFAULT_DIVISION = {
-  label: '',
+  label: 'New division',
   color: '#0090d1',
   filter: {
     logic: ['and'],
@@ -28,7 +28,7 @@ const DEFAULT_DIVISION = {
 };
 /** Default marker rule */
 const DEFAULT_MARKER_RULE = {
-  label: '',
+  label: 'New rule',
   color: '#0090d1',
   size: 1,
   filter: {

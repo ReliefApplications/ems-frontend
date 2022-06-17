@@ -15,7 +15,7 @@
       "
     >
       <ng-template matTabContent>
-        <safe-map-clorophlets></safe-map-clorophlets>
+        <safe-map-clorophlets [clorophlets]="clorophlets"></safe-map-clorophlets>
       </ng-template>
     </mat-tab>
     <mat-tab
@@ -172,43 +172,11 @@
         >
       </div>
     </mat-tab>
-    <mat-tab
-      [label]="
-        'components.widget.settings.map.layers.clorophlet.title'
-          | translate
-      "
-    >
-      <div class="info-text">
-        {{
-          'components.widget.settings.map.layers.clorophlet.info'
-            | translate
-        }}
-      </div>
       <div
         class="filter-list"
         *ngFor="let clorophlet of clorophlets.controls; let i = index"
         [formGroup]="$any(clorophlet)"
       >
-        <div>
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'common.name' | translate }}</mat-label>
-            <input
-              type="text"
-              [placeholder]="'common.placeholder.name' | translate"
-              matInput
-              formControlName="name"
-            />
-          </mat-form-field>
-          <div class="deleteBtn">
-            <safe-button
-              [isIcon]="true"
-              icon="delete"
-              category="primary"
-              variant="danger"
-              (click)="removeClorophlet(i)"
-            ></safe-button>
-          </div>
-        </div>
         <div class="filter-buttons">
           <safe-button category="tertiary" (click)="fileInput.click()">{{
             clorophlet.value.geoJSONname
@@ -317,15 +285,6 @@
           </div>
         </div>
       </div>
-      <safe-button
-        category="tertiary"
-        variant="primary"
-        (click)="addClorophlet()"
-        >{{
-          'components.widget.settings.map.layers.clorophlet.addNew'
-            | translate
-        }}</safe-button
-      >
     </mat-tab>
   </mat-tab-group>
 </div> -->

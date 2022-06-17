@@ -1,13 +1,7 @@
-.advanced-filtering {
+form {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.filter-buttons {
-  padding: 8px 0;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 12px;
 }
 
 input[type='color'] {
@@ -19,14 +13,12 @@ input[type='color'] {
   border: none;
   cursor: pointer;
 }
+
 input[type='color']::-webkit-color-swatch-wrapper {
   padding: 0;
 }
+
 input[type='color']::-webkit-color-swatch {
   border: none;
   border-radius: 4px;
-}
-
-.extraInput {
-  margin-left: 8px;
 }
