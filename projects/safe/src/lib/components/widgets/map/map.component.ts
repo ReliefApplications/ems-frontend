@@ -453,8 +453,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
                 Object.keys(overlays[clorophlet.name]._layers).map((layerName: any) => {
                   const layer = overlays[clorophlet.name]._layers[layerName];
                   if (layer.options.label === division.label) {
+                    console.log(layer);
                     layer.setStyle((feature: any): any => {
-                      console.log(feature)
                       return {
                         fillOpacity: 0,
                       };
