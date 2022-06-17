@@ -232,16 +232,18 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     for (const field in res.data) {
       if (Object.prototype.hasOwnProperty.call(res.data, field)) {
         res.data[field].edges.map((x: any) => {
-          // CReates the marker
+          // Creates the marker
           this.setMarker(x.node);
         });
       }
     }
     // Renders all the markers
     Object.keys(this.markersCategories).map((name: string) => {
-      this.overlays[name !== 'undefined' ? name : 'Markers'] = L.featureGroup
+      const layerName = name !== 'undefined' ? name : 'Markers'
+      this.overlays[layerName] = L.featureGroup
         .subGroup(this.markersLayer, this.markersCategories[name])
         .addTo(this.map);
+      this.overlays[layerName].type = 'Marker';
     });
 
     // Loops throught clorophlets and adds them to the map
@@ -249,7 +251,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.settings.clorophlets.map((value: any) => {
         if (value.divisions.length > 0) {
           // Renders the clorophlet
-          this.drawClorophlet(value, res.data);
+          this.overlays[value.name] = this.setClorophlet(value, res.data).addTo(this.map);
+          this.overlays[value.name].type = 'Clorophlet';
         }
       });
     }
@@ -303,12 +306,13 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         // Sets the style of the marker depending on the rules applied.
         const options = Object.assign({}, MARKER_OPTIONS);
         Object.assign(options, { id: item.id });
-        this.settings.markerRules?.map((rule: any) => {
+        this.settings.markerRules?.map((rule: any, i: any) => {
           if (applyFilters(item, rule.filter)) {
             options.color = rule.color;
             options.fillColor = rule.color;
             options.weight *= rule.size;
             options.radius *= rule.size;
+            // options.rule = rule.label.length > 0 ? rule.label : "Rule " + (i + 1);
           }
         });
 
@@ -323,15 +327,16 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Renders a clorophlet using the passed data.
+   * Creates a clorophlet using the passed data.
    *
-   * @param value Properties of the clorophlet to draw.
+   * @param value Properties of the clorophlet.
    * @param data Query data feeded to the clorophlet.
    */
-  private drawClorophlet(value: any, data: any) {
-    this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
+  private setClorophlet(value: any, data: any) {
+    return L.geoJson(JSON.parse(value.geoJSON), {
       style: (feature: any): any => {
         let color = 'transparent';
+        let label = '';
         for (const field in data) {
           if (Object.prototype.hasOwnProperty.call(data, field)) {
             data[field].edges.map((entry: any) => {
@@ -341,9 +346,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
                 entry.node[value.place].toString() ===
                   feature.properties[value.geoJSONfield].toString()
               ) {
-                value.divisions.map((div: any) => {
+                value.divisions.map((div: any, i: number) => {
                   if (applyFilters(entry.node, div.filter)) {
                     color = div.color;
+                    label = div.label.empty ? "Division " + (i + 1) : div.label;
+                    console.log(label)
                   }
                 });
               }
@@ -356,9 +363,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           weight: 0.5,
           opacity: 1,
           color: color === 'transparent' ? 'transparent' : 'white',
+          label: label,
         };
       },
-    }).addTo(this.map);
+    })
   }
 
   /**
@@ -438,6 +446,24 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
                 ? division.label
                 : 'Division ' + (i + 1)) +
               '<br>';
+            L.DomEvent.on(
+              legendDivisionDiv,
+              'click',
+              () => {
+                Object.keys(overlays[clorophlet.name]._layers).map((layerName: any) => {
+                  const layer = overlays[clorophlet.name]._layers[layerName];
+                  if (layer.options.label === division.label) {
+                    layer.setStyle((feature: any): any => {
+                      console.log(feature)
+                      return {
+                        fillOpacity: 0,
+                      };
+                    })
+                  }
+                });
+              },
+              this
+            );
           });
         }
       });
