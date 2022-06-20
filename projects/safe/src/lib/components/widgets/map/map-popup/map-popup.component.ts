@@ -8,6 +8,9 @@ import {
 } from '@angular/core';
 import get from 'lodash/get';
 
+/**
+ * Map Popup component.
+ */
 @Component({
   selector: 'safe-map-popup',
   templateUrl: './map-popup.component.html',
@@ -20,11 +23,12 @@ export class MapPopupComponent implements OnInit, AfterViewInit {
 
   public popupRows: { label: string; value: any }[] = [];
 
+  /**
+   * Map Popup component.
+   */
   constructor() {}
 
   ngOnInit(): void {
-    console.log(this.item);
-    console.log(this.fields);
     this.popupRows = this.setPopupContent(this.fields);
   }
 
@@ -32,6 +36,13 @@ export class MapPopupComponent implements OnInit, AfterViewInit {
     this.loaded.emit(true);
   }
 
+  /**
+   * Get the content to display.
+   *
+   * @param fields list of available fiels
+   * @param prefix prefix to apply to field names
+   * @returns list of popup rows to display
+   */
   private setPopupContent(fields: any[], prefix = ''): any[] {
     let popupRows: { label: string; value: any }[] = [];
     for (const field of fields) {
