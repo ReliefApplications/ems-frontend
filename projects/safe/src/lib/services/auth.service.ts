@@ -129,10 +129,24 @@ export class SafeAuthService {
    * @returns A promise that resolves to void.
    */
   public initLoginSequence(): Promise<void> {
+    const redirectUri = new URL(location.href);
+    redirectUri.search = '';
+    if (redirectUri.pathname !== '/') {
+      localStorage.setItem('redirect', redirectUri.href);
+    }
+    this.oauthService.redirectUri =
+      localStorage.getItem('redirect') || this.oauthService.redirectUri;
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
       .then(() => this.isDoneLoading.next(true))
-      .catch(() => this.isDoneLoading.next(true));
+      .then(() => {
+        this.isDoneLoading.next(true);
+        localStorage.removeItem('redirect');
+      })
+      .catch(() => {
+        console.error('issue when loading file');
+        this.isDoneLoading.next(false);
+      });
   }
 
   /**
