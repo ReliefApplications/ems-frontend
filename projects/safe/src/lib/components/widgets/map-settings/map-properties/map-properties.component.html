@@ -35,9 +35,7 @@
     <div class="form-group-row">
       <mat-form-field appearance="outline">
         <mat-label>
-          {{
-            'components.widget.settings.map.properties.latitude' | translate
-          }}
+          {{ 'components.widget.settings.map.properties.latitude' | translate }}
         </mat-label>
         <input type="number" matInput formControlName="centerLat" />
         <safe-icon
@@ -50,9 +48,7 @@
           "
         ></safe-icon>
         <mat-error *ngIf="form.controls.centerLat.errors">
-          {{
-            'components.widget.settings.map.errors.latitude' | translate
-          }}
+          {{ 'components.widget.settings.map.errors.latitude' | translate }}
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline">
@@ -72,9 +68,7 @@
           "
         ></safe-icon>
         <mat-error *ngIf="form.controls.centerLat.errors">
-          {{
-            'components.widget.settings.map.errors.longitude' | translate
-          }}
+          {{ 'components.widget.settings.map.errors.longitude' | translate }}
         </mat-error>
       </mat-form-field>
     </div>

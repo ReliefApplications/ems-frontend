@@ -78,20 +78,19 @@
       <td mat-cell *matCellDef="let element; let i = index">
         <div>
           <safe-button
-          [isIcon]="true"
-          icon="edit"
-          category="primary"
-          (click)="editDivision(i)"
-        ></safe-button>
-        <safe-button
-          [isIcon]="true"
-          icon="delete"
-          category="primary"
-          variant="danger"
-          (click)="removeDivision(i)"
-        ></safe-button>
+            [isIcon]="true"
+            icon="edit"
+            category="primary"
+            (click)="editDivision(i)"
+          ></safe-button>
+          <safe-button
+            [isIcon]="true"
+            icon="delete"
+            category="primary"
+            variant="danger"
+            (click)="removeDivision(i)"
+          ></safe-button>
         </div>
-
       </td>
     </ng-container>
 

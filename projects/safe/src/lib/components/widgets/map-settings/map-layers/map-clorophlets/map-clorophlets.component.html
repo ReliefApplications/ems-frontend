@@ -3,7 +3,9 @@
   {{ 'components.widget.settings.map.layers.clorophlet.info' | translate }}
 </safe-alert>
 <!-- LIST of Clorophlets -->
-<h2>{{'components.widget.settings.map.layers.clorophlet.title' | translate }}</h2>
+<h2>
+  {{ 'components.widget.settings.map.layers.clorophlet.title' | translate }}
+</h2>
 <table mat-table [dataSource]="clorophlets.value">
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
@@ -16,20 +18,19 @@
     <td mat-cell *matCellDef="let element; let i = index">
       <div>
         <safe-button
-        [isIcon]="true"
-        icon="edit"
-        category="primary"
-        (click)="editClorophlet(i)"
-      ></safe-button>
-      <safe-button
-        [isIcon]="true"
-        icon="delete"
-        category="primary"
-        variant="danger"
-        (click)="removeClorophlet(i)"
-      ></safe-button>
+          [isIcon]="true"
+          icon="edit"
+          category="primary"
+          (click)="editClorophlet(i)"
+        ></safe-button>
+        <safe-button
+          [isIcon]="true"
+          icon="delete"
+          category="primary"
+          variant="danger"
+          (click)="removeClorophlet(i)"
+        ></safe-button>
       </div>
-
     </td>
   </ng-container>
 
