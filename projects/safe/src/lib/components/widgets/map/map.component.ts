@@ -15,6 +15,8 @@ import get from 'lodash/get';
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
 import 'leaflet.markercluster';
+import { MapPopupComponent } from './map-popup/map-popup.component';
+import { DomService } from '../../../services/dom.service';
 declare let L: any;
 
 /** Default options for the marker */
@@ -76,7 +78,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private data: any[] = [];
   private dataQuery: any;
   private dataSubscription?: Subscription;
-  private displayFields: string[] = [];
+  private fields: any[] = [];
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -91,11 +93,13 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
    * @param environment platform environment
    * @param apollo Apollo client
    * @param queryBuilder The querybuilder service
+   * @param domService Shared dom service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private domService: DomService
   ) {
     this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
@@ -137,8 +141,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.getData();
     }
 
-    this.displayFields =
-      this.settings.query?.fields.map((f: any) => f.name) || [];
+    this.fields = get(this.settings, 'query.fields', []);
 
     setTimeout(() => this.map.invalidateSize(), 100);
   }
@@ -218,10 +221,21 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         this.selectedItem = this.data.find(
           (x) => x.id === event.layer.options.id
         );
+        // Generate popup from component
+        const div = document.createElement('div');
+        const popupContent = this.domService.appendComponentToBody(
+          MapPopupComponent,
+          div
+        );
+        const instance = popupContent.instance;
+        instance.item = get(this.selectedItem, 'data', '');
+        instance.fields = this.fields;
+        // Display popup
         this.popupMarker = L.popup({})
           .setLatLng([event.latlng.lat, event.latlng.lng])
-          .setContent(get(this.selectedItem, 'data', ''))
+          .setContent(div)
           .addTo(this.map);
+        instance.loaded.subscribe(() => this.popupMarker.update());
       });
       this.markersLayer = L.markerClusterGroup({}).addTo(markersLayerGroup);
     } else {
@@ -292,14 +306,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const longitude = Number(item[this.settings.longitude]);
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
       if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
-        // Sets the marker popup contents.
-        let data = '';
-        for (const key of Object.keys(item)) {
-          if (this.displayFields.includes(key)) {
-            data += `<div><b>${key}:</b> ${item[key]}</div>`;
-          }
-        }
-        const obj = { id: item.id, data };
+        // Sets the marker content. Data is used by popup
+        const obj = { id: item.id, data: item };
         this.data.push(obj);
 
         // Sets the style of the marker depending on the rules applied.
