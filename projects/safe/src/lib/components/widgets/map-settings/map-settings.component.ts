@@ -21,8 +21,6 @@ export class SafeMapSettingsComponent implements OnInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   public availableFields: any[] = [];
-  public selectedFields: any[] = [];
-  public formatedSelectedFields: any[] = [];
 
   /**
    * Get marker rules as form array
@@ -50,19 +48,7 @@ export class SafeMapSettingsComponent implements OnInit {
     });
 
     if (this.tileForm?.value.query.name) {
-      this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
-      this.formatedSelectedFields = [];
       this.availableFields = this.getAvailableFields();
-      console.log(this.availableFields);
-      this.availableFields.map((val: any) => {
-        if (this.selectedFields.includes(val.name)) {
-          this.formatedSelectedFields.push(val);
-        }
-      });
-    }
-
-    if (this.tileForm?.value.query.name) {
-      this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
     }
 
     const queryForm = this.tileForm.get('query') as FormGroup;
@@ -73,17 +59,15 @@ export class SafeMapSettingsComponent implements OnInit {
       this.tileForm?.controls.category.setValue('');
     });
     queryForm.valueChanges.subscribe(() => {
-      this.selectedFields = this.getFields(queryForm.getRawValue().fields);
-      this.formatedSelectedFields = [];
       this.availableFields = this.getAvailableFields();
-      this.availableFields.map((val: any) => {
-        if (this.selectedFields.includes(val.name)) {
-          this.formatedSelectedFields.push(val);
-        }
-      });
     });
   }
 
+  /**
+   * Get list of all available fields
+   *
+   * @returns List of available fields
+   */
   private getAvailableFields(): any[] {
     const fields = JSON.parse(
       JSON.stringify(
@@ -103,46 +87,5 @@ export class SafeMapSettingsComponent implements OnInit {
       }
       return field;
     });
-  }
-
-  /**
-   * Flatten an array
-   *
-   * @param {any[]} arr - any[] - the array to be flattened
-   * @returns the array with all the nested arrays flattened.
-   */
-  private flatDeep(arr: any[]): any[] {
-    return arr.reduce(
-      (acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val),
-      []
-    );
-  }
-
-  /**
-   * Take an array of fields, and return an array of strings that represent
-   * the fields
-   *
-   * @param {any[]} fields - any[] - this is the array of fields that we want to
-   * flatten
-   * @param {string} [prefix] - The prefix is the name of the parent object. For
-   * example, if you have a field called "user" and it's an object, the prefix will
-   * be "user".
-   * @returns An array of strings.
-   */
-  private getFields(fields: any[], prefix?: string): any[] {
-    return this.flatDeep(
-      fields
-        .filter((x) => x.kind !== 'LIST')
-        .map((f) => {
-          switch (f.kind) {
-            case 'OBJECT': {
-              return this.getFields(f.fields, f.name);
-            }
-            default: {
-              return prefix ? `${prefix}.${f.name}` : f.name;
-            }
-          }
-        })
-    );
   }
 }
