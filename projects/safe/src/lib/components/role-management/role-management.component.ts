@@ -47,6 +47,11 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   // Role
   public currentRole?: Role;
 
+  // Can_see_user and can_see_roles permissions
+  private permissionsSubscription?: Subscription;
+  private canSeeUsersPermission?: Permission;
+  private canSeeRolesPermission?: Permission;
+
   // List of users with the current role assigned
   public roleUsers: string[] = [];
 
@@ -89,10 +94,6 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
 
   private applicationSubscription?: Subscription;
 
-  private permissionsSubscription?: Subscription;
-  private canSeeUsersPermission?: Permission;
-  private canSeeRolesPermission?: Permission;
-
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
@@ -103,6 +104,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Gets the values of can_see_users and can_see roles permissions in the context (depends if inApp is true or false)
     this.permissionsSubscription = this.apollo
       .watchQuery<GetPermissionsQueryResponse>({
         query: GET_PERMISSIONS,
@@ -124,7 +126,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
 
           // If we manage to fetch the application from service, get all the information from there
           if (this.inApp && application && roleId) {
-            // Deep cloning so that some fields are not read-only
+            // Deep cloning to remove read-only on some fields
             this.currentRole = _.cloneDeep(
               application.roles?.find((role) => role.id === roleId)
             );
@@ -146,7 +148,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
             }));
             this.formatChannels();
 
-            // Deep-copying to avoir read-only "canSee" fields
+            // Deep cloning to remove read-only on some fields
             this.features = _.cloneDeep(application.pages || []);
             this.formatFeatures();
           } else {
@@ -155,7 +157,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
                 query: GET_ROLES,
               })
               .valueChanges.subscribe((roles) => {
-                // Deep cloning so that some fields are not read-only
+                // Deep cloning to remove read-only on some fields
                 this.currentRole = _.cloneDeep(
                   roles.data.roles.find((role) => role.id === roleId)
                 );
@@ -251,6 +253,31 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Manage canSeeRoles and canSeeUsers permission toggling
+   */
+  public onTogglePermission(permission: string): void {
+    const targetPermission =
+      this.canSeeUsersPermission?.type === permission
+        ? this.canSeeUsersPermission
+        : this.canSeeRolesPermission;
+    if (
+      targetPermission &&
+      this.currentRole?.permissions?.find((p) => p.id === targetPermission.id)
+    ) {
+      this.currentRole.permissions = this.currentRole.permissions.filter(
+        (p) => p.id !== targetPermission.id
+      );
+    } else if (targetPermission) {
+      this.currentRole?.permissions?.push(targetPermission);
+    } else {
+      this.snackBar.openSnackBar(
+        this.translateService.instant('components.role.update.error'),
+        { error: true }
+      );
+    }
+  }
+
+  /**
    * Builds a features object that can be easily displayed on the template
    */
   private formatFeatures(): void {
@@ -284,30 +311,6 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Save the expansion state of the panel so that it's not reset on search or selection
-   *
-   * @param groupType type of the features group
-   */
-  public saveFeaturesPanelExpansion(groupType: string): void {
-    const targetGroup = this.formattedFeatures.find(
-      (group) => groupType === group.type
-    );
-    targetGroup.expanded = !targetGroup.expanded;
-  }
-
-  /**
-   * Changes the visibility of a feature
-   */
-  public changeFeatureVisibility(targetFeature: any): void {
-    for (const feature of this.features) {
-      if (feature.id === targetFeature.id) {
-        feature.canSee = !feature.canSee;
-      }
-    }
-    this.formatFeatures();
-  }
-
-  /**
    * Returns the mat-icon identifier corresponding to the features group's type
    *
    * @param type type of the features group
@@ -327,10 +330,104 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Save the expansion state of the panel so that it's not reset on search or selection
+   *
+   * @param groupType type of the features group
+   */
+  public saveFeaturesPanelExpansion(groupType: string): void {
+    const targetGroup = this.formattedFeatures.find(
+      (group) => groupType === group.type
+    );
+    targetGroup.expanded = !targetGroup.expanded;
+  }
+
+  /**
+   * Changes the visibility of a feature
+   *
+   * @param targetFeature that we want to change the visibility of
+   */
+  public changeFeatureVisibility(targetFeature: any): void {
+    for (const feature of this.features) {
+      if (feature.id === targetFeature.id) {
+        feature.canSee = !feature.canSee;
+      }
+    }
+    this.formatFeatures();
+  }
+
+  /**
    * Updates the features list depending on the searchterm
    */
   public onFeaturesSearch(): void {
     this.formatFeatures();
+  }
+
+  /**
+   * Load the list of resources
+   *
+   * @param options object containing optional arguments
+   * "search" is used if the query is a new search which means the previous results will not be used
+   */
+  public loadResources(options?: { search: boolean }): void {
+    this.resourcesQueryInfo.loading = true;
+    this.resourcesQuery.fetchMore({
+      variables: {
+        first: LOAD_ITEMS,
+        filter: this.formsAndResourcesQueryFilter,
+        ...(!options?.search && {
+          afterCursor: this.resourcesQueryInfo.endCursor,
+        }), // If the query is from a search, don't take into account the cursor
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign({}, prev, {
+          resources: {
+            edges: [
+              ...(options?.search ? [] : prev.resources.edges), // If the query is from a search, don't take into account the previous results
+              ...fetchMoreResult.resources.edges,
+            ],
+            pageInfo: fetchMoreResult.resources.pageInfo,
+            totalCount: fetchMoreResult.resources.totalCount,
+          },
+        });
+      },
+    });
+  }
+
+  /**
+   * Load the list of forms
+   *
+   * @param options object containing optional arguments
+   * "search" is used if the query is a new search which means the previous results will not be used
+   */
+  public loadForms(options?: { search: boolean }): void {
+    this.formsQueryInfo.loading = true;
+    this.formsQuery.fetchMore({
+      variables: {
+        first: LOAD_ITEMS,
+        filter: this.formsAndResourcesQueryFilter,
+        ...(!options?.search && {
+          afterCursor: this.formsQueryInfo.endCursor, // If the query is from a search, don't take into account the cursor
+        }),
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign({}, prev, {
+          forms: {
+            edges: [
+              ...(options?.search ? [] : prev.forms.edges), // If the query is from a search, don't take into account the previous results
+              ...fetchMoreResult.forms.edges,
+            ],
+            pageInfo: fetchMoreResult.forms.pageInfo,
+            totalCount: fetchMoreResult.forms.totalCount,
+          },
+        });
+      },
+    });
   }
 
   /**
@@ -371,7 +468,6 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     targetGroup.expanded = !targetGroup.expanded;
   }
 
-  // TODO There is a weird synchronization bug with this, the first click doesn't update the "checked" value. I cannot figure out what it is sorry...
   /**
    * Checks if the channel is already selected
    *
@@ -397,8 +493,6 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     } else {
       this.currentRole?.channels?.push(channel);
     }
-    console.log('this.currentRole?.channels');
-    console.log(this.currentRole?.channels);
     this.isChannelSubscribed(channel);
   }
 
@@ -422,6 +516,7 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // The mix of values from currentRole and roleForm is not very clean. If possible unify all that
     const updateRole = {
       ...this.currentRole,
       channels: this.currentRole.channels?.map((c) => c.id),
@@ -465,107 +560,12 @@ export class SafeRoleManagementComponent implements OnInit, OnDestroy {
     /***************************** END UPDATING THE ROLE *****************************/
 
     /***************************** UPDATING THE FEATURES *****************************/
-
+    // TODO
     /*************************** END UPDATING THE FEATURES ***************************/
 
     /***************************** UPDATING THE RESOURCES ****************************/
-
+    // TODO
     /*************************** END UPDATING THE RESOURCES **************************/
-  }
-
-  /**
-   * Load the list of resources
-   *
-   * @param options object containing optional arguments
-   * "search" is used if the query is a new search which means the previous results will not be used
-   */
-  public loadResources(options?: { search: boolean }): void {
-    this.resourcesQueryInfo.loading = true;
-    this.resourcesQuery.fetchMore({
-      variables: {
-        first: LOAD_ITEMS,
-        filter: this.formsAndResourcesQueryFilter,
-        ...(!options?.search && {
-          afterCursor: this.resourcesQueryInfo.endCursor,
-        }), // If the query is from a search, don't take into account the cursor
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          resources: {
-            edges: [
-              ...(options?.search ? [] : prev.resources.edges), // If the query is from a search, don't take into account the previous results
-              ...fetchMoreResult.resources.edges,
-            ],
-            pageInfo: fetchMoreResult.resources.pageInfo,
-            totalCount: fetchMoreResult.resources.totalCount,
-          },
-        });
-      },
-    });
-  }
-
-
-  /**
-   * Load the list of forms
-   *
-   * @param options object containing optional arguments
-   * "search" is used if the query is a new search which means the previous results will not be used
-   */
-  public loadForms(options?: { search: boolean }): void {
-    this.formsQueryInfo.loading = true;
-    this.formsQuery.fetchMore({
-      variables: {
-        first: LOAD_ITEMS,
-        filter: this.formsAndResourcesQueryFilter,
-        ...(!options?.search && {
-          afterCursor: this.formsQueryInfo.endCursor, // If the query is from a search, don't take into account the cursor
-        }),
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          forms: {
-            edges: [
-              ...(options?.search ? [] : prev.forms.edges), // If the query is from a search, don't take into account the previous results
-              ...fetchMoreResult.forms.edges,
-            ],
-            pageInfo: fetchMoreResult.forms.pageInfo,
-            totalCount: fetchMoreResult.forms.totalCount,
-          },
-        });
-      },
-    });
-  }
-
-
-  /**
-   * Manage canSeeRoles and canSeeUsers permission toggling
-   */
-  public onTogglePermission(permission: string): void {
-    const targetPermission =
-      this.canSeeUsersPermission?.type === permission
-        ? this.canSeeUsersPermission
-        : this.canSeeRolesPermission;
-    if (
-      targetPermission &&
-      this.currentRole?.permissions?.find((p) => p.id === targetPermission.id)
-    ) {
-      this.currentRole.permissions = this.currentRole.permissions.filter(
-        (p) => p.id !== targetPermission.id
-      );
-    } else if (targetPermission) {
-      this.currentRole?.permissions?.push(targetPermission);
-    } else {
-      this.snackBar.openSnackBar(
-        this.translateService.instant('components.role.update.error'),
-        { error: true }
-      );
-    }
   }
 
   /**
