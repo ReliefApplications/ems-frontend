@@ -19,13 +19,12 @@ mat-expansion-panel {
     mat-list-item {
         font-size: 14px;
 
-        &:hover {
-            cursor: pointer;
-            background-color: #dddddd54;
-        }
-
         safe-icon {
-            margin-right: 16px;
+            margin: 0 16px;
+
+            &:hover {
+                cursor: pointer;
+            }
         }
     }
 }

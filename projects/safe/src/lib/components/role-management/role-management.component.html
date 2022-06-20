@@ -56,10 +56,9 @@
                     </mat-expansion-panel-header>
 
                     <mat-list>
-                        <mat-list-item *ngFor="let feature of group.features"
-                            (click)="changeFeatureVisibility(feature)">
-                            <safe-icon icon="{{feature.canSee ? 'visibility' : 'visibility_off'}}"
-                                variant="{{feature.canSee ? 'primary' : 'grey'}}"></safe-icon>
+                        <mat-list-item *ngFor="let feature of group.features">
+                            <safe-icon (click)="changeFeatureVisibility(feature)" icon="{{feature.canSee ? 'visibility' : 'visibility_off'}}"
+                            variant="{{feature.canSee ? 'primary' : 'grey'}}"></safe-icon>
                             {{feature.name}}
                         </mat-list-item>
                     </mat-list>
