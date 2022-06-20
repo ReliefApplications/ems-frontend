@@ -820,21 +820,17 @@
 					"basemap": "Fond de carte",
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
-					"display": {
-						"basemap": "Fond de carte",
-						"latitude": "Latitude du centre de la carte",
-						"longitude": "Longitude du centre de la carte",
-						"title": "Affichage par défaut",
-						"zoom": "Zoom par défaut"
-					},
 					"errors": {
 						"latitude": "Latitude incorrecte, merci de sélectionner un nombre entre -90 et 90",
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
 					},
 					"layers": {
 						"clorophlet": {
-							"addNew": "Ajouter un clorophlet",
-							"addNewDiv": "Ajouter une division",
+							"add": "Ajouter un clorophlet",
+							"division": {
+								"add": "Ajouter une division",
+								"title": "Divisions"
+							},
 							"geoJSON": "geoJSON",
 							"geoJSONidentifier": "geoJSON Identifiant",
 							"identifier": "Identifiant",
@@ -856,13 +852,18 @@
 							"rulesInfo": "Configurer la taille et la couleur des marqueurs",
 							"size": "Taille",
 							"title": "Marqueurs"
-						},
-						"select": "Sélectionnez une couche",
-						"selected": "Couches sélectionnées",
-						"title": "Couches additionnelles"
+						}
+					},
+					"properties": {
+						"basemap": "Fond de carte",
+						"latitude": "Latitude du centre de la carte",
+						"longitude": "Longitude du centre de la carte",
+						"title": "Affichage par défaut",
+						"zoom": "Zoom par défaut"
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
+						"dataset": "Filtrez le jeu de données et sélectionnez les champs à afficher sur la carte",
 						"default": {
 							"latitude": "Sélectionnez une latitude par défaut autour de laquelle vous souhaitez centrer la carte",
 							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte",
