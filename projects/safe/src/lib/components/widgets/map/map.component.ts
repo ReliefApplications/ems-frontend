@@ -10,6 +10,7 @@ import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { applyFilters } from './filter';
+import get from 'lodash/get';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -144,14 +145,12 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
   /** Creates the map and adds all the controls we use */
   private drawMap(): void {
-    const centerLong = this.settings.centerLong
-      ? Number(this.settings.centerLong)
-      : 0;
-    const centerLat = this.settings.centerLat
-      ? Number(this.settings.centerLat)
-      : 0;
+    // Set bounds
+    const centerLong = Number(get(this.settings, 'centerLong', 0));
+    const centerLat = Number(get(this.settings, 'centerLat', 0));
     const bounds = L.latLngBounds(L.latLng(-90, -1000), L.latLng(90, 1000));
 
+    // Create leaflet map
     this.map = L.map(this.mapId, {
       zoomControl: false,
       maxBounds: bounds,
@@ -159,12 +158,15 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       maxZoom: 18,
       worldCopyJump: true,
       zoom: this.settings.zoom,
-    }).setView([centerLat, centerLong], this.settings.zoom || 3);
+    }).setView([centerLat, centerLong], get(this.settings, 'zoom', 3));
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
-    const basemap = BASEMAP_LAYERS[this.settings.basemap]
-      ? BASEMAP_LAYERS[this.settings.basemap]
-      : BASEMAP_LAYERS.OSM;
+    // Set basemap
+    const basemap = get(
+      BASEMAP_LAYERS,
+      this.settings.basemap,
+      BASEMAP_LAYERS.OSM
+    );
     L.esri.Vector.vectorBasemapLayer(basemap, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
@@ -218,7 +220,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         );
         this.popupMarker = L.popup({})
           .setLatLng([event.latlng.lat, event.latlng.lng])
-          .setContent(this.selectedItem ? this.selectedItem.data : '')
+          .setContent(get(this.selectedItem, 'data', ''))
           .addTo(this.map);
       });
       this.markersLayer = L.markerClusterGroup({}).addTo(markersLayerGroup);
@@ -330,6 +332,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
    */
   private drawClorophlet(value: any, data: any) {
     this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
+      interactive: false,
       style: (feature: any): any => {
         let color = 'transparent';
         for (const field in data) {
