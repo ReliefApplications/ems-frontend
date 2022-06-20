@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { clorophletForm } from '../../map-forms';
 import { MapClorophletComponent } from '../map-clorophlet/map-clorophlet.component';
@@ -49,14 +49,12 @@ export class MapClorophletsComponent implements OnInit {
       if (value) {
         this.clorophlets.removeAt(index);
         this.clorophlets.insert(index, clorophletForm(value));
-        // this.clorophlets.at(index).patchValue(value);
-        // this.clorophlets.at(index).setValue(value);
       }
     });
   }
 
   /**
-   * Removes a clorophlets.
+   * Remove a clorophlet.
    *
    * @param index position of the clorophlet to delete.
    */
