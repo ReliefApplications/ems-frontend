@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MapClorophletDivisionComponent } from './map-clorophlet-division.component';
+import { MapMarkerRuleComponent } from './map-marker-rule.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeQueryBuilderModule } from '../../../../query-builder/query-builder.module';
 
 /**
- * Single Division of clorophlet configuration module.
+ * Single Marker Rule configuration module.
  */
 @NgModule({
-  declarations: [MapClorophletDivisionComponent],
+  declarations: [MapMarkerRuleComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -25,6 +25,6 @@ import { SafeQueryBuilderModule } from '../../../../query-builder/query-builder.
     MatButtonModule,
     SafeQueryBuilderModule,
   ],
-  exports: [MapClorophletDivisionComponent],
+  exports: [MapMarkerRuleComponent],
 })
-export class MapClorophletDivisionModule {}
+export class MapMarkerRuleModule {}

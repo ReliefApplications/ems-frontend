@@ -8,6 +8,9 @@ import { MapMarkersModule } from './map-markers/map-markers.module';
 import { MapClorophletsModule } from './map-clorophlets/map-clorophlets.module';
 import { MapOnlineLayersModule } from './map-online-layers/map-online-layers.module';
 
+/**
+ * Map Widget layers configuration module.
+ */
 @NgModule({
   declarations: [MapLayersComponent],
   imports: [

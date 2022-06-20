@@ -826,8 +826,7 @@
 					},
 					"layers": {
 						"clorophlet": {
-							"addNew": "Add new clorophlet",
-							"addNewDiv": "Add new division",
+							"add": "Add new clorophlet",
 							"division": {
 								"add": "Add new division",
 								"title": "Divisions"
@@ -864,6 +863,7 @@
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
+						"dataset": "Filter the dataset and select all fields you want to display on the map",
 						"default": {
 							"latitude": "Select a default latitude to center the map around",
 							"longitude": "Select a default longitude to center the map around",

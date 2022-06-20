@@ -826,8 +826,11 @@
 					},
 					"layers": {
 						"clorophlet": {
-							"addNew": "******",
-							"addNewDiv": "******",
+							"add": "******",
+							"division": {
+								"add": "******",
+								"title": "******"
+							},
 							"geoJSON": "******",
 							"geoJSONidentifier": "******",
 							"identifier": "******",
@@ -860,6 +863,7 @@
 					},
 					"tooltip": {
 						"category": "******",
+						"dataset": "******",
 						"default": {
 							"latitude": "******",
 							"longitude": "******",

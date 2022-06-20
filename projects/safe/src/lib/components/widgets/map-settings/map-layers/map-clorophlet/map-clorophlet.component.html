@@ -34,7 +34,7 @@
           | translate
       }}</mat-label>
       <mat-select formControlName="place">
-        <mat-option *ngFor="let field of selectedFields" [value]="field">{{
+        <mat-option *ngFor="let field of fields" [value]="field">{{
           field
         }}</mat-option>
       </mat-select>
@@ -76,7 +76,8 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element; let i = index">
-        <safe-button
+        <div>
+          <safe-button
           [isIcon]="true"
           icon="edit"
           category="primary"
@@ -89,6 +90,8 @@
           variant="danger"
           (click)="removeDivision(i)"
         ></safe-button>
+        </div>
+
       </td>
     </ng-container>
 
@@ -109,7 +112,7 @@
 <div mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>{{ 'common.close' | translate }}</button>
   <button
-    mat-button
+    mat-flat-button
     color="primary"
     [mat-dialog-close]="form.value"
     [disabled]="form.invalid"

@@ -8,6 +8,10 @@
   </div>
   <div class="form-group">
     <h2>{{ 'components.widget.settings.map.dataset' | translate }}</h2>
+    <safe-alert>
+      <safe-icon icon="info"></safe-icon>
+      {{ 'components.widget.settings.map.tooltip.dataset' | translate }}
+    </safe-alert>
     <safe-query-builder
       [form]="$any(form.controls.query)"
       [canExpand]="false"

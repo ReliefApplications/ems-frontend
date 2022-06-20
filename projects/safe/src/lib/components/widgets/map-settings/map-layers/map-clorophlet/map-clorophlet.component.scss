@@ -5,5 +5,7 @@ form {
 }
 
 td.mat-column-actions {
-  display: flex;
+  div {
+    display: flex;
+  }
 }

@@ -9,7 +9,11 @@ import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MapMarkerRuleModule } from '../map-marker-rule/map-marker-rule.module';
 
+/**
+ * Module of Map Widget marker rules.
+ */
 @NgModule({
   declarations: [MapMarkersComponent],
   imports: [
@@ -23,6 +27,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatTableModule,
     MatFormFieldModule,
     MatSelectModule,
+    MapMarkerRuleModule,
   ],
   exports: [MapMarkersComponent],
 })

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
-import { mapform, markerRuleForm } from './map-forms';
+import { mapform } from './map-forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
 /** Component for the map widget settings */
@@ -22,7 +22,6 @@ export class SafeMapSettingsComponent implements OnInit {
 
   public selectedFields: any[] = [];
   public formatedSelectedFields: any[] = [];
-  public geoJSONfields: any[] = [];
 
   /**
    * Get marker rules as form array
@@ -33,6 +32,11 @@ export class SafeMapSettingsComponent implements OnInit {
     return this.tileForm?.get('markerRules') as FormArray;
   }
 
+  /**
+   * Component for the map widget settings
+   *
+   * @param queryBuilder Shared query builder service
+   */
   constructor(private queryBuilder: QueryBuilderService) {}
 
   /** Build the settings form, using the widget saved parameters. */
@@ -67,7 +71,7 @@ export class SafeMapSettingsComponent implements OnInit {
       this.tileForm?.controls.longitude.setValue('');
       this.tileForm?.controls.category.setValue('');
     });
-    queryForm.valueChanges.subscribe((res) => {
+    queryForm.valueChanges.subscribe(() => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
       this.formatedSelectedFields = [];
       this.queryBuilder
@@ -119,22 +123,5 @@ export class SafeMapSettingsComponent implements OnInit {
           }
         })
     );
-  }
-
-  // === MARKERS ===
-  /**
-   * Adds a new marker rule.
-   */
-  public addMarkerRule(): void {
-    this.markerRules.push(markerRuleForm());
-  }
-
-  /**
-   * Removes a marker rule.
-   *
-   * @param index position of the marker rule to delete.
-   */
-  public removeMarkerRule(index: number): void {
-    this.markerRules.removeAt(index);
   }
 }

@@ -6,7 +6,11 @@
       [label]="'components.widget.settings.map.layers.point.title' | translate"
     >
       <ng-template matTabContent>
-        <safe-map-markers [form]="form"></safe-map-markers>
+        <safe-map-markers
+          [form]="form"
+          [selectedFields]="selectedFields"
+          [formatedSelectedFields]="formatedSelectedFields"
+        ></safe-map-markers>
       </ng-template>
     </mat-tab>
     <mat-tab
@@ -15,14 +19,20 @@
       "
     >
       <ng-template matTabContent>
-        <safe-map-clorophlets [clorophlets]="clorophlets"></safe-map-clorophlets>
+        <safe-map-clorophlets
+          [clorophlets]="clorophlets"
+          [selectedFields]="selectedFields"
+          [formatedSelectedFields]="formatedSelectedFields"
+        ></safe-map-clorophlets>
       </ng-template>
     </mat-tab>
     <mat-tab
       [label]="'components.widget.settings.map.layers.online.title' | translate"
     >
       <ng-template matTabContent>
-        <safe-map-online-layers [layers]="onlineLayers"></safe-map-online-layers>
+        <safe-map-online-layers
+          [layers]="onlineLayers"
+        ></safe-map-online-layers>
       </ng-template>
     </mat-tab>
   </mat-tab-group>

@@ -6,6 +6,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
+import { SafeAlertModule } from '../../../ui/alert/alert.module';
+import { SafeIconModule } from '../../../ui/icon/icon.module';
 
 /**
  * Module of General settings of map widget
@@ -20,6 +22,8 @@ import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.mod
     MatFormFieldModule,
     MatInputModule,
     SafeQueryBuilderModule,
+    SafeAlertModule,
+    SafeIconModule,
   ],
   exports: [MapGeneralComponent],
 })

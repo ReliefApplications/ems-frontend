@@ -15,6 +15,9 @@ import { MapClorophletComponent } from '../map-clorophlet/map-clorophlet.compone
 export class MapClorophletsComponent implements OnInit {
   @Input() clorophlets!: FormArray;
 
+  @Input() selectedFields: any[] = [];
+  @Input() formatedSelectedFields: any[] = [];
+
   public tableColumns = ['name', 'actions'];
 
   /**
@@ -43,6 +46,8 @@ export class MapClorophletsComponent implements OnInit {
     const dialogRef = this.dialog.open(MapClorophletComponent, {
       data: {
         value: this.clorophlets.at(index).value,
+        fields: this.selectedFields,
+        formatedFields: this.formatedSelectedFields,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

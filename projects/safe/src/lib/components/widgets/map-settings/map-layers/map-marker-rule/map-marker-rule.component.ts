@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { divisionForm } from '../../map-forms';
+import { markerRuleForm } from '../../map-forms';
 
 /** Interface of dialog data of the component */
 interface DialogData {
@@ -10,25 +10,26 @@ interface DialogData {
 }
 
 /**
- * Single clorophlet configuration component.
+ * Single Marker Rule component.
+ * Used in dialog.
  */
 @Component({
-  selector: 'safe-map-clorophlet-division',
-  templateUrl: './map-clorophlet-division.component.html',
-  styleUrls: ['./map-clorophlet-division.component.scss'],
+  selector: 'safe-map-marker-rule',
+  templateUrl: './map-marker-rule.component.html',
+  styleUrls: ['./map-marker-rule.component.scss'],
 })
-export class MapClorophletDivisionComponent implements OnInit {
+export class MapMarkerRuleComponent implements OnInit {
   public form!: FormGroup;
 
   public fields: any[] = [];
 
   /**
-   * Single clorophlet configuration component.
+   * Single Marker Rule component.
    *
    * @param data dialog data
    */
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
-    this.form = divisionForm(data.value);
+    this.form = markerRuleForm(data.value);
     this.fields = data.fields;
   }
 

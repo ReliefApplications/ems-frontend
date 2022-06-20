@@ -2,7 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { markerRuleForm } from '../../map-forms';
+import { MapMarkerRuleComponent } from '../map-marker-rule/map-marker-rule.component';
 
+/**
+ * Component of Map widget marker rules.
+ */
 @Component({
   selector: 'safe-map-markers',
   templateUrl: './map-markers.component.html',
@@ -11,8 +15,14 @@ import { markerRuleForm } from '../../map-forms';
 export class MapMarkersComponent implements OnInit {
   @Input() form!: FormGroup;
 
-  @Input() selectedFields = [];
+  @Input() selectedFields: any[] = [];
+  @Input() formatedSelectedFields: any[] = [];
 
+  /**
+   * Get marker rules as form array.
+   *
+   * @returns Form Array
+   */
   get rules(): FormArray {
     return this.form.get('markerRules') as FormArray;
   }
@@ -42,17 +52,18 @@ export class MapMarkersComponent implements OnInit {
    * @param index index of rule to edit.
    */
   public editRule(index: number): void {
-    // const dialogRef = this.dialog.open(MapClorophletComponent, {
-    //   data: {
-    //     value: this.clorophlets.at(index).value,
-    //   },
-    // });
-    // dialogRef.afterClosed().subscribe((value) => {
-    //   if (value) {
-    //     this.clorophlets.removeAt(index);
-    //     this.clorophlets.insert(index, clorophletForm(value));
-    //   }
-    // });
+    const dialogRef = this.dialog.open(MapMarkerRuleComponent, {
+      data: {
+        value: this.rules.at(index).value,
+        fields: this.formatedSelectedFields,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.rules.removeAt(index);
+        this.rules.insert(index, markerRuleForm(value));
+      }
+    });
   }
 
   /**

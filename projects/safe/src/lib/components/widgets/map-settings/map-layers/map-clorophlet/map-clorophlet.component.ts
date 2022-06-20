@@ -7,6 +7,8 @@ import { MapClorophletDivisionComponent } from '../map-clorophlet-division/map-c
 /** Interface of dialog data of the component */
 interface DialogData {
   value: any;
+  fields: any[];
+  formatedFields: any[];
 }
 
 /**
@@ -21,6 +23,10 @@ export class MapClorophletComponent implements OnInit {
   public form!: FormGroup;
 
   public tableColumns = ['label', 'actions'];
+
+  public fields: any[] = [];
+  public formatedFields: any[] = [];
+  public geoJSONfields: string[] = [];
 
   /**
    * Clorophlet divisions as form array.
@@ -42,13 +48,12 @@ export class MapClorophletComponent implements OnInit {
     private dialog: MatDialog
   ) {
     this.form = clorophletForm(data.value);
+    this.fields = data.fields;
+    this.formatedFields = data.formatedFields;
     if (this.form.value.geoJSON) {
       this.updateGeoJSONfields(this.form.value.geoJSON);
     }
   }
-
-  selectedFields: any[] = [];
-  geoJSONfields: string[] = [];
 
   ngOnInit(): void {}
 
@@ -77,6 +82,7 @@ export class MapClorophletComponent implements OnInit {
     const dialogRef = this.dialog.open(MapClorophletDivisionComponent, {
       data: {
         value: this.divisions.at(index).value,
+        fields: this.formatedFields,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
