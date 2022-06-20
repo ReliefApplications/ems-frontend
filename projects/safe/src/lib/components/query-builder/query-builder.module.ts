@@ -18,7 +18,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatRadioModule } from '@angular/material/radio';
 import { SafeButtonModule } from '../ui/button/button.module';
-import { SafeTabClorophletComponent } from './tab-clorophlet/tab-clorophlet.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
@@ -44,7 +43,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     SafeTabFieldsComponent,
     SafeTabSortComponent,
     SafeTabFilterComponent,
-    SafeTabClorophletComponent,
     SafeTabStyleComponent,
     SafeTabLayoutPreviewComponent,
     SafeQueryStyleListComponent,
