@@ -6,6 +6,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePipelineModule } from '../pipeline/pipeline.module';
+import { FieldDropdownModule } from '../../../field-dropdown/field-dropdown.module';
 
 @NgModule({
   declarations: [SafeSeriesMappingComponent],
@@ -17,6 +18,7 @@ import { SafePipelineModule } from '../pipeline/pipeline.module';
     FormsModule,
     TranslateModule,
     SafePipelineModule,
+    FieldDropdownModule,
   ],
   exports: [SafeSeriesMappingComponent],
 })

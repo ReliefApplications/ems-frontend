@@ -14,9 +14,16 @@ import { MapMarkerRuleComponent } from '../map-marker-rule/map-marker-rule.compo
 })
 export class MapMarkersComponent implements OnInit {
   @Input() form!: FormGroup;
+  @Input() availableFields: any[] = [];
 
-  @Input() selectedFields: any[] = [];
-  @Input() formatedSelectedFields: any[] = [];
+  /**
+   * Getter for the available scalar fields
+   *
+   * @returns the available scalar fields
+   */
+  get availableScalarFields(): any[] {
+    return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
+  }
 
   /**
    * Get marker rules as form array.
@@ -55,7 +62,7 @@ export class MapMarkersComponent implements OnInit {
     const dialogRef = this.dialog.open(MapMarkerRuleComponent, {
       data: {
         value: this.rules.at(index).value,
-        fields: this.formatedSelectedFields,
+        availableFields: this.availableScalarFields,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

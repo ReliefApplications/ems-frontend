@@ -13,10 +13,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { SafeAddFieldStageComponent } from './add-field-stage/add-field-stage.component';
 import { SafeExpressionsComponent } from './expressions/expressions.component';
-import { SafeFieldDropdownComponent } from './field-dropdown/field-dropdown.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../icon/icon.module';
+import { FieldDropdownModule } from '../../../field-dropdown/field-dropdown.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +24,6 @@ import { SafeIconModule } from '../../icon/icon.module';
     SafeGroupStageComponent,
     SafeAddFieldStageComponent,
     SafeExpressionsComponent,
-    SafeFieldDropdownComponent,
   ],
   imports: [
     CommonModule,
@@ -41,13 +40,13 @@ import { SafeIconModule } from '../../icon/icon.module';
     DragDropModule,
     SafeIconModule,
     MatTooltipModule,
+    FieldDropdownModule,
   ],
   exports: [
     SafePipelineComponent,
     SafeGroupStageComponent,
     SafeAddFieldStageComponent,
     SafeExpressionsComponent,
-    SafeFieldDropdownComponent,
   ],
 })
 export class SafePipelineModule {}

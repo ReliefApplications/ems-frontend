@@ -46,7 +46,6 @@ export class MapPopupComponent implements OnInit, AfterViewInit {
   private setPopupContent(fields: any[], prefix = ''): any[] {
     let popupRows: { label: string; value: any }[] = [];
     for (const field of fields) {
-      console.log(prefix + field.name);
       if (field.fields) {
         popupRows = popupRows.concat(
           this.setPopupContent(field.fields, prefix + field.name + '.')

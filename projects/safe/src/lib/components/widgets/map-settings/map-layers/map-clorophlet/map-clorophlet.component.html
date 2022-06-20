@@ -28,17 +28,10 @@
     (change)="uploadGeoJSON()"
   />
   <div class="form-group-row">
-    <mat-form-field appearance="outline">
-      <mat-label>{{
-        'components.widget.settings.map.layers.clorophlet.identifier'
-          | translate
-      }}</mat-label>
-      <mat-select formControlName="place">
-        <mat-option *ngFor="let field of fields" [value]="field">{{
-          field
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <safe-field-dropdown
+      [label]="'components.widget.settings.map.layers.clorophlet.identifier'"
+      [fields]="availableFields"
+    ></safe-field-dropdown>
     <mat-form-field appearance="outline" class="extraInput">
       <mat-label>{{
         'components.widget.settings.map.layers.clorophlet.geoJSONidentifier'

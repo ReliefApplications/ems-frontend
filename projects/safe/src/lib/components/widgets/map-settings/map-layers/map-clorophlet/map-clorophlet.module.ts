@@ -12,6 +12,7 @@ import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule } from '@angular/material/select';
 import { MapClorophletDivisionModule } from '../map-clorophlet-division/map-clorophlet-division.module';
+import { FieldDropdownModule } from '../../../../field-dropdown/field-dropdown.module';
 
 /**
  * Single Clorophlet Configuration in Map Settings Module.
@@ -32,6 +33,7 @@ import { MapClorophletDivisionModule } from '../map-clorophlet-division/map-clor
     MatSelectModule,
     SafeButtonModule,
     MapClorophletDivisionModule,
+    FieldDropdownModule,
   ],
   exports: [MapClorophletComponent],
 })

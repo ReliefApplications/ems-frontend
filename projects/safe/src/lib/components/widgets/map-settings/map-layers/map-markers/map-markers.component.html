@@ -4,42 +4,24 @@
 </safe-alert>
 <div class="form-group" [formGroup]="form">
   <div class="form-group-row">
-    <mat-form-field appearance="outline" style="width: 100%">
-      <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
-      <mat-select formControlName="latitude">
-        <mat-option *ngFor="let field of selectedFields" [value]="field">
-          {{ field }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" style="width: 100%">
-      <mat-label>{{ 'models.widget.map.longitude' | translate }}</mat-label>
-      <mat-select formControlName="longitude">
-        <mat-option *ngFor="let field of selectedFields" [value]="field">
-          {{ field }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <safe-field-dropdown
+      [label]="'models.widget.map.latitude'"
+      [fieldControl]="$any(form).get('latitude')"
+      [fields]="availableFields"
+    ></safe-field-dropdown>
+    <safe-field-dropdown
+      [label]="'models.widget.map.longitude'"
+      [fieldControl]="$any(form).get('longitude')"
+      [fields]="availableFields"
+    ></safe-field-dropdown>
   </div>
-  <mat-form-field
-    appearance="outline"
-    style="width: 100%"
-    class="margin-bottom"
-  >
-    <mat-label>{{
-      'components.widget.settings.map.layers.point.category' | translate
-    }}</mat-label>
-    <mat-select formControlName="category">
-      <mat-option [value]="">{{ 'common.input.none' | translate }}</mat-option>
-      <mat-option *ngFor="let field of selectedFields" [value]="field">
-        {{ field }}
-      </mat-option>
-    </mat-select>
-    <mat-hint
-      >{{ 'components.widget.settings.map.tooltip.category' | translate
-      }}<safe-icon icon="layers" [inline]="true" [size]="14"></safe-icon
-    ></mat-hint>
-  </mat-form-field>
+  <safe-field-dropdown
+    [label]="'components.widget.settings.map.layers.point.category'"
+    [fieldControl]="$any(form).get('category')"
+    [fields]="availableFields"
+    [nullable]="true"
+    [suffix]="'components.widget.settings.map.tooltip.category'"
+  ></safe-field-dropdown>
 </div>
 <!-- LIST of Marker rules -->
 <h2>

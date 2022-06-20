@@ -7,8 +7,7 @@ import { MapClorophletDivisionComponent } from '../map-clorophlet-division/map-c
 /** Interface of dialog data of the component */
 interface DialogData {
   value: any;
-  fields: any[];
-  formatedFields: any[];
+  availableFields: any[];
 }
 
 /**
@@ -24,9 +23,17 @@ export class MapClorophletComponent implements OnInit {
 
   public tableColumns = ['label', 'actions'];
 
-  public fields: any[] = [];
-  public formatedFields: any[] = [];
+  public availableFields: any[] = [];
   public geoJSONfields: string[] = [];
+
+  /**
+   * Getter for the available scalar fields
+   *
+   * @returns the available scalar fields
+   */
+  get availableScalarFields(): any[] {
+    return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
+  }
 
   /**
    * Clorophlet divisions as form array.
@@ -48,8 +55,7 @@ export class MapClorophletComponent implements OnInit {
     private dialog: MatDialog
   ) {
     this.form = clorophletForm(data.value);
-    this.fields = data.fields;
-    this.formatedFields = data.formatedFields;
+    this.availableFields = data.availableFields;
     if (this.form.value.geoJSON) {
       this.updateGeoJSONfields(this.form.value.geoJSON);
     }
@@ -82,7 +88,7 @@ export class MapClorophletComponent implements OnInit {
     const dialogRef = this.dialog.open(MapClorophletDivisionComponent, {
       data: {
         value: this.divisions.at(index).value,
-        fields: this.formatedFields,
+        availableFields: this.availableScalarFields,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

@@ -7,4 +7,4 @@ export * from './pipeline/pipeline.component';
 export * from './pipeline/group-stage/group-stage.component';
 export * from './pipeline/add-field-stage/add-field-stage.component';
 export * from './pipeline/expressions/expressions.component';
-export * from './pipeline/field-dropdown/field-dropdown.component';
+export * from '../../field-dropdown/field-dropdown.component';

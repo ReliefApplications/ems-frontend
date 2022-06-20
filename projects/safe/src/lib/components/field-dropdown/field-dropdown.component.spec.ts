@@ -5,16 +5,16 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { SafeFieldDropdownComponent } from './field-dropdown.component';
+import { FieldDropdownComponent } from './field-dropdown.component';
 
-describe('SafeFieldDropdownComponent', () => {
-  let component: SafeFieldDropdownComponent;
-  let fixture: ComponentFixture<SafeFieldDropdownComponent>;
+describe('FieldDropdownComponent', () => {
+  let component: FieldDropdownComponent;
+  let fixture: ComponentFixture<FieldDropdownComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [TranslateService],
-      declarations: [SafeFieldDropdownComponent],
+      declarations: [FieldDropdownComponent],
       imports: [
         TranslateModule.forRoot({
           loader: {
@@ -27,7 +27,7 @@ describe('SafeFieldDropdownComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeFieldDropdownComponent);
+    fixture = TestBed.createComponent(FieldDropdownComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

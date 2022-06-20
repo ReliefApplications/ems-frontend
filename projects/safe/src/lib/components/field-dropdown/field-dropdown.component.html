@@ -17,4 +17,11 @@
       </mat-optgroup>
     </ng-container>
   </mat-select>
+  <safe-icon
+    *ngIf="suffix"
+    matSuffix
+    icon="info"
+    variant="grey"
+    [matTooltip]="suffix | translate"
+  ></safe-icon>
 </mat-form-field>

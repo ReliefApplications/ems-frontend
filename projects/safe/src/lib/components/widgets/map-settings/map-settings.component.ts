@@ -20,6 +20,7 @@ export class SafeMapSettingsComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
+  public availableFields: any[] = [];
   public selectedFields: any[] = [];
   public formatedSelectedFields: any[] = [];
 
@@ -51,13 +52,13 @@ export class SafeMapSettingsComponent implements OnInit {
     if (this.tileForm?.value.query.name) {
       this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
       this.formatedSelectedFields = [];
-      this.queryBuilder
-        .getFields(this.tileForm?.value.query.name)
-        .map((val: any) => {
-          if (this.selectedFields.includes(val.name)) {
-            this.formatedSelectedFields.push(val);
-          }
-        });
+      this.availableFields = this.getAvailableFields();
+      console.log(this.availableFields);
+      this.availableFields.map((val: any) => {
+        if (this.selectedFields.includes(val.name)) {
+          this.formatedSelectedFields.push(val);
+        }
+      });
     }
 
     if (this.tileForm?.value.query.name) {
@@ -74,13 +75,33 @@ export class SafeMapSettingsComponent implements OnInit {
     queryForm.valueChanges.subscribe(() => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
       this.formatedSelectedFields = [];
-      this.queryBuilder
-        .getFields(this.tileForm?.value.query.name)
-        .map((val: any) => {
-          if (this.selectedFields.includes(val.name)) {
-            this.formatedSelectedFields.push(val);
-          }
-        });
+      this.availableFields = this.getAvailableFields();
+      this.availableFields.map((val: any) => {
+        if (this.selectedFields.includes(val.name)) {
+          this.formatedSelectedFields.push(val);
+        }
+      });
+    });
+  }
+
+  private getAvailableFields(): any[] {
+    const fields = JSON.parse(
+      JSON.stringify(
+        this.queryBuilder.getFields(this.tileForm?.value.query.name)
+      )
+    );
+    return fields.map((field: any) => {
+      console.log(field);
+      if (field.type.kind !== 'SCALAR') {
+        field.fields = this.queryBuilder
+          .getFieldsFromType(
+            field.type.kind === 'OBJECT'
+              ? field.type.name
+              : field.type.ofType.name
+          )
+          .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR');
+      }
+      return field;
     });
   }
 
