@@ -1,0 +1,11 @@
+form {
+  overflow: hidden;
+}
+
+.form-group-row {
+  flex-wrap: wrap;
+
+  .mat-form-field {
+    flex: 1;
+  }
+}
