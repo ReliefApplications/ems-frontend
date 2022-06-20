@@ -138,13 +138,12 @@ export class SafeAuthService {
       localStorage.getItem('redirect') || this.oauthService.redirectUri;
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
-      .then(() => this.isDoneLoading.next(true))
       .then(() => {
         this.isDoneLoading.next(true);
         localStorage.removeItem('redirect');
       })
-      .catch(() => {
-        console.error('issue when loading file');
+      .catch((err) => {
+        console.error(err);
         this.isDoneLoading.next(false);
       });
   }
