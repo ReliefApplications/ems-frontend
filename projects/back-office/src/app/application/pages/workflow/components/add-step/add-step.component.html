@@ -14,12 +14,12 @@
     <ng-container *ngSwitchCase="2">
       <h2>{{ 'pages.forms.title' | translate }}</h2>
       <safe-forms-dropdown
-      [forms$]="forms$"
-      [label]="'models.form.select' | translate"
-      [sourceControl]="stepForm.controls.content"
-      (filter)="onFilterDataSource($event)"
-      (scrolled)="onScrollDataSource($event)"
-    ></safe-forms-dropdown>
+        [forms$]="forms$"
+        [label]="'models.form.select' | translate"
+        [sourceControl]="stepForm.controls.content"
+        (filter)="onFilterDataSource($event)"
+        (scrolled)="onScrollDataSource($event)"
+      ></safe-forms-dropdown>
       <safe-button
         icon="add"
         category="secondary"
