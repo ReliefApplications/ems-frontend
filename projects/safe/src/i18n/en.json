@@ -314,9 +314,8 @@
 		"form": {
 			"create": {
 				"choice": {
-					"blank": "Create a blank form",
-					"inherit": "Copy existing resource template",
-					"resource": "Create a new resource",
+					"inherit": "Create form from template",
+					"resource": "Create a core form",
 					"template": "Start from existing template"
 				},
 				"template": {
@@ -324,6 +323,10 @@
 					"placeholder": "Pick an existing template",
 					"title": "From resource",
 					"tooltip": "If no template is selected, core structure will be loaded"
+				},
+				"tooltips": {
+					"inherit": "Creates a child form using a template from the resource linked to the core form",
+					"resource": "Creates a core form that allows the creation of children forms linked to this core form. It will also create a new resource."
 				}
 			},
 			"delete": {

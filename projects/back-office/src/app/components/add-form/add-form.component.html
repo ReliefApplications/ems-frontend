@@ -14,15 +14,26 @@
         />
       </mat-form-field>
       <mat-radio-group formControlName="binding" class="form-radio-group">
-        <mat-radio-button value="newForm">{{
-          'components.form.create.choice.blank' | translate
-        }}</mat-radio-button>
-        <mat-radio-button value="newResource">{{
-          'components.form.create.choice.resource' | translate
-        }}</mat-radio-button>
-        <mat-radio-button value="fromResource">{{
-          'components.form.create.choice.inherit' | translate
-        }}</mat-radio-button>
+        <span class="info-row">
+          <mat-radio-button value="newResource">{{
+            'components.form.create.choice.resource' | translate
+          }}</mat-radio-button>
+          <mat-icon
+            class="info-icon"
+            [matTooltip]="'components.form.create.tooltips.resource' | translate"
+            >info</mat-icon
+          >
+        </span>
+        <span class="info-row">
+          <mat-radio-button value="fromResource">{{
+            'components.form.create.choice.inherit' | translate
+          }}</mat-radio-button>
+          <mat-icon
+            class="info-icon"
+            [matTooltip]="'components.form.create.tooltips.inherit' | translate"
+            >info</mat-icon
+          >
+        </span>
       </mat-radio-group>
       <ng-container *ngIf="addForm.controls.binding.value === 'fromResource'">
         <mat-form-field>

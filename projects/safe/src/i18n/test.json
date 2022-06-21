@@ -314,7 +314,6 @@
 		"form": {
 			"create": {
 				"choice": {
-					"blank": "******",
 					"inherit": "******",
 					"resource": "******",
 					"template": "******"
@@ -324,6 +323,10 @@
 					"placeholder": "******",
 					"title": "******",
 					"tooltip": "******"
+				},
+				"tooltips": {
+					"inherit": "******",
+					"resource": "******"
 				}
 			},
 			"delete": {
