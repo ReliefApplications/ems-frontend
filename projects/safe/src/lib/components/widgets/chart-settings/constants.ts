@@ -1,5 +1,6 @@
 import { Pie } from './charts/pie';
 
+/** List of all the widget types of chart */
 export const CHART_TYPES = [
   {
     name: 'donut',
@@ -28,6 +29,7 @@ export const CHART_TYPES = [
   },
 ];
 
+/** List of available positions for the legend in charts */
 export const LEGEND_POSITIONS = [
   {
     value: 'top',
@@ -47,6 +49,7 @@ export const LEGEND_POSITIONS = [
   },
 ];
 
+/** List of available text oritentations for legends */
 export const LEGEND_ORIENTATIONS = [
   {
     value: 'vertical',
@@ -58,6 +61,7 @@ export const LEGEND_ORIENTATIONS = [
   },
 ];
 
+/** List of available title positions */
 export const TITLE_POSITIONS = [
   {
     value: 'top',

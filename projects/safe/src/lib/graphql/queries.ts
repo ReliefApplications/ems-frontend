@@ -1079,7 +1079,7 @@ export interface GetReferenceDataByIdQueryResponse {
 export const GET_RECORD_HISTORY_BY_ID = gql`
   query GetRecordHistoryByID($id: ID!, $lang: String) {
     recordHistory(id: $id, lang: $lang) {
-      created
+      createdAt
       createdBy
       changes {
         type
@@ -1087,6 +1087,11 @@ export const GET_RECORD_HISTORY_BY_ID = gql`
         displayName
         old
         new
+      }
+      version {
+        id
+        createdAt
+        data
       }
     }
   }

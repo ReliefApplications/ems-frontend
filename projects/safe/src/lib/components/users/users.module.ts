@@ -24,6 +24,7 @@ import { SafeInviteUsersModule } from './components/invite-users/invite-users.mo
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 
+/** Module for components related to users */
 @NgModule({
   declarations: [SafeUsersComponent, SafeEditUserComponent],
   imports: [

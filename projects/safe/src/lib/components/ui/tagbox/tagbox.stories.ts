@@ -25,6 +25,12 @@ export default {
   },
 } as Meta;
 
+/**
+ * Stories template used to render the component
+ *
+ * @param args Arguments used by the component
+ * @returns Returns an object used as the stories template
+ */
 const TEMPLATE: Story<SafeTagboxComponent> = (args) => ({
   template:
     '<safe-tagbox [choices$]=choices$ [parentControl]=parentControl [label]=label></safe-tagbox>',
@@ -33,6 +39,9 @@ const TEMPLATE: Story<SafeTagboxComponent> = (args) => ({
   },
 });
 
+/**
+ * Sets the fields which will be shown and used in the stories page of the component
+ */
 const DEFAULT_FIELDS = [
   {
     type: 'tagbox',
@@ -151,6 +160,9 @@ const DEFAULT_FIELDS = [
   },
 ];
 
+/**
+ * Sets the template as the default state of the component
+ */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {
@@ -162,6 +174,9 @@ DEFAULT.args = {
   inputControl: new FormControl(),
 };
 
+/**
+ * Sets the template as the initial source of the component
+ */
 export const INITIAL_SOURCE = TEMPLATE.bind({});
 DEFAULT.storyName = 'Initial source';
 INITIAL_SOURCE.args = {

@@ -459,6 +459,7 @@
 				"withValue": "with value"
 			},
 			"download": "Download history",
+			"empty": "No activity detected",
 			"field": {
 				"all": "All fields",
 				"select": "Select a field"
@@ -777,6 +778,8 @@
 							},
 							"prefill": "Pre-fill form with selected data",
 							"save": "Auto-save",
+							"selectAllRecords": "Select all records",
+							"selectAllRecordsActivePage": "Select all records on the active page",
 							"selectDisplay": "Select displayed fields",
 							"sendMail": "Send mail",
 							"workflow": {

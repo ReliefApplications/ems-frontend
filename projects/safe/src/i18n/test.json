@@ -459,6 +459,7 @@
 				"withValue": "******"
 			},
 			"download": "******",
+			"empty": "******",
 			"field": {
 				"all": "******",
 				"select": "******"
@@ -777,6 +778,8 @@
 							},
 							"prefill": "******",
 							"save": "******",
+							"selectAllRecords": "******",
+							"selectAllRecordsActivePage": "******",
 							"selectDisplay": "******",
 							"sendMail": "******",
 							"workflow": {

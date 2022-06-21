@@ -9,3 +9,12 @@
   width: min-content;
   align-self: flex-end;
 }
+
+form {
+  display: flex;
+  height: 100%;
+
+  mat-tab-group {
+    flex: 1;
+  }
+}

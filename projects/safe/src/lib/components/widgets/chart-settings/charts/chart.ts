@@ -28,10 +28,16 @@ const DEFAULT_PALETTE = [
   '#FFE9A3',
 ];
 
+/** Class for the chart object */
 export class Chart {
   public form: FormGroup;
   private fb: FormBuilder;
 
+  /**
+   * The constructor for a chart
+   *
+   * @param settings The settings of the chart
+   */
   constructor(settings?: any) {
     this.fb = new FormBuilder();
     const legend = get(settings, 'legend', null);
