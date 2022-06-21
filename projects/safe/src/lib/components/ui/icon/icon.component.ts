@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IconVariant } from './icon-variant.enum';
 
+/**
+ * Component for custom icons
+ */
 @Component({
   selector: 'safe-icon',
   templateUrl: './icon.component.html',
@@ -15,10 +18,12 @@ export class SafeIconComponent implements OnInit {
 
   @Input() size = 24;
 
+  /** @returns the font size of the icon */
   get fontSize(): string {
     return this.size + 'px';
   }
 
+  /** @returns the color of the icon */
   get color(): string {
     switch (this.variant) {
       case IconVariant.PRIMARY: {
@@ -33,6 +38,7 @@ export class SafeIconComponent implements OnInit {
     }
   }
 
+  /** Constructor of the component */
   constructor() {}
 
   ngOnInit(): void {}

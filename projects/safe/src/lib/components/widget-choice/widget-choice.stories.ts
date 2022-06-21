@@ -43,7 +43,7 @@ DEFAULT.args = {
 
 /** Export a story component */
 export const FLOATING = TEMPLATE.bind({});
-DEFAULT.storyName = 'Floating';
+FLOATING.storyName = 'Floating';
 FLOATING.args = {
   ...DEFAULT.args,
   floating: true,

@@ -35,12 +35,19 @@ export default {
   },
 } as Meta;
 
+/**
+ * Template factory for story components
+ *
+ * @param args Properties for the component
+ * @returns The template
+ */
 const TEMPLATE: Story<SafeIconComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
+/** Export a default template wwith mock properties */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {

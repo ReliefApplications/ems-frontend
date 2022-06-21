@@ -107,7 +107,7 @@ DEFAULT.args = {
 };
 
 export const INITIAL_SOURCE = TEMPLATE.bind({});
-DEFAULT.storyName = 'Initial source';
+INITIAL_SOURCE.storyName = 'Initial source';
 INITIAL_SOURCE.args = {
   ...DEFAULT.args,
   sourceControl: new FormControl('613b6c052921406adbfb54bd'),

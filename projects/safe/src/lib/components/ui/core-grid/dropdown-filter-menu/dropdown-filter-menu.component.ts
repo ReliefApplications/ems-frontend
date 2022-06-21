@@ -3,6 +3,7 @@ import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { FilterService } from '@progress/kendo-angular-grid';
 
+/** Component for dropdown filter menu */
 @Component({
   selector: 'safe-dropdown-filter-menu',
   templateUrl: './dropdown-filter-menu.component.html',
@@ -19,6 +20,7 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
   @Input() public filterService?: FilterService;
   public form?: FormGroup;
 
+  /** @returns The default item */
   public get defaultItem(): any {
     return {
       [this.textField]: 'Select item...',
@@ -26,6 +28,7 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
     };
   }
 
+  /** @returns The filters */
   public get filters(): FormArray {
     return this.form?.get('filters') as FormArray;
   }
@@ -52,6 +55,12 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
     },
   ];
 
+  /**
+   * Constructor of the component
+   *
+   * @param fb The form builder
+   * @param translate The translation service
+   */
   constructor(private fb: FormBuilder, private translate: TranslateService) {}
 
   ngOnInit(): void {
@@ -85,6 +94,12 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
     });
   }
 
+  /**
+   * Handle the filters
+   *
+   * @param value The new value
+   * @param index The index
+   */
   public handleFilter(value: string, index: number): void {
     if (index === 1) {
       this.choices1 = this.data.filter(

@@ -1,18 +1,21 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ChartComponent } from '@progress/kendo-angular-charts';
 
+/** Interface for the chart title */
 interface ChartTitle {
   visible: boolean;
   text: string;
   position: 'top' | 'bottom';
 }
 
+/** Interface for the chart legend */
 interface ChartLegend {
   visible: boolean;
   orientation: 'horizontal' | 'vertical';
   position: 'top' | 'bottom' | 'left' | 'right';
 }
 
+/** Interface for the chart series */
 interface ChartSeries {
   data: {
     category: any;
@@ -21,6 +24,7 @@ interface ChartSeries {
   }[];
 }
 
+/** Component for donut charts */
 @Component({
   selector: 'safe-donut-chart',
   templateUrl: './donut-chart.component.html',
@@ -36,6 +40,7 @@ export class SafeDonutChartComponent implements OnInit {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
+  /** Constructor of this component */
   constructor() {}
 
   ngOnInit(): void {}

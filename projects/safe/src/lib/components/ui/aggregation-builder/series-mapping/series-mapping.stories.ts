@@ -163,7 +163,7 @@ const TEMPLATE: Story<SafeSeriesMappingComponent> = (args) => ({
 });
 
 export const INITIAL_SOURCE = TEMPLATE.bind({});
-DEFAULT.storyName = 'Initial source';
+INITIAL_SOURCE.storyName = 'Initial source';
 INITIAL_SOURCE.args = {
   controlNames: ['xAxis', 'yAxis'],
   availableFields: [],
