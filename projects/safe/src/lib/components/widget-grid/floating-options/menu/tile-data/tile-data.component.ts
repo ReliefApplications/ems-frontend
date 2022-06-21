@@ -4,7 +4,6 @@ import {
   Inject,
   ViewChild,
   ViewContainerRef,
-  ComponentFactoryResolver,
   AfterViewInit,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -34,12 +33,10 @@ export class SafeTileDataComponent implements OnInit, AfterViewInit {
   /**
    * Constructor of a data tile
    *
-   * @param componentFactoryResolver A registry for creating component
    * @param dialogRef Reference to a dialog opened via the material dialog service
    * @param data The dialog data
    */
   constructor(
-    private componentFactoryResolver: ComponentFactoryResolver,
     public dialogRef: MatDialogRef<SafeTileDataComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
@@ -48,10 +45,9 @@ export class SafeTileDataComponent implements OnInit, AfterViewInit {
 
   /** Once the template is ready, inject the settings component linked to the widget type passed as a parameter. */
   ngAfterViewInit(): void {
-    const factory = this.componentFactoryResolver.resolveComponentFactory(
+    const componentRef = this.settingsContainer.createComponent(
       this.data.template
     );
-    const componentRef = this.settingsContainer.createComponent(factory);
     componentRef.instance.tile = this.data.tile;
     componentRef.instance.change.subscribe((e: any) => {
       this.tileForm = e;

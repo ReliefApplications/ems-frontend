@@ -1,6 +1,5 @@
 import {
   Component,
-  ComponentFactory,
   Input,
   OnInit,
   ViewChild,
@@ -18,7 +17,6 @@ import { createStyleForm } from '../query-builder-forms';
   styleUrls: ['./tab-style.component.scss'],
 })
 export class SafeTabStyleComponent implements OnInit {
-  @Input() factory?: ComponentFactory<any>;
   @Input() form!: FormArray;
   @Input() editedStyleForm: FormGroup | null = null;
   @Input() fields: any[] = [];
