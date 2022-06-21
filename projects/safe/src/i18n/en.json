@@ -847,7 +847,7 @@
 							"addNew": "Add new marker rule",
 							"category": "Map quick layers",
 							"color": "Color",
-							"info": "Display markers in the map for each entry of your data",
+							"info": "Display markers in the map for each entry of your data, binding dataset number fields to geolocation",
 							"rules": "Marker rules",
 							"rulesInfo": "Customize the size and colors of your pointers",
 							"size": "Size",

@@ -7,7 +7,7 @@
     <mat-form-field appearance="outline" style="width: 100%">
       <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
       <mat-select formControlName="latitude">
-        <mat-option *ngFor="let field of selectedFields" [value]="field">
+        <mat-option *ngFor="let field of numberFields" [value]="field">
           {{ field }}
         </mat-option>
       </mat-select>
@@ -15,7 +15,7 @@
     <mat-form-field appearance="outline" style="width: 100%">
       <mat-label>{{ 'models.widget.map.longitude' | translate }}</mat-label>
       <mat-select formControlName="longitude">
-        <mat-option *ngFor="let field of selectedFields" [value]="field">
+        <mat-option *ngFor="let field of numberFields" [value]="field">
           {{ field }}
         </mat-option>
       </mat-select>

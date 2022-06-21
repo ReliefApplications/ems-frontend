@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import get from 'lodash/get';
 import { markerRuleForm } from '../../map-forms';
 import { MapMarkerRuleComponent } from '../map-marker-rule/map-marker-rule.component';
 
@@ -17,6 +18,7 @@ export class MapMarkersComponent implements OnInit {
 
   @Input() selectedFields: any[] = [];
   @Input() formatedSelectedFields: any[] = [];
+  public numberFields: any[] = [];
 
   /**
    * Get marker rules as form array.
@@ -36,7 +38,14 @@ export class MapMarkersComponent implements OnInit {
    */
   constructor(private dialog: MatDialog) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Build list of number fields
+    this.numberFields = this.formatedSelectedFields
+      .filter((field: any) =>
+        ['Int', 'Float'].includes(get(field, 'type.name', ''))
+      )
+      .map((field: any) => field.name);
+  }
 
   /**
    * Adds a new rule.

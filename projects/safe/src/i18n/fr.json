@@ -847,7 +847,7 @@
 							"addNew": "Ajouter une nouvelle règle",
 							"category": "Couches rapides",
 							"color": "Couleur",
-							"info": "Afficher des marqueurs sur la carte pour chaque enregistrement",
+							"info": "Afficher des marqueurs sur la carte pour chaque enregistrement, en indiquant les champs de géolocation de la source de données",
 							"rules": "Règles de marquarge",
 							"rulesInfo": "Configurer la taille et la couleur des marqueurs",
 							"size": "Taille",
