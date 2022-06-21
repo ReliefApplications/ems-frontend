@@ -23,6 +23,7 @@ import { SafeGridModule } from '../../../components/ui/core-grid/grid/grid.modul
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { SafePaletteControlModule } from '../../palette-control/palette-control.module';
 
+/** Module for the chart settings component */
 @NgModule({
   declarations: [SafeChartSettingsComponent],
   imports: [

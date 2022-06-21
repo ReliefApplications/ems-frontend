@@ -92,3 +92,11 @@ mat-expansion-panel {
   text-align: end;
   margin-left: auto;
 }
+
+.empty-history {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  align-items: center;
+  color: #9e9e9e;
+}
