@@ -10,11 +10,13 @@ import {
 import { FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+/** Model for dialog data */
 interface DialogData {
   tile: any;
   template: any;
 }
 
+/** Component for a data tile */
 @Component({
   selector: 'safe-tile-data',
   templateUrl: './tile-data.component.html',
@@ -29,6 +31,13 @@ export class SafeTileDataComponent implements OnInit, AfterViewInit {
   @ViewChild('settingsContainer', { read: ViewContainerRef })
   settingsContainer: any;
 
+  /**
+   * Constructor of a data tile
+   *
+   * @param componentFactoryResolver A registry for creating component
+   * @param dialogRef Reference to a dialog opened via the material dialog service
+   * @param data The dialog data
+   */
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
     public dialogRef: MatDialogRef<SafeTileDataComponent>,

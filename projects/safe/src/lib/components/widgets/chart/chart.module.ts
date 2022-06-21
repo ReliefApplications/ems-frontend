@@ -12,6 +12,9 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Module for the chart component
+ */
 @NgModule({
   declarations: [SafeChartComponent],
   imports: [

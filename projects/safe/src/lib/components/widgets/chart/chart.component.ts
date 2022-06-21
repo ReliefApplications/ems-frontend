@@ -17,11 +17,13 @@ import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import get from 'lodash/get';
 import groupBy from 'lodash/groupBy';
 
-/** Default file name for export */
-const DEFAULT_FILE_NAME = 'charts';
+/**
+ * Default file name for chart exports
+ */
+const DEFAULT_FILE_NAME = 'chart';
 
 /**
- * Chart widget using KendoUI.
+ * Chart widget component using KendoUI
  */
 @Component({
   selector: 'safe-chart',
@@ -90,7 +92,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   }
 
   /**
-   * Export chart as image
+   * Exports the chart as a png ticket
    */
   public onExport(): void {
     this.chartWrapper?.chart
