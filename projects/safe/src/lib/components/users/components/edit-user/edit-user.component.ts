@@ -4,12 +4,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { Role, User } from '../../../../models/user.model';
 
+/** Model for the data input */
 interface DialogData {
   user: User;
   availableRoles: Role[];
   positionAttributeCategories?: PositionAttributeCategory[];
 }
 
+/** Component for editing a user */
 @Component({
   selector: 'safe-edit-user',
   templateUrl: './edit-user.component.html',
@@ -19,6 +21,7 @@ export class SafeEditUserComponent implements OnInit {
   // === REACTIVE FORM ===
   userForm: FormGroup = new FormGroup({});
 
+  /** @returns The position attributes available */
   get positionAttributes(): FormArray | null {
     return this.userForm.get('positionAttributes')
       ? (this.userForm.get('positionAttributes') as FormArray)
@@ -27,6 +30,13 @@ export class SafeEditUserComponent implements OnInit {
 
   public positionAttributeCategories?: PositionAttributeCategory[];
 
+  /**
+   * Constructor of the component
+   *
+   * @param formBuilder The form builder service
+   * @param dialogRef The material dialog reference service
+   * @param data The input data of the component
+   */
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeEditUserComponent>,

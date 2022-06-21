@@ -552,7 +552,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
-    const date = new Date(parseInt(version.created, 0));
+    const date = new Date(parseInt(version.createdAt, 0));
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
@@ -596,9 +596,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         factory: this.factory,
         inputs: {
           id: this.record.id,
-          revert: (item: any, dialog: any) => {
-            this.confirmRevertDialog(this.record, item);
-          },
+          revert: (version: any) =>
+            this.confirmRevertDialog(this.record, version),
         },
       });
     }

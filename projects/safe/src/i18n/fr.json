@@ -459,6 +459,7 @@
 				"withValue": "avec valeur"
 			},
 			"download": "Télécharger l'historique",
+			"empty": "Aucune activité détectée",
 			"field": {
 				"all": "Tous les champs",
 				"select": "Sélectionner un champ"

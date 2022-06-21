@@ -37,6 +37,7 @@ import { Platform } from '@angular/cdk/platform';
 import { AppOverlayContainer } from './utils/overlay-container';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
+import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 
 /**
  * Initialize authentication in the platform.
@@ -109,6 +110,13 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       useFactory: () =>
         // return the container ElementRef, where the popup will be injected
         ({ nativeElement: document.body } as ElementRef),
+    },
+    // Default parameters of material tooltip
+    {
+      provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
+      useValue: {
+        showDelay: 500,
+      },
     },
     {
       provide: OverlayContainer,

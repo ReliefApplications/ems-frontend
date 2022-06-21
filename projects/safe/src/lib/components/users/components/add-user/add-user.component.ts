@@ -10,12 +10,14 @@ import { GET_USERS } from '../../../../graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Model for the input  */
 interface DialogData {
   roles: Role[];
   users: User[];
   positionAttributeCategories?: PositionAttributeCategory[];
 }
 
+/** Component for adding a user */
 @Component({
   selector: 'safe-add-user',
   templateUrl: './add-user.component.html',
@@ -26,12 +28,22 @@ export class SafeAddUserComponent implements OnInit {
   public filteredUsers?: Observable<User[]>;
   private users: User[] = [];
 
+  /** @returns The position attributes available */
   get positionAttributes(): FormArray | null {
     return this.form.get('positionAttributes')
       ? (this.form.get('positionAttributes') as FormArray)
       : null;
   }
 
+  /**
+   * Constructor for the component
+   *
+   * @param formBuilder The form builder service
+   * @param dialogRef The material dialog reference service
+   * @param data The input data
+   * @param apollo The apollo client
+   * @param translate The translation service
+   */
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeAddUserComponent>,
@@ -78,6 +90,12 @@ export class SafeAddUserComponent implements OnInit {
       });
   }
 
+  /**
+   * Filter the users
+   *
+   * @param value The value to filter on
+   * @returns The filtered list of users
+   */
   private filterUsers(value: string): User[] {
     const filterValue = value.toLowerCase();
     return this.users.filter(
@@ -85,6 +103,9 @@ export class SafeAddUserComponent implements OnInit {
     );
   }
 
+  /**
+   * Close the dialog
+   */
   onClose(): void {
     this.dialogRef.close();
   }
