@@ -238,6 +238,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Detects changes of the settings to (re)load the data.
    */
   ngOnChanges(): void {
+    console.log(this.defaultLayout);
     // define row actions
     this.actions = {
       add: this.settings.actions?.addRecord && this.settings.template,
