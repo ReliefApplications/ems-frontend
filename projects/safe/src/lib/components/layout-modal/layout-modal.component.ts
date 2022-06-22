@@ -26,7 +26,6 @@ interface DialogData {
 export class SafeLayoutModalComponent implements OnInit {
   @Input() layout: any;
   public form?: FormGroup;
-  private queryName = '';
   public templates: any[] = [];
   public layoutPreviewData!: { form: FormGroup; defaultLayout: any };
 
@@ -49,7 +48,6 @@ export class SafeLayoutModalComponent implements OnInit {
       query: createQueryForm(this.data.layout?.query),
       display: createDisplayForm(this.data.layout?.display),
     });
-    this.queryName = this.form.get('query')?.value.name;
     this.layoutPreviewData = {
       form: this.form,
       defaultLayout: this.data.layout?.display,
