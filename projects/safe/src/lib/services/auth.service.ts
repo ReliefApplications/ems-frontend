@@ -130,12 +130,14 @@ export class SafeAuthService {
    */
   public initLoginSequence(): Promise<void> {
     const redirectUri = new URL(location.href);
+    console.log(redirectUri);
     redirectUri.search = '';
     if (redirectUri.pathname !== '/') {
       localStorage.setItem('redirect', redirectUri.href);
     }
     this.oauthService.redirectUri =
       localStorage.getItem('redirect') || this.oauthService.redirectUri;
+    console.log(this.oauthService.redirectUri);
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
       .then(() => {
