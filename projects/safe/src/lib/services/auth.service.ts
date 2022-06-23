@@ -11,6 +11,7 @@ import {
 import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { filter, map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 /** Defining the interface for the account object. */
 export interface Account {
@@ -57,8 +58,13 @@ export class SafeAuthService {
    *
    * @param apollo Apollo client
    * @param oauthService OAuth authentification service
+   * @param router Angular Router service
    */
-  constructor(private apollo: Apollo, private oauthService: OAuthService) {
+  constructor(
+    private apollo: Apollo,
+    private oauthService: OAuthService,
+    private router: Router
+  ) {
     this.oauthService.events.subscribe(() => {
       this.isAuthenticated.next(this.oauthService.hasValidAccessToken());
       this.checkAccount();
@@ -73,6 +79,16 @@ export class SafeAuthService {
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
         this.oauthService.initImplicitFlow();
+      });
+    // Redirect to previous path
+    this.oauthService.events
+      .pipe(filter((e: any) => e.type === 'user_profile_loaded'))
+      .subscribe((e) => {
+        const redirectPath = localStorage.getItem('redirectPath');
+        if (redirectPath) {
+          this.router.navigateByUrl(redirectPath);
+        }
+        localStorage.removeItem('redirectPath');
       });
     this.oauthService.setupAutomaticSilentRefresh();
   }
@@ -130,17 +146,15 @@ export class SafeAuthService {
    */
   public initLoginSequence(): Promise<void> {
     const redirectUri = new URL(location.href);
+    console.log(redirectUri);
     redirectUri.search = '';
     if (redirectUri.pathname !== '/') {
-      localStorage.setItem('redirect', redirectUri.href);
+      localStorage.setItem('redirectPath', redirectUri.pathname);
     }
-    this.oauthService.redirectUri =
-      localStorage.getItem('redirect') || this.oauthService.redirectUri;
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
       .then(() => {
         this.isDoneLoading.next(true);
-        localStorage.removeItem('redirect');
       })
       .catch((err) => {
         console.error(err);

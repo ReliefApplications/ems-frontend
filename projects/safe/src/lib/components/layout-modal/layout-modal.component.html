@@ -24,7 +24,7 @@
         [form]="$any(form.controls.query)"
         [templates]="templates"
         [queryName]="data.queryName"
-        [layoutPreviewData]="{form, defaultLayout: data.layout?.display}"
+        [layoutPreviewData]="layoutPreviewData"
       ></safe-query-builder>
     </div>
   </form>
