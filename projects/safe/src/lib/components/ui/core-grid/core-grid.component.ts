@@ -56,6 +56,8 @@ import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
 import { TranslateService } from '@ngx-translate/core';
+import { SafeDatePipe } from '../../../pipes/date/date.pipe';
+import { SafeDateTranslateService } from '../../../services/date-translate.service';
 
 /** Default file name */
 const DEFAULT_FILE_NAME = 'Records';
@@ -253,6 +255,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param safeAuthService The authentification service
    * @param gridService The grid service
    * @param translate The translation service
+   * @param dateTranslate The date translation service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -265,7 +268,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private downloadService: SafeDownloadService,
     private safeAuthService: SafeAuthService,
     private gridService: SafeGridService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dateTranslate: SafeDateTranslateService
   ) {
     this.apiUrl = environment.apiUrl;
     this.isAdmin =
@@ -940,9 +944,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
     const date = new Date(parseInt(version.createdAt, 0));
-    const formatDate = `${date.getDate()}/${
-      date.getMonth() + 1
-    }/${date.getFullYear()}`;
+    const formatDate = new SafeDatePipe(this.dateTranslate).transform(
+      date,
+      'shortDate'
+    );
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: this.translate.instant('components.record.recovery.title'),
