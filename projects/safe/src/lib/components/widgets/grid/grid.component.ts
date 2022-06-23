@@ -19,15 +19,12 @@ import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
 } from '../../../graphql/queries';
-import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   Component,
   OnInit,
   ViewChild,
   Input,
   Output,
-  ComponentFactory,
-  ComponentFactoryResolver,
   EventEmitter,
   Inject,
 } from '@angular/core';
@@ -80,16 +77,12 @@ export class SafeGridWidgetComponent implements OnInit {
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
-  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
-  public factory?: ComponentFactory<any>;
-
   /**
    * Heavy constructor for the grid widget component
    *
    * @param environment Environment variables
    * @param apollo The apollo client
    * @param dialog Material dialogs service
-   * @param resolver A resolver for component factory
    * @param snackBar The safe snack bar service
    * @param workflowService The safe wofkflow service
    * @param safeAuthService The safe authentification service
@@ -102,7 +95,6 @@ export class SafeGridWidgetComponent implements OnInit {
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
@@ -117,9 +109,6 @@ export class SafeGridWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.gridSettings = { ...this.settings };
-    this.factory = this.resolver.resolveComponentFactory(
-      SafeRecordHistoryComponent
-    );
     if (this.settings.resource) {
       this.gridLayoutService
         .getLayouts(this.settings.resource, this.settings.layouts)
