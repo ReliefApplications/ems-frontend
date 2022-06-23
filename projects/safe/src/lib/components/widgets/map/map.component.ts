@@ -333,6 +333,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
    *
    * @param value Properties of the clorophlet.
    * @param data Query data feeded to the clorophlet.
+   * @returns a geoJSON layer
    */
   private setClorophlet(value: any, data: any) {
     return L.geoJson(JSON.parse(value.geoJSON), {
