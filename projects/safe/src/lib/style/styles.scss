@@ -642,6 +642,10 @@ mat-tab-group[vertical] {
       margin-right: 8px;
       opacity: 0.7;
     }
+
+    .map-legend-division {
+      cursor: pointer;
+    }
   }
 
   .map-legend-hide {
@@ -650,5 +654,9 @@ mat-tab-group[vertical] {
     .map-legend-division {
       display: none;
     }
+  }
+
+  .legend-division-hide {
+    opacity: 0.4;
   }
 }

@@ -239,7 +239,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
     // Renders all the markers
     Object.keys(this.markersCategories).map((name: string) => {
-      const layerName = name !== 'undefined' ? name : 'Markers'
+      const layerName = name !== 'undefined' ? name : 'Markers';
       this.overlays[layerName] = L.featureGroup
         .subGroup(this.markersLayer, this.markersCategories[name])
         .addTo(this.map);
@@ -251,7 +251,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.settings.clorophlets.map((value: any) => {
         if (value.divisions.length > 0) {
           // Renders the clorophlet
-          this.overlays[value.name] = this.setClorophlet(value, res.data).addTo(this.map);
+          this.overlays[value.name] = this.setClorophlet(value, res.data).addTo(
+            this.map
+          );
           this.overlays[value.name].type = 'Clorophlet';
         }
       });
@@ -312,7 +314,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             options.fillColor = rule.color;
             options.weight *= rule.size;
             options.radius *= rule.size;
-            // options.rule = rule.label.length > 0 ? rule.label : "Rule " + (i + 1);
+            Object.assign(options, { divisionID: `${rule.label}-${i}` });
           }
         });
 
@@ -349,8 +351,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
                 value.divisions.map((div: any, i: number) => {
                   if (applyFilters(entry.node, div.filter)) {
                     color = div.color;
-                    label = div.label.empty ? "Division " + (i + 1) : div.label;
-                    console.log(label)
+                    label = div.label.empty ? 'Division ' + (i + 1) : div.label;
                   }
                 });
               }
@@ -363,10 +364,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           weight: 0.5,
           opacity: 1,
           color: color === 'transparent' ? 'transparent' : 'white',
-          label: label,
+          label,
         };
       },
-    })
+    });
   }
 
   /**
@@ -450,15 +451,24 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
               legendDivisionDiv,
               'click',
               () => {
-                Object.keys(overlays[clorophlet.name]._layers).map((layerName: any) => {
-                  const layer = overlays[clorophlet.name]._layers[layerName];
-                  if (layer.options.label === division.label) {
-                    console.log(layer);
-                    layer.setStyle((feature: any): any => {
-                      return {
-                        fillOpacity: 0,
-                      };
-                    })
+                // eslint-disable-next-line no-underscore-dangle
+                const layers = overlays[clorophlet.name]._layers;
+                Object.keys(layers).map((layerName: any) => {
+                  const divisionLayer = layers[layerName];
+                  if (divisionLayer.options.label === division.label) {
+                    if (map.hasLayer(divisionLayer)) {
+                      map.removeLayer(divisionLayer);
+                      L.DomUtil.addClass(
+                        legendDivisionDiv,
+                        'legend-division-hide'
+                      );
+                    } else {
+                      map.addLayer(divisionLayer);
+                      L.DomUtil.removeClass(
+                        legendDivisionDiv,
+                        'legend-division-hide'
+                      );
+                    }
                   }
                 });
               },
@@ -504,8 +514,55 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             '<i style="background:' +
             rule.color +
             '"></i>' +
-            (rule.label.length > 0 ? rule.label : 'Rule ' + (i + 1)) +
+            rule.label +
             '<br>';
+
+          L.DomEvent.on(
+            legendDivisionDiv,
+            'click',
+            () => {
+              // eslint-disable-next-line no-underscore-dangle
+              const layers = overlays.Markers._layers;
+
+              // // array with all the clusters displayed and the markers in each of them
+              // const clusteredLayers: { cluster: any; hiddenMarkers: any[] }[] =
+              //   [];
+              // map.eachLayer((layer: any) => {
+              //   if (layer.getAllChildMarkers)
+              //     clusteredLayers.push({
+              //       cluster: layer,
+              //       hiddenMarkers: layer.getAllChildMarkers(),
+              //     });
+              // });
+              Object.keys(layers).map((layerName: any) => {
+                const divisionLayer = layers[layerName];
+                if (divisionLayer.options.divisionID === `${rule.label}-${i}`) {
+                  if (map.hasLayer(divisionLayer)) {
+                    map.removeLayer(divisionLayer);
+                    L.DomUtil.addClass(
+                      legendDivisionDiv,
+                      'legend-division-hide'
+                    );
+                  } else {
+                    // const cluster = clusteredLayers.find((c) =>
+                    //   c.hiddenMarkers.includes(divisionLayer)
+                    // );
+                    // // marker isn't in any cluster
+                    // if (!cluster) {
+                    map.addLayer(divisionLayer);
+                    L.DomUtil.removeClass(
+                      legendDivisionDiv,
+                      'legend-division-hide'
+                    );
+                    // } else {
+                    //   // cluster.cluster.removeLayer(divisionLayer);
+                    // }
+                  }
+                }
+              });
+            },
+            this
+          );
         });
       }
       if (div.innerHTML.length === 0) {
