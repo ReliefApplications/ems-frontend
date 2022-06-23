@@ -111,7 +111,11 @@
                     | translate
                 }}</mat-label>
                 <ng-container
-                  *ngIf="modification.value.field.type.name === 'Int'"
+                  *ngIf="
+                    ['Int', 'Float'].includes(
+                      modification.value.field.type.name
+                    )
+                  "
                 >
                   <input matInput formControlName="value" type="number" />
                 </ng-container>
@@ -130,8 +134,9 @@
                 </ng-container>
                 <ng-container
                   *ngIf="
-                    modification.value.field.type.name !== 'Int' &&
-                    modification.value.field.type.name !== 'Boolean'
+                    !['Int', 'Float'].includes(
+                      modification.value.field.type.name
+                    ) && modification.value.field.type.name !== 'Boolean'
                   "
                 >
                   <input matInput formControlName="value" type="string" />
