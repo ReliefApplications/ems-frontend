@@ -691,7 +691,7 @@
 				"errors": {
 					"invalid": "******",
 					"missingDataset": "******",
-					"validationFailed": "****** {{index}} ****** {{question}} ****** {{error}}"
+					"validationFailed": "****** {{errors}} ******"
 				},
 				"export": {
 					"columns": {

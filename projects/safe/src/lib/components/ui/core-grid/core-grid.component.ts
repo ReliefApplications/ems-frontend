@@ -40,15 +40,14 @@ import {
 } from '../../../graphql/mutations';
 import {
   GetFormByIdQueryResponse,
-  GetRecordDetailsQueryResponse,
   GET_FORM_BY_ID,
-  GET_RECORD_DETAILS,
 } from '../../../graphql/queries';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
+import { Record } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
@@ -57,12 +56,19 @@ import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
 import { TranslateService } from '@ngx-translate/core';
-import * as Survey from 'survey-angular';
 
+/** Default file name */
 const DEFAULT_FILE_NAME = 'Records';
 
+/**
+ * Clone the data
+ *
+ * @param data The data to clone
+ * @returns A clone of the data
+ */
 const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
 
+/** Component for the core grid component */
 @Component({
   selector: 'safe-core-grid',
   templateUrl: './core-grid.component.html',
@@ -72,6 +78,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === INPUTS ===
   @Input() settings: GridSettings | any = {};
   @Input() defaultLayout: GridLayout = {}; // Cached layout
+
+  /** @returns selected layout of the grid */
   get layout(): any {
     // Current layout
     return this.grid?.layout;
@@ -83,6 +91,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   @Input() selectable = true;
   @Output() selectionChange = new EventEmitter();
 
+  /** @returns selected items in the data grid */
   get selectedItems(): any[] {
     return this.gridData.data.filter((x) => this.selectedRows.includes(x.id));
   }
@@ -135,6 +144,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === SORTING ===
   public sort: SortDescriptor[] = [];
 
+  /** @returns The field used for sorting */
   get sortField(): string | null {
     return this.sort.length > 0 && this.sort[0].dir
       ? this.sort[0].field
@@ -143,12 +153,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       : null;
   }
 
+  /** @returns The order used for sorting */
   get sortOrder(): string {
     return this.sort.length > 0 && this.sort[0].dir
       ? this.sort[0].dir
       : this.settings.query?.sort?.order || '';
   }
 
+  /** @returns The style for the grid */
   get style(): any {
     return this.settings.query?.style || null;
   }
@@ -158,9 +170,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public showFilter = false;
   public search = '';
 
-  /**
-   * All active filters of the grid.
-   */
+  /** @returns All active filters of the grid */
   get queryFilter(): CompositeFilterDescriptor {
     const gridFilters = [this.filter];
     if (this.settings?.query?.filter) {
@@ -199,7 +209,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === DOWNLOAD ===
   private apiUrl = '';
-  /** Builds filename from the date and widget title */
+  /** @returns Builds filename from the date and widget title */
   get fileName(): string {
     const today = new Date();
     const formatDate = `${today.toLocaleString('en-us', {
@@ -211,6 +221,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     } ${formatDate}.png`;
   }
 
+  /** @returns If the grid has changes */
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
   }
@@ -228,6 +239,21 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   public editable = false;
 
+  /**
+   * Constructor of the core grid
+   *
+   * @param environment The env config
+   * @param apollo The apollo client
+   * @param dialog The material dialog service
+   * @param resolver The resolver client
+   * @param queryBuilder The query builder service
+   * @param layoutService The layout service
+   * @param snackBar The snack bar service
+   * @param downloadService The download service
+   * @param safeAuthService The authentification service
+   * @param gridService The grid service
+   * @param translate The translation service
+   */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
@@ -259,6 +285,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Detects changes of the settings to (re)load the data.
+   *
+   * @param changes The changes on the component
    */
   ngOnChanges(changes?: SimpleChanges): void {
     if (changes?.settings) {
@@ -266,6 +294,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Configure the grid
+   */
   public configureGrid(): void {
     // define row actions
     this.actions = {
@@ -403,7 +434,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Finds item in data items and updates it with new values, from inline edition.
    *
-   * @param id Item id.
+   * @param item Item id.
    * @param value Updated value of the item.
    */
   private update(item: any, value: any): void {
@@ -427,50 +458,42 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onSaveChanges(): void {
     if (this.hasChanges) {
-      let hasError = false;
-      let error = '';
-      let questionWithError = '';
-      let index = -1;
-      const survey = new Survey.Model(this.templateStructure);
-      survey.locale = this.translate.currentLang;
-      for (const item of this.updatedItems) {
-        survey.data = item;
-        survey.completeLastPage();
-        if (survey.hasErrors()) {
-          hasError = true;
-          const questions = survey.getAllQuestions();
-          for (const question of questions) {
-            if (question.hasErrors()) {
-              index = this.items.findIndex((x) => x.id === item.id);
-              questionWithError = question.name;
-              error = question.getAllErrors()[0].getText();
-              break;
-            }
-          }
-          if (error) {
-            break;
+      Promise.all(this.promisedChanges()).then((allRes) => {
+        const errors = [];
+        for (const res of allRes) {
+          const resRecord: Record = res.data.editRecord;
+          if (resRecord?.validationErrors?.length) {
+            errors.push({
+              recordId: resRecord.incrementalId,
+              errors: resRecord.validationErrors,
+            });
           }
         }
-      }
-      if (!hasError) {
-        Promise.all(this.promisedChanges()).then(() => this.reloadData());
-      } else {
-        // Open snackbar to indicate the error
-        this.snackBar.openSnackBar(
-          this.translate.instant(
-            'components.widget.grid.errors.validationFailed',
+        if (errors.length) {
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'components.widget.grid.errors.validationFailed',
+              {
+                errors: errors
+                  .map(
+                    (recErr) =>
+                      `- ${recErr.recordId}: ${recErr.errors
+                        .map(
+                          (err) => `${err.question}: ${err.errors.join(', ')}`
+                        )
+                        .join(', ')}`
+                  )
+                  .join('\n'),
+              }
+            ),
             {
-              index,
-              question: questionWithError,
-              error,
+              error: true,
+              duration: 8000,
             }
-          ),
-          {
-            error: true,
-            duration: 8000,
-          }
-        );
-      }
+          );
+        }
+        this.reloadData();
+      });
     }
   }
 
@@ -516,6 +539,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               id: item.id,
               data,
               template: this.settings.template,
+              lang: this.translate.currentLang,
             },
           })
           .toPromise()
@@ -616,7 +640,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Handles grid actions.
    *
-   * @param event Grid Action.
+   * @param event Grid event.
+   * @param event.action event action
+   * @param event.item event item
+   * @param event.items event items
+   * @param event.value event value
+   * @param event.field event field
    */
   public onAction(event: {
     action: string;
@@ -721,7 +750,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Opens the record on a read-only modal. If edit mode is enabled, can open edition modal.
    *
-   * @param item item to get details of.
+   * @param items items to get details of.
+   * @param field The field selected
    */
   public onShowDetails(items: any | any[], field?: any): void {
     const isArray = Array.isArray(items);
@@ -949,8 +979,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Exports selected records to excel / csv file.
    *
-   * @param items items to download.
-   * @param type type of export file.
+   * @param e The event
    */
   public onExport(e: any): void {
     let ids: any[];
@@ -1119,8 +1148,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === LAYOUT ===
   /**
    * Detects fields changes.
-   *
-   * @param fields Fields event.
    */
   onColumnChange(): void {
     this.saveLocalLayout();

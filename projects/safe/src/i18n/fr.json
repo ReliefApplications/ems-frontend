@@ -691,7 +691,7 @@
 				"errors": {
 					"invalid": "Configuration de grille invalide",
 					"missingDataset": "Sélectionner un jeu de données dans les jeux de données",
-					"validationFailed": "Sauvegarde échouée, la ligne {{index}} est invalide\n{{question}}: {{error}}"
+					"validationFailed": "Les enregistrements suivants n'ont pas pu être sauvegardés car invalides :\n{{errors}}\nMerci de les modifier en utilisant le bouton \"Mettre à jour \" pour plus de détails."
 				},
 				"export": {
 					"columns": {

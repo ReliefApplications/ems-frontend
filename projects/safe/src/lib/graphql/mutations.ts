@@ -20,15 +20,27 @@ export const EDIT_RECORD = gql`
     $data: JSON
     $version: ID
     $template: ID
+    $lang: String
     $display: Boolean
   ) {
-    editRecord(id: $id, data: $data, version: $version, template: $template) {
+    editRecord(
+      id: $id
+      data: $data
+      version: $version
+      template: $template
+      lang: $lang
+    ) {
       id
+      incrementalId
       data(display: $display)
       createdAt
       modifiedAt
       createdBy {
         name
+      }
+      validationErrors {
+        question
+        errors
       }
     }
   }
