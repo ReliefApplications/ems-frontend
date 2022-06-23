@@ -314,7 +314,7 @@
 		"form": {
 			"create": {
 				"choice": {
-					"inherit": "Create form from template",
+					"inherit": "Create from template",
 					"resource": "Create a core form",
 					"template": "Start from existing template"
 				},
