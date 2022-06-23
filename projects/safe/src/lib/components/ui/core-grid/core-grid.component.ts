@@ -463,27 +463,44 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public onSaveChanges(): void {
     if (this.hasChanges) {
       Promise.all(this.promisedChanges()).then((allRes) => {
-        const errors = [];
         for (const res of allRes) {
           const resRecord: Record = res.data.editRecord;
+          const index = this.updatedItems.findIndex(
+            (x) => x.id === resRecord.id
+          );
           if (resRecord?.validationErrors?.length) {
-            errors.push({
-              recordId: resRecord.incrementalId,
-              errors: resRecord.validationErrors,
+            // if the item has an error, save the error with the item object
+            this.updatedItems[index] = Object.assign(this.updatedItems[index], {
+              incrementalId: resRecord.incrementalId,
+              validationErrors: resRecord.validationErrors,
             });
+          } else {
+            // if no errors, the item has been saved in the database
+            // remove the item from updatedItems list
+            this.updatedItems.splice(index, 1);
+            // save the new value of the item in the originalItems list
+            const originalIndex = this.originalItems.findIndex(
+              (x) => x.id === resRecord.id
+            );
+            this.originalItems[originalIndex] = this.items.find(
+              (x) => x.id === resRecord.id
+            );
           }
         }
-        if (errors.length) {
+        // the items still in the updatedItems list are the ones with errors
+        if (this.updatedItems.length) {
+          // show an error message
           this.snackBar.openSnackBar(
             this.translate.instant(
               'components.widget.grid.errors.validationFailed',
               {
-                errors: errors
+                errors: this.updatedItems
                   .map(
-                    (recErr) =>
-                      `- ${recErr.recordId}: ${recErr.errors
+                    (item) =>
+                      `- ${item.incrementalId}: ${item.validationErrors
                         .map(
-                          (err) => `${err.question}: ${err.errors.join(', ')}`
+                          (err: any) =>
+                            `${err.question}: ${err.errors.join(', ')}`
                         )
                         .join(', ')}`
                   )
@@ -495,8 +512,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               duration: 8000,
             }
           );
+          // update the displayed items
+          this.loadItems();
+        } else {
+          // if no error, reload the grid
+          this.reloadData();
         }
-        this.reloadData();
       });
     }
   }
@@ -523,16 +544,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       delete data.id;
       for (const field of this.fields) {
         if (field.type === 'Time') {
-          const time = data[field.name]
-            .toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-            .split(/:| /);
-          if (
-            (time[2] === 'PM' && time[0] !== '12') ||
-            (time[2] === 'AM' && time[0] === '12')
-          ) {
-            time[0] = (parseInt(time[0], 10) + 12).toString();
-          }
-          data[field.name] = time[0] + ':' + time[1];
+          data[field.name] = data[field.name].toLocaleTimeString('en', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hourCycle: 'h24',
+          });
         }
       }
       promises.push(
