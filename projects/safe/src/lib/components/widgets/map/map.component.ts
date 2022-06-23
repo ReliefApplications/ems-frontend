@@ -131,6 +131,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         query: builtQuery,
         variables: {
           first: 100,
+          filter: this.settings.query.filter,
         },
       });
       // Handles the settings data and changes the map accordingly.
