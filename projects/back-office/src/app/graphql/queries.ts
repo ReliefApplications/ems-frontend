@@ -118,6 +118,30 @@ export const GET_FORM_NAMES = gql`
   }
 `;
 
+/** Graphql request for getting forms */
+export const GET_FORMS = gql`
+  query GetFormNames($first: Int, $afterCursor: ID, $filter: JSON) {
+    forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
+      edges {
+        node {
+          id
+          name
+          core
+          resource {
+            id
+          }
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
 export const GET_SHORT_FORMS = gql`
   query GetShortForms($first: Int, $afterCursor: ID, $filter: JSON) {
     forms(first: $first, afterCursor: $afterCursor, filter: $filter) {

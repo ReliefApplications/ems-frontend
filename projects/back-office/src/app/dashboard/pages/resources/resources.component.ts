@@ -242,10 +242,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };
-        Object.assign(
-          data,
-          value.binding === 'newResource' && { newResource: true }
-        );
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,

@@ -13,18 +13,13 @@
     </ng-container>
     <ng-container *ngSwitchCase="2">
       <h2>{{ 'pages.application.addPage.form.title' | translate }}</h2>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'models.form.select' | translate }}</mat-label>
-        <mat-select
-          #formSelect
-          formControlName="content"
-          (openedChange)="onOpenSelect($event)"
-        >
-          <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{
-            form.name
-          }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <safe-forms-dropdown
+        [forms$]="forms$"
+        [label]="'models.form.select' | translate"
+        [sourceControl]="pageForm.controls.content"
+        (filter)="onFilterDataSource($event)"
+        (scrolled)="onScrollDataSource($event)"
+      ></safe-forms-dropdown>
       <safe-button
         icon="add"
         category="secondary"

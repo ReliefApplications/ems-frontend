@@ -381,7 +381,6 @@
 		"form": {
 			"create": {
 				"choice": {
-					"blank": "******",
 					"inherit": "******",
 					"resource": "******",
 					"template": "******"
@@ -389,8 +388,12 @@
 				"template": {
 					"from": "******",
 					"placeholder": "******",
-					"title": "******",
-					"tooltip": "******"
+					"title": "******"
+				},
+				"tooltip": {
+					"inherit": "******",
+					"resource": "******",
+					"template": "******"
 				}
 			},
 			"delete": {

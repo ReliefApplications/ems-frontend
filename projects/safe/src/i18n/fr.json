@@ -381,7 +381,6 @@
 		"form": {
 			"create": {
 				"choice": {
-					"blank": "Créer un formulaire vide",
 					"inherit": "Copier un modèle de ressources existant",
 					"resource": "Créer une nouvelle ressource",
 					"template": "Commencer depuis un modèle existant"
@@ -389,8 +388,12 @@
 				"template": {
 					"from": "Depuis le modèle",
 					"placeholder": "Choisir un modèle existant",
-					"title": "Depuis la ressource",
-					"tooltip": "Si aucun modèle n'est sélectionné, la structure principale sera chargée"
+					"title": "Depuis la ressource"
+				},
+				"tooltip": {
+					"inherit": "Creates a child form using a template from the resource linked to the core form",
+					"resource": "Creates a core form that allows the creation of children forms linked to this core form. It will also create a new resource.",
+					"template": "Si aucun modèle n'est sélectionné, la structure principale sera chargée"
 				}
 			},
 			"delete": {

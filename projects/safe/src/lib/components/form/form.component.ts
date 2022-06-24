@@ -2,8 +2,6 @@ import { Apollo } from 'apollo-angular';
 import {
   AfterViewInit,
   Component,
-  ComponentFactory,
-  ComponentFactoryResolver,
   ElementRef,
   EventEmitter,
   Inject,
@@ -82,9 +80,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public storageDate?: Date;
   public isFromCacheData = false;
 
-  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
-  public factory?: ComponentFactory<any>;
-
   /**
    * Getter for the pages of the form
    *
@@ -105,7 +100,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param downloadService This is a service that allows you to download files
    * @param authService This is the service that handles authentication.
    * @param layoutService This is the service that will be used to create the layout of the form.
-   * @param resolver This is used to create the component dynamically
    * @param formBuilderService This is the service that will be used to build forms.
    * @param translate This is the service used to translate text
    */
@@ -117,7 +111,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
-    private resolver: ComponentFactoryResolver,
     private formBuilderService: SafeFormBuilderService,
     private translate: TranslateService,
     private el: ElementRef
@@ -126,9 +119,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.factory = this.resolver.resolveComponentFactory(
-      SafeRecordHistoryComponent
-    );
     const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
     defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
     defaultThemeColorsSurvey['$main-hover-color'] =
@@ -593,7 +583,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public onShowHistory(): void {
     if (this.record) {
       this.layoutService.setRightSidenav({
-        factory: this.factory,
+        component: SafeRecordHistoryComponent,
         inputs: {
           id: this.record.id,
           revert: (version: any) =>
