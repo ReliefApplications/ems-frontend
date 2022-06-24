@@ -14,7 +14,7 @@ import get from 'lodash/get';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
-import 'leaflet.markercluster';
+//import 'leaflet.markercluster';
 declare let L: any;
 
 /** Default options for the marker */
@@ -224,7 +224,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           .setContent(get(this.selectedItem, 'data', ''))
           .addTo(this.map);
       });
-      this.markersLayer = L.markerClusterGroup({}).addTo(markersLayerGroup);
+
+      // Deactivated cluster feature
+      //this.markersLayer = L.markerClusterGroup({}).addTo(markersLayerGroup);
+      this.markersLayer = markersLayerGroup;
     } else {
       this.markersLayer.clearLayers();
     }
