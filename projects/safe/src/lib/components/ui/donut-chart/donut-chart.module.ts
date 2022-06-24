@@ -4,6 +4,9 @@ import { SafeDonutChartComponent } from './donut-chart.component';
 import { ChartsModule } from '@progress/kendo-angular-charts';
 import 'hammerjs';
 
+/**
+ * Module declaration for donut-chart component
+ */
 @NgModule({
   declarations: [SafeDonutChartComponent],
   imports: [CommonModule, ChartsModule],

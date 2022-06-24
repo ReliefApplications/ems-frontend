@@ -25,6 +25,12 @@ export default {
   },
 } as Meta;
 
+/**
+ * Stories template used to render the component
+ *
+ * @param args Arguments used by the component
+ * @returns Returns an object used as the stories template
+ */
 const TEMPLATE: Story<SafeDonutChartComponent> = (args) => ({
   template:
     '<div style="height:400px"><safe-donut-chart [legend]="legend" [title]="title" [series]="series"></safe-donut-chart></div>',
@@ -33,6 +39,9 @@ const TEMPLATE: Story<SafeDonutChartComponent> = (args) => ({
   },
 });
 
+/**
+ * Sets the template as the default state of the component
+ */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {

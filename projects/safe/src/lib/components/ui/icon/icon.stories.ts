@@ -35,12 +35,21 @@ export default {
   },
 } as Meta;
 
+/**
+ * Stories template used to render the component
+ *
+ * @param args Arguments used by the component
+ * @returns Returns an object used as the stories template
+ */
 const TEMPLATE: Story<SafeIconComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
+/**
+ * Sets the template as the default state of the component
+ */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {
