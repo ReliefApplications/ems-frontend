@@ -102,6 +102,9 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  /**
+   * Filter roles and users.
+   */
   private filterPredicate(): void {
     this.roles.filterPredicate = (data: any) =>
       (this.searchText.trim().length === 0 ||

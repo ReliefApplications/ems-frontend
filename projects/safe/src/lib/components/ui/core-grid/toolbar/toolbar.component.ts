@@ -50,7 +50,6 @@ export class SafeGridToolbarComponent implements OnInit {
     return !this.items.some((x) => x.canDelete);
   }
 
-
   /**
    * Constructor for safe-toolbar component
    */

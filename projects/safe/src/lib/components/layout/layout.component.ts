@@ -261,6 +261,12 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     event.stopPropagation();
   }
 
+  /**
+   * Drop event handler. Move item in layout navigation item list.
+   *
+   * @param event drop event
+   * @param group group where the event occurs
+   */
   drop(event: any, group: any): void {
     moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
     this.reorder.emit(group.navItems);

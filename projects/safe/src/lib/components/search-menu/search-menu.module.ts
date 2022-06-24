@@ -8,6 +8,9 @@ import { MatInputModule } from '@angular/material/input';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 
+/**
+ * Search menu component module.
+ */
 @NgModule({
   declarations: [SafeSearchMenuComponent],
   imports: [

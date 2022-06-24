@@ -25,6 +25,12 @@ export default {
   },
 } as Meta;
 
+/**
+ * Template used by storybook to display the component.
+ *
+ * @param args story arguments
+ * @returns storybook template
+ */
 const TEMPLATE: Story<SafeBarChartComponent> = (args) => ({
   template:
     '<div style="height:400px"><safe-bar-chart [legend]="legend" [title]="title" [series]="series"></safe-bar-chart></div>',
@@ -33,6 +39,9 @@ const TEMPLATE: Story<SafeBarChartComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story
+ */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {

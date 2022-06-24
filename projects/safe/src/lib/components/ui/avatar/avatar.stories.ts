@@ -38,6 +38,12 @@ export default {
   },
 } as Meta;
 
+/**
+ * Template used by storybook to display the component in stories.
+ *
+ * @param args story arguments
+ * @returns story template
+ */
 const TEMPLATE_WITH_TEXT: Story<SafeAvatarComponent> = (args) => ({
   template: '<safe-avatar [icon]="icon">{{content}}</safe-avatar>',
   props: {
@@ -45,6 +51,9 @@ const TEMPLATE_WITH_TEXT: Story<SafeAvatarComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {
@@ -52,8 +61,11 @@ DEFAULT.args = {
   variant: AvatarVariant.DEFAULT,
 };
 
+/**
+ * Story with Icon in avatar.
+ */
 export const ICON = TEMPLATE_WITH_TEXT.bind({});
-DEFAULT.storyName = 'With icon';
+ICON.storyName = 'With icon';
 ICON.args = {
   ...DEFAULT.args,
   icon: 'home',

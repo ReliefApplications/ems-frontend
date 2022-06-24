@@ -1,18 +1,27 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ChartComponent } from '@progress/kendo-angular-charts';
 
+/**
+ * Interface of chart title.
+ */
 interface ChartTitle {
   visible: boolean;
   text: string;
   position: 'top' | 'bottom';
 }
 
+/**
+ * Interface of chart legend.
+ */
 interface ChartLegend {
   visible: boolean;
   orientation: 'horizontal' | 'vertical';
   position: 'top' | 'bottom' | 'left' | 'right';
 }
 
+/**
+ * Interface of chart series.
+ */
 interface ChartSeries {
   name?: string;
   color?: string;
@@ -22,6 +31,9 @@ interface ChartSeries {
   }[];
 }
 
+/**
+ * Bar chart component, based on kendo chart component.
+ */
 @Component({
   selector: 'safe-bar-chart',
   templateUrl: './bar-chart.component.html',
@@ -41,6 +53,9 @@ export class SafeBarChartComponent implements OnInit {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
+  /**
+   * Bar chart component, based on kendo chart component.
+   */
   constructor() {}
 
   ngOnInit(): void {}

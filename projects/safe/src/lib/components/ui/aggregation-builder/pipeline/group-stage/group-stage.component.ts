@@ -19,14 +19,21 @@ export class SafeGroupStageComponent implements OnInit {
   public dateOperators = DateOperators;
   public displayDateOperators = false;
 
+  /** @returns this for as form group */
   get formGroup() {
     return this.form as FormGroup;
   }
 
+  /** @returns list of addFields of the stage as Form array */
   get addFields() {
     return this.formGroup.controls.addFields as FormArray;
   }
 
+  /**
+   * Group Stage pipeline component.
+   *
+   * @param aggregationBuilder Shared aggregation builder
+   */
   constructor(private aggregationBuilder: AggregationBuilderService) {}
 
   ngOnInit(): void {
