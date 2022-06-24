@@ -76,6 +76,9 @@ export const routes = [
                   ),
                 // canActivate: [WhoPermissionGuard]
               },
+              {
+                path: '**',
+              },
             ],
           },
         ],
