@@ -410,6 +410,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     ) {
       const div = this.div;
       div.innerHTML = '';
+      // Prevent double click on legend panel to zoom
+      L.DomEvent.on(div, 'dblclick', (e: any) => {
+        e.stopPropagation();
+      });
       // Creates legend for clorophlets
       data.clorophlets?.map((clorophlet: any) => {
         const layer = overlays[clorophlet.name];
