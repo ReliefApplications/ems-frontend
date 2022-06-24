@@ -722,6 +722,15 @@
 				},
 				"layout": {
 					"reset": "Reset default Layout"
+				},
+				"validation": {
+					"editWithUpdate": "Please edit the record using the 'update' button for more details.",
+					"errorOnQuestion": "Errors on question {{question}}:",
+					"errorOnRecord": "This record had the following validation errors while saving:",
+					"errors": "Click to see the errors",
+					"modalTitle": "Errors on record {{record}}",
+					"savedChanges": "Changes saved!",
+					"unsavedChanges": "Some changes are not saved!"
 				}
 			},
 			"settings": {

@@ -80,3 +80,13 @@ textarea {
     cursor: pointer;
   }
 }
+
+.error-button {
+  background-color: #d34444 !important;
+  color: white !important;
+  border-radius: 2px;
+
+  &:hover {
+    background-color: #b93a3a !important;
+  }
+}

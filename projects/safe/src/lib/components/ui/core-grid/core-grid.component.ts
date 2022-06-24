@@ -454,6 +454,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.items.find((x) => x.id === item.id),
       value
     );
+    item.saved = false;
     this.loadItems();
   }
 
@@ -462,29 +463,35 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onSaveChanges(): void {
     if (this.hasChanges) {
+      for (const item of this.items) {
+        delete item.saved;
+      }
       Promise.all(this.promisedChanges()).then((allRes) => {
         for (const res of allRes) {
           const resRecord: Record = res.data.editRecord;
-          const index = this.updatedItems.findIndex(
+          const updatedIndex = this.updatedItems.findIndex(
             (x) => x.id === resRecord.id
           );
+          const item = this.items.find((x) => x.id === resRecord.id);
           if (resRecord?.validationErrors?.length) {
             // if the item has an error, save the error with the item object
-            this.updatedItems[index] = Object.assign(this.updatedItems[index], {
-              incrementalId: resRecord.incrementalId,
-              validationErrors: resRecord.validationErrors,
-            });
+            this.updatedItems[updatedIndex].incrementalId =
+              resRecord.incrementalId;
+            this.updatedItems[updatedIndex].validationErrors =
+              resRecord.validationErrors;
+            item.incrementalId = resRecord.incrementalId;
+            item.validationErrors = resRecord.validationErrors;
           } else {
             // if no errors, the item has been saved in the database
             // remove the item from updatedItems list
-            this.updatedItems.splice(index, 1);
+            this.updatedItems.splice(updatedIndex, 1);
             // save the new value of the item in the originalItems list
             const originalIndex = this.originalItems.findIndex(
               (x) => x.id === resRecord.id
             );
-            this.originalItems[originalIndex] = this.items.find(
-              (x) => x.id === resRecord.id
-            );
+            this.originalItems[originalIndex] = item;
+            // add a property to indicate the item is saved
+            item.saved = true;
           }
         }
         // the items still in the updatedItems list are the ones with errors

@@ -1,0 +1,22 @@
+<div mat-dialog-content>
+  <h1>{{ 'components.widget.grid.validation.modalTitle' | translate: {
+    record: data.incrementalId
+  } }}</h1>
+  <p>{{ 'components.widget.grid.validation.errorOnRecord' | translate }}</p>
+  <ul>
+    <li *ngFor="let questionError of data.errors">
+      <p>{{ 'components.widget.grid.validation.errorOnQuestion' | translate:
+         { question: questionError.question }
+      }}</p>
+      <ul>
+        <li *ngFor="let error of questionError.errors">
+          {{ error }}
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <p>{{ 'components.widget.grid.validation.editWithUpdate' | translate }}</p>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>{{ 'common.close' | translate }}</button>
+</div>

@@ -722,6 +722,15 @@
 				},
 				"layout": {
 					"reset": "******"
+				},
+				"validation": {
+					"editWithUpdate": "******",
+					"errorOnQuestion": "****** {{question}} ******",
+					"errorOnRecord": "******",
+					"errors": "******",
+					"modalTitle": "****** {{record}}",
+					"savedChanges": "******",
+					"unsavedChanges": "******"
 				}
 			},
 			"settings": {

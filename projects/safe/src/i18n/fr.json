@@ -722,6 +722,15 @@
 				},
 				"layout": {
 					"reset": "Réinitialiser la mise en page par défaut"
+				},
+				"validation": {
+					"editWithUpdate": "Veuillez modifier l'enregistrement à l'aide du bouton \"Mise à jour\".",
+					"errorOnQuestion": "Erreurs pour la question {{question}} :",
+					"errorOnRecord": "Cet enregistrement contient les erreurs suivantes :",
+					"errors": "Cliquez pour voir les erreurs",
+					"modalTitle": "Erreurs pour l'enregistrement {{record}}",
+					"savedChanges": "Changements sauvegardés !",
+					"unsavedChanges": "Certains changements ne sont pas sauvegardés."
 				}
 			},
 			"settings": {

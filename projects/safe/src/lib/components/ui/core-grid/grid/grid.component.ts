@@ -47,6 +47,7 @@ import { SafeDownloadService } from '../../../../services/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
+import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component';
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
@@ -584,5 +585,20 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         this.action.emit({ action: 'edit', item, value });
       }
     });
+  }
+
+  /**
+   * Open a modal to show the errors
+   *
+   * @param item The item of the grid
+   */
+  public showErrors(item: any): void {
+    const dialogRef = this.dialog.open(SafeErrorsModalComponent, {
+      data: {
+        incrementalId: item.incrementalId,
+        errors: item.validationErrors,
+      },
+    });
+    dialogRef.afterClosed().subscribe();
   }
 }

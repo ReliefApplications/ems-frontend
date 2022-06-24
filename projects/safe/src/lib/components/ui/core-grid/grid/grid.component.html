@@ -106,8 +106,7 @@
       [columnMenu]="false"
       [showSelectAll]="multiSelect"
       [sticky]="true"
-    >
-    </kendo-grid-checkbox-column>
+    ></kendo-grid-checkbox-column>
     <!-- FIELDS -->
     <ng-container *ngFor="let field of fields">
       <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
@@ -824,6 +823,33 @@
           (action)="action.emit($event)"
         >
         </safe-grid-row-actions>
+        <button
+          *ngIf="dataItem.validationErrors"
+          kendoButton
+          icon="exclamation-circle"
+          [look]="'flat'"
+          class="error-button"
+          (click)="showErrors(dataItem)"
+          title="{{ 'components.widget.grid.validation.errors' | translate }}"
+        ></button>
+        <span 
+          *ngIf="dataItem.saved === false && !dataItem.validationErrors"
+          kendoButton
+          icon="exclamation-circle"
+          look="flat"
+          class="k-color-warning"
+          title="{{ 'components.widget.grid.validation.unsavedChanges' | translate }}"
+          style="cursor:unset"
+        ></span>
+        <span 
+          *ngIf="dataItem.saved"
+          kendoButton
+          icon="check-outline"
+          look="flat"
+          class="k-color-success"
+          title="{{ 'components.widget.grid.validation.savedChanges' | translate }}"
+          style="cursor:unset"
+        ></span>
       </ng-template>
     </kendo-grid-column>
   </ng-container>
