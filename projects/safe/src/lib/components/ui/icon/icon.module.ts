@@ -3,9 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeIconComponent } from './icon.component';
 import { MatIconModule } from '@angular/material/icon';
 
-/**
- * Module declaration for safe-icon component
- */
+/** Module for icon component */
 @NgModule({
   declarations: [SafeIconComponent],
   imports: [CommonModule, MatIconModule],

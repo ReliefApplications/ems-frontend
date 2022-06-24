@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 
+/** Module for expanded comment component */
 @NgModule({
   declarations: [SafeExpandedCommentComponent],
   imports: [

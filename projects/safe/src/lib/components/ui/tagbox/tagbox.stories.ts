@@ -178,7 +178,7 @@ DEFAULT.args = {
  * Sets the template as the initial source of the component
  */
 export const INITIAL_SOURCE = TEMPLATE.bind({});
-DEFAULT.storyName = 'Initial source';
+INITIAL_SOURCE.storyName = 'Initial source';
 INITIAL_SOURCE.args = {
   ...DEFAULT.args,
   parentControl: new FormControl(['follow', 'date']),

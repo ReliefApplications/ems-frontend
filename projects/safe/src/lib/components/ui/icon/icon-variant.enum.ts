@@ -1,6 +1,4 @@
-/**
- * Enum with all the icon variants we accepted by our custom icon component
- */
+/** Enumeration for color variants of icons */
 export enum IconVariant {
   DEFAULT = 'default',
   PRIMARY = 'primary',

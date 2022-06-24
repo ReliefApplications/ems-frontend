@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IconVariant } from './icon-variant.enum';
 
 /**
- * Custom icon component that we use to standarize all the icons in the app
+ * Component for custom icons
  */
 @Component({
   selector: 'safe-icon',

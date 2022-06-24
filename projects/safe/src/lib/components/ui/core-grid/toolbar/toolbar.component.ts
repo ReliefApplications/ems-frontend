@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
+/** Component for the grid toolbar */
 @Component({
   selector: 'safe-grid-toolbar',
   templateUrl: './toolbar.component.html',
@@ -25,7 +26,7 @@ export class SafeGridToolbarComponent implements OnInit {
   /**
    * Gets a boolean indicating if the toolbar should be displayed.
    *
-   * @returns Returns true if any of the actions is true.
+   * @returns Returns true if toolbar must appear.
    */
   get display(): boolean {
     return this.actions.delete || this.actions.update || this.actions.convert;
@@ -48,6 +49,7 @@ export class SafeGridToolbarComponent implements OnInit {
   get canDelete(): boolean {
     return !this.items.some((x) => x.canDelete);
   }
+
 
   /**
    * Constructor for safe-toolbar component

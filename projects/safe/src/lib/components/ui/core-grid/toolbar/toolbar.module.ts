@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { SafeGridToolbarComponent } from './toolbar.component';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 
+
 /**
- * Module declaration for safe-toolbar component
+ * Module declaration for grid toolbar component
  */
 @NgModule({
   declarations: [SafeGridToolbarComponent],

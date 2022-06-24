@@ -20,6 +20,7 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SafeExportModule } from '../export/export.module';
 import { TranslateModule } from '@ngx-translate/core';
 
+/** Module for the grid component */
 @NgModule({
   declarations: [SafeGridComponent],
   imports: [
