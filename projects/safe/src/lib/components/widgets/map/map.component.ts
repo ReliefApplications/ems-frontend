@@ -225,7 +225,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           .addTo(this.map);
       });
 
-      //Desactivated cluster feature
+      // Deactivated cluster feature
       //this.markersLayer = L.markerClusterGroup({}).addTo(markersLayerGroup);
       this.markersLayer = markersLayerGroup;
     } else {
