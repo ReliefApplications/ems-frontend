@@ -2,18 +2,27 @@ import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { CategoryAxis, ChartComponent } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
+/**
+ * Interface containing the settings of the chart title
+ */
 interface ChartTitle {
   visible: boolean;
   text: string;
   position: 'top' | 'bottom';
 }
 
+/**
+ * Interface containing the settings of the chart legend
+ */
 interface ChartLegend {
   visible: boolean;
   orientation: 'horizontal' | 'vertical';
   position: 'top' | 'bottom' | 'left' | 'right';
 }
 
+/**
+ * Interface containing the settings of the chart series
+ */
 interface ChartSeries {
   color?: string;
   data: {
@@ -33,6 +42,9 @@ interface ChartOptions {
   labels?: ChartLabels;
 }
 
+/**
+ * Uses kendo chart to render the data as a line chart
+ */
 @Component({
   selector: 'safe-line-chart',
   templateUrl: './line-chart.component.html',
@@ -64,6 +76,9 @@ export class SafeLineChartComponent implements OnInit, OnChanges {
 
   public labels: any;
 
+  /**
+   * Constructor for safe-line-chart component
+   */
   constructor() {}
 
   ngOnInit(): void {

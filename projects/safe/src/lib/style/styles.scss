@@ -556,6 +556,9 @@ mat-tab-group[vertical] {
 
   & > .mat-tab-header {
     border-bottom: none;
+    width: 240px;
+    position: fixed;
+    z-index: 1;
 
     .mat-tab-labels {
       display: flex;
@@ -589,6 +592,7 @@ mat-tab-group[vertical] {
 
   & > .mat-tab-body-wrapper {
     width: 100%;
+    padding-left: 240px;
 
     & > .mat-tab-body {
       & > .mat-tab-body-content {

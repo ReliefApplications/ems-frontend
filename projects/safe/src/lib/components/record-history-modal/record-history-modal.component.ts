@@ -4,7 +4,6 @@ import {
   MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { Record } from '../../models/record.model';
 
 /**
  * This interface describes the structure of the data that will be displayed in the dialog modal
@@ -20,7 +19,7 @@ interface DialogData {
 @Component({
   selector: 'safe-history-modal',
   templateUrl: './record-history-modal.component.html',
-  styleUrls: ['./record-history-modal.component.css'],
+  styleUrls: ['./record-history-modal.component.scss'],
 })
 export class RecordHistoryModalComponent implements OnInit {
   /**

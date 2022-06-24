@@ -460,6 +460,7 @@
 				"withValue": "******"
 			},
 			"download": "******",
+			"empty": "******",
 			"field": {
 				"all": "******",
 				"select": "******"
@@ -820,21 +821,17 @@
 					"basemap": "******",
 					"category": "******",
 					"dataset": "******",
-					"display": {
-						"basemap": "******",
-						"latitude": "******",
-						"longitude": "******",
-						"title": "******",
-						"zoom": "******"
-					},
 					"errors": {
 						"latitude": "******",
 						"longitude": "******"
 					},
 					"layers": {
 						"clorophlet": {
-							"addNew": "******",
-							"addNewDiv": "******",
+							"add": "******",
+							"division": {
+								"add": "******",
+								"title": "******"
+							},
 							"geoJSON": "******",
 							"geoJSONidentifier": "******",
 							"identifier": "******",
@@ -858,8 +855,16 @@
 							"title": "******"
 						}
 					},
+					"properties": {
+						"basemap": "******",
+						"latitude": "******",
+						"longitude": "******",
+						"title": "******",
+						"zoom": "******"
+					},
 					"tooltip": {
 						"category": "******",
+						"dataset": "******",
 						"default": {
 							"latitude": "******",
 							"longitude": "******",

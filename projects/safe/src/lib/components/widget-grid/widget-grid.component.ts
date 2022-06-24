@@ -14,13 +14,14 @@ import {
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
 
-/** Define maxc height of widgets */
+/** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
-/** Define max width of widgets */
+
+/** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
 
 /**
- * Widget Grid component. Widget grid is the content of the dashboard pages.
+ * Component definition for grid widgets
  */
 @Component({
   selector: 'safe-widget-grid',
@@ -60,6 +61,11 @@ export class SafeWidgetGridComponent implements OnInit {
     this.skeletons = this.getSkeletons();
   }
 
+  /**
+   * Constructor of the grid widget component
+   *
+   * @param dialog The material dialog service
+   */
   constructor(public dialog: MatDialog) {}
 
   ngOnInit(): void {

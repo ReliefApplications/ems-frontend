@@ -48,6 +48,7 @@ import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { touchEnabled } from '@progress/kendo-common';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
+import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 
 /**
  * Initialize authentication in the platform.
@@ -117,6 +118,13 @@ export const httpTranslateLoader = (http: HttpClient) =>
     {
       provide: MAT_DATE_LOCALE,
       useValue: 'en-GB',
+    },
+    // Default parameters of material tooltip
+    {
+      provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
+      useValue: {
+        showDelay: 500,
+      },
     },
     {
       provide: OAuthStorage,

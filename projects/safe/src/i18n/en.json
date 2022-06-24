@@ -460,6 +460,7 @@
 				"withValue": "with value"
 			},
 			"download": "Download history",
+			"empty": "No activity detected",
 			"field": {
 				"all": "All fields",
 				"select": "Select a field"
@@ -820,21 +821,17 @@
 					"basemap": "Base map",
 					"category": "Map quick layers",
 					"dataset": "Data set selection",
-					"display": {
-						"basemap": "Base map",
-						"latitude": "Map center latitude",
-						"longitude": "Map center longitude",
-						"title": "Default display",
-						"zoom": "Default zoom"
-					},
 					"errors": {
 						"latitude": "Invalid latitude, please select a number between -90 and 90",
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
 					},
 					"layers": {
 						"clorophlet": {
-							"addNew": "Add new clorophlet",
-							"addNewDiv": "Add new division",
+							"add": "Add new clorophlet",
+							"division": {
+								"add": "Add new division",
+								"title": "Divisions"
+							},
 							"geoJSON": "geoJSON",
 							"geoJSONidentifier": "geoJSON Identifier",
 							"identifier": "Identifier",
@@ -851,15 +848,23 @@
 							"addNew": "Add new marker rule",
 							"category": "Map quick layers",
 							"color": "Color",
-							"info": "Display markers in the map for each entry of your data",
+							"info": "Display markers in the map for each entry of your data, binding dataset number fields to geolocation",
 							"rules": "Marker rules",
 							"rulesInfo": "Customize the size and colors of your pointers",
 							"size": "Size",
 							"title": "Marker layers"
 						}
 					},
+					"properties": {
+						"basemap": "Base map",
+						"latitude": "Map center latitude",
+						"longitude": "Map center longitude",
+						"title": "Map Parameters",
+						"zoom": "Default zoom"
+					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
+						"dataset": "Filter the dataset and select all fields you want to display on the map",
 						"default": {
 							"latitude": "Select a default latitude to center the map around",
 							"longitude": "Select a default longitude to center the map around",

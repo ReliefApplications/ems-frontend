@@ -1,0 +1,11 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+td.mat-column-actions {
+  div {
+    display: flex;
+  }
+}

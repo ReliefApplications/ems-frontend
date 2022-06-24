@@ -1,0 +1,39 @@
+<!-- <p>map-layers works!</p> -->
+<div class="form-group">
+  <h2>{{ 'common.layers' | translate }}</h2>
+  <mat-tab-group mat-align-tabs="start" animationDuration="0ms">
+    <mat-tab
+      [label]="'components.widget.settings.map.layers.point.title' | translate"
+    >
+      <ng-template matTabContent>
+        <safe-map-markers
+          [form]="form"
+          [selectedFields]="selectedFields"
+          [formatedSelectedFields]="formatedSelectedFields"
+        ></safe-map-markers>
+      </ng-template>
+    </mat-tab>
+    <mat-tab
+      [label]="
+        'components.widget.settings.map.layers.clorophlet.title' | translate
+      "
+    >
+      <ng-template matTabContent>
+        <safe-map-clorophlets
+          [clorophlets]="clorophlets"
+          [selectedFields]="selectedFields"
+          [formatedSelectedFields]="formatedSelectedFields"
+        ></safe-map-clorophlets>
+      </ng-template>
+    </mat-tab>
+    <mat-tab
+      [label]="'components.widget.settings.map.layers.online.title' | translate"
+    >
+      <ng-template matTabContent>
+        <safe-map-online-layers
+          [layers]="onlineLayers"
+        ></safe-map-online-layers>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>
