@@ -8,9 +8,8 @@ describe('MapOnlineLayersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MapOnlineLayersComponent ]
-    })
-    .compileComponents();
+      declarations: [MapOnlineLayersComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
