@@ -206,6 +206,7 @@ export class SafeTabFilterComponent implements OnInit {
   ngOnInit(): void {
     // TODO: move somewhere else
     if (this.query) {
+      // Get MetaData from all scalar fields of the datasource
       const queryWithAllScalarField = clone(this.query);
       queryWithAllScalarField.fields = this.fields.map((f) => ({
         name: f.name,
