@@ -8,9 +8,8 @@ describe('MapClorophletDivisionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MapClorophletDivisionComponent ]
-    })
-    .compileComponents();
+      declarations: [MapClorophletDivisionComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

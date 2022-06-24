@@ -8,9 +8,8 @@ describe('MapMarkerRuleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MapMarkerRuleComponent ]
-    })
-    .compileComponents();
+      declarations: [MapMarkerRuleComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
