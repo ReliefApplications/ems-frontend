@@ -34,6 +34,9 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   @Input() sourceControl!: AbstractControl;
   private sourceFilter = '';
 
+  // === LABEL ===
+  @Input() label!: string;
+
   // === SCROLL DETECTION ===
   @ViewChild('auto') autocomplete?: MatAutocomplete;
   private initializeScrollListener = false;
@@ -42,6 +45,7 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
 
   // === FILTER ===
   @Output() filter = new EventEmitter<string>();
+
   /**
    * Constructor for the dropdown of forms
    */

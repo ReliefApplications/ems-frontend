@@ -155,7 +155,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         this.layoutService.setRightSidenav(null);
         this.showSidenav = true;
         const componentRef: ComponentRef<any> =
-          this.rightSidenav.createComponent(view.factory);
+          this.rightSidenav.createComponent(view.component);
         for (const [key, value] of Object.entries(view.inputs)) {
           componentRef.instance[key] = value;
         }

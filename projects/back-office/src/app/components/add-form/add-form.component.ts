@@ -47,11 +47,41 @@ export class AddFormComponent implements OnInit {
   ngOnInit(): void {
     this.addForm = this.formBuilder.group({
       name: ['', Validators.required],
-      binding: ['', Validators.required],
+      newResource: [true],
       resource: [null],
       inheritsTemplate: [false],
       template: [null],
     });
+
+    this.addForm
+      .get('newResource')
+      ?.valueChanges.subscribe((value: boolean) => {
+        if (value) {
+          this.addForm.get('resource')?.clearValidators();
+          this.addForm.patchValue({
+            resource: null,
+            inheritsTemplate: false,
+            template: null,
+          });
+        } else {
+          this.addForm.get('resource')?.setValidators([Validators.required]);
+        }
+        this.addForm.get('resource')?.updateValueAndValidity();
+      });
+
+    this.addForm
+      .get('inheritsTemplate')
+      ?.valueChanges.subscribe((value: boolean) => {
+        if (value) {
+          this.addForm.get('template')?.setValidators([Validators.required]);
+        } else {
+          this.addForm.get('template')?.clearValidators();
+          this.addForm.patchValue({
+            template: null,
+          });
+        }
+        this.addForm.get('template')?.updateValueAndValidity();
+      });
 
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES,
