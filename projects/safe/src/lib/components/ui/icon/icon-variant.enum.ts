@@ -1,4 +1,4 @@
-/** Enumeration for color variants for icons */
+/** Enumeration for color variants of icons */
 export enum IconVariant {
   DEFAULT = 'default',
   PRIMARY = 'primary',

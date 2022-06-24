@@ -24,7 +24,10 @@ interface ChartSeries {
   }[];
 }
 
-/** Component for donut charts */
+/**
+ * Component for donut charts
+ * Uses kendo chart to render the data as a donut chart
+ */
 @Component({
   selector: 'safe-donut-chart',
   templateUrl: './donut-chart.component.html',
@@ -40,7 +43,9 @@ export class SafeDonutChartComponent implements OnInit {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
-  /** Constructor of this component */
+  /**
+   * Component for donut charts.
+   */
   constructor() {}
 
   ngOnInit(): void {}

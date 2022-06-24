@@ -26,10 +26,10 @@ export default {
 } as Meta;
 
 /**
- * Template factory for stories
+ * Stories template used to render the component
  *
- * @param args Properties of the component
- * @returns The template
+ * @param args Arguments used by the component
+ * @returns Returns an object used as the stories template
  */
 const TEMPLATE: Story<SafeDonutChartComponent> = (args) => ({
   template:
@@ -39,7 +39,9 @@ const TEMPLATE: Story<SafeDonutChartComponent> = (args) => ({
   },
 });
 
-/** Export a default template with mock properties */
+/**
+ * Sets the template as the default state of the component
+ */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {

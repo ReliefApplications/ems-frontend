@@ -1,7 +1,5 @@
 import {
   Component,
-  ComponentFactory,
-  ComponentFactoryResolver,
   EventEmitter,
   Inject,
   Input,
@@ -99,9 +97,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === TEMPLATE REFERENCE TO GRID ===
   @ViewChild(SafeGridComponent)
   private grid?: SafeGridComponent;
-
-  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
-  public factory?: ComponentFactory<any>;
 
   // === DATA ===
   public gridData: GridDataResult = { data: [], total: 0 };
@@ -223,7 +218,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private resolver: ComponentFactoryResolver,
     private queryBuilder: QueryBuilderService,
     private layoutService: SafeLayoutService,
     private snackBar: SafeSnackBarService,
@@ -238,15 +232,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // === COMPONENT LIFECYCLE ===
-
-  /**
-   * Inits the component factory for history.
-   */
-  ngOnInit(): void {
-    this.factory = this.resolver.resolveComponentFactory(
-      SafeRecordHistoryComponent
-    );
-  }
+  ngOnInit(): void {}
 
   /**
    * Detects changes of the settings to (re)load the data.
@@ -833,7 +819,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       })
       .subscribe((res) => {
         this.layoutService.setRightSidenav({
-          factory: this.factory,
+          component: SafeRecordHistoryComponent,
           inputs: {
             record: res.data.record,
             revert: (record: any, dialog: any) => {

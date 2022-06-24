@@ -6,6 +6,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
 })
+
+/**
+ * Custom toolbar that we use in the safe-grid component to interact with the admin features
+ */
 export class SafeGridToolbarComponent implements OnInit {
   // === DATA ===
   @Input() items: any[] = [];
@@ -19,22 +23,37 @@ export class SafeGridToolbarComponent implements OnInit {
   };
   @Output() action = new EventEmitter();
 
-  /** @returns A boolean indicating if the toolbar must be shown */
+  /**
+   * Gets a boolean indicating if the toolbar should be displayed.
+   *
+   * @returns Returns true if toolbar must appear.
+   */
   get display(): boolean {
     return this.actions.delete || this.actions.update || this.actions.convert;
   }
 
-  /** @returns A boolean indicating if there are updatable items */
+  /**
+   * Gets a boolean indicating if the grid can be updated.
+   *
+   * @returns Returns true if the option is available
+   */
   get canUpdate(): boolean {
     return !this.items.some((x) => x.canUpdate);
   }
 
-  /** @returns A boolean indicating if there are deletable items */
+  /**
+   * Gets a boolean indicating if the grid can be deleted.
+   *
+   * @returns Returns true if the option is available
+   */
   get canDelete(): boolean {
     return !this.items.some((x) => x.canDelete);
   }
 
-  /** Constructor of this component */
+
+  /**
+   * Constructor for safe-toolbar component
+   */
   constructor() {}
 
   ngOnInit(): void {}

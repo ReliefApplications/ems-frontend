@@ -18,12 +18,20 @@ export class SafeIconComponent implements OnInit {
 
   @Input() size = 24;
 
-  /** @returns the font size of the icon */
+  /**
+   * Formats the size input adding a 'px' suffix
+   *
+   * @returns Returns a string with the size in px
+   */
   get fontSize(): string {
     return this.size + 'px';
   }
 
-  /** @returns the color of the icon */
+  /**
+   * Compares the variant passed with an enum to return a valid color variant.
+   *
+   * @returns Returns a string with the icon color variant
+   */
   get color(): string {
     switch (this.variant) {
       case IconVariant.PRIMARY: {
@@ -38,7 +46,9 @@ export class SafeIconComponent implements OnInit {
     }
   }
 
-  /** Constructor of the component */
+  /**
+   * Constructor for safe-icon component
+   */
   constructor() {}
 
   ngOnInit(): void {}

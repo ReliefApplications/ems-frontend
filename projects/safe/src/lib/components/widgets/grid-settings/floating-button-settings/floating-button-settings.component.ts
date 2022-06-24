@@ -7,8 +7,6 @@ import {
   EventEmitter,
   ViewChild,
   ElementRef,
-  ComponentFactoryResolver,
-  ComponentFactory,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -67,7 +65,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   // Emails
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
   public emails: string[] = [];
-  public factory?: ComponentFactory<any>;
 
   /** tinymce editor */
   public editor: any = EMAIL_EDITOR_CONFIG;
@@ -88,7 +85,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
    * @param router The router service
    * @param workflowService The workflow service
    * @param queryBuilder The query builder service
-   * @param componentFactoryResolver The factory for creating a component
    * @param dialog The material dialog service
    */
   constructor(
@@ -96,7 +92,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     private router: Router,
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
-    private componentFactoryResolver: ComponentFactoryResolver,
     public dialog: MatDialog
   ) {}
 
@@ -281,10 +276,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
           this.buttonForm?.get('selectAll')?.updateValueAndValidity();
         }
       });
-
-    this.factory = this.componentFactoryResolver.resolveComponentFactory(
-      SafeQueryBuilderComponent
-    );
   }
 
   /**
