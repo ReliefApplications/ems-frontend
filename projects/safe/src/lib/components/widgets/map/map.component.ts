@@ -240,6 +240,17 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         });
       }
     }
+
+    // setting up layer with all markers, if it doesn't exist
+    if (!this.markersCategories.hasOwnProperty('Markers')) {
+      const allLayers: any[] = [];
+      Object.keys(this.markersCategories).forEach((name: string) => {
+        allLayers.push(...this.markersCategories[name]);
+      });
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      this.markersCategories['undefined'] = allLayers;
+    }
+
     // Renders all the markers
     Object.keys(this.markersCategories).map((name: string) => {
       const layerName = name !== 'undefined' ? name : 'Markers';
