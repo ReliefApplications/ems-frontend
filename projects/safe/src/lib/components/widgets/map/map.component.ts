@@ -462,24 +462,28 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
               () => {
                 // eslint-disable-next-line no-underscore-dangle
                 const layers = overlays[clorophlet.name]._layers;
-                Object.keys(layers).map((layerName: any) => {
-                  const divisionLayer = layers[layerName];
-                  if (divisionLayer.options.label === division.label) {
-                    if (map.hasLayer(divisionLayer)) {
-                      map.removeLayer(divisionLayer);
-                      L.DomUtil.addClass(
-                        legendDivisionDiv,
-                        'legend-division-hide'
-                      );
-                    } else {
+                const isHidden = L.DomUtil.hasClass(
+                  legendDivisionDiv,
+                  'legend-division-hide'
+                );
+                if (isHidden) {
+                  L.DomUtil.removeClass(
+                    legendDivisionDiv,
+                    'legend-division-hide'
+                  );
+                  Object.keys(layers).forEach((layerName: any) => {
+                    const divisionLayer = layers[layerName];
+                    if (divisionLayer.options.label === division.label)
                       map.addLayer(divisionLayer);
-                      L.DomUtil.removeClass(
-                        legendDivisionDiv,
-                        'legend-division-hide'
-                      );
-                    }
-                  }
-                });
+                  });
+                } else {
+                  L.DomUtil.addClass(legendDivisionDiv, 'legend-division-hide');
+                  Object.keys(layers).forEach((layerName: any) => {
+                    const divisionLayer = layers[layerName];
+                    if (divisionLayer.options.label === division.label)
+                      map.removeLayer(divisionLayer);
+                  });
+                }
               },
               this
             );
@@ -543,32 +547,39 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
               //       hiddenMarkers: layer.getAllChildMarkers(),
               //     });
               // });
-              Object.keys(layers).map((layerName: any) => {
-                const divisionLayer = layers[layerName];
-                if (divisionLayer.options.divisionID === `${rule.label}-${i}`) {
-                  if (map.hasLayer(divisionLayer)) {
-                    map.removeLayer(divisionLayer);
-                    L.DomUtil.addClass(
-                      legendDivisionDiv,
-                      'legend-division-hide'
-                    );
-                  } else {
+              const isHidden = L.DomUtil.hasClass(
+                legendDivisionDiv,
+                'legend-division-hide'
+              );
+              if (isHidden) {
+                L.DomUtil.removeClass(
+                  legendDivisionDiv,
+                  'legend-division-hide'
+                );
+                Object.keys(layers).map((layerName: any) => {
+                  const divisionLayer = layers[layerName];
+                  if (divisionLayer.options.divisionID === `${rule.label}-${i}`)
+                    map.addLayer(divisionLayer);
+                });
+              } else {
+                L.DomUtil.addClass(legendDivisionDiv, 'legend-division-hide');
+                Object.keys(layers).map((layerName: any) => {
+                  const divisionLayer = layers[layerName];
+                  if (
+                    divisionLayer.options.divisionID === `${rule.label}-${i}`
+                  ) {
                     // const cluster = clusteredLayers.find((c) =>
                     //   c.hiddenMarkers.includes(divisionLayer)
                     // );
                     // // marker isn't in any cluster
                     // if (!cluster) {
-                    map.addLayer(divisionLayer);
-                    L.DomUtil.removeClass(
-                      legendDivisionDiv,
-                      'legend-division-hide'
-                    );
+                    map.removeLayer(divisionLayer);
                     // } else {
                     //   // cluster.cluster.removeLayer(divisionLayer);
                     // }
                   }
-                }
-              });
+                });
+              }
             },
             this
           );
