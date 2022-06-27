@@ -16,14 +16,11 @@ import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.compon
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeApplicationService } from '../../services/application.service';
 import { SafeAddRoleComponent } from './components/add-role/add-role.component';
-import { SafeEditRoleComponent } from './components/edit-role/edit-role.component';
 import {
   AddRoleMutationResponse,
   ADD_ROLE,
   DeleteRoleMutationResponse,
   DELETE_ROLE,
-  EditRoleMutationResponse,
-  EDIT_ROLE,
 } from '../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
@@ -169,48 +166,6 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
               }
             );
-        }
-      }
-    });
-  }
-
-  /**
-   * Display the EditRole modal, passing a role as a parameter.
-   * Edit the role when closed, if there is a result.
-   *
-   * @param role The role to edit
-   */
-  onEdit(role: Role): void {
-    const dialogRef = this.dialog.open(SafeEditRoleComponent, {
-      data: {
-        role,
-        application: this.inApplication,
-      },
-    });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-        if (this.inApplication) {
-          this.applicationService.editRole(role, value);
-        } else {
-          this.apollo
-            .mutate<EditRoleMutationResponse>({
-              mutation: EDIT_ROLE,
-              variables: {
-                id: role.id,
-                permissions: value.permissions,
-                channels: value.channels,
-                title: value.title,
-              },
-            })
-            .subscribe((res) => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.role.one').toLowerCase(),
-                  value: role.title,
-                })
-              );
-              this.getRoles();
-            });
         }
       }
     });
