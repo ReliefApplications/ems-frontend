@@ -99,7 +99,7 @@ export interface GetDashboardsQueryResponse {
 
 // === GET FORMS ===
 export const GET_FORM_NAMES = gql`
-  query GetFormNames($first: Int, $afterCursor: ID) {
+  query GetFormNames($first: Int, $afterCursor: JSON) {
     forms(first: $first, afterCursor: $afterCursor) {
       edges {
         node {
@@ -118,7 +118,7 @@ export const GET_FORM_NAMES = gql`
 `;
 
 export const GET_SHORT_FORMS = gql`
-  query GetShortForms($first: Int, $afterCursor: ID, $filter: JSON) {
+  query GetShortForms($first: Int, $afterCursor: JSON, $filter: JSON) {
     forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
       edges {
         node {
@@ -545,7 +545,7 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-  query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
+  query GetApplications($first: Int, $afterCursor: JSON, $filter: JSON) {
     applications(first: $first, afterCursor: $afterCursor, filter: $filter) {
       edges {
         node {
@@ -809,7 +809,7 @@ export interface GetStepByIdQueryResponse {
 
 // === GET ROUTING KEYS ===
 export const GET_ROUTING_KEYS = gql`
-  query GetRoutingKeys($first: Int, $afterCursor: ID) {
+  query GetRoutingKeys($first: Int, $afterCursor: JSON) {
     applications(first: $first, afterCursor: $afterCursor) {
       edges {
         node {

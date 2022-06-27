@@ -217,7 +217,7 @@ export interface GetResourceByIdQueryResponse {
 
 /** Graphql request for getting forms */
 export const GET_FORMS = gql`
-  query GetFormNames($first: Int, $afterCursor: ID, $filter: JSON) {
+  query GetFormNames($first: Int, $afterCursor: JSON, $filter: JSON) {
     forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
       edges {
         node {
@@ -599,7 +599,7 @@ export interface GetApplicationByIdQueryResponse {
 
 /** Graphql request for getting the list of applications */
 export const GET_APPLICATIONS = gql`
-  query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
+  query GetApplications($first: Int, $afterCursor: JSON, $filter: JSON) {
     applications(first: $first, afterCursor: $afterCursor, filter: $filter) {
       edges {
         node {
