@@ -4,6 +4,9 @@ import { Role } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import { ActivatedRoute } from '@angular/router';
 
+/**
+ * User Summary page component.
+ */
 @Component({
   selector: 'app-user-summary',
   templateUrl: './user-summary.component.html',
@@ -13,6 +16,12 @@ export class UserSummaryComponent implements OnInit {
   public roles: Role[] = [];
   public id = '';
 
+  /**
+   * User summary page component.
+   *
+   * @param apollo Apollo client
+   * @param route Angular active route
+   */
   constructor(private apollo: Apollo, private route: ActivatedRoute) {}
 
   ngOnInit(): void {

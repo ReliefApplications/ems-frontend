@@ -1088,6 +1088,8 @@
 			"new": "******"
 		},
 		"user": {
+			"firstName": "******",
+			"lastName": "******",
 			"notifications": {
 				"rolesUpdated": "{{username}} ******",
 				"userImportFail": "******"

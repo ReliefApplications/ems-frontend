@@ -7,88 +7,15 @@
       user?.lastName
   }}
 </h1>
-<form [formGroup]="form" *ngIf="form" (ngSubmit)="onSubmit()">
-  <mat-tab-group>
-    <mat-tab [label]="'components.user.summary.title' | translate">
-      <div class="form-group">
-        <div class="form-group-row">
-          <mat-form-field appearance="outline">
-            <mat-label>
-              {{ 'components.user.summary.firstName' | translate }}
-            </mat-label>
-            <input matInput formControlName="firstName" type="text" />
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>
-              {{ 'components.user.summary.lastName' | translate }}
-            </mat-label>
-            <input matInput formControlName="lastName" type="text" />
-          </mat-form-field>
-        </div>
-        <mat-form-field appearance="outline">
-          <mat-label>
-            {{ 'common.email.one' | translate }}
-          </mat-label>
-          <input matInput formControlName="email" type="text" />
-        </mat-form-field>
-      </div>
-      <!-- <div class="form-group">
-        <mat-form-field appearance="outline">
-          <mat-label>
-            {{ 'components.user.summary.region' | translate }}
-          </mat-label>
-          <mat-select formControlName="region">
-            <mat-option *ngFor="let region of regions" [value]="region">
-              {{ region }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>
-            {{ 'components.user.summary.country' | translate }}
-          </mat-label>
-          <mat-select formControlName="country">
-            <mat-option *ngFor="let country of countries" [value]="country">
-              {{ country }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>
-            {{ 'components.user.summary.locationType' | translate }}
-          </mat-label>
-          <mat-select formControlName="locationType">
-            <mat-option>{{ 'common.input.none' | translate }}</mat-option>
-            <mat-option
-              *ngFor="let location of locationTypes"
-              [value]="location"
-            >
-              {{ location }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div> -->
-    </mat-tab>
-    <mat-tab [label]="'common.role.few' | translate">
-      <div class="form-group">
-        <mat-form-field appearance="outline">
-          <mat-label>
-            {{ 'common.role.few' | translate }}
-          </mat-label>
-          <mat-select formControlName="roles" multiple>
-            <mat-option *ngFor="let role of roles" [value]="role.title">
-              {{ role.title }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
-  <safe-button
-    variant="primary"
-    category="secondary"
-    type="submit"
-    [disabled]="!form.valid"
-    >{{ 'common.saveChanges' | translate }}</safe-button
-  >
-</form>
+<mat-tab-group>
+  <mat-tab [label]="'components.user.summary.title' | translate">
+    <ng-template matTabContent>
+      <safe-user-details></safe-user-details>
+    </ng-template>
+  </mat-tab>
+  <mat-tab [label]="'common.role.few' | translate">
+    <ng-template matTabContent>
+      <safe-user-roles></safe-user-roles>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

@@ -1,26 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeUserSummaryComponent } from './user-summary.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TranslateModule } from '@ngx-translate/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
+import { UserDetailsModule } from './user-details/user-details.module';
+import { UserRolesModule } from './user-roles/user-roles.module';
 
+/**
+ * User Summary component module.
+ */
 @NgModule({
   declarations: [SafeUserSummaryComponent],
   imports: [
     CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    SafeButtonModule,
     MatTabsModule,
     TranslateModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatSelectModule,
+    UserDetailsModule,
+    UserRolesModule,
   ],
   exports: [SafeUserSummaryComponent],
 })

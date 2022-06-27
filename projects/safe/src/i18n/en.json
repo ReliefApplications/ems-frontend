@@ -1088,6 +1088,8 @@
 			"new": "New subscription"
 		},
 		"user": {
+			"firstName": "First name",
+			"lastName": "Last name",
 			"notifications": {
 				"rolesUpdated": "{{username}} roles updated.",
 				"userImportFail": "The user import has failed"

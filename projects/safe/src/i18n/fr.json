@@ -1088,6 +1088,8 @@
 			"new": "Nouvel abonnement"
 		},
 		"user": {
+			"firstName": "Prénom",
+			"lastName": "Nom",
 			"notifications": {
 				"rolesUpdated": "Les rôles de {{username}} ont été modifiés.",
 				"userImportFail": "L'importation d'utilisateurs a échoué."
