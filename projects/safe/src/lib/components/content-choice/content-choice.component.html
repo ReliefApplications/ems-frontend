@@ -1,7 +1,17 @@
 <div class="safe-content-choice">
-    <div class="safe-content-type" *ngFor="let type of contentTypes" (click)="onSelect(type.value)" matRipple [style.background]="type.color">
-        <img [src]="type.img">
-        <span>{{ type.name | titlecase }}</span>
-        <div *ngIf="type.value === selected" [style.background]="type.focusColor" class="safe-type-selected"></div>
-    </div>
-</div> 
+  <div
+    class="safe-content-type"
+    *ngFor="let type of contentTypes"
+    (click)="onSelect(type.value)"
+    matRipple
+    [style.background]="type.color"
+  >
+    <img [src]="type.img" />
+    <span>{{ type.name | titlecase }}</span>
+    <div
+      *ngIf="type.value === selected"
+      [style.background]="type.focusColor"
+      class="safe-type-selected"
+    ></div>
+  </div>
+</div>

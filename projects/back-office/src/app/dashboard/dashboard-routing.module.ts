@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
 
-/*  Divide the dashboard module into three modules:
+/** Divide the dashboard module into three modules:
     * forms and resources
     * dashboards
     * users
@@ -21,6 +21,25 @@ export const routes = [
         path: 'profile',
         loadChildren: () =>
           import('./pages/profile/profile.module').then((m) => m.ProfileModule),
+      },
+      {
+        path: 'referencedata',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('./pages/reference-datas/reference-datas.module').then(
+                (m) => m.ReferenceDatasModule
+              ),
+          },
+          {
+            path: ':id',
+            loadChildren: () =>
+              import('./pages/reference-data/reference-data.module')
+                .then()
+                .then((m) => m.ReferenceDataModule),
+          },
+        ],
       },
       {
         path: 'forms',

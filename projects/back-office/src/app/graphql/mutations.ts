@@ -14,6 +14,7 @@ import {
   ApiConfiguration,
   PullJob,
   Layout,
+  ReferenceData,
 } from '@safe/builder';
 
 // === EDIT USER ===
@@ -121,18 +122,8 @@ export interface DeleteDashboardMutationResponse {
 
 // === ADD FORM ===
 export const ADD_FORM = gql`
-  mutation addForm(
-    $name: String!
-    $newResource: Boolean
-    $resource: ID
-    $template: ID
-  ) {
-    addForm(
-      name: $name
-      newResource: $newResource
-      resource: $resource
-      template: $template
-    ) {
+  mutation addForm($name: String!, $resource: ID, $template: ID) {
+    addForm(name: $name, resource: $resource, template: $template) {
       id
       name
       createdAt
@@ -170,10 +161,6 @@ export const EDIT_RESOURCE = gql`
       id
       name
       createdAt
-      records {
-        id
-        data(display: true)
-      }
       fields
       forms {
         id
@@ -712,6 +699,7 @@ export const ADD_API_CONFIGURATIION = gql`
       status
       authType
       endpoint
+      graphQLEndpoint
       pingUrl
       settings
       permissions {
@@ -741,7 +729,7 @@ export interface AddApiConfigurationMutationResponse {
 }
 
 // === DELETE API CONFIGURATION ===
-export const DELETE_API_CONFIGURATIION = gql`
+export const DELETE_API_CONFIGURATION = gql`
   mutation deleteApiConfiguration($id: ID!) {
     deleteApiConfiguration(id: $id) {
       id
@@ -762,6 +750,7 @@ export const EDIT_API_CONFIGURATION = gql`
     $status: Status
     $authType: AuthType
     $endpoint: String
+    $graphQLEndpoint: String
     $pingUrl: String
     $settings: JSON
     $permissions: JSON
@@ -772,6 +761,7 @@ export const EDIT_API_CONFIGURATION = gql`
       status: $status
       authType: $authType
       endpoint: $endpoint
+      graphQLEndpoint: $graphQLEndpoint
       pingUrl: $pingUrl
       settings: $settings
       permissions: $permissions
@@ -781,6 +771,7 @@ export const EDIT_API_CONFIGURATION = gql`
       status
       authType
       endpoint
+      graphQLEndpoint
       pingUrl
       settings
       permissions {
@@ -929,4 +920,124 @@ export const EDIT_PULL_JOB = gql`
 export interface EditPullJobMutationResponse {
   loading: boolean;
   editPullJob: PullJob;
+}
+
+// === ADD REFERENCE DATA===
+export const ADD_REFERENCE_DATA = gql`
+  mutation addReferenceData($name: String!) {
+    addReferenceData(name: $name) {
+      id
+      name
+      apiConfiguration {
+        id
+        name
+      }
+      type
+      query
+      fields
+      valueField
+      path
+      data
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
+export interface AddReferenceDataMutationResponse {
+  loading: boolean;
+  addReferenceData: ReferenceData;
+}
+
+// === DELETE REFERENCE DATA ===
+export const DELETE_REFERENCE_DATA = gql`
+  mutation deleteReferenceData($id: ID!) {
+    deleteReferenceData(id: $id) {
+      id
+    }
+  }
+`;
+
+export interface DeleteReferenceDataMutationResponse {
+  loading: boolean;
+  deleteReferenceData: ReferenceData;
+}
+
+// === EDIT REFERENCE DATA ===
+export const EDIT_REFERENCE_DATA = gql`
+  mutation editReferenceData(
+    $id: ID!
+    $name: String
+    $type: ReferenceDataType
+    $apiConfiguration: ID
+    $query: String
+    $fields: [String]
+    $valueField: String
+    $path: String
+    $data: JSON
+    $permissions: JSON
+  ) {
+    editReferenceData(
+      id: $id
+      name: $name
+      type: $type
+      apiConfiguration: $apiConfiguration
+      query: $query
+      fields: $fields
+      valueField: $valueField
+      path: $path
+      data: $data
+      permissions: $permissions
+    ) {
+      id
+      name
+      apiConfiguration {
+        id
+        name
+      }
+      type
+      query
+      fields
+      valueField
+      path
+      data
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
+export interface EditReferenceDataMutationResponse {
+  loading: boolean;
+  editReferenceData: ReferenceData;
 }

@@ -2,33 +2,56 @@
   <div class="top">
     <mat-form-field appearance="outline">
       <mat-icon matPrefix>search</mat-icon>
-      <input id="custom-search" matInput [formControl]="search" type="search" [placeholder]="'common.placeholder.search' | translate">
+      <input
+        id="custom-search"
+        matInput
+        [formControl]="search"
+        type="search"
+        [placeholder]="'common.placeholder.search' | translate"
+      />
+      <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>
     </mat-form-field>
-    <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="show = !show">
-      {{ show ? ('common.filter.hide' | translate) : 'common.filter.show' | translate }}
+    <safe-button
+      icon="filter_list"
+      category="tertiary"
+      variant="primary"
+      (click)="show = !show"
+    >
+      {{
+        show
+          ? ('common.filter.hide' | translate)
+          : ('common.filter.show' | translate)
+      }}
     </safe-button>
   </div>
   <div class="advanced" *ngIf="show">
     <mat-form-field appearance="outline">
-      <mat-label>{{'common.input.dateRange' | translate}}</mat-label>
+      <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
       <mat-date-range-input [rangePicker]="rangePicker">
-        <input formControlName="startDate" matStartDate>
-        <input formControlName="endDate" matEndDate>
+        <input formControlName="startDate" matStartDate />
+        <input formControlName="endDate" matEndDate />
       </mat-date-range-input>
-      <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="rangePicker"
+      ></mat-datepicker-toggle>
       <mat-date-range-picker #rangePicker>
         <mat-date-range-picker-actions>
           <safe-button matDateRangePickerCancel (click)="clearDateFilter()">
-            {{'common.clear' | translate}}
+            {{ 'common.clear' | translate }}
           </safe-button>
-          <safe-button category="secondary" variant="primary" matDateRangePickerApply>
-            {{'common.filter.apply' | translate}}
+          <safe-button
+            category="secondary"
+            variant="primary"
+            matDateRangePickerApply
+          >
+            {{ 'common.filter.apply' | translate }}
           </safe-button>
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
     <safe-button variant="danger" (click)="clear()">
-      {{'common.filter.clear' | translate}}
+      {{ 'common.filter.clear' | translate }}
     </safe-button>
   </div>
 </div>

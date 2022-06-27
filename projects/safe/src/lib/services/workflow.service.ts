@@ -23,7 +23,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class SafeWorkflowService {
   /** Current workflow */
   private workflow = new BehaviorSubject<Workflow | null>(null);
-  /** Current workflow as observable */
+  /** @returns Current workflow as observable */
   get workflow$(): Observable<Workflow | null> {
     return this.workflow.asObservable();
   }

@@ -9,6 +9,9 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 
+/**
+ * Custom tagbox component to use in the app
+ */
 @Component({
   selector: 'safe-tagbox',
   templateUrl: './tagbox.component.html',
@@ -36,6 +39,9 @@ export class SafeTagboxComponent implements OnInit {
   // === OUTPUT CONTROL ===
   @Input() parentControl!: AbstractControl;
 
+  /**
+   * Constructor for safe-tagbox component
+   */
   constructor() {}
 
   ngOnInit(): void {
@@ -43,9 +49,11 @@ export class SafeTagboxComponent implements OnInit {
       this.choicesEmpty = choices.length === 0;
       this.selectedChoices = this.choicesEmpty
         ? []
-        : this.parentControl.value.map((value: string) =>
-            choices.find((choice) => value === choice[this.valueKey])
-          );
+        : this.parentControl.value
+            .map((value: string) =>
+              choices.find((choice) => value === choice[this.valueKey])
+            )
+            .filter((x: any) => x);
       this.availableChoices.next(
         choices.filter(
           (choice) =>
@@ -104,6 +112,7 @@ export class SafeTagboxComponent implements OnInit {
    *
    * @param choices array to filter.
    * @param value string used to filter.
+   * @returns Returns the filtered choices as an array.
    */
   private filterChoices(choices: any, value: string): any[] {
     return choices.filter((choice: any) =>
@@ -111,10 +120,20 @@ export class SafeTagboxComponent implements OnInit {
     );
   }
 
+  /**
+   * Casts the inputControl to a FormControl
+   *
+   * @returns Returns the inputControls as a FormControl
+   */
   get inputFormControl(): FormControl {
     return this.inputControl as FormControl;
   }
 
+  /**
+   * Gets the value from availableChoices FormGroup
+   *
+   * @returns Returns the availableChoices as a plain object
+   */
   get currentChoices(): any[] {
     return this.availableChoices.value;
   }
@@ -123,6 +142,7 @@ export class SafeTagboxComponent implements OnInit {
    * Display function necessary for the autocomplete in order to display selected choice.
    *
    * @param choice Field to display.
+   * @returns Returns a string containing the name of the field
    */
   public displayName(choice: any): string {
     return choice && choice[this.displayKey] ? choice[this.displayKey] : choice;

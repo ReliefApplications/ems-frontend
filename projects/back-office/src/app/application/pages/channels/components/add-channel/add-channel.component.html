@@ -1,17 +1,28 @@
-<h1 mat-dialog-title>{{'common.newObject' | translate: { name: 'common.channel.one' | translate } }}</h1>
+<h1 mat-dialog-title>{{ 'models.channel.new' | translate }}</h1>
 <div mat-dialog-content>
-    <form [formGroup]="channelForm">
-        <mat-form-field>
-            <mat-label>{{'common.title' | translate}}</mat-label>
-            <input matInput formControlName="title" type="text"
-            [placeholder]="'common.placeholder.title' | translate"/>
-        </mat-form-field>
-    </form>
+  <form [formGroup]="channelForm">
+    <mat-form-field>
+      <mat-label>{{ 'common.title' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="title"
+        type="text"
+        [placeholder]="'common.placeholder.title' | translate"
+      />
+    </mat-form-field>
+  </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
-    <button mat-flat-button [mat-dialog-close]="channelForm.value"
-    cdkFocusInitial color="primary" [disabled]="!channelForm.valid">
-        {{'common.create' | translate}}
-    </button>
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="channelForm.value"
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!channelForm.valid"
+  >
+    {{ 'common.create' | translate }}
+  </button>
 </div>

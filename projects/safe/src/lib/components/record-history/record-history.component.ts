@@ -11,265 +11,224 @@ import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeRecordModalComponent } from '../record-modal/record-modal.component';
 import { SafeDownloadService } from '../../services/download.service';
+import { TranslateService } from '@ngx-translate/core';
+import { SafeDateTranslateService } from '../../services/date-translate.service';
+import { Apollo } from 'apollo-angular';
+import {
+  GetRecordByIdQueryResponse,
+  GetRecordHistoryByIdResponse,
+  GET_RECORD_BY_ID_FOR_HISTORY,
+  GET_RECORD_HISTORY_BY_ID,
+} from '../../graphql/queries';
+import { Change, RecordHistory } from '../../models/recordsHistory';
+import { Version } from '../../models/form.model';
 
+/**
+ * Return the type of the old value if existing, else the type of the new value.
+ *
+ * @param oldVal The previous value
+ * @param newVal The next value
+ * @returns The type of the value: primitive, object or array
+ */
+const getValueType = (
+  oldVal: any,
+  newVal: any
+): 'primitive' | 'object' | 'array' => {
+  if (oldVal) {
+    if (Array.isArray(oldVal)) return 'array';
+    if (oldVal instanceof Object) return 'object';
+    return 'primitive';
+  }
+  if (Array.isArray(newVal)) return 'array';
+  if (newVal instanceof Object) return 'object';
+  return 'primitive';
+};
+
+/**
+ * This is a component to access the history of a record
+ */
 @Component({
   selector: 'safe-record-history',
   templateUrl: './record-history.component.html',
   styleUrls: ['./record-history.component.scss'],
 })
 export class SafeRecordHistoryComponent implements OnInit {
-  @Input() record: Record = {};
-  @Input() revert: any;
+  @Input() id!: string;
+  @Input() revert!: (version: Version) => void;
   @Input() template?: string;
   @Output() cancel = new EventEmitter();
 
-  public history: any[] = [];
-  public filterHistory: any[] = [];
+  public record!: Record;
+  public history: RecordHistory = [];
+  public filterHistory: RecordHistory = [];
   public loading = true;
   public showMore = false;
   public displayedColumns: string[] = ['position'];
   public filtersDate = { startDate: '', endDate: '' };
+  public sortedFields: any[] = [];
+  public filterField: string | null = null;
 
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
+  /**
+   * Constructor of the record history component
+   *
+   * @param dialog The material dialog service
+   * @param downloadService The download service
+   * @param translate The translation service
+   * @param dateFormat The dateTranslation service
+   * @param apollo The apollo client
+   */
   constructor(
     public dialog: MatDialog,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private translate: TranslateService,
+    private dateFormat: SafeDateTranslateService,
+    private apollo: Apollo
   ) {}
 
   ngOnInit(): void {
-    this.history = this.getHistory(this.record).filter(
-      (item) => item.changes.length > 0
-    );
-    this.filterHistory = this.history;
-    this.loading = false;
+    // this.sortFields();
+
+    this.apollo
+      .query<GetRecordByIdQueryResponse>({
+        query: GET_RECORD_BY_ID_FOR_HISTORY,
+        variables: {
+          id: this.id,
+        },
+      })
+      .subscribe((res) => {
+        this.record = res.data.record;
+        this.sortedFields = this.sortFields(this.record.form?.fields || []);
+      });
+
+    this.apollo
+      .query<GetRecordHistoryByIdResponse>({
+        query: GET_RECORD_HISTORY_BY_ID,
+        variables: {
+          id: this.id,
+          lang: this.translate.currentLang,
+        },
+      })
+      .subscribe((res) => {
+        this.history = res.data.recordHistory.filter(
+          (item) => item.changes.length
+        );
+        this.filterHistory = this.history;
+        this.loading = false;
+      });
   }
 
+  /**
+   * Handles the cancelling of the edition of the history
+   */
   onCancel(): void {
     this.cancel.emit(true);
   }
 
-  /*  Get current and next record to see difference and put it in a string
+  /**
+   * Gets the HTML element from a change object
+   *
+   * @param change The field change object
+   * @returns the innerHTML for the listing
    */
-  getDifference(current: any, after: any): string[] {
-    const changes: any[] = [];
-    if (current) {
-      const keysCurrent = Object.keys(current);
-      keysCurrent.forEach((key) => {
-        if (
-          typeof after[key] === 'boolean' ||
-          typeof current[key] === 'boolean'
-        ) {
-          if (current[key] !== null && after[key] !== current[key]) {
-            changes.push(this.modifyField(key, after, current));
-          }
-        } else if (!Array.isArray(after[key]) && !Array.isArray(current[key])) {
-          if (after[key]) {
-            if (after[key] instanceof Object && current[key]) {
-              const element = this.modifyObjects(after, current, key);
-              if (element.length > 0) {
-                changes.push(element);
-              }
-            } else if (current[key] && after[key] !== current[key]) {
-              changes.push(this.modifyField(key, after, current));
-            }
-          } else if (current[key]) {
-            if (current[key] instanceof Object) {
-              const element = this.modifyObjects(after, current, key);
-              if (element.length > 0) {
-                changes.push(element);
-              }
-            } else if (after[key] !== current[key]) {
-              changes.push(this.modifyField(key, after, current));
-            } else {
-              changes.push(this.addField(key, current));
-            }
-          }
-        } else {
-          if (
-            (!after[key] && current[key]) ||
-            (current[key] &&
-              after[key] &&
-              after[key].toString() !== current[key].toString())
-          ) {
-            changes.push(this.modifyField(key, after, current));
-          } else if (!after[key] && current[key]) {
-            changes.push(this.addField(key, current));
-          }
-        }
-      });
+  getHTMLFromChange(change: Change) {
+    const translations = {
+      withValue: this.translate.instant('components.history.changes.withValue'),
+      from: this.translate.instant('components.history.changes.from'),
+      to: this.translate.instant('components.history.changes.to'),
+      add: this.translate.instant('components.history.changes.add'),
+      remove: this.translate.instant('components.history.changes.remove'),
+      modify: this.translate.instant('components.history.changes.modify'),
+    };
+
+    let oldVal = change.old ? JSON.parse(change.old) : undefined;
+    let newVal = change.new ? JSON.parse(change.new) : undefined;
+
+    const valueType = getValueType(oldVal, newVal);
+
+    if (valueType === 'object') {
+      if (oldVal) oldVal = this.toReadableObjectValue(oldVal);
+      if (newVal) newVal = this.toReadableObjectValue(newVal);
     }
 
-    const keysAfter = Object.keys(after);
-    keysAfter.forEach((key) => {
-      if (typeof after[key] === 'boolean') {
-        if ((!current || current[key]) === null && after[key] !== null) {
-          changes.push(
-            '<p><span class="add-field">Add field</span> <b>' +
-              key +
-              '</b> with value <b>' +
-              after[key] +
-              '</b> </p>'
-          );
-        }
-      } else if (
-        (!current || current[key] === null) &&
-        !Array.isArray(after[key]) &&
-        after[key] instanceof Object
-      ) {
-        const element = this.addObject(after, key);
-        if (element.length > 0) {
-          changes.push(element);
-        }
-      } else if ((!current || current[key] === null) && after[key]) {
-        changes.push(
-          '<p><span class="add-field">Add field</span> <b>' +
-            key +
-            '</b> with value <b>' +
-            after[key] +
-            '</b> </p>'
-        );
-      }
-    });
-    return changes;
-  }
+    if (valueType === 'array') {
+      if (oldVal && !(oldVal[0] instanceof Object)) oldVal = oldVal.join(', ');
+      else if (oldVal) oldVal = this.toReadableObjectValue(oldVal);
+      if (newVal && !(newVal[0] instanceof Object)) newVal = newVal.join(', ');
+      else if (newVal) newVal = this.toReadableObjectValue(newVal);
+    }
 
-  private addObject(current: any, key: string): string {
-    const currentKeys = Object.keys(current[key]);
-    let currentValuesHTML = '';
-    let element = `<p> <span class="add-field">Add field</span> <b> ${key} </b> with value  `;
-    currentKeys.forEach((k) => {
-      let currentValues;
-      if (current[key][k] instanceof Object) {
-        currentValues = Object.values(current[key][k]);
-      } else {
-        currentValues = current[key][k];
-      }
-      currentValuesHTML += `<b>${k} ( ${currentValues} )</b> `;
-    });
-    element += `${currentValuesHTML} </p>`;
-    return element;
-  }
-
-  private addField(key: string, current: any): string {
-    return (
-      '<p><span class="add-field">Add field</span> <b>' +
-      key +
-      '</b> with value <b>' +
-      current[key] +
-      '</b> </p>'
-    );
-  }
-
-  private modifyField(key: string, after: any, current: any): string {
-    if (after[key] === null) {
-      return (
-        '<p> <span  class="remove-field">Remove field</span> <b>' +
-        key +
-        '</b> with value <b>' +
-        current[key] +
-        '</b> </p>'
-      );
-    } else {
-      return (
-        '<p> <span  class="modify-field">Change field</span> <b>' +
-        key +
-        '</b> from <b>' +
-        current[key] +
-        '</b> to <b>' +
-        after[key] +
-        '</b> </p>'
-      );
+    switch (change.type) {
+      case 'remove':
+      case 'add':
+        return `
+          <p>
+            <span class="${change.type}-field">
+            ${translations[change.type]}
+            </span>
+            <b> ${change.displayName} </b>
+            ${translations.withValue}
+            <b> ${change.type === 'add' ? newVal : oldVal}</b>
+          <p>
+          `;
+      case 'modify':
+        return `
+          <p>
+            <span class="${change.type}-field">
+            ${translations[change.type]}
+            </span> 
+            <b> ${change.displayName} </b>
+            ${translations.from}
+            <b> ${oldVal}</b>
+            ${translations.to}
+            <b> ${newVal}</b>
+          <p>
+          `;
     }
   }
 
-  modifyObjects(after: any, current: any, key: string): string {
-    const afterKeys = Object.keys(after[key] ? after[key] : current[key]);
-    let element = `<p> <span class="modify-field">Change field</span> <b> ${key} </b> from  `;
-    let afterValuesHTML = '';
-    let currentValuesHTML = '';
+  /**
+   * Transforms a object in a more readable inline string (or list)
+   *
+   * @param object The object
+   * @returns A 'readable' version of that object, in which the the format key (value1, value2)
+   */
+  toReadableObjectValue(object: any): any {
+    // base case
+    if (typeof object !== 'object') return object;
 
-    afterKeys.forEach((k) => {
-      let afterValues = [];
-      let currentValues = [];
-      if (after[key] && after[key][k]) {
-        if (after[key][k] instanceof Object) {
-          afterValues = Object.values(after[key][k]);
-        } else {
-          afterValues = after[key][k];
-        }
-      }
-      if (current[key] && current[key][k]) {
-        if (current[key][k] instanceof Object) {
-          currentValues = Object.values(current[key][k]);
-        } else {
-          currentValues = current[key][k];
-        }
-      }
-
-      if (currentValues.toString() !== afterValues.toString()) {
-        afterValuesHTML += `<b>${k} ( ${afterValues} )</b> `;
-        currentValuesHTML += `<b>${k} ( ${currentValues} )</b> `;
-      }
-    });
-    if (afterValuesHTML.length > 0) {
-      element += `${currentValuesHTML} to ${afterValuesHTML}</p>`;
-      return element;
+    // arrys
+    if (Array.isArray(object)) {
+      return object.map((elem) => this.toReadableObjectValue(elem));
     }
-    return '';
-  }
 
-  private getHistory(record: Record): any[] {
+    // objects - non arrays
     const res: any[] = [];
-    const versions = record.versions || [];
-    let difference;
-    if (versions.length === 0) {
-      difference = this.getDifference(null, record.data);
-      res.push({
-        created: record.createdAt,
-        createdBy: record.createdBy?.name,
-        changes: difference,
-        id: record.id,
-      });
-      return res;
-    }
-    difference = this.getDifference(null, versions[0].data);
-    res.push({
-      created: versions[0].createdAt,
-      createdBy: record.createdBy?.name,
-      changes: difference,
-      id: versions[0].id,
+    const keys = Object.keys(object);
+    keys.forEach((key, i) => {
+      res.push(
+        `${i ? ' ' : ''}${key} (${this.toReadableObjectValue(object[key])})`
+      );
     });
-    for (let i = 1; i < versions.length; i++) {
-      difference = this.getDifference(versions[i - 1].data, versions[i].data);
-      res.push({
-        created: versions[i].createdAt,
-        createdBy: versions[i - 1].createdBy?.name,
-        changes: difference,
-        id: versions[i].id,
-      });
-    }
-    difference = this.getDifference(
-      versions[versions.length - 1].data,
-      record.data
-    );
-    res.push({
-      created: record.modifiedAt,
-      createdBy: versions[versions.length - 1].createdBy?.name,
-      changes: difference,
-      id: record.id,
-    });
-    return res.reverse();
+
+    return res;
   }
 
-  onRevert(item: any): void {
+  /**
+   * Handles the revertion of the record to a previous version
+   *
+   * @param version The version to revert
+   */
+  onRevert(version: any): void {
     const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
-        recordId: this.record.id,
+        recordId: this.id,
         locale: 'en',
-        compareTo: this.record.versions?.find((x) => x.id === item.id),
+        compareTo: this.history.find((item) => item.version?.id === version.id)
+          ?.version,
         template: this.template,
       },
       height: '98%',
@@ -279,11 +238,14 @@ export class SafeRecordHistoryComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.revert(item);
+        this.revert(version);
       }
     });
   }
 
+  /**
+   * Clears the date filter, empties it
+   */
   clearDateFilter(): void {
     this.filtersDate.startDate = '';
     this.filtersDate.endDate = '';
@@ -292,25 +254,90 @@ export class SafeRecordHistoryComponent implements OnInit {
     this.endDate.value = '';
   }
 
-  applyFilter(): void {
-    const startDate = new Date(this.filtersDate.startDate).getTime();
-    const endDate = new Date(this.filtersDate.endDate).getTime();
-    this.filterHistory = this.history.filter(
-      (item) =>
+  /**
+   * Triggers when the selected date and field filters are changed
+   * and filters the history accordingly
+   *
+   * @param filterField the name of the field being filtered, if any
+   */
+  applyFilter(filterField?: string): void {
+    // undefined => function called from date change
+    // null => 'All fields' selected
+    // other => Field name for filter
+    if (filterField !== undefined) this.filterField = filterField || null;
+
+    const startDate = this.filtersDate.startDate
+      ? new Date(this.filtersDate.startDate)
+      : undefined;
+    if (startDate) startDate.setHours(0, 0, 0, 0);
+    const endDate = this.filtersDate.endDate
+      ? new Date(this.filtersDate.endDate)
+      : undefined;
+    if (endDate) endDate.setHours(23, 59, 59, 99);
+
+    // filtering by date
+    this.filterHistory = this.history.filter((item) => {
+      const createdAt = new Date(item.createdAt);
+      return (
         !startDate ||
         !endDate ||
-        (item.created >= startDate && item.created <= endDate)
-    );
+        (createdAt >= startDate && createdAt <= endDate)
+      );
+    });
+
+    // filtering by field
+    if (this.filterField !== null) {
+      this.filterHistory = this.filterHistory
+        .filter(
+          (item) =>
+            !!item.changes.find((change) => this.filterField === change.field)
+        )
+        .map((item) => {
+          const newItem = Object.assign({}, item);
+          newItem.changes = item.changes.filter(
+            (change) => change.field === this.filterField
+          );
+          return newItem;
+        });
+    }
   }
 
+  /**
+   * Handle the download event. Send a request to the server to get excel / csv file.
+   *
+   * @param type Type of document to download
+   */
   onDownload(type: string): void {
-    const path = `download/form/records/${this.record.id}/history`;
-    const fileName = `${this.record.id}.${type}`;
-    const queryString = new URLSearchParams({ type }).toString();
+    const path = `download/form/records/${this.id}/history`;
+    const fileName = `${this.record.incrementalId}.${type}`;
+    const queryString = new URLSearchParams({
+      type,
+      from: `${new Date(this.filtersDate.startDate).getTime()}`,
+      to: `${new Date(this.filtersDate.endDate).getTime()}`,
+      lng: this.translate.currentLang,
+      dateLocale: this.dateFormat.currentLang,
+      ...(this.filterField && { field: this.filterField }),
+    }).toString();
     this.downloadService.getFile(
       `${path}?${queryString}`,
       `text/${type};charset=utf-8;`,
       fileName
     );
+  }
+
+  /**
+   * Parses the structure of the record and sorts the fields
+   * based on their names or lables, if available
+   *
+   * @param fields Array of fields
+   * @returns sorted array of fields
+   */
+  sortFields(fields: any[]) {
+    const unsortedFields = [...fields];
+    return unsortedFields.sort((a, b) => {
+      const compA: string = a.title || a.name;
+      const compB: string = b.title || b.name;
+      return compA.toLowerCase() > compB.toLowerCase() ? 1 : -1;
+    });
   }
 }

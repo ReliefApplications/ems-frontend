@@ -1,16 +1,31 @@
-<h1 mat-dialog-title>{{'common.newObject' | translate: { name: 'common.apiConfiguration.one' | translate } }}</h1>
+<h1 mat-dialog-title>{{ 'models.apiConfiguration.new' | translate }}</h1>
 <div mat-dialog-content>
-    <form [formGroup]="apiForm">
-        <mat-form-field>
-            <mat-label>{{'common.name' | translate}}</mat-label>
-            <input matInput formControlName="name" type="text" [placeholder]="'common.placeholder.name' | translate"/>
-            <mat-error *ngIf="name?.errors">
-                {{'components.apiConfiguration.create.errors.name' | translate}}
-            </mat-error>
-        </mat-form-field>
-    </form>
+  <form [formGroup]="apiForm">
+    <mat-form-field>
+      <mat-label>{{ 'common.name' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        type="text"
+        [placeholder]="'common.placeholder.name' | translate"
+      />
+      <mat-error *ngIf="name?.errors">
+        {{ 'components.apiConfiguration.create.errors.name' | translate }}
+      </mat-error>
+    </mat-form-field>
+  </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
-    <button mat-flat-button [mat-dialog-close]="apiForm.value" cdkFocusInitial color="primary" [disabled]="!apiForm.valid">{{'common.create' | translate}}</button>
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="apiForm.value"
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!apiForm.valid"
+  >
+    {{ 'common.create' | translate }}
+  </button>
 </div>

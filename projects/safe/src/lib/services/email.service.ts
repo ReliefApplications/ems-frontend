@@ -10,6 +10,12 @@ import { prettifyLabel } from '../utils/prettify';
 import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Takes an array, and returns a new array with all the nested arrays flattened
+ *
+ * @param {any[]} arr - The array to flatten.
+ * @returns The flatten array
+ */
 const flatDeep = (arr: any[]): any[] =>
   arr.reduce(
     (acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val),
@@ -35,6 +41,7 @@ export class SafeEmailService {
    * @param environment Injection of the environment file.
    * @param http Angular http client.
    * @param snackBar Shared snackbar service.
+   * @param dialog The Material Dialog service.
    * @param translate Angular translate service.
    */
   constructor(
@@ -49,6 +56,13 @@ export class SafeEmailService {
     this.filesUrl = environment.apiUrl + '/email/files';
   }
 
+  /**
+   * Send a POST request to the server with the files attached to the
+   * request body
+   *
+   * @param {any[]} files - array of files to send to the server.
+   * @returns Observable of the POST request
+   */
   public sendFiles(files: any[]): Observable<any> {
     const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
@@ -68,12 +82,15 @@ export class SafeEmailService {
    * @param recipient Recipient of the email.
    * @param subject Subject of the email.
    * @param body Body of the email, if not given we put the formatted records.
-   * @param gridSettings Grid specific settings.
-   * @param gridSettings.query Query settings.
-   * @param gridSettings.ids List of records to include in the email.
-   * @param gridSettings.sortField Sort field.
-   * @param gridSettings.sortOrder Sort order.
-   * @param attachment Whether an excel with the dataset is attached to the mail or not.
+   * @param filter Filters for sending the mail
+   * @param query Query settings
+   * @param query.name Name of the query
+   * @param query.fields Fields requested in the query
+   * @param sortField Sort field (optional).
+   * @param sortOrder Sort order (optional).
+   * @param attachment Whether an excel with the dataset is attached to the mail
+   * or not (optional).
+   * @param files List of files to send with the mail (optional).
    */
   public async sendMail(
     recipient: string[],
@@ -156,12 +173,14 @@ export class SafeEmailService {
    * @param recipient Recipient of the email.
    * @param subject Subject of the email.
    * @param body Body of the email, if not given we put the formatted records.
-   * @param gridSettings Grid specific settings.
-   * @param gridSettings.query Query settings.
-   * @param gridSettings.ids List of records to include in the email.
-   * @param gridSettings.sortField Sort field.
-   * @param gridSettings.sortOrder Sort order.
-   * @param attachment Whether an excel with the dataset is attached to the mail or not.
+   * @param filter Filters for sending the mail
+   * @param query Query settings
+   * @param query.name Name of the query
+   * @param query.fields Fields requested in the query
+   * @param sortField Sort field (optional).
+   * @param sortOrder Sort order (optional).
+   * @param attachment Whether an excel with the dataset is attached to the mail
+   * or not (optional).
    */
   public async previewMail(
     recipient: string[],
@@ -227,7 +246,7 @@ export class SafeEmailService {
               this.sendMail(
                 recipient,
                 subject,
-                body,
+                value.html,
                 filter,
                 query,
                 sortField,

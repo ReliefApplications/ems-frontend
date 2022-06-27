@@ -95,7 +95,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   @Input() blank = false;
 
   // === EXPORT ===
-  @Input() exportable = true;
   public exportSettings = EXPORT_SETTINGS;
   @Output() export = new EventEmitter();
 
@@ -115,6 +114,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     delete: false,
     history: false,
     convert: false,
+    export: false,
+    showDetails: false,
   };
   @Input() hasDetails = true;
   @Output() action = new EventEmitter();
@@ -138,6 +139,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   public selectableSettings = SELECTABLE_SETTINGS;
   @Input() selectedRows: string[] = [];
   @Output() selectionChange = new EventEmitter();
+  public selectedItems: any[] = [];
 
   // === FILTER ===
   @Input() filterable = true;
@@ -177,6 +179,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    this.setSelectedItems();
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     // this way we can wait for 2s before sending an update
     this.search.valueChanges
@@ -187,6 +190,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
     this.grid?.columnReorder.subscribe((res) =>
       setTimeout(() => this.columnChange.emit(), 500)
@@ -270,7 +274,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     if (!this.loading) {
       this.showFilter = !this.showFilter;
       this.showFilterChange.emit(this.showFilter);
-      this.onFilterChange({ logic: 'and', filters: [] });
+      this.onFilterChange({
+        logic: 'and',
+        filters: this.showFilter ? [] : this.filter.filters,
+      });
     }
   }
 
@@ -331,6 +338,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         selectedRows.map((x) => x.dataItem.id)
       );
     }
+    this.setSelectedItems();
     this.selectionChange.emit(selection);
   }
 
@@ -342,6 +350,15 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    */
   public isRowSelected = (row: RowArgs) =>
     this.selectedRows.includes(row.dataItem.id);
+
+  /**
+   * Set array of selected items from selected rows.
+   */
+  private setSelectedItems(): void {
+    this.selectedItems = this.data.data.filter((x) =>
+      this.selectedRows.includes(x.id)
+    );
+  }
 
   // === LAYOUT ===
   /**

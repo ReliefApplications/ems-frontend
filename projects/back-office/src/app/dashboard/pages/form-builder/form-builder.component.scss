@@ -1,17 +1,17 @@
 .page-header {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    margin-bottom: 20px;
-  
-    .page-title {
-      display: inline-block;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      border-radius: 6px;
-    }
-    .page-title:hover {
-      background-color: #dddddd54;
-    }
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 20px;
+
+  .page-title {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border-radius: 6px;
   }
+  .page-title:hover {
+    background-color: #dddddd54;
+  }
+}

@@ -29,8 +29,8 @@ import { Observable } from 'rxjs';
 import { Overlay } from '@angular/cdk/overlay';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { scrollFactory } from '../../../utils/scroll-factory';
-import { Layout } from '../../../models/layout.model';
 import { Resource } from '../../../models/resource.model';
+import get from 'lodash/get';
 
 const DEFAULT_ACTION_NAME = 'Action';
 
@@ -77,10 +77,19 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public form: Form | null = null;
   public resource: Resource | null = null;
 
+  /** @returns List of the floating buttons */
   get floatingButtons(): FormArray {
     return (this.tileForm?.controls.floatingButtons as FormArray) || null;
   }
 
+  /**
+   * Constructor of the grid settings component
+   *
+   * @param formBuilder The form builder of Angular
+   * @param apollo The apollo client
+   * @param applicationService The application service
+   * @param queryBuilder The query builder service
+   */
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
@@ -88,11 +97,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     private queryBuilder: QueryBuilderService
   ) {}
 
-  /*  Build the settings form, using the widget saved parameters.
-   */
+  /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
-    const hasActions = !!tileSettings && !!tileSettings.actions;
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: [
@@ -111,12 +118,14 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         tileSettings && tileSettings.resource ? tileSettings.resource : null,
       ],
       actions: this.formBuilder.group({
-        delete: [hasActions ? tileSettings.actions.delete : true],
-        history: [hasActions ? tileSettings.actions.history : true],
-        convert: [hasActions ? tileSettings.actions.convert : true],
-        update: [hasActions ? tileSettings.actions.update : true],
-        inlineEdition: [hasActions ? tileSettings.actions.inlineEdition : true],
-        addRecord: [hasActions ? tileSettings.actions.addRecord : false],
+        delete: [get(tileSettings, 'actions.delete', true)],
+        history: [get(tileSettings, 'actions.history', true)],
+        convert: [get(tileSettings, 'actions.convert', true)],
+        update: [get(tileSettings, 'actions.update', true)],
+        inlineEdition: [get(tileSettings, 'actions.inlineEdition', true)],
+        addRecord: [get(tileSettings, 'actions.addRecord', false)],
+        export: [get(tileSettings, 'actions.export', true)],
+        showDetails: [get(tileSettings, 'actions.showDetails', true)],
       }),
       floatingButtons: this.formBuilder.array(
         tileSettings.floatingButtons && tileSettings.floatingButtons.length

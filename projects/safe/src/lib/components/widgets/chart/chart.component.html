@@ -1,25 +1,72 @@
 <div class="widget-container">
-    <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
-        <span class="widget-title" [title]="settings.title">{{settings.title}}</span>
-    </kendo-tilelayout-item-header>
-    <ng-container *ngIf="!hasError">
-        <safe-button *ngIf="export" [isIcon]="true" icon="get_app" class="export-button" (click)="onExport()">
-        </safe-button>
-        <safe-line-chart #chartWrapper class="widget-content" *ngIf="settings.chart.type === 'line'" [title]="settings.chart.title"
-            [legend]="settings.chart.legend" [series]="series"></safe-line-chart>
-        <safe-pie-chart #chartWrapper class="widget-content" *ngIf="settings.chart.type === 'pie'" [title]="settings.chart.title"
-            [legend]="settings.chart.legend" [series]="series"></safe-pie-chart>
-        <safe-donut-chart #chartWrapper class="widget-content" *ngIf="settings.chart.type === 'donut'" [title]="settings.chart.title"
-            [legend]="settings.chart.legend" [series]="series"></safe-donut-chart>
-        <safe-column-chart #chartWrapper class="widget-content" *ngIf="settings.chart.type === 'column'" [title]="settings.chart.title"
-            [legend]="settings.chart.legend" [series]="series"></safe-column-chart>
-        <safe-bar-chart #chartWrapper class="widget-content" *ngIf="settings.chart.type === 'bar'" [title]="settings.chart.title"
-            [legend]="settings.chart.legend" [series]="series"></safe-bar-chart>
-        <p class="widget-last-update" *ngIf="lastUpdate && lastUpdate.length > 0">Last update: {{lastUpdate}}</p>
-    </ng-container>
-    <mat-spinner [diameter]="30" *ngIf="loading"></mat-spinner>
-    <div *ngIf="hasError" class="chart-error">
-        <safe-icon variant="danger" icon="error_outline"></safe-icon>
-        <p color="danger">{{'components.widget.chart.errors.aggregation.invalid' | translate}}</p>
-    </div>
+  <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
+    <span class="widget-title" [title]="settings.title">{{
+      settings.title
+    }}</span>
+  </kendo-tilelayout-item-header>
+  <ng-container *ngIf="!hasError">
+    <safe-button
+      *ngIf="export"
+      [isIcon]="true"
+      icon="get_app"
+      class="export-button"
+      (click)="onExport()"
+    >
+    </safe-button>
+    <safe-line-chart
+      #chartWrapper
+      class="widget-content"
+      *ngIf="settings.chart.type === 'line'"
+      [title]="settings.chart.title"
+      [legend]="settings.chart.legend"
+      [series]="series"
+      [options]="options"
+    ></safe-line-chart>
+    <safe-pie-chart
+      #chartWrapper
+      class="widget-content"
+      *ngIf="settings.chart.type === 'pie'"
+      [title]="settings.chart.title"
+      [legend]="settings.chart.legend"
+      [series]="series"
+      [options]="options"
+    ></safe-pie-chart>
+    <safe-donut-chart
+      #chartWrapper
+      class="widget-content"
+      *ngIf="settings.chart.type === 'donut'"
+      [title]="settings.chart.title"
+      [legend]="settings.chart.legend"
+      [series]="series"
+      [options]="options"
+    ></safe-donut-chart>
+    <safe-column-chart
+      #chartWrapper
+      class="widget-content"
+      *ngIf="settings.chart.type === 'column'"
+      [title]="settings.chart.title"
+      [legend]="settings.chart.legend"
+      [series]="series"
+      [options]="options"
+    ></safe-column-chart>
+    <safe-bar-chart
+      #chartWrapper
+      class="widget-content"
+      *ngIf="settings.chart.type === 'bar'"
+      [title]="settings.chart.title"
+      [legend]="settings.chart.legend"
+      [series]="series"
+      [options]="options"
+    ></safe-bar-chart>
+    <p class="widget-last-update" *ngIf="lastUpdate && lastUpdate.length > 0">
+      Last update: {{ lastUpdate }}
+    </p>
+  </ng-container>
+  <mat-spinner [diameter]="30" *ngIf="loading"></mat-spinner>
+  <div *ngIf="hasError" class="chart-error">
+    <safe-icon variant="danger" icon="error_outline"></safe-icon>
+    <p color="danger">
+      {{ 'components.widget.chart.errors.aggregation.invalid' | translate }}
+    </p>
+  </div>
 </div>

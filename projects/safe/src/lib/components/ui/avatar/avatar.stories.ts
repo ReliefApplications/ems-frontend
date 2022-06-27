@@ -46,12 +46,14 @@ const TEMPLATE_WITH_TEXT: Story<SafeAvatarComponent> = (args) => ({
 });
 
 export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   size: AvatarSize.MEDIUM,
   variant: AvatarVariant.DEFAULT,
 };
 
 export const ICON = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.storyName = 'With icon';
 ICON.args = {
   ...DEFAULT.args,
   icon: 'home',

@@ -1,28 +1,37 @@
 .advanced-filtering {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .chart-icon {
-    margin-right: 8px;
-    height: 12px;
+  margin-right: 8px;
+  height: 12px;
 }
 
 .widget-form-container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .preview-container {
-    display: flex;
-    gap: 8px;
+  display: flex;
+  gap: 8px;
 
-    .sub-container {
-        flex: 1;
-        height: 400px;
-        min-width: 300px;
-    }
+  .sub-container {
+    flex: 1;
+    height: 400px;
+    min-width: 300px;
+  }
+}
+
+.axis-container {
+  display: flex;
+  gap: 8px;
+
+  mat-slide-toggle {
+    margin-top: 15px;
+  }
 }

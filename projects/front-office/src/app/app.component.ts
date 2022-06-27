@@ -21,7 +21,6 @@ export class AppComponent implements OnInit, OnDestroy {
   /**
    * Main component of Front-office.
    *
-   * @param router Angular router
    * @param authService Shared authentication service
    * @param formService Shared form service. We need to initialize the service there.
    * @param translate Angular translate service
@@ -32,7 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private translate: TranslateService
   ) {
     this.translate.addLangs(environment.availableLanguages);
-    this.translate.setDefaultLang('en');
+    this.translate.setDefaultLang(environment.availableLanguages[0]);
   }
 
   /**

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CONTENT_TYPES, IContentType } from '../../../../models/page.model';
 import { Step } from '../../../../models/step.model';
 
+/** Component for steps in workflow */
 @Component({
   selector: 'safe-step',
   templateUrl: './step.component.html',
@@ -14,10 +15,12 @@ export class SafeStepComponent implements OnInit {
   @Output() delete = new EventEmitter();
   @Output() duplicate = new EventEmitter();
 
+  /** @returns The type of the step */
   get type(): IContentType | undefined {
     return CONTENT_TYPES.find((x) => x.name === this.step.type);
   }
 
+  /** Constructor of the class */
   constructor() {}
 
   ngOnInit(): void {}

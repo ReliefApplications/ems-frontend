@@ -1,15 +1,28 @@
-<h1 mat-dialog-title>{{'components.role.add.title' | translate}}</h1>
+<h1 mat-dialog-title>{{ 'components.role.add.title' | translate }}</h1>
 <div mat-dialog-content>
-    <form [formGroup]="roleForm">
-        <mat-form-field>
-            <mat-label>{{'common.title' | translate}}</mat-label>
-            <input matInput formControlName="title" type="text" [placeholder]="'common.placeholder.title' | translate"/>
-        </mat-form-field>
-    </form>
+  <form [formGroup]="roleForm">
+    <mat-form-field>
+      <mat-label>{{ 'common.title' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="title"
+        type="text"
+        [placeholder]="'common.placeholder.title' | translate"
+      />
+    </mat-form-field>
+  </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">{{'common.close' | translate}}</button>
-    <button mat-flat-button [mat-dialog-close]="roleForm.value" cdkFocusInitial color="primary" [disabled]="!roleForm.valid">
-        {{'common.create' | translate}}
-    </button>
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="roleForm.value"
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!roleForm.valid"
+  >
+    {{ 'common.create' | translate }}
+  </button>
 </div>

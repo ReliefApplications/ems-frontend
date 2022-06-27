@@ -3,7 +3,12 @@
     [isIcon]="true"
     icon="menu"
     (click)="nav.toggle()"
-    [matTooltip]="(nav.opened ? 'components.header.sidenav.collapse' : 'components.header.sidenav.show') | translate"
+    [matTooltip]="
+      (nav.opened
+        ? 'components.header.sidenav.collapse'
+        : 'components.header.sidenav.show'
+      ) | translate
+    "
   >
   </safe-button>
   <safe-button
@@ -16,25 +21,9 @@
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
     <h1 class="application-title">
-      {{ theme.prefix }} {{ route ? title : ('common.platform.backOffice' | translate) }}
+      {{ theme.prefix }}
+      {{ route ? title : ('common.platform.backOffice' | translate) }}
     </h1>
-    <!-- Temporal language changer -->
-    <span
-      class="form-inline"
-      style="margin-left: 1em"
-      *ngIf="languages.length > 1"
-    >
-      <select
-        class="form-control"
-        #selectedLang
-        (change)="setLanguage(selectedLang.value)"
-        [(ngModel)]="currentLanguage"
-      >
-        <option *ngFor="let language of languages" [value]="language">
-          {{ language }}
-        </option>
-      </select>
-    </span>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button
@@ -52,7 +41,7 @@
       [cdkConnectedOverlayOpen]="showAppMenu"
     >
       <safe-search-menu
-        [data]="this.applications"
+        [applications]="this.applications"
         (close)="showAppMenu = false"
         (open)="onOpenApplication($event)"
       ></safe-search-menu>
@@ -88,6 +77,10 @@
     <button mat-menu-item (click)="onOpenProfile()">
       {{ 'pages.profile.title' | translate }}
     </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="onOpenPreferences()" *ngIf="showPreferences">
+      {{ 'components.preferences.title' | translate }}
+    </button>
     <ng-container *ngIf="user && user.isAdmin">
       <mat-divider></mat-divider>
       <button mat-menu-item (click)="onSwitchOffice()">
@@ -110,7 +103,7 @@
         (click)="onNotificationClick(notification)"
         *ngFor="let notification of notifications"
       >
-        {{ notification.action }} - {{ notification.createdAt | date }}
+        {{ notification.action }} - {{ notification.createdAt | safeDate }}
       </button>
     </div>
     <safe-button
@@ -174,7 +167,8 @@
                       mat-line
                       class="nav-text"
                       [matTooltip]="item.name"
-                      [matTooltipShowDelay]="1000"
+                      matTooltipShowDelay="1000"
+                      matTooltipPosition="right"
                     >
                       {{ item.name }}
                     </div>
@@ -187,9 +181,11 @@
                     *ngIf="item.action"
                     (click)="onClick(item.action.callback, $event)"
                   >
-                    <mat-icon matTooltip="{{ item.action.toolTip }}">{{
-                      item.action.icon
-                    }}</mat-icon>
+                    <mat-icon
+                      matTooltip="{{ item.action.toolTip }}"
+                      matTooltipPosition="left"
+                      >{{ item.action.icon }}</mat-icon
+                    >
                   </button>
                   <button
                     mat-icon-button

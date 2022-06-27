@@ -1,11 +1,19 @@
 <ng-container *ngIf="items.length > 0 && display">
-    <!-- <button *ngIf="actions.update && canUpdate" kendoButton (click)="action.emit({ action: 'update', items: items })">
+  <!-- <button *ngIf="actions.update && canUpdate" kendoButton (click)="action.emit({ action: 'update', items: items })">
         Update
     </button> -->
-    <button *ngIf="actions.convert && canUpdate" kendoButton (click)="action.emit({ action: 'convert', items: items })">
-        Convert
-    </button>
-    <button *ngIf="actions.delete && canDelete" kendoButton (click)="action.emit({ action: 'delete', items: items })">
-        Delete
-    </button>
+  <button
+    *ngIf="actions.convert && canUpdate"
+    kendoButton
+    (click)="action.emit({ action: 'convert', items: items })"
+  >
+    Convert
+  </button>
+  <button
+    *ngIf="actions.delete && canDelete"
+    kendoButton
+    (click)="action.emit({ action: 'delete', items: items })"
+  >
+    Delete
+  </button>
 </ng-container>

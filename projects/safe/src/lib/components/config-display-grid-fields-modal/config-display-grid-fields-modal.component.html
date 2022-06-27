@@ -1,11 +1,29 @@
-<h2 mat-dialog-title>{{'components.widget.settings.grid.buttons.callback.selectDisplay' | translate}}</h2>
+<h2 mat-dialog-title>
+  {{
+    'components.widget.settings.grid.buttons.callback.selectDisplay' | translate
+  }}
+</h2>
 <mat-dialog-content>
   <div class="form-group">
-    <safe-query-builder *ngIf="!loading && form.value.name" [form]="$any(form)" [canSelectDataSet]="false"></safe-query-builder>
+    <safe-query-builder
+      *ngIf="!loading && form.value.name"
+      [form]="$any(form)"
+      [canSelectDataSet]="false"
+    ></safe-query-builder>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button *ngIf="!loading" mat-button mat-dialog-close>{{'common.cancel' | translate}}</button>
-  <button *ngIf="!loading" mat-flat-button color="primary" [disabled]="!form.valid" [mat-dialog-close]="form" cdkFocusInitial>{{'common.save' | translate}}</button>
+  <button *ngIf="!loading" mat-button mat-dialog-close>
+    {{ 'common.cancel' | translate }}
+  </button>
+  <button
+    *ngIf="!loading"
+    mat-flat-button
+    color="primary"
+    [disabled]="!form.valid"
+    [mat-dialog-close]="form"
+    cdkFocusInitial
+  >
+    {{ 'common.save' | translate }}
+  </button>
 </mat-dialog-actions>
-

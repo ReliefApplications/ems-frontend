@@ -1,6 +1,9 @@
 <ng-container>
   <!-- FILTERING -->
-  <app-filter (filter)="onFilter($event)"></app-filter>
+  <app-filter
+    (filter)="onFilter($event)"
+    [loading]="filterLoading"
+  ></app-filter>
 
   <!-- NEW APPLICATIONS -->
   <h2>{{ 'pages.applications.recent' | translate }}</h2>
@@ -34,7 +37,7 @@
         </span>
       </th>
       <td mat-cell *matCellDef="let element">
-        {{ element.createdAt | date }}
+        {{ element.createdAt | safeDate }}
       </td>
     </ng-container>
 

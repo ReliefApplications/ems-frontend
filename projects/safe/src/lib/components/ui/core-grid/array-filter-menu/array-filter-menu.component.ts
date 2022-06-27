@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { FilterService } from '@progress/kendo-angular-grid';
 
 @Component({
@@ -31,43 +32,43 @@ export class SafeArrayFilterMenuComponent implements OnInit {
 
   public logics = [
     {
-      text: 'Or',
+      text: this.translate.instant('kendo.grid.filterOrLogic'),
       value: 'or',
     },
     {
-      text: 'And',
+      text: this.translate.instant('kendo.grid.filterAndLogic'),
       value: 'and',
     },
   ];
 
   public operators = [
     {
-      text: 'Is equal to',
+      text: this.translate.instant('kendo.grid.filterEqOperator'),
       value: 'eq',
     },
     {
-      text: 'Is not equal to',
+      text: this.translate.instant('kendo.grid.filterNotEqOperator'),
       value: 'neq',
     },
     {
-      text: 'Contains',
+      text: this.translate.instant('kendo.grid.filterContainsOperator'),
       value: 'contains',
     },
     {
-      text: 'Does not contain',
+      text: this.translate.instant('kendo.grid.filterNotContainsOperator'),
       value: 'doesnotcontain',
     },
     {
-      text: 'Is empty',
+      text: this.translate.instant('kendo.grid.filterIsEmptyOperator'),
       value: 'isempty',
     },
     {
-      text: 'Is not empty',
+      text: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
       value: 'isnotempty',
     },
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private translate: TranslateService) {}
 
   ngOnInit(): void {
     this.choices1 = this.data.slice();

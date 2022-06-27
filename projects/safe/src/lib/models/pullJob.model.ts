@@ -3,8 +3,7 @@ import { status } from './form.model';
 import { Channel } from './channel.model';
 import { Form } from './form.model';
 
-/*  Model for PullJob object.
- */
+/** Model for PullJob object. */
 export interface PullJob {
   id?: string;
   name?: string;

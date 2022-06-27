@@ -17,6 +17,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"auto": "******",
 		"back": "******",
 		"cancel": "******",
 		"channel": {
@@ -27,7 +28,6 @@
 		"child": "******",
 		"clear": "******",
 		"close": "******",
-		"confirm": "******",
 		"create": "******",
 		"createdOn": "******",
 		"dashboard": {
@@ -38,6 +38,7 @@
 		"delete": "******",
 		"deleteObject": "****** {{name}}",
 		"deleted": "******",
+		"dismiss": "******",
 		"display": "******",
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
@@ -88,7 +89,6 @@
 		},
 		"modifiedOn": "******",
 		"name": "******",
-		"newObject": "****** {{name}}",
 		"next": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
@@ -177,12 +177,22 @@
 			"none": "******",
 			"one": "******"
 		},
+		"referenceData": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"resource": {
 			"few": "******",
 			"none": "******",
 			"one": "******"
 		},
 		"role": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
+		"row": {
 			"few": "******",
 			"none": "******",
 			"one": "******"
@@ -209,6 +219,7 @@
 		"title": "******",
 		"true": "******",
 		"update": "******",
+		"updateObject": "****** {{name}}",
 		"uploadObject": "****** {{name}}",
 		"user": {
 			"few": "******",
@@ -236,16 +247,20 @@
 			"title": "******"
 		},
 		"aggregationBuilder": {
+			"accumulators": "******",
 			"addField": "******",
+			"addRule": "******",
 			"addStage": "******",
 			"dataset": {
 				"select": "******"
 			},
 			"fieldName": "******",
 			"groupBy": "******",
+			"groupingRules": "******",
 			"mapping": {
-				"xAxis": "******",
-				"yAxis": "******"
+				"category": "******",
+				"field": "******",
+				"series": "******"
 			},
 			"operator": "******",
 			"operators": {
@@ -294,11 +309,16 @@
 		},
 		"application": {
 			"delete": {
-				"confirmationMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"duplicate": {
 				"name": {
 					"description": "******"
+				}
+			},
+			"pages": {
+				"delete": {
+					"confirmationMessage": "****** {{name}} ******"
 				}
 			},
 			"positionAttribute": {
@@ -345,6 +365,12 @@
 				"select": "******"
 			}
 		},
+		"confirmModal": {
+			"cancel": "******",
+			"confirm": "******",
+			"delete": "******",
+			"title": "******"
+		},
 		"emailBuilder": {
 			"body": "******",
 			"distribution": "******",
@@ -354,7 +380,6 @@
 		"form": {
 			"create": {
 				"choice": {
-					"blank": "******",
 					"inherit": "******",
 					"resource": "******",
 					"template": "******"
@@ -362,16 +387,29 @@
 				"template": {
 					"from": "******",
 					"placeholder": "******",
-					"title": "******",
-					"tooltip": "******"
+					"title": "******"
+				},
+				"tooltip": {
+					"inherit": "******",
+					"resource": "******",
+					"template": "******"
 				}
 			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
 			},
+			"deleteRow": {
+				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
+			},
+			"display": {
+				"submissionMessage": "******"
+			},
 			"layout": {
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
+				},
+				"errors": {
+					"invalid": "******"
 				},
 				"update": {
 					"preview": {
@@ -390,6 +428,9 @@
 			"update": {
 				"exit": "******",
 				"exitMessage": "******"
+			},
+			"updateRow": {
+				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			}
 		},
 		"formBuilder": {
@@ -412,11 +453,33 @@
 			}
 		},
 		"history": {
+			"changes": {
+				"add": "******",
+				"from": "******",
+				"modify": "******",
+				"remove": "******",
+				"to": "******",
+				"withValue": "******"
+			},
 			"download": "******",
+			"empty": "******",
+			"field": {
+				"all": "******",
+				"select": "******"
+			},
 			"preview": "******"
+		},
+		"logout": {
+			"confirmationMessage": "******",
+			"title": "******"
 		},
 		"notifications": {
 			"readAll": "******"
+		},
+		"preferences": {
+			"dateFormat": "******",
+			"language": "******",
+			"title": "******"
 		},
 		"pullJob": {
 			"delete": {
@@ -497,6 +560,14 @@
 				"operator": "******",
 				"or": "******",
 				"title": "******"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "******",
+						"usePicker": "******"
+					}
+				}
 			}
 		},
 		"record": {
@@ -531,6 +602,10 @@
 			},
 			"modal": {
 				"update": "******"
+			},
+			"recovery": {
+				"confirmationMessage": "****** {{date}} ******",
+				"title": "******"
 			}
 		},
 		"records": {
@@ -538,6 +613,21 @@
 			"showArchived": "******",
 			"upload": {
 				"hint": "******"
+			}
+		},
+		"referenceData": {
+			"create": {
+				"errors": {
+					"name": "******"
+				},
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			},
+			"dropdown": {
+				"select": "******"
 			}
 		},
 		"resource": {
@@ -611,7 +701,8 @@
 				"empty": "******",
 				"errors": {
 					"invalid": "******",
-					"missingDataset": "******"
+					"missingDataset": "******",
+					"validationFailed": "****** {{index}} ****** {{question}} ****** {{error}}"
 				},
 				"export": {
 					"columns": {
@@ -646,19 +737,42 @@
 			},
 			"settings": {
 				"chart": {
+					"axes": "******",
+					"labels": {
+						"percentage": "******",
+						"showCategory": "******",
+						"showValue": "******",
+						"title": "******",
+						"valueType": "******"
+					},
 					"legend": "******",
 					"orientation": "******",
+					"palette": {
+						"enable": "******",
+						"title": "******"
+					},
 					"position": "******",
+					"series": {
+						"stack": {
+							"enable": "******",
+							"usePercentage": "******"
+						},
+						"title": "******"
+					},
 					"text": "******",
-					"type": "******"
+					"type": "******",
+					"xAxis": "******",
+					"yAxis": "******"
 				},
 				"grid": {
 					"actions": {
 						"add": "******",
 						"convert": "******",
 						"delete": "******",
+						"export": "******",
 						"inline": "******",
 						"show": "******",
+						"showDetails": "******",
 						"title": "******",
 						"update": "******"
 					},
@@ -675,6 +789,8 @@
 							},
 							"prefill": "******",
 							"save": "******",
+							"selectAllRecords": "******",
+							"selectAllRecordsActivePage": "******",
 							"selectDisplay": "******",
 							"sendMail": "******",
 							"workflow": {
@@ -705,6 +821,9 @@
 							"select": "******",
 							"title": "******"
 						},
+						"edit": {
+							"title": "******"
+						},
 						"title": "******"
 					}
 				},
@@ -729,13 +848,175 @@
 			}
 		}
 	},
+	"kendo": {
+		"datepicker": {
+			"today": "******",
+			"toggle": "******"
+		},
+		"datetimepicker": {
+			"accept": "******",
+			"acceptLabel": "******",
+			"cancel": "******",
+			"cancelLabel": "******",
+			"dateTab": "******",
+			"dateTabLabel": "******",
+			"now": "******",
+			"timeTab": "******",
+			"timeTabLabel": "******",
+			"today": "******",
+			"toggle": "******"
+		},
+		"editor": {
+			"addColumnAfter": "******",
+			"addColumnBefore": "******",
+			"addRowAfter": "******",
+			"addRowBefore": "******",
+			"alignCenter": "******",
+			"alignJustify": "******",
+			"alignLeft": "******",
+			"alignRight": "******",
+			"backColor": "******",
+			"bold": "******",
+			"cleanFormatting": "******",
+			"createLink": "******",
+			"deleteColumn": "******",
+			"deleteRow": "******",
+			"deleteTable": "******",
+			"dialogApply": "******",
+			"dialogCancel": "******",
+			"dialogInsert": "******",
+			"dialogUpdate": "******",
+			"fileText": "******",
+			"fileTitle": "******",
+			"fileWebAddress": "******",
+			"fontFamily": "******",
+			"fontSize": "******",
+			"foreColor": "******",
+			"format": "******",
+			"imageAltText": "******",
+			"imageHeight": "******",
+			"imageWebAddress": "******",
+			"imageWidth": "******",
+			"indent": "******",
+			"insertFile": "******",
+			"insertImage": "******",
+			"insertOrderedList": "******",
+			"insertTable": "******",
+			"insertUnorderedList": "******",
+			"italic": "******",
+			"linkOpenInNewWindow": "******",
+			"linkText": "******",
+			"linkTitle": "******",
+			"linkWebAddress": "******",
+			"outdent": "******",
+			"print": "******",
+			"redo": "******",
+			"selectAll": "******",
+			"strikethrough": "******",
+			"subscript": "******",
+			"superscript": "******",
+			"underline": "******",
+			"undo": "******",
+			"unlink": "******",
+			"viewSource": "******"
+		},
+		"fileselect": {
+			"dropFilesHere": "******",
+			"select": "******"
+		},
+		"grid": {
+			"columnMenu": "******",
+			"columns": "******",
+			"columnsApply": "******",
+			"columnsReset": "******",
+			"detailCollapse": "******",
+			"detailExpand": "******",
+			"filter": "******",
+			"filterAfterOperator": "******",
+			"filterAfterOrEqualOperator": "******",
+			"filterAndLogic": "******",
+			"filterBeforeOperator": "******",
+			"filterBeforeOrEqualOperator": "******",
+			"filterBooleanAll": "******",
+			"filterClearButton": "******",
+			"filterContainsOperator": "******",
+			"filterDateToday": "******",
+			"filterDateToggle": "******",
+			"filterEndsWithOperator": "******",
+			"filterEqOperator": "******",
+			"filterFilterButton": "******",
+			"filterGtOperator": "******",
+			"filterGteOperator": "******",
+			"filterInputLabel": "******",
+			"filterIsEmptyOperator": "******",
+			"filterIsFalse": "******",
+			"filterIsNotEmptyOperator": "******",
+			"filterIsNotNullOperator": "******",
+			"filterIsNullOperator": "******",
+			"filterIsTrue": "******",
+			"filterLtOperator": "******",
+			"filterLteOperator": "******",
+			"filterMenuLogicDropDownLabel": "******",
+			"filterMenuOperatorsDropDownLabel": "******",
+			"filterMenuTitle": "******",
+			"filterNotContainsOperator": "******",
+			"filterNotEqOperator": "******",
+			"filterNumericDecrement": "******",
+			"filterNumericIncrement": "******",
+			"filterOrLogic": "******",
+			"filterStartsWithOperator": "******",
+			"gridLabel": "******",
+			"groupCollapse": "******",
+			"groupExpand": "******",
+			"groupPanelEmpty": "******",
+			"loading": "******",
+			"lock": "******",
+			"noRecords": "******",
+			"pagerFirstPage": "******",
+			"pagerItems": "******",
+			"pagerItemsPerPage": "******",
+			"pagerLabel": "******",
+			"pagerLastPage": "******",
+			"pagerNextPage": "******",
+			"pagerOf": "******",
+			"pagerPage": "******",
+			"pagerPageNumberInputTitle": "******",
+			"pagerPreviousPage": "******",
+			"selectAllCheckboxLabel": "******",
+			"selectionCheckboxLabel": "******",
+			"setColumnPosition": "******",
+			"sortAscending": "******",
+			"sortDescending": "******",
+			"sortable": "******",
+			"sortedAscending": "******",
+			"sortedDefault": "******",
+			"sortedDescending": "******",
+			"stick": "******",
+			"unlock": "******",
+			"unstick": "******"
+		},
+		"timepicker": {
+			"accept": "******",
+			"acceptLabel": "******",
+			"cancel": "******",
+			"cancelLabel": "******",
+			"now": "******",
+			"toggle": "******"
+		},
+		"upload": {
+			"dropFilesHere": "******",
+			"select": "******"
+		}
+	},
 	"models": {
 		"apiConfiguration": {
-			"authType": "******"
+			"authType": "******",
+			"new": "******"
 		},
 		"application": {
 			"description": "******",
 			"id": "******",
+			"new": "******",
 			"notifications": {
 				"published": "{{value}} ******",
 				"updated": "******"
@@ -746,7 +1027,8 @@
 			}
 		},
 		"channel": {
-			"create": "******"
+			"create": "******",
+			"new": "******"
 		},
 		"dashboard": {
 			"share": "******"
@@ -758,19 +1040,31 @@
 				"label": "******",
 				"name": "******"
 			},
+			"new": "******",
+			"notifications": {
+				"savingFailed": "******"
+			},
 			"select": "******",
 			"template": "******"
 		},
 		"page": {
-			"add": "******"
+			"add": "******",
+			"tooltip": {
+				"duplicate": "******"
+			}
+		},
+		"positionAttribute": {
+			"new": "******"
 		},
 		"pullJob": {
+			"new": "******",
 			"path": "******",
 			"schedule": "******",
 			"url": "******"
 		},
 		"record": {
 			"convert": "******",
+			"new": "******",
 			"notifications": {
 				"conversionIncomplete": "******",
 				"rowsAdded": "****** {{length}} ****** {{field}} ****** {{value}} ******",
@@ -778,15 +1072,25 @@
 			},
 			"restore": "******"
 		},
+		"referenceData": {
+			"add": "******"
+		},
 		"resource": {
 			"create": "******"
 		},
 		"role": {
 			"create": "******"
 		},
+		"step": {
+			"new": "******"
+		},
+		"subscription": {
+			"new": "******"
+		},
 		"user": {
 			"notifications": {
-				"rolesUpdated": "{{username}} ******"
+				"rolesUpdated": "{{username}} ******",
+				"userImportFail": "******"
 			},
 			"username": "******"
 		},
@@ -794,6 +1098,10 @@
 			"add": "******",
 			"chart": {
 				"defaultTitle": "******"
+			},
+			"delete": {
+				"confirmationMessage": "******",
+				"title": "******"
 			},
 			"map": {
 				"defaultTitle": "******",
@@ -820,6 +1128,10 @@
 			"authentication": "******",
 			"baseUrl": "******",
 			"clientId": "******",
+			"graphQL": {
+				"endpoint": "******",
+				"title": "******"
+			},
 			"host": "******",
 			"notifications": {
 				"authTokenFetched": "******",
@@ -831,6 +1143,7 @@
 			"placeholder": {
 				"baseUrl": "******",
 				"clientId": "******",
+				"graphQLEndpoint": "******",
 				"pingUrl": "******",
 				"scope": "******",
 				"secret": "******",
@@ -875,6 +1188,23 @@
 			"title": "******"
 		},
 		"formBuilder": {
+			"errors": {
+				"choices": {
+					"valueDuplicated": "****** {{question}}"
+				},
+				"missingName": "****** {{page}} ******",
+				"multipletext": {
+					"missingName": "****** {{question}}"
+				},
+				"resource": {
+					"invalidRelatedName": "****** {{relatedName}} ****** {{page}} ******",
+					"missingRelatedName": "****** {{question}} ****** {{page}} ******"
+				},
+				"snakecase": "****** {{name}} ****** {{page}} ******"
+			},
+			"questionsCategories": {
+				"core": "******"
+			},
 			"title": "******"
 		},
 		"forms": {
@@ -889,9 +1219,27 @@
 		"pullJobs": {
 			"create": "******"
 		},
+		"referenceData": {
+			"csv": "******",
+			"errors": {
+				"name": "******"
+			},
+			"fields": "******",
+			"path": "******",
+			"placeholder": {
+				"csv": "******"
+			},
+			"queryName": "******",
+			"type": "******",
+			"validateCsv": "******",
+			"valueField": "******"
+		},
 		"workflow": {
 			"addStep": {
 				"selectType": "******"
+			},
+			"deleteStep": {
+				"confirmationMessage": "****** {{step}} ******"
 			},
 			"empty": {
 				"add": "******",

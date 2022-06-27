@@ -13,6 +13,7 @@ import { theme } from '../themes/default/default.local';
 //   strictDiscoveryDocumentValidation: false,
 // };
 
+/** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
   issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
   redirectUri: 'http://localhost:4200/',
@@ -23,9 +24,7 @@ const authConfig: AuthConfig = {
   showDebugInformation: true,
 };
 
-/**
- * Environment file for local development.
- */
+/** Environment configuration */
 export const environment = {
   production: false,
   // apiUrl: 'https://oort-dev.oortcloud.tech/api',
@@ -35,7 +34,7 @@ export const environment = {
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
   module: 'frontoffice',
-  availableLanguages: ['en', 'test'],
+  availableLanguages: ['en', 'fr', 'test'],
   authConfig,
   theme,
 };

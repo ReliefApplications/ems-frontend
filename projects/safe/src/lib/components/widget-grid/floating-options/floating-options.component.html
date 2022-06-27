@@ -1,4 +1,8 @@
-<button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+<button
+  mat-icon-button
+  [matMenuTriggerFor]="menu"
+  aria-label="Example icon-button with a menu"
+>
   <mat-icon>more_vert</mat-icon>
 </button>
 <mat-menu #menu="matMenu">
@@ -6,9 +10,8 @@
     <mat-divider *ngIf="item.name === 'Delete'"></mat-divider>
 
     <button mat-menu-item (click)="onClick(item)" [disabled]="item.disabled">
-
-      <mat-icon>{{item.icon}}</mat-icon>
-      <span>{{item.text}}</span>
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <span>{{ item.text }}</span>
     </button>
   </ng-container>
 </mat-menu>

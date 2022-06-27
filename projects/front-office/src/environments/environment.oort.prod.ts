@@ -1,6 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/oort/oort.prod';
 
+/** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
   issuer: 'https://id.oortcloud.tech/auth/realms/oort',
   redirectUri: 'https://dms.oortcloud.tech/',
@@ -11,9 +12,7 @@ const authConfig: AuthConfig = {
   showDebugInformation: true,
 };
 
-/**
- * Environment file of OORT production platform.
- */
+/** Environment configuration */
 export const environment = {
   production: true,
   apiUrl: 'https://dms.oortcloud.tech/api',
@@ -21,7 +20,7 @@ export const environment = {
   frontOfficeUri: 'https://dms.oortcloud.tech',
   backOfficeUri: 'https://dms.oortcloud.tech/admin/',
   module: 'frontoffice',
-  availableLanguages: ['en'],
+  availableLanguages: ['en', 'fr'],
   authConfig,
   theme,
 };

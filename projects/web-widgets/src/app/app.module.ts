@@ -7,16 +7,9 @@ import {
 } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
-// Apollo
+// Http
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular/http';
-import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
-import { getMainDefinition } from '@apollo/client/utilities';
-import { WebSocketLink } from '@apollo/client/link/ws';
-import { setContext } from '@apollo/client/link/context';
 import { AppComponent } from './app.component';
-import { NewsComponent } from './news/news.component';
 import { ApplicationWidgetComponent } from './widgets/application-widget/application-widget.component';
 import { ApplicationWidgetModule } from './widgets/application-widget/application-widget.module';
 import { DashboardWidgetComponent } from './widgets/dashboard-widget/dashboard-widget.component';
@@ -26,110 +19,34 @@ import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
 import { WorkflowWidgetComponent } from './widgets/workflow-widget/workflow-widget.component';
 import { WorkflowWidgetModule } from './widgets/workflow-widget/workflow-widget.module';
 import { environment } from '../environments/environment';
-import { BehaviorSubject } from 'rxjs';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
-import { OAuthModule, OAuthService } from 'angular-oauth2-oidc';
+import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import {
   TranslateLoader,
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MessageService } from '@progress/kendo-angular-l10n';
+import { KendoTranslationService } from '@safe/builder';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
-
-localStorage.setItem('loaded', 'false');
-
-const REFRESH = new BehaviorSubject<boolean>(false);
+import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
+import { Platform } from '@angular/cdk/platform';
+import { AppOverlayContainer } from './utils/overlay-container';
+// Apollo / GraphQL
+import { GraphQLModule } from './graphql.module';
+import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 
 /**
- * Configuration of the Apollo client.
+ * Initialize authentication in the platform.
+ * Configuration in environment file.
+ * Use oAuth
  *
- * @param httpLink Apollo http link
- * @returns void
+ * @param oauth OAuth Service
+ * @returns oAuth configuration
  */
-export const provideApollo = (httpLink: HttpLink): any => {
-  const basic = setContext((operation, context) => ({
-    headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Accept: 'charset=utf-8',
-    },
-  }));
-
-  const auth = setContext((operation, context) => {
-    // Get the authentication token from local storage if it exists
-    const token = localStorage.getItem('idtoken');
-    return {
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  });
-
-  const http = httpLink.create({ uri: `${environment.apiUrl}/graphql` });
-
-  const ws = new WebSocketLink({
-    uri: `${environment.subscriptionApiUrl}/graphql`,
-    options: {
-      reconnect: true,
-      connectionParams: {
-        authToken: localStorage.getItem('idtoken'),
-      },
-      connectionCallback: (error) => {
-        if (localStorage.getItem('loaded') === 'true') {
-          // location.reload();
-          REFRESH.next(true);
-          localStorage.setItem('loaded', 'false');
-        }
-        localStorage.setItem('loaded', 'true');
-      },
-    },
-  });
-
-  interface Definition {
-    kind: string;
-    operation?: string;
-  }
-
-  const link = ApolloLink.from([
-    basic,
-    auth,
-    split(
-      ({ query }) => {
-        const { kind, operation }: Definition = getMainDefinition(query);
-        return kind === 'OperationDefinition' && operation === 'subscription';
-      },
-      ws,
-      http
-    ),
-  ]);
-
-  // Cache is not currently used, due to fetchPolicy values
-  const cache = new InMemoryCache();
-
-  return {
-    link,
-    cache,
-    defaultOptions: {
-      watchQuery: {
-        fetchPolicy: 'network-only',
-        // fetchPolicy: 'cache-and-network',
-        errorPolicy: 'ignore',
-      },
-      query: {
-        fetchPolicy: 'network-only',
-        // fetchPolicy: 'cache-and-network',
-        errorPolicy: 'all',
-      },
-      mutate: {
-        errorPolicy: 'all',
-      },
-    },
-  };
-};
-
 const initializeAuth =
   (oauth: OAuthService): any =>
   () => {
@@ -145,8 +62,17 @@ const initializeAuth =
 export const httpTranslateLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http);
 
+/**
+ * Provides custom overlay to inject modals / snackbars in shadow root.
+ *
+ * @param _platform CDK platform.
+ * @returns custom Overlay container.
+ */
+const provideOverlay = (_platform: Platform): AppOverlayContainer =>
+  new AppOverlayContainer(_platform);
+
 @NgModule({
-  declarations: [AppComponent, NewsComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -161,21 +87,17 @@ export const httpTranslateLoader = (http: HttpClient) =>
         deps: [HttpClient],
       },
     }),
+    OverlayModule,
     DashboardWidgetModule,
     FormWidgetModule,
     WorkflowWidgetModule,
     ApplicationWidgetModule,
+    GraphQLModule,
   ],
   providers: [
     {
       provide: 'environment',
       useValue: environment,
-    },
-    {
-      // TODO: added default options to solve cache issues, cache solution can be added at the query / mutation level.
-      provide: APOLLO_OPTIONS,
-      useFactory: provideApollo,
-      deps: [HttpLink],
     },
     {
       provide: APP_INITIALIZER,
@@ -189,12 +111,32 @@ export const httpTranslateLoader = (http: HttpClient) =>
         // return the container ElementRef, where the popup will be injected
         ({ nativeElement: document.body } as ElementRef),
     },
+    // Default parameters of material tooltip
+    {
+      provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
+      useValue: {
+        showDelay: 500,
+      },
+    },
+    {
+      provide: OverlayContainer,
+      useFactory: provideOverlay,
+      deps: [Platform],
+    },
+    {
+      provide: MessageService,
+      useClass: KendoTranslationService,
+    },
+    {
+      provide: OAuthStorage,
+      useValue: localStorage,
+    },
   ],
 })
 export class AppModule implements DoBootstrap {
   constructor(private injector: Injector, private translate: TranslateService) {
     this.translate.addLangs(environment.availableLanguages);
-    this.translate.setDefaultLang('en');
+    this.translate.setDefaultLang(environment.availableLanguages[0]);
   }
 
   ngDoBootstrap(): void {

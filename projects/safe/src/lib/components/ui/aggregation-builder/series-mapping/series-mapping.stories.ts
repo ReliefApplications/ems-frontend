@@ -153,8 +153,8 @@ const TEMPLATE: Story<SafeSeriesMappingComponent> = (args) => ({
     mappingForm: createAggregationForm(
       {
         mapping: {
-          xAxis: 'date',
-          yAxis: 'follow',
+          category: 'date',
+          field: 'follow',
         },
       },
       'column'
@@ -163,7 +163,8 @@ const TEMPLATE: Story<SafeSeriesMappingComponent> = (args) => ({
 });
 
 export const INITIAL_SOURCE = TEMPLATE.bind({});
+INITIAL_SOURCE.storyName = 'Initial source';
 INITIAL_SOURCE.args = {
-  controlNames: ['xAxis', 'yAxis'],
+  controlNames: ['category', 'field'],
   availableFields: [],
 };

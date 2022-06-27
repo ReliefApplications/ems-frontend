@@ -5,6 +5,7 @@ import { SafeGridSettingsComponent } from '../components/widgets/grid-settings/g
 import { SafeMapSettingsComponent } from '../components/widgets/map-settings/map-settings.component';
 import { SafeEditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
 
+/** Model for IWidgetType object */
 export interface IWidgetType {
   id: string;
   name: string;
@@ -12,6 +13,7 @@ export interface IWidgetType {
   color: string;
 }
 
+/** List of Widget types with their proeprties */
 export const WIDGET_TYPES = [
   {
     id: 'donut-chart',
@@ -145,8 +147,7 @@ export const WIDGET_TYPES = [
   },
 ];
 
-/*  Model for Dashboard object.
- */
+/** Model for Dashboard object. */
 export interface Dashboard {
   id?: string;
   name?: string;

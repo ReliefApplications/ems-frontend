@@ -15,6 +15,9 @@ import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Form } from '../../../../models/form.model';
 
+/**
+ * This component is used to display a dropdown where the user chan choose a form
+ */
 @Component({
   selector: 'safe-forms-dropdown',
   templateUrl: './forms-dropdown.component.html',
@@ -23,6 +26,7 @@ import { Form } from '../../../../models/form.model';
 export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   // === DATA ===
   @Input() public forms$!: Observable<Form[]>;
+  @Input() public loadingMore = true;
   private currentForms: Form[] = [];
   public filteredForms: Form[] = [];
   private loading = true;
@@ -30,6 +34,9 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   // === REACTIVE FORM ===
   @Input() sourceControl!: AbstractControl;
   private sourceFilter = '';
+
+  // === LABEL ===
+  @Input() label!: string;
 
   // === SCROLL DETECTION ===
   @ViewChild('auto') autocomplete?: MatAutocomplete;
@@ -40,6 +47,9 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   // === FILTER ===
   @Output() filter = new EventEmitter<string>();
 
+  /**
+   * Constructor for the dropdown of forms
+   */
   constructor() {}
 
   ngOnInit(): void {
@@ -64,6 +74,11 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
       });
   }
 
+  /**
+   * Getter for the source control
+   *
+   * @returns the source control
+   */
   get sourceFormControl(): FormControl {
     return this.sourceControl as FormControl;
   }
@@ -72,6 +87,7 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
    * Filter forms by name using passed parameters.
    *
    * @param value string used to filter.
+   * @returns an array of forms
    */
   private filterForms(value: string): Form[] {
     return this.currentForms.filter((form) =>
@@ -82,7 +98,9 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   /**
    * Display function necessary for the autocomplete in order to display selected choice.
    *
-   * @param forms List of forms to compare with for display.
+   * @param formId the ID of the form
+   * @returns the name of the form with matching ID if currentForms exists and has a length,
+   * otherwise returns the formId
    */
   public displayName(formId: string): string {
     return this.currentForms && this.currentForms.length
@@ -132,6 +150,8 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
 
   /**
    * Scroll listener to emit when more forms are needed to load.
+   *
+   * @param event The event that implies that more forms are needed
    */
   private scrollListener(event: any): void {
     if (

@@ -32,6 +32,7 @@ const DEFAULT_PAGE_SIZE = 10;
 export class ResourcesComponent implements OnInit, AfterViewInit {
   // === DATA ===
   public loading = true;
+  public filterLoading = false;
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   displayedColumns: string[] = ['name', 'createdAt', 'recordsCount', 'actions'];
   public cachedResources: Resource[] = [];
@@ -59,8 +60,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     private router: Router
   ) {}
 
-  /*  Load the resources.
-   */
+  /** Load the resources. */
   ngOnInit(): void {
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES_EXTENDED,
@@ -78,6 +78,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       this.pageInfo.length = res.data.resources.totalCount;
       this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
       this.loading = res.loading;
+      this.filterLoading = false;
     });
   }
 
@@ -139,6 +140,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
    * @param filter filter event.
    */
   onFilter(filter: any): void {
+    this.filterLoading = true;
     this.filter = filter;
     this.cachedResources = [];
     this.pageInfo.pageIndex = 0;
@@ -183,8 +185,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
             name: resource.name,
           }
         ),
-        confirmText: this.translate.instant('common.delete'),
-        cancelText: this.translate.instant('common.cancel'),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
         confirmColor: 'warn',
       },
     });
@@ -240,10 +242,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };
-        Object.assign(
-          data,
-          value.binding === 'newResource' && { newResource: true }
-        );
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,

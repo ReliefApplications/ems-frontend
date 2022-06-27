@@ -11,10 +11,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom.service';
 
+/** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
   { field: string; operator: string; value: string }[]
 >([{ field: '', operator: '', value: '' }]);
 
+/** List of operators for the resource conditions */
 export const resourceConditions = [
   { value: '=', text: 'equals' },
   { value: '!=', text: 'not equals' },
@@ -347,6 +349,20 @@ export const init = (
         visibleIndex: 3,
       });
       survey.Serializer.addProperty('resources', {
+        name: 'export:boolean',
+        displayName: 'Export records',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      survey.Serializer.addProperty('resources', {
         name: 'canSearch:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -539,6 +555,11 @@ export const init = (
         visibleIndex: 4,
       });
     },
+    /**
+     * Fetch the resources when the question is loaded
+     *
+     * @param question The current question.
+     */
     onLoaded(question: any): void {
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
@@ -670,6 +691,13 @@ export const init = (
         );
       }
     },
+    /**
+     * Update question properties when the resource property is changed
+     *
+     * @param question The current question
+     * @param propertyName The name of the property
+     * @param newValue The new value assigned to the property by user
+     */
     onPropertyChanged(
       question: any,
       propertyName: string,

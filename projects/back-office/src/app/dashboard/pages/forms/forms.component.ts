@@ -42,6 +42,7 @@ const DEFAULT_PAGE_SIZE = 10;
 export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   // === DATA ===
   public loading = true;
+  public filterLoading = false;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   public displayedColumns = [
     'name',
@@ -103,6 +104,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.pageInfo.length = res.data.forms.totalCount;
       this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
       this.loading = res.loading;
+      this.filterLoading = false;
     });
 
     this.authSubscription = this.authService.user$.subscribe(() => {
@@ -170,6 +172,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param filter filter event.
    */
   onFilter(filter: any): void {
+    this.filterLoading = true;
     this.filter = filter;
     this.cachedForms = [];
     this.pageInfo.pageIndex = 0;
@@ -230,8 +233,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
             name: form.name,
           }
         ),
-        confirmText: this.translate.instant('common.delete'),
-        cancelText: this.translate.instant('common.cancel'),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
         confirmColor: 'warn',
       },
     });
@@ -285,11 +288,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
         const data = { name: value.name };
         Object.assign(
           data,
-          value.binding === 'newResource' && { newResource: true },
-          value.binding === 'fromResource' &&
-            value.resource && { resource: value.resource },
-          value.binding === 'fromResource' &&
-            value.template && { template: value.template }
+          value.resource && { resource: value.resource },
+          value.template && { template: value.template }
         );
         this.apollo
           .mutate<AddFormMutationResponse>({

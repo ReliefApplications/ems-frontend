@@ -46,6 +46,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   private recordsSubscription?: Subscription;
   private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
   public loading = true;
+  public loadingMore = false;
   public id = '';
   public resource: any;
   public cachedRecords: Record[] = [];
@@ -95,8 +96,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
     private gridLayoutService: SafeGridLayoutService
   ) {}
 
-  /*  Load data from the id of the resource passed as a parameter.
-   */
+  /** Load data from the id of the resource passed as a parameter. */
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
@@ -132,13 +132,16 @@ export class ResourceComponent implements OnInit, OnDestroy {
     );
     this.recordsSubscription = this.recordsQuery.valueChanges.subscribe(
       (res) => {
-        this.cachedRecords = res.data.resource.records.edges.map((x) => x.node);
+        this.cachedRecords.push(
+          ...res.data.resource.records.edges.map((x) => x.node)
+        );
         this.dataSourceRecords = this.cachedRecords.slice(
           ITEMS_PER_PAGE * this.pageInfo.pageIndex,
           ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
         );
         this.pageInfo.length = res.data.resource.records.totalCount;
         this.pageInfo.endCursor = res.data.resource.records.pageInfo.endCursor;
+        this.loadingMore = false;
       }
     );
 
@@ -187,31 +190,14 @@ export class ResourceComponent implements OnInit, OnDestroy {
     this.pageInfo.pageIndex = e.pageIndex;
     if (
       e.pageIndex > e.previousPageIndex &&
-      e.length > this.cachedRecords.length
+      e.length > this.cachedRecords.length &&
+      ITEMS_PER_PAGE * this.pageInfo.pageIndex >= this.cachedRecords.length
     ) {
-      this.recordsQuery.fetchMore({
-        variables: {
-          id: this.id,
-          first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            resource: {
-              records: {
-                edges: [
-                  ...prev.resource.records.edges,
-                  ...fetchMoreResult.resource.records.edges,
-                ],
-                pageInfo: fetchMoreResult.resource.records.pageInfo,
-                totalCount: fetchMoreResult.resource.records.totalCount,
-              },
-            },
-          });
-        },
+      this.loadingMore = true;
+      this.recordsQuery.refetch({
+        id: this.id,
+        first: ITEMS_PER_PAGE,
+        afterCursor: this.pageInfo.endCursor,
       });
     } else {
       this.dataSourceRecords = this.cachedRecords.slice(
@@ -267,8 +253,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
               name: element.name,
             }
           ),
-          confirmText: this.translate.instant('common.delete'),
-          cancelText: this.translate.instant('common.cancel'),
+          confirmText: this.translate.instant('components.confirmModal.delete'),
+          cancelText: this.translate.instant('components.confirmModal.cancel'),
         },
       });
       dialogRef.afterClosed().subscribe((value) => {
@@ -307,8 +293,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       });
   }
 
-  /*  Delete a form if authorized.
-   */
+  /** Delete a form if authorized. */
   deleteForm(id: any, e: any): void {
     e.stopPropagation();
     this.apollo
@@ -538,8 +523,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
             name: layout.name,
           }
         ),
-        confirmText: this.translate.instant('common.delete'),
-        cancelText: this.translate.instant('common.cancel'),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

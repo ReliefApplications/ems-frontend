@@ -14,10 +14,15 @@ import {
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
 
+/** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
 
+/** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
 
+/**
+ * Component definition for grid widgets
+ */
 @Component({
   selector: 'safe-widget-grid',
   templateUrl: './widget-grid.component.html',
@@ -56,6 +61,11 @@ export class SafeWidgetGridComponent implements OnInit {
     this.skeletons = this.getSkeletons();
   }
 
+  /**
+   * Constructor of the grid widget component
+   *
+   * @param dialog The material dialog service
+   */
   constructor(public dialog: MatDialog) {}
 
   ngOnInit(): void {

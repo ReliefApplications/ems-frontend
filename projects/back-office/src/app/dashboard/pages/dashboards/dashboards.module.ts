@@ -14,6 +14,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
+import { SafeDateModule } from '@safe/builder';
 
 @NgModule({
   declarations: [DashboardsComponent, AddDashboardComponent],
@@ -31,6 +32,7 @@ import { MatTableModule } from '@angular/material/table';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
+    SafeDateModule,
   ],
   exports: [DashboardsComponent],
 })

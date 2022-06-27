@@ -3,6 +3,7 @@
   <div class="aggregation-data-source">
     <safe-forms-dropdown
       [forms$]="forms$"
+      [loadingMore]="loadingMore"
       [sourceControl]="aggregationForm.controls.dataSource"
       (filter)="onFilterDataSource($event)"
       (scrolled)="onScrollDataSource($event)"

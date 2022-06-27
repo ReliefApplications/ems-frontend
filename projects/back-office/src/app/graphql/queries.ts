@@ -14,6 +14,7 @@ import {
   PositionAttribute,
   ApiConfiguration,
   PullJob,
+  ReferenceData,
 } from '@safe/builder';
 
 // === GET USERS ===
@@ -105,6 +106,30 @@ export const GET_FORM_NAMES = gql`
         node {
           id
           name
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+/** Graphql request for getting forms */
+export const GET_FORMS = gql`
+  query GetFormNames($first: Int, $afterCursor: ID, $filter: JSON) {
+    forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
+      edges {
+        node {
+          id
+          name
+          core
+          resource {
+            id
+          }
         }
         cursor
       }
@@ -882,6 +907,7 @@ export const GET_RECORD_DETAILS = gql`
   query GetRecordDetails($id: ID!) {
     record(id: $id) {
       id
+      incrementalId
       data
       createdAt
       modifiedAt
@@ -952,6 +978,26 @@ export const GET_API_CONFIGURATIONS = gql`
   }
 `;
 
+// === GET API CONFGIURATIONS NAME ===
+export const GET_API_CONFIGURATIONS_NAMES = gql`
+  query GetApiConfigurationsName($first: Int, $afterCursor: ID) {
+    apiConfigurations(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
 export interface GetApiConfigurationsQueryResponse {
   loading: boolean;
   apiConfigurations: {
@@ -978,6 +1024,7 @@ export const GET_API_CONFIGURATION = gql`
       endpoint
       pingUrl
       settings
+      graphQLEndpoint
       permissions {
         canSee {
           id
@@ -1056,4 +1103,108 @@ export interface GetPullJobsQueryResponse {
     };
     totalCount: number;
   };
+}
+
+// === GET REFERENCE DATAS ===
+export const GET_REFERENCE_DATAS = gql`
+  query GetReferenceDatas($first: Int, $afterCursor: ID) {
+    referenceDatas(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+          apiConfiguration {
+            id
+            name
+          }
+          type
+          query
+          fields
+          valueField
+          path
+          data
+          permissions {
+            canSee {
+              id
+              title
+            }
+            canUpdate {
+              id
+              title
+            }
+            canDelete {
+              id
+              title
+            }
+          }
+          canSee
+          canUpdate
+          canDelete
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+export interface GetReferenceDatasQueryResponse {
+  loading: boolean;
+  referenceDatas: {
+    edges: {
+      node: ReferenceData;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
+}
+
+// === GET REFERENCE DATA ===
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!) {
+    referenceData(id: $id) {
+      id
+      name
+      apiConfiguration {
+        id
+        name
+      }
+      type
+      query
+      fields
+      valueField
+      path
+      data
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
+export interface GetReferenceDataQueryResponse {
+  loading: boolean;
+  referenceData: ReferenceData;
 }

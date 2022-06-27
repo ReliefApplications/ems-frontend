@@ -12,6 +12,7 @@ import {
   SafeConfirmModalModule,
   SafeButtonModule,
   SafeSkeletonTableModule,
+  SafeDateModule,
 } from '@safe/builder';
 import { AddFormModule } from '../../../components/add-form/add-form.module';
 import { MatSortModule } from '@angular/material/sort';
@@ -55,6 +56,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatPaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
+    SafeDateModule,
   ],
   exports: [FormsComponent],
 })

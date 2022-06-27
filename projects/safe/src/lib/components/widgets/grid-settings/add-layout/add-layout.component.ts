@@ -11,6 +11,9 @@ import { Layout } from '../../../../models/layout.model';
 import { Resource } from '../../../../models/resource.model';
 import { SafeLayoutModalComponent } from '../../../layout-modal/layout-modal.component';
 
+/**
+ * Data needed for the dialog, should contain a layouts array, a form and a resource
+ */
 interface DialogData {
   layouts: Layout[];
   form?: Form;
@@ -32,6 +35,14 @@ export class AddLayoutComponent implements OnInit {
   public layouts: Layout[] = [];
   public nextStep = false;
 
+  /**
+   * Contructor for safe-add-layout component
+   *
+   * @param dialogRef Material dialog reference
+   * @param dialog Material dialog instance
+   * @param data Data used by the modal
+   * @param gridLayoutService Grid layout service
+   */
   constructor(
     private dialogRef: MatDialogRef<AddLayoutComponent>,
     private dialog: MatDialog,
@@ -50,9 +61,15 @@ export class AddLayoutComponent implements OnInit {
    */
   public onCreate(): void {
     const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
+      disableClose: true,
       data: {
         queryName: this.resource?.queryName || this.form?.queryName,
       },
+      position: {
+        bottom: '0',
+        right: '0',
+      },
+      panelClass: 'tile-settings-dialog',
     });
     dialogRef.afterClosed().subscribe((layout) => {
       if (layout) {

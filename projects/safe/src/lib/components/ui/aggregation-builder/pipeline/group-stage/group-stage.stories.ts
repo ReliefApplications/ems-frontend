@@ -74,4 +74,5 @@ const TEMPLATE: Story<SafeGroupStageComponent> = (args) => ({
 });
 
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {};

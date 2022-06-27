@@ -1,11 +1,14 @@
 <h2 mat-dialog-title>
-  {{'common.searchObject' | translate: { name: ('common.record.few' | translate)} }}
+  {{
+    'common.searchObject'
+      | translate: { name: ('common.record.few' | translate) }
+  }}
 </h2>
 <mat-dialog-content>
   <safe-core-grid
     [settings]="gridSettings"
     [multiSelect]="multiSelect"
-    [selectedRows]="selectedRows" 
+    [selectedRows]="selectedRows"
     (selectionChange)="onSelectionChange($event)"
     style="height: 410px"
     [selectable]="selectable"

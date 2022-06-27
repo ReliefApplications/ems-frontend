@@ -17,6 +17,13 @@
             {{ option }}
           </mat-option>
         </mat-autocomplete>
+        <safe-icon
+          *ngIf="canSelectDataSet && form.invalid"
+          matSuffix
+          icon="error"
+          variant="danger"
+          [matTooltip]="'components.form.layout.errors.invalid' | translate"
+        ></safe-icon>
       </mat-form-field>
 
       <mat-form-field
@@ -49,13 +56,6 @@
         </mat-form-field>
       </div>
     </ng-container>
-    <button
-      class="form-error"
-      mat-icon-button
-      *ngIf="canSelectDataSet && form.invalid"
-    >
-      <mat-icon>error</mat-icon>
-    </button>
     <mat-tab-group
       mat-align-tabs="start"
       animationDuration="0ms"
@@ -67,7 +67,6 @@
             *ngIf="availableFields.length > 0"
             [form]="$any(form.controls.fields)"
             [fields]="availableFields"
-            [factory]="factory"
           ></safe-tab-fields>
         </ng-template>
       </mat-tab>
@@ -103,7 +102,6 @@
           <safe-tab-style
             [form]="$any(form.controls.style)"
             [fields]="form.getRawValue().fields"
-            [factory]="factory"
             [scalarFields]="availableScalarFields"
           >
           </safe-tab-style>

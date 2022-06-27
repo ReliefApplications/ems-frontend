@@ -1,6 +1,5 @@
 import {
   Component,
-  ComponentFactory,
   Input,
   OnInit,
   ViewChild,
@@ -9,13 +8,15 @@ import {
 import { FormArray, FormGroup, Validators } from '@angular/forms';
 import { createStyleForm } from '../query-builder-forms';
 
+/**
+ * Component to display the styling menu
+ */
 @Component({
   selector: 'safe-tab-style',
   templateUrl: './tab-style.component.html',
   styleUrls: ['./tab-style.component.scss'],
 })
 export class SafeTabStyleComponent implements OnInit {
-  @Input() factory?: ComponentFactory<any>;
   @Input() form!: FormArray;
   @Input() editedStyleForm: FormGroup | null = null;
   @Input() fields: any[] = [];
@@ -25,11 +26,19 @@ export class SafeTabStyleComponent implements OnInit {
   @ViewChild('childTemplate', { read: ViewContainerRef })
   childTemplate?: ViewContainerRef;
 
+  /**
+   * Getter for the styles
+   *
+   * @returns The styles in an array
+   */
   get styles$(): FormArray {
     return this.form.get('style') as FormArray;
   }
   public fieldForm: FormGroup | null = null;
 
+  /**
+   * Constructor for the styling component
+   */
   constructor() {}
 
   ngOnInit(): void {}
@@ -67,6 +76,11 @@ export class SafeTabStyleComponent implements OnInit {
     this.editedStyleForm = null;
   }
 
+  /**
+   * Handles the application of a style to fields
+   *
+   * @param value Wether the style is required or not
+   */
   public onApplyTo(value: boolean): void {
     if (value) {
       this.fieldForm?.get('fields')?.setValidators(Validators.required);
