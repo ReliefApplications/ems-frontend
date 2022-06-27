@@ -665,6 +665,14 @@
 					"description": "Select the role to assign"
 				}
 			},
+			"summary": {
+				"country": "Country",
+				"firstName": "First name",
+				"lastName": "Last name",
+				"locationType": "Location type",
+				"region": "Region",
+				"title": "Summary"
+			},
 			"update": {
 				"title": "Update user"
 			}
@@ -1080,6 +1088,8 @@
 			"new": "New subscription"
 		},
 		"user": {
+			"firstName": "First name",
+			"lastName": "Last name",
 			"notifications": {
 				"rolesUpdated": "{{username}} roles updated.",
 				"userImportFail": "The user import has failed"

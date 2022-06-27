@@ -665,6 +665,14 @@
 					"description": "Sélectionner le rôle à assigner"
 				}
 			},
+			"summary": {
+				"country": "Pays",
+				"firstName": "Prénom",
+				"lastName": "Nom",
+				"locationType": "Type de localisation",
+				"region": "Région",
+				"title": "Résumé"
+			},
 			"update": {
 				"title": "Modifier l'utilisateur"
 			}
@@ -1080,6 +1088,8 @@
 			"new": "Nouvel abonnement"
 		},
 		"user": {
+			"firstName": "Prénom",
+			"lastName": "Nom",
 			"notifications": {
 				"rolesUpdated": "Les rôles de {{username}} ont été modifiés.",
 				"userImportFail": "L'importation d'utilisateurs a échoué."

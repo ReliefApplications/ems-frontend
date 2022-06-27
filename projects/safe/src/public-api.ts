@@ -63,6 +63,7 @@ export * from './lib/components/widgets/scheduler-settings/public-api';
 export * from './lib/components/widget/public-api';
 export * from './lib/components/widget-grid/public-api';
 export * from './lib/components/confirm-modal/public-api';
+export * from './lib/components/user-summary/public-api';
 export * from './lib/components/users/public-api';
 export * from './lib/components/roles/public-api';
 export * from './lib/components/previous-button/public-api';

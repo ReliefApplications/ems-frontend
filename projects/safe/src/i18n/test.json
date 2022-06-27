@@ -665,6 +665,14 @@
 					"description": "******"
 				}
 			},
+			"summary": {
+				"country": "******",
+				"firstName": "******",
+				"lastName": "******",
+				"locationType": "******",
+				"region": "******",
+				"title": "******"
+			},
 			"update": {
 				"title": "******"
 			}
@@ -1080,6 +1088,8 @@
 			"new": "******"
 		},
 		"user": {
+			"firstName": "******",
+			"lastName": "******",
 			"notifications": {
 				"rolesUpdated": "{{username}} ******",
 				"userImportFail": "******"
