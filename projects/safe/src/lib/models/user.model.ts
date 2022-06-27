@@ -13,6 +13,7 @@ export interface Permission {
 export interface Role {
   id?: string;
   title?: string;
+  description?: string;
   usersCount?: number;
   permissions?: Permission[];
   application?: Application;
@@ -22,6 +23,8 @@ export interface Role {
 /** Model for User object. */
 export interface User {
   id?: string;
+  firstName?: string;
+  lastName?: string;
   username?: string;
   isAdmin?: boolean;
   name?: string;

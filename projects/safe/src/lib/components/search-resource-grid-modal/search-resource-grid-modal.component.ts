@@ -2,6 +2,9 @@ import { ApplicationRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 
+/**
+ * Dialog data interface of the component
+ */
 interface DialogData {
   gridSettings: any;
   multiselect: boolean;
@@ -9,6 +12,9 @@ interface DialogData {
   selectable?: boolean;
 }
 
+/**
+ * Grid of records for resource / resources questions.
+ */
 @Component({
   selector: 'safe-search-resource-grid-modal',
   templateUrl: './search-resource-grid-modal.component.html',
@@ -20,10 +26,22 @@ export class SafeResourceGridModalComponent implements OnInit {
 
   public selectedRows: any[] = [];
 
+  /**
+   * Is the data selectable
+   *
+   * @returns is the data selectable
+   */
   get selectable(): boolean {
     return this.data.selectable || false;
   }
 
+  /**
+   * Grid of records for resource / resources questions.
+   *
+   * @param data dialog data
+   * @param dialogRef Material dialog reference of the component
+   * @param ref Application reference
+   */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<SafeResourceGridModalComponent>,
@@ -51,6 +69,11 @@ export class SafeResourceGridModalComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  /**
+   * Handle selection change in the grid.
+   *
+   * @param selection selection event
+   */
   onSelectionChange(selection: any): void {
     if (this.multiSelect) {
       if (selection.selectedRows.length > 0) {
@@ -71,6 +94,11 @@ export class SafeResourceGridModalComponent implements OnInit {
     }
   }
 
+  /**
+   * Close the modal, indicating if update is required
+   *
+   * @param saveChanges is update required
+   */
   closeModal(saveChanges: boolean = true): void {
     this.ref.tick();
     if (saveChanges) {

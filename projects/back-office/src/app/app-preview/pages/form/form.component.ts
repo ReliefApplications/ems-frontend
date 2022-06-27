@@ -13,6 +13,9 @@ import {
 } from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 
+/**
+ * Application preview form page component.
+ */
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
@@ -37,6 +40,13 @@ export class FormComponent implements OnInit {
   private routeSubscription?: Subscription;
   public isStep = false;
 
+  /**
+   * Application preview form page component.
+   *
+   * @param apollo Apollo service
+   * @param route Angular current route
+   * @param router Angular router
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -104,7 +114,9 @@ export class FormComponent implements OnInit {
   /**
    * Handles complete event.
    *
-   * @param e complete event.
+   * @param e complete event
+   * @param e.completed is event completed
+   * @param e.hideNewRecord do we need to hide new record
    */
   onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;

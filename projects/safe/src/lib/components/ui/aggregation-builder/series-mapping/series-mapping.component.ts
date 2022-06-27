@@ -20,6 +20,9 @@ export class SafeSeriesMappingComponent implements OnInit {
   @Input() mappingForm!: AbstractControl;
   public controlNames: string[] = [];
 
+  /**
+   * Mapping of series parameters ( category / field ).
+   */
   constructor() {}
 
   /**

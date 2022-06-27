@@ -36,7 +36,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
     hasNextPage: true,
   };
   private loading = true;
-  private loadingMore = false;
+  public loadingMore = false;
 
   @ViewChild('formSelect') formSelect?: MatSelect;
 

@@ -2,19 +2,25 @@
   <h1>{{ 'pages.profile.title' | translate }}</h1>
   <div class="form-group">
     <div class="form-group-row">
-      <mat-form-field appearance="outline" style="flex: 2">
+      <mat-form-field appearance="outline">
         <mat-label>
-          {{ 'common.name' | translate }}
+          {{ 'models.user.firstName' | translate }}
         </mat-label>
-        <input matInput formControlName="name" type="text" />
+        <input matInput formControlName="firstName" type="text" />
       </mat-form-field>
-      <mat-form-field appearance="outline" style="flex: 1">
+      <mat-form-field appearance="outline">
         <mat-label>
-          {{ 'models.user.username' | translate }}
+          {{ 'models.user.lastName' | translate }}
         </mat-label>
-        <input matInput formControlName="username" type="text" />
+        <input matInput formControlName="lastName" type="text" />
       </mat-form-field>
     </div>
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'models.user.username' | translate }}
+      </mat-label>
+      <input matInput formControlName="username" type="text" />
+    </mat-form-field>
   </div>
   <safe-button
     category="secondary"

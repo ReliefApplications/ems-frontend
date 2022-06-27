@@ -2,18 +2,27 @@ import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { ChartComponent, SeriesStack } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
+/**
+ * Interface of chart title.
+ */
 interface ChartTitle {
   visible: boolean;
   text: string;
   position: 'top' | 'bottom';
 }
 
+/**
+ * Interface of chart legend.
+ */
 interface ChartLegend {
   visible: boolean;
   orientation: 'horizontal' | 'vertical';
   position: 'top' | 'bottom' | 'left' | 'right';
 }
 
+/**
+ * Interface of chart series.
+ */
 interface ChartSeries {
   name?: string;
   color?: string;
@@ -23,11 +32,13 @@ interface ChartSeries {
   }[];
 }
 
+/** Interface of chart labels */
 interface ChartLabels {
   showValue: boolean;
   valueType: string;
 }
 
+/** Interface of chart options */
 interface ChartOptions {
   palette: string[];
   axes?: {
@@ -40,6 +51,9 @@ interface ChartOptions {
   stack: boolean | SeriesStack;
 }
 
+/**
+ * Bar chart component, based on kendo chart component.
+ */
 @Component({
   selector: 'safe-bar-chart',
   templateUrl: './bar-chart.component.html',
@@ -71,6 +85,11 @@ export class SafeBarChartComponent implements OnInit, OnChanges {
   public chart?: ChartComponent;
 
   /**
+   * Bar chart component, based on kendo chart component.
+   */
+  constructor() {}
+
+  /**
    * The function which returns the Chart series label content.
    * Content is defined on the component init.
    *
@@ -99,7 +118,6 @@ export class SafeBarChartComponent implements OnInit, OnChanges {
     const showCategory = get(this.options, 'labels.showCategory', false);
     const showValue = get(this.options, 'labels.showValue', false);
     const valueType = get(this.options, 'labels.valueType', 'value');
-
     if (showCategory) {
       if (showValue) {
         switch (valueType) {

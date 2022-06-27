@@ -25,6 +25,12 @@ import { TranslateService } from '@ngx-translate/core';
 /** A constant that is used to set the number of items to be displayed on the page. */
 const ITEMS_PER_PAGE = 25;
 
+/**
+ * Scroll Factory for material select, provided by the component.
+ *
+ * @param overlay material overlay
+ * @returns Strategy to prevent scrolling if user sees overlay.
+ */
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
