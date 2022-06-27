@@ -6,7 +6,7 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 
 /**
- *
+ * Array filter component module.
  */
 @NgModule({
   declarations: [SafeArrayFilterComponent],

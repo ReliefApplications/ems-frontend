@@ -17,9 +17,7 @@ export class SafeArrayFilterComponent
   extends BaseFilterCellComponent
   implements OnInit
 {
-  /**
-   * Returns the selected values
-   */
+  /** @returns selected value */
   public get selectedValue(): any {
     const filter = this.filterByField(this.field);
     return filter ? filter.value : null;
@@ -31,9 +29,7 @@ export class SafeArrayFilterComponent
   @Input() public textField = '';
   @Input() public valueField = '';
 
-  /**
-   *  Returns and empty item
-   */
+  /** @returns empty default item */
   public get defaultItem(): any {
     return {
       [this.textField]: 'Select item...',
@@ -74,7 +70,7 @@ export class SafeArrayFilterComponent
    * Contructor for safe-array-filter
    *
    * @param filterService Filter service
-   * @param translate
+   * @param translate Angular translate service
    */
   constructor(
     filterService: FilterService,
@@ -118,7 +114,7 @@ export class SafeArrayFilterComponent
   /**
    * Updates the filter on item selection
    *
-   * @param value
+   * @param value new filter value
    */
   public onChange(value: any): void {
     this.applyFilter(
@@ -135,7 +131,7 @@ export class SafeArrayFilterComponent
   /**
    * Updates de operation used in filtering
    *
-   * @param value
+   * @param value new operator value
    */
   public onChangeOperator(value: any): void {
     this.selectedOperator = value.value;
@@ -147,7 +143,7 @@ export class SafeArrayFilterComponent
   /**
    * Handles filtering
    *
-   * @param value
+   * @param value new filter value
    */
   public handleFilter(value: string): void {
     this.choices = this.data.filter(

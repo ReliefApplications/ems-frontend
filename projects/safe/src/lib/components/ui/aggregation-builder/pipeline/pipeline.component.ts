@@ -28,6 +28,12 @@ export class SafePipelineComponent implements OnInit {
 
   // === PARENT FORM ===
   @Input() pipelineForm!: FormArray;
+
+  /**
+   * Aggregation pipeline component.
+   *
+   * @param aggregationBuilder Shared aggregation builder
+   */
   constructor(private aggregationBuilder: AggregationBuilderService) {}
 
   ngOnInit(): void {

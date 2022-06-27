@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AppPreviewComponent } from './app-preview.component';
 
+/** List of Application Preview routes */
 const routes: Routes = [
   {
     path: '',

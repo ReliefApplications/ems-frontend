@@ -266,10 +266,10 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Reorders the sidenav items when they change position on drag and drop
+   * Drop event handler. Move item in layout navigation item list.
    *
-   * @param event
-   * @param group
+   * @param event drop event
+   * @param group group where the event occurs
    */
   drop(event: any, group: any): void {
     moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);

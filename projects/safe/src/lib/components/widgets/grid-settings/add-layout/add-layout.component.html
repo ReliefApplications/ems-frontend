@@ -9,6 +9,7 @@
       category="secondary"
       [block]="true"
       (click)="nextStep = true"
+      [disabled]="layouts.length < 1"
       >{{
         'components.widget.settings.grid.layouts.add.choice.load' | translate
       }}</safe-button
