@@ -26,7 +26,7 @@ import { Form } from '../../../../models/form.model';
 export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   // === DATA ===
   @Input() public forms$!: Observable<Form[]>;
-  @Input() public loadingMore: boolean = true;
+  @Input() public loadingMore = true;
   private currentForms: Form[] = [];
   public filteredForms: Form[] = [];
   private loading = true;
