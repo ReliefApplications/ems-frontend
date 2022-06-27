@@ -17,6 +17,19 @@
         [cdkAutosizeMinRows]="5"
       ></textarea>
     </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        'components.role.update.permissions' | translate
+      }}</mat-label>
+      <mat-select formControlName="permissions" multiple>
+        <mat-option
+          *ngFor="let permission of permissions"
+          [value]="permission.id"
+        >
+          {{ permission.type }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 </form>
 <safe-button

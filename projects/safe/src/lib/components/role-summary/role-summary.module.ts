@@ -7,6 +7,7 @@ import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
 import { RoleChannelsModule } from './role-channels/role-channels.module';
 import { RoleDetailsModule } from './role-details/role-details.module';
 import { RoleFeaturesModule } from './role-features/role-features.module';
+import { RoleResourcesModule } from './role-resources/role-resources.module';
 
 @NgModule({
   declarations: [SafeRoleSummaryComponent],
@@ -18,6 +19,7 @@ import { RoleFeaturesModule } from './role-features/role-features.module';
     RoleChannelsModule,
     RoleDetailsModule,
     RoleFeaturesModule,
+    RoleResourcesModule,
   ],
   exports: [SafeRoleSummaryComponent],
 })

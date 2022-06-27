@@ -19,6 +19,9 @@ export const EDIT_ROLE = gql`
       id
       title
       description
+      application {
+        id
+      }
       permissions {
         id
         type

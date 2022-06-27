@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [RoleDetailsComponent],
@@ -17,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatInputModule,
     SafeButtonModule,
+    MatSelectModule,
   ],
   exports: [RoleDetailsComponent],
 })

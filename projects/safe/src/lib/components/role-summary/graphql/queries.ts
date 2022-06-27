@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Role } from '../../../models/user.model';
+import { Permission, Role } from '../../../models/user.model';
 
 export const GET_ROLE = gql`
   query GetRole($id: ID!) {
@@ -11,6 +11,9 @@ export const GET_ROLE = gql`
         id
         type
       }
+      application {
+        id
+      }
     }
   }
 `;
@@ -18,4 +21,21 @@ export const GET_ROLE = gql`
 export interface GetRoleQueryResponse {
   loading: boolean;
   role: Role;
+}
+
+/** Graphql request for getting permissions */
+export const GET_PERMISSIONS = gql`
+  query GetPermissions($application: Boolean) {
+    permissions(application: $application) {
+      id
+      type
+      global
+    }
+  }
+`;
+
+/** Model for GetPermissionsQueryResponse object */
+export interface GetPermissionsQueryResponse {
+  loading: boolean;
+  permissions: Permission[];
 }
