@@ -80,6 +80,7 @@ export * from './lib/components/applications-summary/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
 export * from './lib/components/reference-data-dropdown/public-api';
 export * from './lib/components/skeleton/skeleton-table/public-api';
+export * from './lib/components/role-summary/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/layout-modal/public-api';

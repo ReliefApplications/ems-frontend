@@ -1,0 +1,29 @@
+<form [formGroup]="form">
+  <div class="form-group">
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'models.role.title' | translate }}
+      </mat-label>
+      <input matInput formControlName="title" type="text" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'models.role.description' | translate }}
+      </mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        [cdkTextareaAutosize]="true"
+        [cdkAutosizeMinRows]="5"
+      ></textarea>
+    </mat-form-field>
+  </div>
+</form>
+<safe-button
+  variant="primary"
+  category="secondary"
+  type="submit"
+  [disabled]="!form.valid"
+  (click)="onUpdate()"
+  >{{ 'common.saveChanges' | translate }}</safe-button
+>

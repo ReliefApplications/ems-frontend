@@ -649,6 +649,10 @@
 			"impersonate": {
 				"title": "Choose role to simulate"
 			},
+			"summary": {
+				"features": "Features",
+				"title": "Summary"
+			},
 			"update": {
 				"permissions": "Permissions",
 				"title": "Update role permissions and channels"
@@ -1079,7 +1083,9 @@
 			"create": "Create a Resource"
 		},
 		"role": {
-			"create": "Create a role"
+			"create": "Create a role",
+			"description": "Description",
+			"title": "Title"
 		},
 		"step": {
 			"new": "New step"

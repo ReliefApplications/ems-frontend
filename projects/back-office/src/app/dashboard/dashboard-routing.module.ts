@@ -195,9 +195,24 @@ export const routes = [
           },
           {
             path: 'roles',
-            loadChildren: () =>
-              import('./pages/roles/roles.module').then((m) => m.RolesModule),
-            // canActivate: [SafePermissionGuard]
+            children: [
+              {
+                path: '',
+                loadChildren: () =>
+                  import('./pages/roles/roles.module').then(
+                    (m) => m.RolesModule
+                  ),
+                // canActivate: [SafePermissionGuard]
+              },
+              {
+                path: ':id',
+                loadChildren: () =>
+                  import('./pages/role-summary/role-summary.module').then(
+                    (m) => m.RoleSummaryModule
+                  ),
+                // canActivate: [SafePermissionGuard]
+              },
+            ],
           },
           {
             path: 'apiconfigurations',

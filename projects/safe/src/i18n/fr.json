@@ -649,6 +649,10 @@
 			"impersonate": {
 				"title": "Choix du rôle à simuler"
 			},
+			"summary": {
+				"features": "Fonctionnalités",
+				"title": "Résumé"
+			},
 			"update": {
 				"permissions": "Permissions",
 				"title": "Modifier les permissions des rôles et les canaux de diffusion"
@@ -1079,7 +1083,9 @@
 			"create": "Créer une ressource"
 		},
 		"role": {
-			"create": "Créer un rôle"
+			"create": "Créer un rôle",
+			"description": "Description",
+			"title": "Titre"
 		},
 		"step": {
 			"new": "Nouvelle étape"

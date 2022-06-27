@@ -29,6 +29,7 @@ import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /**
  * This component is used to display the roles page in the platform
@@ -72,13 +73,17 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate This is the service that is used to
    * translate the text in the application.
+   * @param router Angular router
+   * @param activatedRoute Current Angular route
    */
   constructor(
     public dialog: MatDialog,
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -287,5 +292,14 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchText = '';
     this.usersFilter = '';
     this.applyFilter('', null);
+  }
+
+  /**
+   * Open role in new page
+   *
+   * @param role role to see details of
+   */
+  onClick(role: Role): void {
+    this.router.navigate([role.id], { relativeTo: this.activatedRoute });
   }
 }
