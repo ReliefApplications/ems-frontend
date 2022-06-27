@@ -1,6 +1,7 @@
 import { gql } from 'apollo-angular';
 import { Role } from '../../../models/user.model';
 
+/** Edit role mutation of role summary component */
 export const EDIT_ROLE = gql`
   mutation editRole(
     $id: ID!
@@ -38,6 +39,7 @@ export const EDIT_ROLE = gql`
   }
 `;
 
+/** Interface of edit role mutation */
 export interface EditRoleMutationResponse {
   loading: boolean;
   editRole: Role;

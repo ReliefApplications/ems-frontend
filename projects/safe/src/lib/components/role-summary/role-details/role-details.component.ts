@@ -8,6 +8,10 @@ import {
 } from '../graphql/queries';
 import { get } from 'lodash';
 
+/**
+ * General tab of Role Summary.
+ * Contain title / description of role + list of users and permissions.
+ */
 @Component({
   selector: 'safe-role-details',
   templateUrl: './role-details.component.html',
@@ -19,6 +23,13 @@ export class RoleDetailsComponent implements OnInit {
   public form!: FormGroup;
   @Output() edit = new EventEmitter();
 
+  /**
+   * General tab of Role Summary.
+   * Contain title / description of role + list of users and permissions.
+   *
+   * @param fb Angular form builder
+   * @param apollo Apollo Client
+   */
   constructor(private fb: FormBuilder, private apollo: Apollo) {}
 
   ngOnInit(): void {
@@ -39,6 +50,9 @@ export class RoleDetailsComponent implements OnInit {
       });
   }
 
+  /**
+   * Emit an event with new role value
+   */
   onUpdate(): void {
     this.edit.emit(this.form.value);
   }

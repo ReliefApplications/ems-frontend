@@ -26,7 +26,11 @@
   </mat-tab>
   <mat-tab [label]="'common.channel.few' | translate">
     <ng-template matTabContent>
-      <safe-role-channels *ngIf="role"></safe-role-channels>
+      <safe-role-channels
+        *ngIf="role && !loading"
+        [role]="role"
+        (edit)="onEditRole($event)"
+      ></safe-role-channels>
       <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
   </mat-tab>

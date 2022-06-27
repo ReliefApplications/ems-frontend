@@ -9,6 +9,10 @@ import { RoleDetailsModule } from './role-details/role-details.module';
 import { RoleFeaturesModule } from './role-features/role-features.module';
 import { RoleResourcesModule } from './role-resources/role-resources.module';
 
+/**
+ * Shared role summary component module.
+ * Role summary displays role information and allows edition of role parameters.
+ */
 @NgModule({
   declarations: [SafeRoleSummaryComponent],
   imports: [
