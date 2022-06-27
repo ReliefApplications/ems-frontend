@@ -186,6 +186,7 @@ export class SafeAuthService {
     this.account = null;
     this.user.next(null);
     localStorage.removeItem('idtoken');
+    localStorage.removeItem('redirectPath');
     this.oauthService.logOut();
   }
 
