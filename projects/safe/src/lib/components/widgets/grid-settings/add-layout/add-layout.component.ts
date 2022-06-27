@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   MatDialog,
   MatDialogRef,
@@ -29,7 +29,7 @@ interface DialogData {
   templateUrl: './add-layout.component.html',
   styleUrls: ['./add-layout.component.scss'],
 })
-export class AddLayoutComponent implements OnInit {
+export class AddLayoutComponent {
   private form?: Form;
   private resource?: Resource;
   public layouts: Layout[] = [];
@@ -53,8 +53,6 @@ export class AddLayoutComponent implements OnInit {
     this.form = data.form;
     this.resource = data.resource;
   }
-
-  ngOnInit(): void {}
 
   /**
    * Opens the panel to create a new layout.
