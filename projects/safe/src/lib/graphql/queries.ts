@@ -18,6 +18,8 @@ export const GET_PROFILE = gql`
   {
     me {
       id
+      firstName
+      lastName
       username
       isAdmin
       name

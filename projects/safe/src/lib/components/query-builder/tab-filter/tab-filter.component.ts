@@ -322,6 +322,12 @@ export class SafeTabFilterComponent implements OnInit {
     this.form.controls[filterName].setValue('today()');
   }
 
+  /**
+   * Change editor for a field.
+   * It is possible, for date questions, to use text editor instead of date selection.
+   *
+   * @param index index of filter field
+   */
   onChangeEditor(index: number): void {
     const formGroup = this.filters.at(index) as FormGroup;
     formGroup

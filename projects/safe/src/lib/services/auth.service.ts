@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { User } from '../models/user.model';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
 import {
@@ -53,18 +53,23 @@ export class SafeAuthService {
     this.isDoneLoading$,
   ]).pipe(map((values) => values.every((x) => x)));
 
+  private environment: any;
+
   /**
    * Shared authentication service.
    *
+   * @param environment Environment file where front and back office urls are specified
    * @param apollo Apollo client
    * @param oauthService OAuth authentification service
    * @param router Angular Router service
    */
   constructor(
+    @Inject('environment') environment: any,
     private apollo: Apollo,
     private oauthService: OAuthService,
     private router: Router
   ) {
+    this.environment = environment;
     this.oauthService.events.subscribe(() => {
       this.isAuthenticated.next(this.oauthService.hasValidAccessToken());
       this.checkAccount();
@@ -145,11 +150,25 @@ export class SafeAuthService {
    * @returns A promise that resolves to void.
    */
   public initLoginSequence(): Promise<void> {
-    const redirectUri = new URL(location.href);
-    console.log(redirectUri);
-    redirectUri.search = '';
-    if (redirectUri.pathname !== '/') {
-      localStorage.setItem('redirectPath', redirectUri.pathname);
+    if (!localStorage.getItem('idtoken')) {
+      let redirectUri: URL;
+      if (this.environment.module === 'backoffice') {
+        const pathName = location.href.replace(
+          this.environment.backOfficeUri,
+          '/'
+        );
+        redirectUri = new URL(pathName, this.environment.backOfficeUri);
+      } else {
+        const pathName = location.href.replace(
+          this.environment.backOfficeUri,
+          '/'
+        );
+        redirectUri = new URL(pathName, this.environment.frontOfficeUri);
+      }
+      redirectUri.search = '';
+      if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
+        localStorage.setItem('redirectPath', redirectUri.pathname);
+      }
     }
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()

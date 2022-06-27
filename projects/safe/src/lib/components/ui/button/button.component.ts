@@ -12,6 +12,9 @@ import { ButtonCategory } from './button-category.enum';
 import { ButtonSize } from './button-size.enum';
 import { ButtonVariant } from './button-variant.enum';
 
+/**
+ * Button component.
+ */
 @Component({
   selector: 'safe-button',
   templateUrl: './button.component.html',
@@ -38,6 +41,11 @@ export class SafeButtonComponent implements OnInit {
 
   public emittedEventSubject: Subject<string> = new Subject();
 
+  /**
+   * Return material color of button, from variant.
+   *
+   * @returns material color, if any
+   */
   get color(): string {
     switch (this.variant) {
       case ButtonVariant.PRIMARY: {
@@ -52,6 +60,11 @@ export class SafeButtonComponent implements OnInit {
     }
   }
 
+  /**
+   * Return variant of spinner
+   *
+   * @returns spinner variant
+   */
   get spinnerVariant(): string {
     switch (this.category) {
       case ButtonCategory.PRIMARY: {
@@ -73,6 +86,9 @@ export class SafeButtonComponent implements OnInit {
     }
   }
 
+  /**
+   * Button component.
+   */
   constructor() {}
 
   ngOnInit(): void {}

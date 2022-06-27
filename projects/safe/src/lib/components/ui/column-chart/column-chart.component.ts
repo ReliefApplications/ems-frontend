@@ -2,18 +2,27 @@ import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { ChartComponent, SeriesStack } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
+/**
+ * Interface of chart title
+ */
 interface ChartTitle {
   visible: boolean;
   text: string;
   position: 'top' | 'bottom';
 }
 
+/**
+ * Interface of chart legend
+ */
 interface ChartLegend {
   visible: boolean;
   orientation: 'horizontal' | 'vertical';
   position: 'top' | 'bottom' | 'left' | 'right';
 }
 
+/**
+ * Interface of chart series
+ */
 interface ChartSeries {
   name?: string;
   color?: string;
@@ -23,11 +32,13 @@ interface ChartSeries {
   }[];
 }
 
+/** Interface of chart labels */
 interface ChartLabels {
   showValue: boolean;
   valueType: string;
 }
 
+/** Interface of chart options */
 interface ChartOptions {
   palette: string[];
   axes?: {
@@ -40,6 +51,9 @@ interface ChartOptions {
   stack: boolean | SeriesStack;
 }
 
+/**
+ * Column chart component, based on kendo chart component.
+ */
 @Component({
   selector: 'safe-column-chart',
   templateUrl: './column-chart.component.html',
@@ -75,7 +89,7 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
    * Content is defined on the component init.
    *
    * @param e - Event which with the specific label data
-   * @return Returns a string which will be used as the label content
+   * @returns Returns a string which will be used as the label content
    */
   public labelContent: ((e: any) => string) | null = null;
 

@@ -51,7 +51,7 @@ interface ChartOptions {
   styleUrls: ['./pie-chart.component.scss'],
 })
 /**
- *
+ * Pie chart component, based on kendo chart component.
  */
 export class SafePieChartComponent implements OnInit {
   @Input() title: ChartTitle | undefined;

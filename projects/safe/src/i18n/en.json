@@ -649,6 +649,10 @@
 			"impersonate": {
 				"title": "Choose role to simulate"
 			},
+			"summary": {
+				"features": "Features",
+				"title": "Summary"
+			},
 			"update": {
 				"permissions": "Permissions",
 				"title": "Update role permissions and channels"
@@ -664,6 +668,14 @@
 				"role": {
 					"description": "Select the role to assign"
 				}
+			},
+			"summary": {
+				"country": "Country",
+				"firstName": "First name",
+				"lastName": "Last name",
+				"locationType": "Location type",
+				"region": "Region",
+				"title": "Summary"
 			},
 			"update": {
 				"title": "Update user"
@@ -1090,7 +1102,9 @@
 			"create": "Create a Resource"
 		},
 		"role": {
-			"create": "Create a role"
+			"create": "Create a role",
+			"description": "Description",
+			"title": "Title"
 		},
 		"step": {
 			"new": "New step"
@@ -1099,6 +1113,8 @@
 			"new": "New subscription"
 		},
 		"user": {
+			"firstName": "First name",
+			"lastName": "Last name",
 			"notifications": {
 				"rolesUpdated": "{{username}} roles updated.",
 				"userImportFail": "The user import has failed"

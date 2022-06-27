@@ -649,6 +649,10 @@
 			"impersonate": {
 				"title": "******"
 			},
+			"summary": {
+				"features": "******",
+				"title": "******"
+			},
 			"update": {
 				"permissions": "******",
 				"title": "******"
@@ -664,6 +668,14 @@
 				"role": {
 					"description": "******"
 				}
+			},
+			"summary": {
+				"country": "******",
+				"firstName": "******",
+				"lastName": "******",
+				"locationType": "******",
+				"region": "******",
+				"title": "******"
 			},
 			"update": {
 				"title": "******"
@@ -1090,7 +1102,9 @@
 			"create": "******"
 		},
 		"role": {
-			"create": "******"
+			"create": "******",
+			"description": "******",
+			"title": "******"
 		},
 		"step": {
 			"new": "******"
@@ -1099,6 +1113,8 @@
 			"new": "******"
 		},
 		"user": {
+			"firstName": "******",
+			"lastName": "******",
 			"notifications": {
 				"rolesUpdated": "{{username}} ******",
 				"userImportFail": "******"

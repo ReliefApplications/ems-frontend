@@ -2,18 +2,21 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ChartComponent } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
+/** Interface for the chart title */
 interface ChartTitle {
   visible: boolean;
   text: string;
   position: 'top' | 'bottom';
 }
 
+/** Interface for the chart legend */
 interface ChartLegend {
   visible: boolean;
   orientation: 'horizontal' | 'vertical';
   position: 'top' | 'bottom' | 'left' | 'right';
 }
 
+/** Interface for the chart series */
 interface ChartSeries {
   data: {
     category: any;
@@ -22,17 +25,23 @@ interface ChartSeries {
   }[];
 }
 
+/** Interface for chart labels */
 interface ChartLabels {
   showCategory: boolean;
   showValue: boolean;
   valueType: string;
 }
 
+/** Interface for chart options */
 interface ChartOptions {
   palette: string[];
   labels?: ChartLabels;
 }
 
+/**
+ * Component for donut charts
+ * Uses kendo chart to render the data as a donut chart
+ */
 @Component({
   selector: 'safe-donut-chart',
   templateUrl: './donut-chart.component.html',
@@ -57,10 +66,13 @@ export class SafeDonutChartComponent implements OnInit {
    * Content is defined on the component init.
    *
    * @param e - Event which with the specific label data
-   * @return Returns a string which will be used as the label content
+   * @returns Returns a string which will be used as the label content
    */
   public labelContent: ((e: any) => string) | null = null;
 
+  /**
+   * Component for donut charts.
+   */
   constructor() {}
 
   ngOnInit(): void {
