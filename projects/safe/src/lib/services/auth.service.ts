@@ -150,23 +150,25 @@ export class SafeAuthService {
    * @returns A promise that resolves to void.
    */
   public initLoginSequence(): Promise<void> {
-    let redirectUri: URL;
-    if (this.environment.module === 'backoffice') {
-      const pathName = location.href.replace(
-        this.environment.backOfficeUri,
-        '/'
-      );
-      redirectUri = new URL(pathName, this.environment.backOfficeUri);
-    } else {
-      const pathName = location.href.replace(
-        this.environment.backOfficeUri,
-        '/'
-      );
-      redirectUri = new URL(pathName, this.environment.frontOfficeUri);
-    }
-    redirectUri.search = '';
-    if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
-      localStorage.setItem('redirectPath', redirectUri.pathname);
+    if (!localStorage.getItem('idtoken')) {
+      let redirectUri: URL;
+      if (this.environment.module === 'backoffice') {
+        const pathName = location.href.replace(
+          this.environment.backOfficeUri,
+          '/'
+        );
+        redirectUri = new URL(pathName, this.environment.backOfficeUri);
+      } else {
+        const pathName = location.href.replace(
+          this.environment.backOfficeUri,
+          '/'
+        );
+        redirectUri = new URL(pathName, this.environment.frontOfficeUri);
+      }
+      redirectUri.search = '';
+      if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
+        localStorage.setItem('redirectPath', redirectUri.pathname);
+      }
     }
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
@@ -186,7 +188,6 @@ export class SafeAuthService {
     this.account = null;
     this.user.next(null);
     localStorage.removeItem('idtoken');
-    localStorage.removeItem('redirectPath');
     this.oauthService.logOut();
   }
 
