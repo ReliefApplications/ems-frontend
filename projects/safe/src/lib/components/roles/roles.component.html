@@ -54,7 +54,7 @@
       >
       </safe-button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onEdit(element)">
+        <button mat-menu-item (click)="onOpen(element)">
           <mat-icon>edit</mat-icon>
           {{ 'common.edit' | translate }}
         </button>
@@ -68,7 +68,7 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="onClick(row)"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="onOpen(row)"></tr>
 </table>
 
 <safe-skeleton-table

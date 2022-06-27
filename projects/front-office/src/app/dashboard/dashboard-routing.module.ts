@@ -62,11 +62,24 @@ export const routes = [
             children: [
               {
                 path: 'roles',
-                loadChildren: () =>
-                  import('./pages/roles/roles.module').then(
-                    (m) => m.RolesModule
-                  ),
-                // canActivate: [WhoPermissionGuard]
+                children: [
+                  {
+                    path: '',
+                    loadChildren: () =>
+                      import('./pages/roles/roles.module').then(
+                        (m) => m.RolesModule
+                      ),
+                    // canActivate: [SafePermissionGuard]
+                  },
+                  {
+                    path: ':id',
+                    loadChildren: () =>
+                      import('./pages/role-summary/role-summary.module').then(
+                        (m) => m.RoleSummaryModule
+                      ),
+                    // canActivate: [SafePermissionGuard]
+                  },
+                ],
               },
               {
                 path: 'users',

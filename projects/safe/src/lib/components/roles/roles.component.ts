@@ -299,7 +299,7 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
    *
    * @param role role to see details of
    */
-  onClick(role: Role): void {
+  onOpen(role: Role): void {
     this.router.navigate([role.id], { relativeTo: this.activatedRoute });
   }
 }
