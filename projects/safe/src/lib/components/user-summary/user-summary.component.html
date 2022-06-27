@@ -2,20 +2,23 @@
   {{
     ('common.user.one' | translate) +
       ' - ' +
-      user?.firstName +
-      ' ' +
-      user?.lastName
+      title
   }}
 </h1>
 <mat-tab-group>
   <mat-tab [label]="'components.user.summary.title' | translate">
     <ng-template matTabContent>
-      <safe-user-details></safe-user-details>
+      <safe-user-details
+        *ngIf="!loading && user"
+        [user]="user"
+        (edit)="onEditProfile($event)"
+      ></safe-user-details>
+      <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
   </mat-tab>
-  <mat-tab [label]="'common.role.few' | translate">
+  <!-- <mat-tab [label]="'common.role.few' | translate">
     <ng-template matTabContent>
       <safe-user-roles></safe-user-roles>
     </ng-template>
-  </mat-tab>
+  </mat-tab> -->
 </mat-tab-group>

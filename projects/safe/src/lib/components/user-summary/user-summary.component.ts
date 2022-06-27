@@ -1,26 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Role, User } from '../../models/user.model';
-
-// const regions = [
-//   'Asia',
-//   'Africa',
-//   'North America',
-//   'South America',
-//   'Europe',
-//   'Australia',
-// ];
-// const countries = ['Chile'];
-// const locationTypes = ['Headquarters'];
-const dummyUser = {
-  firstName: 'Pedro',
-  lastName: 'Pascal',
-  username: 'ppascal@mail.com',
-  region: 'South America',
-  country: 'Chile',
-  locationType: 'Headquarters',
-  roles: [],
-};
+import { Apollo } from 'apollo-angular';
+import { User } from '../../models/user.model';
+import {
+  EditUserProfileMutationResponse,
+  EDIT_USER_PROFILE,
+} from './graphql/mutations';
+import { GetUserQueryResponse, GET_USER } from './graphql/queries';
 
 /**
  * User Summary shared component.
@@ -32,34 +17,65 @@ const dummyUser = {
 })
 export class SafeUserSummaryComponent implements OnInit {
   @Input() public id = '';
-  @Input() public roles?: Role[];
-  @Input() public user: User = dummyUser;
+  public user?: User;
+  public loading = true;
 
-  // public regions = regions;
-  // public countries = countries;
-  // public locationTypes = locationTypes;
-  public form?: FormGroup;
+  /** @returns title of the page */
+  get title(): string {
+    if (this.user) {
+      if (this.user.firstName && this.user.lastName) {
+        return `${this.user?.firstName} ${this.user?.lastName}`;
+      } else {
+        return `${this.user.name ? this.user.name : this.user.username}`;
+      }
+    } else {
+      return '';
+    }
+  }
 
   /**
    * User Summary shared component.
    *
-   * @param fb Angular form builder
+   * @param apollo Apollo client
    */
-  constructor(private fb: FormBuilder) {}
+  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      firstName: [this.user.firstName, Validators.required],
-      lastName: [this.user.lastName, Validators.required],
-      email: [{ value: this.user.username, disabled: true }],
-      // region: dummyUser.region,
-      // country: dummyUser.country,
-      // locationType: dummyUser.locationType,
-      roles: this.user.roles,
-    });
+    this.apollo
+      .query<GetUserQueryResponse>({
+        query: GET_USER,
+        variables: {
+          id: this.id,
+        },
+      })
+      .subscribe((res) => {
+        if (res.data) {
+          this.user = res.data.user;
+        }
+        this.loading = res.data.loading;
+      });
   }
 
-  onSubmit(): void {
-    console.log(this.form?.value);
+  /**
+   * Edit Profile of user.
+   *
+   * @param e update event
+   */
+  onEditProfile(e: any): void {
+    this.loading = true;
+    this.apollo
+      .mutate<EditUserProfileMutationResponse>({
+        mutation: EDIT_USER_PROFILE,
+        variables: {
+          profile: e,
+          id: this.id,
+        },
+      })
+      .subscribe((res) => {
+        if (res.data) {
+          this.user = res.data.editUserProfile;
+          this.loading = res.data.loading;
+        }
+      });
   }
 }

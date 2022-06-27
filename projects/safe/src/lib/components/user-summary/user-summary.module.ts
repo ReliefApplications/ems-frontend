@@ -5,6 +5,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserDetailsModule } from './user-details/user-details.module';
 import { UserRolesModule } from './user-roles/user-roles.module';
+import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
 
 /**
  * User Summary component module.
@@ -17,6 +18,7 @@ import { UserRolesModule } from './user-roles/user-roles.module';
     TranslateModule,
     UserDetailsModule,
     UserRolesModule,
+    SafeSpinnerModule,
   ],
   exports: [SafeUserSummaryComponent],
 })

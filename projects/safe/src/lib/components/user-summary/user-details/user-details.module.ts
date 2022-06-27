@@ -7,6 +7,9 @@ import { MatInputModule } from '@angular/material/input';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * User details module.
+ */
 @NgModule({
   declarations: [UserDetailsComponent],
   imports: [

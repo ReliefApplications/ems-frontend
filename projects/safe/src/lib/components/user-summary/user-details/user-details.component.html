@@ -63,5 +63,6 @@
   category="secondary"
   type="submit"
   [disabled]="!form.valid"
+  (click)="onUpdate()"
   >{{ 'common.saveChanges' | translate }}</safe-button
 >
