@@ -867,7 +867,7 @@
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
-						"dataset": "Filtrez le jeu de données et sélectionnez les champs à afficher sur la carte",
+						"dataset": "Sélectionnez des points de donnée ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché au clic sur un marqueur",
 						"default": {
 							"latitude": "Sélectionnez une latitude par défaut autour de laquelle vous souhaitez centrer la carte",
 							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte",

@@ -16,8 +16,8 @@ import { MapMarkerRuleComponent } from '../map-marker-rule/map-marker-rule.compo
 export class MapMarkersComponent implements OnInit {
   @Input() form!: FormGroup;
 
-  @Input() selectedFields: any[] = [];
   @Input() formatedSelectedFields: any[] = [];
+  @Input() allFields: any[] = [];
   public numberFields: any[] = [];
 
   /**
@@ -40,7 +40,7 @@ export class MapMarkersComponent implements OnInit {
 
   ngOnInit(): void {
     // Build list of number fields
-    this.numberFields = this.formatedSelectedFields
+    this.numberFields = this.allFields
       .filter((field: any) =>
         ['Int', 'Float'].includes(get(field, 'type.name', ''))
       )

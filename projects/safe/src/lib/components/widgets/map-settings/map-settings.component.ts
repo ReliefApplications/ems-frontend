@@ -22,6 +22,7 @@ export class SafeMapSettingsComponent implements OnInit {
 
   public selectedFields: any[] = [];
   public formatedSelectedFields: any[] = [];
+  public allFields: any[] = [];
 
   /**
    * Get marker rules as form array
@@ -50,6 +51,10 @@ export class SafeMapSettingsComponent implements OnInit {
 
     if (this.tileForm?.value.query.name) {
       this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
+      this.allFields = this.queryBuilder.getFields(
+        this.tileForm?.controls.query.value.name
+      );
+
       this.formatedSelectedFields = [];
       this.queryBuilder
         .getFields(this.tileForm?.value.query.name)
@@ -58,10 +63,6 @@ export class SafeMapSettingsComponent implements OnInit {
             this.formatedSelectedFields.push(val);
           }
         });
-    }
-
-    if (this.tileForm?.value.query.name) {
-      this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
     }
 
     const queryForm = this.tileForm.get('query') as FormGroup;
