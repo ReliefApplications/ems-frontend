@@ -13,6 +13,7 @@ export interface Permission {
 export interface Role {
   id?: string;
   title?: string;
+  description?: string;
   usersCount?: number;
   permissions?: Permission[];
   application?: Application;

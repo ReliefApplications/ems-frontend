@@ -39,6 +39,7 @@ import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
 import { SafeUserSummaryModule } from './components/user-summary/user-summary.module';
 import { SafeDateModule } from './pipes/date/date.module';
 import { SafeIconModule } from './components/ui/icon/icon.module';
+import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -83,6 +84,7 @@ import { SafeIconModule } from './components/ui/icon/icon.module';
     SafeUserSummaryModule,
     SafeDateModule,
     SafeIconModule,
+    SafeRoleSummaryModule,
   ],
   declarations: [],
 })
