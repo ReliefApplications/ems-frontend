@@ -1,6 +1,4 @@
-
--^)pàa& @AQZSP^M+:…bvcxsqw<>QWSXD^Ù$``
-`$^Ù)PMDESZQA     qaszp)^-^)àç!   @&é"'!çà)&@import { AuthConfig } from 'angular-oauth2-oidc';
+import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default/default.local';
 
 // const authConfig: AuthConfig = {
