@@ -1233,11 +1233,16 @@
 				"name": "Only letters, hypens or underscores are accepted"
 			},
 			"fields": "Fields",
+			"graphQLFilter": "GraphQL query parameters",
 			"path": "Path",
 			"placeholder": {
-				"csv": "Insert CSV here"
+				"csv": "Insert CSV here",
+				"graphQLFilter": "Enter a filter to be used once choices are already cached"
 			},
 			"queryName": "Query Name",
+			"tooltip": {
+				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use $$LAST_UPDATE to insert dynamically the last fetch date in SQL format."
+			},
 			"type": "Type",
 			"validateCsv": "Validate CSV",
 			"valueField": "Value Field"

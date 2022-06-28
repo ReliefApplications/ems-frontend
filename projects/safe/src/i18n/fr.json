@@ -1233,11 +1233,16 @@
 				"name": "Seules les lettres, les tirets et les tirets bas sont acceptés"
 			},
 			"fields": "Champs",
+			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",
 			"placeholder": {
-				"csv": "Insérer le CSV ici"
+				"csv": "Insérer le CSV ici",
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés"
 			},
 			"queryName": "Nom de la requête",
+			"tooltip": {
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés. Vous pouvez utiliser le code $$LAST_UPDATE pour insérer dynamiquement la date de la dernière mise à jour des choix dans un format compatible SQL."
+			},
 			"type": "Type",
 			"validateCsv": "Valider le CSV",
 			"valueField": "Champ de valeur"
