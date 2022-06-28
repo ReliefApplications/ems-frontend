@@ -9,6 +9,7 @@ interface DialogData {
   value: any;
   fields: any[];
   formatedFields: any[];
+  query: any;
 }
 
 /**
@@ -27,6 +28,7 @@ export class MapClorophletComponent implements OnInit {
   public fields: any[] = [];
   public formatedFields: any[] = [];
   public geoJSONfields: string[] = [];
+  public query: any;
 
   /**
    * Clorophlet divisions as form array.
@@ -50,6 +52,7 @@ export class MapClorophletComponent implements OnInit {
     this.form = clorophletForm(data.value);
     this.fields = data.fields;
     this.formatedFields = data.formatedFields;
+    this.query = data.query;
     if (this.form.value.geoJSON) {
       this.updateGeoJSONfields(this.form.value.geoJSON);
     }
@@ -83,6 +86,7 @@ export class MapClorophletComponent implements OnInit {
       data: {
         value: this.divisions.at(index).value,
         fields: this.formatedFields,
+        query: this.query,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
