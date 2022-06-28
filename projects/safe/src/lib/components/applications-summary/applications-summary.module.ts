@@ -9,12 +9,17 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * SafeApplicationsSummaryModule is a class used to manage all the modules and components
+ * related to the applications summary block on the home page.
+ */
 @NgModule({
   declarations: [
     SafeApplicationsSummaryComponent,
     SafeAddApplicationComponent,
-    SafeApplicationSummaryComponent
+    SafeApplicationSummaryComponent,
   ],
   imports: [
     CommonModule,
@@ -23,12 +28,13 @@ import { SafeButtonModule } from '../ui/button/button.module';
     MatMenuModule,
     MatIconModule,
     MatDividerModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule,
   ],
   exports: [
     SafeApplicationsSummaryComponent,
     SafeAddApplicationComponent,
-    SafeApplicationSummaryComponent
-  ]
+    SafeApplicationSummaryComponent,
+  ],
 })
-export class SafeApplicationsSummaryModule { }
+export class SafeApplicationsSummaryModule {}

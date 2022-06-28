@@ -8,9 +8,8 @@ describe('SubscriptionModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SubscriptionModalComponent ]
-    })
-    .compileComponents();
+      declarations: [SubscriptionModalComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

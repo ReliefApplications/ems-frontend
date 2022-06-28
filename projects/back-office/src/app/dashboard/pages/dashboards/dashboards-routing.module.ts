@@ -5,12 +5,12 @@ import { DashboardsComponent } from './dashboards.component';
 const routes: Routes = [
   {
     path: '',
-    component: DashboardsComponent
-  }
+    component: DashboardsComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class DashboardsRoutingModule { }
+export class DashboardsRoutingModule {}

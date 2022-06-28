@@ -1,20 +1,26 @@
 <div class="widget-container">
-    <div class="widget-header" *ngIf="header">
-        <div class="widget-title" [title]="settings ? settings.title : ''">{{(settings && settings.title) ? settings.title : 'New scheduler'}}</div>
+  <div class="widget-header" *ngIf="header">
+    <div class="widget-title" [title]="settings ? settings.title : ''">
+      {{
+        settings && settings.title
+          ? settings.title
+          : ('models.widget.scheduler.defaultTitle' | translate)
+      }}
     </div>
-        <kendo-scheduler class="widget-content" [kendoSchedulerBinding]="events" [selectedDate]="selectedDate" scrollTime="08:00"
-            [selectedViewIndex]="1"
-            >
-            <kendo-scheduler-day-view>
-            </kendo-scheduler-day-view>
+  </div>
+  <kendo-scheduler
+    class="widget-content"
+    [kendoSchedulerBinding]="events"
+    [selectedDate]="selectedDate"
+    scrollTime="08:00"
+    [selectedViewIndex]="1"
+  >
+    <kendo-scheduler-day-view> </kendo-scheduler-day-view>
 
-            <kendo-scheduler-week-view>
-            </kendo-scheduler-week-view>
+    <kendo-scheduler-week-view> </kendo-scheduler-week-view>
 
-            <kendo-scheduler-month-view>
-            </kendo-scheduler-month-view>
+    <kendo-scheduler-month-view> </kendo-scheduler-month-view>
 
-            <kendo-scheduler-timeline-view>
-            </kendo-scheduler-timeline-view>
-        </kendo-scheduler>
+    <kendo-scheduler-timeline-view> </kendo-scheduler-timeline-view>
+  </kendo-scheduler>
 </div>

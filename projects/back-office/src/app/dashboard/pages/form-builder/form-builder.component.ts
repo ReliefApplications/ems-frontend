@@ -2,22 +2,35 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EditFormMutationResponse, EDIT_FORM_NAME, EDIT_FORM_PERMISSIONS, EDIT_FORM_STATUS, EDIT_FORM_STRUCTURE } from '../../../graphql/mutations';
-import { GetFormByIdQueryResponse, GET_SHORT_FORM_BY_ID } from '../../../graphql/queries';
+import {
+  EditFormMutationResponse,
+  EDIT_FORM_NAME,
+  EDIT_FORM_PERMISSIONS,
+  EDIT_FORM_STATUS,
+  EDIT_FORM_STRUCTURE,
+} from '../../../graphql/mutations';
+import {
+  GetFormByIdQueryResponse,
+  GET_SHORT_FORM_BY_ID,
+} from '../../../graphql/queries';
 import { MatDialog } from '@angular/material/dialog';
-import { SafeAuthService, SafeSnackBarService, Form, SafeConfirmModalComponent } from '@safe/builder';
+import {
+  SafeAuthService,
+  SafeSnackBarService,
+  Form,
+  SafeConfirmModalComponent,
+} from '@safe/builder';
 import { Observable } from 'rxjs';
-import {  map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { SafeStatusModalComponent, NOTIFICATIONS } from '@safe/builder';
-import { SCHEMA_UPDATE } from '../../../app.module';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
-  styleUrls: ['./form-builder.component.scss']
+  styleUrls: ['./form-builder.component.scss'],
 })
 export class FormBuilderComponent implements OnInit {
-
   public loading = true;
   public id = '';
   public form?: Form;
@@ -29,19 +42,19 @@ export class FormBuilderComponent implements OnInit {
   public statuses = [
     {
       value: 'active',
-      text: 'Active',
-      color: 'primary'
+      key: 'common.status_active',
+      color: 'primary',
     },
     {
       value: 'pending',
-      text: 'Pending',
-      color: 'accent'
+      key: 'common.status_pending',
+      color: 'accent',
     },
     {
       value: 'archived',
-      text: 'Archive',
-      color: 'warn'
-    }
+      key: 'common.status_archived',
+      color: 'warn',
+    },
   ];
 
   // === FORM EDITION ===
@@ -55,66 +68,82 @@ export class FormBuilderComponent implements OnInit {
     private router: Router,
     private snackBar: SafeSnackBarService,
     public dialog: MatDialog,
-    private authService: SafeAuthService
-  ) { }
+    private authService: SafeAuthService,
+    private translate: TranslateService
+  ) {}
 
-  /* Shows modal confirmation before leave the page if has changes on form
-  */
+  /** Shows modal confirmation before leave the page if has changes on form */
   canDeactivate(): Observable<boolean> | boolean {
     if (this.hasChanges) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: `Exit without saving changes`,
-          content: `There are unsaved changes on your form. Are you sure you want to exit?`,
-          confirmText: 'Confirm',
-          confirmColor: 'primary'
-        }
+          title: this.translate.instant('components.form.update.exit'),
+          content: this.translate.instant('components.form.update.exitMessage'),
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
+          cancelText: this.translate.instant('components.confirmModal.cancel'),
+          confirmColor: 'primary',
+        },
       });
-      return dialogRef.afterClosed().pipe(map(value => {
-        if (value) {
-          this.authService.canLogout.next(true);
-          window.localStorage.removeItem(`form:${this.id}`);
-          return true;
-        }
-        return false;
-      }));
+      return dialogRef.afterClosed().pipe(
+        map((value) => {
+          if (value) {
+            this.authService.canLogout.next(true);
+            window.localStorage.removeItem(`form:${this.id}`);
+            return true;
+          }
+          return false;
+        })
+      );
     }
     return true;
   }
-
 
   ngOnInit(): void {
     this.formActive = false;
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
-      this.apollo.watchQuery<GetFormByIdQueryResponse>({
-        query: GET_SHORT_FORM_BY_ID,
-        variables: {
-          id: this.id
-        }
-      }).valueChanges.subscribe((res) => {
-        if (res.data.form) {
-          this.loading = res.loading;
-          this.form = res.data.form;
-          this.nameForm = new FormGroup({
-            formName: new FormControl(this.form.name, Validators.required)
-          });
-          const storedStructure = window.localStorage.getItem(`form:${this.id}`);
-          this.structure = storedStructure ? storedStructure : this.form.structure;
-          if (this.structure !== this.form.structure) {
-            this.hasChanges = true;
-            this.authService.canLogout.next(!this.hasChanges);
+      this.apollo
+        .watchQuery<GetFormByIdQueryResponse>({
+          query: GET_SHORT_FORM_BY_ID,
+          variables: {
+            id: this.id,
+          },
+        })
+        .valueChanges.subscribe(
+          (res) => {
+            if (res.data.form) {
+              this.loading = res.loading;
+              this.form = res.data.form;
+              this.nameForm = new FormGroup({
+                formName: new FormControl(this.form.name, Validators.required),
+              });
+              const storedStructure = window.localStorage.getItem(
+                `form:${this.id}`
+              );
+              this.structure = storedStructure
+                ? storedStructure
+                : this.form.structure;
+              if (this.structure !== this.form.structure) {
+                this.hasChanges = true;
+                this.authService.canLogout.next(!this.hasChanges);
+              }
+            } else {
+              this.snackBar.openSnackBar(
+                NOTIFICATIONS.accessNotProvided('form'),
+                { error: true }
+              );
+              // redirect to default screen if error
+              this.router.navigate(['/forms']);
+            }
+          },
+          (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+            // redirect to default screen if error
+            this.router.navigate(['/forms']);
           }
-        } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.accessNotProvided('form'), { error: true });
-          // redirect to default screen if error
-          this.router.navigate(['/forms']);
-        }
-      }, (err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
-        // redirect to default screen if error
-        this.router.navigate(['/forms']);
-      });
+        );
     } else {
       this.loading = false;
       // redirect to default screen if error
@@ -128,8 +157,7 @@ export class FormBuilderComponent implements OnInit {
     }
   }
 
-  /* Save the form
-  */
+  /** Save the form */
   public onSave(structure: any): void {
     if (!this.form?.id) {
       alert('not valid');
@@ -138,90 +166,103 @@ export class FormBuilderComponent implements OnInit {
         disableClose: true,
         data: {
           title: 'Saving survey',
-          showSpinner: true
-        }
+          showSpinner: true,
+        },
       });
-      this.apollo.mutate<EditFormMutationResponse>({
-        mutation: EDIT_FORM_STRUCTURE,
-        variables: {
-          id: this.form.id,
-          structure
-        }
-      }).subscribe(res => {
-        if (res.errors) {
-          this.snackBar.openSnackBar(res.errors[0].message, { error: true });
-          statusModal.close();
-        } else {
-          // SCHEMA_UPDATE.asObservable().subscribe(refresh => {
-          //   if (refresh) {
-          //     this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
-          //     this.form = { ...res.data?.editForm, structure };
-          //     this.structure = structure;
-          //     localStorage.removeItem(`form:${this.id}`);
-          //     this.hasChanges = false;
-          //     this.authService.canLogout.next(true);
-          //     statusModal.close();
-          //   }
-          // });
-          // TODO: should be waiting for the BACK to be ready
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
-          this.form = { ...res.data?.editForm, structure };
-          this.structure = structure;
-          localStorage.removeItem(`form:${this.id}`);
-          this.hasChanges = false;
-          this.authService.canLogout.next(true);
-          statusModal.close();
-        }
-      }, (err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
-        statusModal.close();
-      });
+      this.apollo
+        .mutate<EditFormMutationResponse>({
+          mutation: EDIT_FORM_STRUCTURE,
+          variables: {
+            id: this.form.id,
+            structure,
+          },
+        })
+        .subscribe(
+          (res) => {
+            if (res.errors) {
+              this.snackBar.openSnackBar(res.errors[0].message, {
+                error: true,
+              });
+              statusModal.close();
+            } else {
+              // SCHEMA_UPDATE.asObservable().subscribe(refresh => {
+              //   if (refresh) {
+              //     this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
+              //     this.form = { ...res.data?.editForm, structure };
+              //     this.structure = structure;
+              //     localStorage.removeItem(`form:${this.id}`);
+              //     this.hasChanges = false;
+              //     this.authService.canLogout.next(true);
+              //     statusModal.close();
+              //   }
+              // });
+              // TODO: should be waiting for the BACK to be ready
+              this.snackBar.openSnackBar(
+                NOTIFICATIONS.objectEdited('form', this.form?.name)
+              );
+              this.form = { ...res.data?.editForm, structure };
+              this.structure = structure;
+              localStorage.removeItem(`form:${this.id}`);
+              this.hasChanges = false;
+              this.authService.canLogout.next(true);
+              statusModal.close();
+            }
+          },
+          (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+            statusModal.close();
+          }
+        );
     }
   }
 
-  /*  Update the status of the form.
-  */
+  /** Update the status of the form. */
   public updateStatus(e: any): void {
     const statusModal = this.dialog.open(SafeStatusModalComponent, {
       disableClose: true,
       data: {
         title: 'Saving survey',
-        showSpinner: true
-      }
+        showSpinner: true,
+      },
     });
-    this.apollo.mutate<EditFormMutationResponse>({
-      mutation: EDIT_FORM_STATUS,
-      variables: {
-        id: this.id,
-        status: e.value
-      }
-    }).subscribe(res => {
-      if (res.errors) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message), { error: true });
-        statusModal.close();
-      } else {
-        this.snackBar.openSnackBar(NOTIFICATIONS.statusUpdated(e.value));
-        this.form = { ...this.form, status: res.data?.editForm.status };
-        statusModal.close();
-      }
-    });
+    this.apollo
+      .mutate<EditFormMutationResponse>({
+        mutation: EDIT_FORM_STATUS,
+        variables: {
+          id: this.id,
+          status: e.value,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          this.snackBar.openSnackBar(
+            NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message),
+            { error: true }
+          );
+          statusModal.close();
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.statusUpdated(e.value));
+          this.form = { ...this.form, status: res.data?.editForm.status };
+          statusModal.close();
+        }
+      });
   }
 
-  /*  Available in previous version to change the template.
-  */
+  /** Available in previous version to change the template. */
   setTemplate(id: string): void {
-    this.apollo.watchQuery<GetFormByIdQueryResponse>({
-      query: GET_SHORT_FORM_BY_ID,
-      variables: {
-        id
-      }
-    }).valueChanges.subscribe(res => {
-      this.structure = res.data.form.structure;
-    });
+    this.apollo
+      .watchQuery<GetFormByIdQueryResponse>({
+        query: GET_SHORT_FORM_BY_ID,
+        variables: {
+          id,
+        },
+      })
+      .valueChanges.subscribe((res) => {
+        this.structure = res.data.form.structure;
+      });
   }
 
-  /*  Available in previous version to change the version.
-*/
+  /** Available in previous version to change the version. */
   public onOpenVersion(e: any): void {
     this.activeVersion = e;
     this.structure = this.activeVersion.data;
@@ -229,8 +270,7 @@ export class FormBuilderComponent implements OnInit {
     // this.surveyCreator.saveSurveyFunc = null;
   }
 
-  /*  Available in previous version to change the version.
-  */
+  /** Available in previous version to change the version. */
   public resetActiveVersion(): void {
     this.activeVersion = null;
     this.structure = this.form?.structure;
@@ -238,67 +278,76 @@ export class FormBuilderComponent implements OnInit {
     // this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
   }
 
-  /*  Edit the form name.
-*/
+  /** Edit the form name. */
   public saveName(): void {
     const statusModal = this.dialog.open(SafeStatusModalComponent, {
       disableClose: true,
       data: {
         title: 'Saving survey',
-        showSpinner: true
-      }
+        showSpinner: true,
+      },
     });
     const { formName } = this.nameForm.value;
     this.toggleFormActive();
-    this.apollo.mutate<EditFormMutationResponse>({
-      mutation: EDIT_FORM_NAME,
-      variables: {
-        id: this.id,
-        name: formName
-      }
-    }).subscribe(
-      res => {
+    this.apollo
+      .mutate<EditFormMutationResponse>({
+        mutation: EDIT_FORM_NAME,
+        variables: {
+          id: this.id,
+          name: formName,
+        },
+      })
+      .subscribe((res) => {
         if (res.errors) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message), { error: true });
+          this.snackBar.openSnackBar(
+            NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message),
+            { error: true }
+          );
           statusModal.close();
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', formName));
+          this.snackBar.openSnackBar(
+            NOTIFICATIONS.objectEdited('form', formName)
+          );
           this.form = { ...this.form, name: res.data?.editForm.name };
           statusModal.close();
         }
       });
   }
 
-  /*  Edit the permissions layer.
-  */
+  /** Edit the permissions layer. */
   saveAccess(e: any): void {
     const statusModal = this.dialog.open(SafeStatusModalComponent, {
       disableClose: true,
       data: {
         title: 'Saving survey',
-        showSpinner: true
-      }
+        showSpinner: true,
+      },
     });
-    this.apollo.mutate<EditFormMutationResponse>({
-      mutation: EDIT_FORM_PERMISSIONS,
-      variables: {
-        id: this.id,
-        permissions: e
-      }
-    }).subscribe(res => {
-      if (res.errors) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message), { error: true });
-        statusModal.close();
-      } else {
-        this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', ''));
-        this.form = { ...res.data?.editForm, structure: this.structure };
-        statusModal.close();
-      }
-    });
+    this.apollo
+      .mutate<EditFormMutationResponse>({
+        mutation: EDIT_FORM_PERMISSIONS,
+        variables: {
+          id: this.id,
+          permissions: e,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          this.snackBar.openSnackBar(
+            NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message),
+            { error: true }
+          );
+          statusModal.close();
+        } else {
+          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', ''));
+          this.form = { ...res.data?.editForm, structure: this.structure };
+          statusModal.close();
+        }
+      });
   }
 
   formStructureChange(event: any): void {
-    this.hasChanges = (event !== this.form?.structure);
+    this.hasChanges = event !== this.form?.structure;
     localStorage.setItem(`form:${this.id}`, event);
     this.authService.canLogout.next(!this.hasChanges);
   }

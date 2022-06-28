@@ -5,12 +5,12 @@ import { FormAnswerComponent } from './form-answer.component';
 const routes: Routes = [
   {
     path: '',
-    component: FormAnswerComponent
-  }
+    component: FormAnswerComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class FormAnswerRoutingModule { }
+export class FormAnswerRoutingModule {}

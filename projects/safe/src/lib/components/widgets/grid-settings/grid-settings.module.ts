@@ -17,10 +17,17 @@ import { SafeFloatingButtonSettingsComponent } from './floating-button-settings/
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeButtonModule } from '../../ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { LayoutsParametersModule } from './layouts-parameters/layouts-parameters.module';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
+/** Module for the grid widget settings component */
 @NgModule({
-  declarations: [SafeGridSettingsComponent, SafeFloatingButtonSettingsComponent],
+  declarations: [
+    SafeGridSettingsComponent,
+    SafeFloatingButtonSettingsComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -39,11 +46,14 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
     MatTabsModule,
     MatChipsModule,
     SafeButtonModule,
-    EditorModule
+    TranslateModule,
+    LayoutsParametersModule,
+    MatAutocompleteModule,
+    EditorModule,
   ],
   exports: [SafeGridSettingsComponent],
   providers: [
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }
-  ]
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+  ],
 })
-export class SafeGridSettingsModule { }
+export class SafeGridSettingsModule {}

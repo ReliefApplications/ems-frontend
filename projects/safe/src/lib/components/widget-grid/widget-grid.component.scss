@@ -1,99 +1,53 @@
 :host {
-    display: block;
+  display: block;
 }
 
 // === DASHBOARD WIDGETS===
-
-.mat-grid-tile {
-    overflow: unset;
+.grid-container {
+  margin: 0 -16px;
 }
 
-.widget-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+.widget-options,
+.widget-expand,
+.widget-handle {
+  position: absolute;
+  color: darkgray;
+  z-index: 1100;
 }
 
-.widget-content{
-    flex: 1;
-    height: auto;
-}
-
-.grid-widget {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    background-color: white;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 2px 5px 0 rgba(219,134,134,.2);
+.widget-options,
+.widget-expand {
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
 }
 
 .widget-handle {
-    position: absolute;
-    top: 0;
-    left: 0;
-    color: darkgray;
-    cursor: move;
-    width: 40px;
-    height: 40px;
-    z-index: 1100;
-}
-
-.widget-options, .widget-expand {
-    position: absolute;
-    top: 0;
-    right: 0;
-    color: darkgray;
-    width: 40px;
-    height: 40px;
-    z-index: 1100;
-}
-
-.widget-content {
-    flex: 1;
-    max-height: 100% !important;
-}
-
-.dashboard-card-content {
-    text-align: center;
-}
-
-.cdk-drop-list {
-    height: 100%;
-    width: 100%;
-}
-
-.cdk-drag-preview {
-    box-sizing: border-box;
-    opacity: 0.5;
-}
-
-.cdk-drag-animating {
-    transition: unset;
-}
-
-.cdk-drag-placeholder {
-    display: none;
-}
-
-.mat-grid-tile:last-child {
-    ::ng-deep.mat-figure {
-        align-items: unset;
-        justify-content: unset;
-    }
+  left: 8px;
+  top: 8px;
+  cursor: grab;
+  pointer-events: none;
 }
 
 .floating-widget-choice-wrapper {
-    position: fixed;
-    bottom: 48px;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 3000;
-    pointer-events: none;
+  position: fixed;
+  bottom: 48px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 3000;
+  pointer-events: none;
+}
+
+kendo-tilelayout {
+  grid-auto-flow: row;
+  background-color: unset;
+
+  kendo-tilelayout-item {
+    border: none;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 2px 5px 0 rgba(134, 134, 134, 0.2);
+  }
 }

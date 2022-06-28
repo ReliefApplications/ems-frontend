@@ -5,12 +5,12 @@ import { PositionComponent } from './position.component';
 const routes: Routes = [
   {
     path: '',
-    component: PositionComponent
-  }
+    component: PositionComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class PositionRoutingModule { }
+export class PositionRoutingModule {}

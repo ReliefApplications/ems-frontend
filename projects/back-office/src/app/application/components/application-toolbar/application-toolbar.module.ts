@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ApplicationToolbarComponent } from './application-toolbar.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [ApplicationToolbarComponent],
@@ -10,8 +11,9 @@ import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
     CommonModule,
     MatDividerModule,
     SafeConfirmModalModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule,
   ],
-  exports: [ApplicationToolbarComponent]
+  exports: [ApplicationToolbarComponent],
 })
-export class ApplicationToolbarModule { }
+export class ApplicationToolbarModule {}

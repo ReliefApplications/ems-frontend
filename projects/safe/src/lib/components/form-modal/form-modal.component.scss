@@ -1,16 +1,15 @@
-@import "../../style/survey.scss";
+@import '../../style/survey.scss';
 
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   position: relative;
 }
 
-.record-date {
-  color: #9e9e9e;
-  font-size: 12px;
-  line-height: 12px;
-  text-align: right;
-  margin-bottom: 8px;
+mat-dialog-content {
+  flex: 1;
+  max-height: unset !important;
 }
 
 .modal-close {

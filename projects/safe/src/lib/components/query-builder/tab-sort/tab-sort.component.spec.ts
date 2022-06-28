@@ -1,5 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { SafeTabSortComponent } from './tab-sort.component';
 
 describe('SafeTabSortComponent', () => {
@@ -8,9 +13,17 @@ describe('SafeTabSortComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeTabSortComponent ]
-    })
-    .compileComponents();
+      providers: [TranslateService],
+      declarations: [SafeTabSortComponent],
+      imports: [
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

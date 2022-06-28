@@ -2,16 +2,19 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WorkflowRoutingModule } from './workflow-routing.module';
 import { WorkflowComponent } from './workflow.component';
-import { SafeAccessModule, SafeButtonModule, SafeWorkflowStepperModule } from '@safe/builder';
+import {
+  SafeAccessModule,
+  SafeButtonModule,
+  SafeWorkflowStepperModule,
+} from '@safe/builder';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [
-    WorkflowComponent,
-  ],
+  declarations: [WorkflowComponent],
   imports: [
     CommonModule,
     WorkflowRoutingModule,
@@ -22,8 +25,9 @@ import { MatInputModule } from '@angular/material/input';
     MatInputModule,
     MatProgressSpinnerModule,
     SafeButtonModule,
-    SafeWorkflowStepperModule
+    SafeWorkflowStepperModule,
+    TranslateModule,
   ],
-  exports: [WorkflowComponent]
+  exports: [WorkflowComponent],
 })
-export class WorkflowModule { }
+export class WorkflowModule {}

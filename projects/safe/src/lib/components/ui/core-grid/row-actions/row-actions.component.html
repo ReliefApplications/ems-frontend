@@ -1,16 +1,42 @@
-<button *ngIf="display" kendoButton style="text-align: center" [icon]="'more-vertical'" [look]="'flat'"
-    [matMenuTriggerFor]="menu"></button>
+<button
+  *ngIf="display"
+  kendoButton
+  style="text-align: center"
+  [icon]="'more-vertical'"
+  [look]="'flat'"
+  [matMenuTriggerFor]="menu"
+></button>
 <mat-menu #menu="matMenu">
-    <button *ngIf="actions.update && item.canUpdate" mat-menu-item color="warn" (click)="action.emit({ action: 'update', item: item })">
-        Update
-    </button>
-    <button *ngIf="actions.history" mat-menu-item color="warn" (click)="action.emit({ action: 'history', item: item })">
-        History
-    </button>
-    <button *ngIf="actions.convert && item.canUpdate" mat-menu-item color="warn" (click)="action.emit({ action: 'convert', item: item })">
-        Convert
-    </button>
-    <button *ngIf="actions.delete && item.canDelete" mat-menu-item color="warn" (click)="action.emit({ action: 'delete', item: item })">
-        Delete
-    </button>
+  <button
+    *ngIf="actions.update && item.canUpdate"
+    mat-menu-item
+    color="warn"
+    (click)="action.emit({ action: 'update', item: item })"
+  >
+    {{ 'common.update' | translate }}
+  </button>
+  <button
+    *ngIf="actions.history"
+    mat-menu-item
+    color="warn"
+    (click)="action.emit({ action: 'history', item: item })"
+  >
+    {{ 'common.history' | translate }}
+  </button>
+  <button
+    *ngIf="actions.convert && item.canUpdate"
+    mat-menu-item
+    color="warn"
+    (click)="action.emit({ action: 'convert', item: item })"
+  >
+    {{ 'models.record.convert' | translate }}
+  </button>
+  <button
+    *ngIf="actions.delete && item.canDelete"
+    mat-menu-item
+    color="warn"
+    (click)="action.emit({ action: 'delete', item: item })"
+  >
+    {{ 'common.delete' | translate }}
+  </button>
 </mat-menu>

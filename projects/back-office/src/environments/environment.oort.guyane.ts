@@ -1,15 +1,25 @@
+import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/oort/oort.prod';
+
+const authConfig: AuthConfig = {
+  issuer: 'https://id.oortcloud.tech/auth/realms/oort',
+  redirectUri: 'https://aide-alimentaire-guyane.oortcloud.tech/admin/',
+  postLogoutRedirectUri:
+    'https://aide-alimentaire-guyane.oortcloud.tech/admin/auth',
+  clientId: 'oort-client',
+  scope: 'openid profile email offline_access',
+  responseType: 'code',
+  showDebugInformation: false,
+};
 
 export const environment = {
   production: true,
-  API_URL: 'https://aide-alimentaire-guyane.oortcloud.tech/api',
-  SUBSCRIPTION_API_URL: 'wss://aide-alimentaire-guyane.oortcloud.tech/api',
-  clientId: 'a85e101e-e193-4a3f-8911-c6e89bc973e6',
-  authority: 'https://login.microsoftonline.com/common',
-  redirectUrl: 'https://aide-alimentaire-guyane.oortcloud.tech/admin/',
-  postLogoutRedirectUri: 'https://aide-alimentaire-guyane.oortcloud.tech/admin/auth',
+  apiUrl: 'https://aide-alimentaire-guyane.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://aide-alimentaire-guyane.oortcloud.tech/api',
   frontOfficeUri: 'https://aide-alimentaire-guyane.oortcloud.tech',
   backOfficeUri: 'https://aide-alimentaire-guyane.oortcloud.tech/admin/',
   module: 'backoffice',
-  theme
+  availableLanguages: ['en'],
+  authConfig,
+  theme,
 };

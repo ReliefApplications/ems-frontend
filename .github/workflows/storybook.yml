@@ -35,7 +35,7 @@ jobs:
       - name: Install Dependencies
         run: npm i
       - name: Build Shared Library
-        run: npm run build -- --prod safe
+        run: npm run build -- --configuration=production safe
       - name: Build Storybook
         run: npm run build-storybook -- -o storybook
       - name: Archive build Storybook

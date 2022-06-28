@@ -5,12 +5,12 @@ import { ResourcesComponent } from './resources.component';
 const routes: Routes = [
   {
     path: '',
-    component: ResourcesComponent
-  }
+    component: ResourcesComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class ResourcesRoutingModule { }
+export class ResourcesRoutingModule {}

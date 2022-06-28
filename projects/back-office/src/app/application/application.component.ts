@@ -1,16 +1,21 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Application, SafeConfirmModalComponent, ContentType, SafeApplicationService } from '@safe/builder';
+import { TranslateService } from '@ngx-translate/core';
+import {
+  Application,
+  SafeConfirmModalComponent,
+  ContentType,
+  SafeApplicationService,
+} from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-application',
   templateUrl: './application.component.html',
-  styleUrls: ['./application.component.scss']
+  styleUrls: ['./application.component.scss'],
 })
 export class ApplicationComponent implements OnInit, OnDestroy {
-
   // === HEADER TITLE ===
 
   public title = '';
@@ -29,102 +34,125 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog
-  ) { }
+    private dialog: MatDialog,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.applicationService.loadApplication(params.id);
     });
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
-      if (application) {
-        this.title = application.name || '';
-        let displayNavItems: any[] = application.pages?.filter((x: any) => x.content && x.canSee).map((x: any) => {
-          return {
-            id: x.id,
-            name: x.name,
-            path: (x.type === ContentType.form) ? `./${x.type}/${x.id}` : `./${x.type}/${x.content}`,
-            icon: this.getNavIcon(x.type || ''),
-            class: null,
-            orderable: true,
-            action: x.canDelete && {
-              icon: 'delete',
-              toolTip: 'Delete the page',
-              callback: () => this.onDelete(x)
+    this.applicationSubscription =
+      this.applicationService.application$.subscribe(
+        (application: Application | null) => {
+          if (application) {
+            this.title = application.name || '';
+            let displayNavItems: any[] =
+              application.pages
+                ?.filter((x: any) => x.content && x.canSee)
+                .map((x: any) => ({
+                  id: x.id,
+                  name: x.name,
+                  path:
+                    x.type === ContentType.form
+                      ? `./${x.type}/${x.id}`
+                      : `./${x.type}/${x.content}`,
+                  icon: this.getNavIcon(x.type || ''),
+                  class: null,
+                  orderable: true,
+                  action: x.canDelete && {
+                    icon: 'delete',
+                    toolTip: this.translate.instant('common.deleteObject', {
+                      name: this.translate
+                        .instant('common.page.one')
+                        .toLowerCase(),
+                    }),
+                    callback: () => this.onDelete(x),
+                  },
+                })) || [];
+            let adminNavItems: any[] = [];
+            if (application.canUpdate) {
+              displayNavItems = displayNavItems.concat({
+                name: 'Add a page',
+                path: './add-page',
+                icon: 'add_circle',
+                class: 'nav-item-add',
+                isAddPage: true,
+              });
+              adminNavItems = adminNavItems.concat([
+                {
+                  name: this.translate.instant('common.settings'),
+                  path: './settings/edit',
+                  icon: 'settings',
+                },
+                {
+                  name: this.translate.instant('common.user.few'),
+                  path: './settings/users',
+                  icon: 'supervisor_account',
+                },
+                {
+                  name: this.translate.instant('common.role.few'),
+                  path: './settings/roles',
+                  icon: 'admin_panel_settings',
+                },
+                {
+                  name: this.translate.instant(
+                    'pages.application.positionAttributes.title'
+                  ),
+                  path: './settings/position',
+                  icon: 'manage_accounts',
+                },
+                {
+                  name: this.translate.instant('common.channel.few'),
+                  path: './settings/channels',
+                  icon: 'edit_notifications',
+                },
+                {
+                  name: this.translate.instant('common.subscription.few'),
+                  path: './settings/subscriptions',
+                  icon: 'move_to_inbox',
+                },
+              ]);
             }
-          };
-        }) || [];
-        let adminNavItems: any[] = [];
-        if (application.canUpdate) {
-          displayNavItems = displayNavItems.concat(
-            {
-              name: 'Add a page',
-              path: './add-page',
-              icon: 'add_circle',
-              class: 'nav-item-add',
-              isAddPage: true
+            this.navGroups = [
+              {
+                name: this.translate.instant('common.display'),
+                navItems: displayNavItems,
+              },
+              {
+                name: this.translate.instant('pages.administration.title'),
+                navItems: adminNavItems,
+              },
+            ];
+            if (!this.application || application.id !== this.application.id) {
+              const [firstPage, ..._] = application.pages || [];
+              if (
+                this.router.url.endsWith(application?.id || '') ||
+                !firstPage
+              ) {
+                if (firstPage) {
+                  this.router.navigate(
+                    [
+                      `./${firstPage.type}/${
+                        firstPage.type === ContentType.form
+                          ? firstPage.id
+                          : firstPage.content
+                      }`,
+                    ],
+                    { relativeTo: this.route }
+                  );
+                } else {
+                  this.router.navigate([`./`], { relativeTo: this.route });
+                }
+              }
             }
-          );
-          adminNavItems = adminNavItems.concat([
-            {
-              name: 'Settings',
-              path: './settings/edit',
-              icon: 'settings'
-            },
-            {
-              name: 'Users',
-              path: './settings/users',
-              icon: 'supervisor_account'
-            },
-            {
-              name: 'Roles',
-              path: './settings/roles',
-              icon: 'admin_panel_settings'
-            },
-            {
-              name: 'Attributes',
-              path: './settings/position',
-              icon: 'manage_accounts'
-            },
-            {
-              name: 'Channels',
-              path: './settings/channels',
-              icon: 'edit_notifications'
-            },
-            {
-              name: 'Subscriptions',
-              path: './settings/subscriptions',
-              icon: 'move_to_inbox'
-            }
-          ]);
-        }
-        this.navGroups = [
-          {
-            name: 'Display',
-            navItems: displayNavItems
-          },
-          {
-            name: 'Administration',
-            navItems: adminNavItems
+            this.application = application;
+          } else {
+            this.title = '';
+            this.navGroups = [];
           }
-        ];
-        if (!this.application || application.id !== this.application.id) {
-          const [firstPage, ..._] = application.pages || [];
-          if (this.router.url.endsWith(application?.id || '') || !firstPage) {
-            if (firstPage) {
-              this.router.navigate([`./${firstPage.type}/${firstPage.type === ContentType.form ? firstPage.id : firstPage.content}`],
-              { relativeTo: this.route });
-            } else {
-              this.router.navigate([`./`], { relativeTo: this.route });
-            }
-          }
         }
-        this.application = application;
-      } else {
-        this.title = '';
-        this.navGroups = [];
-      }
-    });
+      );
   }
 
   private getNavIcon(type: string): string {
@@ -141,21 +169,28 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: 'Delete page',
-        content: `Do you confirm the deletion of the page ${item.name} ?`,
-        confirmText: 'Delete',
-        confirmColor: 'warn'
-      }
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.page.one'),
+        }),
+        content: this.translate.instant(
+          'components.application.pages.delete.confirmationMessage',
+          { name: item.name }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        confirmColor: 'warn',
+      },
     });
-    dialogRef.afterClosed().subscribe(value => {
-      if ( value ) {
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
         this.applicationService.deletePage(item.id);
       }
     });
   }
 
   onReorder(event: any): void {
-    this.applicationService.reorderPages(event.filter((x: any) => x.id).map((x: any) => x.id));
+    this.applicationService.reorderPages(
+      event.filter((x: any) => x.id).map((x: any) => x.id)
+    );
   }
 
   ngOnDestroy(): void {

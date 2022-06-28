@@ -1,11 +1,31 @@
-<button mat-icon-button mat-dialog-close [mat-dialog-close]="data.comment" color="warn" class="close-settings">
-    <mat-icon>close</mat-icon>
+<button
+  mat-icon-button
+  mat-dialog-close
+  [mat-dialog-close]="data.comment"
+  color="warn"
+  class="close-settings"
+>
+  <mat-icon>close</mat-icon>
 </button>
 <div mat-dialog-content class="mat-dialog-content">
-    <h1>{{data.title}}</h1>
-    <textarea id="comment" [(ngModel)]="comment" rows="15" class="modal-textinput" [readonly]="data.readonly"></textarea>
+  <h1>{{ data.title }}</h1>
+  <textarea
+    id="comment"
+    [(ngModel)]="comment"
+    rows="15"
+    class="modal-textinput"
+    [readonly]="data.readonly"
+  ></textarea>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Close</button>
-    <button mat-flat-button [mat-dialog-close]="comment" cdkFocusInitial color="primary" *ngIf="!data.readonly">Save</button>
+  <button mat-button mat-dialog-close>{{ 'common.close' | translate }}</button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="comment"
+    cdkFocusInitial
+    color="primary"
+    *ngIf="!data.readonly"
+  >
+    {{ 'common.save' | translate }}
+  </button>
 </div>

@@ -1,16 +1,51 @@
 <div class="widget-container">
-    <div class="widget-header">
-        <div class="widget-title" [title]="settings.title">{{settings.title}}</div>
-        <div class="floating-button">
-            <ng-container *ngFor="let floatingButton of settings.floatingButtons">
-                <button mat-button color="primary" (click)="onQuickAction(floatingButton)" *ngIf="floatingButton.show">
-                    {{floatingButton.name}}
-                </button>
-            </ng-container>
-        </div>
-    </div>
-    <!-- GRID CONTENT -->
-    <safe-core-grid [settings]="settings" [admin]="isAdmin" [defaultLayout]="layout"
-        (defaultLayoutChanged)="defaultLayoutChanged.emit($event)" (layoutChanged)="layoutChanged.emit($event)"
-        (defaultLayoutReset)="defaultLayoutReset.emit($event)"></safe-core-grid>
+  <!-- CLASSIC VIEW -->
+  <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
+    <span class="widget-title" [title]="settings.title">{{
+      settings.title
+    }}</span>
+    <ng-container *ngTemplateOutlet="layoutsTemplate"></ng-container>
+    <ng-container *ngTemplateOutlet="floatingButtons"></ng-container>
+  </kendo-tilelayout-item-header>
+  <!-- FULL WINDOW VIEW -->
+  <ng-container *ngIf="!header">
+    <ng-container *ngTemplateOutlet="floatingButtons"></ng-container>
+  </ng-container>
+  <!-- GRID CONTENT -->
+  <safe-core-grid
+    [defaultLayout]="layout?.display || {}"
+    [settings]="gridSettings"
+    [admin]="isAdmin"
+    (defaultLayoutReset)="onResetLayout()"
+  ></safe-core-grid>
 </div>
+
+<!-- TEMPLATE OF FLOATING BUTTONS -->
+<ng-template #floatingButtons>
+  <div class="floating-button">
+    <ng-container *ngFor="let floatingButton of settings.floatingButtons">
+      <button
+        mat-button
+        color="primary"
+        (click)="onQuickAction(floatingButton)"
+        *ngIf="floatingButton.show"
+      >
+        {{ floatingButton.name }}
+      </button>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #layoutsTemplate>
+  <ng-container *ngIf="layouts.length > 1">
+    <kendo-dropdownlist
+      class="grid-layout-dropdown"
+      [data]="layouts"
+      textField="name"
+      valueField="id"
+      [value]="layout"
+      (selectionChange)="onLayoutChange($event)"
+    >
+    </kendo-dropdownlist>
+  </ng-container>
+</ng-template>

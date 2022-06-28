@@ -1,54 +1,122 @@
 <mat-toolbar [color]="theme.headerColor">
-  <safe-button [isIcon]="true" icon="menu" (click)="nav.toggle()" *ngIf="!largeDevice">
+  <safe-button
+    [isIcon]="true"
+    icon="menu"
+    (click)="nav.toggle()"
+    [matTooltip]="
+      (nav.opened
+        ? 'components.header.sidenav.collapse'
+        : 'components.header.sidenav.show'
+      ) | translate
+    "
+  >
   </safe-button>
-  <safe-button [isIcon]="true" icon="keyboard_backspace" (click)="goBack()" *ngIf="route" matTooltip="Go to application list">
+  <safe-button
+    [isIcon]="true"
+    icon="keyboard_backspace"
+    (click)="goBack()"
+    *ngIf="route"
+    [matTooltip]="'pages.applications.goTo' | translate"
+  >
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1 class="application-title">{{theme.prefix}} {{title}}</h1>
+    <h1 class="application-title">
+      {{ theme.prefix }}
+      {{ route ? title : ('common.platform.backOffice' | translate) }}
+    </h1>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
-    <button mat-button [matMenuTriggerFor]="applicationMenu">
-      {{theme.prefix}} {{title}}
+    <button
+      mat-button
+      (click)="showAppMenu = !showAppMenu"
+      cdkOverlayOrigin
+      #appMenuTrigger="cdkOverlayOrigin"
+    >
+      {{ theme.prefix }} {{ title }}
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
-    <mat-menu #applicationMenu="matMenu">
-      <button mat-menu-item *ngFor="let application of applications"
-        (click)="onOpenApplication(application)">{{application.name}}</button>
-    </mat-menu>
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="appMenuTrigger"
+      [cdkConnectedOverlayOpen]="showAppMenu"
+    >
+      <safe-search-menu
+        [data]="this.applications"
+        (close)="showAppMenu = false"
+        (open)="onOpenApplication($event)"
+      ></safe-search-menu>
+    </ng-template>
   </ng-container>
   <div class="account-container">
-    <div class="account-property">{{account ? account.name : ''}}</div>
-    <div class="account-property">{{account ? account.userName : ''}}</div>
+    <div class="account-property">{{ account ? account.name : '' }}</div>
+    <div class="account-property">{{ account ? account.username : '' }}</div>
   </div>
-  <safe-button [isIcon]="true" icon="account_circle" [matMenuTriggerFor]="accountMenu">
+  <safe-button
+    [isIcon]="true"
+    icon="account_circle"
+    [matMenuTriggerFor]="accountMenu"
+  >
   </safe-button>
-  <button mat-icon-button [matMenuTriggerFor]="notificationMenu" [disabled]="notifications.length == 0">
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="notificationMenu"
+    [disabled]="notifications.length === 0"
+  >
     <mat-icon class="mat-badge-notification">
       <kendo-badge-container>
         notifications
-        <kendo-badge shape="dot" themeColor="error" *ngIf="notifications.length > 0"></kendo-badge>
+        <kendo-badge
+          shape="dot"
+          themeColor="error"
+          *ngIf="notifications.length > 0"
+        ></kendo-badge>
       </kendo-badge-container>
     </mat-icon>
   </button>
   <mat-menu #accountMenu="matMenu">
-    <button mat-menu-item (click)="onOpenProfile()">Profile</button>
+    <button mat-menu-item (click)="onOpenProfile()">
+      {{ 'pages.profile.title' | translate }}
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="onOpenPreferences()" *ngIf="showPreferences">
+      {{ 'components.preferences.title' | translate }}
+    </button>
     <ng-container *ngIf="user && user.isAdmin">
       <mat-divider></mat-divider>
-      <button mat-menu-item (click)="onSwitchOffice()">Switch to {{ otherOffice }}</button>
+      <button mat-menu-item (click)="onSwitchOffice()">
+        {{ 'components.header.goToPlatform' | translate }} {{ otherOffice }}
+      </button>
     </ng-container>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="logout()" class="warn">Logout</button>
+    <button mat-menu-item (click)="logout()" class="warn">
+      {{ 'components.header.logout' | translate }}
+    </button>
   </mat-menu>
   <mat-menu #notificationMenu="matMenu">
     <div class="notification-menu">
-      <a (click)="onMarkAllNotificationsAsRead()">Mark all as read<mat-icon [inline]="true">check_circle_outline
-        </mat-icon></a>
-      <button mat-menu-item (click)="onNotificationClick(notification)" *ngFor="let notification of notifications">{{
-        notification.action }} -
-        {{ notification.createdAt | date }}</button>
+      <a (click)="onMarkAllNotificationsAsRead()"
+        >{{ 'components.notifications.readAll' | translate
+        }}<mat-icon [inline]="true"> check_circle_outline </mat-icon></a
+      >
+      <button
+        mat-menu-item
+        (click)="onNotificationClick(notification)"
+        *ngFor="let notification of notifications"
+      >
+        {{ notification.action }} - {{ notification.createdAt | date }}
+      </button>
     </div>
-    <safe-button *ngIf="hasMoreNotifications" category="primary" variant="primary" [block]="true"
-      [disabled]="loadingNotifications" [loading]="loadingNotifications" (click)="onLoadMoreNotifications($event)">Load more</safe-button>
+    <safe-button
+      *ngIf="hasMoreNotifications"
+      category="primary"
+      variant="primary"
+      [block]="true"
+      [disabled]="loadingNotifications"
+      [loading]="loadingNotifications"
+      (click)="onLoadMoreNotifications($event)"
+    >
+      {{ 'common.pagination.loadMore' | translate }}
+    </safe-button>
   </mat-menu>
 </mat-toolbar>
 
@@ -57,41 +125,81 @@
 </ng-container>
 
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #nav [mode]="largeDevice ? 'side' : 'over'" [opened]="largeDevice" class="sidenav">
+  <mat-sidenav
+    class="sidenav"
+    #nav
+    [mode]="largeDevice && nav.opened ? 'side' : 'over'"
+    [opened]="largeDevice"
+  >
     <mat-nav-list>
       <ng-container *ngFor="let group of filteredNavGroups; let i = index">
         <div mat-subheader>{{ group.name }}</div>
-        <div cdkDropList (cdkDropListDropped)="drop($event, group)" class="nav-items-list">
+        <div
+          cdkDropList
+          (cdkDropListDropped)="drop($event, group)"
+          class="nav-items-list"
+        >
           <ng-container *ngFor="let item of group.navItems">
             <div cdkDrag [cdkDragDisabled]="!item.orderable">
               <mat-list-item class="nav-item">
-                <a [routerLink]="item.path" routerLinkActive="active-link" (click)="largeDevice ? null : nav.toggle()"
-                  [class]="item.class ? item.class : ''">
+                <a
+                  [routerLink]="item.path"
+                  routerLinkActive="active-link"
+                  (click)="largeDevice ? null : nav.toggle()"
+                  [class]="item.class ? item.class : ''"
+                >
                   <ng-container *ngIf="item.isAddPage">
-                    <safe-button icon="add" category="tertiary" variant="primary" class="add-page-button"
-                      [class]="item.class ? item.class : ''">
-                      Add a Page
+                    <safe-button
+                      icon="add"
+                      category="tertiary"
+                      variant="primary"
+                      class="add-page-button"
+                      [class]="item.class ? item.class : ''"
+                    >
+                      {{ 'models.page.add' | translate }}
                     </safe-button>
                   </ng-container>
                   <ng-container *ngIf="!item.isAddPage">
                     <mat-icon mat-list-icon class="nav-icon">
                       {{ item.icon }}
                     </mat-icon>
-                    <div mat-line class="nav-text" [matTooltip]="item.name" [matTooltipShowDelay]="1000">{{ item.name }}</div>
+                    <div
+                      mat-line
+                      class="nav-text"
+                      [matTooltip]="item.name"
+                      [matTooltipShowDelay]="1000"
+                    >
+                      {{ item.name }}
+                    </div>
                   </ng-container>
                 </a>
                 <div class="nav-actions" *ngIf="item.action || item.orderable">
-                  <button mat-icon-button class="nav-action" *ngIf="item.action"
-                    (click)="onClick(item.action.callback, $event)">
-                    <mat-icon matTooltip="{{item.action.toolTip}}">{{ item.action.icon }}</mat-icon>
+                  <button
+                    mat-icon-button
+                    class="nav-action"
+                    *ngIf="item.action"
+                    (click)="onClick(item.action.callback, $event)"
+                  >
+                    <mat-icon matTooltip="{{ item.action.toolTip }}">{{
+                      item.action.icon
+                    }}</mat-icon>
                   </button>
-                  <button mat-icon-button cdkDragHandle class="nav-item-handle" *ngIf="item.orderable">
+                  <button
+                    mat-icon-button
+                    cdkDragHandle
+                    class="nav-item-handle"
+                    *ngIf="item.orderable"
+                  >
                     <mat-icon>drag_indicator</mat-icon>
                   </button>
                 </div>
               </mat-list-item>
               <mat-list *cdkDragPreview>
-                <a mat-list-item class="nav-item" [class]="item.class ? item.class : ''">
+                <a
+                  mat-list-item
+                  class="nav-item"
+                  [class]="item.class ? item.class : ''"
+                >
                   <mat-icon mat-list-icon class="nav-icon">
                     {{ item.icon }}
                   </mat-icon>
@@ -106,10 +214,8 @@
     </mat-nav-list>
   </mat-sidenav>
 
-  <mat-sidenav-content>
-    <div class="sidenav-content">
-      <router-outlet></router-outlet>
-    </div>
+  <mat-sidenav-content class="sidenav-content">
+    <router-outlet></router-outlet>
   </mat-sidenav-content>
 
   <mat-sidenav mode="side" position="end" [(opened)]="showSidenav">

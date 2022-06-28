@@ -8,9 +8,8 @@ describe('SafeSpinnerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeSpinnerComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeSpinnerComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

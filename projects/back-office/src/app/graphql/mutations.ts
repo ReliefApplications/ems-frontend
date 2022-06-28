@@ -1,21 +1,36 @@
-import {gql} from 'apollo-angular';
+import { gql } from 'apollo-angular';
 
-import { Dashboard, Form, Resource, Role, User, Record, Application, Page, Workflow, Step, ApiConfiguration, PullJob } from '@safe/builder';
+import {
+  Dashboard,
+  Form,
+  Resource,
+  Role,
+  User,
+  Record,
+  Application,
+  Page,
+  Workflow,
+  Step,
+  ApiConfiguration,
+  PullJob,
+  Layout,
+} from '@safe/builder';
 
 // === EDIT USER ===
 export const EDIT_USER = gql`
-mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
-  editUser(id: $id, roles: $roles, application: $application) {
-    id
-    username
-    name
-    roles {
+  mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
+    editUser(id: $id, roles: $roles, application: $application) {
       id
-      title
+      username
+      name
+      roles {
+        id
+        title
+      }
+      oid
     }
-    oid
   }
-}`;
+`;
 
 export interface EditUserMutationResponse {
   loading: boolean;
@@ -24,17 +39,18 @@ export interface EditUserMutationResponse {
 
 // === ADD ROLE ===
 export const ADD_ROLE = gql`
-mutation addRole($title: String!, $application: ID) {
-  addRole(title: $title, application: $application) {
-    id
-    title
-    permissions {
+  mutation addRole($title: String!, $application: ID) {
+    addRole(title: $title, application: $application) {
       id
-      type
+      title
+      permissions {
+        id
+        type
+      }
+      usersCount
     }
-    usersCount
   }
-}`;
+`;
 
 export interface AddRoleMutationResponse {
   loading: boolean;
@@ -43,13 +59,14 @@ export interface AddRoleMutationResponse {
 
 // === EDIT ROLE ===
 export const EDIT_ROLE = gql`
-mutation editRole($id: ID!, $permissions: [ID]!) {
-  editRole(id: $id, permissions: $permissions) {
-    id
-    title
-    usersCount
+  mutation editRole($id: ID!, $permissions: [ID]!) {
+    editRole(id: $id, permissions: $permissions) {
+      id
+      title
+      usersCount
+    }
   }
-}`;
+`;
 
 export interface EditRoleMutationResponse {
   loading: boolean;
@@ -58,29 +75,29 @@ export interface EditRoleMutationResponse {
 
 // === DELETE ROLE ===
 export const DELETE_ROLE = gql`
-mutation deleteRole($id: ID!) {
-  deleteRole(id: $id) {
-    id
+  mutation deleteRole($id: ID!) {
+    deleteRole(id: $id) {
+      id
+    }
   }
-}`;
+`;
 
 export interface DeleteRoleMutationResponse {
   loading: boolean;
   deleteRole: Role;
 }
 
-
-
 // === ADD DASHBOARD ===
 export const ADD_DASHBOARD = gql`
-mutation addDashboard($name: String!) {
-  addDashboard(name: $name){
-    id
-    name
-    structure
-    createdAt
+  mutation addDashboard($name: String!) {
+    addDashboard(name: $name) {
+      id
+      name
+      structure
+      createdAt
+    }
   }
-}`;
+`;
 
 export interface AddDashboardMutationResponse {
   loading: boolean;
@@ -89,12 +106,13 @@ export interface AddDashboardMutationResponse {
 
 // === DELETE DASHBOARD ===
 export const DELETE_DASHBOARD = gql`
-mutation deleteDashboard($id: ID!) {
-  deleteDashboard(id: $id){
-    id
-    name
+  mutation deleteDashboard($id: ID!) {
+    deleteDashboard(id: $id) {
+      id
+      name
+    }
   }
-}`;
+`;
 
 export interface DeleteDashboardMutationResponse {
   loading: boolean;
@@ -103,17 +121,18 @@ export interface DeleteDashboardMutationResponse {
 
 // === ADD FORM ===
 export const ADD_FORM = gql`
-mutation addForm($name: String!, $newResource: Boolean, $resource: ID, $template: ID) {
-  addForm(name: $name, newResource: $newResource, resource: $resource, template: $template) {
-    id
-    name
-    createdAt
-    status
-    versions {
+  mutation addForm($name: String!, $resource: ID, $template: ID) {
+    addForm(name: $name, resource: $resource, template: $template) {
       id
+      name
+      createdAt
+      status
+      versions {
+        id
+      }
     }
   }
-}`;
+`;
 
 export interface AddFormMutationResponse {
   loading: boolean;
@@ -122,11 +141,12 @@ export interface AddFormMutationResponse {
 
 // === DELETE FORM ===
 export const DELETE_FORM = gql`
-mutation deleteForm($id: ID!) {
-  deleteForm(id: $id) {
-    id
+  mutation deleteForm($id: ID!) {
+    deleteForm(id: $id) {
+      id
+    }
   }
-}`;
+`;
 
 export interface DeleteFormMutationResponse {
   loading: boolean;
@@ -135,72 +155,69 @@ export interface DeleteFormMutationResponse {
 
 // === EDIT RESOURCE ===
 export const EDIT_RESOURCE = gql`
-mutation editResource($id: ID!, $permissions: JSON) {
-  editResource(id: $id, permissions: $permissions) {
-    id
-    name
-    createdAt
-    records {
-      id
-      data(display: true)
-    }
-    fields
-    forms {
+  mutation editResource($id: ID!, $permissions: JSON) {
+    editResource(id: $id, permissions: $permissions) {
       id
       name
-      status
       createdAt
-      recordsCount
-      core
+      fields
+      forms {
+        id
+        name
+        status
+        createdAt
+        recordsCount
+        core
+        canUpdate
+        canDelete
+      }
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
       canUpdate
-      canDelete
     }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canUpdate
   }
-}`;
+`;
 
 export interface EditResourceMutationResponse {
   loading: boolean;
   editResource: Resource;
 }
 
-
 // == DELETE RESOURCE ==
 
 export const DELETE_RESOURCE = gql`
-mutation deleteResource($id: ID!){
-  deleteResource(id: $id){
-    id
+  mutation deleteResource($id: ID!) {
+    deleteResource(id: $id) {
+      id
+    }
   }
-}`;
+`;
 
-export interface DeleteResourceMutationResponse{
+export interface DeleteResourceMutationResponse {
   loading: boolean;
   deletedResource: Resource;
 }
 
-
 // === DELETE RECORD ===
 export const DELETE_RECORD = gql`
-mutation deleteRecord($id: ID!, $hardDelete: Boolean) {
-  deleteRecord(id: $id, hardDelete: $hardDelete) {
-    id
+  mutation deleteRecord($id: ID!, $hardDelete: Boolean) {
+    deleteRecord(id: $id, hardDelete: $hardDelete) {
+      id
+    }
   }
-}`;
+`;
 
 export interface DeleteRecordMutationResponse {
   loading: boolean;
@@ -209,11 +226,12 @@ export interface DeleteRecordMutationResponse {
 
 // === RESTORE RECORD ===
 export const RESTORE_RECORD = gql`
-mutation restoreRecord($id: ID!) {
-  restoreRecord(id: $id) {
-    id
+  mutation restoreRecord($id: ID!) {
+    restoreRecord(id: $id) {
+      id
+    }
   }
-}`;
+`;
 
 export interface RestoreRecordMutationResponse {
   loading: boolean;
@@ -222,104 +240,107 @@ export interface RestoreRecordMutationResponse {
 
 // === EDIT FORM ===
 export const EDIT_FORM_STRUCTURE = gql`
-mutation editForm($id: ID!, $structure: JSON!) {
-  editForm(id: $id, structure: $structure) {
-    id
-    name
-    createdAt
-    status
-    core
-    fields
-    versions {
+  mutation editForm($id: ID!, $structure: JSON!) {
+    editForm(id: $id, structure: $structure) {
       id
+      name
       createdAt
-      data
+      status
+      core
+      fields
+      versions {
+        id
+        createdAt
+        data
+      }
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canUpdate
     }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canUpdate
   }
-}`;
+`;
 
 export const EDIT_FORM_STATUS = gql`
-mutation editForm($id: ID!, $status: Status!) {
-  editForm(id: $id, status: $status) {
-    status
+  mutation editForm($id: ID!, $status: Status!) {
+    editForm(id: $id, status: $status) {
+      status
+    }
   }
-}`;
+`;
 
 export const EDIT_FORM_NAME = gql`
-mutation editForm($id: ID!, $name: String!){
-  editForm(id: $id, name: $name){
-    id
-    name
-    createdAt
-    status
-    versions {
+  mutation editForm($id: ID!, $name: String!) {
+    editForm(id: $id, name: $name) {
       id
+      name
       createdAt
-      data
+      status
+      versions {
+        id
+        createdAt
+        data
+      }
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canUpdate
     }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canUpdate
   }
-}`;
+`;
 
 export const EDIT_FORM_PERMISSIONS = gql`
-mutation editForm($id: ID!, $permissions: JSON!){
-  editForm(id: $id, permissions: $permissions){
-    id
-    name
-    createdAt
-    status
-    versions {
+  mutation editForm($id: ID!, $permissions: JSON!) {
+    editForm(id: $id, permissions: $permissions) {
       id
+      name
       createdAt
-      data
+      status
+      versions {
+        id
+        createdAt
+        data
+      }
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canUpdate
     }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canUpdate
   }
-}`;
-
+`;
 
 export interface EditFormMutationResponse {
   loading: boolean;
@@ -328,37 +349,38 @@ export interface EditFormMutationResponse {
 
 // === EDIT DASHBOARD ===
 export const EDIT_DASHBOARD = gql`
-mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
-  editDashboard(id: $id, structure: $structure, name: $name) {
-    id
-    name
-    structure
-    modifiedAt
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canSee
-    canUpdate
-    page {
+  mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
+    editDashboard(id: $id, structure: $structure, name: $name) {
       id
       name
-      application {
+      structure
+      modifiedAt
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      page {
         id
+        name
+        application {
+          id
+        }
       }
     }
   }
-}`;
+`;
 
 export interface EditDashboardMutationResponse {
   loading: boolean;
@@ -367,12 +389,13 @@ export interface EditDashboardMutationResponse {
 
 // === DELETE APPLICATION ===
 export const DELETE_APPLICATION = gql`
-mutation deleteApplication($id: ID!) {
-  deleteApplication(id: $id){
-    id
-    name
+  mutation deleteApplication($id: ID!) {
+    deleteApplication(id: $id) {
+      id
+      name
+    }
   }
-}`;
+`;
 
 export interface DeleteApplicationMutationResponse {
   loading: boolean;
@@ -381,20 +404,21 @@ export interface DeleteApplicationMutationResponse {
 
 // === ADD APPLICATION ===
 export const ADD_APPLICATION = gql`
-mutation addApplication {
-  addApplication {
-    id
-    name
-    pages {
+  mutation addApplication {
+    addApplication {
       id
       name
+      pages {
+        id
+        name
+        createdAt
+        type
+        content
+      }
       createdAt
-      type
-      content
     }
-    createdAt
   }
-}`;
+`;
 
 export interface AddApplicationMutationResponse {
   loading: boolean;
@@ -403,43 +427,58 @@ export interface AddApplicationMutationResponse {
 
 // === EDIT APPLICATION ===
 export const EDIT_APPLICATION = gql`
-mutation editApplication($id: ID!, $name: String, $status: Status, $pages: [ID], $permissions: JSON, $description: String) {
-  editApplication(id: $id, name: $name, status: $status, pages: $pages, permissions: $permissions, description: $description) {
-    id
-    description
-    name
-    createdAt
-    modifiedAt
-    status
-    locked
-    lockedByUser
-    pages {
+  mutation editApplication(
+    $id: ID!
+    $name: String
+    $status: Status
+    $pages: [ID]
+    $permissions: JSON
+    $description: String
+  ) {
+    editApplication(
+      id: $id
+      name: $name
+      status: $status
+      pages: $pages
+      permissions: $permissions
+      description: $description
+    ) {
       id
+      description
       name
       createdAt
-      type
-      content
+      modifiedAt
+      status
+      locked
+      lockedByUser
+      pages {
+        id
+        name
+        createdAt
+        type
+        content
+      }
+      settings
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      canDelete
     }
-    settings
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canSee
-    canUpdate
-    canDelete
   }
-}`;
+`;
 
 export interface EditApplicationMutationResponse {
   loading: boolean;
@@ -448,32 +487,33 @@ export interface EditApplicationMutationResponse {
 
 // === DUPLICATE APPLICATION ===
 export const DUPLICATE_APPLICATION = gql`
-mutation duplicateApplication($name: String!, $application: ID! ) {
-  duplicateApplication(name: $name, application: $application){
-    id
-    name
-    createdAt
-    status
-    permissions {
-      canSee {
-        id
-        title
+  mutation duplicateApplication($name: String!, $application: ID!) {
+    duplicateApplication(name: $name, application: $application) {
+      id
+      name
+      createdAt
+      status
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
       }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
+      canSee
+      canUpdate
+      canDelete
+      usersCount
     }
-    canSee
-    canUpdate
-    canDelete
-    usersCount
   }
-}`;
+`;
 // in () input parameters, in {} return values
 
 export interface DuplicateApplicationMutationResponse {
@@ -483,11 +523,12 @@ export interface DuplicateApplicationMutationResponse {
 
 // === DELETE PAGE ===
 export const DELETE_PAGE = gql`
-mutation deletePage($id: ID!) {
-  deletePage(id: $id){
-    id
+  mutation deletePage($id: ID!) {
+    deletePage(id: $id) {
+      id
+    }
   }
-}`;
+`;
 
 export interface DeletePageMutationResponse {
   loading: boolean;
@@ -496,18 +537,29 @@ export interface DeletePageMutationResponse {
 
 // === ADD PAGE ===
 export const ADD_PAGE = gql`
-mutation addPage($name: String, $type: ContentEnumType!, $content: ID, $application: ID!) {
-  addPage(name: $name, type: $type, content: $content, application: $application){
-    id
-    name
-    type
-    content
-    createdAt
-    canSee
-    canUpdate
-    canDelete
+  mutation addPage(
+    $name: String
+    $type: ContentEnumType!
+    $content: ID
+    $application: ID!
+  ) {
+    addPage(
+      name: $name
+      type: $type
+      content: $content
+      application: $application
+    ) {
+      id
+      name
+      type
+      content
+      createdAt
+      canSee
+      canUpdate
+      canDelete
+    }
   }
-}`;
+`;
 
 export interface AddPageMutationResponse {
   loading: boolean;
@@ -516,26 +568,27 @@ export interface AddPageMutationResponse {
 
 // === EDIT PAGE ===
 export const EDIT_PAGE = gql`
-mutation editPage($id: ID!, $name: String, $permissions: JSON) {
-  editPage(id: $id, name: $name, permissions: $permissions){
-    id
-    name
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
+  mutation editPage($id: ID!, $name: String, $permissions: JSON) {
+    editPage(id: $id, name: $name, permissions: $permissions) {
+      id
+      name
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
       }
     }
   }
-}`;
+`;
 
 export interface EditPageMutationResponse {
   loading: boolean;
@@ -544,12 +597,13 @@ export interface EditPageMutationResponse {
 
 // === EDIT WORKFLOW ===
 export const EDIT_WORKFLOW = gql`
-mutation editWorkflow($id: ID!, $name: String, $steps: [ID]) {
-  editWorkflow(id: $id, name: $name, steps: $steps){
-    id
-    name
+  mutation editWorkflow($id: ID!, $name: String, $steps: [ID]) {
+    editWorkflow(id: $id, name: $name, steps: $steps) {
+      id
+      name
+    }
   }
-}`;
+`;
 
 export interface EditWorkflowMutationResponse {
   loading: boolean;
@@ -558,12 +612,13 @@ export interface EditWorkflowMutationResponse {
 
 // === DELETE STEP ===
 export const DELETE_STEP = gql`
-mutation deleteStep($id: ID!) {
-  deleteStep(id: $id){
-    id
-    name
+  mutation deleteStep($id: ID!) {
+    deleteStep(id: $id) {
+      id
+      name
+    }
   }
-}`;
+`;
 
 export interface DeleteStepMutationResponse {
   loading: boolean;
@@ -572,29 +627,42 @@ export interface DeleteStepMutationResponse {
 
 // === EDIT STEP ===
 export const EDIT_STEP = gql`
-mutation editStep($id: ID!, $name: String, $type: String, $content: ID, $permissions: JSON) {
-  editStep(id: $id, name: $name, type: $type, content: $content, permissions: $permissions) {
-    id
-    name
-    type
-    content
-    createdAt
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
+  mutation editStep(
+    $id: ID!
+    $name: String
+    $type: String
+    $content: ID
+    $permissions: JSON
+  ) {
+    editStep(
+      id: $id
+      name: $name
+      type: $type
+      content: $content
+      permissions: $permissions
+    ) {
+      id
+      name
+      type
+      content
+      createdAt
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
       }
     }
   }
-}`;
+`;
 
 export interface EditStepMutationResponse {
   loading: boolean;
@@ -603,17 +671,18 @@ export interface EditStepMutationResponse {
 
 // === EDIT RECORD ===
 export const EDIT_RECORD = gql`
-mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
-  editRecord(id: $id, data: $data, version: $version) {
-    id
-    data(display: $display)
-    createdAt
-    modifiedAt
-    createdBy {
-      name
+  mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
+    editRecord(id: $id, data: $data, version: $version) {
+      id
+      data(display: $display)
+      createdAt
+      modifiedAt
+      createdBy {
+        name
+      }
     }
   }
-}`;
+`;
 
 export interface EditRecordMutationResponse {
   loading: boolean;
@@ -622,34 +691,35 @@ export interface EditRecordMutationResponse {
 
 // === ADD API CONFIGURATION ===
 export const ADD_API_CONFIGURATIION = gql`
-mutation addApiConfiguration($name: String!) {
-  addApiConfiguration(name: $name) {
-    id
-    name
-    status
-    authType
-    endpoint
-    pingUrl
-    settings
-    permissions {
-      canSee {
-        id
-        title
+  mutation addApiConfiguration($name: String!) {
+    addApiConfiguration(name: $name) {
+      id
+      name
+      status
+      authType
+      endpoint
+      pingUrl
+      settings
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
       }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
+      canSee
+      canUpdate
+      canDelete
     }
-    canSee
-    canUpdate
-    canDelete
   }
-}`;
+`;
 
 export interface AddApiConfigurationMutationResponse {
   loading: boolean;
@@ -658,11 +728,12 @@ export interface AddApiConfigurationMutationResponse {
 
 // === DELETE API CONFIGURATION ===
 export const DELETE_API_CONFIGURATIION = gql`
-mutation deleteApiConfiguration($id: ID!) {
-  deleteApiConfiguration(id: $id) {
-    id
+  mutation deleteApiConfiguration($id: ID!) {
+    deleteApiConfiguration(id: $id) {
+      id
+    }
   }
-}`;
+`;
 
 export interface DeleteApiConfigurationMutationResponse {
   loading: boolean;
@@ -671,34 +742,53 @@ export interface DeleteApiConfigurationMutationResponse {
 
 // === EDIT API CONFIGURATION ===
 export const EDIT_API_CONFIGURATION = gql`
-mutation editApiConfiguration($id: ID!, $name: String, $status: Status, $authType: AuthType, $endpoint: String, $pingUrl: String, $settings: JSON, $permissions: JSON) {
-  editApiConfiguration(id: $id, name: $name, status: $status, authType: $authType, endpoint: $endpoint, pingUrl: $pingUrl, settings: $settings, permissions: $permissions) {
-    id
-    name
-    status
-    authType
-    endpoint
-    pingUrl
-    settings
-    permissions {
-      canSee {
-        id
-        title
+  mutation editApiConfiguration(
+    $id: ID!
+    $name: String
+    $status: Status
+    $authType: AuthType
+    $endpoint: String
+    $pingUrl: String
+    $settings: JSON
+    $permissions: JSON
+  ) {
+    editApiConfiguration(
+      id: $id
+      name: $name
+      status: $status
+      authType: $authType
+      endpoint: $endpoint
+      pingUrl: $pingUrl
+      settings: $settings
+      permissions: $permissions
+    ) {
+      id
+      name
+      status
+      authType
+      endpoint
+      pingUrl
+      settings
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
       }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
+      canSee
+      canUpdate
+      canDelete
     }
-    canSee
-    canUpdate
-    canDelete
   }
-}`;
+`;
 
 export interface EditApiConfigurationMutationResponse {
   loading: boolean;
@@ -707,28 +797,51 @@ export interface EditApiConfigurationMutationResponse {
 
 // === ADD PULL JOB ===
 export const ADD_PULL_JOB = gql`
-mutation addPullJob($name: String!, $status: Status!, $apiConfiguration: ID!, $schedule: String, $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
-  addPullJob(name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
-    id
-    name
-    status
-    apiConfiguration {
+  mutation addPullJob(
+    $name: String!
+    $status: Status!
+    $apiConfiguration: ID!
+    $url: String
+    $path: String
+    $schedule: String
+    $convertTo: ID
+    $mapping: JSON
+    $uniqueIdentifiers: [String]
+    $channel: ID
+  ) {
+    addPullJob(
+      name: $name
+      status: $status
+      apiConfiguration: $apiConfiguration
+      url: $url
+      path: $path
+      schedule: $schedule
+      convertTo: $convertTo
+      mapping: $mapping
+      uniqueIdentifiers: $uniqueIdentifiers
+      channel: $channel
+    ) {
       id
       name
-    }
-    schedule
-    convertTo {
-      id
-      name
-    }
-    mapping
-    uniqueIdentifiers
-    channel {
-      id
-      title
+      status
+      apiConfiguration {
+        id
+        name
+      }
+      schedule
+      convertTo {
+        id
+        name
+      }
+      mapping
+      uniqueIdentifiers
+      channel {
+        id
+        title
+      }
     }
   }
-}`;
+`;
 
 export interface AddPullJobMutationResponse {
   loading: boolean;
@@ -737,11 +850,12 @@ export interface AddPullJobMutationResponse {
 
 // === DELETE PULL JOB ===
 export const DELETE_PULL_JOB = gql`
-mutation deletePullJob($id: ID!) {
-  deletePullJob(id: $id) {
-    id
+  mutation deletePullJob($id: ID!) {
+    deletePullJob(id: $id) {
+      id
+    }
   }
-}`;
+`;
 
 export interface DeletePullJobMutationResponse {
   loading: boolean;
@@ -750,28 +864,53 @@ export interface DeletePullJobMutationResponse {
 
 // === EDIT PULL JOB ===
 export const EDIT_PULL_JOB = gql`
-mutation editPullJob($id: ID! $name: String, $status: Status, $apiConfiguration: ID, $schedule: String, $convertTo: ID, $mapping: JSON, $uniqueIdentifiers: [String], $channel: ID) {
-  editPullJob(id: $id, name: $name, status: $status, apiConfiguration: $apiConfiguration, schedule: $schedule, convertTo: $convertTo, mapping: $mapping, uniqueIdentifiers: $uniqueIdentifiers, channel: $channel) {
-    id
-    name
-    status
-    apiConfiguration {
+  mutation editPullJob(
+    $id: ID!
+    $name: String
+    $status: Status
+    $apiConfiguration: ID
+    $url: String
+    $path: String
+    $schedule: String
+    $convertTo: ID
+    $mapping: JSON
+    $uniqueIdentifiers: [String]
+    $channel: ID
+  ) {
+    editPullJob(
+      id: $id
+      name: $name
+      status: $status
+      apiConfiguration: $apiConfiguration
+      url: $url
+      path: $path
+      schedule: $schedule
+      convertTo: $convertTo
+      mapping: $mapping
+      uniqueIdentifiers: $uniqueIdentifiers
+      channel: $channel
+    ) {
       id
       name
-    }
-    schedule
-    convertTo {
-      id
-      name
-    }
-    mapping
-    uniqueIdentifiers
-    channel {
-      id
-      title
+      status
+      apiConfiguration {
+        id
+        name
+      }
+      schedule
+      convertTo {
+        id
+        name
+      }
+      mapping
+      uniqueIdentifiers
+      channel {
+        id
+        title
+      }
     }
   }
-}`;
+`;
 
 export interface EditPullJobMutationResponse {
   loading: boolean;

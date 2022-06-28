@@ -1,6 +1,14 @@
 <div class="widget-container">
-  <div class="widget-header" *ngIf="header">
-    <div class="widget-title" [title]="settings ? settings.title : ''">{{(settings && settings.title) ? settings.title : ''}}</div>
+  <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
+    <span class="widget-title" [title]="settings ? settings.title : ''">{{
+      settings && settings.title
+        ? settings.title
+        : ('models.widget.map.defaultTitle' | translate)
+    }}</span>
+  </kendo-tilelayout-item-header>
+  <div [id]="mapId" class="widget-content">
+    <p class="widget-last-update" *ngIf="lastUpdate && lastUpdate.length > 0">
+      Last update: {{ lastUpdate }}
+    </p>
   </div>
-  <div [id]="mapId" class="widget-content"></div>
 </div>

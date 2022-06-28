@@ -7,24 +7,24 @@ import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
+/** Default options for the marker */
 const MARKER_OPTIONS = {
   color: '#0090d1',
   opacity: 0.25,
   weight: 12,
   fillColor: '#0090d1',
   fillOpacity: 1,
-  radius: 6
+  radius: 6,
 };
 
+/** Component for the map widget */
 @Component({
   selector: 'safe-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
 })
-/*  Map widget using Leaflet.
-*/
+/** Map widget using Leaflet. */
 export class SafeMapComponent implements AfterViewInit, OnDestroy {
-
   // === MAP ===
   public mapId: string;
   private map: any;
@@ -49,6 +49,15 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   @Input() header = true;
   @Input() settings: any = null;
 
+  // === QUERY UPDATE INFO ===
+  public lastUpdate = '';
+
+  /**
+   * Constructor of the map widget component
+   *
+   * @param apollo Apollo client
+   * @param queryBuilder The querybuilder service
+   */
   constructor(
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService
@@ -56,12 +65,16 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.mapId = this.generateUniqueId();
   }
 
-  /*  Generation of an unique id for the map ( in case multiple widgets use map ).
-  */
+  /**
+   * Generation of an unique id for the map (in case multiple widgets use map).
+   *
+   * @param parts Number of parts in the id (seperated by dashes "-")
+   * @returns A random unique id
+   */
   private generateUniqueId(parts: number = 4): string {
     const stringArr: string[] = [];
     for (let i = 0; i < parts; i++) {
-      // tslint:disable-next-line:no-bitwise
+      // eslint-disable-next-line no-bitwise
       const S4 = (((1 + Math.random()) * 0x10000) | 0)
         .toString(16)
         .substring(1);
@@ -70,20 +83,22 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     return stringArr.join('-');
   }
 
-  /*  Once template is ready, build the map.
-  */
+  /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
     this.drawMap();
-    const builtQuery =  this.queryBuilder.buildQuery(this.settings);
-    this.dataQuery = this.apollo.watchQuery<any>({
-      query: builtQuery
-    });
-
-    if (this.dataQuery) {
+    if (this.settings.query) {
+      const builtQuery = this.queryBuilder.buildQuery(this.settings);
+      this.dataQuery = this.apollo.watchQuery<any>({
+        query: builtQuery,
+        variables: {
+          first: 100,
+        },
+      });
       this.getData();
     }
 
-    this.displayFields = this.settings.query?.fields.map((f: any) => f.name) || [];
+    this.displayFields =
+      this.settings.query?.fields.map((f: any) => f.name) || [];
 
     this.map.setMaxBounds(this.bounds);
     this.map.setZoom(this.settings.zoom);
@@ -91,39 +106,46 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => this.map.invalidateSize(), 100);
   }
 
-  /*  Create the map with all useful parameters
-  */
+  /** Create the map with all useful parameters */
   private drawMap(): void {
-    const centerLong = this.settings.centerLong ? Number(this.settings.centerLong) : 0;
-    const centerLat = this.settings.centerLat ? Number(this.settings.centerLat) : 0;
+    const centerLong = this.settings.centerLong
+      ? Number(this.settings.centerLong)
+      : 0;
+    const centerLat = this.settings.centerLat
+      ? Number(this.settings.centerLat)
+      : 0;
 
-    this.map = L.map(this.mapId, {zoomControl: false}).setView([centerLat, centerLong], this.settings.zoom || 3);
+    this.map = L.map(this.mapId, { zoomControl: false }).setView(
+      [centerLat, centerLong],
+      this.settings.zoom || 3
+    );
 
-    L.control.zoom({
-      position: 'bottomleft'
-    }).addTo(this.map);
+    L.control
+      .zoom({
+        position: 'bottomleft',
+      })
+      .addTo(this.map);
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
       attribution: 'Map',
       noWrap: true,
       minZoom: 1,
     }).addTo(this.map);
-
     this.markersLayerGroup = L.featureGroup().addTo(this.map);
     this.markersLayerGroup.on('click', (event: any) => {
-      this.selectedItem = this.data.find(x => x.id === event.layer.options.id);
+      this.selectedItem = this.data.find(
+        (x) => x.id === event.layer.options.id
+      );
       this.popupMarker = L.popup({})
         .setLatLng([event.latlng.lat, event.latlng.lng])
         .setContent(this.selectedItem ? this.selectedItem.data : '')
         .addTo(this.map);
-
     });
 
     this.markersLayer = L.markerClusterGroup({}).addTo(this.markersLayerGroup);
   }
 
-  /*  Load the data, using widget parameters.
-  */
+  /** Load the data, using widget parameters. */
   private getData(): void {
     this.map.closePopup(this.popupMarker);
     this.popupMarker = null;
@@ -132,20 +154,33 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png',
     });
 
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe((res: any) => {
-      this.data = [];
-      this.selectedItem = null;
-      this.markersLayer.clearLayers();
-      for (const field in res.data) {
-        if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-          res.data[field].map((x: any) => this.drawMarkers(myIcon, x));
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe(
+      (res: any) => {
+        const today = new Date();
+        this.lastUpdate =
+          ('0' + today.getHours()).slice(-2) +
+          ':' +
+          ('0' + today.getMinutes()).slice(-2);
+        this.data = [];
+        this.selectedItem = null;
+        this.markersLayer.clearLayers();
+        for (const field in res.data) {
+          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+            res.data[field].edges.map((x: any) =>
+              this.drawMarkers(myIcon, x.node)
+            );
+          }
         }
       }
-    });
+    );
   }
 
-  /*  Draw markers on the map if the record has coordinates
-  */
+  /**
+   * Draw markers on the map if the record has coordinates.
+   *
+   * @param icon The icon to use for the marker
+   * @param item Data to use for disaplying the marker
+   */
   private drawMarkers(icon: any, item: any): void {
     const latitude = Number(item[this.settings.latitude]);
     const longitude = Number(item[this.settings.longitude]);
@@ -157,16 +192,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             data += `<div><b>${key}:</b> ${item[key]}</div>`;
           }
         }
-        const obj = {id: item.id, data};
+        const obj = { id: item.id, data };
         this.data.push(obj);
         const options = MARKER_OPTIONS;
-        Object.assign(options, {id: item.id});
-        const marker = L.circleMarker(
-          [
-            latitude,
-            longitude
-          ],
-          options);
+        Object.assign(options, { id: item.id });
+        const marker = L.circleMarker([latitude, longitude], options);
         this.markersLayer.addLayer(marker);
       }
     }

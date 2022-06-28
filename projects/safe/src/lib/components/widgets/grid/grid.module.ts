@@ -5,20 +5,23 @@ import { SafeFormModalModule } from '../../form-modal/form-modal.module';
 import { MatButtonModule } from '@angular/material/button';
 import { SafeChooseRecordModalModule } from '../../choose-record-modal/choose-record-modal.module';
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
+import { LayoutModule } from '@progress/kendo-angular-layout';
+import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { SafeEmailPreviewModule } from '../../email-preview/email-preview.module';
 
+/** Module for grid widget component */
 @NgModule({
-  declarations: [
-    SafeGridWidgetComponent
-  ],
+  declarations: [SafeGridWidgetComponent],
   imports: [
     CommonModule,
     SafeFormModalModule,
     MatButtonModule,
     SafeChooseRecordModalModule,
     SafeCoreGridModule,
-    SafeEmailPreviewModule
+    LayoutModule,
+    DropDownListModule,
+    SafeEmailPreviewModule,
   ],
-  exports: [SafeGridWidgetComponent]
+  exports: [SafeGridWidgetComponent],
 })
-export class SafeGridWidgetModule { }
+export class SafeGridWidgetModule {}

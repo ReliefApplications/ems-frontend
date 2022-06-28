@@ -1,0 +1,25 @@
+<form
+  [formGroup]="$any(fieldForm)"
+  class="add-field"
+  *ngFor="let fieldForm of form.controls; let index = index"
+>
+  <mat-form-field appearance="outline" *ngIf="displayName">
+    <mat-label>{{ 'common.name' | translate }}</mat-label>
+    <input matInput formControlName="name" />
+  </mat-form-field>
+  <safe-expressions
+    [fields]="fields"
+    [form]="$any(fieldForm.get('expression'))"
+    [operators]="$any(operators)"
+  ></safe-expressions>
+  <safe-button
+    class="remove-button"
+    [isIcon]="true"
+    icon="delete"
+    variant="danger"
+    (click)="deleteField(index)"
+  ></safe-button>
+</form>
+<safe-button icon="add" category="tertiary" (click)="addField()">
+  {{ 'components.aggregationBuilder.addField' | translate }}
+</safe-button>

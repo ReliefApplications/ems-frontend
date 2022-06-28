@@ -1,15 +1,23 @@
-import { Component, OnInit, Output, EventEmitter, Input, ViewChild, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  Input,
+  AfterViewInit,
+} from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
 
+/**
+ * Modal content for the settings of the editor widgets.
+ */
 @Component({
   selector: 'safe-editor-settings',
   templateUrl: './editor-settings.component.html',
-  styleUrls: ['./editor-settings.component.scss']
+  styleUrls: ['./editor-settings.component.scss'],
 })
-/*  Modal content for the settings of the editor widgets.
-*/
 export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
-
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
 
@@ -17,37 +25,37 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   @Input() tile: any;
 
   // === EMIT THE CHANGES APPLIED ===
-  // tslint:disable-next-line: no-output-native
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
-  // === TEMPLATE REFERENCE TO THE KENDO EDITOR ===
-  @ViewChild('editor') public editor: any;
+  /** tinymce editor */
+  public editor: any = WIDGET_EDITOR_CONFIG;
 
-  constructor(private formBuilder: FormBuilder) { }
+  /**
+   * Modal content for the settings of the editor widgets.
+   *
+   * @param formBuilder Angular Form Builder
+   */
+  constructor(private formBuilder: FormBuilder) {}
 
-  /*  Build the settings form, using the widget saved parameters.
-  */
+  /**
+   * Build the settings form, using the widget saved parameters.
+   */
   ngOnInit(): void {
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
       title: this.tile.settings.title,
-      text: this.tile.settings.text
+      text: this.tile.settings.text,
     });
     this.change.emit(this.tileForm);
   }
 
-  /*  Detect the form changes to emit the new configuration.
-  */
+  /**
+   * Detect the form changes to emit the new configuration.
+   */
   ngAfterViewInit(): void {
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
   }
-
-  /*  Update the text of the editor.
-  */
-  updateText(): void {
-    this.tileForm?.setValue({...this.tileForm?.value, text: this.editor.value});
-  }
-
 }

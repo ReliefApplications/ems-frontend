@@ -36,6 +36,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatMenuModule,
     ClipboardModule,
   ],
-  exports: [DashboardComponent]
+  exports: [DashboardComponent],
 })
-export class DashboardModule { }
+export class DashboardModule {}

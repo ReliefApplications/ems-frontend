@@ -8,7 +8,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * ConfigDisplayGridFieldsModalModule is a class used to manage all the modules and components
+ * related to the modals of configuration of grid fields.
+ */
 @NgModule({
   declarations: [ConfigDisplayGridFieldsModalComponent],
   imports: [
@@ -20,9 +25,9 @@ import { MatInputModule } from '@angular/material/input';
     MatProgressSpinnerModule,
     SafeQueryBuilderModule,
     MatButtonModule,
-    MatInputModule
+    MatInputModule,
+    TranslateModule,
   ],
-  exports: [ConfigDisplayGridFieldsModalComponent]
+  exports: [ConfigDisplayGridFieldsModalComponent],
 })
-export class ConfigDisplayGridFieldsModalModule {
-}
+export class ConfigDisplayGridFieldsModalModule {}

@@ -1,5 +1,9 @@
 import { Component, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
@@ -8,7 +12,10 @@ import { SafeAddUserComponent } from '../add-user/add-user.component';
 import { NOTIFICATIONS } from '../../../../const/notifications';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { SafeDownloadService } from '../../../../services/download.service';
+import { TranslateService } from '@ngx-translate/core';
+import { UploadEvent } from '@progress/kendo-angular-upload';
 
+/** Model fot the input data */
 interface DialogData {
   roles: Role[];
   users: User[];
@@ -17,13 +24,13 @@ interface DialogData {
   downloadPath: string;
 }
 
+/** Component for inviting users */
 @Component({
   selector: 'safe-invite-users',
   templateUrl: './invite-users.component.html',
-  styleUrls: ['./invite-users.component.scss']
+  styleUrls: ['./invite-users.component.scss'],
 })
 export class SafeInviteUsersComponent implements OnInit {
-
   public gridData: GridDataResult = { data: [], total: 0 };
   public formGroup: FormGroup = new FormGroup({});
   private editedRowIndex = 0;
@@ -35,10 +42,23 @@ export class SafeInviteUsersComponent implements OnInit {
 
   @ViewChild('fileReader') fileReader: any;
 
+  /** @returns The position attributes available */
   get positionAttributes(): FormArray | null {
     return this.formGroup.get('positionAttributes') as FormArray;
   }
 
+  /**
+   * Constructor of the component
+   *
+   * @param renderer Custom render factory client
+   * @param downloadService The download service
+   * @param snackBar The snack bar service
+   * @param formBuilder The form builder service
+   * @param dialog The material dialog service
+   * @param dialogRef The reference to a material dialog
+   * @param translate The translation service
+   * @param data The input data of the component
+   */
   constructor(
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
@@ -46,8 +66,9 @@ export class SafeInviteUsersComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeInviteUsersComponent>,
+    public translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) { }
+  ) {}
 
   ngOnInit(): void {}
 
@@ -62,17 +83,21 @@ export class SafeInviteUsersComponent implements OnInit {
    * Opens a modal to invite a new user.
    */
   onAdd(): void {
-    const invitedUsers = this.gridData.data.map(x => x.email);
+    const invitedUsers = this.gridData.data.map((x) => x.email);
     const dialogRef = this.dialog.open(SafeAddUserComponent, {
       panelClass: 'add-dialog',
       data: {
         roles: this.data.roles,
-        users: this.data.users.filter(x => !invitedUsers.includes(x.username)),
-        ...this.data.positionAttributeCategories && { positionAttributeCategories: this.data.positionAttributeCategories }
+        users: this.data.users.filter(
+          (x) => !invitedUsers.includes(x.username)
+        ),
+        ...(this.data.positionAttributeCategories && {
+          positionAttributeCategories: this.data.positionAttributeCategories,
+        }),
       },
-      autoFocus: false
+      autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe(value => {
+    dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.gridData.data.push(value);
       }
@@ -81,6 +106,7 @@ export class SafeInviteUsersComponent implements OnInit {
 
   /**
    * Removes an user from the invitation list.
+   *
    * @param index index of user to remove.
    */
   onRemove(index: number): void {
@@ -89,18 +115,38 @@ export class SafeInviteUsersComponent implements OnInit {
 
   /**
    * Uploads a list of users as xlsx file.
-   * @param $event Event of file upload.
+   *
+   * @param e Event of file upload.
    */
-  onUpload($event: any): void {
-    const files = $event.target.files;
-    if (files[0] && this.isValidFile(files[0])) {
-      this.downloadService.uploadFile(this.data.uploadPath, files[0]).subscribe(res => {
-        this.gridData.data = this.gridData.data.concat(res);
-      });
-    } else {
-      if (files.length > 0) {
-        this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {error: true});
-        this.resetFileInput();
+  onUpload(e: UploadEvent): void {
+    e.preventDefault();
+    this.gridData.data = [];
+    if (e.files.length > 0) {
+      const file = e.files[0].rawFile;
+      if (file && this.isValidFile(file)) {
+        this.downloadService.uploadFile(this.data.uploadPath, file).subscribe(
+          (res) => {
+            this.gridData.data = res;
+          },
+          (err) => {
+            if (err.status === 400) {
+              this.snackBar.openSnackBar(err.error, { error: true });
+              this.resetFileInput();
+            } else {
+              this.snackBar.openSnackBar(NOTIFICATIONS.userImportFail, {
+                error: true,
+              });
+              this.resetFileInput();
+            }
+          }
+        );
+      } else {
+        if (e.files.length > 1) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {
+            error: true,
+          });
+          this.resetFileInput();
+        }
       }
     }
   }
@@ -109,14 +155,18 @@ export class SafeInviteUsersComponent implements OnInit {
    * Download template for users invite.
    */
   onDownload(): void {
-    this.downloadService.getFile(this.data.downloadPath, `text/xlsx;charset=utf-8;`, 'users.xlsx');
+    this.downloadService.getFile(
+      this.data.downloadPath,
+      `text/xlsx;charset=utf-8;`,
+      'users_template.xlsx'
+    );
   }
 
   /**
    * Deletes the file.
    */
   private resetFileInput(): void {
-    this.fileReader.nativeElement.value = '';
+    this.fileReader.clearFiles();
   }
 
   /**
@@ -131,7 +181,11 @@ export class SafeInviteUsersComponent implements OnInit {
 
   /**
    * Handles cell click events. Creates form group for edition.
+   *
    * @param param0 cell click event.
+   * @param param0.isEdited Weather the cell is edited
+   * @param param0.dataItem The data of the item
+   * @param param0.rowIndex The index of the current row
    */
   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
     if (!this.editionActive) {
@@ -148,6 +202,7 @@ export class SafeInviteUsersComponent implements OnInit {
 
   /**
    * Creates a form group for inline edition of a row.
+   *
    * @param dataItem Row data.
    * @returns Form group created from row data.
    */
@@ -155,15 +210,16 @@ export class SafeInviteUsersComponent implements OnInit {
     const formGroup: any = {
       email: [dataItem.email, Validators.required],
       role: [dataItem.role, Validators.required],
-      ...this.data.positionAttributeCategories &&
-      {
-        positionAttributes: this.formBuilder.array(this.data.positionAttributeCategories.map((x, index) => {
-          return this.formBuilder.group({
-            value: [dataItem.positionAttributes[index].value || ''],
-            category: [x.id, Validators.required]
-          });
-        }))
-      }
+      ...(this.data.positionAttributeCategories && {
+        positionAttributes: this.formBuilder.array(
+          this.data.positionAttributeCategories.map((x, index) =>
+            this.formBuilder.group({
+              value: [dataItem.positionAttributes[index].value || ''],
+              category: [x.id, Validators.required],
+            })
+          )
+        ),
+      }),
     };
     return this.formBuilder.group(formGroup);
   }
@@ -182,6 +238,7 @@ export class SafeInviteUsersComponent implements OnInit {
 
   /**
    * Check that the file can be considered as valid.
+   *
    * @param file File to check extension of.
    * @returns does the file have correct extension.
    */

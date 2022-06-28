@@ -1,14 +1,17 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { FilterService } from '@progress/kendo-angular-grid';
 
+/**
+ * Array Filter menu, used by grid, when filtering by multi choices question.
+ */
 @Component({
   selector: 'safe-array-filter-menu',
   templateUrl: './array-filter-menu.component.html',
-  styleUrls: ['./array-filter-menu.component.scss']
+  styleUrls: ['./array-filter-menu.component.scss'],
 })
 export class SafeArrayFilterMenuComponent implements OnInit {
-
   @Input() public field = '';
   @Input() public filter: any;
   @Input() public data: any[] = [];
@@ -19,6 +22,7 @@ export class SafeArrayFilterMenuComponent implements OnInit {
   @Input() public filterService?: FilterService;
   public form?: FormGroup;
 
+  /** @returns default item choice */
   public get defaultItem(): any {
     return {
       [this.textField]: 'Select item...',
@@ -26,49 +30,56 @@ export class SafeArrayFilterMenuComponent implements OnInit {
     };
   }
 
+  /** @returns filters as form Array. */
   public get filters(): FormArray {
     return this.form?.get('filters') as FormArray;
   }
 
   public logics = [
     {
-      text: 'Or',
-      value: 'or'
+      text: this.translate.instant('kendo.grid.filterOrLogic'),
+      value: 'or',
     },
     {
-      text: 'And',
-      value: 'and'
-    }
+      text: this.translate.instant('kendo.grid.filterAndLogic'),
+      value: 'and',
+    },
   ];
 
   public operators = [
     {
-      text: 'Is equal to',
-      value: 'eq'
+      text: this.translate.instant('kendo.grid.filterEqOperator'),
+      value: 'eq',
     },
     {
-      text: 'Is not equal to',
-      value: 'neq'
+      text: this.translate.instant('kendo.grid.filterNotEqOperator'),
+      value: 'neq',
     },
     {
-      text: 'Contains',
-      value: 'contains'
+      text: this.translate.instant('kendo.grid.filterContainsOperator'),
+      value: 'contains',
     },
     {
-      text: 'Does not contain',
-      value: 'doesnotcontain'
+      text: this.translate.instant('kendo.grid.filterNotContainsOperator'),
+      value: 'doesnotcontain',
     },
     {
-      text: 'Is empty',
-      value: 'isempty'
+      text: this.translate.instant('kendo.grid.filterIsEmptyOperator'),
+      value: 'isempty',
     },
     {
-      text: 'Is not empty',
-      value: 'isnotempty'
-    }
+      text: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
+      value: 'isnotempty',
+    },
   ];
 
-  constructor(private fb: FormBuilder) { }
+  /**
+   * Array Filter menu, used by grid, when filtering by multi choices question.
+   *
+   * @param fb Angular form builder
+   * @param translate Angular translate service
+   */
+  constructor(private fb: FormBuilder, private translate: TranslateService) {}
 
   ngOnInit(): void {
     this.choices1 = this.data.slice();
@@ -78,26 +89,46 @@ export class SafeArrayFilterMenuComponent implements OnInit {
       filters: this.fb.array([
         this.fb.group({
           field: this.field,
-          operator: this.filter.filters[0] ? this.filter.filters[0].operator : 'contains',
-          value: this.fb.control(this.filter.filters[0] ? this.filter.filters[0].value : [])
+          operator: this.filter.filters[0]
+            ? this.filter.filters[0].operator
+            : 'contains',
+          value: this.fb.control(
+            this.filter.filters[0] ? this.filter.filters[0].value : []
+          ),
         }),
         this.fb.group({
           field: this.field,
-          operator: this.filter.filters[1] ? this.filter.filters[1].operator : 'contains',
-          value: this.fb.control(this.filter.filters[1] ? this.filter.filters[1].value : [])
-        })
-      ])
+          operator: this.filter.filters[1]
+            ? this.filter.filters[1].operator
+            : 'contains',
+          value: this.fb.control(
+            this.filter.filters[1] ? this.filter.filters[1].value : []
+          ),
+        }),
+      ]),
     });
-    this.form.valueChanges.subscribe(value => {
+    this.form.valueChanges.subscribe((value) => {
       this.filterService?.filter(value);
     });
   }
 
+  /**
+   * Handle filter update
+   *
+   * @param value new filter value
+   * @param index index of filter to update
+   */
   public handleFilter(value: string, index: number): void {
     if (index === 1) {
-      this.choices1 = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
+      this.choices1 = this.data.filter(
+        (x) =>
+          x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1
+      );
     } else {
-      this.choices2 = this.data.filter(x => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1);
+      this.choices2 = this.data.filter(
+        (x) =>
+          x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1
+      );
     }
   }
 }

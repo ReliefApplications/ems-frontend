@@ -1,8 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { EDITOR_CONFIG } from '../../const/email';
-// import { RawEditorOptions } from 'tinymce/tinymce';
+import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -25,8 +24,8 @@ export class SafeEmailPreviewComponent implements OnInit {
   /** mail is put in a form to use read-only inputs */
   public form!: FormGroup;
 
-    /** tinymce editor */
-  public editor: any = EDITOR_CONFIG;
+  /** tinymce editor */
+  public editor: any = EMAIL_EDITOR_CONFIG;
 
   /**
    * Preview Email component.
@@ -35,7 +34,6 @@ export class SafeEmailPreviewComponent implements OnInit {
    * @param data injected dialog data
    * @param dialogRef Dialog reference
    * @param formBuilder Angular Form Builder
-   * @param sanitizer Angular DOM sanitizer
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,

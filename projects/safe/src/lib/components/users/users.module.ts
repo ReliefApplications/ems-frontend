@@ -21,7 +21,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
+import { TranslateModule } from '@ngx-translate/core';
 
+/** Module for components related to users */
 @NgModule({
   declarations: [SafeUsersComponent, SafeEditUserComponent],
   imports: [
@@ -45,8 +47,9 @@ import { SafeInviteUsersModule } from './components/invite-users/invite-users.mo
     MatDividerModule,
     SafeButtonModule,
     MatTooltipModule,
-    SafeInviteUsersModule
+    SafeInviteUsersModule,
+    TranslateModule,
   ],
-  exports: [SafeUsersComponent]
+  exports: [SafeUsersComponent],
 })
-export class SafeUsersModule { }
+export class SafeUsersModule {}

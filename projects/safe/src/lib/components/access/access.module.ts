@@ -11,7 +11,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * SafeAccessModule is a class used to manage all the modules and components related to the access properties.
+ */
 @NgModule({
   declarations: [SafeAccessComponent, SafeEditAccessComponent],
   imports: [
@@ -25,8 +29,9 @@ import { SafeButtonModule } from '../ui/button/button.module';
     MatSelectModule,
     MatMenuModule,
     MatTooltipModule,
-    SafeButtonModule
+    SafeButtonModule,
+    TranslateModule,
   ],
-  exports: [SafeAccessComponent]
+  exports: [SafeAccessComponent],
 })
-export class SafeAccessModule { }
+export class SafeAccessModule {}

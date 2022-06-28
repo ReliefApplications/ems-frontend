@@ -1,9 +1,26 @@
-<button mat-button [class.mat-flat-button]="category === 'secondary'"
-    [class.mat-stroked-button]="category === 'tertiary'" [class.safe-btn-block]="block"
-    [class.safe-btn-small]="size === 'small'" [class.safe-btn-success]="variant === 'success'" [color]="color"
-    [class.mat-icon-button]="isIcon"
-    [disabled]="disabled" (click)="emittedEventSubject.next('click')">
-    <safe-icon *ngIf="icon && !loading" [class.safe-btn-icon]="!isIcon" [icon]="icon" [inline]="!isIcon"></safe-icon>
-    <safe-spinner *ngIf="loading" class="safe-btn-spinner" size="small" [variant]="spinnerVariant"></safe-spinner>
-    <ng-content></ng-content>
+<button
+  mat-button
+  [class.mat-flat-button]="category === 'secondary'"
+  [class.mat-stroked-button]="category === 'tertiary'"
+  [class.safe-btn-block]="block"
+  [class.safe-btn-small]="size === 'small'"
+  [class.safe-btn-success]="variant === 'success'"
+  [color]="color"
+  [class.mat-icon-button]="isIcon"
+  [disabled]="disabled"
+  (click)="emittedEventSubject.next('click')"
+>
+  <safe-icon
+    *ngIf="icon && !loading"
+    [class.safe-btn-icon]="!isIcon"
+    [icon]="icon"
+    [inline]="!isIcon"
+  ></safe-icon>
+  <safe-spinner
+    *ngIf="loading"
+    class="safe-btn-spinner"
+    size="small"
+    [variant]="spinnerVariant"
+  ></safe-spinner>
+  <ng-content></ng-content>
 </button>

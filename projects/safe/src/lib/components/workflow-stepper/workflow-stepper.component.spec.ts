@@ -8,9 +8,8 @@ describe('SafeWorkflowStepperComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeWorkflowStepperComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeWorkflowStepperComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

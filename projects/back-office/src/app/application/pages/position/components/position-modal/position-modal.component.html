@@ -1,13 +1,35 @@
-<h1 mat-dialog-title>{{data.add ? 'New position category' : 'Edit position category'}}</h1>
+<h1 mat-dialog-title>
+  {{
+    (data.add ? 'common.newObject' : 'common.editObject')
+      | translate: { name: 'common.positionAttribute.one' | translate }
+  }}
+</h1>
 <div mat-dialog-content>
-    <form [formGroup]="positionForm">
-        <mat-form-field>
-            <mat-label>Title</mat-label>
-            <input matInput formControlName="title" type="text" placeholder="{{data.add ? 'Enter a title' : data.title}}"/>
-        </mat-form-field>
-    </form>
+  <form [formGroup]="positionForm">
+    <mat-form-field>
+      <mat-label>{{ 'common.title' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="title"
+        type="text"
+        [placeholder]="
+          data.add ? ('common.placeholder.title' | translate) : data.title
+        "
+      />
+    </mat-form-field>
+  </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button [mat-dialog-close]="positionForm.value" cdkFocusInitial color="primary" [disabled]="!positionForm.valid">{{data.add ? 'Create' : 'Confirm'}}</button>
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="positionForm.value"
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!positionForm.valid"
+  >
+    {{ (data.add ? 'common.create' : 'common.update') | translate }}
+  </button>
 </div>

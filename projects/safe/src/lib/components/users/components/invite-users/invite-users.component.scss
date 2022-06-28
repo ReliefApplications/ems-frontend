@@ -1,7 +1,20 @@
 .invite-label {
-    margin-bottom: 24px;
+  margin-bottom: 24px;
 }
 
 .file-select {
-    margin-bottom: 24px;
+  margin-bottom: 24px;
+}
+
+.file-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+
+  kendo-upload {
+    flex: 1;
+  }
 }

@@ -8,7 +8,11 @@ import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdo
 import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
 import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
+import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Resource grid modal component module.
+ */
 @NgModule({
   declarations: [SafeResourceGridModalComponent],
   imports: [
@@ -19,8 +23,9 @@ import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
     SafeResourceDropdownModule,
     SafeApplicationDropdownModule,
     SafeRecordDropdownModule,
-    SafeCoreGridModule
+    SafeCoreGridModule,
+    TranslateModule,
   ],
-  exports: [SafeResourceGridModalComponent]
+  exports: [SafeResourceGridModalComponent],
 })
-export class SafeSearchResourceGridModalModule { }
+export class SafeSearchResourceGridModalModule {}

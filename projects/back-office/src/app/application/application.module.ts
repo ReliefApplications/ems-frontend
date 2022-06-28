@@ -6,16 +6,14 @@ import { SafeLayoutModule, SafeConfirmModalModule } from '@safe/builder';
 import { ApplicationToolbarModule } from './components/application-toolbar/application-toolbar.module';
 
 @NgModule({
-  declarations: [
-    ApplicationComponent
-  ],
+  declarations: [ApplicationComponent],
   imports: [
     CommonModule,
     ApplicationRoutingModule,
     ApplicationToolbarModule,
     SafeLayoutModule,
-    SafeConfirmModalModule
+    SafeConfirmModalModule,
   ],
-  exports: [ApplicationComponent]
+  exports: [ApplicationComponent],
 })
-export class ApplicationModule { }
+export class ApplicationModule {}

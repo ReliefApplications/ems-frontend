@@ -1,5 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { SafeRecordDropdownComponent } from './record-dropdown.component';
 
 describe('SafeRecordDropdownComponent', () => {
@@ -8,9 +13,17 @@ describe('SafeRecordDropdownComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeRecordDropdownComponent ]
-    })
-    .compileComponents();
+      providers: [TranslateService],
+      declarations: [SafeRecordDropdownComponent],
+      imports: [
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

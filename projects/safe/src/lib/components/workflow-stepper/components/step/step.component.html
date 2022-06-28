@@ -1,13 +1,38 @@
-<div matRipple class="safe-step" [style.background-color]="active ? type?.color : ''" [ngClass]="{'active': active }">
-    <div class="step-actions">
-        <safe-button *ngIf="canUpdate" [isIcon]="true" icon="delete_outline" category="primary" variant="danger" matTooltip="Delete step"
-            (click)="onDelete($event)">
-        </safe-button>
-        <safe-button *ngIf="canUpdate" [isIcon]="true" icon="content_copy" category="primary" variant="primary"
-            [disabled]="true">
-        </safe-button>
-    </div>
-    <img [src]="type?.img">
-    <span>{{ step.name | titlecase }}</span>
-    <div *ngIf="active" [style.background]="type?.focusColor" class="safe-step-active"></div>
+<div
+  matRipple
+  class="safe-step"
+  [style.background-color]="active ? type?.color : ''"
+  [ngClass]="{ active: active }"
+>
+  <div class="step-actions">
+    <safe-button
+      *ngIf="canUpdate"
+      [isIcon]="true"
+      icon="delete_outline"
+      category="primary"
+      variant="danger"
+      [matTooltip]="
+        'common.deleteObject'
+          | translate: { name: 'common.step.one' | translate }
+      "
+      (click)="onDelete($event)"
+    >
+    </safe-button>
+    <safe-button
+      *ngIf="canUpdate"
+      [isIcon]="true"
+      icon="content_copy"
+      category="primary"
+      variant="primary"
+      [disabled]="true"
+    >
+    </safe-button>
+  </div>
+  <img [src]="type?.img" />
+  <span>{{ step.name | titlecase }}</span>
+  <div
+    *ngIf="active"
+    [style.background]="type?.focusColor"
+    class="safe-step-active"
+  ></div>
 </div>

@@ -1,4 +1,9 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { RouterTestingModule } from '@angular/router/testing';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { environment } from '../../../../environments/environment';
 
 import { UsersComponent } from './users.component';
 
@@ -8,9 +13,20 @@ describe('UsersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ UsersComponent ]
-    })
-    .compileComponents();
+      imports: [
+        RouterTestingModule,
+        HttpClientModule,
+        OAuthModule.forRoot(),
+        MatSnackBarModule,
+      ],
+      declarations: [UsersComponent],
+      providers: [
+        {
+          provide: 'environment',
+          useValue: environment,
+        },
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

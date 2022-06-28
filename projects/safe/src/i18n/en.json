@@ -1,0 +1,1024 @@
+{
+	"common": {
+		"add": "Add",
+		"aggregation": {
+			"few": "Aggregations",
+			"none": "No aggregation",
+			"one": "Aggregation"
+		},
+		"apiConfiguration": {
+			"few": "API Configurations",
+			"none": "No API Configuration",
+			"one": "API Configuration"
+		},
+		"application": {
+			"few": "Applications",
+			"none": "No application",
+			"one": "Application"
+		},
+		"back": "Back",
+		"cancel": "Cancel",
+		"channel": {
+			"few": "Channels",
+			"none": "No channel",
+			"one": "Channel"
+		},
+		"child": "Child",
+		"clear": "Clear",
+		"close": "Close",
+		"create": "Create",
+		"createdOn": "Created on",
+		"delete": "Delete",
+		"deleteObject": "Delete {{name}}",
+		"display": "Display",
+		"downloadObject": "Download {{name}}",
+		"downloadTemplate": "Get template",
+		"duplicate": "Duplicate",
+		"edit": "Edit",
+		"editObject": "Edit {{name}}",
+		"email": {
+			"few": "Emails",
+			"none": "No email",
+			"one": "Email"
+		},
+		"export": "Export",
+		"exportObject": "Export {{name}}",
+		"false": "False",
+		"field": {
+			"few": "Fields",
+			"none": "No field",
+			"one": "Field"
+		},
+		"filter": {
+			"apply": "Apply",
+			"clear": "Clear Filter",
+			"empty": "No result",
+			"hide": "Hide Filter",
+			"show": "Show Filter"
+		},
+		"form": {
+			"few": "Forms",
+			"none": "No form",
+			"one": "Form"
+		},
+		"general": "General",
+		"history": "History",
+		"id": "Id",
+		"input": {
+			"dateRange": "Date range",
+			"none": "-- None --",
+			"rawJson": "Raw JSON"
+		},
+		"layout": {
+			"few": "Layouts",
+			"none": "No layout",
+			"one": "Layout"
+		},
+		"logout": {
+			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
+			"titleMessage": "Exit without saving changes"
+		},
+		"name": "Name",
+		"newObject": "New {{name}}",
+		"next": "Next",
+		"notifications": {
+			"email": {
+				"error": "Something went wrong during the email sending",
+				"processing": "Sending email...",
+				"ready": "Email ready",
+				"sent": "Email sent"
+			}
+		},
+		"openFullScreen": "Open in Full Screen",
+		"page": {
+			"few": "Pages",
+			"none": "No page",
+			"one": "Page"
+		},
+		"pagination": {
+			"loadMore": "Load more"
+		},
+		"placeholder": {
+			"email": "Enter email",
+			"name": "Enter a name",
+			"search": "Search...",
+			"title": "Enter a title"
+		},
+		"platform": {
+			"backOffice": "Back-Office"
+		},
+		"positionAttribute": {
+			"few": "Position attributes",
+			"none": "No position attribute",
+			"one": "Position attribute"
+		},
+		"preview": "Preview",
+		"previous": "Previous",
+		"publish": "Publish",
+		"pullJob": {
+			"few": "Pull jobs",
+			"none": "No pull job",
+			"one": "Pull job"
+		},
+		"record": {
+			"few": "Records",
+			"none": "No record",
+			"one": "Record"
+		},
+		"resource": {
+			"few": "Resources",
+			"none": "No resource",
+			"one": "Resource"
+		},
+		"role": {
+			"few": "Roles",
+			"none": "No role",
+			"one": "Role"
+		},
+		"row": {
+			"few": "Rows",
+			"none": "No row",
+			"one": "Row"
+		},
+		"save": "Save",
+		"saveChanges": "Save changes",
+		"searchObject": "Search {{name}}",
+		"select": "Select",
+		"settings": "Settings",
+		"status": "Status",
+		"status_active": "Active",
+		"status_archived": "Archived",
+		"status_pending": "Pending",
+		"step": {
+			"few": "Steps",
+			"none": "No step",
+			"one": "Step"
+		},
+		"subscription": {
+			"few": "Subscriptions",
+			"none": "No subscription",
+			"one": "Subscription"
+		},
+		"title": "Title",
+		"true": "True",
+		"update": "Update",
+		"updateObject": "Update {{name}}",
+		"uploadObject": "Upload {{name}}",
+		"user": {
+			"few": "Users",
+			"none": "No user",
+			"one": "User"
+		},
+		"value": {
+			"few": "Values",
+			"none": "No value",
+			"one": "Value"
+		},
+		"viewObject": "View {{name}}"
+	},
+	"components": {
+		"access": {
+			"canDelete": "Can delete",
+			"canSee": "Can see",
+			"canUpdate": "Can update",
+			"description": "Update access permissions",
+			"title": "Access"
+		},
+		"aggregationBuilder": {
+			"addField": "Add field",
+			"addStage": "Add stage",
+			"dataset": {
+				"select": "Select the data source"
+			},
+			"fieldName": "Field name",
+			"groupBy": "Group by",
+			"mapping": {
+				"xAxis": "X Axis",
+				"yAxis": "Y Axis"
+			},
+			"operator": "Operator",
+			"operators": {
+				"add": "Add",
+				"avg": "Average",
+				"count": "Count",
+				"day": "Day",
+				"first": "First",
+				"last": "Last",
+				"max": "Maximum",
+				"min": "Minimum",
+				"month": "Month",
+				"multiply": "Multiply",
+				"sum": "Sum",
+				"week": "Week",
+				"year": "Year"
+			},
+			"sourceFields": "Select fields",
+			"stages": {
+				"addFields": "Add fields",
+				"custom": "Custom",
+				"filter": "Filter",
+				"group": "Group",
+				"sort": "Sort",
+				"unwind": "Unwind"
+			},
+			"tooltip": {
+				"addFields": "Adds new fields to documents.",
+				"custom": "Defines a custom aggregation function or expression in JavaScript.",
+				"filter": "Returns an array with only those elements that match the condition.",
+				"group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
+				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.",
+				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
+			}
+		},
+		"apiConfiguration": {
+			"create": {
+				"errors": {
+					"name": "Only letters, hypens or underscores are accepted"
+				}
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the API Configuration {{name}}?",
+				"title": "Delete API configuration"
+			}
+		},
+		"application": {
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the application {{name}}?"
+			},
+			"duplicate": {
+				"name": {
+					"description": "Please enter a description for the application"
+				}
+			},
+			"pages": {
+				"delete": {
+					"confirmationMessage": "Do you confirm the deletion of the page {{name}}?"
+				}
+			},
+			"positionAttribute": {
+				"delete": {
+					"confirmationMessage": "Do you confirm the deletion of the position attribute {{name}}?",
+					"title": "Delete position attribute"
+				}
+			},
+			"publish": {
+				"confirmationMessage": "Do you confirm the publication of {{aplication}}?",
+				"titleMessage": "Publish application"
+			},
+			"subscription": {
+				"modal": {
+					"hint": {
+						"listenTo": "Message broker routing key"
+					},
+					"listenTo": "Listen to",
+					"placeholder": {
+						"listenTo": "Select a routing key"
+					}
+				}
+			},
+			"unlock": {
+				"confirmationMessage": "Do you want to unlock {{application}}'s edition?",
+				"titleMessage": "Unlock edition"
+			},
+			"update": {
+				"placeholder": {
+					"description": "Please enter a description for the application"
+				}
+			}
+		},
+		"applications": {
+			"dropdown": {
+				"select": "From applications"
+			}
+		},
+		"channel": {
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the channel {{name}}?"
+			},
+			"dropdown": {
+				"select": "Notify on"
+			}
+		},
+		"confirmModal": {
+			"cancel": "Cancel",
+			"confirm": "Confirm",
+			"delete": "Delete",
+			"title": "Confirm"
+		},
+		"emailBuilder": {
+			"body": "Body",
+			"distribution": "Distribution list",
+			"fields": "Select fields to write in body",
+			"subject": "Subject"
+		},
+		"form": {
+			"create": {
+				"choice": {
+					"inherit": "Create from template",
+					"resource": "Create a core form",
+					"template": "Start from existing template"
+				},
+				"template": {
+					"from": "From template",
+					"placeholder": "Pick an existing template",
+					"title": "From resource",
+					"tooltip": "If no template is selected, core structure will be loaded"
+				},
+				"tooltips": {
+					"inherit": "Creates a child form using a template from the resource linked to the core form",
+					"resource": "Creates a core form that allows the creation of children forms linked to this core form. It will also create a new resource."
+				}
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the form {{name}}?"
+			},
+			"deleteRow": {
+				"confirmationMessage": "Do you confirm the deletion of {{quantity}} {{rowText}}?"
+			},
+			"display": {
+				"submissionMessage": "The form has successfully been submitted."
+			},
+			"layout": {
+				"delete": {
+					"confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"
+				},
+				"update": {
+					"preview": {
+						"description": "Reorder, sort, filter and hide columns to edit default display of the layout"
+					}
+				}
+			},
+			"summary": {
+				"cache": {
+					"clear": "Clear cache",
+					"load": "Load from cache {{date}}"
+				},
+				"createdBy": "Created by {{user}} at {{date}}",
+				"modifiedBy": "Last modified by {{user}} on {{date}}"
+			},
+			"update": {
+				"exit": "Exit without saving changes",
+				"exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
+			},
+			"updateRow": {
+				"confirmationMessage": "Do you confirm the update of {{quantity}} {{rowText}}?"
+			}
+		},
+		"forms": {
+			"isCore": "Is core",
+			"parent": "Parent form"
+		},
+		"header": {
+			"goToPlatform": "Navigate to",
+			"logout": "Logout",
+			"sidenav": {
+				"collapse": "Collapse sidebar",
+				"show": "Show sidebar"
+			}
+		},
+		"history": {
+			"download": "Download history",
+			"preview": "Preview and revert"
+		},
+		"notifications": {
+			"readAll": "Mark all as read"
+		},
+		"preferences": {
+			"language": "Language",
+			"title": "Preferences"
+		},
+		"pullJob": {
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the pull job {{name}}?",
+				"title": "Delete pull job"
+			},
+			"modal": {
+				"hint": {
+					"path": "Enter the path to extract data from response",
+					"schedule": "Enter the schedule time for this Pull job",
+					"url": "Enter the URL after the host to reach specific data"
+				},
+				"identifier": "Unique identifiers",
+				"mapping": "Mapping",
+				"placeholder": {
+					"path": "Enter path...",
+					"schedule": "Enter schedule time...",
+					"url": "Enter URL..."
+				},
+				"switch": "Switch mode"
+			}
+		},
+		"queryBuilder": {
+			"dataset": {
+				"select": "Select a dataset"
+			},
+			"error": {
+				"field": {
+					"invalid": "Invalid field. Please click to remove."
+				}
+			},
+			"fields": {
+				"available": "Available fields",
+				"selected": "Selected fields",
+				"title": "Fields"
+			},
+			"filter": {
+				"and": "And",
+				"logic": "Filter logic",
+				"new": "Add new fiter",
+				"newGroup": "Add new filter group",
+				"operator": "Operator",
+				"or": "Or",
+				"title": "Filter"
+			},
+			"hint": {
+				"fields": "Select data points below and drag them to 'selected fields' on the right",
+				"style": "Styling rules make records with important information stand out. When a record matches more than one rule, the first rule is used."
+			},
+			"sort": {
+				"ascending": "Ascending",
+				"descending": "Descending",
+				"field": "Sort field",
+				"order": "Sort order",
+				"title": "Sort"
+			},
+			"style": {
+				"and": "And",
+				"edit": {
+					"appliesTo": "Apply style to",
+					"background": {
+						"color": "Background color"
+					},
+					"criteria": "Rule criteria",
+					"fields": "Fields",
+					"name": "Rule name",
+					"selectedColumns": "Only selected columns",
+					"text": {
+						"color": "Text color",
+						"style": "Text style"
+					},
+					"wholeRow": "Whole row"
+				},
+				"logic": "Style filter",
+				"new": "Add styling rule",
+				"operator": "Operator",
+				"or": "Or",
+				"title": "Style"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "Use Expression editor",
+						"usePicker": "Use Date picker"
+					}
+				}
+			}
+		},
+		"record": {
+			"attach": {
+				"confirm": "Attach",
+				"selectTarget": "Select {{name}} target"
+			},
+			"convert": {
+				"choice": {
+					"copy": "Copy source record",
+					"overwrite": "Overwrite source record"
+				},
+				"result": {
+					"force": "Following fields will be ignored:",
+					"smooth": "Conversion OK"
+				},
+				"select": "Convert to"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the record {{name}}?",
+				"permanently": "Delete permanently"
+			},
+			"dropdown": {
+				"select": "Select record"
+			},
+			"history": {
+				"revert": "Revert to past record",
+				"version": {
+					"current": "Current version",
+					"old": "Past version"
+				}
+			},
+			"modal": {
+				"update": "Save and close"
+			},
+			"recovery": {
+				"confirmationMessage": "Do you confirm recovery the data from {{date}} to the current register?",
+				"titleMessage": "Recovery data"
+			}
+		},
+		"records": {
+			"showActive": "Show active records",
+			"showArchived": "Show archived records",
+			"upload": {
+				"hint": "File should contain one record per row. Header row contains the names of data fields."
+			}
+		},
+		"resource": {
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the resource {{name}}?"
+			},
+			"dropdown": {
+				"select": "From resource"
+			}
+		},
+		"role": {
+			"add": {
+				"title": "Add new role"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the role {{name}}?",
+				"title": "Delete role"
+			},
+			"impersonate": {
+				"title": "Choose role to simulate"
+			},
+			"update": {
+				"permissions": "Permissions",
+				"title": "Update role permissions and channels"
+			}
+		},
+		"user": {
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the user {{name}}?",
+				"title": "Delete user"
+			},
+			"invite": {
+				"confirm": "Invite",
+				"role": {
+					"description": "Select the role to assign"
+				}
+			},
+			"update": {
+				"title": "Update user"
+			}
+		},
+		"users": {
+			"invite": {
+				"add": "Add new user",
+				"confirm": "Invite users",
+				"description": "Select existing users, invite new users or import from Excel file"
+			}
+		},
+		"widget": {
+			"chart": {
+				"errors": {
+					"aggregation": {
+						"invalid": "Invalid aggregation"
+					}
+				}
+			},
+			"expand": "Expand",
+			"grid": {
+				"actions": {
+					"detail": "Open detail",
+					"history": "Show history"
+				},
+				"empty": "No record detected",
+				"errors": {
+					"invalid": "Invalid grid configuration",
+					"missingDataset": "Select a dataset in settings"
+				},
+				"export": {
+					"columns": {
+						"choice": {
+							"all": "All available columns",
+							"visible": "Only visible columns"
+						},
+						"title": "Select columns to export"
+					},
+					"dataset": {
+						"choice": {
+							"all": "All records in view",
+							"selected": "Only selected records"
+						},
+						"title": "Select records to export"
+					},
+					"format": {
+						"title": "Select export format"
+					}
+				},
+				"filter": {
+					"toggle": "Toggle visibility of filter"
+				},
+				"item": {
+					"few": "{{count}} items",
+					"none": "No item",
+					"one": "{{count}} item"
+				},
+				"layout": {
+					"reset": "Reset default Layout"
+				}
+			},
+			"settings": {
+				"chart": {
+					"legend": "Legend",
+					"orientation": "Orientation",
+					"position": "Position",
+					"text": "Text",
+					"type": "Chart Type"
+				},
+				"grid": {
+					"actions": {
+						"add": "Add new records",
+						"convert": "Convert records",
+						"delete": "Delete records",
+						"inline": "Inline edition",
+						"show": "Show history",
+						"showDetails": "Show record details",
+						"title": "Enabled actions",
+						"update": "Update records"
+					},
+					"buttons": {
+						"callback": {
+							"attach": "Attach to record",
+							"displayField": "Display field",
+							"export": "Export selected dataset",
+							"modify": "Auto-modify selected rows",
+							"modifyField": "Field to update",
+							"modifyValue": "Value to attribute",
+							"notify": {
+								"message": "Notification message"
+							},
+							"prefill": "Pre-fill form with selected data",
+							"save": "Auto-save",
+							"selectDisplay": "Select displayed fields",
+							"sendMail": "Send mail",
+							"workflow": {
+								"close": "Close workflow",
+								"confirm": "Confirmation message",
+								"next": "Go to next step"
+							}
+						},
+						"create": "Add a button",
+						"enable": "Enable",
+						"title": "Quick action buttons",
+						"tooltip": {
+							"attach": "When enabled, you must provide a form and a field of this form. All selected rows will be attached to a record from this form. The user will be able to choose which record using a the given field",
+							"notify": "When enabled, you must provide a channel and a message. All selected rows will be sent as a single notification on the specified channel. The provided message is used to define the notification’s action",
+							"publish": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
+						}
+					},
+					"hint": {
+						"buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below"
+					},
+					"layouts": {
+						"add": {
+							"choice": {
+								"create": "Create a new layout",
+								"load": "Load existing layout"
+							},
+							"select": "Select a layout",
+							"title": "Add a layout"
+						},
+						"edit": {
+							"title": "Layout configuration"
+						},
+						"title": "Grid layouts"
+					}
+				},
+				"map": {
+					"dataset": "Data set selection",
+					"display": {
+						"latitude": "Map center latitude",
+						"longitude": "Map center longitude",
+						"title": "Default display"
+					}
+				}
+			}
+		}
+	},
+	"kendo": {
+		"datepicker": {
+			"today": "Today",
+			"toggle": "Choose a date"
+		},
+		"datetimepicker": {
+			"accept": "Accept",
+			"acceptLabel": "Accept",
+			"cancel": "Cancel",
+			"cancelLabel": "Cancel",
+			"dateTab": "Date",
+			"dateTabLabel": "Date",
+			"now": "Now",
+			"timeTab": "Time",
+			"timeTabLabel": "Time",
+			"today": "Today",
+			"toggle": "Choose a date and a time"
+		},
+		"editor": {
+			"addColumnAfter": "Add column after",
+			"addColumnBefore": "Add column before",
+			"addRowAfter": "Add row after",
+			"addRowBefore": "Add row before",
+			"alignCenter": "Center text",
+			"alignJustify": "Justify",
+			"alignLeft": "Align text left",
+			"alignRight": "Align text right",
+			"backColor": "Background color",
+			"bold": "Bold",
+			"cleanFormatting": "Clean formatting",
+			"createLink": "Insert link",
+			"deleteColumn": "Delete column",
+			"deleteRow": "Delete row",
+			"deleteTable": "Delete table",
+			"dialogApply": "Apply",
+			"dialogCancel": "Cancel",
+			"dialogInsert": "Insert",
+			"dialogUpdate": "Update",
+			"fileText": "Text",
+			"fileTitle": "Title",
+			"fileWebAddress": "Web address",
+			"fontFamily": "Select font family",
+			"fontSize": "Select font size",
+			"foreColor": "Color",
+			"format": "Format",
+			"imageAltText": "Alternate text",
+			"imageHeight": "Height (px)",
+			"imageWebAddress": "Web address",
+			"imageWidth": "Width (px)",
+			"indent": "Indent",
+			"insertFile": "Insert file",
+			"insertImage": "Insert image",
+			"insertOrderedList": "Insert ordered list",
+			"insertTable": "Insert Table",
+			"insertUnorderedList": "Insert unordered list",
+			"italic": "Italic",
+			"linkOpenInNewWindow": "Open link in new window",
+			"linkText": "Text",
+			"linkTitle": "Title",
+			"linkWebAddress": "Web address",
+			"outdent": "Outdent",
+			"print": "Print",
+			"redo": "Redo",
+			"selectAll": "Select All",
+			"strikethrough": "Strikethrough",
+			"subscript": "Subscript",
+			"superscript": "Superscript",
+			"underline": "Underline",
+			"undo": "Undo",
+			"unlink": "Remove Link",
+			"viewSource": "View source"
+		},
+		"fileselect": {
+			"dropFilesHere": "Drop files here to select",
+			"select": "Select files..."
+		},
+		"grid": {
+			"columnMenu": "'{columnName} Column Menu'",
+			"columns": "Columns",
+			"columnsApply": "Apply",
+			"columnsReset": "Reset",
+			"detailCollapse": "Collapse Details",
+			"detailExpand": "Expand Details",
+			"filter": "Filter",
+			"filterAfterOperator": "Is after",
+			"filterAfterOrEqualOperator": "Is after or equal to",
+			"filterAndLogic": "And",
+			"filterBeforeOperator": "Is before",
+			"filterBeforeOrEqualOperator": "Is before or equal to",
+			"filterBooleanAll": "(All)",
+			"filterClearButton": "Clear",
+			"filterContainsOperator": "Contains",
+			"filterDateToday": "Today",
+			"filterDateToggle": "Toggle calendar",
+			"filterEndsWithOperator": "Ends with",
+			"filterEqOperator": "Is equal to",
+			"filterFilterButton": "Filter",
+			"filterGtOperator": "Is greater than",
+			"filterGteOperator": "Is greater than or equal to",
+			"filterInputLabel": "'{columnName} Filter'",
+			"filterIsEmptyOperator": "Is empty",
+			"filterIsFalse": "is false",
+			"filterIsNotEmptyOperator": "Is not empty",
+			"filterIsNotNullOperator": "Is not null",
+			"filterIsNullOperator": "Is null",
+			"filterIsTrue": "is true",
+			"filterLtOperator": "Is less than",
+			"filterLteOperator": "Is less than or equal to",
+			"filterMenuLogicDropDownLabel": "'{columnName} Filter Logic'",
+			"filterMenuOperatorsDropDownLabel": "'{columnName} Filter Operators'",
+			"filterMenuTitle": "'{columnName} Filter Menu'",
+			"filterNotContainsOperator": "Does not contain",
+			"filterNotEqOperator": "Is not equal to",
+			"filterNumericDecrement": "Decrease value",
+			"filterNumericIncrement": "Increase value",
+			"filterOrLogic": "Or",
+			"filterStartsWithOperator": "Starts with",
+			"gridLabel": "Data table",
+			"groupCollapse": "Collapse Group",
+			"groupExpand": "Expand Group",
+			"groupPanelEmpty": "Drag a column header and drop it here to group by that column",
+			"loading": "Loading",
+			"lock": "Lock",
+			"noRecords": "No records available.",
+			"pagerFirstPage": "Go to the first page",
+			"pagerItems": "items",
+			"pagerItemsPerPage": "items per page",
+			"pagerLabel": "'Page navigation, page {currentPage} of {totalPages}'",
+			"pagerLastPage": "Go to the last page",
+			"pagerNextPage": "Go to the next page",
+			"pagerOf": "of",
+			"pagerPage": "Page",
+			"pagerPageNumberInputTitle": "Page Number",
+			"pagerPreviousPage": "Go to the previous page",
+			"selectAllCheckboxLabel": "Select All Rows",
+			"selectionCheckboxLabel": "Select Row",
+			"setColumnPosition": "Set Column Position",
+			"sortAscending": "Sort Ascending",
+			"sortDescending": "Sort Descending",
+			"sortable": "Sortable",
+			"sortedAscending": "Sorted ascending",
+			"sortedDefault": "Not sorted",
+			"sortedDescending": "Sorted descending",
+			"stick": "Stick",
+			"unlock": "Unlock",
+			"unstick": "Unstick"
+		},
+		"timepicker": {
+			"accept": "Accept",
+			"acceptLabel": "Accept",
+			"cancel": "Cancel",
+			"cancelLabel": "Cancel",
+			"now": "Now",
+			"toggle": "Choose a time"
+		},
+		"upload": {
+			"dropFilesHere": "Drop files here to upload",
+			"select": "Select files..."
+		}
+	},
+	"models": {
+		"apiConfiguration": {
+			"authType": "Authentication type"
+		},
+		"application": {
+			"description": "Description",
+			"id": "Application ID",
+			"setAsFavorite": "Set as favorite",
+			"subscription": {
+				"create": "Create a subscription"
+			}
+		},
+		"channel": {
+			"create": "Create a channel"
+		},
+		"dashboard": {
+			"share": "Share Dashboard"
+		},
+		"form": {
+			"core": "Core",
+			"create": "Create a Form",
+			"field": {
+				"label": "Label",
+				"name": "Field name"
+			},
+			"select": "Select a Form",
+			"template": "Template"
+		},
+		"page": {
+			"add": "Add a Page"
+		},
+		"pullJob": {
+			"path": "Path",
+			"schedule": "Schedule",
+			"url": "Url"
+		},
+		"record": {
+			"convert": "Convert",
+			"restore": "Restore"
+		},
+		"resource": {
+			"create": "Create a Resource"
+		},
+		"role": {
+			"create": "Create a role"
+		},
+		"user": {
+			"username": "Username"
+		},
+		"widget": {
+			"add": "Add a Widget",
+			"chart": {
+				"defaultTitle": "Chart Widget"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the widget?",
+				"titleMessage": "Delete Widget"
+			},
+			"map": {
+				"defaultTitle": "Map Widget",
+				"latitude": "Latitude",
+				"longitude": "Longitude",
+				"zoom": "Zoom"
+			},
+			"scheduler": {
+				"defaultTitle": "Scheduler Widget"
+			}
+		}
+	},
+	"pages": {
+		"administration": {
+			"title": "Administration"
+		},
+		"apiConfiguration": {
+			"authentication": "Authentication settings",
+			"baseUrl": "Main endpoint",
+			"clientId": "Client ID",
+			"host": "Host settings",
+			"ping": "Try settings",
+			"pingUrl": "Ping extension",
+			"placeholder": {
+				"baseUrl": "Base URL for the API",
+				"clientId": "Enter client ID",
+				"pingUrl": "Enter ping extension URL",
+				"scope": "Enter scope",
+				"secret": "Enter client secret",
+				"token": "Enter token for authentication",
+				"tokenUrl": "Enter acces token URL"
+			},
+			"scope": "Scope",
+			"secret": "Client Secret",
+			"token": "Token",
+			"tokenUrl": "Access token URL"
+		},
+		"apiConfigurations": {
+			"create": "Create an API Configuration"
+		},
+		"appBuilder": {
+			"title": "Site builder"
+		},
+		"application": {
+			"addPage": {
+				"form": {
+					"title": "Available forms"
+				},
+				"selectType": "Select which type of page you want to create"
+			},
+			"empty": {
+				"add": "Add a Page",
+				"create": "Click on create to finish the process",
+				"customize": "Customize each of the pages created"
+			},
+			"positionAttributes": {
+				"create": "Create a position category",
+				"title": "Attributes"
+			},
+			"settings": {
+				"actions": "Actions"
+			}
+		},
+		"applications": {
+			"all": "All applications",
+			"goTo": "Go to Application list",
+			"recent": "Recent applications",
+			"title": "My applications"
+		},
+		"formBuilder": {
+			"errors": {
+				"choices": {
+					"valueDuplicated": "Please provide unique values for each of the choices of question: {{question}}"
+				},
+				"missingName": "Missing value name for an element on page {{page}}. Please provide a valid data value name (snake_case) to save the form.",
+				"multipletext": {
+					"missingName": "Please provide name or title for each text of question: {{question}}"
+				},
+				"resource": {
+					"invalidRelatedName": "The related name {{relatedName}} on page {{page}} is invalid. Please conform to snake_case.",
+					"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake_case) to save the form."
+				},
+				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
+			},
+			"questionsCategories": {
+				"core": "Question Library"
+			},
+			"title": "Advanced settings"
+		},
+		"forms": {
+			"title": "Available forms"
+		},
+		"profile": {
+			"title": "Your profile"
+		},
+		"pullJobs": {
+			"create": "Create a pull job"
+		},
+		"workflow": {
+			"addStep": {
+				"selectType": "Select which type of step you want to create"
+			},
+			"deleteStep": {
+				"confirmationMessage": "Are you sure you want to delete {{step}}?\n This action cannot be undone."
+			},
+			"empty": {
+				"add": "Add steps",
+				"customize": "Customize each of the steps created"
+			}
+		}
+	}
+}

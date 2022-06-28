@@ -2,60 +2,92 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+/**
+ * Shared download service. Handles export and upload events.
+ * TODO: rename in file service
+ */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SafeDownloadService {
-
+  /** API base url */
   public baseUrl: string;
 
+  /**
+   * Shared download service. Handles export and upload events.
+   * TODO: rename in file service
+   *
+   * @param environment Current environment
+   * @param http Http client
+   */
   constructor(
     @Inject('environment') environment: any,
     private http: HttpClient
   ) {
-    this.baseUrl = environment.API_URL;
+    this.baseUrl = environment.apiUrl;
   }
 
   /**
-   * Download file from the server
+   * Downloads file from the server
+   *
    * @param path download path to append to base url
    * @param type type of the file
    * @param fileName name of the file
    * @param options (optional) request options
    */
-   getFile(path: string, type: string, fileName: string, options?: any): void {
+  getFile(path: string, type: string, fileName: string, options?: any): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Authorization: `Bearer ${token}`,
     });
-    this.http.get(url, {...options, responseType: 'blob', headers}).subscribe((res) => {
-      const blob = new Blob([res], {type});
-      this.saveFile(fileName, blob);
-    });
+    this.http
+      .get(url, { ...options, responseType: 'blob', headers })
+      .subscribe((res) => {
+        const blob = new Blob([res], { type });
+        this.saveFile(fileName, blob);
+      });
   }
 
   /**
    * Downloads records file from the server with a POST request
+   *
    * @param path download path to append to base url
    * @param type type of the file
    * @param fileName name of the file
    * @param body (optional) request body
    */
-  getRecordsExport(path: string, type: string, fileName: string, body?: any): void {
+  getRecordsExport(
+    path: string,
+    type: string,
+    fileName: string,
+    body?: any
+  ): void {
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Authorization: `Bearer ${token}`,
     });
-    this.http.post(url, body, {responseType: 'blob', headers}).subscribe((res) => {
-      const blob = new Blob([res], {type});
-      this.saveFile(fileName, blob);
-    });
+    this.http
+      .post(url, body, { responseType: 'blob', headers })
+      .subscribe((res) => {
+        const blob = new Blob([res], { type });
+        this.saveFile(fileName, blob);
+      });
   }
 
+  /**
+   * Saves file from blob
+   *
+   * @param fileName name of the file
+   * @param blob File blob
+   */
   private saveFile(fileName: string, blob: Blob): void {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -65,20 +97,33 @@ export class SafeDownloadService {
     setTimeout(() => link.remove(), 0);
   }
 
+  /**
+   * Uploads a file
+   *
+   * @param path request path
+   * @param file file to upload
+   * @returns http upload request
+   */
   uploadFile(path: string, file: any): Observable<any> {
     const url = this.buildURL(path);
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Authorization: `Bearer ${token}`,
     });
     const formData = new FormData();
-
     formData.append('excelFile', file, file.name);
-
-    return this.http.post(url, formData, {headers});
+    return this.http.post(url, formData, { headers });
   }
 
+  /**
+   * Builds url from path.
+   *
+   * @param path Request path
+   * @returns full url
+   */
   private buildURL(path: string): string {
     return path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
   }

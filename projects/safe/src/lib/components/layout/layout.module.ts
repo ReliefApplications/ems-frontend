@@ -14,12 +14,22 @@ import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
+import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { SafePreferencesModalModule } from '../preferences-modal/preferences-modal.module';
 
+/**
+ * SafeLayoutModule is a class used to manage all the modules and components
+ * related to the main layout of the platform.
+ */
 @NgModule({
   declarations: [SafeLayoutComponent],
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -31,8 +41,12 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     SafeConfirmModalModule,
     MatTooltipModule,
     SafeButtonModule,
-    IndicatorsModule
+    IndicatorsModule,
+    TranslateModule,
+    SafeSearchMenuModule,
+    OverlayModule,
+    SafePreferencesModalModule,
   ],
-  exports: [SafeLayoutComponent]
+  exports: [SafeLayoutComponent],
 })
-export class SafeLayoutModule { }
+export class SafeLayoutModule {}

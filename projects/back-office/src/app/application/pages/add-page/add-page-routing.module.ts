@@ -5,12 +5,12 @@ import { AddPageComponent } from './add-page.component';
 const routes: Routes = [
   {
     path: '',
-    component: AddPageComponent
-  }
+    component: AddPageComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AddPageRoutingModule { }
+export class AddPageRoutingModule {}

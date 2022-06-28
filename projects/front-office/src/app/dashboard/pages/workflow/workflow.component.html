@@ -1,7 +1,11 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading && workflow">
-    <!-- STEPS -->
-    <safe-workflow-stepper [steps]="steps" (openStep)="onOpenStep($event)" [activeStep]="activeStep">
-    </safe-workflow-stepper>
+  <!-- STEPS -->
+  <safe-workflow-stepper
+    [steps]="steps"
+    (openStep)="onOpenStep($event)"
+    [activeStep]="activeStep"
+  >
+  </safe-workflow-stepper>
 </ng-container>
 <router-outlet (activate)="onActivate($event)"></router-outlet>

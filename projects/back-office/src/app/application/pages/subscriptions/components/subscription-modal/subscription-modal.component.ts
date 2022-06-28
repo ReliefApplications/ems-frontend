@@ -1,4 +1,4 @@
-import {Apollo, QueryRef} from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -7,7 +7,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import {
   GetRoutingKeysQueryResponse,
   GET_ROUTING_KEYS,
-  GET_FORM_NAMES, GetFormsQueryResponse
+  GET_FORM_NAMES,
+  GetFormsQueryResponse,
 } from '../../../../../graphql/queries';
 import { map, startWith } from 'rxjs/operators';
 import { MatSelect } from '@angular/material/select';
@@ -18,10 +19,9 @@ const ITEMS_PER_PAGE = 10;
 @Component({
   selector: 'app-subscription-modal',
   templateUrl: './subscription-modal.component.html',
-  styleUrls: ['./subscription-modal.component.scss']
+  styleUrls: ['./subscription-modal.component.scss'],
 })
 export class SubscriptionModalComponent implements OnInit {
-
   // === REACTIVE FORM ===
   subscriptionForm: FormGroup = new FormGroup({});
 
@@ -31,7 +31,7 @@ export class SubscriptionModalComponent implements OnInit {
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   private formsPageInfo = {
     endCursor: '',
-    hasNextPage: true
+    hasNextPage: true,
   };
   private formsLoading = true;
 
@@ -44,7 +44,7 @@ export class SubscriptionModalComponent implements OnInit {
   private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
   private applicationsPageInfo = {
     endCursor: '',
-    hasNextPage: true
+    hasNextPage: true,
   };
   private applicationsLoading = true;
 
@@ -62,101 +62,134 @@ export class SubscriptionModalComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SubscriptionModalComponent>,
     private apollo: Apollo,
-    @Inject(MAT_DIALOG_DATA) public data: {
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
       channels: Channel[];
-      subscription?: Subscription
+      subscription?: Subscription;
     }
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.subscriptionForm = this.formBuilder.group({
-      routingKey: [this.data.subscription ? this.data.subscription.routingKey : '', Validators.required],
-      title: [this.data.subscription ? this.data.subscription.title : '', Validators.required],
-      convertTo: [( this.data.subscription && this.data.subscription.convertTo ) ? this.data.subscription.convertTo.id : ''],
-      channel: [( this.data.subscription && this.data.subscription.channel ) ? this.data.subscription.channel.id : '']
+      routingKey: [
+        this.data.subscription ? this.data.subscription.routingKey : '',
+        Validators.required,
+      ],
+      title: [
+        this.data.subscription ? this.data.subscription.title : '',
+        Validators.required,
+      ],
+      convertTo: [
+        this.data.subscription && this.data.subscription.convertTo
+          ? this.data.subscription.convertTo.id
+          : '',
+      ],
+      channel: [
+        this.data.subscription && this.data.subscription.channel
+          ? this.data.subscription.channel.id
+          : '',
+      ],
     });
     // Get forms and set pagination logic
     this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORM_NAMES,
       variables: {
-        first: ITEMS_PER_PAGE
-      }
+        first: ITEMS_PER_PAGE,
+      },
     });
 
     this.forms$ = this.forms.asObservable();
-    this.formsQuery.valueChanges.subscribe(res => {
-      this.forms.next(res.data.forms.edges.map(x => x.node));
+    this.formsQuery.valueChanges.subscribe((res) => {
+      this.forms.next(res.data.forms.edges.map((x) => x.node));
       this.formsPageInfo = res.data.forms.pageInfo;
       this.formsLoading = res.loading;
     });
 
     // Get applications and set pagination logic
-    this.applicationsQuery = this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
-      query: GET_ROUTING_KEYS,
-      variables: {
-        first: ITEMS_PER_PAGE
-      }
-    });
+    this.applicationsQuery =
+      this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
+        query: GET_ROUTING_KEYS,
+        variables: {
+          first: ITEMS_PER_PAGE,
+        },
+      });
 
     // this.applications$ = this.applications.asObservable();
-    this.applicationsQuery.valueChanges.subscribe(res => {
-      this.applications.next(res.data.applications.edges.map(x => x.node).filter(x => x.channels ? x.channels.length > 0 : false));
+    this.applicationsQuery.valueChanges.subscribe((res) => {
+      this.applications.next(
+        res.data.applications.edges
+          .map((x) => x.node)
+          .filter((x) => (x.channels ? x.channels.length > 0 : false))
+      );
       this.applicationsPageInfo = res.data.applications.pageInfo;
       this.applicationsLoading = res.loading;
-      this.applications$ = this.subscriptionForm.controls.routingKey.valueChanges.pipe(
-        startWith(''),
-        map(value => typeof value === 'string' ? value : value.name),
-        map(x => this.filter(x))
-      );
+      this.applications$ =
+        this.subscriptionForm.controls.routingKey.valueChanges.pipe(
+          startWith(''),
+          map((value) => (typeof value === 'string' ? value : value.name)),
+          map((x) => this.filter(x))
+        );
     });
   }
 
   private filter(value: string): Application[] {
     const filterValue = value.toLowerCase();
     const applications = this.applications.getValue();
-    return applications ? applications.filter(x => x.name?.toLowerCase().indexOf(filterValue) === 0) : applications;
+    return applications
+      ? applications.filter(
+          (x) => x.name?.toLowerCase().indexOf(filterValue) === 0
+        )
+      : applications;
   }
 
-  /*  Close the modal without sending any data.
-  */
+  /** Close the modal without sending any data. */
   onClose(): void {
     this.dialogRef.close();
   }
 
   /**
    * Adds scroll listener to select.
+   *
    * @param e open select event.
    */
-   onOpenFormSelect(e: any): void {
+  onOpenFormSelect(e: any): void {
     if (e && this.formSelect) {
       const panel = this.formSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) => this.loadOnScrollForm(event));
+      panel.addEventListener('scroll', (event: any) =>
+        this.loadOnScrollForm(event)
+      );
     }
   }
 
   /**
    * Fetches more forms on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScrollForm(e: any): void {
-    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+    if (
+      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
+      50
+    ) {
       if (!this.formsLoading && this.formsPageInfo.hasNextPage) {
         this.formsLoading = true;
         this.formsQuery.fetchMore({
           variables: {
             first: ITEMS_PER_PAGE,
-            afterCursor: this.formsPageInfo.endCursor
+            afterCursor: this.formsPageInfo.endCursor,
           },
           updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) { return prev; }
+            if (!fetchMoreResult) {
+              return prev;
+            }
             return Object.assign({}, prev, {
               forms: {
                 edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
                 pageInfo: fetchMoreResult.forms.pageInfo,
-                totalCount: fetchMoreResult.forms.totalCount
-              }
+                totalCount: fetchMoreResult.forms.totalCount,
+              },
             });
-          }
+          },
         });
       }
     }
@@ -165,7 +198,7 @@ export class SubscriptionModalComponent implements OnInit {
   /**
    * Adds scroll listener to auto complete.
    */
-   onOpenApplicationSelect(): void {
+  onOpenApplicationSelect(): void {
     if (this.applicationSelect) {
       const panel = this.applicationSelect.panel.nativeElement;
       if (panel) {
@@ -176,27 +209,36 @@ export class SubscriptionModalComponent implements OnInit {
 
   /**
    * Fetches more forms on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScrollApplication(e: any): void {
-    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+    if (
+      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
+      50
+    ) {
       if (!this.applicationsLoading && this.applicationsPageInfo.hasNextPage) {
         this.applicationsLoading = true;
         this.applicationsQuery.fetchMore({
           variables: {
             first: ITEMS_PER_PAGE,
-            afterCursor: this.applicationsPageInfo.endCursor
+            afterCursor: this.applicationsPageInfo.endCursor,
           },
           updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) { return prev; }
+            if (!fetchMoreResult) {
+              return prev;
+            }
             return Object.assign({}, prev, {
               applications: {
-                edges: [...prev.applications.edges, ...fetchMoreResult.applications.edges],
+                edges: [
+                  ...prev.applications.edges,
+                  ...fetchMoreResult.applications.edges,
+                ],
                 pageInfo: fetchMoreResult.applications.pageInfo,
-                totalCount: fetchMoreResult.applications.totalCount
-              }
+                totalCount: fetchMoreResult.applications.totalCount,
+              },
             });
-          }
+          },
         });
       }
     }

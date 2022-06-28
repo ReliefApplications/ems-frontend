@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormBuilder } from '@angular/forms';
 
 import { SafeDropdownFilterMenuComponent } from './dropdown-filter-menu.component';
 
@@ -8,14 +9,18 @@ describe('SafeDropdownFilterMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeDropdownFilterMenuComponent ]
-    })
-    .compileComponents();
+      providers: [FormBuilder],
+      declarations: [SafeDropdownFilterMenuComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeDropdownFilterMenuComponent);
     component = fixture.componentInstance;
+    component.filter = {
+      logic: [],
+      filters: [],
+    };
     fixture.detectChanges();
   });
 

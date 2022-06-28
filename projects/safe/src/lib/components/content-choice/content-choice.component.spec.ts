@@ -8,9 +8,8 @@ describe('ContentChoiceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeContentChoiceComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeContentChoiceComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

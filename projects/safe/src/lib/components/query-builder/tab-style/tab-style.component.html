@@ -1,0 +1,30 @@
+<div class="info-text">
+  {{ 'components.queryBuilder.hint.style' | translate }}
+</div>
+<ng-container *ngIf="!editedStyleForm">
+  <!-- LIST OF STYLES -->
+  <safe-query-style-list
+    [form]="form"
+    (delete)="onDelete($event)"
+    (edit)="onEdit($event)"
+  ></safe-query-style-list>
+  <div class="actions">
+    <safe-button
+      icon="add"
+      (click)="onAdd()"
+      category="tertiary"
+      variant="primary"
+      [block]="true"
+      >{{ 'components.queryBuilder.style.new' | translate }}</safe-button
+    >
+  </div>
+</ng-container>
+<ng-container *ngIf="editedStyleForm">
+  <!-- STYLE EDITION -->
+  <safe-query-style
+    [form]="editedStyleForm"
+    (closeEdition)="onClose()"
+    [scalarFields]="scalarFields"
+    [fields]="fields"
+  ></safe-query-style>
+</ng-container>

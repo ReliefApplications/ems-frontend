@@ -9,7 +9,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
+import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * SafeFormModalModule is a class used to manage all the modules and components
+ * related to modals containing forms.
+ */
 @NgModule({
   declarations: [SafeFormModalComponent],
   imports: [
@@ -21,8 +26,9 @@ import { SafeRecordHistoryModalModule } from '../record-history-modal/record-his
     SafeButtonModule,
     SafeIconModule,
     SafeRecordHistoryModalModule,
-    SafeRecordSummaryModule
+    SafeRecordSummaryModule,
+    TranslateModule,
   ],
-  exports: [SafeFormModalComponent]
+  exports: [SafeFormModalComponent],
 })
-export class SafeFormModalModule { }
+export class SafeFormModalModule {}

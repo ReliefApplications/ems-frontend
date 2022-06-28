@@ -4,14 +4,12 @@ import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
 import { SafeFormModule, SafeButtonModule } from '@safe/builder';
 
+/**
+ * Form page module.
+ */
 @NgModule({
   declarations: [FormComponent],
-  imports: [
-    CommonModule,
-    FormRoutingModule,
-    SafeFormModule,
-    SafeButtonModule
-  ],
-  exports: [FormComponent]
+  imports: [CommonModule, FormRoutingModule, SafeFormModule, SafeButtonModule],
+  exports: [FormComponent],
 })
-export class FormModule { }
+export class FormModule {}

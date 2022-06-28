@@ -1,33 +1,51 @@
 <div matRipple class="safe-application">
-    <div class="header">
-        <div class="users">
-            <safe-icon icon="person"></safe-icon>
-            <span>{{ application.usersCount }}</span>
-        </div>
-        <div class="status" *ngIf="status" [style.color]="status.focusColor" [style.background]="status.color">{{
-            status.short }}</div>
+  <div class="header">
+    <div class="users">
+      <safe-icon icon="person"></safe-icon>
+      <span>{{ application.usersCount }}</span>
     </div>
-    <div class="title">{{ application.name }}</div>
-    <div class="bottom">
-        <span>Created: {{ application.createdAt | date: 'mediumDate' }}</span>
-        <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
-        </safe-button>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="preview.emit()">
-                <mat-icon>preview</mat-icon>
-                Preview
-            </button>
-            <button mat-menu-item (click)="clone.emit()" *ngIf="application.canUpdate">
-                <mat-icon>file_copy</mat-icon>
-                Duplicate
-            </button>
-            <ng-container *ngIf="application.canDelete">
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="delete.emit()">
-                    <mat-icon>delete</mat-icon>
-                    Delete
-                </button>
-            </ng-container>
-        </mat-menu>
+    <div
+      class="status"
+      *ngIf="status"
+      [style.color]="status.focusColor"
+      [style.background]="status.color"
+    >
+      {{ status.short }}
     </div>
+  </div>
+  <div class="title">{{ application.name }}</div>
+  <div class="bottom">
+    <span
+      >{{ 'common.createdOn' | translate }}:
+      {{ application.createdAt | date: 'mediumDate' }}</span
+    >
+    <safe-button
+      [isIcon]="true"
+      icon="more_vert"
+      [matMenuTriggerFor]="menu"
+      (click)="$event.stopPropagation()"
+    >
+    </safe-button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="preview.emit()">
+        <mat-icon>preview</mat-icon>
+        {{ 'common.preview' | translate }}
+      </button>
+      <button
+        mat-menu-item
+        (click)="clone.emit()"
+        *ngIf="application.canUpdate"
+      >
+        <mat-icon>file_copy</mat-icon>
+        {{ 'common.duplicate' | translate }}
+      </button>
+      <ng-container *ngIf="application.canDelete">
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="delete.emit()">
+          <mat-icon>delete</mat-icon>
+          {{ 'common.delete' | translate }}
+        </button>
+      </ng-container>
+    </mat-menu>
+  </div>
 </div>

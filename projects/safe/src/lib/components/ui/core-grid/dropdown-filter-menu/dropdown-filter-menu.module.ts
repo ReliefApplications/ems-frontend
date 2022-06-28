@@ -4,18 +4,10 @@ import { SafeDropdownFilterMenuComponent } from './dropdown-filter-menu.componen
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 
+/** Module for the dropdown filter component */
 @NgModule({
-  declarations: [
-    SafeDropdownFilterMenuComponent
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    DropDownsModule
-  ],
-  exports: [
-    SafeDropdownFilterMenuComponent
-  ]
+  declarations: [SafeDropdownFilterMenuComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, DropDownsModule],
+  exports: [SafeDropdownFilterMenuComponent],
 })
-export class SafeDropdownFilterMenuModule { }
+export class SafeDropdownFilterMenuModule {}

@@ -8,9 +8,8 @@ describe('SafeIconComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeIconComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeIconComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

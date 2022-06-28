@@ -5,12 +5,12 @@ import { ChannelsComponent } from './channels.component';
 const routes: Routes = [
   {
     path: '',
-    component: ChannelsComponent
-  }
+    component: ChannelsComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class ChannelsRoutingModule { }
+export class ChannelsRoutingModule {}

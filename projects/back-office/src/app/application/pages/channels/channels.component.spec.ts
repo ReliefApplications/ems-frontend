@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { environment } from '../../../../environments/environment';
 import { ChannelsComponent } from './channels.component';
 
 describe('ChannelsComponent', () => {
@@ -8,9 +8,14 @@ describe('ChannelsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ChannelsComponent ]
-    })
-    .compileComponents();
+      declarations: [ChannelsComponent],
+      providers: [
+        {
+          provide: 'environment',
+          useValue: environment,
+        },
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

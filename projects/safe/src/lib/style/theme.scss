@@ -1,9 +1,11 @@
+@import 'variables.scss';
+
 $border-radius: 2px;
-$primary: #008dc9;
+$primary: $primary_500;
 $secondary: #f6f6f6;
-$info: #007abc;
+$info: $primary_300;
 $success: #67dd2d;
-$warning: #efc530;
+$warning: $secondary_main;
 $error: #d34444;
 $body-text: #424242;
 $body-bg: #ffffff;
@@ -17,11 +19,11 @@ $base-bg: #fafafa;
 $hovered-text: #424242;
 $hovered-bg: #ececec;
 $selected-text: #ffffff;
-$selected-bg: #008dc9;
+$selected-bg: $primary_500;
 $button-text: #424242;
 $button-bg: #f5f5f5;
-$link-text: #008dc9;
-$link-hover-text: #007abc;
+$link-text: $primary_500;
+$link-hover-text: $primary_300;
 $series-a: #ff6358;
 $series-b: #ffd246;
 $series-c: #78d237;
@@ -29,4 +31,4 @@ $series-d: #28b4c8;
 $series-e: #2d73f5;
 $series-f: #aa46be;
 
-@import "~@progress/kendo-theme-default/dist/all.scss";
+@import '~@progress/kendo-theme-default/dist/all.scss';

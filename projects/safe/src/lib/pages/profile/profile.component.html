@@ -1,66 +1,86 @@
 <form [formGroup]="userForm" *ngIf="userForm">
-    <h1>Your profile</h1>
-    <div class="form-group">
-        <div class="form-group-row">
-            <mat-form-field appearance="outline" style="flex: 2;">
-                <mat-label>
-                    Name
-                </mat-label>
-                <input matInput formControlName="name" type='text' />
-            </mat-form-field>
-            <mat-form-field appearance="outline" style="flex: 1;">
-                <mat-label>
-                    Username
-                </mat-label>
-                <input matInput formControlName="username" type='text' />
-            </mat-form-field>
-        </div>
+  <h1>{{ 'pages.profile.title' | translate }}</h1>
+  <div class="form-group">
+    <div class="form-group-row">
+      <mat-form-field appearance="outline" style="flex: 2">
+        <mat-label>
+          {{ 'common.name' | translate }}
+        </mat-label>
+        <input matInput formControlName="name" type="text" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" style="flex: 1">
+        <mat-label>
+          {{ 'models.user.username' | translate }}
+        </mat-label>
+        <input matInput formControlName="username" type="text" />
+      </mat-form-field>
     </div>
-    <safe-button category="secondary" variant="primary" (click)="onSubmit()" [disabled]="userForm.invalid || !userForm.dirty">Save
-        changes</safe-button>
-    <table mat-table [dataSource]="user.applications" style="margin-top: 48px;">
-        <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>
-                <span class="headerTitle" mat-sort-header>
-                    Application ({{ user.applications.length }})
-                </span>
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.name}}<span *ngIf="user.favoriteApp === element.id">
-                    <mat-icon inline="true" color="primary">star</mat-icon>
-                </span></td>
-        </ng-container>
-        <ng-container matColumnDef="role">
-            <th mat-header-cell *matHeaderCellDef>
-                <span class="headerTitle" mat-sort-header>
-                    Role
-                </span>
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.role ? element.role.title : '' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="positionAttributes">
-            <th mat-header-cell *matHeaderCellDef>
-                <span class="headerTitle" mat-sort-header>
-                    Position Attributes
-                </span>
-            </th>
-            <td mat-cell *matCellDef="let element"><span *ngFor="let e of element.positionAttributes">{{ e.value }},
-                </span>
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element">
-                <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
-                </safe-button>
-                <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="onSelectFavorite(element)">
-                        <mat-icon>star</mat-icon>
-                        Set as favorite
-                    </button>
-                </mat-menu>
-            </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumnsApps"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumnsApps;"></tr>
-    </table>
+  </div>
+  <safe-button
+    category="secondary"
+    variant="primary"
+    (click)="onSubmit()"
+    [disabled]="userForm.invalid || !userForm.dirty"
+  >
+    {{ 'common.saveChanges' | translate }}
+  </safe-button>
+  <table mat-table [dataSource]="user.applications" style="margin-top: 48px">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>
+        <span class="headerTitle" mat-sort-header>
+          {{ 'common.application.few' | translate }} ({{
+            user.applications.length
+          }})
+        </span>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.name
+        }}<span *ngIf="user.favoriteApp === element.id">
+          <mat-icon inline="true" color="primary">star</mat-icon>
+        </span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef>
+        <span class="headerTitle" mat-sort-header>
+          {{ 'common.role.one' | translate }}
+        </span>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.role ? element.role.title : '' }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="positionAttributes">
+      <th mat-header-cell *matHeaderCellDef>
+        <span class="headerTitle" mat-sort-header>
+          {{ 'common.positionAttribute.few' | translate }}
+        </span>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <span *ngFor="let e of element.positionAttributes"
+          >{{ e.value }},
+        </span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <safe-button
+          [isIcon]="true"
+          icon="more_vert"
+          [matMenuTriggerFor]="menu"
+          (click)="$event.stopPropagation()"
+        >
+        </safe-button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="onSelectFavorite(element)">
+            <mat-icon>star</mat-icon>
+            {{ 'models.application.setAsFavorite' | translate }}
+          </button>
+        </mat-menu>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsApps"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsApps"></tr>
+  </table>
 </form>

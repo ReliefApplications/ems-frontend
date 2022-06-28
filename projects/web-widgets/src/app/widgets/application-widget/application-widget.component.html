@@ -1,0 +1,13 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav-content>
+    <div class="sidenav-content">
+      <app-application
+        [pageId]="pageId"
+        (pages)="pages.emit($event)"
+      ></app-application>
+    </div>
+  </mat-sidenav-content>
+  <mat-sidenav mode="side" position="end" [(opened)]="showSidenav">
+    <ng-template #rightSidenav></ng-template>
+  </mat-sidenav>
+</mat-sidenav-container>

@@ -1,26 +1,39 @@
 import { gql } from 'apollo-angular';
 import {
-  Dashboard, Form, Permission, Resource, Role, User, Record,
-  Application, Page, Workflow, Step, PositionAttribute, ApiConfiguration, PullJob
+  Dashboard,
+  Form,
+  Permission,
+  Resource,
+  Role,
+  User,
+  Record,
+  Application,
+  Page,
+  Workflow,
+  Step,
+  PositionAttribute,
+  ApiConfiguration,
+  PullJob,
 } from '@safe/builder';
 
 // === GET USERS ===
 export const GET_USERS = gql`
-{
-  users {
-    id
-    username
-    name
-    roles {
+  {
+    users {
       id
-      title
-      application {
+      username
+      name
+      roles {
         id
+        title
+        application {
+          id
+        }
       }
+      oid
     }
-    oid
   }
-}`;
+`;
 
 export interface GetUsersQueryResponse {
   loading: boolean;
@@ -29,21 +42,21 @@ export interface GetUsersQueryResponse {
 
 // === GET ROLES ===
 export const GET_ROLES = gql`
-query GetRoles($all: Boolean, $application: ID) {
-  roles(all: $all, application: $application) {
-    id
-    title
-    permissions {
+  query GetRoles($all: Boolean, $application: ID) {
+    roles(all: $all, application: $application) {
       id
-      type
-    }
-    usersCount
-    application {
-      name
+      title
+      permissions {
+        id
+        type
+      }
+      usersCount
+      application {
+        name
+      }
     }
   }
-}`;
-
+`;
 
 export interface GetRolesQueryResponse {
   loading: boolean;
@@ -52,13 +65,14 @@ export interface GetRolesQueryResponse {
 
 // === GET PERMISSIONS ===
 export const GET_PERMISSIONS = gql`
-query GetPermissions($application: Boolean) {
-  permissions(application: $application) {
-    id
-    type
-    global
+  query GetPermissions($application: Boolean) {
+    permissions(application: $application) {
+      id
+      type
+      global
+    }
   }
-}`;
+`;
 
 export interface GetPermissionsQueryResponse {
   loading: boolean;
@@ -67,15 +81,16 @@ export interface GetPermissionsQueryResponse {
 
 // === GET DASHBOARDS ===
 export const GET_DASHBOARDS = gql`
-{
-  dashboards {
-    id
-    name
-    createdAt
-    structure
-    canDelete
+  {
+    dashboards {
+      id
+      name
+      createdAt
+      structure
+      canDelete
+    }
   }
-}`;
+`;
 
 export interface GetDashboardsQueryResponse {
   loading: boolean;
@@ -84,56 +99,58 @@ export interface GetDashboardsQueryResponse {
 
 // === GET FORMS ===
 export const GET_FORM_NAMES = gql`
-query GetFormNames($first: Int, $afterCursor: ID) {
-  forms(first: $first, afterCursor: $afterCursor) {
-    edges {
-      node {
-        id
-        name
+  query GetFormNames($first: Int, $afterCursor: ID) {
+    forms(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+        }
+        cursor
       }
-      cursor
-    }
-    totalCount
-    pageInfo {
-      hasNextPage
-      endCursor
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
-}`;
+`;
 
 export const GET_SHORT_FORMS = gql`
-query GetShortForms($first: Int, $afterCursor: ID, $filter: JSON) {
-  forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
-    edges {
-      node {
-        id
-        name
-        createdAt
-        status
-        versionsCount
-        recordsCount
-        core
-        canSee
-        canCreateRecords
-        canUpdate
-        canDelete
-        resource {
+  query GetShortForms($first: Int, $afterCursor: ID, $filter: JSON) {
+    forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
+      edges {
+        node {
           id
-          coreForm {
+          name
+          createdAt
+          status
+          versionsCount
+          recordsCount
+          core
+          canSee
+          canCreateRecords
+          canUpdate
+          canDelete
+          resource {
             id
-            name
+            coreForm {
+              id
+              name
+            }
           }
         }
+        cursor
       }
-      cursor
-    }
-    totalCount
-    pageInfo {
-      hasNextPage
-      endCursor
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
-}`;
+`;
 
 export interface GetFormsQueryResponse {
   loading: boolean;
@@ -152,63 +169,66 @@ export interface GetFormsQueryResponse {
 
 // === GET FORM BY ID ===
 export const GET_SHORT_FORM_BY_ID = gql`
-query GetShortFormById($id: ID!) {
-  form(id: $id) {
-    id
-    name
-    core
-    structure
-    fields
-    status
-    canCreateRecords
-    uniqueRecord {
+  query GetShortFormById($id: ID!) {
+    form(id: $id) {
       id
-      modifiedAt
-      data
+      name
+      core
+      structure
+      fields
+      status
+      canCreateRecords
+      uniqueRecord {
+        id
+        modifiedAt
+        data
+      }
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canUpdate
     }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canUpdate
   }
-}`;
+`;
 
 export const GET_FORM_BY_ID = gql`
-query GetFormById($id: ID!) {
-  form(id: $id) {
-    id
-    name
-    createdAt
-    structure
-    fields
-    status
-    versions {
+  query GetFormById($id: ID!) {
+    form(id: $id) {
       id
+      name
       createdAt
-      data
+      structure
+      fields
+      status
+      versions {
+        id
+        createdAt
+        data
+      }
+      canUpdate
     }
-    canUpdate
   }
-}`;
+`;
 
 export const GET_FORM_STRUCTURE = gql`
-query GetFormStructure($id: ID!) {
-  form(id: $id) {
-    id
-    structure
+  query GetFormStructure($id: ID!) {
+    form(id: $id) {
+      id
+      structure
+    }
   }
-}`;
+`;
 
 export interface GetFormByIdQueryResponse {
   loading: boolean;
@@ -216,30 +236,43 @@ export interface GetFormByIdQueryResponse {
 }
 
 export const GET_FORM_RECORDS = gql`
-query GetFormRecords($id: ID!, $afterCursor: ID, $first: Int, $filter: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
-  form(id: $id) {
-    records(first: $first, afterCursor: $afterCursor, filter: $filter, archived: $showDeletedRecords) {
-      edges {
-        node {
-          id
-          incrementalId
-          data(display: $display)
-          versions {
+  query GetFormRecords(
+    $id: ID!
+    $afterCursor: ID
+    $first: Int
+    $filter: JSON
+    $display: Boolean
+    $showDeletedRecords: Boolean
+  ) {
+    form(id: $id) {
+      records(
+        first: $first
+        afterCursor: $afterCursor
+        filter: $filter
+        archived: $showDeletedRecords
+      ) {
+        edges {
+          node {
             id
-            createdAt
-            data
+            incrementalId
+            data(display: $display)
+            versions {
+              id
+              createdAt
+              data
+            }
           }
+          cursor
         }
-        cursor
-      }
-      totalCount
-      pageInfo {
-        hasNextPage
-        endCursor
+        totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
       }
     }
   }
-}`;
+`;
 
 export interface GetFormRecordsQueryResponse {
   loading: boolean;
@@ -254,46 +287,55 @@ export interface GetFormRecordsQueryResponse {
         hasNextPage: boolean;
       };
       totalCount: number;
-    }
+    };
   };
 }
 
 // === GET RESOURCE BY ID ===
 export const GET_RESOURCE_BY_ID = gql`
-query GetResourceById($id: ID!) {
-  resource(id: $id) {
-    id
-    name
-    createdAt
-    fields
-    forms {
+  query GetResourceById($id: ID!) {
+    resource(id: $id) {
       id
       name
-      status
+      queryName
       createdAt
-      recordsCount
-      core
+      fields
+      layouts {
+        id
+        name
+        createdAt
+        query
+        display
+      }
+      forms {
+        id
+        name
+        status
+        createdAt
+        recordsCount
+        core
+        canUpdate
+        canDelete
+        canCreateRecords
+      }
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
       canUpdate
-      canDelete
-      canCreateRecords
     }
-    permissions {
-      canSee {
-        id
-        title
-      }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
-    }
-    canUpdate
   }
-}`;
+`;
 
 export interface GetResourceByIdQueryResponse {
   loading: boolean;
@@ -301,34 +343,47 @@ export interface GetResourceByIdQueryResponse {
 }
 
 export const GET_RESOURCE_RECORDS = gql`
-query GetResourceRecords($id: ID!, $afterCursor: ID, $first: Int, $filter: JSON, $display: Boolean, $showDeletedRecords: Boolean) {
-  resource(id: $id) {
-    records(first: $first, afterCursor: $afterCursor, filter: $filter, archived: $showDeletedRecords) {
-      edges {
-        node {
-          id
-          incrementalId
-          data(display: $display)
-          versions {
+  query GetResourceRecords(
+    $id: ID!
+    $afterCursor: ID
+    $first: Int
+    $filter: JSON
+    $display: Boolean
+    $showDeletedRecords: Boolean
+  ) {
+    resource(id: $id) {
+      records(
+        first: $first
+        afterCursor: $afterCursor
+        filter: $filter
+        archived: $showDeletedRecords
+      ) {
+        edges {
+          node {
             id
-            createdAt
-            data
+            incrementalId
+            data(display: $display)
+            versions {
+              id
+              createdAt
+              data
+            }
+            form {
+              id
+              name
+            }
           }
-          form {
-            id
-            name
-          }
+          cursor
         }
-        cursor
-      }
-      totalCount
-      pageInfo {
-        hasNextPage
-        endCursor
+        totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
       }
     }
   }
-}`;
+`;
 
 export interface GetResourceRecordsQueryResponse {
   loading: boolean;
@@ -343,53 +398,55 @@ export interface GetResourceRecordsQueryResponse {
         hasNextPage: boolean;
       };
       totalCount: number;
-    }
+    };
   };
 }
 
 // === GET RESOURCES ===
 export const GET_RESOURCES = gql`
-query GetResources($first: Int, $afterCursor: ID){
-  resources(first: $first, afterCursor: $afterCursor) {
-    edges {
-      node {
-        id
-        name
-        forms {
+  query GetResources($first: Int, $afterCursor: ID) {
+    resources(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
           id
           name
+          forms {
+            id
+            name
+          }
         }
+        cursor
       }
-      cursor
-    }
-    totalCount
-    pageInfo {
-      hasNextPage
-      endCursor
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
-}`;
+`;
 
 export const GET_RESOURCES_EXTENDED = gql`
-query GetResourcesExtended($first: Int, $afterCursor: ID, $filter: JSON){
-  resources(first: $first, afterCursor: $afterCursor, filter: $filter) {
-    edges {
-      node {
-        id
-        name
-        createdAt
-        recordsCount
-        canDelete
+  query GetResourcesExtended($first: Int, $afterCursor: ID, $filter: JSON) {
+    resources(first: $first, afterCursor: $afterCursor, filter: $filter) {
+      edges {
+        node {
+          id
+          name
+          createdAt
+          recordsCount
+          canDelete
+        }
+        cursor
       }
-      cursor
-    }
-    totalCount
-    pageInfo {
-      hasNextPage
-      endCursor
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
-}`;
+`;
 
 export interface GetResourcesQueryResponse {
   loading: boolean;
@@ -401,31 +458,32 @@ export interface GetResourcesQueryResponse {
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }
 
 // === GET RECORD BY ID ===
 export const GET_RECORD_BY_ID = gql`
-query GetRecordById($id: ID!) {
-  record(id: $id) {
-    id
-    createdAt
-    modifiedAt
-    createdBy {
-      name
-    }
-    modifiedBy {
-      name
-    }
-    data
-    form {
+  query GetRecordById($id: ID!) {
+    record(id: $id) {
       id
-      structure
+      createdAt
+      modifiedAt
+      createdBy {
+        name
+      }
+      modifiedBy {
+        name
+      }
+      data
+      form {
+        id
+        structure
+      }
     }
   }
-}`;
+`;
 
 export interface GetRecordByIdQueryResponse {
   loading: boolean;
@@ -434,8 +492,8 @@ export interface GetRecordByIdQueryResponse {
 
 // === GET DASHBOARD BY ID ===
 export const GET_DASHBOARD_BY_ID = gql`
-  query GetDashboardById($id: ID!){
-    dashboard(id: $id){
+  query GetDashboardById($id: ID!) {
+    dashboard(id: $id) {
       id
       name
       createdAt
@@ -487,43 +545,44 @@ export interface GetDashboardByIdQueryResponse {
 
 // === GET APPLICATIONS ===
 export const GET_APPLICATIONS = gql`
-query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
-  applications(first: $first, afterCursor: $afterCursor, filter: $filter) {
-    edges {
-      node {
-        id
-        name
-        createdAt
-        modifiedAt
-        status
-        permissions {
-          canSee {
-            id
-            title
+  query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
+    applications(first: $first, afterCursor: $afterCursor, filter: $filter) {
+      edges {
+        node {
+          id
+          name
+          createdAt
+          modifiedAt
+          status
+          permissions {
+            canSee {
+              id
+              title
+            }
+            canUpdate {
+              id
+              title
+            }
+            canDelete {
+              id
+              title
+            }
           }
-          canUpdate {
-            id
-            title
-          }
-          canDelete {
-            id
-            title
-          }
+          canSee
+          canUpdate
+          canDelete
+          usersCount
         }
-        canSee
-        canUpdate
-        canDelete
-        usersCount
+        cursor
       }
-      cursor
-    }
-    totalCount
-    pageInfo {
-      hasNextPage
-      endCursor
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
-}`;
+`;
 
 export interface GetApplicationsQueryResponse {
   loading: boolean;
@@ -535,15 +594,15 @@ export interface GetApplicationsQueryResponse {
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }
 
 // === GET APPLICATION BY ID ===
 export const GET_APPLICATION_BY_ID = gql`
-  query GetApplicationById($id: ID!, $asRole: ID){
-    application(id: $id, asRole: $asRole){
+  query GetApplicationById($id: ID!, $asRole: ID) {
+    application(id: $id, asRole: $asRole) {
       id
       name
       description
@@ -606,8 +665,8 @@ export interface GetApplicationByIdQueryResponse {
 
 // === GET PAGE BY ID ===
 export const GET_PAGE_BY_ID = gql`
-  query GetPageById($id: ID!){
-    page(id: $id){
+  query GetPageById($id: ID!) {
+    page(id: $id) {
       id
       name
       createdAt
@@ -645,8 +704,8 @@ export interface GetPageByIdQueryResponse {
 
 // === GET WORKFLOW BY ID ===
 export const GET_WORKFLOW_BY_ID = gql`
-  query GetWorkflowById($id: ID!, $asRole: ID){
-    workflow(id: $id, asRole: $asRole){
+  query GetWorkflowById($id: ID!, $asRole: ID) {
+    workflow(id: $id, asRole: $asRole) {
       id
       name
       createdAt
@@ -705,8 +764,8 @@ export interface GetWorkflowByIdQueryResponse {
 
 // === GET STEP BY ID ===
 export const GET_STEP_BY_ID = gql`
-  query GetStepById($id: ID!){
-    step(id: $id){
+  query GetStepById($id: ID!) {
+    step(id: $id) {
       id
       name
       createdAt
@@ -750,27 +809,28 @@ export interface GetStepByIdQueryResponse {
 
 // === GET ROUTING KEYS ===
 export const GET_ROUTING_KEYS = gql`
-query GetRoutingKeys($first: Int, $afterCursor: ID) {
-  applications(first: $first, afterCursor: $afterCursor) {
-    edges {
-      node {
-        id
-        name
-        channels {
+  query GetRoutingKeys($first: Int, $afterCursor: ID) {
+    applications(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
           id
-          title
-          routingKey
+          name
+          channels {
+            id
+            title
+            routingKey
+          }
         }
+        cursor
       }
-      cursor
-    }
-    totalCount
-    pageInfo {
-      hasNextPage
-      endCursor
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
-}`;
+`;
 
 export interface GetRoutingKeysQueryResponse {
   loading: boolean;
@@ -778,26 +838,27 @@ export interface GetRoutingKeysQueryResponse {
     edges: {
       node: Application;
       cursor: string;
-    }[],
+    }[];
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }
 
 // === GET POSITION ATTRIBUTES FORM CATEGORY ===
 export const GET_POSITION_ATTRIBUTES_FROM_CATEGORY = gql`
-query GetPositionAttributesFromCategory($id: ID!) {
-  positionAttributes(category: $id) {
-    value
-    category {
-      title
+  query GetPositionAttributesFromCategory($id: ID!) {
+    positionAttributes(category: $id) {
+      value
+      category {
+        title
+      }
+      usersCount
     }
-    usersCount
   }
-}`;
+`;
 
 export interface GetPositionAttributesFromCategoryQueryResponse {
   loading: boolean;
@@ -806,30 +867,31 @@ export interface GetPositionAttributesFromCategoryQueryResponse {
 
 // === GET RECORD DETAILS ===
 export const GET_RECORD_DETAILS = gql`
-query GetRecordDetails($id: ID!) {
-  record(id: $id) {
-    id
-    data
-    createdAt
-    modifiedAt
-    form {
+  query GetRecordDetails($id: ID!) {
+    record(id: $id) {
       id
-      name
-      createdAt
-      structure
-      fields
-      core
-    }
-    versions {
-      id
-      createdAt
       data
-      createdBy {
+      createdAt
+      modifiedAt
+      form {
+        id
         name
+        createdAt
+        structure
+        fields
+        core
+      }
+      versions {
+        id
+        createdAt
+        data
+        createdBy {
+          name
+        }
       }
     }
   }
-}`;
+`;
 
 export interface GetRecordDetailsQueryResponse {
   loading: boolean;
@@ -838,44 +900,45 @@ export interface GetRecordDetailsQueryResponse {
 
 // === GET API CONFIGURATIONS ===
 export const GET_API_CONFIGURATIONS = gql`
-query GetApiConfigurations($first: Int, $afterCursor: ID) {
-  apiConfigurations(first: $first, afterCursor: $afterCursor) {
-    edges {
-      node {
-        id
-        name
-        status
-        authType
-        endpoint
-        pingUrl
-        settings
-        permissions {
-          canSee {
-            id
-            title
+  query GetApiConfigurations($first: Int, $afterCursor: ID) {
+    apiConfigurations(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+          status
+          authType
+          endpoint
+          pingUrl
+          settings
+          permissions {
+            canSee {
+              id
+              title
+            }
+            canUpdate {
+              id
+              title
+            }
+            canDelete {
+              id
+              title
+            }
           }
-          canUpdate {
-            id
-            title
-          }
-          canDelete {
-            id
-            title
-          }
+          canSee
+          canUpdate
+          canDelete
         }
-        canSee
-        canUpdate
-        canDelete
+        cursor
       }
-      cursor
-    }
-    totalCount
-    pageInfo {
-      hasNextPage
-      endCursor
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
-}`;
+`;
 
 export interface GetApiConfigurationsQueryResponse {
   loading: boolean;
@@ -887,41 +950,42 @@ export interface GetApiConfigurationsQueryResponse {
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }
 
 // === GET API CONFIGURATION ===
 export const GET_API_CONFIGURATION = gql`
-query GetApiConfiguration($id: ID!) {
-  apiConfiguration(id: $id) {
-    id
-    name
-    status
-    authType
-    endpoint
-    pingUrl
-    settings
-    permissions {
-      canSee {
-        id
-        title
+  query GetApiConfiguration($id: ID!) {
+    apiConfiguration(id: $id) {
+      id
+      name
+      status
+      authType
+      endpoint
+      pingUrl
+      settings
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
       }
-      canUpdate {
-        id
-        title
-      }
-      canDelete {
-        id
-        title
-      }
+      canSee
+      canUpdate
+      canDelete
     }
-    canSee
-    canUpdate
-    canDelete
   }
-}`;
+`;
 
 export interface GetApiConfigurationQueryResponse {
   loading: boolean;
@@ -930,39 +994,42 @@ export interface GetApiConfigurationQueryResponse {
 
 // === GET PULL JOBS ===
 export const GET_PULL_JOBS = gql`
-query GetPullJobs($first: Int, $afterCursor: ID) {
-  pullJobs(first: $first, afterCursor: $afterCursor) {
-    edges {
-      node {
-        id
-        name
-        status
-        apiConfiguration {
+  query GetPullJobs($first: Int, $afterCursor: ID) {
+    pullJobs(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
           id
           name
+          status
+          apiConfiguration {
+            id
+            name
+            authType
+          }
+          url
+          path
+          schedule
+          convertTo {
+            id
+            name
+          }
+          mapping
+          uniqueIdentifiers
+          channel {
+            id
+            title
+          }
         }
-        schedule
-        convertTo {
-          id
-          name
-        }
-        mapping
-        uniqueIdentifiers
-        channel {
-          id
-          title
-        }
+        cursor
       }
-      cursor
-    }
-    totalCount
-    pageInfo {
-      hasNextPage
-      endCursor
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
-}`;
-
+`;
 
 export interface GetPullJobsQueryResponse {
   loading: boolean;
@@ -974,7 +1041,7 @@ export interface GetPullJobsQueryResponse {
     pageInfo: {
       endCursor: string;
       hasNextPage: boolean;
-    },
+    };
     totalCount: number;
   };
 }

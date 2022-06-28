@@ -1,33 +1,54 @@
-<h1 mat-dialog-title>Update role permissions and channels</h1>
+<h1 mat-dialog-title>{{ 'components.role.update.title' | translate }}</h1>
 <div mat-dialog-content>
-    <form [formGroup]="roleForm">
-        <div class="form-group">
-            <mat-form-field>
-                <mat-label>Title</mat-label>
-                <input matInput formControlName="title" type='text' />
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Permissions</mat-label>
-                <mat-select formControlName="permissions" multiple>
-                    <mat-option *ngFor="let permission of permissions" [value]="permission.id">
-                        {{permission.type}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Channels</mat-label>
-                <mat-select matNativeControl multiple formControlName="channels">
-                    <mat-optgroup *ngFor="let application of applications" [label]="application.name || ''">
-                        <mat-option *ngFor="let channel of application.channels" [value]="channel.id">
-                            {{channel.title}}
-                        </mat-option>
-                    </mat-optgroup>
-                </mat-select>
-            </mat-form-field>
-        </div>
-    </form>
+  <form [formGroup]="roleForm">
+    <div class="form-group">
+      <mat-form-field>
+        <mat-label>{{ 'common.title' | translate }}</mat-label>
+        <input matInput formControlName="title" type="text" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{
+          'components.role.update.permissions' | translate
+        }}</mat-label>
+        <mat-select formControlName="permissions" multiple>
+          <mat-option
+            *ngFor="let permission of permissions"
+            [value]="permission.id"
+          >
+            {{ permission.type }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{ 'common.channel.few' | translate }}</mat-label>
+        <mat-select matNativeControl multiple formControlName="channels">
+          <mat-optgroup
+            *ngFor="let application of applications"
+            [label]="application.name || ''"
+          >
+            <mat-option
+              *ngFor="let channel of application.channels"
+              [value]="channel.id"
+            >
+              {{ channel.title }}
+            </mat-option>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button [mat-dialog-close]="roleForm.value" cdkFocusInitial color="primary" [disabled]="!roleForm.valid">Update role</button>
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="roleForm.value"
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!roleForm.valid"
+  >
+    {{ 'common.update' | translate }}
+  </button>
 </div>

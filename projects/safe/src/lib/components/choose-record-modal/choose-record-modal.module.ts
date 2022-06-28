@@ -10,7 +10,12 @@ import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdo
 import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
 import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
+import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * SafeChooseRecordModalModule is a class used to manage all the modules and components
+ * related to the modals displaying the choice of records.
+ */
 @NgModule({
   declarations: [SafeChooseRecordModalComponent],
   imports: [
@@ -24,8 +29,9 @@ import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
     SafeResourceDropdownModule,
     SafeApplicationDropdownModule,
     SafeRecordDropdownModule,
-    SafeCoreGridModule
+    SafeCoreGridModule,
+    TranslateModule,
   ],
-  exports: [SafeChooseRecordModalComponent]
+  exports: [SafeChooseRecordModalComponent],
 })
-export class SafeChooseRecordModalModule { }
+export class SafeChooseRecordModalModule {}

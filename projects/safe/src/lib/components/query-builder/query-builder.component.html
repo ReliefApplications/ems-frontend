@@ -1,55 +1,116 @@
 <ng-container *ngIf="form">
-  <form [formGroup]="form" [ngClass]="{'field-form': isField}">
-    <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()" *ngIf="isField">
+  <form [formGroup]="form" [ngClass]="{ 'field-form': isField }">
+    <safe-button
+      [isIcon]="true"
+      icon="arrow_back"
+      (click)="onCloseField()"
+      *ngIf="isField"
+    >
     </safe-button>
 
     <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
-      <mat-label>Select a data set</mat-label>
-      <input type="text" placeholder="Select a data source" matInput formControlName="name" [matAutocomplete]="auto">
+      <mat-label>{{
+        'components.queryBuilder.dataset.select' | translate
+      }}</mat-label>
+      <input
+        type="text"
+        [placeholder]="'components.queryBuilder.dataset.select' | translate"
+        matInput
+        formControlName="name"
+        [matAutocomplete]="auto"
+      />
       <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
         <mat-option *ngFor="let option of filteredQueries" [value]="option">
-          {{option}}
+          {{ option }}
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet && (templates.length > 0)">
-      <mat-label>Template</mat-label>
+    <mat-form-field
+      appearance="outline"
+      *ngIf="!isField && canSelectDataSet && templates.length > 0"
+    >
+      <mat-label>{{ 'models.form.template' | translate }}</mat-label>
       <mat-select formControlName="template">
-        <mat-option>-- Default --</mat-option>
-        <mat-option *ngFor="let template of templates" [value]="template.id">{{template.name}}</mat-option>
+        <mat-option>-</mat-option>
+        <mat-option *ngFor="let template of templates" [value]="template.id">{{
+          template.name
+        }}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <ng-container *ngIf="isField">
       <mat-form-field appearance="outline">
-        <mat-label>Field name</mat-label>
+        <mat-label>{{ 'models.form.field.name' | translate }}</mat-label>
         <input matInput formControlName="name" type="text" />
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>Label</mat-label>
+        <mat-label>{{ 'models.form.field.label' | translate }}</mat-label>
         <input matInput formControlName="label" type="text" />
       </mat-form-field>
     </ng-container>
-    <button class="form-error" mat-icon-button *ngIf="canSelectDataSet && form.invalid">
+    <button
+      class="form-error"
+      mat-icon-button
+      *ngIf="canSelectDataSet && form.invalid"
+    >
       <mat-icon>error</mat-icon>
     </button>
-    <mat-tab-group mat-align-tabs="start" animationDuration="0ms" *ngIf="form.getRawValue().name">
-      <mat-tab label="Fields">
+    <mat-tab-group
+      mat-align-tabs="start"
+      animationDuration="0ms"
+      *ngIf="form.getRawValue().name"
+    >
+      <mat-tab [label]="'components.queryBuilder.fields.title' | translate">
         <ng-template matTabContent>
-          <safe-tab-fields *ngIf="availableFields.length > 0" [form]="$any(form.controls.fields)"
-            [fields]="availableFields" [factory]="factory"></safe-tab-fields>
+          <safe-tab-fields
+            *ngIf="availableFields.length > 0"
+            [form]="$any(form.controls.fields)"
+            [fields]="availableFields"
+          ></safe-tab-fields>
         </ng-template>
       </mat-tab>
-      <mat-tab label="Sort" *ngIf="form.get('sort')">
+      <mat-tab
+        [label]="'components.queryBuilder.sort.title' | translate"
+        *ngIf="form.get('sort')"
+      >
         <ng-template matTabContent>
-          <safe-tab-sort [form]="$any(form.controls.sort)" [fields]="availableScalarFields"></safe-tab-sort>
+          <safe-tab-sort
+            [form]="$any(form.controls.sort)"
+            [fields]="availableScalarFields"
+          ></safe-tab-sort>
         </ng-template>
       </mat-tab>
-      <mat-tab label="Filter" *ngIf="form.get('filter')">
+      <mat-tab
+        [label]="'components.queryBuilder.filter.title' | translate"
+        *ngIf="form.get('filter')"
+      >
         <ng-template matTabContent>
-          <safe-tab-filter [form]="$any(form.controls.filter)" [fields]="availableScalarFields" [settings]="settings">
+          <safe-tab-filter
+            [form]="$any(form.controls.filter)"
+            [fields]="availableScalarFields"
+            [query]="form.getRawValue()"
+          >
           </safe-tab-filter>
+        </ng-template>
+      </mat-tab>
+      <mat-tab
+        [label]="'components.queryBuilder.style.title' | translate"
+        *ngIf="form.get('style')"
+      >
+        <ng-template matTabContent>
+          <safe-tab-style
+            [form]="$any(form.controls.style)"
+            [fields]="form.getRawValue().fields"
+            [scalarFields]="availableScalarFields"
+          >
+          </safe-tab-style>
+        </ng-template>
+      </mat-tab>
+      <mat-tab [label]="'common.preview' | translate" *ngIf="layoutPreviewData">
+        <ng-template matTabContent>
+          <safe-tab-layout-preview [data]="layoutPreviewData">
+          </safe-tab-layout-preview>
         </ng-template>
       </mat-tab>
     </mat-tab-group>

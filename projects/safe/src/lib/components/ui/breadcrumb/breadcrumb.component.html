@@ -1,0 +1,6 @@
+<div class="breadcrumb">
+  <div *ngFor="let item of items; let i = index" class="breadcrumb-item">
+    <div>{{ item.name }}</div>
+    <span *ngIf="i + 1 < items.length">/</span>
+  </div>
+</div>

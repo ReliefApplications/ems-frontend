@@ -1,101 +1,75 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AppRoutingModule } from './app-routing.module';
 
-// Apollo
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular/http';
-import { InMemoryCache, ApolloLink, split } from '@apollo/client/core';
-import { getMainDefinition } from '@apollo/client/utilities';
-import { WebSocketLink } from '@apollo/client/link/ws';
-import { setContext } from '@apollo/client/link/context';
+// Http
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 // Env
 import { environment } from '../environments/environment';
 
-// MSAL
-import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+// Config
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
 
-const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+// TRANSLATOR
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
+import { MessageService } from '@progress/kendo-angular-l10n';
+import { KendoTranslationService } from '@safe/builder';
 
-/*  Configuration of the Apollo client.
-*/
-export function provideApollo(httpLink: HttpLink): any {
-  const basic = setContext((operation, context) => ({
-    headers: {
-      Accept: 'charset=utf-8'
-    }
-  }));
+// Kendo datepicker for surveyjs
+import {
+  CalendarDOMService,
+  CenturyViewService,
+  DecadeViewService,
+  HoursService,
+  MinutesService,
+  MonthViewService,
+  TimePickerDOMService,
+  TOUCH_ENABLED,
+  YearViewService,
+} from '@progress/kendo-angular-dateinputs';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+import { touchEnabled } from '@progress/kendo-common';
+// Apollo / GraphQL
+import { GraphQLModule } from './graphql.module';
 
-  const auth = setContext((operation, context) => {
-    // Get the authentication token from local storage if it exists
-    const token = localStorage.getItem('msal.idtoken');
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    };
-  });
-  const http = httpLink.create({ uri: `${environment.API_URL}/graphql` });
-
-  const ws = new WebSocketLink({
-    uri: `${environment.SUBSCRIPTION_API_URL}/graphql`,
-    options: {
-      reconnect: true,
-      connectionParams: {
-        authToken: localStorage.getItem('msal.idtoken')
-      }
-    }
-  });
-
-  interface Definition {
-    kind: string;
-    operation?: string;
-  }
-
-  const link = ApolloLink.from([basic, auth, split(
-    ({ query }) => {
-      const { kind, operation }: Definition = getMainDefinition(query);
-      return kind === 'OperationDefinition' && operation === 'subscription';
-    },
-    ws,
-    http,
-  )]);
-  // Cache is not currently used, due to fetchPolicy values
-  const cache = new InMemoryCache();
-
-  return {
-    link,
-    cache,
-    defaultOptions: {
-      watchQuery: {
-        fetchPolicy: 'network-only',
-        // fetchPolicy: 'cache-and-network',
-        errorPolicy: 'ignore',
-      },
-      query: {
-        fetchPolicy: 'network-only',
-        // fetchPolicy: 'cache-and-network',
-        errorPolicy: 'all',
-      },
-      mutate: {
-        errorPolicy: 'all',
-      }
-    }
+/**
+ * Initialize authentication in the platform.
+ * Configuration in environment file.
+ * Use oAuth
+ *
+ * @param oauth OAuth Service
+ * @returns oAuth configuration
+ */
+const initializeAuth =
+  (oauth: OAuthService): any =>
+  () => {
+    oauth.configure(environment.authConfig);
   };
-}
 
+/**
+ * Sets up translator.
+ *
+ * @param http http client
+ * @returns Translator.
+ */
+export const httpTranslateLoader = (http: HttpClient) =>
+  new TranslateHttpLoader(http);
+
+/**
+ * Main module of Front-Office project.
+ */
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -104,54 +78,59 @@ export function provideApollo(httpLink: HttpLink): any {
     ReactiveFormsModule,
     MatSnackBarModule,
     BrowserAnimationsModule,
-    // Configuration of the Msal module. Check that the scope are actually enabled by Azure AD on Azure portal.
-    MsalModule.forRoot({
-      auth: {
-        clientId: environment.clientId,
-        authority: environment.authority,
-        redirectUri: environment.redirectUrl,
-        postLogoutRedirectUri: environment.postLogoutRedirectUri
-      },
-      cache: {
-        cacheLocation: 'localStorage',
-        storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
-      },
-      framework: {
-        isAngular: true
-      }
-    },
-    {
-      popUp: false,
-      consentScopes: [
-        'user.read',
-        'openid',
-        'profile',
-      ],
-      protectedResourceMap: [
-        ['https://graph.microsoft.com/v1.0/me', ['user.read']]
-      ],
-      extraQueryParameters: {}
-    }),
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatDialogModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: httpTranslateLoader,
+        deps: [HttpClient],
+      },
+    }),
+    OAuthModule.forRoot({
+      resourceServer: {
+        allowedUrls: ['http://localhost:9090/api'],
+        sendAccessToken: true,
+      },
+    }),
+    GraphQLModule,
   ],
   providers: [
     {
       provide: 'environment',
-      useValue: environment
+      useValue: environment,
     },
     {
-      // TODO: added default options to solve cache issues, cache solution can be added at the query / mutation level.
-      provide: APOLLO_OPTIONS,
-      useFactory: provideApollo,
-      deps: [HttpLink]
+      provide: APP_INITIALIZER,
+      useFactory: initializeAuth,
+      multi: true,
+      deps: [OAuthService],
     },
     {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MsalInterceptor,
-      multi: true
-    }
+      provide: MessageService,
+      useClass: KendoTranslationService,
+    },
+    {
+      provide: OAuthStorage,
+      useValue: localStorage,
+    },
+    // TODO: check
+    {
+      provide: TOUCH_ENABLED,
+      useValue: [touchEnabled],
+    },
+    PopupService,
+    ResizeBatchService,
+    CalendarDOMService,
+    TimePickerDOMService,
+    MonthViewService,
+    HoursService,
+    MinutesService,
+    YearViewService,
+    DecadeViewService,
+    CenturyViewService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

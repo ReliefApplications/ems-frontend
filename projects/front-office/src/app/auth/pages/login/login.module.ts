@@ -6,6 +6,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { SafeButtonModule } from '@safe/builder';
 
+/**
+ * Login Page Module.
+ */
 @NgModule({
   declarations: [LoginComponent],
   imports: [
@@ -13,8 +16,8 @@ import { SafeButtonModule } from '@safe/builder';
     MatFormFieldModule,
     LoginRoutingModule,
     MatGridListModule,
-    SafeButtonModule
+    SafeButtonModule,
   ],
-  exports: [LoginComponent]
+  exports: [LoginComponent],
 })
-export class LoginModule { }
+export class LoginModule {}

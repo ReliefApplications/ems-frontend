@@ -4,12 +4,20 @@ import 'zone.js/dist/zone-testing';
 import { getTestBed } from '@angular/core/testing';
 import {
   BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
+  platformBrowserDynamicTesting,
 } from '@angular/platform-browser-dynamic/testing';
 
+/**
+ * @ignore
+ */
 declare const require: {
-  context(path: string, deep?: boolean, filter?: RegExp): {
+  context(
+    path: string,
+    deep?: boolean,
+    filter?: RegExp
+  ): {
     keys(): string[];
+    // eslint-disable-next-line @typescript-eslint/member-ordering
     <T>(id: string): T;
   };
 };
@@ -17,9 +25,15 @@ declare const require: {
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting()
+  platformBrowserDynamicTesting(),
+  {
+    teardown: { destroyAfterEach: false },
+  }
 );
 // Then we find all the tests.
+/**
+ * @ignore
+ */
 const context = require.context('./', true, /\.spec\.ts$/);
 // And load the modules.
 context.keys().map(context);

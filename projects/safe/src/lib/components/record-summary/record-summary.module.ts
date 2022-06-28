@@ -3,18 +3,21 @@ import { CommonModule } from '@angular/common';
 import { SafeRecordSummaryComponent } from './record-summary.component';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
+import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 
+/**
+ * SafeRecordSummaryModule is the module related to the records information summary.
+ */
 @NgModule({
-  declarations: [
-    SafeRecordSummaryComponent
-  ],
+  declarations: [SafeRecordSummaryComponent],
   imports: [
     CommonModule,
     SafeButtonModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule,
+    DateInputModule,
   ],
-  exports: [
-    SafeRecordSummaryComponent
-  ]
+  exports: [SafeRecordSummaryComponent],
 })
-export class SafeRecordSummaryModule { }
+export class SafeRecordSummaryModule {}

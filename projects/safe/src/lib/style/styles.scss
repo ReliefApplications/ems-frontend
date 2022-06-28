@@ -1,32 +1,44 @@
-@import '~@angular/material/theming';
-@include mat-core();
+@use '@angular/material' as mat;
+@import 'variables.scss';
+@include mat.core();
+
+.sv_main {
+  --primary-color: #{$primary_500};
+  --secondary-color: #{$primary_500};
+  // --primary-text-color: #676a6c;
+  // --secondary-text-color: #a7a7a7;
+  // --inverted-text-color: #ffffff;
+  --primary-hover-color: #{$primary_500};
+  --selection-border-color: #{$primary_500};
+  // --primary-icon-color: #3d4d5d;
+  // --primary-bg-color: #fff;
+  // --secondary-bg-color: #f4f4f4;
+  // --primary-border-color: #e7eaec;
+  // --secondary-border-color: #ddd;
+  // --error-color: #ed5565;
+}
 
 $safe-palette: (
-  50 : #e0f1f9,
-  100 : #b3ddef,
-  200 : #80c6e4,
-  300 : #4dafd9,
-  400 : #269ed1,
-  500 : #008dc9,
-  600 : #0085c3,
-  700 : #007abc,
-  800 : #0070b5,
-  900 : #005da9,
-  Blue500 : #eaf4f8,
-  Blue600 : #d8e5ea,
-  Blue700 : #bccdd4,
-  Blue800 : #a4b6bd,
-  Blue900 : #7694a0,
-  A100 : #d3e8ff,
-  A200 : #a0ceff,
-  A400 : #6db4ff,
-  A700 : #53a7ff,
+  50: $primary_50,
+  100: $primary_100,
+  200: $primary_200,
+  300: $primary_300,
+  400: $primary_400,
+  500: $primary_500,
+  600: $primary_600,
+  700: $primary_700,
+  800: $primary_800,
+  900: $primary_900,
+  A100: $primary_A100,
+  A200: $primary_A200,
+  A400: $primary_A400,
+  A700: $primary_A700,
   contrast: (
     50: #000000,
     100: #000000,
     200: #000000,
     300: #000000,
-    400: #000000,
+    400: #ffffff,
     500: #ffffff,
     600: #ffffff,
     700: #ffffff,
@@ -34,43 +46,45 @@ $safe-palette: (
     900: #ffffff,
     A100: #000000,
     A200: #000000,
-    A400: #000000,
-    A700: #000000,
+    A400: #ffffff,
+    A700: #ffffff,
   ),
 );
 
 $safe-palette-accent: (
-  main: #efc530,
-  lighter: #fff865,
-  darker: #b89500,
-  200: #f7e298,
+  main: $secondary_main,
+  lighter: $secondary_lighter,
+  darker: $secondary_darker,
+  200: $secondary_200,
   // For slide toggle,
-    contrast:
+  contrast:
     (
-      main: $light-primary-text,
-      lighter: $dark-primary-text,
-      darker: $light-primary-text,
+      main: white,
+      lighter: rgba(black, 0.87),
+      darker: white,
     ),
 );
 
 $safe-palette-warn: (
-  main: #d34444, // 500
+  main: #d34444,
+  // 500
   lighter: #ff766f,
   darker: #9b001d,
-  200: #e9a2a2, // 200
+  200: #e9a2a2,
+  // 200
   // For slide toggle,
   contrast:
-  (
-    main: $light-primary-text,
-    lighter: $dark-primary-text,
-    darker: $light-primary-text,
-  ),
+    (
+      main: white,
+      lighter: rgba(black, 0.87),
+      darker: white,
+    ),
 );
 
-$safe-primary: mat-palette($safe-palette);
-$safe-accent: mat-palette($safe-palette-accent, main, lighter, darker);
-$safe-warn: mat-palette($safe-palette-warn, main, lighter, darker);
-$safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
+$safe-primary: mat.define-palette($safe-palette);
+$safe-accent: mat.define-palette($safe-palette-accent, main, lighter, darker);
+$safe-warn: mat.define-palette($safe-palette-warn, main, lighter, darker);
+$safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 
 // === CUSTOM THEME ===
 @mixin custom-theme($theme) {
@@ -79,7 +93,7 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
   $warn: map-get($theme, warn);
 
   .snack-error {
-    background-color: mat-color($warn);
+    background-color: mat.get-color-from-palette($warn);
     color: white;
 
     .mat-simple-snackbar-action {
@@ -89,26 +103,34 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
 
   .active-link {
     .nav-icon {
-      color: mat-color($primary);
+      color: mat.get-color-from-palette($primary);
     }
   }
 
   .mat-list-item {
     a:not(.active-link) {
-      color: mat-color($mat-grey, 500);
+      color: mat.get-color-from-palette(mat.$grey-palette, 500);
     }
   }
 
   .primary {
-    color: mat-color($primary);
+    color: mat.get-color-from-palette($primary);
   }
 
   .accent {
-    color: mat-color($accent);
+    color: mat.get-color-from-palette($accent);
   }
 
   .warn {
-    color: mat-color($warn);
+    color: mat.get-color-from-palette($warn);
+  }
+
+  .safe-add-application {
+    background-color: mat.get-color-from-palette($primary, 50);
+
+    span {
+      color: mat.get-color-from-palette($primary);
+    }
   }
 }
 
@@ -117,9 +139,9 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
 
-  .warn-chip{
-    background-color: mat-color($warn, lighter) !important;
-    color: mat-color($warn) !important;
+  .warn-chip {
+    background-color: mat.get-color-from-palette($warn, lighter) !important;
+    color: mat.get-color-from-palette($warn) !important;
   }
 
   .success-chip {
@@ -133,8 +155,8 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 
   .primary-chip {
-    background-color: mat-color($primary, lighter) !important;
-    color: mat-color($primary) !important;
+    background-color: mat.get-color-from-palette($primary, lighter) !important;
+    color: mat.get-color-from-palette($primary) !important;
   }
 }
 
@@ -145,23 +167,24 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
 
   .mat-stroked-button:not(.mat-button-disabled) {
     &.mat-primary {
-      border-color: mat-color($primary);
+      border-color: mat.get-color-from-palette($primary);
     }
     &.mat-accent {
-      border-color: mat-color($accent);
+      border-color: mat.get-color-from-palette($accent);
     }
     &.mat-warn {
-      border-color: mat-color($warn);
+      border-color: mat.get-color-from-palette($warn);
     }
   }
 
-  .mat-button:disabled, .mat-stroked-button:disabled {
+  .mat-button:disabled,
+  .mat-stroked-button:disabled {
     color: #adadad !important;
   }
 
   .mat-flat-button:disabled {
     color: #adadad !important;
-    background-color: #d8d8d8!important;
+    background-color: #d8d8d8 !important;
   }
 }
 
@@ -169,7 +192,7 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
 // img-selected
 
 // === GLOBAL STYLES ==
-.mat-table{
+.mat-table {
   box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
   font-size: 14px;
   opacity: 0.87;
@@ -179,26 +202,26 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
 
 .success-button {
   &:not(:disabled) {
-    background-color: #63D168 !important;
+    background-color: #63d168 !important;
     color: white !important;
   }
 }
 
 .danger-button {
-  background: mat-color($safe-warn) !important;
+  background: mat.get-color-from-palette($safe-warn) !important;
 }
 
-.mat-header-cell{
+.mat-header-cell {
   border-bottom: 1px solid #d8d8d8 !important;
   color: #767373;
 }
 
-.mat-row{
+.mat-row {
   .mat-cell {
     border-bottom: 1px solid #f2f3f5 !important;
     color: #3f3c3c;
   }
-  .mat-cell:first-child{
+  .mat-cell:first-child {
     color: #000000;
     font-weight: 500;
   }
@@ -236,13 +259,14 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-.clickable{
+.clickable {
   &:hover {
-    cursor:pointer;
+    cursor: pointer;
   }
 }
 
-.mat-column-_actions, .mat-column-actions {
+.mat-column-_actions,
+.mat-column-actions {
   width: 64px;
 }
 
@@ -278,6 +302,7 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
 
     .form-group-row {
       display: flex;
+      gap: 8px;
     }
 
     .form-group-title {
@@ -300,6 +325,7 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
       display: flex;
       flex-direction: column;
       margin-bottom: 1.25em;
+      gap: 4px;
     }
     .form-slide-toggle {
       margin-bottom: 1.25em;
@@ -309,26 +335,51 @@ $safe-theme: mat-light-theme($safe-primary, $safe-accent, $safe-warn);
 
 .mat-tab-group {
   .mat-tab-header {
-      margin-bottom: 12px;
+    margin-bottom: 12px;
   }
 }
 
-@include angular-material-theme($safe-theme);
+@include mat.all-component-themes($safe-theme);
 @include chip($safe-theme);
 @include button($safe-theme);
 @include custom-theme($safe-theme);
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  overflow: hidden;
+}
 
 .widget-container {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+
+  .widget-last-update {
+    visibility: hidden;
+    position: absolute;
+    bottom: 0;
+    font-size: 11px;
+    padding: 0 4px;
+    z-index: 1000;
+    margin: 0;
+    color: #a9a9a9;
+  }
+
+  &:hover {
+    .widget-last-update {
+      visibility: visible;
+    }
+  }
 }
 
 .widget-header {
+  box-sizing: border-box;
   height: 40px;
   position: relative;
   z-index: 1001;
@@ -336,8 +387,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   color: black;
   text-align: left;
   line-height: 40px;
-  padding: 0 40px;
-  border-bottom: 1px solid #d8d8d8;
+  padding: 0 40px !important;
+  border-bottom: 1px solid #d8d8d8 !important;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -347,10 +398,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     white-space: nowrap;
     text-overflow: ellipsis;
     flex: 1;
+    margin: unset;
   }
 }
 
-.widget-content{
+.widget-content {
   flex: 1;
   height: auto;
 }
@@ -375,7 +427,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
-.tile-settings-dialog, .expanded-widget-dialog {
+.tile-settings-dialog,
+.expanded-widget-dialog {
   max-width: unset !important;
   width: 100%;
   height: calc(100% - 72px);
@@ -414,13 +467,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .info-row {
   display: flex;
   .info-icon {
-    margin-left: 12px;
+    margin-left: 6px;
   }
 }
 
 // === SURVEY BUILDER ===
 .core-question {
-  color: mat-color($safe-warn) !important;
+  color: mat.get-color-from-palette($safe-warn) !important;
 }
 
-@import "theme.scss";
+@import 'theme.scss';
+
+// === TINYMCE ===
+.tox-editor-header *,
+.tox-tinymce-aux * {
+  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
+}

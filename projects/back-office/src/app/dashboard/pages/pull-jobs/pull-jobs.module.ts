@@ -17,12 +17,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
-  declarations: [
-    PullJobsComponent,
-    PullJobModalComponent
-  ],
+  declarations: [PullJobsComponent, PullJobModalComponent],
   imports: [
     CommonModule,
     PullJobsRoutingModule,
@@ -33,6 +33,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatTooltipModule,
     MatSelectModule,
     MatMenuModule,
     MatProgressSpinnerModule,
@@ -41,7 +42,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatExpansionModule,
     MatDividerModule,
     SafeButtonModule,
-    MatPaginatorModule
-  ]
+    MatPaginatorModule,
+    TranslateModule,
+    MatChipsModule,
+  ],
 })
-export class PullJobsModule { }
+export class PullJobsModule {}

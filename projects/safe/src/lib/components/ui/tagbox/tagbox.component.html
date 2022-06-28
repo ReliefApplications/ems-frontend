@@ -1,0 +1,41 @@
+<mat-form-field appearance="outline">
+  <mat-label>{{ label }}</mat-label>
+  <mat-chip-list #chipList>
+    <mat-basic-chip
+      *ngFor="let choice of selectedChoices"
+      (removed)="remove(choice)"
+      [value]="choice"
+    >
+      <div class="chip-text">{{ choice[displayKey] }}</div>
+      <safe-icon
+        matChipRemove
+        icon="close"
+        [size]="16"
+        [inline]="true"
+      ></safe-icon>
+    </mat-basic-chip>
+    <input
+      type="text"
+      [placeholder]="label"
+      #textInput
+      matInput
+      [formControl]="inputFormControl"
+      [matAutocomplete]="auto"
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      (matChipInputTokenEnd)="add($event)"
+      [disabled]="choicesEmpty"
+      *ngIf="showInput"
+    />
+  </mat-chip-list>
+
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    (optionSelected)="selected($event)"
+    [displayWith]="displayName"
+  >
+    <mat-option *ngFor="let choice of filteredChoices | async" [value]="choice">
+      {{ choice[displayKey] }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

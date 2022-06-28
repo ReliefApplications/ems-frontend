@@ -16,27 +16,29 @@ import { EditChannelComponent } from './components/edit-channel/edit-channel.com
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [ChannelsComponent, AddChannelComponent, EditChannelComponent],
-    imports: [
-        CommonModule,
-        ChannelsRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatMenuModule,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        MatSelectModule,
-        SafeConfirmModalModule,
-        MatDividerModule,
-        SafeButtonModule,
-        MatButtonModule
-    ]
+  imports: [
+    CommonModule,
+    ChannelsRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatSelectModule,
+    SafeConfirmModalModule,
+    MatDividerModule,
+    SafeButtonModule,
+    MatButtonModule,
+    TranslateModule,
+  ],
 })
-export class ChannelsModule { }
+export class ChannelsModule {}

@@ -1,12 +1,26 @@
-import {Apollo, QueryRef} from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ContentType, CONTENT_TYPES, Form, Permissions, SafeAuthService, SafeSnackBarService, SafeWorkflowService } from '@safe/builder';
+import {
+  ContentType,
+  CONTENT_TYPES,
+  Form,
+  Permissions,
+  SafeAuthService,
+  SafeSnackBarService,
+  SafeWorkflowService,
+} from '@safe/builder';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { AddFormMutationResponse, ADD_FORM } from '../../../../../graphql/mutations';
-import { GET_FORM_NAMES, GetFormsQueryResponse } from '../../../../../graphql/queries';
+import {
+  AddFormMutationResponse,
+  ADD_FORM,
+} from '../../../../../graphql/mutations';
+import {
+  GET_FORM_NAMES,
+  GetFormsQueryResponse,
+} from '../../../../../graphql/queries';
 import { AddFormComponent } from '../../../../../components/add-form/add-form.component';
 import { MatSelect } from '@angular/material/select';
 
@@ -15,18 +29,17 @@ const ITEMS_PER_PAGE = 10;
 @Component({
   selector: 'app-add-step',
   templateUrl: './add-step.component.html',
-  styleUrls: ['./add-step.component.scss']
+  styleUrls: ['./add-step.component.scss'],
 })
 export class AddStepComponent implements OnInit, OnDestroy {
-
   // === DATA ===
-  public contentTypes = CONTENT_TYPES.filter(x => x.value !== 'workflow');
+  public contentTypes = CONTENT_TYPES.filter((x) => x.value !== 'workflow');
   private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   private pageInfo = {
     endCursor: '',
-    hasNextPage: true
+    hasNextPage: true,
   };
   private loading = true;
 
@@ -47,7 +60,7 @@ export class AddStepComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     private apollo: Apollo,
-    private workflowServive: SafeWorkflowService,
+    private workflowServive: SafeWorkflowService
   ) {}
 
   ngOnInit(): void {
@@ -55,19 +68,19 @@ export class AddStepComponent implements OnInit, OnDestroy {
       type: ['', Validators.required],
       content: [''],
     });
-    this.stepForm.get('type')?.valueChanges.subscribe(type => {
+    this.stepForm.get('type')?.valueChanges.subscribe((type) => {
       const contentControl = this.stepForm.controls.content;
       if (type === ContentType.form) {
         this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
           query: GET_FORM_NAMES,
           variables: {
-            first: ITEMS_PER_PAGE
-          }
+            first: ITEMS_PER_PAGE,
+          },
         });
 
         this.forms$ = this.forms.asObservable();
-        this.formsQuery.valueChanges.subscribe(res => {
-          this.forms.next(res.data.forms.edges.map(x => x.node));
+        this.formsQuery.valueChanges.subscribe((res) => {
+          this.forms.next(res.data.forms.edges.map((x) => x.node));
           this.pageInfo = res.data.forms.pageInfo;
           this.loading = res.loading;
         });
@@ -80,8 +93,10 @@ export class AddStepComponent implements OnInit, OnDestroy {
       }
       this.onNext();
     });
-    this.authSubscription = this.authService.user.subscribe(() => {
-      this.canCreateForm = this.authService.userHasClaim(Permissions.canManageForms);
+    this.authSubscription = this.authService.user$.subscribe(() => {
+      this.canCreateForm = this.authService.userHasClaim(
+        Permissions.canManageForms
+      );
     });
   }
 
@@ -110,7 +125,10 @@ export class AddStepComponent implements OnInit, OnDestroy {
   onNext(): void {
     switch (this.stage) {
       case 1: {
-        this.stepForm.controls.type.value === ContentType.form ? this.stage += 1 : this.onSubmit();
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        this.stepForm.controls.type.value === ContentType.form
+          ? (this.stage += 1)
+          : this.onSubmit();
         break;
       }
       case 2: {
@@ -126,66 +144,80 @@ export class AddStepComponent implements OnInit, OnDestroy {
 
   onAdd(): void {
     const dialogRef = this.dialog.open(AddFormComponent, {
-      panelClass: 'add-dialog'
+      panelClass: 'add-dialog',
     });
-    dialogRef.afterClosed().subscribe(value => {
+    dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };
-        Object.assign(data,
-          value.binding === 'newResource' && { newResource: true },
-          (value.binding === 'fromResource' && value.resource) && { resource: value.resource },
-          (value.binding === 'fromResource' && value.template) && { template: value.template }
+        Object.assign(
+          data,
+          value.resource && { resource: value.resource },
+          value.template && { template: value.template }
         );
-        this.apollo.mutate<AddFormMutationResponse>({
-          mutation: ADD_FORM,
-          variables: data
-        }).subscribe(res => {
-          if (res.data) {
-            const { id } = res.data.addForm;
-            this.stepForm.controls.content.setValue(id);
-            this.onSubmit();
-          }
-        }, (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-        });
+        this.apollo
+          .mutate<AddFormMutationResponse>({
+            mutation: ADD_FORM,
+            variables: data,
+          })
+          .subscribe(
+            (res) => {
+              if (res.data) {
+                const { id } = res.data.addForm;
+                this.stepForm.controls.content.setValue(id);
+                this.onSubmit();
+              }
+            },
+            (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            }
+          );
       }
     });
   }
 
   /**
    * Adds scroll listener to select.
+   *
    * @param e open select event.
    */
-   onOpenSelect(e: any): void {
+  onOpenSelect(e: any): void {
     if (e && this.formSelect) {
       const panel = this.formSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
+      panel.addEventListener('scroll', (event: any) =>
+        this.loadOnScroll(event)
+      );
     }
   }
 
   /**
    * Fetches more forms on scroll.
+   *
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {
-    if (e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50) {
+    if (
+      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
+      50
+    ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
         this.formsQuery.fetchMore({
           variables: {
             first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor
+            afterCursor: this.pageInfo.endCursor,
           },
           updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) { return prev; }
+            if (!fetchMoreResult) {
+              return prev;
+            }
             return Object.assign({}, prev, {
               forms: {
                 edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
                 pageInfo: fetchMoreResult.forms.pageInfo,
-                totalCount: fetchMoreResult.forms.totalCount
-              }
+                totalCount: fetchMoreResult.forms.totalCount,
+              },
             });
-          }
+          },
         });
       }
     }
@@ -193,7 +225,7 @@ export class AddStepComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.authSubscription) {
-    this.authSubscription.unsubscribe();
+      this.authSubscription.unsubscribe();
     }
   }
 }

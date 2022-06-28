@@ -1,104 +1,120 @@
 :host {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidenav {
-    width: 240px;
+  width: 240px;
 }
 
 .sidenav-container {
-    flex: 1;
+  flex: 1;
+  display: flex;
+  position: unset;
 }
 
 .sidenav-content {
-    min-height: calc(100% - 64px);
-    padding: 32px 24px;
+  position: unset;
+  min-height: calc(100% - 64px);
+  height: unset;
+  padding: 32px 24px;
+  margin: 0 !important;
+  flex: 1;
+  z-index: 2;
+}
+
+.mat-drawer-side {
+  position: relative;
+}
+
+.mat-drawer-end {
+  order: 2;
 }
 
 .account-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    align-content: center;
-    font-size: 12px;
-    margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  align-content: center;
+  font-size: 12px;
+  margin-left: auto;
 
-    .account-property {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: normal;
-        @media only screen and (max-width: 600px) {
-            display: none;
-        }
+  .account-property {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: normal;
+    @media only screen and (max-width: 600px) {
+      display: none;
     }
+  }
 }
 
 .nav-items-list {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .nav-item-add {
-    margin: auto;
+  margin: auto;
 }
 
 .nav-item {
-    a {
-        display: flex;
-        align-items: center;
-        flex: 1;
-        height: 100%;
-        overflow: hidden;
-    }
+  a {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+  }
 
+  .nav-actions {
+    display: none;
+  }
+
+  .nav-action,
+  .nav-item-handle {
+    color: transparent;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+  }
+  &:hover {
     .nav-actions {
-        display: none;
+      display: block;
     }
+    .nav-action,
+    .nav-item-handle {
+      color: #aeaeaf;
+    }
+  }
 
-    .nav-action, .nav-item-handle {
-        color: transparent;
-        width: 24px;
-        height: 24px;
-        line-height: 24px;
-    }
-    &:hover {
-        .nav-actions {
-            display: block;
-        }
-        .nav-action, .nav-item-handle {
-            color: #aeaeaf;
-        }
-    }
-
-    .nav-text {
-        text-overflow: ellipsis;
-    }
+  .nav-text {
+    text-overflow: ellipsis;
+  }
 }
 
 .cdk-drag-preview {
-    box-sizing: border-box;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-                0 8px 10px 1px rgba(0, 0, 0, 0.14),
-                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .cdk-drag-placeholder {
-    opacity: 0;
+  opacity: 0;
 }
 
 .cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .nav-items-list.cdk-drop-list-dragging .nav-item:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .nav-item-handle {
-    cursor: move;
+  cursor: move;
 }
 
 .add-page-button {
@@ -106,20 +122,20 @@
 }
 
 .notification-menu {
-    display: flex;
-    align-items: flex-end;
-    flex-direction: column;
-    a {
-        display: inline-flex;
-        padding-right: 8px;
-        cursor: pointer;
-        mat-icon {
-            padding-left: 10px;
-        }
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  a {
+    display: inline-flex;
+    padding-right: 8px;
+    cursor: pointer;
+    mat-icon {
+      padding-left: 10px;
     }
+  }
 }
 
 .application-title {
-    text-overflow: ellipsis;
-    overflow: hidden;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }

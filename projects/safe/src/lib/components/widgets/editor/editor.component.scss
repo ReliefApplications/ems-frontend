@@ -3,17 +3,7 @@
   height: 100%;
 }
 
-.editor-header{
-  width: 100%;
-  height: 40px;
-  position: relative;
-  z-index: 1001;
-  background-color: #0090d1;
-  color: white;
-  text-align: center;
-  line-height: 40px;
-  pointer-events: none;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  padding: 0 40px;
+.widget-content {
+  padding: 8px 12px;
+  overflow: auto;
 }

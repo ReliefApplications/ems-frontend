@@ -5,6 +5,11 @@
   "projects": {
     "safe": {
       "projectType": "library",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
       "root": "projects/safe",
       "sourceRoot": "projects/safe/src",
       "prefix": "safe",
@@ -19,7 +24,8 @@
             "production": {
               "tsConfig": "projects/safe/tsconfig.lib.prod.json"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -30,14 +36,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/safe/tsconfig.lib.json",
-              "projects/safe/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/safe/**/*.ts",
+              "projects/safe/**/*.html"
             ]
           }
         }
@@ -64,10 +67,19 @@
             "tsConfig": "projects/back-office/tsconfig.app.json",
             "aot": true,
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/back-office/src/favicon.ico",
               "projects/back-office/src/assets",
               "projects/back-office/src/web.config",
-              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              }
             ],
             "styles": [
               {
@@ -77,7 +89,6 @@
               "projects/back-office/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
-              "node_modules/survey-angular/survey.min.css",
               "node_modules/survey-creator/survey-creator.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
@@ -96,7 +107,8 @@
               "survey-knockout",
               "surveyjs-widgets",
               "subscriptions-transport-ws",
-              "zen-observable"
+              "zen-observable",
+              "lodash"
             ]
           },
           "configurations": {
@@ -117,15 +129,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
             },
             "azure-dev": {
               "fileReplacements": [
@@ -146,15 +161,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
             },
             "azure-uat": {
               "fileReplacements": [
@@ -175,15 +193,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
             },
             "azure-prod": {
               "fileReplacements": [
@@ -204,15 +225,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
             },
             "oort-dev": {
               "fileReplacements": [
@@ -233,15 +257,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
             },
             "oort-guyane": {
               "fileReplacements": [
@@ -262,15 +289,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
             },
             "oort-prod": {
               "fileReplacements": [
@@ -291,28 +321,44 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "back-office:build"
+            "browserTarget": "back-office:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "back-office:build:production"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -328,6 +374,11 @@
             "tsConfig": "projects/back-office/tsconfig.spec.json",
             "karmaConfig": "projects/back-office/karma.conf.js",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/back-office/src/favicon.ico",
               "projects/back-office/src/assets",
               "projects/back-office/src/web.config"
@@ -345,29 +396,28 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/back-office/tsconfig.app.json",
-              "projects/back-office/tsconfig.spec.json",
-              "projects/back-office/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/back-office/**/*.ts",
+              "projects/back-office/**/*.html"
             ]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/back-office/e2e/protractor.conf.js",
-            "devServerTarget": "back-office:serve"
+            "protractorConfig": "projects/back-office/e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "back-office:serve:production"
+            },
+            "development": {
+              "devServerTarget": "back-office:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         }
       }
     },
@@ -392,10 +442,19 @@
             "tsConfig": "projects/front-office/tsconfig.app.json",
             "aot": true,
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/front-office/src/favicon.ico",
               "projects/front-office/src/assets",
               "projects/front-office/src/web.config",
-              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              }
             ],
             "styles": [
               {
@@ -424,7 +483,8 @@
               "survey-knockout",
               "surveyjs-widgets",
               "subscriptions-transport-ws",
-              "zen-observable"
+              "zen-observable",
+              "lodash"
             ]
           },
           "configurations": {
@@ -445,15 +505,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
             },
             "azure-dev": {
               "fileReplacements": [
@@ -472,15 +535,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
             },
             "azure-uat": {
               "fileReplacements": [
@@ -499,15 +565,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
             },
             "azure-prod": {
               "fileReplacements": [
@@ -526,15 +595,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
             },
             "oort-dev": {
               "fileReplacements": [
@@ -553,15 +625,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
             },
             "oort-guyane": {
               "fileReplacements": [
@@ -580,15 +655,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
             },
             "oort-prod": {
               "fileReplacements": [
@@ -607,28 +685,44 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "front-office:build"
+            "browserTarget": "front-office:build:development"
           },
           "configurations": {
             "production": {
               "browserTarget": "front-office:build:production"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -644,6 +738,11 @@
             "tsConfig": "projects/front-office/tsconfig.spec.json",
             "karmaConfig": "projects/front-office/karma.conf.js",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
               "projects/front-office/src/favicon.ico",
               "projects/front-office/src/assets",
               "projects/front-office/src/web.config"
@@ -657,63 +756,69 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/front-office/tsconfig.app.json",
-              "projects/front-office/tsconfig.spec.json",
-              "projects/front-office/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/front-office/**/*.ts",
+              "projects/front-office/**/*.html"
             ]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/front-office/e2e/protractor.conf.js",
-            "devServerTarget": "front-office:serve"
+            "protractorConfig": "projects/front-office/e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "front-office:serve:production"
+            },
+            "development": {
+              "devServerTarget": "front-office:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         }
       }
     },
-    "web-element": {
+    "web-widgets": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
         }
       },
-      "root": "projects/web-element",
-      "sourceRoot": "projects/web-element/src",
+      "root": "projects/web-widgets",
+      "sourceRoot": "projects/web-widgets/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/web-element",
-            "index": "projects/web-element/src/index.html",
-            "main": "projects/web-element/src/main.ts",
-            "polyfills": "projects/web-element/src/polyfills.ts",
-            "tsConfig": "projects/web-element/tsconfig.app.json",
-            "aot": true,
+            "outputPath": "dist/web-widgets",
+            "index": "projects/web-widgets/src/index.html",
+            "main": "projects/web-widgets/src/main.ts",
+            "polyfills": "projects/web-widgets/src/polyfills.ts",
+            "tsConfig": "projects/web-widgets/tsconfig.app.json",
             "assets": [
-              "projects/web-element/src/favicon.ico",
-              "projects/web-element/src/assets",
-              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
+              "projects/web-widgets/src/favicon.ico",
+              "projects/web-widgets/src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              }
             ],
             "styles": [
-              {
-                "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
-                "inject": true
-              },
-              "projects/web-element/src/styles.scss",
+              "projects/web-widgets/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
               "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-angular/survey.min.css",
@@ -738,94 +843,157 @@
             ]
           },
           "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/web-element/src/environments/environment.ts",
-                  "with": "projects/web-element/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
+            "oort-dev": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "11mb"
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
                   "maximumError": "10kb"
                 }
-              ]
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              },
+              "fileReplacements": [
+                {
+                  "replace": "projects/web-widgets/src/environments/environment.ts",
+                  "with": "projects/web-widgets/src/environments/environment.oort.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "none",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "local": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              },
+              "fileReplacements": [
+                {
+                  "replace": "projects/web-widgets/src/environments/environment.ts",
+                  "with": "projects/web-widgets/src/environments/environment.local.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
             }
-          }
+          },
+          "defaultConfiguration": "oort-dev"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "web-element:build"
-          },
           "configurations": {
             "production": {
-              "browserTarget": "web-element:build:production"
+              "browserTarget": "web-widgets:build:production"
+            },
+            "development": {
+              "browserTarget": "web-widgets:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "web-element:build"
+            "browserTarget": "web-widgets:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/web-element/src/test.ts",
-            "polyfills": "projects/web-element/src/polyfills.ts",
-            "tsConfig": "projects/web-element/tsconfig.spec.json",
-            "karmaConfig": "projects/web-element/karma.conf.js",
+            "main": "projects/web-widgets/src/test.ts",
+            "polyfills": "projects/web-widgets/src/polyfills.ts",
+            "tsConfig": "projects/web-widgets/tsconfig.spec.json",
+            "karmaConfig": "projects/web-widgets/karma.conf.js",
             "assets": [
-              "projects/web-element/src/favicon.ico",
-              "projects/web-element/src/assets"
+              "projects/web-widgets/src/favicon.ico",
+              "projects/web-widgets/src/assets"
             ],
-            "styles": [
-              "projects/web-element/src/styles.scss",
-              "node_modules/survey-angular/survey.css",
-              "node_modules/survey-creator/survey-creator.css"
-            ],
+            "styles": ["projects/web-widgets/src/styles.scss"],
             "scripts": []
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/web-element/tsconfig.app.json",
-              "projects/web-element/tsconfig.spec.json",
-              "projects/web-element/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/web-widgets/**/*.ts",
+              "projects/web-widgets/**/*.html"
             ]
           }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
+        }
+      }
+    },
+    "storybook": {
+      "projectType": "application",
+      "root": "stories",
+      "sourceRoot": "stories",
+      "architect": {
+        "build": {
+          "builder": "@storybook/angular:start-storybook",
           "options": {
-            "protractorConfig": "projects/web-element/e2e/protractor.conf.js",
-            "devServerTarget": "web-element:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "web-element:serve:production"
-            }
+            "tsConfig": ".storybook/tsconfig.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/",
+                "output": "/assets/i18n/"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/front-office/src/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              }
+            ],
+            "styles": [
+              {
+                "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
+                "inject": true
+              },
+              "projects/safe/src/lib/style/styles.scss",
+              "./node_modules/leaflet/dist/leaflet.css",
+              "node_modules/survey-creator/survey-creator.min.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+              "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "node_modules/select2/dist/css/select2.min.css"
+            ],
+            "scripts": []
           }
         }
       }

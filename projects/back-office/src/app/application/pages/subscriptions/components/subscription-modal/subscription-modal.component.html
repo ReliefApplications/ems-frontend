@@ -1,45 +1,104 @@
-<h1 mat-dialog-title>{{data.subscription ? 'Edit Subscription' : 'New Subscription'}}</h1>
+<h1 mat-dialog-title>
+  {{
+    (data.subscription ? 'common.editObject' : 'common.newObject')
+      | translate: { name: 'common.subscription.one' | translate }
+  }}
+</h1>
 <div mat-dialog-content>
-    <form [formGroup]="subscriptionForm">
-        <div class="form-group">
-            <mat-form-field appearance="outline">
-                <mat-label>Title</mat-label>
-                <input type="text" placeholder="Name your subscription." matInput formControlName="title">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Listen to</mat-label>
-                <input type="text" placeholder="Select a routing key" matInput formControlName="routingKey"
-                    [matAutocomplete]="auto">
-                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" #applicationSelect (opened)="onOpenApplicationSelect()">
-                    <mat-optgroup *ngFor="let application of applications$ | async" [label]="application.name || ''">
-                        <mat-option *ngFor="let channel of application.channels" [value]="channel.routingKey">
-                            {{channel.title}}
-                        </mat-option>
-                    </mat-optgroup>
-                </mat-autocomplete>
-                <safe-button *ngIf="routingKey" matSuffix [isIcon]="true" icon="close" aria-label="Clear"
-                    (click)="routingKey=''">
-                </safe-button>
-                <mat-hint>Message broker routing key</mat-hint>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Convert to</mat-label>
-                <mat-select #formSelect  formControlName="convertTo" (openedChange)="onOpenFormSelect($event)">
-                    <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{ form.name }}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Notify on</mat-label>
-                <mat-select formControlName="channel">
-                    <mat-option *ngFor="let channel of data.channels" [value]="channel.id">{{ channel.title }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-    </form>
+  <form [formGroup]="subscriptionForm">
+    <div class="form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'common.title' | translate }}</mat-label>
+        <input
+          type="text"
+          [placeholder]="'common.placeholder.title' | translate"
+          matInput
+          formControlName="title"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.application.subscription.modal.listenTo' | translate
+        }}</mat-label>
+        <input
+          type="text"
+          [placeholder]="
+            'components.application.subscription.modal.placeholder.listenTo'
+              | translate
+          "
+          matInput
+          formControlName="routingKey"
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete
+          autoActiveFirstOption
+          #auto="matAutocomplete"
+          #applicationSelect
+          (opened)="onOpenApplicationSelect()"
+        >
+          <mat-optgroup
+            *ngFor="let application of applications$ | async"
+            [label]="application.name || ''"
+          >
+            <mat-option
+              *ngFor="let channel of application.channels"
+              [value]="channel.routingKey"
+            >
+              {{ channel.title }}
+            </mat-option>
+          </mat-optgroup>
+        </mat-autocomplete>
+        <safe-button
+          *ngIf="routingKey"
+          matSuffix
+          [isIcon]="true"
+          icon="close"
+          aria-label="Clear"
+          (click)="routingKey = ''"
+        >
+        </safe-button>
+        <mat-hint>{{
+          'components.application.subscription.modal.hint.listenTo' | translate
+        }}</mat-hint>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.record.convert.select' | translate
+        }}</mat-label>
+        <mat-select
+          #formSelect
+          formControlName="convertTo"
+          (openedChange)="onOpenFormSelect($event)"
+        >
+          <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{
+            form.name
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.channel.dropdown.select' | translate
+        }}</mat-label>
+        <mat-select formControlName="channel">
+          <mat-option *ngFor="let channel of data.channels" [value]="channel.id"
+            >{{ channel.title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button [mat-dialog-close]="subscriptionForm.value" cdkFocusInitial color="primary"
-        [disabled]="!subscriptionForm.valid">{{data.subscription ? 'Update' : 'Create'}}</button>
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="subscriptionForm.value"
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!subscriptionForm.valid"
+  >
+    {{ (data.subscription ? 'common.update' : 'common.create') | translate }}
+  </button>
 </div>

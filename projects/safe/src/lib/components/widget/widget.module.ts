@@ -8,6 +8,7 @@ import { SafeMapModule } from '../widgets/map/map.module';
 import { SafeSchedulerModule } from '../widgets/scheduler/scheduler.module';
 import 'hammerjs';
 
+/** Module for the widget component */
 @NgModule({
   declarations: [SafeWidgetComponent],
   imports: [
@@ -16,8 +17,8 @@ import 'hammerjs';
     SafeEditorModule,
     SafeGridWidgetModule,
     SafeMapModule,
-    SafeSchedulerModule
+    SafeSchedulerModule,
   ],
-  exports: [SafeWidgetComponent]
+  exports: [SafeWidgetComponent],
 })
-export class SafeWidgetModule { }
+export class SafeWidgetModule {}

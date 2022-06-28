@@ -1,0 +1,10 @@
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+
+  mat-form-field {
+    flex: 1;
+  }
+}

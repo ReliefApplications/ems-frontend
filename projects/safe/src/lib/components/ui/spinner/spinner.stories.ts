@@ -5,42 +5,50 @@ import { SafeSpinnerComponent } from './spinner.component';
 import { SafeSpinnerModule } from './spinner.module';
 
 export default {
-    component: SafeSpinnerComponent,
-    decorators: [
-        moduleMetadata({
-            imports: [
-                SafeSpinnerModule
-            ],
-            providers: []
-        })
-    ],
-    title: 'UI/Spinner',
-    argTypes: {
-        size: {
-            options: [SpinnerSize.SMALL, SpinnerSize.MEDIUM],
-            control: { type: 'select' }
-        },
-        variant: {
-            options: [
-                SpinnerVariant.DEFAULT,
-                SpinnerVariant.PRIMARY,
-                SpinnerVariant.SUCCESS,
-                SpinnerVariant.DANGER,
-                SpinnerVariant.LIGHT
-            ],
-            control: { type: 'select' }
-        }
-    }
+  component: SafeSpinnerComponent,
+  decorators: [
+    moduleMetadata({
+      imports: [SafeSpinnerModule],
+      providers: [],
+    }),
+  ],
+  title: 'UI/Spinner',
+  argTypes: {
+    size: {
+      options: [SpinnerSize.SMALL, SpinnerSize.MEDIUM],
+      control: { type: 'select' },
+    },
+    variant: {
+      options: [
+        SpinnerVariant.DEFAULT,
+        SpinnerVariant.PRIMARY,
+        SpinnerVariant.SUCCESS,
+        SpinnerVariant.DANGER,
+        SpinnerVariant.LIGHT,
+      ],
+      control: { type: 'select' },
+    },
+  },
 } as Meta;
 
-const Template: Story<SafeSpinnerComponent> = args => ({
-    props: {
-        ...args
-    }
+/**
+ * Stories template used to render the component
+ *
+ * @param args Arguments used by the component
+ * @returns Returns an object used as the stories template
+ */
+const TEMPLATE: Story<SafeSpinnerComponent> = (args) => ({
+  props: {
+    ...args,
+  },
 });
 
-export const Default = Template.bind({});
-Default.args = {
-    size: SpinnerSize.MEDIUM,
-    variant: SpinnerVariant.DEFAULT
+/**
+ * Sets the template as the default state of the component
+ */
+export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
+DEFAULT.args = {
+  size: SpinnerSize.MEDIUM,
+  variant: SpinnerVariant.DEFAULT,
 };

@@ -61,15 +61,15 @@ jobs:
         with:
           name: doc_front_office
           path: documentation/front-office
-      # WEB ELEMENT
-      - name: Build doc Web-element
-        run: npm run compodoc:elem
+      # WEB WIDGETS
+      - name: Build doc Web-widgets
+        run: npm run compodoc:widgets
       - name: Archive build Front-office
         if: success()
         uses: actions/upload-artifact@v2
         with:
-          name: doc_web_element
-          path: documentation/web-element
+          name: doc_web_widgets
+          path: documentation/web-widgets
 
   deploy_safe_documentation:
     name : Deploy @SAFE documentation 🚀
@@ -124,18 +124,18 @@ jobs:
           folder: documentation/front-office
           target-folder: oort/frontend/front-office
           clean: true
-      # WEB ELEMENT
-      - name: Download doc Web-element
+      # WEB WIDGETS
+      - name: Download doc Web-widgets
         uses: actions/download-artifact@v1
         with:
-          name: doc_web_element
-          path: documentation/web-element
-      - name: Deploy to github pages Web-element
+          name: doc_web_widgets
+          path: documentation/web-widgets
+      - name: Deploy to github pages Web-widgets
         uses: JamesIves/github-pages-deploy-action@4.1.3
         with:
           token: ${{ secrets.COMPODOC_GITHUB_PAGES_TOKEN }}
           repository-name: ReliefApplications/ReliefApplications.github.io
           branch: master
-          folder: documentation/web-element
-          target-folder: oort/frontend/web-element
+          folder: documentation/web-widgets
+          target-folder: oort/frontend/web-widgets
           clean: true

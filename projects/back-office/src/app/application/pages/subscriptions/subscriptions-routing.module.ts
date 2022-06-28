@@ -5,12 +5,12 @@ import { SubscriptionsComponent } from './subscriptions.component';
 const routes: Routes = [
   {
     path: '',
-    component: SubscriptionsComponent
-  }
+    component: SubscriptionsComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class SubscriptionsRoutingModule { }
+export class SubscriptionsRoutingModule {}

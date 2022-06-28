@@ -1,58 +1,101 @@
-<div class="info-text">Select data points below and drag them to 'selected fields' on the right</div>
-<div cdkDropListGroup class="field-wrapper" [ngClass]="{'hidden': fieldForm }">
-    <div class="field-container" *ngIf="!fieldForm">
-        <h2>Available fields</h2>
+<div class="info-text">
+  {{ 'components.queryBuilder.hint.fields' | translate }}
+</div>
+<div cdkDropListGroup class="field-wrapper" [ngClass]="{ hidden: fieldForm }">
+  <div class="field-container" *ngIf="!fieldForm">
+    <h2>{{ 'components.queryBuilder.fields.available' | translate }}</h2>
 
-        <div class="field-list-wrapper">
-            <div cdkDropList [cdkDropListData]="availableFields" class="field-list" cdkDropListSortingDisabled
-                (cdkDropListDropped)="drop($event)">
-                <div class="field-box" *ngFor="let field of availableFields" cdkDrag>{{ field.name }}<span
-                        class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span></div>
-            </div>
+    <div class="field-list-wrapper">
+      <div
+        cdkDropList
+        [cdkDropListData]="availableFields"
+        class="field-list"
+        cdkDropListSortingDisabled
+        (cdkDropListDropped)="drop($event)"
+      >
+        <div class="field-box" *ngFor="let field of availableFields" cdkDrag>
+          {{ field.name
+          }}<span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{
+            field.type.kind
+          }}</span>
         </div>
+      </div>
     </div>
+  </div>
 
-    <div class="field-container" *ngIf="!fieldForm">
-        <h2>Selected fields</h2>
+  <div class="field-container" *ngIf="!fieldForm">
+    <h2>{{ 'components.queryBuilder.fields.selected' | translate }}</h2>
 
-        <div class="field-list-wrapper">
-            <div cdkDropList [cdkDropListData]="selectedFields" class="field-list" (cdkDropListDropped)="drop($event)">
-                <div class="field-box" *ngFor="let field of selectedFields; let index = index" cdkDrag>
-                    <div>
-                        <span>{{ field.name }}</span>
-                        <safe-button [isIcon]="true" icon="error" class="field-error" (click)="onEdit(index)"
-                            *ngIf="form.at(index)?.invalid && field.type">
-                        </safe-button>
-                        <safe-button [isIcon]="true" icon="close" class="field-error" *ngIf="!field.type" (click)="onDelete(index)"
-                            matTooltip="Invalid field. Please click to remove.">
-                        </safe-button>
-                    </div>
-                    <div *ngIf="field.type">
-                        <span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{ field.type.kind }}</span>
-                        <safe-button [isIcon]="true" icon="edit" (click)="onEdit(index)">
-                        </safe-button>
-                    </div>
-                </div>
-            </div>
+    <div class="field-list-wrapper">
+      <div
+        cdkDropList
+        [cdkDropListData]="selectedFields"
+        class="field-list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <div
+          class="field-box"
+          *ngFor="let field of selectedFields; let index = index"
+          cdkDrag
+        >
+          <div>
+            <span>{{ field.name }}</span>
+            <safe-button
+              [isIcon]="true"
+              icon="error"
+              class="field-error"
+              (click)="onEdit(index)"
+              *ngIf="form.at(index)?.invalid && field.type"
+            >
+            </safe-button>
+            <safe-button
+              [isIcon]="true"
+              icon="close"
+              class="field-error"
+              *ngIf="!field.type"
+              (click)="onDelete(index)"
+              [matTooltip]="
+                'components.queryBuilder.error.field.invalid' | translate
+              "
+            >
+            </safe-button>
+          </div>
+          <div *ngIf="field.type">
+            <span class="field-type" *ngIf="field.type.kind !== 'SCALAR'">{{
+              field.type.kind
+            }}</span>
+            <safe-button [isIcon]="true" icon="edit" (click)="onEdit(index)">
+            </safe-button>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <div class="field-container" *ngIf="fieldForm">
-        <ng-container *ngIf="fieldForm.value.kind === 'SCALAR'">
-            <form [formGroup]="fieldForm" class="field-form">
-                <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
-                </safe-button>
-                <mat-form-field appearance="outline">
-                    <mat-label>Field name</mat-label>
-                    <input matInput formControlName="name" type="text" [disabled]="true" />
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Label</mat-label>
-                    <input matInput formControlName="label" type="text" />
-                </mat-form-field>
-            </form>
-        </ng-container>
-        <ng-container *ngIf="fieldForm.value.kind !== 'SCALAR'" [ngTemplateOutlet]="childTemplate"></ng-container>
-    </div>
+  <div class="field-container" *ngIf="fieldForm">
+    <ng-container *ngIf="fieldForm.value.kind === 'SCALAR'">
+      <form [formGroup]="fieldForm" class="field-form">
+        <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
+        </safe-button>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'models.form.field.name' | translate }}</mat-label>
+          <input
+            matInput
+            formControlName="name"
+            type="text"
+            [disabled]="true"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'models.form.field.label' | translate }}</mat-label>
+          <input matInput formControlName="label" type="text" />
+        </mat-form-field>
+      </form>
+    </ng-container>
+    <ng-container
+      *ngIf="fieldForm.value.kind !== 'SCALAR'"
+      [ngTemplateOutlet]="childTemplate"
+    ></ng-container>
+  </div>
 </div>
 <ng-template #childTemplate></ng-template>

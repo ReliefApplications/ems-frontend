@@ -1,24 +1,59 @@
 <div class="grid-container">
-    <div class="widget-choice-wrapper" *ngIf="canUpdate" [ngClass]="{'floating-widget-choice-wrapper': widgets.length > 0}">
-        <h2 *ngIf="widgets.length === 0">Add a widget</h2>
-        <safe-widget-choice [floating]="widgets.length > 0" [widgetTypes]="widgetTypes" (add)="onAdd($event)"></safe-widget-choice>
-    </div>
-    <mat-grid-list [cols]="colsNumber" rowHeight="1:1" gutterSize="8px">
-        <mat-grid-tile *ngFor="let widget of widgets; let i = index;"
-            [colspan]="( widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1) ) ? colsNumber : widget.defaultCols"
-            [rowspan]="(!canUpdate && widgets.length === 1) ? 4 : ( widget.defaultRows > colsNumber) ? colsNumber : widget.defaultRows">
-            <cdk-drop-list [cdkDropListConnectedTo]="drops" [cdkDropListData]="i">
-                <div cdkDrag [cdkDragDisabled] = "!this.canUpdate" (cdkDragEntered)="onMove($event)" [cdkDragData]="i" class="grid-widget"
-                    cdkDragBoundary=".grid-container">
-                    <safe-floating-options class="widget-options" [widget]="widget" (edit)="onEditWidget($event)"
-                                           (delete)="onDeleteWidget($event)" (expand)="onExpandWidget($event)" *ngIf="canUpdate"></safe-floating-options>
-                    <safe-widget [widget]="widget" (goToNextStep)="goToNextStep.emit($event)"></safe-widget>
-                    <safe-button [isIcon]="true" icon="drag_indicator" class="widget-handle" cdkDragHandle *ngIf="canUpdate">
-                    </safe-button>
-                    <safe-button [isIcon]="true" icon="open_in_full" class="widget-expand" *ngIf="!canUpdate" (click)="onExpandWidget(widget)">
-                    </safe-button>
-                </div>
-            </cdk-drop-list>
-        </mat-grid-tile>
-    </mat-grid-list>
+  <!-- NEW WIDGETS -->
+  <div
+    class="widget-choice-wrapper"
+    *ngIf="canUpdate"
+    [ngClass]="{ 'floating-widget-choice-wrapper': widgets.length > 0 }"
+  >
+    <h2 *ngIf="widgets.length === 0">{{ 'models.widget.add' | translate }}</h2>
+    <safe-widget-choice
+      [floating]="widgets.length > 0"
+      [widgetTypes]="widgetTypes"
+      (add)="onAdd($event)"
+    >
+    </safe-widget-choice>
+  </div>
+  <!-- GRID OF WIDGETS -->
+  <kendo-tilelayout
+    [columns]="colsNumber"
+    [rowHeight]="200"
+    [resizable]="canUpdate"
+    [reorderable]="canUpdate"
+    (reorder)="onReorder($event)"
+    (resize)="onResize($event)"
+  >
+    <kendo-tilelayout-item
+      *ngFor="let widget of widgets; let i = index"
+      [colSpan]="
+        widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1)
+          ? colsNumber
+          : widget.defaultCols
+      "
+      [rowSpan]="!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows"
+    >
+      <safe-floating-options
+        *ngIf="canUpdate"
+        class="widget-options"
+        [widget]="widget"
+        (edit)="onEditWidget($event)"
+        (delete)="onDeleteWidget($event)"
+        (expand)="onExpandWidget($event)"
+      >
+      </safe-floating-options>
+      <safe-widget
+        [widget]="widget"
+        (goToNextStep)="goToNextStep.emit($event)"
+      ></safe-widget>
+      <safe-icon *ngIf="canUpdate" icon="drag_indicator" class="widget-handle">
+      </safe-icon>
+      <safe-button
+        *ngIf="!canUpdate"
+        [isIcon]="true"
+        icon="open_in_full"
+        class="widget-expand"
+        (click)="onExpandWidget(widget)"
+      >
+      </safe-button>
+    </kendo-tilelayout-item>
+  </kendo-tilelayout>
 </div>

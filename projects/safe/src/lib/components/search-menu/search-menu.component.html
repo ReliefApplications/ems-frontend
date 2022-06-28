@@ -1,0 +1,21 @@
+<mat-form-field appearance="outline">
+  <input
+    matInput
+    placeholder="Search"
+    [(ngModel)]="search"
+    (ngModelChange)="onSearch()"
+    autocomplete="off"
+  />
+  <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>
+<div class="application-list">
+  <safe-button
+    *ngFor="let item of searchResults"
+    [block]="true"
+    (click)="onClick(item)"
+    >{{ item.name }}</safe-button
+  >
+</div>
+<p *ngIf="searchResults.length === 0">
+  {{ 'common.filter.empty' | translate }}
+</p>

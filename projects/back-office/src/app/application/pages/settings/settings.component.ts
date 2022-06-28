@@ -1,29 +1,38 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Application, SafeApplicationService, SafeConfirmModalComponent, SafeSnackBarService, NOTIFICATIONS, SafeAuthService } from '@safe/builder';
-import { MatDialog} from '@angular/material/dialog';
-import { DeleteApplicationMutationResponse, DELETE_APPLICATION } from '../../../graphql/mutations';
+import {
+  Application,
+  SafeApplicationService,
+  SafeConfirmModalComponent,
+  SafeSnackBarService,
+  NOTIFICATIONS,
+  SafeAuthService,
+} from '@safe/builder';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  DeleteApplicationMutationResponse,
+  DELETE_APPLICATION,
+} from '../../../graphql/mutations';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+  styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent implements OnInit, OnDestroy {
-
-
   public applications = new MatTableDataSource<Application>([]);
   public settingsForm?: FormGroup;
   private applicationSubscription?: Subscription;
   public application?: Application;
   public user: any;
-  public locked: boolean  | undefined = undefined;
+  public locked: boolean | undefined = undefined;
   public lockedByUser: boolean | undefined = undefined;
 
   constructor(
@@ -33,25 +42,27 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private applicationService: SafeApplicationService,
     private authService: SafeAuthService,
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
-    this.applicationSubscription = this.applicationService.application.subscribe((application: Application | null) => {
-      if (application){
-        this.application = application;
-        this.settingsForm = this.formBuilder.group(
-          {
-            id: [{ value: application.id, disabled: true }],
-            name: [application.name, Validators.required],
-            description: [application.description],
-            status: [application.status]
+    this.applicationSubscription =
+      this.applicationService.application$.subscribe(
+        (application: Application | null) => {
+          if (application) {
+            this.application = application;
+            this.settingsForm = this.formBuilder.group({
+              id: [{ value: application.id, disabled: true }],
+              name: [application.name, Validators.required],
+              description: [application.description],
+              status: [application.status],
+            });
+            this.locked = this.application?.locked;
+            this.lockedByUser = this.application?.lockedByUser;
           }
-        );
-        this.locked = this.application?.locked;
-        this.lockedByUser = this.application?.lockedByUser;
-      }
-    });
+        }
+      );
   }
 
   onSubmit(): void {
@@ -61,43 +72,57 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   onDuplicate(): void {
     if (this.locked && !this.lockedByUser) {
-      this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(this.application?.name));
+      this.snackBar.openSnackBar(
+        NOTIFICATIONS.objectIsLocked(this.application?.name)
+      );
     } else {
       this.dialog.open(DuplicateApplicationComponent, {
         data: {
           id: this.application?.id,
-          name: this.application?.name
-        }
+          name: this.application?.name,
+        },
       });
     }
   }
 
   onDelete(): void {
     if (this.locked && !this.lockedByUser) {
-      this.snackBar.openSnackBar(NOTIFICATIONS.objectIsLocked(this.application?.name));
+      this.snackBar.openSnackBar(
+        NOTIFICATIONS.objectIsLocked(this.application?.name)
+      );
     } else {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: 'Delete application',
-          content: `Do you confirm the deletion of this application ?`,
-          confirmText: 'Delete',
-          confirmColor: 'warn'
-        }
+          title: this.translate.instant('common.deleteObject', {
+            name: this.translate.instant('common.application.one'),
+          }),
+          content: this.translate.instant(
+            'components.application.delete.confirmationMessage',
+            { name: this.application?.name }
+          ),
+          confirmText: this.translate.instant('components.confirmModal.delete'),
+          cancelText: this.translate.instant('components.confirmModal.cancel'),
+          confirmColor: 'warn',
+        },
       });
-      dialogRef.afterClosed().subscribe(value => {
+      dialogRef.afterClosed().subscribe((value) => {
         if (value) {
           const id = this.application?.id;
-          this.apollo.mutate<DeleteApplicationMutationResponse>({
-            mutation: DELETE_APPLICATION,
-            variables: {
-              id
-            }
-          }).subscribe(res => {
-            this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Application'));
-            this.applications.data = this.applications.data.filter(x => {
-              return x.id !== res.data?.deleteApplication.id;
+          this.apollo
+            .mutate<DeleteApplicationMutationResponse>({
+              mutation: DELETE_APPLICATION,
+              variables: {
+                id,
+              },
+            })
+            .subscribe((res) => {
+              this.snackBar.openSnackBar(
+                NOTIFICATIONS.objectDeleted('Application')
+              );
+              this.applications.data = this.applications.data.filter(
+                (x) => x.id !== res.data?.deleteApplication.id
+              );
             });
-          });
           this.router.navigate(['/applications']);
         }
       });

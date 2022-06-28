@@ -10,6 +10,10 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { TranslateModule } from '@ngx-translate/core';
+import { UploadsModule } from '@progress/kendo-angular-upload';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
 
 @NgModule({
   declarations: [FormRecordsComponent],
@@ -24,8 +28,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatTooltipModule,
     SafeButtonModule,
     MatProgressSpinnerModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    TranslateModule,
+    OverlayModule,
+    UploadMenuModule,
   ],
-  exports: [FormRecordsComponent]
+  exports: [FormRecordsComponent],
 })
-export class FormRecordsModule { }
+export class FormRecordsModule {}

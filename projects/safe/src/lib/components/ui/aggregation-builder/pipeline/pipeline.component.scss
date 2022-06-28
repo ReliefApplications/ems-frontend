@@ -1,0 +1,10 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info {
+  padding-left: 4px;
+  color: rgba(0, 0, 0, 0.3);
+}

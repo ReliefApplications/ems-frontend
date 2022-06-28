@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-api-configuration',
   templateUrl: './add-api-configuration.component.html',
-  styleUrls: ['./add-api-configuration.component.scss']
+  styleUrls: ['./add-api-configuration.component.scss'],
 })
 export class AddApiConfigurationComponent implements OnInit {
   // === REACTIVE FORM ===
@@ -18,18 +23,16 @@ export class AddApiConfigurationComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<AddApiConfigurationComponent>
-  ) { }
+  ) {}
 
-  /*  Build the form.
-  */
+  /** Build the form. */
   ngOnInit(): void {
     this.apiForm = this.formBuilder.group({
-      name: ['', [ Validators.required, Validators.pattern('^[A-Za-z-_]+$') ]]
+      name: ['', [Validators.required, Validators.pattern('^[A-Za-z-_]+$')]],
     });
   }
 
-  /*  Close the modal without sending data.
-  */
+  /** Close the modal without sending data. */
   onClose(): void {
     this.dialogRef.close();
   }

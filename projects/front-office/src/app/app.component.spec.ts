@@ -1,15 +1,30 @@
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        RouterTestingModule,
+        HttpClientModule,
+        OAuthModule.forRoot(),
+        MatDialogModule,
+        ReactiveFormsModule,
+        TranslateModule.forRoot(),
       ],
-      declarations: [
-        AppComponent
+      declarations: [AppComponent],
+      providers: [
+        {
+          provide: 'environment',
+          useValue: environment,
+        },
       ],
     }).compileComponents();
   });
@@ -30,6 +45,8 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('front-office app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain(
+      'front-office app is running!'
+    );
   });
 });

@@ -8,11 +8,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateModule } from '@ngx-translate/core';
 
+/** Module for the add user component */
 @NgModule({
-  declarations: [
-    SafeAddUserComponent
-  ],
+  declarations: [SafeAddUserComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -22,8 +22,9 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatSelectModule,
     MatAutocompleteModule,
-    MatInputModule
+    MatInputModule,
+    TranslateModule,
   ],
-  exports: [SafeAddUserComponent]
+  exports: [SafeAddUserComponent],
 })
-export class SafeAddUserModule { }
+export class SafeAddUserModule {}

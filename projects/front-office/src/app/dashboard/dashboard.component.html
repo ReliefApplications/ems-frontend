@@ -1,1 +1,7 @@
-<safe-layout [title]="title" [applications]="applications" [navGroups]="navGroups" (openApplication)="onOpenApplication($event)"></safe-layout>
+<safe-layout
+  [title]="title"
+  [applications]="applications"
+  [navGroups]="navGroups"
+  [profileRoute]="'/' + appID + '/profile'"
+  (openApplication)="onOpenApplication($event)"
+></safe-layout>

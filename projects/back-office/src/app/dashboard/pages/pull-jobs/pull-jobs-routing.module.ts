@@ -5,12 +5,12 @@ import { PullJobsComponent } from './pull-jobs.component';
 const routes: Routes = [
   {
     path: '',
-    component: PullJobsComponent
-  }
+    component: PullJobsComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class PullJobsRoutingModule { }
+export class PullJobsRoutingModule {}

@@ -5,8 +5,14 @@
     <app-filter (filter)="onFilter($event)"></app-filter>
     <!-- ACTIONS -->
     <div class="actions">
-      <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
-        Create a form
+      <safe-button
+        icon="add"
+        category="secondary"
+        variant="primary"
+        (click)="onAdd()"
+        *ngIf="canAdd"
+      >
+        {{ 'models.form.create' | translate }}
       </safe-button>
     </div>
   </div>
@@ -15,7 +21,7 @@
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Name
+          {{ 'common.name' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -24,7 +30,7 @@
     <ng-container matColumnDef="createdAt">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Created on
+          {{ 'common.createdOn' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
@@ -33,19 +39,33 @@
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Status
+          {{ 'common.status' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">
         <mat-chip-list>
-          <mat-chip class="success-chip" disabled *ngIf="element.status === 'active'">
-            {{ element.status | titlecase }}
+          <mat-chip
+            class="success-chip"
+            disabled
+            *ngIf="element.status === 'active'"
+          >
+            {{ 'common.status_active' | translate | titlecase }}
           </mat-chip>
-          <mat-chip class="accent-chip" disabled color="accent" *ngIf="element.status === 'pending'">
-            {{ element.status | titlecase }}
+          <mat-chip
+            class="accent-chip"
+            disabled
+            color="accent"
+            *ngIf="element.status === 'pending'"
+          >
+            {{ 'common.status_pending' | translate | titlecase }}
           </mat-chip>
-          <mat-chip class="warn-chip" disabled color="warn" *ngIf="element.status === 'archived'">
-            {{ element.status | titlecase }}
+          <mat-chip
+            class="warn-chip"
+            disabled
+            color="warn"
+            *ngIf="element.status === 'archived'"
+          >
+            {{ 'common.status_archived' | translate | titlecase }}
           </mat-chip>
         </mat-chip-list>
       </td>
@@ -54,7 +74,7 @@
     <ng-container matColumnDef="versionsCount">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          History
+          {{ 'common.history' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.versionsCount }}</td>
@@ -63,7 +83,7 @@
     <ng-container matColumnDef="recordsCount">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Records
+          {{ 'common.record.few' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.recordsCount }}</td>
@@ -72,12 +92,14 @@
     <ng-container matColumnDef="core">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Is Core
+          {{ 'components.forms.isCore' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">
         <mat-chip-list *ngIf="element.core">
-          <mat-chip class="primary-chip" disabled>Core</mat-chip>
+          <mat-chip class="primary-chip" disabled>{{
+            'models.form.core' | translate
+          }}</mat-chip>
         </mat-chip-list>
       </td>
     </ng-container>
@@ -85,12 +107,14 @@
     <ng-container matColumnDef="parentForm">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Parent form
+          {{ 'components.forms.parent' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">
-        <safe-button *ngIf="!element.core && element.resource?.coreForm?.name"
-          [routerLink]="['/forms/builder', element.resource.coreForm.id]">
+        <safe-button
+          *ngIf="!element.core && element.resource?.coreForm?.name"
+          [routerLink]="['/forms/builder', element.resource.coreForm.id]"
+        >
           {{ element.resource.coreForm.name }}
         </safe-button>
       </td>
@@ -99,25 +123,43 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-        <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()"
-          [disabled]="!(element.canUpdate || element.canDelete || (element.recordsCount > 0))">
+        <safe-button
+          [isIcon]="true"
+          icon="more_vert"
+          [matMenuTriggerFor]="menu"
+          (click)="$event.stopPropagation()"
+          [disabled]="
+            !(
+              element.canUpdate ||
+              element.canDelete ||
+              element.recordsCount > 0
+            )
+          "
+        >
         </safe-button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item [routerLink]="['/forms/builder', element.id]" *ngIf="element.canUpdate">
+          <button
+            mat-menu-item
+            [routerLink]="['/forms/builder', element.id]"
+            *ngIf="element.canUpdate"
+          >
             <mat-icon>edit</mat-icon>
-            Edit
+            {{ 'common.edit' | translate }}
           </button>
           <ng-container *ngIf="element.canSee">
             <button mat-menu-item [routerLink]="['/forms/records', element.id]">
               <mat-icon>plagiarism</mat-icon>
-              View
+              {{
+                'common.viewObject'
+                  | translate: { name: 'common.record.few' | translate }
+              }}
             </button>
           </ng-container>
           <ng-container *ngIf="element.canDelete">
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="onDelete(element, $event)">
               <mat-icon>delete</mat-icon>
-              Delete
+              {{ 'common.delete' | translate }}
             </button>
           </ng-container>
         </mat-menu>
@@ -125,11 +167,23 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"
-      [ngClass]="{'clickable': ( row.canCreateRecords && (row.status === 'active') )}"
-      [routerLink]="( row.canCreateRecords && (row.status === 'active') ) ? ['/forms/answer', row.id] : []"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      [ngClass]="{ clickable: row.canCreateRecords && row.status === 'active' }"
+      [routerLink]="
+        row.canCreateRecords && row.status === 'active'
+          ? ['/forms/answer', row.id]
+          : []
+      "
+    ></tr>
   </table>
-  <mat-paginator [pageSize]="pageInfo.pageSize" [pageSizeOptions]="[10, 25, 50]" [length]="pageInfo.length" aria-label="Select page of forms"
-    (page)="onPage($event)">
+  <mat-paginator
+    [pageSize]="pageInfo.pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
+    [length]="pageInfo.length"
+    aria-label="Select page of forms"
+    (page)="onPage($event)"
+  >
   </mat-paginator>
 </ng-container>

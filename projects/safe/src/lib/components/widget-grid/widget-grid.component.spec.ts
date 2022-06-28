@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { SafeWidgetGridComponent } from './widget-grid.component';
 
@@ -8,9 +9,9 @@ describe('SafeWidgetGridComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeWidgetGridComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeWidgetGridComponent],
+      imports: [MatDialogModule],
+    }).compileComponents();
   });
 
   beforeEach(() => {

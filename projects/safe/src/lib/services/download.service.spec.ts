@@ -1,13 +1,18 @@
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { environment } from 'projects/back-office/src/environments/environment';
 
-import { DownloadService } from './download.service';
+import { SafeDownloadService } from './download.service';
 
-describe('DownloadService', () => {
-  let service: DownloadService;
+describe('SafeDownloadService', () => {
+  let service: SafeDownloadService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(DownloadService);
+    TestBed.configureTestingModule({
+      providers: [{ provide: 'environment', useValue: environment }],
+      imports: [HttpClientModule],
+    });
+    service = TestBed.inject(SafeDownloadService);
   });
 
   it('should be created', () => {

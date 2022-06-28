@@ -1,41 +1,67 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
-
   <div class="header">
     <div class="filters">
       <div class="top">
         <mat-form-field appearance="outline">
           <mat-icon matPrefix>search</mat-icon>
-          <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
-            placeholder="Search...">
+          <input
+            id="custom-search"
+            matInput
+            [ngModel]="searchText"
+            (keyup)="applyFilter('', $event)"
+            type="search"
+            [placeholder]="'common.placeholder.search' | translate"
+          />
         </mat-form-field>
-        <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
-          Filter
+        <safe-button
+          icon="filter_list"
+          category="tertiary"
+          variant="primary"
+          (click)="showFilters = !showFilters"
+          class="filters-toggle"
+        >
+          {{
+            showFilters
+              ? ('common.filter.hide' | translate)
+              : ('common.filter.show' | translate)
+          }}
         </safe-button>
       </div>
       <div class="advanced" [style.display]="!showFilters ? 'none' : ''">
         <mat-form-field appearance="outline">
-          <mat-label>Status</mat-label>
-          <mat-select [ngModel]="statusFilter" (selectionChange)="applyFilter('status', $event)">
+          <mat-label>{{ 'common.status' | translate }}</mat-label>
+          <mat-select
+            [ngModel]="statusFilter"
+            (selectionChange)="applyFilter('status', $event)"
+          >
             <mat-option>-</mat-option>
             <mat-option value="active">
-              Active
+              {{ 'common.status_active' | translate }}
             </mat-option>
             <mat-option value="pending">
-              Pending
+              {{ 'common.status_pending' | translate }}
             </mat-option>
             <mat-option value="archived">
-              Archived
+              {{ 'common.status_archived' | translate }}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <safe-button variant="danger" (click)="clearAllFilters()">Clear Filters</safe-button>
+        <safe-button variant="danger" (click)="clearAllFilters()">{{
+          'common.filter.clear' | translate
+        }}</safe-button>
       </div>
     </div>
 
     <div class="actions">
-      <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()" *ngIf="canAdd">
-        Create an API Configuration
+      <safe-button
+        icon="add"
+        category="secondary"
+        variant="primary"
+        (click)="onAdd()"
+        *ngIf="canAdd"
+      >
+        {{ 'pages.apiConfigurations.create' | translate }}
       </safe-button>
     </div>
   </div>
@@ -44,7 +70,7 @@
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Name
+          {{ 'common.name' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -53,19 +79,33 @@
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Status
+          {{ 'common.status' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">
         <mat-chip-list>
-          <mat-chip class="success-chip" disabled *ngIf="element.status === 'active'">
-            {{ element.status | titlecase }}
+          <mat-chip
+            class="success-chip"
+            disabled
+            *ngIf="element.status === 'active'"
+          >
+            {{ 'common.status_active' | translate | titlecase }}
           </mat-chip>
-          <mat-chip class="accent-chip" disabled color="accent" *ngIf="element.status === 'pending'">
-            {{ element.status | titlecase }}
+          <mat-chip
+            class="accent-chip"
+            disabled
+            color="accent"
+            *ngIf="element.status === 'pending'"
+          >
+            {{ 'common.status_pending' | translate | titlecase }}
           </mat-chip>
-          <mat-chip class="warn-chip" disabled color="warn" *ngIf="element.status === 'archived'">
-            {{ element.status | titlecase }}
+          <mat-chip
+            class="warn-chip"
+            disabled
+            color="warn"
+            *ngIf="element.status === 'archived'"
+          >
+            {{ 'common.status_archived' | translate | titlecase }}
           </mat-chip>
         </mat-chip-list>
       </td>
@@ -74,7 +114,7 @@
     <ng-container matColumnDef="authType">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Authentication type
+          {{ 'models.apiConfiguration.authType' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.authType }}</td>
@@ -83,24 +123,41 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-        <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()"
-          [disabled]="!(element.canUpdate || element.canDelete)">
+        <safe-button
+          [isIcon]="true"
+          icon="more_vert"
+          [matMenuTriggerFor]="menu"
+          (click)="$event.stopPropagation()"
+          [disabled]="!(element.canUpdate || element.canDelete)"
+        >
         </safe-button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onDelete(element, $event)" *ngIf="element.canDelete">
+          <button
+            mat-menu-item
+            (click)="onDelete(element, $event)"
+            *ngIf="element.canDelete"
+          >
             <mat-icon>delete</mat-icon>
-            Delete
+            {{ 'common.delete' | translate }}
           </button>
         </mat-menu>
       </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
       class="clickable"
-      [routerLink]="['/settings/apiconfigurations', row.id]"></tr>
+      [routerLink]="['/settings/apiconfigurations', row.id]"
+    ></tr>
   </table>
-  <mat-paginator [pageSize]="pageInfo.pageSize" [pageSizeOptions]="[10, 25, 50]" [length]="pageInfo.length" aria-label="Select page of forms"
-    (page)="onPage($event)">
+  <mat-paginator
+    [pageSize]="pageInfo.pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
+    [length]="pageInfo.length"
+    aria-label="Select page of forms"
+    (page)="onPage($event)"
+  >
   </mat-paginator>
 </ng-container>

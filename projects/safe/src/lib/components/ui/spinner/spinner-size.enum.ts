@@ -1,4 +1,7 @@
+/**
+ * Declares all the sizes supported by the spinner component
+ */
 export enum SpinnerSize {
-    SMALL = 'small',
-    MEDIUM = 'medium'
+  SMALL = 'small',
+  MEDIUM = 'medium',
 }

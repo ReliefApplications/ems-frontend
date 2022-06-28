@@ -8,14 +8,14 @@ describe('SafeStepComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeStepComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeStepComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeStepComponent);
     component = fixture.componentInstance;
+    component.step = { type: undefined };
     fixture.detectChanges();
   });
 

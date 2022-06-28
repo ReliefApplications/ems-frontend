@@ -3,43 +3,86 @@
     <div class="top">
       <mat-form-field appearance="outline">
         <mat-icon matPrefix>search</mat-icon>
-        <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
-              placeholder="Search...">
+        <input
+          id="custom-search"
+          matInput
+          [ngModel]="searchText"
+          (keyup)="applyFilter('', $event)"
+          type="search"
+          [placeholder]="'common.placeholder.search' | translate"
+        />
       </mat-form-field>
-      <safe-button icon="filter_list" category="tertiary" variant="primary" (click)="showFilters = !showFilters" class="filters-toggle">
-        {{ showFilters ? 'Hide Filter' : 'Show Filter' }}
+      <safe-button
+        icon="filter_list"
+        category="tertiary"
+        variant="primary"
+        (click)="showFilters = !showFilters"
+        class="filters-toggle"
+      >
+        {{
+          showFilters
+            ? ('common.filter.hide' | translate)
+            : ('common.filter.show' | translate)
+        }}
       </safe-button>
     </div>
     <div class="advanced" [style.display]="!showFilters ? 'none' : ''">
       <mat-form-field appearance="outline">
-        <mat-label>Role</mat-label>
-        <mat-select [ngModel]="roleFilter" (selectionChange)="applyFilter('role', $event)">
+        <mat-label>{{ 'common.title' | translate }}</mat-label>
+        <mat-select
+          [ngModel]="roleFilter"
+          (selectionChange)="applyFilter('role', $event)"
+        >
           <mat-option>-</mat-option>
           <mat-option [value]="role.title" *ngFor="let role of roles">
             {{ role.title }}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <safe-button variant="danger" (click)="clearAllFilters()">Clear Filters</safe-button>
+      <safe-button variant="danger" (click)="clearAllFilters()">{{
+        'common.filter.clear' | translate
+      }}</safe-button>
     </div>
   </div>
   <div class="actions">
-    <safe-button class="export-users" icon="file_download" category="secondary" variant="primary" [matMenuTriggerFor]="menu">
-      Export users
+    <safe-button
+      class="export-users"
+      icon="file_download"
+      category="secondary"
+      variant="primary"
+      [matMenuTriggerFor]="menu"
+    >
+      {{
+        'common.exportObject'
+          | translate: { name: 'common.user.few' | translate }
+      }}
     </safe-button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onExport('csv')">.csv</button>
       <button mat-menu-item (click)="onExport('xlsx')">.xlsx</button>
     </mat-menu>
-    <safe-button icon="send" category="secondary" variant="primary" (click)="onInvite()">
-      Invite users
+    <safe-button
+      icon="send"
+      category="secondary"
+      variant="primary"
+      (click)="onInvite()"
+    >
+      {{ 'components.users.invite.confirm' | translate }}
     </safe-button>
   </div>
 </div>
 <div>
   <div class="actions" *ngIf="selection.selected.length > 0">
-    <safe-button icon="delete" category="secondary" variant="danger" (click)="onDelete(selection.selected)">
-      Delete selected users
+    <safe-button
+      icon="delete"
+      category="secondary"
+      variant="danger"
+      (click)="onDelete(selection.selected)"
+    >
+      {{
+        'common.deleteObject'
+          | translate: { name: 'common.user.few' | translate }
+      }}
     </safe-button>
   </div>
 </div>
@@ -48,24 +91,28 @@
   <!-- Checkbox Column -->
   <ng-container matColumnDef="select">
     <th mat-header-cell *matHeaderCellDef>
-      <mat-checkbox (change)="$event ? masterToggle() : null"
-                    [checked]="selection.hasValue() && isAllSelected()"
-                    [indeterminate]="selection.hasValue() && !isAllSelected()"
-                    [aria-label]="checkboxLabel()">
+      <mat-checkbox
+        (change)="$event ? masterToggle() : null"
+        [checked]="selection.hasValue() && isAllSelected()"
+        [indeterminate]="selection.hasValue() && !isAllSelected()"
+        [aria-label]="checkboxLabel()"
+      >
       </mat-checkbox>
     </th>
     <td mat-cell *matCellDef="let row">
-      <mat-checkbox (click)="$event.stopPropagation()"
-                    (change)="$event ? selection.toggle(row) : null"
-                    [checked]="selection.isSelected(row)"
-                    [aria-label]="checkboxLabel(row)">
+      <mat-checkbox
+        (click)="$event.stopPropagation()"
+        (change)="$event ? selection.toggle(row) : null"
+        [checked]="selection.isSelected(row)"
+        [aria-label]="checkboxLabel(row)"
+      >
       </mat-checkbox>
     </td>
   </ng-container>
   <ng-container matColumnDef="username">
     <th mat-header-cell *matHeaderCellDef>
       <span class="headerTitle" mat-sort-header>
-        Username
+        {{ 'models.user.username' | translate }}
       </span>
     </th>
     <td mat-cell *matCellDef="let element">{{ element.username }}</td>
@@ -74,7 +121,7 @@
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
       <span class="headerTitle" mat-sort-header>
-        Name
+        {{ 'common.name' | translate }}
       </span>
     </th>
     <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -83,19 +130,28 @@
   <ng-container matColumnDef="roles">
     <th mat-header-cell *matHeaderCellDef>
       <span class="headerTitle" mat-sort-header>
-        Role
+        {{ 'common.role.few' | translate }}
       </span>
     </th>
     <td mat-cell *matCellDef="let element">
-      <span *ngFor="let role of element.roles"> {{role.title}},</span>
+      <span *ngFor="let role of element.roles"> {{ role.title }}</span>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="attributes" *ngIf="applicationService">
+    <th mat-header-cell *matHeaderCellDef>
+      <span class="headerTitle" mat-sort-header> Attributes </span>
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <span *ngFor="let attribute of element.positionAttributes">
+        {{ attribute.value }},</span
+      >
     </td>
   </ng-container>
 
   <ng-container matColumnDef="oid">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
-        Azure
-      </span>
+      <span class="headerTitle" mat-sort-header> Authentication ID </span>
     </th>
     <td mat-cell *matCellDef="let element">{{ element.oid }}</td>
   </ng-container>
@@ -103,17 +159,22 @@
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
     <td mat-cell *matCellDef="let element">
-      <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+      <safe-button
+        [isIcon]="true"
+        icon="more_vert"
+        [matMenuTriggerFor]="menu"
+        (click)="$event.stopPropagation()"
+      >
       </safe-button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="onEdit(element)">
           <mat-icon>edit</mat-icon>
-          Edit
+          {{ 'common.edit' | translate }}
         </button>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="onDelete([element])">
           <mat-icon>delete</mat-icon>
-          Delete
+          {{ 'common.delete' | translate }}
         </button>
       </mat-menu>
     </td>

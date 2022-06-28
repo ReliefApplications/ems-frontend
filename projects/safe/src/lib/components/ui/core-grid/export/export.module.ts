@@ -5,20 +5,19 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 
+/** Module for the export component */
 @NgModule({
-  declarations: [
-    SafeExportComponent
-  ],
+  declarations: [SafeExportComponent],
   imports: [
     CommonModule,
     FormsModule,
     MatDialogModule,
     MatRadioModule,
-    MatButtonModule
+    MatButtonModule,
+    TranslateModule,
   ],
-  exports: [
-    SafeExportComponent
-  ]
+  exports: [SafeExportComponent],
 })
-export class SafeExportModule { }
+export class SafeExportModule {}

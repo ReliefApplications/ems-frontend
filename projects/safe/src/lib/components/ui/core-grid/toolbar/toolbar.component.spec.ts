@@ -8,9 +8,8 @@ describe('SafeGridToolbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeGridToolbarComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeGridToolbarComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

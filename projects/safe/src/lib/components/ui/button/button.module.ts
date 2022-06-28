@@ -5,18 +5,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { SafeSpinnerModule } from '../spinner/spinner.module';
 import { SafeIconModule } from '../icon/icon.module';
 
+/**
+ * Button component module.
+ */
 @NgModule({
-  declarations: [
-    SafeButtonComponent
-  ],
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    SafeSpinnerModule,
-    SafeIconModule
-  ],
-  exports: [
-    SafeButtonComponent
-  ]
+  declarations: [SafeButtonComponent],
+  imports: [CommonModule, MatButtonModule, SafeSpinnerModule, SafeIconModule],
+  exports: [SafeButtonComponent],
 })
-export class SafeButtonModule { }
+export class SafeButtonModule {}

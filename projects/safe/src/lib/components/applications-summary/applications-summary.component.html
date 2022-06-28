@@ -1,7 +1,15 @@
 <div class="safe-applications">
-    <safe-add-application *ngIf="canCreate" (click)="add.emit()"></safe-add-application>
-    <safe-application-summary *ngFor="let application of applications; let index = index;" [application]="application"
-        (click)="openApplication.emit(application.id)" (delete)="delete.emit(application)"
-        (preview)="preview.emit(application)" (clone)="clone.emit(application)"
-        (editAccess)="editAccess.emit(application)"></safe-application-summary>
+  <safe-add-application
+    *ngIf="canCreate"
+    (click)="add.emit()"
+  ></safe-add-application>
+  <safe-application-summary
+    *ngFor="let application of applications; let index = index"
+    [application]="application"
+    (click)="openApplication.emit(application.id)"
+    (delete)="delete.emit(application)"
+    (preview)="preview.emit(application)"
+    (clone)="clone.emit(application)"
+    (editAccess)="editAccess.emit(application)"
+  ></safe-application-summary>
 </div>

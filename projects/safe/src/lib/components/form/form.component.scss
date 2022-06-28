@@ -4,19 +4,17 @@
   position: relative;
 }
 
-.survey-float {
+.survey-actions {
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  margin-bottom: 16px;
 }
 
 #langSelect {
-  position: absolute;
   z-index: 99;
-  top: 8px;
-  right: 1em;
   border: 1px solid #777777;
   border-radius: 3px;
 }
@@ -32,7 +30,10 @@ mat-tab-group {
 .survey-navigation {
   display: flex;
   justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+
   safe-button {
-    margin-left: 8px
+    margin-left: 8px;
   }
 }

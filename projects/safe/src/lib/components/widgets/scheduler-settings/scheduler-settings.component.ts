@@ -1,19 +1,26 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
-import { GetResourcesQueryResponse, GET_RESOURCES, GetFormsQueryResponse,
-  GET_FORMS, GetResourceByIdQueryResponse, GET_RESOURCE_BY_ID, GetFormByIdQueryResponse, GET_FORM_BY_ID } from '../../../graphql/queries';
+import {
+  GetResourcesQueryResponse,
+  GET_RESOURCES,
+  GetFormsQueryResponse,
+  GET_FORMS,
+  GetResourceByIdQueryResponse,
+  GET_RESOURCE_BY_ID,
+  GetFormByIdQueryResponse,
+  GET_FORM_BY_ID,
+} from '../../../graphql/queries';
 
+/** A component for the scheduler settings */
 @Component({
   selector: 'safe-scheduler-settings',
   templateUrl: './scheduler-settings.component.html',
-  styleUrls: ['./scheduler-settings.component.scss']
+  styleUrls: ['./scheduler-settings.component.scss'],
 })
-/*  Modal content for the settings of the scheduler widgets.
-*/
+/** Modal content for the settings of the scheduler widgets. */
 export class SafeSchedulerSettingsComponent implements OnInit {
-
   // === REACTIVE FORM ===
   tileForm: FormGroup = new FormGroup({});
 
@@ -21,7 +28,7 @@ export class SafeSchedulerSettingsComponent implements OnInit {
   @Input() tile: any;
 
   // === EMIT THE CHANGES APPLIED ===
-  // tslint:disable-next-line: no-output-native
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   // === DATA ===
@@ -29,27 +36,56 @@ export class SafeSchedulerSettingsComponent implements OnInit {
   public fields: any[] = [];
   public forms: any[] = [];
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private apollo: Apollo
-  ) { }
+  /**
+   * Constructor of the scheduler settings component
+   *
+   * @param formBuilder The form builder
+   * @param apollo The apollo client
+   */
+  constructor(private formBuilder: FormBuilder, private apollo: Apollo) {}
 
-  /*  Build the settings form, using the widget saved parameters.
-  */
+  /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
-      title: [(tileSettings && tileSettings.title) ? tileSettings.title : 'New scheduler'],
-      from: [(tileSettings && tileSettings.from) ? tileSettings.from : 'resource', Validators.required],
-      source: [(tileSettings && tileSettings.source) ? tileSettings.source : null, Validators.required],
+      title: [
+        tileSettings && tileSettings.title
+          ? tileSettings.title
+          : 'New scheduler',
+      ],
+      from: [
+        tileSettings && tileSettings.from ? tileSettings.from : 'resource',
+        Validators.required,
+      ],
+      source: [
+        tileSettings && tileSettings.source ? tileSettings.source : null,
+        Validators.required,
+      ],
       events: this.formBuilder.group({
-        title: [(tileSettings && tileSettings.events && tileSettings.events.title) ? tileSettings.events.title : null, Validators.required],
-        description: [(tileSettings && tileSettings.events && tileSettings.events.description) ? tileSettings.events.description : null],
-        startDate: [(tileSettings && tileSettings.events && tileSettings.events.startDate) ?
-          tileSettings.events.startDate : null, Validators.required],
-        endDate: [(tileSettings && tileSettings.events && tileSettings.events.endDate) ? tileSettings.events.endDate : null]
-      })
+        title: [
+          tileSettings && tileSettings.events && tileSettings.events.title
+            ? tileSettings.events.title
+            : null,
+          Validators.required,
+        ],
+        description: [
+          tileSettings && tileSettings.events && tileSettings.events.description
+            ? tileSettings.events.description
+            : null,
+        ],
+        startDate: [
+          tileSettings && tileSettings.events && tileSettings.events.startDate
+            ? tileSettings.events.startDate
+            : null,
+          Validators.required,
+        ],
+        endDate: [
+          tileSettings && tileSettings.events && tileSettings.events.endDate
+            ? tileSettings.events.endDate
+            : null,
+        ],
+      }),
     });
     this.change.emit(this.tileForm);
     this.tileForm.valueChanges.subscribe(() => {
@@ -62,8 +98,12 @@ export class SafeSchedulerSettingsComponent implements OnInit {
     }
   }
 
-  /*  Load the list of resources or forms.
-  */
+  /**
+   * Load the list of resources or forms.
+   *
+   * @param {any} e An event or any object with a value attribute
+   * @param {boolean} init Indicating if we must init the sources (optional)
+   */
   getSources(e: any, init?: boolean): void {
     // if (e.value === 'resource') {
     //   this.apollo.query<GetResourcesQueryResponse>({
@@ -96,30 +136,36 @@ export class SafeSchedulerSettingsComponent implements OnInit {
     // }
   }
 
-  /*  Load a resource or a form.
-  */
+  /**
+   * Load a resource or a form.
+   *
+   * @param e An event or any object with a value attribute
+   */
   getSource(e: any): void {
     if (this.tileForm.controls.from.value === 'resource') {
-      this.apollo.query<GetResourceByIdQueryResponse>({
-        query: GET_RESOURCE_BY_ID,
-        variables: {
-          id: e.value
-        }
-      }).subscribe(res => {
-        this.fields = res.data.resource.fields || [];
-        this.forms = res.data.resource.forms || [];
-      });
+      this.apollo
+        .query<GetResourceByIdQueryResponse>({
+          query: GET_RESOURCE_BY_ID,
+          variables: {
+            id: e.value,
+          },
+        })
+        .subscribe((res) => {
+          this.fields = res.data.resource.fields || [];
+          this.forms = res.data.resource.forms || [];
+        });
     } else {
-      this.apollo.query<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: e.value
-        }
-      }).subscribe(res => {
-        this.fields = res.data.form.fields || [];
-        this.forms = [{ id: res.data.form.id, name: res.data.form.name }];
-      });
+      this.apollo
+        .query<GetFormByIdQueryResponse>({
+          query: GET_FORM_BY_ID,
+          variables: {
+            id: e.value,
+          },
+        })
+        .subscribe((res) => {
+          this.fields = res.data.form.fields || [];
+          this.forms = [{ id: res.data.form.id, name: res.data.form.name }];
+        });
     }
   }
-
 }

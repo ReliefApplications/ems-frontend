@@ -11,7 +11,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { SafeAccessModule, SafeConfirmModalModule, SafeButtonModule, SafeApplicationsSummaryModule } from '@safe/builder';
+import {
+  SafeAccessModule,
+  SafeConfirmModalModule,
+  SafeButtonModule,
+  SafeApplicationsSummaryModule,
+} from '@safe/builder';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
@@ -22,35 +27,37 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './components/filter/filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [ApplicationsComponent, ChoseRoleComponent, FilterComponent],
-    imports: [
-      CommonModule,
-      ApplicationsRoutingModule,
-      FormsModule,
-      ReactiveFormsModule,
-      MatFormFieldModule,
-      MatInputModule,
-      MatSelectModule,
-      MatProgressSpinnerModule,
-      MatTableModule,
-      MatSortModule,
-      MatDialogModule,
-      MatMenuModule,
-      MatIconModule,
-      MatChipsModule,
-      SafeConfirmModalModule,
-      SafeAccessModule,
-      DuplicateApplicationModule,
-      MatDatepickerModule,
-      MatNativeDateModule,
-      MatDividerModule,
-      SafeButtonModule,
-      MatButtonModule,
-      MatPaginatorModule,
-      SafeApplicationsSummaryModule
-    ],
-  exports: [ApplicationsComponent]
+  imports: [
+    CommonModule,
+    ApplicationsRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatSortModule,
+    MatDialogModule,
+    MatMenuModule,
+    MatIconModule,
+    MatChipsModule,
+    SafeConfirmModalModule,
+    SafeAccessModule,
+    DuplicateApplicationModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatDividerModule,
+    SafeButtonModule,
+    MatButtonModule,
+    MatPaginatorModule,
+    SafeApplicationsSummaryModule,
+    TranslateModule,
+  ],
+  exports: [ApplicationsComponent],
 })
-export class ApplicationsModule { }
+export class ApplicationsModule {}

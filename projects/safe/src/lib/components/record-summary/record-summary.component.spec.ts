@@ -8,9 +8,8 @@ describe('SafeRecordSummaryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeRecordSummaryComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeRecordSummaryComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

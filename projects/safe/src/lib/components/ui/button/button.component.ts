@@ -1,19 +1,26 @@
-import { Component, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  Input,
+  OnInit,
+  Output,
+  ViewEncapsulation,
+} from '@angular/core';
 import { Subject } from 'rxjs';
 import { SpinnerVariant } from '../spinner/spinner-variant.enum';
 import { ButtonCategory } from './button-category.enum';
 import { ButtonSize } from './button-size.enum';
 import { ButtonVariant } from './button-variant.enum';
 
+/**
+ * Button component.
+ */
 @Component({
   selector: 'safe-button',
   templateUrl: './button.component.html',
-  styleUrls: [
-    './button.component.scss'
-  ]
+  styleUrls: ['./button.component.scss'],
 })
-export class SafeButtonComponent implements OnInit  {
-
+export class SafeButtonComponent implements OnInit {
   @Input() category: ButtonCategory | string = ButtonCategory.PRIMARY;
 
   @Input() size: ButtonSize | string = ButtonSize.MEDIUM;
@@ -25,7 +32,8 @@ export class SafeButtonComponent implements OnInit  {
   @Input() block = false;
 
   @HostBinding('class.disabled')
-  @Input() disabled = false;
+  @Input()
+  disabled = false;
 
   @Input() loading = false;
 
@@ -33,6 +41,11 @@ export class SafeButtonComponent implements OnInit  {
 
   public emittedEventSubject: Subject<string> = new Subject();
 
+  /**
+   * Return material color of button, from variant.
+   *
+   * @returns material color, if any
+   */
   get color(): string {
     switch (this.variant) {
       case ButtonVariant.PRIMARY: {
@@ -47,6 +60,11 @@ export class SafeButtonComponent implements OnInit  {
     }
   }
 
+  /**
+   * Return variant of spinner
+   *
+   * @returns spinner variant
+   */
   get spinnerVariant(): string {
     switch (this.category) {
       case ButtonCategory.PRIMARY: {
@@ -68,6 +86,9 @@ export class SafeButtonComponent implements OnInit  {
     }
   }
 
+  /**
+   * Button component.
+   */
   constructor() {}
 
   ngOnInit(): void {}

@@ -4,18 +4,25 @@
   <app-filter (filter)="onFilter($event)"></app-filter>
 
   <!-- NEW APPLICATIONS -->
-  <h2>Recent applications</h2>
-  <safe-applications-summary [canCreate]="canAdd" (add)="onAdd()" [applications]="newApplications"
-    (openApplication)="onOpenApplication($event)" (delete)="onDelete($event)" (preview)="onPreview($event)" (clone)="onClone($event)"></safe-applications-summary>
+  <h2>{{ 'pages.applications.recent' | translate }}</h2>
+  <safe-applications-summary
+    [canCreate]="canAdd"
+    (add)="onAdd()"
+    [applications]="newApplications"
+    (openApplication)="onOpenApplication($event)"
+    (delete)="onDelete($event)"
+    (preview)="onPreview($event)"
+    (clone)="onClone($event)"
+  ></safe-applications-summary>
 
   <!-- APPLICATIONS TABLE -->
   <ng-container>
-    <h2>All applications</h2>
+    <h2>{{ 'pages.applications.all' | translate }}</h2>
     <table mat-table [dataSource]="applications" matSort>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>
-            Name
+            {{ 'common.name' | translate }}
           </span>
         </th>
         <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -24,28 +31,44 @@
       <ng-container matColumnDef="createdAt">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>
-            Created on
+            {{ 'common.createdOn' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
+        <td mat-cell *matCellDef="let element">
+          {{ element.createdAt | date }}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>
-            Status
+            {{ 'common.status' | translate }}
           </span>
         </th>
         <td mat-cell *matCellDef="let element">
           <mat-chip-list>
-            <mat-chip class="success-chip" disabled *ngIf="element.status === 'active'">
-              {{ element.status | titlecase }}
+            <mat-chip
+              class="success-chip"
+              disabled
+              *ngIf="element.status === 'active'"
+            >
+              {{ 'common.status_active' | translate | titlecase }}
             </mat-chip>
-            <mat-chip class="accent-chip" disabled color="accent" *ngIf="element.status === 'pending'">
-              {{ element.status | titlecase }}
+            <mat-chip
+              class="accent-chip"
+              disabled
+              color="accent"
+              *ngIf="element.status === 'pending'"
+            >
+              {{ 'common.status_pending' | translate | titlecase }}
             </mat-chip>
-            <mat-chip class="warn-chip" disabled color="warn" *ngIf="element.status === 'archived'">
-              {{ element.status | titlecase }}
+            <mat-chip
+              class="warn-chip"
+              disabled
+              color="warn"
+              *ngIf="element.status === 'archived'"
+            >
+              {{ 'common.status_archived' | translate | titlecase }}
             </mat-chip>
           </mat-chip-list>
         </td>
@@ -54,7 +77,7 @@
       <ng-container matColumnDef="usersCount">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>
-            Users
+            {{ 'common.user.few' | translate }}
           </span>
         </th>
         <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
@@ -63,24 +86,37 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
-          <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+          <safe-button
+            [isIcon]="true"
+            icon="more_vert"
+            [matMenuTriggerFor]="menu"
+            (click)="$event.stopPropagation()"
+          >
           </safe-button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onPreview(element)">
               <mat-icon>preview</mat-icon>
-              Preview
+              {{ 'common.preview' | translate }}
             </button>
-            <safe-access [menuItem]="true" [access]="element.permissions" (save)="saveAccess($event, element)"
-              *ngIf="element.canUpdate"></safe-access>
-            <button mat-menu-item (click)="onClone(element)" *ngIf="element.canDelete">
+            <safe-access
+              [menuItem]="true"
+              [access]="element.permissions"
+              (save)="saveAccess($event, element)"
+              *ngIf="element.canUpdate"
+            ></safe-access>
+            <button
+              mat-menu-item
+              (click)="onClone(element)"
+              *ngIf="element.canDelete"
+            >
               <mat-icon>file_copy</mat-icon>
-              Duplicate
+              {{ 'common.duplicate' | translate }}
             </button>
             <ng-container *ngIf="element.canDelete">
               <mat-divider></mat-divider>
               <button mat-menu-item (click)="onDelete(element, $event)">
                 <mat-icon>delete</mat-icon>
-                Delete
+                {{ 'common.delete' | translate }}
               </button>
             </ng-container>
           </mat-menu>
@@ -88,11 +124,20 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr class="clickable" mat-row *matRowDef="let row; columns: displayedColumns"
-        [routerLink]="['/applications', row.id]"></tr>
+      <tr
+        class="clickable"
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        [routerLink]="['/applications', row.id]"
+      ></tr>
     </table>
-    <mat-paginator [pageSize]="pageInfo.pageSize" [pageSizeOptions]="[10, 25, 50]" [length]="pageInfo.length" aria-label="Select page of applications"
-      (page)="onPage($event)">
+    <mat-paginator
+      [pageSize]="pageInfo.pageSize"
+      [pageSizeOptions]="[10, 25, 50]"
+      [length]="pageInfo.length"
+      aria-label="Select page of applications"
+      (page)="onPage($event)"
+    >
     </mat-paginator>
   </ng-container>
 </ng-container>

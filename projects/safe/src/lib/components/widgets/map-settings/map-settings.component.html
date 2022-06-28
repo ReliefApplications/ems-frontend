@@ -1,52 +1,59 @@
 <ng-container *ngIf="tileForm">
-    <form [formGroup]="tileForm">
-        <div class="form-group">
-            <div class=form-group-title>General</div>
-            <mat-form-field appearance="outline" >
-                <mat-label>Title</mat-label>
-                <input matInput formControlName="title" type="string" />
-            </mat-form-field>
-        </div>
-        <div class="form-group">
-            <div class="form-group-title">Data set selection</div>
-            <safe-query-builder [form]="$any(tileForm.controls.query)" [canExpand]="false"></safe-query-builder>
-            <ng-container *ngIf="selectedFields.length > 0">
-                <mat-form-field appearance="outline">
-                    <mat-label>Latitude</mat-label>
-                    <mat-select formControlName="latitude">
-                        <mat-option *ngFor="let field of selectedFields" [value]="field">
-                            {{field}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Longitude</mat-label>
-                    <mat-select formControlName="longitude">
-                        <mat-option *ngFor="let field of selectedFields" [value]="field">
-                            {{field}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </ng-container>
-        </div>
-        <div class="form-group">
-            <div class="form-group-title">Default display</div>
-            <mat-form-field appearance="outline">
-                <mat-label>Zoom</mat-label>
-                <input type="number" matInput formControlName="zoom">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>
-                    Latitude
-                </mat-label>
-                <input type="string" matInput formControlName="centerLat">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>
-                    Longitude
-                </mat-label>
-                <input type="string" matInput formControlName="centerLong">
-            </mat-form-field>
-        </div>
-    </form>
+  <form [formGroup]="tileForm">
+    <div class="form-group">
+      <div class="form-group-title">{{ 'common.general' | translate }}</div>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'common.name' | translate }}</mat-label>
+        <input matInput formControlName="title" type="string" />
+      </mat-form-field>
+    </div>
+    <div class="form-group">
+      <div class="form-group-title">
+        {{ 'components.widget.settings.map.dataset' | translate }}
+      </div>
+      <safe-query-builder
+        [form]="$any(tileForm.controls.query)"
+        [canExpand]="false"
+      ></safe-query-builder>
+      <ng-container *ngIf="selectedFields.length > 0">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
+          <mat-select formControlName="latitude">
+            <mat-option *ngFor="let field of selectedFields" [value]="field">
+              {{ field }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'models.widget.map.longitude' | translate }}</mat-label>
+          <mat-select formControlName="longitude">
+            <mat-option *ngFor="let field of selectedFields" [value]="field">
+              {{ field }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+    </div>
+    <div class="form-group">
+      <div class="form-group-title">
+        {{ 'components.widget.settings.map.display.title' | translate }}
+      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'models.widget.map.zoom' | translate }}</mat-label>
+        <input type="number" matInput formControlName="zoom" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>
+          {{ 'components.widget.settings.map.display.latitude' | translate }}
+        </mat-label>
+        <input type="string" matInput formControlName="centerLat" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>
+          {{ 'components.widget.settings.map.display.longitude' | translate }}
+        </mat-label>
+        <input type="string" matInput formControlName="centerLong" />
+      </mat-form-field>
+    </div>
+  </form>
 </ng-container>

@@ -1,10 +1,20 @@
 <mat-form-field appearance="outline">
-    <mat-label>From resource</mat-label>
-    <mat-select #resourceSelect [(ngModel)]="resource" name="resource" (openedChange)="onOpenSelect($event)"
-        (selectionChange)="onSelect($event)">
-        <mat-option *ngIf="selectedResource" [value]="selectedResource.id">{{selectedResource.name}}</mat-option>
-        <mat-option *ngFor="let resource of resources$ | async" [value]="resource.id">
-            {{resource.name}}
-        </mat-option>
-    </mat-select>
+  <mat-label>{{ 'components.resource.dropdown.select' | translate }}</mat-label>
+  <mat-select
+    #resourceSelect
+    [(ngModel)]="resource"
+    name="resource"
+    (openedChange)="onOpenSelect($event)"
+    (selectionChange)="onSelect($event)"
+  >
+    <mat-option *ngIf="selectedResource" [value]="selectedResource.id">{{
+      selectedResource.name
+    }}</mat-option>
+    <mat-option
+      *ngFor="let resource of resources$ | async"
+      [value]="resource.id"
+    >
+      {{ resource.name }}
+    </mat-option>
+  </mat-select>
 </mat-form-field>

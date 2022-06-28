@@ -4,13 +4,24 @@
     <div class="filters">
       <mat-form-field appearance="outline">
         <mat-icon matPrefix>search</mat-icon>
-        <input id="custom-search" matInput [ngModel]="searchText" (keyup)="applyFilter('', $event)" type="search"
-          placeholder="Search...">
+        <input
+          id="custom-search"
+          matInput
+          [ngModel]="searchText"
+          (keyup)="applyFilter('', $event)"
+          type="search"
+          [placeholder]="'common.placeholder.search' | translate"
+        />
       </mat-form-field>
     </div>
     <div class="actions">
-      <safe-button icon="add" category="secondary" variant="primary" (click)="onAdd()">
-        Create a role
+      <safe-button
+        icon="add"
+        category="secondary"
+        variant="primary"
+        (click)="onAdd()"
+      >
+        {{ 'models.role.create' | translate }}
       </safe-button>
     </div>
   </div>
@@ -18,7 +29,7 @@
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Title
+          {{ 'common.title' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.title }}</td>
@@ -27,7 +38,7 @@
     <ng-container matColumnDef="usersCount">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header>
-          Users
+          {{ 'common.user.few' | translate }}
         </span>
       </th>
       <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
@@ -36,17 +47,22 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-        <safe-button [isIcon]="true" icon="more_vert" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+        <safe-button
+          [isIcon]="true"
+          icon="more_vert"
+          [matMenuTriggerFor]="menu"
+          (click)="$event.stopPropagation()"
+        >
         </safe-button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="onEdit(element)">
             <mat-icon>edit</mat-icon>
-            Edit
+            {{ 'common.edit' | translate }}
           </button>
           <mat-divider></mat-divider>
           <button mat-menu-item color="warn" (click)="onDelete(element)">
             <mat-icon>delete</mat-icon>
-            Delete
+            {{ 'common.delete' | translate }}
           </button>
         </mat-menu>
       </td>

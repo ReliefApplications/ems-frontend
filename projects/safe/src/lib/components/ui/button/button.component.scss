@@ -1,47 +1,56 @@
 :host {
-    &.disabled {
-        pointer-events: none;
-    }
+  &.disabled {
+    pointer-events: none;
+  }
+}
+
+:host ::ng-deep .mat-button {
+  .mat-button-wrapper {
+    display: block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: pre;
+  }
 }
 
 .safe-btn-block {
-    width: 100%;
+  width: 100%;
 }
 
 .safe-btn-small {
-    padding: 0 4px;
-    line-height: 24px;
+  padding: 0 4px;
+  line-height: 24px;
 }
 
 .safe-btn-icon {
-    margin-right: 4px;
-    line-height: initial;
+  margin-right: 4px;
+  line-height: initial;
 }
 
 .safe-btn-spinner {
-    display: inline-block;
-    vertical-align: sub !important;
-    margin-right: 4px;
+  display: inline-block;
+  vertical-align: sub !important;
+  margin-right: 4px;
 }
 
 safe-icon {
-    display: inline-block;
+  display: inline-block;
 
-    &:not(.safe-btn-icon) {
-        display: flex;
-        justify-content: center;
-    }
+  &:not(.safe-btn-icon) {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .safe-btn-success {
-    &:not(:disabled) {
-        color: #63d168;
-        &.mat-flat-button {
-            background-color: #63d168;
-            color: white;
-        }
-        &.mat-stroked-button {
-            border-color: #63d168;
-        }
+  &:not(:disabled) {
+    color: #63d168;
+    &.mat-flat-button {
+      background-color: #63d168;
+      color: white;
     }
+    &.mat-stroked-button {
+      border-color: #63d168;
+    }
+  }
 }

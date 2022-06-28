@@ -1,32 +1,28 @@
 .advanced-filtering {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .chart-icon {
-    margin-right: 8px;
-    height: 12px;
+  margin-right: 8px;
+  height: 12px;
 }
 
 .widget-form-container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.chart-form-container {
-    display: flex;
-    height: 100%;
+.preview-container {
+  display: flex;
+  gap: 8px;
 
-    .chart-form {
-        flex: 1;
-        max-width: 300px;
-    }
-
-    .chart-display {
-        margin-left: 8px;
-        flex: 1;
-    }
+  .sub-container {
+    flex: 1;
+    height: 400px;
+    min-width: 300px;
+  }
 }

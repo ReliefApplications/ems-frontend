@@ -1,6 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeAddApplicationComponent } from './add-application.component';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
 describe('SafeAddApplicationComponent', () => {
   let component: SafeAddApplicationComponent;
@@ -8,9 +13,17 @@ describe('SafeAddApplicationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeAddApplicationComponent ]
-    })
-    .compileComponents();
+      providers: [TranslateService],
+      declarations: [SafeAddApplicationComponent],
+      imports: [
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

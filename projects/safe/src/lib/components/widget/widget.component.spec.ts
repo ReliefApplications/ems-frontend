@@ -8,14 +8,16 @@ describe('SafeWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeWidgetComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeWidgetComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeWidgetComponent);
     component = fixture.componentInstance;
+    component.widget = {
+      component: null,
+    };
     fixture.detectChanges();
   });
 

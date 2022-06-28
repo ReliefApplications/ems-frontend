@@ -1,9 +1,26 @@
-import { Component, ComponentRef, EventEmitter, HostListener, Inject, Input, OnChanges, OnDestroy,
-  OnInit, Output, SimpleChanges, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { SafeAuthService } from '../../services/auth.service';
+import {
+  Component,
+  ComponentRef,
+  EventEmitter,
+  HostListener,
+  Inject,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
+import { Account, SafeAuthService } from '../../services/auth.service';
 import { SafeLayoutService } from '../../services/layout.service';
-import { Account } from 'msal';
-import { PermissionsManagement, PermissionType, User } from '../../models/user.model';
+import {
+  PermissionsManagement,
+  PermissionType,
+  User,
+} from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,14 +29,18 @@ import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { TranslateService } from '@ngx-translate/core';
+import { SafePreferencesModalComponent } from '../preferences-modal/preferences-modal.component';
 
+/**
+ * Component for the main layout of the platform
+ */
 @Component({
   selector: 'safe-layout',
   templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss']
+  styleUrls: ['./layout.component.scss'],
 })
 export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
-
   // === HEADER TITLE ===
   @Input() title = '';
 
@@ -31,14 +52,18 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() toolbar?: TemplateRef<any>;
 
-  @ViewChild('rightSidenav', { read: ViewContainerRef }) rightSidenav?: ViewContainerRef;
+  @ViewChild('rightSidenav', { read: ViewContainerRef })
+  rightSidenav?: ViewContainerRef;
 
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 
   @Output() reorder: EventEmitter<any> = new EventEmitter();
 
+  @Input() profileRoute = '/profile';
 
   filteredNavGroups: any[] = [];
+
+  languages: string[] = [];
 
   // === NOTIFICATIONS ===
   public notifications: Notification[] = [];
@@ -48,7 +73,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   public loadingNotifications = false;
 
   // === USER INFO ===
-  account: Account | null;
+  public account: Account | null;
   public user?: User;
   private userSubscription?: Subscription;
 
@@ -57,11 +82,27 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   public theme: any;
 
   public showSidenav = false;
+  public showPreferences = false;
 
   public otherOffice = '';
   private environment: any;
   private inApplication = false;
 
+  // === APP SEARCH ===
+  public showAppMenu = false;
+
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param environment This is the environment in which we are running the application
+   * @param router The Angular Router service
+   * @param authService This is the service that handles authentication
+   * @param notificationService This is the service that handles the notifications.
+   * @param layoutService This is the service that handles the layout of the application.
+   * @param dialog This is the dialog service provided by Angular Material
+   * @param translate This is the Angular service that translates text
+   */
   constructor(
     @Inject('environment') environment: any,
     private router: Router,
@@ -69,11 +110,14 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     private notificationService: SafeNotificationService,
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
+    private translate: TranslateService
   ) {
-    this.largeDevice = (window.innerWidth > 1024);
+    this.largeDevice = window.innerWidth > 1024;
     this.account = this.authService.account;
     this.environment = environment;
+    this.languages = this.translate.getLangs();
     this.theme = this.environment.theme;
+    this.showPreferences = environment.availableLanguages.length > 1;
   }
 
   ngOnInit(): void {
@@ -85,25 +129,30 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.loadUserAndUpdateLayout();
     this.notificationService.init();
-    this.notificationsSubscription = this.notificationService.notifications$.subscribe((notifications: Notification[]) => {
-      if (notifications) {
-        this.notifications = notifications;
-      } else {
-        this.notifications = [];
-      }
-    });
+    this.notificationsSubscription =
+      this.notificationService.notifications$.subscribe(
+        (notifications: Notification[]) => {
+          if (notifications) {
+            this.notifications = notifications;
+          } else {
+            this.notifications = [];
+          }
+        }
+      );
 
-    this.hasMoreNotificationsSubscription = this.notificationService.hasNextPage$.subscribe(res => {
-      this.hasMoreNotifications = res;
-      this.loadingNotifications = false;
-    });
+    this.hasMoreNotificationsSubscription =
+      this.notificationService.hasNextPage$.subscribe((res) => {
+        this.hasMoreNotifications = res;
+        this.loadingNotifications = false;
+      });
 
-    this.layoutService.rightSidenav.subscribe(view => {
+    this.layoutService.rightSidenav$.subscribe((view) => {
       if (view && this.rightSidenav) {
         // this is necessary to prevent have more than one history component at the same time.
         this.layoutService.setRightSidenav(null);
         this.showSidenav = true;
-        const componentRef: ComponentRef<any> = this.rightSidenav.createComponent(view.factory);
+        const componentRef: ComponentRef<any> =
+          this.rightSidenav.createComponent(view.component);
         for (const [key, value] of Object.entries(view.inputs)) {
           componentRef.instance[key] = value;
         }
@@ -120,13 +169,14 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /* Load the user and update availables navGroups accordingly
-  */
+  /**
+   * Load the user and update availables navGroups accordingly
+   */
   private loadUserAndUpdateLayout(): void {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
-    this.userSubscription = this.authService.user.subscribe((user) => {
+    this.userSubscription = this.authService.user$.subscribe((user) => {
       if (user) {
         this.user = { ...user };
       }
@@ -136,14 +186,20 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
           if (this.inApplication) {
             return true;
           }
-          const permission = PermissionsManagement.getRightFromPath(item.path, PermissionType.access);
-          return this.authService.userHasClaim(permission, this.environment.module === 'backoffice');
+          const permission = PermissionsManagement.getRightFromPath(
+            item.path,
+            PermissionType.access
+          );
+          return this.authService.userHasClaim(
+            permission,
+            this.environment.module === 'backoffice'
+          );
         });
         if (navItems.length > 0) {
           const filteredGroup = {
             name: group.name,
             callback: group.callback,
-            navItems
+            navItems,
           };
           this.filteredNavGroups.push(filteredGroup);
         }
@@ -167,49 +223,71 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /*  Go back to previous view
-  */
+  /**
+   * Go back to previous view
+   */
   goBack(): void {
     this.router.navigate(['../../'], { relativeTo: this.route });
   }
 
-  /*  Change the display depending on windows size.
-  */
+  /**
+   * Change the display depending on windows size.
+   *
+   * @param event Event that implies a change in window size
+   */
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
-    this.largeDevice = (event.target.innerWidth > 1024);
+    this.largeDevice = event.target.innerWidth > 1024;
   }
 
-  /* Emit the application to open
-  */
+  /**
+   * Emit the application to open
+   *
+   * @param application The application that needs to be opened
+   */
   onOpenApplication(application: Application): void {
     this.openApplication.emit(application);
   }
 
+  /**
+   * Handles the click event
+   *
+   * @param callback Callback that defines the action to perform on click
+   * @param event Event that happends with the click
+   */
   onClick(callback: () => any, event: any): void {
     callback();
     event.preventDefault();
     event.stopPropagation();
   }
 
+  /**
+   * Drop event handler. Move item in layout navigation item list.
+   *
+   * @param event drop event
+   * @param group group where the event occurs
+   */
   drop(event: any, group: any): void {
     moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
     this.reorder.emit(group.navItems);
   }
 
-  /*  Call logout method of authService.
-    */
+  /**
+   * Call logout method of authService.
+   */
   logout(): void {
     if (!this.authService.canLogout.value) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
         data: {
-          title: `Exit without saving changes`,
-          content: `There are unsaved changes on your form. Are you sure you want to logout?`,
-          confirmText: 'Confirm',
-          confirmColor: 'primary'
-        }
+          title: this.translate.instant('common.logout.titleMessage'),
+          content: this.translate.instant('common.logout.confirmationMessage'),
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
+          confirmColor: 'primary',
+        },
       });
-      dialogRef.afterClosed().subscribe(value => {
+      dialogRef.afterClosed().subscribe((value) => {
         if (value) {
           this.authService.canLogout.next(true);
           localStorage.clear();
@@ -221,10 +299,33 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Shows options when opening user profile
+   */
   onOpenProfile(): void {
-    this.router.navigate(['/profile']);
+    this.router.navigate([this.profileRoute]);
   }
 
+  /**
+   * Opens the preferences modal and deals with the resulting form
+   */
+  onOpenPreferences(): void {
+    const dialogRef = this.dialog.open(SafePreferencesModalComponent, {
+      data: {
+        languages: this.languages,
+      },
+      width: '100%',
+    });
+    dialogRef.afterClosed().subscribe((form) => {
+      if (form && form.touched) {
+        this.setLanguage(form.value.language);
+      }
+    });
+  }
+
+  /**
+   * Switches to back or front-office
+   */
   onSwitchOffice(): void {
     if (this.environment.module === 'backoffice') {
       window.location.href = this.environment.frontOfficeUri;
@@ -233,17 +334,59 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Load more notifications
+   *
+   * @param e Event
+   */
   public onLoadMoreNotifications(e: any): void {
     e.stopPropagation();
     this.notificationService.fetchMore();
     this.loadingNotifications = true;
   }
 
+  /**
+   * Marks all the notifications as read
+   */
   onMarkAllNotificationsAsRead(): void {
     this.notificationService.markAllAsSeen();
   }
 
+  /**
+   * Marks notification as seen when clicking on it
+   *
+   * @param notification The notification that was clicked on
+   */
   onNotificationClick(notification: Notification): void {
     this.notificationService.markAsSeen(notification);
+  }
+
+  /**
+   * Changes current active language.
+   *
+   * @param language id of the language.
+   */
+  setLanguage(language: string) {
+    this.translate.use(language);
+    window.localStorage.setItem('lang', language);
+  }
+
+  /**
+   * Get the current active language. First it checks if there is one already
+   * set, else it takes the default one.
+   *
+   * @returns language id of the language
+   */
+  getLanguage(): string {
+    // select the langage saved (or default if not)
+    let language = window.localStorage.getItem('lang');
+    if (!language || !this.languages.includes(language)) {
+      language = this.translate.defaultLang;
+    }
+    // if not default language, change langage of the interface
+    if (language !== this.translate.defaultLang) {
+      this.translate.use(language);
+    }
+    return language;
   }
 }

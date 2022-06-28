@@ -14,8 +14,8 @@ import { MatIconModule } from '@angular/material/icon';
     SafeFormModule,
     MatIconModule,
     MatButtonModule,
-    SafePreviousButtonModule
+    SafePreviousButtonModule,
   ],
-  exports: [UpdateRecordComponent]
+  exports: [UpdateRecordComponent],
 })
-export class UpdateRecordModule { }
+export class UpdateRecordModule {}

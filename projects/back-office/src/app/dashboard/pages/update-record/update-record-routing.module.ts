@@ -5,12 +5,12 @@ import { UpdateRecordComponent } from './update-record.component';
 const routes: Routes = [
   {
     path: '',
-    component: UpdateRecordComponent
-  }
+    component: UpdateRecordComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class UpdateRecordRoutingModule { }
+export class UpdateRecordRoutingModule {}

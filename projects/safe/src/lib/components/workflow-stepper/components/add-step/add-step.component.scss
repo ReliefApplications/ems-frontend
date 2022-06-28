@@ -1,21 +1,21 @@
 .safe-add-step {
-    width: 100px;
-    height: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    border-radius: 8px;
-    background-color: #ebf3f9;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 8px;
+  background-color: #ebf3f9;
 
-    safe-icon {
-        margin-top: 32px;
-    }
+  safe-icon {
+    margin-top: 32px;
+  }
 
-    span {
-        font-weight: 500;
-        color: #3b8cc4;
-        margin-bottom: 8px;
-    }
+  span {
+    font-weight: 500;
+    color: #3b8cc4;
+    margin-bottom: 8px;
+  }
 }

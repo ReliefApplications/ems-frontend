@@ -8,13 +8,19 @@ import { SafeEmailPreviewComponent } from '../components/email-preview/email-pre
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../utils/prettify';
 import { Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
-const flatDeep = (arr: any[]): any[] => {
-  return arr.reduce(
+/**
+ * Takes an array, and returns a new array with all the nested arrays flattened
+ *
+ * @param {any[]} arr - The array to flatten.
+ * @returns The flatten array
+ */
+const flatDeep = (arr: any[]): any[] =>
+  arr.reduce(
     (acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val),
     []
   );
-};
 
 /**
  * Shared email service.
@@ -35,24 +41,30 @@ export class SafeEmailService {
    * @param environment Injection of the environment file.
    * @param http Angular http client.
    * @param snackBar Shared snackbar service.
+   * @param dialog The Material Dialog service.
    * @param translate Angular translate service.
    */
   constructor(
     @Inject('environment') environment: any,
     private http: HttpClient,
     private snackBar: SafeSnackBarService,
-    private dialog: MatDialog
-  ) // private translate: TranslateService
-  {
-    // this.url = environment.apiUrl + '/email/';
-    this.sendUrl = environment.API_URL + '/email/';
-    this.previewUrl = environment.API_URL + '/email/preview/';
-    this.filesUrl = environment.API_URL + '/email/files';
+    private dialog: MatDialog,
+    private translate: TranslateService
+  ) {
+    this.sendUrl = environment.apiUrl + '/email/';
+    this.previewUrl = environment.apiUrl + '/email/preview/';
+    this.filesUrl = environment.apiUrl + '/email/files';
   }
 
+  /**
+   * Send a POST request to the server with the files attached to the
+   * request body
+   *
+   * @param {any[]} files - array of files to send to the server.
+   * @returns Observable of the POST request
+   */
   public sendFiles(files: any[]): Observable<any> {
-    // const token = localStorage.getItem('idtoken');
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       Accept: 'application/json',
       Authorization: `Bearer ${token}`,
@@ -70,12 +82,15 @@ export class SafeEmailService {
    * @param recipient Recipient of the email.
    * @param subject Subject of the email.
    * @param body Body of the email, if not given we put the formatted records.
-   * @param gridSettings Grid specific settings.
-   * @param gridSettings.query Query settings.
-   * @param gridSettings.ids List of records to include in the email.
-   * @param gridSettings.sortField Sort field.
-   * @param gridSettings.sortOrder Sort order.
-   * @param attachment Whether an excel with the dataset is attached to the mail or not.
+   * @param filter Filters for sending the mail
+   * @param query Query settings
+   * @param query.name Name of the query
+   * @param query.fields Fields requested in the query
+   * @param sortField Sort field (optional).
+   * @param sortOrder Sort order (optional).
+   * @param attachment Whether an excel with the dataset is attached to the mail
+   * or not (optional).
+   * @param files List of files to send with the mail (optional).
    */
   public async sendMail(
     recipient: string[],
@@ -96,8 +111,9 @@ export class SafeEmailService {
       {
         duration: 0,
         data: {
-          message: 'Sending email...',
-          // message: this.translate.instant('email.processing'),
+          message: this.translate.instant(
+            'common.notifications.email.processing'
+          ),
           loading: true,
         },
       }
@@ -109,8 +125,7 @@ export class SafeEmailService {
         fileFolderId = response.id;
       }
     }
-    // const token = localStorage.getItem('idtoken');
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -136,16 +151,14 @@ export class SafeEmailService {
       .subscribe(
         (res) => {
           snackBarRef.instance.data = {
-            message: 'Email sent',
-            // message: this.translate.instant('email.sent'),
+            message: this.translate.instant('common.notifications.email.sent'),
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
         () => {
           snackBarRef.instance.data = {
-            message: 'Something went wrong during the email sending',
-            // message: this.translate.instant('email.error'),
+            message: this.translate.instant('common.notifications.email.error'),
             loading: false,
             error: true,
           };
@@ -160,12 +173,14 @@ export class SafeEmailService {
    * @param recipient Recipient of the email.
    * @param subject Subject of the email.
    * @param body Body of the email, if not given we put the formatted records.
-   * @param gridSettings Grid specific settings.
-   * @param gridSettings.query Query settings.
-   * @param gridSettings.ids List of records to include in the email.
-   * @param gridSettings.sortField Sort field.
-   * @param gridSettings.sortOrder Sort order.
-   * @param attachment Whether an excel with the dataset is attached to the mail or not.
+   * @param filter Filters for sending the mail
+   * @param query Query settings
+   * @param query.name Name of the query
+   * @param query.fields Fields requested in the query
+   * @param sortField Sort field (optional).
+   * @param sortOrder Sort order (optional).
+   * @param attachment Whether an excel with the dataset is attached to the mail
+   * or not (optional).
    */
   public async previewMail(
     recipient: string[],
@@ -185,14 +200,14 @@ export class SafeEmailService {
       {
         duration: 0,
         data: {
-          message: 'Generating email...',
-          // message: this.translate.instant('email.processing'),
+          message: this.translate.instant(
+            'common.notifications.email.processing'
+          ),
           loading: true,
         },
       }
     );
-    // const token = localStorage.getItem('idtoken');
-    const token = localStorage.getItem('msal.idtoken');
+    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -216,8 +231,7 @@ export class SafeEmailService {
       .subscribe(
         (res) => {
           snackBarRef.instance.data = {
-            message: 'Email ready',
-            // message: this.translate.instant('email.sent'),
+            message: this.translate.instant('common.notifications.email.ready'),
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
@@ -245,8 +259,7 @@ export class SafeEmailService {
         },
         () => {
           snackBarRef.instance.data = {
-            message: 'Something went wrong during the email creation',
-            // message: this.translate.instant('email.error'),
+            message: this.translate.instant('common.notifications.email.error'),
             loading: false,
             error: true,
           };

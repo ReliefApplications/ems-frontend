@@ -1,20 +1,45 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormBuilder } from '@angular/forms';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import { SafeAddRoleComponent } from './add-role.component';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 
-import { AddRoleComponent } from './add-role.component';
-
-describe('AddRoleComponent', () => {
-  let component: AddRoleComponent;
-  let fixture: ComponentFixture<AddRoleComponent>;
+describe('SafeAddRoleComponent', () => {
+  let component: SafeAddRoleComponent;
+  let fixture: ComponentFixture<SafeAddRoleComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddRoleComponent ]
-    })
-    .compileComponents();
+      providers: [
+        FormBuilder,
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+        TranslateService,
+      ],
+      declarations: [SafeAddRoleComponent],
+      imports: [
+        MatDialogModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddRoleComponent);
+    fixture = TestBed.createComponent(SafeAddRoleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
