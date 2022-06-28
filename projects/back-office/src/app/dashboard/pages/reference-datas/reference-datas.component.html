@@ -53,7 +53,9 @@
         {{ 'common.apiConfiguration.one' | translate }}
       </span>
     </th>
-    <td mat-cell *matCellDef="let element">{{ element.apiConfiguration ? element.apiConfiguration.name : '' }}</td>
+    <td mat-cell *matCellDef="let element">
+      {{ element.apiConfiguration ? element.apiConfiguration.name : '' }}
+    </td>
   </ng-container>
 
   <ng-container matColumnDef="modifiedAt">
@@ -62,7 +64,9 @@
         {{ 'common.modifiedOn' | translate }}
       </span>
     </th>
-    <td mat-cell *matCellDef="let element">{{ element.modifiedAt | safeDate: 'medium'}}</td>
+    <td mat-cell *matCellDef="let element">
+      {{ element.modifiedAt | safeDate: 'medium' }}
+    </td>
   </ng-container>
 
   <ng-container matColumnDef="actions">
