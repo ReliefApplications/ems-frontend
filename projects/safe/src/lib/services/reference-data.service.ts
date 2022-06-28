@@ -45,6 +45,7 @@ export class SafeReferenceDataService {
    * Build a graphQL query based on the ReferenceData configuration.
    *
    * @param referenceData Reference data configuration.
+   * @param newItems do we need to query only new items
    * @returns GraphQL query.
    */
   private buildGraphQLQuery(

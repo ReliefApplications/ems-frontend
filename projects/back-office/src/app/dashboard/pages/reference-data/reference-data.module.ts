@@ -14,7 +14,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeIconModule } from '@safe/builder';
 import { GridModule } from '@progress/kendo-angular-grid';
-import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 /**
@@ -38,7 +37,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatChipsModule,
     SafeIconModule,
     GridModule,
-    MatIconModule,
     MatTooltipModule,
   ],
 })
