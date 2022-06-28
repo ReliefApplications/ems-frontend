@@ -11,6 +11,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeLayoutModalModule } from '../../../layout-modal/layout-modal.module';
 import { SafeDateModule } from '../../../../pipes/date/date.module';
 
+/** Module for layout component in grid widget settings */
 @NgModule({
   declarations: [LayoutsParametersComponent],
   imports: [

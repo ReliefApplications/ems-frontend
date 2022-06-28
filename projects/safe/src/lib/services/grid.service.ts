@@ -3,9 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { prettifyLabel } from '../utils/prettify';
 import get from 'lodash/get';
 import { SafeApiProxyService } from './api-proxy.service';
+import { MULTISELECT_TYPES } from '../components/ui/core-grid/grid/grid.constants';
 
-/** List of multi select question types */
-const MULTISELECT_TYPES: string[] = ['checkbox', 'tagbox', 'owner'];
 /** List of disabled fields */
 const DISABLED_FIELDS = [
   'id',
@@ -14,7 +13,12 @@ const DISABLED_FIELDS = [
   'modifiedAt',
   'form',
 ];
-/** Transforms a list with nested lists into a flat list */
+/**
+ * Transforms a list with nested lists into a flat list
+ *
+ * @param arr The list to flat
+ * @returns The flated list
+ */
 const flatDeep = (arr: any[]): any[] =>
   arr.reduce(
     (acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val),
@@ -45,10 +49,14 @@ export class SafeGridService {
    * Generates list of fields for the grid, based on grid parameters.
    *
    * @param fields list of fields saved in settings.
+   * @param metaFields list of metaFields (createdBy, updateBy...)
+   * @param layoutFields list of layout fields
    * @param prefix prefix of the field.
-   * @param disabled disabled status of the field, can overwrite the meta one.
-   * @param options additional options ( disable / filter )
-   * @returns List of fields for the grid.
+   * @param options additional options ( disable / hidden / filter )
+   * @param options.disabled disable the grid
+   * @param options.hidden hide the grid
+   * @param options.filter filter options for the grid
+   * @returns The list of fields formatted for a grid component
    */
   public getFields(
     fields: any[],
@@ -74,7 +82,7 @@ export class SafeGridService {
               {
                 disabled: true,
                 hidden: options.hidden,
-                filter: f.type === 'User',
+                filter: prefix ? false : options.filter,
               }
             );
           }
@@ -202,6 +210,9 @@ export class SafeGridService {
       case 'Int': {
         return 'numeric';
       }
+      case 'Float': {
+        return 'float';
+      }
       case 'Boolean': {
         return 'boolean';
       }
@@ -225,6 +236,8 @@ export class SafeGridService {
 
   /**
    * Fetches choices from URL for fields with url parameter.
+   *
+   * @param metaFields List of meta fields
    */
   public async populateMetaFields(metaFields: any): Promise<void> {
     for (const fieldName of Object.keys(metaFields)) {
@@ -258,6 +271,11 @@ export class SafeGridService {
    *
    * @param res Result of http request.
    * @param choicesByUrl Choices By Url property.
+   * @param choicesByUrl.path The path of the url to fetch
+   * @param choicesByUrl.value The key for values in the response
+   * @param choicesByUrl.text The key for labels in the response
+   * @param choicesByUrl.hasOther If the "other" option is enabled
+   * @param choicesByUrl.otherText Label fot the "other" option if enabled
    * @returns list of choices.
    */
   private extractChoices(

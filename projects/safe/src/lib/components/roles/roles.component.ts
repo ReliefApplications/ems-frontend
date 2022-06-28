@@ -16,20 +16,21 @@ import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.compon
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeApplicationService } from '../../services/application.service';
 import { SafeAddRoleComponent } from './components/add-role/add-role.component';
-import { SafeEditRoleComponent } from './components/edit-role/edit-role.component';
 import {
   AddRoleMutationResponse,
   ADD_ROLE,
   DeleteRoleMutationResponse,
   DELETE_ROLE,
-  EditRoleMutationResponse,
-  EDIT_ROLE,
 } from '../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
+/**
+ * This component is used to display the roles page in the platform
+ */
 @Component({
   selector: 'safe-roles',
   templateUrl: './roles.component.html',
@@ -57,12 +58,29 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
   public searchText = '';
   public usersFilter = '';
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param dialog This is the Angular Material Dialog service.
+   * @param applicationService This is the service that will be used to get
+   * the application data from the backend.
+   * @param apollo This is the Apollo client that will be used to make GraphQL
+   * requests.
+   * @param snackBar This is the service that will be used to display the snackbar.
+   * @param translate This is the service that is used to
+   * translate the text in the application.
+   * @param router Angular router
+   * @param activatedRoute Current Angular route
+   */
   constructor(
     public dialog: MatDialog,
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -85,6 +103,9 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  /**
+   * Filter roles and users.
+   */
   private filterPredicate(): void {
     this.roles.filterPredicate = (data: any) =>
       (this.searchText.trim().length === 0 ||
@@ -95,7 +116,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
           data.usersCount.toString().includes(this.usersFilter.trim())));
   }
 
-  /*  Load the roles.
+  /**
+   *  Load the roles.
    */
   private getRoles(): void {
     this.apollo
@@ -114,6 +136,9 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  /**
+   * Adds a role
+   */
   onAdd(): void {
     const dialogRef = this.dialog.open(SafeAddRoleComponent);
     dialogRef.afterClosed().subscribe((value) => {
@@ -149,48 +174,12 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  /*  Display the EditRole modal, passing a role as a parameter.
-    Edit the role when closed, if there is a result.
-  */
-  onEdit(role: Role): void {
-    const dialogRef = this.dialog.open(SafeEditRoleComponent, {
-      data: {
-        role,
-        application: this.inApplication,
-      },
-    });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-        if (this.inApplication) {
-          this.applicationService.editRole(role, value);
-        } else {
-          this.apollo
-            .mutate<EditRoleMutationResponse>({
-              mutation: EDIT_ROLE,
-              variables: {
-                id: role.id,
-                permissions: value.permissions,
-                channels: value.channels,
-                title: value.title,
-              },
-            })
-            .subscribe((res) => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.role.one').toLowerCase(),
-                  value: role.title,
-                })
-              );
-              this.getRoles();
-            });
-        }
-      }
-    });
-  }
-
-  /* Display a modal to confirm the deletion of the role.
-    If confirmed, the role is removed from the system.
-  */
+  /**
+   * Display a modal to confirm the deletion of the role.
+   * If confirmed, the role is removed from the system.
+   *
+   * @param item Role to delete
+   */
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -201,8 +190,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             name: item.title,
           }
         ),
-        confirmText: this.translate.instant('common.delete'),
-        cancelText: this.translate.instant('common.cancel'),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
         confirmColor: 'warn',
       },
     });
@@ -235,6 +224,12 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.roles.sort = this.sort;
   }
 
+  /**
+   * Applies filters to the list of roles on event
+   *
+   * @param column Name of the column where the filtering happens
+   * @param event The event
+   */
   applyFilter(column: string, event: any): void {
     if (column === 'usersCount') {
       this.usersFilter = !!event.target
@@ -248,9 +243,21 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.roles.filter = '##';
   }
 
+  /**
+   * Clear all the filters
+   */
   clearAllFilters(): void {
     this.searchText = '';
     this.usersFilter = '';
     this.applyFilter('', null);
+  }
+
+  /**
+   * Open role in new page
+   *
+   * @param role role to see details of
+   */
+  onOpen(role: Role): void {
+    this.router.navigate([role.id], { relativeTo: this.activatedRoute });
   }
 }

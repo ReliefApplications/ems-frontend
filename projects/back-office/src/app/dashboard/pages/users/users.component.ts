@@ -15,7 +15,7 @@ import { Role, User } from '@safe/builder';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-/*  Accessible with '/settings/users' route.
+/** Accessible with '/settings/users' route.
   Managelent of users.
 */
 export class UsersComponent implements OnInit {
@@ -27,8 +27,7 @@ export class UsersComponent implements OnInit {
 
   constructor(private apollo: Apollo) {}
 
-  /*  Load the users
-   */
+  /** Load the users */
   ngOnInit(): void {
     this.apollo
       .watchQuery<GetUsersQueryResponse>({

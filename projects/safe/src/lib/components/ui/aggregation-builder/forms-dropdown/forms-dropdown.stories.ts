@@ -26,6 +26,12 @@ export default {
   },
 } as Meta;
 
+/**
+ * Template used by storybook to display the component.
+ *
+ * @param args story arguments
+ * @returns storybook template
+ */
 const TEMPLATE: Story<SafeFormsDropdownComponent> = (args) => ({
   template:
     '<safe-forms-dropdown [forms$]=forms$ [sourceControl]=sourceControl></safe-forms-dropdown>',
@@ -34,6 +40,9 @@ const TEMPLATE: Story<SafeFormsDropdownComponent> = (args) => ({
   },
 });
 
+/**
+ * List of forms for testing.
+ */
 const DEFAULT_FORMS = [
   {
     id: '608fcf37425fcd001d46ef40',
@@ -97,7 +106,11 @@ const DEFAULT_FORMS = [
   },
 ];
 
+/**
+ * Default story.
+ */
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   forms$: new BehaviorSubject<Form[]>(DEFAULT_FORMS)
     .asObservable()
@@ -105,7 +118,11 @@ DEFAULT.args = {
   sourceControl: new FormControl(''),
 };
 
+/**
+ * Story with initial value.
+ */
 export const INITIAL_SOURCE = TEMPLATE.bind({});
+INITIAL_SOURCE.storyName = 'Initial source';
 INITIAL_SOURCE.args = {
   ...DEFAULT.args,
   sourceControl: new FormControl('613b6c052921406adbfb54bd'),

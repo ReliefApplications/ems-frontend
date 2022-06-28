@@ -1,4 +1,5 @@
 <div class="history-header">
+  <!-- HEADER -->
   <div>
     <h2>{{ 'common.history' | translate }}</h2>
     <safe-button
@@ -9,7 +10,8 @@
     >
     </safe-button>
   </div>
-  <div style="clear: both">
+  <!-- FILTER -->
+  <div style="clear: both; display: flex; flex-direction: column">
     <mat-form-field>
       <mat-date-range-input
         (click)="rangePicker.open()"
@@ -49,7 +51,24 @@
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{ 'components.history.field.select' | translate }}</mat-label>
+      <mat-select
+        (selectionChange)="applyFilter($event.value)"
+        [value]="filterField"
+      >
+        <mat-option value="">{{
+          'components.history.field.all' | translate
+        }}</mat-option>
+        <mat-option
+          *ngFor="let field of sortedFields"
+          value="{{ field.name }}"
+          >{{ field.title || field.name }}</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
   </div>
+  <!-- ACTIONS -->
   <div class="actions">
     <safe-button
       category="secondary"
@@ -64,15 +83,33 @@
     </mat-menu>
   </div>
 </div>
-<div class="history-container">
-  <ng-container *ngFor="let item of filterHistory; let index = index">
+<!-- LOADING -->
+<div class="history-container" *ngIf="loading">
+  <ng-container *ngFor="let _ of [].constructor(4)">
+    <mat-expansion-panel closed>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <kendo-skeleton width="50%"></kendo-skeleton>
+          <kendo-skeleton
+            class="history-user"
+            width="30%"
+            height="2em"
+          ></kendo-skeleton>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+    </mat-expansion-panel>
+  </ng-container>
+</div>
+<!-- HISTORY CHANGES -->
+<div class="history-container" *ngIf="!loading">
+  <ng-container *ngFor="let item of filterHistory">
     <mat-expansion-panel (closed)="showMore = false">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <span class="history-date">{{
-            item.created | safeDate: 'shortDate'
+            item.createdAt | safeDate: 'shortDate'
           }}</span>
-          {{ item.created | safeDate: 'shortTime' }}
+          {{ item.createdAt | safeDate: 'shortTime' }}
           <span class="history-user" *ngIf="item.createdBy">{{
             item.createdBy
           }}</span>
@@ -85,7 +122,7 @@
           *ngFor="
             let value of showMore ? item.changes : item.changes.slice(0, 4)
           "
-          [innerHTML]="value"
+          [innerHTML]="getHTMLFromChange(value)"
         ></div>
         <div class="full-history">
           <safe-button
@@ -100,12 +137,16 @@
         <safe-button
           icon="update"
           class="revert-icon"
-          (click)="onRevert(item)"
-          *ngIf="index > 0"
+          (click)="onRevert(item.version)"
+          *ngIf="item.version"
         >
           {{ 'components.history.preview' | translate }}
         </safe-button>
       </ng-template>
     </mat-expansion-panel>
   </ng-container>
+  <div *ngIf="filterHistory.length === 0" class="empty-history">
+    <safe-icon icon="folder_open"></safe-icon>
+    <h3>{{ 'components.history.empty' | translate }}</h3>
+  </div>
 </div>

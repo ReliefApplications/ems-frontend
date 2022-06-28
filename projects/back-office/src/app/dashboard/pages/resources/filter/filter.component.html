@@ -9,11 +9,7 @@
         type="search"
         [placeholder]="'common.placeholder.search' | translate"
       />
-      <mat-spinner
-        *ngIf="loading"
-        diameter="24"
-        matSuffix
-      ></mat-spinner>
+      <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>
     </mat-form-field>
     <safe-button
       icon="filter_list"

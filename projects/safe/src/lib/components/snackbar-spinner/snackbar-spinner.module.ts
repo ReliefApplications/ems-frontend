@@ -5,6 +5,10 @@ import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SafeIconModule } from '../ui/icon/icon.module';
 
+/**
+ * SafeSnackbarSpinnerModule is a class used to manage all the modules and components
+ * related to the spinner snackbars.
+ */
 @NgModule({
   declarations: [SafeSnackbarSpinnerComponent],
   imports: [CommonModule, SafeSpinnerModule, MatSnackBarModule, SafeIconModule],

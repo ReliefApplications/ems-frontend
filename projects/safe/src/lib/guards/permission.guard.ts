@@ -10,19 +10,32 @@ import { Observable } from 'rxjs';
 import { PermissionsManagement, PermissionType } from '../models/user.model';
 import { SafeAuthService } from '../services/auth.service';
 
+/**
+ * Check if the logged user has an access to the route.
+ * Only the 'applications' route is accessible to all logged users.
+ */
 @Injectable({
   providedIn: 'root',
 })
-/*  Check if the logged user has an access to the route.
-    Only the 'applications' route is accessible to all logged users.
-*/
 export class SafePermissionGuard implements CanActivate {
+  /**
+   * Constructor of the SAfePermissionGuard class
+   *
+   * @param authService The authentification service
+   * @param router The router service
+   */
   constructor(private authService: SafeAuthService, private router: Router) {}
 
-  /*  Executed everytime a route is called, in order to check user permissions.
-      Redirects to default route if not authorized.
-      When reloading the page, the router will redirect to 'applications'. GraphQL should prevent that issue.
-  */
+  /**
+   * Executed everytime a route is called, in order to check user permissions.
+   * Redirects to default route if not authorized.
+   * When reloading the page, the router will redirect to 'applications'.
+   * GraphQL should prevent that issue.
+   *
+   * @param next activated route snapshot
+   * @param state router state snapshot
+   * @returns A boolean indicating if the user has permission
+   */
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot

@@ -63,6 +63,7 @@ export * from './lib/components/widgets/scheduler-settings/public-api';
 export * from './lib/components/widget/public-api';
 export * from './lib/components/widget-grid/public-api';
 export * from './lib/components/confirm-modal/public-api';
+export * from './lib/components/user-summary/public-api';
 export * from './lib/components/users/public-api';
 export * from './lib/components/roles/public-api';
 export * from './lib/components/previous-button/public-api';
@@ -79,6 +80,7 @@ export * from './lib/components/applications-summary/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
 export * from './lib/components/reference-data-dropdown/public-api';
 export * from './lib/components/skeleton/skeleton-table/public-api';
+export * from './lib/components/role-summary/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/layout-modal/public-api';
@@ -86,8 +88,10 @@ export * from './lib/components/snackbar-spinner/public-api';
 
 // === UI ===
 export * from './lib/components/ui/button/public-api';
+export * from './lib/components/ui/alert/public-api';
 export * from './lib/components/ui/aggregation-builder/public-api';
 export * from './lib/components/ui/tagbox/public-api';
+export * from './lib/components/ui/icon/public-api';
 
 // === PAGES ===
 export * from './lib/pages/profile/public-api';

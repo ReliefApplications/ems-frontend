@@ -12,7 +12,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { SafeButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatChipsModule } from '@angular/material/chips';
-import { SafeIconModule } from 'projects/safe/src/lib/components/ui/icon/icon.module';
+import { SafeIconModule } from '@safe/builder';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';

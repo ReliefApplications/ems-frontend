@@ -47,8 +47,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     private translateService: TranslateService
   ) {}
 
-  /*  Load the data and check if user can add new dashboards.
-   */
+  /** Load the data and check if user can add new dashboards. */
   ngOnInit(): void {
     this.apollo
       .watchQuery<GetDashboardsQueryResponse>({
@@ -74,8 +73,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*  Delete a dashboard if authorized.
-   */
+  /** Delete a dashboard if authorized. */
   deleteDashboard(id: any, e: any): void {
     e.stopPropagation();
     this.apollo
@@ -102,9 +100,8 @@ export class DashboardsComponent implements OnInit, OnDestroy {
       });
   }
 
-  /*  Display the AddDashboard component.
-    Add a new dashboard once closed, if result exists.
-  */
+  /** Display the AddDashboard component.
+    Add a new dashboard once closed, if result exists. */
   onAdd(): void {
     const dialogRef = this.dialog.open(AddDashboardComponent);
     dialogRef.afterClosed().subscribe((value) => {

@@ -63,6 +63,12 @@ export default {
   },
 } as Meta;
 
+/**
+ * Template used by storybook to display the component in stories.
+ *
+ * @param args story arguments
+ * @returns story template
+ */
 const TEMPLATE_WITH_TEXT: Story<SafeButtonComponent> = (args) => ({
   template: '<safe-button [icon]="icon">{{content}}</safe-button>',
   props: {
@@ -70,26 +76,44 @@ const TEMPLATE_WITH_TEXT: Story<SafeButtonComponent> = (args) => ({
   },
 });
 
+/**
+ * Template used by stories that don't need to display text.
+ *
+ * @param args story arguments
+ * @returns story template
+ */
 const TEMPLATE_WITHOUT_TEXT: Story<SafeButtonComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
+/**
+ * Default story
+ */
 export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   category: ButtonCategory.PRIMARY,
   size: ButtonSize.MEDIUM,
   variant: ButtonVariant.DEFAULT,
 };
 
+/**
+ * Story with Icon and Text
+ */
 export const ICON_AND_TEXT = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.storyName = 'Icon and text';
 ICON_AND_TEXT.args = {
   ...DEFAULT.args,
   icon: 'home',
 };
 
+/**
+ * Story with icon only
+ */
 export const ICON = TEMPLATE_WITHOUT_TEXT.bind({});
+DEFAULT.storyName = 'Icon only';
 ICON.args = {
   ...DEFAULT.args,
   isIcon: true,

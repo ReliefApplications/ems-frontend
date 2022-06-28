@@ -21,6 +21,12 @@ export default {
   argTypes: {},
 } as Meta;
 
+/**
+ * Template factory for the SafeGridComponent
+ *
+ * @param args Properties of the component
+ * @returns The template
+ */
 const TEMPLATE: Story<SafeGridComponent> = (args) => ({
   template: `<div style="height: 400px"><safe-grid
         [loading]="loading"
@@ -40,6 +46,7 @@ const TEMPLATE: Story<SafeGridComponent> = (args) => ({
   },
 });
 
+/** Mock data for the compoent */
 const DEFAULT_DATA = [
   {
     id: '1',
@@ -79,6 +86,7 @@ const DEFAULT_DATA = [
   },
 ];
 
+/** Mock fields for the component */
 const DEFAULT_FIELDS = [
   {
     title: 'Text',
@@ -183,7 +191,9 @@ const DEFAULT_FIELDS = [
   },
 ];
 
+/** Exoprt a template with mock properties */
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   fields: DEFAULT_FIELDS,
   data: {
@@ -193,7 +203,9 @@ DEFAULT.args = {
   editable: true,
 };
 
+/** Export an empty template with mock properties */
 export const EMPTY = TEMPLATE.bind({});
+EMPTY.storyName = 'Empty';
 EMPTY.args = {
   fields: DEFAULT_FIELDS,
   data: {
@@ -202,7 +214,9 @@ EMPTY.args = {
   },
 };
 
+/** Export a template with invalid properties and an error */
 export const ERROR = TEMPLATE.bind({});
+ERROR.storyName = 'With error';
 ERROR.args = {
   fields: DEFAULT_FIELDS,
   error: true,
@@ -212,13 +226,17 @@ ERROR.args = {
   },
 };
 
+/** Export a template with loading data */
 export const LOADING = TEMPLATE.bind({});
+LOADING.storyName = 'Loading';
 LOADING.args = {
   ...DEFAULT.args,
   loading: true,
 };
 
+/** Export a template with a size fixed */
 export const FIXED = TEMPLATE.bind({});
+FIXED.storyName = 'Fixed size';
 FIXED.args = {
   ...DEFAULT.args,
   resizable: false,
@@ -226,6 +244,7 @@ FIXED.args = {
   sortable: false,
 };
 
+/** Mock data for multi-select field */
 const MULTI_SELECT_DATA = [
   {
     checkbox: [1, 2],
@@ -235,7 +254,9 @@ const MULTI_SELECT_DATA = [
   },
 ];
 
+/** Export template with multi-select data */
 export const MULTI_SELECT_INPUTS = TEMPLATE.bind({});
+MULTI_SELECT_INPUTS.storyName = 'With multi select inputs';
 MULTI_SELECT_INPUTS.args = {
   ...DEFAULT.args,
   fields: [
@@ -303,6 +324,7 @@ MULTI_SELECT_INPUTS.args = {
   },
 };
 
+/** Mock data which is more complex */
 const COMPLEX_DATA = [
   {
     multipletext: {
@@ -336,7 +358,9 @@ const COMPLEX_DATA = [
   },
 ];
 
+/** Export template with more complex data */
 export const COMPLEX_INPUTS = TEMPLATE.bind({});
+COMPLEX_INPUTS.storyName = 'With complex inputs';
 COMPLEX_INPUTS.args = {
   ...DEFAULT.args,
   fields: [

@@ -2,29 +2,29 @@ import { Application } from './application.model';
 import { Channel } from './channel.model';
 import { PositionAttribute } from './position-attribute.model';
 
-/*  Model for Permission object.
- */
+/** Model for Permission object. */
 export interface Permission {
   id?: string;
   type?: string;
   global?: boolean;
 }
 
-/*  Model for Role object.
- */
+/** Model for Role object. */
 export interface Role {
   id?: string;
   title?: string;
+  description?: string;
   usersCount?: number;
   permissions?: Permission[];
   application?: Application;
   channels?: Channel[];
 }
 
-/*  Model for User object.
- */
+/** Model for User object. */
 export interface User {
   id?: string;
+  firstName?: string;
+  lastName?: string;
   username?: string;
   isAdmin?: boolean;
   name?: string;
@@ -36,8 +36,7 @@ export interface User {
   favoriteApp?: string;
 }
 
-/*  Enum of admin permissions.
- */
+/** Enum of admin permissions. */
 export enum Permissions {
   canSeeResources = 'can_see_resources',
   canSeeForms = 'can_see_forms',
@@ -53,8 +52,7 @@ export enum Permissions {
   canCreateApplications = 'can_create_applications',
 }
 
-/*  Enum of permissions types.
- */
+/** Enum of permissions types. */
 export enum PermissionType {
   access = 'access',
   create = 'create',
@@ -63,8 +61,7 @@ export enum PermissionType {
   manage = 'manage',
 }
 
-/*  Class to check for routes and methods what is the needed admin permission.
- */
+/** Class to check for routes and methods what is the needed admin permission. */
 export class PermissionsManagement {
   public static mappedPermissions = {
     resources: {
@@ -98,6 +95,14 @@ export class PermissionsManagement {
     },
   };
 
+  /**
+   * Get the permission object for an object defined by its path and a
+   * permission type.
+   *
+   * @param {string} path - The path of the object we want the permission.
+   * @param {PermissionType} type - The permission type
+   * @returns The permission object
+   */
   public static getRightFromPath(path: string, type: PermissionType): string {
     const pathArray = path.split('?')[0].split('/');
     pathArray.shift();
@@ -110,6 +115,14 @@ export class PermissionsManagement {
     return this.getRightFromKeys(pathArray, type);
   }
 
+  /**
+   * Get the permission object for an object defined by a list of keys and a
+   * permission type
+   *
+   * @param keys - The list of keys defining the object
+   * @param type - The permission type
+   * @returns The permission object
+   */
   public static getRightFromKeys(keys: string[], type: PermissionType): string {
     let value = this.mappedPermissions;
     for (const key of keys) {

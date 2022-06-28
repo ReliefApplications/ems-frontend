@@ -8,7 +8,7 @@
 >
 </safe-button>
 <h1 mat-dialog-title>
-  {{ 'components.widget.settings.grid.layouts.add.choice.create' | translate }}
+  {{ 'components.widget.settings.grid.layouts.edit.title' | translate }}
 </h1>
 <div mat-dialog-content class="mat-dialog-content" *ngIf="form">
   <form [formGroup]="form">
@@ -24,7 +24,7 @@
         [form]="$any(form.controls.query)"
         [templates]="templates"
         [queryName]="data.queryName"
-        [layoutPreviewData]="{form, defaultLayout: data.layout?.display}"
+        [layoutPreviewData]="layoutPreviewData"
       ></safe-query-builder>
     </div>
   </form>

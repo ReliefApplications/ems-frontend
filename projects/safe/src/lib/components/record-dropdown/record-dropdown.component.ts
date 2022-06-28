@@ -22,14 +22,24 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Record } from '../../models/record.model';
 import { TranslateService } from '@ngx-translate/core';
 
+/** A constant that is used to set the number of items to be displayed on the page. */
 const ITEMS_PER_PAGE = 25;
 
+/**
+ * Scroll Factory for material select, provided by the component.
+ *
+ * @param overlay material overlay
+ * @returns Strategy to prevent scrolling if user sees overlay.
+ */
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;
 }
 
+/**
+ * A component to display a dropdown to select a record
+ */
 @Component({
   selector: 'safe-record-dropdown',
   templateUrl: './record-dropdown.component.html',
@@ -64,6 +74,13 @@ export class SafeRecordDropdownComponent implements OnInit {
 
   @ViewChild('recordSelect') recordSelect?: MatSelect;
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param apollo This is the Apollo service use to generate GraphQL queries
+   * @param translate This is the service that we will use to translate the text in the platform
+   */
   constructor(private apollo: Apollo, private translate: TranslateService) {}
 
   ngOnInit(): void {

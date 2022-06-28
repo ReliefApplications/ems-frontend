@@ -6,7 +6,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
-import { DefaultOperators, NO_FIELD_OPERATORS } from './operators';
+import { DEFAULT_OPERATORS, NO_FIELD_OPERATORS } from './operators';
 
 /**
  * Aggregation pipeline expression component.
@@ -19,24 +19,30 @@ import { DefaultOperators, NO_FIELD_OPERATORS } from './operators';
 export class SafeExpressionsComponent implements OnInit, OnChanges {
   @Input() form!: FormGroup;
   @Input() fields: any[] = [];
-  @Input() operators: any = DefaultOperators;
+  @Input() operators: any = DEFAULT_OPERATORS;
+  @Input() displayField = true;
   public operatorsList: string[] = Object.values(this.operators);
   public noFieldOperators = NO_FIELD_OPERATORS;
 
+  /**
+   * Aggregation pipeline expression component.
+   */
   constructor() {}
 
   ngOnInit(): void {
-    this.form.get('operator')?.valueChanges.subscribe((operator: string) => {
-      if (operator) {
-        if (this.noFieldOperators.includes(operator)) {
-          this.form.get('field')?.setValue('');
-          this.form.get('field')?.setValidators(null);
-        } else {
-          this.form.get('field')?.setValidators(Validators.required);
+    if (this.displayField) {
+      this.form.get('operator')?.valueChanges.subscribe((operator: string) => {
+        if (operator) {
+          if (this.noFieldOperators.includes(operator)) {
+            this.form.get('field')?.setValue('');
+            this.form.get('field')?.setValidators(null);
+          } else {
+            this.form.get('field')?.setValidators(Validators.required);
+          }
+          this.form.get('field')?.updateValueAndValidity();
         }
-        this.form.get('field')?.updateValueAndValidity();
-      }
-    });
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

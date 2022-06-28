@@ -11,6 +11,7 @@ import { SafeAddUserModule } from '../add-user/add-user.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 
+/** Module for invite users component */
 @NgModule({
   declarations: [SafeInviteUsersComponent],
   imports: [

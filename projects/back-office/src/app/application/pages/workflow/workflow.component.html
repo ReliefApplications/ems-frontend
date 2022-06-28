@@ -19,12 +19,50 @@
     <h1 class="workflow-name" (click)="toggleFormActive()">
       {{ workflow.name }}
     </h1>
-    <safe-access
-      [access]="workflow.permissions"
-      [application]="workflow.page?.application?.id"
-      (save)="saveAccess($event)"
-      *ngIf="workflow.page?.canUpdate || false"
-    ></safe-access>
+    <div class="workflow-icons-container">
+      <safe-access
+        [access]="workflow.permissions"
+        [application]="workflow.page?.application?.id"
+        (save)="saveAccess($event)"
+        *ngIf="workflow.page?.canUpdate || false"
+      ></safe-access>
+      <safe-button
+        [isIcon]="true"
+        icon="more_vert"
+        class="share-button"
+        [matMenuTriggerFor]="menu"
+        cdkOverlayOrigin
+        #appMenuTrigger="cdkOverlayOrigin"
+      >
+      </safe-button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="onAppSelection()">
+          <mat-icon>file_copy</mat-icon>
+          {{ 'common.duplicate' | translate }}
+        </button>
+      </mat-menu>
+
+      <ng-template #searchMenuHeaderTemplate>
+        <safe-alert
+          ><safe-icon icon="info"></safe-icon>
+          {{ 'models.page.tooltip.duplicate' | translate }}
+        </safe-alert>
+      </ng-template>
+
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="appMenuTrigger"
+        [cdkConnectedOverlayOpen]="showAppMenu"
+      >
+        <safe-search-menu
+          [headerTemplate]="searchMenuHeaderTemplate"
+          [currentApplicationId]="applicationId"
+          [applications]="applications"
+          (close)="showAppMenu = false"
+          (open)="onDuplicate($event)"
+        ></safe-search-menu>
+      </ng-template>
+    </div>
   </ng-container>
 </div>
 <!-- NAME EDITION -->
@@ -32,7 +70,7 @@
   <form
     [formGroup]="workflowNameForm"
     (ngSubmit)="saveName()"
-    class="workflow-name-container"
+    class="name-edit-container"
   >
     <mat-form-field>
       <mat-label>{{ 'common.name' | translate }}</mat-label>

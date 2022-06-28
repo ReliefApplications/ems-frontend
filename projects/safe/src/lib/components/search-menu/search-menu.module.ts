@@ -7,7 +7,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
+/**
+ * Search menu component module.
+ */
 @NgModule({
   declarations: [SafeSearchMenuComponent],
   imports: [
@@ -18,6 +23,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     MatIconModule,
     SafeButtonModule,
+    MatDividerModule,
+    MatTooltipModule,
   ],
   exports: [SafeSearchMenuComponent],
 })

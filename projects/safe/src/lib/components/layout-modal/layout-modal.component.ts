@@ -7,11 +7,17 @@ import {
   createQueryForm,
 } from '../query-builder/query-builder-forms';
 
+/**
+ * Interface describing the structure of the data displayed in the dialog
+ */
 interface DialogData {
   layout?: Layout;
   queryName?: string;
 }
 
+/**
+ * Component used to display modals regarding layouts
+ */
 @Component({
   selector: 'safe-layout-modal',
   templateUrl: './layout-modal.component.html',
@@ -20,9 +26,16 @@ interface DialogData {
 export class SafeLayoutModalComponent implements OnInit {
   @Input() layout: any;
   public form?: FormGroup;
-  private queryName = '';
   public templates: any[] = [];
+  public layoutPreviewData!: { form: FormGroup; defaultLayout: any };
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is created
+   *
+   * @param formBuilder This is the service used to build forms.
+   * @param dialogRef This is the reference of the dialog that will be opened.
+   * @param data This is the data that is passed to the modal when it is opened.
+   */
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeLayoutModalComponent>,
@@ -35,7 +48,13 @@ export class SafeLayoutModalComponent implements OnInit {
       query: createQueryForm(this.data.layout?.query),
       display: createDisplayForm(this.data.layout?.display),
     });
-    this.queryName = this.form.get('query')?.value.name;
+    this.layoutPreviewData = {
+      form: this.form,
+      defaultLayout: this.data.layout?.display,
+    };
+    this.form.get('display')?.valueChanges.subscribe((value: any) => {
+      this.layoutPreviewData.defaultLayout = value;
+    });
   }
 
   /**

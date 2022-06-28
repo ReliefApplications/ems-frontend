@@ -31,6 +31,9 @@ export default {
   },
 } as Meta;
 
+/**
+ * List of fields for testing.
+ */
 const DEFAULT_FIELDS = [
   {
     name: 'date',
@@ -60,8 +63,17 @@ const DEFAULT_FIELDS = [
   },
 ];
 
+/**
+ * Form builder reference.
+ */
 const fb = new FormBuilder();
 
+/**
+ * Template used by storybook to display the component in stories.
+ *
+ * @param args story arguments
+ * @returns story template
+ */
 const TEMPLATE: Story<SafeExpressionsComponent> = (args) => ({
   template:
     '<safe-expressions [form]=form [fields]=fields [operators]=operators></safe-expressions>',
@@ -76,5 +88,9 @@ const TEMPLATE: Story<SafeExpressionsComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {};

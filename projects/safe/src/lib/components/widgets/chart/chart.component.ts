@@ -15,11 +15,15 @@ import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.compon
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import get from 'lodash/get';
-
-const DEFAULT_FILE_NAME = 'chartS';
+import groupBy from 'lodash/groupBy';
 
 /**
- * Chart widget using KendoUI.
+ * Default file name for chart exports
+ */
+const DEFAULT_FILE_NAME = 'chart';
+
+/**
+ * Chart widget component using KendoUI
  */
 @Component({
   selector: 'safe-chart',
@@ -42,7 +46,10 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   @Input() export = true;
   @Input() settings: any = null;
 
-  /** Builds filename from the date and widget title */
+  /**
+   * Get filename from the date and widget title
+   * @returns filename
+   */
   get fileName(): string {
     const today = new Date();
     const formatDate = `${today.toLocaleString('en-us', {
@@ -63,11 +70,15 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     | SafeBarChartComponent
     | SafeColumnChartComponent;
 
+  /**
+   * Chart widget using KendoUI.
+   *
+   * @param aggregationBuilder Share aggregation builder service
+   */
   constructor(private aggregationBuilder: AggregationBuilderService) {}
 
-  /*  Detect changes of the settings to reload the data.
-   */
-  ngOnChanges(changes: SimpleChanges): void {
+  /** Detect changes of the settings to reload the data. */
+  ngOnChanges(): void {
     this.loading = true;
     this.dataQuery = this.aggregationBuilder.buildAggregation(
       this.settings.chart.aggregation
@@ -80,6 +91,9 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Exports the chart as a png ticket
+   */
   public onExport(): void {
     this.chartWrapper?.chart
       ?.exportImage({
@@ -91,16 +105,46 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
       });
   }
 
+  /**
+   * Get chart options from settings
+   */
   public getOptions(): void {
     this.options = {
       palette: get(this.settings, 'chart.palette.enabled', false)
         ? get(this.settings, 'chart.palette.value', null)
         : null,
+      axes: {
+        x: {
+          min: get(this.settings, 'chart.axes.x.enableMin')
+            ? get(this.settings, 'chart.axes.x.min')
+            : null,
+          max: get(this.settings, 'chart.axes.x.enableMax')
+            ? get(this.settings, 'chart.axes.x.max')
+            : null,
+        },
+        y: {
+          min: get(this.settings, 'chart.axes.y.enableMin')
+            ? get(this.settings, 'chart.axes.y.min')
+            : null,
+          max: get(this.settings, 'chart.axes.y.enableMax')
+            ? get(this.settings, 'chart.axes.y.max')
+            : null,
+        },
+      },
+      labels: {
+        showCategory: get(this.settings, 'chart.labels.showCategory', false),
+        showValue: get(this.settings, 'chart.labels.showValue', false),
+        valueType: get(this.settings, 'chart.labels.valueType', 'value'),
+      },
+      stack: get(this.settings, 'chart.stack.enable', false)
+        ? get(this.settings, 'chart.stack.usePercentage', false)
+          ? { type: '100%' }
+          : { type: 'normal' }
+        : false,
     };
   }
 
-  /*  Load the data, using widget parameters.
-   */
+  /** Load the data, using widget parameters. */
   private getData(): void {
     this.dataSubscription = this.dataQuery.subscribe((res: any) => {
       if (res.errors) {
@@ -119,11 +163,22 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
             this.settings.chart.type
           )
         ) {
-          this.series = [
-            {
-              data: JSON.parse(JSON.stringify(res.data.recordsAggregation)),
-            },
-          ];
+          const aggregationData = JSON.parse(
+            JSON.stringify(res.data.recordsAggregation)
+          );
+          if (get(this.settings, 'chart.aggregation.mapping.series', null)) {
+            const groups = groupBy(aggregationData, 'series');
+            this.series = Object.keys(groups).map((key) => ({
+              name: key,
+              data: groups[key],
+            }));
+          } else {
+            this.series = [
+              {
+                data: aggregationData,
+              },
+            ];
+          }
         } else {
           this.series = res.data.recordsAggregation;
         }
@@ -133,6 +188,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     });
   }
 
+  /** Remove subscriptions */
   ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();

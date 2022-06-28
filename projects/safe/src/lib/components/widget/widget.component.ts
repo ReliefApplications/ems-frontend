@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
+/** Component for the widgets */
 @Component({
   selector: 'safe-widget',
   templateUrl: './widget.component.html',
@@ -12,6 +13,7 @@ export class SafeWidgetComponent implements OnInit {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
+  /** Constructor of the class */
   constructor() {}
 
   ngOnInit(): void {}

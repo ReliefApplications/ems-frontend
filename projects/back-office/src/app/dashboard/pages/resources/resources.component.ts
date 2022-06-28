@@ -60,8 +60,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     private router: Router
   ) {}
 
-  /*  Load the resources.
-   */
+  /** Load the resources. */
   ngOnInit(): void {
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES_EXTENDED,
@@ -186,8 +185,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
             name: resource.name,
           }
         ),
-        confirmText: this.translate.instant('common.delete'),
-        cancelText: this.translate.instant('common.cancel'),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
         confirmColor: 'warn',
       },
     });
@@ -243,10 +242,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };
-        Object.assign(
-          data,
-          value.binding === 'newResource' && { newResource: true }
-        );
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,

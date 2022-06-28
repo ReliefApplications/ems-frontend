@@ -21,13 +21,21 @@ export default {
   argTypes: {},
 } as Meta;
 
+/**
+ * Template for story component
+ *
+ * @param args properties
+ * @returns A story component
+ */
 const TEMPLATE: Story<SafeWorkflowStepperComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
+/** The story component */
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   canUpdate: true,
   steps: [

@@ -18,12 +18,14 @@
           <mat-label>{{ 'common.name' | translate }}</mat-label>
           <input matInput formControlName="name" type="string" />
         </mat-form-field>
-        <mat-checkbox formControlName="selectAll"
-          >Select all records</mat-checkbox
-        >
-        <mat-checkbox formControlName="selectPage"
-          >Select all records on the active page</mat-checkbox
-        >
+        <mat-checkbox formControlName="selectAll">{{
+          'components.widget.settings.grid.buttons.callback.selectAllRecords'
+            | translate
+        }}</mat-checkbox>
+        <mat-checkbox formControlName="selectPage">{{
+          'components.widget.settings.grid.buttons.callback.selectAllRecordsActivePage'
+            | translate
+        }}</mat-checkbox>
         <ng-container *ngIf="relatedForms.length > 0">
           <mat-checkbox formControlName="prefillForm">{{
             'components.widget.settings.grid.buttons.callback.prefill'
@@ -109,7 +111,11 @@
                     | translate
                 }}</mat-label>
                 <ng-container
-                  *ngIf="modification.value.field.type.name === 'Int'"
+                  *ngIf="
+                    ['Int', 'Float'].includes(
+                      modification.value.field.type.name
+                    )
+                  "
                 >
                   <input matInput formControlName="value" type="number" />
                 </ng-container>
@@ -128,8 +134,9 @@
                 </ng-container>
                 <ng-container
                   *ngIf="
-                    modification.value.field.type.name !== 'Int' &&
-                    modification.value.field.type.name !== 'Boolean'
+                    !['Int', 'Float'].includes(
+                      modification.value.field.type.name
+                    ) && modification.value.field.type.name !== 'Boolean'
                   "
                 >
                   <input matInput formControlName="value" type="string" />
@@ -328,7 +335,6 @@
                   *ngIf="fields.length > 0"
                   [form]="$any(buttonForm.controls.bodyFields)"
                   [fields]="fields"
-                  [factory]="factory"
                 ></safe-tab-fields>
               </ng-template>
             </mat-tab>

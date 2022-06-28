@@ -63,6 +63,7 @@ export const init = (
     },
     filters: [] as any[],
     resourceFieldsName: [] as any[],
+    /** Initiate the resource question component */
     onInit(): void {
       survey.Serializer.addProperty('resource', {
         name: 'resource',
@@ -462,6 +463,11 @@ export const init = (
         visibleIndex: 4,
       });
     },
+    /**
+     * Get the resource after the question is loaded
+     *
+     * @param question The current resource question
+     */
     onLoaded(question: any): void {
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
@@ -550,6 +556,13 @@ export const init = (
         }
       }
     },
+    /**
+     * Update the question properties when the resource property is changed
+     *
+     * @param question The current question
+     * @param propertyName The name of the property
+     * @param newValue The new value assigned to the property by the user
+     */
     onPropertyChanged(
       question: any,
       propertyName: string,

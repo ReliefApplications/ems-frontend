@@ -36,8 +36,12 @@ import { SafeLayoutModalModule } from './components/layout-modal/layout-modal.mo
 import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackbar-spinner.module';
 import { SafeSkeletonTableModule } from './components/skeleton/skeleton-table/skeleton-table.module';
 import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
+import { SafeUserSummaryModule } from './components/user-summary/user-summary.module';
 import { SafeDateModule } from './pipes/date/date.module';
+import { SafeIconModule } from './components/ui/icon/icon.module';
+import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
 
+/** Main module for the safe project */
 @NgModule({
   exports: [
     SafeLayoutModule,
@@ -77,7 +81,11 @@ import { SafeDateModule } from './pipes/date/date.module';
     SafeSnackbarSpinnerModule,
     SafeSkeletonTableModule,
     SafeSkeletonModule,
+    SafeUserSummaryModule,
     SafeDateModule,
+    SafeIconModule,
+    SafeRoleSummaryModule,
   ],
+  declarations: [],
 })
 export class SafeModule {}

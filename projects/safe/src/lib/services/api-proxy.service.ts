@@ -41,6 +41,11 @@ export class SafeApiProxyService {
 
   /**
    * Sends a ping request using the passed arguments
+   *
+   * @param name - The name of the API
+   * @param pingUrl - The url to ping
+   * @returns An observable with results of the request, or null if name is
+   * undefined or empty
    */
   public buildPingRequest(name: string | undefined, pingUrl: string): any {
     if (name) {

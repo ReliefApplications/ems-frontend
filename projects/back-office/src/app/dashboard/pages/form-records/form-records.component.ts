@@ -1,12 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  Component,
-  ComponentFactory,
-  ComponentFactoryResolver,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   GetFormByIdQueryResponse,
@@ -47,6 +40,7 @@ const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
 export class FormRecordsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
+  public loadingMore = false;
   private recordsQuery!: QueryRef<GetFormRecordsQueryResponse>;
   public id = '';
   public form: any;
@@ -58,9 +52,6 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   private recordsSubscription?: Subscription;
   public cachedRecords: Record[] = [];
   public defaultColumns = DEFAULT_COLUMNS;
-
-  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
-  public factory?: ComponentFactory<any>;
 
   // === DELETED RECORDS VIEW ===
   public showDeletedRecords = false;
@@ -79,19 +70,14 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private downloadService: SafeDownloadService,
-    private resolver: ComponentFactoryResolver,
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService
   ) {}
 
-  /*  Load the records, using the form id passed as a parameter.
-   */
+  /** Load the records, using the form id passed as a parameter. */
   ngOnInit(): void {
-    this.factory = this.resolver.resolveComponentFactory(
-      SafeRecordHistoryComponent
-    );
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.getFormData();
@@ -120,8 +106,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
     this.recordsSubscription = this.recordsQuery.valueChanges.subscribe(
       (res) => {
-        this.cachedRecords = res.data.form.records.edges.map(
-          (x: any) => x.node
+        this.cachedRecords.push(
+          ...res.data.form.records.edges.map((x: any) => x.node)
         );
         this.dataSource = this.cachedRecords.slice(
           ITEMS_PER_PAGE * this.pageInfo.pageIndex,
@@ -129,6 +115,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
         );
         this.pageInfo.length = res.data.form.records.totalCount;
         this.pageInfo.endCursor = res.data.form.records.pageInfo.endCursor;
+        this.loadingMore = false;
       }
     );
 
@@ -170,31 +157,14 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     this.pageInfo.pageIndex = e.pageIndex;
     if (
       e.pageIndex > e.previousPageIndex &&
-      e.length > this.cachedRecords.length
+      e.length > this.cachedRecords.length &&
+      ITEMS_PER_PAGE * this.pageInfo.pageIndex >= this.cachedRecords.length
     ) {
-      this.recordsQuery.fetchMore({
-        variables: {
-          id: this.id,
-          first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            form: {
-              records: {
-                edges: [
-                  ...prev.form.records.edges,
-                  ...fetchMoreResult.form.records.edges,
-                ],
-                pageInfo: fetchMoreResult.form.records.pageInfo,
-                totalCount: fetchMoreResult.form.records.totalCount,
-              },
-            },
-          });
-        },
+      this.loadingMore = true;
+      this.recordsQuery.refetch({
+        id: this.id,
+        first: ITEMS_PER_PAGE,
+        afterCursor: this.pageInfo.endCursor,
       });
     } else {
       this.dataSource = this.cachedRecords.slice(
@@ -239,8 +209,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
               name: element.name,
             }
           ),
-          confirmText: this.translate.instant('common.delete'),
-          cancelText: this.translate.instant('common.cancel'),
+          confirmText: this.translate.instant('components.confirmModal.delete'),
+          cancelText: this.translate.instant('components.confirmModal.cancel'),
           confirmColor: 'warn',
         },
       });
@@ -278,15 +248,18 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
-    const date = new Date(parseInt(version.created, 0));
+    const date = new Date(parseInt(version.createdAt, 0));
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
-        title: `Recovery data`,
-        content: `Do you confirm recovery the data from ${formatDate} to the current register?`,
-        confirmText: 'Confirm',
+        title: this.translate.instant('components.record.recovery.title'),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       },
     });
@@ -310,8 +283,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* Opens the history of the record on the right side of the screen.
-   */
+  /** Opens the history of the record on the right side of the screen. */
   public onViewHistory(id: string): void {
     this.apollo
       .query<GetRecordDetailsQueryResponse>({
@@ -323,12 +295,11 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         this.historyId = id;
         this.layoutService.setRightSidenav({
-          factory: this.factory,
+          component: SafeRecordHistoryComponent,
           inputs: {
-            record: res.data.record,
-            revert: (item: any, dialog: any) => {
-              this.confirmRevertDialog(res.data.record, item);
-            },
+            id: res.data.record.id,
+            revert: (version: any) =>
+              this.confirmRevertDialog(res.data.record, version),
           },
         });
       });

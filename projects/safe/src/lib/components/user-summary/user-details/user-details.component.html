@@ -1,0 +1,68 @@
+<form [formGroup]="form">
+  <div class="form-group">
+    <div class="form-group-row">
+      <mat-form-field appearance="outline">
+        <mat-label>
+          {{ 'components.user.summary.firstName' | translate }}
+        </mat-label>
+        <input matInput formControlName="firstName" type="text" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>
+          {{ 'components.user.summary.lastName' | translate }}
+        </mat-label>
+        <input matInput formControlName="lastName" type="text" />
+      </mat-form-field>
+    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'common.email.one' | translate }}
+      </mat-label>
+      <input matInput formControlName="email" type="text" />
+    </mat-form-field>
+  </div>
+</form>
+<!-- <div class="form-group">
+  <mat-form-field appearance="outline">
+    <mat-label>
+      {{ 'components.user.summary.region' | translate }}
+    </mat-label>
+    <mat-select formControlName="region">
+      <mat-option *ngFor="let region of regions" [value]="region">
+        {{ region }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>
+      {{ 'components.user.summary.country' | translate }}
+    </mat-label>
+    <mat-select formControlName="country">
+      <mat-option *ngFor="let country of countries" [value]="country">
+        {{ country }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>
+      {{ 'components.user.summary.locationType' | translate }}
+    </mat-label>
+    <mat-select formControlName="locationType">
+      <mat-option>{{ 'common.input.none' | translate }}</mat-option>
+      <mat-option
+        *ngFor="let location of locationTypes"
+        [value]="location"
+      >
+        {{ location }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div> -->
+<safe-button
+  variant="primary"
+  category="secondary"
+  type="submit"
+  [disabled]="!form.valid"
+  (click)="onUpdate()"
+  >{{ 'common.saveChanges' | translate }}</safe-button
+>

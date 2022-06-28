@@ -38,6 +38,9 @@ export default {
   },
 } as Meta;
 
+/**
+ * List of fields for testing.
+ */
 const DEFAULT_FIELDS = [
   {
     name: 'date',
@@ -77,6 +80,9 @@ const DEFAULT_FIELDS = [
   },
 ];
 
+/**
+ * Default meta for the pipeline fields.
+ */
 const DEFAULT_META = {
   date: {
     type: 'date',
@@ -112,8 +118,17 @@ const DEFAULT_META = {
   },
 };
 
+/**
+ * Form builder reference
+ */
 const fb = new FormBuilder();
 
+/**
+ * Template used by storybook to display the component.
+ *
+ * @param args story arguments
+ * @returns storybook template
+ */
 const TEMPLATE: Story<SafePipelineComponent> = (args) => ({
   template:
     '<safe-pipeline [fields$]=fields$ [metaFields$]=metaFields$ [pipelineForm]="pipelineForm"></safe-pipeline>',
@@ -144,5 +159,9 @@ const TEMPLATE: Story<SafePipelineComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story
+ */
 export const DEFAULT = TEMPLATE.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {};
