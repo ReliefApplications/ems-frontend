@@ -35,17 +35,31 @@ export class SafeEmailPreviewComponent implements OnInit {
    * Preview Email component.
    * Modal in read-only mode.
    *
+   * @param environment environment file used to get main url of the page
    * @param data injected dialog data
    * @param dialogRef Dialog reference
    * @param formBuilder Angular Form Builder
    * @param translate Angular translate service
    */
   constructor(
+    @Inject('environment') environment: any,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<SafeEmailPreviewComponent>,
     private formBuilder: FormBuilder,
     private translate: TranslateService
   ) {
+    // Set the editor base url based on the environment file
+    let url: string;
+    if (environment.module === 'backoffice') {
+      url = new URL(environment.backOfficeUri).pathname;
+    } else {
+      url = new URL(environment.frontOfficeUri).pathname;
+    }
+    if (url !== '/') {
+      this.editor.base_url = url.slice(0, -1) + '/tinymce';
+    } else {
+      this.editor.base_url = '/tinymce';
+    }
     // Set the editor language
     const lang = this.translate.currentLang;
     const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
