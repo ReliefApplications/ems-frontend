@@ -6,9 +6,9 @@ import {
   OnDestroy,
   Inject,
 } from '@angular/core';
-import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { PopupService } from '../../../services/popup.service';
 import { applyFilters } from './filter';
 import get from 'lodash/get';
 
@@ -72,8 +72,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private legendControl: any;
 
   // === RECORDS ===
-  private selectedItem: Record | null = null;
-  private data: any[] = [];
   private dataQuery: any;
   private dataSubscription?: Subscription;
   private displayFields: string[] = [];
@@ -91,11 +89,13 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
    * @param environment platform environment
    * @param apollo Apollo client
    * @param queryBuilder The querybuilder service
+   * @param popupService The map popup service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private popupService: PopupService
   ) {
     this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
@@ -126,7 +126,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     // Gets the settings from the DB.
     if (this.settings.query) {
-      const builtQuery = this.queryBuilder.buildQuery(this.settings);
+      const builtQuery = this.queryBuilder.buildQuery(this.settings, true);
       this.dataQuery = this.apollo.watchQuery<any>({
         query: builtQuery,
         variables: {
@@ -215,30 +215,19 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Creates a featureGroup which will contain all the markers/pointer
     if (!this.markersLayer) {
       const markersLayerGroup = L.featureGroup().addTo(this.map);
-      markersLayerGroup.on('click', (event: any) => {
-        this.selectedItem = this.data.find(
-          (x) => x.id === event.layer.options.id
-        );
-        this.popupMarker = L.popup({})
-          .setLatLng([event.latlng.lat, event.latlng.lng])
-          .setContent(get(this.selectedItem, 'data', ''))
-          .addTo(this.map);
-      });
-
       // Deactivated cluster feature
-      //this.markersLayer = L.markerClusterGroup({}).addTo(markersLayerGroup);
+      // this.markersLayer = L.markerClusterGroup({}).addTo(markersLayerGroup);
       this.markersLayer = markersLayerGroup;
     } else {
       this.markersLayer.clearLayers();
     }
 
     // Loops throught fields to get all markers
-    this.data = [];
     this.markersCategories = [];
     for (const field in res.data) {
       if (Object.prototype.hasOwnProperty.call(res.data, field)) {
         res.data[field].edges.map((x: any) => {
-          // CReates the marker
+          // Creates the marker
           this.setMarker(x.node);
         });
       }
@@ -296,16 +285,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const longitude = Number(item[this.settings.longitude]);
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
       if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
-        // Sets the marker popup contents.
-        let data = '';
-        for (const key of Object.keys(item)) {
-          if (this.displayFields.includes(key)) {
-            data += `<div><b>${key}:</b> ${item[key]}</div>`;
-          }
-        }
-        const obj = { id: item.id, data };
-        this.data.push(obj);
-
         // Sets the style of the marker depending on the rules applied.
         const options = Object.assign({}, MARKER_OPTIONS);
         Object.assign(options, { id: item.id });
@@ -324,6 +303,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           this.markersCategories[item[this.settings.category]] = [];
         }
         this.markersCategories[item[this.settings.category]].push(marker);
+        marker.bindPopup(
+          this.popupService.getPopupHTML(item, this.displayFields)
+        );
       }
     }
   }
