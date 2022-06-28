@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Input,
   AfterViewInit,
+  Inject,
 } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
@@ -38,12 +39,27 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   /**
    * Modal content for the settings of the editor widgets.
    *
+   * @param environment Environment file used to get main url of the page
    * @param formBuilder Angular Form Builder
+   * @param translate Translate service provided with i18n
    */
   constructor(
+    @Inject('environment') environment: any,
     private formBuilder: FormBuilder,
     private translate: TranslateService
   ) {
+    // Set the editor base url based on the environment file
+    let url: string;
+    if (environment.module === 'backoffice') {
+      url = new URL(environment.backOfficeUri).pathname;
+    } else {
+      url = new URL(environment.frontOfficeUri).pathname;
+    }
+    if (url !== '/') {
+      this.editor.base_url = url.slice(0, -1) + '/tinymce';
+    } else {
+      this.editor.base_url = '/tinymce'
+    }
     // Set the editor language
     const lang = this.translate.currentLang;
     const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
