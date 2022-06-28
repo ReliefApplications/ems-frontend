@@ -9,6 +9,6 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./map-popup.component.scss'],
 })
 export class SafeMapPopupComponent {
-  @Input() displayFields: string[] = [];
+  @Input() displayFields: { name: string; label: string | undefined }[] = [];
   @Input() data: any;
 }

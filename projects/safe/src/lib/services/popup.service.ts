@@ -31,7 +31,10 @@ export class PopupService {
    * @param displayFields The fields of the record that should be displayed in the popup
    * @returns The HTML for the popup
    */
-  getPopupHTML(data: any, displayFields: string[]): HTMLElement {
+  getPopupHTML(
+    data: any,
+    displayFields: { name: string; label: string | undefined }[]
+  ): HTMLElement {
     // Create element
     const popup = document.createElement('safe-map-popup');
 

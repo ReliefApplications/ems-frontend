@@ -304,7 +304,15 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         }
         this.markersCategories[item[this.settings.category]].push(marker);
         marker.bindPopup(
-          this.popupService.getPopupHTML(item, this.displayFields)
+          this.popupService.getPopupHTML(
+            item,
+            this.displayFields.map((field) => ({
+              name: field,
+              label: this.settings.query.fields.find(
+                (x: any) => x.name === field
+              )?.label,
+            }))
+          )
         );
       }
     }

@@ -1,3 +1,3 @@
 <div *ngFor="let field of displayFields">
-  <b>{{ field }}:</b> {{ data[field] }}
+  <b>{{ field.label ? field.label : field.name }}:</b> {{ data[field.name] }}
 </div>
