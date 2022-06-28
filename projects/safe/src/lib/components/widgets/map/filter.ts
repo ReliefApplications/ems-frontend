@@ -1,9 +1,19 @@
+import { isEqual, isArray } from 'lodash';
+
+/**
+ * Calculate an operation for filters
+ *
+ * @param field The value which comes from the record item
+ * @param operator The operator to use for the operation
+ * @param value The value which comes from the filter
+ * @returns A boolean, indicating the result of the operation
+ */
 const operate = (field: any, operator: string, value: any): boolean => {
   switch (operator) {
     case 'eq':
-      return field === value;
+      return isEqual(field, value);
     case 'neq':
-      return field !== value;
+      return !isEqual(field, value);
     case 'gte':
       return field >= value;
     case 'gt':
@@ -21,9 +31,27 @@ const operate = (field: any, operator: string, value: any): boolean => {
     case 'isnotempty':
       return field.lenght > 0;
     case 'contains':
-      return field.includes(value);
+      if (isArray(value)) {
+        for (const itemValue of value) {
+          if (!field.includes(itemValue)) {
+            return false;
+          }
+        }
+        return true;
+      } else {
+        return field.includes(value);
+      }
     case 'doesnotcontain':
-      return !field.includes(value);
+      if (isArray(value)) {
+        for (const itemValue of value) {
+          if (field.includes(itemValue)) {
+            return false;
+          }
+        }
+        return true;
+      } else {
+        return !field.includes(value);
+      }
     case 'startswith':
       return field.startsWith(value);
     case 'endswith':
@@ -33,6 +61,13 @@ const operate = (field: any, operator: string, value: any): boolean => {
   }
 };
 
+/**
+ * Test a record through a filter
+ *
+ * @param value The record to test
+ * @param filter The filter to apply
+ * @returns A boolean indicating if the record passes the filter
+ */
 export const applyFilters = (value: any, filter: any): boolean => {
   let res = false;
   let logic = false;
