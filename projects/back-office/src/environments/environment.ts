@@ -13,6 +13,9 @@ import { theme } from '../themes/default/default.local';
 //   strictDiscoveryDocumentValidation: false,
 // };
 
+/**
+ * Authentication parameters for local development.
+ */
 const authConfig: AuthConfig = {
   issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
   redirectUri: 'http://localhost:4200/',

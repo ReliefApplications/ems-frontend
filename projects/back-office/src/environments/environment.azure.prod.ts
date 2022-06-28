@@ -1,6 +1,9 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default/default.prod';
 
+/**
+ * Authentication parameters for azure production server.
+ */
 const authConfig: AuthConfig = {
   issuer:
     'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/v2.0',
@@ -13,6 +16,9 @@ const authConfig: AuthConfig = {
   strictDiscoveryDocumentValidation: false,
 };
 
+/**
+ * Environment file for azure production server.
+ */
 export const environment = {
   production: true,
   apiUrl: 'https://ems-safe.who.int/api',

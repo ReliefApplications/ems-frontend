@@ -1,6 +1,9 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default/default.prod';
 
+/**
+ * Authentication parameters for production server.
+ */
 const authConfig: AuthConfig = {
   issuer:
     'https://login.microsoftonline.com/fbacd48d-ccf4-480d-baf0-31048368055f/v2.0',
@@ -14,6 +17,9 @@ const authConfig: AuthConfig = {
   strictDiscoveryDocumentValidation: false,
 };
 
+/**
+ * Environment file for production server.
+ */
 export const environment = {
   production: true,
   apiUrl: 'https://safe-api.development.humanitarian.tech',
