@@ -7,6 +7,7 @@ import { divisionForm } from '../../map-forms';
 interface DialogData {
   value: any;
   fields: any[];
+  query: any;
 }
 
 /**
@@ -21,6 +22,7 @@ export class MapClorophletDivisionComponent implements OnInit {
   public form!: FormGroup;
 
   public fields: any[] = [];
+  public query: any;
 
   /**
    * Single clorophlet configuration component.
@@ -30,6 +32,7 @@ export class MapClorophletDivisionComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.form = divisionForm(data.value);
     this.fields = data.fields;
+    this.query = data.query;
   }
 
   ngOnInit(): void {}

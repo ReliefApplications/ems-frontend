@@ -7,6 +7,7 @@ import { markerRuleForm } from '../../map-forms';
 interface DialogData {
   value: any;
   fields: any[];
+  query: any;
 }
 
 /**
@@ -22,6 +23,7 @@ export class MapMarkerRuleComponent implements OnInit {
   public form!: FormGroup;
 
   public fields: any[] = [];
+  public query: any;
 
   /**
    * Single Marker Rule component.
@@ -31,6 +33,7 @@ export class MapMarkerRuleComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.form = markerRuleForm(data.value);
     this.fields = data.fields;
+    this.query = data.query;
   }
 
   ngOnInit(): void {}
