@@ -16,6 +16,7 @@ import { MapMarkerRuleComponent } from '../map-marker-rule/map-marker-rule.compo
 export class MapMarkersComponent implements OnInit {
   @Input() form!: FormGroup;
 
+  @Input() selectedFields: any[] = [];
   @Input() formatedSelectedFields: any[] = [];
   public numberFields: any[] = [];
 
