@@ -8,7 +8,6 @@ export const EDITOR_LANGUAGE_PAIRS: { key: string; tinymceKey: string }[] = [
 
 /** Widget Editor tinymce configuration. */
 export const WIDGET_EDITOR_CONFIG = {
-  base_url: '/tinymce',
   suffix: '.min',
   plugins:
     'preview paste importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap hr nonbreaking insertdatetime advlist lists wordcount imagetools textpattern help charmap quickbars emoticons',
@@ -30,7 +29,6 @@ export const WIDGET_EDITOR_CONFIG = {
 
 /** Email Editor tinymce configuration. */
 export const EMAIL_EDITOR_CONFIG = {
-  base_url: '/tinymce',
   suffix: '.min',
   plugins:
     'preview paste importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap hr nonbreaking insertdatetime advlist lists wordcount imagetools textpattern help charmap quickbars emoticons',
