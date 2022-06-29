@@ -23,7 +23,7 @@
       'components.widget.settings.summaryCard.dynamic' | translate
     }}</mat-radio-button>
   </mat-radio-group> -->
-  
+
   <h2>
     {{
       'components.widget.settings.summaryCard.create.choice.template'
@@ -31,9 +31,15 @@
     }}
   </h2>
   <mat-divider></mat-divider>
-  <safe-button variant="primary" category="tertiary" [block]="true" (click)="onCreate()">{{
-    'components.widget.settings.summaryCard.create.choice.blank' | translate
-  }}</safe-button>
+  <safe-button
+    variant="primary"
+    category="tertiary"
+    [block]="true"
+    (click)="onCreate()"
+    >{{
+      'components.widget.settings.summaryCard.create.choice.blank' | translate
+    }}</safe-button
+  >
 </div>
 <div mat-dialog-actions class="mat-dialog-actions" align="end">
   <button mat-button (click)="onClose()">
