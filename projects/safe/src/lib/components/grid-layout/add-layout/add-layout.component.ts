@@ -5,11 +5,11 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
-import { SafeGridLayoutService } from '../../../../services/grid-layout.service';
-import { Form } from '../../../../models/form.model';
-import { Layout } from '../../../../models/layout.model';
-import { Resource } from '../../../../models/resource.model';
-import { SafeLayoutModalComponent } from '../../../layout-modal/layout-modal.component';
+import { SafeGridLayoutService } from '../../../services/grid-layout.service';
+import { Form } from '../../../models/form.model';
+import { Layout } from '../../../models/layout.model';
+import { Resource } from '../../../models/resource.model';
+import { SafeLayoutModalComponent } from '../layout-modal/layout-modal.component';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource

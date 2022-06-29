@@ -4,8 +4,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AddLayoutComponent } from './add-layout.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { SafeButtonModule } from '../../../ui/button/button.module';
-import { SafeLayoutModule } from '../../../layout/layout.module';
+import { SafeButtonModule } from '../../ui/button/button.module';
+import { SafeLayoutModule } from '../../layout/layout.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 
