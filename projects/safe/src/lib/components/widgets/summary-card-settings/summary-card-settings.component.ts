@@ -7,7 +7,7 @@ import {
   AfterViewInit,
   HostListener,
 } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
   TileLayoutReorderEvent,
@@ -15,6 +15,7 @@ import {
 } from '@progress/kendo-angular-layout';
 import { SafeCardCreationModalComponent } from './card-creation-modal/card-creation-modal.component';
 import { SafeCardSettingsComponent } from './card-settings/card-settings.component';
+import get from 'lodash/get';
 
 /** Define max height of widgets */
 const MAX_ROW_SPAN = 4;
@@ -27,7 +28,7 @@ const DEFAULT_CARD_HEIGHT = 2;
 const DEFAULT_CARD_WIDTH = 2;
 
 /**
- *
+ * Summary Card Settings component.
  */
 @Component({
   selector: 'safe-summary-card-settings',
@@ -59,31 +60,34 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Modal content for the settings of the editor widgets.
+   * Get cards settings as Form Array
    *
-   * @param formBuilder Angular Form Builder
-   * @param dialog
+   * @returns cards as Form Array
    */
-  constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
+  get cards(): FormArray {
+    return this.tileForm?.get('cards') as FormArray;
+  }
+
+  /**
+   * Summary Card Settings component.
+   *
+   * @param fb Angular Form Builder
+   * @param dialog Material Dialog Service
+   */
+  constructor(private fb: FormBuilder, private dialog: MatDialog) {}
 
   /**
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
-    const cards: any[] = [];
-    if (this.tile.settings.cards && this.tile.settings.cards.length > 0) {
-      this.tile.settings.cards.map((card: any) => {
-        cards.push(this.formBuilder.group(card));
-      });
-    }
-    this.tileForm = this.formBuilder.group({
+    this.tileForm = this.fb.group({
       id: this.tile.id,
       title: this.tile.settings.title,
-      isDynamic: this.tile.settings.isDynamic
-        ? this.tile.settings.isDynamic
-        : false,
-      cards: this.formBuilder.array(cards),
+      isDynamic: get(this.tile, 'settings.isDynamic', false),
+      cards: this.fb.array(
+        get(this.tile, 'settings.cards', []).map((x: any) => this.cardForm(x))
+      ),
     });
     this.change.emit(this.tileForm);
   }
@@ -120,45 +124,53 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Creates a new card
+   * Add a new card to the cards form array.
+   * Open a modal before adding it.
    */
   addCard() {
     const dialogRef = this.dialog.open(SafeCardCreationModalComponent, {
       panelClass: 'preferences-dialog',
     });
-
     dialogRef.afterClosed().subscribe((res: any) => {
       if (res) {
-        (this.tileForm?.controls.cards as any).push(
-          this.formBuilder.group({
-            title: 'New card',
-            isDynamic: res.isDynamic,
-            height: DEFAULT_CARD_HEIGHT,
-            width: DEFAULT_CARD_WIDTH,
-          })
-        );
+        this.cards.push(this.cardForm(res));
       }
     });
   }
 
   /**
-   * Removes an specific card from the data
+   * Create a card form
    *
-   * @param i
+   * @param value card value, optional
+   * @returns card as form group
    */
-  removeCard(i: number) {
-    (this.tileForm?.controls.cards as any).removeAt(i);
+  private cardForm(value?: any): FormGroup {
+    return this.fb.group({
+      title: get(value, 'title', 'New Card'),
+      isDynamic: value.isDynamic,
+      height: DEFAULT_CARD_HEIGHT,
+      width: DEFAULT_CARD_WIDTH,
+    });
   }
 
   /**
-   * Opens a settings modal for an specific card
+   * Remove a card from the cards form array.
    *
-   * @param i
+   * @param index index of card to remove
    */
-  openCardSettings(i: number) {
+  removeCard(index: number) {
+    this.cards.removeAt(index);
+  }
+
+  /**
+   * Open Card Settings at index
+   *
+   * @param index index of card to open
+   */
+  openCardSettings(index: number) {
     const dialogRef = this.dialog.open(SafeCardSettingsComponent, {
       disableClose: true,
-      data: this.tileForm?.value.cards[i],
+      data: this.cards.at(index).value,
       position: {
         bottom: '0',
         right: '0',
@@ -166,10 +178,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       panelClass: 'tile-settings-dialog',
     });
 
-    dialogRef.afterClosed().subscribe((res: any) => {
-      if (res) {
-        (this.tileForm?.controls.cards as any).controls[i].setValue(res);
-        console.log(res);
+    dialogRef.afterClosed().subscribe((value: any) => {
+      if (value) {
+        this.cards.at(index).setValue(value);
       }
     });
   }

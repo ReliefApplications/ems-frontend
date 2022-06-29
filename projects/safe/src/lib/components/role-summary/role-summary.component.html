@@ -1,0 +1,37 @@
+<h1>
+  {{ ('common.role.one' | translate) + ' - ' + role?.title }}
+</h1>
+<mat-tab-group>
+  <mat-tab [label]="'components.role.summary.title' | translate">
+    <ng-template matTabContent>
+      <safe-role-details
+        *ngIf="role && !loading"
+        [role]="role"
+        (edit)="onEditRole($event)"
+      ></safe-role-details>
+      <safe-spinner *ngIf="loading"></safe-spinner>
+    </ng-template>
+  </mat-tab>
+  <!-- <mat-tab [label]="'common.resource.few' | translate">
+    <ng-template matTabContent>
+      <safe-role-resources *ngIf="role"></safe-role-resources>
+      <safe-spinner *ngIf="loading"></safe-spinner>
+    </ng-template>
+  </mat-tab> -->
+  <!-- <mat-tab [label]="'components.role.summary.features' | translate">
+    <ng-template matTabContent>
+      <safe-role-features *ngIf="role"></safe-role-features>
+      <safe-spinner *ngIf="loading"></safe-spinner>
+    </ng-template>
+  </mat-tab> -->
+  <mat-tab [label]="'common.channel.few' | translate">
+    <ng-template matTabContent>
+      <safe-role-channels
+        *ngIf="role && !loading"
+        [role]="role"
+        (edit)="onEditRole($event)"
+      ></safe-role-channels>
+      <safe-spinner *ngIf="loading"></safe-spinner>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

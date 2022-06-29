@@ -26,13 +26,15 @@ export class SafeAggregationBuilderComponent implements OnInit {
   // === REACTIVE FORM ===
   @Input() aggregationForm: FormGroup = new FormGroup({});
 
+  @Input() reload$!: Observable<boolean>;
+
   // === DATA ===
   private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   public loading = true;
   public loadingForm = false;
-  private loadingMore = false;
+  public loadingMore = false;
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -162,6 +164,13 @@ export class SafeAggregationBuilderComponent implements OnInit {
           )
         );
       });
+
+    this.reload$.subscribe(() => {
+      this.loading = true;
+      setTimeout(() => {
+        this.loading = false;
+      }, 1000);
+    });
   }
 
   /**

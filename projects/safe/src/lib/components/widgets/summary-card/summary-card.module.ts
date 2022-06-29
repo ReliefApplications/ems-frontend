@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeSummaryCardComponent } from './summary-card.component';
 
-/** Module for scheduler  component */
+/** Summary Card Widget Module */
 @NgModule({
   declarations: [SafeSummaryCardComponent],
   imports: [CommonModule, LayoutModule],

@@ -16,19 +16,17 @@ import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.compon
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeApplicationService } from '../../services/application.service';
 import { SafeAddRoleComponent } from './components/add-role/add-role.component';
-import { SafeEditRoleComponent } from './components/edit-role/edit-role.component';
 import {
   AddRoleMutationResponse,
   ADD_ROLE,
   DeleteRoleMutationResponse,
   DELETE_ROLE,
-  EditRoleMutationResponse,
-  EDIT_ROLE,
 } from '../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /**
  * This component is used to display the roles page in the platform
@@ -72,13 +70,17 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate This is the service that is used to
    * translate the text in the application.
+   * @param router Angular router
+   * @param activatedRoute Current Angular route
    */
   constructor(
     public dialog: MatDialog,
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -101,6 +103,9 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  /**
+   * Filter roles and users.
+   */
   private filterPredicate(): void {
     this.roles.filterPredicate = (data: any) =>
       (this.searchText.trim().length === 0 ||
@@ -164,48 +169,6 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
                 console.log(err);
               }
             );
-        }
-      }
-    });
-  }
-
-  /**
-   * Display the EditRole modal, passing a role as a parameter.
-   * Edit the role when closed, if there is a result.
-   *
-   * @param role The role to edit
-   */
-  onEdit(role: Role): void {
-    const dialogRef = this.dialog.open(SafeEditRoleComponent, {
-      data: {
-        role,
-        application: this.inApplication,
-      },
-    });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-        if (this.inApplication) {
-          this.applicationService.editRole(role, value);
-        } else {
-          this.apollo
-            .mutate<EditRoleMutationResponse>({
-              mutation: EDIT_ROLE,
-              variables: {
-                id: role.id,
-                permissions: value.permissions,
-                channels: value.channels,
-                title: value.title,
-              },
-            })
-            .subscribe((res) => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.role.one').toLowerCase(),
-                  value: role.title,
-                })
-              );
-              this.getRoles();
-            });
         }
       }
     });
@@ -287,5 +250,14 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchText = '';
     this.usersFilter = '';
     this.applyFilter('', null);
+  }
+
+  /**
+   * Open role in new page
+   *
+   * @param role role to see details of
+   */
+  onOpen(role: Role): void {
+    this.router.navigate([role.id], { relativeTo: this.activatedRoute });
   }
 }

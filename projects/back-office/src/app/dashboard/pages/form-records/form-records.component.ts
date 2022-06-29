@@ -1,12 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  Component,
-  ComponentFactory,
-  ComponentFactoryResolver,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   GetFormByIdQueryResponse,
@@ -60,9 +53,6 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   public cachedRecords: Record[] = [];
   public defaultColumns = DEFAULT_COLUMNS;
 
-  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
-  public factory?: ComponentFactory<any>;
-
   // === DELETED RECORDS VIEW ===
   public showDeletedRecords = false;
 
@@ -80,7 +70,6 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private downloadService: SafeDownloadService,
-    private resolver: ComponentFactoryResolver,
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
@@ -89,9 +78,6 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   /** Load the records, using the form id passed as a parameter. */
   ngOnInit(): void {
-    this.factory = this.resolver.resolveComponentFactory(
-      SafeRecordHistoryComponent
-    );
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.getFormData();
@@ -262,7 +248,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
 
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
-    const date = new Date(parseInt(version.created, 0));
+    const date = new Date(parseInt(version.createdAt, 0));
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
@@ -309,12 +295,11 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         this.historyId = id;
         this.layoutService.setRightSidenav({
-          factory: this.factory,
+          component: SafeRecordHistoryComponent,
           inputs: {
-            record: res.data.record,
-            revert: (item: any, dialog: any) => {
-              this.confirmRevertDialog(res.data.record, item);
-            },
+            id: res.data.record.id,
+            revert: (version: any) =>
+              this.confirmRevertDialog(res.data.record, version),
           },
         });
       });

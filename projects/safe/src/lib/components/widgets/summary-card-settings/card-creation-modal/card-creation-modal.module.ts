@@ -7,6 +7,7 @@ import { SafeCardCreationModalComponent } from './card-creation-modal.component'
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatDividerModule } from '@angular/material/divider';
 
 /** Module for scheduler  component */
 @NgModule({
@@ -19,6 +20,7 @@ import { MatRadioModule } from '@angular/material/radio';
     SafeButtonModule,
     TranslateModule,
     MatRadioModule,
+    MatDividerModule,
   ],
   exports: [SafeCardCreationModalComponent],
 })

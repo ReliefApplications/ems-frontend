@@ -288,11 +288,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
         const data = { name: value.name };
         Object.assign(
           data,
-          value.binding === 'newResource' && { newResource: true },
-          value.binding === 'fromResource' &&
-            value.resource && { resource: value.resource },
-          value.binding === 'fromResource' &&
-            value.template && { template: value.template }
+          value.resource && { resource: value.resource },
+          value.template && { template: value.template }
         );
         this.apollo
           .mutate<AddFormMutationResponse>({

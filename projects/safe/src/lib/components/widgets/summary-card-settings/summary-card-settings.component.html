@@ -7,11 +7,20 @@
       </mat-form-field>
     </div>
     <div class="settings">
-      <mat-radio-group aria-label="Select an option" formControlName="isDynamic">
-        <mat-radio-button [value]="false">{{ 'components.widget.settings.summaryCard.static' | translate }}</mat-radio-button>
-        <mat-radio-button [value]="true">{{ 'components.widget.settings.summaryCard.dynamic' | translate }}</mat-radio-button>
+      <mat-radio-group
+        aria-label="Select an option"
+        formControlName="isDynamic"
+      >
+        <mat-radio-button [value]="false">{{
+          'components.widget.settings.summaryCard.static' | translate
+        }}</mat-radio-button>
+        <mat-radio-button [value]="true">{{
+          'components.widget.settings.summaryCard.dynamic' | translate
+        }}</mat-radio-button>
       </mat-radio-group>
-      <safe-button (click)="addCard()" icon="add">{{ 'components.widget.settings.summaryCard.addCard' | translate }}</safe-button>
+      <safe-button (click)="addCard()" icon="add">{{
+        'components.widget.settings.summaryCard.add' | translate
+      }}</safe-button>
     </div>
     <kendo-tilelayout
       [columns]="colsNumber"
@@ -21,16 +30,22 @@
       (reorder)="onReorder($event)"
       (resize)="onResize($event)"
     >
-      <kendo-tilelayout-item *ngFor="let card of $any(tileForm.controls.cards).controls; let i = index"
-      [colSpan]="card.value.width > colsNumber ? colsNumber : card.value.width"
-      [rowSpan]="card.value.height"
+      <kendo-tilelayout-item
+        *ngFor="let card of cards.controls; let i = index"
+        [colSpan]="
+          card.value.width > colsNumber ? colsNumber : card.value.width
+        "
+        [rowSpan]="card.value.height"
       >
         <kendo-tilelayout-item-header class="widget-header">
-          <span class="widget-title" [title]="card.value.title">{{ card.value.title }}</span>
+          <span class="widget-title" [title]="card.value.title">{{
+            card.value.title
+          }}</span>
         </kendo-tilelayout-item-header>
         <safe-button
           icon="more_vert"
-          [isIcon]="true" class="widget-options"
+          [isIcon]="true"
+          class="widget-options"
           [matMenuTriggerFor]="menu"
         ></safe-button>
         <mat-menu #menu="matMenu">
@@ -44,7 +59,11 @@
             <span>{{ 'common.delete' | translate }}</span>
           </button>
         </mat-menu>
-        <safe-icon *ngIf="!tileForm.value.isDynamic" icon="drag_indicator" class="widget-handle">
+        <safe-icon
+          *ngIf="!tileForm.value.isDynamic"
+          icon="drag_indicator"
+          class="widget-handle"
+        >
         </safe-icon>
       </kendo-tilelayout-item>
     </kendo-tilelayout>

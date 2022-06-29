@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatRadioModule } from '@angular/material/radio';
 
-/** Module for scheduler  component */
+/** Card Settings Module */
 @NgModule({
   declarations: [SafeCardSettingsComponent],
   imports: [

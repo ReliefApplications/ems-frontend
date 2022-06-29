@@ -61,6 +61,14 @@ export class ChecklistDatabase {
     this.dataChange.next(this.buildFileTree(data, 0));
   }
 
+  /**
+   * Generate checkbox tree
+   *
+   * @param obj object to build tree from
+   * @param level deep level
+   * @param prefix prefix of tree level
+   * @returns list of tree item nodes
+   */
   buildFileTree(
     obj: { [key: string]: any },
     level: number,
@@ -99,7 +107,7 @@ export class ChecklistDatabase {
 }
 
 /**
- *
+ * Checkbox tree component.
  */
 @Component({
   selector: 'safe-checkbox-tree',
@@ -136,7 +144,7 @@ export class SafeCheckboxTreeComponent implements OnInit {
   @Output() valueChange = new EventEmitter<TreeItemFlatNode[]>();
 
   /**
-   *
+   * Checkbox tree component.
    */
   constructor() {
     this.treeFlattener = new MatTreeFlattener(

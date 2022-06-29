@@ -247,16 +247,20 @@
 			"title": "Accès"
 		},
 		"aggregationBuilder": {
+			"accumulators": "Accumulateurs",
 			"addField": "Ajouter un champ",
+			"addRule": "Ajouter une règle",
 			"addStage": "Ajouter une étape",
 			"dataset": {
 				"select": "Sélectionner la source de données"
 			},
 			"fieldName": "Nom du champ",
 			"groupBy": "Regrouper par",
+			"groupingRules": "Grouper par",
 			"mapping": {
-				"xAxis": "Axe X",
-				"yAxis": "Axe Y"
+				"category": "Categorie",
+				"field": "Valeur",
+				"series": "Séries"
 			},
 			"operator": "Opérateur",
 			"operators": {
@@ -376,7 +380,6 @@
 		"form": {
 			"create": {
 				"choice": {
-					"blank": "Créer un formulaire vide",
 					"inherit": "Copier un modèle de ressources existant",
 					"resource": "Créer une nouvelle ressource",
 					"template": "Commencer depuis un modèle existant"
@@ -384,8 +387,12 @@
 				"template": {
 					"from": "Depuis le modèle",
 					"placeholder": "Choisir un modèle existant",
-					"title": "Depuis la ressource",
-					"tooltip": "Si aucun modèle n'est sélectionné, la structure principale sera chargée"
+					"title": "Depuis la ressource"
+				},
+				"tooltip": {
+					"inherit": "Creates a child form using a template from the resource linked to the core form",
+					"resource": "Creates a core form that allows the creation of children forms linked to this core form. It will also create a new resource.",
+					"template": "Si aucun modèle n'est sélectionné, la structure principale sera chargée"
 				}
 			},
 			"delete": {
@@ -455,6 +462,7 @@
 				"withValue": "avec valeur"
 			},
 			"download": "Télécharger l'historique",
+			"empty": "Aucune activité détectée",
 			"field": {
 				"all": "Tous les champs",
 				"select": "Sélectionner un champ"
@@ -641,6 +649,10 @@
 			"impersonate": {
 				"title": "Choix du rôle à simuler"
 			},
+			"summary": {
+				"features": "Fonctionnalités",
+				"title": "Résumé"
+			},
 			"update": {
 				"permissions": "Permissions",
 				"title": "Modifier les permissions des rôles et les canaux de diffusion"
@@ -656,6 +668,14 @@
 				"role": {
 					"description": "Sélectionner le rôle à assigner"
 				}
+			},
+			"summary": {
+				"country": "Pays",
+				"firstName": "Prénom",
+				"lastName": "Nom",
+				"locationType": "Type de localisation",
+				"region": "Région",
+				"title": "Résumé"
 			},
 			"update": {
 				"title": "Modifier l'utilisateur"
@@ -736,8 +756,17 @@
 						"title": "Palette de couleurs"
 					},
 					"position": "Position",
+					"series": {
+						"stack": {
+							"enable": "Empiler les séries",
+							"usePercentage": "Utiliser des pourcentages"
+						},
+						"title": "Séries"
+					},
 					"text": "Texte",
-					"type": "Graphique"
+					"type": "Graphique",
+					"xAxis": "Axe X",
+					"yAxis": "Axe Y"
 				},
 				"grid": {
 					"actions": {
@@ -764,6 +793,8 @@
 							},
 							"prefill": "Préremplir le formulaire avec les données sélectionnées",
 							"save": "Sauvegarder automatiquement",
+							"selectAllRecords": "Sélectionner tous les enregistrements",
+							"selectAllRecordsActivePage": "Sélectionner tous les enregistrements sur la page active",
 							"selectDisplay": "Sélectionner les champs affichés",
 							"sendMail": "Envoyer le mail",
 							"workflow": {
@@ -817,6 +848,34 @@
 							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte"
 						}
 					}
+				},
+				"summaryCard": {
+					"add": "Ajouter un carte",
+					"card": {
+						"dataSource": {
+							"title": "Source de données"
+						},
+						"display": {
+							"header": "Title",
+							"title": "Affichage"
+						},
+						"preview": {},
+						"textEditor": {
+							"title": "Éditeur de texte"
+						},
+						"title": "Paramètres de carte",
+						"valueSelector": {
+							"title": "Selection de valeur"
+						}
+					},
+					"create": {
+						"choice": {
+							"blank": "Créer une nouvelle carte",
+							"template": "Utiliser un modèle"
+						}
+					},
+					"dynamic": "Dynamique",
+					"static": "Statique"
 				}
 			}
 		}
@@ -1052,7 +1111,9 @@
 			"create": "Créer une ressource"
 		},
 		"role": {
-			"create": "Créer un rôle"
+			"create": "Créer un rôle",
+			"description": "Description",
+			"title": "Titre"
 		},
 		"step": {
 			"new": "Nouvelle étape"
@@ -1061,6 +1122,8 @@
 			"new": "Nouvel abonnement"
 		},
 		"user": {
+			"firstName": "Prénom",
+			"lastName": "Nom",
 			"notifications": {
 				"rolesUpdated": "Les rôles de {{username}} ont été modifiés.",
 				"userImportFail": "L'importation d'utilisateurs a échoué."
@@ -1198,11 +1261,16 @@
 				"name": "Seules les lettres, les tirets et les tirets bas sont acceptés"
 			},
 			"fields": "Champs",
+			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",
 			"placeholder": {
-				"csv": "Insérer le CSV ici"
+				"csv": "Insérer le CSV ici",
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés"
 			},
 			"queryName": "Nom de la requête",
+			"tooltip": {
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés. Vous pouvez utiliser le code $$LAST_UPDATE pour insérer dynamiquement la date de la dernière mise à jour des choix dans un format compatible SQL."
+			},
 			"type": "Type",
 			"validateCsv": "Valider le CSV",
 			"valueField": "Champ de valeur"

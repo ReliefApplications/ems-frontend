@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { isDate } from 'lodash';
+import { clone, isDate } from 'lodash';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
@@ -206,7 +206,16 @@ export class SafeTabFilterComponent implements OnInit {
   ngOnInit(): void {
     // TODO: move somewhere else
     if (this.query) {
-      this.metaQuery = this.queryBuilder.buildMetaQuery(this.query);
+      // Get MetaData from all scalar fields of the datasource
+      const queryWithAllScalarField = clone(this.query);
+      queryWithAllScalarField.fields = this.fields.map((f) => ({
+        name: f.name,
+        kind: 'SCALAR',
+        type: f.type.name,
+      }));
+      this.metaQuery = this.queryBuilder.buildMetaQuery(
+        queryWithAllScalarField
+      );
       if (this.metaQuery) {
         this.metaQuery.subscribe((res: any) => {
           for (const field in res.data) {
@@ -313,6 +322,12 @@ export class SafeTabFilterComponent implements OnInit {
     this.form.controls[filterName].setValue('today()');
   }
 
+  /**
+   * Change editor for a field.
+   * It is possible, for date questions, to use text editor instead of date selection.
+   *
+   * @param index index of filter field
+   */
   onChangeEditor(index: number): void {
     const formGroup = this.filters.at(index) as FormGroup;
     formGroup

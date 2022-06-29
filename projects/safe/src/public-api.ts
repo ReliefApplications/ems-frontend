@@ -50,23 +50,14 @@ export * from './lib/components/layout/public-api';
 export * from './lib/components/access/public-api';
 export * from './lib/components/form/public-api';
 export * from './lib/components/form-builder/public-api';
-export * from './lib/components/widgets/chart/public-api';
 export * from './lib/components/widgets/chart-settings/public-api';
-export * from './lib/components/widgets/editor/public-api';
 export * from './lib/components/widgets/editor-settings/public-api';
-export * from './lib/components/widgets/grid/public-api';
 export * from './lib/components/widgets/grid-settings/public-api';
-export * from './lib/components/widgets/map/public-api';
 export * from './lib/components/widgets/map-settings/public-api';
-export * from './lib/components/widgets/scheduler/public-api';
-export * from './lib/components/widgets/scheduler-settings/public-api';
-export * from './lib/components/widgets/summary-card/public-api';
 export * from './lib/components/widgets/summary-card-settings/public-api';
-export * from './lib/components/widgets/summary-card-settings/card-settings/public-api';
-export * from './lib/components/widgets/summary-card-settings/card-creation-modal/public-api';
-export * from './lib/components/widget/public-api';
 export * from './lib/components/widget-grid/public-api';
 export * from './lib/components/confirm-modal/public-api';
+export * from './lib/components/user-summary/public-api';
 export * from './lib/components/users/public-api';
 export * from './lib/components/roles/public-api';
 export * from './lib/components/previous-button/public-api';
@@ -83,9 +74,10 @@ export * from './lib/components/applications-summary/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
 export * from './lib/components/reference-data-dropdown/public-api';
 export * from './lib/components/skeleton/skeleton-table/public-api';
+export * from './lib/components/role-summary/public-api';
 
 /** Grid Layouts */
-export * from './lib/components/layout-modal/public-api';
+export * from './lib/components/grid-layout/layout-modal/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
 
 // === UI ===

@@ -3,14 +3,15 @@ import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 /**
- *
+ * Material Dialog Data
  */
 interface DialogData {
   tileForm: any;
 }
 
 /**
- * Used for changing the settings of a card in the summary-card widget
+ * Card Settings component.
+ * Used as a Material Dialog.
  */
 @Component({
   selector: 'safe-card-settings',
@@ -21,15 +22,16 @@ export class SafeCardSettingsComponent implements OnInit {
   public form: any;
 
   /**
-   * Contructor for safe-card-settings component
+   * Card Settings component.
+   * Used as a Material Dialog.
    *
-   * @param dialogRef
-   * @param formBuilder
-   * @param data
+   * @param dialogRef Material Dialog Ref of the component
+   * @param fb Angular form builder
+   * @param data dialog data
    */
   constructor(
     public dialogRef: MatDialogRef<SafeCardSettingsComponent>,
-    public formBuilder: FormBuilder,
+    public fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
@@ -37,7 +39,7 @@ export class SafeCardSettingsComponent implements OnInit {
    * Creates a formGroup with the data provided in the modal creation
    */
   ngOnInit(): void {
-    this.form = this.formBuilder.group(this.data);
+    this.form = this.fb.group(this.data);
   }
 
   /**

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 /**
- *
+ * Summary Card Widget component.
  */
 @Component({
   selector: 'safe-summary-card',
@@ -14,7 +14,7 @@ export class SafeSummaryCardComponent implements OnInit {
   @Input() public text = '';
 
   /**
-   *
+   * Summary Card Widget component.
    */
   constructor() {}
 

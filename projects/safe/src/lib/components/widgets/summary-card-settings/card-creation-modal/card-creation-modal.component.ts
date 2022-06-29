@@ -34,14 +34,14 @@ export class SafeCardCreationModalComponent implements OnInit {
   /**
    * Closes the modal sending the modal data.
    */
-  onSubmit(): void {
+  onCreate(): void {
     this.dialogRef.close(this.data);
   }
 
   /**
    * Changes the isDynamic property on radio component change
    *
-   * @param event
+   * @param event dynamic change
    */
   radioChange(event: any): void {
     this.data.isDynamic = event.value;

@@ -38,7 +38,7 @@ jobs:
             ${{ runner.OS }}-build-
             ${{ runner.OS }}-
       - name: Install Dependencies
-        run: npm ci
+        run: npm i
       - name: Prettify
         run: npx prettier --write "**/*.{scss,html}"
       - name: Commit changes
@@ -47,4 +47,5 @@ jobs:
           commit_message: Prettify
           commit_options: '--no-verify'
           push_options: '--no-verify'
+          file_pattern: projects/*.scss projects/*.html
 

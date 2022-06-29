@@ -3,6 +3,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
+import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { scrollFactory } from '../../../utils/scroll-factory';
@@ -15,6 +16,9 @@ import {
   TITLE_POSITIONS,
 } from './constants';
 
+/**
+ * Chart settings component
+ */
 @Component({
   selector: 'safe-chart-settings',
   templateUrl: './chart-settings.component.html',
@@ -52,10 +56,15 @@ export class SafeChartSettingsComponent implements OnInit {
   public settings: any;
   public grid: any;
 
+  private reload = new Subject<boolean>();
+  public reload$ = this.reload.asObservable();
+
+  /** @returns the form for the chart */
   public get chartForm(): FormGroup {
     return (this.tileForm?.controls.chart as FormGroup) || null;
   }
 
+  /** @returns the aggregation form */
   public get aggregationForm(): FormGroup {
     return (
       ((this.tileForm?.controls.chart as FormGroup).controls
@@ -63,6 +72,12 @@ export class SafeChartSettingsComponent implements OnInit {
     );
   }
 
+  /**
+   * Constructor for the chart settings component
+   *
+   * @param formBuilder The formBuilder service
+   * @param aggregationBuilder The aggregationBuilder service
+   */
   constructor(
     private formBuilder: FormBuilder,
     private aggregationBuilder: AggregationBuilderService
@@ -98,6 +113,7 @@ export class SafeChartSettingsComponent implements OnInit {
 
     this.chartForm.controls.type.valueChanges.subscribe((value) => {
       this.type = this.types.find((x) => x.name === value);
+      this.reload.next(true);
     });
 
     this.settings = this.tileForm?.value;

@@ -4,6 +4,7 @@ import {
 } from '@progress/kendo-angular-grid';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
 
+/** Types of field that are multi-select */
 export const MULTISELECT_TYPES: string[] = [
   'checkbox',
   'tagbox',
@@ -11,6 +12,7 @@ export const MULTISELECT_TYPES: string[] = [
   'users',
 ];
 
+/** Settings for pager */
 export const PAGER_SETTINGS: PagerSettings = {
   buttonCount: 5,
   type: 'numeric',
@@ -19,6 +21,7 @@ export const PAGER_SETTINGS: PagerSettings = {
   previousNext: true,
 };
 
+/** Settings for selection */
 export const SELECTABLE_SETTINGS: SelectableSettings = {
   enabled: true,
   checkboxOnly: true,
@@ -26,10 +29,12 @@ export const SELECTABLE_SETTINGS: SelectableSettings = {
   drag: false,
 };
 
+/** Settings for gradient */
 export const GRADIENT_SETTINGS: GradientSettings = {
   opacity: false,
 };
 
+/** Settings for exporting data */
 export const EXPORT_SETTINGS = {
   records: 'all',
   fields: 'all',

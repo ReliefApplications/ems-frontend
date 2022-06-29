@@ -247,16 +247,20 @@
 			"title": "Access"
 		},
 		"aggregationBuilder": {
+			"accumulators": "Accumulators",
 			"addField": "Add field",
+			"addRule": "Add rule",
 			"addStage": "Add stage",
 			"dataset": {
 				"select": "Select the data source"
 			},
 			"fieldName": "Field name",
 			"groupBy": "Group by",
+			"groupingRules": "Grouping rules",
 			"mapping": {
-				"xAxis": "X Axis",
-				"yAxis": "Y Axis"
+				"category": "Category",
+				"field": "Value",
+				"series": "Series"
 			},
 			"operator": "Operator",
 			"operators": {
@@ -376,16 +380,19 @@
 		"form": {
 			"create": {
 				"choice": {
-					"blank": "Create a blank form",
-					"inherit": "Copy existing resource template",
-					"resource": "Create a new resource",
+					"inherit": "Create from template",
+					"resource": "Create a core form",
 					"template": "Start from existing template"
 				},
 				"template": {
 					"from": "From template",
 					"placeholder": "Pick an existing template",
-					"title": "From resource",
-					"tooltip": "If no template is selected, core structure will be loaded"
+					"title": "From resource"
+				},
+				"tooltip": {
+					"inherit": "Creates a child form using a template from the resource linked to the core form",
+					"resource": "Creates a core form that allows the creation of children forms linked to this core form. It will also create a new resource.",
+					"template": "If no template is selected, core structure will be loaded"
 				}
 			},
 			"delete": {
@@ -455,6 +462,7 @@
 				"withValue": "with value"
 			},
 			"download": "Download history",
+			"empty": "No activity detected",
 			"field": {
 				"all": "All fields",
 				"select": "Select a field"
@@ -641,6 +649,10 @@
 			"impersonate": {
 				"title": "Choose role to simulate"
 			},
+			"summary": {
+				"features": "Features",
+				"title": "Summary"
+			},
 			"update": {
 				"permissions": "Permissions",
 				"title": "Update role permissions and channels"
@@ -656,6 +668,14 @@
 				"role": {
 					"description": "Select the role to assign"
 				}
+			},
+			"summary": {
+				"country": "Country",
+				"firstName": "First name",
+				"lastName": "Last name",
+				"locationType": "Location type",
+				"region": "Region",
+				"title": "Summary"
 			},
 			"update": {
 				"title": "Update user"
@@ -736,8 +756,17 @@
 						"title": "Color palette"
 					},
 					"position": "Position",
+					"series": {
+						"stack": {
+							"enable": "Plot series",
+							"usePercentage": "Use percentage"
+						},
+						"title": "Series"
+					},
 					"text": "Text",
-					"type": "Chart Type"
+					"type": "Chart Type",
+					"xAxis": "X Axis",
+					"yAxis": "Y Axis"
 				},
 				"grid": {
 					"actions": {
@@ -764,6 +793,8 @@
 							},
 							"prefill": "Pre-fill form with selected data",
 							"save": "Auto-save",
+							"selectAllRecords": "Select all records",
+							"selectAllRecordsActivePage": "Select all records on the active page",
 							"selectDisplay": "Select displayed fields",
 							"sendMail": "Send mail",
 							"workflow": {
@@ -819,13 +850,14 @@
 					}
 				},
 				"summaryCard": {
-					"addCard": "Add a card",
+					"add": "Add new card",
 					"card": {
 						"dataSource": {
 							"title": "Data source"
 						},
 						"display": {
-							"header": "Header"
+							"header": "Header",
+							"title": "Display"
 						},
 						"preview": {},
 						"textEditor": {
@@ -836,10 +868,11 @@
 							"title": "Value selector"
 						}
 					},
-					"cardCreation": {
-						"info": "This is a placeholder for an explanation",
-						"startBlank": "Start from blank",
-						"startTemplate": "Start from template"
+					"create": {
+						"choice": {
+							"blank": "Start from blank",
+							"template": "Start from template"
+						}
 					},
 					"dynamic": "Dynamic",
 					"static": "Static"
@@ -1078,7 +1111,9 @@
 			"create": "Create a Resource"
 		},
 		"role": {
-			"create": "Create a role"
+			"create": "Create a role",
+			"description": "Description",
+			"title": "Title"
 		},
 		"step": {
 			"new": "New step"
@@ -1087,6 +1122,8 @@
 			"new": "New subscription"
 		},
 		"user": {
+			"firstName": "First name",
+			"lastName": "Last name",
 			"notifications": {
 				"rolesUpdated": "{{username}} roles updated.",
 				"userImportFail": "The user import has failed"
@@ -1224,11 +1261,16 @@
 				"name": "Only letters, hypens or underscores are accepted"
 			},
 			"fields": "Fields",
+			"graphQLFilter": "GraphQL query parameters",
 			"path": "Path",
 			"placeholder": {
-				"csv": "Insert CSV here"
+				"csv": "Insert CSV here",
+				"graphQLFilter": "Enter a filter to be used once choices are already cached"
 			},
 			"queryName": "Query Name",
+			"tooltip": {
+				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use $$LAST_UPDATE to insert dynamically the last fetch date in SQL format."
+			},
 			"type": "Type",
 			"validateCsv": "Validate CSV",
 			"valueField": "Value Field"

@@ -14,7 +14,6 @@ export type DateFormat =
   | 'fullDate'
   | 'shortTime'
   | 'mediumTime'
-  | 'mediumTime'
   | 'longTime'
   | 'fullTime';
 

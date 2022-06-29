@@ -247,16 +247,20 @@
 			"title": "******"
 		},
 		"aggregationBuilder": {
+			"accumulators": "******",
 			"addField": "******",
+			"addRule": "******",
 			"addStage": "******",
 			"dataset": {
 				"select": "******"
 			},
 			"fieldName": "******",
 			"groupBy": "******",
+			"groupingRules": "******",
 			"mapping": {
-				"xAxis": "******",
-				"yAxis": "******"
+				"category": "******",
+				"field": "******",
+				"series": "******"
 			},
 			"operator": "******",
 			"operators": {
@@ -376,7 +380,6 @@
 		"form": {
 			"create": {
 				"choice": {
-					"blank": "******",
 					"inherit": "******",
 					"resource": "******",
 					"template": "******"
@@ -384,8 +387,12 @@
 				"template": {
 					"from": "******",
 					"placeholder": "******",
-					"title": "******",
-					"tooltip": "******"
+					"title": "******"
+				},
+				"tooltip": {
+					"inherit": "******",
+					"resource": "******",
+					"template": "******"
 				}
 			},
 			"delete": {
@@ -455,6 +462,7 @@
 				"withValue": "******"
 			},
 			"download": "******",
+			"empty": "******",
 			"field": {
 				"all": "******",
 				"select": "******"
@@ -641,6 +649,10 @@
 			"impersonate": {
 				"title": "******"
 			},
+			"summary": {
+				"features": "******",
+				"title": "******"
+			},
 			"update": {
 				"permissions": "******",
 				"title": "******"
@@ -656,6 +668,14 @@
 				"role": {
 					"description": "******"
 				}
+			},
+			"summary": {
+				"country": "******",
+				"firstName": "******",
+				"lastName": "******",
+				"locationType": "******",
+				"region": "******",
+				"title": "******"
 			},
 			"update": {
 				"title": "******"
@@ -736,8 +756,17 @@
 						"title": "******"
 					},
 					"position": "******",
+					"series": {
+						"stack": {
+							"enable": "******",
+							"usePercentage": "******"
+						},
+						"title": "******"
+					},
 					"text": "******",
-					"type": "******"
+					"type": "******",
+					"xAxis": "******",
+					"yAxis": "******"
 				},
 				"grid": {
 					"actions": {
@@ -764,6 +793,8 @@
 							},
 							"prefill": "******",
 							"save": "******",
+							"selectAllRecords": "******",
+							"selectAllRecordsActivePage": "******",
 							"selectDisplay": "******",
 							"sendMail": "******",
 							"workflow": {
@@ -817,6 +848,34 @@
 							"longitude": "******"
 						}
 					}
+				},
+				"summaryCard": {
+					"add": "******",
+					"card": {
+						"dataSource": {
+							"title": "******"
+						},
+						"display": {
+							"header": "******",
+							"title": "******"
+						},
+						"preview": {},
+						"textEditor": {
+							"title": "******"
+						},
+						"title": "******",
+						"valueSelector": {
+							"title": "******"
+						}
+					},
+					"create": {
+						"choice": {
+							"blank": "******",
+							"template": "******"
+						}
+					},
+					"dynamic": "******",
+					"static": "******"
 				}
 			}
 		}
@@ -1052,7 +1111,9 @@
 			"create": "******"
 		},
 		"role": {
-			"create": "******"
+			"create": "******",
+			"description": "******",
+			"title": "******"
 		},
 		"step": {
 			"new": "******"
@@ -1061,6 +1122,8 @@
 			"new": "******"
 		},
 		"user": {
+			"firstName": "******",
+			"lastName": "******",
 			"notifications": {
 				"rolesUpdated": "{{username}} ******",
 				"userImportFail": "******"
@@ -1198,11 +1261,16 @@
 				"name": "******"
 			},
 			"fields": "******",
+			"graphQLFilter": "******",
 			"path": "******",
 			"placeholder": {
-				"csv": "******"
+				"csv": "******",
+				"graphQLFilter": "******"
 			},
 			"queryName": "******",
+			"tooltip": {
+				"graphQLFilter": "******"
+			},
 			"type": "******",
 			"validateCsv": "******",
 			"valueField": "******"
