@@ -1271,11 +1271,16 @@
 				"name": "******"
 			},
 			"fields": "******",
+			"graphQLFilter": "******",
 			"path": "******",
 			"placeholder": {
-				"csv": "******"
+				"csv": "******",
+				"graphQLFilter": "******"
 			},
 			"queryName": "******",
+			"tooltip": {
+				"graphQLFilter": "******"
+			},
 			"type": "******",
 			"validateCsv": "******",
 			"valueField": "******"

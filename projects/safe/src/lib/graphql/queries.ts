@@ -326,13 +326,14 @@ export const GET_RECORD_BY_ID = gql`
 
 /** GraphQL query definition for getting record details for history purpose */
 export const GET_RECORD_BY_ID_FOR_HISTORY = gql`
-  query GetRecordByIfForHistory($id: ID!) {
+  query GetRecordByIdForHistory($id: ID!) {
     record(id: $id) {
       id
       incrementalId
       form {
         id
         fields
+        structure
       }
     }
   }
@@ -1051,15 +1052,18 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
     referenceData(id: $id) {
       id
       name
+      modifiedAt
       type
       apiConfiguration {
         name
+        graphQLEndpoint
       }
       query
       fields
       valueField
       path
       data
+      graphQLFilter
     }
   }
 `;

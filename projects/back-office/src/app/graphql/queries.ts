@@ -1113,16 +1113,12 @@ export const GET_REFERENCE_DATAS = gql`
         node {
           id
           name
+          modifiedAt
           apiConfiguration {
             id
             name
           }
           type
-          query
-          fields
-          valueField
-          path
-          data
           permissions {
             canSee {
               id
@@ -1183,6 +1179,7 @@ export const GET_REFERENCE_DATA = gql`
       valueField
       path
       data
+      graphQLFilter
       permissions {
         canSee {
           id
