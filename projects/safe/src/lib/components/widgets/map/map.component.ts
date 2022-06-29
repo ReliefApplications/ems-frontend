@@ -8,9 +8,10 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
-import { PopupService } from '../../../services/popup.service';
 import { applyFilters } from './filter';
+import { DomService } from '../../../services/dom.service';
 import get from 'lodash/get';
+import { SafeMapPopupComponent } from './map-popup/map-popup.component';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -74,7 +75,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === RECORDS ===
   private dataQuery: any;
   private dataSubscription?: Subscription;
-  private displayFields: string[] = [];
+  private fields: any[] = [];
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -89,13 +90,13 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
    * @param environment platform environment
    * @param apollo Apollo client
    * @param queryBuilder The querybuilder service
-   * @param popupService The map popup service
+   * @param domService Shared dom service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService,
-    private popupService: PopupService
+    private domService: DomService
   ) {
     this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
@@ -126,7 +127,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     // Gets the settings from the DB.
     if (this.settings.query) {
-      const builtQuery = this.queryBuilder.buildQuery(this.settings, true);
+      const builtQuery = this.queryBuilder.buildQuery(this.settings);
       this.dataQuery = this.apollo.watchQuery<any>({
         query: builtQuery,
         variables: {
@@ -138,8 +139,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.getData();
     }
 
-    this.displayFields =
-      this.settings.query?.fields.map((f: any) => f.name) || [];
+    this.fields = get(this.settings, 'query.fields', []);
 
     setTimeout(() => this.map.invalidateSize(), 100);
   }
@@ -320,17 +320,22 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           this.markersCategories[item[this.settings.category]] = [];
         }
         this.markersCategories[item[this.settings.category]].push(marker);
-        marker.bindPopup(
-          this.popupService.getPopupHTML(
-            item,
-            this.displayFields.map((field) => ({
-              name: field,
-              label: this.settings.query.fields.find(
-                (x: any) => x.name === field
-              )?.label,
-            }))
-          )
-        );
+        marker.bindPopup(() => {
+          const div = document.createElement('div');
+          const popupContent = this.domService.appendComponentToBody(
+            SafeMapPopupComponent,
+            div
+          );
+          const instance = popupContent.instance;
+          instance.data = item;
+          instance.fields = this.fields;
+          this.popupMarker = L.popup({})
+            .setLatLng([latitude, longitude])
+            .setContent(div)
+            .addTo(this.map);
+          instance.loaded.subscribe(() => this.popupMarker.update());
+          return;
+        });
       }
     }
   }

@@ -32,7 +32,7 @@
     <mat-select formControlName="category">
       <mat-option [value]="">{{ 'common.input.none' | translate }}</mat-option>
       <mat-option
-        *ngFor="let field of formatedSelectedFields"
+        *ngFor="let field of selectedFields
         [value]="field.name"
       >
         {{ field.name }}

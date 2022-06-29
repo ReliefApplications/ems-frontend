@@ -4,7 +4,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
-import { cloneDeep } from 'lodash';
 
 /** List of fields part of the schema but not selectable */
 const NON_SELECTABLE_FIELDS = ['canUpdate', 'canDelete'];
@@ -231,23 +230,10 @@ export class QueryBuilderService {
    * TODO: we should pass directly the query definition, instead of the settings.
    *
    * @param settings Widget settings.
-   * @param isMap Indicates if query is for a map
    * @returns GraphQL query.
    */
-  public buildQuery(settings: any, isMap?: boolean): any {
-    const builtQuery = cloneDeep(settings.query);
-    if (isMap && builtQuery?.fields) {
-      builtQuery.fields.push(
-        {
-          name: settings.latitude,
-          kind: 'SCALAR',
-        },
-        {
-          name: settings.longitude,
-          kind: 'SCALAR',
-        }
-      );
-    }
+  public buildQuery(settings: any): any {
+    const builtQuery = settings.query;
     if (builtQuery?.fields?.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(
         this.buildFields(builtQuery.fields)

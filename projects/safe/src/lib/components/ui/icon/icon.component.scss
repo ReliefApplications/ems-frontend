@@ -1,3 +1,7 @@
+:host {
+  display: flex;
+}
+
 .safe-icon-success {
   color: #63d168;
 }
@@ -8,8 +12,4 @@
 
 .safe-icon-grey {
   color: #a9a9a9;
-}
-
-:host {
-  display: grid;
 }

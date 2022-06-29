@@ -1,3 +1,4 @@
-<div *ngFor="let field of displayFields">
-  <b>{{ field.label ? field.label : field.name }}:</b> {{ data[field.name] }}
+<div *ngFor="let row of popupRows">
+  <b>{{ row.label }}:</b>
+  {{ row.value }}
 </div>

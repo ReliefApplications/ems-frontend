@@ -528,7 +528,7 @@
 				"title": "Filtre"
 			},
 			"hint": {
-				"fields": "Sélectionnez des points de donnée ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
+				"fields": "Sélectionnez des champs ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
 				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
 				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
 			},
@@ -879,7 +879,7 @@
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
-						"dataset": "Sélectionnez des points de donnée ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché au clic sur un marqueur",
+						"dataset": "Sélectionnez des champs ci-dessous et déplacez-les vers 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché en cliquant sur les marqueurs",
 						"default": {
 							"latitude": "Sélectionnez une latitude par défaut autour de laquelle vous souhaitez centrer la carte",
 							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte",

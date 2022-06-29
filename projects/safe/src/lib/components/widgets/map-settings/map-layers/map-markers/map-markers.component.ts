@@ -17,7 +17,6 @@ export class MapMarkersComponent implements OnInit {
   @Input() form!: FormGroup;
 
   @Input() formatedSelectedFields: any[] = [];
-  @Input() allFields: any[] = [];
   public numberFields: any[] = [];
 
   /**
@@ -40,7 +39,7 @@ export class MapMarkersComponent implements OnInit {
 
   ngOnInit(): void {
     // Build list of number fields
-    this.numberFields = this.allFields
+    this.numberFields = this.formatedSelectedFields
       .filter((field: any) =>
         ['Int', 'Float'].includes(get(field, 'type.name', ''))
       )
