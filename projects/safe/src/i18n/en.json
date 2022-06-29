@@ -879,7 +879,7 @@
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
-						"dataset": "Filter the dataset and select all fields you want to display on the map",
+						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
 						"default": {
 							"latitude": "Select a default latitude to center the map around",
 							"longitude": "Select a default longitude to center the map around",

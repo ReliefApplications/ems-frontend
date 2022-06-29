@@ -60,10 +60,6 @@ export class SafeMapSettingsComponent implements OnInit {
         });
     }
 
-    if (this.tileForm?.value.query.name) {
-      this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
-    }
-
     const queryForm = this.tileForm.get('query') as FormGroup;
 
     queryForm.controls.name.valueChanges.subscribe(() => {
