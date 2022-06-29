@@ -8,3 +8,9 @@ mat-radio-group {
   display: flex;
   gap: 12px;
 }
+
+.mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}

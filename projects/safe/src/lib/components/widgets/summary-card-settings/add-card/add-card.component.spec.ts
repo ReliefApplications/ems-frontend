@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CardSettingsComponent } from './card-settings.component';
+import { SafeAddCardComponent } from './add-card.component';
 
-describe('CardSettingsComponent', () => {
-  let component: CardSettingsComponent;
-  let fixture: ComponentFixture<CardSettingsComponent>;
+describe('AddCardComponent', () => {
+  let component: SafeAddCardComponent;
+  let fixture: ComponentFixture<SafeAddCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CardSettingsComponent],
+      declarations: [SafeAddCardComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CardSettingsComponent);
+    fixture = TestBed.createComponent(SafeAddCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

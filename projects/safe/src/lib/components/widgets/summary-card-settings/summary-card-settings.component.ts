@@ -13,9 +13,9 @@ import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
-import { SafeCardCreationModalComponent } from './card-creation-modal/card-creation-modal.component';
-import { SafeCardSettingsComponent } from './card-settings/card-settings.component';
 import get from 'lodash/get';
+import { SafeAddCardComponent } from './add-card/add-card.component';
+import { SafeCardModalComponent } from './card-modal/card-modal.component';
 
 /** Define max height of widgets */
 const MAX_ROW_SPAN = 4;
@@ -128,7 +128,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * Open a modal before adding it.
    */
   addCard() {
-    const dialogRef = this.dialog.open(SafeCardCreationModalComponent, {
+    const dialogRef = this.dialog.open(SafeAddCardComponent, {
       panelClass: 'preferences-dialog',
     });
     dialogRef.afterClosed().subscribe((res: any) => {
@@ -163,12 +163,12 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Open Card Settings at index
+   * Open Card at index
    *
    * @param index index of card to open
    */
-  openCardSettings(index: number) {
-    const dialogRef = this.dialog.open(SafeCardSettingsComponent, {
+  openCard(index: number) {
+    const dialogRef = this.dialog.open(SafeCardModalComponent, {
       disableClose: true,
       data: this.cards.at(index).value,
       position: {

@@ -5,22 +5,21 @@ import { MatDialogRef } from '@angular/material/dialog';
  * The component is used on a card creation in the summary-card widget
  */
 @Component({
-  selector: 'safe-card-creation-modal',
-  templateUrl: './card-creation-modal.component.html',
-  styleUrls: ['./card-creation-modal.component.scss'],
+  selector: 'safe-add-card',
+  templateUrl: './add-card.component.html',
+  styleUrls: ['./add-card.component.scss'],
 })
-export class SafeCardCreationModalComponent implements OnInit {
+export class SafeAddCardComponent implements OnInit {
   public data: any = {
     isDynamic: false,
   };
 
   /**
-   * Constructor for safe-card-creation-modal contructor
+   * Constructor for safe-add-card contructor
    *
-   * @param dialogRef
-   * @param formBuilder
+   * @param dialogRef material dialog reference of the component
    */
-  constructor(public dialogRef: MatDialogRef<SafeCardCreationModalComponent>) {}
+  constructor(public dialogRef: MatDialogRef<SafeAddCardComponent>) {}
 
   ngOnInit(): void {}
 

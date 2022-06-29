@@ -13,8 +13,8 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
-import { SafeCardSettingsModule } from './card-settings/card-settings.module';
-import { SafeCardCreationModalModule } from './card-creation-modal/card-creation-modal.module';
+import { SafeAddCardModule } from './add-card/add-card.module';
+import { SafeCardModalModule } from './card-modal/card-modal.module';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -34,8 +34,8 @@ import { SafeCardCreationModalModule } from './card-creation-modal/card-creation
     MatMenuModule,
     MatIconModule,
     MatDividerModule,
-    SafeCardSettingsModule,
-    SafeCardCreationModalModule,
+    SafeAddCardModule,
+    SafeCardModalModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

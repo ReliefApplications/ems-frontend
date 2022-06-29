@@ -3,15 +3,15 @@ import { NgModule } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import { SafeCardCreationModalComponent } from './card-creation-modal.component';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatDividerModule } from '@angular/material/divider';
+import { SafeAddCardComponent } from './add-card.component';
 
-/** Module for scheduler  component */
+/** Module to add new card in summary card widget */
 @NgModule({
-  declarations: [SafeCardCreationModalComponent],
+  declarations: [SafeAddCardComponent],
   imports: [
     CommonModule,
     MatTooltipModule,
@@ -22,6 +22,6 @@ import { MatDividerModule } from '@angular/material/divider';
     MatRadioModule,
     MatDividerModule,
   ],
-  exports: [SafeCardCreationModalComponent],
+  exports: [SafeAddCardComponent],
 })
-export class SafeCardCreationModalModule {}
+export class SafeAddCardModule {}
