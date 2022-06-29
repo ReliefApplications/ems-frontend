@@ -27,10 +27,11 @@ const operate = (field: any, operator: string, value: any): boolean => {
     case 'isnotnull':
       return field !== null;
     case 'isempty':
-      return field.lenght === 0;
+      return field === null || (isArray(field) && field.length === 0);
     case 'isnotempty':
-      return field.lenght > 0;
+      return isArray(field) && field.length > 0;
     case 'contains':
+      if (field === null) return false;
       if (isArray(value)) {
         for (const itemValue of value) {
           if (!field.includes(itemValue)) {
@@ -42,6 +43,7 @@ const operate = (field: any, operator: string, value: any): boolean => {
         return field.includes(value);
       }
     case 'doesnotcontain':
+      if (field === null) return true;
       if (isArray(value)) {
         for (const itemValue of value) {
           if (field.includes(itemValue)) {

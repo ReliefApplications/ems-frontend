@@ -299,7 +299,10 @@ export class SafeFormModalComponent implements OnInit {
       if (questions[field]) {
         const key = questions[field].getValueName();
         if (!data[key]) {
-          if (questions[field].getType() !== 'boolean') {
+          const type = questions[field].getType();
+          if (['checkbox', 'tagbox'].includes(type)) {
+            data[key] = [];
+          } else if (type !== 'boolean') {
             data[key] = null;
           }
           if (questions[field].readOnly || !questions[field].visible) {
