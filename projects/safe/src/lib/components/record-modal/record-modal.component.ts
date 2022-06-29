@@ -369,7 +369,6 @@ export class SafeRecordModalComponent implements AfterViewInit {
   /**
    * Add custom CSS classes to the survey elements.
    *
-   * @param survey current survey.
    * @param options survey options.
    */
   private onSetCustomCss(options: any): void {

@@ -650,6 +650,10 @@
 			"impersonate": {
 				"title": "Choix du rôle à simuler"
 			},
+			"summary": {
+				"features": "Fonctionnalités",
+				"title": "Résumé"
+			},
 			"update": {
 				"permissions": "Permissions",
 				"title": "Modifier les permissions des rôles et les canaux de diffusion"
@@ -665,6 +669,14 @@
 				"role": {
 					"description": "Sélectionner le rôle à assigner"
 				}
+			},
+			"summary": {
+				"country": "Pays",
+				"firstName": "Prénom",
+				"lastName": "Nom",
+				"locationType": "Type de localisation",
+				"region": "Région",
+				"title": "Résumé"
 			},
 			"update": {
 				"title": "Modifier l'utilisateur"
@@ -1109,7 +1121,9 @@
 			"create": "Créer une ressource"
 		},
 		"role": {
-			"create": "Créer un rôle"
+			"create": "Créer un rôle",
+			"description": "Description",
+			"title": "Titre"
 		},
 		"step": {
 			"new": "Nouvelle étape"
@@ -1118,6 +1132,8 @@
 			"new": "Nouvel abonnement"
 		},
 		"user": {
+			"firstName": "Prénom",
+			"lastName": "Nom",
 			"notifications": {
 				"rolesUpdated": "Les rôles de {{username}} ont été modifiés.",
 				"userImportFail": "L'importation d'utilisateurs a échoué."

@@ -232,11 +232,24 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         });
       }
     }
+
+    // setting up layer with all markers, if it doesn't exist
+    if (!this.markersCategories.hasOwnProperty('Markers')) {
+      const allLayers: any[] = [];
+      Object.keys(this.markersCategories).forEach((name: string) => {
+        allLayers.push(...this.markersCategories[name]);
+      });
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      this.markersCategories['undefined'] = allLayers;
+    }
+
     // Renders all the markers
     Object.keys(this.markersCategories).map((name: string) => {
-      this.overlays[name !== 'undefined' ? name : 'Markers'] = L.featureGroup
+      const layerName = name !== 'undefined' ? name : 'Markers';
+      this.overlays[layerName] = L.featureGroup
         .subGroup(this.markersLayer, this.markersCategories[name])
         .addTo(this.map);
+      this.overlays[layerName].type = 'Marker';
     });
 
     // Loops throught clorophlets and adds them to the map
@@ -244,7 +257,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.settings.clorophlets.map((value: any) => {
         if (value.divisions.length > 0) {
           // Renders the clorophlet
-          this.drawClorophlet(value, res.data);
+          this.overlays[value.name] = this.setClorophlet(value, res.data).addTo(
+            this.map
+          );
+          this.overlays[value.name].type = 'Clorophlet';
         }
       });
     }
@@ -288,12 +304,13 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         // Sets the style of the marker depending on the rules applied.
         const options = Object.assign({}, MARKER_OPTIONS);
         Object.assign(options, { id: item.id });
-        this.settings.markerRules?.map((rule: any) => {
+        this.settings.markerRules?.map((rule: any, i: any) => {
           if (applyFilters(item, rule.filter)) {
             options.color = rule.color;
             options.fillColor = rule.color;
             options.weight *= rule.size;
             options.radius *= rule.size;
+            Object.assign(options, { divisionID: `${rule.label}-${i}` });
           }
         });
 
@@ -319,16 +336,18 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Renders a clorophlet using the passed data.
+   * Creates a clorophlet using the passed data.
    *
-   * @param value Properties of the clorophlet to draw.
+   * @param value Properties of the clorophlet.
    * @param data Query data feeded to the clorophlet.
+   * @returns a geoJSON layer
    */
-  private drawClorophlet(value: any, data: any) {
-    this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
+  private setClorophlet(value: any, data: any) {
+    return L.geoJson(JSON.parse(value.geoJSON), {
       interactive: false,
       style: (feature: any): any => {
         let color = 'transparent';
+        let label = '';
         for (const field in data) {
           if (Object.prototype.hasOwnProperty.call(data, field)) {
             data[field].edges.map((entry: any) => {
@@ -338,9 +357,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
                 entry.node[value.place].toString() ===
                   feature.properties[value.geoJSONfield].toString()
               ) {
-                value.divisions.map((div: any) => {
+                value.divisions.map((div: any, i: number) => {
                   if (applyFilters(entry.node, div.filter)) {
                     color = div.color;
+                    label = div.label.empty ? 'Division ' + (i + 1) : div.label;
                   }
                 });
               }
@@ -353,9 +373,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           weight: 0.5,
           opacity: 1,
           color: color === 'transparent' ? 'transparent' : 'white',
+          label,
         };
       },
-    }).addTo(this.map);
+    });
   }
 
   /**
@@ -393,6 +414,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     ) {
       const div = this.div;
       div.innerHTML = '';
+      // Prevent double click on legend panel to zoom
+      L.DomEvent.on(div, 'dblclick', (e: any) => {
+        e.stopPropagation();
+      });
       // Creates legend for clorophlets
       data.clorophlets?.map((clorophlet: any) => {
         const layer = overlays[clorophlet.name];
@@ -435,6 +460,37 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
                 ? division.label
                 : 'Division ' + (i + 1)) +
               '<br>';
+            L.DomEvent.on(
+              legendDivisionDiv,
+              'click',
+              () => {
+                // eslint-disable-next-line no-underscore-dangle
+                const layers = overlays[clorophlet.name]._layers;
+                const isHidden = L.DomUtil.hasClass(
+                  legendDivisionDiv,
+                  'legend-division-hide'
+                );
+                if (isHidden) {
+                  L.DomUtil.removeClass(
+                    legendDivisionDiv,
+                    'legend-division-hide'
+                  );
+                  Object.keys(layers).forEach((layerName: any) => {
+                    const divisionLayer = layers[layerName];
+                    if (divisionLayer.options.label === division.label)
+                      map.addLayer(divisionLayer);
+                  });
+                } else {
+                  L.DomUtil.addClass(legendDivisionDiv, 'legend-division-hide');
+                  Object.keys(layers).forEach((layerName: any) => {
+                    const divisionLayer = layers[layerName];
+                    if (divisionLayer.options.label === division.label)
+                      map.removeLayer(divisionLayer);
+                  });
+                }
+              },
+              this
+            );
           });
         }
       });
@@ -475,8 +531,62 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             '<i style="background:' +
             rule.color +
             '"></i>' +
-            (rule.label.length > 0 ? rule.label : 'Rule ' + (i + 1)) +
+            rule.label +
             '<br>';
+
+          L.DomEvent.on(
+            legendDivisionDiv,
+            'click',
+            () => {
+              // eslint-disable-next-line no-underscore-dangle
+              const layers = overlays.Markers._layers;
+
+              // // array with all the clusters displayed and the markers in each of them
+              // const clusteredLayers: { cluster: any; hiddenMarkers: any[] }[] =
+              //   [];
+              // map.eachLayer((layer: any) => {
+              //   if (layer.getAllChildMarkers)
+              //     clusteredLayers.push({
+              //       cluster: layer,
+              //       hiddenMarkers: layer.getAllChildMarkers(),
+              //     });
+              // });
+              const isHidden = L.DomUtil.hasClass(
+                legendDivisionDiv,
+                'legend-division-hide'
+              );
+              if (isHidden) {
+                L.DomUtil.removeClass(
+                  legendDivisionDiv,
+                  'legend-division-hide'
+                );
+                Object.keys(layers).map((layerName: any) => {
+                  const divisionLayer = layers[layerName];
+                  if (divisionLayer.options.divisionID === `${rule.label}-${i}`)
+                    map.addLayer(divisionLayer);
+                });
+              } else {
+                L.DomUtil.addClass(legendDivisionDiv, 'legend-division-hide');
+                Object.keys(layers).map((layerName: any) => {
+                  const divisionLayer = layers[layerName];
+                  if (
+                    divisionLayer.options.divisionID === `${rule.label}-${i}`
+                  ) {
+                    // const cluster = clusteredLayers.find((c) =>
+                    //   c.hiddenMarkers.includes(divisionLayer)
+                    // );
+                    // // marker isn't in any cluster
+                    // if (!cluster) {
+                    map.removeLayer(divisionLayer);
+                    // } else {
+                    //   // cluster.cluster.removeLayer(divisionLayer);
+                    // }
+                  }
+                });
+              }
+            },
+            this
+          );
         });
       }
       if (div.innerHTML.length === 0) {

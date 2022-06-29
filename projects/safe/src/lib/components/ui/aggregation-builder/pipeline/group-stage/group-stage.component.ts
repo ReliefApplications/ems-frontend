@@ -20,21 +20,13 @@ export class SafeGroupStageComponent implements OnInit {
   public dateOperators = DateOperators;
   public usedDateFields: string[] = [];
 
-  /**
-   * Form as form group.
-   *
-   * @returns form group
-   */
-  get formGroup(): FormGroup {
+  /** @returns this for as form group */
+  get formGroup() {
     return this.form as FormGroup;
   }
 
-  /**
-   * AddFields form as form array
-   *
-   * @returns form array
-   */
-  get addFields(): FormArray {
+  /** @returns list of addFields of the stage as Form array */
+  get addFields() {
     return this.formGroup.controls.addFields as FormArray;
   }
 

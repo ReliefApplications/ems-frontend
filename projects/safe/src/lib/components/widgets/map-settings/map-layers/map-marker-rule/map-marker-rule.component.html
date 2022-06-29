@@ -19,6 +19,7 @@
   <safe-tab-filter
     [form]="$any(form.controls.filter)"
     [fields]="fields"
+    [query]="query.getRawValue()"
   ></safe-tab-filter>
 </form>
 <div mat-dialog-actions align="end">
