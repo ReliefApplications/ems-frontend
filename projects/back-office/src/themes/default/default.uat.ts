@@ -1,3 +1,4 @@
+/** Application theme */
 export const theme = {
   headerColor: 'warn',
   prefix: '[UAT]',

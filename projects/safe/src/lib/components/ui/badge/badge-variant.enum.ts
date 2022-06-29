@@ -1,3 +1,6 @@
+/**
+ * Badge variant enum.
+ */
 export enum BadgeVariant {
   DEFAULT = 'default',
   PRIMARY = 'primary',

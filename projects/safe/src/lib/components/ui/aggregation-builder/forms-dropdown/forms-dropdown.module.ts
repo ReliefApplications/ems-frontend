@@ -8,6 +8,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeIconModule } from '../../icon/icon.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 /**
  * SafeRecordSummaryModule is the module related to the selection of forms by a dropdown menu.
@@ -24,6 +25,7 @@ import { SafeIconModule } from '../../icon/icon.module';
     MatAutocompleteModule,
     MatInputModule,
     SafeIconModule,
+    MatProgressSpinnerModule,
   ],
   exports: [SafeFormsDropdownComponent],
 })

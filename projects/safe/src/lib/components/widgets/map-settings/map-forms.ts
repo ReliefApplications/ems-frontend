@@ -42,7 +42,7 @@ const DEFAULT_MAP = {
   query: null,
   latitude: 0,
   longitude: 0,
-  zoom: 0,
+  zoom: 2,
   category: null,
   basemap: null,
   centerLong: null,
@@ -150,7 +150,7 @@ export const mapform = (id: any, value?: any): FormGroup =>
     ],
     zoom: [
       get(value, 'zoom', DEFAULT_MAP.zoom),
-      [Validators.min(0), Validators.max(10)],
+      [Validators.min(2), Validators.max(18)],
     ],
     category: [get(value, 'category', DEFAULT_MAP.category)],
     basemap: [get(value, 'basemap', DEFAULT_MAP.basemap)],

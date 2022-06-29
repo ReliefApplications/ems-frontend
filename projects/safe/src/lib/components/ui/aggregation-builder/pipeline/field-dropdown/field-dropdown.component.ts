@@ -15,6 +15,9 @@ export class SafeFieldDropdownComponent implements OnInit {
   @Input() label = '';
   @Input() nullable = false;
 
+  /**
+   * Fields dropdown component.
+   */
   constructor() {}
 
   ngOnInit(): void {}

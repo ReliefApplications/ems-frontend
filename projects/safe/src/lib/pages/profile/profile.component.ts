@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
@@ -65,7 +65,8 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
       if (user) {
         this.user = { ...user };
         this.userForm = this.formBuilder.group({
-          name: user.name,
+          firstName: [user.firstName, Validators.required],
+          lastName: [user.lastName, Validators.required],
           username: [{ value: user.username, disabled: true }],
         });
       }
@@ -85,7 +86,8 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
         mutation: EDIT_USER_PROFILE,
         variables: {
           profile: {
-            name: this.userForm?.value.name,
+            firstName: this.userForm?.value.firstName,
+            lastName: this.userForm?.value.lastName,
           },
         },
       })

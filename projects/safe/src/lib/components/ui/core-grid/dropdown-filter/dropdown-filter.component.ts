@@ -17,9 +17,7 @@ export class SafeDropdownFilterComponent
   extends BaseFilterCellComponent
   implements OnInit
 {
-  /**
-   * Returns the selected value
-   */
+  /** @returns The selected value */
   public get selectedValue(): any {
     const filter = this.filterByField(this.field);
     return filter ? filter.value : null;
@@ -31,9 +29,7 @@ export class SafeDropdownFilterComponent
   @Input() public textField = '';
   @Input() public valueField = '';
 
-  /**
-   * Returns the default item
-   */
+  /** @returns The default item */
   public get defaultItem(): any {
     return {
       [this.textField]: 'Select item...',
@@ -57,8 +53,8 @@ export class SafeDropdownFilterComponent
   /**
    * Contructor for safe-dropdown-filter
    *
-   * @param filterService
-   * @param translate
+   * @param filterService The filter service
+   * @param translate The translation service
    */
   constructor(
     filterService: FilterService,
@@ -86,7 +82,7 @@ export class SafeDropdownFilterComponent
   /**
    * Updates the filter on item selection
    *
-   * @param value
+   * @param value The new value
    */
   public onChange(value: any): void {
     this.applyFilter(
@@ -103,7 +99,7 @@ export class SafeDropdownFilterComponent
   /**
    * Updates de operation used in filtering
    *
-   * @param value
+   * @param value The new value
    */
   public onChangeOperator(value: any): void {
     this.selectedOperator = value.value;
@@ -118,7 +114,9 @@ export class SafeDropdownFilterComponent
   public onClear() {
     this.selectedOperator = 'eq';
     this.filter = {
-      filters: [],
+      filters: this.filter.filters.filter(
+        (filter: any) => filter.field !== this.field
+      ),
       logic: 'and',
     };
     this.applyFilter(this.filter);
@@ -127,7 +125,7 @@ export class SafeDropdownFilterComponent
   /**
    * Handles filtering
    *
-   * @param value
+   * @param value The new value
    */
   public handleFilter(value: string): void {
     this.choices = this.data.filter(

@@ -70,6 +70,9 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'tooltip',
 ];
 
+/**
+ * Class name to add to core field question.
+ */
 const CORE_FIELD_CLASS = 'core-question';
 
 /**
@@ -219,6 +222,11 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Add new class to questions considered as core fields
+   *
+   * @param coreFields list of core fields
+   */
   private addCustomClassToCoreFields(coreFields: string[]): void {
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       (survey: Survey.SurveyModel, options: any) => {

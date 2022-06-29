@@ -20,6 +20,7 @@
     >
       <ng-template matTabContent>
         <safe-map-clorophlets
+          [query]="form.get('query')"
           [clorophlets]="clorophlets"
           [selectedFields]="selectedFields"
           [formatedSelectedFields]="formatedSelectedFields"

@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EXPORT_SETTINGS } from '../grid/grid.constants';
 
+/** The data for the dialogs input */
 interface DialogData {
   export: {
     records: string;
@@ -10,6 +11,7 @@ interface DialogData {
   };
 }
 
+/** Component for exporting data */
 @Component({
   selector: 'safe-export',
   templateUrl: './export.component.html',
@@ -19,6 +21,11 @@ export class SafeExportComponent implements OnInit {
   // === EXPORT MENU SELECTION ===
   public export = EXPORT_SETTINGS;
 
+  /**
+   * Constructor for the component
+   *
+   * @param data The dialog data
+   */
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
   ngOnInit(): void {

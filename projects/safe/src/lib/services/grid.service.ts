@@ -210,6 +210,9 @@ export class SafeGridService {
       case 'Int': {
         return 'numeric';
       }
+      case 'Float': {
+        return 'float';
+      }
       case 'Boolean': {
         return 'boolean';
       }
