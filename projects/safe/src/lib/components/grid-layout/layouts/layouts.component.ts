@@ -1,23 +1,23 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Layout } from '../../../../models/layout.model';
-import { Form } from '../../../../models/form.model';
-import { Resource } from '../../../../models/resource.model';
+import { Layout } from '../../../models/layout.model';
+import { Form } from '../../../models/form.model';
+import { Resource } from '../../../models/resource.model';
 import { AddLayoutComponent } from '../add-layout/add-layout.component';
 import { FormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { SafeGridLayoutService } from '../../../../services/grid-layout.service';
+import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { SafeLayoutModalComponent } from '../layout-modal/layout-modal.component';
 
 /**
  * Layouts list configuration for grid widgets
  */
 @Component({
-  selector: 'safe-layouts-parameters',
-  templateUrl: './layouts-parameters.component.html',
-  styleUrls: ['./layouts-parameters.component.scss'],
+  selector: 'safe-layouts',
+  templateUrl: './layouts.component.html',
+  styleUrls: ['./layouts.component.scss'],
 })
-export class LayoutsParametersComponent implements OnInit, OnChanges {
+export class LayoutsComponent implements OnInit, OnChanges {
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
   @Input() selectedLayouts: FormControl | null = null;
@@ -27,7 +27,7 @@ export class LayoutsParametersComponent implements OnInit, OnChanges {
   columns: string[] = ['name', 'createdAt', '_actions'];
 
   /**
-   * Constructor of the layout parameters component
+   * Constructor of the layout list component
    *
    * @param dialog Material Dialog Service
    * @param gridLayoutService The safe grid layout service
