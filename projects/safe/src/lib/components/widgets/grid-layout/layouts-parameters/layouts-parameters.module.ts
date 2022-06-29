@@ -8,7 +8,7 @@ import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddLayoutModule } from '../add-layout/add-layout.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { SafeLayoutModalModule } from '../../../layout-modal/layout-modal.module';
+import { SafeLayoutModalModule } from '../layout-modal/layout-modal.module';
 import { SafeDateModule } from '../../../../pipes/date/date.module';
 
 /** Module for layout component in grid widget settings */

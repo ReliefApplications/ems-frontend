@@ -1,11 +1,11 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Layout } from '../../models/layout.model';
+import { Layout } from '../../../../models/layout.model';
 import {
   createDisplayForm,
   createQueryForm,
-} from '../query-builder/query-builder-forms';
+} from '../../../query-builder/query-builder-forms';
 
 /**
  * Interface describing the structure of the data displayed in the dialog

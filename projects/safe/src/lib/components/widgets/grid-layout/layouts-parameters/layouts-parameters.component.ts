@@ -7,7 +7,7 @@ import { AddLayoutComponent } from '../add-layout/add-layout.component';
 import { FormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { SafeGridLayoutService } from '../../../../services/grid-layout.service';
-import { SafeLayoutModalComponent } from '../../../layout-modal/layout-modal.component';
+import { SafeLayoutModalComponent } from '../layout-modal/layout-modal.component';
 
 /**
  * Layouts list configuration for grid widgets
