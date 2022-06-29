@@ -27,7 +27,8 @@ export class SafeFloatingOptionsComponent implements OnInit {
   public items: any[] = [];
 
   /**
-   * Constructor of floating options component
+   * Button on top left of each widget, if user can see it, with menu of possible
+   * actions for that widget.
    *
    * @param dialog Material dialog service
    * @param dashboardService Dashboard service
@@ -81,7 +82,7 @@ export class SafeFloatingOptionsComponent implements OnInit {
           bottom: '0',
           right: '0',
         },
-        panelClass: 'tile-settings-dialog',
+        panelClass: 'tile-settings-dialog-with-tile-layout',
       });
       dialogRef.afterClosed().subscribe((res) => {
         if (res) {

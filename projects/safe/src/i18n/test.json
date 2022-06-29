@@ -850,6 +850,7 @@
 					}
 				},
 				"summaryCard": {
+					"add": "******",
 					"card": {
 						"dataSource": {
 							"title": "******"
@@ -866,7 +867,15 @@
 						"valueSelector": {
 							"title": "******"
 						}
-					}
+					},
+					"create": {
+						"choice": {
+							"blank": "******",
+							"template": "******"
+						}
+					},
+					"dynamic": "******",
+					"static": "******"
 				}
 			}
 		}

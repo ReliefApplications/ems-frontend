@@ -499,13 +499,14 @@ body {
 }
 
 .tile-settings-dialog,
-.expanded-widget-dialog {
+.expanded-widget-dialog,
+.tile-settings-dialog-with-tile-layout {
   max-width: unset !important;
   width: 100%;
   height: calc(100% - 72px);
 
   mat-dialog-container {
-    position: relative;
+    // position: relative;
     border-radius: 4px 4px 0 0;
     width: 100%;
   }
@@ -513,6 +514,13 @@ body {
   .mat-dialog-content {
     max-height: calc(100% - 68px - 32px);
     height: 100%;
+  }
+}
+
+.tile-settings-dialog,
+.expanded-widget-dialog {
+  mat-dialog-container {
+    position: relative;
   }
 }
 

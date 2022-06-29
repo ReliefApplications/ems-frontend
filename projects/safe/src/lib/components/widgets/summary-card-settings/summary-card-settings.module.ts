@@ -7,7 +7,14 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeButtonModule } from '../../ui/button/button.module';
-import { SafeCardSettingsModule } from './card-settings/card-settings.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatRadioModule } from '@angular/material/radio';
+import { SafeIconModule } from '../../ui/icon/icon.module';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { SafeAddCardModule } from './add-card/add-card.module';
+import { SafeCardModalModule } from './card-modal/card-modal.module';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -21,7 +28,14 @@ import { SafeCardSettingsModule } from './card-settings/card-settings.module';
     TranslateModule,
     LayoutModule,
     SafeButtonModule,
-    SafeCardSettingsModule,
+    MatTooltipModule,
+    MatRadioModule,
+    SafeIconModule,
+    MatMenuModule,
+    MatIconModule,
+    MatDividerModule,
+    SafeAddCardModule,
+    SafeCardModalModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

@@ -1,0 +1,42 @@
+<safe-button
+  class="close-settings"
+  [isIcon]="true"
+  icon="close"
+  variant="danger"
+  (click)="onClose()"
+  [matTooltip]="'common.close' | translate"
+>
+</safe-button>
+<h1 mat-dialog-title>
+  {{ 'components.widget.settings.summaryCard.add' | translate }}
+</h1>
+<div mat-dialog-content class="mat-dialog-content">
+  <!-- <mat-radio-group
+    aria-label="Select an option"
+    [value]="false"
+    (change)="radioChange($event)"
+  >
+    <mat-radio-button [value]="false">{{
+      'components.widget.settings.summaryCard.static' | translate
+    }}</mat-radio-button>
+    <mat-radio-button [value]="true">{{
+      'components.widget.settings.summaryCard.dynamic' | translate
+    }}</mat-radio-button>
+  </mat-radio-group> -->
+  
+  <h2>
+    {{
+      'components.widget.settings.summaryCard.create.choice.template'
+        | translate
+    }}
+  </h2>
+  <mat-divider></mat-divider>
+  <safe-button variant="primary" category="tertiary" [block]="true" (click)="onCreate()">{{
+    'components.widget.settings.summaryCard.create.choice.blank' | translate
+  }}</safe-button>
+</div>
+<div mat-dialog-actions class="mat-dialog-actions" align="end">
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+</div>

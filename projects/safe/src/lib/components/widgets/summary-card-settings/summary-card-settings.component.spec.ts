@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SummaryCardSettingsComponent } from './summary-card-settings.component';
+import { SafeSummaryCardSettingsComponent } from './summary-card-settings.component';
 
-describe('SummaryCardSettingsComponent', () => {
-  let component: SummaryCardSettingsComponent;
-  let fixture: ComponentFixture<SummaryCardSettingsComponent>;
+describe('SafeSummaryCardSettingsComponent', () => {
+  let component: SafeSummaryCardSettingsComponent;
+  let fixture: ComponentFixture<SafeSummaryCardSettingsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SummaryCardSettingsComponent],
+      declarations: [SafeSummaryCardSettingsComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SummaryCardSettingsComponent);
+    fixture = TestBed.createComponent(SafeSummaryCardSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

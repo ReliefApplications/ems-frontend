@@ -10,19 +10,19 @@ interface DialogData {
 }
 
 /**
- * Card Settings component.
+ * Card modal component.
  * Used as a Material Dialog.
  */
 @Component({
-  selector: 'safe-card-settings',
-  templateUrl: './card-settings.component.html',
-  styleUrls: ['./card-settings.component.scss'],
+  selector: 'safe-card-modal',
+  templateUrl: './card-modal.component.html',
+  styleUrls: ['./card-modal.component.scss'],
 })
-export class SafeCardSettingsComponent implements OnInit {
+export class SafeCardModalComponent implements OnInit {
   public form: any;
 
   /**
-   * Card Settings component.
+   * Card modal component.
    * Used as a Material Dialog.
    *
    * @param dialogRef Material Dialog Ref of the component
@@ -30,11 +30,14 @@ export class SafeCardSettingsComponent implements OnInit {
    * @param data dialog data
    */
   constructor(
-    public dialogRef: MatDialogRef<SafeCardSettingsComponent>,
+    public dialogRef: MatDialogRef<SafeCardModalComponent>,
     public fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
+  /**
+   * Creates a formGroup with the data provided in the modal creation
+   */
   ngOnInit(): void {
     this.form = this.fb.group(this.data);
   }
@@ -47,7 +50,7 @@ export class SafeCardSettingsComponent implements OnInit {
   }
 
   /**
-   * Closes the modal sending tile form value.
+   * Closes the modal sending the form data.
    */
   onSubmit(): void {
     this.dialogRef.close(this.form.value);

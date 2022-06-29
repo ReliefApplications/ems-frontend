@@ -5,11 +5,27 @@ import {
   EventEmitter,
   Input,
   AfterViewInit,
+  HostListener,
 } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { SafeCardSettingsComponent } from './card-settings/card-settings.component';
+import {
+  TileLayoutReorderEvent,
+  TileLayoutResizeEvent,
+} from '@progress/kendo-angular-layout';
 import get from 'lodash/get';
+import { SafeAddCardComponent } from './add-card/add-card.component';
+import { SafeCardModalComponent } from './card-modal/card-modal.component';
+
+/** Define max height of widgets */
+const MAX_ROW_SPAN = 4;
+/** Define max width of widgets */
+const MAX_COL_SPAN = 8;
+
+/** Define maxc height of widgets */
+const DEFAULT_CARD_HEIGHT = 2;
+/** Define max width of widgets */
+const DEFAULT_CARD_WIDTH = 2;
 
 /**
  * Summary Card Settings component.
@@ -23,12 +39,25 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
 
+  // === GRID ===
+  colsNumber = MAX_COL_SPAN;
+
   // === WIDGET ===
   @Input() tile: any;
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
+
+  /**
+   * Changes display when windows size changes.
+   *
+   * @param event window resize event
+   */
+  @HostListener('window:resize', ['$event'])
+  onWindowResize(event: any): void {
+    this.colsNumber = this.setColsNumber(event.target.innerWidth);
+  }
 
   /**
    * Get cards settings as Form Array
@@ -51,14 +80,38 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
+    this.colsNumber = this.setColsNumber(window.innerWidth);
     this.tileForm = this.fb.group({
       id: this.tile.id,
       title: this.tile.settings.title,
+      isDynamic: get(this.tile, 'settings.isDynamic', false),
       cards: this.fb.array(
         get(this.tile, 'settings.cards', []).map((x: any) => this.cardForm(x))
       ),
     });
     this.change.emit(this.tileForm);
+  }
+
+  /**
+   * Changes the number of displayed columns.
+   *
+   * @param width width of the screen.
+   * @returns new number of cols.
+   */
+  private setColsNumber(width: number): number {
+    if (width <= 480) {
+      return 1;
+    }
+    if (width <= 600) {
+      return 2;
+    }
+    if (width <= 800) {
+      return 4;
+    }
+    if (width <= 1024) {
+      return 6;
+    }
+    return MAX_COL_SPAN;
   }
 
   /**
@@ -72,9 +125,17 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
 
   /**
    * Add a new card to the cards form array.
+   * Open a modal before adding it.
    */
   addCard() {
-    this.cards.push(this.cardForm());
+    const dialogRef = this.dialog.open(SafeAddCardComponent, {
+      panelClass: 'preferences-dialog',
+    });
+    dialogRef.afterClosed().subscribe((res: any) => {
+      if (res) {
+        this.cards.push(this.cardForm(res));
+      }
+    });
   }
 
   /**
@@ -86,6 +147,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   private cardForm(value?: any): FormGroup {
     return this.fb.group({
       title: get(value, 'title', 'New Card'),
+      isDynamic: value.isDynamic,
+      height: DEFAULT_CARD_HEIGHT,
+      width: DEFAULT_CARD_WIDTH,
     });
   }
 
@@ -99,12 +163,12 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Open Card Settings at index
+   * Open Card at index
    *
    * @param index index of card to open
    */
-  openCardSettings(index: number) {
-    const dialogRef = this.dialog.open(SafeCardSettingsComponent, {
+  openCard(index: number) {
+    const dialogRef = this.dialog.open(SafeCardModalComponent, {
       disableClose: true,
       data: this.cards.at(index).value,
       position: {
@@ -118,6 +182,42 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       if (value) {
         this.cards.at(index).setValue(value);
       }
+    });
+  }
+
+  /**
+   * Emits reorder event.
+   *
+   * @param e reorder event.
+   */
+  onReorder(e: TileLayoutReorderEvent) {
+    const newValue = (this.tileForm?.controls.cards as any).controls[
+      e.oldIndex
+    ];
+    const oldValue = (this.tileForm?.controls.cards as any).controls[
+      e.newIndex
+    ];
+    (this.tileForm?.controls.cards as any).removeAt(e.newIndex);
+    (this.tileForm?.controls.cards as any).insert(e.newIndex, newValue);
+    (this.tileForm?.controls.cards as any).removeAt(e.oldIndex);
+    (this.tileForm?.controls.cards as any).insert(e.oldIndex, oldValue);
+  }
+
+  /**
+   * Handles resize widget event.
+   *
+   * @param e resize event.
+   */
+  public onResize(e: TileLayoutResizeEvent) {
+    if (e.newRowSpan > MAX_ROW_SPAN) {
+      e.newRowSpan = MAX_ROW_SPAN;
+    }
+    if (e.newColSpan > MAX_COL_SPAN) {
+      e.newColSpan = MAX_COL_SPAN;
+    }
+    (this.tileForm?.controls.cards as any).controls[e.item.order].patchValue({
+      height: e.newRowSpan,
+      width: e.newColSpan,
     });
   }
 }
