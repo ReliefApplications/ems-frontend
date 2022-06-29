@@ -77,7 +77,7 @@ export * from './lib/components/skeleton/skeleton-table/public-api';
 export * from './lib/components/role-summary/public-api';
 
 /** Grid Layouts */
-export * from './lib/components/layout-modal/public-api';
+export * from './lib/components/grid-layout/layout-modal/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
 
 // === UI ===

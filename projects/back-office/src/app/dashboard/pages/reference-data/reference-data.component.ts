@@ -65,8 +65,10 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
   public valueFields: string[] = [];
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
 
+  // === CSV ===
   public csvValue = '';
   public newData: any = [];
+  public csvLoading = false;
 
   @ViewChild('formSelect') apiConfSelect?: MatSelect;
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
@@ -122,11 +124,11 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
             if (res.data.referenceData) {
               this.referenceData = res.data.referenceData;
               this.csvValue =
-                this.referenceData?.data.length > 0
+                this.referenceData?.data && this.referenceData?.data.length > 0
                   ? this.convertToCSV(this.referenceData?.data)
                   : '';
               this.newData =
-                this.referenceData?.data.length > 0
+                this.referenceData?.data && this.referenceData?.data.length > 0
                   ? this.referenceData?.data
                   : [];
               this.referenceForm = this.formBuilder.group({
@@ -144,6 +146,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
                 query: [this.referenceData?.query],
                 path: [this.referenceData?.path],
                 data: [this.referenceData?.data],
+                graphQLFilter: [this.referenceData?.graphQLFilter],
               });
               this.valueFields = this.referenceForm?.get('fields')?.value;
               this.loadApiConfigurations(
@@ -289,6 +292,10 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
         },
         this.referenceForm.value.query !== this.referenceData?.query && {
           query: this.referenceForm.value.query,
+        },
+        this.referenceForm.value.graphQLFilter !==
+          this.referenceData?.graphQLFilter && {
+          graphQLFilter: this.referenceForm.value.graphQLFilter,
         }
       );
     } else {
@@ -403,6 +410,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
         }
         this.referenceForm?.get('fields')?.setValue(this.valueFields);
         this.referenceForm?.get('fields')?.updateValueAndValidity();
+        this.referenceForm?.markAsDirty();
         // Reset the input value
         if (input) {
           input.value = '';
@@ -427,33 +435,37 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     }
     this.referenceForm?.get('fields')?.setValue(this.valueFields);
     this.referenceForm?.get('fields')?.updateValueAndValidity();
+    this.referenceForm?.markAsDirty();
   }
 
   /**
    * Validate the CSV input and transform it into JSON object.
    */
   onValidateCSV(): void {
+    this.csvLoading = true;
     const dataTemp: any = this.csvData?.nativeElement.value;
-    this.csvValue = dataTemp;
-    this.newData = [];
-    const lines = dataTemp.split('\n');
-    const headers = lines[0].split(',');
-    this.valueFields = headers;
-
-    for (let i = 1; i < lines.length; i++) {
-      if (!lines[i]) continue;
-      const obj: any = {};
-      const currentline = lines[i].split(',');
-      for (let j = 0; j < headers.length; j++) {
-        obj[headers[j]] = currentline[j];
+    if (dataTemp !== this.csvValue) {
+      this.csvValue = dataTemp;
+      this.newData = [];
+      const lines = dataTemp.split('\n');
+      const headers = lines[0].split(',').map((x: string) => x.trim());
+      this.valueFields = headers;
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i]) continue;
+        const obj: any = {};
+        const currentline = lines[i].split(',').map((x: string) => x.trim());
+        for (let j = 0; j < headers.length; j++) {
+          obj[headers[j]] = currentline[j];
+        }
+        this.newData.push(obj);
       }
-      this.newData.push(obj);
+      this.referenceForm?.get('data')?.setValue(this.newData);
+      this.referenceForm?.get('data')?.updateValueAndValidity();
+      this.referenceForm?.get('fields')?.setValue(this.valueFields);
+      this.referenceForm?.get('fields')?.updateValueAndValidity();
+      this.referenceForm?.markAsDirty();
     }
-    this.referenceForm?.get('data')?.setValue(this.newData);
-    this.referenceForm?.get('data')?.updateValueAndValidity();
-    this.referenceForm?.get('fields')?.setValue(this.valueFields);
-    this.referenceForm?.get('fields')?.updateValueAndValidity();
-    this.referenceForm?.markAsDirty();
+    this.csvLoading = false;
   }
 
   /**
