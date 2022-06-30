@@ -45,9 +45,25 @@
               formControlName="field"
               (selectionChange)="onSetField($event, i)"
             >
-              <mat-option *ngFor="let field of fields" [value]="field.name">{{
-                field.name
-              }}</mat-option>
+              <ng-container *ngFor="let field of fields">
+                <mat-option
+                  *ngIf="field.type.kind === 'SCALAR'"
+                  [value]="field.name"
+                >
+                  {{ field.name }}
+                </mat-option>
+                <mat-optgroup 
+                  *ngIf="field.type.kind !== 'SCALAR'"
+                  [label]="field.name"
+                >
+                  <mat-option
+                    *ngFor="let subField of field.fields"
+                    [value]="field.name + '.' + subField.name"
+                  >
+                    {{ subField.name }}
+                  </mat-option>
+                </mat-optgroup>
+              </ng-container>
             </mat-select>
           </mat-form-field>
           <ng-container *ngIf="selectedFields[i].name">
@@ -95,15 +111,15 @@
                 <mat-select
                   formControlName="value"
                   *ngIf="
-                    metaFields[selectedFields[i].name] &&
+                    getMeta(selectedFields[i].name) &&
                     ['dropdown', 'radiogroup'].includes(
-                      metaFields[selectedFields[i].name].type
+                      getMeta(selectedFields[i].name).type
                     )
                   "
                 >
                   <mat-option
                     *ngFor="
-                      let choice of metaFields[selectedFields[i].name].choices
+                      let choice of getMeta(selectedFields[i].name).choices
                     "
                     [value]="choice.value"
                     >{{ choice.text }}</mat-option
@@ -111,9 +127,9 @@
                 </mat-select>
                 <input
                   *ngIf="
-                    !metaFields[selectedFields[i].name] ||
+                    !getMeta(selectedFields[i].name) ||
                     !['dropdown', 'radiogroup'].includes(
-                      metaFields[selectedFields[i].name].type
+                      getMeta(selectedFields[i].name).type
                     )
                   "
                   matInput
@@ -124,18 +140,18 @@
               <ng-container *ngIf="selectedFields[i].type === 'JSON'">
                 <mat-select
                   formControlName="value"
-                  *ngIf="!metaFields[selectedFields[i].name]"
+                  *ngIf="!getMeta(selectedFields[i].name)"
                 >
-                  <mat-option>None</mat-option>
+                  <mat-option>{{ 'common.input.none' | translate }}</mat-option>
                 </mat-select>
                 <mat-select
                   formControlName="value"
                   multiple
-                  *ngIf="metaFields[selectedFields[i].name]"
+                  *ngIf="getMeta(selectedFields[i].name)"
                 >
                   <mat-option
                     *ngFor="
-                      let choice of metaFields[selectedFields[i].name].choices
+                      let choice of getMeta(selectedFields[i].name).choices
                     "
                     [value]="choice.value"
                     >{{ choice.text }}</mat-option

@@ -157,7 +157,7 @@ export class SafeGridService {
         return 'numeric';
       }
       case 'Float': {
-        return 'float';
+        return 'numeric';
       }
       case 'Boolean': {
         return 'boolean';
@@ -211,7 +211,7 @@ export class SafeGridService {
         return 'numeric';
       }
       case 'Float': {
-        return 'float';
+        return 'numeric';
       }
       case 'Boolean': {
         return 'boolean';
