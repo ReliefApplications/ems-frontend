@@ -503,6 +503,10 @@ body {
   max-width: unset !important;
   width: 100%;
   height: calc(100% - 72px);
+  // max-width: 1200px !important;
+  // width: 90%;
+  // height: 90%;
+  // margin: auto !important;
 
   mat-dialog-container {
     position: relative;

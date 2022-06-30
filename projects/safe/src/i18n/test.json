@@ -870,6 +870,9 @@
 							"title": "******"
 						}
 					},
+					"popup": {
+						"label": "******"
+					},
 					"properties": {
 						"basemap": "******",
 						"latitude": "******",

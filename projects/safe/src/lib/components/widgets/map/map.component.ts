@@ -139,9 +139,62 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.getData();
     }
 
-    this.fields = get(this.settings, 'query.fields', []);
+    const flatQueryFields = this.getFields(
+      get(this.settings, 'query.fields', [])
+    );
+    const popupFields = get(this.settings, 'popupFields', []);
+    if (popupFields.length > 0) {
+      this.fields = flatQueryFields.filter((field) =>
+        popupFields.includes(field.name)
+      );
+    } else {
+      this.fields = flatQueryFields;
+    }
 
     setTimeout(() => this.map.invalidateSize(), 100);
+  }
+
+  /**
+   * Flatten an array
+   *
+   * @param {any[]} arr - any[] - the array to be flattened
+   * @returns the array with all the nested arrays flattened.
+   */
+  private flatDeep(arr: any[]): any[] {
+    return arr.reduce(
+      (acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val),
+      []
+    );
+  }
+
+  /**
+   * Get list of query fields from settings
+   *
+   * @param fields list of fields
+   * @param prefix prefix to add to field name
+   * @returns flat list of fields
+   */
+  private getFields(
+    fields: any[],
+    prefix?: string
+  ): { name: string; label: string }[] {
+    return this.flatDeep(
+      fields
+        .filter((x) => x.kind !== 'LIST')
+        .map((f) => {
+          switch (f.kind) {
+            case 'OBJECT': {
+              return this.getFields(f.fields, f.name);
+            }
+            default: {
+              return {
+                name: prefix ? `${prefix}.${f.name}` : f.name,
+                label: f.label,
+              };
+            }
+          }
+        })
+    );
   }
 
   /** Creates the map and adds all the controls we use */

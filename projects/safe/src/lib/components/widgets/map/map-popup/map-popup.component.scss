@@ -1,4 +1,12 @@
 div {
+  max-width: 350px;
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 2px;
+}
+
+span {
+  display: flex;
+  gap: 0 8px;
+  flex-wrap: wrap;
 }

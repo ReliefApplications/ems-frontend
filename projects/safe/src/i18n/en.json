@@ -870,6 +870,9 @@
 							"title": "Marker layers"
 						}
 					},
+					"popup": {
+						"label": "Fields displayed in the popup"
+					},
 					"properties": {
 						"basemap": "Base map",
 						"latitude": "Map center latitude",

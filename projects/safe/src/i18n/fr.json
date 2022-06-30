@@ -870,6 +870,9 @@
 							"title": "Marqueurs"
 						}
 					},
+					"popup": {
+						"label": "Champs affichés dans le popup"
+					},
 					"properties": {
 						"basemap": "Fond de carte",
 						"latitude": "Latitude du centre de la carte",

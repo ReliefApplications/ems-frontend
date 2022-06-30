@@ -10,6 +10,7 @@ import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MapMarkerRuleModule } from '../map-marker-rule/map-marker-rule.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 /**
  * Module of Map Widget marker rules.
@@ -28,6 +29,7 @@ import { MapMarkerRuleModule } from '../map-marker-rule/map-marker-rule.module';
     MatFormFieldModule,
     MatSelectModule,
     MapMarkerRuleModule,
+    MatTooltipModule,
   ],
   exports: [MapMarkersComponent],
 })
