@@ -49,7 +49,13 @@ export class ReferenceDatasComponent
   // === DATA ===
   public loading = true;
   private referenceDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
-  displayedColumns = ['name', 'apiConfiguration', 'actions'];
+  displayedColumns = [
+    'name',
+    'type',
+    'apiConfiguration',
+    'modifiedAt',
+    'actions',
+  ];
   dataSource = new MatTableDataSource<ReferenceData>([]);
   public cachedReferenceDatas: ReferenceData[] = [];
 

@@ -65,12 +65,12 @@ export class MapMarkersComponent implements OnInit {
       data: {
         value: this.rules.at(index).value,
         fields: this.formatedSelectedFields,
+        query: this.form.get('query'),
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.rules.removeAt(index);
-        this.rules.insert(index, markerRuleForm(value));
+        this.rules.setControl(index, markerRuleForm(value));
       }
     });
   }

@@ -101,7 +101,7 @@ export class SafeRecordHistoryComponent implements OnInit {
       })
       .subscribe((res) => {
         this.record = res.data.record;
-        this.sortedFields = this.sortFields(this.record.form?.fields || []);
+        this.sortedFields = this.sortFields(this.getFields());
       });
 
     this.apollo
@@ -179,7 +179,7 @@ export class SafeRecordHistoryComponent implements OnInit {
           <p>
             <span class="${change.type}-field">
             ${translations[change.type]}
-            </span> 
+            </span>
             <b> ${change.displayName} </b>
             ${translations.from}
             <b> ${oldVal}</b>
@@ -339,5 +339,56 @@ export class SafeRecordHistoryComponent implements OnInit {
       const compB: string = b.title || b.name;
       return compA.toLowerCase() > compB.toLowerCase() ? 1 : -1;
     });
+  }
+
+  /**
+   * Get fields from the form
+   *
+   * @returns Returns an array with all the fields.
+   */
+  private getFields(): any[] {
+    const fields: any[] = [];
+    // No form, break the display
+    if (this.record.form) {
+      // Take the fields from the form
+      this.record.form.fields?.map((field: any) => {
+        fields.push(Object.assign({}, field));
+      });
+      if (this.record.form.structure) {
+        const structure = JSON.parse(this.record.form.structure);
+        if (!structure.pages || !structure.pages.length) {
+          return [];
+        }
+        for (const page of structure.pages) {
+          this.extractFields(page, fields);
+        }
+      }
+    }
+    return fields;
+  }
+
+  /**
+   * Extract fields from form structure in order to get titles.
+   *
+   * @param object Structure to inspect, can be a page, a panel.
+   * @param fields Array of fields.
+   */
+  private extractFields(object: any, fields: any[]): void {
+    if (object.elements) {
+      for (const element of object.elements) {
+        if (element.type === 'panel') {
+          this.extractFields(element, fields);
+        } else {
+          const field = fields.find((x) => x.name === element.name);
+          if (field && element.title) {
+            if (typeof element.title === 'string') {
+              field.title = element.title;
+            } else {
+              field.title = element.title.default;
+            }
+          }
+        }
+      }
+    }
   }
 }

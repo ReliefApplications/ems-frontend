@@ -112,7 +112,10 @@ export const divisionForm = (value?: any): FormGroup =>
  */
 export const markerRuleForm = (value?: any): FormGroup =>
   fb.group({
-    label: [get(value, 'label', DEFAULT_MARKER_RULE.label)],
+    label: [
+      get(value, 'label', DEFAULT_MARKER_RULE.label),
+      [Validators.required],
+    ],
     color: [get(value, 'color', DEFAULT_MARKER_RULE.color)],
     size: [
       get(value, 'size', DEFAULT_MARKER_RULE.size),

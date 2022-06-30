@@ -14,6 +14,7 @@ export enum referenceDataType {
 export interface ReferenceData {
   id?: string;
   name?: string;
+  modifiedAt?: string;
   type?: referenceDataType;
   apiConfiguration?: ApiConfiguration;
   query?: string;
@@ -21,6 +22,7 @@ export interface ReferenceData {
   valueField?: string;
   path?: string;
   data?: any;
+  graphQLFilter?: string;
   permissions?: any;
   canSee?: boolean;
   canUpdate?: boolean;

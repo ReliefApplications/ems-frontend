@@ -17,6 +17,7 @@ export class MapClorophletsComponent implements OnInit {
 
   @Input() selectedFields: any[] = [];
   @Input() formatedSelectedFields: any[] = [];
+  @Input() query: any;
 
   public tableColumns = ['name', 'actions'];
 
@@ -48,12 +49,12 @@ export class MapClorophletsComponent implements OnInit {
         value: this.clorophlets.at(index).value,
         fields: this.selectedFields,
         formatedFields: this.formatedSelectedFields,
+        query: this.query,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.clorophlets.removeAt(index);
-        this.clorophlets.insert(index, clorophletForm(value));
+        this.clorophlets.setControl(index, clorophletForm(value));
       }
     });
   }

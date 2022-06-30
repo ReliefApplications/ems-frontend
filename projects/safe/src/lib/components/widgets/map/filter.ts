@@ -1,38 +1,81 @@
-const operate = (field: any, operator: string, value: any): boolean => {
+import { isEqual, isArray, get } from 'lodash';
+
+/**
+ * Calculate an operation for filters
+ *
+ * @param fieldValue The value which comes from the record item
+ * @param operator The operator to use for the operation
+ * @param filterValue The value which comes from the filter
+ * @returns A boolean, indicating the result of the operation
+ */
+const operate = (
+  fieldValue: any,
+  operator: string,
+  filterValue: any
+): boolean => {
   switch (operator) {
     case 'eq':
-      return field === value;
+      return isEqual(fieldValue, filterValue);
     case 'neq':
-      return field !== value;
+      return !isEqual(fieldValue, filterValue);
     case 'gte':
-      return field >= value;
+      return fieldValue >= filterValue;
     case 'gt':
-      return field > value;
+      return fieldValue > filterValue;
     case 'lte':
-      return field <= value;
+      return fieldValue <= filterValue;
     case 'lt':
-      return field < value;
+      return fieldValue < filterValue;
     case 'isnull':
-      return field === null;
+      return fieldValue === null;
     case 'isnotnull':
-      return field !== null;
+      return fieldValue !== null;
     case 'isempty':
-      return field.lenght === 0;
+      return (
+        fieldValue === null || (isArray(fieldValue) && fieldValue.length === 0)
+      );
     case 'isnotempty':
-      return field.lenght > 0;
+      return isArray(fieldValue) && fieldValue.length > 0;
     case 'contains':
-      return field.includes(value);
+      if (fieldValue === null) return false;
+      if (isArray(filterValue)) {
+        for (const itemValue of filterValue) {
+          if (!fieldValue.includes(itemValue)) {
+            return false;
+          }
+        }
+        return true;
+      } else {
+        return fieldValue.includes(filterValue);
+      }
     case 'doesnotcontain':
-      return !field.includes(value);
+      if (fieldValue === null) return true;
+      if (isArray(filterValue)) {
+        for (const itemValue of filterValue) {
+          if (fieldValue.includes(itemValue)) {
+            return false;
+          }
+        }
+        return true;
+      } else {
+        return !fieldValue.includes(filterValue);
+      }
     case 'startswith':
-      return field.startsWith(value);
+      return fieldValue.startsWith(filterValue);
     case 'endswith':
-      return field.endsWith(value);
+      return fieldValue.endsWith(filterValue);
     default:
       return true;
   }
 };
 
+/**
+ * Test a record through a filter
+ *
+ * @param value The record to test
+ * @param filter The filter to apply
+ * @returns A boolean indicating if the record passes the filter
+ */
 export const applyFilters = (value: any, filter: any): boolean => {
   let res = false;
   let logic = false;
@@ -47,7 +90,7 @@ export const applyFilters = (value: any, filter: any): boolean => {
       res = applyFilters(value, filter.filters[i].filters);
     } else {
       res = operate(
-        value[filter.filters[i].field],
+        get(value, filter.filters[i].field, null),
         filter.filters[i].operator,
         filter.filters[i].value
       );

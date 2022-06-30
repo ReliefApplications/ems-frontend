@@ -6,11 +6,12 @@ import {
   OnDestroy,
   Inject,
 } from '@angular/core';
-import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { applyFilters } from './filter';
+import { DomService } from '../../../services/dom.service';
 import get from 'lodash/get';
+import { SafeMapPopupComponent } from './map-popup/map-popup.component';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -72,11 +73,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private legendControl: any;
 
   // === RECORDS ===
-  private selectedItem: Record | null = null;
-  private data: any[] = [];
   private dataQuery: any;
   private dataSubscription?: Subscription;
-  private displayFields: string[] = [];
+  private fields: any[] = [];
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -91,11 +90,13 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
    * @param environment platform environment
    * @param apollo Apollo client
    * @param queryBuilder The querybuilder service
+   * @param domService Shared dom service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private domService: DomService
   ) {
     this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
@@ -138,7 +139,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.getData();
     }
 
-    this.displayFields = this.settings.popupFields || [];
+    this.fields = get(this.settings, 'query.fields', []);
 
     setTimeout(() => this.map.invalidateSize(), 100);
   }
@@ -214,39 +215,41 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Creates a featureGroup which will contain all the markers/pointer
     if (!this.markersLayer) {
       const markersLayerGroup = L.featureGroup().addTo(this.map);
-      markersLayerGroup.on('click', (event: any) => {
-        this.selectedItem = this.data.find(
-          (x) => x.id === event.layer.options.id
-        );
-        this.popupMarker = L.popup({})
-          .setLatLng([event.latlng.lat, event.latlng.lng])
-          .setContent(get(this.selectedItem, 'data', ''))
-          .addTo(this.map);
-      });
-
       // Deactivated cluster feature
-      //this.markersLayer = L.markerClusterGroup({}).addTo(markersLayerGroup);
+      // this.markersLayer = L.markerClusterGroup({}).addTo(markersLayerGroup);
       this.markersLayer = markersLayerGroup;
     } else {
       this.markersLayer.clearLayers();
     }
 
     // Loops throught fields to get all markers
-    this.data = [];
     this.markersCategories = [];
     for (const field in res.data) {
       if (Object.prototype.hasOwnProperty.call(res.data, field)) {
         res.data[field].edges.map((x: any) => {
-          // CReates the marker
+          // Creates the marker
           this.setMarker(x.node);
         });
       }
     }
+
+    // setting up layer with all markers, if it doesn't exist
+    if (!this.markersCategories.hasOwnProperty('Markers')) {
+      const allLayers: any[] = [];
+      Object.keys(this.markersCategories).forEach((name: string) => {
+        allLayers.push(...this.markersCategories[name]);
+      });
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      this.markersCategories['undefined'] = allLayers;
+    }
+
     // Renders all the markers
     Object.keys(this.markersCategories).map((name: string) => {
-      this.overlays[name !== 'undefined' ? name : 'Markers'] = L.featureGroup
+      const layerName = name !== 'undefined' ? name : 'Markers';
+      this.overlays[layerName] = L.featureGroup
         .subGroup(this.markersLayer, this.markersCategories[name])
         .addTo(this.map);
+      this.overlays[layerName].type = 'Marker';
     });
 
     // Loops throught clorophlets and adds them to the map
@@ -254,7 +257,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.settings.clorophlets.map((value: any) => {
         if (value.divisions.length > 0) {
           // Renders the clorophlet
-          this.drawClorophlet(value, res.data);
+          this.overlays[value.name] = this.setClorophlet(value, res.data).addTo(
+            this.map
+          );
+          this.overlays[value.name].type = 'Clorophlet';
         }
       });
     }
@@ -295,28 +301,16 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     const longitude = Number(item[this.settings.longitude]);
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
       if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
-        // Sets the marker popup contents.
-        let data = '';
-        for (const displayField of this.displayFields) {
-          const value = displayField
-            .split('.')
-            .reduce((val, field) => val[field] || undefined, item);
-          if (value !== undefined) {
-            data += `<div><b>${displayField}:</b> ${value}</div>`;
-          }
-        }
-        const obj = { id: item.id, data };
-        this.data.push(obj);
-
         // Sets the style of the marker depending on the rules applied.
         const options = Object.assign({}, MARKER_OPTIONS);
         Object.assign(options, { id: item.id });
-        this.settings.markerRules?.map((rule: any) => {
+        this.settings.markerRules?.map((rule: any, i: any) => {
           if (applyFilters(item, rule.filter)) {
             options.color = rule.color;
             options.fillColor = rule.color;
             options.weight *= rule.size;
             options.radius *= rule.size;
+            Object.assign(options, { divisionID: `${rule.label}-${i}` });
           }
         });
 
@@ -326,21 +320,39 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           this.markersCategories[item[this.settings.category]] = [];
         }
         this.markersCategories[item[this.settings.category]].push(marker);
+        marker.bindPopup(() => {
+          const div = document.createElement('div');
+          const popupContent = this.domService.appendComponentToBody(
+            SafeMapPopupComponent,
+            div
+          );
+          const instance = popupContent.instance;
+          instance.data = item;
+          instance.fields = this.fields;
+          this.popupMarker = L.popup({})
+            .setLatLng([latitude, longitude])
+            .setContent(div)
+            .addTo(this.map);
+          instance.loaded.subscribe(() => this.popupMarker.update());
+          return;
+        });
       }
     }
   }
 
   /**
-   * Renders a clorophlet using the passed data.
+   * Creates a clorophlet using the passed data.
    *
-   * @param value Properties of the clorophlet to draw.
+   * @param value Properties of the clorophlet.
    * @param data Query data feeded to the clorophlet.
+   * @returns a geoJSON layer
    */
-  private drawClorophlet(value: any, data: any) {
-    this.overlays[value.name] = L.geoJson(JSON.parse(value.geoJSON), {
+  private setClorophlet(value: any, data: any) {
+    return L.geoJson(JSON.parse(value.geoJSON), {
       interactive: false,
       style: (feature: any): any => {
         let color = 'transparent';
+        let label = '';
         for (const field in data) {
           if (Object.prototype.hasOwnProperty.call(data, field)) {
             data[field].edges.map((entry: any) => {
@@ -350,9 +362,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
                 entry.node[value.place].toString() ===
                   feature.properties[value.geoJSONfield].toString()
               ) {
-                value.divisions.map((div: any) => {
+                value.divisions.map((div: any, i: number) => {
                   if (applyFilters(entry.node, div.filter)) {
                     color = div.color;
+                    label = div.label.empty ? 'Division ' + (i + 1) : div.label;
                   }
                 });
               }
@@ -365,9 +378,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           weight: 0.5,
           opacity: 1,
           color: color === 'transparent' ? 'transparent' : 'white',
+          label,
         };
       },
-    }).addTo(this.map);
+    });
   }
 
   /**
@@ -405,6 +419,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     ) {
       const div = this.div;
       div.innerHTML = '';
+      // Prevent double click on legend panel to zoom
+      L.DomEvent.on(div, 'dblclick', (e: any) => {
+        e.stopPropagation();
+      });
       // Creates legend for clorophlets
       data.clorophlets?.map((clorophlet: any) => {
         const layer = overlays[clorophlet.name];
@@ -447,6 +465,37 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
                 ? division.label
                 : 'Division ' + (i + 1)) +
               '<br>';
+            L.DomEvent.on(
+              legendDivisionDiv,
+              'click',
+              () => {
+                // eslint-disable-next-line no-underscore-dangle
+                const layers = overlays[clorophlet.name]._layers;
+                const isHidden = L.DomUtil.hasClass(
+                  legendDivisionDiv,
+                  'legend-division-hide'
+                );
+                if (isHidden) {
+                  L.DomUtil.removeClass(
+                    legendDivisionDiv,
+                    'legend-division-hide'
+                  );
+                  Object.keys(layers).forEach((layerName: any) => {
+                    const divisionLayer = layers[layerName];
+                    if (divisionLayer.options.label === division.label)
+                      map.addLayer(divisionLayer);
+                  });
+                } else {
+                  L.DomUtil.addClass(legendDivisionDiv, 'legend-division-hide');
+                  Object.keys(layers).forEach((layerName: any) => {
+                    const divisionLayer = layers[layerName];
+                    if (divisionLayer.options.label === division.label)
+                      map.removeLayer(divisionLayer);
+                  });
+                }
+              },
+              this
+            );
           });
         }
       });
@@ -487,8 +536,62 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             '<i style="background:' +
             rule.color +
             '"></i>' +
-            (rule.label.length > 0 ? rule.label : 'Rule ' + (i + 1)) +
+            rule.label +
             '<br>';
+
+          L.DomEvent.on(
+            legendDivisionDiv,
+            'click',
+            () => {
+              // eslint-disable-next-line no-underscore-dangle
+              const layers = overlays.Markers._layers;
+
+              // // array with all the clusters displayed and the markers in each of them
+              // const clusteredLayers: { cluster: any; hiddenMarkers: any[] }[] =
+              //   [];
+              // map.eachLayer((layer: any) => {
+              //   if (layer.getAllChildMarkers)
+              //     clusteredLayers.push({
+              //       cluster: layer,
+              //       hiddenMarkers: layer.getAllChildMarkers(),
+              //     });
+              // });
+              const isHidden = L.DomUtil.hasClass(
+                legendDivisionDiv,
+                'legend-division-hide'
+              );
+              if (isHidden) {
+                L.DomUtil.removeClass(
+                  legendDivisionDiv,
+                  'legend-division-hide'
+                );
+                Object.keys(layers).map((layerName: any) => {
+                  const divisionLayer = layers[layerName];
+                  if (divisionLayer.options.divisionID === `${rule.label}-${i}`)
+                    map.addLayer(divisionLayer);
+                });
+              } else {
+                L.DomUtil.addClass(legendDivisionDiv, 'legend-division-hide');
+                Object.keys(layers).map((layerName: any) => {
+                  const divisionLayer = layers[layerName];
+                  if (
+                    divisionLayer.options.divisionID === `${rule.label}-${i}`
+                  ) {
+                    // const cluster = clusteredLayers.find((c) =>
+                    //   c.hiddenMarkers.includes(divisionLayer)
+                    // );
+                    // // marker isn't in any cluster
+                    // if (!cluster) {
+                    map.removeLayer(divisionLayer);
+                    // } else {
+                    //   // cluster.cluster.removeLayer(divisionLayer);
+                    // }
+                  }
+                });
+              }
+            },
+            this
+          );
         });
       }
       if (div.innerHTML.length === 0) {

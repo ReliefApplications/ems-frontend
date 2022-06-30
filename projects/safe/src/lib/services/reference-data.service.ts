@@ -13,6 +13,10 @@ import {
 } from '../graphql/queries';
 import { SafeApiProxyService } from './api-proxy.service';
 
+const LAST_MODIFIED_KEY = '_last_modified';
+const LAST_REQUEST_KEY = '_last_request';
+const LAST_UPDATE_CODE = '$$LAST_UPDATE';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -41,6 +45,7 @@ export class SafeReferenceDataService {
    * Build a graphQL query based on the ReferenceData configuration.
    *
    * @param referenceData Reference data configuration.
+   * @param newItems do we need to query only new items
    * @returns GraphQL query.
    */
   private buildGraphQLQuery(
@@ -48,15 +53,16 @@ export class SafeReferenceDataService {
     newItems = false
   ): string {
     let query = '{ ' + (referenceData.query || '');
-    // if (newItems) {
-    //   // eslint-disable-next-line prettier/prettier
-    //   let filter = 'filter:"modifieddate > \\\"$$TODAY\\\":datetime"'; // TO REMOVE WITH FIELD OF REF DATA
-    //   if (filter.includes('$$TODAY')) {
-    //     const today = new Date().toISOString().split('T')[0];
-    //     filter = filter.split('$$TODAY').join(today);
-    //   }
-    //   query += '(' + filter + ')';
-    // }
+    if (newItems && referenceData.graphQLFilter) {
+      let filter = `${referenceData.graphQLFilter}`;
+      if (filter.includes(LAST_UPDATE_CODE)) {
+        const lastUpdate =
+          localStorage.getItem(referenceData.id + LAST_REQUEST_KEY) ||
+          this.formatDateSQL(new Date(0));
+        filter = filter.split(LAST_UPDATE_CODE).join(lastUpdate);
+      }
+      query += '(' + filter + ')';
+    }
     query += ' { ';
     for (const field of referenceData.fields || []) {
       query += field + ' ';
@@ -86,7 +92,7 @@ export class SafeReferenceDataService {
 
   /**
    * Asynchronously fetch choices from ReferenceData and return them in the right format for a selectable questions.
-   * Include caching for graphQL requests to optimise number of requests.
+   * Include caching for requests to optimise number of requests.
    *
    * @param referenceDataID ReferenceData ID.
    * @param displayField Field used for display in the question.
@@ -96,19 +102,62 @@ export class SafeReferenceDataService {
     referenceDataID: string,
     displayField: string
   ): Promise<{ value: string | number; text: string }[]> {
+    // Initialisation
+    let items: any;
     const referenceData = await this.loadReferenceData(referenceDataID);
     const cacheKey = referenceData.id || '';
     const valueField = referenceData.valueField || 'id';
-    let items: any;
-    switch (referenceData.type) {
-      case referenceDataType.graphql: {
+    const cacheTimestamp = localStorage.getItem(cacheKey + LAST_MODIFIED_KEY);
+    const modifiedAt = referenceData.modifiedAt || '';
+
+    // Check if referenceData has changed. In this case, refresh choices instead of using cached ones.
+    if (!cacheTimestamp || cacheTimestamp < modifiedAt) {
+      switch (referenceData.type) {
+        case referenceDataType.graphql: {
+          const url =
+            this.apiProxy.baseUrl +
+            referenceData.apiConfiguration?.name +
+            referenceData.apiConfiguration?.graphQLEndpoint;
+          const body = { query: this.buildGraphQLQuery(referenceData, false) };
+          const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
+          items = referenceData.path ? get(data, referenceData.path) : data;
+          items = referenceData.query ? items[referenceData.query] : items;
+          localStorage.setItem(
+            cacheKey + LAST_REQUEST_KEY,
+            this.formatDateSQL(new Date())
+          );
+          break;
+        }
+        case referenceDataType.rest: {
+          const url =
+            this.apiProxy.baseUrl +
+            referenceData.apiConfiguration?.name +
+            referenceData.query;
+          const data = await this.apiProxy.promisedRequestWithHeaders(url);
+          items = referenceData.path ? get(data, referenceData.path) : data;
+          break;
+        }
+        case referenceDataType.static: {
+          items = referenceData.data;
+          break;
+        }
+        default: {
+          items = referenceData.data;
+          break;
+        }
+      }
+      // Cache items and timestamp
+      localForage.setItem(cacheKey, items);
+      localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
+    } else {
+      // If referenceData has not changed, use cached value and check for updates for graphQL.
+      if (referenceData.type === referenceDataType.graphql) {
         const isCached = (await localForage.keys()).includes(cacheKey);
         // Fetch items
-        const graphqlEndpoint = '/graphql'; // TO-DO: get it from apiConfiguration
         const url =
           this.apiProxy.baseUrl +
           referenceData.apiConfiguration?.name +
-          graphqlEndpoint;
+          referenceData.apiConfiguration?.graphQLEndpoint;
         const body = { query: this.buildGraphQLQuery(referenceData, isCached) };
         const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
         items = referenceData.path ? get(data, referenceData.path) : data;
@@ -131,26 +180,47 @@ export class SafeReferenceDataService {
           items = cache || [];
         }
         localForage.setItem(cacheKey, items);
-        break;
-      }
-      case referenceDataType.rest: {
-        const url =
-          this.apiProxy.baseUrl +
-          referenceData.apiConfiguration?.name +
-          referenceData.query;
-        const data = await this.apiProxy.promisedRequestWithHeaders(url);
-        items = referenceData.path ? get(data, referenceData.path) : data;
-        break;
-      }
-      case referenceDataType.static: {
-        items = referenceData.data;
-        break;
-      }
-      default: {
-        items = referenceData.data;
-        break;
+        localStorage.setItem(
+          cacheKey + LAST_REQUEST_KEY,
+          this.formatDateSQL(new Date())
+        );
+      } else {
+        // If referenceData has not changed, use cached value for non graphQL.
+        items = await localForage.getItem(cacheKey);
       }
     }
     return this.buildChoices(items, valueField, displayField);
+  }
+
+  /**
+   * Pad a number to 2 digits string.
+   *
+   * @param num number to pad
+   * @returns 2 digits string.
+   */
+  private padTo2Digits(num: number): string {
+    return num.toString().padStart(2, '0');
+  }
+
+  /**
+   * Format a date to YYYY-MM-DD HH:MM:SS.
+   *
+   * @param date date to format.
+   * @returns String formatted to YYYY-MM-DD HH:MM:SS.
+   */
+  private formatDateSQL(date: Date): string {
+    return (
+      [
+        date.getFullYear(),
+        this.padTo2Digits(date.getMonth() + 1),
+        this.padTo2Digits(date.getDate()),
+      ].join('-') +
+      ' ' +
+      [
+        this.padTo2Digits(date.getHours()),
+        this.padTo2Digits(date.getMinutes()),
+        this.padTo2Digits(date.getSeconds()),
+      ].join(':')
+    );
   }
 }

@@ -528,7 +528,7 @@
 				"title": "Filtre"
 			},
 			"hint": {
-				"fields": "Sélectionnez des points de donnée ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
+				"fields": "Sélectionnez des champs ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
 				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
 				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
 			},
@@ -882,7 +882,7 @@
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
-						"dataset": "Filtrez le jeu de données et sélectionnez les champs à afficher sur la carte",
+						"dataset": "Sélectionnez des champs ci-dessous et déplacez-les vers 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché en cliquant sur les marqueurs",
 						"default": {
 							"latitude": "Sélectionnez une latitude par défaut autour de laquelle vous souhaitez centrer la carte",
 							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte",
@@ -1274,11 +1274,16 @@
 				"name": "Seules les lettres, les tirets et les tirets bas sont acceptés"
 			},
 			"fields": "Champs",
+			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",
 			"placeholder": {
-				"csv": "Insérer le CSV ici"
+				"csv": "Insérer le CSV ici",
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés"
 			},
 			"queryName": "Nom de la requête",
+			"tooltip": {
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés. Vous pouvez utiliser le code $$LAST_UPDATE pour insérer dynamiquement la date de la dernière mise à jour des choix dans un format compatible SQL."
+			},
 			"type": "Type",
 			"validateCsv": "Valider le CSV",
 			"valueField": "Champ de valeur"
