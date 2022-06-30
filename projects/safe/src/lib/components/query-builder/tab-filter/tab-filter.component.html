@@ -57,7 +57,7 @@
                   [label]="field.name"
                 >
                   <mat-option
-                    *ngFor="let subField of field.type.fields"
+                    *ngFor="let subField of field.fields"
                     [value]="field.name + '.' + subField.name"
                   >
                     {{ subField.name }}
@@ -111,15 +111,15 @@
                 <mat-select
                   formControlName="value"
                   *ngIf="
-                    metaFields[selectedFields[i].name] &&
+                    getMeta(selectedFields[i].name) &&
                     ['dropdown', 'radiogroup'].includes(
-                      metaFields[selectedFields[i].name].type
+                      getMeta(selectedFields[i].name).type
                     )
                   "
                 >
                   <mat-option
                     *ngFor="
-                      let choice of metaFields[selectedFields[i].name].choices
+                      let choice of getMeta(selectedFields[i].name).choices
                     "
                     [value]="choice.value"
                     >{{ choice.text }}</mat-option
@@ -127,9 +127,9 @@
                 </mat-select>
                 <input
                   *ngIf="
-                    !metaFields[selectedFields[i].name] ||
+                    !getMeta(selectedFields[i].name) ||
                     !['dropdown', 'radiogroup'].includes(
-                      metaFields[selectedFields[i].name].type
+                      getMeta(selectedFields[i].name).type
                     )
                   "
                   matInput
@@ -140,18 +140,18 @@
               <ng-container *ngIf="selectedFields[i].type === 'JSON'">
                 <mat-select
                   formControlName="value"
-                  *ngIf="!metaFields[selectedFields[i].name]"
+                  *ngIf="!getMeta(selectedFields[i].name)"
                 >
-                  <mat-option>None</mat-option>
+                  <mat-option>{{ 'common.input.none' | translate }}</mat-option>
                 </mat-select>
                 <mat-select
                   formControlName="value"
                   multiple
-                  *ngIf="metaFields[selectedFields[i].name]"
+                  *ngIf="getMeta(selectedFields[i].name)"
                 >
                   <mat-option
                     *ngFor="
-                      let choice of metaFields[selectedFields[i].name].choices
+                      let choice of getMeta(selectedFields[i].name).choices
                     "
                     [value]="choice.value"
                     >{{ choice.text }}</mat-option

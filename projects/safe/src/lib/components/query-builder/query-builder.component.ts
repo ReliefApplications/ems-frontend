@@ -41,6 +41,7 @@ export class SafeQueryBuilderComponent implements OnInit {
     return this.availableFields.filter(
       (x) => x.type.kind === 'SCALAR' || x.type.kind === 'OBJECT'
     );
+    // return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
   }
 
   @Input() form?: FormGroup;

@@ -13,7 +13,7 @@ const formBuilder = new FormBuilder();
  * @returns Filter form
  */
 export const createFilterGroup = (filter: any, fields: any): FormGroup => {
-  if (filter.filters) {
+  if (filter?.filters) {
     const filters = filter.filters.map((x: any) =>
       createFilterGroup(x, fields)
     );
@@ -22,7 +22,7 @@ export const createFilterGroup = (filter: any, fields: any): FormGroup => {
       filters: formBuilder.array(filters),
     });
   }
-  if (filter.field) {
+  if (filter?.field) {
     return formBuilder.group({
       field: filter.field,
       operator: filter.operator || 'eq',

@@ -11,7 +11,7 @@
         </mat-option>
         <mat-optgroup *ngIf="field.type.kind !== 'SCALAR'" [label]="field.name">
           <mat-option
-            *ngFor="let subField of field.type.fields"
+            *ngFor="let subField of field.fields"
             [value]="field.name + '.' + subField.name"
           >
             {{ subField.name }}

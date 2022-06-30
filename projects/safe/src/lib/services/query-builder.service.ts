@@ -82,14 +82,13 @@ export class QueryBuilderService {
           .map((x: any) => {
             if (x.type.kind === 'OBJECT') {
               return Object.assign({}, x, {
-                type: Object.assign({}, x.type, {
-                  fields: x.type.fields.filter(
-                    (y: any) =>
-                      y.type.kind === 'SCALAR' &&
-                      !NON_SELECTABLE_FIELDS.includes(y.name) &&
-                      (x.type.name !== 'User' || USER_FIELDS.includes(y.name))
-                  ),
-                }),
+                kind: 'OBJECT',
+                fields: x.type.fields.filter(
+                  (y: any) =>
+                    y.type.kind === 'SCALAR' &&
+                    !NON_SELECTABLE_FIELDS.includes(y.name) &&
+                    (x.type.name !== 'User' || USER_FIELDS.includes(y.name))
+                ),
               });
             }
             return x;
@@ -221,7 +220,8 @@ export class QueryBuilderService {
     }
     return [''].concat(
       fields.map((x) => {
-        switch (x.kind) {
+        const kind = x.kind || x.type?.kind;
+        switch (kind) {
           case 'SCALAR': {
             return x.name + '\n';
           }
