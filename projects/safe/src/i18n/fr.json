@@ -1160,6 +1160,12 @@
 			},
 			"scheduler": {
 				"defaultTitle": "Widget Calendrier"
+			},
+			"tooltip": {
+				"selector": {
+					"collapse": "Fermer la sélection de widget",
+					"expand": "Afficher la sélection de widget"
+				}
 			}
 		},
 		"workflow": {

@@ -55,11 +55,11 @@
           <h2>
             {{ 'components.widget.settings.grid.layouts.title' | translate }}
           </h2>
-          <safe-layouts-parameters
+          <safe-layouts
             [form]="form"
             [resource]="resource"
             [selectedLayouts]="$any(tileForm).get('layouts')"
-          ></safe-layouts-parameters>
+          ></safe-layouts>
         </div>
       </mat-tab>
       <!-- AVAILABLE ACTIONS -->
