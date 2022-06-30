@@ -48,6 +48,8 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() queryName? = '';
   @Input() layoutPreviewData: LayoutPreviewData | null = null;
   @Input() showStyle = true;
+  @Input() showFilter = true;
+  @Input() showSort = true;
 
   // === FIELD EDITION ===
   public isField = false;
