@@ -1,0 +1,7 @@
+.form-option {
+  ::ng-deep .mat-option-text {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 4px;
+  }
+}
