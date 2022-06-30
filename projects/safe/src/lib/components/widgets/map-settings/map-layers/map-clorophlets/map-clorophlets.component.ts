@@ -54,8 +54,7 @@ export class MapClorophletsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.clorophlets.removeAt(index);
-        this.clorophlets.insert(index, clorophletForm(value));
+        this.clorophlets.setControl(index, clorophletForm(value));
       }
     });
   }
