@@ -1119,6 +1119,12 @@
 			},
 			"scheduler": {
 				"defaultTitle": "Scheduler Widget"
+			},
+			"tooltip": {
+				"selector": {
+					"collapse": "Hide widget selector",
+					"expand": "Show widget selector"
+				}
 			}
 		},
 		"workflow": {

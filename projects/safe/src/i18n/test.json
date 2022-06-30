@@ -1119,6 +1119,12 @@
 			},
 			"scheduler": {
 				"defaultTitle": "******"
+			},
+			"tooltip": {
+				"selector": {
+					"collapse": "******",
+					"expand": "******"
+				}
 			}
 		},
 		"workflow": {
