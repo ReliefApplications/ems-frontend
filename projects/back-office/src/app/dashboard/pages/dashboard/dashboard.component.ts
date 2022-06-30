@@ -153,29 +153,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.generatedTiles += 1;
     this.tiles = [...this.tiles, tile];
     this.autoSaveChanges();
+    // scroll to the element once it is created
     setTimeout(() => {
       const el = document.getElementById(`widget-${tile.id}`);
       el?.scrollIntoView({ behavior: 'smooth' });
-      setTimeout(() => {
-        const dialogRef = this.dialog.open(SafeTileDataComponent, {
-          disableClose: true,
-          data: {
-            tile,
-            template: this.dashboardService.findSettingsTemplate(tile),
-          },
-          // hasBackdrop: false,
-          position: {
-            bottom: '0',
-            right: '0',
-          },
-          panelClass: 'tile-settings-dialog',
-        });
-        dialogRef.afterClosed().subscribe((res) => {
-          if (res) {
-            this.onEditTile({ type: 'data', id: tile.id, options: res });
-          }
-        });
-      }, 300);
+      // automatically open the settings panel after scrolling
+      // setTimeout(() => {
+      //   const dialogRef = this.dialog.open(SafeTileDataComponent, {
+      //     disableClose: true,
+      //     data: {
+      //       tile,
+      //       template: this.dashboardService.findSettingsTemplate(tile),
+      //     },
+      //     // hasBackdrop: false,
+      //     position: {
+      //       bottom: '0',
+      //       right: '0',
+      //     },
+      //     panelClass: 'tile-settings-dialog',
+      //   });
+      //   dialogRef.afterClosed().subscribe((res) => {
+      //     if (res) {
+      //       this.onEditTile({ type: 'data', id: tile.id, options: res });
+      //     }
+      //   });
+      // }, 500);
     });
   }
 
