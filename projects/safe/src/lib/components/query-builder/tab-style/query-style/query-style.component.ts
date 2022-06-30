@@ -16,7 +16,6 @@ import {
 })
 export class SafeQueryStyleComponent implements OnInit {
   @Input() query: any;
-  @Input() fields: any[] = [];
   public selectedFields: any[] = [];
   @Input() form!: FormGroup;
   @Input() scalarFields: any[] = [];
@@ -31,7 +30,9 @@ export class SafeQueryStyleComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.checklist = new ChecklistDatabase(this.getChecklist(this.fields));
+    this.checklist = new ChecklistDatabase(
+      this.getChecklist(this.query.fields)
+    );
     const fields = this.form.get('fields')?.value || [];
     if (fields.length > 0) {
       this.wholeRow = new FormControl(false);
