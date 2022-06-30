@@ -374,9 +374,6 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     .form-slide-toggle {
       margin-bottom: 1.25em;
     }
-    .margin-bottom {
-      margin-bottom: 1rem;
-    }
   }
 }
 
@@ -503,10 +500,13 @@ body {
 
 .tile-settings-dialog,
 .expanded-widget-dialog {
-  max-width: 1200px !important;
-  width: 90%;
-  height: 90%;
-  margin: auto !important;
+  max-width: unset !important;
+  width: 100%;
+  height: calc(100% - 72px);
+  // max-width: 1200px !important;
+  // width: 90%;
+  // height: 90%;
+  // margin: auto !important;
 
   mat-dialog-container {
     position: relative;

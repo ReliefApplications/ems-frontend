@@ -23,11 +23,7 @@
     </mat-form-field>
   </div>
   <!-- Quick layer -->
-  <mat-form-field
-    appearance="outline"
-    style="width: 100%"
-    class="margin-bottom"
-  >
+  <mat-form-field appearance="outline" style="width: 100%">
     <mat-label>{{
       'components.widget.settings.map.layers.point.category' | translate
     }}</mat-label>
@@ -37,16 +33,17 @@
         {{ field }}
       </mat-option>
     </mat-select>
-    <mat-hint>
-      {{ 'components.widget.settings.map.tooltip.category' | translate }}
-      <safe-icon icon="layers" [inline]="true" [size]="14"></safe-icon
-    ></mat-hint>
+    <safe-icon
+      matSuffix
+      icon="info"
+      variant="grey"
+      [matTooltip]="
+        'components.widget.settings.map.tooltip.category' | translate
+      "
+    ></safe-icon>
   </mat-form-field>
   <!-- Popup details selector -->
-  <mat-form-field 
-    appearance="outline"
-    style="width: 100%"
-  >
+  <mat-form-field appearance="outline" style="width: 100%">
     <mat-label>
       {{ 'components.widget.settings.map.popup.label' | translate }}
     </mat-label>
