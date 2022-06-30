@@ -1,3 +1,4 @@
+/** Application theme */
 export const theme = {
   headerColor: 'accent',
   prefix: '[DEV]',

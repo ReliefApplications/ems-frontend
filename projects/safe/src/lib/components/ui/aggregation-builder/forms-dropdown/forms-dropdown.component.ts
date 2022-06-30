@@ -26,6 +26,7 @@ import { Form } from '../../../../models/form.model';
 export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   // === DATA ===
   @Input() public forms$!: Observable<Form[]>;
+  @Input() public loadingMore = true;
   private currentForms: Form[] = [];
   public filteredForms: Form[] = [];
   private loading = true;
@@ -33,6 +34,9 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   // === REACTIVE FORM ===
   @Input() sourceControl!: AbstractControl;
   private sourceFilter = '';
+
+  // === LABEL ===
+  @Input() label!: string;
 
   // === SCROLL DETECTION ===
   @ViewChild('auto') autocomplete?: MatAutocomplete;
@@ -42,6 +46,7 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
 
   // === FILTER ===
   @Output() filter = new EventEmitter<string>();
+
   /**
    * Constructor for the dropdown of forms
    */

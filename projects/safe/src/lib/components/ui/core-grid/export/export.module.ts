@@ -7,6 +7,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 
+/** Module for the export component */
 @NgModule({
   declarations: [SafeExportComponent],
   imports: [

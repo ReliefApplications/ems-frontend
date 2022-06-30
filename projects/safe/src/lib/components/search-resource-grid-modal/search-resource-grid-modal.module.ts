@@ -10,6 +10,9 @@ import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.mod
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Resource grid modal component module.
+ */
 @NgModule({
   declarations: [SafeResourceGridModalComponent],
   imports: [

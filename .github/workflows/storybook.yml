@@ -33,7 +33,7 @@ jobs:
             ${{ runner.OS }}-build-
             ${{ runner.OS }}-
       - name: Install Dependencies
-        run: npm ci
+        run: npm i
       - name: Build Shared Library
         run: npm run build -- --configuration=production safe
       - name: Build Storybook

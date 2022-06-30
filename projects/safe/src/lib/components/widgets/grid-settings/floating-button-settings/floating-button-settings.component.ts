@@ -7,8 +7,7 @@ import {
   EventEmitter,
   ViewChild,
   ElementRef,
-  ComponentFactoryResolver,
-  ComponentFactory,
+  Inject,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -71,7 +70,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   // Emails
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
   public emails: string[] = [];
-  public factory?: ComponentFactory<any>;
 
   /** tinymce editor */
   public editor: any = EMAIL_EDITOR_CONFIG;
@@ -88,22 +86,35 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   /**
    * Constructor of the component
    *
-   * @param formBuilder The form builder
-   * @param router The router service
-   * @param workflowService The workflow service
-   * @param queryBuilder The query builder service
-   * @param componentFactoryResolver The factory for creating a component
-   * @param dialog The material dialog service
+   * @param environment Environment file used to get main url of the page
+   * @param formBuilder Form builder
+   * @param router Angular Router service
+   * @param workflowService Shared workflow service
+   * @param queryBuilder Shared Query Builder service
+   * @param dialog Material dialog service
+   * @param translate Angular Translate Service
    */
   constructor(
+    @Inject('environment') environment: any,
     private formBuilder: FormBuilder,
     private router: Router,
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
-    private componentFactoryResolver: ComponentFactoryResolver,
     public dialog: MatDialog,
     private translate: TranslateService
   ) {
+    // Set the editor base url based on the environment file
+    let url: string;
+    if (environment.module === 'backoffice') {
+      url = new URL(environment.backOfficeUri).pathname;
+    } else {
+      url = new URL(environment.frontOfficeUri).pathname;
+    }
+    if (url !== '/') {
+      this.editor.base_url = url.slice(0, -1) + '/tinymce';
+    } else {
+      this.editor.base_url = '/tinymce'
+    }
     // Set the editor language
     const lang = this.translate.currentLang;
     const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
@@ -295,10 +306,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
           this.buttonForm?.get('selectAll')?.updateValueAndValidity();
         }
       });
-
-    this.factory = this.componentFactoryResolver.resolveComponentFactory(
-      SafeQueryBuilderComponent
-    );
   }
 
   /**

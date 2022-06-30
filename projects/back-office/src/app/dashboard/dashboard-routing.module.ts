@@ -174,15 +174,45 @@ export const routes = [
         children: [
           {
             path: 'users',
-            loadChildren: () =>
-              import('./pages/users/users.module').then((m) => m.UsersModule),
-            // canActivate: [SafePermissionGuard]
+            children: [
+              {
+                path: '',
+                loadChildren: () =>
+                  import('./pages/users/users.module').then(
+                    (m) => m.UsersModule
+                  ),
+                // canActivate: [SafePermissionGuard]
+              },
+              {
+                path: ':id',
+                loadChildren: () =>
+                  import('./pages/user-summary/user-summary.module').then(
+                    (m) => m.UserSummaryModule
+                  ),
+                // canActivate: [SafePermissionGuard]
+              },
+            ],
           },
           {
             path: 'roles',
-            loadChildren: () =>
-              import('./pages/roles/roles.module').then((m) => m.RolesModule),
-            // canActivate: [SafePermissionGuard]
+            children: [
+              {
+                path: '',
+                loadChildren: () =>
+                  import('./pages/roles/roles.module').then(
+                    (m) => m.RolesModule
+                  ),
+                // canActivate: [SafePermissionGuard]
+              },
+              {
+                path: ':id',
+                loadChildren: () =>
+                  import('./pages/role-summary/role-summary.module').then(
+                    (m) => m.RoleSummaryModule
+                  ),
+                // canActivate: [SafePermissionGuard]
+              },
+            ],
           },
           {
             path: 'apiconfigurations',

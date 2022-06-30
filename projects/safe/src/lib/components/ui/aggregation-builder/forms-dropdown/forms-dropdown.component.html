@@ -1,7 +1,8 @@
 <mat-form-field appearance="outline">
-  <mat-label>{{
+  <mat-label *ngIf="!label">{{
     'components.aggregationBuilder.dataset.select' | translate
   }}</mat-label>
+  <mat-label *ngIf="label">{{ label }}</mat-label>
   <input
     type="text"
     [placeholder]="'common.placeholder.search' | translate"
@@ -16,7 +17,11 @@
     (opened)="onOpen($event)"
     (closed)="onClose($event)"
   >
-    <mat-option *ngFor="let form of filteredForms" [value]="form.id">
+    <mat-option
+      *ngFor="let form of filteredForms"
+      [value]="form.id"
+      class="form-option"
+    >
       {{ form.name }}
       <safe-icon
         *ngIf="form.core"
@@ -26,4 +31,5 @@
       ></safe-icon>
     </mat-option>
   </mat-autocomplete>
+  <mat-spinner *ngIf="loadingMore" diameter="24" matSuffix></mat-spinner>
 </mat-form-field>

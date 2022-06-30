@@ -1,12 +1,4 @@
-import {
-  Component,
-  ComponentFactory,
-  ComponentFactoryResolver,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder.service';
@@ -37,7 +29,6 @@ export class SafeQueryBuilderComponent implements OnInit {
   // === QUERY BUILDER ===
   public availableQueries?: Observable<any[]>;
   public availableFields: any[] = [];
-  public factory?: ComponentFactory<any>;
 
   public allQueries: any[] = [];
   public filteredQueries: any[] = [];
@@ -67,12 +58,10 @@ export class SafeQueryBuilderComponent implements OnInit {
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param componentFactoryResolver This is used to create a component dynamically.
    * @param formBuilder This is the Angular FormBuilder service.
    * @param queryBuilder This is the service that will be used to build the query.
    */
   constructor(
-    private componentFactoryResolver: ComponentFactoryResolver,
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService
   ) {}
@@ -81,9 +70,6 @@ export class SafeQueryBuilderComponent implements OnInit {
    * Allows to inject the component without creating circular dependency.
    */
   ngOnInit(): void {
-    this.factory = this.componentFactoryResolver.resolveComponentFactory(
-      SafeQueryBuilderComponent
-    );
     this.buildSettings();
   }
 

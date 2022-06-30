@@ -21,12 +21,19 @@ export default {
   },
 } as Meta;
 
+/**
+ * Template for story component
+ *
+ * @param args Parameters
+ * @returns A story component
+ */
 const TEMPLATE: Story<SafeWidgetChoiceComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
+/** Export a story component */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {
@@ -34,8 +41,9 @@ DEFAULT.args = {
   widgetTypes: WIDGET_TYPES as IWidgetType[],
 };
 
+/** Export a story component */
 export const FLOATING = TEMPLATE.bind({});
-DEFAULT.storyName = 'Floating';
+FLOATING.storyName = 'Floating';
 FLOATING.args = {
   ...DEFAULT.args,
   floating: true,
