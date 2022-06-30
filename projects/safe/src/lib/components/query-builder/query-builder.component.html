@@ -103,6 +103,7 @@
             [form]="$any(form.controls.style)"
             [fields]="form.getRawValue().fields"
             [scalarFields]="availableScalarFields"
+            [query]="form.getRawValue()"
           >
           </safe-tab-style>
         </ng-template>

@@ -15,6 +15,7 @@ import {
   styleUrls: ['./query-style.component.scss'],
 })
 export class SafeQueryStyleComponent implements OnInit {
+  @Input() query: any;
   @Input() fields: any[] = [];
   public selectedFields: any[] = [];
   @Input() form!: FormGroup;

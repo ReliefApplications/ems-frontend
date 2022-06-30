@@ -1,10 +1,4 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
+import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormArray, FormGroup, Validators } from '@angular/forms';
 import { createStyleForm } from '../query-builder-forms';
 
@@ -16,13 +10,14 @@ import { createStyleForm } from '../query-builder-forms';
   templateUrl: './tab-style.component.html',
   styleUrls: ['./tab-style.component.scss'],
 })
-export class SafeTabStyleComponent implements OnInit {
+export class SafeTabStyleComponent {
   @Input() form!: FormArray;
   @Input() editedStyleForm: FormGroup | null = null;
   @Input() fields: any[] = [];
   @Input() scalarFields: any[] = [];
   @Input() metaFields: any = {};
   @Input() canDelete = false;
+  @Input() query: any;
   @ViewChild('childTemplate', { read: ViewContainerRef })
   childTemplate?: ViewContainerRef;
 
@@ -40,8 +35,6 @@ export class SafeTabStyleComponent implements OnInit {
    * Constructor for the styling component
    */
   constructor() {}
-
-  ngOnInit(): void {}
 
   /**
    * Creates a new form group and add it to the array of styles.
