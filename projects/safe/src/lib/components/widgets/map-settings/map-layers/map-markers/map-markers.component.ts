@@ -70,8 +70,7 @@ export class MapMarkersComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.rules.removeAt(index);
-        this.rules.insert(index, markerRuleForm(value));
+        this.rules.setControl(index, markerRuleForm(value));
       }
     });
   }

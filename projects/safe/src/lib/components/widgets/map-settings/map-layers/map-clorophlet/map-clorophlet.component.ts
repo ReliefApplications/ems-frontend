@@ -91,7 +91,7 @@ export class MapClorophletComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.divisions.at(index).setValue(value);
+        this.divisions.setControl(index, divisionForm(value));
       }
     });
   }
