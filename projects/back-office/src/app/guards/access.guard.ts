@@ -21,12 +21,26 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AccessGuard implements CanActivate {
+  /**
+   * Constructor of the accessguard
+   *
+   * @param authService The authentification service
+   * @param snackBar The snack bar service
+   * @param router The router client
+   */
   constructor(
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
     private router: Router
   ) {}
 
+  /**
+   * Check if user can activate the route
+   *
+   * @param route The route to test
+   * @param state The current state
+   * @returns A boolean indicating if he can activate
+   */
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
