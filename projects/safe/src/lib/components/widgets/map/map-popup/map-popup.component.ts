@@ -34,8 +34,6 @@ export class SafeMapPopupComponent implements OnInit, AfterViewInit {
   /**
    * Get the content to display.
    *
-   * @param fields list of available fiels
-   * @param prefix prefix to apply to field names
    * @returns list of popup rows to display
    */
   private setPopupContent(): any[] {
