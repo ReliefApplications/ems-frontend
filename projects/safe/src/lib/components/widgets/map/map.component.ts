@@ -139,7 +139,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.getData();
     }
 
-    this.fields = get(this.settings, 'query.fields', []);
+    this.fields = get(this.settings, 'popupFields', []);
 
     setTimeout(() => this.map.invalidateSize(), 100);
   }
