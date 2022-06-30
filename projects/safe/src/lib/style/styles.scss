@@ -374,6 +374,9 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     .form-slide-toggle {
       margin-bottom: 1.25em;
     }
+    .margin-bottom {
+      margin-bottom: 1rem;
+    }
   }
 }
 

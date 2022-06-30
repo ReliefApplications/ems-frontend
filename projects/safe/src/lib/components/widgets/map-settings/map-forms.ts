@@ -47,6 +47,7 @@ const DEFAULT_MAP = {
   basemap: null,
   centerLong: null,
   centerLat: null,
+  popupFields: [],
   onlineLayers: [],
   markersRules: [],
   clorophlets: [],
@@ -159,6 +160,7 @@ export const mapform = (id: any, value?: any): FormGroup =>
       get(value, 'centerLat', DEFAULT_MAP.centerLat),
       [Validators.min(-90), Validators.max(90)],
     ],
+    popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
     onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
     markerRules: fb.array(
       get(value, 'markerRules', DEFAULT_MAP.markersRules).map((x: any) =>

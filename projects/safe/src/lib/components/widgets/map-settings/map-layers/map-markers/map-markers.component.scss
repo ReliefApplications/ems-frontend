@@ -15,3 +15,8 @@ td.mat-column-actions {
   margin-top: 0 !important;
   margin-bottom: 48px;
 }
+
+mat-hint safe-icon {
+  position: absolute;
+  transform: translateY(-2px);
+}

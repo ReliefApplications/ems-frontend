@@ -138,8 +138,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.getData();
     }
 
-    this.displayFields =
-      this.settings.query?.fields.map((f: any) => f.name) || [];
+    this.displayFields = this.settings.popupFields || [];
 
     setTimeout(() => this.map.invalidateSize(), 100);
   }
@@ -298,9 +297,12 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
         // Sets the marker popup contents.
         let data = '';
-        for (const key of Object.keys(item)) {
-          if (this.displayFields.includes(key)) {
-            data += `<div><b>${key}:</b> ${item[key]}</div>`;
+        for (const displayField of this.displayFields) {
+          const value = displayField
+            .split('.')
+            .reduce((val, field) => val[field] || undefined, item);
+          if (value !== undefined) {
+            data += `<div><b>${displayField}:</b> ${value}</div>`;
           }
         }
         const obj = { id: item.id, data };

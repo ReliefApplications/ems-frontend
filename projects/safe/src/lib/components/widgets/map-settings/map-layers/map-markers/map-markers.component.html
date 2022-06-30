@@ -3,6 +3,7 @@
   {{ 'components.widget.settings.map.layers.point.info' | translate }}
 </safe-alert>
 <div class="form-group" [formGroup]="form">
+  <!-- Latitude and longitude -->
   <div class="form-group-row">
     <mat-form-field appearance="outline" style="width: 100%">
       <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
@@ -21,6 +22,7 @@
       </mat-select>
     </mat-form-field>
   </div>
+  <!-- Quick layer -->
   <mat-form-field
     appearance="outline"
     style="width: 100%"
@@ -35,10 +37,24 @@
         {{ field }}
       </mat-option>
     </mat-select>
-    <mat-hint
-      >{{ 'components.widget.settings.map.tooltip.category' | translate
-      }}<safe-icon icon="layers" [inline]="true" [size]="14"></safe-icon
+    <mat-hint>
+      {{ 'components.widget.settings.map.tooltip.category' | translate }}
+      <safe-icon icon="layers" [inline]="true" [size]="14"></safe-icon
     ></mat-hint>
+  </mat-form-field>
+  <!-- Popup details selector -->
+  <mat-form-field 
+    appearance="outline"
+    style="width: 100%"
+  >
+    <mat-label>
+      {{ 'components.widget.settings.map.popup.label' | translate }}
+    </mat-label>
+    <mat-select formControlName="popupFields" multiple>
+      <mat-option *ngFor="let field of selectedFields" [value]="field">
+        {{ field }}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
 </div>
 <!-- LIST of Marker rules -->
