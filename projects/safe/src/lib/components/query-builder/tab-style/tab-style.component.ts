@@ -1,4 +1,10 @@
-import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { FormArray, FormGroup, Validators } from '@angular/forms';
 import { createStyleForm } from '../query-builder-forms';
 
@@ -10,10 +16,9 @@ import { createStyleForm } from '../query-builder-forms';
   templateUrl: './tab-style.component.html',
   styleUrls: ['./tab-style.component.scss'],
 })
-export class SafeTabStyleComponent {
+export class SafeTabStyleComponent implements OnInit {
   @Input() form!: FormArray;
   @Input() editedStyleForm: FormGroup | null = null;
-  @Input() fields: any[] = [];
   @Input() scalarFields: any[] = [];
   @Input() metaFields: any = {};
   @Input() canDelete = false;
@@ -30,6 +35,7 @@ export class SafeTabStyleComponent {
     return this.form.get('style') as FormArray;
   }
   public fieldForm: FormGroup | null = null;
+  public fields: any[] = [];
 
   /**
    * Constructor for the styling component
@@ -42,6 +48,10 @@ export class SafeTabStyleComponent {
   public onAdd(): void {
     const styleForm = createStyleForm(null);
     this.form.push(styleForm);
+  }
+
+  ngOnInit(): void {
+    this.fields = this.query.fields;
   }
 
   /**
