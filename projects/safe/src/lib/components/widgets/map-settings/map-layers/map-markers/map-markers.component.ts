@@ -40,11 +40,7 @@ export class MapMarkersComponent implements OnInit {
 
   ngOnInit(): void {
     // Build list of number fields
-    this.numberFields = this.formatedSelectedFields
-      .filter((field: any) =>
-        ['Int', 'Float'].includes(get(field, 'type.name', ''))
-      )
-      .map((field: any) => field.name);
+    this.numberFields = this.getNumberFields(this.formatedSelectedFields);
   }
 
   /**
@@ -82,5 +78,29 @@ export class MapMarkersComponent implements OnInit {
    */
   public removeRule(index: number): void {
     this.rules.removeAt(index);
+  }
+
+  /**
+   * Get the names of the fields with a number format
+   *
+   * @param formatedFields The list of formated fields
+   * @returns A list of fields names of type number
+   */
+  private getNumberFields(formatedFields: any[]): any[] {
+    return formatedFields
+      .filter((field: any) =>
+        ['Int', 'Float'].includes(get(field, 'type.name', ''))
+      )
+      .map((field) => field.name)
+      .concat(
+        formatedFields
+          .filter((field) => field.fields)
+          .map((field) =>
+            this.getNumberFields(field.fields).map(
+              (numberField) => `${field.name}.${numberField}`
+            )
+          )
+          .reduce((res, subFields) => res.concat(subFields), [])
+      );
   }
 }

@@ -1,12 +1,13 @@
 div {
-  max-width: 350px;
+  // max-width: 350px;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  // width: 350px;
 }
 
 span {
   display: flex;
   gap: 0 8px;
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
 }

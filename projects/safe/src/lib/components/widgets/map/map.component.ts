@@ -350,8 +350,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
    * @param item data of the marker
    */
   private setMarker(item: any): void {
-    const latitude = Number(item[this.settings.latitude]);
-    const longitude = Number(item[this.settings.longitude]);
+    const latitude = Number(null);
+    const longitude = Number(get(item, this.settings.longitude, null));
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
       if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
         // Sets the style of the marker depending on the rules applied.
@@ -369,10 +369,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
         // Creates the marker and adds it to the correct category.
         const marker = L.circleMarker([latitude, longitude], options);
-        if (!this.markersCategories[item[this.settings.category]]) {
-          this.markersCategories[item[this.settings.category]] = [];
+        const category = get(item, this.settings.category, null);
+        if (!this.markersCategories[category]) {
+          this.markersCategories[category] = [];
         }
-        this.markersCategories[item[this.settings.category]].push(marker);
+        this.markersCategories[category].push(marker);
         marker.bindPopup(() => {
           const div = document.createElement('div');
           const popupContent = this.domService.appendComponentToBody(
@@ -382,7 +383,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           const instance = popupContent.instance;
           instance.data = item;
           instance.fields = this.fields;
-          this.popupMarker = L.popup({})
+          this.popupMarker = L.popup({
+            width: 350,
+          })
             .setLatLng([latitude, longitude])
             .setContent(div)
             .addTo(this.map);
