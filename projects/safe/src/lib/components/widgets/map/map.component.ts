@@ -350,8 +350,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
    * @param item data of the marker
    */
   private setMarker(item: any): void {
-    const latitude = Number(null);
-    const longitude = Number(get(item, this.settings.longitude, null));
+    const latitude = Number(get(item, this.settings.latitude, undefined));
+    const longitude = Number(get(item, this.settings.longitude, undefined));
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
       if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
         // Sets the style of the marker depending on the rules applied.
