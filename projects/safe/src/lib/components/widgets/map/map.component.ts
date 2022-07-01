@@ -345,29 +345,13 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Get the value of a concatenate field name, with dots.
-   *
-   * @param record The record with the values of the answer
-   * @param field The querying field, in 'parent.child' format
-   * @returns The value of the field
-   */
-  private getFieldValue(record: any, field: string): any {
-    return field
-      .split('.')
-      .reduce(
-        (parentField, childField) => parentField[childField] || undefined,
-        record
-      );
-  }
-
-  /**
    * Creates a marker with the data passed and adds it to the correspondant category.
    *
    * @param item data of the marker
    */
   private setMarker(item: any): void {
-    const latitude = Number(this.getFieldValue(item, this.settings.latitude));
-    const longitude = Number(this.getFieldValue(item, this.settings.longitude));
+    const latitude = Number(null);
+    const longitude = Number(get(item, this.settings.longitude, null));
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
       if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
         // Sets the style of the marker depending on the rules applied.
@@ -385,7 +369,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
         // Creates the marker and adds it to the correct category.
         const marker = L.circleMarker([latitude, longitude], options);
-        const category = this.getFieldValue(item, this.settings.category);
+        const category = get(item, this.settings.category, null);
         if (!this.markersCategories[category]) {
           this.markersCategories[category] = [];
         }
@@ -399,7 +383,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           const instance = popupContent.instance;
           instance.data = item;
           instance.fields = this.fields;
-          this.popupMarker = L.popup({})
+          this.popupMarker = L.popup({
+            width: 350,
+          })
             .setLatLng([latitude, longitude])
             .setContent(div)
             .addTo(this.map);
