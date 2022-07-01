@@ -345,13 +345,29 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
+   * Get the value of a concatenate field name, with dots.
+   *
+   * @param record The record with the values of the answer
+   * @param field The querying field, in 'parent.child' format
+   * @returns The value of the field
+   */
+  private getFieldValue(record: any, field: string): any {
+    return field
+      .split('.')
+      .reduce(
+        (parentField, childField) => parentField[childField] || undefined,
+        record
+      );
+  }
+
+  /**
    * Creates a marker with the data passed and adds it to the correspondant category.
    *
    * @param item data of the marker
    */
   private setMarker(item: any): void {
-    const latitude = Number(item[this.settings.latitude]);
-    const longitude = Number(item[this.settings.longitude]);
+    const latitude = Number(this.getFieldValue(item, this.settings.latitude));
+    const longitude = Number(this.getFieldValue(item, this.settings.longitude));
     if (!isNaN(latitude) && latitude >= -90 && latitude <= 90) {
       if (!isNaN(longitude) && longitude >= -180 && longitude <= 180) {
         // Sets the style of the marker depending on the rules applied.
@@ -369,10 +385,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
         // Creates the marker and adds it to the correct category.
         const marker = L.circleMarker([latitude, longitude], options);
-        if (!this.markersCategories[item[this.settings.category]]) {
-          this.markersCategories[item[this.settings.category]] = [];
+        const category = this.getFieldValue(item, this.settings.category);
+        if (!this.markersCategories[category]) {
+          this.markersCategories[category] = [];
         }
-        this.markersCategories[item[this.settings.category]].push(marker);
+        this.markersCategories[category].push(marker);
         marker.bindPopup(() => {
           const div = document.createElement('div');
           const popupContent = this.domService.appendComponentToBody(

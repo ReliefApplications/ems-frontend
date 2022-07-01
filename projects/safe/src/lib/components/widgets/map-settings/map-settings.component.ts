@@ -20,7 +20,7 @@ export class SafeMapSettingsComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
-  public selectedFields: any[] = [];
+  public selectedFields: (string | undefined)[] = [];
   public formatedSelectedFields: any[] = [];
 
   /**
@@ -50,14 +50,10 @@ export class SafeMapSettingsComponent implements OnInit {
 
     if (this.tileForm?.value.query.name) {
       this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
-      this.formatedSelectedFields = [];
-      this.queryBuilder
-        .getFields(this.tileForm?.value.query.name)
-        .map((val: any) => {
-          if (this.selectedFields.includes(val.name)) {
-            this.formatedSelectedFields.push(val);
-          }
-        });
+      this.formatedSelectedFields = this.getFormatedSelectedFields(
+        this.queryBuilder.getFields(this.tileForm?.value.query.name),
+        this.selectedFields
+      );
     }
 
     const queryForm = this.tileForm.get('query') as FormGroup;
@@ -69,14 +65,10 @@ export class SafeMapSettingsComponent implements OnInit {
     });
     queryForm.valueChanges.subscribe(() => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
-      this.formatedSelectedFields = [];
-      this.queryBuilder
-        .getFields(this.tileForm?.value.query.name)
-        .map((val: any) => {
-          if (this.selectedFields.includes(val.name)) {
-            this.formatedSelectedFields.push(val);
-          }
-        });
+      this.formatedSelectedFields = this.getFormatedSelectedFields(
+        this.queryBuilder.getFields(this.tileForm?.value.query.name),
+        this.selectedFields
+      );
     });
   }
 
@@ -104,7 +96,7 @@ export class SafeMapSettingsComponent implements OnInit {
    * be "user".
    * @returns An array of strings.
    */
-  private getFields(fields: any[], prefix?: string): any[] {
+  private getFields(fields: any[], prefix?: string): (string | undefined)[] {
     return this.flatDeep(
       fields
         .filter((x) => x.kind !== 'LIST')
@@ -119,5 +111,35 @@ export class SafeMapSettingsComponent implements OnInit {
           }
         })
     );
+  }
+
+  /**
+   * Filter the query fields to only get those in the selectedFields
+   *
+   * @param queryFields All the fields obtained by query
+   * @param selectedFields The concatenated names of the selected fields
+   * @returns A list of formated seected fields
+   */
+  private getFormatedSelectedFields(
+    queryFields: any[],
+    selectedFields: (string | undefined)[]
+  ): any[] {
+    const rootFields = selectedFields.map((field) => field?.split('.')[0]);
+    return queryFields
+      .filter((queryField) => rootFields.includes(queryField.name))
+      .map((queryField) => {
+        const formatedFields = queryField.fields
+          ? this.getFormatedSelectedFields(
+              queryField.fields,
+              selectedFields
+                .filter((field) => field?.split('.')[0] === queryField.name)
+                .map((field) => field?.split('.').slice(1).join('.'))
+            )
+          : null;
+        return {
+          ...queryField,
+          ...(formatedFields ? { fields: formatedFields } : {}),
+        };
+      });
   }
 }
