@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapMarkersModule } from './map-markers/map-markers.module';
-import { MapClorophletsModule } from './map-choropleths/map-choropleths.module';
+import { MapChoroplethsModule } from './map-choropleths/map-choropleths.module';
 import { MapOnlineLayersModule } from './map-online-layers/map-online-layers.module';
 
 /**
@@ -20,7 +20,7 @@ import { MapOnlineLayersModule } from './map-online-layers/map-online-layers.mod
     TranslateModule,
     MatTabsModule,
     MapMarkersModule,
-    MapClorophletsModule,
+    MapChoroplethsModule,
     MapOnlineLayersModule,
   ],
   exports: [MapLayersComponent],

@@ -15,16 +15,16 @@
     </mat-tab>
     <mat-tab
       [label]="
-        'components.widget.settings.map.layers.clorophlet.title' | translate
+        'components.widget.settings.map.layers.choropleth.title' | translate
       "
     >
       <ng-template matTabContent>
-        <safe-map-clorophlets
+        <safe-map-choropleths
           [query]="form.get('query')"
-          [clorophlets]="clorophlets"
+          [choropleths]="choropleths"
           [selectedFields]="selectedFields"
           [formatedSelectedFields]="formatedSelectedFields"
-        ></safe-map-clorophlets>
+        ></safe-map-choropleths>
       </ng-template>
     </mat-tab>
     <mat-tab

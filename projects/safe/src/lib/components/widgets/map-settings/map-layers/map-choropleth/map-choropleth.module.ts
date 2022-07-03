@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MapClorophletComponent } from './map-choropleth.component';
+import { MapChoroplethComponent } from './map-choropleth.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,13 +11,13 @@ import { MatTableModule } from '@angular/material/table';
 import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule } from '@angular/material/select';
-import { MapClorophletDivisionModule } from '../map-choropleth-division/map-choropleth-division.module';
+import { MapChoroplethDivisionModule } from '../map-choropleth-division/map-choropleth-division.module';
 
 /**
- * Single Clorophlet Configuration in Map Settings Module.
+ * Single Choropleth layer Configuration in Map Settings Module.
  */
 @NgModule({
-  declarations: [MapClorophletComponent],
+  declarations: [MapChoroplethComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -31,8 +31,8 @@ import { MapClorophletDivisionModule } from '../map-choropleth-division/map-chor
     MatSliderModule,
     MatSelectModule,
     SafeButtonModule,
-    MapClorophletDivisionModule,
+    MapChoroplethDivisionModule,
   ],
-  exports: [MapClorophletComponent],
+  exports: [MapChoroplethComponent],
 })
-export class MapClorophletModule {}
+export class MapChoroplethModule {}

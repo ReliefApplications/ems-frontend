@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapClorophletDivisionComponent } from './map-choropleth-division.component';
+import { MapChoroplethDivisionComponent } from './map-choropleth-division.component';
 
-describe('MapClorophletDivisionComponent', () => {
-  let component: MapClorophletDivisionComponent;
-  let fixture: ComponentFixture<MapClorophletDivisionComponent>;
+describe('MapChoroplethDivisionComponent', () => {
+  let component: MapChoroplethDivisionComponent;
+  let fixture: ComponentFixture<MapChoroplethDivisionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MapClorophletDivisionComponent],
+      declarations: [MapChoroplethDivisionComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MapClorophletDivisionComponent);
+    fixture = TestBed.createComponent(MapChoroplethDivisionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

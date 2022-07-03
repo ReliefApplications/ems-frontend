@@ -305,15 +305,15 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       this.overlays[layerName].type = 'Marker';
     });
 
-    // Loops throught clorophlets and adds them to the map
-    if (this.settings.clorophlets) {
-      this.settings.clorophlets.map((value: any) => {
+    // Loops throught choropleth layers and adds them to the map
+    if (this.settings.choropleths) {
+      this.settings.choropleths.map((value: any) => {
         if (value.divisions.length > 0) {
-          // Renders the clorophlet
-          this.overlays[value.name] = this.setClorophlet(value, res.data).addTo(
+          // Renders the choropleth
+          this.overlays[value.name] = this.setChoropleth(value, res.data).addTo(
             this.map
           );
-          this.overlays[value.name].type = 'Clorophlet';
+          this.overlays[value.name].type = 'Choropleth';
         }
       });
     }
@@ -397,13 +397,13 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Creates a clorophlet using the passed data.
+   * Creates a choropleth layer using the passed data.
    *
-   * @param value Properties of the clorophlet.
-   * @param data Query data feeded to the clorophlet.
+   * @param value Properties of the choropleth layer.
+   * @param data Query data feeded to the choropleth layer.
    * @returns a geoJSON layer
    */
-  private setClorophlet(value: any, data: any) {
+  private setChoropleth(value: any, data: any) {
     return L.geoJson(JSON.parse(value.geoJSON), {
       interactive: false,
       style: (feature: any): any => {
@@ -479,11 +479,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       L.DomEvent.on(div, 'dblclick', (e: any) => {
         e.stopPropagation();
       });
-      // Creates legend for clorophlets
-      data.clorophlets?.map((clorophlet: any) => {
-        const layer = overlays[clorophlet.name];
+      // Creates legend for choropleth layers
+      data.choropleths?.map((choropleth: any) => {
+        const layer = overlays[choropleth.name];
 
-        if (clorophlet.divisions.length > 0) {
+        if (choropleth.divisions.length > 0) {
           // Generates header of legend
           const legendLayerDiv = L.DomUtil.create('div', 'map-legend', div);
           const legendLayerHeader = L.DomUtil.create(
@@ -491,7 +491,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             'map-legend-header',
             legendLayerDiv
           );
-          legendLayerHeader.innerHTML = `<h4>${clorophlet.name}</h4>`;
+          legendLayerHeader.innerHTML = `<h4>${choropleth.name}</h4>`;
           L.DomEvent.on(
             legendLayerHeader,
             'click',
@@ -507,7 +507,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
             this
           );
           // Generates divisions legend
-          clorophlet.divisions.map((division: any, i: number) => {
+          choropleth.divisions.map((division: any, i: number) => {
             const legendDivisionDiv = L.DomUtil.create(
               'div',
               'map-legend-division',
@@ -526,7 +526,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
               'click',
               () => {
                 // eslint-disable-next-line no-underscore-dangle
-                const layers = overlays[clorophlet.name]._layers;
+                const layers = overlays[choropleth.name]._layers;
                 const isHidden = L.DomUtil.hasClass(
                   legendDivisionDiv,
                   'legend-division-hide'

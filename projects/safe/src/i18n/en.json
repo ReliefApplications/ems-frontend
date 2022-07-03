@@ -841,8 +841,8 @@
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
 					},
 					"layers": {
-						"clorophlet": {
-							"add": "Add new clorophlet",
+						"choropleth": {
+							"add": "Add new choropleth layer",
 							"division": {
 								"add": "Add new division",
 								"title": "Divisions"
@@ -850,8 +850,8 @@
 							"geoJSON": "geoJSON",
 							"geoJSONidentifier": "geoJSON Identifier",
 							"identifier": "Identifier",
-							"info": "Set up different clorophlets which will be displayed as layers in the map",
-							"title": "Clorophlets"
+							"info": "Set up different choropleth layers which will be displayed as layers in the map",
+							"title": "Choropleth layers"
 						},
 						"online": {
 							"info": "Search for online layers in arcGIS online",

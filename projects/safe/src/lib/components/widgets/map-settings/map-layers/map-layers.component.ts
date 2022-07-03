@@ -23,12 +23,12 @@ export class MapLayersComponent implements OnInit {
   }
 
   /**
-   * Get clorophlets configuration of map as Form Array.
+   * Get choropleth layers configuration of map as Form Array.
    *
    * @returns Form Array
    */
-  get clorophlets(): FormArray {
-    return this.form.get('clorophlets') as FormArray;
+  get choropleths(): FormArray {
+    return this.form.get('choropleths') as FormArray;
   }
 
   @Input() form!: FormGroup;

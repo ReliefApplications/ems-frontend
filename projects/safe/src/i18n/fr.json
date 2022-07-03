@@ -841,8 +841,8 @@
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
 					},
 					"layers": {
-						"clorophlet": {
-							"add": "Ajouter un clorophlet",
+						"choropleth": {
+							"add": "Ajouter une couche choroplèthe",
 							"division": {
 								"add": "Ajouter une division",
 								"title": "Divisions"
@@ -850,8 +850,8 @@
 							"geoJSON": "geoJSON",
 							"geoJSONidentifier": "geoJSON Identifiant",
 							"identifier": "Identifiant",
-							"info": "Configurer des clorophlets en tant que couches pour la carte",
-							"title": "Clorophlets"
+							"info": "Configurer des choroplèthe en tant que couches pour la carte",
+							"title": "Couches choroplèthes"
 						},
 						"online": {
 							"info": "Charger des couches depuis arcGIS online",

@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MapClorophletsComponent } from './map-choropleths.component';
+import { MapChoroplethsComponent } from './map-choropleths.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeAlertModule } from '../../../../ui/alert/alert.module';
 import { MatTableModule } from '@angular/material/table';
-import { MapClorophletModule } from '../map-choropleth/map-choropleth.module';
+import { MapChoroplethModule } from '../map-choropleth/map-choropleth.module';
 
 /**
- * List of clorophlets in Map Settings Module.
+ * List of choropleth layers in Map Settings Module.
  */
 @NgModule({
-  declarations: [MapClorophletsComponent],
+  declarations: [MapChoroplethsComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -23,8 +23,8 @@ import { MapClorophletModule } from '../map-choropleth/map-choropleth.module';
     SafeIconModule,
     SafeAlertModule,
     MatTableModule,
-    MapClorophletModule,
+    MapChoroplethModule,
   ],
-  exports: [MapClorophletsComponent],
+  exports: [MapChoroplethsComponent],
 })
-export class MapClorophletsModule {}
+export class MapChoroplethsModule {}

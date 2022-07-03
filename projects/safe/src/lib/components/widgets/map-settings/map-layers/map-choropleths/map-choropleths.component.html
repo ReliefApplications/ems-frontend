@@ -1,12 +1,12 @@
 <safe-alert>
   <safe-icon icon="info"></safe-icon>
-  {{ 'components.widget.settings.map.layers.clorophlet.info' | translate }}
+  {{ 'components.widget.settings.map.layers.choropleth.info' | translate }}
 </safe-alert>
-<!-- LIST of Clorophlets -->
+<!-- LIST of Choropleth layers -->
 <h2>
-  {{ 'components.widget.settings.map.layers.clorophlet.title' | translate }}
+  {{ 'components.widget.settings.map.layers.choropleth.title' | translate }}
 </h2>
-<table mat-table [dataSource]="clorophlets.value">
+<table mat-table [dataSource]="choropleths.value">
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
       {{ 'common.name' | translate }}
@@ -21,14 +21,14 @@
           [isIcon]="true"
           icon="edit"
           category="primary"
-          (click)="editClorophlet(i)"
+          (click)="editChoropleth(i)"
         ></safe-button>
         <safe-button
           [isIcon]="true"
           icon="delete"
           category="primary"
           variant="danger"
-          (click)="removeClorophlet(i)"
+          (click)="removeChoropleth(i)"
         ></safe-button>
       </div>
     </td>
@@ -41,8 +41,8 @@
   [block]="true"
   category="tertiary"
   variant="primary"
-  (click)="addClorophlet()"
+  (click)="addChoropleth()"
   >{{
-    'components.widget.settings.map.layers.clorophlet.add' | translate
+    'components.widget.settings.map.layers.choropleth.add' | translate
   }}</safe-button
 >

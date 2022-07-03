@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MapClorophletDivisionComponent } from './map-choropleth-division.component';
+import { MapChoroplethDivisionComponent } from './map-choropleth-division.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -10,10 +10,10 @@ import { MatInputModule } from '@angular/material/input';
 import { SafeQueryBuilderModule } from '../../../../query-builder/query-builder.module';
 
 /**
- * Single Division of clorophlet configuration module.
+ * Single Division of choropleth layer configuration module.
  */
 @NgModule({
-  declarations: [MapClorophletDivisionComponent],
+  declarations: [MapChoroplethDivisionComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -25,6 +25,6 @@ import { SafeQueryBuilderModule } from '../../../../query-builder/query-builder.
     MatButtonModule,
     SafeQueryBuilderModule,
   ],
-  exports: [MapClorophletDivisionComponent],
+  exports: [MapChoroplethDivisionComponent],
 })
-export class MapClorophletDivisionModule {}
+export class MapChoroplethDivisionModule {}

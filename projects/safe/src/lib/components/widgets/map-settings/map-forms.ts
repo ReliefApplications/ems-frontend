@@ -7,9 +7,9 @@ import get from 'lodash/get';
 
 /** Angular Form Builder */
 const fb = new FormBuilder();
-/** Default clorophlet value */
-const DEFAULT_CLOROPHLET = {
-  name: 'New clorophlet',
+/** Default choropleth layer value */
+const DEFAULT_CHOROPLETH = {
+  name: 'New choropleth layer',
   geoJSON: '',
   geoJSONname: '',
   geoJSONfield: '',
@@ -50,38 +50,38 @@ const DEFAULT_MAP = {
   popupFields: [],
   onlineLayers: [],
   markersRules: [],
-  clorophlets: [],
+  choropleths: [],
 };
 
-// === CLOROPHLET ===
+// === CHOROPLETH ===
 /**
- * Create new clorophlet form from value
+ * Create new choropleth layer form from value
  *
- * @param value value of clorophlet, optional
+ * @param value value of choropleth layer, optional
  * @returns new form group
  */
-export const clorophletForm = (value?: any): FormGroup =>
+export const choroplethForm = (value?: any): FormGroup =>
   fb.group({
-    name: [get(value, 'name', DEFAULT_CLOROPHLET.name), [Validators.required]],
+    name: [get(value, 'name', DEFAULT_CHOROPLETH.name), [Validators.required]],
     geoJSON: [
-      get(value, 'geoJSON', DEFAULT_CLOROPHLET.geoJSON),
+      get(value, 'geoJSON', DEFAULT_CHOROPLETH.geoJSON),
       [Validators.required],
     ],
     geoJSONname: [
-      get(value, 'geoJSONname', DEFAULT_CLOROPHLET.geoJSONname),
+      get(value, 'geoJSONname', DEFAULT_CHOROPLETH.geoJSONname),
       [Validators.required],
     ],
     geoJSONfield: [
-      get(value, 'geoJSONfield', DEFAULT_CLOROPHLET.geoJSONfield),
+      get(value, 'geoJSONfield', DEFAULT_CHOROPLETH.geoJSONfield),
       [Validators.required],
     ],
-    opacity: [get(value, 'opacity', DEFAULT_CLOROPHLET.opacity)],
+    opacity: [get(value, 'opacity', DEFAULT_CHOROPLETH.opacity)],
     place: [
-      get(value, 'place', DEFAULT_CLOROPHLET.place),
+      get(value, 'place', DEFAULT_CHOROPLETH.place),
       [Validators.required],
     ],
     divisions: fb.array(
-      get(value, 'divisions', DEFAULT_CLOROPHLET.divisions).map((x: any) =>
+      get(value, 'divisions', DEFAULT_CHOROPLETH.divisions).map((x: any) =>
         divisionForm(x)
       )
     ),
@@ -170,9 +170,9 @@ export const mapform = (id: any, value?: any): FormGroup =>
         markerRuleForm(x)
       )
     ),
-    clorophlets: fb.array(
-      get(value, 'clorophlets', DEFAULT_MAP.clorophlets).map((x: any) =>
-        clorophletForm(x)
+    choropleths: fb.array(
+      get(value, 'choropleths', DEFAULT_MAP.choropleths).map((x: any) =>
+        choroplethForm(x)
       )
     ),
   });

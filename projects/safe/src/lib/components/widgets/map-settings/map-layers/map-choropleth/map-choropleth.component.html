@@ -15,7 +15,7 @@
         | translate
           : {
               name:
-                ('components.widget.settings.map.layers.clorophlet.geoJSON'
+                ('components.widget.settings.map.layers.choropleth.geoJSON'
                 | translate)
             })
   }}</safe-button>
@@ -30,7 +30,7 @@
   <div class="form-group-row">
     <mat-form-field appearance="outline">
       <mat-label>{{
-        'components.widget.settings.map.layers.clorophlet.identifier'
+        'components.widget.settings.map.layers.choropleth.identifier'
           | translate
       }}</mat-label>
       <mat-select formControlName="place">
@@ -41,7 +41,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="extraInput">
       <mat-label>{{
-        'components.widget.settings.map.layers.clorophlet.geoJSONidentifier'
+        'components.widget.settings.map.layers.choropleth.geoJSONidentifier'
           | translate
       }}</mat-label>
       <mat-select formControlName="geoJSONfield">
@@ -62,7 +62,7 @@
   <!-- LIST of Divisions -->
   <h2 style="margin-top: 24px">
     {{
-      'components.widget.settings.map.layers.clorophlet.division.title'
+      'components.widget.settings.map.layers.choropleth.division.title'
         | translate
     }}
   </h2>
@@ -103,7 +103,7 @@
     variant="primary"
     (click)="addDivision()"
     >{{
-      'components.widget.settings.map.layers.clorophlet.division.add'
+      'components.widget.settings.map.layers.choropleth.division.add'
         | translate
     }}</safe-button
   >

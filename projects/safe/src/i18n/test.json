@@ -841,7 +841,7 @@
 						"longitude": "******"
 					},
 					"layers": {
-						"clorophlet": {
+						"choropleth": {
 							"add": "******",
 							"division": {
 								"add": "******",

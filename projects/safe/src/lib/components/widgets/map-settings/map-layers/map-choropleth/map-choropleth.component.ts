@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { clorophletForm, divisionForm } from '../../map-forms';
-import { MapClorophletDivisionComponent } from '../map-choropleth-division/map-choropleth-division.component';
+import { choroplethForm, divisionForm } from '../../map-forms';
+import { MapChoroplethDivisionComponent } from '../map-choropleth-division/map-choropleth-division.component';
 
 /** Interface of dialog data of the component */
 interface DialogData {
@@ -13,14 +13,14 @@ interface DialogData {
 }
 
 /**
- * Single Clorophlet Configuration in Map Settings.
+ * Single Choropleth layer Configuration in Map Settings.
  */
 @Component({
-  selector: 'safe-map-clorophlet',
-  templateUrl: './map-clorophlet.component.html',
-  styleUrls: ['./map-clorophlet.component.scss'],
+  selector: 'safe-map-choropleth',
+  templateUrl: './map-choropleth.component.html',
+  styleUrls: ['./map-choropleth.component.scss'],
 })
-export class MapClorophletComponent implements OnInit {
+export class MapChoroplethComponent implements OnInit {
   public form!: FormGroup;
 
   public tableColumns = ['label', 'actions'];
@@ -31,7 +31,7 @@ export class MapClorophletComponent implements OnInit {
   public query: any;
 
   /**
-   * Clorophlet divisions as form array.
+   * Choropleth layer divisions as form array.
    *
    * @returns Divisions as form array.
    */
@@ -40,7 +40,7 @@ export class MapClorophletComponent implements OnInit {
   }
 
   /**
-   * Single Clorophlet Configuration in Map Settings.
+   * Single Choropleth layer Configuration in Map Settings.
    *
    * @param data dialog data
    * @param dialog Material dialog service
@@ -49,7 +49,7 @@ export class MapClorophletComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private dialog: MatDialog
   ) {
-    this.form = clorophletForm(data.value);
+    this.form = choroplethForm(data.value);
     this.fields = data.fields;
     this.formatedFields = data.formatedFields;
     this.query = data.query;
@@ -82,7 +82,7 @@ export class MapClorophletComponent implements OnInit {
    * @param index index of division to edit
    */
   public editDivision(index: number): void {
-    const dialogRef = this.dialog.open(MapClorophletDivisionComponent, {
+    const dialogRef = this.dialog.open(MapChoroplethDivisionComponent, {
       data: {
         value: this.divisions.at(index).value,
         fields: this.formatedFields,
@@ -97,7 +97,7 @@ export class MapClorophletComponent implements OnInit {
   }
 
   /**
-   * Add a GeoJSON file to the clorophlet.
+   * Add a GeoJSON file to the choropleth layer.
    */
   public async uploadGeoJSON(): Promise<void> {
     const file = document.getElementById('geojson') as HTMLInputElement;

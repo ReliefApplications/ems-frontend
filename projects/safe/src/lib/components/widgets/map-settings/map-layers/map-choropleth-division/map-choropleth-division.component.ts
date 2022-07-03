@@ -11,21 +11,21 @@ interface DialogData {
 }
 
 /**
- * Single clorophlet configuration component.
+ * Single choropleth layer configuration component.
  */
 @Component({
-  selector: 'safe-map-clorophlet-division',
-  templateUrl: './map-clorophlet-division.component.html',
-  styleUrls: ['./map-clorophlet-division.component.scss'],
+  selector: 'safe-map-choropleth-division',
+  templateUrl: './map-choropleth-division.component.html',
+  styleUrls: ['./map-choropleth-division.component.scss'],
 })
-export class MapClorophletDivisionComponent implements OnInit {
+export class MapChoroplethDivisionComponent implements OnInit {
   public form!: FormGroup;
 
   public fields: any[] = [];
   public query: any;
 
   /**
-   * Single clorophlet configuration component.
+   * Single choropleth layer configuration component.
    *
    * @param data dialog data
    */
