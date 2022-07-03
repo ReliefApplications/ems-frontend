@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapClorophletComponent } from './map-clorophlet.component';
+import { MapClorophletsComponent } from './map-choropleths.component';
 
-describe('MapClorophletComponent', () => {
-  let component: MapClorophletComponent;
-  let fixture: ComponentFixture<MapClorophletComponent>;
+describe('MapClorophletsComponent', () => {
+  let component: MapClorophletsComponent;
+  let fixture: ComponentFixture<MapClorophletsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MapClorophletComponent],
+      declarations: [MapClorophletsComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MapClorophletComponent);
+    fixture = TestBed.createComponent(MapClorophletsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

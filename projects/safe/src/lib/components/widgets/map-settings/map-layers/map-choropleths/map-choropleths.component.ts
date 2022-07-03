@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { clorophletForm } from '../../map-forms';
-import { MapClorophletComponent } from '../map-clorophlet/map-clorophlet.component';
+import { MapClorophletComponent } from '../map-choropleth/map-choropleth.component';
 
 /**
  * List of clorophlets in Map Settings

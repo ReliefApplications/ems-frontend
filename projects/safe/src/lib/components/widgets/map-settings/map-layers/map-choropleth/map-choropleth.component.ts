@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { clorophletForm, divisionForm } from '../../map-forms';
-import { MapClorophletDivisionComponent } from '../map-clorophlet-division/map-clorophlet-division.component';
+import { MapClorophletDivisionComponent } from '../map-choropleth-division/map-choropleth-division.component';
 
 /** Interface of dialog data of the component */
 interface DialogData {
