@@ -1,3 +1,6 @@
+/**
+ * Avatar variant enum.
+ */
 export enum AvatarVariant {
   DEFAULT = 'default',
   PRIMARY = 'primary',

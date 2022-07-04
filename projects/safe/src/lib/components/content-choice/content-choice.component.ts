@@ -46,18 +46,38 @@ export class SafeContentChoiceComponent
     this.selected = value;
     this.onChanged(value);
   }
+  /**
+   * Write value of control.
+   *
+   * @param value new value
+   */
   public writeValue(value: string): void {
     this.selected = value;
   }
 
+  /**
+   * Register new method to call when control state change
+   *
+   * @param fn callback function
+   */
   public registerOnChange(fn: any): void {
     this.onChanged = fn;
   }
 
+  /**
+   * Register new method to call when control touch state change
+   *
+   * @param fn callback function
+   */
   public registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 
+  /**
+   * Set disabled state of the control
+   *
+   * @param isDisabled is control disabled
+   */
   public setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }

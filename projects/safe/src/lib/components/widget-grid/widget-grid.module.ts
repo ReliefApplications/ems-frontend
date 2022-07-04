@@ -52,6 +52,6 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     LayoutModule,
     IndicatorsModule,
   ],
-  exports: [SafeWidgetGridComponent],
+  exports: [SafeWidgetGridComponent, SafeTileDataComponent],
 })
 export class SafeWidgetGridModule {}

@@ -36,7 +36,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
     hasNextPage: true,
   };
   private loading = true;
-  private loadingMore = false;
+  public loadingMore = false;
 
   @ViewChild('formSelect') formSelect?: MatSelect;
 
@@ -147,11 +147,8 @@ export class AddPageComponent implements OnInit, OnDestroy {
         const data = { name: value.name };
         Object.assign(
           data,
-          value.binding === 'newResource' && { newResource: true },
-          value.binding === 'fromResource' &&
-            value.resource && { resource: value.resource },
-          value.binding === 'fromResource' &&
-            value.template && { template: value.template }
+          value.resource && { resource: value.resource },
+          value.template && { template: value.template }
         );
         this.apollo
           .mutate<AddFormMutationResponse>({

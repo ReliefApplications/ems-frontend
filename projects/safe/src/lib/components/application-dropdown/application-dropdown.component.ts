@@ -24,6 +24,12 @@ import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
  */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Scroll Factory for material select, provided by the component.
+ *
+ * @param overlay material overlay
+ * @returns Strategy to prevent scrolling if user sees overlay.
+ */
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();

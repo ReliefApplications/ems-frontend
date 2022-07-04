@@ -122,18 +122,8 @@ export interface DeleteDashboardMutationResponse {
 
 // === ADD FORM ===
 export const ADD_FORM = gql`
-  mutation addForm(
-    $name: String!
-    $newResource: Boolean
-    $resource: ID
-    $template: ID
-  ) {
-    addForm(
-      name: $name
-      newResource: $newResource
-      resource: $resource
-      template: $template
-    ) {
+  mutation addForm($name: String!, $resource: ID, $template: ID) {
+    addForm(name: $name, resource: $resource, template: $template) {
       id
       name
       createdAt
@@ -1000,6 +990,7 @@ export const EDIT_REFERENCE_DATA = gql`
     $valueField: String
     $path: String
     $data: JSON
+    $graphQLFilter: String
     $permissions: JSON
   ) {
     editReferenceData(
@@ -1012,6 +1003,7 @@ export const EDIT_REFERENCE_DATA = gql`
       valueField: $valueField
       path: $path
       data: $data
+      graphQLFilter: $graphQLFilter
       permissions: $permissions
     ) {
       id

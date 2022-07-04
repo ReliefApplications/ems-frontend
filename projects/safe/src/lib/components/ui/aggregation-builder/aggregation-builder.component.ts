@@ -34,7 +34,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   public loading = true;
   public loadingForm = false;
-  private loadingMore = false;
+  public loadingMore = false;
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,

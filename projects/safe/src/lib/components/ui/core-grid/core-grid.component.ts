@@ -1,7 +1,5 @@
 import {
   Component,
-  ComponentFactory,
-  ComponentFactoryResolver,
   EventEmitter,
   Inject,
   Input,
@@ -59,18 +57,23 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
 import { SafeDateTranslateService } from '../../../services/date-translate.service';
 
-/** Default file name */
+/**
+ * Default file name when exporting grid data.
+ */
 const DEFAULT_FILE_NAME = 'Records';
 
 /**
- * Clone the data
+ * Clone the data. Used in order to prevent edition of the grid items directly, and to be able to revert the changes.
  *
- * @param data The data to clone
- * @returns A clone of the data
+ * @param data grid data
+ * @returns cloned grid data
  */
 const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
 
-/** Component for the core grid component */
+/**
+ * Main Grid data component to display Records.
+ * Used by grid widget, and in several other places, like record selection.
+ */
 @Component({
   selector: 'safe-core-grid',
   templateUrl: './core-grid.component.html',
@@ -79,11 +82,11 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
 export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === INPUTS ===
   @Input() settings: GridSettings | any = {};
-  @Input() defaultLayout: GridLayout = {}; // Cached layout
+  /** Default grid layout */
+  @Input() defaultLayout: GridLayout = {};
 
-  /** @returns selected layout of the grid */
+  /** @returns current grid layout */
   get layout(): any {
-    // Current layout
     return this.grid?.layout;
   }
 
@@ -93,7 +96,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   @Input() selectable = true;
   @Output() selectionChange = new EventEmitter();
 
-  /** @returns selected items in the data grid */
+  /** @returns list of selected items in the grid */
   get selectedItems(): any[] {
     return this.gridData.data.filter((x) => this.selectedRows.includes(x.id));
   }
@@ -114,9 +117,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === TEMPLATE REFERENCE TO GRID ===
   @ViewChild(SafeGridComponent)
   private grid?: SafeGridComponent;
-
-  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
-  public factory?: ComponentFactory<any>;
 
   // === DATA ===
   public gridData: GridDataResult = { data: [], total: 0 };
@@ -146,7 +146,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === SORTING ===
   public sort: SortDescriptor[] = [];
 
-  /** @returns The field used for sorting */
+  /** @returns current field used for sorting */
   get sortField(): string | null {
     return this.sort.length > 0 && this.sort[0].dir
       ? this.sort[0].field
@@ -155,14 +155,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       : null;
   }
 
-  /** @returns The order used for sorting */
+  /** @returns current sorting order */
   get sortOrder(): string {
     return this.sort.length > 0 && this.sort[0].dir
       ? this.sort[0].dir
       : this.settings.query?.sort?.order || '';
   }
 
-  /** @returns The style for the grid */
+  /** @returns grid styling rules */
   get style(): any {
     return this.settings.query?.style || null;
   }
@@ -172,7 +172,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public showFilter = false;
   public search = '';
 
-  /** @returns All active filters of the grid */
+  /** @returns current grid filter, from grid settings and grid layout */
   get queryFilter(): CompositeFilterDescriptor {
     const gridFilters = [this.filter];
     if (this.settings?.query?.filter) {
@@ -211,7 +211,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === DOWNLOAD ===
   private apiUrl = '';
-  /** @returns Builds filename from the date and widget title */
+  /** @returns filename, from grid title, or default filename, and current date */
   get fileName(): string {
     const today = new Date();
     const formatDate = `${today.toLocaleString('en-us', {
@@ -223,7 +223,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     } ${formatDate}.png`;
   }
 
-  /** @returns If the grid has changes */
+  /** @returns true if any updated item in the list */
   get hasChanges(): boolean {
     return this.updatedItems.length > 0;
   }
@@ -242,50 +242,41 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public editable = false;
 
   /**
-   * Constructor of the core grid
+   * Main Grid data component to display Records.
+   * Used by grid widget, and in several other places, like record selection.
    *
-   * @param environment The env config
-   * @param apollo The apollo client
-   * @param dialog The material dialog service
-   * @param resolver The resolver client
-   * @param queryBuilder The query builder service
-   * @param layoutService The layout service
-   * @param snackBar The snack bar service
-   * @param downloadService The download service
-   * @param safeAuthService The authentification service
-   * @param gridService The grid service
-   * @param translate The translation service
-   * @param dateTranslate The date translation service
+   * @param environment platform environment
+   * @param apollo Apollo service
+   * @param dialog Material dialog
+   * @param queryBuilder Shared query builder
+   * @param layoutService Shared layout service
+   * @param snackBar Shared snackbar service
+   * @param downloadService Shared download service
+   * @param authService Shared authentication service
+   * @param gridService Shared grid service
+   * @param translate Angular translate service
+   * @param dateTranslate Shared date translate service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private resolver: ComponentFactoryResolver,
     private queryBuilder: QueryBuilderService,
     private layoutService: SafeLayoutService,
     private snackBar: SafeSnackBarService,
     private downloadService: SafeDownloadService,
-    private safeAuthService: SafeAuthService,
+    private authService: SafeAuthService,
     private gridService: SafeGridService,
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService
   ) {
     this.apiUrl = environment.apiUrl;
     this.isAdmin =
-      this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
+      this.authService.userIsAdmin && environment.module === 'backoffice';
   }
 
   // === COMPONENT LIFECYCLE ===
-
-  /**
-   * Inits the component factory for history.
-   */
-  ngOnInit(): void {
-    this.factory = this.resolver.resolveComponentFactory(
-      SafeRecordHistoryComponent
-    );
-  }
+  ngOnInit(): void {}
 
   /**
    * Detects changes of the settings to (re)load the data.
@@ -438,7 +429,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Finds item in data items and updates it with new values, from inline edition.
    *
-   * @param item Item id.
+   * @param item item to update
    * @param value Updated value of the item.
    */
   private update(item: any, value: any): void {
@@ -667,12 +658,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Handles grid actions.
    *
-   * @param event Grid event.
-   * @param event.action event action
-   * @param event.item event item
-   * @param event.items event items
-   * @param event.value event value
-   * @param event.field event field
+   * @param event Grid Action.
+   * @param event.action action to perform, short string code
+   * @param event.item item to perform the action on
+   * @param event.items list of items to perform the action on
+   * @param event.value value to apply to item, if any
+   * @param event.field field to use in action, optional
    */
   public onAction(event: {
     action: string;
@@ -777,8 +768,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Opens the record on a read-only modal. If edit mode is enabled, can open edition modal.
    *
-   * @param items items to get details of.
-   * @param field The field selected
+   * @param items single item or list of items to show details of
+   * @param field field to show detail of ( related resource(s) )
    */
   public onShowDetails(items: any | any[], field?: any): void {
     const isArray = Array.isArray(items);
@@ -945,11 +936,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Opens the history of the record on the right side of the screen.
    *
-   * @param item record to get history of.
+   * @param item item to get history of
    */
   public onViewHistory(item: any): void {
     this.layoutService.setRightSidenav({
-      factory: this.factory,
+      component: SafeRecordHistoryComponent,
       inputs: {
         id: item.id,
         revert: (version: any) => this.confirmRevertDialog(item, version),
@@ -1007,7 +998,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Exports selected records to excel / csv file.
    *
-   * @param e The event
+   * @param e export event
    */
   public onExport(e: any): void {
     let ids: any[];

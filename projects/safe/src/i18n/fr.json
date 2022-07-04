@@ -380,7 +380,6 @@
 		"form": {
 			"create": {
 				"choice": {
-					"blank": "Créer un formulaire vide",
 					"inherit": "Copier un modèle de ressources existant",
 					"resource": "Créer une nouvelle ressource",
 					"template": "Commencer depuis un modèle existant"
@@ -388,8 +387,12 @@
 				"template": {
 					"from": "Depuis le modèle",
 					"placeholder": "Choisir un modèle existant",
-					"title": "Depuis la ressource",
-					"tooltip": "Si aucun modèle n'est sélectionné, la structure principale sera chargée"
+					"title": "Depuis la ressource"
+				},
+				"tooltip": {
+					"inherit": "Creates a child form using a template from the resource linked to the core form",
+					"resource": "Creates a core form that allows the creation of children forms linked to this core form. It will also create a new resource.",
+					"template": "Si aucun modèle n'est sélectionné, la structure principale sera chargée"
 				}
 			},
 			"delete": {
@@ -646,6 +649,10 @@
 			"impersonate": {
 				"title": "Choix du rôle à simuler"
 			},
+			"summary": {
+				"features": "Fonctionnalités",
+				"title": "Résumé"
+			},
 			"update": {
 				"permissions": "Permissions",
 				"title": "Modifier les permissions des rôles et les canaux de diffusion"
@@ -661,6 +668,14 @@
 				"role": {
 					"description": "Sélectionner le rôle à assigner"
 				}
+			},
+			"summary": {
+				"country": "Pays",
+				"firstName": "Prénom",
+				"lastName": "Nom",
+				"locationType": "Type de localisation",
+				"region": "Région",
+				"title": "Résumé"
 			},
 			"update": {
 				"title": "Modifier l'utilisateur"
@@ -1077,7 +1092,9 @@
 			"create": "Créer une ressource"
 		},
 		"role": {
-			"create": "Créer un rôle"
+			"create": "Créer un rôle",
+			"description": "Description",
+			"title": "Titre"
 		},
 		"step": {
 			"new": "Nouvelle étape"
@@ -1086,6 +1103,8 @@
 			"new": "Nouvel abonnement"
 		},
 		"user": {
+			"firstName": "Prénom",
+			"lastName": "Nom",
 			"notifications": {
 				"rolesUpdated": "Les rôles de {{username}} ont été modifiés.",
 				"userImportFail": "L'importation d'utilisateurs a échoué."
@@ -1109,6 +1128,12 @@
 			},
 			"scheduler": {
 				"defaultTitle": "Widget Calendrier"
+			},
+			"tooltip": {
+				"selector": {
+					"collapse": "Fermer la sélection de widget",
+					"expand": "Afficher la sélection de widget"
+				}
 			}
 		},
 		"workflow": {
@@ -1223,11 +1248,16 @@
 				"name": "Seules les lettres, les tirets et les tirets bas sont acceptés"
 			},
 			"fields": "Champs",
+			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",
 			"placeholder": {
-				"csv": "Insérer le CSV ici"
+				"csv": "Insérer le CSV ici",
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés"
 			},
 			"queryName": "Nom de la requête",
+			"tooltip": {
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés. Vous pouvez utiliser le code $$LAST_UPDATE pour insérer dynamiquement la date de la dernière mise à jour des choix dans un format compatible SQL."
+			},
 			"type": "Type",
 			"validateCsv": "Valider le CSV",
 			"valueField": "Champ de valeur"

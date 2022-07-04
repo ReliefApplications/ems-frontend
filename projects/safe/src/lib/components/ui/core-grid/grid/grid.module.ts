@@ -22,6 +22,7 @@ import { SafeExportModule } from '../export/export.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../../../pipes/date/date.module';
 
+/** Module for the grid component */
 @NgModule({
   declarations: [SafeGridComponent],
   imports: [

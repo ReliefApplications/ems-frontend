@@ -192,6 +192,8 @@ export const EDIT_USER_PROFILE = gql`
       id
       username
       name
+      firstName
+      lastName
       roles {
         id
         title
