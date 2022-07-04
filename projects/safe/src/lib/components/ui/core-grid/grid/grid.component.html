@@ -808,7 +808,7 @@
     <kendo-grid-column
       *ngIf="hasEnabledActions"
       [columnMenu]="false"
-      [width]="56"
+      [width]="86"
       [resizable]="false"
       [sticky]="true"
     >
@@ -826,11 +826,11 @@
         <button
           *ngIf="dataItem.validationErrors"
           kendoButton
-          icon="exclamation-circle"
-          [look]="'flat'"
-          class="error-button"
+          icon="error"
+          look="flat"
+          class="k-color-error"
           (click)="showErrors(dataItem)"
-          title="{{ 'components.widget.grid.validation.errors' | translate }}"
+          [matTooltip]="'components.widget.grid.tooltip.uploadFailed' | translate"
         ></button>
         <span 
           *ngIf="dataItem.saved === false && !dataItem.validationErrors"
@@ -838,7 +838,7 @@
           icon="exclamation-circle"
           look="flat"
           class="k-color-warning"
-          title="{{ 'components.widget.grid.validation.unsavedChanges' | translate }}"
+          [matTooltip]="'components.widget.grid.tooltip.unsaved' | translate"
           style="cursor:unset"
         ></span>
         <span 
@@ -847,7 +847,7 @@
           icon="check-outline"
           look="flat"
           class="k-color-success"
-          title="{{ 'components.widget.grid.validation.savedChanges' | translate }}"
+          [matTooltip]="'components.widget.grid.tooltip.saved' | translate"
           style="cursor:unset"
         ></span>
       </ng-template>

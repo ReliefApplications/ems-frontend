@@ -623,7 +623,12 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         incrementalId: item.incrementalId,
         errors: item.validationErrors,
       },
+      autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe();
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        this.action.emit({ action: 'update', item });
+      }
+    });
   }
 }

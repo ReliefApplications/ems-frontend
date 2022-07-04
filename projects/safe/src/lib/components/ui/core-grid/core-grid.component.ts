@@ -623,6 +623,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Reloads data and unselect all rows.
    */
   public reloadData(): void {
+    // TODO = check what to do there
     this.onPageChange({ skip: 0, take: this.pageSize });
     this.selectedRows = [];
     this.updatedItems = [];

@@ -738,14 +738,16 @@
 				"layout": {
 					"reset": "******"
 				},
+				"tooltip": {
+					"saved": "******",
+					"unsaved": "******",
+					"uploadFailed": "******"
+				},
 				"validation": {
-					"editWithUpdate": "******",
-					"errorOnQuestion": "****** {{question}} ******",
-					"errorOnRecord": "******",
-					"errors": "******",
-					"modalTitle": "****** {{record}}",
-					"savedChanges": "******",
-					"unsavedChanges": "******"
+					"help": "******",
+					"questionTitle": "****** {{question}} ******",
+					"subtitle": "******",
+					"title": "****** {{record}}"
 				}
 			},
 			"settings": {
