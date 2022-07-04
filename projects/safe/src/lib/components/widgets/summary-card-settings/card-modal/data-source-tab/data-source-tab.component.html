@@ -1,17 +1,34 @@
 <mat-radio-group
   aria-label="Select an option"
-  [value]="false"
+  [value]="radioValue"
   (change)="radioChange($event)"
 >
-  <mat-radio-button [value]="false">{{
+  <mat-radio-button [value]="true">{{
     'Aggregation'
   }}</mat-radio-button>
-  <mat-radio-button [value]="true">{{
+  <mat-radio-button [value]="false">{{
     'Form/resource'
   }}</mat-radio-button>
 </mat-radio-group>
 
-<!-- <safe-aggregation-builder
-  [reload$]="reload$"
-  [aggregationForm]="aggregationForm"
-></safe-aggregation-builder> -->
+<ng-container *ngIf="radioValue">
+
+</ng-container>
+
+<ng-container *ngIf="!radioValue">
+  <!-- <safe-forms-dropdown
+  [forms$]="forms$"
+  [loadingMore]="loadingMore"
+  [sourceControl]="aggregationForm.controls.dataSource"
+  (filter)="onFilterDataSource($event)"
+  (scrolled)="onScrollDataSource($event)"
+  ></safe-forms-dropdown> -->
+
+  <safe-layouts
+  [form]="form.value[0]"
+  [resource]="null"
+  [selectedLayouts]="null"
+  ></safe-layouts>
+</ng-container>
+
+

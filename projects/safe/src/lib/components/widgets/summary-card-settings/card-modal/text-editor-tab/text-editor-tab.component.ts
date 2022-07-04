@@ -42,7 +42,6 @@ export class SafeTextEditorTabComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.editor);
   }
 
 }

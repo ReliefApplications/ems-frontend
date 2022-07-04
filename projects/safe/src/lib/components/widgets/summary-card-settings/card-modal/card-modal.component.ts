@@ -1,13 +1,7 @@
-import { Component, Input, OnInit, Inject } from '@angular/core';
+import { Component, Input, OnInit, Inject, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
-/**
- * Material Dialog Data
- */
-interface DialogData {
-  tileForm: any;
-}
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 /**
  * Card modal component.
@@ -19,6 +13,11 @@ interface DialogData {
   styleUrls: ['./card-modal.component.scss'],
 })
 export class SafeCardModalComponent implements OnInit {
+
+  @ViewChild('tabGroup') tabGroup: any;
+
+  private activeTabIndex: number | undefined;
+
   public form: any;
 
   /**
@@ -30,16 +29,20 @@ export class SafeCardModalComponent implements OnInit {
    * @param data dialog data
    */
   constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<SafeCardModalComponent>,
     public fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    private cdRef: ChangeDetectorRef,
   ) {}
 
   /**
    * Creates a formGroup with the data provided in the modal creation
    */
   ngOnInit(): void {
-    this.form = this.fb.group(this.data);
+    this.form = this.fb.group({
+      ...this.data,
+      // aggregation: this.fb.group(this.data.aggregation)
+    });
   }
 
   /**
@@ -54,5 +57,31 @@ export class SafeCardModalComponent implements OnInit {
    */
   onSubmit(): void {
     this.dialogRef.close(this.form.value);
+  }
+
+  /**
+   * Checks if the user is in the editor tab before loading it.
+   *
+   * @returns Returns a boolean.
+   */
+  isEditorTab(): boolean {
+    return this.activeTabIndex === 3;
+  }
+
+  /**
+   * Sets an internal variable with the current tab.
+   *
+   * @param e Change tab event.
+   */
+  handleTabChange(e: MatTabChangeEvent) {
+    this.activeTabIndex = e.index;
+  }
+
+  /**
+   * Initializes the active tab variable.
+   */
+  ngAfterViewInit() {
+    this.activeTabIndex = this.tabGroup.selectedIndex;
+    this.cdRef.detectChanges();
   }
 }

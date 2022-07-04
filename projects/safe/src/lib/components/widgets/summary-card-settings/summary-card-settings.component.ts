@@ -153,10 +153,11 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       width: DEFAULT_CARD_WIDTH,
       columns: get(value, 'columns', 1),
       rows: get(value, 'rows', 1),
-      aggregation: createAggregationForm(
-        get(value, 'aggregation', null),
-        ''
-      ),
+      isAggregation: get(value, 'isAggregation', true),
+      // aggregation: createAggregationForm(
+      //   get(value, 'aggregation', null),
+      //   ''
+      // ),
     });
   }
 

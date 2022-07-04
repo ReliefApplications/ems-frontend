@@ -12,7 +12,7 @@
 </h1>
 <div mat-dialog-content class="mat-dialog-content">
   <form [formGroup]="form">
-    <mat-tab-group>
+    <mat-tab-group #tabGroup (selectedTabChange)="handleTabChange($event)" [selectedIndex]="0">
       <mat-tab
         [label]="
           'components.widget.settings.summaryCard.card.dataSource.title'
@@ -38,7 +38,7 @@
             | translate
         "
       >
-      <safe-text-editor-tab></safe-text-editor-tab>
+      <safe-text-editor-tab *ngIf="isEditorTab()"></safe-text-editor-tab>
       </mat-tab>
       <mat-tab [label]="'common.preview' | translate">
         <safe-preview-tab></safe-preview-tab>
