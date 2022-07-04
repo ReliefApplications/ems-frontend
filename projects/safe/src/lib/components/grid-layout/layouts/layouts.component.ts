@@ -87,6 +87,7 @@ export class LayoutsComponent implements OnInit, OnChanges {
    * Adds a new layout to the list.
    */
   public onAdd(): void {
+    console.log(this.selectedLayouts, this.form, this.resource);
     const dialogRef = this.dialog.open(AddLayoutComponent, {
       data: {
         layouts: this.form ? this.form.layouts : this.resource?.layouts,

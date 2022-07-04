@@ -25,9 +25,9 @@
   ></safe-forms-dropdown> -->
 
   <safe-layouts
-  [form]="form.value[0]"
-  [resource]="null"
-  [selectedLayouts]="null"
+  [form]="null"
+  [resource]="selectedResource"
+  [selectedLayouts]="$any(form).get('layouts')"
   ></safe-layouts>
 </ng-container>
 

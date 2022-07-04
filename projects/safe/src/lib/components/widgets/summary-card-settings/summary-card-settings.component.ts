@@ -154,6 +154,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       columns: get(value, 'columns', 1),
       rows: get(value, 'rows', 1),
       isAggregation: get(value, 'isAggregation', true),
+      layouts: get(value, 'layouts', null)
       // aggregation: createAggregationForm(
       //   get(value, 'aggregation', null),
       //   ''

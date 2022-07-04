@@ -1,10 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get } from 'lodash';
 import { Subject } from 'rxjs';
 import { createAggregationForm } from '../../../../ui/aggregation-builder/aggregation-builder-forms';
-import { GET_FORMS, GetFormsQueryResponse } from '../../../../../graphql/queries';
+import {
+  GET_FORMS,
+  GetFormsQueryResponse,
+  GET_GRID_RESOURCE_META,
+  GetResourceByIdQueryResponse,
+  GET_GRID_FORM_META,
+  GetFormByIdQueryResponse,
+} from '../../../../../graphql/queries';
 import { Form } from '../../../../../models/form.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -22,8 +29,11 @@ export class SafeDataSourceTabComponent implements OnInit {
   // === RADIO ===
   public radioValue = false;
 
+  public selectedForm: any = null;
+  public selectedResource: any = null;
+
   // === DATA ===
-  public forms = new BehaviorSubject<Form[]>([]);
+  private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   public loading = true;
@@ -51,7 +61,10 @@ export class SafeDataSourceTabComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Initialize raidoValue
+    if (!this.form.value.layouts) {
+      this.form.patchValue({ layouts: [] });
+    }
+    // Initialize radioValue
     this.radioValue = this.form.value.isAggregation;
 
     // Data source query
@@ -82,7 +95,34 @@ export class SafeDataSourceTabComponent implements OnInit {
       if (this.loading) {
         this.loading = res.loading;
       }
-      console.log(this.forms.value[0])
+      this.selectedForm = this.forms.value[0];
+      this.apollo
+        .query<GetResourceByIdQueryResponse>({
+          query: GET_GRID_RESOURCE_META,
+          variables: {
+            resource: this.selectedForm.resource.id,
+          },
+        })
+        .subscribe((res2) => {
+          if (res2.errors) {
+            this.apollo
+              .query<GetFormByIdQueryResponse>({
+                query: GET_GRID_FORM_META,
+                variables: {
+                  id: this.selectedForm.resource.id,
+                },
+              })
+              .subscribe((res3) => {
+                if (res3.errors) {
+                  this.selectedResource = null;
+                } else {
+                  this.selectedResource = null;
+                }
+              });
+          } else {
+            this.selectedResource = res2.data.resource;
+          }
+        });
     });
   }
 
