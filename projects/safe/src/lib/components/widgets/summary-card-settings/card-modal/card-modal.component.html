@@ -19,6 +19,7 @@
             | translate
         "
       >
+        <safe-data-source-tab [form]="form"></safe-data-source-tab>
       </mat-tab>
       <mat-tab
         [label]="
@@ -26,17 +27,10 @@
             | translate
         "
       >
+        <safe-value-selector-tab></safe-value-selector-tab>
       </mat-tab>
       <mat-tab [label]="'common.display' | translate">
-        <div class="form-group">
-          <mat-form-field appearance="outline">
-            <mat-label>{{
-              'components.widget.settings.summaryCard.card.display.header'
-                | translate
-            }}</mat-label>
-            <input matInput formControlName="title" type="string" />
-          </mat-form-field>
-        </div>
+        <safe-display-tab [form]="form"></safe-display-tab>
       </mat-tab>
       <mat-tab
         [label]="
@@ -44,8 +38,11 @@
             | translate
         "
       >
+      <safe-text-editor-tab></safe-text-editor-tab>
       </mat-tab>
-      <mat-tab [label]="'common.preview' | translate"> </mat-tab>
+      <mat-tab [label]="'common.preview' | translate">
+        <safe-preview-tab></safe-preview-tab>
+      </mat-tab>
     </mat-tab-group>
   </form>
 </div>

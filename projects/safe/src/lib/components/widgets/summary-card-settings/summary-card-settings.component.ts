@@ -14,6 +14,7 @@ import {
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
 import get from 'lodash/get';
+import { createAggregationForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 import { SafeAddCardComponent } from './add-card/add-card.component';
 import { SafeCardModalComponent } from './card-modal/card-modal.component';
 
@@ -150,6 +151,12 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       isDynamic: value.isDynamic,
       height: DEFAULT_CARD_HEIGHT,
       width: DEFAULT_CARD_WIDTH,
+      columns: get(value, 'columns', 1),
+      rows: get(value, 'rows', 1),
+      aggregation: createAggregationForm(
+        get(value, 'aggregation', null),
+        ''
+      ),
     });
   }
 

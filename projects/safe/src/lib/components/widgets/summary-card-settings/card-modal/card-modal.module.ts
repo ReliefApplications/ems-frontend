@@ -10,6 +10,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatRadioModule } from '@angular/material/radio';
 import { SafeCardModalComponent } from './card-modal.component';
+import { SafeDataSourceTabModule } from './data-source-tab/data-source.module';
+import { SafeValueSelectorTabModule } from './value-selector-tab/value-selector.module';
+import { SafeDisplayTabModule } from './display-tab/display.module';
+import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
+import { SafePreviewTabModule } from './preview-tab/preview.module';
 
 /** Card Modal Module */
 @NgModule({
@@ -26,6 +31,11 @@ import { SafeCardModalComponent } from './card-modal.component';
     MatInputModule,
     MatTabsModule,
     MatRadioModule,
+    SafeDataSourceTabModule,
+    SafeValueSelectorTabModule,
+    SafeDisplayTabModule,
+    SafeTextEditorTabModule,
+    SafePreviewTabModule
   ],
   exports: [SafeCardModalComponent],
 })

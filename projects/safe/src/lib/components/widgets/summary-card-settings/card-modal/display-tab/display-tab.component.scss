@@ -1,0 +1,9 @@
+.dual {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+
+  .mat-form-field {
+    width: 100%;
+  }
+}

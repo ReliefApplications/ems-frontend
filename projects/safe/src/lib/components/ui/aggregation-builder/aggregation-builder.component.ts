@@ -102,6 +102,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
       variables,
     });
     this.forms$ = this.forms.asObservable();
+    console.log(this.forms$, this.loadingMore);
     this.formsQuery.valueChanges.subscribe((res) => {
       this.forms.next(res.data.forms.edges.map((x) => x.node));
       this.pageInfo = res.data.forms.pageInfo;
@@ -143,6 +144,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
           this.selectedFields.value,
           this.metaFields.value
         );
+        console.log('hello');
       });
 
     // Preview grid and mapping fields

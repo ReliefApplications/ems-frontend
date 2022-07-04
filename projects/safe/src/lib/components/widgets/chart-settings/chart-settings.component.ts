@@ -126,5 +126,7 @@ export class SafeChartSettingsComponent implements OnInit {
     this.aggregationBuilder.getPreviewGrid().subscribe((value) => {
       this.grid = value;
     });
+
+    console.log(this.aggregationForm);
   }
 }

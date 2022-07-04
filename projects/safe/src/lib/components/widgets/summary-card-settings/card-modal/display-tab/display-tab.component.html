@@ -1,0 +1,26 @@
+
+<form [formGroup]="form">
+  <div class="form-group">
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        'components.widget.settings.summaryCard.card.display.header'
+          | translate
+      }}</mat-label>
+      <input matInput formControlName="title" type="string" />
+    </mat-form-field>
+    <div class="dual">
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'Rows'
+        }}</mat-label>
+        <input matInput formControlName="rows" type="number" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'Columns'
+        }}</mat-label>
+        <input matInput formControlName="columns" type="number" />
+      </mat-form-field>
+    </div>
+  </div>
+</form>

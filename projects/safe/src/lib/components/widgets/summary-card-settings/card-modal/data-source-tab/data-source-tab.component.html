@@ -1,0 +1,17 @@
+<mat-radio-group
+  aria-label="Select an option"
+  [value]="false"
+  (change)="radioChange($event)"
+>
+  <mat-radio-button [value]="false">{{
+    'Aggregation'
+  }}</mat-radio-button>
+  <mat-radio-button [value]="true">{{
+    'Form/resource'
+  }}</mat-radio-button>
+</mat-radio-group>
+
+<!-- <safe-aggregation-builder
+  [reload$]="reload$"
+  [aggregationForm]="aggregationForm"
+></safe-aggregation-builder> -->
