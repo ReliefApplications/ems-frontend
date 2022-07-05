@@ -20,6 +20,7 @@ import {
 } from '../../graphql/queries';
 import { MatSelect } from '@angular/material/select';
 
+/** Roles tab for the user summary */
 @Component({
   selector: 'safe-user-app-roles',
   templateUrl: './user-app-roles.component.html',
@@ -32,6 +33,7 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
   selectedRoles!: FormControl;
   @Output() edit = new EventEmitter();
 
+  /** loading setter */
   @Input() set loading(loading: boolean) {
     if (loading) {
       this.selectedRoles?.disable({ emitEvent: false });
@@ -52,6 +54,12 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
   private readonly RELOAD_BOTTOM_SCROLL_POSITION = 50;
   @ViewChild('applicationSelect') applicationSelect!: MatSelect;
 
+  /**
+   * Roles tab for the user summary.
+   *
+   * @param fb Angular form builder
+   * @param apollo Apollo client
+   */
   constructor(private fb: FormBuilder, private apollo: Apollo) {}
 
   ngOnInit(): void {
@@ -107,6 +115,11 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Fetches the roles for a given application
+   *
+   * @param application The application id
+   */
   private getApplicationRoles(application: string): void {
     this.loading = true;
     this.apollo
@@ -122,7 +135,7 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
         }
         this.selectedRoles.setValue(
           get(this.user, 'roles', [])
-            .filter((x) => x.application === application)
+            .filter((x) => x.application?.id === application)
             .map((x) => x.id),
           { emitEvent: false }
         );
@@ -135,6 +148,11 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
     panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
   }
 
+  /**
+   * Triggers new page reaching scroll target
+   *
+   * @param event The scroll event
+   */
   private loadOnScroll(event: any): void {
     if (
       event.target.scrollHeight -
@@ -145,6 +163,7 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /** Fetches more applications when needed */
   private onLoadMore(): void {
     if (!this.loadingApplications && this.pageInfo.hasNextPage) {
       this.loading = true;
