@@ -1086,7 +1086,6 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
     referenceData(id: $id) {
       id
       name
-      modifiedAt
       type
       apiConfiguration {
         name
@@ -1097,7 +1096,6 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
       valueField
       path
       data
-      graphQLFilter
     }
   }
 `;
