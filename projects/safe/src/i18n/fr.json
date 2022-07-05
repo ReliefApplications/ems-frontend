@@ -706,7 +706,7 @@
 				"errors": {
 					"invalid": "Configuration de grille invalide",
 					"missingDataset": "Sélectionner un jeu de données dans les jeux de données",
-					"validationFailed": "Sauvegarde échouée, la ligne {{index}} est invalide\n{{question}}: {{error}}"
+					"validationFailed": "Les enregistrements suivants n'ont pas pu être sauvegardés car invalides :\n{{errors}}\nMerci de les modifier en utilisant le bouton \"Mettre à jour \" pour plus de détails."
 				},
 				"export": {
 					"columns": {
@@ -737,6 +737,17 @@
 				},
 				"layout": {
 					"reset": "Réinitialiser la mise en page par défaut"
+				},
+				"tooltip": {
+					"saved": "Changements sauvegardés",
+					"unsaved": "Cliquez sur sauvegarder pour enregistrer les changements",
+					"uploadFailed": "L'enregistrement a échoué. Cliquez pour obtenir plus de détails"
+				},
+				"validation": {
+					"help": "Veuillez modifier l'enregistrement à l'aide du bouton \"Mettre à jour\".",
+					"questionTitle": "Erreurs sur le champ {{question}}:",
+					"subtitle": "Ces erreurs furent détectées durant l'enregistrement :",
+					"title": "L'enregistrement du document {{record}} a échoué"
 				}
 			},
 			"settings": {

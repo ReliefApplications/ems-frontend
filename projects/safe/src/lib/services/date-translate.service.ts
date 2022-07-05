@@ -22,7 +22,7 @@ export class SafeDateTranslateService {
       this.translate.defaultLang;
   }
 
-  /** Return current language */
+  /** @returns Current language */
   get currentLang(): string {
     return this.lang;
   }
