@@ -12,6 +12,7 @@ import { User } from '../../../models/user.model';
 })
 export class UserDetailsComponent implements OnInit {
   @Input() user!: User;
+  @Input() editable = true;
   public form!: FormGroup;
 
   @Output() edit = new EventEmitter();
@@ -37,6 +38,7 @@ export class UserDetailsComponent implements OnInit {
       lastName: [this.user.lastName, Validators.required],
       email: [{ value: this.user.username, disabled: true }],
     });
+    if (!this.editable) this.form.disable();
   }
 
   /**
