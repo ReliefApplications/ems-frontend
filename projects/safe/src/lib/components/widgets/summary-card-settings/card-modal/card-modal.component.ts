@@ -41,8 +41,11 @@ export class SafeCardModalComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       ...this.data,
-      // aggregation: this.fb.group(this.data.aggregation)
+      layout: [],
     });
+    this.form.patchValue({ layout: this.data.layout ? this.data.layout : [] });
+
+    console.log(this.form);
   }
 
   /**

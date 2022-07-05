@@ -56,14 +56,9 @@ export class SafeDataSourceTabComponent implements OnInit {
 
   constructor(
     private apollo: Apollo,
-    // private queryBuilder: QueryBuilderService,
-    // private aggregationBuilder: AggregationBuilderService,
   ) { }
 
   ngOnInit(): void {
-    if (!this.form.value.layouts) {
-      this.form.patchValue({ layouts: [] });
-    }
     // Initialize radioValue
     this.radioValue = this.form.value.isAggregation;
 
@@ -100,7 +95,7 @@ export class SafeDataSourceTabComponent implements OnInit {
         .query<GetResourceByIdQueryResponse>({
           query: GET_GRID_RESOURCE_META,
           variables: {
-            resource: this.selectedForm.resource.id,
+            resource: this.selectedForm.resource?.id,
           },
         })
         .subscribe((res2) => {
@@ -109,18 +104,18 @@ export class SafeDataSourceTabComponent implements OnInit {
               .query<GetFormByIdQueryResponse>({
                 query: GET_GRID_FORM_META,
                 variables: {
-                  id: this.selectedForm.resource.id,
+                  id: this.selectedForm.resource?.id,
                 },
               })
               .subscribe((res3) => {
                 if (res3.errors) {
-                  this.selectedResource = null;
+                  this.form.patchValue({dataset: null})
                 } else {
-                  this.selectedResource = null;
+                  this.form.patchValue({dataset: null})
                 }
               });
           } else {
-            this.selectedResource = res2.data.resource;
+            this.form.patchValue({dataset: res2.data.resource})
           }
         });
     });

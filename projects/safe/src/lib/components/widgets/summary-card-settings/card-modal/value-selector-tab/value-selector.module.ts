@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeCoreGridModule } from '../../../../ui/core-grid/core-grid.module';
 import { SafeValueSelectorTabComponent } from './value-selector-tab.component';
 
 /** Data Source Module */
@@ -9,6 +10,7 @@ import { SafeValueSelectorTabComponent } from './value-selector-tab.component';
   imports: [
     CommonModule,
     TranslateModule,
+    SafeCoreGridModule
   ],
   exports: [SafeValueSelectorTabComponent],
 })

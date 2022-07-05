@@ -1,1 +1,9 @@
-<p>value-selector-tab works!</p>
+
+<safe-core-grid *ngIf="settings"
+[settings]="settings"
+[multiSelect]="true"
+[selectedRows]="selectedRows"
+(selectionChange)="onSelectionChange($event)"
+style="height: 600px"
+>
+</safe-core-grid>

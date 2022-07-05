@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { SafeTextEditorTabComponent } from './text-editor-tab.component';
@@ -10,7 +11,9 @@ import { SafeTextEditorTabComponent } from './text-editor-tab.component';
   imports: [
     CommonModule,
     TranslateModule,
-    EditorModule
+    EditorModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   exports: [SafeTextEditorTabComponent],
   providers: [

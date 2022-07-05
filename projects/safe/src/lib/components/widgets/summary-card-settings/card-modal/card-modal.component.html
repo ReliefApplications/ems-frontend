@@ -27,7 +27,7 @@
             | translate
         "
       >
-        <safe-value-selector-tab></safe-value-selector-tab>
+        <safe-value-selector-tab [form]="form"></safe-value-selector-tab>
       </mat-tab>
       <mat-tab [label]="'common.display' | translate">
         <safe-display-tab [form]="form"></safe-display-tab>
@@ -38,7 +38,7 @@
             | translate
         "
       >
-      <safe-text-editor-tab *ngIf="isEditorTab()"></safe-text-editor-tab>
+      <safe-text-editor-tab *ngIf="isEditorTab()" [form]="form"></safe-text-editor-tab>
       </mat-tab>
       <mat-tab [label]="'common.preview' | translate">
         <safe-preview-tab></safe-preview-tab>

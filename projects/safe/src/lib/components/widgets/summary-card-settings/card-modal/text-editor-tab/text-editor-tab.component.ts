@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
   EDITOR_LANGUAGE_PAIRS,
@@ -11,6 +11,8 @@ import {
   styleUrls: ['./text-editor-tab.component.scss']
 })
 export class SafeTextEditorTabComponent implements OnInit {
+
+  @Input() form: any;
 
   /** tinymce editor */
   public editor: any = WIDGET_EDITOR_CONFIG;

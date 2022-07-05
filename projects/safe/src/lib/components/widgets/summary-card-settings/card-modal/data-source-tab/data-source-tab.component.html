@@ -26,8 +26,8 @@
 
   <safe-layouts
   [form]="null"
-  [resource]="selectedResource"
-  [selectedLayouts]="$any(form).get('layouts')"
+  [resource]="$any(form).get('dataset').value"
+  [selectedLayouts]="$any(form).get('layout')"
   ></safe-layouts>
 </ng-container>
 
