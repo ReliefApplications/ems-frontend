@@ -9,21 +9,29 @@
 </h1>
 <div mat-dialog-content>
   <p>{{ 'components.widget.grid.validation.subtitle' | translate }}</p>
-  <ul>
-    <li *ngFor="let questionError of data.errors">
-      <p>
-        {{
-          'components.widget.grid.validation.questionTitle'
-            | translate: { question: questionError.question }
-        }}
-      </p>
-      <ul>
-        <li *ngFor="let error of questionError.errors">
-          {{ error }}
-        </li>
-      </ul>
-    </li>
-  </ul>
+  <table mat-table [dataSource]="data.errors">
+    <ng-container matColumnDef="question">
+      <th mat-header-cell *matHeaderCellDef>
+        Field
+      </th>
+      <td mat-cell *matCellDef="let element">{{element.question}}</td>
+    </ng-container>
+    <ng-container matColumnDef="errors">
+      <th mat-header-cell *matHeaderCellDef>
+        Errors
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <ul>
+          <li *ngFor="let error of element.errors">
+            {{ error }}
+          </li>
+        </ul>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+  </table>
   <p>{{ 'components.widget.grid.validation.help' | translate }}</p>
 </div>
 <div mat-dialog-actions align="end">

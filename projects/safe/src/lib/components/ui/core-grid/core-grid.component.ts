@@ -493,15 +493,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               'components.widget.grid.errors.validationFailed',
               {
                 errors: this.updatedItems
-                  .map(
-                    (item) =>
-                      `- ${item.incrementalId}: ${item.validationErrors
-                        .map(
-                          (err: any) =>
-                            `${err.question}: ${err.errors.join(', ')}`
-                        )
-                        .join(', ')}`
-                  )
+                  .map((item) => `- ${item.incrementalId}`)
                   .join('\n'),
               }
             ),
@@ -593,6 +585,15 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
               this.loadItems();
+              for (const updatedItem of this.updatedItems) {
+                const item: any = this.items.find(
+                  (x) => x.id === updatedItem.id
+                );
+                if (item) {
+                  Object.assign(item, updatedItem);
+                  item.saved = false;
+                }
+              }
               // if (!this.readOnly) {
               //   this.initSelectedRows();
               // }
@@ -626,7 +627,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     // TODO = check what to do there
     this.onPageChange({ skip: 0, take: this.pageSize });
     this.selectedRows = [];
-    this.updatedItems = [];
+    // this.updatedItems = [];
   }
 
   // === SELECTION ===
@@ -841,9 +842,19 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
+        this.validateRecords(ids);
         this.reloadData();
       }
     });
+  }
+
+  /**
+   * Remove elements from the list of updated items
+   *
+   * @param ids list of item ids
+   */
+  private validateRecords(ids: string[]): void {
+    this.updatedItems = this.updatedItems.filter((x) => !ids.includes(x.id));
   }
 
   /**

@@ -17,6 +17,8 @@ interface DialogData {
   styleUrls: ['./errors-modal.component.scss'],
 })
 export class SafeErrorsModalComponent implements OnInit {
+  public displayedColumns = ['question', 'errors'];
+
   /**
    * Constructor of the component
    *

@@ -744,8 +744,8 @@
 					"uploadFailed": "L'enregistrement a échoué. Cliquez pour obtenir plus de détails"
 				},
 				"validation": {
-					"help": "Veuillez modifier l'enregistrement à l'aide du bouton \"Mise à jour\".",
-					"questionTitle": "Erreur sur le champ {{question}}:",
+					"help": "Veuillez modifier l'enregistrement à l'aide du bouton \"Mettre à jour\".",
+					"questionTitle": "Erreurs sur le champ {{question}}:",
 					"subtitle": "Ces erreurs furent détectées durant l'enregistrement :",
 					"title": "L'enregistrement du document {{record}} a échoué"
 				}
