@@ -1,0 +1,20 @@
+.user-management {
+  display: flex;
+  flex-direction: column;
+  margin-left: 5%;
+}
+
+.radio-button-tooltip {
+  display: flex;
+}
+
+.align-end {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+}
+
+.api-input {
+  margin-top: 1.25em;
+  width: 100%;
+}

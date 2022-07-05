@@ -16,7 +16,7 @@ import { Role, User } from '@safe/builder';
   styleUrls: ['./users.component.scss'],
 })
 /** Accessible with '/settings/users' route.
-  Managelent of users.
+  Management of users.
 */
 export class UsersComponent implements OnInit {
   // === DATA ===

@@ -13,8 +13,8 @@ import {
   Step,
   ApiConfiguration,
   PullJob,
-  Layout,
   ReferenceData,
+  Setting,
 } from '@safe/builder';
 
 // === EDIT USER ===
@@ -1040,4 +1040,22 @@ export const EDIT_REFERENCE_DATA = gql`
 export interface EditReferenceDataMutationResponse {
   loading: boolean;
   editReferenceData: ReferenceData;
+}
+
+// === EDIT SETTING ===
+export const EDIT_SETTING = gql`
+  mutation editSetting($userManagement: JSON) {
+    editSetting(userManagement: $userManagement) {
+      userManagement {
+        local
+        serviceAPI
+        attributesMapping
+      }
+    }
+  }
+`;
+
+export interface EditSettingMutationResponse {
+  loading: boolean;
+  editSetting: Setting;
 }

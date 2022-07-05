@@ -9,7 +9,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { SafeSnackBarService } from '../../services/snackbar.service';
-import { User, Role } from '../../models/user.model';
+import { User, Role, Permissions } from '../../models/user.model';
 import {
   EditUserMutationResponse,
   EDIT_USER,
@@ -29,6 +29,7 @@ import { SafeDownloadService } from '../../services/download.service';
 import { Application } from '../../models/application.model';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application.service';
+import { Router } from '@angular/router';
 
 /** User columns to display for the main user administration page */
 const ADMIN_COLUMNS = ['select', 'name', 'username', 'oid', 'roles', 'actions'];
@@ -63,6 +64,9 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   // === DISPLAYED COLUMNS ===
   public displayedColumns: string[] = [];
 
+  // === DISPLAY ADVANCED SETTINGS ===
+  public advancedSettings = false;
+
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
 
@@ -82,6 +86,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
    * @param dialog The material dialog service
    * @param downloadService The download service
    * @param translate The translation service
+   * @param router Angular router
    */
   constructor(
     private apollo: Apollo,
@@ -89,7 +94,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     private authService: SafeAuthService,
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -97,6 +103,9 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       this.displayedColumns = APPLICATION_COLUMNS;
     } else {
       this.displayedColumns = ADMIN_COLUMNS;
+      this.advancedSettings =
+        this.authService.userHasClaim(Permissions.canSeeUsers) &&
+        this.authService.userHasClaim(Permissions.canSeeRoles);
     }
     this.users.filterPredicate = (data: any) =>
       (this.searchText.trim().length === 0 ||
@@ -423,5 +432,12 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
         fileName
       );
     }
+  }
+
+  /**
+   * Route to the advanced settings component
+   */
+  onAdvancedSettings(): void {
+    this.router.navigate(['/settings/users/advanced-settings']);
   }
 }

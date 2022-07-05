@@ -1,0 +1,76 @@
+<div class="page-header">
+  <safe-previous-button path="/settings/users"></safe-previous-button>
+  <h1 class="page-title">
+    {{ 'components.users.advancedSettings.title' | translate }}
+  </h1>
+</div>
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<form [formGroup]="settingForm" *ngIf="!loading">
+  <h2>
+    {{ 'components.users.advancedSettings.userManagement.title' | translate }}
+  </h2>
+  <div formGroupName="userManagement" class="user-management">
+    <mat-radio-group formControlName="local" class="form-radio-group">
+      <div class="radio-button-tooltip">
+        <mat-radio-button [value]="true">{{
+          'components.users.advancedSettings.userManagement.local.title'
+            | translate
+        }}</mat-radio-button>
+        <mat-icon
+          class="info-icon"
+          [matTooltip]="
+            'components.users.advancedSettings.userManagement.local.tooltip'
+              | translate
+          "
+          >info</mat-icon
+        >
+      </div>
+      <div class="radio-button-tooltip">
+        <mat-radio-button [value]="false">{{
+          'components.users.advancedSettings.userManagement.external.title'
+            | translate
+        }}</mat-radio-button>
+        <mat-icon
+          class="info-icon"
+          [matTooltip]="
+            'components.users.advancedSettings.userManagement.external.tooltip'
+              | translate
+          "
+          >info</mat-icon
+        >
+      </div>
+    </mat-radio-group>
+    <ng-container
+      *ngIf="!$any(settingForm.controls.userManagement).controls.local.value"
+    >
+      <mat-form-field appearance="outline" class="api-input">
+        <mat-label>{{
+          'components.users.advancedSettings.userManagement.api.title'
+            | translate
+        }}</mat-label>
+        <input
+          type="text"
+          [placeholder]="
+            'components.users.advancedSettings.userManagement.api.placeholder'
+              | translate
+          "
+          matInput
+          formControlName="serviceAPI"
+        />
+      </mat-form-field>
+      <h3>{{ 'components.mapping.title' | translate }}</h3>
+      <safe-mapping [mappingForm]="mappingForm"></safe-mapping>
+    </ng-container>
+  </div>
+  <div class="align-end">
+    <safe-button
+      class="save-button"
+      category="secondary"
+      variant="primary"
+      (click)="onSave()"
+      [disabled]="settingForm.invalid || !settingForm.dirty"
+    >
+      {{ 'common.save' | translate }}
+    </safe-button>
+  </div>
+</form>
