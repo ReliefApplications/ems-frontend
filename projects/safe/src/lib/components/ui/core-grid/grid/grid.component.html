@@ -830,25 +830,27 @@
           look="flat"
           class="k-color-error"
           (click)="showErrors(dataItem)"
-          [matTooltip]="'components.widget.grid.tooltip.uploadFailed' | translate"
+          [matTooltip]="
+            'components.widget.grid.tooltip.uploadFailed' | translate
+          "
         ></button>
-        <span 
+        <span
           *ngIf="dataItem.saved === false && !dataItem.validationErrors"
           kendoButton
           icon="exclamation-circle"
           look="flat"
           class="k-color-warning"
           [matTooltip]="'components.widget.grid.tooltip.unsaved' | translate"
-          style="cursor:unset"
+          style="cursor: unset"
         ></span>
-        <span 
+        <span
           *ngIf="dataItem.saved"
           kendoButton
           icon="check-outline"
           look="flat"
           class="k-color-success"
           [matTooltip]="'components.widget.grid.tooltip.saved' | translate"
-          style="cursor:unset"
+          style="cursor: unset"
         ></span>
       </ng-template>
     </kendo-grid-column>

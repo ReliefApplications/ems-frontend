@@ -11,15 +11,11 @@
   <p>{{ 'components.widget.grid.validation.subtitle' | translate }}</p>
   <table mat-table [dataSource]="data.errors">
     <ng-container matColumnDef="question">
-      <th mat-header-cell *matHeaderCellDef>
-        Field
-      </th>
-      <td mat-cell *matCellDef="let element">{{element.question}}</td>
+      <th mat-header-cell *matHeaderCellDef>Field</th>
+      <td mat-cell *matCellDef="let element">{{ element.question }}</td>
     </ng-container>
     <ng-container matColumnDef="errors">
-      <th mat-header-cell *matHeaderCellDef>
-        Errors
-      </th>
+      <th mat-header-cell *matHeaderCellDef>Errors</th>
       <td mat-cell *matCellDef="let element">
         <ul>
           <li *ngFor="let error of element.errors">
