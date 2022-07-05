@@ -120,7 +120,6 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
         if (res.data) {
           this.roles = res.data.roles;
         }
-        console.log(this.user);
         this.selectedRoles.setValue(
           get(this.user, 'roles', [])
             .filter((x) => x.application === application)
