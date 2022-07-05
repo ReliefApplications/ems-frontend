@@ -16,6 +16,14 @@ export class UserDetailsComponent implements OnInit {
 
   @Output() edit = new EventEmitter();
 
+  @Input() set loading(loading: boolean) {
+    if (loading) {
+      this.form?.disable();
+    } else {
+      this.form?.enable();
+    }
+  }
+
   /**
    * User summary details component
    *

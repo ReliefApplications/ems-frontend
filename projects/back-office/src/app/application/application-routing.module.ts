@@ -54,9 +54,24 @@ const routes: Routes = [
           },
           {
             path: 'users',
-            loadChildren: () =>
-              import('./pages/users/users.module').then((m) => m.UsersModule),
-            // canActivate: [SafePermissionGuard]
+            children: [
+              {
+                path: '',
+                loadChildren: () =>
+                  import('./pages/users/users.module').then(
+                    (m) => m.UsersModule
+                  ),
+                // canActivate: [SafePermissionGuard]
+              },
+              {
+                path: ':id',
+                loadChildren: () =>
+                  import('./pages/user-summary/user-summary.module').then(
+                    (m) => m.UserSummaryModule
+                  ),
+                // canActivate: [SafePermissionGuard]
+              },
+            ],
           },
           {
             path: 'position',

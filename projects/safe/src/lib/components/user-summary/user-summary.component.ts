@@ -1,9 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
+import { Application } from '../../models/application.model';
 import { User } from '../../models/user.model';
 import {
   EditUserProfileMutationResponse,
+  EditUserRolesMutationResponse,
   EDIT_USER_PROFILE,
+  EDIT_USER_ROLES,
 } from './graphql/mutations';
 import { GetUserQueryResponse, GET_USER } from './graphql/queries';
 
@@ -16,7 +19,8 @@ import { GetUserQueryResponse, GET_USER } from './graphql/queries';
   styleUrls: ['./user-summary.component.scss'],
 })
 export class SafeUserSummaryComponent implements OnInit {
-  @Input() public id = '';
+  @Input() id = '';
+  @Input() application?: Application;
   public user?: User;
   public loading = true;
 
@@ -74,7 +78,26 @@ export class SafeUserSummaryComponent implements OnInit {
       .subscribe((res) => {
         if (res.data) {
           this.user = res.data.editUserProfile;
-          this.loading = res.data.loading;
+          this.loading = res.loading;
+        }
+      });
+  }
+
+  onEditRoles(event: { roles: string[]; application?: string }): void {
+    this.loading = true;
+    this.apollo
+      .mutate<EditUserRolesMutationResponse>({
+        mutation: EDIT_USER_ROLES,
+        variables: {
+          id: this.id,
+          roles: event.roles,
+          application: event.application,
+        },
+      })
+      .subscribe((res) => {
+        if (res.data) {
+          this.user = res.data.editUser;
+          this.loading = res.loading;
         }
       });
   }
