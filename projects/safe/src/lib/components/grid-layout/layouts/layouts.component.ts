@@ -21,6 +21,7 @@ export class LayoutsComponent implements OnInit, OnChanges {
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
   @Input() selectedLayouts: FormControl | null = null;
+  @Input() singleInput: boolean = false;
 
   layouts: Layout[] = [];
   allLayouts: Layout[] = [];
@@ -97,15 +98,24 @@ export class LayoutsComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        if (typeof value === 'string') {
-          this.selectedLayouts?.setValue(
-            this.selectedLayouts?.value.concat(value)
-          );
+        if (!this.singleInput) {
+          if (typeof value === 'string') {
+            this.selectedLayouts?.setValue(
+              this.selectedLayouts?.value.concat(value)
+            );
+          } else {
+            this.allLayouts.push(value);
+            this.selectedLayouts?.setValue(
+              this.selectedLayouts?.value.concat(value.id)
+            );
+          }
         } else {
-          this.allLayouts.push(value);
-          this.selectedLayouts?.setValue(
-            this.selectedLayouts?.value.concat(value.id)
-          );
+          if (typeof value === 'string') {
+            this.selectedLayouts?.setValue([value]);
+          } else {
+            this.allLayouts = [value];
+            this.selectedLayouts?.setValue([value.id]);
+          }
         }
       }
     });

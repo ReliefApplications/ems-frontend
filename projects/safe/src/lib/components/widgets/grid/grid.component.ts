@@ -118,7 +118,6 @@ export class SafeGridWidgetComponent implements OnInit {
             ...this.layout,
             ...{ template: this.settings.query?.template },
           };
-          console.log(this.gridSettings);
         });
     }
   }

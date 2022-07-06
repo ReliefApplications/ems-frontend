@@ -1,7 +1,9 @@
 
 <safe-core-grid *ngIf="settings"
 [settings]="settings"
-[multiSelect]="true"
+[multiSelect]="false"
+[selectable]="true"
+[showExport]="false"
 [selectedRows]="selectedRows"
 (selectionChange)="onSelectionChange($event)"
 style="height: 600px"

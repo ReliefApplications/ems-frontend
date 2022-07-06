@@ -10,7 +10,7 @@ export class SafeValueSelectorTabComponent implements OnInit {
 
   @Input() form: any;
 
-  public selectedRows = [];
+  public selectedRows: string[] = [];
   public settings: any = null;
 
   constructor() { }
@@ -21,6 +21,10 @@ export class SafeValueSelectorTabComponent implements OnInit {
         this.settings = this.findLayout(value.dataset.layouts, value.layout[0]);
       }
     })
+    if (this.form.get('record').value) {
+      this.selectedRows = [this.form.get('record').value];
+    }
+    console.log(this.selectedRows);
   }
 
   private findLayout(layouts: any[], layoutToFind: string): any {
@@ -36,7 +40,11 @@ export class SafeValueSelectorTabComponent implements OnInit {
   }
 
   onSelectionChange(event: any) {
-    this.form.patchValue({record: event.selectedRows[0].dataItem.id});
+    if (event.selectedRows.length > 0) {
+      this.form.patchValue({record: event.selectedRows[0].dataItem.id});
+    } else {
+      this.form.patchValue({record: null});
+    }
   }
 
 }

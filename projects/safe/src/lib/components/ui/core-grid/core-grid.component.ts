@@ -103,7 +103,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === FEATURES INPUTS ===
   @Input() showDetails = true;
-  @Input() showExport = false;
+  @Input() showExport = true;
   @Input() admin = false;
 
   // === OUTPUTS ===
@@ -235,7 +235,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     delete: false,
     history: false,
     convert: false,
-    export: true,
+    export: this.showExport,
     showDetails: true,
   };
 
@@ -274,7 +274,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // === COMPONENT LIFECYCLE ===
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   /**
    * Detects changes of the settings to (re)load the data.
@@ -295,7 +296,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       update: get(this.settings, 'actions.update', false),
       delete: get(this.settings, 'actions.delete', false),
       convert: get(this.settings, 'actions.convert', false),
-      export: get(this.settings, 'actions.export', true),
+      export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
     };
     this.editable = this.settings.actions?.inlineEdition;
