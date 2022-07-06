@@ -71,5 +71,9 @@
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
-  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" style="height: 0;"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: ['expandedDetail']"
+    style="height: 0"
+  ></tr>
 </table>
