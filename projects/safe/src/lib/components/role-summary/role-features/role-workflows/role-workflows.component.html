@@ -1,0 +1,19 @@
+<h2>Workflows</h2>
+<table mat-table [dataSource]="pages">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>
+      {{ 'common.name' | translate }}
+    </th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <safe-button [isIcon]="true" icon="visibility" variant="primary"> </safe-button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+</table>
