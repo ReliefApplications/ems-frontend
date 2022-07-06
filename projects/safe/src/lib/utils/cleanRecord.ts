@@ -6,8 +6,5 @@
  */
 export const cleanRecord = (record: any): any => {
   const entries = Object.entries(record).filter(([, value]) => value !== null);
-  return entries.reduce(
-    (o, [key, value]) => Object.assign(o, { [key]: value }),
-    {}
-  );
+  return entries.reduce((o, [key, value]) => ({ ...o, [key]: value }), {});
 };
