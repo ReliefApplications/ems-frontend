@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { Permission, Role } from '../../../models/user.model';
+import { Workflow } from '../../../models/workflow.model';
 
 /** Get role by id GraphQL query */
 export const GET_ROLE = gql`
@@ -85,4 +86,27 @@ export const GET_APPLICATION_FEATURES = gql`
 
 export interface GetApplicationFeaturesQueryResponse {
   application: Application;
+}
+
+export const GET_WORKFLOW_STEPS = gql`
+  query getWorkflowSteps($id: ID!) {
+    workflow(id: $id) {
+      id
+      steps {
+        id
+        name
+        type
+        content
+        permissions {
+          canSee {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
+export interface GetWorkflowStepsQueryResponse {
+  workflow: Workflow;
 }

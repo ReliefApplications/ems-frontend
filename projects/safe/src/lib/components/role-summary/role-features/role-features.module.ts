@@ -7,6 +7,7 @@ import { RoleWorkflowsComponent } from './role-workflows/role-workflows.componen
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTableModule } from '@angular/material/table';
 import { SafeButtonModule } from '../../ui/button/button.module';
+import { SafeIconModule } from '../../ui/icon/icon.module';
 
 /**
  * Features tab of Role Summary component.
@@ -19,7 +20,13 @@ import { SafeButtonModule } from '../../ui/button/button.module';
     RoleFormsComponent,
     RoleWorkflowsComponent,
   ],
-  imports: [CommonModule, TranslateModule, MatTableModule, SafeButtonModule],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    MatTableModule,
+    SafeButtonModule,
+    SafeIconModule,
+  ],
   exports: [RoleFeaturesComponent],
 })
 export class RoleFeaturesModule {}

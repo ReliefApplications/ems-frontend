@@ -3,3 +3,11 @@
   flex-direction: column;
   gap: 32px;
 }
+
+.empty-features {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  align-items: center;
+  color: #9e9e9e;
+}

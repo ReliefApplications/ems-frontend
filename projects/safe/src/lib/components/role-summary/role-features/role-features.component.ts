@@ -62,55 +62,52 @@ export class RoleFeaturesComponent implements OnInit {
 
   onEditAccess(e: any): void {
     this.loading = true;
-    if (e.page) {
-      this.apollo
-        .mutate<EditPageAccessMutationResponse>({
-          mutation: EDIT_PAGE_ACCESS,
-          variables: {
-            id: e.page,
-            permissions: {
-              canSee: e.permissions,
-            },
+    this.apollo
+      .mutate<EditPageAccessMutationResponse>({
+        mutation: EDIT_PAGE_ACCESS,
+        variables: {
+          id: e.page,
+          permissions: {
+            canSee: e.permissions,
           },
-        })
-        .subscribe((res) => {
-          if (res.data) {
-            switch (res.data.editPage.type) {
-              case ContentType.dashboard: {
-                const index = this.dashboards.findIndex(
-                  (x) => x.id === res.data?.editPage.id
-                );
-                const dashboards = [...this.dashboards];
-                dashboards[index] = res.data.editPage;
-                this.dashboards = dashboards;
-                break;
-              }
-              case ContentType.form: {
-                const index = this.forms.findIndex(
-                  (x) => x.id === res.data?.editPage.id
-                );
-                const forms = [...this.forms];
-                forms[index] = res.data.editPage;
-                this.forms = forms;
-                break;
-              }
-              case ContentType.workflow: {
-                const index = this.workflows.findIndex(
-                  (x) => x.id === res.data?.editPage.id
-                );
-                const workflows = [...this.workflows];
-                workflows[index] = res.data.editPage;
-                this.workflows = workflows;
-                break;
-              }
-              default: {
-                break;
-              }
+        },
+      })
+      .subscribe((res) => {
+        if (res.data) {
+          switch (res.data.editPage.type) {
+            case ContentType.dashboard: {
+              const index = this.dashboards.findIndex(
+                (x) => x.id === res.data?.editPage.id
+              );
+              const dashboards = [...this.dashboards];
+              dashboards[index] = res.data.editPage;
+              this.dashboards = dashboards;
+              break;
             }
-            this.loading = res.loading;
+            case ContentType.form: {
+              const index = this.forms.findIndex(
+                (x) => x.id === res.data?.editPage.id
+              );
+              const forms = [...this.forms];
+              forms[index] = res.data.editPage;
+              this.forms = forms;
+              break;
+            }
+            case ContentType.workflow: {
+              const index = this.workflows.findIndex(
+                (x) => x.id === res.data?.editPage.id
+              );
+              const workflows = [...this.workflows];
+              workflows[index] = res.data.editPage;
+              this.workflows = workflows;
+              break;
+            }
+            default: {
+              break;
+            }
           }
-        });
-    } else {
-    }
+        }
+        this.loading = res.loading;
+      });
   }
 }

@@ -28,7 +28,6 @@ export class RoleDashboardsComponent implements OnInit, OnChanges {
   constructor() {}
 
   ngOnInit(): void {
-    console.log('change');
     this.accessiblePages = this.pages
       .filter((x) =>
         get(x, 'permissions.canSee', [])
@@ -39,7 +38,6 @@ export class RoleDashboardsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    console.log('change');
     this.accessiblePages = this.pages
       .filter((x) =>
         get(x, 'permissions.canSee', [])

@@ -12,14 +12,16 @@
     <td mat-cell *matCellDef="let element">
       <div style="display: flex">
         <safe-button
-        [isIcon]="true"
-        [icon]="
-          accessiblePages.includes(element.id) ? 'visibility' : 'visibility_off'
-        "
-        [variant]="accessiblePages.includes(element.id) ? 'primary' : 'grey'"
-        (click)="onEditAccess(element)"
-        [disabled]="loading"
-      >
+          [isIcon]="true"
+          [icon]="
+            accessiblePages.includes(element.id)
+              ? 'visibility'
+              : 'visibility_off'
+          "
+          [variant]="accessiblePages.includes(element.id) ? 'primary' : 'grey'"
+          (click)="onEditAccess(element)"
+          [disabled]="loading"
+        >
         </safe-button>
         <safe-button
           [isIcon]="true"
@@ -28,7 +30,7 @@
               ? 'keyboard_arrow_up'
               : 'keyboard_arrow_down'
           "
-          (click)="toggleWorkflow(element.id)"
+          (click)="toggleWorkflow(element)"
           [disabled]="loading"
         >
         </safe-button>
@@ -48,7 +50,7 @@
           element.id === openedWorkflowId ? 'expanded' : 'collapsed'
         "
       >
-        <table mat-table [dataSource]="pages">
+        <table mat-table [dataSource]="steps">
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>
               {{ 'common.name' | translate }}
@@ -57,12 +59,19 @@
           </ng-container>
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element; let odd = odd">
+            <td mat-cell *matCellDef="let element">
               <safe-button
-                [disabled]="loading"
                 [isIcon]="true"
-                [icon]="odd ? 'visibility' : 'visibility_off'"
-                [variant]="odd ? 'primary' : 'grey'"
+                [icon]="
+                  accessibleSteps.includes(element.id)
+                    ? 'visibility'
+                    : 'visibility_off'
+                "
+                [variant]="
+                  accessibleSteps.includes(element.id) ? 'primary' : 'grey'
+                "
+                (click)="onEditStepAccess(element)"
+                [disabled]="loading"
               >
               </safe-button>
             </td>

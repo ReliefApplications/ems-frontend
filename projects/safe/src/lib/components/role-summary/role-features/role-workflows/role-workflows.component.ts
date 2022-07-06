@@ -16,6 +16,16 @@ import {
 import { Role } from '../../../../models/user.model';
 import { Page } from '../../../../models/page.model';
 import { get } from 'lodash';
+import { Apollo } from 'apollo-angular';
+import {
+  GetWorkflowStepsQueryResponse,
+  GET_WORKFLOW_STEPS,
+} from '../../graphql/queries';
+import { Step } from '../../../../models/step.model';
+import {
+  EditStepAccessMutationResponse,
+  EDIT_STEP_ACCESS,
+} from '../../graphql/mutations';
 
 @Component({
   selector: 'safe-role-workflows',
@@ -37,13 +47,16 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
   @Input() pages: Page[] = [];
   @Input() loading = false;
 
+  public steps: Step[] = [];
+  public accessibleSteps: string[] = [];
+
   @Output() edit = new EventEmitter();
 
   public displayedColumns = ['name', 'actions'];
   public openedWorkflowId = '';
   public accessiblePages: string[] = [];
 
-  constructor() {}
+  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
     this.accessiblePages = this.pages
@@ -65,12 +78,75 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
       .map((x) => x.id as string);
   }
 
-  toggleWorkflow(id: string): void {
-    if (id === this.openedWorkflowId) {
+  toggleWorkflow(page: Page): void {
+    this.steps = [];
+    if (page.id === this.openedWorkflowId) {
       this.openedWorkflowId = '';
     } else {
-      this.openedWorkflowId = id;
+      this.openedWorkflowId = page.id as string;
+      this.apollo
+        .query<GetWorkflowStepsQueryResponse>({
+          query: GET_WORKFLOW_STEPS,
+          variables: {
+            id: page.content,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            this.steps = get(res.data.workflow, 'steps', []);
+            this.accessibleSteps = this.steps
+              .filter((x) =>
+                get(x, 'permissions.canSee', [])
+                  .map((y: any) => y.id)
+                  .includes(this.role.id)
+              )
+              .map((x) => x.id as string);
+          }
+        });
     }
+  }
+
+  onEditStepAccess(step: Step): void {
+    this.loading = true;
+    let canSeePermissions = get(step, 'permissions.canSee', []).map(
+      (x: any) => x.id as string
+    );
+    if (this.accessibleSteps.includes(step.id as string)) {
+      canSeePermissions = canSeePermissions.filter(
+        (x: string) => x !== this.role.id
+      );
+    } else {
+      canSeePermissions = [...canSeePermissions, this.role.id];
+    }
+
+    this.apollo
+      .mutate<EditStepAccessMutationResponse>({
+        mutation: EDIT_STEP_ACCESS,
+        variables: {
+          id: step.id,
+          permissions: {
+            canSee: canSeePermissions,
+          },
+        },
+      })
+      .subscribe((res) => {
+        if (res.data) {
+          const index = this.steps.findIndex(
+            (x) => x.id === res.data?.editStep.id
+          );
+          const steps = [...this.steps];
+          steps[index] = res.data.editStep;
+          this.steps = steps;
+          this.accessibleSteps = this.steps
+            .filter((x) =>
+              get(x, 'permissions.canSee', [])
+                .map((y: any) => y.id)
+                .includes(this.role.id)
+            )
+            .map((x) => x.id as string);
+        }
+        this.loading = res.loading;
+      });
   }
 
   onEditAccess(page: Page): void {

@@ -19,3 +19,15 @@
   [loading]="loading"
   (edit)="onEditAccess($event)"
 ></safe-role-workflows>
+<div
+  *ngIf="
+    !loading &&
+    dashboards.length === 0 &&
+    forms.length === 0 &&
+    workflows.length === 0
+  "
+  class="empty-features"
+>
+  <safe-icon icon="folder_open"></safe-icon>
+  <h3>Vide</h3>
+</div>
