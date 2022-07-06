@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Application } from '../../../models/application.model';
 import { User } from '../../../models/user.model';
 
+/** Component for the roles tab of the user summary */
 @Component({
   selector: 'safe-user-roles',
   templateUrl: './user-roles.component.html',
@@ -14,8 +15,6 @@ export class UserRolesComponent implements OnInit {
   @Output() edit = new EventEmitter();
 
   @Input() loading = false;
-
-  constructor() {}
 
   ngOnInit(): void {}
 }

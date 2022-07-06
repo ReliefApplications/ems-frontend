@@ -20,6 +20,7 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
    * User summary page component.
    *
    * @param route Angular active route
+   * @param applicationService Shared application service
    */
   constructor(
     private route: ActivatedRoute,

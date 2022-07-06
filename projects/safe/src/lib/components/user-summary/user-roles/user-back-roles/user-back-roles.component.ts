@@ -5,6 +5,7 @@ import { get } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 
+/** Back-office roles section the user summary */
 @Component({
   selector: 'safe-user-back-roles',
   templateUrl: './user-back-roles.component.html',
@@ -16,6 +17,7 @@ export class UserBackRolesComponent implements OnInit {
   selectedRoles!: FormControl;
   @Output() edit = new EventEmitter();
 
+  /** Setter for the loading state */
   @Input() set loading(loading: boolean) {
     if (loading) {
       this.selectedRoles?.disable({ emitEvent: false });
@@ -24,6 +26,12 @@ export class UserBackRolesComponent implements OnInit {
     }
   }
 
+  /**
+   * Back-office roles section the user summary
+   *
+   * @param fb Angular form builder
+   * @param apollo Apollo client
+   */
   constructor(private fb: FormBuilder, private apollo: Apollo) {}
 
   ngOnInit(): void {

@@ -143,6 +143,7 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
       });
   }
 
+  /** Adds a scroll event listener for the application dropdown */
   private registerScrollEvent(): void {
     const panel = this.applicationSelect.panel.nativeElement;
     panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));

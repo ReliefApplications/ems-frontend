@@ -83,6 +83,13 @@ export class SafeUserSummaryComponent implements OnInit {
       });
   }
 
+  /**
+   * Modify the roles of an user
+   *
+   * @param event An object with the new data
+   * @param event.roles the array of updated roles
+   * @param event.application the id of an application, if the roles are associated with it
+   */
   onEditRoles(event: { roles: string[]; application?: string }): void {
     this.loading = true;
     this.apollo

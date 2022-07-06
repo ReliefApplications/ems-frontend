@@ -17,6 +17,7 @@ export class UserDetailsComponent implements OnInit {
 
   @Output() edit = new EventEmitter();
 
+  /** Setter for the loading state */
   @Input() set loading(loading: boolean) {
     if (loading) {
       this.form?.disable();
