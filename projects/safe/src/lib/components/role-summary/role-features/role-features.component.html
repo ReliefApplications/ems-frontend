@@ -1,3 +1,9 @@
-<safe-role-dashboards [pages]="dashboards"></safe-role-dashboards>
-<safe-role-forms [pages]="forms"></safe-role-forms>
-<safe-role-workflows [pages]="workflows"></safe-role-workflows>
+<safe-role-dashboards
+  *ngIf="dashboards.length > 0"
+  [pages]="dashboards"
+></safe-role-dashboards>
+<safe-role-forms *ngIf="forms.length > 0" [pages]="forms"></safe-role-forms>
+<safe-role-workflows
+  *ngIf="workflows.length > 0"
+  [pages]="workflows"
+></safe-role-workflows>

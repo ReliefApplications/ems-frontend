@@ -1,5 +1,5 @@
 <h2>Workflows</h2>
-<table mat-table [dataSource]="pages">
+<table mat-table [dataSource]="pages" multiTemplateDataRows>
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
       {{ 'common.name' | translate }}
@@ -9,11 +9,67 @@
 
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element">
-      <safe-button [isIcon]="true" icon="visibility" variant="primary"> </safe-button>
+    <td mat-cell *matCellDef="let element; let odd = odd">
+      <div style="display: flex">
+        <safe-button
+          [isIcon]="true"
+          [icon]="odd ? 'visibility' : 'visibility_off'"
+          [variant]="odd ? 'primary' : 'grey'"
+        >
+        </safe-button>
+        <safe-button
+          (click)="toggleWorkflow(element.id)"
+          [isIcon]="true"
+          [icon]="
+            openedWorkflowId === element.id
+              ? 'keyboard_arrow_up'
+              : 'keyboard_arrow_down'
+          "
+        >
+        </safe-button>
+      </div>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <td
+      mat-cell
+      *matCellDef="let element"
+      [attr.colspan]="displayedColumns.length"
+    >
+      <div
+        class="expanded-workflow"
+        [@detailExpand]="
+          element.id === openedWorkflowId ? 'expanded' : 'collapsed'
+        "
+      >
+        <table mat-table [dataSource]="pages">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'common.name' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element; let odd = odd">
+              <safe-button
+                [isIcon]="true"
+                [icon]="odd ? 'visibility' : 'visibility_off'"
+                [variant]="odd ? 'primary' : 'grey'"
+              >
+              </safe-button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+        </table>
+      </div>
     </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" style="height: 0;"></tr>
 </table>

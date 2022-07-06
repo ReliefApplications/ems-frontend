@@ -9,8 +9,13 @@
 
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element">
-      <safe-button [isIcon]="true" icon="visibility" variant="primary"> </safe-button>
+    <td mat-cell *matCellDef="let element; let odd = odd">
+      <safe-button
+        [isIcon]="true"
+        [icon]="odd ? 'visibility' : 'visibility_off'"
+        [variant]="odd ? 'primary' : 'grey'"
+      >
+      </safe-button>
     </td>
   </ng-container>
 
