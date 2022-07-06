@@ -113,7 +113,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     if (url !== '/') {
       this.editor.base_url = url.slice(0, -1) + '/tinymce';
     } else {
-      this.editor.base_url = '/tinymce'
+      this.editor.base_url = '/tinymce';
     }
     // Set the editor language
     const lang = this.translate.currentLang;

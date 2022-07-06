@@ -675,6 +675,12 @@
 				"lastName": "Last name",
 				"locationType": "Location type",
 				"region": "Region",
+				"roles": {
+					"application": "Application roles",
+					"backoffice": "Back-Office roles",
+					"selectedApplication": "Selected application",
+					"selectedRoles": "Selected roles"
+				},
 				"title": "Summary"
 			},
 			"update": {

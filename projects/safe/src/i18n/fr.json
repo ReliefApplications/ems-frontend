@@ -675,6 +675,12 @@
 				"lastName": "Nom",
 				"locationType": "Type de localisation",
 				"region": "Région",
+				"roles": {
+					"application": "Rôles d'application",
+					"backoffice": "Rôles de back-office",
+					"selectedApplication": "Application sélectionnée",
+					"selectedRoles": "Rôles sélectionnés"
+				},
 				"title": "Résumé"
 			},
 			"update": {
