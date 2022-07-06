@@ -676,6 +676,12 @@
 				"lastName": "******",
 				"locationType": "******",
 				"region": "******",
+				"roles": {
+					"application": "******",
+					"backoffice": "******",
+					"selectedApplication": "******",
+					"selectedRoles": "******"
+				},
 				"title": "******"
 			},
 			"update": {
@@ -707,7 +713,7 @@
 				"errors": {
 					"invalid": "******",
 					"missingDataset": "******",
-					"validationFailed": "****** {{index}} ****** {{question}} ****** {{error}}"
+					"validationFailed": "****** {{errors}} ******"
 				},
 				"export": {
 					"columns": {
@@ -738,6 +744,17 @@
 				},
 				"layout": {
 					"reset": "******"
+				},
+				"tooltip": {
+					"saved": "******",
+					"unsaved": "******",
+					"uploadFailed": "******"
+				},
+				"validation": {
+					"help": "******",
+					"questionTitle": "****** {{question}} ******",
+					"subtitle": "******",
+					"title": "****** {{record}}"
 				}
 			},
 			"settings": {

@@ -21,14 +21,26 @@ export const EDIT_RECORD = gql`
     $version: ID
     $template: ID
     $display: Boolean
+    $lang: String
   ) {
-    editRecord(id: $id, data: $data, version: $version, template: $template) {
+    editRecord(
+      id: $id
+      data: $data
+      version: $version
+      template: $template
+      lang: $lang
+    ) {
       id
+      incrementalId
       data(display: $display)
       createdAt
       modifiedAt
       createdBy {
         name
+      }
+      validationErrors {
+        question
+        errors
       }
     }
   }
@@ -44,8 +56,13 @@ export interface EditRecordMutationResponse {
 
 /** Graphql request for editing multiple records by their ids */
 export const EDIT_RECORDS = gql`
-  mutation editRecords($ids: [ID]!, $data: JSON!, $template: ID) {
-    editRecords(ids: $ids, data: $data, template: $template) {
+  mutation editRecords(
+    $ids: [ID]!
+    $data: JSON!
+    $template: ID
+    $lang: String
+  ) {
+    editRecords(ids: $ids, data: $data, template: $template, lang: $lang) {
       id
       data
       createdAt
