@@ -9,7 +9,6 @@
         [user]="user"
         (edit)="onEditProfile($event)"
         [loading]="loading"
-        [editable]="!application"
       ></safe-user-details>
       <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
