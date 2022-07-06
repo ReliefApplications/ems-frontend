@@ -65,6 +65,7 @@ export interface GetChannelsQueryResponse {
   channels: Channel[];
 }
 
+/** Graphql request for getting the features of an application by its id */
 export const GET_APPLICATION_FEATURES = gql`
   query getApplicationFeatures($id: ID!) {
     application(id: $id) {
@@ -84,10 +85,12 @@ export const GET_APPLICATION_FEATURES = gql`
   }
 `;
 
+/** Model for the response of the getApplicationFeatures query */
 export interface GetApplicationFeaturesQueryResponse {
   application: Application;
 }
 
+/** Graphql request for getting the steps of a workflow by its id */
 export const GET_WORKFLOW_STEPS = gql`
   query getWorkflowSteps($id: ID!) {
     workflow(id: $id) {
@@ -107,6 +110,7 @@ export const GET_WORKFLOW_STEPS = gql`
   }
 `;
 
+/** Model for the response of the getWorkflowSteps query */
 export interface GetWorkflowStepsQueryResponse {
   workflow: Workflow;
 }

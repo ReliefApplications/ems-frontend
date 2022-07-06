@@ -27,6 +27,7 @@ import {
   EDIT_STEP_ACCESS,
 } from '../../graphql/mutations';
 
+/** Component for the workflows section of the roles features */
 @Component({
   selector: 'safe-role-workflows',
   templateUrl: './role-workflows.component.html',
@@ -56,6 +57,11 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
   public openedWorkflowId = '';
   public accessiblePages: string[] = [];
 
+  /**
+   * Component for the workflows section of the roles features
+   *
+   * @param apollo Apollo service
+   */
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
@@ -78,6 +84,11 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
       .map((x) => x.id as string);
   }
 
+  /**
+   * Toggles the accordion for the clicled workflow and fetches its steps
+   *
+   * @param page The Page element for the workflow to be toggled
+   */
   toggleWorkflow(page: Page): void {
     this.steps = [];
     if (page.id === this.openedWorkflowId) {
@@ -106,6 +117,11 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Edits the permissions for a given workflow step
+   *
+   * @param step A step object
+   */
   onEditStepAccess(step: Step): void {
     this.loading = true;
     let canSeePermissions = get(step, 'permissions.canSee', []).map(
@@ -148,7 +164,11 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
         this.loading = res.loading;
       });
   }
-
+  /**
+   * Emits an event with the changes in permission for a given workflow page
+   *
+   * @param page A dashboard page object
+   */
   onEditAccess(page: Page): void {
     const canSeePermissions = get(page, 'permissions.canSee', []).map(
       (x: any) => x.id as string

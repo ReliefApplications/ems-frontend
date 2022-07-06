@@ -650,6 +650,7 @@
 				"title": "Choix du rôle à simuler"
 			},
 			"summary": {
+				"empty": "Vide",
 				"features": "Fonctionnalités",
 				"title": "Résumé"
 			},

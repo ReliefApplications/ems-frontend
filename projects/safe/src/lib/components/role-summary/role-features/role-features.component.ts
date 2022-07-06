@@ -34,6 +34,8 @@ export class RoleFeaturesComponent implements OnInit {
   /**
    * Features tab of Role Summary component.
    * Visible only in applications.
+   *
+   * @param apollo Apollo service
    */
   constructor(private apollo: Apollo) {}
 
@@ -60,6 +62,12 @@ export class RoleFeaturesComponent implements OnInit {
       });
   }
 
+  /**
+   * Edits the specified page with given permissions
+   * and updates the correspondent array
+   *
+   * @param e Object with page id and array of permissions to be applied
+   */
   onEditAccess(e: any): void {
     this.loading = true;
     this.apollo

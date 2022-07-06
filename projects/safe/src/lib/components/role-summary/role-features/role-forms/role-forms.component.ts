@@ -10,6 +10,7 @@ import { Role } from '../../../../models/user.model';
 import { Page } from '../../../../models/page.model';
 import { get } from 'lodash';
 
+/** Component for the forms section of the roles features */
 @Component({
   selector: 'safe-role-forms',
   templateUrl: './role-forms.component.html',
@@ -24,8 +25,6 @@ export class RoleFormsComponent implements OnInit, OnChanges {
 
   public displayedColumns = ['name', 'actions'];
   public accessiblePages: string[] = [];
-
-  constructor() {}
 
   ngOnInit(): void {
     this.accessiblePages = this.pages
@@ -47,6 +46,11 @@ export class RoleFormsComponent implements OnInit, OnChanges {
       .map((x) => x.id as string);
   }
 
+  /**
+   * Emits an event with the changes in permission for a given form page
+   *
+   * @param page A dashboard page object
+   */
   onEditAccess(page: Page): void {
     const canSeePermissions = get(page, 'permissions.canSee', []).map(
       (x: any) => x.id as string

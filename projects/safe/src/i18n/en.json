@@ -650,6 +650,7 @@
 				"title": "Choose role to simulate"
 			},
 			"summary": {
+				"empty": "Empty",
 				"features": "Features",
 				"title": "Summary"
 			},
