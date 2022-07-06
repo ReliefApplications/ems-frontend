@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 import { User } from '../../../models/user.model';
 
-/** Graphql request for editing the user profile */
+/** Edit User profile mutation */
 export const EDIT_USER_PROFILE = gql`
   mutation editUserProfile($profile: UserProfileInputType!, $id: ID!) {
     editUserProfile(profile: $profile, id: $id) {
@@ -22,8 +22,35 @@ export const EDIT_USER_PROFILE = gql`
   }
 `;
 
-/** Model for EditUserProfileMutationResponse object */
+/** Interface of Edit User Profile mutation */
 export interface EditUserProfileMutationResponse {
   loading: boolean;
   editUserProfile: User;
+}
+
+/** Edit User roles Mutation */
+export const EDIT_USER_ROLES = gql`
+  mutation editUser($id: ID!, $roles: [ID]!, $application: ID) {
+    editUser(id: $id, roles: $roles, application: $application) {
+      id
+      username
+      name
+      firstName
+      lastName
+      roles {
+        id
+        title
+        application {
+          id
+        }
+      }
+      oid
+    }
+  }
+`;
+
+/** Interface of Edit User Roles mutation */
+export interface EditUserRolesMutationResponse {
+  loading: boolean;
+  editUser: User;
 }

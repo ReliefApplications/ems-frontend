@@ -38,15 +38,14 @@ import {
 } from '../../../graphql/mutations';
 import {
   GetFormByIdQueryResponse,
-  GetRecordDetailsQueryResponse,
   GET_FORM_BY_ID,
-  GET_RECORD_DETAILS,
 } from '../../../graphql/queries';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
+import { Record } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
@@ -55,7 +54,8 @@ import { SafeGridService } from '../../../services/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
 import { TranslateService } from '@ngx-translate/core';
-import * as Survey from 'survey-angular';
+import { SafeDatePipe } from '../../../pipes/date/date.pipe';
+import { SafeDateTranslateService } from '../../../services/date-translate.service';
 
 /**
  * Default file name when exporting grid data.
@@ -255,6 +255,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param authService Shared authentication service
    * @param gridService Shared grid service
    * @param translate Angular translate service
+   * @param dateTranslate Shared date translate service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -266,7 +267,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private gridService: SafeGridService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dateTranslate: SafeDateTranslateService
   ) {
     this.apiUrl = environment.apiUrl;
     this.isAdmin =
@@ -278,6 +280,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Detects changes of the settings to (re)load the data.
+   *
+   * @param changes The changes on the component
    */
   ngOnChanges(changes?: SimpleChanges): void {
     if (changes?.settings) {
@@ -285,6 +289,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Configure the grid
+   */
   public configureGrid(): void {
     // define row actions
     this.actions = {
@@ -438,6 +445,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.items.find((x) => x.id === item.id),
       value
     );
+    item.saved = false;
     this.loadItems();
   }
 
@@ -446,50 +454,61 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   public onSaveChanges(): void {
     if (this.hasChanges) {
-      let hasError = false;
-      let error = '';
-      let questionWithError = '';
-      let index = -1;
-      const survey = new Survey.Model(this.templateStructure);
-      survey.locale = this.translate.currentLang;
-      for (const item of this.updatedItems) {
-        survey.data = item;
-        survey.completeLastPage();
-        if (survey.hasErrors()) {
-          hasError = true;
-          const questions = survey.getAllQuestions();
-          for (const question of questions) {
-            if (question.hasErrors()) {
-              index = this.items.findIndex((x) => x.id === item.id);
-              questionWithError = question.name;
-              error = question.getAllErrors()[0].getText();
-              break;
-            }
-          }
-          if (error) {
-            break;
+      for (const item of this.items) {
+        delete item.saved;
+      }
+      Promise.all(this.promisedChanges()).then((allRes) => {
+        for (const res of allRes) {
+          const resRecord: Record = res.data.editRecord;
+          const updatedIndex = this.updatedItems.findIndex(
+            (x) => x.id === resRecord.id
+          );
+          const item = this.items.find((x) => x.id === resRecord.id);
+          if (resRecord?.validationErrors?.length) {
+            // if the item has an error, save the error with the item object
+            this.updatedItems[updatedIndex].incrementalId =
+              resRecord.incrementalId;
+            this.updatedItems[updatedIndex].validationErrors =
+              resRecord.validationErrors;
+            item.incrementalId = resRecord.incrementalId;
+            item.validationErrors = resRecord.validationErrors;
+          } else {
+            // if no errors, the item has been saved in the database
+            // remove the item from updatedItems list
+            this.updatedItems.splice(updatedIndex, 1);
+            // save the new value of the item in the originalItems list
+            const originalIndex = this.originalItems.findIndex(
+              (x) => x.id === resRecord.id
+            );
+            this.originalItems[originalIndex] = item;
+            // add a property to indicate the item is saved
+            item.saved = true;
           }
         }
-      }
-      if (!hasError) {
-        Promise.all(this.promisedChanges()).then(() => this.reloadData());
-      } else {
-        // Open snackbar to indicate the error
-        this.snackBar.openSnackBar(
-          this.translate.instant(
-            'components.widget.grid.errors.validationFailed',
+        // the items still in the updatedItems list are the ones with errors
+        if (this.updatedItems.length) {
+          // show an error message
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'components.widget.grid.errors.validationFailed',
+              {
+                errors: this.updatedItems
+                  .map((item) => `- ${item.incrementalId}`)
+                  .join('\n'),
+              }
+            ),
             {
-              index,
-              question: questionWithError,
-              error,
+              error: true,
+              duration: 8000,
             }
-          ),
-          {
-            error: true,
-            duration: 8000,
-          }
-        );
-      }
+          );
+          // update the displayed items
+          this.loadItems();
+        } else {
+          // if no error, reload the grid
+          this.reloadData();
+        }
+      });
     }
   }
 
@@ -515,16 +534,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       delete data.id;
       for (const field of this.fields) {
         if (field.type === 'Time') {
-          const time = data[field.name]
-            .toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-            .split(/:| /);
-          if (
-            (time[2] === 'PM' && time[0] !== '12') ||
-            (time[2] === 'AM' && time[0] === '12')
-          ) {
-            time[0] = (parseInt(time[0], 10) + 12).toString();
-          }
-          data[field.name] = time[0] + ':' + time[1];
+          data[field.name] = data[field.name].toLocaleTimeString('en', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hourCycle: 'h24',
+          });
         }
       }
       promises.push(
@@ -535,6 +549,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               id: item.id,
               data,
               template: this.settings.template,
+              lang: this.translate.currentLang,
             },
           })
           .toPromise()
@@ -570,6 +585,15 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
               this.loadItems();
+              for (const updatedItem of this.updatedItems) {
+                const item: any = this.items.find(
+                  (x) => x.id === updatedItem.id
+                );
+                if (item) {
+                  Object.assign(item, updatedItem);
+                  item.saved = false;
+                }
+              }
               // if (!this.readOnly) {
               //   this.initSelectedRows();
               // }
@@ -600,9 +624,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * Reloads data and unselect all rows.
    */
   public reloadData(): void {
+    // TODO = check what to do there
     this.onPageChange({ skip: 0, take: this.pageSize });
     this.selectedRows = [];
-    this.updatedItems = [];
+    // this.updatedItems = [];
   }
 
   // === SELECTION ===
@@ -817,9 +842,19 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
+        this.validateRecords(ids);
         this.reloadData();
       }
     });
+  }
+
+  /**
+   * Remove elements from the list of updated items
+   *
+   * @param ids list of item ids
+   */
+  private validateRecords(ids: string[]): void {
+    this.updatedItems = this.updatedItems.filter((x) => !ids.includes(x.id));
   }
 
   /**
@@ -935,9 +970,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
     const date = new Date(parseInt(version.createdAt, 0));
-    const formatDate = `${date.getDate()}/${
-      date.getMonth() + 1
-    }/${date.getFullYear()}`;
+    const formatDate = new SafeDatePipe(this.dateTranslate).transform(
+      date,
+      'shortDate'
+    );
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: this.translate.instant('components.record.recovery.title'),

@@ -11,6 +11,7 @@ import { setContext } from '@apollo/client/link/context';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { environment } from '../environments/environment';
+import extractFiles from 'extract-files/extractFiles.mjs';
 
 /**
  * Configuration of the Apollo client.
@@ -37,7 +38,10 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
     };
   });
 
-  const http = httpLink.create({ uri: `${environment.apiUrl}/graphql` });
+  const http = httpLink.create({
+    uri: `${environment.apiUrl}/graphql`,
+    extractFiles,
+  });
 
   const ws = new WebSocketLink({
     uri: `${environment.subscriptionApiUrl}/graphql`,

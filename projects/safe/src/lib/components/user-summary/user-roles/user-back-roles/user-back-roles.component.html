@@ -1,0 +1,13 @@
+<div class="form-group">
+  <h2>{{ 'components.user.summary.roles.backoffice' | translate }}</h2>
+  <mat-form-field appearance="outline">
+    <mat-label>
+      {{ 'components.user.summary.roles.selectedRoles' | translate }}</mat-label
+    >
+    <mat-select [formControl]="selectedRoles" multiple>
+      <mat-option *ngFor="let role of roles" [value]="role.id">
+        {{ role.title }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

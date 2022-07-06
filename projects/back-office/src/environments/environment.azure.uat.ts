@@ -1,6 +1,9 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default/default.uat';
 
+/**
+ * Authentification configuration
+ */
 const authConfig: AuthConfig = {
   issuer:
     'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/v2.0',
@@ -13,6 +16,9 @@ const authConfig: AuthConfig = {
   strictDiscoveryDocumentValidation: false,
 };
 
+/**
+ * Environment file for local development.
+ */
 export const environment = {
   production: true,
   apiUrl: 'https://ems-safe-test.who.int/api',

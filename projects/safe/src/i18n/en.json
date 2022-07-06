@@ -675,6 +675,12 @@
 				"lastName": "Last name",
 				"locationType": "Location type",
 				"region": "Region",
+				"roles": {
+					"application": "Application roles",
+					"backoffice": "Back-Office roles",
+					"selectedApplication": "Selected application",
+					"selectedRoles": "Selected roles"
+				},
 				"title": "Summary"
 			},
 			"update": {
@@ -706,7 +712,7 @@
 				"errors": {
 					"invalid": "Invalid grid configuration",
 					"missingDataset": "Select a dataset in settings",
-					"validationFailed": "Unable to save records due to row {{index}} validation error\n{{question}}: {{error}}"
+					"validationFailed": "The following records could not be saved due to validation rules:\n{{errors}}\nPlease edit the record using the 'update' button for more details."
 				},
 				"export": {
 					"columns": {
@@ -737,6 +743,17 @@
 				},
 				"layout": {
 					"reset": "Reset default Layout"
+				},
+				"tooltip": {
+					"saved": "Changes saved",
+					"unsaved": "Click on save button to upload changes",
+					"uploadFailed": "Record not saved. Click to see more details"
+				},
+				"validation": {
+					"help": "Please edit the record using the 'update' button for more details.",
+					"questionTitle": "Errors on field {{question}}:",
+					"subtitle": "These errors where found while saving changes:",
+					"title": "Validation failed for record {{record}}"
 				}
 			},
 			"settings": {
@@ -1147,6 +1164,12 @@
 			},
 			"scheduler": {
 				"defaultTitle": "Scheduler Widget"
+			},
+			"tooltip": {
+				"selector": {
+					"collapse": "Hide widget selector",
+					"expand": "Show widget selector"
+				}
 			}
 		},
 		"workflow": {
