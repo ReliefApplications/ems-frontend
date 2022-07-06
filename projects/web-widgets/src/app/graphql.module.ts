@@ -11,7 +11,7 @@ import { setContext } from '@apollo/client/link/context';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { environment } from '../environments/environment';
-import extractFiles from 'extract-files/extractFiles.mjs';
+import { extractFiles } from 'extract-files';
 
 /**
  * Configuration of the Apollo client.
