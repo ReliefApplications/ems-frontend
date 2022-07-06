@@ -1,4 +1,5 @@
 import { gql } from 'apollo-angular';
+import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { Permission, Role } from '../../../models/user.model';
 
@@ -61,4 +62,27 @@ export const GET_CHANNELS = gql`
 export interface GetChannelsQueryResponse {
   loading: boolean;
   channels: Channel[];
+}
+
+export const GET_APPLICATION_FEATURES = gql`
+  query getApplicationFeatures($id: ID!) {
+    application(id: $id) {
+      id
+      pages {
+        id
+        name
+        type
+        content
+        permissions {
+          canSee {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
+export interface GetApplicationFeaturesQueryResponse {
+  application: Application;
 }

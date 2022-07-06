@@ -1,4 +1,12 @@
 .expanded-workflow {
   overflow: hidden;
   display: flex;
+
+  table {
+    margin: 16px 0;
+  }
+}
+
+.mat-column-expandedDetail {
+  background-color: rgba(0, 0, 0, 0.05);
 }

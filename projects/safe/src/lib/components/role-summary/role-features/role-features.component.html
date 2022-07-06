@@ -1,9 +1,21 @@
 <safe-role-dashboards
   *ngIf="dashboards.length > 0"
+  [role]="role"
   [pages]="dashboards"
+  [loading]="loading"
+  (edit)="onEditAccess($event)"
 ></safe-role-dashboards>
-<safe-role-forms *ngIf="forms.length > 0" [pages]="forms"></safe-role-forms>
+<safe-role-forms
+  *ngIf="forms.length > 0"
+  [role]="role"
+  [pages]="forms"
+  [loading]="loading"
+  (edit)="onEditAccess($event)"
+></safe-role-forms>
 <safe-role-workflows
   *ngIf="workflows.length > 0"
+  [role]="role"
   [pages]="workflows"
+  [loading]="loading"
+  (edit)="onEditAccess($event)"
 ></safe-role-workflows>
