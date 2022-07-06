@@ -8,9 +8,8 @@ describe('SafeRoleSummaryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeRoleSummaryComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeRoleSummaryComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
