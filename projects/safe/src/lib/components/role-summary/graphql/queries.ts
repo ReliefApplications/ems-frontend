@@ -1,6 +1,8 @@
 import { gql } from 'apollo-angular';
+import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { Permission, Role } from '../../../models/user.model';
+import { Workflow } from '../../../models/workflow.model';
 
 /** Get role by id GraphQL query */
 export const GET_ROLE = gql`
@@ -61,4 +63,54 @@ export const GET_CHANNELS = gql`
 export interface GetChannelsQueryResponse {
   loading: boolean;
   channels: Channel[];
+}
+
+/** Graphql request for getting the features of an application by its id */
+export const GET_APPLICATION_FEATURES = gql`
+  query getApplicationFeatures($id: ID!) {
+    application(id: $id) {
+      id
+      pages {
+        id
+        name
+        type
+        content
+        permissions {
+          canSee {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
+/** Model for the response of the getApplicationFeatures query */
+export interface GetApplicationFeaturesQueryResponse {
+  application: Application;
+}
+
+/** Graphql request for getting the steps of a workflow by its id */
+export const GET_WORKFLOW_STEPS = gql`
+  query getWorkflowSteps($id: ID!) {
+    workflow(id: $id) {
+      id
+      steps {
+        id
+        name
+        type
+        content
+        permissions {
+          canSee {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
+/** Model for the response of the getWorkflowSteps query */
+export interface GetWorkflowStepsQueryResponse {
+  workflow: Workflow;
 }

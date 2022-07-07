@@ -9,6 +9,7 @@ import {
   EDIT_USER_ROLES,
 } from './graphql/mutations';
 import { GetUserQueryResponse, GET_USER } from './graphql/queries';
+import { SafeSnackBarService } from '../../services/snackbar.service';
 
 /**
  * User Summary shared component.
@@ -41,8 +42,9 @@ export class SafeUserSummaryComponent implements OnInit {
    * User Summary shared component.
    *
    * @param apollo Apollo client
+   * @param snackBar Shared snackbar service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
 
   ngOnInit(): void {
     this.apollo
@@ -52,12 +54,17 @@ export class SafeUserSummaryComponent implements OnInit {
           id: this.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.user = res.data.user;
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.user = res.data.user;
+          }
+          this.loading = res.data.loading;
+        },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
         }
-        this.loading = res.data.loading;
-      });
+      );
   }
 
   /**
@@ -75,12 +82,17 @@ export class SafeUserSummaryComponent implements OnInit {
           id: this.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.user = res.data.editUserProfile;
-          this.loading = res.loading;
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.user = res.data.editUserProfile;
+            this.loading = res.loading;
+          }
+        },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
         }
-      });
+      );
   }
 
   /**
@@ -101,11 +113,16 @@ export class SafeUserSummaryComponent implements OnInit {
           application: event.application,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.user = res.data.editUser;
-          this.loading = res.loading;
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.user = res.data.editUser;
+            this.loading = res.loading;
+          }
+        },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
         }
-      });
+      );
   }
 }
