@@ -23,7 +23,7 @@ const authConfig: AuthConfig = {
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
-  showDebugInformation: true,
+  showDebugInformation: false,
 };
 
 /**

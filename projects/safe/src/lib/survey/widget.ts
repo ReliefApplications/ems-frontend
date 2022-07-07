@@ -98,21 +98,15 @@ export const init = (
       });
 
       serializer.addProperty('selectbase', {
-        name: 'referenceDataDisplayField',
         displayName: 'Display field',
+        name: 'referenceDataDisplayField',
         category: 'Choices from Reference data',
         required: true,
         dependsOn: 'referenceData',
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.referenceData) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: (obj: any): boolean => obj?.referenceData,
         visibleIndex: 2,
         choices: (obj: any, choicesCallback: any) => {
-          if (obj.referenceData) {
+          if (obj?.referenceData) {
             referenceDataService
               .loadReferenceData(obj.referenceData)
               .then((referenceData) =>
@@ -120,6 +114,51 @@ export const init = (
               );
           }
         },
+      });
+
+      serializer.addProperty('selectbase', {
+        displayName: 'Filter from question',
+        name: 'referenceDataFilterFilterFromQuestion:question_selectbase',
+        category: 'Choices from Reference data',
+        dependsOn: 'referenceData',
+        visibleIf: (obj: any): boolean => obj?.referenceData,
+        visibleIndex: 3,
+      });
+
+      serializer.addProperty('selectbase', {
+        displayName: 'Foreign field',
+        name: 'referenceDataFilterForeignField',
+        category: 'Choices from Reference data',
+        required: true,
+        dependsOn: 'referenceDataFilterFilterFromQuestion',
+        visibleIf: (obj: any): boolean =>
+          obj?.referenceDataFilterFilterFromQuestion,
+        visibleIndex: 4,
+        choices: [1, 2, 3],
+      });
+
+      serializer.addProperty('selectbase', {
+        displayName: 'Filter condition',
+        name: 'referenceDataFilterFilterCondition',
+        category: 'Choices from Reference data',
+        required: true,
+        dependsOn: 'referenceDataFilterFilterFromQuestion',
+        visibleIf: (obj: any): boolean =>
+          obj?.referenceDataFilterFilterFromQuestion,
+        visibleIndex: 5,
+        choices: [1, 2, 3],
+      });
+
+      serializer.addProperty('selectbase', {
+        displayName: 'Foreign field',
+        name: 'referenceDataForeignField',
+        category: 'Choices from Reference data',
+        required: true,
+        dependsOn: 'referenceDataFilterFilterFromQuestion',
+        visibleIf: (obj: any): boolean =>
+          obj?.referenceDataFilterFilterFromQuestion,
+        visibleIndex: 6,
+        choices: [1, 2, 3],
       });
 
       const referenceDataEditor = {
