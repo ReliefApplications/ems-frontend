@@ -26,6 +26,12 @@ export class SafeSkeletonDirective implements OnChanges {
 
   private factory = this.resolver.resolveComponentFactory(SkeletonComponent);
 
+  /**
+   *
+   * @param tpl
+   * @param vcr
+   * @param resolver
+   */
   constructor(
     private tpl: TemplateRef<any>,
     private vcr: ViewContainerRef,

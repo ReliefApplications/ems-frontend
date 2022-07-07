@@ -32,6 +32,9 @@ import { scrollFactory } from '../../../utils/scroll-factory';
 import { Resource } from '../../../models/resource.model';
 import get from 'lodash/get';
 
+/**
+ *
+ */
 const DEFAULT_ACTION_NAME = 'Action';
 
 /**

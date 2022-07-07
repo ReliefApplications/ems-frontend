@@ -5,18 +5,25 @@ import {
   WIDGET_EDITOR_CONFIG,
 } from '../../../../../const/tinymce.const';
 
+/**
+ *
+ */
 @Component({
   selector: 'safe-text-editor-tab',
   templateUrl: './text-editor-tab.component.html',
-  styleUrls: ['./text-editor-tab.component.scss']
+  styleUrls: ['./text-editor-tab.component.scss'],
 })
 export class SafeTextEditorTabComponent implements OnInit {
-
   @Input() form: any;
 
   /** tinymce editor */
   public editor: any = WIDGET_EDITOR_CONFIG;
 
+  /**
+   *
+   * @param environment
+   * @param translate
+   */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService
@@ -31,7 +38,7 @@ export class SafeTextEditorTabComponent implements OnInit {
     if (url !== '/') {
       this.editor.base_url = url.slice(0, -1) + '/tinymce';
     } else {
-      this.editor.base_url = '/tinymce'
+      this.editor.base_url = '/tinymce';
     }
     // Set the editor language
     const lang = this.translate.currentLang;
@@ -43,7 +50,5 @@ export class SafeTextEditorTabComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

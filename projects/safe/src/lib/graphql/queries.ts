@@ -1013,6 +1013,9 @@ export interface GetResourceRecordsQueryResponse {
 }
 
 // === GET REFERENCE DATAS ===
+/**
+ *
+ */
 export const GET_REFERENCE_DATAS = gql`
   query GetReferenceDatas($first: Int, $afterCursor: ID) {
     referenceDatas(first: $first, afterCursor: $afterCursor) {
@@ -1032,6 +1035,9 @@ export const GET_REFERENCE_DATAS = gql`
   }
 `;
 
+/**
+ *
+ */
 export interface GetReferenceDatasQueryResponse {
   loading: boolean;
   referenceDatas: {
@@ -1047,6 +1053,9 @@ export interface GetReferenceDatasQueryResponse {
   };
 }
 
+/**
+ *
+ */
 export const GET_REFERENCE_DATA_BY_ID = gql`
   query GetShortReferenceDataById($id: ID!) {
     referenceData(id: $id) {
@@ -1068,6 +1077,9 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
   }
 `;
 
+/**
+ *
+ */
 export const GET_SHORT_REFERENCE_DATA_BY_ID = gql`
   query GetShortReferenceDataById($id: ID!) {
     referenceData(id: $id) {
@@ -1077,11 +1089,17 @@ export const GET_SHORT_REFERENCE_DATA_BY_ID = gql`
   }
 `;
 
+/**
+ *
+ */
 export interface GetReferenceDataByIdQueryResponse {
   loading: boolean;
   referenceData: ReferenceData;
 }
 
+/**
+ *
+ */
 export const GET_RECORD_HISTORY_BY_ID = gql`
   query GetRecordHistoryByID($id: ID!, $lang: String) {
     recordHistory(id: $id, lang: $lang) {
@@ -1103,6 +1121,9 @@ export const GET_RECORD_HISTORY_BY_ID = gql`
   }
 `;
 
+/**
+ *
+ */
 export interface GetRecordHistoryByIdResponse {
   loading: boolean;
   recordHistory: RecordHistory;

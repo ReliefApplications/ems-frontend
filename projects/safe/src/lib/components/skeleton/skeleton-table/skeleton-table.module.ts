@@ -13,6 +13,9 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
+/**
+ *
+ */
 @NgModule({
   declarations: [SafeSkeletonTableComponent],
   imports: [

@@ -20,6 +20,10 @@ export default {
   title: 'UI/Controls/Palette',
 } as Meta;
 
+/**
+ *
+ * @param args
+ */
 const TEMPLATE: Story<SafePaletteControlComponent> = (args) => ({
   // template:
   //   '<safe-palette-control [formControl]="palette"></safe-palette-control>',
@@ -29,6 +33,9 @@ const TEMPLATE: Story<SafePaletteControlComponent> = (args) => ({
   },
 });
 
+/**
+ *
+ */
 const COLORS = [
   '#FF8C00',
   '#B0C4DE',
@@ -42,12 +49,18 @@ const COLORS = [
   '#FF0000',
 ];
 
+/**
+ *
+ */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.args = {
   formControl: new FormControl(COLORS),
   colors: COLORS,
 };
 
+/**
+ *
+ */
 export const DISABLED = TEMPLATE.bind({});
 DISABLED.args = {
   formControl: new FormControl({ value: COLORS, disabled: true }),

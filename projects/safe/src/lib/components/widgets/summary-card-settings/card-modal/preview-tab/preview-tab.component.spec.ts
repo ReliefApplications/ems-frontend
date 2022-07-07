@@ -8,9 +8,8 @@ describe('PreviewTabComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PreviewTabComponent ]
-    })
-    .compileComponents();
+      declarations: [PreviewTabComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

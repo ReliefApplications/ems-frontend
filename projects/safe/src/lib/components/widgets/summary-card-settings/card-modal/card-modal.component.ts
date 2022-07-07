@@ -1,7 +1,21 @@
-import { Component, Input, OnInit, Inject, ChangeDetectorRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Inject,
+  ChangeDetectorRef,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { Apollo } from 'apollo-angular';
+import {
+  GET_GRID_RESOURCE_META,
+  GetResourceByIdQueryResponse,
+  GET_GRID_FORM_META,
+  GetFormByIdQueryResponse,
+} from '../../../../graphql/queries';
 
 /**
  * Card modal component.
@@ -12,11 +26,14 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
   templateUrl: './card-modal.component.html',
   styleUrls: ['./card-modal.component.scss'],
 })
-export class SafeCardModalComponent implements OnInit {
-
+export class SafeCardModalComponent implements OnInit, AfterViewInit {
   @ViewChild('tabGroup') tabGroup: any;
 
   private activeTabIndex: number | undefined;
+
+  public dataset: any;
+
+  public gridSettings: any;
 
   public form: any;
 
@@ -27,12 +44,15 @@ export class SafeCardModalComponent implements OnInit {
    * @param dialogRef Material Dialog Ref of the component
    * @param fb Angular form builder
    * @param data dialog data
+   * @param cdRef
+   * @param apollo
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<SafeCardModalComponent>,
     public fb: FormBuilder,
     private cdRef: ChangeDetectorRef,
+    private apollo: Apollo
   ) {}
 
   /**
@@ -45,7 +65,51 @@ export class SafeCardModalComponent implements OnInit {
     });
     this.form.patchValue({ layout: this.data.layout ? this.data.layout : [] });
 
-    console.log(this.form);
+    this.form.controls.resource.valueChanges.subscribe((value: any) => {
+      this.apollo
+        .query<GetResourceByIdQueryResponse>({
+          query: GET_GRID_RESOURCE_META,
+          variables: {
+            resource: value.resource.id,
+          },
+        })
+        .subscribe((res2) => {
+          if (res2.errors) {
+            this.apollo
+              .query<GetFormByIdQueryResponse>({
+                query: GET_GRID_FORM_META,
+                variables: {
+                  id: value.resource.id,
+                },
+              })
+              .subscribe((res3) => {
+                if (res3.errors) {
+                  this.dataset = null;
+                } else {
+                  this.dataset = null;
+                }
+              });
+          } else {
+            this.dataset = res2.data.resource;
+            this.gridSettings = this.findLayout(
+              this.dataset.layouts,
+              this.form.value.layout[0]
+            );
+            if (!this.gridSettings) {
+              this.form.patchValue({
+                layout: [],
+                record: null,
+              });
+            }
+          }
+        });
+    });
+
+    this.form.controls.layout.valueChanges.subscribe((value: any) => {
+      if (this.dataset) {
+        this.gridSettings = this.findLayout(this.dataset.layouts, value[0]);
+      }
+    });
   }
 
   /**
@@ -86,5 +150,21 @@ export class SafeCardModalComponent implements OnInit {
   ngAfterViewInit() {
     this.activeTabIndex = this.tabGroup.selectedIndex;
     this.cdRef.detectChanges();
+  }
+
+  /**
+   *
+   * @param layouts
+   * @param layoutToFind
+   * @returns
+   */
+  private findLayout(layouts: any[], layoutToFind: string): any {
+    let result = null;
+    layouts.map((layout: any) => {
+      if (layout.id === layoutToFind) {
+        result = layout;
+      }
+    });
+    return result;
   }
 }

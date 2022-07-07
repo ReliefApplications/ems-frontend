@@ -13,7 +13,7 @@ import { SafeTextEditorTabComponent } from './text-editor-tab.component';
     TranslateModule,
     EditorModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
   ],
   exports: [SafeTextEditorTabComponent],
   providers: [

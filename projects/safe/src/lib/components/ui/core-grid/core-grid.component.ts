@@ -274,11 +274,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // === COMPONENT LIFECYCLE ===
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   /**
    * Detects changes of the settings to (re)load the data.
+   *
+   * @param changes
    */
   ngOnChanges(changes?: SimpleChanges): void {
     if (changes?.settings) {
@@ -286,6 +287,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   *
+   */
   public configureGrid(): void {
     // define row actions
     this.actions = {

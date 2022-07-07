@@ -6,10 +6,7 @@ import { SafePreviewTabComponent } from './preview-tab.component';
 /** Data Source Module */
 @NgModule({
   declarations: [SafePreviewTabComponent],
-  imports: [
-    CommonModule,
-    TranslateModule,
-  ],
+  imports: [CommonModule, TranslateModule],
   exports: [SafePreviewTabComponent],
 })
 export class SafePreviewTabModule {}

@@ -24,9 +24,18 @@
   (scrolled)="onScrollDataSource($event)"
   ></safe-forms-dropdown> -->
 
+  <mat-form-field [formGroup]='form' fxFlex>
+    <mat-label>Job Type</mat-label>
+    <mat-select formControlName="resource" placeholder="Select a dataset">
+      <mat-option *ngFor="let resource of forms" [value]="resource">
+        {{ resource.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
   <safe-layouts
   [form]="null"
-  [resource]="$any(form).get('dataset').value"
+  [resource]="dataset"
   [selectedLayouts]="$any(form).get('layout')"
   [singleInput] = true
   ></safe-layouts>

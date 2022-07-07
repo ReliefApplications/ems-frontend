@@ -13,14 +13,31 @@ import {
 } from '../graphql/queries';
 import { SafeApiProxyService } from './api-proxy.service';
 
+/**
+ *
+ */
 const LAST_MODIFIED_KEY = '_last_modified';
+/**
+ *
+ */
 const LAST_REQUEST_KEY = '_last_request';
+/**
+ *
+ */
 const LAST_UPDATE_CODE = '$$LAST_UPDATE';
 
+/**
+ *
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class SafeReferenceDataService {
+  /**
+   *
+   * @param apollo
+   * @param apiProxy
+   */
   constructor(private apollo: Apollo, private apiProxy: SafeApiProxyService) {}
 
   /**

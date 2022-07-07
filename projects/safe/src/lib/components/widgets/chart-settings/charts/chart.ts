@@ -5,6 +5,9 @@ import {
   createMappingForm,
 } from '../../../ui/aggregation-builder/aggregation-builder-forms';
 
+/**
+ *
+ */
 const DEFAULT_PALETTE = [
   '#ff6358',
   '#ffd246',

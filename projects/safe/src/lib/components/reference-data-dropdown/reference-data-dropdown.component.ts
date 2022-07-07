@@ -56,6 +56,10 @@ export class SafeReferenceDataDropdownComponent implements OnInit {
 
   @ViewChild('referenceDataSelect') referenceDataSelect?: MatSelect;
 
+  /**
+   *
+   * @param apollo
+   */
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {

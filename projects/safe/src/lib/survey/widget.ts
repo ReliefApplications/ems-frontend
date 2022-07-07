@@ -19,6 +19,9 @@ import {
   TimePickerComponent,
 } from '@progress/kendo-angular-dateinputs';
 
+/**
+ *
+ */
 const SELECTABLE_TYPES = ['dropdown', 'checkbox', 'radiogroup', 'tagbox'];
 
 /**

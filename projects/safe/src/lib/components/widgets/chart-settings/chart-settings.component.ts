@@ -127,6 +127,6 @@ export class SafeChartSettingsComponent implements OnInit {
       this.grid = value;
     });
 
-    console.log(this.aggregationForm)
+    console.log(this.aggregationForm);
   }
 }

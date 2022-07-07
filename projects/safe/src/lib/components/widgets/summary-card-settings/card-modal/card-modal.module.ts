@@ -35,7 +35,7 @@ import { SafePreviewTabModule } from './preview-tab/preview.module';
     SafeValueSelectorTabModule,
     SafeDisplayTabModule,
     SafeTextEditorTabModule,
-    SafePreviewTabModule
+    SafePreviewTabModule,
   ],
   exports: [SafeCardModalComponent],
 })

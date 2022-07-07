@@ -149,15 +149,13 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     return this.fb.group({
       title: get(value, 'title', 'New Card'),
       isDynamic: value.isDynamic,
-      height: DEFAULT_CARD_HEIGHT,
-      width: DEFAULT_CARD_WIDTH,
-      columns: get(value, 'columns', 1),
-      rows: get(value, 'rows', 1),
+      height: get(value, 'height', DEFAULT_CARD_HEIGHT),
+      width: get(value, 'width', DEFAULT_CARD_WIDTH),
       isAggregation: get(value, 'isAggregation', true),
-      dataset: get(value, 'dataset', null),
+      resource: get(value, 'resource', null),
       layout: [get(value, 'layout', [])],
       record: get(value, 'record', null),
-      text: get(value, 'text', null)
+      html: get(value, 'html', null),
     });
   }
 

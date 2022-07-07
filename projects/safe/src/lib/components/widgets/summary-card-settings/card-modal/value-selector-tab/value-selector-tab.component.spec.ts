@@ -8,9 +8,8 @@ describe('ValueSelectorTabComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ValueSelectorTabComponent ]
-    })
-    .compileComponents();
+      declarations: [ValueSelectorTabComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -1,30 +1,30 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { get } from 'lodash';
-import { Subject } from 'rxjs';
 import { createAggregationForm } from '../../../../ui/aggregation-builder/aggregation-builder-forms';
 import {
   GET_FORMS,
   GetFormsQueryResponse,
-  GET_GRID_RESOURCE_META,
-  GetResourceByIdQueryResponse,
-  GET_GRID_FORM_META,
-  GetFormByIdQueryResponse,
 } from '../../../../../graphql/queries';
 import { Form } from '../../../../../models/form.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+/**
+ *
+ */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ *
+ */
 @Component({
   selector: 'safe-data-source-tab',
   templateUrl: './data-source-tab.component.html',
-  styleUrls: ['./data-source-tab.component.scss']
+  styleUrls: ['./data-source-tab.component.scss'],
 })
 export class SafeDataSourceTabComponent implements OnInit {
-
   @Input() form: any;
+  @Input() dataset: any;
 
   // === RADIO ===
   public radioValue = false;
@@ -33,8 +33,7 @@ export class SafeDataSourceTabComponent implements OnInit {
   public selectedResource: any = null;
 
   // === DATA ===
-  private forms = new BehaviorSubject<Form[]>([]);
-  public forms$!: Observable<Form[]>;
+  public forms: any[] = [];
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   public loading = true;
   public loadingForm = false;
@@ -51,12 +50,14 @@ export class SafeDataSourceTabComponent implements OnInit {
 
   /** @returns the aggregation form */
   public get aggregationForm(): FormGroup {
-    return createAggregationForm( null, '' );
+    return createAggregationForm(null, '');
   }
 
-  constructor(
-    private apollo: Apollo,
-  ) { }
+  /**
+   *
+   * @param apollo
+   */
+  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
     // Initialize radioValue
@@ -82,42 +83,14 @@ export class SafeDataSourceTabComponent implements OnInit {
       query: GET_FORMS,
       variables,
     });
-    this.forms$ = this.forms.asObservable();
     this.formsQuery.valueChanges.subscribe((res) => {
-      this.forms.next(res.data.forms.edges.map((x) => x.node));
+      this.forms = res.data.forms.edges.map((x) => x.node);
       this.pageInfo = res.data.forms.pageInfo;
       this.loadingMore = res.loading;
       if (this.loading) {
         this.loading = res.loading;
       }
-      this.selectedForm = this.forms.value[0];
-      this.apollo
-        .query<GetResourceByIdQueryResponse>({
-          query: GET_GRID_RESOURCE_META,
-          variables: {
-            resource: this.selectedForm.resource?.id,
-          },
-        })
-        .subscribe((res2) => {
-          if (res2.errors) {
-            this.apollo
-              .query<GetFormByIdQueryResponse>({
-                query: GET_GRID_FORM_META,
-                variables: {
-                  id: this.selectedForm.resource?.id,
-                },
-              })
-              .subscribe((res3) => {
-                if (res3.errors) {
-                  this.form.patchValue({dataset: null})
-                } else {
-                  this.form.patchValue({dataset: null})
-                }
-              });
-          } else {
-            this.form.patchValue({dataset: res2.data.resource})
-          }
-        });
+      this.form.patchValue({ resource: this.forms[0] });
     });
   }
 
@@ -189,9 +162,12 @@ export class SafeDataSourceTabComponent implements OnInit {
     });
   }
 
+  /**
+   *
+   * @param event
+   */
   radioChange(event: any) {
     this.radioValue = event.value;
-    this.form.patchValue({isAggregation: event.value});
+    this.form.patchValue({ isAggregation: event.value });
   }
-
 }

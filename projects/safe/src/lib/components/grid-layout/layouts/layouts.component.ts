@@ -21,7 +21,7 @@ export class LayoutsComponent implements OnInit, OnChanges {
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
   @Input() selectedLayouts: FormControl | null = null;
-  @Input() singleInput: boolean = false;
+  @Input() singleInput = false;
 
   layouts: Layout[] = [];
   allLayouts: Layout[] = [];

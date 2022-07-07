@@ -48,6 +48,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
 
   /**
    * Get filename from the date and widget title
+   *
    * @returns filename
    */
   get fileName(): string {

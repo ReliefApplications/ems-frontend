@@ -31,12 +31,18 @@ interface ChartSeries {
   }[];
 }
 
+/**
+ *
+ */
 interface ChartLabels {
   showCategory: boolean;
   showValue: boolean;
   valueType: string;
 }
 
+/**
+ *
+ */
 interface ChartOptions {
   palette: string[];
   labels?: ChartLabels;
@@ -72,7 +78,7 @@ export class SafePieChartComponent implements OnInit {
    * Content is defined on the component init.
    *
    * @param e - Event which with the specific label data
-   * @return Returns a string which will be used as the label content
+   * @returns Returns a string which will be used as the label content
    */
   public labelContent: ((e: any) => string) | null = null;
 

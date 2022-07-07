@@ -7,11 +7,7 @@ import { SafeValueSelectorTabComponent } from './value-selector-tab.component';
 /** Data Source Module */
 @NgModule({
   declarations: [SafeValueSelectorTabComponent],
-  imports: [
-    CommonModule,
-    TranslateModule,
-    SafeCoreGridModule
-  ],
+  imports: [CommonModule, TranslateModule, SafeCoreGridModule],
   exports: [SafeValueSelectorTabComponent],
 })
 export class SafeValueSelectorTabModule {}

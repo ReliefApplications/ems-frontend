@@ -8,9 +8,8 @@ describe('TextEditorTabComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TextEditorTabComponent ]
-    })
-    .compileComponents();
+      declarations: [TextEditorTabComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

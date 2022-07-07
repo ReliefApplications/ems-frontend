@@ -23,6 +23,8 @@ export class SafeDownloadService {
    *
    * @param environment Current environment
    * @param http Http client
+   * @param snackBar
+   * @param translate
    */
   constructor(
     @Inject('environment') environment: any,
