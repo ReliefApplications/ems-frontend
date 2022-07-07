@@ -650,8 +650,9 @@
 				"title": "******"
 			},
 			"summary": {
-				"empty": "******",
 				"features": "******",
+				"noFeatures": "******",
+				"noSteps": "******",
 				"title": "******"
 			},
 			"update": {

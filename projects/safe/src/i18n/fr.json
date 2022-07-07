@@ -650,8 +650,9 @@
 				"title": "Choix du rôle à simuler"
 			},
 			"summary": {
-				"empty": "Aucune fonctionnalité détectée",
 				"features": "Fonctionnalités",
+				"noFeatures": "Aucune fonctionnalité détectée",
+				"noSteps": "Aucune étape détectée",
 				"title": "Résumé"
 			},
 			"update": {
