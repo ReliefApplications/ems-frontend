@@ -1,11 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
+import { Application } from '../../models/application.model';
 import { User } from '../../models/user.model';
 import {
   EditUserProfileMutationResponse,
+  EditUserRolesMutationResponse,
   EDIT_USER_PROFILE,
+  EDIT_USER_ROLES,
 } from './graphql/mutations';
 import { GetUserQueryResponse, GET_USER } from './graphql/queries';
+import { SafeSnackBarService } from '../../services/snackbar.service';
 
 /**
  * User Summary shared component.
@@ -16,7 +20,8 @@ import { GetUserQueryResponse, GET_USER } from './graphql/queries';
   styleUrls: ['./user-summary.component.scss'],
 })
 export class SafeUserSummaryComponent implements OnInit {
-  @Input() public id = '';
+  @Input() id = '';
+  @Input() application?: Application;
   public user?: User;
   public loading = true;
 
@@ -37,8 +42,9 @@ export class SafeUserSummaryComponent implements OnInit {
    * User Summary shared component.
    *
    * @param apollo Apollo client
+   * @param snackBar Shared snackbar service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
 
   ngOnInit(): void {
     this.apollo
@@ -48,12 +54,17 @@ export class SafeUserSummaryComponent implements OnInit {
           id: this.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.user = res.data.user;
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.user = res.data.user;
+          }
+          this.loading = res.data.loading;
+        },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
         }
-        this.loading = res.data.loading;
-      });
+      );
   }
 
   /**
@@ -71,11 +82,47 @@ export class SafeUserSummaryComponent implements OnInit {
           id: this.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.user = res.data.editUserProfile;
-          this.loading = res.data.loading;
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.user = res.data.editUserProfile;
+            this.loading = res.loading;
+          }
+        },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
         }
-      });
+      );
+  }
+
+  /**
+   * Modify the roles of an user
+   *
+   * @param event An object with the new data
+   * @param event.roles the array of updated roles
+   * @param event.application the id of an application, if the roles are associated with it
+   */
+  onEditRoles(event: { roles: string[]; application?: string }): void {
+    this.loading = true;
+    this.apollo
+      .mutate<EditUserRolesMutationResponse>({
+        mutation: EDIT_USER_ROLES,
+        variables: {
+          id: this.id,
+          roles: event.roles,
+          application: event.application,
+        },
+      })
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.user = res.data.editUser;
+            this.loading = res.loading;
+          }
+        },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        }
+      );
   }
 }

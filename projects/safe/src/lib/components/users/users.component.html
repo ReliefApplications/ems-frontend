@@ -173,11 +173,12 @@
       >
       </safe-button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onEdit(element)">
+        <!-- Deactivated as we now use edition in a separated page -->
+        <!-- <button mat-menu-item (click)="onEdit(element)">
           <mat-icon>edit</mat-icon>
           {{ 'common.edit' | translate }}
         </button>
-        <mat-divider></mat-divider>
+        <mat-divider></mat-divider> -->
         <button mat-menu-item (click)="onDelete([element])">
           <mat-icon>delete</mat-icon>
           {{ 'common.delete' | translate }}
