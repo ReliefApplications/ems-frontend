@@ -15,6 +15,9 @@ import {
   TITLE_POSITIONS,
 } from './constants';
 
+/**
+ * Chart settings component
+ */
 @Component({
   selector: 'safe-chart-settings',
   templateUrl: './chart-settings.component.html',
@@ -52,10 +55,12 @@ export class SafeChartSettingsComponent implements OnInit {
   public settings: any;
   public grid: any;
 
+  /** @returns the form for the chart */
   public get chartForm(): FormGroup {
     return (this.tileForm?.controls.chart as FormGroup) || null;
   }
 
+  /** @returns the aggregation form */
   public get aggregationForm(): FormGroup {
     return (
       ((this.tileForm?.controls.chart as FormGroup).controls
@@ -63,6 +68,12 @@ export class SafeChartSettingsComponent implements OnInit {
     );
   }
 
+  /**
+   * Constructor for the chart settings component
+   *
+   * @param formBuilder The formBuilder service
+   * @param aggregationBuilder The aggregationBuilder service
+   */
   constructor(
     private formBuilder: FormBuilder,
     private aggregationBuilder: AggregationBuilderService

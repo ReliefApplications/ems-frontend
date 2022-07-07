@@ -15,6 +15,7 @@ import { SafeDownloadService } from '../../../../services/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
 
+/** Model fot the input data */
 interface DialogData {
   roles: Role[];
   users: User[];
@@ -23,6 +24,7 @@ interface DialogData {
   downloadPath: string;
 }
 
+/** Component for inviting users */
 @Component({
   selector: 'safe-invite-users',
   templateUrl: './invite-users.component.html',
@@ -40,10 +42,23 @@ export class SafeInviteUsersComponent implements OnInit {
 
   @ViewChild('fileReader') fileReader: any;
 
+  /** @returns The position attributes available */
   get positionAttributes(): FormArray | null {
     return this.formGroup.get('positionAttributes') as FormArray;
   }
 
+  /**
+   * Constructor of the component
+   *
+   * @param renderer Custom render factory client
+   * @param downloadService The download service
+   * @param snackBar The snack bar service
+   * @param formBuilder The form builder service
+   * @param dialog The material dialog service
+   * @param dialogRef The reference to a material dialog
+   * @param translate The translation service
+   * @param data The input data of the component
+   */
   constructor(
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
@@ -168,6 +183,9 @@ export class SafeInviteUsersComponent implements OnInit {
    * Handles cell click events. Creates form group for edition.
    *
    * @param param0 cell click event.
+   * @param param0.isEdited Weather the cell is edited
+   * @param param0.dataItem The data of the item
+   * @param param0.rowIndex The index of the current row
    */
   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
     if (!this.editionActive) {

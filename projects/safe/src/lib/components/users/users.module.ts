@@ -23,6 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
 import { TranslateModule } from '@ngx-translate/core';
 
+/** Module for components related to users */
 @NgModule({
   declarations: [SafeUsersComponent, SafeEditUserComponent],
   imports: [

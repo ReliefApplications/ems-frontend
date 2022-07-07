@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { User } from '../models/user.model';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
 import {
@@ -11,6 +11,7 @@ import {
 import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { filter, map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 /** Defining the interface for the account object. */
 export interface Account {
@@ -52,13 +53,23 @@ export class SafeAuthService {
     this.isDoneLoading$,
   ]).pipe(map((values) => values.every((x) => x)));
 
+  private environment: any;
+
   /**
    * Shared authentication service.
    *
+   * @param environment Environment file where front and back office urls are specified
    * @param apollo Apollo client
    * @param oauthService OAuth authentification service
+   * @param router Angular Router service
    */
-  constructor(private apollo: Apollo, private oauthService: OAuthService) {
+  constructor(
+    @Inject('environment') environment: any,
+    private apollo: Apollo,
+    private oauthService: OAuthService,
+    private router: Router
+  ) {
+    this.environment = environment;
     this.oauthService.events.subscribe(() => {
       this.isAuthenticated.next(this.oauthService.hasValidAccessToken());
       this.checkAccount();
@@ -73,6 +84,16 @@ export class SafeAuthService {
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
         this.oauthService.initImplicitFlow();
+      });
+    // Redirect to previous path
+    this.oauthService.events
+      .pipe(filter((e: any) => e.type === 'user_profile_loaded'))
+      .subscribe((e) => {
+        const redirectPath = localStorage.getItem('redirectPath');
+        if (redirectPath) {
+          this.router.navigateByUrl(redirectPath);
+        }
+        localStorage.removeItem('redirectPath');
       });
     this.oauthService.setupAutomaticSilentRefresh();
   }
@@ -129,10 +150,35 @@ export class SafeAuthService {
    * @returns A promise that resolves to void.
    */
   public initLoginSequence(): Promise<void> {
+    if (!localStorage.getItem('idtoken')) {
+      let redirectUri: URL;
+      if (this.environment.module === 'backoffice') {
+        const pathName = location.href.replace(
+          this.environment.backOfficeUri,
+          '/'
+        );
+        redirectUri = new URL(pathName, this.environment.backOfficeUri);
+      } else {
+        const pathName = location.href.replace(
+          this.environment.backOfficeUri,
+          '/'
+        );
+        redirectUri = new URL(pathName, this.environment.frontOfficeUri);
+      }
+      redirectUri.search = '';
+      if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
+        localStorage.setItem('redirectPath', redirectUri.pathname);
+      }
+    }
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
-      .then(() => this.isDoneLoading.next(true))
-      .catch(() => this.isDoneLoading.next(true));
+      .then(() => {
+        this.isDoneLoading.next(true);
+      })
+      .catch((err) => {
+        console.error(err);
+        this.isDoneLoading.next(false);
+      });
   }
 
   /**

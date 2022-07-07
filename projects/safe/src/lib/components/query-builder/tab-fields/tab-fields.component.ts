@@ -5,7 +5,6 @@ import {
 } from '@angular/cdk/drag-drop';
 import {
   Component,
-  ComponentFactory,
   Input,
   OnChanges,
   OnInit,
@@ -15,6 +14,7 @@ import {
 import { FormArray, FormGroup } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { addNewField } from '../query-builder-forms';
+import { SafeQueryBuilderComponent } from '../query-builder.component';
 
 /**
  * Component used for the selection of fields to display the fields in tabs
@@ -27,8 +27,6 @@ import { addNewField } from '../query-builder-forms';
 export class SafeTabFieldsComponent implements OnInit, OnChanges {
   @Input() form: FormArray = new FormArray([]);
   @Input() fields: any[] = [];
-  // === TEMPLATE REFERENCE ===
-  @Input() factory?: ComponentFactory<any>;
   @ViewChild('childTemplate', { read: ViewContainerRef })
   childTemplate?: ViewContainerRef;
 
@@ -134,8 +132,10 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public onEdit(index: number): void {
     this.fieldForm = this.form.at(index) as FormGroup;
     if (this.fieldForm.value.kind !== 'SCALAR') {
-      if (this.childTemplate && this.factory) {
-        const componentRef = this.childTemplate.createComponent(this.factory);
+      if (this.childTemplate) {
+        const componentRef = this.childTemplate.createComponent(
+          SafeQueryBuilderComponent
+        );
         componentRef.instance.setForm(this.fieldForm);
         componentRef.instance.canExpand = this.fieldForm.value.kind === 'LIST';
         componentRef.instance.closeField.subscribe(() => {

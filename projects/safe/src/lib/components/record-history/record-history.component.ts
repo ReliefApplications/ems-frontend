@@ -153,6 +153,13 @@ export class SafeRecordHistoryComponent implements OnInit {
     return changes;
   }
 
+  /**
+   * Add an object addition in the history
+   *
+   * @param current current version
+   * @param key key of field
+   * @returns new history entry for the object addition
+   */
   private addObject(current: any, key: string): string {
     const currentKeys = Object.keys(current[key]);
     let currentValuesHTML = '';
@@ -170,6 +177,13 @@ export class SafeRecordHistoryComponent implements OnInit {
     return element;
   }
 
+  /**
+   * Add a field addition in the history
+   *
+   * @param key key of field
+   * @param current current version
+   * @returns new history entry for the field addition
+   */
   private addField(key: string, current: any): string {
     return (
       '<p><span class="add-field">Add field</span> <b>' +
@@ -180,6 +194,14 @@ export class SafeRecordHistoryComponent implements OnInit {
     );
   }
 
+  /**
+   * Add a field update in the history
+   *
+   * @param key key of field
+   * @param after next version
+   * @param current current version
+   * @returns new history entry for the field update
+   */
   private modifyField(key: string, after: any, current: any): string {
     if (after[key] === null) {
       return (
@@ -202,6 +224,14 @@ export class SafeRecordHistoryComponent implements OnInit {
     }
   }
 
+  /**
+   * Add an object update in the history
+   *
+   * @param after next version
+   * @param current current version
+   * @param key key of field
+   * @returns new history entry for the field update
+   */
   modifyObjects(after: any, current: any, key: string): string {
     const afterKeys = Object.keys(after[key] ? after[key] : current[key]);
     let element = `<p> <span class="modify-field">Change field</span> <b> ${key} </b> from  `;

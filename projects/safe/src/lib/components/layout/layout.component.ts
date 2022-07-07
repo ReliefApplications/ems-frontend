@@ -152,7 +152,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         this.layoutService.setRightSidenav(null);
         this.showSidenav = true;
         const componentRef: ComponentRef<any> =
-          this.rightSidenav.createComponent(view.factory);
+          this.rightSidenav.createComponent(view.component);
         for (const [key, value] of Object.entries(view.inputs)) {
           componentRef.instance[key] = value;
         }
@@ -261,6 +261,12 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     event.stopPropagation();
   }
 
+  /**
+   * Drop event handler. Move item in layout navigation item list.
+   *
+   * @param event drop event
+   * @param group group where the event occurs
+   */
   drop(event: any, group: any): void {
     moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
     this.reorder.emit(group.navItems);

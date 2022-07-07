@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   MatDialog,
   MatDialogRef,
@@ -11,6 +11,9 @@ import { Layout } from '../../../../models/layout.model';
 import { Resource } from '../../../../models/resource.model';
 import { SafeLayoutModalComponent } from '../../../layout-modal/layout-modal.component';
 
+/**
+ * Data needed for the dialog, should contain a layouts array, a form and a resource
+ */
 interface DialogData {
   layouts: Layout[];
   form?: Form;
@@ -26,12 +29,20 @@ interface DialogData {
   templateUrl: './add-layout.component.html',
   styleUrls: ['./add-layout.component.scss'],
 })
-export class AddLayoutComponent implements OnInit {
+export class AddLayoutComponent {
   private form?: Form;
   private resource?: Resource;
   public layouts: Layout[] = [];
   public nextStep = false;
 
+  /**
+   * Contructor for safe-add-layout component
+   *
+   * @param dialogRef Material dialog reference
+   * @param dialog Material dialog instance
+   * @param data Data used by the modal
+   * @param gridLayoutService Grid layout service
+   */
   constructor(
     private dialogRef: MatDialogRef<AddLayoutComponent>,
     private dialog: MatDialog,
@@ -42,8 +53,6 @@ export class AddLayoutComponent implements OnInit {
     this.form = data.form;
     this.resource = data.resource;
   }
-
-  ngOnInit(): void {}
 
   /**
    * Opens the panel to create a new layout.
