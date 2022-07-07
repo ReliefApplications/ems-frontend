@@ -25,7 +25,7 @@ import {
 } from '../../../graphql/mutations';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort, Sort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
@@ -56,7 +56,6 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
   public newApplications: Application[] = [];
   public filter: any;
   private sort: Sort = { active: '', direction: '' };
-  @ViewChild(MatSort) matSort?: MatSort;
 
   public pageInfo = {
     pageIndex: 0,
@@ -209,13 +208,18 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     if (refetch) {
       this.cachedApplications = [];
       this.pageInfo.pageIndex = 0;
-      this.applicationsQuery.refetch({
-        first: this.pageInfo.pageSize,
-        afterCursor: null,
-        filter: this.filter,
-        sortField: this.sort?.direction && this.sort.active,
-        sortOrder: this.sort?.direction,
-      });
+      this.applicationsQuery
+        .refetch({
+          first: this.pageInfo.pageSize,
+          afterCursor: null,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        })
+        .then(() => {
+          this.loading = false;
+          this.updating = false;
+        });
     } else {
       this.applicationsQuery.fetchMore({
         variables: {

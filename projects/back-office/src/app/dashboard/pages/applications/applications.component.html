@@ -1,9 +1,6 @@
 <ng-container>
   <!-- FILTERING -->
-  <app-filter
-    (filter)="onFilter($event)"
-    [loading]="updating"
-  ></app-filter>
+  <app-filter (filter)="onFilter($event)" [loading]="updating"></app-filter>
 
   <!-- NEW APPLICATIONS -->
   <h2>{{ 'pages.applications.recent' | translate }}</h2>
@@ -20,7 +17,13 @@
 
   <!-- APPLICATIONS TABLE -->
   <h2>{{ 'pages.applications.all' | translate }}</h2>
-  <table *ngIf="!loading" mat-table [dataSource]="applications" matSort (matSortChange)="onSort($event)">
+  <table
+    *ngIf="!loading"
+    mat-table
+    [dataSource]="applications"
+    matSort
+    (matSortChange)="onSort($event)"
+  >
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         <span class="headerTitle" mat-sort-header="name">
