@@ -79,13 +79,14 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   /**
    * Summary Card Settings component.
    *
-   * @param fb Angular Form Builder
-   * @param dialog Material Dialog Service
+   * @param fb Angular Form Builder.
+   * @param dialog Material Dialog Service.
+   * @param apollo Used for getting the records query.
    */
   constructor(
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private apollo: Apollo,
+    private apollo: Apollo
   ) {}
 
   /**
@@ -104,7 +105,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     this.getCardsContent(this.cards.value);
     this.cards.valueChanges.subscribe((value: any) => {
       this.getCardsContent(value);
-    })
+    });
     this.change.emit(this.tileForm);
   }
 
@@ -227,7 +228,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   /**
    * Handles resize widget event.
    *
-   * @param e resize event.
+   * @param e Resize event.
    */
   public onResize(e: TileLayoutResizeEvent) {
     if (e.newRowSpan > MAX_ROW_SPAN) {
@@ -242,16 +243,23 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Updates the card content array.
+   *
+   * @param cards Array of cards form value.
+   */
   private getCardsContent(cards: any[]) {
-
     const newCardsContent: any[] = [];
 
     cards.map((card: any, i: number) => {
       newCardsContent.push({
         html: card.html,
-        record: null
+        record: null,
       });
-      if (this.cardsContent[i] && this.cardsContent[i].record.id === card.record) {
+      if (
+        this.cardsContent[i] &&
+        this.cardsContent[i].record.id === card.record
+      ) {
         newCardsContent[i] = this.cardsContent[i];
         newCardsContent[i].html = this.replaceRecordFields(
           card.html,
@@ -275,15 +283,16 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
             }
           });
       }
-    })
+    });
 
     this.cardsContent = newCardsContent;
   }
 
   /**
+   * Replaces the html resource fields with the resource data.
    *
-   * @param html
-   * @param record
+   * @param html String with the content html.
+   * @param record Record object.
    */
   private replaceRecordFields(html: string, record: any): string {
     const fields = this.getFieldsValue(record);
@@ -298,8 +307,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Returns an object with the record data keys paired with the values.
    *
-   * @param record
+   * @param record Record object.
    */
   private getFieldsValue(record: any) {
     const fields: any = {};

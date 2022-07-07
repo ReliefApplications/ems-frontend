@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
   EDITOR_LANGUAGE_PAIRS,
@@ -6,23 +6,24 @@ import {
 } from '../../../../../const/tinymce.const';
 
 /**
- *
+ * Component used in the card-modal-settings for editing the content of the card.
  */
 @Component({
   selector: 'safe-text-editor-tab',
   templateUrl: './text-editor-tab.component.html',
   styleUrls: ['./text-editor-tab.component.scss'],
 })
-export class SafeTextEditorTabComponent implements OnInit {
+export class SafeTextEditorTabComponent {
   @Input() form: any;
 
   /** tinymce editor */
   public editor: any = WIDGET_EDITOR_CONFIG;
 
   /**
+   * SafeTextEditorTabComponent constructor.
    *
-   * @param environment
-   * @param translate
+   * @param environment Gets the environment to set the correct editor base_url.
+   * @param translate Service used for translation.
    */
   constructor(
     @Inject('environment') environment: any,
@@ -49,6 +50,4 @@ export class SafeTextEditorTabComponent implements OnInit {
       this.editor.language = 'en';
     }
   }
-
-  ngOnInit(): void {}
 }

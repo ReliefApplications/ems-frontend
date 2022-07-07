@@ -56,7 +56,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   ) {}
 
   /**
-   * Creates a formGroup with the data provided in the modal creation
+   * Creates a formGroup with the data provided in the modal creation and gets the resource data used in the card.
    */
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -153,10 +153,11 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Search the an specific layout in an array.
    *
-   * @param layouts
-   * @param layoutToFind
-   * @returns
+   * @param layouts Array of layout objects.
+   * @param layoutToFind String with the layout id to find.
+   * @returns Returns the layout if found, if not null is returned.
    */
   private findLayout(layouts: any[], layoutToFind: string): any {
     let result = null;

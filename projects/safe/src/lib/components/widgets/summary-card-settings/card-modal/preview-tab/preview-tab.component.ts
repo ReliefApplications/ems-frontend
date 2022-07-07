@@ -7,7 +7,7 @@ import {
 } from '../../../../../graphql/queries';
 
 /**
- *
+ * Component used in the card-modal-settings for previewing the final result.
  */
 @Component({
   selector: 'safe-preview-tab',
@@ -24,11 +24,15 @@ export class SafePreviewTabComponent implements OnChanges {
   public formatedHtml: string = this.html;
 
   /**
+   * Constructor used by the SafePreviewTab component.
    *
-   * @param apollo
+   * @param apollo Service used for getting the record queries.
    */
   constructor(private apollo: Apollo) {}
 
+  /**
+   * Detects when the html or record inputs change.
+   */
   ngOnChanges(): void {
     if (!this.loadedRecord || this.loadedRecord.id !== this.record) {
       if (this.recordSubscription) {
@@ -64,9 +68,10 @@ export class SafePreviewTabComponent implements OnChanges {
   }
 
   /**
+   * Replaces the html resource fields with the resource data.
    *
-   * @param html
-   * @param record
+   * @param html String with the content html.
+   * @param record Record object.
    */
   private replaceRecordFields(html: string, record: any): string {
     const fields = this.getFieldsValue(record);
@@ -81,8 +86,9 @@ export class SafePreviewTabComponent implements OnChanges {
   }
 
   /**
+   * Returns an object with the record data keys paired with the values.
    *
-   * @param record
+   * @param record Record object.
    */
   private getFieldsValue(record: any) {
     const fields: any = {};

@@ -6,16 +6,14 @@ import {
   GET_FORMS,
   GetFormsQueryResponse,
 } from '../../../../../graphql/queries';
-import { Form } from '../../../../../models/form.model';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 /**
- *
+ * How many resources.forms will be shown on the selector.
  */
 const ITEMS_PER_PAGE = 10;
 
 /**
- *
+ * Component used in the card-modal-settings for selecting the resource and layout.
  */
 @Component({
   selector: 'safe-data-source-tab',
@@ -54,11 +52,15 @@ export class SafeDataSourceTabComponent implements OnInit {
   }
 
   /**
+   * SafeDataSourceTabComponent constructor
    *
-   * @param apollo
+   * @param apollo Used for getting the resources and layouts query
    */
   constructor(private apollo: Apollo) {}
 
+  /**
+   * Gets the selected resource data
+   */
   ngOnInit(): void {
     // Initialize radioValue
     this.radioValue = this.form.value.isAggregation;
@@ -163,8 +165,9 @@ export class SafeDataSourceTabComponent implements OnInit {
   }
 
   /**
+   * Changes the form value assigned to the radio component.
    *
-   * @param event
+   * @param event Event with the change values.
    */
   radioChange(event: any) {
     this.radioValue = event.value;
