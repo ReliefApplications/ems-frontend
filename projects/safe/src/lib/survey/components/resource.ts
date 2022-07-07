@@ -617,7 +617,9 @@ export const init = (
         actionsButtons.appendChild(addBtn);
 
         const parentElement = el.querySelector('.safe-qst-content');
-        parentElement.insertBefore(actionsButtons, parentElement.firstChild);
+        if (parentElement) {
+          parentElement.insertBefore(actionsButtons, parentElement.firstChild);
+        }
 
         // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
 

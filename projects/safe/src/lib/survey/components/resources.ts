@@ -709,50 +709,63 @@ export const init = (
       // Display the add button | grid for resources question
       if (question.resource) {
         const parentElement = el.querySelector('.safe-qst-content');
-        const gridComponent = buildRecordsGrid(
-          question,
-          parentElement.firstChild
-        );
-
-        if (question.survey.mode !== 'display') {
-          const actionsButtons = document.createElement('div');
-          actionsButtons.id = 'actionsButtons';
-          actionsButtons.style.display = 'flex';
-          actionsButtons.style.marginBottom = '0.5em';
-
-          const searchBtn = buildSearchButton(
+        if (parentElement) {
+          const gridComponent = buildRecordsGrid(
             question,
-            question.gridFieldsSettings,
-            true,
-            dialog
+            parentElement.firstChild
           );
-          actionsButtons.appendChild(searchBtn);
 
-          const addBtn = buildAddButton(question, true, dialog, gridComponent);
-          actionsButtons.appendChild(addBtn);
+          if (question.survey.mode !== 'display') {
+            const actionsButtons = document.createElement('div');
+            actionsButtons.id = 'actionsButtons';
+            actionsButtons.style.display = 'flex';
+            actionsButtons.style.marginBottom = '0.5em';
 
-          parentElement.insertBefore(actionsButtons, parentElement.firstChild);
-          // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+            const searchBtn = buildSearchButton(
+              question,
+              question.gridFieldsSettings,
+              true,
+              dialog
+            );
+            actionsButtons.appendChild(searchBtn);
 
-          question.registerFunctionOnPropertyValueChanged(
-            'gridFieldsSettings',
-            () => {
-              searchBtn.style.display = question.gridFieldsSettings
-                ? ''
-                : 'none';
-            }
-          );
-          question.registerFunctionOnPropertyValueChanged('canSearch', () => {
-            searchBtn.style.display = question.canSearch ? '' : 'none';
-          });
-          question.registerFunctionOnPropertyValueChanged('addTemplate', () => {
-            addBtn.style.display =
-              question.addRecord && question.addTemplate ? '' : 'none';
-          });
-          question.registerFunctionOnPropertyValueChanged('addRecord', () => {
-            addBtn.style.display =
-              question.addRecord && question.addTemplate ? '' : 'none';
-          });
+            const addBtn = buildAddButton(
+              question,
+              true,
+              dialog,
+              gridComponent
+            );
+            actionsButtons.appendChild(addBtn);
+
+            parentElement.insertBefore(
+              actionsButtons,
+              parentElement.firstChild
+            );
+            // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+
+            question.registerFunctionOnPropertyValueChanged(
+              'gridFieldsSettings',
+              () => {
+                searchBtn.style.display = question.gridFieldsSettings
+                  ? ''
+                  : 'none';
+              }
+            );
+            question.registerFunctionOnPropertyValueChanged('canSearch', () => {
+              searchBtn.style.display = question.canSearch ? '' : 'none';
+            });
+            question.registerFunctionOnPropertyValueChanged(
+              'addTemplate',
+              () => {
+                addBtn.style.display =
+                  question.addRecord && question.addTemplate ? '' : 'none';
+              }
+            );
+            question.registerFunctionOnPropertyValueChanged('addRecord', () => {
+              addBtn.style.display =
+                question.addRecord && question.addTemplate ? '' : 'none';
+            });
+          }
         }
       }
     },

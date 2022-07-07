@@ -5,6 +5,10 @@ import {
   TimePickerComponent,
 } from '@progress/kendo-angular-dateinputs';
 import * as SurveyCreator from 'survey-creator';
+import { EmbeddedViewRef } from '@angular/core';
+import { ButtonCategory } from '../../components/ui/button/button-category.enum';
+import { SafeButtonComponent } from '../../components/ui/button/button.component';
+import { ButtonSize } from '../../components/ui/button/button-size.enum';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
@@ -160,6 +164,83 @@ export const init = (Survey: any, domService: DomService): void => {
       );
       // Init
       updateTextInput();
+
+      // Adding an open url icon for urls inputs
+      if (question.inputType === 'url') {
+        // Generate the dynamic component with its parameters
+        const button = domService.appendComponentToBody(
+          SafeButtonComponent,
+          el.parentElement
+        );
+        const instance: SafeButtonComponent = button.instance;
+        instance.isIcon = true;
+        instance.icon = 'open_in_new';
+        instance.size = ButtonSize.SMALL;
+        instance.category = ButtonCategory.TERTIARY;
+        instance.variant = 'default';
+        // we override the css of the component
+        const domElem = (button.hostView as EmbeddedViewRef<any>)
+          .rootNodes[0] as HTMLElement;
+        (domElem.firstChild as HTMLElement).style.minWidth = 'unset';
+        (domElem.firstChild as HTMLElement).style.backgroundColor = 'unset';
+        (domElem.firstChild as HTMLElement).style.color = 'black';
+
+        // Set the default styling of the parent
+        el.parentElement.style.display = 'flex';
+        el.parentElement.style.alignItems = 'center';
+        el.parentElement.style.flexDirection = 'row';
+        el.parentElement.style.pointerEvents = 'auto';
+        el.parentElement.style.justifyContent = 'space-between';
+        el.parentElement.title =
+          'The URL should start with "http://" or "https://"';
+
+        // Create an <a> HTMLElement only used to verify the validity of the URL
+        const urlTester = document.createElement('a');
+        if (
+          el.value &&
+          !(el.value.startsWith('https://') || el.value.startsWith('http://'))
+        ) {
+          urlTester.href = 'https://' + el.value;
+        } else {
+          urlTester.href = el.value || '';
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        urlTester.host && urlTester.host !== window.location.host
+          ? (instance.disabled = false)
+          : (instance.disabled = true);
+
+        question.survey.onValueChanged.add((__: any, opt: any) => {
+          if (opt.question.name === question.name) {
+            if (
+              opt.question.value &&
+              !(
+                opt.question.value.startsWith('https://') ||
+                opt.question.value.startsWith('http://')
+              )
+            ) {
+              urlTester.href = 'https://' + opt.question.value;
+            } else {
+              urlTester.href = opt.question.value || '';
+            }
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            urlTester.host && urlTester.host !== window.location.host
+              ? (instance.disabled = false)
+              : (instance.disabled = true);
+
+            console.log(opt.question.value);
+          }
+        });
+
+        button.instance.emittedEventSubject.subscribe((eventType: string) => {
+          if (
+            eventType === 'click' &&
+            urlTester.host &&
+            urlTester.host !== window.location.host
+          ) {
+            window.open(urlTester.href, '_blank', 'noopener,noreferrer');
+          }
+        });
+      }
     },
   };
 
