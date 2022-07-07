@@ -134,7 +134,23 @@ export const init = (
         visibleIf: (obj: any): boolean =>
           obj?.referenceDataFilterFilterFromQuestion,
         visibleIndex: 4,
-        choices: [1, 2, 3],
+        choices: (obj: any, choicesCallback: any) => {
+          if (obj?.referenceDataFilterFilterFromQuestion) {
+            const foreignQuestion = obj.survey
+              .getAllQuestions()
+              .find(
+                (x: any) =>
+                  x.name === obj?.referenceDataFilterFilterFromQuestion
+              );
+            if (foreignQuestion?.referenceData) {
+              referenceDataService
+                .loadReferenceData(foreignQuestion.referenceData)
+                .then((referenceData) =>
+                  choicesCallback(referenceData.fields || [])
+                );
+            }
+          }
+        },
       });
 
       serializer.addProperty('selectbase', {
@@ -146,19 +162,27 @@ export const init = (
         visibleIf: (obj: any): boolean =>
           obj?.referenceDataFilterFilterFromQuestion,
         visibleIndex: 5,
-        choices: [1, 2, 3],
+        choices: ['equals'],
       });
 
       serializer.addProperty('selectbase', {
-        displayName: 'Foreign field',
-        name: 'referenceDataForeignField',
+        displayName: 'Local field',
+        name: 'referenceDataFilterLocalField',
         category: 'Choices from Reference data',
         required: true,
         dependsOn: 'referenceDataFilterFilterFromQuestion',
         visibleIf: (obj: any): boolean =>
           obj?.referenceDataFilterFilterFromQuestion,
         visibleIndex: 6,
-        choices: [1, 2, 3],
+        choices: (obj: any, choicesCallback: any) => {
+          if (obj?.referenceData) {
+            referenceDataService
+              .loadReferenceData(obj.referenceData)
+              .then((referenceData) =>
+                choicesCallback(referenceData.fields || [])
+              );
+          }
+        },
       });
 
       const referenceDataEditor = {
