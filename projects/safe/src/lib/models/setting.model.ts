@@ -1,3 +1,5 @@
+import { ApiConfiguration } from "./apiConfiguration.model";
+
 /** Interface for Mapping element. */
 export interface Mapping {
   field: string;
@@ -14,6 +16,7 @@ export interface Setting extends Document {
   kind: 'Setting';
   userManagement?: {
     local?: boolean;
+    apiConfiguration?: ApiConfiguration;
     serviceAPI?: string;
     attributesMapping?: Mappings;
   };

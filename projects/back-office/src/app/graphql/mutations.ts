@@ -1048,6 +1048,10 @@ export const EDIT_SETTING = gql`
     editSetting(userManagement: $userManagement) {
       userManagement {
         local
+        apiConfiguration {
+          id
+          name
+        }
         serviceAPI
         attributesMapping
       }

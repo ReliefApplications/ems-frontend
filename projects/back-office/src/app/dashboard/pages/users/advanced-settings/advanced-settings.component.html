@@ -43,6 +43,20 @@
     <ng-container
       *ngIf="!$any(settingForm.controls.userManagement).controls.local.value"
     >
+      <mat-form-field appearance="outline" style="flex: 1">
+        <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
+        <mat-select
+          #apiSelect
+          formControlName="apiConfiguration"
+          (openedChange)="onOpenApiSelect($event)"
+        >
+          <mat-option
+            *ngFor="let apiConfiguration of apiConfigurations$ | async"
+            [value]="apiConfiguration.id"
+            >{{ apiConfiguration.name }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
       <mat-form-field appearance="outline" class="api-input">
         <mat-label>{{
           'components.users.advancedSettings.userManagement.api.title'

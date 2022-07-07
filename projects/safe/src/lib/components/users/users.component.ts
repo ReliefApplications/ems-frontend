@@ -105,7 +105,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       this.displayedColumns = ADMIN_COLUMNS;
       this.advancedSettings =
         this.authService.userHasClaim(Permissions.canSeeUsers) &&
-        this.authService.userHasClaim(Permissions.canSeeRoles);
+        this.authService.userHasClaim(Permissions.canSeeRoles) &&
+        this.authService.userHasClaim(Permissions.canManageApiConfigurations);
     }
     this.users.filterPredicate = (data: any) =>
       (this.searchText.trim().length === 0 ||

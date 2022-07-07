@@ -1216,6 +1216,10 @@ export const GET_SETTING = gql`
     setting {
       userManagement {
         local
+        apiConfiguration {
+          id
+          name
+        }
         serviceAPI
         attributesMapping
       }
