@@ -25,7 +25,7 @@
   ></safe-forms-dropdown> -->
 
   <mat-form-field [formGroup]='form' fxFlex>
-    <mat-label>Job Type</mat-label>
+    <mat-label>Select a resource</mat-label>
     <mat-select formControlName="resource" placeholder="Select a dataset">
       <mat-option *ngFor="let resource of forms" [value]="resource">
         {{ resource.name }}
