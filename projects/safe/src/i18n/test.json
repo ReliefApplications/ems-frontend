@@ -653,9 +653,11 @@
 				"features": "******",
 				"noFeatures": "******",
 				"noSteps": "******",
-				"title": "******",
-				"toggleOff": "****** {{page}} ******",
-				"toggleOn": "****** {{page}} ******"
+				"title": "******"
+			},
+			"tooltip": {
+				"hideFeature": "****** {{page}} ******",
+				"showFeature": "****** {{page}} ******"
 			},
 			"update": {
 				"permissions": "******",

@@ -23,8 +23,8 @@
           [disabled]="loading"
           [matTooltip]="
             (accessiblePages.includes(element.id)
-              ? 'components.role.summary.toggleOff'
-              : 'components.role.summary.toggleOn'
+              ? 'components.role.tooltip.hideFeature'
+              : 'components.role.tooltip.showFeature'
             ) | translate: { page: element.name }
           "
         >

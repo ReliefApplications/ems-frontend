@@ -13,6 +13,9 @@
 }
 
 .search-bar {
+  display: flex;
+  justify-content: flex-end;
+
   mat-form-field {
     #feature-search {
       position: relative;
