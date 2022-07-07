@@ -653,7 +653,9 @@
 				"features": "Fonctionnalités",
 				"noFeatures": "Aucune fonctionnalité détectée",
 				"noSteps": "Aucune étape détectée",
-				"title": "Résumé"
+				"title": "Résumé",
+				"toggleOff": "Masquer {{page}} de ce rôle",
+				"toggleOn": "Afficher {{page}} pour ce rôle"
 			},
 			"update": {
 				"permissions": "Permissions",

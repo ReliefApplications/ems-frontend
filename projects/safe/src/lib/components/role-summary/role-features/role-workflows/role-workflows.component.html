@@ -24,6 +24,12 @@
             "
             (click)="onEditAccess(element)"
             [disabled]="loading"
+            [matTooltip]="
+              (accessiblePages.includes(element.id)
+                ? 'components.role.summary.toggleOff'
+                : 'components.role.summary.toggleOn'
+              ) | translate: { page: element.name }
+            "
           >
           </safe-button>
           <safe-button
@@ -79,6 +85,12 @@
                   "
                   (click)="onEditStepAccess(element)"
                   [disabled]="loading"
+                  [matTooltip]="
+                    (accessiblePages.includes(element.id)
+                      ? 'components.role.summary.toggleOff'
+                      : 'components.role.summary.toggleOn'
+                    ) | translate: { page: element.name }
+                  "
                 >
                 </safe-button>
               </td>

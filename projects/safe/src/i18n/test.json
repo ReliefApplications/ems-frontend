@@ -653,7 +653,9 @@
 				"features": "******",
 				"noFeatures": "******",
 				"noSteps": "******",
-				"title": "******"
+				"title": "******",
+				"toggleOff": "****** {{page}} ******",
+				"toggleOn": "****** {{page}} ******"
 			},
 			"update": {
 				"permissions": "******",

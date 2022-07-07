@@ -653,7 +653,9 @@
 				"features": "Features",
 				"noFeatures": "No feature detected",
 				"noSteps": "No steps detected",
-				"title": "Summary"
+				"title": "Summary",
+				"toggleOff": "Hide {{page}} from this role",
+				"toggleOn": "Show {{page}} to this role"
 			},
 			"update": {
 				"permissions": "Permissions",
