@@ -26,6 +26,7 @@ import {
   EditStepAccessMutationResponse,
   EDIT_STEP_ACCESS,
 } from '../../graphql/mutations';
+import { SafeSnackBarService } from '../../../../services/snackbar.service';
 
 /** Component for the workflows section of the roles features */
 @Component({
@@ -63,8 +64,9 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
    * Component for the workflows section of the roles features
    *
    * @param apollo Apollo service
+   * @param snackBar Shared snackbar service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
 
   ngOnInit(): void {
     this.accessiblePages = this.filteredPages
@@ -114,21 +116,26 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
             id: page.content,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
-            this.steps = get(res.data.workflow, 'steps', []);
-            this.filteredSteps = this.steps.filter((x) =>
-              x.name?.toLowerCase().includes(this.search)
-            );
-            this.accessibleSteps = this.filteredSteps
-              .filter((x) =>
-                get(x, 'permissions.canSee', [])
-                  .map((y: any) => y.id)
-                  .includes(this.role.id)
-              )
-              .map((x) => x.id as string);
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              this.steps = get(res.data.workflow, 'steps', []);
+              this.filteredSteps = this.steps.filter((x) =>
+                x.name?.toLowerCase().includes(this.search)
+              );
+              this.accessibleSteps = this.filteredSteps
+                .filter((x) =>
+                  get(x, 'permissions.canSee', [])
+                    .map((y: any) => y.id)
+                    .includes(this.role.id)
+                )
+                .map((x) => x.id as string);
+            }
+          },
+          (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
           }
-        });
+        );
     }
   }
 
@@ -160,27 +167,32 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
           },
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          const index = this.steps.findIndex(
-            (x) => x.id === res.data?.editStep.id
-          );
-          const steps = [...this.steps];
-          steps[index] = res.data.editStep;
-          this.steps = steps;
-          this.filteredSteps = this.steps.filter((x) =>
-            x.name?.toLowerCase().includes(this.search)
-          );
-          this.accessibleSteps = this.steps
-            .filter((x) =>
-              get(x, 'permissions.canSee', [])
-                .map((y: any) => y.id)
-                .includes(this.role.id)
-            )
-            .map((x) => x.id as string);
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            const index = this.steps.findIndex(
+              (x) => x.id === res.data?.editStep.id
+            );
+            const steps = [...this.steps];
+            steps[index] = res.data.editStep;
+            this.steps = steps;
+            this.filteredSteps = this.steps.filter((x) =>
+              x.name?.toLowerCase().includes(this.search)
+            );
+            this.accessibleSteps = this.steps
+              .filter((x) =>
+                get(x, 'permissions.canSee', [])
+                  .map((y: any) => y.id)
+                  .includes(this.role.id)
+              )
+              .map((x) => x.id as string);
+          }
+          this.loading = res.loading;
+        },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
         }
-        this.loading = res.loading;
-      });
+      );
   }
   /**
    * Emits an event with the changes in permission for a given workflow page
