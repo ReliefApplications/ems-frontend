@@ -1,11 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewChild,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -31,7 +25,7 @@ import {
 } from '../../../graphql/mutations';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
@@ -44,10 +38,10 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.scss'],
 })
-export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ApplicationsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
-  public filterLoading = false;
+  public updating = false;
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   private newApplicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   public applications = new MatTableDataSource<Application>([]);
@@ -61,9 +55,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
   public newApplications: Application[] = [];
   public filter: any;
-
-  // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  private sort: Sort = { active: '', direction: '' };
+  @ViewChild(MatSort) matSort?: MatSort;
 
   public pageInfo = {
     pageIndex: 0,
@@ -113,6 +106,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
         },
       });
     this.applicationsQuery.valueChanges.subscribe((res) => {
+      console.log(res);
       this.cachedApplications = res.data.applications.edges.map((x) => x.node);
       this.applications.data = this.cachedApplications.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
@@ -121,7 +115,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.pageInfo.length = res.data.applications.totalCount;
       this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
       this.loading = res.loading;
-      this.filterLoading = false;
+      this.updating = false;
     });
     this.newApplicationsQuery.valueChanges.subscribe((res) => {
       this.newApplications = res.data.applications.edges
@@ -146,6 +140,15 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
+   * Removes all subscriptions.
+   */
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+  }
+
+  /**
    * Handles page event.
    *
    * @param e page event.
@@ -165,29 +168,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
-      this.loading = true;
-      this.applicationsQuery.fetchMore({
-        variables: {
-          first,
-          afterCursor: this.pageInfo.endCursor,
-          filter: this.filter,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            applications: {
-              edges: [
-                ...prev.applications.edges,
-                ...fetchMoreResult.applications.edges,
-              ],
-              pageInfo: fetchMoreResult.applications.pageInfo,
-              totalCount: fetchMoreResult.applications.totalCount,
-            },
-          });
-        },
-      });
+      this.pageInfo.pageSize = first;
+      this.fetchApplications();
     } else {
       this.applications.data = this.cachedApplications.slice(
         e.pageSize * this.pageInfo.pageIndex,
@@ -203,43 +185,63 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param filter filter event.
    */
   onFilter(filter: any): void {
-    this.filterLoading = true;
     this.filter = filter;
-    this.cachedApplications = [];
-    this.pageInfo.pageIndex = 0;
-    this.applicationsQuery.fetchMore({
-      variables: {
+    this.fetchApplications(true);
+  }
+
+  /**
+   * Handle sort change.
+   *
+   * @param event sort event
+   */
+  onSort(event: Sort): void {
+    this.sort = event;
+    this.fetchApplications(true);
+  }
+
+  /**
+   * Update applications query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchApplications(refetch?: boolean): void {
+    this.updating = true;
+    if (refetch) {
+      this.cachedApplications = [];
+      this.pageInfo.pageIndex = 0;
+      this.applicationsQuery.refetch({
         first: this.pageInfo.pageSize,
+        afterCursor: null,
         filter: this.filter,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          applications: {
-            edges: fetchMoreResult.applications.edges,
-            pageInfo: fetchMoreResult.applications.pageInfo,
-            totalCount: fetchMoreResult.applications.totalCount,
-          },
-        });
-      },
-    });
-  }
-
-  /**
-   * Sets the sort in the view.
-   */
-  ngAfterViewInit(): void {
-    this.applications.sort = this.sort || null;
-  }
-
-  /**
-   * Removes all subscriptions.
-   */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
+        sortField: this.sort?.direction && this.sort.active,
+        sortOrder: this.sort?.direction,
+      });
+    } else {
+      this.applicationsQuery.fetchMore({
+        variables: {
+          first: this.pageInfo.pageSize,
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) {
+            return prev;
+          }
+          console.log(prev);
+          return Object.assign({}, prev, {
+            applications: {
+              edges: [
+                ...prev.applications.edges,
+                ...fetchMoreResult.applications.edges,
+              ],
+              pageInfo: fetchMoreResult.applications.pageInfo,
+              totalCount: fetchMoreResult.applications.totalCount,
+            },
+          });
+        },
+      });
     }
   }
 
