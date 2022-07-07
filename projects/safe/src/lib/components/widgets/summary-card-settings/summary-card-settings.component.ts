@@ -258,6 +258,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       });
       if (
         this.cardsContent[i] &&
+        this.cardsContent[i].record &&
         this.cardsContent[i].record.id === card.record
       ) {
         newCardsContent[i] = this.cardsContent[i];
@@ -265,6 +266,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
           card.html,
           newCardsContent[i].record
         );
+        this.cardsContent = newCardsContent;
       } else if (card.record) {
         this.apollo
           .watchQuery<GetRecordByIdQueryResponse>({
@@ -280,12 +282,11 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
                 card.html,
                 newCardsContent[i].record
               );
+              this.cardsContent = newCardsContent;
             }
           });
       }
     });
-
-    this.cardsContent = newCardsContent;
   }
 
   /**
