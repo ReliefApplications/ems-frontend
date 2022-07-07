@@ -203,6 +203,14 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       });
       // Highlight core fields
       this.addCustomClassToCoreFields(coreFields);
+      //Scroll to question when added
+      this.surveyCreator.onQuestionAdded.add((sender, opt) => {
+        const name = opt.question.name;
+        setTimeout(() => {
+          const el = document.querySelector('[data-name="' + name + '"]');
+          el?.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
     }
   }
 
