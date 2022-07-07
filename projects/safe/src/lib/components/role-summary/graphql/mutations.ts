@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { Page } from '../../../models/page.model';
 import { Step } from '../../../models/step.model';
 import { Role } from '../../../models/user.model';
+import { Resource } from '../../../models/resource.model';
 
 /** Edit role mutation of role summary component */
 export const EDIT_ROLE = gql`
@@ -89,4 +90,24 @@ export const EDIT_STEP_ACCESS = gql`
 /** Interface of Edit Step Access mutation response */
 export interface EditStepAccessMutationResponse {
   editStep: Step;
+}
+
+/** Edit Resource access mutation */
+export const EDIT_RESOURCE_ACCESS = gql`
+  mutation editResource($id: ID!, $permissions: JSON) {
+    editResource(id: $id, permissions: $permissions) {
+      id
+      name
+      permissions {
+        canSee {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/** Interface of Edit Resource Access mutation response */
+export interface EditResourceAccessMutationResponse {
+  editResource: Resource;
 }

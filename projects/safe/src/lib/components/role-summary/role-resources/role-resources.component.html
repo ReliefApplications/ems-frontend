@@ -1,1 +1,50 @@
-<p>role-resources works!</p>
+<table *ngIf="!loading" mat-table [dataSource]="resources">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>
+      {{ 'common.name' | translate }}
+    </th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <safe-button
+        [isIcon]="true"
+        [icon]="
+          accessibleResources.includes(element.id)
+            ? 'visibility'
+            : 'visibility_off'
+        "
+        [variant]="
+          accessibleResources.includes(element.id) ? 'primary' : 'grey'
+        "
+        [matTooltip]="
+          (accessibleResources.includes(element.id)
+            ? 'components.role.tooltip.hideFeature'
+            : 'components.role.tooltip.showFeature'
+          ) | translate: { page: element.name }
+        "
+        (click)="onEditAccess(element)"
+      >
+      </safe-button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+</table>
+<safe-skeleton-table
+  *ngIf="loading"
+  [columns]="['common.name']"
+  [actions]="true"
+>
+</safe-skeleton-table>
+<mat-paginator
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [length]="pageInfo.length"
+  aria-label="Select page of applications"
+  (page)="onPage($event)"
+>
+</mat-paginator>

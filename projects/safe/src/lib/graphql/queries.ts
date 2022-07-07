@@ -269,6 +269,12 @@ export const GET_RESOURCES = gql`
         node {
           id
           name
+          permissions {
+            canSee {
+              id
+              title
+            }
+          }
         }
         cursor
       }
