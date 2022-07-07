@@ -13,10 +13,14 @@ import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
+import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
-import { createAggregationForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 import { SafeAddCardComponent } from './add-card/add-card.component';
 import { SafeCardModalComponent } from './card-modal/card-modal.component';
+import {
+  GetRecordByIdQueryResponse,
+  GET_RECORD_BY_ID,
+} from '../../../graphql/queries';
 
 /** Define max height of widgets */
 const MAX_ROW_SPAN = 4;
@@ -42,6 +46,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
+
+  // === CARDS CONTENTS ===
+  cardsContent: any[] = [];
 
   // === WIDGET ===
   @Input() tile: any;
@@ -75,7 +82,11 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * @param fb Angular Form Builder
    * @param dialog Material Dialog Service
    */
-  constructor(private fb: FormBuilder, private dialog: MatDialog) {}
+  constructor(
+    private fb: FormBuilder,
+    private dialog: MatDialog,
+    private apollo: Apollo,
+  ) {}
 
   /**
    * Build the settings form, using the widget saved parameters.
@@ -90,6 +101,10 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
         get(this.tile, 'settings.cards', []).map((x: any) => this.cardForm(x))
       ),
     });
+    this.getCardsContent(this.cards.value);
+    this.cards.valueChanges.subscribe((value: any) => {
+      this.getCardsContent(value);
+    })
     this.change.emit(this.tileForm);
   }
 
@@ -225,5 +240,82 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       height: e.newRowSpan,
       width: e.newColSpan,
     });
+  }
+
+  private getCardsContent(cards: any[]) {
+
+    const newCardsContent: any[] = [];
+
+    cards.map((card: any, i: number) => {
+      newCardsContent.push({
+        html: card.html,
+        record: null
+      });
+      if (this.cardsContent[i] && this.cardsContent[i].record.id === card.record) {
+        newCardsContent[i] = this.cardsContent[i];
+        newCardsContent[i].html = this.replaceRecordFields(
+          card.html,
+          newCardsContent[i].record
+        );
+      } else if (card.record) {
+        this.apollo
+          .watchQuery<GetRecordByIdQueryResponse>({
+            query: GET_RECORD_BY_ID,
+            variables: {
+              id: card.record,
+            },
+          })
+          .valueChanges.subscribe((res) => {
+            if (res) {
+              newCardsContent[i].record = res.data.record;
+              newCardsContent[i].html = this.replaceRecordFields(
+                card.html,
+                newCardsContent[i].record
+              );
+            }
+          });
+      }
+    })
+
+    this.cardsContent = newCardsContent;
+  }
+
+  /**
+   *
+   * @param html
+   * @param record
+   */
+  private replaceRecordFields(html: string, record: any): string {
+    const fields = this.getFieldsValue(record);
+    let formatedHtml = html;
+    for (const [key, value] of Object.entries(fields)) {
+      if (value) {
+        const regex = new RegExp(`@\\bdata.${key}\\b`, 'gi');
+        formatedHtml = formatedHtml.replace(regex, value as string);
+      }
+    }
+    return formatedHtml;
+  }
+
+  /**
+   *
+   * @param record
+   */
+  private getFieldsValue(record: any) {
+    const fields: any = {};
+    for (const [key, value] of Object.entries(record)) {
+      if (!key.startsWith('__') && key !== 'form') {
+        if (value instanceof Object) {
+          for (const [key2, value2] of Object.entries(value)) {
+            if (!key2.startsWith('__')) {
+              fields[(key === 'data' ? '' : key + '.') + key2] = value2;
+            }
+          }
+        } else {
+          fields[key] = value;
+        }
+      }
+    }
+    return fields;
   }
 }
