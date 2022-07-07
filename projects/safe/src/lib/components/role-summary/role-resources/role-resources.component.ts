@@ -162,6 +162,8 @@ export class RoleResourcesComponent implements OnInit {
           id: resource.id,
           permissions: {
             canSee: canSeePermissions,
+            canUpdate: canSeePermissions,
+            canDelete: canSeePermissions,
           },
         },
       })
