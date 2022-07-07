@@ -19,15 +19,17 @@ import { get } from 'lodash';
 export class RoleDashboardsComponent implements OnInit, OnChanges {
   @Input() role!: Role;
   @Input() pages: Page[] = [];
+  @Input() search = '';
   @Input() loading = false;
 
   @Output() edit = new EventEmitter();
 
   public displayedColumns = ['name', 'actions'];
   public accessiblePages: string[] = [];
+  public filteredPages = this.pages;
 
   ngOnInit(): void {
-    this.accessiblePages = this.pages
+    this.accessiblePages = this.filteredPages
       .filter((x) =>
         get(x, 'permissions.canSee', [])
           .map((y: any) => y.id)
@@ -37,7 +39,10 @@ export class RoleDashboardsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    this.accessiblePages = this.pages
+    this.filteredPages = this.pages.filter((x) =>
+      x.name?.toLowerCase().includes(this.search)
+    );
+    this.accessiblePages = this.filteredPages
       .filter((x) =>
         get(x, 'permissions.canSee', [])
           .map((y: any) => y.id)

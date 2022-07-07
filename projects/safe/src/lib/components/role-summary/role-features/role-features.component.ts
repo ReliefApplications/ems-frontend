@@ -31,6 +31,9 @@ export class RoleFeaturesComponent implements OnInit {
   public forms: Page[] = [];
   public workflows: Page[] = [];
 
+  // search query
+  public search = '';
+
   /**
    * Features tab of Role Summary component.
    * Visible only in applications.

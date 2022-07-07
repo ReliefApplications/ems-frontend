@@ -47,15 +47,17 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
   @Input() role!: Role;
   @Input() pages: Page[] = [];
   @Input() loading = false;
+  @Input() search = '';
 
   public steps: Step[] = [];
+  public filteredSteps = this.steps;
   public accessibleSteps: string[] = [];
-
   @Output() edit = new EventEmitter();
 
   public displayedColumns = ['name', 'actions'];
   public openedWorkflowId = '';
   public accessiblePages: string[] = [];
+  public filteredPages = this.pages;
 
   /**
    * Component for the workflows section of the roles features
@@ -65,7 +67,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
-    this.accessiblePages = this.pages
+    this.accessiblePages = this.filteredPages
       .filter((x) =>
         get(x, 'permissions.canSee', [])
           .map((y: any) => y.id)
@@ -75,7 +77,16 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    this.accessiblePages = this.pages
+    this.filteredSteps = this.steps.filter((x) =>
+      x.name?.toLowerCase().includes(this.search)
+    );
+
+    // shows workflows that don't match the search if one of its steps does
+    this.filteredPages = this.pages.filter(
+      (x) =>
+        x.name?.toLowerCase().includes(this.search) || this.filteredSteps.length
+    );
+    this.accessiblePages = this.filteredPages
       .filter((x) =>
         get(x, 'permissions.canSee', [])
           .map((y: any) => y.id)
@@ -91,6 +102,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
    */
   toggleWorkflow(page: Page): void {
     this.steps = [];
+    this.filteredSteps = [];
     if (page.id === this.openedWorkflowId) {
       this.openedWorkflowId = '';
     } else {
@@ -105,7 +117,10 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
         .subscribe((res) => {
           if (res.data) {
             this.steps = get(res.data.workflow, 'steps', []);
-            this.accessibleSteps = this.steps
+            this.filteredSteps = this.steps.filter((x) =>
+              x.name?.toLowerCase().includes(this.search)
+            );
+            this.accessibleSteps = this.filteredSteps
               .filter((x) =>
                 get(x, 'permissions.canSee', [])
                   .map((y: any) => y.id)
@@ -153,6 +168,9 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
           const steps = [...this.steps];
           steps[index] = res.data.editStep;
           this.steps = steps;
+          this.filteredSteps = this.steps.filter((x) =>
+            x.name?.toLowerCase().includes(this.search)
+          );
           this.accessibleSteps = this.steps
             .filter((x) =>
               get(x, 'permissions.canSee', [])

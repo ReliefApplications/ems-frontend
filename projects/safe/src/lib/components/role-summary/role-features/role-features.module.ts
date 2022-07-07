@@ -8,6 +8,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatTableModule } from '@angular/material/table';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeIconModule } from '../../ui/icon/icon.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 /**
  * Features tab of Role Summary component.
@@ -22,6 +26,11 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
   ],
   imports: [
     CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    FormsModule,
+    ReactiveFormsModule,
     TranslateModule,
     MatTableModule,
     SafeButtonModule,
