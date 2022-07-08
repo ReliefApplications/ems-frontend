@@ -1,9 +1,7 @@
 <div class="widget-container">
   <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
     <span class="widget-title" [title]="settings ? settings.title : ''">{{
-      settings && settings.title
-        ? settings.title
-        : ('models.widget.map.defaultTitle' | translate)
+      settings.title
     }}</span>
   </kendo-tilelayout-item-header>
   <div [id]="mapId" class="widget-content">
