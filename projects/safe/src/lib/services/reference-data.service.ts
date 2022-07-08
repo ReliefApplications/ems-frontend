@@ -96,11 +96,13 @@ export class SafeReferenceDataService {
    *
    * @param referenceDataID ReferenceData ID.
    * @param displayField Field used for display in the question.
+   * @param filter The filter object
    * @returns Promised choices.
    */
   public async getChoices(
     referenceDataID: string,
-    displayField: string
+    displayField: string,
+    filter: any = {}
   ): Promise<{ value: string | number; text: string }[]> {
     // Initialisation
     let items: any;

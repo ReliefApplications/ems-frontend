@@ -3,7 +3,7 @@ import { SafeFormModalComponent } from '../components/form-modal/form-modal.comp
 import { DomService } from '../services/dom.service';
 import { SafeResourceGridModalComponent } from '../components/search-resource-grid-modal/search-resource-grid-modal.component';
 import { FormGroup } from '@angular/forms';
-import { ChoicesRestful, JsonMetadata } from 'survey-angular';
+import { ChoicesRestful, JsonMetadata, Question } from 'survey-angular';
 import * as SurveyCreator from 'survey-creator';
 import { SafeButtonComponent } from '../components/ui/button/button.component';
 import { ButtonSize } from '../components/ui/button/button-size.enum';
@@ -563,27 +563,63 @@ export const init = (
       }
       // === REFERENCE DATA CHOICES ===
       if (SELECTABLE_TYPES.includes(question.getType())) {
+        // if (
+        //   question.referenceDataFilterFilterFromQuestion &&
+        //   question.referenceDataFilterForeignField &&
+        //   question.referenceDataFilterFilterCondition &&
+        //   question.referenceDataFilterLocalField
+        // ) {
+        //   filter = {
+        //     foreignQuestion: question.survey
+        //       .getAllQuestions()
+        //       .find(
+        //         (x: any) =>
+        //           x.name === question.referenceDataFilterFilterFromQuestion
+        //       ),
+        //     foreignField: question.referenceDataFilterForeignField,
+        //     operator: question.referenceDataFilterFilterCondition,
+        //     localField: question.referenceDataFilterLocalField,
+        //   };
+        // }
+        // define a function to update the choices
+        const updateChoices = () => {
+          referenceDataService
+            .getChoices(
+              question.referenceData,
+              question.referenceDataDisplayField
+            )
+            .then((choices) => {
+              question.referenceDataChoicesLoaded = true;
+              question.choices = choices;
+            });
+        };
+        // init the choices
+        if (
+          !question.referenceDataChoicesLoaded &&
+          question.referenceData &&
+          question.referenceDataDisplayField
+        ) {
+          updateChoices();
+        }
+        // look on changes
         question.registerFunctionOnPropertyValueChanged('referenceData', () => {
           question.referenceDataDisplayField = null;
+          question.choices = [];
         });
-        if (question.referenceData && question.referenceDataDisplayField) {
-          if (
-            question.populatedReferenceData !==
-            question.referenceData + question.referenceDataDisplayField
-          ) {
-            question.populatedReferenceData =
-              question.referenceData + question.referenceDataDisplayField;
-            referenceDataService
-              .getChoices(
-                question.referenceData,
-                question.referenceDataDisplayField
-              )
-              .then((choices) => {
-                question.choices = choices;
-              });
+        question.registerFunctionOnPropertyValueChanged(
+          'referenceDataDisplayField',
+          () => {
+            updateChoices();
           }
-        }
+        );
+        const foreignQuestion: Question = question.survey
+          .getAllQuestions()
+          .find(
+            (x: any) =>
+              x.name === question.referenceDataFilterFilterFromQuestion
+          );
       }
+      console.log('after render', question.name);
     },
     willUnmount: (): void => {},
   };
