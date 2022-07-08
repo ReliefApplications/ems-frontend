@@ -1,9 +1,5 @@
-import { DomService } from '../services/dom.service';
 import { ChoicesRestful } from 'survey-angular';
 import get from 'lodash/get';
-import { SafeReferenceDataService } from '../services/reference-data.service';
-import { SafeReferenceDataDropdownComponent } from '../components/reference-data-dropdown/reference-data-dropdown.component';
-import * as SurveyCreator from 'survey-creator';
 
 /** Available question type with choices */
 const SELECTABLE_TYPES = ['dropdown', 'checkbox', 'radiogroup', 'tagbox'];
@@ -16,12 +12,7 @@ const SELECTABLE_TYPES = ['dropdown', 'checkbox', 'radiogroup', 'tagbox'];
  * @param referenceDataService Reference data service
  * @param domService Dom service.
  */
-export const initCustomProperties = (
-  Survey: any,
-  environment: any,
-  referenceDataService: SafeReferenceDataService,
-  domService: DomService
-): void => {
+export const initCustomProperties = (Survey: any, environment: any): void => {
   // change the prefix for comments
   Survey.settings.commentPrefix = '_comment';
   // add tooltip property
@@ -58,75 +49,23 @@ export const initCustomProperties = (
     visibleIndex: 350,
     category: 'logic',
   });
-
-  // === REFERENCE DATA SELECTION ===
-  Survey.Serializer.addProperty('selectbase', {
-    name: 'referenceData',
-    category: 'Choices from Reference data',
-    type: 'referenceDataDropdown',
-    visibleIndex: 1,
-  });
-
-  Survey.Serializer.addProperty('selectbase', {
-    name: 'referenceDataDisplayField',
-    displayName: 'Display field',
-    category: 'Choices from Reference data',
-    required: true,
-    dependsOn: 'referenceData',
-    visibleIf: (obj: any) => {
-      if (!obj || !obj.referenceData) {
-        return false;
-      } else {
-        return true;
-      }
-    },
-    visibleIndex: 2,
-    choices: (obj: any, choicesCallback: any) => {
-      if (obj.referenceData) {
-        referenceDataService
-          .loadReferenceData(obj.referenceData)
-          .then((referenceData) => choicesCallback(referenceData.fields || []));
-      }
-    },
-  });
-
-  const referenceDataEditor = {
-    render: (editor: any, htmlElement: any) => {
-      const question = editor.object;
-      const dropdown = domService.appendComponentToBody(
-        SafeReferenceDataDropdownComponent,
-        htmlElement
-      );
-      const instance: SafeReferenceDataDropdownComponent = dropdown.instance;
-      instance.referenceData = question.referenceData;
-      instance.choice.subscribe((res) => editor.onChanged(res));
-    },
-  };
-  SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-    'referenceDataDropdown',
-    referenceDataEditor
-  );
 };
 
 /**
  * Render the custom properties
  *
- * @param domService The dom service
- * @param referenceDataService Reference data service
  * @returns A function which render the custom properties on a question
  */
 export const renderCustomProperties =
-  (
-    domService: DomService,
-    referenceDataService: SafeReferenceDataService
-  ): ((survey: any, options: any) => void) =>
+  (): ((survey: any, options: any) => void) =>
   (_: any, options: { question: any; htmlElement: any }): void => {
     // get the question and the html element of the question
     const el = options.htmlElement;
     const question = options.question;
 
     // Display the tooltip
-    const header = el.parentElement.parentElement.querySelector('.sv_q_title');
+    const header =
+      el?.parentElement?.parentElement?.querySelector('.sv_q_title');
     if (header) {
       header.title = get(
         question,
@@ -150,29 +89,5 @@ export const renderCustomProperties =
     // define the max size for files
     if (question.getType() === 'file') {
       question.maxSize = 7340032;
-    }
-
-    // === REFERENCE DATA CHOICES ===
-    if (SELECTABLE_TYPES.includes(question.getType())) {
-      question.registerFunctionOnPropertyValueChanged('referenceData', () => {
-        question.referenceDataDisplayField = null;
-      });
-      if (question.referenceData && question.referenceDataDisplayField) {
-        if (
-          question.populatedReferenceData !==
-          question.referenceData + question.referenceDataDisplayField
-        ) {
-          question.populatedReferenceData =
-            question.referenceData + question.referenceDataDisplayField;
-          referenceDataService
-            .getChoices(
-              question.referenceData,
-              question.referenceDataDisplayField
-            )
-            .then((choices) => {
-              question.choices = choices;
-            });
-        }
-      }
     }
   };

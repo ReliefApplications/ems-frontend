@@ -14,8 +14,6 @@ import * as Survey from 'survey-angular';
 import { Form } from '../../models/form.model';
 import { TranslateService } from '@ngx-translate/core';
 import { renderCustomProperties } from '../../survey/custom-properties';
-import { DomService } from '../../services/dom.service';
-import { SafeReferenceDataService } from '../../services/reference-data.service';
 
 /**
  * Array containing the different types of questions.
@@ -112,9 +110,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     @Inject('environment') environment: any,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService,
-    private domService: DomService,
-    private referenceDataService: SafeReferenceDataService
+    private translate: TranslateService
   ) {
     this.environment = environment;
     // translate the editor in the same language as the interface
@@ -214,12 +210,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderCustomProperties(this.domService, this.referenceDataService)
+      renderCustomProperties()
     );
     this.surveyCreator.onTestSurveyCreated.add((_, options) =>
-      options.survey.onAfterRenderQuestion.add(
-        renderCustomProperties(this.domService, this.referenceDataService)
-      )
+      options.survey.onAfterRenderQuestion.add(renderCustomProperties())
     );
   }
 
@@ -244,7 +238,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
       // add the rendering of custom properties
       this.surveyCreator.survey.onAfterRenderQuestion.add(
-        renderCustomProperties(this.domService, this.referenceDataService)
+        renderCustomProperties()
       );
     }
   }

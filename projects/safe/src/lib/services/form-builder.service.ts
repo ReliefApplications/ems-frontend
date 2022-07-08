@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as Survey from 'survey-angular';
 import { renderCustomProperties } from '../survey/custom-properties';
-import { DomService } from './dom.service';
-import { SafeReferenceDataService } from './reference-data.service';
 
 /**
  * Shared form builder service.
@@ -18,10 +16,7 @@ export class SafeFormBuilderService {
    * @param domService The dom service
    * @param referenceDataService Reference data service
    */
-  constructor(
-    private domService: DomService,
-    private referenceDataService: SafeReferenceDataService
-  ) {}
+  constructor() {}
 
   /**
    * Creates new survey from the structure and add on complete expression to it.
@@ -31,9 +26,7 @@ export class SafeFormBuilderService {
    */
   createSurvey(structure: string): Survey.Survey {
     const survey = new Survey.Model(structure);
-    survey.onAfterRenderQuestion.add(
-      renderCustomProperties(this.domService, this.referenceDataService)
-    );
+    survey.onAfterRenderQuestion.add(renderCustomProperties());
     const onCompleteExpression = survey.toJSON().onCompleteExpression;
     if (onCompleteExpression) {
       survey.onCompleting.add(() => {

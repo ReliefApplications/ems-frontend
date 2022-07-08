@@ -9,6 +9,7 @@ import { init as initOwnerComponent } from './components/owner';
 import { init as initUsersComponent } from './components/users';
 import { init as initTextWidget } from './widgets/text-widget';
 import { init as initCommentWidget } from './widgets/comment-widget';
+import { init as initSelectBasWidget } from './widgets/select-base-widget';
 import { initCustomProperties } from './custom-properties';
 import addCustomFunctions from '../utils/custom-functions';
 import { Apollo } from 'apollo-angular';
@@ -44,13 +45,14 @@ export const initCustomSurvey = (
   widgets.select2tagbox(Survey);
   initCommentWidget(Survey);
   initTextWidget(Survey, domService);
+  initSelectBasWidget(Survey, domService, referenceDataService);
   // load components (same as widgets, but with less configuration options)
   initResourceComponent(Survey, domService, apollo, dialog, formBuilder);
   initResourcesComponent(Survey, domService, apollo, dialog, formBuilder);
   initOwnerComponent(Survey, domService, apollo);
   initUsersComponent(Survey, domService, apollo);
   // load custom properties
-  initCustomProperties(Survey, environment, referenceDataService, domService);
+  initCustomProperties(Survey, environment);
   // load internal functions
   addCustomFunctions(Survey, authService, apollo);
 };
