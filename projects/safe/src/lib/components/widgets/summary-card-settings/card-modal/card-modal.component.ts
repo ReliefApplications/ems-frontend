@@ -15,6 +15,8 @@ import {
   GetResourceByIdQueryResponse,
   GET_GRID_FORM_META,
   GetFormByIdQueryResponse,
+  GetRecordByIdQueryResponse,
+  GET_RECORD_BY_ID,
 } from '../../../../graphql/queries';
 
 /**
@@ -29,12 +31,20 @@ import {
 export class SafeCardModalComponent implements OnInit, AfterViewInit {
   @ViewChild('tabGroup') tabGroup: any;
 
+  // === CURRENT TAB ===
   private activeTabIndex: number | undefined;
 
+  // === RESOURCE DATA ===
   public dataset: any;
 
+  // === GRID FOR RECORD SELECTION SETTINGS ===
   public gridSettings: any;
 
+  // === RECORD DATA ===
+  public loadedRecord: any;
+  private recordSubscription: any;
+
+  // === FORM WITH CARD SETTINGS INFORMATION ===
   public form: any;
 
   /**
@@ -110,6 +120,48 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
         this.gridSettings = this.findLayout(this.dataset.layouts, value[0]);
       }
     });
+
+    // Fetches the specified record data.
+
+    if (this.form.value.record) {
+      this.recordSubscription = this.apollo
+      .watchQuery<GetRecordByIdQueryResponse>({
+        query: GET_RECORD_BY_ID,
+        variables: {
+          id: this.form.value.record,
+        },
+      })
+      .valueChanges.subscribe((res) => {
+        if (res) {
+          this.loadedRecord = res.data.record;
+        } else {
+          this.loadedRecord = null;
+        }
+      });
+    }
+    this.form.controls.record.valueChanges.subscribe((value: any) => {
+      if (!this.loadedRecord || this.loadedRecord.id !== value) {
+        if (this.recordSubscription) {
+          this.recordSubscription.unsubscribe();
+        }
+        if (value) {
+          this.recordSubscription = this.apollo
+            .watchQuery<GetRecordByIdQueryResponse>({
+              query: GET_RECORD_BY_ID,
+              variables: {
+                id: value,
+              },
+            })
+            .valueChanges.subscribe((res) => {
+              if (res) {
+                this.loadedRecord = res.data.record;
+              } else {
+                this.loadedRecord = null;
+              }
+            });
+        }
+      }
+    })
   }
 
   /**

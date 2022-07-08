@@ -1,10 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
-import {
-  GetRecordByIdQueryResponse,
-  GET_RECORD_BY_ID,
-} from '../../../../../graphql/queries';
 
 /**
  * Component used in the card-modal-settings for previewing the final result.
@@ -16,10 +12,7 @@ import {
 })
 export class SafePreviewTabComponent implements OnChanges {
   @Input() html = '';
-  @Input() record?: string;
-
-  private recordSubscription: Subscription | undefined;
-  private loadedRecord: any;
+  @Input() record: any;
 
   public formatedHtml: string = this.html;
 
@@ -34,36 +27,13 @@ export class SafePreviewTabComponent implements OnChanges {
    * Detects when the html or record inputs change.
    */
   ngOnChanges(): void {
-    if (!this.loadedRecord || this.loadedRecord.id !== this.record) {
-      if (this.recordSubscription) {
-        this.recordSubscription.unsubscribe();
-      }
-      if (this.record) {
-        this.recordSubscription = this.apollo
-          .watchQuery<GetRecordByIdQueryResponse>({
-            query: GET_RECORD_BY_ID,
-            variables: {
-              id: this.record,
-            },
-          })
-          .valueChanges.subscribe((res) => {
-            if (res) {
-              this.loadedRecord = res.data.record;
-              this.formatedHtml = this.replaceRecordFields(
-                this.html,
-                this.loadedRecord
-              );
-            } else {
-              this.loadedRecord = null;
-              this.formatedHtml = this.html;
-            }
-          });
-      }
-    } else {
+    if (this.record) {
       this.formatedHtml = this.replaceRecordFields(
         this.html,
-        this.loadedRecord
+        this.record
       );
+    } else {
+      this.formatedHtml = this.html;
     }
   }
 

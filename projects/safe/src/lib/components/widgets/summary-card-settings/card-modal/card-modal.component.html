@@ -38,10 +38,10 @@
             | translate
         "
       >
-      <safe-text-editor-tab *ngIf="isEditorTab()" [form]="form"></safe-text-editor-tab>
+        <safe-text-editor-tab *ngIf="isEditorTab()" [form]="form" [record]="loadedRecord"></safe-text-editor-tab>
       </mat-tab>
       <mat-tab [label]="'common.preview' | translate">
-        <safe-preview-tab [html]="form.value.html" [record]="form.value.record"></safe-preview-tab>
+        <safe-preview-tab [html]="form.value.html" [record]="loadedRecord"></safe-preview-tab>
       </mat-tab>
     </mat-tab-group>
   </form>
