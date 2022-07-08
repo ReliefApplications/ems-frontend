@@ -9,14 +9,11 @@ const formBuilder = new FormBuilder();
  * Builds a filter form
  *
  * @param filter Initial filter
- * @param fields List of fields
  * @returns Filter form
  */
-export const createFilterGroup = (filter: any, fields: any): FormGroup => {
+export const createFilterGroup = (filter: any): FormGroup => {
   if (filter?.filters) {
-    const filters = filter.filters.map((x: any) =>
-      createFilterGroup(x, fields)
-    );
+    const filters = filter.filters.map((x: any) => createFilterGroup(x));
     return formBuilder.group({
       logic: filter.logic || 'and',
       filters: formBuilder.array(filters),
@@ -58,12 +55,12 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
           Validators.required
         ),
         sort: formBuilder.group({
-          field: [field.sort ? field.sort.field : ''],
-          order: [field.sort && field.sort.order ? field.sort.order : 'asc'],
+          field: [get(field, 'sort.field', '')],
+          order: [get(field, 'sort.order', 'asc')],
         }),
         filter: newField
           ? formBuilder.group({})
-          : createFilterGroup(field.filter, null),
+          : createFilterGroup(field.filter),
       });
     }
     case 'OBJECT': {
@@ -104,18 +101,18 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
  */
 export const createQueryForm = (value: any, validators = true): FormGroup =>
   formBuilder.group({
-    name: [value ? value.name : '', validators ? Validators.required : null],
-    template: [value ? value.template : '', null],
+    name: [get(value, 'name', ''), validators ? Validators.required : null],
+    template: [get(value, 'template', ''), null],
     pageSize: [value?.pageSize || 10],
     fields: formBuilder.array(
       value && value.fields ? value.fields.map((x: any) => addNewField(x)) : [],
       validators ? Validators.required : null
     ),
     sort: formBuilder.group({
-      field: [value && value.sort ? value.sort.field : ''],
-      order: [value && value.sort ? value.sort.order : 'asc'],
+      field: [get(value, 'sort.field', '')],
+      order: [get(value, 'sort.order', 'asc')],
     }),
-    filter: createFilterGroup(value && value.filter ? value.filter : {}, null),
+    filter: createFilterGroup(get(value, 'filter', {})),
     style: formBuilder.array(
       value && value.style && value.style.length
         ? value.style.map((x: any) => createStyleForm(x))
@@ -156,5 +153,5 @@ export const createStyleForm = (value: any): FormGroup =>
       italic: [value?.text?.italic || false],
     }),
     fields: [value?.fields || []],
-    filter: createFilterGroup(value?.filter || {}, null),
+    filter: createFilterGroup(value?.filter || {}),
   });

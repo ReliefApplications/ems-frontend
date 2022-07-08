@@ -13,6 +13,9 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
 import { Form } from '../../models/form.model';
 import { TranslateService } from '@ngx-translate/core';
+import { renderCustomProperties } from '../../survey/custom-properties';
+import { DomService } from '../../services/dom.service';
+import { SafeReferenceDataService } from '../../services/reference-data.service';
 
 /**
  * Array containing the different types of questions.
@@ -102,12 +105,16 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param dialog This is the Angular Material Dialog service used to display dialog modals
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
+   * @param domService The dom service
+   * @param referenceDataService Reference data service
    */
   constructor(
     @Inject('environment') environment: any,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private domService: DomService,
+    private referenceDataService: SafeReferenceDataService
   ) {
     this.environment = environment;
     // translate the editor in the same language as the interface
@@ -212,6 +219,16 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         });
       });
     }
+
+    // add the rendering of custom properties
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      renderCustomProperties(this.domService, this.referenceDataService)
+    );
+    this.surveyCreator.onTestSurveyCreated.add((_, options) =>
+      options.survey.onAfterRenderQuestion.add(
+        renderCustomProperties(this.domService, this.referenceDataService)
+      )
+    );
   }
 
   ngOnChanges(): void {
@@ -227,6 +244,16 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         // Highlight core fields
         this.addCustomClassToCoreFields(coreFields);
       }
+
+      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
+        (survey: Survey.SurveyModel, options: any) =>
+          this.onSetCustomCss(options)
+      );
+
+      // add the rendering of custom properties
+      this.surveyCreator.survey.onAfterRenderQuestion.add(
+        renderCustomProperties(this.domService, this.referenceDataService)
+      );
     }
   }
 

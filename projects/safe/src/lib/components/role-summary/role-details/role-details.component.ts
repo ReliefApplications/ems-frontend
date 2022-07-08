@@ -23,6 +23,15 @@ export class RoleDetailsComponent implements OnInit {
   public form!: FormGroup;
   @Output() edit = new EventEmitter();
 
+  /** Setter for the loading state */
+  @Input() set loading(loading: boolean) {
+    if (loading) {
+      this.form?.disable();
+    } else {
+      this.form?.enable();
+    }
+  }
+
   /**
    * General tab of Role Summary.
    * Contain title / description of role + list of users and permissions.

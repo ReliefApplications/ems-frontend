@@ -1,6 +1,4 @@
 import { Apollo } from 'apollo-angular';
-import { FormBuilder } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import { DomService } from '../../services/dom.service';
 import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
@@ -12,18 +10,14 @@ import {
 /**
  * Inits the owner component.
  *
- * @param survey Survey class.
+ * @param Survey Survey library.
  * @param domService Dom service.
  * @param apollo Apollo client.
- * @param dialog Dialog service.
- * @param formBuilder Form Builder service.
  */
 export const init = (
-  survey: any,
+  Survey: any,
   domService: DomService,
-  apollo: Apollo,
-  dialog: MatDialog,
-  formBuilder: FormBuilder
+  apollo: Apollo
 ): void => {
   const component = {
     name: 'owner',
@@ -37,7 +31,7 @@ export const init = (
       choices: [] as any[],
     },
     onInit: (): void => {
-      survey.Serializer.addProperty('owner', {
+      Survey.Serializer.addProperty('owner', {
         name: 'applications',
         category: 'Owner properties',
         type: 'applicationsDropdown',
@@ -84,5 +78,5 @@ export const init = (
     },
     onAfterRender: (question: any, el: any): void => {},
   };
-  survey.ComponentCollection.Instance.add(component);
+  Survey.ComponentCollection.Instance.add(component);
 };

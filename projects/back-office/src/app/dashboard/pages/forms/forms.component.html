@@ -1,9 +1,6 @@
 <div class="forms-header">
   <!-- FILTERING -->
-  <app-filter
-    (filter)="onFilter($event)"
-    [loading]="filterLoading"
-  ></app-filter>
+  <app-filter (filter)="onFilter($event)" [loading]="updating"></app-filter>
   <!-- ACTIONS -->
   <div class="actions">
     <safe-button
@@ -18,10 +15,16 @@
   </div>
 </div>
 
-<table *ngIf="!loading" mat-table [dataSource]="forms" matSort>
+<table
+  *ngIf="!loading"
+  mat-table
+  [dataSource]="forms"
+  matSort
+  (matSortChange)="onSort($event)"
+>
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
+      <span class="headerTitle" mat-sort-header="name">
         {{ 'common.name' | translate }}
       </span>
     </th>
@@ -30,7 +33,7 @@
 
   <ng-container matColumnDef="createdAt">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
+      <span class="headerTitle" mat-sort-header="createdAt">
         {{ 'common.createdOn' | translate }}
       </span>
     </th>
@@ -41,7 +44,7 @@
 
   <ng-container matColumnDef="status">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
+      <span class="headerTitle">
         {{ 'common.status' | translate }}
       </span>
     </th>
@@ -76,7 +79,7 @@
 
   <ng-container matColumnDef="versionsCount">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
+      <span class="headerTitle">
         {{ 'common.history' | translate }}
       </span>
     </th>
@@ -85,7 +88,7 @@
 
   <ng-container matColumnDef="recordsCount">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
+      <span class="headerTitle">
         {{ 'common.record.few' | translate }}
       </span>
     </th>
@@ -94,7 +97,7 @@
 
   <ng-container matColumnDef="core">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
+      <span class="headerTitle">
         {{ 'components.forms.isCore' | translate }}
       </span>
     </th>
@@ -109,7 +112,7 @@
 
   <ng-container matColumnDef="parentForm">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
+      <span class="headerTitle">
         {{ 'components.forms.parent' | translate }}
       </span>
     </th>
@@ -192,7 +195,8 @@
 >
 </safe-skeleton-table>
 <mat-paginator
-  [disabled]="loading"
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
   [pageSize]="pageInfo.pageSize"
   [pageSizeOptions]="[10, 25, 50]"
   [length]="pageInfo.length"

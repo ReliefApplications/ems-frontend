@@ -229,8 +229,8 @@ export class SafeTabFilterComponent implements OnInit {
       this.gridService.populateMetaFields(this.metaFields);
     }
     this.form.value?.filters.forEach((x: any, index: number) => {
-      if (x.field) {
-        let field = this.fields.find((y) => y.name === x.field.split('.')[0]);
+      let field = this.fields.find((y) => y.name === x?.field?.split('.')[0]);
+      if (field) {
         let name = field.name;
         if (field.type.kind === 'OBJECT') {
           field = field.type.fields.find(
