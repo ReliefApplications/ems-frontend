@@ -125,19 +125,19 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
 
     if (this.form.value.record) {
       this.recordSubscription = this.apollo
-      .watchQuery<GetRecordByIdQueryResponse>({
-        query: GET_RECORD_BY_ID,
-        variables: {
-          id: this.form.value.record,
-        },
-      })
-      .valueChanges.subscribe((res) => {
-        if (res) {
-          this.loadedRecord = res.data.record;
-        } else {
-          this.loadedRecord = null;
-        }
-      });
+        .watchQuery<GetRecordByIdQueryResponse>({
+          query: GET_RECORD_BY_ID,
+          variables: {
+            id: this.form.value.record,
+          },
+        })
+        .valueChanges.subscribe((res) => {
+          if (res) {
+            this.loadedRecord = res.data.record;
+          } else {
+            this.loadedRecord = null;
+          }
+        });
     }
     this.form.controls.record.valueChanges.subscribe((value: any) => {
       if (!this.loadedRecord || this.loadedRecord.id !== value) {
@@ -161,7 +161,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
             });
         }
       }
-    })
+    });
   }
 
   /**

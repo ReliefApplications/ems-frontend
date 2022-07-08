@@ -1,4 +1,11 @@
-import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
   EDITOR_LANGUAGE_PAIRS,
@@ -54,54 +61,62 @@ export class SafeTextEditorTabComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    let keys = this.getDataKeys(this.record);
+    const keys = this.getDataKeys(this.record);
 
-    this.editor.setup = function (editor: any) {
-      var onAction = function (autocompleteApi: any, rng: any, value: any) {
+    /**
+     *
+     * @param editor
+     */
+    this.editor.setup = (editor: any) => {
+      /**
+       *
+       * @param autocompleteApi
+       * @param rng
+       * @param value
+       */
+      const onAction = (autocompleteApi: any, rng: any, value: any) => {
         editor.selection.setRng(rng);
         editor.insertContent(value);
         autocompleteApi.hide();
       };
 
-      var getMatchedKeys = function (pattern: any) {
-        return keys.filter(function (key: any) {
-          return key.indexOf(pattern) !== -1;
-        });
-      };
+      /**
+       *
+       * @param pattern
+       */
+      const getMatchedKeys = (pattern: any) =>
+        keys.filter((key: any) => key.indexOf(pattern) !== -1);
 
       editor.ui.registry.addAutocompleter('specialchars_cardmenuitems', {
         ch: '@',
         minChars: 1,
         columns: 1,
         highlightOn: ['char_name'],
-        onAction: onAction,
-        fetch: function (pattern: any) {
-          return new Promise(function (resolve: any) {
-            var results = getMatchedKeys(pattern).map(function (key) {
-              return {
-                type: 'cardmenuitem',
-                value: key,
-                label: key,
-                items: [
-                  {
-                    type: 'cardcontainer',
-                    direction: 'vertical',
-                    items: [
-                      {
-                        type: 'cardtext',
-                        text: key,
-                        name: 'char_name'
-                      }
-                    ]
-                  }
-                ]
-              }
-            });
+        onAction,
+        fetch: (pattern: any) =>
+          new Promise((resolve: any) => {
+            const results = getMatchedKeys(pattern).map((key) => ({
+              type: 'cardmenuitem',
+              value: key,
+              label: key,
+              items: [
+                {
+                  type: 'cardcontainer',
+                  direction: 'vertical',
+                  items: [
+                    {
+                      type: 'cardtext',
+                      text: key,
+                      name: 'char_name',
+                    },
+                  ],
+                },
+              ],
+            }));
             resolve(results);
-          });
-        }
+          }),
       });
-    }
+    };
   }
 
   /**

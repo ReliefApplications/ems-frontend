@@ -28,10 +28,7 @@ export class SafePreviewTabComponent implements OnChanges {
    */
   ngOnChanges(): void {
     if (this.record) {
-      this.formatedHtml = this.replaceRecordFields(
-        this.html,
-        this.record
-      );
+      this.formatedHtml = this.replaceRecordFields(this.html, this.record);
     } else {
       this.formatedHtml = this.html;
     }
