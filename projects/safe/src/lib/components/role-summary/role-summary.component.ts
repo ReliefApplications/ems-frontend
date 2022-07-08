@@ -51,7 +51,6 @@ export class SafeRoleSummaryComponent implements OnInit {
    * @param e update event
    */
   onEditRole(e: any): void {
-    console.log({ ...e, id: this.id });
     this.loading = true;
     this.apollo
       .mutate<EditRoleMutationResponse>({

@@ -11,5 +11,7 @@
     "i18n-ally.usage.scanningIgnore": [
         "widgets/*",
         "dist/*",
-    ]
+    ],
+    "i18n-ally.tabStyle": "tab",
+    "i18n-ally.indent": 4
 }
