@@ -19,6 +19,7 @@ import {
   GET_ROLES,
 } from '../../graphql/queries';
 import { MatSelect } from '@angular/material/select';
+import { SafeSnackBarService } from '../../../../services/snackbar.service';
 
 /** Roles tab for the user summary */
 @Component({
@@ -59,8 +60,13 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
    *
    * @param fb Angular form builder
    * @param apollo Apollo client
+   * @param snackBar Shared snackbar service
    */
-  constructor(private fb: FormBuilder, private apollo: Apollo) {}
+  constructor(
+    private fb: FormBuilder,
+    private apollo: Apollo,
+    private snackBar: SafeSnackBarService
+  ) {}
 
   ngOnInit(): void {
     this.selectedRoles = this.fb.control(
@@ -94,13 +100,18 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
             sortField: 'name',
           },
         });
-      this.applicationsQuery.valueChanges.subscribe((res) => {
-        this.applications = res.data.applications.edges.map((x) => x.node);
-        this.pageInfo = res.data.applications.pageInfo;
-        this.loading = res.loading;
-        this.loadingApplications = res.loading;
-        this.selectedApplication.enable();
-      });
+      this.applicationsQuery.valueChanges.subscribe(
+        (res) => {
+          this.applications = res.data.applications.edges.map((x) => x.node);
+          this.pageInfo = res.data.applications.pageInfo;
+          this.loading = res.loading;
+          this.loadingApplications = res.loading;
+          this.selectedApplication.enable();
+        },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        }
+      );
     } else {
       this.applications = [this.application];
       this.selectedApplication.setValue(this.application.id);
@@ -129,18 +140,23 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
           application,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.roles = res.data.roles;
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.roles = res.data.roles;
+          }
+          this.selectedRoles.setValue(
+            get(this.user, 'roles', [])
+              .filter((x) => x.application?.id === application)
+              .map((x) => x.id),
+            { emitEvent: false }
+          );
+          this.loading = res.loading;
+        },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
         }
-        this.selectedRoles.setValue(
-          get(this.user, 'roles', [])
-            .filter((x) => x.application?.id === application)
-            .map((x) => x.id),
-          { emitEvent: false }
-        );
-        this.loading = res.loading;
-      });
+      );
   }
 
   /** Adds a scroll event listener for the application dropdown */
