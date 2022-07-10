@@ -1,5 +1,6 @@
 import { gql } from 'apollo-angular';
 import { Application } from '../../../models/application.model';
+import { Resource } from '../../../models/resource.model';
 import { Channel } from '../../../models/channel.model';
 import { Permission, Role } from '../../../models/user.model';
 import { Workflow } from '../../../models/workflow.model';
@@ -113,4 +114,29 @@ export const GET_WORKFLOW_STEPS = gql`
 /** Model for the response of the getWorkflowSteps query */
 export interface GetWorkflowStepsQueryResponse {
   workflow: Workflow;
+}
+
+/** Graphql request for getting forms of a resource */
+export const GET_RESOURCE_FORMS = gql`
+  query GetResourceForms($resource: ID!) {
+    resource(id: $resource) {
+      forms {
+        id
+        name
+        permissions {
+          canCreateRecords {
+            id
+          }
+          canSeeRecords
+          canUpdateRecords
+          canDeleteRecords
+        }
+      }
+    }
+  }
+`;
+
+/** Model for the response of the GetResourceForms query */
+export interface GetResourceFormsQueryResponse {
+  resource: Resource;
 }
