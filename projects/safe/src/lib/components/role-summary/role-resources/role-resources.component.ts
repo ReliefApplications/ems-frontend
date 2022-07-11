@@ -220,15 +220,31 @@ export class RoleResourcesComponent implements OnInit {
   onEditFormAccess(form: Form, action: Permission): void {
     if (!this.role.id) return;
 
-    // TODO: CHECK permissions ARG FORMAT
-    const newPermissions: string[] = get(form, `permissions.${action}`, []).map(
-      (x: any) => (x.role || x.id) as string
-    );
+    let newPermissions: string[] | { role: string }[];
+    switch (action) {
+      case Permission.CREATE:
+        newPermissions = get(form, `permissions.${action}`, []).map(
+          (x: any) => x.id as string
+        ) as string[];
 
-    // toggles the permission
-    const roleIndex = newPermissions.findIndex((x) => x === this.role.id);
-    if (roleIndex >= 0) newPermissions.splice(roleIndex, 1);
-    else newPermissions.push(this.role.id);
+        // toggles the permission
+        const index = newPermissions.findIndex((x) => x === this.role.id);
+        if (index >= 0) newPermissions.splice(index, 1);
+        else newPermissions.push(this.role.id);
+        break;
+      default:
+        newPermissions = get(form, `permissions.${action}`, []).map(
+          (x: any) => ({ role: x.role as string })
+        ) as { role: string }[];
+
+        // toggles the permission
+        const roleIndex = newPermissions.findIndex(
+          (x) => x.role === this.role.id
+        );
+        if (roleIndex >= 0) newPermissions.splice(roleIndex, 1);
+        else newPermissions.push({ role: this.role.id });
+    }
+
     this.apollo
       .mutate<EditFormAccessMutationResponse>({
         mutation: EDIT_FORM_ACCESS,
