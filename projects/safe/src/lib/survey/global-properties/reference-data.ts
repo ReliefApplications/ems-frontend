@@ -16,7 +16,7 @@ interface QuestionReferenceData extends QuestionSelectBase {
   referenceDataDisplayField?: string;
   referenceDataFilterFilterFromQuestion?: string;
   referenceDataFilterForeignField?: string;
-  referenceDataFilterFilterCondition?: 'equals';
+  referenceDataFilterFilterCondition?: string;
   referenceDataFilterLocalField?: string;
   referenceDataChoicesLoaded?: boolean;
 }
@@ -117,7 +117,18 @@ export const init = (
     visibleIf: (obj: null | QuestionReferenceData): boolean =>
       Boolean(obj?.referenceDataFilterFilterFromQuestion),
     visibleIndex: 5,
-    choices: ['equals'],
+    choices: [
+      { value: 'eq', text: '==' },
+      { value: 'neq', text: '!=' },
+      { value: 'gte', text: '>=' },
+      { value: 'gt', text: '>' },
+      { value: 'lte', text: '<=' },
+      { value: 'lt', text: '<' },
+      { value: 'contains', text: 'contains' },
+      { value: 'doesnotcontain', text: 'does not contain' },
+      { value: 'iscontained', text: 'is contained in' },
+      { value: 'isnotcontained', text: 'is not contained in' },
+    ],
   });
 
   serializer.addProperty('selectbase', {
