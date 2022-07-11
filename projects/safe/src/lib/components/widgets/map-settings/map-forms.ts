@@ -97,10 +97,7 @@ export const divisionForm = (value?: any): FormGroup =>
   fb.group({
     label: [get(value, 'label', DEFAULT_DIVISION.label)],
     color: [get(value, 'color', DEFAULT_DIVISION.color)],
-    filter: createFilterGroup(
-      get(value, 'filter', DEFAULT_DIVISION.filter),
-      null
-    ),
+    filter: createFilterGroup(get(value, 'filter', DEFAULT_DIVISION.filter)),
   });
 
 // === MARKERS ===
@@ -121,10 +118,7 @@ export const markerRuleForm = (value?: any): FormGroup =>
       get(value, 'size', DEFAULT_MARKER_RULE.size),
       [Validators.min(1), Validators.max(10)],
     ],
-    filter: createFilterGroup(
-      get(value, 'filter', DEFAULT_MARKER_RULE.filter),
-      null
-    ),
+    filter: createFilterGroup(get(value, 'filter', DEFAULT_MARKER_RULE.filter)),
   });
 
 // === MAP ===

@@ -652,7 +652,13 @@
 			},
 			"summary": {
 				"features": "Features",
+				"noFeatures": "No feature detected",
+				"noSteps": "No steps detected",
 				"title": "Summary"
+			},
+			"tooltip": {
+				"hideFeature": "Hide {{page}} from this role",
+				"showFeature": "Show {{page}} to this role"
 			},
 			"update": {
 				"permissions": "Permissions",

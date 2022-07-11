@@ -652,7 +652,13 @@
 			},
 			"summary": {
 				"features": "Fonctionnalités",
+				"noFeatures": "Aucune fonctionnalité détectée",
+				"noSteps": "Aucune étape détectée",
 				"title": "Résumé"
+			},
+			"tooltip": {
+				"hideFeature": "Masquer {{page}} pour ce rôle",
+				"showFeature": "Afficher {{page}} pour ce rôle"
 			},
 			"update": {
 				"permissions": "Permissions",
