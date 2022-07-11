@@ -105,7 +105,6 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
         },
       });
     this.applicationsQuery.valueChanges.subscribe((res) => {
-      console.log(res);
       this.cachedApplications = res.data.applications.edges.map((x) => x.node);
       this.applications.data = this.cachedApplications.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
@@ -233,7 +232,6 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
           if (!fetchMoreResult) {
             return prev;
           }
-          console.log(prev);
           return Object.assign({}, prev, {
             applications: {
               edges: [

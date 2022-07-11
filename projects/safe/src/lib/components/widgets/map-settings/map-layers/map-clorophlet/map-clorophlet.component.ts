@@ -58,9 +58,7 @@ export class MapClorophletComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    console.log(this.divisions.value);
-  }
+  ngOnInit(): void {}
 
   /**
    * Adds a new division.
