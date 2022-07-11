@@ -9,11 +9,12 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
-import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
-import { Form } from '../../models/form.model';
 import { TranslateService } from '@ngx-translate/core';
-import { renderCustomProperties } from '../../survey/custom-properties';
+import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeReferenceDataService } from '../../services/reference-data.service';
+import { Form } from '../../models/form.model';
+import { renderGlobalProperties } from '../../survey/render-global-properties';
 
 /**
  * Array containing the different types of questions.
@@ -103,14 +104,14 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param dialog This is the Angular Material Dialog service used to display dialog modals
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
-   * @param domService The dom service
    * @param referenceDataService Reference data service
    */
   constructor(
     @Inject('environment') environment: any,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private referenceDataService: SafeReferenceDataService
   ) {
     this.environment = environment;
     // translate the editor in the same language as the interface
@@ -210,10 +211,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderCustomProperties()
+      renderGlobalProperties(this.referenceDataService)
     );
     this.surveyCreator.onTestSurveyCreated.add((_, options) =>
-      options.survey.onAfterRenderQuestion.add(renderCustomProperties())
+      options.survey.onAfterRenderQuestion.add(
+        renderGlobalProperties(this.referenceDataService)
+      )
     );
   }
 
@@ -238,7 +241,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
       // add the rendering of custom properties
       this.surveyCreator.survey.onAfterRenderQuestion.add(
-        renderCustomProperties()
+        renderGlobalProperties(this.referenceDataService)
       );
     }
   }

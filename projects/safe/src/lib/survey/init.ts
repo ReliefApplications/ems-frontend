@@ -2,27 +2,30 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../typings/surveyjs-widgets/index.d.ts" />
 
-import * as widgets from 'surveyjs-widgets';
-import { init as initResourceComponent } from './components/resource';
-import { init as initResourcesComponent } from './components/resources';
-import { init as initOwnerComponent } from './components/owner';
-import { init as initUsersComponent } from './components/users';
-import { init as initTextWidget } from './widgets/text-widget';
-import { init as initCommentWidget } from './widgets/comment-widget';
-import { init as initSelectBasWidget } from './widgets/select-base-widget';
-import { initCustomProperties } from './custom-properties';
-import addCustomFunctions from '../utils/custom-functions';
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
-import { DomService } from '../services/dom.service';
 import { FormBuilder } from '@angular/forms';
+import * as SurveyJSWidgets from 'surveyjs-widgets';
+
+import { DomService } from '../services/dom.service';
 import { SafeAuthService } from '../services/auth.service';
 import { SafeReferenceDataService } from '../services/reference-data.service';
+import addCustomFunctions from '../utils/custom-functions';
+
+import * as ResourceComponent from './components/resource';
+import * as ResourcesComponent from './components/resources';
+import * as OwnerComponent from './components/owner';
+import * as UsersComponent from './components/users';
+import * as TextWidget from './widgets/text-widget';
+import * as CommentWidget from './widgets/comment-widget';
+import * as OtherProperties from './global-properties/others';
+import * as ReferenceDataProperties from './global-properties/reference-data';
+import * as TooltipProperty from './global-properties/tooltip';
 
 /**
  * Executes all init methods of custom SurveyJS.
  *
- * @param Survey surveyjs or surveyjs creator library
+ * @param Survey surveyjs or surveyjsCreator library
  * @param domService Shared DOM service, used to inject components on the go
  * @param dialog dialog service
  * @param apollo apollo service
@@ -42,17 +45,18 @@ export const initCustomSurvey = (
   referenceDataService: SafeReferenceDataService
 ): void => {
   // load widgets (aka custom questions)
-  widgets.select2tagbox(Survey);
-  initCommentWidget(Survey);
-  initTextWidget(Survey, domService);
-  initSelectBasWidget(Survey, domService, referenceDataService);
+  SurveyJSWidgets.select2tagbox(Survey);
+  CommentWidget.init(Survey);
+  TextWidget.init(Survey, domService);
   // load components (same as widgets, but with less configuration options)
-  initResourceComponent(Survey, domService, apollo, dialog, formBuilder);
-  initResourcesComponent(Survey, domService, apollo, dialog, formBuilder);
-  initOwnerComponent(Survey, domService, apollo);
-  initUsersComponent(Survey, domService, apollo);
-  // load custom properties
-  initCustomProperties(Survey, environment);
+  ResourceComponent.init(Survey, domService, apollo, dialog, formBuilder);
+  ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
+  OwnerComponent.init(Survey, domService, apollo);
+  UsersComponent.init(Survey, domService, apollo);
+  // load global properties
+  ReferenceDataProperties.init(Survey, domService, referenceDataService);
+  TooltipProperty.init(Survey);
+  OtherProperties.init(Survey, environment);
   // load internal functions
   addCustomFunctions(Survey, authService, apollo);
 };
