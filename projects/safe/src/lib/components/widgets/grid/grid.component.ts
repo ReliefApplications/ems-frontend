@@ -350,13 +350,13 @@ export class SafeGridWidgetComponent implements OnInit {
         update[modification.field.name] = modification.value;
       }
     }
-    const cleanedUpdate = cleanRecord(update);
+    const data = cleanRecord(update);
     return this.apollo
       .mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data: cleanedUpdate,
+          data,
         },
       })
       .toPromise();
