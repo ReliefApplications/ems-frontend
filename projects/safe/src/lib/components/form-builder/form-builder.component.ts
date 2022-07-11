@@ -212,6 +212,16 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       this.addCustomClassToCoreFields(coreFields);
     }
 
+    // Scroll to question when adde
+    this.surveyCreator.onQuestionAdded.add((sender, opt) => {
+      const name = opt.question.name;
+      setTimeout(() => {
+        const el = document.querySelector('[data-name="' + name + '"]');
+        el?.scrollIntoView({ behavior: 'smooth' });
+        this.surveyCreator.showQuestionEditor(opt.question);
+      });
+    });
+
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderCustomProperties(this.domService, this.referenceDataService)
