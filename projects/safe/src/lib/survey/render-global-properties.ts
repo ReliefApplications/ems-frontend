@@ -5,10 +5,11 @@ import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 
 /**
- * Render the custom properties
+ * Render custom properties which are applied to every questions, or to
+ * multiple widgets
  *
  * @param referenceDataService The reference data service
- * @returns A function which takes the survey instance and the options as args
+ * @returns A function which takes the survey instance and some options as args
  */
 export const renderGlobalProperties =
   (

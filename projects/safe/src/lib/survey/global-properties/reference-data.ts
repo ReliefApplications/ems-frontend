@@ -16,7 +16,7 @@ interface QuestionReferenceData extends QuestionSelectBase {
   referenceDataDisplayField?: string;
   referenceDataFilterFilterFromQuestion?: string;
   referenceDataFilterForeignField?: string;
-  referenceDataFilterFilterCondition?: string;
+  referenceDataFilterFilterCondition?: 'equals';
   referenceDataFilterLocalField?: string;
   referenceDataChoicesLoaded?: boolean;
 }
@@ -188,13 +188,15 @@ export const render = (
               (x: any) =>
                 x.name === question.referenceDataFilterFilterFromQuestion
             ) as QuestionReferenceData;
-          filter = {
-            foreignReferenceData: foreign.referenceData,
-            foreignField: question.referenceDataFilterForeignField,
-            foreignValue: foreign.value,
-            localField: question.referenceDataFilterLocalField,
-            operator: question.referenceDataFilterFilterCondition,
-          };
+          if (foreign.referenceData && !!foreign.value) {
+            filter = {
+              foreignReferenceData: foreign.referenceData,
+              foreignField: question.referenceDataFilterForeignField,
+              foreignValue: foreign.value,
+              localField: question.referenceDataFilterLocalField,
+              operator: question.referenceDataFilterFilterCondition,
+            };
+          }
         }
         referenceDataService
           .getChoices(

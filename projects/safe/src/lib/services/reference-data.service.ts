@@ -13,14 +13,24 @@ import {
 } from '../graphql/queries';
 import { SafeApiProxyService } from './api-proxy.service';
 
+/** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
+/** Local storage key for last request */
 const LAST_REQUEST_KEY = '_last_request';
+/** Property for filtering in requests */
 const LAST_UPDATE_CODE = '$$LAST_UPDATE';
 
+/** Service for reference data */
 @Injectable({
   providedIn: 'root',
 })
 export class SafeReferenceDataService {
+  /**
+   * Constructor of the service
+   *
+   * @param apollo The apollo client
+   * @param apiProxy The api proxy service
+   */
   constructor(private apollo: Apollo, private apiProxy: SafeApiProxyService) {}
 
   /**
@@ -97,12 +107,23 @@ export class SafeReferenceDataService {
    * @param referenceDataID ReferenceData ID.
    * @param displayField Field used for display in the question.
    * @param filter The filter object
+   * @param filter.foreignReferenceData The reference data name of the foreign question
+   * @param filter.foreignField The field name for the foreign question
+   * @param filter.foreignValue The value to filter on for the foreign field
+   * @param filter.localField The field to filter on on the local reference data
+   * @param filter.operator The operator to filter
    * @returns Promised choices.
    */
   public async getChoices(
     referenceDataID: string,
     displayField: string,
-    filter: any = {}
+    filter?: {
+      foreignReferenceData: string;
+      foreignField: string;
+      foreignValue: any;
+      localField: string;
+      operator: 'equals';
+    }
   ): Promise<{ value: string | number; text: string }[]> {
     // Initialisation
     let items: any;

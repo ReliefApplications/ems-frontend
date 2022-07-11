@@ -9,7 +9,7 @@ interface QuestionComment extends QuestionCommentSurveyJS {
 }
 
 /**
- * Custom definition for overrriding the comment question. Add edit functionnality.
+ * Custom definition for overriding the comment question. Add edit functionality.
  *
  * @param Survey Survey library
  */
@@ -25,13 +25,7 @@ export const init = (Survey: any): void => {
         dependsOn: ['readOnly'],
         default: false,
         category: 'general',
-        visibleIf: (obj: Question) => {
-          if (!obj || !obj.readOnly) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: (obj: null | QuestionComment) => Boolean(obj?.readOnly),
       });
     },
     isDefaultRender: true,
