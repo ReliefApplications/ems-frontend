@@ -60,7 +60,7 @@ const BASEMAP_LAYERS: any = {
 export class SafeMapComponent implements AfterViewInit, OnDestroy {
   // === MAP ===
   public mapId: string;
-  private map: any;
+  public map: any;
   public esriApiKey: string;
 
   // === MARKERS ===
@@ -212,7 +212,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       minZoom: 2,
       maxZoom: 18,
       worldCopyJump: true,
-      zoom: this.settings.zoom,
+      zoom: get(this.settings, 'zoom', 3),
     }).setView([centerLat, centerLong], get(this.settings, 'zoom', 3));
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
