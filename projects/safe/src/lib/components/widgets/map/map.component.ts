@@ -26,6 +26,7 @@ const MARKER_OPTIONS = {
   fillColor: '#0090d1',
   fillOpacity: 1,
   radius: 6,
+  pane: 'markers',
 };
 
 /** Declares an interface that will be used in the cluster markers layers */
@@ -229,6 +230,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
     this.getSearchbarControl().addTo(this.map);
     this.legendControl = this.getLegendControl().addTo(this.map);
+
+    // Creates a pane for markers so they are always shown in top, used in the marker options;
+    this.map.createPane('markers');
+    this.map.getPane('markers').style.zIndex = 650;
   }
 
   /** Load the data, using widget parameters. */
