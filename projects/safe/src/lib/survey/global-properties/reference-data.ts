@@ -53,9 +53,13 @@ export const init = (
     category: 'Choices from Reference data',
     required: true,
     dependsOn: 'referenceData',
-    visibleIf: (obj: any): boolean => obj?.referenceData,
+    visibleIf: (obj: null | QuestionReferenceData): boolean =>
+      Boolean(obj?.referenceData),
     visibleIndex: 2,
-    choices: (obj: any, choicesCallback: any) => {
+    choices: (
+      obj: null | QuestionReferenceData,
+      choicesCallback: (choices: any[]) => void
+    ) => {
       if (obj?.referenceData) {
         referenceDataService
           .loadReferenceData(obj.referenceData)
@@ -69,7 +73,8 @@ export const init = (
     name: 'referenceDataFilterFilterFromQuestion:question_selectbase',
     category: 'Choices from Reference data',
     dependsOn: 'referenceData',
-    visibleIf: (obj: any): boolean => obj?.referenceData,
+    visibleIf: (obj: null | QuestionReferenceData): boolean =>
+      Boolean(obj?.referenceData),
     visibleIndex: 3,
   });
 
@@ -109,8 +114,8 @@ export const init = (
     category: 'Choices from Reference data',
     required: true,
     dependsOn: 'referenceDataFilterFilterFromQuestion',
-    visibleIf: (obj: any): boolean =>
-      obj?.referenceDataFilterFilterFromQuestion,
+    visibleIf: (obj: null | QuestionReferenceData): boolean =>
+      Boolean(obj?.referenceDataFilterFilterFromQuestion),
     visibleIndex: 5,
     choices: ['equals'],
   });
@@ -121,10 +126,13 @@ export const init = (
     category: 'Choices from Reference data',
     required: true,
     dependsOn: 'referenceDataFilterFilterFromQuestion',
-    visibleIf: (obj: any): boolean =>
-      obj?.referenceDataFilterFilterFromQuestion,
+    visibleIf: (obj: null | QuestionReferenceData): boolean =>
+      Boolean(obj?.referenceDataFilterFilterFromQuestion),
     visibleIndex: 6,
-    choices: (obj: any, choicesCallback: any) => {
+    choices: (
+      obj: null | QuestionReferenceData,
+      choicesCallback: (choices: any[]) => void
+    ) => {
       if (obj?.referenceData) {
         referenceDataService
           .loadReferenceData(obj.referenceData)
@@ -134,14 +142,14 @@ export const init = (
   });
 
   const referenceDataEditor = {
-    render: (editor: any, htmlElement: any) => {
-      const question = editor.object;
+    render: (editor: any, htmlElement: HTMLElement) => {
+      const question = editor.object as QuestionReferenceData;
       const dropdown = domService.appendComponentToBody(
         SafeReferenceDataDropdownComponent,
         htmlElement
       );
       const instance: SafeReferenceDataDropdownComponent = dropdown.instance;
-      instance.referenceData = question.referenceData;
+      instance.referenceData = question.referenceData || '';
       instance.choice.subscribe((res) => editor.onChanged(res));
     },
   };
@@ -214,6 +222,5 @@ export const render = (
       .find(
         (x: any) => x.name === question.referenceDataFilterFilterFromQuestion
       );
-    console.log('after render', question.name);
   }
 };

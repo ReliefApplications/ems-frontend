@@ -234,12 +234,8 @@ export const init = (Survey: any, domService: DomService): void => {
                 } else {
                   urlTester.href = opt.question.value || '';
                 }
-                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                urlTester.host && urlTester.host !== window.location.host
-                  ? (instance.disabled = false)
-                  : (instance.disabled = true);
-
-                console.log(opt.question.value);
+                instance.disabled =
+                  !urlTester.host || urlTester.host === window.location.host;
               }
             }
           );
