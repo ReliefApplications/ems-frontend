@@ -660,7 +660,7 @@
 				"allowRecordAccessibility": "Autoriser ce rôle à voir les enregistrements de {{form}}",
 				"allowRecordCreation": "Autoriser ce rôle à créer des enregistrements dans {{form}}",
 				"allowRecordDeletion": "Autoriser ce rôle à supprimer des enregistrements de {{form}}",
-				"allowRecordUpate": "Autoriser ce rôle à mettre à jour les enregistrements de {{form}}",
+				"allowRecordUpdate": "Autoriser ce rôle à mettre à jour les enregistrements de {{form}}",
 				"disallowRecordAccessibility": "Interdire ce rôle pour voir les enregistrements de {{form}}",
 				"disallowRecordCreation": "Interdire à ce rôle de créer des enregistrements dans {{form}}",
 				"disallowRecordDeletion": "Interdire ce rôle pour supprimer des enregistrements de {{form}}",

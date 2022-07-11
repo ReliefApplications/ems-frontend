@@ -22,7 +22,7 @@
   <mat-tab [label]="'components.role.summary.features' | translate">
     <ng-template matTabContent>
       <safe-role-features
-        *ngIf="role"
+        *ngIf="role && application"
         [role]="role"
         [application]="application"
         [loading]="loading"

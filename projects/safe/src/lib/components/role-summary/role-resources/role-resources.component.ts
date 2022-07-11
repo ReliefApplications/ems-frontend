@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { clone, get, has } from 'lodash';
+import { get } from 'lodash';
 import {
   animate,
   state,
@@ -15,12 +15,10 @@ import { Form } from '../../../models/form.model';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import {
   GetResourceFormsQueryResponse,
-  GET_RESOURCE_FORMS,
-} from '../graphql/queries';
-import {
   GetResourcesQueryResponse,
   GET_RESOURCES,
-} from '../../../graphql/queries';
+  GET_RESOURCE_FORMS,
+} from '../graphql/queries';
 import {
   EditFormAccessMutationResponse,
   EDIT_FORM_ACCESS,

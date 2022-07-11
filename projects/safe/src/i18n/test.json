@@ -660,7 +660,7 @@
 				"allowRecordAccessibility": "****** {{form}}",
 				"allowRecordCreation": "****** {{form}}",
 				"allowRecordDeletion": "****** {{form}}",
-				"allowRecordUpate": "****** {{form}}",
+				"allowRecordUpdate": "****** {{form}}",
 				"disallowRecordAccessibility": "****** {{form}}",
 				"disallowRecordCreation": "****** {{form}}",
 				"disallowRecordDeletion": "****** {{form}}",

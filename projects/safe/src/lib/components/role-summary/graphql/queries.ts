@@ -116,6 +116,48 @@ export interface GetWorkflowStepsQueryResponse {
   workflow: Workflow;
 }
 
+/** Graphql request for getting resources */
+export const GET_RESOURCES = gql`
+  query GetResources($first: Int, $afterCursor: ID) {
+    resources(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+          permissions {
+            canSee {
+              id
+              title
+            }
+          }
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+/** Model for GetResourcesQueryResponse object */
+export interface GetResourcesQueryResponse {
+  loading: boolean;
+  resources: {
+    edges: {
+      node: Resource;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
+}
+
 /** Graphql request for getting forms of a resource */
 export const GET_RESOURCE_FORMS = gql`
   query GetResourceForms($resource: ID!) {
