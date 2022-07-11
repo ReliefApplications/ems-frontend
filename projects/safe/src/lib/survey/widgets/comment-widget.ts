@@ -1,3 +1,13 @@
+import {
+  Question,
+  QuestionComment as QuestionCommentSurveyJS,
+} from 'survey-angular';
+
+/** Interface for question of type comment */
+interface QuestionComment extends QuestionCommentSurveyJS {
+  allowEdition?: boolean;
+}
+
 /**
  * Custom definition for overrriding the comment question. Add edit functionnality.
  *
@@ -7,7 +17,7 @@ export const init = (Survey: any): void => {
   const widget = {
     name: 'comment-widget',
     widgetIsLoaded: (): boolean => true,
-    isFit: (question: any): boolean => question.getType() === 'comment',
+    isFit: (question: Question): boolean => question.getType() === 'comment',
     init: (): void => {
       Survey.Serializer.addProperty('comment', {
         name: 'allowEdition:boolean',
@@ -15,7 +25,7 @@ export const init = (Survey: any): void => {
         dependsOn: ['readOnly'],
         default: false,
         category: 'general',
-        visibleIf: (obj: any) => {
+        visibleIf: (obj: Question) => {
           if (!obj || !obj.readOnly) {
             return false;
           } else {
@@ -25,10 +35,10 @@ export const init = (Survey: any): void => {
       });
     },
     isDefaultRender: true,
-    afterRender: (question: any, el: any): void => {
+    afterRender: (question: QuestionComment, el: HTMLElement): void => {
       // Display of edit button for comment question
       if (question.allowEdition) {
-        el.parentElement.querySelector('#editComment')?.remove();
+        el.parentElement?.querySelector('#editComment')?.remove();
         const mainDiv = document.createElement('div');
         mainDiv.id = 'editComment';
         mainDiv.style.height = '23px';
@@ -37,7 +47,7 @@ export const init = (Survey: any): void => {
         btnEl.innerText = 'Edit';
         btnEl.style.width = '50px';
         mainDiv.appendChild(btnEl);
-        el.parentElement.insertBefore(mainDiv, el);
+        el.parentElement?.insertBefore(mainDiv, el);
         mainDiv.style.display = !question.allowEdition ? 'none' : '';
         question.registerFunctionOnPropertyValueChanged('allowEdition', () => {
           mainDiv.style.display = !question.allowEdition ? 'none' : '';

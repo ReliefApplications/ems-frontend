@@ -154,19 +154,15 @@ export const init = (
 /**
  * Render the custom properties
  *
- * @param survey The survey instance
- * @param options The options object
- * @param options.question The question element
- * @param options.htmlElement The dom element of the question
+ * @param questionElement The question element
  * @param referenceDataService The reference data service
  */
 export const render = (
-  survey: SurveyModel,
-  options: { question: Question; htmlElement: HTMLElement },
+  questionElement: Question,
   referenceDataService: SafeReferenceDataService
 ): void => {
-  if (SELECTABLE_TYPES.includes(options.question.getType())) {
-    const question = options.question as QuestionReferenceData;
+  if (SELECTABLE_TYPES.includes(questionElement.getType())) {
+    const question = questionElement as QuestionReferenceData;
     // if (
     //   question.referenceDataFilterFilterFromQuestion &&
     //   question.referenceDataFilterForeignField &&

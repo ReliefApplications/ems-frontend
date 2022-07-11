@@ -21,7 +21,7 @@ export const renderGlobalProperties =
     survey: SurveyModel,
     options: { question: Question; htmlElement: HTMLElement }
   ): void => {
-    OthersProperties.render(survey, options);
-    TooltipProperty.render(survey, options);
-    ReferenceDataProperties.render(survey, options, referenceDataService);
+    OthersProperties.render(options.question);
+    TooltipProperty.render(options.question, options.htmlElement);
+    ReferenceDataProperties.render(options.question, referenceDataService);
   };

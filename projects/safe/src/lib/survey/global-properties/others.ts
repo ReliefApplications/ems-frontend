@@ -3,7 +3,6 @@ import {
   JsonMetadata,
   Question,
   QuestionFile,
-  SurveyModel,
 } from 'survey-angular';
 
 /**
@@ -50,18 +49,9 @@ export const init = (Survey: any, environment: any): void => {
 /**
  * Render the other global properties
  *
- * @param survey The survey instance
- * @param options The options object
- * @param options.question The question object
- * @param options.htmlElement The dom element
+ * @param question The question object
  */
-export const render = (
-  survey: SurveyModel,
-  options: { question: Question; htmlElement: HTMLElement }
-): void => {
-  // get the question and the html element of the question
-  const question = options.question;
-
+export const render = (question: Question): void => {
   // define the max size for files
   if (question.getType() === 'file') {
     (question as QuestionFile).maxSize = 7340032;

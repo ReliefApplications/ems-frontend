@@ -1,5 +1,5 @@
 import get from 'lodash/get';
-import { JsonMetadata, Question, SurveyModel } from 'survey-angular';
+import { JsonMetadata, Question } from 'survey-angular';
 
 /** Question with tooltip interface */
 interface QuestionTooltip extends Question {
@@ -25,19 +25,10 @@ export const init = (Survey: any): void => {
 /**
  * Render the custom properties
  *
- * @param survey The survey instance
- * @param options The options object
- * @param options.question The question object
- * @param options.htmlElement The dom element of the question
+ * @param question The question object
+ * @param el The html element of the question
  */
-export const render = (
-  survey: SurveyModel,
-  options: { question: Question; htmlElement: HTMLElement }
-): void => {
-  // get the question and the html element of the question
-  const el = options.htmlElement;
-  const question = options.question as QuestionTooltip;
-
+export const render = (question: QuestionTooltip, el: HTMLElement): void => {
   // Display the tooltip
   const header = el?.parentElement?.parentElement?.querySelector(
     '.sv_q_title'
