@@ -882,7 +882,7 @@
 							"color": "Color",
 							"info": "Display markers in the map for each entry of your data, binding dataset number fields to geolocation",
 							"rules": "Marker rules",
-							"rulesInfo": "Customize the size and colors of your pointers",
+							"rulesInfo": "Customize the size and colors of your markers",
 							"size": "Size",
 							"title": "Marker layers"
 						}

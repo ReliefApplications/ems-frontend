@@ -23,7 +23,7 @@ interface DialogData {
 export class MapClorophletComponent implements OnInit {
   public form!: FormGroup;
 
-  public tableColumns = ['label', 'actions'];
+  public tableColumns = ['label', 'color', 'actions'];
 
   public fields: any[] = [];
   public formatedFields: any[] = [];
@@ -58,7 +58,9 @@ export class MapClorophletComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.divisions.value);
+  }
 
   /**
    * Adds a new division.

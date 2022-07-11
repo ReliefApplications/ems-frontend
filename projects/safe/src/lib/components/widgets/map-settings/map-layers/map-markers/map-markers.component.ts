@@ -29,7 +29,7 @@ export class MapMarkersComponent implements OnInit {
     return this.form.get('markerRules') as FormArray;
   }
 
-  public tableColumns = ['label', 'actions'];
+  public tableColumns = ['label', 'color', 'actions'];
 
   /**
    * List of rules in Map Settings
