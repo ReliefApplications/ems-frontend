@@ -171,31 +171,36 @@ export const render = (
 ): void => {
   if (SELECTABLE_TYPES.includes(questionElement.getType())) {
     const question = questionElement as QuestionReferenceData;
-    // if (
-    //   question.referenceDataFilterFilterFromQuestion &&
-    //   question.referenceDataFilterForeignField &&
-    //   question.referenceDataFilterFilterCondition &&
-    //   question.referenceDataFilterLocalField
-    // ) {
-    //   filter = {
-    //     foreignQuestion: question.survey
-    //       .getAllQuestions()
-    //       .find(
-    //         (x: any) =>
-    //           x.name === question.referenceDataFilterFilterFromQuestion
-    //       ),
-    //     foreignField: question.referenceDataFilterForeignField,
-    //     operator: question.referenceDataFilterFilterCondition,
-    //     localField: question.referenceDataFilterLocalField,
-    //   };
-    // }
-    // define a function to update the choices
+
     const updateChoices = () => {
       if (question.referenceData && question.referenceDataDisplayField) {
+        let filter;
+        // create a filter object if all required properties for filtering are set
+        if (
+          question.referenceDataFilterFilterFromQuestion &&
+          question.referenceDataFilterForeignField &&
+          question.referenceDataFilterFilterCondition &&
+          question.referenceDataFilterLocalField
+        ) {
+          const foreign = question.survey
+            .getAllQuestions()
+            .find(
+              (x: any) =>
+                x.name === question.referenceDataFilterFilterFromQuestion
+            ) as QuestionReferenceData;
+          filter = {
+            foreignReferenceData: foreign.referenceData,
+            foreignField: question.referenceDataFilterForeignField,
+            foreignValue: foreign.value,
+            localField: question.referenceDataFilterLocalField,
+            operator: question.referenceDataFilterFilterCondition,
+          };
+        }
         referenceDataService
           .getChoices(
             question.referenceData,
-            question.referenceDataDisplayField
+            question.referenceDataDisplayField,
+            filter
           )
           .then((choices) => {
             question.choices = choices;
@@ -205,6 +210,7 @@ export const render = (
       }
       question.referenceDataChoicesLoaded = true;
     };
+
     // init the choices
     if (!question.referenceDataChoicesLoaded && question.referenceData) {
       updateChoices();
@@ -217,10 +223,15 @@ export const render = (
       'referenceDataDisplayField',
       updateChoices
     );
+
+    // logic for filters
     const foreignQuestion = question.survey
       .getAllQuestions()
       .find(
         (x: any) => x.name === question.referenceDataFilterFilterFromQuestion
-      );
+      ) as QuestionReferenceData | undefined;
+    foreignQuestion?.registerFunctionOnPropertyValueChanged('value', () => {
+      updateChoices();
+    });
   }
 };

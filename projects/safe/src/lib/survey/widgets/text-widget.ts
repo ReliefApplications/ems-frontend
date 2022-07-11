@@ -215,10 +215,8 @@ export const init = (Survey: any, domService: DomService): void => {
           } else {
             urlTester.href = el.value || '';
           }
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          urlTester.host && urlTester.host !== window.location.host
-            ? (instance.disabled = false)
-            : (instance.disabled = true);
+          instance.disabled =
+            !urlTester.host || urlTester.host === window.location.host;
 
           (question.survey as SurveyModel).onValueChanged.add(
             (__: any, opt: any) => {

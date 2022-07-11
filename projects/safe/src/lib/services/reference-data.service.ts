@@ -195,34 +195,15 @@ export class SafeReferenceDataService {
   }
 
   /**
-   * Pad a number to 2 digits string.
-   *
-   * @param num number to pad
-   * @returns 2 digits string.
-   */
-  private padTo2Digits(num: number): string {
-    return num.toString().padStart(2, '0');
-  }
-
-  /**
    * Format a date to YYYY-MM-DD HH:MM:SS.
    *
    * @param date date to format.
    * @returns String formatted to YYYY-MM-DD HH:MM:SS.
    */
   private formatDateSQL(date: Date): string {
-    return (
-      [
-        date.getFullYear(),
-        this.padTo2Digits(date.getMonth() + 1),
-        this.padTo2Digits(date.getDate()),
-      ].join('-') +
-      ' ' +
-      [
-        this.padTo2Digits(date.getHours()),
-        this.padTo2Digits(date.getMinutes()),
-        this.padTo2Digits(date.getSeconds()),
-      ].join(':')
-    );
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000) // remove timezone
+      .toISOString() // convert to iso string
+      .replace('T', ' ') // remove the T between date and time
+      .split('.')[0]; // remove the decimals after the seconds
   }
 }
