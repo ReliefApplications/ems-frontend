@@ -153,8 +153,20 @@ export const GET_FORMS = gql`
 
 /** Graphql query for getting forms with minimum details */
 export const GET_SHORT_FORMS = gql`
-  query GetShortForms($first: Int, $afterCursor: ID, $filter: JSON) {
-    forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
+  query GetShortForms(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sortField: String
+    $sortOrder: String
+  ) {
+    forms(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
       edges {
         node {
           id
