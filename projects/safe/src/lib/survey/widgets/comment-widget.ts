@@ -1,3 +1,5 @@
+import { surveyLocalization } from 'survey-angular';
+
 /**
  * Custom definition for overrriding the comment question. Add edit functionnality.
  *
@@ -34,7 +36,10 @@ export const init = (Survey: any): void => {
         mainDiv.style.height = '23px';
         mainDiv.style.marginBottom = '0.5em';
         const btnEl = document.createElement('button');
-        btnEl.innerText = 'Edit';
+        btnEl.innerText = surveyLocalization.getString(
+          'oort:edit',
+          question.survey.locale
+        );
         btnEl.style.width = '50px';
         mainDiv.appendChild(btnEl);
         el.parentElement.insertBefore(mainDiv, el);

@@ -9,7 +9,7 @@ import { init as initOwnerComponent } from './components/owner';
 import { init as initUsersComponent } from './components/users';
 import { init as initTextWidget } from './widgets/text-widget';
 import { init as initCommentWidget } from './widgets/comment-widget';
-import { initCustomProperties } from './custom-properties';
+import { initCustomProperties, initLocalization } from './custom-properties';
 import addCustomFunctions from '../utils/custom-functions';
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
@@ -51,6 +51,8 @@ export const initCustomSurvey = (
   initUsersComponent(Survey, domService, apollo);
   // load custom properties
   initCustomProperties(Survey, environment, referenceDataService, domService);
+  // set translation
+  initLocalization(Survey);
   // load internal functions
   addCustomFunctions(Survey, authService, apollo);
 };
