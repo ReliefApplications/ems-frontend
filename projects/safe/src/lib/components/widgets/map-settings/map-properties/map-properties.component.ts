@@ -40,8 +40,6 @@ export class MapPropertiesComponent implements OnInit, AfterViewInit {
 
   public basemaps = BASEMAPS;
 
-  public loading = false;
-
   public mapSettings!: {
     basemap: string;
     zoom: number;
@@ -74,11 +72,6 @@ export class MapPropertiesComponent implements OnInit, AfterViewInit {
     this.form.get('centerLong')?.valueChanges.subscribe((value) => {
       const map = this.previewMap.map;
       map.setView([map.getCenter().lat, value], map.getZoom());
-    });
-    this.form.get('basemap')?.valueChanges.subscribe((value) => {
-      this.loading = true;
-      this.mapSettings.basemap = value;
-      setTimeout(() => (this.loading = false), 500);
     });
   }
 
