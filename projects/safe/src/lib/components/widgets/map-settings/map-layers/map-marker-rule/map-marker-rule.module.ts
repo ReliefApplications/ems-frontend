@@ -8,6 +8,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeQueryBuilderModule } from '../../../../query-builder/query-builder.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { SafeAlertModule } from '../../../../ui/alert/alert.module';
+import { SafeIconModule } from '../../../../ui/icon/icon.module';
 
 /**
  * Single Marker Rule configuration module.
@@ -24,6 +27,8 @@ import { SafeQueryBuilderModule } from '../../../../query-builder/query-builder.
     MatInputModule,
     MatButtonModule,
     SafeQueryBuilderModule,
+    MatTooltipModule,
+    SafeIconModule,
   ],
   exports: [MapMarkerRuleComponent],
 })

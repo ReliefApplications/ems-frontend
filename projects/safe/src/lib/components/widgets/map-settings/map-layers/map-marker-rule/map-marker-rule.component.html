@@ -14,7 +14,21 @@
     <mat-label>{{
       'components.widget.settings.map.layers.point.size' | translate
     }}</mat-label>
-    <input type="number" matInput formControlName="size" min="1" max="10" />
+    <input type="number" matInput formControlName="size" min="0" max="10" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{
+      'components.widget.settings.map.layers.point.outerSize' | translate
+    }}</mat-label>
+    <input type="number" matInput formControlName="outerSize" min="0" max="5" />
+    <safe-icon
+      matSuffix
+      icon="info"
+      variant="grey"
+      [matTooltip]="
+      'components.widget.settings.map.layers.point.outerSizeDesc' | translate
+      "
+    ></safe-icon>
   </mat-form-field>
   <safe-tab-filter
     [form]="$any(form.controls.filter)"

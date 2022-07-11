@@ -361,7 +361,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           if (applyFilters(item, rule.filter)) {
             options.color = rule.color;
             options.fillColor = rule.color;
-            options.weight *= rule.size;
+            options.weight *= rule.size * rule.outerSize;
             options.radius *= rule.size;
             Object.assign(options, { divisionID: `${rule.label}-${i}` });
           }

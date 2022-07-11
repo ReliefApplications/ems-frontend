@@ -881,6 +881,8 @@
 							"category": "Map quick layers",
 							"color": "Color",
 							"info": "Display markers in the map for each entry of your data, binding dataset number fields to geolocation",
+							"outerSize": "Outer ring size",
+							"outerSizeDesc": "Set a multiplier for the outer ring size of the marker, set to 0 to remove it",
 							"rules": "Marker rules",
 							"rulesInfo": "Customize the size and colors of your pointers",
 							"size": "Size",

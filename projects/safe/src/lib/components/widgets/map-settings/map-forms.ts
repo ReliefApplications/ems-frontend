@@ -31,6 +31,7 @@ const DEFAULT_MARKER_RULE = {
   label: 'New rule',
   color: '#0090d1',
   size: 1,
+  outerSize: 1,
   filter: {
     logic: ['and'],
     filters: [],
@@ -119,7 +120,11 @@ export const markerRuleForm = (value?: any): FormGroup =>
     color: [get(value, 'color', DEFAULT_MARKER_RULE.color)],
     size: [
       get(value, 'size', DEFAULT_MARKER_RULE.size),
-      [Validators.min(1), Validators.max(10)],
+      [Validators.min(0), Validators.max(10)],
+    ],
+    outerSize: [
+      get(value, 'outerSize', DEFAULT_MARKER_RULE.outerSize),
+      [Validators.min(0), Validators.max(10)],
     ],
     filter: createFilterGroup(
       get(value, 'filter', DEFAULT_MARKER_RULE.filter),
