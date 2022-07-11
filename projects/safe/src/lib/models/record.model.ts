@@ -23,6 +23,7 @@ export interface Record {
   modifiedBy?: User;
   canUpdate?: boolean;
   canDelete?: boolean;
+  validationErrors?: { question: string; errors: string[] }[];
 }
 
 /** Model for RecordConnection object */

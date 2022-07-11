@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
+import { Application } from '../../models/application.model';
 import { Role } from '../../models/user.model';
 import { EditRoleMutationResponse, EDIT_ROLE } from './graphql/mutations';
 import { GetRoleQueryResponse, GET_ROLE } from './graphql/queries';
@@ -16,6 +17,7 @@ import { GetRoleQueryResponse, GET_ROLE } from './graphql/queries';
 })
 export class SafeRoleSummaryComponent implements OnInit {
   @Input() id = '';
+  @Input() application?: Application;
   public role?: Role;
   public loading = true;
 
@@ -51,7 +53,6 @@ export class SafeRoleSummaryComponent implements OnInit {
    * @param e update event
    */
   onEditRole(e: any): void {
-    console.log({ ...e, id: this.id });
     this.loading = true;
     this.apollo
       .mutate<EditRoleMutationResponse>({

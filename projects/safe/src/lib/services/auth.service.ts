@@ -99,7 +99,7 @@ export class SafeAuthService {
   }
 
   /**
-   * Checkes if user has permission.
+   * Check if user has permission.
    * If user profile is empty, tries to get it.
    *
    * @param permission permission.s required
@@ -131,7 +131,7 @@ export class SafeAuthService {
   }
 
   /**
-   * Checkes if user is admin. If user profile is empty, tries to get it.
+   * Check if user is admin. If user profile is empty, tries to get it.
    *
    * @returns A boolean value.
    */

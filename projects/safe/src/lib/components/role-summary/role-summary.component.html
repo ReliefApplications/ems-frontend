@@ -5,9 +5,10 @@
   <mat-tab [label]="'components.role.summary.title' | translate">
     <ng-template matTabContent>
       <safe-role-details
-        *ngIf="role && !loading"
+        *ngIf="role"
         [role]="role"
         (edit)="onEditRole($event)"
+        [loading]="loading"
       ></safe-role-details>
       <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
@@ -18,18 +19,25 @@
       <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
   </mat-tab> -->
-  <!-- <mat-tab [label]="'components.role.summary.features' | translate">
+  <mat-tab [label]="'components.role.summary.features' | translate">
     <ng-template matTabContent>
-      <safe-role-features *ngIf="role"></safe-role-features>
+      <safe-role-features
+        *ngIf="role"
+        [role]="role"
+        [application]="application"
+        [loading]="loading"
+      ></safe-role-features>
       <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
-  </mat-tab> -->
+  </mat-tab>
   <mat-tab [label]="'common.channel.few' | translate">
     <ng-template matTabContent>
       <safe-role-channels
-        *ngIf="role && !loading"
+        *ngIf="role"
         [role]="role"
+        [application]="application"
         (edit)="onEditRole($event)"
+        [loading]="loading"
       ></safe-role-channels>
       <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
