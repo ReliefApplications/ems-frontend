@@ -6,9 +6,6 @@ import {
 } from '@angular/forms';
 import { Subject } from 'rxjs';
 
-/**
- *
- */
 const CONTROL_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => SafePaletteControlComponent),

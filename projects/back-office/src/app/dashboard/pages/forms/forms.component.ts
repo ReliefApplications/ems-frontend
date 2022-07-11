@@ -203,7 +203,6 @@ export class FormsComponent implements OnInit, OnDestroy {
           if (!fetchMoreResult) {
             return prev;
           }
-          console.log(prev);
           return Object.assign({}, prev, {
             forms: {
               edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
