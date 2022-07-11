@@ -124,7 +124,7 @@ export const markerRuleForm = (value?: any): FormGroup =>
     ],
     outerSize: [
       get(value, 'outerSize', DEFAULT_MARKER_RULE.outerSize),
-      [Validators.min(0), Validators.max(10)],
+      [Validators.min(0), Validators.max(5)],
     ],
     filter: createFilterGroup(
       get(value, 'filter', DEFAULT_MARKER_RULE.filter),
