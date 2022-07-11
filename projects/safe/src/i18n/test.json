@@ -652,7 +652,13 @@
 			},
 			"summary": {
 				"features": "******",
+				"noFeatures": "******",
+				"noSteps": "******",
 				"title": "******"
+			},
+			"tooltip": {
+				"hideFeature": "****** {{page}} ******",
+				"showFeature": "****** {{page}} ******"
 			},
 			"update": {
 				"permissions": "******",
