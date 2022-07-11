@@ -303,11 +303,13 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     // Renders all the markers
     Object.keys(this.markersCategories).map((name: string) => {
-      const layerName = name !== 'undefined' ? name : 'Markers';
-      this.overlays[layerName] = L.featureGroup
-        .subGroup(this.markersLayer, this.markersCategories[name])
-        .addTo(this.map);
-      this.overlays[layerName].type = 'Marker';
+      if (name !== 'null') {
+        const layerName = name !== 'undefined' ? name : 'Markers';
+        this.overlays[layerName] = L.featureGroup
+          .subGroup(this.markersLayer, this.markersCategories[name])
+          .addTo(this.map);
+        this.overlays[layerName].type = 'Marker';
+      }
     });
 
     // Loops throught clorophlets and adds them to the map
@@ -324,7 +326,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Loops throught online layers and add them to the map
-    if (this.settings.onlineLayers) {
+    if (this.settings.onlineLayers.length > 0) {
       this.settings.onlineLayers.map((layer: any) => {
         this.overlays[layer.title] = L.esri.featureLayer({
           url: layer.url + '/0',
@@ -340,7 +342,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
         });
       });
     }
-
     // Set ups a layer control with the new layers.
     if (Object.keys(this.overlays).length > 0) {
       this.layerControl = L.control
