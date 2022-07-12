@@ -1,1 +1,109 @@
-<p>role-resources works!</p>
+<table
+  *ngIf="!loading"
+  mat-table
+  [dataSource]="resources"
+  multiTemplateDataRows
+>
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>
+      {{ 'common.name' | translate }}
+    </th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <safe-button
+        [isIcon]="true"
+        [icon]="
+          openedResourceId === element.id
+            ? 'keyboard_arrow_up'
+            : 'keyboard_arrow_down'
+        "
+        (click)="toggleResource(element)"
+        [disabled]="loading"
+      >
+      </safe-button>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="expandedDetail">
+    <td
+      mat-cell
+      *matCellDef="let element"
+      [attr.colspan]="displayedColumns.length"
+    >
+      <div
+        class="expanded-form"
+        [@detailExpand]="
+          element.id === openedResourceId ? 'expanded' : 'collapsed'
+        "
+      >
+        <table mat-table [dataSource]="forms" *ngIf="forms.length > 0">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'common.form.one' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+              <div style="display: flex" *ngIf="formsPermissions">
+                <ng-container *ngFor="let action of permissionTypes">
+                  <safe-button
+                    [isIcon]="true"
+                    [icon]="getIcon(action, element)"
+                    [variant]="
+                      formsPermissions[action].includes(element.id)
+                        ? 'primary'
+                        : 'grey'
+                    "
+                    (click)="onEditFormAccess(element, action)"
+                    [disabled]="loading"
+                    [matTooltip]="
+                      getTooltip(action, element)
+                        | translate: { form: element.name }
+                    "
+                  >
+                  </safe-button>
+                </ng-container>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+        </table>
+        <div *ngIf="forms.length === 0 && !loadingForms" class="empty-form">
+          <safe-icon icon="folder_open"></safe-icon>
+          <h3>{{ 'components.role.summary.noForms' | translate }}</h3>
+        </div>
+        <safe-skeleton-table
+          *ngIf="loadingForms"
+          [columns]="['common.form.one']"
+          [rows]="3"
+        ></safe-skeleton-table>
+      </div>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: ['expandedDetail']"
+    style="height: 0"
+  ></tr>
+</table>
+<safe-skeleton-table *ngIf="loading" [columns]="['common.name']">
+</safe-skeleton-table>
+<mat-paginator
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [length]="pageInfo.length"
+  aria-label="Select page of applications"
+  (page)="onPage($event)"
+>
+</mat-paginator>

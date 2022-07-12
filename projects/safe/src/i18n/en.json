@@ -652,10 +652,19 @@
 			"summary": {
 				"features": "Features",
 				"noFeatures": "No feature detected",
+				"noForms": "No forms detected",
 				"noSteps": "No steps detected",
 				"title": "Summary"
 			},
 			"tooltip": {
+				"allowRecordAccessibility": "Allow this role to see records of {{form}}",
+				"allowRecordCreation": "Allow this role to create records with {{form}}",
+				"allowRecordDeletion": "Allow this role to remove records from {{form}}",
+				"allowRecordUpdate": "Allow this role to update records from {{form}}",
+				"disallowRecordAccessibility": "Disallow this role to see records of {{form}}",
+				"disallowRecordCreation": "Disallow this role to create records with {{form}}",
+				"disallowRecordDeletion": "Disallow this role to remove records from {{form}}",
+				"disallowRecordUpate": "Disallow this role to update records from {{form}}",
 				"hideFeature": "Hide {{page}} from this role",
 				"showFeature": "Show {{page}} to this role"
 			},
