@@ -9,13 +9,12 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
-import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
-import { Form } from '../../models/form.model';
 import { TranslateService } from '@ngx-translate/core';
-import { renderCustomProperties } from '../../survey/custom-properties';
-import { DomService } from '../../services/dom.service';
+import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeReferenceDataService } from '../../services/reference-data.service';
+import { Form } from '../../models/form.model';
+import { renderGlobalProperties } from '../../survey/render-global-properties';
 
 /**
  * Array containing the different types of questions.
@@ -105,7 +104,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param dialog This is the Angular Material Dialog service used to display dialog modals
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
-   * @param domService The dom service
    * @param referenceDataService Reference data service
    */
   constructor(
@@ -113,7 +111,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService,
-    private domService: DomService,
     private referenceDataService: SafeReferenceDataService
   ) {
     this.environment = environment;
@@ -215,13 +212,23 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       this.addCustomClassToCoreFields(coreFields);
     }
 
+    // Scroll to question when adde
+    this.surveyCreator.onQuestionAdded.add((sender, opt) => {
+      const name = opt.question.name;
+      setTimeout(() => {
+        const el = document.querySelector('[data-name="' + name + '"]');
+        el?.scrollIntoView({ behavior: 'smooth' });
+        this.surveyCreator.showQuestionEditor(opt.question);
+      });
+    });
+
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderCustomProperties(this.domService, this.referenceDataService)
+      renderGlobalProperties(this.referenceDataService)
     );
     this.surveyCreator.onTestSurveyCreated.add((_, options) =>
       options.survey.onAfterRenderQuestion.add(
-        renderCustomProperties(this.domService, this.referenceDataService)
+        renderGlobalProperties(this.referenceDataService)
       )
     );
     this.surveyCreator.survey.locale = this.translate.currentLang;
@@ -248,7 +255,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
       // add the rendering of custom properties
       this.surveyCreator.survey.onAfterRenderQuestion.add(
-        renderCustomProperties(this.domService, this.referenceDataService)
+        renderGlobalProperties(this.referenceDataService)
       );
     }
   }

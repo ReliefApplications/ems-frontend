@@ -96,7 +96,7 @@ export class FormsComponent implements OnInit, OnDestroy {
       this.pageInfo.length = res.data.forms.totalCount;
       this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
       this.loading = res.loading;
-      this.updating = false;
+      this.updating = res.loading;
     });
 
     this.authSubscription = this.authService.user$.subscribe(() => {
@@ -203,7 +203,6 @@ export class FormsComponent implements OnInit, OnDestroy {
           if (!fetchMoreResult) {
             return prev;
           }
-          console.log(prev);
           return Object.assign({}, prev, {
             forms: {
               edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],

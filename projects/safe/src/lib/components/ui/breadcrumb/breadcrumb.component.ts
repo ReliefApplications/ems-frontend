@@ -1,13 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-
-/**
- * Breadcrumb interface.
- */
-interface Breadcrumb {
-  name: string;
-  href: string;
-  queryParams?: any;
-}
+import { Component, OnInit } from '@angular/core';
+import {
+  Breadcrumb,
+  SafeBreadcrumbService,
+} from '../../../services/breadcrumb.service';
 
 /**
  * Breadcrumb component
@@ -18,12 +13,18 @@ interface Breadcrumb {
   styleUrls: ['./breadcrumb.component.scss'],
 })
 export class SafeBreadcrumbComponent implements OnInit {
-  @Input() items: Breadcrumb[] = [];
+  public breadcrumbs: Breadcrumb[] = [];
 
   /**
-   * Breadcrumb component
+   * Breadcrumb service
+   *
+   * @param breadcrumbService Shared breadcrumb service
    */
-  constructor() {}
+  constructor(private breadcrumbService: SafeBreadcrumbService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.breadcrumbService.breadcrumbs$.subscribe((res) => {
+      this.breadcrumbs = res;
+    });
+  }
 }
