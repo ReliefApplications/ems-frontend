@@ -295,6 +295,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Renders all the markers
+    console.log(this.markersCategories);
     Object.keys(this.markersCategories).map((name: string) => {
       if (name !== 'null') {
         const layerName = name !== 'undefined' ? name : 'Markers';
@@ -319,7 +320,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Loops throught online layers and add them to the map
-    if (this.settings.onlineLayers.length > 0) {
+    if (this.settings.onlineLayers) {
       this.settings.onlineLayers.map((layer: any) => {
         this.overlays[layer.title] = L.esri.featureLayer({
           url: layer.url + '/0',
