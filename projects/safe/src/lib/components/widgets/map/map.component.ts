@@ -62,6 +62,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   public mapId: string;
   public map: any;
   public esriApiKey: string;
+  private basemap: any;
 
   // === MARKERS ===
   private markersLayer: any = null;
@@ -217,14 +218,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     // Set basemap
-    const basemap = get(
-      BASEMAP_LAYERS,
-      this.settings.basemap,
-      BASEMAP_LAYERS.OSM
-    );
-    L.esri.Vector.vectorBasemapLayer(basemap, {
-      apiKey: this.esriApiKey,
-    }).addTo(this.map);
+    this.changeBasemap(this.settings.basemap);
 
     // Adds all the controls we use to the map
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
@@ -702,6 +696,21 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     });
 
     return searchControl;
+  }
+
+  /**
+   * Changes the basemap of the map used for setting in up and for previewing it in map settings.
+   *
+   * @param basemap String containing the name of the basemap
+   */
+  public changeBasemap(basemap: string) {
+    if (this.basemap) {
+      this.basemap.remove();
+    }
+    const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
+    this.basemap = L.esri.Vector.vectorBasemapLayer(basemapName, {
+      apiKey: this.esriApiKey,
+    }).addTo(this.map);
   }
 
   /**
