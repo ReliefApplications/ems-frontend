@@ -295,7 +295,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Renders all the markers
-    console.log(this.markersCategories);
     Object.keys(this.markersCategories).map((name: string) => {
       if (name !== 'null') {
         const layerName = name !== 'undefined' ? name : 'Markers';
