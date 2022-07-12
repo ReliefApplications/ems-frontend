@@ -220,29 +220,29 @@ export class RoleResourcesComponent implements OnInit {
   onEditFormAccess(form: Form, action: Permission): void {
     if (!this.role.id) return;
 
-    let newPermissions: string[] | { role: string }[];
+    const updatedPermissions: {
+      add?: string[] | { role: string }[];
+      remove?: string[] | { role: string }[];
+    } = {};
+
+    let hasCurrPermission: boolean;
     switch (action) {
       case Permission.CREATE:
-        newPermissions = get(form, `permissions.${action}`, []).map(
-          (x: any) => x.id as string
-        ) as string[];
-
-        // toggles the permission
-        const index = newPermissions.findIndex((x) => x === this.role.id);
-        if (index >= 0) newPermissions.splice(index, 1);
-        else newPermissions.push(this.role.id);
+        hasCurrPermission = get(form, `permissions.${action}`, []).some(
+          (x: any) => x.id === this.role.id
+        );
+        Object.assign(updatedPermissions, {
+          [hasCurrPermission ? 'remove' : 'add']: [this.role.id],
+        });
         break;
       default:
-        newPermissions = get(form, `permissions.${action}`, []).map(
-          (x: any) => ({ role: x.role as string })
-        ) as { role: string }[];
-
-        // toggles the permission
-        const roleIndex = newPermissions.findIndex(
-          (x) => x.role === this.role.id
+        hasCurrPermission = get(form, `permissions.${action}`, []).some(
+          (x: any) => x.role === this.role.id
         );
-        if (roleIndex >= 0) newPermissions.splice(roleIndex, 1);
-        else newPermissions.push({ role: this.role.id });
+        Object.assign(updatedPermissions, {
+          [hasCurrPermission ? 'remove' : 'add']: [{ role: this.role.id }],
+        });
+        break;
     }
 
     this.apollo
@@ -251,7 +251,7 @@ export class RoleResourcesComponent implements OnInit {
         variables: {
           id: form.id,
           permissions: {
-            [action]: newPermissions,
+            [action]: updatedPermissions,
           },
         },
       })
