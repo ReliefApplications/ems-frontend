@@ -133,7 +133,7 @@
 			"platformAccessNotGranted": "******",
 			"readAll": "******",
 			"statusUpdated": "****** {{value}} ******",
-			"unlocked": "{{value}} ******"
+			"unlocked": "{{name}} ******"
 		},
 		"openFullScreen": "******",
 		"page": {
