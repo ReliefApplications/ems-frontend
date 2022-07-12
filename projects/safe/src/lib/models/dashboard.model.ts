@@ -142,7 +142,7 @@ export const WIDGET_TYPES = [
     color: '#2F383E',
     settings: {
       title: 'Text widget',
-      text: 'Enter a content'
+      text: 'Enter a content',
     },
     defaultCols: 3,
     defaultRows: 3,
