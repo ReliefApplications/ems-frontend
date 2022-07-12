@@ -217,8 +217,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     }).setView([centerLat, centerLong], get(this.settings, 'zoom', 3));
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
-    // Set basemap
-    this.changeBasemap(this.settings.basemap);
+    this.setBasemap(this.settings.basemap);
 
     // Adds all the controls we use to the map
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
@@ -699,11 +698,11 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Changes the basemap of the map used for setting in up and for previewing it in map settings.
+   * Set the basemap.
    *
-   * @param basemap String containing the name of the basemap
+   * @param basemap String containing the id (name) of the basemap
    */
-  public changeBasemap(basemap: string) {
+  public setBasemap(basemap: string) {
     if (this.basemap) {
       this.basemap.remove();
     }

@@ -74,7 +74,7 @@ export class MapPropertiesComponent implements OnInit, AfterViewInit {
       map.setView([map.getCenter().lat, value], map.getZoom());
     });
     this.form.get('basemap')?.valueChanges.subscribe((value) => {
-      this.previewMap.changeBasemap(value);
+      this.previewMap.setBasemap(value);
     });
   }
 
