@@ -144,11 +144,26 @@ export const routes = [
                   import('./pages/update-record/update-record.module').then(
                     (m) => m.UpdateRecordModule
                   ),
+                data: {
+                  breadcrumb: {
+                    alias: '@record',
+                  },
+                },
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                alias: '@resource',
+              },
+            },
           },
         ],
+        data: {
+          breadcrumb: {
+            key: 'common.resource.few',
+          },
+        },
       },
       {
         path: 'dashboards',

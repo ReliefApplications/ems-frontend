@@ -10,6 +10,7 @@ import {
   SafeLayoutModalComponent,
   Layout,
   SafeGridLayoutService,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import {
   DeleteFormMutationResponse,
@@ -93,7 +94,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
     private downloadService: SafeDownloadService,
     private dialog: MatDialog,
     private translate: TranslateService,
-    private gridLayoutService: SafeGridLayoutService
+    private gridLayoutService: SafeGridLayoutService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /** Load data from the id of the resource passed as a parameter. */
@@ -157,6 +159,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
         (res) => {
           if (res.data.resource) {
             this.resource = res.data.resource;
+            this.breadcrumbService.setBreadcrumb(
+              '@resource',
+              this.resource.name as string
+            );
             this.dataSourceForms = this.resource.forms;
             this.dataSourceLayouts = this.resource.layouts;
             this.setDisplayedColumns(false);
