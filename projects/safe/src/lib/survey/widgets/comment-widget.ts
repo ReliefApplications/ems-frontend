@@ -1,10 +1,13 @@
+import { surveyLocalization } from 'survey-angular';
 import {
   Question,
   QuestionComment as QuestionCommentSurveyJS,
+  SurveyModel,
 } from 'survey-knockout';
 
 /** Interface for question of type comment */
 interface QuestionComment extends QuestionCommentSurveyJS {
+  survey: SurveyModel;
   allowEdition?: boolean;
 }
 
@@ -38,7 +41,10 @@ export const init = (Survey: any): void => {
         mainDiv.style.height = '23px';
         mainDiv.style.marginBottom = '0.5em';
         const btnEl = document.createElement('button');
-        btnEl.innerText = 'Edit';
+        btnEl.innerText = surveyLocalization.getString(
+          'oort:edit',
+          question.survey.locale
+        );
         btnEl.style.width = '50px';
         mainDiv.appendChild(btnEl);
         el.parentElement?.insertBefore(mainDiv, el);

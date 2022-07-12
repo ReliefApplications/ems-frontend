@@ -21,6 +21,7 @@ import * as CommentWidget from './widgets/comment-widget';
 import * as OtherProperties from './global-properties/others';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
+import { initLocalization } from './localization';
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -57,6 +58,8 @@ export const initCustomSurvey = (
   ReferenceDataProperties.init(Survey, domService, referenceDataService);
   TooltipProperty.init(Survey);
   OtherProperties.init(Survey, environment);
+  // set localization
+  initLocalization(Survey);
   // load internal functions
   addCustomFunctions(Survey, authService, apollo);
 };

@@ -13,16 +13,16 @@
       <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
   </mat-tab>
-  <!-- <mat-tab [label]="'common.resource.few' | translate">
+  <mat-tab [label]="'common.resource.few' | translate">
     <ng-template matTabContent>
-      <safe-role-resources *ngIf="role"></safe-role-resources>
+      <safe-role-resources *ngIf="role" [role]="role"></safe-role-resources>
       <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
-  </mat-tab> -->
+  </mat-tab>
   <mat-tab [label]="'components.role.summary.features' | translate">
     <ng-template matTabContent>
       <safe-role-features
-        *ngIf="role"
+        *ngIf="role && application"
         [role]="role"
         [application]="application"
         [loading]="loading"
