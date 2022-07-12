@@ -57,6 +57,7 @@ export class RoleResourcesComponent implements OnInit {
   // === RESOURCES ===
   @Input() role!: Role;
   public loading = true;
+  public updating = false;
   public resources = new MatTableDataSource<Resource>([]);
   public cachedResources: Resource[] = [];
   public openedResourceId = '';
@@ -115,6 +116,7 @@ export class RoleResourcesComponent implements OnInit {
       this.pageInfo.length = res.data.resources.totalCount;
       this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
       this.loading = res.loading;
+      this.updating = res.loading;
     });
   }
 
@@ -138,10 +140,41 @@ export class RoleResourcesComponent implements OnInit {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.pageInfo.pageSize = first;
+      this.fetchResources();
+    } else {
+      this.resources.data = this.cachedResources.slice(
+        e.pageSize * this.pageInfo.pageIndex,
+        e.pageSize * (this.pageInfo.pageIndex + 1)
+      );
+    }
+    this.pageInfo.pageSize = e.pageSize;
+  }
+
+  /**
+   * Update resources query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchResources(refetch?: boolean): void {
+    this.updating = true;
+    if (refetch) {
+      this.cachedResources = [];
+      this.pageInfo.pageIndex = 0;
+      this.resourcesQuery
+        .refetch({
+          first: this.pageInfo.pageSize,
+          afterCursor: null,
+        })
+        .then(() => {
+          this.loading = false;
+          this.updating = false;
+        });
+    } else {
       this.loading = true;
       this.resourcesQuery.fetchMore({
         variables: {
-          first,
+          first: this.pageInfo.pageSize,
           afterCursor: this.pageInfo.endCursor,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
@@ -160,13 +193,7 @@ export class RoleResourcesComponent implements OnInit {
           });
         },
       });
-    } else {
-      this.resources.data = this.cachedResources.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**

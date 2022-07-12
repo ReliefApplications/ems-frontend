@@ -226,8 +226,6 @@ export const init = (Survey: any, domService: DomService): void => {
             urlTester.host && urlTester.host !== window.location.host
               ? (instance.disabled = false)
               : (instance.disabled = true);
-
-            console.log(opt.question.value);
           }
         });
 

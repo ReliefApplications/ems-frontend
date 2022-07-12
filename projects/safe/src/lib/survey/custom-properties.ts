@@ -140,7 +140,6 @@ const SURVEY_LOCALIZABLE_STRINGS = [
  * @param Survey Survey library
  */
 export const initLocalization = (Survey: any) => {
-  console.log(Survey.surveyLocalization);
   for (const item of SURVEY_LOCALIZABLE_STRINGS) {
     for (const [locale, value] of Object.entries(item.locales)) {
       set(
