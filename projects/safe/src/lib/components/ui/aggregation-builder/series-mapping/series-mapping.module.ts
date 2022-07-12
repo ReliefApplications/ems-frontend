@@ -7,6 +7,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePipelineModule } from '../pipeline/pipeline.module';
 
+/**
+ * Series mapping for aggregation builder.
+ * Display a list per field used as final stage of aggregation, to get category / field / series fields.
+ */
 @NgModule({
   declarations: [SafeSeriesMappingComponent],
   imports: [

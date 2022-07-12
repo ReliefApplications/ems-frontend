@@ -157,7 +157,7 @@ export class SafeGridService {
         return 'numeric';
       }
       case 'Float': {
-        return 'float';
+        return 'numeric';
       }
       case 'Boolean': {
         return 'boolean';
@@ -208,6 +208,9 @@ export class SafeGridService {
   private getFieldFilter(type: any): string {
     switch (type) {
       case 'Int': {
+        return 'numeric';
+      }
+      case 'Float': {
         return 'numeric';
       }
       case 'Boolean': {

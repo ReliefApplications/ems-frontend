@@ -133,7 +133,7 @@
 			"platformAccessNotGranted": "******",
 			"readAll": "******",
 			"statusUpdated": "****** {{value}} ******",
-			"unlocked": "{{value}} ******"
+			"unlocked": "{{name}} ******"
 		},
 		"openFullScreen": "******",
 		"page": {
@@ -247,16 +247,20 @@
 			"title": "******"
 		},
 		"aggregationBuilder": {
+			"accumulators": "******",
 			"addField": "******",
+			"addRule": "******",
 			"addStage": "******",
 			"dataset": {
 				"select": "******"
 			},
 			"fieldName": "******",
 			"groupBy": "******",
+			"groupingRules": "******",
 			"mapping": {
-				"xAxis": "******",
-				"yAxis": "******"
+				"category": "******",
+				"field": "******",
+				"series": "******"
 			},
 			"operator": "******",
 			"operators": {
@@ -376,7 +380,6 @@
 		"form": {
 			"create": {
 				"choice": {
-					"blank": "******",
 					"inherit": "******",
 					"resource": "******",
 					"template": "******"
@@ -384,8 +387,12 @@
 				"template": {
 					"from": "******",
 					"placeholder": "******",
-					"title": "******",
-					"tooltip": "******"
+					"title": "******"
+				},
+				"tooltip": {
+					"inherit": "******",
+					"resource": "******",
+					"template": "******"
 				}
 			},
 			"delete": {
@@ -455,6 +462,7 @@
 				"withValue": "******"
 			},
 			"download": "******",
+			"empty": "******",
 			"field": {
 				"all": "******",
 				"select": "******"
@@ -641,6 +649,25 @@
 			"impersonate": {
 				"title": "******"
 			},
+			"summary": {
+				"features": "******",
+				"noFeatures": "******",
+				"noForms": "******",
+				"noSteps": "******",
+				"title": "******"
+			},
+			"tooltip": {
+				"allowRecordAccessibility": "****** {{form}}",
+				"allowRecordCreation": "****** {{form}}",
+				"allowRecordDeletion": "****** {{form}}",
+				"allowRecordUpdate": "****** {{form}}",
+				"disallowRecordAccessibility": "****** {{form}}",
+				"disallowRecordCreation": "****** {{form}}",
+				"disallowRecordDeletion": "****** {{form}}",
+				"disallowRecordUpate": "****** {{form}}",
+				"hideFeature": "****** {{page}} ******",
+				"showFeature": "****** {{page}} ******"
+			},
 			"update": {
 				"permissions": "******",
 				"title": "******"
@@ -656,6 +683,20 @@
 				"role": {
 					"description": "******"
 				}
+			},
+			"summary": {
+				"country": "******",
+				"firstName": "******",
+				"lastName": "******",
+				"locationType": "******",
+				"region": "******",
+				"roles": {
+					"application": "******",
+					"backoffice": "******",
+					"selectedApplication": "******",
+					"selectedRoles": "******"
+				},
+				"title": "******"
 			},
 			"update": {
 				"title": "******"
@@ -686,7 +727,7 @@
 				"errors": {
 					"invalid": "******",
 					"missingDataset": "******",
-					"validationFailed": "****** {{index}} ****** {{question}} ****** {{error}}"
+					"validationFailed": "****** {{errors}} ******"
 				},
 				"export": {
 					"columns": {
@@ -717,6 +758,17 @@
 				},
 				"layout": {
 					"reset": "******"
+				},
+				"tooltip": {
+					"saved": "******",
+					"unsaved": "******",
+					"uploadFailed": "******"
+				},
+				"validation": {
+					"help": "******",
+					"questionTitle": "****** {{question}} ******",
+					"subtitle": "******",
+					"title": "****** {{record}}"
 				}
 			},
 			"settings": {
@@ -736,8 +788,17 @@
 						"title": "******"
 					},
 					"position": "******",
+					"series": {
+						"stack": {
+							"enable": "******",
+							"usePercentage": "******"
+						},
+						"title": "******"
+					},
 					"text": "******",
-					"type": "******"
+					"type": "******",
+					"xAxis": "******",
+					"yAxis": "******"
 				},
 				"grid": {
 					"actions": {
@@ -764,6 +825,8 @@
 							},
 							"prefill": "******",
 							"save": "******",
+							"selectAllRecords": "******",
+							"selectAllRecordsActivePage": "******",
 							"selectDisplay": "******",
 							"sendMail": "******",
 							"workflow": {
@@ -1052,7 +1115,9 @@
 			"create": "******"
 		},
 		"role": {
-			"create": "******"
+			"create": "******",
+			"description": "******",
+			"title": "******"
 		},
 		"step": {
 			"new": "******"
@@ -1061,6 +1126,8 @@
 			"new": "******"
 		},
 		"user": {
+			"firstName": "******",
+			"lastName": "******",
 			"notifications": {
 				"rolesUpdated": "{{username}} ******",
 				"userImportFail": "******"
@@ -1084,6 +1151,12 @@
 			},
 			"scheduler": {
 				"defaultTitle": "******"
+			},
+			"tooltip": {
+				"selector": {
+					"collapse": "******",
+					"expand": "******"
+				}
 			}
 		},
 		"workflow": {
@@ -1198,11 +1271,16 @@
 				"name": "******"
 			},
 			"fields": "******",
+			"graphQLFilter": "******",
 			"path": "******",
 			"placeholder": {
-				"csv": "******"
+				"csv": "******",
+				"graphQLFilter": "******"
 			},
 			"queryName": "******",
+			"tooltip": {
+				"graphQLFilter": "******"
+			},
 			"type": "******",
 			"validateCsv": "******",
 			"valueField": "******"

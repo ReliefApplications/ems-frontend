@@ -1,11 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  AfterViewInit,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
@@ -29,7 +23,7 @@ import {
 } from '../../../graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -39,10 +33,10 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './forms.component.html',
   styleUrls: ['./forms.component.scss'],
 })
-export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
+export class FormsComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
-  public filterLoading = false;
+  public updating = false;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   public displayedColumns = [
     'name',
@@ -61,11 +55,9 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   canAdd = false;
   private authSubscription?: Subscription;
 
-  // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
-
   // === FILTERING ===
   public filter: any;
+  private sort: Sort = { active: '', direction: '' };
 
   // === PAGINATION ===
   public pageInfo = {
@@ -104,7 +96,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.pageInfo.length = res.data.forms.totalCount;
       this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
       this.loading = res.loading;
-      this.filterLoading = false;
+      this.updating = res.loading;
     });
 
     this.authSubscription = this.authService.user$.subscribe(() => {
@@ -115,6 +107,15 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
         )
       );
     });
+  }
+
+  /**
+   * Removes all the subscriptions.
+   */
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 
   /**
@@ -137,26 +138,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
-      this.loading = true;
-      this.formsQuery.fetchMore({
-        variables: {
-          first,
-          afterCursor: this.pageInfo.endCursor,
-          filter: this.filter,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            forms: {
-              edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
-              pageInfo: fetchMoreResult.forms.pageInfo,
-              totalCount: fetchMoreResult.forms.totalCount,
-            },
-          });
-        },
-      });
+      this.fetchForms();
     } else {
       this.forms.data = this.cachedForms.slice(
         e.pageSize * this.pageInfo.pageIndex,
@@ -172,43 +154,64 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param filter filter event.
    */
   onFilter(filter: any): void {
-    this.filterLoading = true;
     this.filter = filter;
-    this.cachedForms = [];
-    this.pageInfo.pageIndex = 0;
-    this.formsQuery.fetchMore({
-      variables: {
-        first: this.pageInfo.pageSize,
-        filter: this.filter,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          forms: {
-            edges: fetchMoreResult.forms.edges,
-            pageInfo: fetchMoreResult.forms.pageInfo,
-            totalCount: fetchMoreResult.forms.totalCount,
-          },
+    this.fetchForms(true);
+  }
+
+  /**
+   * Handle sort change.
+   *
+   * @param event sort event
+   */
+  onSort(event: Sort): void {
+    this.sort = event;
+    this.fetchForms(true);
+  }
+
+  /**
+   * Update forms query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchForms(refetch?: boolean): void {
+    this.updating = true;
+    if (refetch) {
+      this.cachedForms = [];
+      this.pageInfo.pageIndex = 0;
+      this.formsQuery
+        .refetch({
+          first: this.pageInfo.pageSize,
+          afterCursor: null,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        })
+        .then(() => {
+          this.loading = false;
+          this.updating = false;
         });
-      },
-    });
-  }
-
-  /**
-   * Sets the sort in the view.
-   */
-  ngAfterViewInit(): void {
-    this.forms.sort = this.sort || null;
-  }
-
-  /**
-   * Removes all the subscriptions.
-   */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
+    } else {
+      this.formsQuery.fetchMore({
+        variables: {
+          first: this.pageInfo.pageSize,
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) {
+            return prev;
+          }
+          return Object.assign({}, prev, {
+            forms: {
+              edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
+              pageInfo: fetchMoreResult.forms.pageInfo,
+              totalCount: fetchMoreResult.forms.totalCount,
+            },
+          });
+        },
+      });
     }
   }
 
@@ -288,11 +291,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
         const data = { name: value.name };
         Object.assign(
           data,
-          value.binding === 'newResource' && { newResource: true },
-          value.binding === 'fromResource' &&
-            value.resource && { resource: value.resource },
-          value.binding === 'fromResource' &&
-            value.template && { template: value.template }
+          value.resource && { resource: value.resource },
+          value.template && { template: value.template }
         );
         this.apollo
           .mutate<AddFormMutationResponse>({

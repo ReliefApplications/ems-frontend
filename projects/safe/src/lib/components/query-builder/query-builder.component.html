@@ -67,7 +67,6 @@
             *ngIf="availableFields.length > 0"
             [form]="$any(form.controls.fields)"
             [fields]="availableFields"
-            [factory]="factory"
           ></safe-tab-fields>
         </ng-template>
       </mat-tab>
@@ -102,9 +101,8 @@
         <ng-template matTabContent>
           <safe-tab-style
             [form]="$any(form.controls.style)"
-            [fields]="form.getRawValue().fields"
-            [factory]="factory"
             [scalarFields]="availableScalarFields"
+            [query]="form.getRawValue()"
           >
           </safe-tab-style>
         </ng-template>

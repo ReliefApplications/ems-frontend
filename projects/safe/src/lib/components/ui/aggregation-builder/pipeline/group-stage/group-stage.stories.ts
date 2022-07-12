@@ -30,6 +30,9 @@ export default {
   },
 } as Meta;
 
+/**
+ * List of fields for testing.
+ */
 const DEFAULT_FIELDS = [
   {
     name: 'date',
@@ -59,8 +62,17 @@ const DEFAULT_FIELDS = [
   },
 ];
 
+/**
+ * Form builder reference.
+ */
 const fb = new FormBuilder();
 
+/**
+ * Template used by storybook to display the component in stories.
+ *
+ * @param args story arguments
+ * @returns story template
+ */
 const TEMPLATE: Story<SafeGroupStageComponent> = (args) => ({
   template: '<safe-group-stage [form]=form [fields]=fields></safe-group-stage>',
   props: {
@@ -73,6 +85,9 @@ const TEMPLATE: Story<SafeGroupStageComponent> = (args) => ({
   },
 });
 
+/**
+ * Default template.
+ */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {};

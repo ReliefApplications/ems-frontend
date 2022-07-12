@@ -25,6 +25,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 import { MatPaginatorModule } from '@angular/material/paginator';
 
+/** Module for components related to users */
 @NgModule({
   declarations: [SafeUsersComponent, SafeEditUserComponent],
   imports: [

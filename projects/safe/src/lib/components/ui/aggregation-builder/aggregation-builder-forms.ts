@@ -37,6 +37,18 @@ export const addFieldsForm = (value: any, validators = true): FormGroup =>
   });
 
 /**
+ * Create a groupBy rule form.
+ *
+ * @param value initial value
+ * @returns GroupBy rule form group.
+ */
+export const groupByRuleForm = (value: any): FormGroup =>
+  formBuilder.group({
+    field: [get(value, 'field', ''), Validators.required],
+    expression: expressionForm(get(value, 'expression', false), false),
+  });
+
+/**
  * Builds a stage form from its initial value.
  *
  * @param value Initial value of the form.
@@ -47,7 +59,7 @@ export const addStage = (value: any): FormGroup => {
     case PipelineStage.FILTER: {
       return formBuilder.group({
         type: [PipelineStage.FILTER],
-        form: createFilterGroup(value.form ? value.form : {}, null),
+        form: createFilterGroup(get(value, 'form', {})),
       });
     }
     case PipelineStage.SORT: {
@@ -63,10 +75,8 @@ export const addStage = (value: any): FormGroup => {
       return formBuilder.group({
         type: [PipelineStage.GROUP],
         form: formBuilder.group({
-          groupBy: [get(value, 'form.groupBy', ''), Validators.required],
-          groupByExpression: expressionForm(
-            get(value, 'form.groupByExpression', false),
-            false
+          groupBy: formBuilder.array(
+            get(value, 'form.groupBy', [{}]).map((x: any) => groupByRuleForm(x))
           ),
           addFields: formBuilder.array(
             get(value, 'form.addFields', []).map((x: any) =>
@@ -122,21 +132,48 @@ export const addStage = (value: any): FormGroup => {
 /**
  * Exports the mapping fields
  *
- * @param widgetType - The type of widget you want to create.
+ * @param widgetType type of chart widget
  * @returns The x and y axis
  */
-export const mappingFields = (widgetType: string): string[] =>
-  // if (WIDGET_TYPES.some((x) => x.id === widgetType)) {
-  //   return ['xAxis', 'yAxis'];
-  // }
-  // return [];
-  ['xAxis', 'yAxis'];
+export const mappingFields = (
+  widgetType: string
+): { name: string; required: boolean }[] => {
+  const fields = [
+    { name: 'category', required: true },
+    { name: 'field', required: true },
+  ];
+  if (['bar', 'column', 'line'].includes(widgetType)) {
+    fields.push({ name: 'series', required: false });
+  }
+  return fields;
+};
+
+/**
+ * Create mapping form ( category / field / series )
+ *
+ * @param value current form value
+ * @param widgetType type of chart widget
+ * @returns New mapping form
+ */
+export const createMappingForm = (value: any, widgetType: string): FormGroup =>
+  formBuilder.group(
+    mappingFields(widgetType).reduce(
+      (o, field) =>
+        Object.assign(o, {
+          [field.name]: [
+            get(value, field.name, ''),
+            field.required ? Validators.required : null,
+          ],
+        }),
+      {}
+    )
+  );
 
 /**
  * Generates a new aggregation form.
  *
  * @param value initial value
- * @param widgetType type of widget
+ * @param widgetType type of chart widget
  * @returns New aggregation form
  */
 export const createAggregationForm = (
@@ -151,20 +188,7 @@ export const createAggregationForm = (
         ? value.pipeline.map((x: any) => addStage(x))
         : []
     ),
-    mapping: formBuilder.group(
-      mappingFields(widgetType).reduce(
-        (o, key) =>
-          Object.assign(o, {
-            [key]: [
-              value && value.mapping && value.mapping[key]
-                ? value.mapping[key]
-                : '',
-              Validators.required,
-            ],
-          }),
-        {}
-      )
-    ),
+    mapping: createMappingForm(get(value, 'mapping', null), widgetType),
   });
 
 /**

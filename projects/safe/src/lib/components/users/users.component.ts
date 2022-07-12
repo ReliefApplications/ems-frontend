@@ -32,9 +32,12 @@ import { Application } from '../../models/application.model';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application.service';
 import { PageEvent } from '@angular/material/paginator';
+import { Router, ActivatedRoute } from '@angular/router';
 
+/** User columns to display for the main user administration page */
 const ADMIN_COLUMNS = ['select', 'name', 'username', 'oid', 'roles', 'actions'];
 
+/** User columns to display for the user administration page in an application */
 const APPLICATION_COLUMNS = [
   'select',
   'name',
@@ -45,6 +48,9 @@ const APPLICATION_COLUMNS = [
   'actions',
 ];
 
+/**
+ * A component to display the list of users
+ */
 @Component({
   selector: 'safe-users',
   templateUrl: './users.component.html',
@@ -79,13 +85,25 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
 
   selection = new SelectionModel<User>(true, []);
 
+  /**
+   * Constructor of the users component
+   *
+   * @param apollo The apollo client
+   * @param snackBar The snack bar service
+   * @param authService The authentification service
+   * @param dialog The material dialog service
+   * @param downloadService The download service
+   * @param translate The translation service
+   */
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -108,6 +126,9 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
           ).length > 0));
   }
 
+  /**
+   * Show a dialog for inviting someone
+   */
   onInvite(): void {
     const dialogRef = this.dialog.open(SafeInviteUsersComponent, {
       panelClass: 'add-dialog',
@@ -173,6 +194,11 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Show a dialog to edit a user
+   *
+   * @param user The user to edit
+   */
   onEdit(user: User): void {
     const dialogRef = this.dialog.open(SafeEditUserComponent, {
       data: {
@@ -225,6 +251,21 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Handle click on user row.
+   * Redirect to user page
+   *
+   * @param user user to see details of
+   */
+  onClick(user: User): void {
+    this.router.navigate([user.id], { relativeTo: this.activatedRoute });
+  }
+
+  /**
+   * Show a dialog to confirm the deletion of users
+   *
+   * @param users The list of users to delete
+   */
   onDelete(users: User[]): void {
     let title = this.translate.instant('common.deleteObject', {
       name: this.translate.instant('common.user.one'),
@@ -314,6 +355,12 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     this.users.sort = this.sort || null;
   }
 
+  /**
+   * Apply the filters to the list
+   *
+   * @param column The column used for filtering
+   * @param event The event triggered on filter action
+   */
   applyFilter(column: string, event: any): void {
     if (column === 'role') {
       this.roleFilter = !!event.value ? event.value.trim() : '';
@@ -325,20 +372,29 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     this.users.filter = '##';
   }
 
+  /**
+   * Clear all the filters
+   */
   clearAllFilters(): void {
     this.searchText = '';
     this.roleFilter = '';
     this.applyFilter('', null);
   }
 
-  /** Whether the number of selected elements matches the total number of rows. */
+  /**
+   * Whether the number of selected elements matches the total number of rows.
+   *
+   * @returns True if it matches, else False
+   */
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
     const numRows = this.users.data.length;
     return numSelected === numRows;
   }
 
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  /**
+   * Selects all rows if they are not all selected; otherwise clear selection.
+   */
   masterToggle(): void {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.isAllSelected()
@@ -346,7 +402,12 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       : this.users.data.forEach((row) => this.selection.select(row));
   }
 
-  /** The label for the checkbox on the passed row */
+  /**
+   * Get the label for the checkbox on the passed row
+   *
+   * @param row The current row
+   * @returns The label for the checkbox
+   */
   checkboxLabel(row?: any): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
@@ -356,6 +417,11 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     }`;
   }
 
+  /**
+   * Export the list of users
+   *
+   * @param type The type of file we want ('csv' or 'xslx')
+   */
   onExport(type: string): void {
     // if we are in the Users page of an application
     if (this.applicationService) {

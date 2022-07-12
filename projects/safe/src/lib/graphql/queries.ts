@@ -18,6 +18,8 @@ export const GET_PROFILE = gql`
   {
     me {
       id
+      firstName
+      lastName
       username
       isAdmin
       name
@@ -324,13 +326,14 @@ export const GET_RECORD_BY_ID = gql`
 
 /** GraphQL query definition for getting record details for history purpose */
 export const GET_RECORD_BY_ID_FOR_HISTORY = gql`
-  query GetRecordByIfForHistory($id: ID!) {
+  query GetRecordByIdForHistory($id: ID!) {
     record(id: $id) {
       id
       incrementalId
       form {
         id
         fields
+        structure
       }
     }
   }
@@ -714,6 +717,40 @@ export const GET_QUERY_TYPES = gql`
           type {
             name
             kind
+            fields {
+              name
+              args {
+                name
+                type {
+                  name
+                  kind
+                  inputFields {
+                    name
+                    type {
+                      name
+                      kind
+                    }
+                  }
+                }
+              }
+              type {
+                name
+                kind
+                ofType {
+                  name
+                  fields {
+                    name
+                    type {
+                      name
+                      kind
+                      ofType {
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }
             ofType {
               name
               fields {
@@ -1049,15 +1086,18 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
     referenceData(id: $id) {
       id
       name
+      modifiedAt
       type
       apiConfiguration {
         name
+        graphQLEndpoint
       }
       query
       fields
       valueField
       path
       data
+      graphQLFilter
     }
   }
 `;
@@ -1079,7 +1119,7 @@ export interface GetReferenceDataByIdQueryResponse {
 export const GET_RECORD_HISTORY_BY_ID = gql`
   query GetRecordHistoryByID($id: ID!, $lang: String) {
     recordHistory(id: $id, lang: $lang) {
-      created
+      createdAt
       createdBy
       changes {
         type
@@ -1087,6 +1127,11 @@ export const GET_RECORD_HISTORY_BY_ID = gql`
         displayName
         old
         new
+      }
+      version {
+        id
+        createdAt
+        data
       }
     }
   }

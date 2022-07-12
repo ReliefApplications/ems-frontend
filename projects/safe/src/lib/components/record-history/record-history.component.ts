@@ -21,7 +21,15 @@ import {
   GET_RECORD_HISTORY_BY_ID,
 } from '../../graphql/queries';
 import { Change, RecordHistory } from '../../models/recordsHistory';
+import { Version } from '../../models/form.model';
 
+/**
+ * Return the type of the old value if existing, else the type of the new value.
+ *
+ * @param oldVal The previous value
+ * @param newVal The next value
+ * @returns The type of the value: primitive, object or array
+ */
 const getValueType = (
   oldVal: any,
   newVal: any
@@ -45,8 +53,8 @@ const getValueType = (
   styleUrls: ['./record-history.component.scss'],
 })
 export class SafeRecordHistoryComponent implements OnInit {
-  @Input() id = '';
-  @Input() revert: any;
+  @Input() id!: string;
+  @Input() revert!: (version: Version) => void;
   @Input() template?: string;
   @Output() cancel = new EventEmitter();
 
@@ -64,6 +72,15 @@ export class SafeRecordHistoryComponent implements OnInit {
   startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
+  /**
+   * Constructor of the record history component
+   *
+   * @param dialog The material dialog service
+   * @param downloadService The download service
+   * @param translate The translation service
+   * @param dateFormat The dateTranslation service
+   * @param apollo The apollo client
+   */
   constructor(
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
@@ -84,7 +101,7 @@ export class SafeRecordHistoryComponent implements OnInit {
       })
       .subscribe((res) => {
         this.record = res.data.record;
-        this.sortedFields = this.sortFields(this.record.form?.fields || []);
+        this.sortedFields = this.sortFields(this.getFields());
       });
 
     this.apollo
@@ -97,7 +114,7 @@ export class SafeRecordHistoryComponent implements OnInit {
       })
       .subscribe((res) => {
         this.history = res.data.recordHistory.filter(
-          (version) => version.changes.length
+          (item) => item.changes.length
         );
         this.filterHistory = this.history;
         this.loading = false;
@@ -162,7 +179,7 @@ export class SafeRecordHistoryComponent implements OnInit {
           <p>
             <span class="${change.type}-field">
             ${translations[change.type]}
-            </span> 
+            </span>
             <b> ${change.displayName} </b>
             ${translations.from}
             <b> ${oldVal}</b>
@@ -201,16 +218,17 @@ export class SafeRecordHistoryComponent implements OnInit {
   }
 
   /**
-   * Handles the revertion of items
+   * Handles the revertion of the record to a previous version
    *
-   * @param item The item to revert
+   * @param version The version to revert
    */
-  onRevert(item: any): void {
+  onRevert(version: any): void {
     const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
         recordId: this.id,
         locale: 'en',
-        compareTo: this.record.versions?.find((x) => x.id === item.id),
+        compareTo: this.history.find((item) => item.version?.id === version.id)
+          ?.version,
         template: this.template,
       },
       height: '98%',
@@ -220,7 +238,7 @@ export class SafeRecordHistoryComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.revert(item);
+        this.revert(version);
       }
     });
   }
@@ -259,7 +277,7 @@ export class SafeRecordHistoryComponent implements OnInit {
 
     // filtering by date
     this.filterHistory = this.history.filter((item) => {
-      const createdAt = new Date(item.created);
+      const createdAt = new Date(item.createdAt);
       return (
         !startDate ||
         !endDate ||
@@ -268,11 +286,20 @@ export class SafeRecordHistoryComponent implements OnInit {
     });
 
     // filtering by field
-    if (this.filterField !== null)
-      this.filterHistory = this.filterHistory.filter(
-        (version) =>
-          !!version.changes.find((change) => this.filterField === change.field)
-      );
+    if (this.filterField !== null) {
+      this.filterHistory = this.filterHistory
+        .filter(
+          (item) =>
+            !!item.changes.find((change) => this.filterField === change.field)
+        )
+        .map((item) => {
+          const newItem = Object.assign({}, item);
+          newItem.changes = item.changes.filter(
+            (change) => change.field === this.filterField
+          );
+          return newItem;
+        });
+    }
   }
 
   /**
@@ -312,5 +339,56 @@ export class SafeRecordHistoryComponent implements OnInit {
       const compB: string = b.title || b.name;
       return compA.toLowerCase() > compB.toLowerCase() ? 1 : -1;
     });
+  }
+
+  /**
+   * Get fields from the form
+   *
+   * @returns Returns an array with all the fields.
+   */
+  private getFields(): any[] {
+    const fields: any[] = [];
+    // No form, break the display
+    if (this.record.form) {
+      // Take the fields from the form
+      this.record.form.fields?.map((field: any) => {
+        fields.push(Object.assign({}, field));
+      });
+      if (this.record.form.structure) {
+        const structure = JSON.parse(this.record.form.structure);
+        if (!structure.pages || !structure.pages.length) {
+          return [];
+        }
+        for (const page of structure.pages) {
+          this.extractFields(page, fields);
+        }
+      }
+    }
+    return fields;
+  }
+
+  /**
+   * Extract fields from form structure in order to get titles.
+   *
+   * @param object Structure to inspect, can be a page, a panel.
+   * @param fields Array of fields.
+   */
+  private extractFields(object: any, fields: any[]): void {
+    if (object.elements) {
+      for (const element of object.elements) {
+        if (element.type === 'panel') {
+          this.extractFields(element, fields);
+        } else {
+          const field = fields.find((x) => x.name === element.name);
+          if (field && element.title) {
+            if (typeof element.title === 'string') {
+              field.title = element.title;
+            } else {
+              field.title = element.title.default;
+            }
+          }
+        }
+      }
+    }
   }
 }

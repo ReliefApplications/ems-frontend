@@ -350,7 +350,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     }
 
     .form-group-title {
-      font-weight: bold;
+      font-weight: 500;
       font-size: 16px;
       margin-bottom: 12px;
       border-bottom: 1px solid darkgray;
@@ -538,7 +538,7 @@ body {
 .info-row {
   display: flex;
   .info-icon {
-    margin-left: 12px;
+    margin-left: 6px;
   }
 }
 
@@ -571,6 +571,14 @@ mat-tab-group[vertical] {
           opacity: 1;
           background-color: #f5f5f5;
         }
+
+        .mat-tab-label-content {
+          gap: 6px;
+
+          safe-icon {
+            display: flex;
+          }
+        }
       }
 
       &::after {
@@ -591,7 +599,21 @@ mat-tab-group[vertical] {
 
   & > .mat-tab-body-wrapper {
     width: 100%;
-    margin-left: 32px;
+
+    & > .mat-tab-body {
+      & > .mat-tab-body-content {
+        transition: all ease 200ms;
+        padding-left: 32px;
+      }
+      &
+        > .mat-tab-body-content[style*='transform: translate3d(100%, 0px, 0px)'] {
+        transform: translate3d(0px, 100%, 0px) !important;
+      }
+      &
+        > .mat-tab-body-content[style*='transform: translate3d(-100%, 0px, 0px)'] {
+        transform: translate3d(0px, -100%, 0px) !important;
+      }
+    }
   }
 }
 

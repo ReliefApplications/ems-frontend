@@ -7,7 +7,9 @@ import { init as initResourceComponent } from './components/resource';
 import { init as initResourcesComponent } from './components/resources';
 import { init as initOwnerComponent } from './components/owner';
 import { init as initUsersComponent } from './components/users';
-import { init as initCustomWidget } from './widget';
+import { init as initTextWidget } from './widgets/text-widget';
+import { init as initCommentWidget } from './widgets/comment-widget';
+import { initCustomProperties, initLocalization } from './custom-properties';
 import addCustomFunctions from '../utils/custom-functions';
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
@@ -19,7 +21,7 @@ import { SafeReferenceDataService } from '../services/reference-data.service';
 /**
  * Executes all init methods of custom SurveyJS.
  *
- * @param survey surveyjs or surveyjs creator
+ * @param Survey surveyjs or surveyjs creator library
  * @param domService Shared DOM service, used to inject components on the go
  * @param dialog dialog service
  * @param apollo apollo service
@@ -28,8 +30,8 @@ import { SafeReferenceDataService } from '../services/reference-data.service';
  * @param environment injected environment
  * @param referenceDataService Reference data service
  */
-export const initCustomWidgets = (
-  survey: any,
+export const initCustomSurvey = (
+  Survey: any,
   domService: DomService,
   dialog: MatDialog,
   apollo: Apollo,
@@ -38,19 +40,19 @@ export const initCustomWidgets = (
   environment: any,
   referenceDataService: SafeReferenceDataService
 ): void => {
-  survey.settings.commentPrefix = '_comment';
-  // supportCreatorV2
-  widgets.select2tagbox(survey);
-  initResourceComponent(survey, domService, apollo, dialog, formBuilder);
-  initResourcesComponent(survey, domService, apollo, dialog, formBuilder);
-  initOwnerComponent(survey, domService, apollo, dialog, formBuilder);
-  initUsersComponent(survey, domService, apollo, dialog, formBuilder);
-  initCustomWidget(
-    survey,
-    domService,
-    dialog,
-    environment,
-    referenceDataService
-  );
-  addCustomFunctions(survey, authService, apollo);
+  // load widgets (aka custom questions)
+  widgets.select2tagbox(Survey);
+  initCommentWidget(Survey);
+  initTextWidget(Survey, domService);
+  // load components (same as widgets, but with less configuration options)
+  initResourceComponent(Survey, domService, apollo, dialog, formBuilder);
+  initResourcesComponent(Survey, domService, apollo, dialog, formBuilder);
+  initOwnerComponent(Survey, domService, apollo);
+  initUsersComponent(Survey, domService, apollo);
+  // load custom properties
+  initCustomProperties(Survey, environment, referenceDataService, domService);
+  // set translation
+  initLocalization(Survey);
+  // load internal functions
+  addCustomFunctions(Survey, authService, apollo);
 };

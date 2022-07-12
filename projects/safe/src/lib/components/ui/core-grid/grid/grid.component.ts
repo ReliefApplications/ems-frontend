@@ -47,16 +47,31 @@ import { SafeDownloadService } from '../../../../services/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
+import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component';
 
+/**
+ * Factory for creating scroll strategy
+ *
+ * @param overlay The overlay
+ * @returns A function that returns a block scroll strategy
+ */
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;
 }
 
+/**
+ * Test if an element match a css selector
+ *
+ * @param el A dom element
+ * @param selector A selector
+ * @returns A boolean, indicating if the element matches the selector
+ */
 const matches = (el: any, selector: any) =>
   (el.matches || el.msMatchesSelector).call(el, selector);
 
+/** Component for grid widgets */
 @Component({
   selector: 'safe-grid',
   templateUrl: './grid.component.html',
@@ -119,6 +134,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   };
   @Input() hasDetails = true;
   @Output() action = new EventEmitter();
+
+  /** @returns A boolean indicating if actions are enabled */
   get hasEnabledActions(): boolean {
     return Object.values(this.actions).includes(true);
   }
@@ -126,6 +143,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === DISPLAY ===
   @Input() resizable = true;
   @Input() reorderable = true;
+
+  /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
     return {
       columnChooser: false,
@@ -171,6 +190,14 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   private columnsOrder: any[] = [];
   @Output() columnChange = new EventEmitter();
 
+  /**
+   * Constructor of the grid component
+   *
+   * @param dialog The material dialog service
+   * @param gridService The grid service
+   * @param renderer The renderer library
+   * @param downloadService The download service
+   */
   constructor(
     private dialog: MatDialog,
     private gridService: SafeGridService,
@@ -384,9 +411,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     this.columnChange.emit();
   }
 
-  /**
-   * Returns the visible columns of the grid.
-   */
+  /** @returns Visible columns of the grid. */
   get visibleFields(): any {
     return this.grid?.columns
       .toArray()
@@ -409,9 +434,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       );
   }
 
-  /**
-   * Returns the current grid layout.
-   */
+  /** @returns Current grid layout. */
   get layout(): GridLayout {
     return {
       fields: this.visibleFields,
@@ -427,6 +450,9 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * Detects cell click event and opens row form if user is authorized.
    *
    * @param param0 click event.
+   * @param param0.isEdited a boolean indicating if the cell is edited
+   * @param param0.dataItem the data item of the cell
+   * @param param0.rowIndex the row index of the cell
    */
   public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
     // Parameters that prevent the inline edition.
@@ -562,7 +588,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * Expands text in a full window modal.
    *
    * @param item Item to display data of.
-   * @param rowTitle field name.
+   * @param field field name.
    */
   public onExpandText(item: any, field: any): void {
     const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
@@ -582,6 +608,26 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       if (res && res !== get(item, field)) {
         const value = { field: res };
         this.action.emit({ action: 'edit', item, value });
+      }
+    });
+  }
+
+  /**
+   * Open a modal to show the errors
+   *
+   * @param item The item of the grid
+   */
+  public showErrors(item: any): void {
+    const dialogRef = this.dialog.open(SafeErrorsModalComponent, {
+      data: {
+        incrementalId: item.incrementalId,
+        errors: item.validationErrors,
+      },
+      autoFocus: false,
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        this.action.emit({ action: 'update', item });
       }
     });
   }

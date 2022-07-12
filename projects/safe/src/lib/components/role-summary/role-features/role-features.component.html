@@ -1,0 +1,53 @@
+<div class="search-bar">
+  <mat-form-field appearance="outline">
+    <mat-icon matPrefix>search</mat-icon>
+    <input
+      id="feature-search"
+      matInput
+      [(ngModel)]="search"
+      type="search"
+      [placeholder]="'common.placeholder.search' | translate"
+    />
+    <safe-button
+      matSuffix
+      [isIcon]="true"
+      [icon]="'close'"
+      *ngIf="search"
+      aria-label="Clear"
+      (click)="search = ''"
+    ></safe-button>
+  </mat-form-field>
+</div>
+<safe-role-dashboards
+  [role]="role"
+  [pages]="dashboards"
+  [loading]="loading"
+  (edit)="onEditAccess($event)"
+  [search]="search.toLowerCase().trim()"
+></safe-role-dashboards>
+<safe-role-forms
+  [role]="role"
+  [pages]="forms"
+  [loading]="loading"
+  (edit)="onEditAccess($event)"
+  [search]="search.toLowerCase().trim()"
+></safe-role-forms>
+<safe-role-workflows
+  [role]="role"
+  [pages]="workflows"
+  [loading]="loading"
+  (edit)="onEditAccess($event)"
+  [search]="search.toLowerCase().trim()"
+></safe-role-workflows>
+<div
+  *ngIf="
+    !loading &&
+    dashboards.length === 0 &&
+    forms.length === 0 &&
+    workflows.length === 0
+  "
+  class="empty-features"
+>
+  <safe-icon icon="folder_open"></safe-icon>
+  <h3>{{ 'components.role.summary.noFeatures' | translate }}</h3>
+</div>

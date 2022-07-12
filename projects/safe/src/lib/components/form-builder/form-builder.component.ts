@@ -13,6 +13,9 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
 import { Form } from '../../models/form.model';
 import { TranslateService } from '@ngx-translate/core';
+import { renderCustomProperties } from '../../survey/custom-properties';
+import { DomService } from '../../services/dom.service';
+import { SafeReferenceDataService } from '../../services/reference-data.service';
 
 /**
  * Array containing the different types of questions.
@@ -70,6 +73,9 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'tooltip',
 ];
 
+/**
+ * Class name to add to core field question.
+ */
 const CORE_FIELD_CLASS = 'core-question';
 
 /**
@@ -99,12 +105,16 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param dialog This is the Angular Material Dialog service used to display dialog modals
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
+   * @param domService The dom service
+   * @param referenceDataService Reference data service
    */
   constructor(
     @Inject('environment') environment: any,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private domService: DomService,
+    private referenceDataService: SafeReferenceDataService
   ) {
     this.environment = environment;
     // translate the editor in the same language as the interface
@@ -201,6 +211,26 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       // Highlight core fields
       this.addCustomClassToCoreFields(coreFields);
     }
+
+    // Scroll to question when adde
+    this.surveyCreator.onQuestionAdded.add((sender, opt) => {
+      const name = opt.question.name;
+      setTimeout(() => {
+        const el = document.querySelector('[data-name="' + name + '"]');
+        el?.scrollIntoView({ behavior: 'smooth' });
+        this.surveyCreator.showQuestionEditor(opt.question);
+      });
+    });
+
+    // add the rendering of custom properties
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      renderCustomProperties(this.domService, this.referenceDataService)
+    );
+    this.surveyCreator.onTestSurveyCreated.add((_, options) =>
+      options.survey.onAfterRenderQuestion.add(
+        renderCustomProperties(this.domService, this.referenceDataService)
+      )
+    );
   }
 
   ngOnChanges(): void {
@@ -216,9 +246,24 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         // Highlight core fields
         this.addCustomClassToCoreFields(coreFields);
       }
+
+      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
+        (survey: Survey.SurveyModel, options: any) =>
+          this.onSetCustomCss(options)
+      );
+
+      // add the rendering of custom properties
+      this.surveyCreator.survey.onAfterRenderQuestion.add(
+        renderCustomProperties(this.domService, this.referenceDataService)
+      );
     }
   }
 
+  /**
+   * Add new class to questions considered as core fields
+   *
+   * @param coreFields list of core fields
+   */
   private addCustomClassToCoreFields(coreFields: string[]): void {
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       (survey: Survey.SurveyModel, options: any) => {

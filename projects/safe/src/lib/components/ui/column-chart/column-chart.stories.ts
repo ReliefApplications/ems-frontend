@@ -25,6 +25,12 @@ export default {
   },
 } as Meta;
 
+/**
+ * Template used by storybook to display the component in stories.
+ *
+ * @param args story arguments
+ * @returns story template
+ */
 const TEMPLATE: Story<SafeColumnChartComponent> = (args) => ({
   template:
     '<div style="height:400px"><safe-column-chart [legend]="legend" [title]="title" [series]="series"></safe-column-chart></div>',
@@ -33,6 +39,9 @@ const TEMPLATE: Story<SafeColumnChartComponent> = (args) => ({
   },
 });
 
+/**
+ * Default template
+ */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {

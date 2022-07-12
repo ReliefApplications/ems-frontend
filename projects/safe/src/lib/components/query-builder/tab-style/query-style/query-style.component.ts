@@ -1,11 +1,4 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnInit,
-  ComponentFactory,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
   ChecklistDatabase,
@@ -22,8 +15,7 @@ import {
   styleUrls: ['./query-style.component.scss'],
 })
 export class SafeQueryStyleComponent implements OnInit {
-  @Input() factory?: ComponentFactory<any>;
-  @Input() fields: any[] = [];
+  @Input() query: any;
   public selectedFields: any[] = [];
   @Input() form!: FormGroup;
   @Input() scalarFields: any[] = [];
@@ -38,7 +30,9 @@ export class SafeQueryStyleComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.checklist = new ChecklistDatabase(this.getChecklist(this.fields));
+    this.checklist = new ChecklistDatabase(
+      this.getChecklist(this.query.fields)
+    );
     const fields = this.form.get('fields')?.value || [];
     if (fields.length > 0) {
       this.wholeRow = new FormControl(false);

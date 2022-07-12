@@ -22,6 +22,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
+/** Module for the widget-related components */
 @NgModule({
   declarations: [
     SafeWidgetGridComponent,
@@ -51,6 +52,6 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     LayoutModule,
     IndicatorsModule,
   ],
-  exports: [SafeWidgetGridComponent],
+  exports: [SafeWidgetGridComponent, SafeTileDataComponent],
 })
 export class SafeWidgetGridModule {}

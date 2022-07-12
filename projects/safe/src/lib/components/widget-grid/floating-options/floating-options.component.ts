@@ -6,7 +6,8 @@ import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.com
 import { TranslateService } from '@ngx-translate/core';
 
 /**
- * Button on top left of each widget, if user can see it, with menu of possible actions for that widget.
+ * Button on top left of each widget, if user can see it, with menu of possible
+ * actions for that widget.
  */
 @Component({
   selector: 'safe-floating-options',
@@ -25,6 +26,13 @@ export class SafeFloatingOptionsComponent implements OnInit {
   // === AVAILABLE ACTIONS ===
   public items: any[] = [];
 
+  /**
+   * Constructor of floating options component
+   *
+   * @param dialog Material dialog service
+   * @param dashboardService Dashboard service
+   * @param translate Translation service
+   */
   constructor(
     public dialog: MatDialog,
     private dashboardService: SafeDashboardService,

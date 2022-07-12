@@ -24,6 +24,9 @@ export class SafeExpressionsComponent implements OnInit, OnChanges {
   public operatorsList: string[] = Object.values(this.operators);
   public noFieldOperators = NO_FIELD_OPERATORS;
 
+  /**
+   * Aggregation pipeline expression component.
+   */
   constructor() {}
 
   ngOnInit(): void {
