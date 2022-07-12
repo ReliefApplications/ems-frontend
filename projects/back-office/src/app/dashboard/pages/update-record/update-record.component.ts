@@ -10,6 +10,9 @@ import {
 } from '../../../graphql/queries';
 import { Record, Form, SafeBreadcrumbService } from '@safe/builder';
 
+/**
+ * Component which will be used at record update.
+ */
 @Component({
   selector: 'app-update-record',
   templateUrl: './update-record.component.html',
@@ -22,6 +25,13 @@ export class UpdateRecordComponent implements OnInit {
   public record?: Record;
   public form?: Form;
 
+  /**
+   * UpdateRecordComponent constructor.
+   *
+   * @param apollo Used to get the form and the record data
+   * @param route Used to get url params.
+   * @param router Used to change the app route.
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
