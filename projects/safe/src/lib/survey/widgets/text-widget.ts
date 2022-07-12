@@ -14,7 +14,7 @@ import {
   Question,
   QuestionText,
   SurveyModel,
-} from 'survey-angular';
+} from 'survey-knockout';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 

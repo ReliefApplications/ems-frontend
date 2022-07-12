@@ -3,7 +3,7 @@ import {
   JsonMetadata,
   Question,
   QuestionFile,
-} from 'survey-angular';
+} from 'survey-knockout';
 
 /**
  * Add support for custom properties to the survey

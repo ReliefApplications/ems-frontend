@@ -4,7 +4,8 @@ import {
   QuestionSelectBase,
   JsonMetadata,
   SurveyModel,
-} from 'survey-angular';
+  Serializer,
+} from 'survey-knockout';
 import { DomService } from '../../services/dom.service';
 import { SafeReferenceDataService } from '../../services/reference-data.service';
 import { SafeReferenceDataDropdownComponent } from '../../components/reference-data-dropdown/reference-data-dropdown.component';
@@ -21,8 +22,14 @@ interface QuestionReferenceData extends QuestionSelectBase {
   referenceDataChoicesLoaded?: boolean;
 }
 
-/** Types that inherit from select-base question */
-const SELECTABLE_TYPES = ['dropdown', 'checkbox', 'radiogroup', 'tagbox'];
+/**
+ * Check if a question is of select type
+ *
+ * @param question The question to check
+ * @returns A boolean indicating if the question is a select type
+ */
+const isSelectQuestion = (question: Question): boolean =>
+  Serializer.isDescendantOf(question.getType(), 'selectbase');
 
 /**
  * Add support for custom properties to the survey
@@ -70,12 +77,36 @@ export const init = (
 
   serializer.addProperty('selectbase', {
     displayName: 'Filter from question',
-    name: 'referenceDataFilterFilterFromQuestion:question_selectbase',
+    name: 'referenceDataFilterFilterFromQuestion',
+    type: 'dropdown',
     category: 'Choices from Reference data',
     dependsOn: 'referenceData',
     visibleIf: (obj: null | QuestionReferenceData): boolean =>
       Boolean(obj?.referenceData),
     visibleIndex: 3,
+    choices: (
+      obj: null | QuestionReferenceData,
+      choicesCallback: (choices: any[]) => void
+    ) => {
+      const defaultOption = new Survey.ItemValue(
+        '',
+        SurveyCreator.localization.getString('pe.conditionSelectQuestion')
+      );
+      const survey = obj?.survey;
+      if (!survey) return choicesCallback([defaultOption]);
+      const questions = survey
+        .getAllQuestions()
+        .filter((question) => isSelectQuestion(question) && question !== obj)
+        .map((question) => question as QuestionReferenceData)
+        .filter((question) => question.referenceData);
+      const qItems = questions.map((q) => {
+        const text = q.locTitle.renderedHtml || q.name;
+        return new Survey.ItemValue(q.name, text);
+      });
+      qItems.sort((el1, el2) => el1.text.localeCompare(el2.text));
+      qItems.unshift(defaultOption);
+      choicesCallback(qItems);
+    },
   });
 
   serializer.addProperty('selectbase', {
@@ -152,6 +183,7 @@ export const init = (
     },
   });
 
+  // custom editor for the reference data dropdown
   const referenceDataEditor = {
     render: (editor: any, htmlElement: HTMLElement) => {
       const question = editor.object as QuestionReferenceData;
@@ -180,7 +212,7 @@ export const render = (
   questionElement: Question,
   referenceDataService: SafeReferenceDataService
 ): void => {
-  if (SELECTABLE_TYPES.includes(questionElement.getType())) {
+  if (isSelectQuestion(questionElement)) {
     const question = questionElement as QuestionReferenceData;
 
     const updateChoices = () => {

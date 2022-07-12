@@ -1,5 +1,5 @@
 import get from 'lodash/get';
-import { JsonMetadata, Question } from 'survey-angular';
+import { JsonMetadata, Question } from 'survey-knockout';
 
 /** Question with tooltip interface */
 interface QuestionTooltip extends Question {

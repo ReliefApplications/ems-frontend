@@ -1,7 +1,7 @@
 import {
   Question,
   QuestionComment as QuestionCommentSurveyJS,
-} from 'survey-angular';
+} from 'survey-knockout';
 
 /** Interface for question of type comment */
 interface QuestionComment extends QuestionCommentSurveyJS {
