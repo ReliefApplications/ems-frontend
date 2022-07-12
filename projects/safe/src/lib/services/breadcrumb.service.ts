@@ -3,13 +3,19 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
+/** Interface of breadcrumb */
 export interface Breadcrumb {
   alias?: string;
   uri: string;
-  text: string;
+  text?: string;
+  key?: string;
   queryParams?: any;
 }
 
+/**
+ * Shared Breadcrumb service.
+ * Handle behavior of breadcrumb component, listening to activated route
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -17,14 +23,19 @@ export class SafeBreadcrumbService {
   private breadcrumbs = new BehaviorSubject<Breadcrumb[]>([]);
   public breadcrumbs$ = this.breadcrumbs.asObservable();
 
+  /**
+   * Shared Breadcrumb service.
+   * Handle behavior of breadcrumb component, listening to activated route
+   *
+   * @param activateRoute Angular activated route
+   * @param router Angular router
+   */
   constructor(private activateRoute: ActivatedRoute, private router: Router) {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
-        console.log(this.activateRoute);
-        console.log(this.activateRoute.root);
-        this.breadcrumbs.next(this.createBreadcrumbs(this.activateRoute.root));
-      });
+      .subscribe(() =>
+        this.breadcrumbs.next(this.createBreadcrumbs(this.activateRoute.root))
+      );
   }
 
   /**
@@ -47,6 +58,7 @@ export class SafeBreadcrumbService {
     }
 
     for (const child of children) {
+      const previousUri = uri;
       const routeURL: string = child.snapshot.url
         .map((segment) => segment.path)
         .join('/');
@@ -55,7 +67,7 @@ export class SafeBreadcrumbService {
       }
       const breadcrumb = child.snapshot.data?.breadcrumb;
       if (!(breadcrumb === null || breadcrumb === undefined)) {
-        if (!breadcrumb.skip) {
+        if (!breadcrumb.skip && uri !== previousUri) {
           if (
             this.breadcrumbs.value[breadcrumbs.length] &&
             this.breadcrumbs.value[breadcrumbs.length].uri === uri
@@ -77,9 +89,7 @@ export class SafeBreadcrumbService {
    * @param label label to apply
    */
   public setBreadcrumb(alias: string, label: string) {
-    console.log(alias);
     const breadcrumbs = this.breadcrumbs.getValue();
-    console.log(breadcrumbs);
     const breadcrumb = breadcrumbs.find((x) => x.alias === alias);
     if (breadcrumb) {
       breadcrumb.text = label[0].toUpperCase() + label.slice(1);

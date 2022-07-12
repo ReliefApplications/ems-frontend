@@ -70,6 +70,11 @@ export const routes = [
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                key: 'common.record.few',
+              },
+            },
           },
           {
             path: 'answer/:id',
@@ -100,7 +105,7 @@ export const routes = [
               ),
             data: {
               breadcrumb: {
-                text: '@form',
+                alias: '@form',
               },
             },
             // canActivate: [SafePermissionGuard]
@@ -108,7 +113,7 @@ export const routes = [
         ],
         data: {
           breadcrumb: {
-            text: 'Forms',
+            key: 'common.form.few',
           },
         },
       },

@@ -16,7 +16,9 @@ export class SafeBreadcrumbComponent implements OnInit {
   public breadcrumbs: Breadcrumb[] = [];
 
   /**
-   * Breadcrumb component
+   * Breadcrumb service
+   *
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(private breadcrumbService: SafeBreadcrumbService) {}
 

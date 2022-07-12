@@ -1,9 +1,9 @@
-<nav class="breadcrumbs" *ngIf="breadcrumbs.length > 0">
-  <ol>
-    <li *ngFor="let breadcrumb of breadcrumbs; let i = index">
-      <a [routerLink]="[breadcrumb.uri]">
-        <span>{{ breadcrumb.text }}</span>
-      </a>
-    </li>
-  </ol>
-</nav>
+<ol *ngIf="breadcrumbs.length > 1">
+  <li *ngFor="let breadcrumb of breadcrumbs; let i = index">
+    <a [routerLink]="[breadcrumb.uri]">
+      <span>{{
+        breadcrumb.key ? (breadcrumb.key | translate) : breadcrumb.text
+      }}</span>
+    </a>
+  </li>
+</ol>
