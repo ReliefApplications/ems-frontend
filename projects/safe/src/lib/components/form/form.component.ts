@@ -102,6 +102,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param layoutService This is the service that will be used to create the layout of the form.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param translate This is the service used to translate text
+   * @param el Element reference.
    */
   constructor(
     @Inject('environment') environment: any,
@@ -231,8 +232,10 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.survey.onValueChanged.add(this.valueChange.bind(this));
 
     // Sets default language as form language if it is in survey locales
-    const currentLang = this.usedLocales.find(lang => lang.value === this.translate.currentLang);
-    if(currentLang) {
+    const currentLang = this.usedLocales.find(
+      (lang) => lang.value === this.translate.currentLang
+    );
+    if (currentLang) {
       this.setLanguage(currentLang.text);
       this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
     }
