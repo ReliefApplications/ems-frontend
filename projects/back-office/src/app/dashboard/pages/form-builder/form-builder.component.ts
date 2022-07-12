@@ -19,6 +19,7 @@ import {
   SafeSnackBarService,
   Form,
   SafeConfirmModalComponent,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -69,7 +70,8 @@ export class FormBuilderComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     public dialog: MatDialog,
     private authService: SafeAuthService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /** Shows modal confirmation before leave the page if has changes on form */
@@ -116,6 +118,10 @@ export class FormBuilderComponent implements OnInit {
             if (res.data.form) {
               this.loading = res.loading;
               this.form = res.data.form;
+              this.breadcrumbService.setBreadcrumb(
+                '@form',
+                this.form.name as string
+              );
               this.nameForm = new FormGroup({
                 formName: new FormControl(this.form.name, Validators.required),
               });
@@ -321,6 +327,10 @@ export class FormBuilderComponent implements OnInit {
             })
           );
           this.form = { ...this.form, name: res.data?.editForm.name };
+          this.breadcrumbService.setBreadcrumb(
+            '@form',
+            this.form.name as string
+          );
           statusModal.close();
         }
       });

@@ -70,6 +70,11 @@ export const routes = [
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                key: 'common.record.few',
+              },
+            },
           },
           {
             path: 'answer/:id',
@@ -77,6 +82,11 @@ export const routes = [
               import('./pages/form-answer/form-answer.module').then(
                 (m) => m.FormAnswerModule
               ),
+            data: {
+              breadcrumb: {
+                alias: '@form',
+              },
+            },
             // canActivate: [SafePermissionGuard]
           },
           {
@@ -93,9 +103,19 @@ export const routes = [
               import('./pages/form-builder/form-builder.module').then(
                 (m) => m.FormBuilderModule
               ),
+            data: {
+              breadcrumb: {
+                alias: '@form',
+              },
+            },
             // canActivate: [SafePermissionGuard]
           },
         ],
+        data: {
+          breadcrumb: {
+            key: 'common.form.few',
+          },
+        },
       },
       {
         path: 'resources',
@@ -124,11 +144,26 @@ export const routes = [
                   import('./pages/update-record/update-record.module').then(
                     (m) => m.UpdateRecordModule
                   ),
+                data: {
+                  breadcrumb: {
+                    alias: '@record',
+                  },
+                },
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                alias: '@resource',
+              },
+            },
           },
         ],
+        data: {
+          breadcrumb: {
+            key: 'common.resource.few',
+          },
+        },
       },
       {
         path: 'dashboards',

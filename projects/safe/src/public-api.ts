@@ -18,6 +18,7 @@ export * from './lib/services/grid-layout.service';
 export * from './lib/services/reference-data.service';
 export * from './lib/services/kendo-translation.service';
 export * from './lib/services/date-translate.service';
+export * from './lib/services/breadcrumb.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
