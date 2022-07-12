@@ -77,6 +77,11 @@ export const routes = [
               import('./pages/form-answer/form-answer.module').then(
                 (m) => m.FormAnswerModule
               ),
+            data: {
+              breadcrumb: {
+                alias: '@form',
+              },
+            },
             // canActivate: [SafePermissionGuard]
           },
           {
@@ -93,9 +98,19 @@ export const routes = [
               import('./pages/form-builder/form-builder.module').then(
                 (m) => m.FormBuilderModule
               ),
+            data: {
+              breadcrumb: {
+                text: '@form',
+              },
+            },
             // canActivate: [SafePermissionGuard]
           },
         ],
+        data: {
+          breadcrumb: {
+            text: 'Forms',
+          },
+        },
       },
       {
         path: 'resources',

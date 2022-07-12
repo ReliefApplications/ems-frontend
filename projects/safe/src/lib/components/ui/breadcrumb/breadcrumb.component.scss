@@ -1,7 +1,32 @@
-.breadcrumb {
-  display: flex;
+.breadcrumbs {
+  display: block;
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 0 12px;
+    padding: 0;
+    color: #2f383eb2;
+
+    li {
+      display: flex;
+      flex-direction: row;
+      a {
+        display: inline-flex;
+        text-decoration: none;
+        color: #2f383eb2 !important;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      &:not(:last-child):after {
+        content: "/";
+        flex-shrink: 0;
+        padding: 0 8px;
+        text-align: center;
+        width: 8px;
+      }
+    }
+  }
 }
 
-.breadcrumb-item {
-  display: flex;
-}
