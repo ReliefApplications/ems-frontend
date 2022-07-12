@@ -21,7 +21,7 @@ ol {
       }
     }
     &:not(:last-child):after {
-      content: "/";
+      content: '/';
       flex-shrink: 0;
       padding: 0 8px;
       text-align: center;
