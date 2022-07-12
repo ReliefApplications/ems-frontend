@@ -133,7 +133,7 @@
 			"platformAccessNotGranted": "Vous n'avez pas d'accès valide à cette plateforme.",
 			"readAll": "Tout marqué comme lu",
 			"statusUpdated": "Statut mis à jour par {{value}}.",
-			"unlocked": "L'édition de l'objet {{value}} a été débloquée par un autre utilisateur."
+			"unlocked": "L'édition de l'objet {{name}} a été débloquée par un autre utilisateur."
 		},
 		"openFullScreen": "Ouvrir en plein écran",
 		"page": {
