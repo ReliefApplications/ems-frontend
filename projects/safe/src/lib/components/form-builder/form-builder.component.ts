@@ -121,6 +121,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
     this.translate.onLangChange.subscribe(() => {
       SurveyCreator.localization.currentLocale = this.translate.currentLang;
+      if (this.surveyCreator) {
+        this.surveyCreator.survey.locale = this.translate.currentLang;
+      }
     });
   }
 
@@ -221,6 +224,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         renderCustomProperties(this.domService, this.referenceDataService)
       )
     );
+    this.surveyCreator.survey.locale = this.translate.currentLang;
   }
 
   ngOnChanges(): void {
