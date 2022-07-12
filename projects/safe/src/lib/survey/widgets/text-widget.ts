@@ -208,12 +208,15 @@ export const init = (Survey: any, domService: DomService): void => {
           // Create an <a> HTMLElement only used to verify the validity of the URL
           const urlTester = document.createElement('a');
           if (
-            el.value &&
-            !(el.value.startsWith('https://') || el.value.startsWith('http://'))
+            question.value &&
+            !(
+              question.value.startsWith('https://') ||
+              question.value.startsWith('http://')
+            )
           ) {
-            urlTester.href = 'https://' + el.value;
+            urlTester.href = 'https://' + question.value;
           } else {
-            urlTester.href = el.value || '';
+            urlTester.href = question.value || '';
           }
           instance.disabled =
             !urlTester.host || urlTester.host === window.location.host;
