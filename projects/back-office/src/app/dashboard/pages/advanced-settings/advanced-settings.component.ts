@@ -12,16 +12,11 @@ import {
   GetSettingQueryResponse,
   GET_API_CONFIGURATIONS,
   GET_SETTING,
-} from '../../../../graphql/queries';
+} from '../../../graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  EditSettingMutationResponse,
-  EDIT_SETTING,
-} from '../../../../graphql/mutations';
+import { EditSettingMutationResponse, EDIT_SETTING } from './graphql/mutations';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Observable } from 'rxjs';
-
-const ITEMS_PER_PAGE = 10;
 
 /**
  * Advanced user settings component.
@@ -35,6 +30,8 @@ export class AdvancedSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
   settingForm: FormGroup = new FormGroup({});
   loading = true;
+
+  private readonly ITEMS_PER_PAGE = 10;
 
   // === API CONFIGURATIONS ===
   private defaultApiConfiguration?: ApiConfiguration;
@@ -58,6 +55,7 @@ export class AdvancedSettingsComponent implements OnInit {
       'userManagement.attributesMapping'
     ) as FormArray;
   }
+
   /**
    * Constructor for AdvancedSettingsComponent.
    *
@@ -195,7 +193,7 @@ export class AdvancedSettingsComponent implements OnInit {
       this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
         query: GET_API_CONFIGURATIONS,
         variables: {
-          first: ITEMS_PER_PAGE,
+          first: this.ITEMS_PER_PAGE,
         },
       });
 
@@ -243,7 +241,7 @@ export class AdvancedSettingsComponent implements OnInit {
         this.apiConfigurationsLoading = true;
         this.apiConfigurationsQuery.fetchMore({
           variables: {
-            first: ITEMS_PER_PAGE,
+            first: this.ITEMS_PER_PAGE,
             afterCursor: this.apiPageInfo.endCursor,
           },
           updateQuery: (prev, { fetchMoreResult }) => {

@@ -10,9 +10,14 @@ const routes: Routes = [
   {
     path: 'advanced-settings',
     loadChildren: () =>
-      import('./advanced-settings/advanced-settings.module').then(
+      import('../advanced-settings/advanced-settings.module').then(
         (m) => m.AdvancedSettingsModule
       ),
+    data: {
+      breadcrumb: {
+        key: 'components.users.advancedSettings.title',
+      },
+    },
   },
 ];
 

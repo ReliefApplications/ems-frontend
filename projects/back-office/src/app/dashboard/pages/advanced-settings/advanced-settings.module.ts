@@ -6,6 +6,7 @@ import { AdvancedSettingsComponent } from './advanced-settings.component';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
+  SafeIconModule,
   SafeMappingModule,
   SafePreviousButtonModule,
 } from '@safe/builder';
@@ -36,6 +37,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatTooltipModule,
     MatProgressSpinnerModule,
     MatSelectModule,
+    SafeIconModule,
   ],
 })
 export class AdvancedSettingsModule {}
