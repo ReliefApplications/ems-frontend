@@ -134,7 +134,7 @@
 			"platformAccessNotGranted": "******",
 			"readAll": "******",
 			"statusUpdated": "****** {{value}} ******",
-			"unlocked": "{{value}} ******"
+			"unlocked": "{{name}} ******"
 		},
 		"openFullScreen": "******",
 		"page": {
@@ -653,10 +653,19 @@
 			"summary": {
 				"features": "******",
 				"noFeatures": "******",
+				"noForms": "******",
 				"noSteps": "******",
 				"title": "******"
 			},
 			"tooltip": {
+				"allowRecordAccessibility": "****** {{form}}",
+				"allowRecordCreation": "****** {{form}}",
+				"allowRecordDeletion": "****** {{form}}",
+				"allowRecordUpdate": "****** {{form}}",
+				"disallowRecordAccessibility": "****** {{form}}",
+				"disallowRecordCreation": "****** {{form}}",
+				"disallowRecordDeletion": "****** {{form}}",
+				"disallowRecordUpate": "****** {{form}}",
 				"hideFeature": "****** {{page}} ******",
 				"showFeature": "****** {{page}} ******"
 			},

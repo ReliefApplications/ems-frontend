@@ -39,8 +39,18 @@ export const routes = [
               import('./pages/reference-data/reference-data.module')
                 .then()
                 .then((m) => m.ReferenceDataModule),
+            data: {
+              breadcrumb: {
+                alias: '@referenceData',
+              },
+            },
           },
         ],
+        data: {
+          breadcrumb: {
+            key: 'common.referenceData.few',
+          },
+        },
       },
       {
         path: 'forms',
@@ -67,9 +77,19 @@ export const routes = [
                   import('./pages/update-record/update-record.module').then(
                     (m) => m.UpdateRecordModule
                   ),
+                data: {
+                  breadcrumb: {
+                    alias: '@record',
+                  },
+                },
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                key: 'common.record.few',
+              },
+            },
           },
           {
             path: 'answer/:id',
@@ -77,6 +97,11 @@ export const routes = [
               import('./pages/form-answer/form-answer.module').then(
                 (m) => m.FormAnswerModule
               ),
+            data: {
+              breadcrumb: {
+                alias: '@form',
+              },
+            },
             // canActivate: [SafePermissionGuard]
           },
           {
@@ -93,9 +118,19 @@ export const routes = [
               import('./pages/form-builder/form-builder.module').then(
                 (m) => m.FormBuilderModule
               ),
+            data: {
+              breadcrumb: {
+                alias: '@form',
+              },
+            },
             // canActivate: [SafePermissionGuard]
           },
         ],
+        data: {
+          breadcrumb: {
+            key: 'common.form.few',
+          },
+        },
       },
       {
         path: 'resources',
@@ -124,11 +159,26 @@ export const routes = [
                   import('./pages/update-record/update-record.module').then(
                     (m) => m.UpdateRecordModule
                   ),
+                data: {
+                  breadcrumb: {
+                    alias: '@record',
+                  },
+                },
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                alias: '@resource',
+              },
+            },
           },
         ],
+        data: {
+          breadcrumb: {
+            key: 'common.resource.few',
+          },
+        },
       },
       {
         path: 'dashboards',
@@ -190,9 +240,19 @@ export const routes = [
                   import('./pages/user-summary/user-summary.module').then(
                     (m) => m.UserSummaryModule
                   ),
+                data: {
+                  breadcrumb: {
+                    alias: '@user',
+                  },
+                },
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                key: 'common.user.few',
+              },
+            },
           },
           {
             path: 'roles',
@@ -211,9 +271,19 @@ export const routes = [
                   import('./pages/role-summary/role-summary.module').then(
                     (m) => m.RoleSummaryModule
                   ),
+                data: {
+                  breadcrumb: {
+                    alias: '@role',
+                  },
+                },
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                key: 'common.role.few',
+              },
+            },
           },
           {
             path: 'apiconfigurations',
@@ -232,9 +302,19 @@ export const routes = [
                   import(
                     './pages/api-configuration/api-configuration.module'
                   ).then((m) => m.ApiConfigurationModule),
+                data: {
+                  breadcrumb: {
+                    alias: '@api',
+                  },
+                },
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                key: 'common.apiConfiguration.few',
+              },
+            },
           },
           {
             path: 'pulljobs',

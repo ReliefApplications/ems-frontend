@@ -146,16 +146,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
    */
   onEditStepAccess(step: Step): void {
     this.loading = true;
-    let canSeePermissions = get(step, 'permissions.canSee', []).map(
-      (x: any) => x.id as string
-    );
-    if (this.accessibleSteps.includes(step.id as string)) {
-      canSeePermissions = canSeePermissions.filter(
-        (x: string) => x !== this.role.id
-      );
-    } else {
-      canSeePermissions = [...canSeePermissions, this.role.id];
-    }
+    const hasAccess = this.accessibleSteps.includes(step.id as string);
 
     this.apollo
       .mutate<EditStepAccessMutationResponse>({
@@ -163,7 +154,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
         variables: {
           id: step.id,
           permissions: {
-            canSee: canSeePermissions,
+            canSee: { [hasAccess ? 'remove' : 'add']: [this.role.id] },
           },
         },
       })
@@ -200,21 +191,10 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
    * @param page A dashboard page object
    */
   onEditAccess(page: Page): void {
-    const canSeePermissions = get(page, 'permissions.canSee', []).map(
-      (x: any) => x.id as string
-    );
-    if (this.accessiblePages.includes(page.id as string)) {
-      this.edit.emit({
-        page: page.id,
-        permissions: canSeePermissions.filter(
-          (x: string) => x !== this.role.id
-        ),
-      });
-    } else {
-      this.edit.emit({
-        page: page.id,
-        permissions: [...canSeePermissions, this.role.id],
-      });
-    }
+    const hasAccess = this.accessiblePages.includes(page.id as string);
+    this.edit.emit({
+      page: page.id,
+      action: { [hasAccess ? 'remove' : 'add']: [this.role.id] },
+    });
   }
 }

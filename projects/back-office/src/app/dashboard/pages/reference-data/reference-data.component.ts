@@ -18,6 +18,7 @@ import {
   SafeSnackBarService,
   referenceDataType,
   ApiConfiguration,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
@@ -96,6 +97,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
    * @param router Angular router
    * @param formBuilder Angular form builder
    * @param translateService Angular translate service
+   * @param breadcrumbService Setups the breadcrumb component variables
    */
   constructor(
     private apollo: Apollo,
@@ -103,7 +105,8 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /**
@@ -123,6 +126,10 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
           (res) => {
             if (res.data.referenceData) {
               this.referenceData = res.data.referenceData;
+              this.breadcrumbService.setBreadcrumb(
+                '@referenceData',
+                this.referenceData.name as string
+              );
               this.csvValue =
                 this.referenceData?.data && this.referenceData?.data.length > 0
                   ? this.convertToCSV(this.referenceData?.data)

@@ -20,6 +20,7 @@ import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafePreferencesModalModule } from '../preferences-modal/preferences-modal.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
+import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
 
 /**
  * SafeLayoutModule is a class used to manage all the modules and components
@@ -48,6 +49,7 @@ import { SafeDateModule } from '../../pipes/date/date.module';
     OverlayModule,
     SafePreferencesModalModule,
     SafeDateModule,
+    SafeBreadcrumbModule,
   ],
   exports: [SafeLayoutComponent],
 })
