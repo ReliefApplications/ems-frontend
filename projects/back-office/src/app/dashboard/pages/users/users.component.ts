@@ -10,14 +10,18 @@ import {
 } from '../../../graphql/queries';
 import { Role, User } from '@safe/builder';
 
+/**
+ * Component which will show all the user in the app.
+ */
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-/** Accessible with '/settings/users' route.
-  Managelent of users.
-*/
+/**
+  Accessible with '/settings/users' route.
+  Management of users.
+ */
 export class UsersComponent implements OnInit {
   // === DATA ===
   public loading = true;
@@ -25,6 +29,11 @@ export class UsersComponent implements OnInit {
   public roles: Role[] = [];
   public displayedColumns = ['name', 'username', 'oid', 'roles', 'actions'];
 
+  /**
+   * UsersComponent constructor.
+   *
+   * @param apollo Used to load the users.
+   */
   constructor(private apollo: Apollo) {}
 
   /** Load the users */

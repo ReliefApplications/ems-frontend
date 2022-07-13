@@ -133,7 +133,7 @@
 			"platformAccessNotGranted": "Vous n'avez pas d'accès valide à cette plateforme.",
 			"readAll": "Tout marqué comme lu",
 			"statusUpdated": "Statut mis à jour par {{value}}.",
-			"unlocked": "L'édition de l'objet {{value}} a été débloquée par un autre utilisateur."
+			"unlocked": "L'édition de l'objet {{name}} a été débloquée par un autre utilisateur."
 		},
 		"openFullScreen": "Ouvrir en plein écran",
 		"page": {
@@ -652,10 +652,19 @@
 			"summary": {
 				"features": "Fonctionnalités",
 				"noFeatures": "Aucune fonctionnalité détectée",
+				"noForms": "Aucun formulaire détecté",
 				"noSteps": "Aucune étape détectée",
 				"title": "Résumé"
 			},
 			"tooltip": {
+				"allowRecordAccessibility": "Autoriser ce rôle à voir les enregistrements de {{form}}",
+				"allowRecordCreation": "Autoriser ce rôle à créer des enregistrements dans {{form}}",
+				"allowRecordDeletion": "Autoriser ce rôle à supprimer des enregistrements de {{form}}",
+				"allowRecordUpdate": "Autoriser ce rôle à mettre à jour les enregistrements de {{form}}",
+				"disallowRecordAccessibility": "Interdire ce rôle pour voir les enregistrements de {{form}}",
+				"disallowRecordCreation": "Interdire à ce rôle de créer des enregistrements dans {{form}}",
+				"disallowRecordDeletion": "Interdire ce rôle pour supprimer des enregistrements de {{form}}",
+				"disallowRecordUpate": "Interdire ce rôle pour mettre à jour les enregistrements de {{form}}",
 				"hideFeature": "Masquer {{page}} pour ce rôle",
 				"showFeature": "Afficher {{page}} pour ce rôle"
 			},

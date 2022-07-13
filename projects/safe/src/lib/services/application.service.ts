@@ -104,7 +104,7 @@ export class SafeApplicationService {
       if (application?.locked && !application.lockedByUser) {
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.objectLocked', {
-            value: application.name,
+            name: application.name,
           })
         );
         return false;
@@ -155,7 +155,7 @@ export class SafeApplicationService {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectLocked', {
-                value: res.data.application.name,
+                name: res.data.application.name,
               })
             );
           }

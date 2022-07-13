@@ -1,5 +1,5 @@
 <h1>
-  {{ ('common.role.one' | translate) + ' - ' + role?.title }}
+  {{ role?.title ? role?.title : '' }}
 </h1>
 <mat-tab-group>
   <mat-tab [label]="'components.role.summary.title' | translate">
@@ -13,13 +13,16 @@
       <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
   </mat-tab>
-  <!-- <mat-tab [label]="'common.resource.few' | translate">
+  <mat-tab [label]="'common.resource.few' | translate">
     <ng-template matTabContent>
-      <safe-role-resources *ngIf="role"></safe-role-resources>
+      <safe-role-resources *ngIf="role" [role]="role"></safe-role-resources>
       <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
-  </mat-tab> -->
-  <mat-tab [label]="'components.role.summary.features' | translate">
+  </mat-tab>
+  <mat-tab
+    [label]="'components.role.summary.features' | translate"
+    *ngIf="application"
+  >
     <ng-template matTabContent>
       <safe-role-features
         *ngIf="role"
