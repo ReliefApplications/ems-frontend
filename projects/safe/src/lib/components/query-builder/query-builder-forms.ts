@@ -14,9 +14,7 @@ const formBuilder = new FormBuilder();
 export const createFilterGroup = (filter: any): FormGroup => {
   if (filter) {
     if (filter.filters) {
-      const filters = filter.filters.map((x: any) =>
-        createFilterGroup(x)
-      );
+      const filters = filter.filters.map((x: any) => createFilterGroup(x));
       return formBuilder.group({
         logic: filter.logic || 'and',
         filters: formBuilder.array(filters),

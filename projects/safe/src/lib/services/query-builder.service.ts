@@ -191,7 +191,8 @@ export class QueryBuilderService {
     }
     return [''].concat(
       fields.map((x) => {
-        switch (x.kind) {
+        const kind = x.kind || x.type?.kind;
+        switch (kind) {
           case 'SCALAR': {
             return x.name + '\n';
           }

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { isDate } from 'lodash';
+import { clone, isDate } from 'lodash';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
@@ -206,13 +206,18 @@ export class SafeTabFilterComponent implements OnInit {
   ngOnInit(): void {
     // TODO: move somewhere else
     if (this.query) {
-      this.metaQuery = this.queryBuilder.buildMetaQuery(this.query);
+      // Get MetaData from all scalar fields of the datasource
+      const queryWithAllScalarField = clone(this.query);
+      queryWithAllScalarField.fields = this.fields;
+      this.metaQuery = this.queryBuilder.buildMetaQuery(
+        queryWithAllScalarField
+      );
       if (this.metaQuery) {
-        this.metaQuery.subscribe((res: any) => {
+        this.metaQuery.subscribe(async (res: any) => {
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.metaFields = Object.assign({}, res.data[field]);
-              this.populateMetaFields();
+              await this.populateMetaFields();
             }
           }
         });

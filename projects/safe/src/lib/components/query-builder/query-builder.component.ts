@@ -38,10 +38,7 @@ export class SafeQueryBuilderComponent implements OnInit {
    * @returns the available scalar fields
    */
   get availableScalarFields(): any[] {
-    return this.availableFields.filter(
-      (x) => x.type.kind === 'SCALAR' || x.type.kind === 'OBJECT'
-    );
-    // return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
+    return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
   }
 
   @Input() form?: FormGroup;
@@ -109,19 +106,14 @@ export class SafeQueryBuilderComponent implements OnInit {
           );
           this.form?.setControl(
             'filter',
-            createFilterGroup(
-              this.form?.value.filter
-            )
+            createFilterGroup(this.form?.value.filter)
           );
         }
       });
       this.form?.controls.name.valueChanges.subscribe((res) => {
         if (this.allQueries.find((x) => x === res)) {
           this.availableFields = this.queryBuilder.getFields(res);
-          this.form?.setControl(
-            'filter',
-            createFilterGroup(null)
-          );
+          this.form?.setControl('filter', createFilterGroup(null));
           this.form?.setControl(
             'fields',
             this.formBuilder.array([], Validators.required)
@@ -135,10 +127,7 @@ export class SafeQueryBuilderComponent implements OnInit {
           );
         } else {
           this.availableFields = [];
-          this.form?.setControl(
-            'filter',
-            createFilterGroup(null)
-          );
+          this.form?.setControl('filter', createFilterGroup(null));
           this.form?.setControl('fields', this.formBuilder.array([]));
           this.form?.setControl(
             'sort',
