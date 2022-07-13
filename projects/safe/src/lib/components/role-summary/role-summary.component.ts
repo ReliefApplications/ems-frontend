@@ -31,6 +31,7 @@ export class SafeRoleSummaryComponent implements OnInit {
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
+    console.log(this.application);
     this.apollo
       .query<GetRoleQueryResponse>({
         query: GET_ROLE,

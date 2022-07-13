@@ -86,7 +86,7 @@ export class RoleFeaturesComponent implements OnInit {
         variables: {
           id: e.page,
           permissions: {
-            canSee: e.permissions,
+            canSee: e.action,
           },
         },
       })
