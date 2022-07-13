@@ -15,6 +15,7 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeReferenceDataService } from '../../services/reference-data.service';
 import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
+import get from 'lodash/get';
 
 /**
  * Array containing the different types of questions.
@@ -123,7 +124,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.setFormBuilder();
+    this.setFormBuilder(get(this.form, 'structure', ''));
   }
 
   ngOnChanges(): void {
@@ -157,7 +158,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    *
    * @param structure Optional param used as the form struc
    */
-  private setFormBuilder(structure?: any) {
+  private setFormBuilder(structure: string) {
     const creatorOptions = {
       showEmbededSurveyTab: false,
       showJSONEditorTab: false,
@@ -173,7 +174,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       creatorOptions
     );
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.text = structure ? structure : this.form.structure || '';
+    this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
