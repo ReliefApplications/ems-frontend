@@ -55,9 +55,7 @@
     color="primary"
     [disabled]="!form.valid"
   >
-    <ng-container *ngIf="isNew"
-    >{{ 'common.create' | translate }}</ng-container>
-    <ng-container *ngIf="!isNew"
-    >{{ 'common.edit' | translate }}</ng-container>
+    <ng-container *ngIf="isNew">{{ 'common.create' | translate }}</ng-container>
+    <ng-container *ngIf="!isNew">{{ 'common.edit' | translate }}</ng-container>
   </button>
 </div>

@@ -46,17 +46,11 @@
       >
       </safe-button>
       <mat-menu #menu="matMenu">
-        <button
-          mat-menu-item
-          (click)="onEdit(element, index)"
-        >
+        <button mat-menu-item (click)="onEdit(element, index)">
           <mat-icon>edit</mat-icon>
           {{ 'common.edit' | translate }}
         </button>
-        <button
-          mat-menu-item
-          (click)="onDelete(index)"
-        >
+        <button mat-menu-item (click)="onDelete(index)">
           <mat-icon>delete</mat-icon>
           {{ 'common.delete' | translate }}
         </button>
@@ -65,10 +59,7 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: displayedColumns"
-  ></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
 <div class="actions">
   <safe-button
@@ -76,8 +67,6 @@
     category="tertiary"
     variant="primary"
     (click)="onAdd()"
-    >{{
-      'common.add' | translate
-    }}</safe-button
+    >{{ 'common.add' | translate }}</safe-button
   >
 </div>
