@@ -1,7 +1,9 @@
 import { gql } from 'apollo-angular';
 import { Dashboard } from '@safe/builder';
 
-// === GET URL NEEDED INFO FROM AN SPECIFIC DASHBOARD ID ===
+/**
+ * Get url needed info from an specific dashboard id
+ */
 export const GET_SHARE_DASHBOARD_BY_ID = gql`
   query GetDashboardById($id: ID!) {
     dashboard(id: $id) {
@@ -25,6 +27,9 @@ export const GET_SHARE_DASHBOARD_BY_ID = gql`
   }
 `;
 
+/**
+ * Interface used by the GET_SHARE_DASHBOARD_BY_ID query
+ */
 export interface GetShareDashboardByIdQueryResponse {
   loading: boolean;
   dashboard: Dashboard;

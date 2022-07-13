@@ -52,6 +52,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
+   * @param translate Used to get translations from text keys
    */
   constructor(
     private apollo: Apollo,

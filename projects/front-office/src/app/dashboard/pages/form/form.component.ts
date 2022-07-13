@@ -57,6 +57,7 @@ export class FormComponent implements OnInit, OnDestroy {
    * @param route Angular current route
    * @param router Angular router
    * @param snackBar Shared snackbar service
+   * @param translate Used to get translations from text keys
    */
   constructor(
     private apollo: Apollo,

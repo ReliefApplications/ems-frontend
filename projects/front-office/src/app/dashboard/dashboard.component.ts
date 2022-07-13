@@ -53,6 +53,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @param route Angular current route
    * @param snackBar Shared snackbar service
    * @param router Angular router
+   * @param translate Used to get translations from text keys
    */
   constructor(
     private authService: SafeAuthService,
