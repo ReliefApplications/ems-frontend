@@ -1,0 +1,9 @@
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  safe-button {
+    max-width: 100px;
+    flex: 1;
+  }
+}
