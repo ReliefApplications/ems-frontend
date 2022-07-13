@@ -192,11 +192,6 @@
 			"none": "No role",
 			"one": "Role"
 		},
-		"roles": {
-			"few": "Roles",
-			"none": "No roles",
-			"one": "Role"
-		},
 		"row": {
 			"few": "Rows",
 			"none": "No row",
@@ -229,11 +224,6 @@
 		"user": {
 			"few": "Users",
 			"none": "No user",
-			"one": "User"
-		},
-		"users": {
-			"few": "Users",
-			"none": "No users",
 			"one": "User"
 		},
 		"value": {

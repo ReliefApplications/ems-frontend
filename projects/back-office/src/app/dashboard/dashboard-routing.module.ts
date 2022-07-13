@@ -245,7 +245,7 @@ export const routes = [
             ],
             data: {
               breadcrumb: {
-                key: 'common.users.few',
+                key: 'common.user.few',
               },
             },
           },
@@ -276,7 +276,7 @@ export const routes = [
             ],
             data: {
               breadcrumb: {
-                key: 'common.roles.few',
+                key: 'common.role.few',
               },
             },
           },
