@@ -23,6 +23,8 @@ export class SafeDownloadService {
    *
    * @param environment Current environment
    * @param http Http client
+   * @param snackBar Service used to show snackbars.
+   * @param translate Service used to get the translations.
    */
   constructor(
     @Inject('environment') environment: any,

@@ -121,6 +121,7 @@ export class SafeApplicationService {
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
    * @param router Angular router
+   * @param translate Service used to get the translations.
    */
   constructor(
     @Inject('environment') environment: any,
