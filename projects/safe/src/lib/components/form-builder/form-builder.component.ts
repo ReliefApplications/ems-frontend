@@ -15,6 +15,7 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeReferenceDataService } from '../../services/reference-data.service';
 import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
+import get from 'lodash/get';
 
 /**
  * Array containing the different types of questions.
@@ -118,10 +119,46 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
     this.translate.onLangChange.subscribe(() => {
       SurveyCreator.localization.currentLocale = this.translate.currentLang;
+      this.setFormBuilder(this.surveyCreator.text);
     });
   }
 
   ngOnInit(): void {
+    this.setFormBuilder(get(this.form, 'structure', ''));
+  }
+
+  ngOnChanges(): void {
+    if (this.surveyCreator) {
+      this.surveyCreator.text = this.form.structure || '';
+      if (!this.form.structure) {
+        this.surveyCreator.survey.showQuestionNumbers = 'off';
+      }
+      // skip if form is core
+      if (!this.form.core) {
+        const coreFields =
+          this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
+        // Highlight core fields
+        this.addCustomClassToCoreFields(coreFields);
+      }
+
+      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
+        (survey: Survey.SurveyModel, options: any) =>
+          this.onSetCustomCss(options)
+      );
+
+      // add the rendering of custom properties
+      this.surveyCreator.survey.onAfterRenderQuestion.add(
+        renderGlobalProperties(this.referenceDataService)
+      );
+    }
+  }
+
+  /**
+   * Creates the form builder and sets up all the options.
+   *
+   * @param structure Optional param used as the form struc
+   */
+  private setFormBuilder(structure: string) {
     const creatorOptions = {
       showEmbededSurveyTab: false,
       showJSONEditorTab: false,
@@ -137,7 +174,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       creatorOptions
     );
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.text = this.form.structure || '';
+    this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
@@ -228,32 +265,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         renderGlobalProperties(this.referenceDataService)
       )
     );
-  }
-
-  ngOnChanges(): void {
-    if (this.surveyCreator) {
-      this.surveyCreator.text = this.form.structure || '';
-      if (!this.form.structure) {
-        this.surveyCreator.survey.showQuestionNumbers = 'off';
-      }
-      // skip if form is core
-      if (!this.form.core) {
-        const coreFields =
-          this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
-        // Highlight core fields
-        this.addCustomClassToCoreFields(coreFields);
-      }
-
-      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
-        (survey: Survey.SurveyModel, options: any) =>
-          this.onSetCustomCss(options)
-      );
-
-      // add the rendering of custom properties
-      this.surveyCreator.survey.onAfterRenderQuestion.add(
-        renderGlobalProperties(this.referenceDataService)
-      );
-    }
+    this.surveyCreator.survey.locale = this.translate.currentLang;
   }
 
   /**

@@ -1,0 +1,92 @@
+<div class="page-header">
+  <h1 class="page-title">
+    {{ 'components.users.advancedSettings.title' | translate }}
+  </h1>
+</div>
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<h2>
+  {{ 'components.users.advancedSettings.userManagement.title' | translate }}
+</h2>
+<form [formGroup]="settingForm" *ngIf="!loading">
+  <div formGroupName="userManagement" class="form-group">
+    <mat-radio-group formControlName="local" class="form-radio-group">
+      <mat-radio-button [value]="true"
+        >{{
+          'components.users.advancedSettings.userManagement.local.title'
+            | translate
+        }}<safe-icon
+          [inline]="true"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [matTooltip]="
+            'components.users.advancedSettings.userManagement.local.tooltip'
+              | translate
+          "
+        ></safe-icon
+      ></mat-radio-button>
+      <mat-radio-button [value]="false"
+        >{{
+          'components.users.advancedSettings.userManagement.external.title'
+            | translate
+        }}
+        <safe-icon
+          [inline]="true"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [matTooltip]="
+            'components.users.advancedSettings.userManagement.external.tooltip'
+              | translate
+          "
+        ></safe-icon
+      ></mat-radio-button>
+    </mat-radio-group>
+    <ng-container
+      *ngIf="!$any(settingForm.controls.userManagement).controls.local.value"
+    >
+      <mat-form-field appearance="outline" style="flex: 1">
+        <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
+        <mat-select
+          #apiSelect
+          formControlName="apiConfiguration"
+          (openedChange)="onOpenApiSelect($event)"
+        >
+          <mat-option
+            *ngFor="let apiConfiguration of apiConfigurations$ | async"
+            [value]="apiConfiguration.id"
+            >{{ apiConfiguration.name }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="api-input">
+        <mat-label>{{
+          'components.users.advancedSettings.userManagement.api.title'
+            | translate
+        }}</mat-label>
+        <input
+          type="text"
+          [placeholder]="
+            'components.users.advancedSettings.userManagement.api.placeholder'
+              | translate
+          "
+          matInput
+          formControlName="serviceAPI"
+        />
+      </mat-form-field>
+      <div>
+        <h3>{{ 'components.mapping.title' | translate }}</h3>
+        <safe-mapping [mappingForm]="mappingForm"></safe-mapping>
+      </div>
+    </ng-container>
+  </div>
+  <safe-button
+    style="align-self: end"
+    category="secondary"
+    variant="primary"
+    (click)="onSave()"
+    [disabled]="settingForm.invalid || !settingForm.dirty"
+  >
+    {{ 'common.save' | translate }}
+  </safe-button>
+</form>

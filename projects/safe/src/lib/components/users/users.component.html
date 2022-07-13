@@ -62,12 +62,22 @@
       <button mat-menu-item (click)="onExport('xlsx')">.xlsx</button>
     </mat-menu>
     <safe-button
+      class="export-users"
       icon="send"
       category="secondary"
       variant="primary"
       (click)="onInvite()"
     >
       {{ 'components.users.invite.confirm' | translate }}
+    </safe-button>
+    <safe-button
+      *ngIf="advancedSettings"
+      icon="settings"
+      category="secondary"
+      variant="primary"
+      (click)="onAdvancedSettings()"
+      [title]="'common.advancedSettings' | translate"
+    >
     </safe-button>
   </div>
 </div>

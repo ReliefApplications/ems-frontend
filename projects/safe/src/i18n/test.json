@@ -2,6 +2,7 @@
 	"common": {
 		"access": "******",
 		"add": "******",
+		"advancedSettings": "******",
 		"aggregation": {
 			"few": "******",
 			"none": "******",
@@ -474,6 +475,13 @@
 			"confirmationMessage": "******",
 			"title": "******"
 		},
+		"mapping": {
+			"field": "******",
+			"path": "******",
+			"text": "******",
+			"title": "******",
+			"value": "******"
+		},
 		"notifications": {
 			"readAll": "******"
 		},
@@ -704,6 +712,24 @@
 			}
 		},
 		"users": {
+			"advancedSettings": {
+				"title": "******",
+				"userManagement": {
+					"api": {
+						"placeholder": "******",
+						"title": "******"
+					},
+					"external": {
+						"title": "******",
+						"tooltip": "******"
+					},
+					"local": {
+						"title": "******",
+						"tooltip": "******"
+					},
+					"title": "******"
+				}
+			},
 			"invite": {
 				"add": "******",
 				"confirm": "******",
@@ -1123,6 +1149,10 @@
 			},
 			"select": "******",
 			"template": "******"
+		},
+		"mapping": {
+			"add": "******",
+			"edit": "******"
 		},
 		"page": {
 			"add": "******",
