@@ -192,6 +192,11 @@
 			"none": "No role",
 			"one": "Role"
 		},
+		"roles": {
+			"few": "Roles",
+			"none": "No roles",
+			"one": "Role"
+		},
 		"row": {
 			"few": "Rows",
 			"none": "No row",
@@ -226,6 +231,11 @@
 			"none": "No user",
 			"one": "User"
 		},
+		"users": {
+			"few": "Users",
+			"none": "No users",
+			"one": "User"
+		},
 		"value": {
 			"few": "Values",
 			"none": "No value",
@@ -236,16 +246,6 @@
 			"few": "Workflows",
 			"none": "No workflow",
 			"one": "Workflow"
-		},
-		"users": {
-			"few": "Users",
-			"none": "No users",
-			"one": "User"
-		},
-		"roles": {
-			"few": "Roles",
-			"none": "No roles",
-			"one": "Role"
 		}
 	},
 	"components": {
