@@ -236,6 +236,16 @@
 			"few": "Workflows",
 			"none": "No workflow",
 			"one": "Workflow"
+		},
+		"users": {
+			"few": "Users",
+			"none": "No users",
+			"one": "User"
+		},
+		"roles": {
+			"few": "Roles",
+			"none": "No roles",
+			"one": "Role"
 		}
 	},
 	"components": {
