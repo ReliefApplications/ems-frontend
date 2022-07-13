@@ -19,7 +19,10 @@
       <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
   </mat-tab>
-  <mat-tab [label]="'components.role.summary.features' | translate" *ngIf="application">
+  <mat-tab
+    [label]="'components.role.summary.features' | translate"
+    *ngIf="application"
+  >
     <ng-template matTabContent>
       <safe-role-features
         *ngIf="role"
