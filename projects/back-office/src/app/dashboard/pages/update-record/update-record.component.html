@@ -1,5 +1,8 @@
 <div class="page-header">
-  <h1 class="page-title">Update record</h1>
+  <h1 class="page-title">
+    {{ 'common.updateObject' | translate: { name: 'common.record.one' | translate
+    } }}
+  </h1>
 </div>
 <ng-container *ngIf="!loading && form">
   <safe-form [form]="form" [record]="record"></safe-form>
