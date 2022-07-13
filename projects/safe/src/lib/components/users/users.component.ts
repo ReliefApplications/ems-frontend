@@ -29,7 +29,7 @@ import { SafeDownloadService } from '../../services/download.service';
 import { Application } from '../../models/application.model';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 /** User columns to display for the main user administration page */
 const ADMIN_COLUMNS = ['select', 'name', 'username', 'oid', 'roles', 'actions'];
@@ -87,6 +87,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
    * @param downloadService The download service
    * @param translate The translation service
    * @param router Angular router
+   * @param activatedRoute Angular active route
    */
   constructor(
     private apollo: Apollo,
@@ -95,7 +96,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
     private translate: TranslateService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -245,6 +247,16 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
         }
       }
     });
+  }
+
+  /**
+   * Handle click on user row.
+   * Redirect to user page
+   *
+   * @param user user to see details of
+   */
+  onClick(user: User): void {
+    this.router.navigate([user.id], { relativeTo: this.activatedRoute });
   }
 
   /**

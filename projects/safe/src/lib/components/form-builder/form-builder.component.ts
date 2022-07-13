@@ -9,10 +9,13 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
-import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
-import { Form } from '../../models/form.model';
 import { TranslateService } from '@ngx-translate/core';
+import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeReferenceDataService } from '../../services/reference-data.service';
+import { Form } from '../../models/form.model';
+import { renderGlobalProperties } from '../../survey/render-global-properties';
+import get from 'lodash/get';
 
 /**
  * Array containing the different types of questions.
@@ -70,6 +73,9 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'tooltip',
 ];
 
+/**
+ * Class name to add to core field question.
+ */
 const CORE_FIELD_CLASS = 'core-question';
 
 /**
@@ -99,22 +105,60 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param dialog This is the Angular Material Dialog service used to display dialog modals
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
+   * @param referenceDataService Reference data service
    */
   constructor(
     @Inject('environment') environment: any,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private referenceDataService: SafeReferenceDataService
   ) {
     this.environment = environment;
     // translate the editor in the same language as the interface
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
     this.translate.onLangChange.subscribe(() => {
       SurveyCreator.localization.currentLocale = this.translate.currentLang;
+      this.setFormBuilder(this.surveyCreator.text);
     });
   }
 
   ngOnInit(): void {
+    this.setFormBuilder(get(this.form, 'structure', ''));
+  }
+
+  ngOnChanges(): void {
+    if (this.surveyCreator) {
+      this.surveyCreator.text = this.form.structure || '';
+      if (!this.form.structure) {
+        this.surveyCreator.survey.showQuestionNumbers = 'off';
+      }
+      // skip if form is core
+      if (!this.form.core) {
+        const coreFields =
+          this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
+        // Highlight core fields
+        this.addCustomClassToCoreFields(coreFields);
+      }
+
+      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
+        (survey: Survey.SurveyModel, options: any) =>
+          this.onSetCustomCss(options)
+      );
+
+      // add the rendering of custom properties
+      this.surveyCreator.survey.onAfterRenderQuestion.add(
+        renderGlobalProperties(this.referenceDataService)
+      );
+    }
+  }
+
+  /**
+   * Creates the form builder and sets up all the options.
+   *
+   * @param structure Optional param used as the form struc
+   */
+  private setFormBuilder(structure: string) {
     const creatorOptions = {
       showEmbededSurveyTab: false,
       showJSONEditorTab: false,
@@ -130,7 +174,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       creatorOptions
     );
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.text = this.form.structure || '';
+    this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
@@ -201,24 +245,34 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       // Highlight core fields
       this.addCustomClassToCoreFields(coreFields);
     }
+
+    // Scroll to question when adde
+    this.surveyCreator.onQuestionAdded.add((sender, opt) => {
+      const name = opt.question.name;
+      setTimeout(() => {
+        const el = document.querySelector('[data-name="' + name + '"]');
+        el?.scrollIntoView({ behavior: 'smooth' });
+        this.surveyCreator.showQuestionEditor(opt.question);
+      });
+    });
+
+    // add the rendering of custom properties
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      renderGlobalProperties(this.referenceDataService)
+    );
+    this.surveyCreator.onTestSurveyCreated.add((_, options) =>
+      options.survey.onAfterRenderQuestion.add(
+        renderGlobalProperties(this.referenceDataService)
+      )
+    );
+    this.surveyCreator.survey.locale = this.translate.currentLang;
   }
 
-  ngOnChanges(): void {
-    if (this.surveyCreator) {
-      this.surveyCreator.text = this.form.structure || '';
-      if (!this.form.structure) {
-        this.surveyCreator.survey.showQuestionNumbers = 'off';
-      }
-      // skip if form is core
-      if (!this.form.core) {
-        const coreFields =
-          this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
-        // Highlight core fields
-        this.addCustomClassToCoreFields(coreFields);
-      }
-    }
-  }
-
+  /**
+   * Add new class to questions considered as core fields
+   *
+   * @param coreFields list of core fields
+   */
   private addCustomClassToCoreFields(coreFields: string[]): void {
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       (survey: Survey.SurveyModel, options: any) => {

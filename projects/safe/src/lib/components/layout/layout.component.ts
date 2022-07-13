@@ -103,7 +103,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    * @param layoutService This is the service that handles the layout of the application.
    * @param dialog This is the dialog service provided by Angular Material
    * @param translate This is the Angular service that translates text
-   * @param dateTranslate
+   * @param dateTranslate Service used for date formatting
    */
   constructor(
     @Inject('environment') environment: any,
@@ -266,10 +266,10 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Reorders the sidenav items when they change position on drag and drop
+   * Drop event handler. Move item in layout navigation item list.
    *
-   * @param event
-   * @param group
+   * @param event drop event
+   * @param group group where the event occurs
    */
   drop(event: any, group: any): void {
     moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
@@ -336,27 +336,36 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    * Switches to back or front-office
    */
   onSwitchOffice(): void {
+    const frontOfficeUri =
+      this.environment.frontOfficeUri.slice(-1) === '/'
+        ? this.environment.frontOfficeUri
+        : this.environment.frontOfficeUri + '/';
+    const backOfficeUri =
+      this.environment.backOfficeUri.slice(-1) === '/'
+        ? this.environment.backOfficeUri
+        : this.environment.backOfficeUri + '/';
+
     if (this.environment.module === 'backoffice') {
-      const location = this.environment.backOfficeUri + 'applications/';
+      const location = backOfficeUri + 'applications/';
       if (window.location.href.indexOf(location) === 0) {
         window.location.href =
-          this.environment.frontOfficeUri +
+          frontOfficeUri +
           window.location.href.slice(
             location.length,
             window.location.href.length
           );
       } else {
-        window.location.href = this.environment.frontOfficeUri;
+        window.location.href = frontOfficeUri;
       }
     } else {
       if (window.location.href.indexOf('profile') > 0) {
-        window.location.href = this.environment.backOfficeUri + 'profile';
+        window.location.href = backOfficeUri + 'profile/';
       } else {
         window.location.href =
-          this.environment.backOfficeUri +
+          backOfficeUri +
           'applications/' +
           window.location.href.slice(
-            this.environment.frontOfficeUri.length,
+            frontOfficeUri.length,
             window.location.href.length
           );
       }

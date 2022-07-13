@@ -8,6 +8,7 @@ import { SafeArrayFilterMenuModule } from '../array-filter-menu/array-filter-men
 import { SafeDropdownFilterModule } from '../dropdown-filter/dropdown-filter.module';
 import { SafeDropdownFilterMenuModule } from '../dropdown-filter-menu/dropdown-filter-menu.module';
 import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
+import { SafeErrorsModalModule } from '../errors-modal/errors-modal.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,6 +22,7 @@ import { SafeExportModule } from '../export/export.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../../../pipes/date/date.module';
 
+/** Module for the grid component */
 @NgModule({
   declarations: [SafeGridComponent],
   imports: [
@@ -40,6 +42,7 @@ import { SafeDateModule } from '../../../../pipes/date/date.module';
     ButtonsModule,
     // === UTILS ===
     SafeExpandedCommentModule,
+    SafeErrorsModalModule,
     // === FILTER ===
     SafeArrayFilterModule,
     SafeArrayFilterMenuModule,

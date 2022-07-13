@@ -14,6 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeIconModule } from '@safe/builder';
 import { GridModule } from '@progress/kendo-angular-grid';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 /**
  * Reference Data page module.
@@ -36,6 +37,7 @@ import { GridModule } from '@progress/kendo-angular-grid';
     MatChipsModule,
     SafeIconModule,
     GridModule,
+    MatTooltipModule,
   ],
 })
 export class ReferenceDataModule {}

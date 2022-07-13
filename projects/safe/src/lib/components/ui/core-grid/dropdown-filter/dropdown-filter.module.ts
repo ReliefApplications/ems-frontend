@@ -7,7 +7,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 
 /**
- *
+ * Dropdown filter component module.
  */
 @NgModule({
   declarations: [SafeDropdownFilterComponent],

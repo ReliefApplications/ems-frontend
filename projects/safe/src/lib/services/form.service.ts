@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import * as SurveyKo from 'survey-knockout';
 import * as Survey from 'survey-angular';
 import { initCreatorSettings } from '../survey/creator';
-import { initCustomWidgets } from '../survey/init';
+import { initCustomSurvey } from '../survey/init';
 import { DomService } from './dom.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
@@ -42,7 +42,7 @@ export class SafeFormService {
     public referenceDataService: SafeReferenceDataService
   ) {
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(
+    initCustomSurvey(
       SurveyKo,
       domService,
       dialog,
@@ -55,7 +55,7 @@ export class SafeFormService {
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomWidgets(
+    initCustomSurvey(
       Survey,
       domService,
       dialog,

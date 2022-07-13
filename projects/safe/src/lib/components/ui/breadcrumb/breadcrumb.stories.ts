@@ -12,27 +12,36 @@ export default {
   title: 'UI/Breadcrumb',
 } as Meta;
 
+/**
+ * Template used by storybook to display the component in stories.
+ *
+ * @param args story arguments
+ * @returns story template
+ */
 const TEMPLATE: Story<SafeBreadcrumbComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {
-  items: [
+  breadcrumbs: [
     {
-      name: 'item 0',
-      href: '#',
+      text: 'item 0',
+      uri: '#',
     },
     {
-      name: 'item 1',
-      href: '#',
+      text: 'item 1',
+      uri: '#',
     },
     {
-      name: 'item 2',
-      href: '#',
+      text: 'item 2',
+      uri: '#',
     },
   ],
 };

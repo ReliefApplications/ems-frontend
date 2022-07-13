@@ -8,8 +8,11 @@ import {
   GET_FORM_STRUCTURE,
   GET_RECORD_BY_ID,
 } from '../../../graphql/queries';
-import { Record, Form } from '@safe/builder';
+import { Record, Form, SafeBreadcrumbService } from '@safe/builder';
 
+/**
+ * Component which will be used at record update.
+ */
 @Component({
   selector: 'app-update-record',
   templateUrl: './update-record.component.html',
@@ -21,17 +24,23 @@ export class UpdateRecordComponent implements OnInit {
   public id = '';
   public record?: Record;
   public form?: Form;
-  public backPath = '';
 
+  /**
+   * UpdateRecordComponent constructor.
+   *
+   * @param apollo Used to get the form and the record data
+   * @param route Used to get url params.
+   * @param router Used to change the app route.
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
-    this.backPath = this.router.url.replace(`/update/${this.id}`, '');
     const template = history.state.template;
     if (template) {
       this.apollo
@@ -43,6 +52,10 @@ export class UpdateRecordComponent implements OnInit {
         })
         .valueChanges.subscribe((res) => {
           this.form = res.data.form;
+          this.breadcrumbService.setBreadcrumb(
+            '@resource',
+            this.form.name as string
+          );
           this.loading = res.loading;
         });
     }
@@ -56,6 +69,14 @@ export class UpdateRecordComponent implements OnInit {
         })
         .valueChanges.subscribe((res) => {
           this.record = res.data.record;
+          this.breadcrumbService.setBreadcrumb(
+            '@record',
+            this.record.incrementalId as string
+          );
+          this.breadcrumbService.setBreadcrumb(
+            '@resource',
+            this.record.form?.name as string
+          );
           if (!template) {
             this.form = this.record.form || {};
             this.loading = res.loading;

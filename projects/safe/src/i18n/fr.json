@@ -134,7 +134,7 @@
 			"platformAccessNotGranted": "Vous n'avez pas d'accès valide à cette plateforme.",
 			"readAll": "Tout marqué comme lu",
 			"statusUpdated": "Statut mis à jour par {{value}}.",
-			"unlocked": "L'édition de l'objet {{value}} a été débloquée par un autre utilisateur."
+			"unlocked": "L'édition de l'objet {{name}} a été débloquée par un autre utilisateur."
 		},
 		"openFullScreen": "Ouvrir en plein écran",
 		"page": {
@@ -657,6 +657,25 @@
 			"impersonate": {
 				"title": "Choix du rôle à simuler"
 			},
+			"summary": {
+				"features": "Fonctionnalités",
+				"noFeatures": "Aucune fonctionnalité détectée",
+				"noForms": "Aucun formulaire détecté",
+				"noSteps": "Aucune étape détectée",
+				"title": "Résumé"
+			},
+			"tooltip": {
+				"allowRecordAccessibility": "Autoriser ce rôle à voir les enregistrements de {{form}}",
+				"allowRecordCreation": "Autoriser ce rôle à créer des enregistrements dans {{form}}",
+				"allowRecordDeletion": "Autoriser ce rôle à supprimer des enregistrements de {{form}}",
+				"allowRecordUpdate": "Autoriser ce rôle à mettre à jour les enregistrements de {{form}}",
+				"disallowRecordAccessibility": "Interdire ce rôle pour voir les enregistrements de {{form}}",
+				"disallowRecordCreation": "Interdire à ce rôle de créer des enregistrements dans {{form}}",
+				"disallowRecordDeletion": "Interdire ce rôle pour supprimer des enregistrements de {{form}}",
+				"disallowRecordUpate": "Interdire ce rôle pour mettre à jour les enregistrements de {{form}}",
+				"hideFeature": "Masquer {{page}} pour ce rôle",
+				"showFeature": "Afficher {{page}} pour ce rôle"
+			},
 			"update": {
 				"permissions": "Permissions",
 				"title": "Modifier les permissions des rôles et les canaux de diffusion"
@@ -672,6 +691,20 @@
 				"role": {
 					"description": "Sélectionner le rôle à assigner"
 				}
+			},
+			"summary": {
+				"country": "Pays",
+				"firstName": "Prénom",
+				"lastName": "Nom",
+				"locationType": "Type de localisation",
+				"region": "Région",
+				"roles": {
+					"application": "Rôles d'application",
+					"backoffice": "Rôles de back-office",
+					"selectedApplication": "Application sélectionnée",
+					"selectedRoles": "Rôles sélectionnés"
+				},
+				"title": "Résumé"
 			},
 			"update": {
 				"title": "Modifier l'utilisateur"
@@ -720,7 +753,7 @@
 				"errors": {
 					"invalid": "Configuration de grille invalide",
 					"missingDataset": "Sélectionner un jeu de données dans les jeux de données",
-					"validationFailed": "Sauvegarde échouée, la ligne {{index}} est invalide\n{{question}}: {{error}}"
+					"validationFailed": "Les enregistrements suivants n'ont pas pu être sauvegardés car invalides :\n{{errors}}\nMerci de les modifier en utilisant le bouton \"Mettre à jour \" pour plus de détails."
 				},
 				"export": {
 					"columns": {
@@ -751,6 +784,17 @@
 				},
 				"layout": {
 					"reset": "Réinitialiser la mise en page par défaut"
+				},
+				"tooltip": {
+					"saved": "Changements sauvegardés",
+					"unsaved": "Cliquez sur sauvegarder pour enregistrer les changements",
+					"uploadFailed": "L'enregistrement a échoué. Cliquez pour obtenir plus de détails"
+				},
+				"validation": {
+					"help": "Veuillez modifier l'enregistrement à l'aide du bouton \"Mettre à jour\".",
+					"questionTitle": "Erreurs sur le champ {{question}}:",
+					"subtitle": "Ces erreurs furent détectées durant l'enregistrement :",
+					"title": "L'enregistrement du document {{record}} a échoué"
 				}
 			},
 			"settings": {
@@ -1101,7 +1145,9 @@
 			"create": "Créer une ressource"
 		},
 		"role": {
-			"create": "Créer un rôle"
+			"create": "Créer un rôle",
+			"description": "Description",
+			"title": "Titre"
 		},
 		"step": {
 			"new": "Nouvelle étape"
@@ -1110,6 +1156,8 @@
 			"new": "Nouvel abonnement"
 		},
 		"user": {
+			"firstName": "Prénom",
+			"lastName": "Nom",
 			"notifications": {
 				"rolesUpdated": "Les rôles de {{username}} ont été modifiés.",
 				"userImportFail": "L'importation d'utilisateurs a échoué."
@@ -1133,6 +1181,12 @@
 			},
 			"scheduler": {
 				"defaultTitle": "Widget Calendrier"
+			},
+			"tooltip": {
+				"selector": {
+					"collapse": "Fermer la sélection de widget",
+					"expand": "Afficher la sélection de widget"
+				}
 			}
 		},
 		"workflow": {
@@ -1247,11 +1301,16 @@
 				"name": "Seules les lettres, les tirets et les tirets bas sont acceptés"
 			},
 			"fields": "Champs",
+			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",
 			"placeholder": {
-				"csv": "Insérer le CSV ici"
+				"csv": "Insérer le CSV ici",
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés"
 			},
 			"queryName": "Nom de la requête",
+			"tooltip": {
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés. Vous pouvez utiliser le code $$LAST_UPDATE pour insérer dynamiquement la date de la dernière mise à jour des choix dans un format compatible SQL."
+			},
 			"type": "Type",
 			"validateCsv": "Valider le CSV",
 			"valueField": "Champ de valeur"

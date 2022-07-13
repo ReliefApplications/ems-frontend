@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { clone, isDate } from 'lodash';
+import { clone, get, isDate } from 'lodash';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
+import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
 /**
@@ -196,11 +197,13 @@ export class SafeTabFilterComponent implements OnInit {
    * @param formBuilder This is the service that will be used to build forms.
    * @param queryBuilder This is the service that will be used to build the query.
    * @param apiProxyService This is the service that will be used to make the API call.
+   * @param gridService Shared grid service
    */
   constructor(
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService,
-    private apiProxyService: SafeApiProxyService
+    private apiProxyService: SafeApiProxyService,
+    private gridService: SafeGridService
   ) {}
 
   ngOnInit(): void {
@@ -208,34 +211,37 @@ export class SafeTabFilterComponent implements OnInit {
     if (this.query) {
       // Get MetaData from all scalar fields of the datasource
       const queryWithAllScalarField = clone(this.query);
-      queryWithAllScalarField.fields = this.fields.map((f) => ({
-        name: f.name,
-        kind: 'SCALAR',
-        type: f.type.name,
-      }));
+      queryWithAllScalarField.fields = this.fields;
       this.metaQuery = this.queryBuilder.buildMetaQuery(
         queryWithAllScalarField
       );
       if (this.metaQuery) {
-        this.metaQuery.subscribe((res: any) => {
+        this.metaQuery.subscribe(async (res: any) => {
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.metaFields = Object.assign({}, res.data[field]);
-              this.populateMetaFields();
+              await this.gridService.populateMetaFields(this.metaFields);
             }
           }
         });
       }
     } else {
-      this.populateMetaFields();
+      this.gridService.populateMetaFields(this.metaFields);
     }
     this.form.value?.filters.forEach((x: any, index: number) => {
-      if (x.field) {
-        const field = this.fields.find((y) => y.name === x.field);
+      let field = this.fields.find((y) => y.name === x?.field?.split('.')[0]);
+      if (field) {
+        let name = field.name;
+        if (field.type.kind === 'OBJECT') {
+          field = field.type.fields.find(
+            (y: any) => y.name === x.field.split('.')[1]
+          );
+          name += `.${field.name}`;
+        }
         if (field && field.type && AVAILABLE_TYPES.includes(field.type.name)) {
           const type = field.name === 'form' ? 'Form' : field.type.name;
           this.selectedFields.splice(index, 1, {
-            name: field.name,
+            name,
             type,
           });
           if (['Date', 'DateTime'].includes(type)) {
@@ -254,63 +260,8 @@ export class SafeTabFilterComponent implements OnInit {
     });
   }
 
-  /**
-   * Fetch choices from URL if needed
-   */
-  private async populateMetaFields(): Promise<void> {
-    for (const fieldName of Object.keys(this.metaFields)) {
-      const meta = this.metaFields[fieldName];
-      if (meta.choicesByUrl) {
-        const url: string = meta.choicesByUrl.url;
-        const localRes = localStorage.getItem(url);
-        if (localRes) {
-          this.metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(
-              JSON.parse(localRes),
-              meta.choicesByUrl
-            ),
-            choicesByUrl: null,
-          };
-        } else {
-          const res: any =
-            await this.apiProxyService.promisedRequestWithHeaders(url);
-          localStorage.setItem(url, JSON.stringify(res));
-          this.metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(res, meta.choicesByUrl),
-            choicesByUrl: null,
-          };
-        }
-      }
-    }
-  }
-
-  /**
-   * Extracts choices using choicesByUrl properties
-   *
-   * @param res Result of http request.
-   * @param choicesByUrl Choices By Url property.
-   * @param choicesByUrl.path Path of the choice
-   * @param choicesByUrl.value Value of the choice
-   * @param choicesByUrl.text Text of the choice
-   * @returns list of choices.
-   */
-  private extractChoices(
-    res: any,
-    choicesByUrl: { path?: string; value?: string; text?: string }
-  ): { value: string; text: string }[] {
-    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
-    return choices
-      ? choices.map((x: any) => ({
-          value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
-          text: choicesByUrl.text
-            ? x[choicesByUrl.text]
-            : choicesByUrl.value
-            ? x[choicesByUrl.value]
-            : x,
-        }))
-      : [];
+  getMeta(name: string): any {
+    return get(this.metaFields, name, null);
   }
 
   /**
@@ -322,6 +273,12 @@ export class SafeTabFilterComponent implements OnInit {
     this.form.controls[filterName].setValue('today()');
   }
 
+  /**
+   * Change editor for a field.
+   * It is possible, for date questions, to use text editor instead of date selection.
+   *
+   * @param index index of filter field
+   */
   onChangeEditor(index: number): void {
     const formGroup = this.filters.at(index) as FormGroup;
     formGroup
@@ -394,14 +351,21 @@ export class SafeTabFilterComponent implements OnInit {
    */
   onSetField(e: any, index: number): void {
     if (e.value) {
-      const field = this.fields.find((x) => x.name === e.value);
+      let field = this.fields.find((x) => x.name === e.value.split('.')[0]);
+      let name = field.name;
+      if (field.type.kind === 'OBJECT') {
+        field = field.type.fields.find(
+          (x: any) => x.name === e.value.split('.')[1]
+        );
+        name += `.${field.name}`;
+      }
       if (field && field.type && AVAILABLE_TYPES.includes(field.type.name)) {
         const type = field.name === 'form' ? 'Form' : field.type.name;
         const operator = TYPES[type].defaultOperator;
         this.filters.at(index).get('operator')?.setValue(operator);
         this.filters.at(index).get('value')?.setValue(null);
         this.selectedFields.splice(index, 1, {
-          name: field.name,
+          name,
           type,
         });
       } else {

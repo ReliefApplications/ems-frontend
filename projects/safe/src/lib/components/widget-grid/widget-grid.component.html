@@ -43,6 +43,7 @@
       <safe-widget
         [widget]="widget"
         (goToNextStep)="goToNextStep.emit($event)"
+        [id]="'widget-' + widget.id"
       ></safe-widget>
       <safe-icon *ngIf="canUpdate" icon="drag_indicator" class="widget-handle">
       </safe-icon>

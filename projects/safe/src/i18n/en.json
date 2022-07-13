@@ -134,7 +134,7 @@
 			"platformAccessNotGranted": "You don't have a valid access to this platform.",
 			"readAll": "Mark all as read",
 			"statusUpdated": "Status updated to {{value}}.",
-			"unlocked": "{{value}} edition has been unlocked by another user."
+			"unlocked": "{{name}} edition has been unlocked by another user."
 		},
 		"openFullScreen": "Open in Full Screen",
 		"page": {
@@ -657,6 +657,25 @@
 			"impersonate": {
 				"title": "Choose role to simulate"
 			},
+			"summary": {
+				"features": "Features",
+				"noFeatures": "No feature detected",
+				"noForms": "No forms detected",
+				"noSteps": "No steps detected",
+				"title": "Summary"
+			},
+			"tooltip": {
+				"allowRecordAccessibility": "Allow this role to see records of {{form}}",
+				"allowRecordCreation": "Allow this role to create records with {{form}}",
+				"allowRecordDeletion": "Allow this role to remove records from {{form}}",
+				"allowRecordUpdate": "Allow this role to update records from {{form}}",
+				"disallowRecordAccessibility": "Disallow this role to see records of {{form}}",
+				"disallowRecordCreation": "Disallow this role to create records with {{form}}",
+				"disallowRecordDeletion": "Disallow this role to remove records from {{form}}",
+				"disallowRecordUpate": "Disallow this role to update records from {{form}}",
+				"hideFeature": "Hide {{page}} from this role",
+				"showFeature": "Show {{page}} to this role"
+			},
 			"update": {
 				"permissions": "Permissions",
 				"title": "Update role permissions and channels"
@@ -672,6 +691,20 @@
 				"role": {
 					"description": "Select the role to assign"
 				}
+			},
+			"summary": {
+				"country": "Country",
+				"firstName": "First name",
+				"lastName": "Last name",
+				"locationType": "Location type",
+				"region": "Region",
+				"roles": {
+					"application": "Application roles",
+					"backoffice": "Back-Office roles",
+					"selectedApplication": "Selected application",
+					"selectedRoles": "Selected roles"
+				},
+				"title": "Summary"
 			},
 			"update": {
 				"title": "Update user"
@@ -720,7 +753,7 @@
 				"errors": {
 					"invalid": "Invalid grid configuration",
 					"missingDataset": "Select a dataset in settings",
-					"validationFailed": "Unable to save records due to row {{index}} validation error\n{{question}}: {{error}}"
+					"validationFailed": "The following records could not be saved due to validation rules:\n{{errors}}\nPlease edit the record using the 'update' button for more details."
 				},
 				"export": {
 					"columns": {
@@ -751,6 +784,17 @@
 				},
 				"layout": {
 					"reset": "Reset default Layout"
+				},
+				"tooltip": {
+					"saved": "Changes saved",
+					"unsaved": "Click on save button to upload changes",
+					"uploadFailed": "Record not saved. Click to see more details"
+				},
+				"validation": {
+					"help": "Please edit the record using the 'update' button for more details.",
+					"questionTitle": "Errors on field {{question}}:",
+					"subtitle": "These errors where found while saving changes:",
+					"title": "Validation failed for record {{record}}"
 				}
 			},
 			"settings": {
@@ -1101,7 +1145,9 @@
 			"create": "Create a Resource"
 		},
 		"role": {
-			"create": "Create a role"
+			"create": "Create a role",
+			"description": "Description",
+			"title": "Title"
 		},
 		"step": {
 			"new": "New step"
@@ -1110,6 +1156,8 @@
 			"new": "New subscription"
 		},
 		"user": {
+			"firstName": "First name",
+			"lastName": "Last name",
 			"notifications": {
 				"rolesUpdated": "{{username}} roles updated.",
 				"userImportFail": "The user import has failed"
@@ -1133,6 +1181,12 @@
 			},
 			"scheduler": {
 				"defaultTitle": "Scheduler Widget"
+			},
+			"tooltip": {
+				"selector": {
+					"collapse": "Hide widget selector",
+					"expand": "Show widget selector"
+				}
 			}
 		},
 		"workflow": {
@@ -1247,11 +1301,16 @@
 				"name": "Only letters, hypens or underscores are accepted"
 			},
 			"fields": "Fields",
+			"graphQLFilter": "GraphQL query parameters",
 			"path": "Path",
 			"placeholder": {
-				"csv": "Insert CSV here"
+				"csv": "Insert CSV here",
+				"graphQLFilter": "Enter a filter to be used once choices are already cached"
 			},
 			"queryName": "Query Name",
+			"tooltip": {
+				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use $$LAST_UPDATE to insert dynamically the last fetch date in SQL format."
+			},
 			"type": "Type",
 			"validateCsv": "Validate CSV",
 			"valueField": "Value Field"

@@ -7,6 +7,7 @@ import {
   EventEmitter,
   ViewChild,
   ElementRef,
+  Inject,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -85,6 +86,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   /**
    * Constructor of the component
    *
+   * @param environment Environment file used to get main url of the page
    * @param formBuilder Form builder
    * @param router Angular Router service
    * @param workflowService Shared workflow service
@@ -93,6 +95,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
    * @param translate Angular Translate Service
    */
   constructor(
+    @Inject('environment') environment: any,
     private formBuilder: FormBuilder,
     private router: Router,
     private workflowService: SafeWorkflowService,
@@ -100,6 +103,18 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private translate: TranslateService
   ) {
+    // Set the editor base url based on the environment file
+    let url: string;
+    if (environment.module === 'backoffice') {
+      url = new URL(environment.backOfficeUri).pathname;
+    } else {
+      url = new URL(environment.frontOfficeUri).pathname;
+    }
+    if (url !== '/') {
+      this.editor.base_url = url.slice(0, -1) + '/tinymce';
+    } else {
+      this.editor.base_url = '/tinymce';
+    }
     // Set the editor language
     const lang = this.translate.currentLang;
     const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
