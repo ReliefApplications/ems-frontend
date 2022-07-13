@@ -118,13 +118,11 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
     this.translate.onLangChange.subscribe(() => {
       SurveyCreator.localization.currentLocale = this.translate.currentLang;
-      if (this.surveyCreator) {
-        this.surveyCreator.survey.locale = this.translate.currentLang;
-      }
+      this.ngOnInit(this.surveyCreator.text);
     });
   }
 
-  ngOnInit(): void {
+  ngOnInit(structure?: any): void {
     const creatorOptions = {
       showEmbededSurveyTab: false,
       showJSONEditorTab: false,
@@ -140,7 +138,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       creatorOptions
     );
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.text = this.form.structure || '';
+    this.surveyCreator.text = structure ? structure : (this.form.structure || '');
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
