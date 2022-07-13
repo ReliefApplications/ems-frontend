@@ -9,14 +9,13 @@ const formBuilder = new FormBuilder();
  * Builds a filter form
  *
  * @param filter Initial filter
- * @param fields List of fields
  * @returns Filter form
  */
-export const createFilterGroup = (filter: any, fields: any): FormGroup => {
+export const createFilterGroup = (filter: any): FormGroup => {
   if (filter) {
     if (filter.filters) {
       const filters = filter.filters.map((x: any) =>
-        createFilterGroup(x, fields)
+        createFilterGroup(x)
       );
       return formBuilder.group({
         logic: filter.logic || 'and',
@@ -66,7 +65,7 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
         }),
         filter: newField
           ? formBuilder.group({})
-          : createFilterGroup(field.filter, null),
+          : createFilterGroup(field.filter),
       });
     }
     case 'OBJECT': {
@@ -117,7 +116,7 @@ export const createQueryForm = (value: any, validators = true): FormGroup =>
       field: [value && value.sort ? value.sort.field : ''],
       order: [value && value.sort ? value.sort.order : 'asc'],
     }),
-    filter: createFilterGroup(value && value.filter ? value.filter : {}, null),
+    filter: createFilterGroup(value && value.filter ? value.filter : {}),
     style: formBuilder.array(
       value && value.style && value.style.length
         ? value.style.map((x: any) => createStyleForm(x))
@@ -158,5 +157,5 @@ export const createStyleForm = (value: any): FormGroup =>
       italic: [value?.text?.italic || false],
     }),
     fields: [value?.fields || []],
-    filter: createFilterGroup(value?.filter || {}, null),
+    filter: createFilterGroup(value?.filter || {}),
   });
