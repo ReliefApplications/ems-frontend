@@ -1,3 +1,7 @@
+<safe-role-resources-filter
+  (filter)="onFilter($event)"
+  [loading]="filterLoading"
+></safe-role-resources-filter>
 <table
   *ngIf="!loading"
   mat-table

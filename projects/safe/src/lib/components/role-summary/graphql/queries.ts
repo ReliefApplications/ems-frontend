@@ -158,6 +158,29 @@ export interface GetResourcesQueryResponse {
   };
 }
 
+/** Graphql query for getting resources with a filter and more data */
+export const GET_RESOURCES_EXTENDED = gql`
+  query GetResourcesExtended($first: Int, $afterCursor: ID, $filter: JSON) {
+    resources(first: $first, afterCursor: $afterCursor, filter: $filter) {
+      edges {
+        node {
+          id
+          name
+          createdAt
+          recordsCount
+          canDelete
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
 /** Graphql request for getting forms of a resource */
 export const GET_RESOURCE_FORMS = gql`
   query GetResourceForms($resource: ID!) {
