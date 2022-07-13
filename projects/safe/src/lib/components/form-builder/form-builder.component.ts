@@ -118,11 +118,46 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
     this.translate.onLangChange.subscribe(() => {
       SurveyCreator.localization.currentLocale = this.translate.currentLang;
-      this.ngOnInit(this.surveyCreator.text);
+      this.setFormBuilder(this.surveyCreator.text);
     });
   }
 
-  ngOnInit(structure?: any): void {
+  ngOnInit(): void {
+    this.setFormBuilder();
+  }
+
+  ngOnChanges(): void {
+    if (this.surveyCreator) {
+      this.surveyCreator.text = this.form.structure || '';
+      if (!this.form.structure) {
+        this.surveyCreator.survey.showQuestionNumbers = 'off';
+      }
+      // skip if form is core
+      if (!this.form.core) {
+        const coreFields =
+          this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
+        // Highlight core fields
+        this.addCustomClassToCoreFields(coreFields);
+      }
+
+      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
+        (survey: Survey.SurveyModel, options: any) =>
+          this.onSetCustomCss(options)
+      );
+
+      // add the rendering of custom properties
+      this.surveyCreator.survey.onAfterRenderQuestion.add(
+        renderGlobalProperties(this.referenceDataService)
+      );
+    }
+  }
+
+  /**
+   * Creates the form builder and sets up all the options.
+   *
+   * @param structure Optional param used as the form struc
+   */
+  private setFormBuilder(structure?: any) {
     const creatorOptions = {
       showEmbededSurveyTab: false,
       showJSONEditorTab: false,
@@ -138,7 +173,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       creatorOptions
     );
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.text = structure ? structure : (this.form.structure || '');
+    this.surveyCreator.text = structure ? structure : this.form.structure || '';
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
@@ -230,32 +265,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       )
     );
     this.surveyCreator.survey.locale = this.translate.currentLang;
-  }
-
-  ngOnChanges(): void {
-    if (this.surveyCreator) {
-      this.surveyCreator.text = this.form.structure || '';
-      if (!this.form.structure) {
-        this.surveyCreator.survey.showQuestionNumbers = 'off';
-      }
-      // skip if form is core
-      if (!this.form.core) {
-        const coreFields =
-          this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
-        // Highlight core fields
-        this.addCustomClassToCoreFields(coreFields);
-      }
-
-      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
-        (survey: Survey.SurveyModel, options: any) =>
-          this.onSetCustomCss(options)
-      );
-
-      // add the rendering of custom properties
-      this.surveyCreator.survey.onAfterRenderQuestion.add(
-        renderGlobalProperties(this.referenceDataService)
-      );
-    }
   }
 
   /**
