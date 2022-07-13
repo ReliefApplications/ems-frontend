@@ -1,5 +1,5 @@
 <h1>
-  {{ ('common.role.one' | translate) + ' - ' + role?.title }}
+  {{ role?.title ? role?.title : '' }}
 </h1>
 <mat-tab-group>
   <mat-tab [label]="'components.role.summary.title' | translate">

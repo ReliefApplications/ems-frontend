@@ -13,6 +13,7 @@ import {
   SafeSnackBarService,
   SafeApiProxyService,
   status,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
@@ -55,7 +56,8 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     private router: Router,
     private formBuilder: FormBuilder,
     private apiProxy: SafeApiProxyService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -72,6 +74,10 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
           (res) => {
             if (res.data.apiConfiguration) {
               this.apiConfiguration = res.data.apiConfiguration;
+              this.breadcrumbService.setBreadcrumb(
+                '@api',
+                this.apiConfiguration.name as string
+              );
               this.apiForm = this.formBuilder.group({
                 name: [
                   this.apiConfiguration?.name,

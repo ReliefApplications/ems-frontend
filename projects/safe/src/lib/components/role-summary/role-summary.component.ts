@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Application } from '../../models/application.model';
 import { Role } from '../../models/user.model';
+import { SafeBreadcrumbService } from '../../services/breadcrumb.service';
 import { EditRoleMutationResponse, EDIT_ROLE } from './graphql/mutations';
 import { GetRoleQueryResponse, GET_ROLE } from './graphql/queries';
 
@@ -27,8 +28,12 @@ export class SafeRoleSummaryComponent implements OnInit {
    * This component allows edition of roles.
    *
    * @param apollo Apollo client
+   * @param breadcrumbService Setups the breadcrumb component variables
    */
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private apollo: Apollo,
+    private breadcrumbService: SafeBreadcrumbService
+  ) {}
 
   ngOnInit(): void {
     console.log(this.application);
@@ -42,6 +47,10 @@ export class SafeRoleSummaryComponent implements OnInit {
       .subscribe((res) => {
         if (res.data) {
           this.role = res.data.role;
+          this.breadcrumbService.setBreadcrumb(
+            '@role',
+            this.role.title as string
+          );
         }
         this.loading = res.data.loading;
       });

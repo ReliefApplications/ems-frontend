@@ -5,11 +5,13 @@ import { UpdateRecordComponent } from './update-record.component';
 import { SafeFormModule } from '@safe/builder';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [UpdateRecordComponent],
   imports: [
     CommonModule,
+    TranslateModule,
     UpdateRecordRoutingModule,
     SafeFormModule,
     MatIconModule,
