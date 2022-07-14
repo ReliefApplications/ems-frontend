@@ -48,6 +48,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
 
   /**
    * Get filename from the date and widget title
+   *
    * @returns filename
    */
   get fileName(): string {
@@ -167,11 +168,39 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
             JSON.stringify(res.data.recordsAggregation)
           );
           if (get(this.settings, 'chart.aggregation.mapping.series', null)) {
-            const groups = groupBy(aggregationData, 'series');
-            this.series = Object.keys(groups).map((key) => ({
-              name: key,
-              data: groups[key],
-            }));
+            const groups: any = {}; //groupBy(aggregationData, 'series');
+            const mockGroups: any[] = [];
+            aggregationData.map((data: any) => {
+              if (!groups[data.series]) {
+                groups[data.series] = [];
+              }
+              groups[data.series].push(data);
+              if (
+                !mockGroups.find((group) => group.category === data.category)
+              ) {
+                mockGroups.push({ category: data.category });
+              }
+            });
+
+            this.series = [];
+            Object.keys(groups).map((key) => {
+              const data: any[] = groups[key];
+              let currentIndex = -1;
+              mockGroups.map((group: any) => {
+                const i = data.findIndex(
+                  (dataGroup) => dataGroup.category === group.category
+                );
+                if (i === -1) {
+                  data.splice(++currentIndex, 0, group);
+                } else {
+                  currentIndex = i;
+                }
+              });
+              this.series.push({
+                name: key,
+                data,
+              });
+            });
           } else {
             this.series = [
               {
