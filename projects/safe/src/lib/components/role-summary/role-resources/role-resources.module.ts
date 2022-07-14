@@ -9,12 +9,13 @@ import { SafeSkeletonTableModule } from '../../../components/skeleton/skeleton-t
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../ui/icon/icon.module';
+import { RoleFormsComponent } from './role-forms/role-forms.component';
 
 /**
  * Resources tab of Role Summary component.
  */
 @NgModule({
-  declarations: [RoleResourcesComponent],
+  declarations: [RoleResourcesComponent, RoleFormsComponent],
   imports: [
     CommonModule,
     MatTableModule,

@@ -2,24 +2,8 @@
   overflow: hidden;
   display: flex;
   justify-content: center;
-  table {
-    margin: 16px 0;
-  }
-
-  safe-skeleton-table {
-    margin: 16px 0;
-    width: 100%;
-  }
 }
 
 .mat-column-expandedDetail {
   background-color: rgba(0, 0, 0, 0.05);
-}
-
-.empty-form {
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  align-items: center;
-  color: #9e9e9e;
 }

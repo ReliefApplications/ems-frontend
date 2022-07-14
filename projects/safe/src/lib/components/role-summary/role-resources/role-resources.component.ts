@@ -151,49 +151,32 @@ export class RoleResourcesComponent implements OnInit {
     this.pageInfo.pageSize = e.pageSize;
   }
 
-  /**
-   * Update resources query.
-   *
-   * @param refetch erase previous query results
-   */
-  private fetchResources(refetch?: boolean): void {
+  /** Queries the resources */
+  private fetchResources(): void {
     this.updating = true;
-    if (refetch) {
-      this.cachedResources = [];
-      this.pageInfo.pageIndex = 0;
-      this.resourcesQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          afterCursor: null,
-        })
-        .then(() => {
-          this.loading = false;
-          this.updating = false;
+
+    this.loading = true;
+    this.resourcesQuery.fetchMore({
+      variables: {
+        first: this.pageInfo.pageSize,
+        afterCursor: this.pageInfo.endCursor,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign({}, prev, {
+          resources: {
+            edges: [
+              ...prev.resources.edges,
+              ...fetchMoreResult.resources.edges,
+            ],
+            pageInfo: fetchMoreResult.resources.pageInfo,
+            totalCount: fetchMoreResult.resources.totalCount,
+          },
         });
-    } else {
-      this.loading = true;
-      this.resourcesQuery.fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            resources: {
-              edges: [
-                ...prev.resources.edges,
-                ...fetchMoreResult.resources.edges,
-              ],
-              pageInfo: fetchMoreResult.resources.pageInfo,
-              totalCount: fetchMoreResult.resources.totalCount,
-            },
-          });
-        },
-      });
-    }
+      },
+    });
   }
 
   /**
@@ -235,133 +218,6 @@ export class RoleResourcesComponent implements OnInit {
             this.snackBar.openSnackBar(err.message, { error: true });
           }
         );
-    }
-  }
-
-  /**
-   * Edits the specified form permissions array
-   *
-   * @param form the form object to be updated
-   * @param action the permission to be edited
-   */
-  onEditFormAccess(form: Form, action: Permission): void {
-    if (!this.role.id) return;
-
-    this.updating = true;
-    const updatedPermissions: {
-      add?: string[] | { role: string }[];
-      remove?: string[] | { role: string }[];
-    } = {};
-
-    let hasCurrPermission: boolean;
-    switch (action) {
-      case Permission.CREATE:
-        hasCurrPermission = get(form, `permissions.${action}`, []).some(
-          (x: any) => x.id === this.role.id
-        );
-        Object.assign(updatedPermissions, {
-          [hasCurrPermission ? 'remove' : 'add']: [this.role.id],
-        });
-        break;
-      default:
-        hasCurrPermission = get(form, `permissions.${action}`, []).some(
-          (x: any) => x.role === this.role.id
-        );
-        Object.assign(updatedPermissions, {
-          [hasCurrPermission ? 'remove' : 'add']: [{ role: this.role.id }],
-        });
-        break;
-    }
-
-    this.apollo
-      .mutate<EditFormAccessMutationResponse>({
-        mutation: EDIT_FORM_ACCESS,
-        variables: {
-          id: form.id,
-          permissions: {
-            [action]: updatedPermissions,
-          },
-        },
-      })
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            const index = this.forms.findIndex(
-              (x) => x.id === res.data?.editForm.id
-            );
-            const forms = [...this.forms];
-            forms[index] = res.data.editForm;
-            this.forms = forms;
-            for (const permission of this.permissionTypes) {
-              this.formsPermissions[permission] = this.forms
-                .filter((x) =>
-                  get(x, `permissions.${permission}`, [])
-                    .map((y: any) => y.role || y.id)
-                    .includes(this.role.id)
-                )
-                .map((x) => x.id as string);
-            }
-          }
-          this.updating = false;
-        },
-        (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-          this.updating = false;
-        }
-      );
-  }
-
-  /**
-   * Gets the correspondent icon for a given permission
-   *
-   * @param permission The permission name
-   * @param form A form
-   * @returns the name of the icon to be displayed
-   */
-  getIcon(permission: Permission, form: Form) {
-    const hasPermission =
-      this.formsPermissions &&
-      this.formsPermissions[permission].includes(form.id || '');
-    switch (permission) {
-      case Permission.SEE:
-        return hasPermission ? 'visibility' : 'visibility_off';
-      case Permission.CREATE:
-        return 'add';
-      case Permission.UPDATE:
-        return hasPermission ? 'edit' : 'edit_off';
-      case Permission.DELETE:
-        return 'delete';
-    }
-  }
-
-  /**
-   * Gets the correspondent tooltip for a given permission
-   *
-   * @param permission The permission name
-   * @param form A form
-   * @returns the name of the icon to be displayed
-   */
-  getTooltip(permission: Permission, form: Form) {
-    const hasPermission =
-      this.formsPermissions &&
-      this.formsPermissions[permission].includes(form.id || '');
-    switch (permission) {
-      case Permission.SEE:
-        return hasPermission
-          ? 'components.role.tooltip.disallowRecordAccessibility'
-          : 'components.role.tooltip.allowRecordAccessibility';
-      case Permission.CREATE:
-        return hasPermission
-          ? 'components.role.tooltip.disallowRecordCreation'
-          : 'components.role.tooltip.allowRecordCreation';
-      case Permission.UPDATE:
-        return hasPermission
-          ? 'components.role.tooltip.disallowRecordUpdate'
-          : 'components.role.tooltip.allowRecordUpdate';
-      case Permission.DELETE:
-        return hasPermission
-          ? 'components.role.tooltip.disallowRecordDeletion'
-          : 'components.role.tooltip.allowRecordDeletion';
     }
   }
 }
