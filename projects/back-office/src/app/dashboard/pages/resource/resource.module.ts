@@ -19,9 +19,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
+import { RecordsTabComponent } from './records-tab/records-tab.component';
+import { FormsTabComponent } from './forms-tab/forms-tab.component';
+import { LayoutsTabComponent } from './layouts-tab/layouts-tab.component';
 
 @NgModule({
-  declarations: [ResourceComponent],
+  declarations: [ResourceComponent, RecordsTabComponent, FormsTabComponent, LayoutsTabComponent],
   imports: [
     CommonModule,
     ResourceRoutingModule,

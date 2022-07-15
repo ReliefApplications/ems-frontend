@@ -77,103 +77,14 @@
       <ng-template mat-tab-label>
         {{ 'common.record.few' | translate }} ( {{ pageInfo.length }} )
       </ng-template>
-      <div class="table-container">
-        <table mat-table [dataSource]="dataSourceRecords">
-          <ng-container
-            *ngFor="let column of displayedColumnsRecords"
-            [matColumnDef]="column"
-            [stickyEnd]="column === '_actions'"
-          >
-            <ng-container *ngIf="!recordsDefaultColumns.includes(column)">
-              <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
-              <td mat-cell *matCellDef="let element" class="table-column">
-                <div>{{ element.data[column] }}</div>
-              </td>
-            </ng-container>
-            <ng-container *ngIf="column === '_incrementalId'">
-              <th mat-header-cell *matHeaderCellDef class="table-column">ID</th>
-              <td mat-cell *matCellDef="let element" class="table-column">
-                <div>{{ element.incrementalId }}</div>
-              </td>
-            </ng-container>
-            <ng-container *ngIf="column === '_actions'">
-              <th mat-header-cell *matHeaderCellDef></th>
-              <td mat-cell *matCellDef="let element">
-                <safe-button
-                  [isIcon]="true"
-                  icon="more_vert"
-                  [matMenuTriggerFor]="recMenu"
-                  (click)="$event.stopPropagation()"
-                >
-                </safe-button>
-                <mat-menu #recMenu="matMenu">
-                  <button
-                    mat-menu-item
-                    [routerLink]="['./update', element.id]"
-                    [matTooltip]="'Edit as ' + element.form.name"
-                    matTooltipPosition="above"
-                    [matTooltipDisabled]="resource.forms.length <= 1"
-                  >
-                    <mat-icon>edit</mat-icon>
-                    {{ 'common.edit' | translate }}
-                  </button>
-                  <button
-                    *ngIf="resource.forms.length > 1"
-                    mat-menu-item
-                    [matMenuTriggerFor]="templates"
-                  >
-                    <mat-icon>edit_note</mat-icon>
-                    {{
-                      'common.editObject'
-                        | translate: { name: 'common.child' | translate }
-                    }}
-                  </button>
-                  <button
-                    *ngIf="!showDeletedRecords"
-                    mat-menu-item
-                    (click)="onDeleteRecord(element, $event)"
-                  >
-                    <mat-icon>delete</mat-icon>
-                    {{ 'common.delete' | translate }}
-                  </button>
-                  <button
-                    *ngIf="showDeletedRecords"
-                    mat-menu-item
-                    (click)="onDeleteRecord(element, $event)"
-                  >
-                    <mat-icon>delete_forever</mat-icon>
-                    {{ 'components.record.delete.permanently' | translate }}
-                  </button>
-                  <button
-                    *ngIf="showDeletedRecords"
-                    mat-menu-item
-                    (click)="onRestoreRecord(element.id, $event)"
-                  >
-                    <mat-icon>unarchive</mat-icon>
-                    {{ 'models.record.restore' | translate }}
-                  </button>
-                </mat-menu>
-                <mat-menu #templates="matMenu">
-                  <ng-container *ngFor="let form of filterTemplates(element)">
-                    <button
-                      mat-menu-item
-                      [routerLink]="['./update', element.id]"
-                      [state]="{ template: form.id }"
-                    >
-                      {{ form.name }}
-                    </button>
-                  </ng-container>
-                </mat-menu>
-              </td>
-            </ng-container>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumnsRecords"></tr>
-          <tr
-            mat-row
-            *matRowDef="let row; columns: displayedColumnsRecords"
-          ></tr>
-        </table>
-      </div>
+      <app-records-tab
+        class="table-container"
+        [dataSourceRecords]="dataSourceRecords"
+        [resource]="resource"
+        [showDeletedRecords]="showDeletedRecords"
+        [displayedColumnsRecords]="displayedColumnsRecords"
+        [recordsDefaultColumns]="recordsDefaultColumns"
+      ></app-records-tab>
       <mat-paginator
         [disabled]="loadingMore"
         [pageSize]="pageInfo.pageSize"
@@ -186,192 +97,21 @@
       <ng-template mat-tab-label>
         {{ 'common.form.few' | translate }} ( {{ resource.forms.length }} )
       </ng-template>
-      <ng-container *ngIf="!loading">
-        <table mat-table [dataSource]="dataSourceForms">
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'common.name' | translate }}
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="createdAt">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'common.createdOn' | translate }}
-            </th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.createdAt | safeDate }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'common.status' | translate }}
-            </th>
-            <td mat-cell *matCellDef="let element">
-              <mat-chip-list>
-                <mat-chip
-                  class="success-chip"
-                  disabled
-                  *ngIf="element.status === 'active'"
-                >
-                  {{ 'common.status_active' | translate | titlecase }}
-                </mat-chip>
-                <mat-chip
-                  class="accent-chip"
-                  disabled
-                  color="accent"
-                  *ngIf="element.status === 'pending'"
-                >
-                  {{ 'common.status_pending' | translate | titlecase }}
-                </mat-chip>
-                <mat-chip
-                  class="warn-chip"
-                  disabled
-                  color="warn"
-                  *ngIf="element.status === 'archived'"
-                >
-                  {{ 'common.status_archived' | translate | titlecase }}
-                </mat-chip>
-              </mat-chip-list>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="recordsCount">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'common.record.few' | translate }}
-            </th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.recordsCount }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="core">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'components.forms.isCore' | translate }}
-            </th>
-            <td mat-cell *matCellDef="let element">
-              <mat-chip-list *ngIf="element.core">
-                <mat-chip class="primary-chip" disabled>{{
-                  'models.form.core' | translate
-                }}</mat-chip>
-              </mat-chip-list>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="_actions">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element">
-              <safe-button
-                [isIcon]="true"
-                icon="more_vert"
-                [matMenuTriggerFor]="resMenu"
-                (click)="$event.stopPropagation()"
-                [disabled]="!(element.canUpdate || element.canDelete)"
-              >
-              </safe-button>
-              <mat-menu #resMenu="matMenu">
-                <button
-                  mat-menu-item
-                  [routerLink]="['/forms/builder', element.id]"
-                  *ngIf="element.canUpdate"
-                >
-                  <mat-icon>edit</mat-icon>
-                  {{ 'common.edit' | translate }}
-                </button>
-                <button
-                  mat-menu-item
-                  (click)="deleteForm(element.id, $event)"
-                  *ngIf="element.canDelete"
-                >
-                  <mat-icon>delete</mat-icon>
-                  {{ 'common.delete' | translate }}
-                </button>
-              </mat-menu>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumnsForms"></tr>
-          <tr
-            mat-row
-            *matRowDef="let row; columns: displayedColumnsForms"
-            [ngClass]="{
-              clickable: row.canCreateRecords && row.status === 'active'
-            }"
-            [routerLink]="
-              row.canCreateRecords && row.status === 'active'
-                ? ['/forms/answer', row.id]
-                : []
-            "
-          ></tr>
-        </table>
-      </ng-container>
+      <app-forms-tab
+        *ngIf="!loading"
+        [dataSourceForms]="dataSourceForms"
+      ></app-forms-tab>
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
         {{ 'common.layout.few' | translate }} ( {{ dataSourceLayouts.length }} )
       </ng-template>
-      <ng-container *ngIf="!loading">
-        <div class="actions">
-          <safe-button
-            variant="primary"
-            category="secondary"
-            (click)="onAddLayout()"
-          >
-            {{
-              'components.widget.settings.grid.layouts.add.choice.create'
-                | translate
-            }}</safe-button
-          >
-        </div>
-        <table mat-table [dataSource]="dataSourceLayouts">
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'common.name' | translate }}
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="createdAt">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ 'common.createdOn' | translate }}
-            </th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.createdAt | safeDate }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="_actions">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element">
-              <safe-button
-                [isIcon]="true"
-                icon="more_vert"
-                [matMenuTriggerFor]="resMenu"
-                (click)="$event.stopPropagation()"
-                [disabled]="!resource.canUpdate"
-              >
-              </safe-button>
-              <mat-menu #resMenu="matMenu">
-                <button mat-menu-item (click)="onEditLayout(element)">
-                  <mat-icon>edit</mat-icon>
-                  {{ 'common.edit' | translate }}
-                </button>
-                <button mat-menu-item (click)="onDeleteLayout(element)">
-                  <mat-icon>delete</mat-icon>
-                  {{ 'common.delete' | translate }}
-                </button>
-              </mat-menu>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumnsLayouts"></tr>
-          <tr
-            mat-row
-            *matRowDef="let row; columns: displayedColumnsLayouts"
-          ></tr>
-        </table>
-      </ng-container>
+      <app-layouts-tab
+        *ngIf="!loading"
+        [dataSourceLayouts]="dataSourceLayouts"
+        [resource]="resource"
+        [id]="id"
+      ></app-layouts-tab>
     </mat-tab>
   </mat-tab-group>
 </ng-container>

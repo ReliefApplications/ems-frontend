@@ -1,0 +1,60 @@
+
+<div class="actions">
+  <safe-button
+    variant="primary"
+    category="secondary"
+    (click)="onAddLayout()"
+  >
+    {{
+      'components.widget.settings.grid.layouts.add.choice.create'
+        | translate
+    }}</safe-button
+  >
+</div>
+<table mat-table [dataSource]="dataSourceLayouts">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>
+      {{ 'common.name' | translate }}
+    </th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="createdAt">
+    <th mat-header-cell *matHeaderCellDef>
+      {{ 'common.createdOn' | translate }}
+    </th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.createdAt | safeDate }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="_actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <safe-button
+        [isIcon]="true"
+        icon="more_vert"
+        [matMenuTriggerFor]="resMenu"
+        (click)="$event.stopPropagation()"
+        [disabled]="!resource.canUpdate"
+      >
+      </safe-button>
+      <mat-menu #resMenu="matMenu">
+        <button mat-menu-item (click)="onEditLayout(element)">
+          <mat-icon>edit</mat-icon>
+          {{ 'common.edit' | translate }}
+        </button>
+        <button mat-menu-item (click)="onDeleteLayout(element)">
+          <mat-icon>delete</mat-icon>
+          {{ 'common.delete' | translate }}
+        </button>
+      </mat-menu>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumnsLayouts"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumnsLayouts"
+  ></tr>
+</table>

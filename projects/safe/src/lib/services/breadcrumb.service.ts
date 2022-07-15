@@ -23,6 +23,9 @@ export class SafeBreadcrumbService {
   private breadcrumbs = new BehaviorSubject<Breadcrumb[]>([]);
   public breadcrumbs$ = this.breadcrumbs.asObservable();
 
+  private keepParent: boolean = false;
+  private previousRoot: any;
+
   /**
    * Shared Breadcrumb service.
    * Handle behavior of breadcrumb component, listening to activated route
@@ -33,9 +36,14 @@ export class SafeBreadcrumbService {
   constructor(private activateRoute: ActivatedRoute, private router: Router) {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() =>
-        this.breadcrumbs.next(this.createBreadcrumbs(this.activateRoute.root))
-      );
+      .subscribe(() => {
+        if (this.previousRoot != this.activateRoute.root.children) {
+          console.log(this.keepParent);
+          this.breadcrumbs.next(this.createBreadcrumbs(this.activateRoute.root, undefined, this.keepParent ? this.breadcrumbs.value : undefined));
+          this.previousRoot = this.activateRoute.root.children;
+          this.keepParent = false;
+        }
+      });
   }
 
   /**
@@ -95,5 +103,9 @@ export class SafeBreadcrumbService {
       breadcrumb.text = label[0].toUpperCase() + label.slice(1);
       this.breadcrumbs.next(breadcrumbs);
     }
+  }
+
+  public keepPreviousRoute() {
+    this.keepParent = true;
   }
 }
