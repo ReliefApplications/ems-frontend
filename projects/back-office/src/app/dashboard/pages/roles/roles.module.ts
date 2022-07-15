@@ -5,6 +5,9 @@ import { RolesRoutingModule } from './roles-routing.module';
 import { RolesComponent } from './roles.component';
 import { SafeRolesModule } from '@safe/builder';
 
+/**
+ * Module declaration for roles component.
+ */
 @NgModule({
   declarations: [RolesComponent],
   imports: [CommonModule, RolesRoutingModule, SafeRolesModule],

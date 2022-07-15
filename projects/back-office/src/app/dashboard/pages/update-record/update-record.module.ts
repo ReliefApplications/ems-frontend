@@ -7,6 +7,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Module declaration for update records component.
+ */
 @NgModule({
   declarations: [UpdateRecordComponent],
   imports: [
