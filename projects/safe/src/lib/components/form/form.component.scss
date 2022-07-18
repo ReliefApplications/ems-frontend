@@ -4,23 +4,16 @@
   position: relative;
 }
 
-.survey-actions {
-  position: relative;
-  width: 100%;
+.form-infos {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  margin-bottom: 16px;
-}
+  flex-wrap: wrap;
 
-#langSelect {
-  z-index: 99;
-  border: 1px solid #777777;
-  border-radius: 3px;
-}
-
-safe-record-summary {
-  margin-bottom: 8px;
+  safe-record-summary {
+    margin: 0 20px 8px 0;
+  }
+  safe-form-actions {
+    margin: 4px 0 12px auto;
+  }
 }
 
 mat-tab-group {

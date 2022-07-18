@@ -43,9 +43,15 @@ export class SafeFormBuilderService {
         survey.runExpression(onCompleteExpression);
       });
     }
-    const lang = this.translate.currentLang || this.translate.defaultLang;
-    if (survey.getUsedLocales().includes(lang)) {
-      survey.locale = lang;
+    // set the lang of the survey
+    const surveyLang = localStorage.getItem('surveyLang');
+    if (surveyLang && survey.getUsedLocales().includes(surveyLang)) {
+      survey.locale = surveyLang;
+    } else {
+      const lang = this.translate.currentLang || this.translate.defaultLang;
+      if (survey.getUsedLocales().includes(lang)) {
+        survey.locale = lang;
+      }
     }
     return survey;
   }
