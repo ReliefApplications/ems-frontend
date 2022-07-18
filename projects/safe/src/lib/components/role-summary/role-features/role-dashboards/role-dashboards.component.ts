@@ -57,21 +57,10 @@ export class RoleDashboardsComponent implements OnInit, OnChanges {
    * @param page A dashboard page object
    */
   onEditAccess(page: Page): void {
-    const canSeePermissions = get(page, 'permissions.canSee', []).map(
-      (x: any) => x.id as string
-    );
-    if (this.accessiblePages.includes(page.id as string)) {
-      this.edit.emit({
-        page: page.id,
-        permissions: canSeePermissions.filter(
-          (x: string) => x !== this.role.id
-        ),
-      });
-    } else {
-      this.edit.emit({
-        page: page.id,
-        permissions: [...canSeePermissions, this.role.id],
-      });
-    }
+    const hasAccess = this.accessiblePages.includes(page.id as string);
+    this.edit.emit({
+      page: page.id,
+      action: { [hasAccess ? 'remove' : 'add']: [this.role.id] },
+    });
   }
 }

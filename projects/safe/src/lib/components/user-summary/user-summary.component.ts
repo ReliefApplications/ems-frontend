@@ -10,6 +10,7 @@ import {
 } from './graphql/mutations';
 import { GetUserQueryResponse, GET_USER } from './graphql/queries';
 import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeBreadcrumbService } from '../../services/breadcrumb.service';
 
 /**
  * User Summary shared component.
@@ -43,8 +44,13 @@ export class SafeUserSummaryComponent implements OnInit {
    *
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
+   * @param breadcrumbService Setups the breadcrumb component
    */
-  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
+  constructor(
+    private apollo: Apollo,
+    private snackBar: SafeSnackBarService,
+    private breadcrumbService: SafeBreadcrumbService
+  ) {}
 
   ngOnInit(): void {
     this.apollo
@@ -58,6 +64,10 @@ export class SafeUserSummaryComponent implements OnInit {
         (res) => {
           if (res.data) {
             this.user = res.data.user;
+            this.breadcrumbService.setBreadcrumb(
+              '@user',
+              this.user.name as string
+            );
           }
           this.loading = res.data.loading;
         },

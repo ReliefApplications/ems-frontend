@@ -22,8 +22,14 @@ import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import { AddResourceComponent } from '../../../components/add-resource/add-resource.component';
 
+/**
+ * Default number of resources that will be shown at once.
+ */
 const DEFAULT_PAGE_SIZE = 10;
 
+/**
+ * Component which will show all the resources in the app.
+ */
 @Component({
   selector: 'app-resources',
   templateUrl: './resources.component.html',
@@ -53,6 +59,15 @@ export class ResourcesComponent implements OnInit {
     endCursor: '',
   };
 
+  /**
+   * ResourcesComponent constructor.
+   *
+   * @param dialog Used for opening a dialog.
+   * @param apollo Used for loading the resources.
+   * @param snackBar Service used to show the snackbar,
+   * @param translate Service used to get translations
+   * @param router Used to change the app route.
+   */
   constructor(
     private dialog: MatDialog,
     private apollo: Apollo,

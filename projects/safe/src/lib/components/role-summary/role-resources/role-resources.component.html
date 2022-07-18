@@ -26,7 +26,7 @@
             : 'keyboard_arrow_down'
         "
         (click)="toggleResource(element)"
-        [disabled]="loading"
+        [disabled]="loading || updating"
       >
       </safe-button>
     </td>
@@ -64,7 +64,7 @@
                         : 'grey'
                     "
                     (click)="onEditFormAccess(element, action)"
-                    [disabled]="loading"
+                    [disabled]="loading || updating"
                     [matTooltip]="
                       getTooltip(action, element)
                         | translate: { form: element.name }
