@@ -24,6 +24,7 @@ const DEFAULT_LOCALE_SURVEY: LangObject = {
 })
 export class SafeFormActionsComponent implements OnInit {
   @Input() survey!: Survey.SurveyModel;
+  @Input() surveyNext?: Survey.SurveyModel;
   @Input() surveyActive = true;
   public usedLocalesSurvey: LangObject[] = [];
   public currentLocaleSurvey = DEFAULT_LOCALE_SURVEY;
@@ -53,6 +54,10 @@ export class SafeFormActionsComponent implements OnInit {
   public setLanguage(langItem: LangObject): void {
     this.survey.locale = langItem.code;
     this.survey.render();
+    if (this.surveyNext) {
+      this.surveyNext.locale = langItem.code;
+      this.surveyNext.render();
+    }
     this.currentLocaleSurvey = langItem;
     localStorage.setItem('surveyLang', langItem.code);
     // this.survey.render(this.containerId);

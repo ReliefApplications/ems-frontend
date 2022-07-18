@@ -41,7 +41,6 @@ import isEqual from 'lodash/isEqual';
  */
 interface DialogData {
   recordId: string;
-  locale?: string;
   compareTo?: any;
   canUpdate?: boolean;
   template?: string;
@@ -176,7 +175,6 @@ export class SafeRecordModalComponent implements AfterViewInit {
       (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
     this.survey.data = this.record.data;
-    this.survey.locale = this.data.locale ? this.data.locale : 'en';
     this.survey.mode = 'display';
     this.survey.showNavigationButtons = 'none';
     this.survey.focusFirstQuestionAutomatic = false;
@@ -193,7 +191,6 @@ export class SafeRecordModalComponent implements AfterViewInit {
           this.onDownloadFile(survey, options)
       );
       this.surveyNext.data = this.data.compareTo.data;
-      this.surveyNext.locale = this.data.locale ? this.data.locale : 'en';
       this.surveyNext.mode = 'display';
       this.surveyNext.showNavigationButtons = 'none';
       this.surveyNext.focusFirstQuestionAutomatic = false;

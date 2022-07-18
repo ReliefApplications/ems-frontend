@@ -800,7 +800,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       const dialogRef = this.dialog.open(SafeRecordModalComponent, {
         data: {
           recordId: isArray ? items[0].id : items.id,
-          locale: 'en',
           canUpdate:
             this.settings.actions &&
             this.settings.actions.update &&

@@ -52,3 +52,16 @@ mat-dialog-content {
   right: -24px;
   z-index: 1002;
 }
+
+.form-infos {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: 16px;
+
+  safe-record-summary {
+    margin: 0 20px 8px 0;
+  }
+  safe-form-actions {
+    margin: 4px 0 12px auto;
+  }
+}
