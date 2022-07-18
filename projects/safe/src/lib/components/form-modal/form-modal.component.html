@@ -6,11 +6,17 @@
   class="modal-close"
 ></safe-button>
 <ng-container *ngIf="!loading">
-  <safe-record-summary
-    *ngIf="record"
-    [record]="record"
-    (showHistory)="onShowHistory()"
-  ></safe-record-summary>
+  <div class="form-infos">
+    <safe-record-summary
+      *ngIf="record"
+      [record]="record"
+      (showHistory)="onShowHistory()"
+    ></safe-record-summary>
+    <safe-form-actions
+      *ngIf="survey"
+      [survey]="survey"
+    ></safe-form-actions>
+  </div>  
   <div mat-dialog-title>
     <mat-tab-group
       animationDuration="0ms"

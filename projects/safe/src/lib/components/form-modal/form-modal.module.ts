@@ -9,6 +9,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
+import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -27,6 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeIconModule,
     SafeRecordHistoryModalModule,
     SafeRecordSummaryModule,
+    SafeFormActionsModule,
     TranslateModule,
   ],
   exports: [SafeFormModalComponent],

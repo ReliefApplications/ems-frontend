@@ -51,7 +51,6 @@ import { TranslateService } from '@ngx-translate/core';
 interface DialogData {
   template?: string;
   recordId?: string | [];
-  locale?: string;
   prefillRecords?: Record[];
   prefillData?: any;
   askForConfirm?: boolean;
@@ -112,6 +111,7 @@ export class SafeFormModalComponent implements OnInit {
    * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param translate This is the service that allows us to translate the text in our application.
+   * @param ngZone The ngZone service
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -246,7 +246,6 @@ export class SafeFormModalComponent implements OnInit {
         this.setPages();
       }
     );
-    this.survey.locale = this.data.locale ? this.data.locale : 'en';
     if (this.data.recordId && this.record) {
       addCustomFunctions(Survey, this.authService, this.apollo, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;

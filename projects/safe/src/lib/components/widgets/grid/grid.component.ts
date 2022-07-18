@@ -286,7 +286,6 @@ export class SafeGridWidgetComponent implements OnInit {
       this.dialog.open(SafeFormModalComponent, {
         data: {
           template: options.prefillTargetForm,
-          locale: 'en',
           prefillRecords: records,
           askForConfirm: false,
         },
@@ -486,7 +485,6 @@ export class SafeGridWidgetComponent implements OnInit {
                     disableClose: true,
                     data: {
                       recordId: record.id,
-                      locale: 'en',
                     },
                     height: '98%',
                     width: '100vw',

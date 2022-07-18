@@ -751,7 +751,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         disableClose: true,
         data: {
           template: this.settings.template,
-          locale: 'en',
           askForConfirm: false,
         },
         height: '98%',
@@ -832,7 +831,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       disableClose: true,
       data: {
         recordId: ids.length > 1 ? ids : ids[0],
-        locale: 'en',
         template: this.settings.template || null,
       },
       height: '98%',
