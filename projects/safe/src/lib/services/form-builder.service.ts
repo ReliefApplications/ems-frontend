@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import * as Survey from 'survey-angular';
 import { renderCustomProperties } from '../survey/custom-properties';
 import { DomService } from './dom.service';
@@ -17,10 +18,12 @@ export class SafeFormBuilderService {
    *
    * @param domService The dom service
    * @param referenceDataService Reference data service
+   * @param translate Translation service
    */
   constructor(
     private domService: DomService,
-    private referenceDataService: SafeReferenceDataService
+    private referenceDataService: SafeReferenceDataService,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -39,6 +42,10 @@ export class SafeFormBuilderService {
       survey.onCompleting.add(() => {
         survey.runExpression(onCompleteExpression);
       });
+    }
+    const lang = this.translate.currentLang || this.translate.defaultLang;
+    if (survey.getUsedLocales().includes(lang)) {
+      survey.locale = lang;
     }
     return survey;
   }

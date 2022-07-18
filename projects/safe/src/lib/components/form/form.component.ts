@@ -24,20 +24,22 @@ import {
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar.service';
-import { LANGUAGES } from '../../utils/languages';
+import { getLanguageNativeName } from '../../utils/languages';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth.service';
-import {
-  GET_RECORD_DETAILS,
-  GetRecordDetailsQueryResponse,
-} from '../../graphql/queries';
 import { SafeLayoutService } from '../../services/layout.service';
 import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
+
+/** Default locale of the survey */
+const DEFAULT_LOCALE_SURVEY = {
+  code: 'en',
+  nativeName: getLanguageNativeName('en'),
+};
 
 /**
  * This component is used to display forms
@@ -57,12 +59,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === SURVEYJS ===
   public survey!: Survey.Model;
-  public surveyLanguage: { name: string; nativeName: string } = {
-    name: 'English',
-    nativeName: 'English',
-  };
-  public usedLocales: Array<{ text: string; value: string }> = [];
-  public dropdownLocales: any[] = [];
+  public usedLocalesSurvey: { code: string; nativeName: string }[] = [];
+  public currentLocaleSurvey: { code: string; nativeName: string } =
+    DEFAULT_LOCALE_SURVEY;
   public surveyActive = true;
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
@@ -112,8 +111,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private formBuilderService: SafeFormBuilderService,
-    private translate: TranslateService,
-    private el: ElementRef
+    private translate: TranslateService
   ) {
     this.environment = environment;
   }
@@ -185,25 +183,19 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.modifiedAt = this.record.modifiedAt || null;
     }
 
-    if (this.survey.getUsedLocales().length > 1) {
-      this.survey.getUsedLocales().forEach((lang) => {
-        const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
-        this.usedLocales.push({ value: lang, text: nativeName });
-        this.dropdownLocales.push(nativeName);
-      });
-    }
+    // set the available languages and default language of the survey
+    this.usedLocalesSurvey = this.survey.getUsedLocales().map((lang) => ({
+      code: lang,
+      nativeName: getLanguageNativeName(lang),
+    }));
+    this.currentLocaleSurvey =
+      this.usedLocalesSurvey.find(
+        (x) =>
+          x.code ===
+          (this.survey.locale || Survey.surveyLocalization.defaultLocale)
+      ) || DEFAULT_LOCALE_SURVEY;
 
-    if (navigator.language) {
-      const clientLanguage = navigator.language.substring(0, 2);
-      const code = this.survey.getUsedLocales().includes(clientLanguage)
-        ? clientLanguage
-        : 'en';
-      this.surveyLanguage = (LANGUAGES as any)[code];
-      this.survey.locale = code;
-    } else {
-      this.survey.locale = 'en';
-    }
-
+    // set some settings on the survey
     this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showNavigationButtons = false;
     this.setPages();
@@ -373,12 +365,11 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Change language of the form.
    *
-   * @param lang selected language
+   * @param langItem The selected language
    */
-  setLanguage(lang: string): void {
-    this.survey.locale = this.usedLocales.filter(
-      (locale) => locale.text === lang
-    )[0].value;
+  setLanguage(langItem: any): void {
+    this.currentLocaleSurvey = langItem;
+    this.survey.locale = langItem.code;
     this.survey.render();
     // this.survey.render(this.containerId);
   }

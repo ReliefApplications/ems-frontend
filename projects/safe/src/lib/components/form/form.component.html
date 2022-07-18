@@ -6,20 +6,14 @@
 ></safe-record-summary>
 <div class="survey-actions" *ngIf="surveyActive">
   <kendo-dropdownlist
-    *ngIf="!!survey && survey.getUsedLocales().length > 1"
+    *ngIf="!!survey && usedLocalesSurvey.length > 1"
     id="langSelect"
-    [data]="dropdownLocales"
-    [value]="surveyLanguage.nativeName.split(',')[0]"
+    [data]="usedLocalesSurvey"
+    [value]="currentLocaleSurvey"
+    textField="nativeName"
+    valueField="code"
     (selectionChange)="setLanguage($event)"
-  >
-    <ng-template
-      kendoDropDownListValueTemplate
-      let-dataItem
-      style="text-transform: capitalize"
-    >
-      {{ dataItem }}
-    </ng-template>
-  </kendo-dropdownlist>
+  ></kendo-dropdownlist>
 </div>
 <mat-tab-group
   animationDuration="0ms"
