@@ -16,8 +16,8 @@ import { SafeSnackBarService } from '../../../services/snackbar.service';
 import {
   GetResourceFormsQueryResponse,
   GetResourcesQueryResponse,
-  GET_RESOURCES_EXTENDED,
   GET_RESOURCE_FORMS,
+  GET_SHORT_RESOURCES,
 } from '../graphql/queries';
 import {
   EditFormAccessMutationResponse,
@@ -105,9 +105,11 @@ export class RoleResourcesComponent implements OnInit {
   /** Load the resources. */
   ngOnInit(): void {
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
-      query: GET_RESOURCES_EXTENDED,
+      query: GET_SHORT_RESOURCES,
       variables: {
         first: DEFAULT_PAGE_SIZE,
+        sortField: 'name',
+        sortOrder: 'asc',
       },
     });
 

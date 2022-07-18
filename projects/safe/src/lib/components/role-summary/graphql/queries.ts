@@ -201,6 +201,39 @@ export const GET_RESOURCE_FORMS = gql`
   }
 `;
 
+/** Graphql request for getting minimum information on a resource */
+export const GET_SHORT_RESOURCES = gql`
+  query GetShortResource(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sortField: String
+    $sortOrder: String
+  ) {
+    resources(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
+      edges {
+        node {
+          id
+          name
+          createdAt
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
 /** Model for the response of the GetResourceForms query */
 export interface GetResourceFormsQueryResponse {
   resource: Resource;
