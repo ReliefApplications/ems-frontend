@@ -44,6 +44,7 @@ import { RecordHistoryModalComponent } from '../record-history-modal/record-hist
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
 import { TranslateService } from '@ngx-translate/core';
+import { cleanRecord } from '../../utils/cleanRecord';
 
 /**
  * Interface of Dialog data.
@@ -422,12 +423,13 @@ export class SafeFormModalComponent implements OnInit {
    * @param survey current survey.
    */
   public updateMultipleData(ids: any, survey: any): void {
+    const data = cleanRecord(survey.data);
     this.apollo
       .mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data: survey.data,
+          data,
           template: this.data.template,
         },
       })

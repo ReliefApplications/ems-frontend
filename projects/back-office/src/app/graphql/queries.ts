@@ -11,6 +11,7 @@ import {
   Page,
   Workflow,
   Step,
+  Setting,
   PositionAttribute,
   ApiConfiguration,
   PullJob,
@@ -276,6 +277,7 @@ export const GET_FORM_STRUCTURE = gql`
   query GetFormStructure($id: ID!) {
     form(id: $id) {
       id
+      name
       structure
     }
   }
@@ -530,6 +532,7 @@ export const GET_RECORD_BY_ID = gql`
   query GetRecordById($id: ID!) {
     record(id: $id) {
       id
+      incrementalId
       createdAt
       modifiedAt
       createdBy {
@@ -541,6 +544,7 @@ export const GET_RECORD_BY_ID = gql`
       data
       form {
         id
+        name
         structure
       }
     }
@@ -1277,4 +1281,26 @@ export const GET_REFERENCE_DATA = gql`
 export interface GetReferenceDataQueryResponse {
   loading: boolean;
   referenceData: ReferenceData;
+}
+
+// === GET SETTING ===
+export const GET_SETTING = gql`
+  query GetSetting {
+    setting {
+      userManagement {
+        local
+        apiConfiguration {
+          id
+          name
+        }
+        serviceAPI
+        attributesMapping
+      }
+    }
+  }
+`;
+
+export interface GetSettingQueryResponse {
+  loading: boolean;
+  setting: Setting;
 }

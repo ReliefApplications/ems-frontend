@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import * as Survey from 'survey-angular';
-import { renderCustomProperties } from '../survey/custom-properties';
-import { DomService } from './dom.service';
 import { SafeReferenceDataService } from './reference-data.service';
+import { renderGlobalProperties } from '../survey/render-global-properties';
 
 /**
  * Shared form builder service.
@@ -16,12 +15,10 @@ export class SafeFormBuilderService {
   /**
    * Constructor of the service
    *
-   * @param domService The dom service
    * @param referenceDataService Reference data service
    * @param translate Translation service
    */
   constructor(
-    private domService: DomService,
     private referenceDataService: SafeReferenceDataService,
     private translate: TranslateService
   ) {}
@@ -35,7 +32,7 @@ export class SafeFormBuilderService {
   createSurvey(structure: string): Survey.Survey {
     const survey = new Survey.Model(structure);
     survey.onAfterRenderQuestion.add(
-      renderCustomProperties(this.domService, this.referenceDataService)
+      renderGlobalProperties(this.referenceDataService)
     );
     const onCompleteExpression = survey.toJSON().onCompleteExpression;
     if (onCompleteExpression) {

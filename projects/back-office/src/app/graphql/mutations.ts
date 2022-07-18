@@ -13,7 +13,6 @@ import {
   Step,
   ApiConfiguration,
   PullJob,
-  Layout,
   ReferenceData,
 } from '@safe/builder';
 

@@ -247,6 +247,7 @@ export class RoleResourcesComponent implements OnInit {
   onEditFormAccess(form: Form, action: Permission): void {
     if (!this.role.id) return;
 
+    this.updating = true;
     const updatedPermissions: {
       add?: string[] | { role: string }[];
       remove?: string[] | { role: string }[];
@@ -301,9 +302,11 @@ export class RoleResourcesComponent implements OnInit {
                 .map((x) => x.id as string);
             }
           }
+          this.updating = false;
         },
         (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.updating = false;
         }
       );
   }

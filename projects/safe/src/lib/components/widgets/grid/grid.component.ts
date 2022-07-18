@@ -38,6 +38,7 @@ import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
+import { cleanRecord } from '../../../utils/cleanRecord';
 
 /** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
@@ -349,12 +350,13 @@ export class SafeGridWidgetComponent implements OnInit {
         );
       }
     }
+    const data = cleanRecord(update);
     return this.apollo
       .mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data: update,
+          data,
         },
       })
       .toPromise();
