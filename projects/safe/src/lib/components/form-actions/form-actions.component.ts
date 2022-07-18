@@ -15,7 +15,7 @@ const DEFAULT_LOCALE_SURVEY: LangObject = {
 };
 
 /**
- * This component is used to show a summary of a record and its informations
+ * Component for the language selection dropdown for surveys
  */
 @Component({
   selector: 'safe-form-actions',
@@ -30,8 +30,7 @@ export class SafeFormActionsComponent implements OnInit {
   public currentLocaleSurvey = DEFAULT_LOCALE_SURVEY;
 
   /**
-   * The constructor function is a special function that is called when a new instance of the class is
-   * created.
+   * Constructor of the component.
    */
   constructor() {}
 

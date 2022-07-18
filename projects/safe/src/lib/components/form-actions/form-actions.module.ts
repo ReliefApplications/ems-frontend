@@ -4,7 +4,7 @@ import { SafeFormActionsComponent } from './form-actions.component';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 
 /**
- * SafeRecordSummaryModule is the module related to the records information summary.
+ * Module for the safeFormActions component
  */
 @NgModule({
   declarations: [SafeFormActionsComponent],
