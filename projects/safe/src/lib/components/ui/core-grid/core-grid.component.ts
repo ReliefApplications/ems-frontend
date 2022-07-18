@@ -35,11 +35,8 @@ import {
   DELETE_RECORDS,
   EditRecordMutationResponse,
   EDIT_RECORD,
-} from '../../../graphql/mutations';
-import {
-  GetFormByIdQueryResponse,
-  GET_FORM_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/mutations';
+import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from './graphql/queries';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';

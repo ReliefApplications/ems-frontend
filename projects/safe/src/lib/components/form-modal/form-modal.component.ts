@@ -17,9 +17,7 @@ import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
   GET_FORM_BY_ID,
-  GetRecordDetailsQueryResponse,
-  GET_RECORD_DETAILS,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import * as Survey from 'survey-angular';
@@ -32,7 +30,7 @@ import {
   UPLOAD_FILE,
   EDIT_RECORDS,
   EditRecordsMutationResponse,
-} from '../../graphql/mutations';
+} from './graphql/mutations';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar.service';
