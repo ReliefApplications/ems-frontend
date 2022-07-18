@@ -160,8 +160,20 @@ export interface GetResourcesQueryResponse {
 
 /** Graphql query for getting resources with a filter and more data */
 export const GET_RESOURCES_EXTENDED = gql`
-  query GetResourcesExtended($first: Int, $afterCursor: ID, $filter: JSON) {
-    resources(first: $first, afterCursor: $afterCursor, filter: $filter) {
+  query GetResourcesExtended(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sortField: String
+    $sortOrder: String
+  ) {
+    resources(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
       edges {
         node {
           id
@@ -196,39 +208,6 @@ export const GET_RESOURCE_FORMS = gql`
           canUpdateRecords
           canDeleteRecords
         }
-      }
-    }
-  }
-`;
-
-/** Graphql request for getting minimum information on a resource */
-export const GET_SHORT_RESOURCES = gql`
-  query GetShortResource(
-    $first: Int
-    $afterCursor: ID
-    $filter: JSON
-    $sortField: String
-    $sortOrder: String
-  ) {
-    resources(
-      first: $first
-      afterCursor: $afterCursor
-      filter: $filter
-      sortField: $sortField
-      sortOrder: $sortOrder
-    ) {
-      edges {
-        node {
-          id
-          name
-          createdAt
-        }
-        cursor
-      }
-      totalCount
-      pageInfo {
-        hasNextPage
-        endCursor
       }
     }
   }

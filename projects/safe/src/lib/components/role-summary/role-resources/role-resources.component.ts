@@ -17,7 +17,7 @@ import {
   GetResourceFormsQueryResponse,
   GetResourcesQueryResponse,
   GET_RESOURCE_FORMS,
-  GET_SHORT_RESOURCES,
+  GET_RESOURCES_EXTENDED,
 } from '../graphql/queries';
 import {
   EditFormAccessMutationResponse,
@@ -105,7 +105,7 @@ export class RoleResourcesComponent implements OnInit {
   /** Load the resources. */
   ngOnInit(): void {
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
-      query: GET_SHORT_RESOURCES,
+      query: GET_RESOURCES_EXTENDED,
       variables: {
         first: DEFAULT_PAGE_SIZE,
         sortField: 'name',
