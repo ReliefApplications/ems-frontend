@@ -30,7 +30,6 @@ export class AddResourceComponent implements OnInit {
   ngOnInit(): void {
     this.addForm = this.formBuilder.group({
       name: ['', Validators.required],
-      binding: ['newResource'],
     });
   }
 

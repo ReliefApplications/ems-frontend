@@ -25,8 +25,14 @@ import { PullJobModalComponent } from './components/pull-job-modal/pull-job-moda
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Limit of pull jobs shown at once.
+ */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Shows all pull-jobs avilable.
+ */
 @Component({
   selector: 'app-pull-jobs',
   templateUrl: './pull-jobs.component.html',
@@ -57,6 +63,14 @@ export class PullJobsComponent implements OnInit, OnDestroy {
     endCursor: '',
   };
 
+  /**
+   * PullJobsComponent constructor.
+   *
+   * @param dialog Used to show popup dialog.
+   * @param apollo Loads the pull jobs.
+   * @param snackBar Service usde to show a snackbar.
+   * @param translate Service used to get the translations.
+   */
   constructor(
     public dialog: MatDialog,
     private apollo: Apollo,
@@ -213,8 +227,8 @@ export class PullJobsComponent implements OnInit, OnDestroy {
               name: element.name,
             }
           ),
-          confirmText: this.translate.instant('common.delete'),
-          cancelText: this.translate.instant('common.cancel'),
+          confirmText: this.translate.instant('components.confirmModal.delete'),
+          cancelText: this.translate.instant('components.confirmModal.cancel'),
           confirmColor: 'warn',
         },
       });

@@ -43,16 +43,45 @@ export class AddFormComponent implements OnInit {
     private apollo: Apollo
   ) {}
 
-  /*  Load the resources and build the form.
-   */
+  /** Load the resources and build the form. */
   ngOnInit(): void {
     this.addForm = this.formBuilder.group({
       name: ['', Validators.required],
-      binding: ['', Validators.required],
+      newResource: [true],
       resource: [null],
       inheritsTemplate: [false],
       template: [null],
     });
+
+    this.addForm
+      .get('newResource')
+      ?.valueChanges.subscribe((value: boolean) => {
+        if (value) {
+          this.addForm.get('resource')?.clearValidators();
+          this.addForm.patchValue({
+            resource: null,
+            inheritsTemplate: false,
+            template: null,
+          });
+        } else {
+          this.addForm.get('resource')?.setValidators([Validators.required]);
+        }
+        this.addForm.get('resource')?.updateValueAndValidity();
+      });
+
+    this.addForm
+      .get('inheritsTemplate')
+      ?.valueChanges.subscribe((value: boolean) => {
+        if (value) {
+          this.addForm.get('template')?.setValidators([Validators.required]);
+        } else {
+          this.addForm.get('template')?.clearValidators();
+          this.addForm.patchValue({
+            template: null,
+          });
+        }
+        this.addForm.get('template')?.updateValueAndValidity();
+      });
 
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES,
@@ -69,9 +98,8 @@ export class AddFormComponent implements OnInit {
     });
   }
 
-  /*  Called on resource input change.
-    Load the templates linked to that resource.
-  */
+  /** Called on resource input change.
+    Load the templates linked to that resource. */
   getResource(e: any): void {
     this.apollo
       .query<GetResourceByIdQueryResponse>({
@@ -85,8 +113,7 @@ export class AddFormComponent implements OnInit {
       });
   }
 
-  /*  Close the modal without sending any data.
-   */
+  /** Close the modal without sending any data. */
   onClose(): void {
     this.dialogRef.close();
   }

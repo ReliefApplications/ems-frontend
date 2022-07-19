@@ -22,8 +22,7 @@ export class AddChannelComponent implements OnInit {
     });
   }
 
-  /*  Close the modal without sending any data.
-   */
+  /** Close the modal without sending any data. */
   onClose(): void {
     this.dialogRef.close();
   }

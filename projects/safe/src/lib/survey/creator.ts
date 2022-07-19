@@ -1,19 +1,19 @@
 /**
  * Edits general settings of the survey builder.
  *
- * @param survey Survey instance
+ * @param Survey Survey library
  */
-export const initCreatorSettings = (survey: any): void => {
-  survey.Serializer.findProperty('question', 'name').readOnly = true;
-  survey.Serializer.findProperty('question', 'name').dependsOn = 'valueName';
-  survey.Serializer.findProperty('question', 'name').onGetValue = (obj: any) =>
+export const initCreatorSettings = (Survey: any): void => {
+  Survey.Serializer.findProperty('question', 'name').readOnly = true;
+  Survey.Serializer.findProperty('question', 'name').dependsOn = 'valueName';
+  Survey.Serializer.findProperty('question', 'name').onGetValue = (obj: any) =>
     obj.valueName ? obj.valueName : obj.name;
-  survey.Serializer.findProperty('question', 'valueName').isRequired = true;
-  survey.Serializer.findProperty('file', 'storeDataAsText').onGetValue = (
+  Survey.Serializer.findProperty('question', 'valueName').isRequired = true;
+  Survey.Serializer.findProperty('file', 'storeDataAsText').onGetValue = (
     obj: any
   ) => false;
-  survey.Serializer.findProperty('file', 'storeDataAsText').readOnly = true;
-  survey.Serializer.findProperty('file', 'storeDataAsText').visible = false;
-  survey.Serializer.findProperty('file', 'maxSize').onGetValue = (obj: any) =>
+  Survey.Serializer.findProperty('file', 'storeDataAsText').readOnly = true;
+  Survey.Serializer.findProperty('file', 'storeDataAsText').visible = false;
+  Survey.Serializer.findProperty('file', 'maxSize').onGetValue = (obj: any) =>
     7340032;
 };

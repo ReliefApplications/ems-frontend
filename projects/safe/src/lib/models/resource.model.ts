@@ -2,8 +2,7 @@ import { Form } from './form.model';
 import { Layout } from './layout.model';
 import { RecordConnection } from './record.model';
 
-/*  Model for Resource object.
- */
+/** Model for Resource object. */
 export interface Resource {
   id?: string;
   name?: string;

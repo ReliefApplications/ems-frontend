@@ -16,16 +16,14 @@ export class AddDashboardComponent implements OnInit {
     public dialogRef: MatDialogRef<AddDashboardComponent>
   ) {}
 
-  /*  Build the form.
-   */
+  /** Build the form. */
   ngOnInit(): void {
     this.dashboardForm = this.formBuilder.group({
       name: ['', Validators.required],
     });
   }
 
-  /* Close the modal without sending any data.
-   */
+  /** Close the modal without sending any data. */
   onClose(): void {
     this.dialogRef.close();
   }

@@ -19,15 +19,12 @@ import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
 } from '../../../graphql/queries';
-import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   Component,
   OnInit,
   ViewChild,
   Input,
   Output,
-  ComponentFactory,
-  ComponentFactoryResolver,
   EventEmitter,
   Inject,
 } from '@angular/core';
@@ -38,22 +35,24 @@ import { NOTIFICATIONS } from '../../../const/notifications';
 import { SafeAuthService } from '../../../services/auth.service';
 import { SafeEmailService } from '../../../services/email.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
-import { GridLayout } from '../../ui/core-grid/models/grid-layout.model';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
+import { TranslateService } from '@ngx-translate/core';
+import { cleanRecord } from '../../../utils/cleanRecord';
 
+/** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
-
+/** Regex for the pattern "today()-[number of days to substract]" */
 const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
 
+/** Component for the grid widget */
 @Component({
   selector: 'safe-grid-widget',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
 })
-/*  Grid widget using KendoUI.
- */
+/** Grid widget using KendoUI. */
 export class SafeGridWidgetComponent implements OnInit {
   // === TEMPLATE REFERENCE ===
   @ViewChild(SafeCoreGridComponent)
@@ -78,20 +77,31 @@ export class SafeGridWidgetComponent implements OnInit {
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
-  // === HISTORY COMPONENT TO BE INJECTED IN LAYOUT SERVICE ===
-  public factory?: ComponentFactory<any>;
-
+  /**
+   * Heavy constructor for the grid widget component
+   *
+   * @param environment Environment variables
+   * @param apollo The apollo client
+   * @param dialog Material dialogs service
+   * @param snackBar The safe snack bar service
+   * @param workflowService The safe wofkflow service
+   * @param safeAuthService The safe authentification service
+   * @param emailService The safe email service
+   * @param queryBuilder The query builder service
+   * @param gridLayoutService The safe grid layout service
+   * @param translate The translate service
+   */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private resolver: ComponentFactoryResolver,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
     private emailService: SafeEmailService,
     private queryBuilder: QueryBuilderService,
-    private gridLayoutService: SafeGridLayoutService
+    private gridLayoutService: SafeGridLayoutService,
+    private translate: TranslateService
   ) {
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -99,9 +109,6 @@ export class SafeGridWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.gridSettings = { ...this.settings };
-    this.factory = this.resolver.resolveComponentFactory(
-      SafeRecordHistoryComponent
-    );
     if (this.settings.resource) {
       this.gridLayoutService
         .getLayouts(this.settings.resource, this.settings.layouts)
@@ -117,6 +124,12 @@ export class SafeGridWidgetComponent implements OnInit {
     }
   }
 
+  /**
+   * Send changes on multiple records to the backend
+   *
+   * @param items A list of item representing the changes for each record
+   * @returns A list of promise with the result of the request
+   */
   private promisedChanges(items: any[]): Promise<any>[] {
     const promises: Promise<any>[] = [];
     for (const item of items) {
@@ -293,9 +306,13 @@ export class SafeGridWidgetComponent implements OnInit {
       } else {
         const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
           data: {
-            title: `Close workflow`,
+            title: this.translate.instant(
+              'components.widget.settings.grid.buttons.callback.workflow.close'
+            ),
             content: options.confirmationText,
-            confirmText: 'Yes',
+            confirmText: this.translate.instant(
+              'components.confirmModal.confirm'
+            ),
             confirmColor: 'primary',
           },
         });
@@ -333,12 +350,13 @@ export class SafeGridWidgetComponent implements OnInit {
         update[modification.field.name] = modification.value;
       }
     }
+    const data = cleanRecord(update);
     return this.apollo
       .mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data: update,
+          data,
         },
       })
       .toPromise();
@@ -372,10 +390,17 @@ export class SafeGridWidgetComponent implements OnInit {
     return date;
   }
 
-  /* Open a modal to select which record we want to attach the rows to and perform the attach.
+  /**
+   * Open a modal to select which record we want to attach the rows to and
+   * perform the attach.
+   * The inputs comes from 'attach to record' button from grid component
+   *
+   * @param selectedRecords The list of selected records
+   * @param targetForm The targetted form
+   * @param targetFormField The form field
+   * @param targetFormQuery The form query
    */
   private async promisedAttachToRecord(
-    // come from 'attach to record' button from grid component
     selectedRecords: string[],
     targetForm: Form,
     targetFormField: string,

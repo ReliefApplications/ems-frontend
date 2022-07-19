@@ -21,6 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeIconModule } from '../ui/icon/icon.module';
 
+/** Module for the widget-related components */
 @NgModule({
   declarations: [
     SafeWidgetGridComponent,

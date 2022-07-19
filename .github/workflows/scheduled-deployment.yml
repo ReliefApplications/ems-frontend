@@ -11,10 +11,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - environment: OORT_ILO
-            ref: release-1.3.0-next
-          - environment: OORT_GUYANE
-            ref: release-1.3.0-next
+          # - environment: OORT_GUYANE
+          #   ref: release-1.3.0-next
           - environment: OORT_PROD
             ref: release-1.3.0-next
           - environment: OORT_DEV
@@ -29,5 +27,5 @@ jobs:
         with:
           token: ${{ secrets.CD_ACCESS_TOKEN }}
           event-type: CD
-          client-payload: '{"environment": "${{ matrix.environment }}", "branch": "${{ matrix.ref }}"}'
+          client-payload: '{"environment": "${{ matrix.environment }}", "ref": "${{ matrix.ref }}"}'
           

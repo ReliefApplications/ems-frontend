@@ -113,6 +113,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   /**
    * Navigates to the clicked step.
+   *
+   * @param index index of step to navigate to
    */
   public onOpenStep(index: number): void {
     if (index >= 0 && index < this.steps.length) {

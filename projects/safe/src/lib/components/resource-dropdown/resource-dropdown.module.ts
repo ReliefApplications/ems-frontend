@@ -6,6 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * SafeResourceDropdownModule is a class used to manage all the modules and components
+ * related to the dropdowns for resource selection.
+ */
 @NgModule({
   declarations: [SafeResourceDropdownComponent],
   imports: [

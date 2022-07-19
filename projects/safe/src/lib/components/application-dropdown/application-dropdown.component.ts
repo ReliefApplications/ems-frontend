@@ -19,14 +19,26 @@ import {
 } from '../../graphql/queries';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 
+/**
+ * A constant that is used to set the number of items to be displayed on the page.
+ */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Scroll Factory for material select, provided by the component.
+ *
+ * @param overlay material overlay
+ * @returns Strategy to prevent scrolling if user sees overlay.
+ */
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;
 }
 
+/**
+ * This is a component used to show a dropdown form where the user can choose an application
+ */
 @Component({
   selector: 'safe-application-dropdown',
   templateUrl: './application-dropdown.component.html',
@@ -55,6 +67,13 @@ export class SafeApplicationDropdownComponent implements OnInit {
 
   @ViewChild('applicationSelect') applicationSelect?: MatSelect;
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created
+   *
+   * @param apollo This is the Apollo service that we'll use to make our GraphQL
+   * queries.
+   */
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {

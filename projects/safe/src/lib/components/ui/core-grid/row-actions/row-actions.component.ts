@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
+/** Component for grid row actions */
 @Component({
   selector: 'safe-grid-row-actions',
   templateUrl: './row-actions.component.html',
@@ -18,6 +19,7 @@ export class SafeGridRowActionsComponent implements OnInit {
   };
   @Output() action = new EventEmitter();
 
+  /** @returns A boolean indicating if the component must be shown */
   get display(): boolean {
     return (
       this.actions.history ||
@@ -26,6 +28,7 @@ export class SafeGridRowActionsComponent implements OnInit {
     );
   }
 
+  /** Constructor of the component */
   constructor() {}
 
   ngOnInit(): void {}

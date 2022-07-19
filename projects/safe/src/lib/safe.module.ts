@@ -36,6 +36,7 @@ import { SafeLayoutModalModule } from './components/layout-modal/layout-modal.mo
 import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackbar-spinner.module';
 import { SafePageNotFoundModule } from './components/page-not-found/page-not-found.module';
 
+/** Main module for the safe project */
 @NgModule({
   exports: [
     SafeLayoutModule,

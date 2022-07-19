@@ -38,6 +38,12 @@ export default {
   },
 } as Meta;
 
+/**
+ * Template used by storybook to display the component in stories.
+ *
+ * @param args story arguments
+ * @returns story template
+ */
 const TEMPLATE_WITH_TEXT: Story<SafeBadgeComponent> = (args) => ({
   template:
     '<safe-badge [icon]="icon" [size]="size" [variant]="variant">{{content}}</safe-badge>',
@@ -46,13 +52,21 @@ const TEMPLATE_WITH_TEXT: Story<SafeBadgeComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
+DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   size: BadgeSize.MEDIUM,
   variant: BadgeVariant.DEFAULT,
 };
 
+/**
+ * Story with icon.
+ */
 export const ICON = TEMPLATE_WITH_TEXT.bind({});
+ICON.storyName = 'With icon';
 ICON.args = {
   ...DEFAULT.args,
   icon: 'home',

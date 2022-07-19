@@ -31,6 +31,9 @@ import { MatSort } from '@angular/material/sort';
 import { NOTIFICATIONS } from '../../const/notifications';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * This component is used to display the roles page in the platform
+ */
 @Component({
   selector: 'safe-roles',
   templateUrl: './roles.component.html',
@@ -58,6 +61,19 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
   public searchText = '';
   public usersFilter = '';
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param dialog This is the Angular Material Dialog service.
+   * @param applicationService This is the service that will be used to get
+   * the application data from the backend.
+   * @param apollo This is the Apollo client that will be used to make GraphQL
+   * requests.
+   * @param snackBar This is the service that will be used to display the snackbar.
+   * @param translate This is the service that is used to
+   * translate the text in the application.
+   */
   constructor(
     public dialog: MatDialog,
     private applicationService: SafeApplicationService,
@@ -86,6 +102,9 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  /**
+   * Filter roles and users.
+   */
   private filterPredicate(): void {
     this.roles.filterPredicate = (data: any) =>
       (this.searchText.trim().length === 0 ||
@@ -96,7 +115,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
           data.usersCount.toString().includes(this.usersFilter.trim())));
   }
 
-  /*  Load the roles.
+  /**
+   *  Load the roles.
    */
   private getRoles(): void {
     this.apollo
@@ -115,6 +135,9 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  /**
+   * Adds a role
+   */
   onAdd(): void {
     const dialogRef = this.dialog.open(SafeAddRoleComponent);
     dialogRef.afterClosed().subscribe((value) => {
@@ -145,9 +168,12 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  /*  Display the EditRole modal, passing a role as a parameter.
-    Edit the role when closed, if there is a result.
-  */
+  /**
+   * Display the EditRole modal, passing a role as a parameter.
+   * Edit the role when closed, if there is a result.
+   *
+   * @param role The role to edit
+   */
   onEdit(role: Role): void {
     const dialogRef = this.dialog.open(SafeEditRoleComponent, {
       data: {
@@ -181,9 +207,12 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  /* Display a modal to confirm the deletion of the role.
-    If confirmed, the role is removed from the system.
-  */
+  /**
+   * Display a modal to confirm the deletion of the role.
+   * If confirmed, the role is removed from the system.
+   *
+   * @param item Role to delete
+   */
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -194,8 +223,8 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
             name: item.title,
           }
         ),
-        confirmText: this.translate.instant('common.delete'),
-        cancelText: this.translate.instant('common.cancel'),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
         confirmColor: 'warn',
       },
     });
@@ -226,6 +255,12 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.roles.sort = this.sort;
   }
 
+  /**
+   * Applies filters to the list of roles on event
+   *
+   * @param column Name of the column where the filtering happens
+   * @param event The event
+   */
   applyFilter(column: string, event: any): void {
     if (column === 'usersCount') {
       this.usersFilter = !!event.target
@@ -239,6 +274,9 @@ export class SafeRolesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.roles.filter = '##';
   }
 
+  /**
+   * Clear all the filters
+   */
   clearAllFilters(): void {
     this.searchText = '';
     this.usersFilter = '';

@@ -23,8 +23,14 @@ import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import { AddResourceComponent } from '../../../components/add-resource/add-resource.component';
 
+/**
+ * Default number of resources that will be shown at once.
+ */
 const DEFAULT_PAGE_SIZE = 10;
 
+/**
+ * Component which will show all the resources in the app.
+ */
 @Component({
   selector: 'app-resources',
   templateUrl: './resources.component.html',
@@ -52,6 +58,15 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     endCursor: '',
   };
 
+  /**
+   * ResourcesComponent constructor.
+   *
+   * @param dialog Used for opening a dialog.
+   * @param apollo Used for loading the resources.
+   * @param snackBar Service used to show the snackbar,
+   * @param translate Service used to get translations
+   * @param router Used to change the app route.
+   */
   constructor(
     private dialog: MatDialog,
     private apollo: Apollo,
@@ -60,8 +75,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     private router: Router
   ) {}
 
-  /*  Load the resources.
-   */
+  /** Load the resources. */
   ngOnInit(): void {
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES_EXTENDED,
@@ -183,8 +197,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
             name: resource.name,
           }
         ),
-        confirmText: this.translate.instant('common.delete'),
-        cancelText: this.translate.instant('common.cancel'),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
         confirmColor: 'warn',
       },
     });
@@ -231,10 +245,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };
-        Object.assign(
-          data,
-          value.binding === 'newResource' && { newResource: true }
-        );
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,

@@ -1,6 +1,7 @@
 import { Application } from './application.model';
 import { Role } from './user.model';
 
+/** Model for Channel object */
 export interface Channel {
   id?: string;
   title?: string;
@@ -9,6 +10,7 @@ export interface Channel {
   routingKey?: string;
 }
 
+/** Model for ChannelDisplay object */
 export interface ChannelDisplay extends Channel {
   subscribedApplications?: {
     name: string;

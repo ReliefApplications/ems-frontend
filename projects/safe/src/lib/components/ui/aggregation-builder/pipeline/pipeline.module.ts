@@ -18,6 +18,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../icon/icon.module';
 
+/**
+ * Aggregation builder pipeline module.
+ */
 @NgModule({
   declarations: [
     SafePipelineComponent,

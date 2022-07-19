@@ -33,9 +33,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
 
+/**
+ * Quantity of resource that will be loaded at once.
+ */
 const ITEMS_PER_PAGE = 10;
+/**
+ * Default fields for the records.
+ */
 const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
 
+/**
+ * Component used to display resource in a table.
+ */
 @Component({
   selector: 'app-resource',
   templateUrl: './resource.component.html',
@@ -47,6 +56,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   private recordsSubscription?: Subscription;
   private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
   public loading = true;
+  public loadingMore = false;
   public id = '';
   public resource: any;
   public cachedRecords: Record[] = [];
@@ -85,6 +95,18 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   public showUpload = false;
 
+  /**
+   * ResourceComponent constructor.
+   *
+   * @param apollo Used to load the resources.
+   * @param route Used to get route arguments.
+   * @param router Used to change app route.
+   * @param snackBar Service used to show a snackbar.
+   * @param downloadService Service used to download.
+   * @param dialog Used to display a dialog overlay.
+   * @param translate Service used to get translations.
+   * @param gridLayoutService Service used to manage the grid.
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -96,8 +118,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
     private gridLayoutService: SafeGridLayoutService
   ) {}
 
-  /*  Load data from the id of the resource passed as a parameter.
-   */
+  /** Load data from the id of the resource passed as a parameter. */
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
@@ -133,13 +154,16 @@ export class ResourceComponent implements OnInit, OnDestroy {
     );
     this.recordsSubscription = this.recordsQuery.valueChanges.subscribe(
       (res) => {
-        this.cachedRecords = res.data.resource.records.edges.map((x) => x.node);
+        this.cachedRecords.push(
+          ...res.data.resource.records.edges.map((x) => x.node)
+        );
         this.dataSourceRecords = this.cachedRecords.slice(
           ITEMS_PER_PAGE * this.pageInfo.pageIndex,
           ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
         );
         this.pageInfo.length = res.data.resource.records.totalCount;
         this.pageInfo.endCursor = res.data.resource.records.pageInfo.endCursor;
+        this.loadingMore = false;
       }
     );
 
@@ -183,31 +207,14 @@ export class ResourceComponent implements OnInit, OnDestroy {
     this.pageInfo.pageIndex = e.pageIndex;
     if (
       e.pageIndex > e.previousPageIndex &&
-      e.length > this.cachedRecords.length
+      e.length > this.cachedRecords.length &&
+      ITEMS_PER_PAGE * this.pageInfo.pageIndex >= this.cachedRecords.length
     ) {
-      this.recordsQuery.fetchMore({
-        variables: {
-          id: this.id,
-          first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            resource: {
-              records: {
-                edges: [
-                  ...prev.resource.records.edges,
-                  ...fetchMoreResult.resource.records.edges,
-                ],
-                pageInfo: fetchMoreResult.resource.records.pageInfo,
-                totalCount: fetchMoreResult.resource.records.totalCount,
-              },
-            },
-          });
-        },
+      this.loadingMore = true;
+      this.recordsQuery.refetch({
+        id: this.id,
+        first: ITEMS_PER_PAGE,
+        afterCursor: this.pageInfo.endCursor,
       });
     } else {
       this.dataSourceRecords = this.cachedRecords.slice(
@@ -239,6 +246,11 @@ export class ResourceComponent implements OnInit, OnDestroy {
     this.displayedColumnsRecords = columns;
   }
 
+  /**
+   * Filters the shown columns.
+   *
+   * @param event Event trigger on filtering.
+   */
   public filterCore(event: any): void {
     this.setDisplayedColumns(event.value);
   }
@@ -246,7 +258,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   /**
    * Deletes a record if authorized, open a confirmation modal if it's a hard delete.
    *
-   * @param id Id of record to delete.
+   * @param element Element to delete.
    * @param e click event.
    */
   public onDeleteRecord(element: any, e: any): void {
@@ -263,8 +275,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
               name: element.name,
             }
           ),
-          confirmText: this.translate.instant('common.delete'),
-          cancelText: this.translate.instant('common.cancel'),
+          confirmText: this.translate.instant('components.confirmModal.delete'),
+          cancelText: this.translate.instant('components.confirmModal.cancel'),
         },
       });
       dialogRef.afterClosed().subscribe((value) => {
@@ -299,7 +311,11 @@ export class ResourceComponent implements OnInit, OnDestroy {
       });
   }
 
-  /*  Delete a form if authorized.
+  /**
+   * Delete a form if authorized.
+   *
+   * @param id Id of the form to delete.
+   * @param e Used to prevent the default behaviour.
    */
   deleteForm(id: any, e: any): void {
     e.stopPropagation();
@@ -446,6 +462,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
     return this.resource.forms.filter((x: Form) => x.id !== record.form?.id);
   }
 
+  /**
+   * Adds a new layout for the resource.
+   */
   onAddLayout(): void {
     const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
       disableClose: true,
@@ -527,8 +546,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
             name: layout.name,
           }
         ),
-        confirmText: this.translate.instant('common.delete'),
-        cancelText: this.translate.instant('common.cancel'),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

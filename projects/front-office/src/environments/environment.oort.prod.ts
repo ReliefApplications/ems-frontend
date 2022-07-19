@@ -1,6 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/oort/oort.prod';
 
+/** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
   issuer:
     'https://login.microsoftonline.com/fbacd48d-ccf4-480d-baf0-31048368055f/v2.0',
@@ -13,9 +14,7 @@ const authConfig: AuthConfig = {
   strictDiscoveryDocumentValidation: false,
 };
 
-/**
- * Environment file of OORT production platform.
- */
+/** Environment configuration */
 export const environment = {
   production: true,
   apiUrl: 'https://dms.oortcloud.tech/api',

@@ -25,16 +25,14 @@ export class AddApiConfigurationComponent implements OnInit {
     public dialogRef: MatDialogRef<AddApiConfigurationComponent>
   ) {}
 
-  /*  Build the form.
-   */
+  /** Build the form. */
   ngOnInit(): void {
     this.apiForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.pattern('^[A-Za-z-_]+$')]],
     });
   }
 
-  /*  Close the modal without sending data.
-   */
+  /** Close the modal without sending data. */
   onClose(): void {
     this.dialogRef.close();
   }

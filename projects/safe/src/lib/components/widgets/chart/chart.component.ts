@@ -15,15 +15,19 @@ import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.compon
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 
+/**
+ * Default file name for chart exports
+ */
 const DEFAULT_FILE_NAME = 'chart.png';
 
+/**
+ * Chart widget component using KendoUI
+ */
 @Component({
   selector: 'safe-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-/*  Chart widget using KendoUI.
- */
 export class SafeChartComponent implements OnChanges, OnDestroy {
   // === DATA ===
   public loading = true;
@@ -48,9 +52,17 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     | SafeBarChartComponent
     | SafeColumnChartComponent;
 
+  /**
+   * Constructor for safe-chart component
+   *
+   * @param aggregationBuilder Aggregation Builder Service
+   */
   constructor(private aggregationBuilder: AggregationBuilderService) {}
 
-  /*  Detect changes of the settings to reload the data.
+  /**
+   * Detect changes of the settings to reload the data
+   *
+   * @param changes Simple changes
    */
   ngOnChanges(changes: SimpleChanges): void {
     this.loading = true;
@@ -64,6 +76,9 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Exports the chart as a png ticket
+   */
   public onExport(): void {
     this.chartWrapper?.chart
       ?.exportImage({
@@ -78,8 +93,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
       });
   }
 
-  /*  Load the data, using widget parameters.
-   */
+  /** Load the data, using widget parameters. */
   private getData(): void {
     this.dataSubscription = this.dataQuery.subscribe((res: any) => {
       if (res.errors) {

@@ -1,7 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { FilterService } from '@progress/kendo-angular-grid';
 
+/**
+ * Array Filter menu, used by grid, when filtering by multi choices question.
+ */
 @Component({
   selector: 'safe-array-filter-menu',
   templateUrl: './array-filter-menu.component.html',
@@ -18,6 +22,7 @@ export class SafeArrayFilterMenuComponent implements OnInit {
   @Input() public filterService?: FilterService;
   public form?: FormGroup;
 
+  /** @returns default item choice */
   public get defaultItem(): any {
     return {
       [this.textField]: 'Select item...',
@@ -25,49 +30,56 @@ export class SafeArrayFilterMenuComponent implements OnInit {
     };
   }
 
+  /** @returns filters as form Array. */
   public get filters(): FormArray {
     return this.form?.get('filters') as FormArray;
   }
 
   public logics = [
     {
-      text: 'Or',
+      text: this.translate.instant('kendo.grid.filterOrLogic'),
       value: 'or',
     },
     {
-      text: 'And',
+      text: this.translate.instant('kendo.grid.filterAndLogic'),
       value: 'and',
     },
   ];
 
   public operators = [
     {
-      text: 'Is equal to',
+      text: this.translate.instant('kendo.grid.filterEqOperator'),
       value: 'eq',
     },
     {
-      text: 'Is not equal to',
+      text: this.translate.instant('kendo.grid.filterNotEqOperator'),
       value: 'neq',
     },
     {
-      text: 'Contains',
+      text: this.translate.instant('kendo.grid.filterContainsOperator'),
       value: 'contains',
     },
     {
-      text: 'Does not contain',
+      text: this.translate.instant('kendo.grid.filterNotContainsOperator'),
       value: 'doesnotcontain',
     },
     {
-      text: 'Is empty',
+      text: this.translate.instant('kendo.grid.filterIsEmptyOperator'),
       value: 'isempty',
     },
     {
-      text: 'Is not empty',
+      text: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
       value: 'isnotempty',
     },
   ];
 
-  constructor(private fb: FormBuilder) {}
+  /**
+   * Array Filter menu, used by grid, when filtering by multi choices question.
+   *
+   * @param fb Angular form builder
+   * @param translate Angular translate service
+   */
+  constructor(private fb: FormBuilder, private translate: TranslateService) {}
 
   ngOnInit(): void {
     this.choices1 = this.data.slice();
@@ -100,6 +112,12 @@ export class SafeArrayFilterMenuComponent implements OnInit {
     });
   }
 
+  /**
+   * Handle filter update
+   *
+   * @param value new filter value
+   * @param index index of filter to update
+   */
   public handleFilter(value: string, index: number): void {
     if (index === 1) {
       this.choices1 = this.data.filter(

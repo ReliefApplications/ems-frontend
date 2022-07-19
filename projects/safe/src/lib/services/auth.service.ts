@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { User } from '../models/user.model';
 import { GetProfileQueryResponse, GET_PROFILE } from '../graphql/queries';
 import {
@@ -11,7 +11,9 @@ import {
 import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { filter, map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
+/** Defining the interface for the account object. */
 export interface Account {
   name: string;
   username: string;
@@ -26,13 +28,14 @@ export interface Account {
 export class SafeAuthService {
   /** Current user */
   public user = new BehaviorSubject<User | null>(null);
-  /** Current user as observable */
+  /** @returns Current user as observable */
   get user$(): Observable<User | null> {
     return this.user.asObservable();
   }
+
   /** Current account info */
   public account: Account | null = null;
-  /** Current user value */
+  /** @returns Current user value */
   get userValue(): User | null {
     return this.user.getValue();
   }
@@ -50,12 +53,23 @@ export class SafeAuthService {
     this.isDoneLoading$,
   ]).pipe(map((values) => values.every((x) => x)));
 
+  private environment: any;
+
   /**
    * Shared authentication service.
    *
+   * @param environment Environment file where front and back office urls are specified
    * @param apollo Apollo client
+   * @param oauthService OAuth authentification service
+   * @param router Angular Router service
    */
-  constructor(private apollo: Apollo, private oauthService: OAuthService) {
+  constructor(
+    @Inject('environment') environment: any,
+    private apollo: Apollo,
+    private oauthService: OAuthService,
+    private router: Router
+  ) {
+    this.environment = environment;
     this.oauthService.events.subscribe(() => {
       this.isAuthenticated.next(this.oauthService.hasValidAccessToken());
       this.checkAccount();
@@ -70,6 +84,16 @@ export class SafeAuthService {
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
         this.oauthService.initImplicitFlow();
+      });
+    // Redirect to previous path
+    this.oauthService.events
+      .pipe(filter((e: any) => e.type === 'user_profile_loaded'))
+      .subscribe((e) => {
+        const redirectPath = localStorage.getItem('redirectPath');
+        if (redirectPath) {
+          this.router.navigateByUrl(redirectPath);
+        }
+        localStorage.removeItem('redirectPath');
       });
     this.oauthService.setupAutomaticSilentRefresh();
   }
@@ -107,8 +131,9 @@ export class SafeAuthService {
   }
 
   /**
-   * Checkes if user is admin.
-   * If user profile is empty, tries to get it.
+   * Checkes if user is admin. If user profile is empty, tries to get it.
+   *
+   * @returns A boolean value.
    */
   get userIsAdmin(): boolean {
     const user = this.user.getValue();
@@ -119,11 +144,41 @@ export class SafeAuthService {
     }
   }
 
+  /**
+   * Initiate the login sequence
+   *
+   * @returns A promise that resolves to void.
+   */
   public initLoginSequence(): Promise<void> {
+    if (!localStorage.getItem('idtoken')) {
+      let redirectUri: URL;
+      if (this.environment.module === 'backoffice') {
+        const pathName = location.href.replace(
+          this.environment.backOfficeUri,
+          '/'
+        );
+        redirectUri = new URL(pathName, this.environment.backOfficeUri);
+      } else {
+        const pathName = location.href.replace(
+          this.environment.backOfficeUri,
+          '/'
+        );
+        redirectUri = new URL(pathName, this.environment.frontOfficeUri);
+      }
+      redirectUri.search = '';
+      if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
+        localStorage.setItem('redirectPath', redirectUri.pathname);
+      }
+    }
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
-      .then(() => this.isDoneLoading.next(true))
-      .catch(() => this.isDoneLoading.next(true));
+      .then(() => {
+        this.isDoneLoading.next(true);
+      })
+      .catch((err) => {
+        console.error(err);
+        this.isDoneLoading.next(false);
+      });
   }
 
   /**

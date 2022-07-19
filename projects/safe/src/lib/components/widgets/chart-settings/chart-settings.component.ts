@@ -15,6 +15,9 @@ import {
   TITLE_POSITIONS,
 } from './constants';
 
+/**
+ * Chart settings component
+ */
 @Component({
   selector: 'safe-chart-settings',
   templateUrl: './chart-settings.component.html',
@@ -28,8 +31,7 @@ import {
     { provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory },
   ],
 })
-/*  Modal content for the settings of the chart widgets.
- */
+/** Modal content for the settings of the chart widgets. */
 export class SafeChartSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
@@ -53,10 +55,12 @@ export class SafeChartSettingsComponent implements OnInit {
   public settings: any;
   public grid: any;
 
+  /** @returns the form for the chart */
   public get chartForm(): FormGroup {
     return (this.tileForm?.controls.chart as FormGroup) || null;
   }
 
+  /** @returns the aggregation form */
   public get aggregationForm(): FormGroup {
     return (
       ((this.tileForm?.controls.chart as FormGroup).controls
@@ -64,13 +68,18 @@ export class SafeChartSettingsComponent implements OnInit {
     );
   }
 
+  /**
+   * Constructor for the chart settings component
+   *
+   * @param formBuilder The formBuilder service
+   * @param aggregationBuilder The aggregationBuilder service
+   */
   constructor(
     private formBuilder: FormBuilder,
     private aggregationBuilder: AggregationBuilderService
   ) {}
 
-  /*  Build the settings form, using the widget saved parameters.
-   */
+  /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     const chartSettings = tileSettings.chart;

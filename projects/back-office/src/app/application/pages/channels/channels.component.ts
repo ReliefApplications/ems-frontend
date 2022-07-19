@@ -65,9 +65,8 @@ export class ChannelsComponent implements OnInit, OnDestroy {
       );
   }
 
-  /* Display the AddChannel modal.
-    Create a new channel linked to this application on close.
-  */
+  /** Display the AddChannel modal.
+    Create a new channel linked to this application on close. */
   onAdd(): void {
     const dialogRef = this.dialog.open(AddChannelComponent);
     dialogRef.afterClosed().subscribe((value: { title: string }) => {
@@ -90,9 +89,8 @@ export class ChannelsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* Display a modal to confirm the deletion of the channel.
-    If confirmed, the channel is removed from the system with all notifications linked to it.
-  */
+  /** Display a modal to confirm the deletion of the channel.
+    If confirmed, the channel is removed from the system with all notifications linked to it. */
   onDelete(channel: Channel): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -105,8 +103,8 @@ export class ChannelsComponent implements OnInit, OnDestroy {
             name: channel.title,
           }
         ),
-        confirmText: this.translate.instant('common.delete'),
-        cancelText: this.translate.instant('common.cancel'),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
         confirmColor: 'warn',
       },
     });

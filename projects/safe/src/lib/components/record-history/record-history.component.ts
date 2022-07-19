@@ -12,6 +12,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeRecordModalComponent } from '../record-modal/record-modal.component';
 import { SafeDownloadService } from '../../services/download.service';
 
+/**
+ * This is a component to access the history of a record
+ */
 @Component({
   selector: 'safe-record-history',
   templateUrl: './record-history.component.html',
@@ -33,7 +36,13 @@ export class SafeRecordHistoryComponent implements OnInit {
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
-
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created
+   *
+   * @param dialog This is the Material dialog service that we will use to open the dialog.
+   * @param downloadService This is the service that will be used to download files
+   */
   constructor(
     public dialog: MatDialog,
     private downloadService: SafeDownloadService
@@ -47,11 +56,19 @@ export class SafeRecordHistoryComponent implements OnInit {
     this.loading = false;
   }
 
+  /**
+   * Handles the cancelling of the edition of the history
+   */
   onCancel(): void {
     this.cancel.emit(true);
   }
 
-  /*  Get current and next record to see difference and put it in a string
+  /**
+   * Get current and next record to see difference and put it in a string
+   *
+   * @param current The current record
+   * @param after The next record
+   * @returns The difference between the two records in string format
    */
   getDifference(current: any, after: any): string[] {
     const changes: any[] = [];
@@ -136,6 +153,13 @@ export class SafeRecordHistoryComponent implements OnInit {
     return changes;
   }
 
+  /**
+   * Add an object addition in the history
+   *
+   * @param current current version
+   * @param key key of field
+   * @returns new history entry for the object addition
+   */
   private addObject(current: any, key: string): string {
     const currentKeys = Object.keys(current[key]);
     let currentValuesHTML = '';
@@ -153,6 +177,13 @@ export class SafeRecordHistoryComponent implements OnInit {
     return element;
   }
 
+  /**
+   * Add a field addition in the history
+   *
+   * @param key key of field
+   * @param current current version
+   * @returns new history entry for the field addition
+   */
   private addField(key: string, current: any): string {
     return (
       '<p><span class="add-field">Add field</span> <b>' +
@@ -163,6 +194,14 @@ export class SafeRecordHistoryComponent implements OnInit {
     );
   }
 
+  /**
+   * Add a field update in the history
+   *
+   * @param key key of field
+   * @param after next version
+   * @param current current version
+   * @returns new history entry for the field update
+   */
   private modifyField(key: string, after: any, current: any): string {
     if (after[key] === null) {
       return (
@@ -185,6 +224,14 @@ export class SafeRecordHistoryComponent implements OnInit {
     }
   }
 
+  /**
+   * Add an object update in the history
+   *
+   * @param after next version
+   * @param current current version
+   * @param key key of field
+   * @returns new history entry for the field update
+   */
   modifyObjects(after: any, current: any, key: string): string {
     const afterKeys = Object.keys(after[key] ? after[key] : current[key]);
     let element = `<p> <span class="modify-field">Change field</span> <b> ${key} </b> from  `;
@@ -221,6 +268,12 @@ export class SafeRecordHistoryComponent implements OnInit {
     return '';
   }
 
+  /**
+   * Get the history of a record
+   *
+   * @param record The record whose history we are getting
+   * @returns the history in array format
+   */
   private getHistory(record: Record): any[] {
     const res: any[] = [];
     const versions = record.versions || [];
@@ -264,6 +317,11 @@ export class SafeRecordHistoryComponent implements OnInit {
     return res.reverse();
   }
 
+  /**
+   * Handles the revertion of items
+   *
+   * @param item The item to revert
+   */
   onRevert(item: any): void {
     const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
@@ -284,6 +342,9 @@ export class SafeRecordHistoryComponent implements OnInit {
     });
   }
 
+  /**
+   * Clears the date filter, empties it
+   */
   clearDateFilter(): void {
     this.filtersDate.startDate = '';
     this.filtersDate.endDate = '';
@@ -292,6 +353,9 @@ export class SafeRecordHistoryComponent implements OnInit {
     this.endDate.value = '';
   }
 
+  /**
+   * Applies a filter to the history
+   */
   applyFilter(): void {
     const startDate = new Date(this.filtersDate.startDate).getTime();
     const endDate = new Date(this.filtersDate.endDate).getTime();
@@ -303,6 +367,11 @@ export class SafeRecordHistoryComponent implements OnInit {
     );
   }
 
+  /**
+   * Handles the download event
+   *
+   * @param type Type of document to download
+   */
   onDownload(type: string): void {
     const path = `download/form/records/${this.record.id}/history`;
     const fileName = `${this.record.id}.${type}`;

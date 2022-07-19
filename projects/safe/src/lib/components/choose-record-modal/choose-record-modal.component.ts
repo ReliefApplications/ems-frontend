@@ -7,19 +7,31 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder.service';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 
+/**
+ * A constant that is used to set the number of items to be displayed on the page.
+ */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Interface that describes the structure of the data used in the dialog
+ */
 interface DialogData {
   targetForm: any;
   targetFormField: string;
   targetFormQuery: any;
 }
 
+/**
+ * Interface that describes the structure of the data for the records
+ */
 interface IRecord {
   value: string;
   label: any;
 }
 
+/**
+ * Component used for the modals that allow the users to chose records
+ */
 @Component({
   selector: 'safe-choose-record-modal',
   templateUrl: './choose-record-modal.component.html',
@@ -50,6 +62,20 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
   public isSearchActivated = false;
   public selectedRows: any[] = [];
 
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created.
+   *
+   * @param queryBuilder This is the service that will be used to build the
+   * query.
+   * @param formBuilder This is used to create the form that will be used
+   * to search for records.
+   * @param apollo This is the Apollo service that we will use to make our GraphQL
+   * queries.
+   * @param dialogRef This is the dialog that will be opened
+   * @param data This is the data that is passed into the modal when it is
+   * opened.
+   */
   constructor(
     private queryBuilder: QueryBuilderService,
     private formBuilder: FormBuilder,
@@ -120,10 +146,18 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * Set the boolean isSearchActivated to true on search
+   */
   onSearch(): void {
     this.isSearchActivated = !this.isSearchActivated;
   }
 
+  /**
+   * Update the modal when rows selected changes
+   *
+   * @param rows Rows of the grid
+   */
   onSelectionChange(rows: any): void {
     if (rows.selectedRows && rows.selectedRows.length > 0) {
       this.chooseRecordForm
@@ -133,7 +167,9 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
       this.chooseRecordForm.get('record')?.setValue(null);
     }
   }
-  /*  Close the modal without sending data.
+
+  /**
+   * Closes the modal without sending data.
    */
   onClose(): void {
     this.dialogRef.close();

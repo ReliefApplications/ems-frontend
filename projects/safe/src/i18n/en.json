@@ -26,7 +26,6 @@
 		"child": "Child",
 		"clear": "Clear",
 		"close": "Close",
-		"confirm": "Confirm",
 		"create": "Create",
 		"createdOn": "Created on",
 		"delete": "Delete",
@@ -74,6 +73,10 @@
 			"few": "Layouts",
 			"none": "No layout",
 			"one": "Layout"
+		},
+		"logout": {
+			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
+			"titleMessage": "Exit without saving changes"
 		},
 		"name": "Name",
 		"newObject": "New {{name}}",
@@ -132,6 +135,11 @@
 			"none": "No role",
 			"one": "Role"
 		},
+		"row": {
+			"few": "Rows",
+			"none": "No row",
+			"one": "Row"
+		},
 		"save": "Save",
 		"saveChanges": "Save changes",
 		"searchObject": "Search {{name}}",
@@ -154,6 +162,7 @@
 		"title": "Title",
 		"true": "True",
 		"update": "Update",
+		"updateObject": "Update {{name}}",
 		"uploadObject": "Upload {{name}}",
 		"user": {
 			"few": "Users",
@@ -234,11 +243,16 @@
 		},
 		"application": {
 			"delete": {
-				"confirmationMessage": "Do you confirm the deletion of this application?"
+				"confirmationMessage": "Do you confirm the deletion of the application {{name}}?"
 			},
 			"duplicate": {
 				"name": {
 					"description": "Please enter a description for the application"
+				}
+			},
+			"pages": {
+				"delete": {
+					"confirmationMessage": "Do you confirm the deletion of the page {{name}}?"
 				}
 			},
 			"positionAttribute": {
@@ -246,6 +260,10 @@
 					"confirmationMessage": "Do you confirm the deletion of the position attribute {{name}}?",
 					"title": "Delete position attribute"
 				}
+			},
+			"publish": {
+				"confirmationMessage": "Do you confirm the publication of {{aplication}}?",
+				"titleMessage": "Publish application"
 			},
 			"subscription": {
 				"modal": {
@@ -257,6 +275,10 @@
 						"listenTo": "Select a routing key"
 					}
 				}
+			},
+			"unlock": {
+				"confirmationMessage": "Do you want to unlock {{application}}'s edition?",
+				"titleMessage": "Unlock edition"
 			},
 			"update": {
 				"placeholder": {
@@ -277,6 +299,12 @@
 				"select": "Notify on"
 			}
 		},
+		"confirmModal": {
+			"cancel": "Cancel",
+			"confirm": "Confirm",
+			"delete": "Delete",
+			"title": "Confirm"
+		},
 		"emailBuilder": {
 			"body": "Body",
 			"distribution": "Distribution list",
@@ -286,9 +314,8 @@
 		"form": {
 			"create": {
 				"choice": {
-					"blank": "Create a blank form",
-					"inherit": "Copy existing resource template",
-					"resource": "Create a new resource",
+					"inherit": "Create from template",
+					"resource": "Create a core form",
 					"template": "Start from existing template"
 				},
 				"template": {
@@ -296,10 +323,20 @@
 					"placeholder": "Pick an existing template",
 					"title": "From resource",
 					"tooltip": "If no template is selected, core structure will be loaded"
+				},
+				"tooltips": {
+					"inherit": "Creates a child form using a template from the resource linked to the core form",
+					"resource": "Creates a core form that allows the creation of children forms linked to this core form. It will also create a new resource."
 				}
 			},
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the form {{name}}?"
+			},
+			"deleteRow": {
+				"confirmationMessage": "Do you confirm the deletion of {{quantity}} {{rowText}}?"
+			},
+			"display": {
+				"submissionMessage": "The form has successfully been submitted."
 			},
 			"layout": {
 				"delete": {
@@ -322,6 +359,9 @@
 			"update": {
 				"exit": "Exit without saving changes",
 				"exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
+			},
+			"updateRow": {
+				"confirmationMessage": "Do you confirm the update of {{quantity}} {{rowText}}?"
 			}
 		},
 		"forms": {
@@ -424,6 +464,14 @@
 				"operator": "Operator",
 				"or": "Or",
 				"title": "Style"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "Use Expression editor",
+						"usePicker": "Use Date picker"
+					}
+				}
 			}
 		},
 		"record": {
@@ -458,6 +506,10 @@
 			},
 			"modal": {
 				"update": "Save and close"
+			},
+			"recovery": {
+				"confirmationMessage": "Do you confirm recovery the data from {{date}} to the current register?",
+				"titleMessage": "Recovery data"
 			}
 		},
 		"records": {
@@ -624,6 +676,9 @@
 							"select": "Select a layout",
 							"title": "Add a layout"
 						},
+						"edit": {
+							"title": "Layout configuration"
+						},
 						"title": "Grid layouts"
 					}
 				},
@@ -639,6 +694,23 @@
 		}
 	},
 	"kendo": {
+		"datepicker": {
+			"today": "Today",
+			"toggle": "Choose a date"
+		},
+		"datetimepicker": {
+			"accept": "Accept",
+			"acceptLabel": "Accept",
+			"cancel": "Cancel",
+			"cancelLabel": "Cancel",
+			"dateTab": "Date",
+			"dateTabLabel": "Date",
+			"now": "Now",
+			"timeTab": "Time",
+			"timeTabLabel": "Time",
+			"today": "Today",
+			"toggle": "Choose a date and a time"
+		},
 		"editor": {
 			"addColumnAfter": "Add column after",
 			"addColumnBefore": "Add column before",
@@ -768,6 +840,14 @@
 			"unlock": "Unlock",
 			"unstick": "Unstick"
 		},
+		"timepicker": {
+			"accept": "Accept",
+			"acceptLabel": "Accept",
+			"cancel": "Cancel",
+			"cancelLabel": "Cancel",
+			"now": "Now",
+			"toggle": "Choose a time"
+		},
 		"upload": {
 			"dropFilesHere": "Drop files here to upload",
 			"select": "Select files..."
@@ -826,6 +906,10 @@
 			"add": "Add a Widget",
 			"chart": {
 				"defaultTitle": "Chart Widget"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the widget?",
+				"titleMessage": "Delete Widget"
 			},
 			"map": {
 				"defaultTitle": "Map Widget",
@@ -896,6 +980,23 @@
 			"title": "My applications"
 		},
 		"formBuilder": {
+			"errors": {
+				"choices": {
+					"valueDuplicated": "Please provide unique values for each of the choices of question: {{question}}"
+				},
+				"missingName": "Missing value name for an element on page {{page}}. Please provide a valid data value name (snake_case) to save the form.",
+				"multipletext": {
+					"missingName": "Please provide name or title for each text of question: {{question}}"
+				},
+				"resource": {
+					"invalidRelatedName": "The related name {{relatedName}} on page {{page}} is invalid. Please conform to snake_case.",
+					"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake_case) to save the form."
+				},
+				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
+			},
+			"questionsCategories": {
+				"core": "Question Library"
+			},
 			"title": "Advanced settings"
 		},
 		"forms": {
@@ -914,6 +1015,9 @@
 		"workflow": {
 			"addStep": {
 				"selectType": "Select which type of step you want to create"
+			},
+			"deleteStep": {
+				"confirmationMessage": "Are you sure you want to delete {{step}}?\n This action cannot be undone."
 			},
 			"empty": {
 				"add": "Add steps",
