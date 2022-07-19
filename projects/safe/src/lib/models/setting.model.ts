@@ -1,4 +1,4 @@
-import { ApiConfiguration } from "./apiConfiguration.model";
+import { ApiConfiguration } from './apiConfiguration.model';
 
 /** Interface for Mapping element. */
 export interface Mapping {
