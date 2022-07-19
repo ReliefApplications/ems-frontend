@@ -23,7 +23,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { SafeGridSettingsComponent } from './grid-settings.component';
-import { GET_CHANNELS, GET_QUERY_TYPES } from '../../../graphql/queries';
+import { GET_CHANNELS, GET_QUERY_TYPES } from './graphql/queries';
 
 describe('SafeGridSettingsComponent', () => {
   let component: SafeGridSettingsComponent;

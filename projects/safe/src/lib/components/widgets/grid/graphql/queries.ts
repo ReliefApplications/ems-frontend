@@ -83,3 +83,152 @@ export interface GetRecordDetailsQueryResponse {
   loading: boolean;
   record: Record;
 }
+
+// === GET RELATED FORMS FROM RESOURCE ===
+
+/** Graphql request for getting resource meta date for a grid */
+export const GET_GRID_RESOURCE_META = gql`
+  query GetGridResourceMeta($resource: ID!) {
+    resource(id: $resource) {
+      id
+      name
+      queryName
+      forms {
+        id
+        name
+      }
+      relatedForms {
+        id
+        name
+        fields
+      }
+      layouts {
+        id
+        name
+        query
+        createdAt
+        display
+      }
+    }
+  }
+`;
+
+// === GET QUERY TYPES ===
+
+/** Graphql request for getting query types */
+export const GET_QUERY_TYPES = gql`
+  query GetQueryTypes {
+    __schema {
+      types {
+        name
+        kind
+        fields {
+          name
+          args {
+            name
+            type {
+              name
+              kind
+              inputFields {
+                name
+                type {
+                  name
+                  kind
+                }
+              }
+            }
+          }
+          type {
+            name
+            kind
+            fields {
+              name
+              args {
+                name
+                type {
+                  name
+                  kind
+                  inputFields {
+                    name
+                    type {
+                      name
+                      kind
+                    }
+                  }
+                }
+              }
+              type {
+                name
+                kind
+                ofType {
+                  name
+                  fields {
+                    name
+                    type {
+                      name
+                      kind
+                      ofType {
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            ofType {
+              name
+              fields {
+                name
+                type {
+                  name
+                  kind
+                  ofType {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      queryType {
+        name
+        kind
+        fields {
+          name
+          args {
+            name
+            type {
+              name
+              kind
+              inputFields {
+                name
+                type {
+                  name
+                  kind
+                }
+              }
+            }
+          }
+          type {
+            name
+            kind
+            ofType {
+              name
+              fields {
+                name
+                type {
+                  name
+                  kind
+                  ofType {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
