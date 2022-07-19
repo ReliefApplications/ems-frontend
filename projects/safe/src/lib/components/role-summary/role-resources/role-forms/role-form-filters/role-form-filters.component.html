@@ -1,4 +1,8 @@
 <h1>{{ form.name }}</h1>
+<div *ngIf="accesses.data.length === 0" class="empty-form">
+  <safe-icon icon="folder_open"></safe-icon>
+  <h3>{{ 'components.role.summary.noForms' | translate }}</h3>
+</div>
 <div class="content">
   <table
     mat-table

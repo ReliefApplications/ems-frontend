@@ -663,6 +663,7 @@
 				"features": "Features",
 				"newFilter": "New filter",
 				"noFeatures": "No feature detected",
+				"noFilters": "No access filters detected",
 				"noForms": "No forms detected",
 				"noSteps": "No steps detected",
 				"removeFilter": "Remove filter",
