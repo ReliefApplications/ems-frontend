@@ -94,10 +94,10 @@
   </mat-menu>
   <mat-menu #notificationMenu="matMenu">
     <div class="notification-menu">
-      <a (click)="onMarkAllNotificationsAsRead()"
-        >{{ 'components.notifications.readAll' | translate
-        }}<mat-icon [inline]="true"> check_circle_outline </mat-icon></a
-      >
+      <a (click)="onMarkAllNotificationsAsRead()">
+        {{ 'components.notifications.readAll' | translate }}
+        <mat-icon [inline]="true">check_circle_outline</mat-icon>
+      </a>
       <button
         mat-menu-item
         (click)="onNotificationClick(notification)"
