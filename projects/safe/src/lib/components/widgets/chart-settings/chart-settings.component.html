@@ -32,11 +32,11 @@
             {{ 'common.aggregation.one' | translate }}
             <safe-icon
               *ngIf="aggregationForm.invalid"
-              style="padding-left: 2px"
               icon="error_outline"
+              class="icon-inline"
+              variant="danger"
               [inline]="true"
               [size]="18"
-              variant="danger"
             ></safe-icon>
           </ng-template>
           <safe-aggregation-builder

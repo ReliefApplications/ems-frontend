@@ -41,13 +41,14 @@
       <mat-label>
         {{ 'models.widget.map.zoom' | translate }}
         <safe-icon
-          icon="info"
+          icon="info_outline"
+          class="icon-inline clickable"
+          variant="grey"
+          [inline]="true"
+          [size]="18"
           [matTooltip]="
             'components.widget.settings.map.display.latitude' | translate
           "
-          [inline]="true"
-          [size]="16"
-          variant="grey"
         ></safe-icon>
       </mat-label>
       <mat-slider
@@ -64,9 +65,10 @@
           </mat-label>
           <input type="number" matInput formControlName="centerLat" />
           <safe-icon
-            matSuffix
             icon="info"
+            class="clickable"
             variant="grey"
+            matSuffix
             [matTooltip]="
               'components.widget.settings.map.tooltip.default.latitude'
                 | translate
@@ -82,9 +84,10 @@
           </mat-label>
           <input type="number" matInput formControlName="centerLong" />
           <safe-icon
-            matSuffix
             icon="info"
+            class="clickable"
             variant="grey"
+            matSuffix
             [matTooltip]="
               'components.widget.settings.map.tooltip.default.longitude'
                 | translate

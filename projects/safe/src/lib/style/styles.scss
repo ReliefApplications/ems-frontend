@@ -536,22 +536,9 @@ body {
   align-items: center;
 }
 
-.info-icon {
-  color: #939393;
-  font-size: 22px;
-  cursor: pointer;
-}
-
 .info-text {
   color: #939393;
   margin-bottom: 32px;
-}
-
-.info-row {
-  display: flex;
-  .info-icon {
-    margin-left: 6px;
-  }
 }
 
 // === SURVEY BUILDER ===
