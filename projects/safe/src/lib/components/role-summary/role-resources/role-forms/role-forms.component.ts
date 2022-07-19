@@ -356,7 +356,7 @@ export class RoleFormsComponent implements OnInit {
                 (x) => x.id === res.data?.editForm.id
               );
               const forms = [...this.forms];
-              forms[index] = res.data.editForm;
+              forms[index] = { ...forms[index], ...res.data.editForm };
               this.forms = forms;
               this.formsPermissions = this.forms.map((f) => {
                 const permissions: FormRolePermissions = {
