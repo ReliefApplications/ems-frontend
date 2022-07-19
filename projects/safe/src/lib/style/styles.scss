@@ -498,6 +498,7 @@ body {
   }
 }
 
+.from-access-dialog,
 .tile-settings-dialog,
 .expanded-widget-dialog {
   max-width: unset !important;
@@ -520,6 +521,13 @@ body {
   .mat-dialog-content {
     max-height: unset;
     height: 100%;
+  }
+}
+
+.from-access-dialog {
+  width: 90%;
+  mat-dialog-container {
+    background-color: #fafafa;
   }
 }
 

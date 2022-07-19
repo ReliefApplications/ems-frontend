@@ -19,10 +19,6 @@ import {
   GET_RESOURCES,
   GET_RESOURCE_FORMS,
 } from '../graphql/queries';
-import {
-  EditFormAccessMutationResponse,
-  EDIT_FORM_ACCESS,
-} from '../graphql/mutations';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;

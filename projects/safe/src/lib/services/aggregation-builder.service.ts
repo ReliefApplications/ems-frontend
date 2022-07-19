@@ -109,7 +109,11 @@ export class AggregationBuilderService {
       const formattedForm = addNewField(field, true);
       formattedForm.enable();
       const formattedField = formattedForm.value;
-      if (formattedField.kind !== 'SCALAR' && field.fields.length) {
+      if (
+        formattedField.kind !== 'SCALAR' &&
+        field.fields &&
+        field.fields.length
+      ) {
         formattedField.fields = this.formatFields(field.fields);
       }
       return formattedField;

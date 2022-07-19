@@ -658,17 +658,27 @@
 				"title": "Choix du rôle à simuler"
 			},
 			"summary": {
+				"addFilter": "Ajouter un filtre",
+				"editFilters": "Modifier les filtres",
 				"features": "Fonctionnalités",
+				"newFilter": "Nouveau filtre",
 				"noFeatures": "Aucune fonctionnalité détectée",
 				"noForms": "Aucun formulaire détecté",
 				"noSteps": "Aucune étape détectée",
+				"removeFilter": "Supprimer le filtre",
 				"title": "Résumé"
 			},
 			"tooltip": {
+				"allowFilterAccessibility": "Autoriser ce rôle à voir les enregistrements qui satisfont ce filtre",
+				"allowFilterDeletion": "Autoriser ce rôle à supprimer les enregistrements qui satisfont à ce filtre",
+				"allowFilterUpdate": "Autoriser ce rôle à mettre à jour les enregistrements qui satisfont ce filtre",
 				"allowRecordAccessibility": "Autoriser ce rôle à voir les enregistrements de {{form}}",
 				"allowRecordCreation": "Autoriser ce rôle à créer des enregistrements dans {{form}}",
 				"allowRecordDeletion": "Autoriser ce rôle à supprimer des enregistrements de {{form}}",
 				"allowRecordUpdate": "Autoriser ce rôle à mettre à jour les enregistrements de {{form}}",
+				"disallowFilterAccessibility": "Interdire ce rôle pour voir les enregistrements qui satisfont ce filtre",
+				"disallowFilterDeletion": "Interdire ce rôle pour supprimer les enregistrements qui satisfont ce filtre",
+				"disallowFilterUpate": "Interdire ce rôle pour mettre à jour les enregistrements qui satisfont ce filtre",
 				"disallowRecordAccessibility": "Interdire ce rôle pour voir les enregistrements de {{form}}",
 				"disallowRecordCreation": "Interdire à ce rôle de créer des enregistrements dans {{form}}",
 				"disallowRecordDeletion": "Interdire ce rôle pour supprimer des enregistrements de {{form}}",

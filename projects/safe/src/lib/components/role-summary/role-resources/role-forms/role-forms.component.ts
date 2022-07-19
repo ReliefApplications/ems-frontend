@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { get, isEqual } from 'lodash';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
+import { QueryBuilderService } from '../../../../services/query-builder.service';
 import { Form } from '../../../../models/form.model';
 import { Role } from '../../../../models/user.model';
 import { Resource } from '../../../../models/resource.model';
@@ -15,8 +16,10 @@ import {
   EditFormAccessMutationResponse,
   EDIT_FORM_ACCESS,
 } from '../../graphql/mutations';
+import { MatDialog } from '@angular/material/dialog';
+import { SafeRoleFormFiltersComponent } from './role-form-filters/role-form-filters.component';
 
-type FormRolePermissions = {
+export type FormRolePermissions = {
   [key in Permission]: {
     role: string;
     access?: Access;
@@ -24,7 +27,7 @@ type FormRolePermissions = {
 };
 
 /** Permission type for Form */
-enum Permission {
+export enum Permission {
   SEE = 'canSeeRecords',
   CREATE = 'canCreateRecords',
   UPDATE = 'canUpdateRecords',
@@ -32,9 +35,9 @@ enum Permission {
 }
 
 /** Role access interface */
-interface Access {
-  condition: string;
-  rules: (
+export interface Access {
+  logic: string;
+  filters: (
     | {
         field: string;
         operator: string;
@@ -72,9 +75,16 @@ export class RoleFormsComponent implements OnInit {
    * Resource tab of Role Summary component.
    *
    * @param apollo Apollo client service
+   * @param dialog Material dialog service
    * @param snackBar shared snackbar service
+   * @param queryBuilder shared querybuilder service
    */
-  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
+  constructor(
+    private apollo: Apollo,
+    private dialog: MatDialog,
+    private snackBar: SafeSnackBarService,
+    private queryBuilder: QueryBuilderService
+  ) {}
 
   ngOnInit(): void {
     this.apollo
@@ -137,8 +147,9 @@ export class RoleFormsComponent implements OnInit {
    *
    * @param form the form object to be updated
    * @param action the permission to be edited
+   * @param access the accesses, if any
    */
-  onEditFormAccess(form: Form, action: Permission): void {
+  onEditFormAccess(form: Form, action: Permission, access?: Access): void {
     if (!this.role.id) return;
     this.updating = true;
     const updatedPermissions: {
@@ -157,7 +168,7 @@ export class RoleFormsComponent implements OnInit {
         break;
       default:
         hasCurrPermission = get(form, `permissions.${action}`, []).some(
-          (x: any) => x.role === this.role.id
+          (x: any) => x.role === this.role.id && isEqual(x.access, access)
         );
         Object.assign(updatedPermissions, {
           [hasCurrPermission ? 'remove' : 'add']: [{ role: this.role.id }],
@@ -314,5 +325,79 @@ export class RoleFormsComponent implements OnInit {
       : false;
 
     return hasPermission ? 'primary' : 'grey';
+  }
+
+  /**
+   * Opens a modal where the user can set access filters for a given form
+   *
+   * @param form The selected form
+   */
+  openFormFilters(form: Form): void {
+    const initPerm = this.formsPermissions.find((x) => x.form === form.id);
+    const dialogRef = this.dialog.open(SafeRoleFormFiltersComponent, {
+      data: {
+        form,
+        permissions: initPerm?.permissions,
+        role: this.role.id,
+      },
+      panelClass: 'from-access-dialog',
+    });
+    dialogRef.afterClosed().subscribe((changes) => {
+      if (!changes) return;
+      this.apollo
+        .mutate<EditFormAccessMutationResponse>({
+          mutation: EDIT_FORM_ACCESS,
+          variables: changes,
+        })
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              const index = this.forms.findIndex(
+                (x) => x.id === res.data?.editForm.id
+              );
+              const forms = [...this.forms];
+              forms[index] = res.data.editForm;
+              this.forms = forms;
+              this.formsPermissions = this.forms.map((f) => {
+                const permissions: FormRolePermissions = {
+                  canSeeRecords: [],
+                  canCreateRecords: [],
+                  canUpdateRecords: [],
+                  canDeleteRecords: [],
+                };
+                for (const permission of this.permissionTypes) {
+                  permissions[permission] = get(
+                    f,
+                    `permissions.${permission}`,
+                    []
+                  )
+                    .filter((x: any) => {
+                      switch (permission) {
+                        case Permission.CREATE:
+                          return x.id === this.role.id;
+                        default:
+                          return x.role === this.role.id;
+                      }
+                    })
+                    .map((x: any) => {
+                      const roleId =
+                        permission === Permission.CREATE ? x.id : x.role;
+                      return { role: roleId, access: x.access };
+                    });
+                }
+                return {
+                  form: f.id,
+                  permissions,
+                };
+              });
+            }
+            this.updating = false;
+          },
+          (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+            this.updating = false;
+          }
+        );
+    });
   }
 }

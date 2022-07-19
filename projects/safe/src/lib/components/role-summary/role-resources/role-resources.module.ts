@@ -10,12 +10,20 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { RoleFormsComponent } from './role-forms/role-forms.component';
+import { SafeRoleFormFiltersComponent } from './role-forms/role-form-filters/role-form-filters.component';
+import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 
 /**
  * Resources tab of Role Summary component.
  */
 @NgModule({
-  declarations: [RoleResourcesComponent, RoleFormsComponent],
+  declarations: [
+    RoleResourcesComponent,
+    RoleFormsComponent,
+    SafeRoleFormFiltersComponent,
+  ],
   imports: [
     CommonModule,
     MatTableModule,
@@ -26,6 +34,9 @@ import { RoleFormsComponent } from './role-forms/role-forms.component';
     SafeIconModule,
     SafeButtonModule,
     SafeSkeletonTableModule,
+    SafeQueryBuilderModule,
+    MatButtonModule,
+    MatDialogModule,
   ],
   exports: [RoleResourcesComponent],
 })

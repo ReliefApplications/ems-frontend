@@ -658,17 +658,27 @@
 				"title": "******"
 			},
 			"summary": {
+				"addFilter": "******",
+				"editFilters": "******",
 				"features": "******",
+				"newFilter": "******",
 				"noFeatures": "******",
 				"noForms": "******",
 				"noSteps": "******",
+				"removeFilter": "******",
 				"title": "******"
 			},
 			"tooltip": {
+				"allowFilterAccessibility": "******",
+				"allowFilterDeletion": "******",
+				"allowFilterUpdate": "******",
 				"allowRecordAccessibility": "****** {{form}}",
 				"allowRecordCreation": "****** {{form}}",
 				"allowRecordDeletion": "****** {{form}}",
 				"allowRecordUpdate": "****** {{form}}",
+				"disallowFilterAccessibility": "******",
+				"disallowFilterDeletion": "******",
+				"disallowFilterUpate": "******",
 				"disallowRecordAccessibility": "****** {{form}}",
 				"disallowRecordCreation": "****** {{form}}",
 				"disallowRecordDeletion": "****** {{form}}",

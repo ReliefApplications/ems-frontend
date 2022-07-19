@@ -165,6 +165,8 @@ export const GET_RESOURCE_FORMS = gql`
       forms {
         id
         name
+        fields
+        queryName
         permissions {
           canCreateRecords {
             id

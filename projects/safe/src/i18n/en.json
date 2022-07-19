@@ -658,17 +658,27 @@
 				"title": "Choose role to simulate"
 			},
 			"summary": {
+				"addFilter": "Add filter",
+				"editFilters": "Edit filters",
 				"features": "Features",
+				"newFilter": "New filter",
 				"noFeatures": "No feature detected",
 				"noForms": "No forms detected",
 				"noSteps": "No steps detected",
+				"removeFilter": "Remove filter",
 				"title": "Summary"
 			},
 			"tooltip": {
+				"allowFilterAccessibility": "Allow this role to see records that satisfies this filter",
+				"allowFilterDeletion": "Allow this role to remove records that satisfies this filter",
+				"allowFilterUpdate": "Allow this role to update records that satisfies this filter",
 				"allowRecordAccessibility": "Allow this role to see records of {{form}}",
 				"allowRecordCreation": "Allow this role to create records with {{form}}",
 				"allowRecordDeletion": "Allow this role to remove records from {{form}}",
 				"allowRecordUpdate": "Allow this role to update records from {{form}}",
+				"disallowFilterAccessibility": "Disallow this role to see records that satisfies this filter",
+				"disallowFilterDeletion": "Disallow this role to remove records that satisfies this filter",
+				"disallowFilterUpate": "Disallow this role to update records that satisfies this filter",
 				"disallowRecordAccessibility": "Disallow this role to see records of {{form}}",
 				"disallowRecordCreation": "Disallow this role to create records with {{form}}",
 				"disallowRecordDeletion": "Disallow this role to remove records from {{form}}",
