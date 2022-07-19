@@ -5,7 +5,7 @@ import { SafeApplicationDropdownComponent } from '../../components/application-d
 import {
   GetRolesFromApplicationsQueryResponse,
   GET_ROLES_FROM_APPLICATIONS,
-} from '../../graphql/queries';
+} from '../graphql/queries';
 
 /**
  * Inits the owner component.
