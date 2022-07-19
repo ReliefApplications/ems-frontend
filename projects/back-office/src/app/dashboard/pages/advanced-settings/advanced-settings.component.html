@@ -10,31 +10,31 @@
 <form [formGroup]="settingForm" *ngIf="!loading">
   <div formGroupName="userManagement" class="form-group">
     <mat-radio-group formControlName="local" class="form-radio-group">
-      <mat-radio-button [value]="true"
-        >{{
-          'components.users.advancedSettings.userManagement.local.title'
-            | translate
-        }}<safe-icon
-          [inline]="true"
+      <mat-radio-button [value]="true">
+        {{ 'components.users.advancedSettings.userManagement.local.title' | translate }}
+        <safe-icon
           icon="info_outline"
+          class="icon-inline"
           variant="grey"
-          [size]="18"
+          [inline]="true"
+          [size]="19"
           [matTooltip]="
             'components.users.advancedSettings.userManagement.local.tooltip'
               | translate
           "
         ></safe-icon
       ></mat-radio-button>
-      <mat-radio-button [value]="false"
-        >{{
+      <mat-radio-button [value]="false">
+        {{
           'components.users.advancedSettings.userManagement.external.title'
             | translate
         }}
         <safe-icon
-          [inline]="true"
           icon="info_outline"
+          class="icon-inline"
           variant="grey"
-          [size]="18"
+          [inline]="true"
+          [size]="19"
           [matTooltip]="
             'components.users.advancedSettings.userManagement.external.tooltip'
               | translate

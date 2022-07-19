@@ -528,22 +528,21 @@ body {
 }
 
 // === UTILS ===
-.info-icon {
-  color: #939393;
-  font-size: 22px;
-  cursor: pointer;
+
+.icon-inline {
+  vertical-align: text-bottom;
+  margin: 0 4px;
+}
+
+// Correct a bug of angular, see https://github.com/angular/components/issues/14311
+.mat-form-field-suffix, .mat-form-field-prefix {
+  display: inline-flex;
+  align-items: center;
 }
 
 .info-text {
   color: #939393;
   margin-bottom: 32px;
-}
-
-.info-row {
-  display: flex;
-  .info-icon {
-    margin-left: 6px;
-  }
 }
 
 // === SURVEY BUILDER ===
