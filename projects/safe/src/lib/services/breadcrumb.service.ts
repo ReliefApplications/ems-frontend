@@ -37,7 +37,7 @@ export class SafeBreadcrumbService {
    *
    * @param activateRoute Angular activated route
    * @param router Angular router
-   * @param apollo
+   * @param apollo Querie service
    */
   constructor(
     private activateRoute: ActivatedRoute,
@@ -117,7 +117,7 @@ export class SafeBreadcrumbService {
   }
 
   /**
-   *
+   * Maps the breadcrumb values and if it finds an unamed resource it queries it to get its name.
    */
   public setResourceName() {
     this.breadcrumbs.value.map((breadcrumb: any) => {
