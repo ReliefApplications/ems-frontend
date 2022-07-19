@@ -5,6 +5,10 @@ import { UsersRoutingModule } from './users-routing.module';
 import { UsersComponent } from './users.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SafeUsersModule } from '@safe/builder';
+
+/**
+ * Module for user component
+ */
 @NgModule({
   declarations: [UsersComponent],
   imports: [

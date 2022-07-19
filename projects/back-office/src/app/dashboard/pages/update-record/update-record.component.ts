@@ -31,6 +31,7 @@ export class UpdateRecordComponent implements OnInit {
    * @param apollo Used to get the form and the record data
    * @param route Used to get url params.
    * @param router Used to change the app route.
+   * @param breadcrumbService Used to update the breadcrumb
    */
   constructor(
     private apollo: Apollo,

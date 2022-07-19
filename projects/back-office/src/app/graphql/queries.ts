@@ -1118,7 +1118,7 @@ export const GET_API_CONFIGURATION = gql`
   }
 `;
 
-/** Modelf for GetApiConfigurationQueryResponse object */
+/** Model for GetApiConfigurationQueryResponse object */
 export interface GetApiConfigurationQueryResponse {
   loading: boolean;
   apiConfiguration: ApiConfiguration;
@@ -1181,7 +1181,9 @@ export interface GetPullJobsQueryResponse {
   };
 }
 
-// === GET REFERENCE DATAS ===
+/**
+ * GET_REFERENCE_DATAS query
+ */
 export const GET_REFERENCE_DATAS = gql`
   query GetReferenceDatas($first: Int, $afterCursor: ID) {
     referenceDatas(first: $first, afterCursor: $afterCursor) {
@@ -1224,6 +1226,9 @@ export const GET_REFERENCE_DATAS = gql`
   }
 `;
 
+/**
+ * Interface for GET_REFERENCE_DATAS query
+ */
 export interface GetReferenceDatasQueryResponse {
   loading: boolean;
   referenceDatas: {
@@ -1239,7 +1244,9 @@ export interface GetReferenceDatasQueryResponse {
   };
 }
 
-// === GET REFERENCE DATA ===
+/**
+ * GET_REFERENCE_DATA query
+ */
 export const GET_REFERENCE_DATA = gql`
   query GetReferenceData($id: ID!) {
     referenceData(id: $id) {
@@ -1277,6 +1284,9 @@ export const GET_REFERENCE_DATA = gql`
   }
 `;
 
+/**
+ * Interface for GET_REFERENCE_DATA query
+ */
 export interface GetReferenceDataQueryResponse {
   loading: boolean;
   referenceData: ReferenceData;

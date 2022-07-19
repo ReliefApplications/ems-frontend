@@ -24,6 +24,7 @@ export class AccessGuard implements CanActivate {
    * @param authService The authentification service
    * @param snackBar The snack bar service
    * @param router The router client
+   * @param translate Translate service
    */
   constructor(
     private authService: SafeAuthService,

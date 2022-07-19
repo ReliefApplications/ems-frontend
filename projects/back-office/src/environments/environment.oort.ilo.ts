@@ -1,6 +1,9 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/oort/oort.prod';
 
+/**
+ * Authentification configuration
+ */
 const authConfig: AuthConfig = {
   issuer: 'https://id.oortcloud.tech/auth/realms/ilo',
   redirectUri: 'https://c2a-durban.oortcloud.tech/admin/',
@@ -11,6 +14,9 @@ const authConfig: AuthConfig = {
   showDebugInformation: false,
 };
 
+/**
+ * Environment file for local development.
+ */
 export const environment = {
   production: true,
   apiUrl: 'https://c2a-durban.oortcloud.tech/api',
