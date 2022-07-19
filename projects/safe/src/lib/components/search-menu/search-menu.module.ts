@@ -25,6 +25,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     SafeButtonModule,
     MatDividerModule,
     MatTooltipModule,
+    TranslateModule,
   ],
   exports: [SafeSearchMenuComponent],
 })
