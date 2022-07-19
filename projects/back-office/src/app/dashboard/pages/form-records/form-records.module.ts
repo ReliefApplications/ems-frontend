@@ -15,6 +15,9 @@ import { UploadsModule } from '@progress/kendo-angular-upload';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
 
+/**
+ * Form-records component module
+ */
 @NgModule({
   declarations: [FormRecordsComponent],
   imports: [

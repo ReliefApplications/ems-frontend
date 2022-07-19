@@ -2,6 +2,9 @@ import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
+/**
+ * Filter used by forms component
+ */
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
@@ -14,6 +17,11 @@ export class FilterComponent implements OnInit {
   @Output() filter = new EventEmitter<any>();
   @Input() loading = false;
 
+  /**
+   * Filter component builder
+   *
+   * @param formBuilder Used to create a reactive form
+   */
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
@@ -39,6 +47,8 @@ export class FilterComponent implements OnInit {
 
   /**
    * Emits the filter value, so the main component can get it.
+   *
+   * @param value Value to emit
    */
   private emitFilter(value: any): void {
     const filters: any[] = [];

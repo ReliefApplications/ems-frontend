@@ -25,6 +25,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+/**
+ * Module for pull-jobs component
+ */
 @NgModule({
   declarations: [PullJobsComponent, PullJobModalComponent],
   imports: [

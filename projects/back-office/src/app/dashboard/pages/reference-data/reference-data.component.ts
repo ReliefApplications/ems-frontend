@@ -38,6 +38,8 @@ import { MatChipInputEvent } from '@angular/material/chips';
 
 /** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
+
+/** Key codes for separators */
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
 /**
@@ -80,10 +82,20 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     hasNextPage: true,
   };
 
+  /**
+   * Returns the name property of the reference form
+   *
+   * @returns Name property reference Form
+   */
   get name(): AbstractControl | null {
     return this.referenceForm.get('name');
   }
 
+  /**
+   * Returns the type property of the reference form
+   *
+   * @returns Type property reference Form
+   */
   get type(): string {
     return this.referenceForm.get('type')?.value;
   }

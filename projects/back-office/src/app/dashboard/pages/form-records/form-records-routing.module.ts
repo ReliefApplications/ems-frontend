@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { FormRecordsComponent } from './form-records.component';
 
+/**
+ * Avilable routes for the forms-record component
+ */
 const routes: Routes = [
   {
     path: '',
@@ -9,6 +12,9 @@ const routes: Routes = [
   },
 ];
 
+/**
+ * Routing module for forms-record component
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

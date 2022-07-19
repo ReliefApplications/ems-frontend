@@ -26,10 +26,19 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 // eslint-disable-next-line max-len
 import { SubscriptionModalComponent } from '../../../../../application/pages/subscriptions/components/subscription-modal/subscription-modal.component';
 
+/**
+ * Default number of items shown in the table per page
+ */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Default fields shown in the table
+ */
 const DEFAULT_FIELDS = ['createdBy'];
 
+/**
+ * Component used when editing/creating a pull-job
+ */
 @Component({
   selector: 'app-pull-job-modal',
   templateUrl: './pull-job-modal.component.html',
@@ -82,22 +91,52 @@ export class PullJobModalComponent implements OnInit {
   // === RAW JSON UTILITY ===
   public openRawJSON = false;
 
+  /**
+   * Gets the mapping property from the pullJobForm
+   *
+   * @returns Mapping property of pullJobForm
+   */
   get mappingArray(): FormArray {
     return this.pullJobForm.get('mapping') as FormArray;
   }
 
+  /**
+   * Gets the apiConfiguration property from the pulljob
+   *
+   * @returns ApiConfiguration property of pulljob
+   */
   get defaultApiConfiguration(): ApiConfiguration | null {
     return this.data.pullJob?.apiConfiguration || null;
   }
 
+  /**
+   * Gets the convertTo property from the pulljob
+   *
+   * @returns ConvertTo property of pulljob
+   */
   get defaultForm(): Form | null {
     return this.data.pullJob?.convertTo || null;
   }
 
+  /**
+   * Gets the channel property from the pulljob
+   *
+   * @returns Channel property of pulljob
+   */
   get defaultChannel(): Channel | null {
     return this.data.pullJob?.channel || null;
   }
 
+  /**
+   * Constructor of the pull-job-modal component
+   *
+   * @param formBuilder Used to create reactive forms.
+   * @param dialogRef Used to get the modal reference.
+   * @param apollo Service use to get and update db data.
+   * @param data Data provided on the modal creation.
+   * @param data.channels Channels affected by the pulljob.
+   * @param data.pullJob Pulljob data.
+   */
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SubscriptionModalComponent>,

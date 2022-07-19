@@ -29,9 +29,15 @@ import { SafeDownloadService, Record } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Default number of records shown on the table per page */
 const ITEMS_PER_PAGE = 10;
+
+/** Default colums shown per record */
 const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
 
+/**
+ * Component used to show all records from a form
+ */
 @Component({
   selector: 'app-form-records',
   templateUrl: './form-records.component.html',
@@ -66,6 +72,17 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   @ViewChild('xlsxFile') xlsxFile: any;
   public showUpload = false;
 
+  /**
+   * Constructor used by the form-records component
+   *
+   * @param apollo Used to get and edit all the records
+   * @param route Used to get the active route
+   * @param downloadService Service used to donload the records
+   * @param layoutService Service used to update the app layout
+   * @param dialog Service used to open a modal
+   * @param snackBar Service used to show a snackbar
+   * @param translate Service used for tranlations
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -84,6 +101,9 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Gets all the records linked to a form
+   */
   private getFormData(): void {
     this.loading = true;
     if (this.formSubscription) {
@@ -192,7 +212,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   /**
    * Deletes a record if authorized, open a confirmation modal if it's a hard delete.
    *
-   * @param id Id of record to delete.
+   * @param element Record to delete.
    * @param e click envent.
    */
   public onDeleteRecord(element: any, e: any): void {
@@ -246,6 +266,12 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Shows a dialog to confirm a revertion and reverts the record if the response is positive
+   *
+   * @param record Record to revert
+   * @param version Version of the record to revert
+   */
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
     const date = new Date(parseInt(version.createdAt, 0));
@@ -283,7 +309,11 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Opens the history of the record on the right side of the screen. */
+  /**
+   * Opens the history of the record on the right side of the screen.
+   *
+   * @param id The id of the record
+   */
   public onViewHistory(id: string): void {
     this.apollo
       .query<GetRecordDetailsQueryResponse>({
@@ -305,6 +335,11 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Downloads all records
+   *
+   * @param type The type of the file which will be downloaded
+   */
   onDownload(type: string): void {
     const path = `download/form/records/${this.id}`;
     const fileName = `${this.form.name}.${type}`;

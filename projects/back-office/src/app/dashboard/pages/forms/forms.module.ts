@@ -30,6 +30,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Forms component module
+ */
 @NgModule({
   declarations: [FormsComponent, FilterComponent],
   imports: [

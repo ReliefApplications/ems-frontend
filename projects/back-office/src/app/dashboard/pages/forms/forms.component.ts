@@ -26,8 +26,14 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Default page size for the forms table
+ */
 const DEFAULT_PAGE_SIZE = 10;
 
+/**
+ * Component used to show all the forms available for a user.
+ */
 @Component({
   selector: 'app-forms',
   templateUrl: './forms.component.html',
@@ -67,6 +73,16 @@ export class FormsComponent implements OnInit, OnDestroy {
     endCursor: '',
   };
 
+  /**
+   * Constructor for Forms componet
+   *
+   * @param apollo Used to get a query of all the forms
+   * @param dialog Used to open a component as a dialog
+   * @param router Used to change the route of the app
+   * @param snackBar Used to show the snackbar
+   * @param authService Service used to authenticate the user
+   * @param translate Service used for translation
+   */
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
