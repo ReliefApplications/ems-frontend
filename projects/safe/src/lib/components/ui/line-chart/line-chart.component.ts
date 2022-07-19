@@ -32,10 +32,16 @@ interface ChartSeries {
   }[];
 }
 
+/**
+ * Chart labels interface
+ */
 interface ChartLabels {
   showValue: boolean;
 }
 
+/**
+ * Chart options interface
+ */
 interface ChartOptions {
   palette: string[];
   axes: any;

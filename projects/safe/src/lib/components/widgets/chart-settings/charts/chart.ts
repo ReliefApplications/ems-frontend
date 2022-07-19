@@ -5,6 +5,9 @@ import {
   createMappingForm,
 } from '../../../ui/aggregation-builder/aggregation-builder-forms';
 
+/**
+ * Default color palette for the chart widgets
+ */
 const DEFAULT_PALETTE = [
   '#ff6358',
   '#ffd246',

@@ -83,6 +83,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
    * @param dialog The material dialog service
    * @param downloadService The download service
    * @param translate The translation service
+   * @param router Service used to chage the app route.
+   * @param activatedRoute Get the current route.
    */
   constructor(
     private apollo: Apollo,

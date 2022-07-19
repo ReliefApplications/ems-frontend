@@ -20,6 +20,12 @@ export default {
   title: 'UI/Controls/Palette',
 } as Meta;
 
+/**
+ * Gets the template for the palette.
+ *
+ * @param args Arguments used on the template creation
+ * @returns Returns the builded template
+ */
 const TEMPLATE: Story<SafePaletteControlComponent> = (args) => ({
   // template:
   //   '<safe-palette-control [formControl]="palette"></safe-palette-control>',
@@ -29,6 +35,9 @@ const TEMPLATE: Story<SafePaletteControlComponent> = (args) => ({
   },
 });
 
+/**
+ * Default colors for the palette
+ */
 const COLORS = [
   '#FF8C00',
   '#B0C4DE',
@@ -42,12 +51,18 @@ const COLORS = [
   '#FF0000',
 ];
 
+/**
+ * Gets the default values for the palette
+ */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.args = {
   formControl: new FormControl(COLORS),
   colors: COLORS,
 };
 
+/**
+ * Gets the disabled state of the palette
+ */
 export const DISABLED = TEMPLATE.bind({});
 DISABLED.args = {
   formControl: new FormControl({ value: COLORS, disabled: true }),
