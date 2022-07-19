@@ -4,9 +4,9 @@
 		"add": "Ajouter",
 		"advancedSettings": "Paramètres avancés",
 		"aggregation": {
-			"few": "Aggrégations",
-			"none": "Aucune aggrégation",
-			"one": "Aggrégation"
+			"few": "Agrégations",
+			"none": "Aucune agrégation",
+			"one": "Agrégation"
 		},
 		"apiConfiguration": {
 			"few": "Configurations d'API",
@@ -195,7 +195,7 @@
 		},
 		"row": {
 			"few": "Rangées",
-			"none": "Auncune rangée",
+			"none": "Aucune rangée",
 			"one": "Rangée"
 		},
 		"save": "Sauvegarder",
@@ -259,7 +259,7 @@
 			"groupBy": "Regrouper par",
 			"groupingRules": "Grouper par",
 			"mapping": {
-				"category": "Categorie",
+				"category": "Catégorie",
 				"field": "Valeur",
 				"series": "Séries"
 			},
@@ -290,7 +290,7 @@
 			},
 			"tooltip": {
 				"addFields": "Ajouter de nouveaux champs au document.",
-				"custom": "Définit une fonction ou une expression d'aggrégation personnalisée en JavaScript.",
+				"custom": "Définit une fonction ou une expression d'agrégation personnalisée en JavaScript.",
 				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
 				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
 				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
@@ -391,8 +391,8 @@
 					"title": "Depuis la ressource"
 				},
 				"tooltip": {
-					"inherit": "Creates a child form using a template from the resource linked to the core form",
-					"resource": "Creates a core form that allows the creation of children forms linked to this core form. It will also create a new resource.",
+					"inherit": "Crée un formulaire hérité en utilisant comme modèle la ressource liée à un formulaire source.",
+					"resource": "Crée un formulaire source permettant la création de formulaire hérités liés à celui-ci. Crée aussi une nouvelle ressource liée.",
 					"template": "Si aucun modèle n'est sélectionné, la structure principale sera chargée"
 				}
 			},
@@ -672,7 +672,7 @@
 				"disallowRecordAccessibility": "Interdire ce rôle pour voir les enregistrements de {{form}}",
 				"disallowRecordCreation": "Interdire à ce rôle de créer des enregistrements dans {{form}}",
 				"disallowRecordDeletion": "Interdire ce rôle pour supprimer des enregistrements de {{form}}",
-				"disallowRecordUpate": "Interdire ce rôle pour mettre à jour les enregistrements de {{form}}",
+				"disallowRecordUpdate": "Interdire ce rôle pour mettre à jour les enregistrements de {{form}}",
 				"hideFeature": "Masquer {{page}} pour ce rôle",
 				"showFeature": "Afficher {{page}} pour ce rôle"
 			},
@@ -739,7 +739,7 @@
 			"chart": {
 				"errors": {
 					"aggregation": {
-						"invalid": "Aggrégation invalide"
+						"invalid": "Agrégation invalide"
 					}
 				}
 			},
@@ -872,7 +872,7 @@
 						}
 					},
 					"hint": {
-						"buttons": "Les boutons d'action rapides apparaitront dans le widget et vous permettront de réaliser chacune des actions ci-dessous"
+						"buttons": "Les boutons d'action rapides apparaîtront dans le widget et vous permettront de réaliser chacune des actions ci-dessous"
 					},
 					"layouts": {
 						"add": {
@@ -992,7 +992,7 @@
 			"columnsApply": "Appliquer",
 			"columnsReset": "Réinitialiser",
 			"detailCollapse": "Réduire",
-			"detailExpand": "Etendre",
+			"detailExpand": "Étendre",
 			"filter": "Filtrer",
 			"filterAfterOperator": "Est après",
 			"filterAfterOrEqualOperator": "Est après ou égal à",
@@ -1029,7 +1029,7 @@
 			"filterStartsWithOperator": "Commence par",
 			"gridLabel": "Table de données",
 			"groupCollapse": "Réduire le groupe",
-			"groupExpand": "Etendre le groupe",
+			"groupExpand": "Étendre le groupe",
 			"groupPanelEmpty": "Faites glisser un en-tête de colonne et déposez-le ici pour grouper par cette colonne",
 			"loading": "Chargement",
 			"lock": "Verrouiller",
@@ -1053,7 +1053,7 @@
 			"sortedAscending": "Trié par ordre croissant",
 			"sortedDefault": "Non trié",
 			"sortedDescending": "Trié par ordre décroissant",
-			"stick": "Epingler",
+			"stick": "Épingler",
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
 		},

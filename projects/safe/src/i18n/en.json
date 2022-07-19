@@ -672,7 +672,7 @@
 				"disallowRecordAccessibility": "Disallow this role to see records of {{form}}",
 				"disallowRecordCreation": "Disallow this role to create records with {{form}}",
 				"disallowRecordDeletion": "Disallow this role to remove records from {{form}}",
-				"disallowRecordUpate": "Disallow this role to update records from {{form}}",
+				"disallowRecordUpdate": "Disallow this role to update records from {{form}}",
 				"hideFeature": "Hide {{page}} from this role",
 				"showFeature": "Show {{page}} to this role"
 			},
