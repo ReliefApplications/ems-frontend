@@ -26,8 +26,14 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ *
+ */
 const DEFAULT_PAGE_SIZE = 10;
 
+/**
+ *
+ */
 @Component({
   selector: 'app-forms',
   templateUrl: './forms.component.html',
@@ -67,6 +73,15 @@ export class FormsComponent implements OnInit, OnDestroy {
     endCursor: '',
   };
 
+  /**
+   *
+   * @param apollo
+   * @param dialog
+   * @param router
+   * @param snackBar
+   * @param authService
+   * @param translate
+   */
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -317,7 +332,7 @@ export class FormsComponent implements OnInit, OnDestroy {
               } else {
                 if (res.data) {
                   const { id } = res.data.addForm;
-                  this.router.navigate(['/forms/builder', id]);
+                  this.router.navigate(['/forms/' + id + '/builder']);
                 }
               }
             },

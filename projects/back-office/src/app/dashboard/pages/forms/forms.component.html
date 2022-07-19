@@ -119,7 +119,7 @@
     <td mat-cell *matCellDef="let element">
       <safe-button
         *ngIf="!element.core && element.resource?.coreForm?.name"
-        [routerLink]="['/forms/builder', element.resource.coreForm.id]"
+        [routerLink]="[element.resource.coreForm.id + '/builder']"
       >
         {{ element.resource.coreForm.name }}
       </safe-button>
@@ -142,14 +142,14 @@
       <mat-menu #menu="matMenu">
         <button
           mat-menu-item
-          [routerLink]="['/forms/builder', element.id]"
+          [routerLink]="[element.id + '/builder']"
           *ngIf="element.canUpdate"
         >
           <mat-icon>edit</mat-icon>
           {{ 'common.edit' | translate }}
         </button>
         <ng-container *ngIf="element.canSee">
-          <button mat-menu-item [routerLink]="['/forms/records', element.id]">
+          <button mat-menu-item [routerLink]="[element.id + '/records']">
             <mat-icon>plagiarism</mat-icon>
             {{
               'common.viewObject'
@@ -175,7 +175,7 @@
     [ngClass]="{ clickable: row.canCreateRecords && row.status === 'active' }"
     [routerLink]="
       row.canCreateRecords && row.status === 'active'
-        ? ['/forms/answer', row.id]
+        ? [row.id + '/answer']
         : []
     "
   ></tr>

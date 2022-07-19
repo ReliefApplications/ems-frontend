@@ -72,7 +72,9 @@
       </ng-template>
     </div>
   </div>
-  <mat-tab-group dynamicHeight>
+  <mat-tab-group dynamicHeight
+  [(selectedIndex)]="selectedTab"
+  (selectedTabChange)="onTabChanged($event)">
     <mat-tab>
       <ng-template mat-tab-label>
         {{ 'common.record.few' | translate }} ( {{ pageInfo.length }} )

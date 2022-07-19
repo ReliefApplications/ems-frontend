@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Apollo } from 'apollo-angular';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import {
+  GetResourceByIdQueryResponse,
+  GET_RESOURCE_BY_ID,
+} from '../graphql/queries';
 
 /** Interface of breadcrumb */
 export interface Breadcrumb {
@@ -23,7 +28,7 @@ export class SafeBreadcrumbService {
   private breadcrumbs = new BehaviorSubject<Breadcrumb[]>([]);
   public breadcrumbs$ = this.breadcrumbs.asObservable();
 
-  private keepParent: boolean = false;
+  private keepParent = false;
   private previousRoot: any;
 
   /**
@@ -32,14 +37,20 @@ export class SafeBreadcrumbService {
    *
    * @param activateRoute Angular activated route
    * @param router Angular router
+   * @param apollo
    */
-  constructor(private activateRoute: ActivatedRoute, private router: Router) {
+  constructor(
+    private activateRoute: ActivatedRoute,
+    private router: Router,
+    private apollo: Apollo
+  ) {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
-        if (this.previousRoot != this.activateRoute.root.children) {
-          console.log(this.keepParent);
-          this.breadcrumbs.next(this.createBreadcrumbs(this.activateRoute.root, undefined, this.keepParent ? this.breadcrumbs.value : undefined));
+        if (this.previousRoot !== this.activateRoute.root.children) {
+          this.breadcrumbs.next(
+            this.createBreadcrumbs(this.activateRoute.root)
+          );
           this.previousRoot = this.activateRoute.root.children;
           this.keepParent = false;
         }
@@ -105,7 +116,26 @@ export class SafeBreadcrumbService {
     }
   }
 
-  public keepPreviousRoute() {
-    this.keepParent = true;
+  /**
+   *
+   */
+  public setResourceName() {
+    this.breadcrumbs.value.map((breadcrumb: any) => {
+      if (breadcrumb.alias && breadcrumb.alias === '@resource') {
+        const id = breadcrumb.uri.split('/').pop();
+        this.apollo
+          .watchQuery<GetResourceByIdQueryResponse>({
+            query: GET_RESOURCE_BY_ID,
+            variables: {
+              id,
+            },
+          })
+          .valueChanges.subscribe((res) => {
+            if (res.data && res.data.resource.name) {
+              this.setBreadcrumb('@resource', res.data.resource.name);
+            }
+          });
+      }
+    });
   }
 }

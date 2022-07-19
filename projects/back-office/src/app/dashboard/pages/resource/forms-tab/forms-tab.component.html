@@ -85,8 +85,8 @@
       <mat-menu #resMenu="matMenu">
         <button
           mat-menu-item
-          (click)="editForm(element.id)"
           *ngIf="element.canUpdate"
+          [routerLink]="[element.id + '/builder']"
         >
           <mat-icon>edit</mat-icon>
           {{ 'common.edit' | translate }}
@@ -112,7 +112,7 @@
     }"
     [routerLink]="
       row.canCreateRecords && row.status === 'active'
-        ? ['/forms/answer', row.id]
+        ? [row.id + '/answer']
         : []
     "
   ></tr>

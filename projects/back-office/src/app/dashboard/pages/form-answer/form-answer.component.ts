@@ -8,6 +8,9 @@ import {
   GET_SHORT_FORM_BY_ID,
 } from '../../../graphql/queries';
 
+/**
+ *
+ */
 @Component({
   selector: 'app-form-answer',
   templateUrl: './form-answer.component.html',
@@ -23,6 +26,12 @@ export class FormAnswerComponent implements OnInit {
   public form?: Form;
   public completed = false;
 
+  /**
+   *
+   * @param apollo
+   * @param route
+   * @param breadcrumbService
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -31,6 +40,7 @@ export class FormAnswerComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
+    console.log(this.id);
     if (this.id !== null) {
       this.apollo
         .watchQuery<GetFormByIdQueryResponse>({
@@ -46,14 +56,24 @@ export class FormAnswerComponent implements OnInit {
             '@form',
             this.form.name as string
           );
+          this.breadcrumbService.setResourceName();
         });
     }
   }
 
+  /**
+   *
+   * @param e
+   * @param e.completed
+   * @param e.hideNewRecord
+   */
   onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;
   }
 
+  /**
+   *
+   */
   clearForm(): void {
     this.formComponent?.reset();
   }

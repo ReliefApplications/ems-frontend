@@ -75,6 +75,10 @@ export class UpdateRecordComponent implements OnInit {
             this.record.incrementalId as string
           );
           this.breadcrumbService.setBreadcrumb(
+            '@form',
+            this.record.form?.name as string
+          );
+          this.breadcrumbService.setBreadcrumb(
             '@resource',
             this.record.form?.name as string
           );

@@ -62,69 +62,82 @@ export const routes = [
             // canActivate: [SafePermissionGuard]
           },
           {
-            path: 'records/:id',
+            path: ':id',
             children: [
               {
                 path: '',
-                loadChildren: () =>
-                  import('./pages/form-records/form-records.module').then(
-                    (m) => m.FormRecordsModule
-                  ),
+                redirectTo: 'answer',
               },
               {
-                path: 'update/:id',
+                path: 'builder',
                 loadChildren: () =>
-                  import('./pages/update-record/update-record.module').then(
-                    (m) => m.UpdateRecordModule
+                  import('./pages/form-builder/form-builder.module').then(
+                    (m) => m.FormBuilderModule
                   ),
                 data: {
                   breadcrumb: {
-                    alias: '@record',
+                    key: 'common.edit',
+                  },
+                },
+              },
+              {
+                path: 'answer',
+                loadChildren: () =>
+                  import('./pages/form-answer/form-answer.module').then(
+                    (m) => m.FormAnswerModule
+                  ),
+                data: {
+                  breadcrumb: {
+                    key: 'common.add',
                   },
                 },
                 // canActivate: [SafePermissionGuard]
               },
+              {
+                path: 'records',
+                children: [
+                  {
+                    path: '',
+                    loadChildren: () =>
+                      import('./pages/form-records/form-records.module').then(
+                        (m) => m.FormRecordsModule
+                      ),
+                  },
+                  {
+                    path: 'update/:id',
+                    loadChildren: () =>
+                      import('./pages/update-record/update-record.module').then(
+                        (m) => m.UpdateRecordModule
+                      ),
+                    data: {
+                      breadcrumb: {
+                        alias: '@record',
+                      },
+                    },
+                    // canActivate: [SafePermissionGuard]
+                  },
+                ],
+                data: {
+                  breadcrumb: {
+                    key: 'common.record.few',
+                  },
+                },
+              },
             ],
             data: {
               breadcrumb: {
-                key: 'common.record.few',
-              },
-            },
-          },
-          {
-            path: 'answer/:id',
-            loadChildren: () =>
-              import('./pages/form-answer/form-answer.module').then(
-                (m) => m.FormAnswerModule
-              ),
-            data: {
-              breadcrumb: {
                 alias: '@form',
               },
             },
-            // canActivate: [SafePermissionGuard]
           },
-          {
-            path: 'builder',
-            loadChildren: () =>
-              import('./pages/form-builder/form-builder.module').then(
-                (m) => m.FormBuilderModule
-              ),
-            // canActivate: [SafePermissionGuard]
-          },
-          {
-            path: 'builder/:id',
-            loadChildren: () =>
-              import('./pages/form-builder/form-builder.module').then(
-                (m) => m.FormBuilderModule
-              ),
-            data: {
-              breadcrumb: {
-                alias: '@form',
-              },
-            },
-            // canActivate: [SafePermissionGuard]
-          },
+          // {
+          //   path: 'builder',
+          //   loadChildren: () =>
+          //     import('./pages/form-builder/form-builder.module').then(
+          //       (m) => m.FormBuilderModule
+          //     ),
+          //   // canActivate: [SafePermissionGuard]
+          // },
         ],
         data: {
           breadcrumb: {
@@ -145,26 +158,113 @@ export const routes = [
           },
           {
             path: ':id',
+            loadChildren: () =>
+              import('./pages/resource/resource.module').then(
+                (m) => m.ResourceModule
+              ),
             children: [
               {
                 path: '',
+                redirectTo: 'records',
+              },
+              {
+                path: 'records',
+                children: [
+                  {
+                    path: '',
+                    loadChildren: () =>
+                      import('./pages/resource/resource.module').then(
+                        (m) => m.ResourceModule
+                      ),
+                  },
+                  {
+                    path: 'update/:id',
+                    loadChildren: () =>
+                      import('./pages/update-record/update-record.module').then(
+                        (m) => m.UpdateRecordModule
+                      ),
+                    data: {
+                      breadcrumb: {
+                        alias: '@record',
+                      },
+                    },
+                    // canActivate: [SafePermissionGuard]
+                  },
+                ],
+                data: {
+                  breadcrumb: {
+                    key: 'common.record.few',
+                  },
+                },
+              },
+              {
+                path: 'forms',
+                children: [
+                  {
+                    path: '',
+                    loadChildren: () =>
+                      import('./pages/resource/resource.module').then(
+                        (m) => m.ResourceModule
+                      ),
+                  },
+                  {
+                    path: ':id',
+                    children: [
+                      {
+                        path: '',
+                        redirectTo: 'answer',
+                      },
+                      {
+                        path: 'builder',
+                        loadChildren: () =>
+                          import(
+                            './pages/form-builder/form-builder.module'
+                          ).then((m) => m.FormBuilderModule),
+                        data: {
+                          breadcrumb: {
+                            key: 'common.edit',
+                          },
+                        },
+                      },
+                      {
+                        path: 'answer',
+                        loadChildren: () =>
+                          import('./pages/form-answer/form-answer.module').then(
+                            (m) => m.FormAnswerModule
+                          ),
+                        data: {
+                          breadcrumb: {
+                            key: 'common.add',
+                          },
+                        },
+                        // canActivate: [SafePermissionGuard]
+                      },
+                    ],
+                    data: {
+                      breadcrumb: {
+                        alias: '@form',
+                      },
+                    },
+                  },
+                ],
+                data: {
+                  breadcrumb: {
+                    key: 'common.form.few',
+                  },
+                },
+              },
+              {
+                path: 'layouts',
                 loadChildren: () =>
                   import('./pages/resource/resource.module').then(
                     (m) => m.ResourceModule
                   ),
-              },
-              {
-                path: 'update/:id',
-                loadChildren: () =>
-                  import('./pages/update-record/update-record.module').then(
-                    (m) => m.UpdateRecordModule
-                  ),
+                // canActivate: [SafePermissionGuard]
                 data: {
                   breadcrumb: {
-                    alias: '@record',
+                    key: 'common.layout.few',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
               },
             ],
             data: {
@@ -334,6 +434,9 @@ export const routes = [
     ],
   },
 ];
+/**
+ *
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

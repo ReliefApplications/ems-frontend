@@ -29,7 +29,7 @@
         <mat-menu #recMenu="matMenu">
           <button
             mat-menu-item
-            [routerLink]="['./update', element.id]"
+            [routerLink]="['update', element.id]"
             [matTooltip]="'Edit as ' + element.form.name"
             matTooltipPosition="above"
             [matTooltipDisabled]="resource.forms.length <= 1"

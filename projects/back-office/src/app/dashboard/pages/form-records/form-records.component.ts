@@ -23,15 +23,25 @@ import {
   SafeLayoutService,
   SafeConfirmModalComponent,
   SafeSnackBarService,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeDownloadService, Record } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ *
+ */
 const ITEMS_PER_PAGE = 10;
+/**
+ *
+ */
 const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
 
+/**
+ *
+ */
 @Component({
   selector: 'app-form-records',
   templateUrl: './form-records.component.html',
@@ -66,6 +76,17 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   @ViewChild('xlsxFile') xlsxFile: any;
   public showUpload = false;
 
+  /**
+   *
+   * @param apollo
+   * @param route
+   * @param downloadService
+   * @param layoutService
+   * @param dialog
+   * @param snackBar
+   * @param translate
+   * @param breadcrumbService
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -73,7 +94,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /** Load the records, using the form id passed as a parameter. */
@@ -84,6 +106,9 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   *
+   */
   private getFormData(): void {
     this.loading = true;
     if (this.formSubscription) {
@@ -132,6 +157,10 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       .valueChanges.subscribe((res) => {
         if (res.data.form) {
           this.form = res.data.form;
+          this.breadcrumbService.setBreadcrumb(
+            '@form',
+            this.form.name as string
+          );
           this.setDisplayedColumns();
           this.loading = res.loading;
         }
@@ -193,6 +222,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    * Deletes a record if authorized, open a confirmation modal if it's a hard delete.
    *
    * @param id Id of record to delete.
+   * @param element
    * @param e click envent.
    */
   public onDeleteRecord(element: any, e: any): void {
@@ -246,6 +276,11 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   *
+   * @param record
+   * @param version
+   */
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
     const date = new Date(parseInt(version.createdAt, 0));
@@ -283,7 +318,11 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Opens the history of the record on the right side of the screen. */
+  /**
+   * Opens the history of the record on the right side of the screen.
+   *
+   * @param id
+   */
   public onViewHistory(id: string): void {
     this.apollo
       .query<GetRecordDetailsQueryResponse>({
@@ -305,6 +344,10 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   *
+   * @param type
+   */
   onDownload(type: string): void {
     const path = `download/form/records/${this.id}`;
     const fileName = `${this.form.name}.${type}`;

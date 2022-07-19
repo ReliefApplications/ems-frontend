@@ -30,6 +30,11 @@ const ITEMS_PER_PAGE = 10;
 const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
 
 /**
+ * Array of tab names sorted by position index.
+ */
+const ROUTE_TABS: string[] = ['records', 'forms', 'layouts'];
+
+/**
  * Component used to display resource in a table.
  */
 @Component({
@@ -47,6 +52,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   public id = '';
   public resource: any;
   public cachedRecords: Record[] = [];
+  public selectedTab = 0;
 
   // === RECORDS ASSOCIATED ===
   recordsDefaultColumns: string[] = RECORDS_DEFAULT_COLUMNS;
@@ -82,6 +88,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
    * @param snackBar Service used to show a snackbar.
    * @param downloadService Service used to download.
    * @param translate Service used to get translations.
+   * @param breadcrumbService
    */
   constructor(
     private apollo: Apollo,
@@ -101,6 +108,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/resources']);
     }
+    const routeTab: any = this.router.url.split('/').pop();
+    this.selectedTab = ROUTE_TABS.findIndex((tab) => tab === routeTab);
   }
 
   /**
@@ -334,6 +343,17 @@ export class ResourceComponent implements OnInit, OnDestroy {
     e.stopPropagation();
     this.showDeletedRecords = !this.showDeletedRecords;
     this.getResourceData();
+  }
+
+  /**
+   * Changes the route on tab change.
+   *
+   * @param e change tab event.
+   */
+  onTabChanged(e: any) {
+    const tab = ROUTE_TABS[e.index];
+    const route = this.router.url.split('/').slice(0, -1).join('/') + '/' + tab;
+    this.router.navigate([route]);
   }
 
   /**

@@ -1,9 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import {
-  SafeBreadcrumbService,
-  SafeSnackBarService
-} from '@safe/builder';
+import { SafeBreadcrumbService, SafeSnackBarService } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 import {
   DeleteFormMutationResponse,
@@ -11,13 +8,15 @@ import {
 } from '../../../../graphql/mutations';
 import { Router } from '@angular/router';
 
+/**
+ *
+ */
 @Component({
   selector: 'app-forms-tab',
   templateUrl: './forms-tab.component.html',
-  styleUrls: ['./forms-tab.component.scss']
+  styleUrls: ['./forms-tab.component.scss'],
 })
 export class FormsTabComponent implements OnInit {
-
   @Input() dataSourceForms: any;
 
   displayedColumnsForms: string[] = [
@@ -29,17 +28,23 @@ export class FormsTabComponent implements OnInit {
     '_actions',
   ];
 
+  /**
+   *
+   * @param apollo
+   * @param snackBar
+   * @param translate
+   * @param breadcrumbService
+   * @param router
+   */
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService,
     private breadcrumbService: SafeBreadcrumbService,
-    private router: Router,
-  ) { }
+    private router: Router
+  ) {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 
   /**
    * Delete a form if authorized.
@@ -47,7 +52,7 @@ export class FormsTabComponent implements OnInit {
    * @param id Id of the form to delete.
    * @param e Used to prevent the default behaviour.
    */
-   deleteForm(id: any, e: any): void {
+  deleteForm(id: any, e: any): void {
     e.stopPropagation();
     this.apollo
       .mutate<DeleteFormMutationResponse>({
@@ -62,13 +67,9 @@ export class FormsTabComponent implements OnInit {
             value: this.translate.instant('common.form.one'),
           })
         );
-        this.dataSourceForms = this.dataSourceForms.filter((x: any) => x.id !== id);
+        this.dataSourceForms = this.dataSourceForms.filter(
+          (x: any) => x.id !== id
+        );
       });
   }
-
-  public editForm(id: number) {
-    this.breadcrumbService.keepPreviousRoute();
-    this.router.navigate(['/forms/builder', id])
-  }
-
 }
