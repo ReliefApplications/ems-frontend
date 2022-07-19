@@ -530,6 +530,12 @@ body {
   margin: 0 4px;
 }
 
+// Correct a bug of angular, see https://github.com/angular/components/issues/14311
+.mat-form-field-suffix, .mat-form-field-prefix {
+  display: inline-flex;
+  align-items: center;
+}
+
 .info-icon {
   color: #939393;
   font-size: 22px;
