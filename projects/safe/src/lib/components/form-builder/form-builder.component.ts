@@ -16,6 +16,7 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeReferenceDataService } from '../../services/reference-data.service';
 import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { AnyQuestion } from '../../survey/types';
 
 /**
  * Array containing the different types of questions.
@@ -323,15 +324,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * Makes sure that value names are existent and snake case, to not cause backend problems.
    */
   private async validateValueNames(): Promise<void> {
-    const object = JSON.parse(this.surveyCreator.text);
-    await object.pages.forEach((page: any) => {
-      if (page.elements) {
-        page.elements.forEach((element: any) => {
-          this.setQuestionNames(element, page);
-        });
-      }
-    });
-    this.surveyCreator.text = JSON.stringify(object);
+    const survey: Survey.SurveyModel = this.surveyCreator.survey;
+    survey.pages.forEach((page: Survey.Page) =>
+      page.elements.forEach((element: AnyQuestion) =>
+        this.setQuestionNames(element, page)
+      )
+    );
   }
 
   /**
@@ -350,121 +348,125 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param element The element of the form whose name we need to set
    * @param page The page of the form
    */
-  private setQuestionNames(element: any, page: any): void {
-    if (element.type === 'panel') {
-      if (element.elements) {
-        for (const el of element.elements) {
-          this.setQuestionNames(el, page);
-        }
+  private setQuestionNames(element: AnyQuestion, page: Survey.Page): void {
+    // create the valueName of the element in snake case
+    if (!element.valueName) {
+      if (element.title) {
+        element.valueName = snakeCase(element.title);
+      } else if (element.name) {
+        element.valueName = snakeCase(element.name);
+      } else {
+        throw new Error(
+          this.translate.instant('pages.formBuilder.errors.missingName', {
+            page: page.name,
+          })
+        );
       }
     } else {
-      if (!element.valueName) {
-        if (element.title) {
-          element.valueName = snakeCase(element.title);
-        } else if (element.name) {
-          element.valueName = snakeCase(element.name);
-        } else {
-          throw new Error(
-            this.translate.instant('pages.formBuilder.errors.missingName', {
-              page: page.name,
-            })
-          );
-        }
-      } else {
-        if (!this.isSnakeCase(element.valueName)) {
-          throw new Error(
-            this.translate.instant('pages.formBuilder.errors.snakecase', {
-              name: element.valueName,
-              page: page.name,
-            })
-          );
-        }
-      }
-      // if choices object exists, checks for duplicate values
-      if (element.choices) {
-        const values = element.choices.map(
-          (choice: { value: string; text: string }) => choice.value || choice
+      if (!this.isSnakeCase(element.valueName)) {
+        throw new Error(
+          this.translate.instant('pages.formBuilder.errors.snakecase', {
+            name: element.valueName,
+            page: page.name,
+          })
         );
-        const distinctValues = [...new Set(values)];
+      }
+    }
+    // if choices object exists, checks for duplicate values
+    if (element.choices) {
+      const values = element.choices.map(
+        (choice: { value: string; text: string }) => choice.value || choice
+      );
+      const distinctValues = [...new Set(values)];
 
-        if (values.length > distinctValues.length) {
+      if (values.length > distinctValues.length) {
+        throw new Error(
+          this.translate.instant(
+            'pages.formBuilder.errors.choices.valueDuplicated',
+            {
+              question: element.valueName,
+            }
+          )
+        );
+      }
+    }
+    if (element.getType() === 'multipletext') {
+      element.items = element.items.map((e: any) => {
+        if (!e.name && !e.title) {
           throw new Error(
             this.translate.instant(
-              'pages.formBuilder.errors.choices.valueDuplicated',
+              'pages.formBuilder.errors.multipletext.missingName',
               {
                 question: element.valueName,
               }
             )
           );
         }
+        return {
+          name: this.isSnakeCase(e.name) ? e.name : snakeCase(e.name),
+          title: e.title || null,
+        };
+      });
+    }
+    if (element.getType() === 'matrix') {
+      element.columns = element.columns.map((x: any) => ({
+        value: snakeCase(x.value || x.text || x),
+        text: x.text || x,
+      }));
+      element.rows = element.rows.map((x: any) => ({
+        value: snakeCase(x.value || x.text || x),
+        text: x.text || x,
+      }));
+    }
+    if (element.getType() === 'matrixdropdown') {
+      element.columns = element.columns.map((x: any) => ({
+        name: snakeCase(x.name || x.title || x),
+        title: x.title || x.name || x,
+        ...(x.cellType && { cellType: x.cellType }),
+        ...(x.isRequired && { isRequired: true }),
+      }));
+      element.rows = element.rows.map((x: any) => ({
+        value: snakeCase(x.value || x.text || x),
+        text: x.text || x,
+      }));
+    }
+    if (['resource', 'resources'].includes(element.getType())) {
+      if (element.relatedName) {
+        element.relatedName = snakeCase(element.relatedName);
+      } else {
+        throw new Error(
+          this.translate.instant(
+            'components.formBuilder.errors.missingRelatedName',
+            {
+              question: element.name,
+              page: page.name,
+            }
+          )
+        );
       }
-      if (element.type === 'multipletext') {
-        element.items = element.items.map((e: any) => {
-          if (!e.name && !e.title) {
-            throw new Error(
-              this.translate.instant(
-                'pages.formBuilder.errors.multipletext.missingName',
-                {
-                  question: element.valueName,
-                }
-              )
-            );
-          }
-          return {
-            name: this.isSnakeCase(e.name) ? e.name : snakeCase(e.name),
-            title: e.title || null,
-          };
-        });
-      }
-      if (element.type === 'matrix') {
-        element.columns = element.columns.map((x: any) => ({
-          value: snakeCase(x.value || x.text || x),
-          text: x.text || x,
-        }));
-        element.rows = element.rows.map((x: any) => ({
-          value: snakeCase(x.value || x.text || x),
-          text: x.text || x,
-        }));
-      }
-      if (element.type === 'matrixdropdown') {
-        element.columns = element.columns.map((x: any) => ({
-          name: snakeCase(x.name || x.title || x),
-          title: x.title || x.name || x,
-          ...(x.cellType && { cellType: x.cellType }),
-          ...(x.isRequired && { isRequired: true }),
-        }));
-        element.rows = element.rows.map((x: any) => ({
-          value: snakeCase(x.value || x.text || x),
-          text: x.text || x,
-        }));
-      }
-      if (['resource', 'resources'].includes(element.type)) {
-        if (element.relatedName) {
-          element.relatedName = snakeCase(element.relatedName);
-        } else {
-          throw new Error(
-            this.translate.instant(
-              'components.formBuilder.errors.missingRelatedName',
-              {
-                question: element.name,
-                page: page.name,
-              }
-            )
-          );
-        }
 
-        if (element.addRecord && !element.addTemplate) {
-          throw new Error(
-            this.translate.instant(
-              'components.formBuilder.errors.missingTemplate',
-              {
-                question: element.name,
-                page: page.name,
-              }
-            )
-          );
-        }
+      if (element.addRecord && !element.addTemplate) {
+        throw new Error(
+          this.translate.instant(
+            'components.formBuilder.errors.missingTemplate',
+            {
+              question: element.name,
+              page: page.name,
+            }
+          )
+        );
       }
+    }
+    // if the element contains other elements, apply the same rule on them
+    if (element.elements) {
+      element.elements.forEach((elt: AnyQuestion) =>
+        this.setQuestionNames(elt, page)
+      );
+    }
+    if (element.templateElements) {
+      element.templateElements.forEach((elt: AnyQuestion) =>
+        this.setQuestionNames(elt, page)
+      );
     }
   }
 
