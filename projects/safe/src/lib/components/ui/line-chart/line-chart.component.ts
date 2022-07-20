@@ -70,11 +70,6 @@ export class SafeLineChartComponent implements OnInit, OnChanges {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
-  public categoryAxis: CategoryAxis = {
-    type: 'date',
-    maxDivisions: 10,
-  };
-
   public labels: any;
 
   /**
