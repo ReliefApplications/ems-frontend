@@ -436,7 +436,6 @@
 		},
 		"formBuilder": {
 			"errors": {
-				"invalidRelatedName": "Le nom lié fourni ({{name}}) pour la question {{question}} à la page {{page}} est invalide. Veuillez entrer un nom lié valide (au format snake_case) pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
 			}
@@ -1271,10 +1270,6 @@
 				"missingName": "Nom manquant pour un élément de la page : {{page}}. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire.",
 				"multipletext": {
 					"missingName": "Veuillez configurer un nom ou titre pour chaque champ de text de la question : {{question}}"
-				},
-				"resource": {
-					"invalidRelatedName": "Le nom relatif {{relatedName}} de la page {{page}} est invalide. Veuillez configurer un nom au format snake_case.",
-					"missingRelatedName": "Nom relatif manquant pour la question {{question}} de la page {{page}}. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
 				},
 				"snakecase": "Le nom de valeur {{name}} de la page {{page}} est invalide. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
 			},

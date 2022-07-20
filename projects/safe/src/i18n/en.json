@@ -436,7 +436,6 @@
 		},
 		"formBuilder": {
 			"errors": {
-				"invalidRelatedName": "Provided related name ({{name}}) for question {{question}} on page {{page}} is invalid. Please provide a valid related name (snake case format) to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
 			}
@@ -1271,10 +1270,6 @@
 				"missingName": "Missing value name for an element on page {{page}}. Please provide a valid data value name (snake_case) to save the form.",
 				"multipletext": {
 					"missingName": "Please provide name or title for each text of question: {{question}}"
-				},
-				"resource": {
-					"invalidRelatedName": "The related name {{relatedName}} on page {{page}} is invalid. Please conform to snake_case.",
-					"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake_case) to save the form."
 				},
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
 			},

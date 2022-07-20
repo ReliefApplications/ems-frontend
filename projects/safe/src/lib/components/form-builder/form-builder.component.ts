@@ -15,7 +15,7 @@ import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeReferenceDataService } from '../../services/reference-data.service';
 import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
-import get from 'lodash/get';
+import { snakeCase, get } from 'lodash';
 
 /**
  * Array containing the different types of questions.
@@ -335,20 +335,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Takes a string and converts it to snake case.
-   *
-   * @param text The text to convert
-   * @returns The text in snake case
-   */
-  private toSnakeCase(text: string): string {
-    return text
-      .replace(/\W+/g, ' ')
-      .split(/ |\B(?=[A-Z])/)
-      .map((word) => word.toLowerCase())
-      .join('_');
-  }
-
-  /**
    * Checks if a string is already in snake case
    *
    * @param text The text to check
@@ -374,25 +360,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     } else {
       if (!element.valueName) {
         if (element.title) {
-          element.valueName = this.toSnakeCase(element.title);
-          if (!this.isSnakeCase(element.valueName)) {
-            throw new Error(
-              this.translate.instant('pages.formBuilder.errors.snakecase', {
-                name: element.valueName,
-                page: page.name,
-              })
-            );
-          }
+          element.valueName = snakeCase(element.title);
         } else if (element.name) {
-          element.valueName = this.toSnakeCase(element.name);
-          if (!this.isSnakeCase(element.valueName)) {
-            throw new Error(
-              this.translate.instant('pages.formBuilder.errors.snakecase', {
-                name: element.valueName,
-                page: page.name,
-              })
-            );
-          }
+          element.valueName = snakeCase(element.name);
         } else {
           throw new Error(
             this.translate.instant('pages.formBuilder.errors.missingName', {
@@ -441,56 +411,36 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
             );
           }
           return {
-            name: this.isSnakeCase(e.name) ? e.name : this.toSnakeCase(e.name),
+            name: this.isSnakeCase(e.name) ? e.name : snakeCase(e.name),
             title: e.title ? e.title : null,
           };
         });
       }
       if (element.type === 'matrix') {
         element.columns = element.columns.map((x: any) => ({
-          value: x.value
-            ? this.toSnakeCase(x.value)
-            : this.toSnakeCase(x.text ? x.text : x),
+          value: x.value ? snakeCase(x.value) : snakeCase(x.text ? x.text : x),
           text: x.text ? x.text : x,
         }));
         element.rows = element.rows.map((x: any) => ({
-          value: x.value
-            ? this.toSnakeCase(x.value)
-            : this.toSnakeCase(x.text ? x.text : x),
+          value: x.value ? snakeCase(x.value) : snakeCase(x.text ? x.text : x),
           text: x.text ? x.text : x,
         }));
       }
       if (element.type === 'matrixdropdown') {
         element.columns = element.columns.map((x: any) => ({
-          name: x.name
-            ? this.toSnakeCase(x.name)
-            : this.toSnakeCase(x.title ? x.title : x),
+          name: x.name ? snakeCase(x.name) : snakeCase(x.title ? x.title : x),
           title: x.title ? x.title : x.name ? x.name : x,
           ...(x.cellType && { cellType: x.cellType }),
           ...(x.isRequired && { isRequired: true }),
         }));
         element.rows = element.rows.map((x: any) => ({
-          value: x.value
-            ? this.toSnakeCase(x.value)
-            : this.toSnakeCase(x.text ? x.text : x),
+          value: x.value ? snakeCase(x.value) : snakeCase(x.text ? x.text : x),
           text: x.text ? x.text : x,
         }));
       }
       if (['resource', 'resources'].includes(element.type)) {
         if (element.relatedName) {
-          element.relatedName = this.toSnakeCase(element.relatedName);
-          if (!this.isSnakeCase(element.relatedName)) {
-            throw new Error(
-              this.translate.instant(
-                'components.formBuilder.errors.invalidRelatedName',
-                {
-                  name: element.relatedName,
-                  question: element.name,
-                  page: page.name,
-                }
-              )
-            );
-          }
+          element.relatedName = snakeCase(element.relatedName);
         } else {
           throw new Error(
             this.translate.instant(

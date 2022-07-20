@@ -436,7 +436,6 @@
 		},
 		"formBuilder": {
 			"errors": {
-				"invalidRelatedName": "****** {{name}} ****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			}
@@ -1271,10 +1270,6 @@
 				"missingName": "****** {{page}} ******",
 				"multipletext": {
 					"missingName": "****** {{question}}"
-				},
-				"resource": {
-					"invalidRelatedName": "****** {{relatedName}} ****** {{page}} ******",
-					"missingRelatedName": "****** {{question}} ****** {{page}} ******"
 				},
 				"snakecase": "****** {{name}} ****** {{page}} ******"
 			},
