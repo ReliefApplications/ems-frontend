@@ -24,6 +24,7 @@ interface ChartLegend {
  * Interface containing the settings of the chart series
  */
 interface ChartSeries {
+  name?: string;
   color?: string;
   data: {
     category: any;
