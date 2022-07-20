@@ -1,26 +1,9 @@
 import SurveyCreator from 'survey-creator';
-import {
-  Question,
-  QuestionSelectBase,
-  JsonMetadata,
-  SurveyModel,
-  Serializer,
-} from 'survey-knockout';
+import { JsonMetadata, SurveyModel, Serializer } from 'survey-angular';
 import { DomService } from '../../services/dom.service';
 import { SafeReferenceDataService } from '../../services/reference-data.service';
 import { SafeReferenceDataDropdownComponent } from '../../components/reference-data-dropdown/reference-data-dropdown.component';
-
-/** Custom type of questions for reference data */
-interface QuestionReferenceData extends QuestionSelectBase {
-  survey: SurveyModel;
-  referenceData?: string;
-  referenceDataDisplayField?: string;
-  referenceDataFilterFilterFromQuestion?: string;
-  referenceDataFilterForeignField?: string;
-  referenceDataFilterFilterCondition?: string;
-  referenceDataFilterLocalField?: string;
-  referenceDataChoicesLoaded?: boolean;
-}
+import { Question, QuestionSelectBase } from '../types';
 
 /**
  * Check if a question is of select type
@@ -60,11 +43,11 @@ export const init = (
     category: 'Choices from Reference data',
     required: true,
     dependsOn: 'referenceData',
-    visibleIf: (obj: null | QuestionReferenceData): boolean =>
+    visibleIf: (obj: null | QuestionSelectBase): boolean =>
       Boolean(obj?.referenceData),
     visibleIndex: 2,
     choices: (
-      obj: null | QuestionReferenceData,
+      obj: null | QuestionSelectBase,
       choicesCallback: (choices: any[]) => void
     ) => {
       if (obj?.referenceData) {
@@ -81,23 +64,23 @@ export const init = (
     type: 'dropdown',
     category: 'Choices from Reference data',
     dependsOn: 'referenceData',
-    visibleIf: (obj: null | QuestionReferenceData): boolean =>
+    visibleIf: (obj: null | QuestionSelectBase): boolean =>
       Boolean(obj?.referenceData),
     visibleIndex: 3,
     choices: (
-      obj: null | QuestionReferenceData,
+      obj: null | QuestionSelectBase,
       choicesCallback: (choices: any[]) => void
     ) => {
       const defaultOption = new Survey.ItemValue(
         '',
         SurveyCreator.localization.getString('pe.conditionSelectQuestion')
       );
-      const survey = obj?.survey;
+      const survey = obj?.survey as SurveyModel;
       if (!survey) return choicesCallback([defaultOption]);
       const questions = survey
         .getAllQuestions()
         .filter((question) => isSelectQuestion(question) && question !== obj)
-        .map((question) => question as QuestionReferenceData)
+        .map((question) => question as QuestionSelectBase)
         .filter((question) => question.referenceData);
       const qItems = questions.map((q) => {
         const text = q.locTitle.renderedHtml || q.name;
@@ -115,18 +98,18 @@ export const init = (
     category: 'Choices from Reference data',
     required: true,
     dependsOn: 'referenceDataFilterFilterFromQuestion',
-    visibleIf: (obj: null | QuestionReferenceData): boolean =>
+    visibleIf: (obj: null | QuestionSelectBase): boolean =>
       Boolean(obj?.referenceDataFilterFilterFromQuestion),
     visibleIndex: 4,
     choices: (
-      obj: null | QuestionReferenceData,
+      obj: null | QuestionSelectBase,
       choicesCallback: (choices: any[]) => void
     ) => {
       if (obj?.referenceDataFilterFilterFromQuestion) {
-        const foreignQuestion = obj.survey
+        const foreignQuestion = (obj.survey as SurveyModel)
           .getAllQuestions()
           .find((q) => q.name === obj.referenceDataFilterFilterFromQuestion) as
-          | QuestionReferenceData
+          | QuestionSelectBase
           | undefined;
         if (foreignQuestion?.referenceData) {
           referenceDataService
@@ -145,7 +128,7 @@ export const init = (
     category: 'Choices from Reference data',
     required: true,
     dependsOn: 'referenceDataFilterFilterFromQuestion',
-    visibleIf: (obj: null | QuestionReferenceData): boolean =>
+    visibleIf: (obj: null | QuestionSelectBase): boolean =>
       Boolean(obj?.referenceDataFilterFilterFromQuestion),
     visibleIndex: 5,
     choices: [
@@ -168,11 +151,11 @@ export const init = (
     category: 'Choices from Reference data',
     required: true,
     dependsOn: 'referenceDataFilterFilterFromQuestion',
-    visibleIf: (obj: null | QuestionReferenceData): boolean =>
+    visibleIf: (obj: null | QuestionSelectBase): boolean =>
       Boolean(obj?.referenceDataFilterFilterFromQuestion),
     visibleIndex: 6,
     choices: (
-      obj: null | QuestionReferenceData,
+      obj: null | QuestionSelectBase,
       choicesCallback: (choices: any[]) => void
     ) => {
       if (obj?.referenceData) {
@@ -186,7 +169,7 @@ export const init = (
   // custom editor for the reference data dropdown
   const referenceDataEditor = {
     render: (editor: any, htmlElement: HTMLElement) => {
-      const question = editor.object as QuestionReferenceData;
+      const question = editor.object as QuestionSelectBase;
       const dropdown = domService.appendComponentToBody(
         SafeReferenceDataDropdownComponent,
         htmlElement
@@ -213,7 +196,7 @@ export const render = (
   referenceDataService: SafeReferenceDataService
 ): void => {
   if (isSelectQuestion(questionElement)) {
-    const question = questionElement as QuestionReferenceData;
+    const question = questionElement as QuestionSelectBase;
 
     const updateChoices = () => {
       if (question.referenceData && question.referenceDataDisplayField) {
@@ -225,12 +208,12 @@ export const render = (
           question.referenceDataFilterFilterCondition &&
           question.referenceDataFilterLocalField
         ) {
-          const foreign = question.survey
+          const foreign = (question.survey as SurveyModel)
             .getAllQuestions()
             .find(
               (x: any) =>
                 x.name === question.referenceDataFilterFilterFromQuestion
-            ) as QuestionReferenceData;
+            ) as QuestionSelectBase;
           if (foreign.referenceData && !!foreign.value) {
             filter = {
               foreignReferenceData: foreign.referenceData,
@@ -270,11 +253,11 @@ export const render = (
     );
 
     // logic for filters
-    const foreignQuestion = question.survey
+    const foreignQuestion = (question.survey as SurveyModel)
       .getAllQuestions()
       .find(
         (x: any) => x.name === question.referenceDataFilterFilterFromQuestion
-      ) as QuestionReferenceData | undefined;
+      ) as QuestionSelectBase | undefined;
     foreignQuestion?.registerFunctionOnPropertyValueChanged('value', () => {
       updateChoices();
     });
