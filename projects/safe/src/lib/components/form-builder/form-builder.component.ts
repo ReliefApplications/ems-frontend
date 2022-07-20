@@ -11,11 +11,11 @@ import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import * as Survey from 'survey-angular';
 import { TranslateService } from '@ngx-translate/core';
+import { snakeCase, get } from 'lodash';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeReferenceDataService } from '../../services/reference-data.service';
 import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
-import { snakeCase, get } from 'lodash';
 
 /**
  * Array containing the different types of questions.
@@ -412,30 +412,30 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           }
           return {
             name: this.isSnakeCase(e.name) ? e.name : snakeCase(e.name),
-            title: e.title ? e.title : null,
+            title: e.title || null,
           };
         });
       }
       if (element.type === 'matrix') {
         element.columns = element.columns.map((x: any) => ({
-          value: x.value ? snakeCase(x.value) : snakeCase(x.text ? x.text : x),
-          text: x.text ? x.text : x,
+          value: snakeCase(x.value || x.text || x),
+          text: x.text || x,
         }));
         element.rows = element.rows.map((x: any) => ({
-          value: x.value ? snakeCase(x.value) : snakeCase(x.text ? x.text : x),
-          text: x.text ? x.text : x,
+          value: snakeCase(x.value || x.text || x),
+          text: x.text || x,
         }));
       }
       if (element.type === 'matrixdropdown') {
         element.columns = element.columns.map((x: any) => ({
-          name: x.name ? snakeCase(x.name) : snakeCase(x.title ? x.title : x),
-          title: x.title ? x.title : x.name ? x.name : x,
+          name: snakeCase(x.name || x.title || x),
+          title: x.title || x.name || x,
           ...(x.cellType && { cellType: x.cellType }),
           ...(x.isRequired && { isRequired: true }),
         }));
         element.rows = element.rows.map((x: any) => ({
-          value: x.value ? snakeCase(x.value) : snakeCase(x.text ? x.text : x),
-          text: x.text ? x.text : x,
+          value: snakeCase(x.value || x.text || x),
+          text: x.text || x,
         }));
       }
       if (['resource', 'resources'].includes(element.type)) {
