@@ -19,13 +19,13 @@ import {
   GET_PAGE_BY_ID,
   GetStepByIdQueryResponse,
   GET_STEP_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   EditStepMutationResponse,
   EDIT_STEP,
   EditPageMutationResponse,
   EDIT_PAGE,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { switchMap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 

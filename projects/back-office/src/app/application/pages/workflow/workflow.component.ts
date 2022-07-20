@@ -22,7 +22,7 @@ import {
   DELETE_STEP,
   EditWorkflowMutationResponse,
   EDIT_WORKFLOW,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({

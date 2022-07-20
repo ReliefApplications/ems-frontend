@@ -9,7 +9,7 @@ import {
   GET_ROUTING_KEYS,
   GET_FORM_NAMES,
   GetFormsQueryResponse,
-} from '../../../../../graphql/queries';
+} from '../../graphql/queries';
 import { map, startWith } from 'rxjs/operators';
 import { MatSelect } from '@angular/material/select';
 import { MatAutocomplete } from '@angular/material/autocomplete';

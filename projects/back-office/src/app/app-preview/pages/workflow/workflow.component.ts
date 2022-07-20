@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 import {
   GetWorkflowByIdQueryResponse,
   GET_WORKFLOW_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { PreviewService } from '../../../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
 

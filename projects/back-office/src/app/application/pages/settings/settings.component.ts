@@ -13,7 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {
   DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
 
 import { MatTableDataSource } from '@angular/material/table';
