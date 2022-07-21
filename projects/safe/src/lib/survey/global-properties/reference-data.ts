@@ -258,8 +258,9 @@ export const render = (
       .find(
         (x: any) => x.name === question.referenceDataFilterFilterFromQuestion
       ) as QuestionSelectBase | undefined;
-    foreignQuestion?.registerFunctionOnPropertyValueChanged('value', () => {
-      updateChoices();
-    });
+    foreignQuestion?.registerFunctionOnPropertyValueChanged(
+      'value',
+      updateChoices
+    );
   }
 };

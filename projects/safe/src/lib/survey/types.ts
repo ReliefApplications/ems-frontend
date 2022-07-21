@@ -1,29 +1,29 @@
 import * as Survey from 'survey-angular';
 
-/** Custom properties definition */
+/** Custom global properties definition */
 export interface GlobalProperties {
   tooltip?: string;
 }
 
 // REWRITING OF EXISTING QUESTION TYPES
 
-/** Main Question type */
+/** Type for general question */
 export interface Question extends Survey.Question, GlobalProperties {}
 
-/** Text question with extended properties */
+/** Type for text question */
 export interface QuestionText extends Survey.QuestionText, GlobalProperties {
   dateMin?: Date;
   dateMax?: Date;
 }
 
-/** Interface for question of type comment */
+/** Type for comment question */
 export interface QuestionComment
   extends Survey.QuestionComment,
     GlobalProperties {
   allowEdition?: boolean;
 }
 
-/** Custom type of questions for reference data */
+/** Type for all select-based questions */
 export interface QuestionSelectBase
   extends Survey.QuestionSelectBase,
     GlobalProperties {
@@ -38,13 +38,13 @@ export interface QuestionSelectBase
 
 // TYPES FOR CUSTOM QUESTIONS
 
-/** Model for owner question */
+/** Type for owner question */
 export interface QuestionOwner extends Survey.QuestionCustom, GlobalProperties {
   applications?: any;
   contentQuestion: QuestionSelectBase;
 }
 
-/** Model for resource question */
+/** Type for resource question */
 export interface QuestionResource
   extends Survey.QuestionCustom,
     GlobalProperties {
@@ -65,6 +65,7 @@ export interface QuestionResource
   customFilter: string;
 }
 
+/** Type for any questions, which allows to use all properties of different question types */
 export type AnyQuestion = Survey.SurveyElement &
   Partial<
     Question &

@@ -17,7 +17,6 @@ import {
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
-import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
 import {
   EXPORT_SETTINGS,
@@ -48,6 +47,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
 import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component';
+import { get, has, isString } from 'lodash';
 
 /**
  * Factory for creating scroll strategy
@@ -108,6 +108,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   @Input() loading = false;
   @Input() error = false;
   @Input() blank = false;
+  @Input() surveyLang = '';
 
   // === EXPORT ===
   public exportSettings = EXPORT_SETTINGS;
@@ -239,15 +240,37 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       if (Array.isArray(value)) {
         return meta.choices.reduce(
           (acc: string[], x: any) =>
-            value.includes(x.value) ? acc.concat([x.text]) : acc,
+            value.includes(x.value)
+              ? acc.push(this.getLocaleText(x.text))
+              : acc,
           []
         );
       } else {
-        return meta.choices.find((x: any) => x.value === value)?.text || '';
+        return this.getLocaleText(
+          meta.choices.find((x: any) => x.value === value)?.text || ''
+        );
       }
     } else {
       return value;
     }
+  }
+
+  /**
+   *  Get the locale text of a localisable string
+   *
+   * @param obj - The property object to analyze
+   * @returns - The text in the default lang of the survey
+   */
+  private getLocaleText(obj: any): string {
+    if (isString(obj)) {
+      return obj;
+    }
+    // if the object has a translation for the default language
+    if (has(obj, this.surveyLang)) {
+      return get(obj, this.surveyLang);
+    }
+    // if not, take the first translation in the object
+    return obj[Object.keys(obj)[0]];
   }
 
   /**
