@@ -3,9 +3,11 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
   Renderer2,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import {
@@ -99,7 +101,7 @@ const matches = (el: any, selector: any) =>
     },
   ],
 })
-export class SafeGridComponent implements OnInit, AfterViewInit {
+export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
   // === DATA ===
@@ -223,6 +225,26 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     this.grid?.columnReorder.subscribe((res) =>
       setTimeout(() => this.columnChange.emit(), 500)
     );
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.fields) {
+      // define a getter for locale text on choices so that kendo can call it
+      const self = this;
+      this.fields = this.fields.map((field) => ({
+        ...field,
+        meta: {
+          ...field.meta,
+          choices: field.meta?.choices?.map((choice: any) => ({
+            ...choice,
+            /** @returns Getter for the localeText */
+            get localeText() {
+              return self.getLocaleText(choice.text);
+            },
+          })),
+        },
+      }));
+    }
   }
 
   // === DATA ===
