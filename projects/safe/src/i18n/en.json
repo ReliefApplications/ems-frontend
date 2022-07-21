@@ -1166,7 +1166,6 @@
 		},
 		"widget": {
 			"add": "Add a Widget",
-      "duplicate": "Duplicating widget...",
 			"chart": {
 				"defaultTitle": "Chart Widget"
 			},
@@ -1174,6 +1173,7 @@
 				"confirmationMessage": "Do you confirm the deletion of the widget?",
 				"title": "Delete Widget"
 			},
+			"duplicate": "Duplicating widget...",
 			"map": {
 				"defaultTitle": "Map Widget",
 				"latitude": "Latitude",
@@ -1184,11 +1184,11 @@
 				"defaultTitle": "Scheduler Widget"
 			},
 			"tooltip": {
+				"duplicate": "Select the dashboard you want to put the copy in",
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"
-				},
-				"duplicate": "Select the dashboard you want to put the copy in"
+				}
 			}
 		},
 		"workflow": {
