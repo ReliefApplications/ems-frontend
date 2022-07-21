@@ -26,7 +26,7 @@ import {
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_NOTIFICATIONS } from './graphql/queries';
-import { NOTIFICATION_SUBSCRIPTION } from '../../graphql/subscriptions';
+import { NOTIFICATION_SUBSCRIPTION } from './graphql/subscriptions';
 
 describe('SafeLayoutComponent', () => {
   let component: SafeLayoutComponent;
