@@ -1267,6 +1267,7 @@
 				"choices": {
 					"valueDuplicated": "Please provide unique values for each of the choices of question: {{question}}"
 				},
+				"dataFieldDuplicated": "Data name duplicated : {{name}}. Please provide different value names for all questions.",
 				"missingName": "Missing value name for an element on page {{page}}. Please provide a valid data value name (snake_case) to save the form.",
 				"multipletext": {
 					"missingName": "Please provide name or title for each text of question: {{question}}"

@@ -1267,6 +1267,7 @@
 				"choices": {
 					"valueDuplicated": "****** {{question}}"
 				},
+				"dataFieldDuplicated": "****** {{name}} ******",
 				"missingName": "****** {{page}} ******",
 				"multipletext": {
 					"missingName": "****** {{question}}"

@@ -1267,6 +1267,7 @@
 				"choices": {
 					"valueDuplicated": "Veuillez configurer des valeurs uniques pour les choix de la question : {{question}}"
 				},
+				"dataFieldDuplicated": "Doublon de nom de valeur : {{name}}. Indiquez un nom de valeur distinct pour chaque question.",
 				"missingName": "Nom manquant pour un élément de la page : {{page}}. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire.",
 				"multipletext": {
 					"missingName": "Veuillez configurer un nom ou titre pour chaque champ de text de la question : {{question}}"

@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import * as Survey from 'survey-angular';
 import { TranslateService } from '@ngx-translate/core';
-import { snakeCase, get } from 'lodash';
+import { snakeCase, get, uniqBy, difference } from 'lodash';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { SafeReferenceDataService } from '../../services/reference-data.service';
 import { Form } from '../../models/form.model';
@@ -324,12 +324,41 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * Makes sure that value names are existent and snake case, to not cause backend problems.
    */
   private async validateValueNames(): Promise<void> {
-    const survey: Survey.SurveyModel = this.surveyCreator.survey;
-    survey.pages.forEach((page: Survey.Page) =>
+    const survey = new Survey.SurveyModel(this.surveyCreator.JSON);
+    await survey.pages.forEach((page: Survey.Page) => {
       page.elements.forEach((element: AnyQuestion) =>
         this.setQuestionNames(element, page)
-      )
-    );
+      );
+      if (uniqBy(page.elements, 'valueName').length !== page.elements.length) {
+        const duplicatedFields = difference(
+          page.elements as AnyQuestion[],
+          uniqBy(page.elements as AnyQuestion[], 'valueName')
+        );
+        throw new Error(
+          this.translate.instant(
+            'pages.formBuilder.errors.dataFieldDuplicated',
+            {
+              name: duplicatedFields[0].valueName,
+            }
+          )
+        );
+      }
+    });
+    this.surveyCreator.JSON = survey.toJSON();
+  }
+
+  /**
+   * Convert a string to snake_case. Overrides the snakeCase function of lodash
+   * by first checking if the text is not already in snake case
+   *
+   * @param text - The text to convert into snake_case
+   * @returns - The text as snake_case
+   */
+  private toSnakeCase(text: string): any {
+    if (this.isSnakeCase(text)) {
+      return text;
+    }
+    return snakeCase(text);
   }
 
   /**
@@ -352,9 +381,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     // create the valueName of the element in snake case
     if (!element.valueName) {
       if (element.title) {
-        element.valueName = snakeCase(element.title);
+        element.valueName = this.toSnakeCase(element.title);
       } else if (element.name) {
-        element.valueName = snakeCase(element.name);
+        element.valueName = this.toSnakeCase(element.name);
       } else {
         throw new Error(
           this.translate.instant('pages.formBuilder.errors.missingName', {
@@ -391,8 +420,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       }
     }
     if (element.getType() === 'multipletext') {
-      element.items = element.items.map((e: any) => {
-        if (!e.name && !e.title) {
+      element.items.forEach((item: any) => {
+        if (!item.name && !item.title) {
           throw new Error(
             this.translate.instant(
               'pages.formBuilder.errors.multipletext.missingName',
@@ -402,37 +431,29 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
             )
           );
         }
-        return {
-          name: this.isSnakeCase(e.name) ? e.name : snakeCase(e.name),
-          title: e.title || null,
-        };
+        item.name = this.toSnakeCase(item.name);
       });
     }
     if (element.getType() === 'matrix') {
-      element.columns = element.columns.map((x: any) => ({
-        value: snakeCase(x.value || x.text || x),
-        text: x.text || x,
-      }));
-      element.rows = element.rows.map((x: any) => ({
-        value: snakeCase(x.value || x.text || x),
-        text: x.text || x,
-      }));
+      element.columns.forEach(
+        (x: any) => (x.value = this.toSnakeCase(x.value || x.text || x))
+      );
+      element.rows.forEach(
+        (x: any) => (x.value = this.toSnakeCase(x.value || x.text || x))
+      );
     }
     if (element.getType() === 'matrixdropdown') {
-      element.columns = element.columns.map((x: any) => ({
-        name: snakeCase(x.name || x.title || x),
-        title: x.title || x.name || x,
-        ...(x.cellType && { cellType: x.cellType }),
-        ...(x.isRequired && { isRequired: true }),
-      }));
-      element.rows = element.rows.map((x: any) => ({
-        value: snakeCase(x.value || x.text || x),
-        text: x.text || x,
-      }));
+      element.columns.forEach((x: any) => {
+        x.name = this.toSnakeCase(x.name || x.title || x);
+        x.title = x.title || x.name || x;
+      });
+      element.rows.forEach((x: any) => {
+        x.value = this.toSnakeCase(x.value || x.text || x);
+      });
     }
     if (['resource', 'resources'].includes(element.getType())) {
       if (element.relatedName) {
-        element.relatedName = snakeCase(element.relatedName);
+        element.relatedName = this.toSnakeCase(element.relatedName);
       } else {
         throw new Error(
           this.translate.instant(
