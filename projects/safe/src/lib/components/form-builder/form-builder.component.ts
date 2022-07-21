@@ -351,10 +351,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * Convert a string to snake_case. Overrides the snakeCase function of lodash
    * by first checking if the text is not already in snake case
    *
-   * @param text - The text to convert into snake_case
-   * @returns - The text as snake_case
+   * @param text The text to convert
+   * @returns The text in snake_case
    */
-  private toSnakeCase(text: string): any {
+  private toSnakeCase(text: string): string {
     if (this.isSnakeCase(text)) {
       return text;
     }
