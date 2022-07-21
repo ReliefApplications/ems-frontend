@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   DuplicateApplicationMutationResponse,
   DUPLICATE_APPLICATION,
-} from '../../graphql/mutations';
+} from './graphql/mutations';
 import { Application, SafeSnackBarService } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 

@@ -16,10 +16,7 @@ import {
   AddDashboardMutationResponse,
   ADD_DASHBOARD,
 } from './graphql/mutations';
-import {
-  GetDashboardsQueryResponse,
-  GET_DASHBOARDS,
-} from '../../../graphql/queries';
+import { GetDashboardsQueryResponse, GET_DASHBOARDS } from './graphql/queries';
 import { AddDashboardComponent } from './components/add-dashboard/add-dashboard.component';
 import { TranslateService } from '@ngx-translate/core';
 
