@@ -11,28 +11,73 @@
   />
   <mat-icon matSuffix>search</mat-icon>
 </mat-form-field>
-<div class="application-list">
-  <div *ngIf="currentApplication">
-    <safe-button
-      [block]="true"
-      variant="primary"
-      (click)="onClick(currentApplication)"
-      >{{ currentApplication.name }}</safe-button
-    >
+
+<ng-container *ngIf="!selectDashboard">
+  <div class="application-list">
+    <div *ngIf="currentApplication">
+      <safe-button
+        [block]="true"
+        variant="primary"
+        (click)="onClick(currentApplication)"
+      >
+        {{ currentApplication.name }}
+      </safe-button>
+    </div>
+    <mat-divider *ngIf="currentApplication"></mat-divider>
+    <div class="search-application-list">
+      <ng-container *ngFor="let item of searchResults">
+        <safe-button
+          *ngIf="!selectDashboard"
+          [block]="true"
+          (click)="onClick(item)"
+          [matTooltip]="item.name"
+          matTooltipShowDelay="1000"
+          matTooltipPosition="right"
+          >{{ item.name }}</safe-button
+        >
+      </ng-container>
+    </div>
   </div>
-  <mat-divider *ngIf="currentApplication"></mat-divider>
-  <div class="search-application-list">
-    <safe-button
-      *ngFor="let item of searchResults"
-      [block]="true"
-      (click)="onClick(item)"
-      [matTooltip]="item.name"
-      matTooltipShowDelay="1000"
-      matTooltipPosition="right"
-      >{{ item.name }}</safe-button
-    >
-  </div>
-  <p *ngIf="searchResults.length === 0">
-    {{ 'common.filter.empty' | translate }}
-  </p>
-</div>
+</ng-container>
+
+<ng-container *ngIf="selectDashboard">
+  <mat-accordion class="application-list">
+    <div *ngIf="currentApplication">
+      <mat-expansion-panel *ngIf="selectDashboard" (opened)="onExpand(currentApplication)" class="mat-elevation-z0">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ currentApplication.name }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <safe-spinner *ngIf="dashboards.length === 0"></safe-spinner>
+        <ng-container *ngFor="let dashboard of dashboards">
+          <safe-button
+            [block]="true"
+            (click)="onClick(dashboard)"
+            >{{ dashboard.name }}</safe-button
+          >
+        </ng-container>
+      </mat-expansion-panel>
+    </div>
+    <mat-divider *ngIf="currentApplication"></mat-divider>
+    <div class="search-application-list">
+      <ng-container *ngFor="let item of searchResults">
+        <mat-expansion-panel *ngIf="selectDashboard" (opened)="onExpand(item)" class="mat-elevation-z0">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ item.name }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <safe-spinner *ngIf="dashboards.length === 0"></safe-spinner>
+          <ng-container *ngFor="let dashboard of dashboards">
+            <safe-button
+              [block]="true"
+              (click)="onClick(dashboard)"
+              >{{ dashboard.name }}</safe-button
+            >
+          </ng-container>
+        </mat-expansion-panel>
+      </ng-container>
+    </div>
+  </mat-accordion>
+</ng-container>

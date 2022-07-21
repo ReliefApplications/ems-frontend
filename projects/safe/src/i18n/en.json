@@ -1166,6 +1166,7 @@
 		},
 		"widget": {
 			"add": "Add a Widget",
+      "duplicate": "Duplicating widget...",
 			"chart": {
 				"defaultTitle": "Chart Widget"
 			},
@@ -1186,7 +1187,8 @@
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"
-				}
+				},
+				"duplicate": "Select the dashboard you want to put the copy in"
 			}
 		},
 		"workflow": {

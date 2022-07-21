@@ -13,6 +13,7 @@ import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
+import { SafeAuthService } from '../../services/auth.service';
 
 /** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
@@ -37,6 +38,7 @@ export class SafeWidgetGridComponent implements OnInit {
 
   @Input() widgets: any[] = [];
   @Input() canUpdate = false;
+  @Input() applicationId?: string;
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
@@ -46,6 +48,7 @@ export class SafeWidgetGridComponent implements OnInit {
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
   @Output() add: EventEmitter<any> = new EventEmitter();
+  @Output() duplicate: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -102,6 +105,15 @@ export class SafeWidgetGridComponent implements OnInit {
    */
   onEditWidget(e: any): void {
     this.edit.emit(e);
+  }
+
+  /**
+   * Emits duplicate event.
+   *
+   * @param e widget to duplicate
+   */
+  onDuplicateWidget(e: any) {
+    this.duplicate.emit(e);
   }
 
   /**

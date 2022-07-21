@@ -27,3 +27,11 @@ p {
 safe-button {
   display: block;
 }
+
+mat-expansion-panel-header {
+  height: 36px !important;
+}
+
+.mat-expansion-panel-spacing {
+  margin: 0;
+}

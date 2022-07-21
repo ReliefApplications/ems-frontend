@@ -48,10 +48,14 @@ import {
   TOGGLE_APPLICATION_LOCK,
   duplicatePageMutationResponse,
   DUPLICATE_PAGE,
+  EditDashboardMutationResponse,
+  EDIT_DASHBOARD,
 } from '../graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
+  GetDashboardByIdQueryResponse,
   GET_APPLICATION_BY_ID,
+  GET_DASHBOARD_BY_ID,
 } from '../graphql/queries';
 import { PositionAttributeCategory } from '../models/position-attribute-category.model';
 import {
@@ -121,6 +125,7 @@ export class SafeApplicationService {
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
    * @param router Angular router
+   * @param translate Service used to get translations
    */
   constructor(
     @Inject('environment') environment: any,
@@ -513,6 +518,64 @@ export class SafeApplicationService {
               `/applications/${applicationId}/${newPage?.type}/${newPage?.content}`,
             ]);
           }
+        }
+      });
+  }
+
+  /**
+   * Duplicates widget in indicated dashboard of an application.
+   *
+   * @param widget widget which will be duplicated
+   * @param dashboardId dashboard where the widget will be duplicated
+   */
+  duplicateWidget(widget: any, dashboardId: string): void {
+    this.snackBar.openSnackBar(
+      this.translate.instant('models.widget.duplicate'),
+      { duration: 2500 }
+    );
+    this.apollo
+      .query<GetDashboardByIdQueryResponse>({
+        query: GET_DASHBOARD_BY_ID,
+        variables: {
+          id: dashboardId,
+        },
+      })
+      .subscribe((res: any) => {
+        if (res.data.dashboard) {
+          let tiles = res.data.dashboard.structure
+            ? [...res.data.dashboard.structure]
+            : [];
+          const generatedTiles =
+            tiles.length === 0 ? 0 : Math.max(...tiles.map((x) => x.id)) + 1;
+          widget.id = generatedTiles;
+          tiles = [...tiles, widget];
+          this.apollo
+            .mutate<EditDashboardMutationResponse>({
+              mutation: EDIT_DASHBOARD,
+              variables: {
+                id: dashboardId,
+                structure: tiles,
+              },
+            })
+            .subscribe((res2) => {
+              if (res2.data?.editDashboard) {
+                const applicationId =
+                  res2.data.editDashboard.page?.application?.id;
+                this.router.navigate([
+                  `/applications/${applicationId}/dashboard/${dashboardId}`,
+                ]);
+              }
+            });
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.accessNotProvided', {
+              type: this.translate
+                .instant('common.dashboard.one')
+                .toLowerCase(),
+              error: '',
+            }),
+            { error: true }
+          );
         }
       });
   }

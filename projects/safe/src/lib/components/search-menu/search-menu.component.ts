@@ -7,7 +7,13 @@ import {
   Output,
   ElementRef,
   TemplateRef,
+  OnDestroy,
 } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import {
+  GetApplicationByIdQueryResponse,
+  GET_APPLICATION_BY_ID,
+} from '../../graphql/queries';
 import { Application } from '../../models/application.model';
 
 /**
@@ -18,11 +24,14 @@ import { Application } from '../../models/application.model';
   templateUrl: './search-menu.component.html',
   styleUrls: ['./search-menu.component.scss'],
 })
-export class SafeSearchMenuComponent implements OnInit {
+export class SafeSearchMenuComponent implements OnInit, OnDestroy {
   @Input() currentApplicationId: string | undefined = '';
   @Input() applications: Application[] = [];
   @Input() headerTemplate?: TemplateRef<any>;
+  @Input() selectDashboard = false;
   private show = true;
+  private applicationSubscription: any;
+  private expanded = false;
 
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() open: EventEmitter<any> = new EventEmitter<any>();
@@ -32,6 +41,7 @@ export class SafeSearchMenuComponent implements OnInit {
   public currentApplication: Application | undefined;
   public searchResults: any = [];
   public search = '';
+  public dashboards: any[] = [];
 
   /** Listening to the click event on the component and setting the show variable to true. */
   @HostListener('click')
@@ -53,8 +63,9 @@ export class SafeSearchMenuComponent implements OnInit {
    * created
    *
    * @param eRef Unused ElementRef
+   * @param apollo Used to to get dashboards queries
    */
-  constructor(private eRef: ElementRef) {}
+  constructor(private eRef: ElementRef, private apollo: Apollo) {}
 
   ngOnInit(): void {
     this.searchResults = this.applications
@@ -78,6 +89,34 @@ export class SafeSearchMenuComponent implements OnInit {
   }
 
   /**
+   * Manages the mat expansion events, queries all available dashboards and shows them in the dropdown
+   *
+   * @param application Application to expand
+   */
+  onExpand(application: any) {
+    this.dashboards = [];
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
+    this.applicationSubscription = this.apollo
+      .query<GetApplicationByIdQueryResponse>({
+        query: GET_APPLICATION_BY_ID,
+        variables: {
+          id: application.id,
+        },
+      })
+      .subscribe((res: any) => {
+        if (res.data) {
+          res.data.application.pages.map((page: any) => {
+            if (page.type === 'dashboard') {
+              this.dashboards.push(page);
+            }
+          });
+        }
+      });
+  }
+
+  /**
    * Handles the click on application
    *
    * @param app Item that the user clicked on
@@ -85,5 +124,11 @@ export class SafeSearchMenuComponent implements OnInit {
   onClick(app: any) {
     this.open.emit(app);
     this.close.emit();
+  }
+
+  ngOnDestroy() {
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
   }
 }

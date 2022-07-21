@@ -35,9 +35,11 @@
         *ngIf="canUpdate"
         class="widget-options"
         [widget]="widget"
+        [applicationId]="applicationId"
         (edit)="onEditWidget($event)"
         (delete)="onDeleteWidget($event)"
         (expand)="onExpandWidget($event)"
+        (duplicate)="onDuplicateWidget($event)"
       >
       </safe-floating-options>
       <safe-widget

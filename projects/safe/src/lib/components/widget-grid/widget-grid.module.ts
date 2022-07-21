@@ -21,6 +21,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { SafeAlertModule } from '../ui/alert/alert.module';
 
 /** Module for the widget-related components */
 @NgModule({
@@ -51,6 +54,9 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     SafeWidgetChoiceModule,
     LayoutModule,
     IndicatorsModule,
+    SafeSearchMenuModule,
+    OverlayModule,
+    SafeAlertModule,
   ],
   exports: [SafeWidgetGridComponent, SafeTileDataComponent],
 })

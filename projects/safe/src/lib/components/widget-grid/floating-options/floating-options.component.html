@@ -2,6 +2,8 @@
   mat-icon-button
   [matMenuTriggerFor]="menu"
   aria-label="Example icon-button with a menu"
+  cdkOverlayOrigin
+  #appMenuTrigger="cdkOverlayOrigin"
 >
   <mat-icon>more_vert</mat-icon>
 </button>
@@ -15,3 +17,25 @@
     </button>
   </ng-container>
 </mat-menu>
+
+<ng-template #searchMenuHeaderTemplate>
+  <safe-alert
+    ><safe-icon icon="info"></safe-icon>
+    {{ 'models.widget.tooltip.duplicate' | translate }}
+  </safe-alert>
+</ng-template>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="appMenuTrigger"
+  [cdkConnectedOverlayOpen]="showAppMenu"
+>
+  <safe-search-menu
+    [headerTemplate]="searchMenuHeaderTemplate"
+    [currentApplicationId]="applicationId"
+    [applications]="applications"
+    [selectDashboard]="true"
+    (close)="showAppMenu = false"
+    (open)="onDuplicate($event)"
+  ></safe-search-menu>
+</ng-template>

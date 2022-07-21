@@ -104,9 +104,11 @@
   [loading]="loading"
   [widgets]="tiles"
   [canUpdate]="dashboard?.canUpdate || false"
+  [applicationId]="applicationId"
   (move)="onMove($event)"
   (edit)="onEditTile($event)"
   (delete)="onDeleteTile($event)"
   (goToNextStep)="goToNextStep.emit($event)"
   (add)="onAdd($event)"
+  (duplicate)="onDuplicateTile($event)"
 ></safe-widget-grid>

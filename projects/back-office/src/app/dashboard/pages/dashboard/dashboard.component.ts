@@ -19,6 +19,7 @@ import {
   SafeAuthService,
   SafeTileDataComponent,
   Application,
+  SafeSearchMenuComponent,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
@@ -36,6 +37,9 @@ import {
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ *
+ */
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -66,6 +70,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public showAppMenu = false;
   public applications: Application[] = [];
 
+  /**
+   * Constructor for DashboardComponent
+   *
+   * @param applicationService Service used to manage all app editions
+   * @param workflowService Service used to manage all workflow editions
+   * @param apollo Used to do all queries and mutations
+   * @param route Used to get the active route
+   * @param router Used to change the page route
+   * @param dialog Used to open overlay modals
+   * @param snackBar Service used to show snackbars
+   * @param dashboardService Service used to manage the dashboard
+   * @param translateService Service used to get translations
+   * @param authService Service used to check the user permisions
+   */
   constructor(
     private applicationService: SafeApplicationService,
     private workflowService: SafeWorkflowService,
@@ -146,7 +164,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.closeDashboard();
   }
 
-  /** Add a new widget to the dashboard. */
+  /**
+   * Add a new widget to the dashboard.
+   *
+   * @param e Widget content.
+   */
   onAdd(e: any): void {
     const tile = JSON.parse(JSON.stringify(e));
     tile.id = this.generatedTiles;
@@ -228,7 +250,34 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Remove a widget from the dashboard. */
+  /**
+   * Duplicates a widget from the dashboard.
+   *
+   * @param e Object with all needed information for duplication.
+   */
+  onDuplicateTile(e: any): void {
+    console.log(e);
+    const index = this.tiles.findIndex((v: any) => v.id === e.widgetId);
+    const tile = { ...this.tiles[index] };
+    if (e.dashboardId === this.id) {
+      tile.id = this.generatedTiles;
+      this.generatedTiles += 1;
+      this.tiles = [...this.tiles, tile];
+      this.autoSaveChanges();
+      setTimeout(() => {
+        const el = document.getElementById(`widget-${tile.id}`);
+        el?.scrollIntoView({ behavior: 'smooth' });
+      });
+    } else {
+      this.applicationService.duplicateWidget(tile, e.dashboardId);
+    }
+  }
+
+  /**
+   * Remove a widget from the dashboard.
+   *
+   * @param e Tile to delete
+   */
   onDeleteTile(e: any): void {
     this.tiles = this.tiles.filter((x) => x.id !== e.id);
     this.autoSaveChanges();
@@ -270,7 +319,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       );
   }
 
-  /** Edit the permissions layer. */
+  /**
+   * Edit the permissions layer.
+   *
+   * @param e New permissions to update
+   */
   saveAccess(e: any): void {
     if (this.router.url.includes('/workflow/')) {
       this.apollo
@@ -305,6 +358,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Toggles the formActive variable
+   */
   toggleFormActive(): void {
     if (
       this.dashboard?.page
@@ -387,6 +443,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Shows the app selection menu for dashboard duplication
+   */
   public onAppSelection(): void {
     this.showAppMenu = !this.showAppMenu;
     const authSubscription = this.authService.user$.subscribe(
