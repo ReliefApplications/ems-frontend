@@ -329,11 +329,11 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       page.elements.forEach((element: AnyQuestion) =>
         this.setQuestionNames(element, page)
       );
-      if (uniqBy(page.elements, 'valueName').length !== page.elements.length) {
-        const duplicatedFields = difference(
-          page.elements as AnyQuestion[],
-          uniqBy(page.elements as AnyQuestion[], 'valueName')
-        );
+      const duplicatedFields = difference(
+        page.elements as AnyQuestion[],
+        uniqBy(page.elements as AnyQuestion[], 'valueName')
+      );
+      if (duplicatedFields.length > 0) {
         throw new Error(
           this.translate.instant(
             'pages.formBuilder.errors.dataFieldDuplicated',
