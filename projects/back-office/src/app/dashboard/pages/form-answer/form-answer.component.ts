@@ -6,7 +6,7 @@ import { Form, SafeBreadcrumbService, SafeFormComponent } from '@safe/builder';
 import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 
 @Component({
   selector: 'app-form-answer',

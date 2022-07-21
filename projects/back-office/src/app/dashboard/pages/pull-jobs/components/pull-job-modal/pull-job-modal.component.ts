@@ -21,7 +21,7 @@ import {
   GET_FORM_NAMES,
   GetRoutingKeysQueryResponse,
   GET_ROUTING_KEYS,
-} from 'projects/back-office/src/app/graphql/queries';
+} from '../../graphql/queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 // eslint-disable-next-line max-len
 import { SubscriptionModalComponent } from '../../../../../application/pages/subscriptions/components/subscription-modal/subscription-modal.component';

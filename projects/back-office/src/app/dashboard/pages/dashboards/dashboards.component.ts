@@ -15,7 +15,7 @@ import {
   DELETE_DASHBOARD,
   AddDashboardMutationResponse,
   ADD_DASHBOARD,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetDashboardsQueryResponse,
   GET_DASHBOARDS,

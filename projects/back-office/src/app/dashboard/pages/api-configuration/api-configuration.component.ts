@@ -20,11 +20,11 @@ import { Subscription } from 'rxjs';
 import {
   EditApiConfigurationMutationResponse,
   EDIT_API_CONFIGURATION,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetApiConfigurationQueryResponse,
   GET_API_CONFIGURATION,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 
 @Component({
   selector: 'app-api-configuration',

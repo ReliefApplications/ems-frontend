@@ -28,11 +28,11 @@ import {
   EDIT_PAGE,
   EditStepMutationResponse,
   EDIT_STEP,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetDashboardByIdQueryResponse,
   GET_DASHBOARD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 

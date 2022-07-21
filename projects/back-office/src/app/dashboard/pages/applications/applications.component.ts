@@ -14,7 +14,7 @@ import {
 import {
   GetApplicationsQueryResponse,
   GET_APPLICATIONS,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
@@ -22,7 +22,7 @@ import {
   ADD_APPLICATION,
   EditApplicationMutationResponse,
   EDIT_APPLICATION,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';

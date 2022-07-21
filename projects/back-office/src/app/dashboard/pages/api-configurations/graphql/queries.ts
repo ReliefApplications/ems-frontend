@@ -1,27 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Setting, ApiConfiguration } from '@safe/builder';
-
-// === GET SETTING ===
-export const GET_SETTING = gql`
-  query GetSetting {
-    setting {
-      userManagement {
-        local
-        apiConfiguration {
-          id
-          name
-        }
-        serviceAPI
-        attributesMapping
-      }
-    }
-  }
-`;
-
-export interface GetSettingQueryResponse {
-  loading: boolean;
-  setting: Setting;
-}
+import { ApiConfiguration } from '@safe/builder';
 
 // === GET API CONFIGURATIONS ===
 
