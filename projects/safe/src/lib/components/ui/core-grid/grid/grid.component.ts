@@ -247,36 +247,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  // === DATA ===
-  /**
-   * Returns property value in object from path.
-   *
-   * @param item Item to get property of.
-   * @param path Path of the property.
-   * @returns Value of the property.
-   */
-  public getPropertyValue(item: any, path: string): any {
-    const meta = this.fields.find((x) => x.name === path).meta;
-    const value = get(item, path);
-    if (meta.choices) {
-      if (Array.isArray(value)) {
-        return meta.choices.reduce(
-          (acc: string[], x: any) =>
-            value.includes(x.value)
-              ? acc.push(this.getLocaleText(x.text))
-              : acc,
-          []
-        );
-      } else {
-        return this.getLocaleText(
-          meta.choices.find((x: any) => x.value === value)?.text || ''
-        );
-      }
-    } else {
-      return value;
-    }
-  }
-
   /**
    *  Get the locale text of a localisable string
    *
@@ -293,6 +263,34 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     }
     // if not, take the first translation in the object
     return obj[Object.keys(obj)[0]];
+  }
+
+  // === DATA ===
+  /**
+   * Returns property value in object from path.
+   *
+   * @param item Item to get property of.
+   * @param path Path of the property.
+   * @returns Value of the property.
+   */
+  public getPropertyValue(item: any, path: string): any {
+    const meta = this.fields.find((x) => x.name === path).meta;
+    const value = get(item, path);
+    if (meta.choices) {
+      if (Array.isArray(value)) {
+        return meta.choices.reduce(
+          (acc: string[], x: any) =>
+            value.includes(x.value) ? acc.push(x.localeText) : acc,
+          []
+        );
+      } else {
+        return (
+          meta.choices.find((x: any) => x.value === value)?.localeText || ''
+        );
+      }
+    } else {
+      return value;
+    }
   }
 
   /**
