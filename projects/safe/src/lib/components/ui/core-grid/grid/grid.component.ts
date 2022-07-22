@@ -233,7 +233,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @returns Value of the property.
    */
   public getPropertyValue(item: any, path: string): any {
-    const meta = this.fields.find((x) => x.name === path).meta;
+    const meta = this.fields.find((x) => x.name === path)?.meta;
     const value = get(item, path);
     if (meta.choices) {
       if (Array.isArray(value)) {
@@ -247,6 +247,25 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       }
     } else {
       return value;
+    }
+  }
+
+  /**
+   * Returns property value in object from path. Specific for multiselect reference data.
+   *
+   * @param item Item to get property of.
+   * @param path Path of the property.
+   * @param attribute Path of the final attribute.
+   * @returns Value of the property.
+   */
+  public getReferenceDataPropertyValue(
+    item: any,
+    path: string,
+    attribute: string
+  ): any {
+    const values = get(item, path);
+    if (Array.isArray(values)) {
+      return values.map((x) => x[attribute]);
     }
   }
 
@@ -402,6 +421,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    */
   onColumnResize(): void {
     this.columnChange.emit();
+    console.log('FIELDS', this.fields);
   }
 
   /**

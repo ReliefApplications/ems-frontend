@@ -9,6 +9,8 @@ import { ApolloQueryResult } from '@apollo/client';
 const NON_SELECTABLE_FIELDS = ['canUpdate', 'canDelete'];
 /** List of user fields */
 const USER_FIELDS = ['id', 'name', 'username'];
+/** ReferenceData identifier convention */
+export const REFERENCE_DATA_END = 'Ref';
 
 /**
  * Shared query builder service. The query builder service is used by the widgets, that creates the query based on their settings.
@@ -167,6 +169,14 @@ export class QueryBuilderService {
             return x.name + '\n';
           }
           case 'LIST': {
+            console.log('X', x);
+            if (x.type.endsWith(REFERENCE_DATA_END)) {
+              return (
+                `${x.name} {
+              ${this.buildFields(x.fields)}
+            }` + '\n'
+              );
+            }
             return (
               `${x.name} (
             sortField: ${x.sort.field ? `"${x.sort.field}"` : null},

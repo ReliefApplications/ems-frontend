@@ -4,6 +4,7 @@ import { prettifyLabel } from '../utils/prettify';
 import get from 'lodash/get';
 import { SafeApiProxyService } from './api-proxy.service';
 import { MULTISELECT_TYPES } from '../components/ui/core-grid/grid/grid.constants';
+import { REFERENCE_DATA_END } from './query-builder.service';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -89,7 +90,11 @@ export class SafeGridService {
           case 'LIST': {
             let metaData = get(metaFields, fullName);
             metaData = Object.assign([], metaData);
-            metaData.type = 'records';
+            if (f.type.endsWith(REFERENCE_DATA_END)) {
+              metaData.type = 'referenceData';
+            } else {
+              metaData.type = 'records';
+            }
             const cachedField = get(layoutFields, fullName);
             const title = f.label ? f.label : prettifyLabel(f.name);
             const subFields = this.getFields(
@@ -97,7 +102,11 @@ export class SafeGridService {
               metaFields,
               layoutFields,
               fullName,
-              { disabled: true, hidden: true, filter: false }
+              {
+                disabled: true,
+                hidden: !f.type.endsWith(REFERENCE_DATA_END),
+                filter: false,
+              }
             );
             return {
               name: fullName,
