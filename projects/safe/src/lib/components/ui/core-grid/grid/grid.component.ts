@@ -236,7 +236,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     const meta = this.fields.find((x) => x.name === path).meta;
     const value = get(item, path);
     if (meta.choices) {
-      console.log(meta.choices);
       if (Array.isArray(value)) {
         return meta.choices.reduce(
           (acc: string[], x: any) =>

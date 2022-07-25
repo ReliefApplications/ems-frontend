@@ -242,7 +242,6 @@ export class SafeGridService {
   public async populateMetaFields(metaFields: any): Promise<void> {
     for (const fieldName of Object.keys(metaFields)) {
       const meta = metaFields[fieldName];
-      console.log(meta);
       if (meta.choicesByUrl) {
         const url: string = meta.choicesByUrl.url;
         const localRes = localStorage.getItem(url);
