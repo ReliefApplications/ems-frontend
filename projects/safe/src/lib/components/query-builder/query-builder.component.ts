@@ -83,7 +83,7 @@ export class SafeQueryBuilderComponent implements OnInit {
       if (this.form?.get('filter')) {
         this.form?.setControl(
           'filter',
-          createFilterGroup(this.form?.value.filter, this.availableScalarFields)
+          createFilterGroup(this.form?.value.filter)
         );
       }
     } else {
@@ -106,20 +106,14 @@ export class SafeQueryBuilderComponent implements OnInit {
           );
           this.form?.setControl(
             'filter',
-            createFilterGroup(
-              this.form?.value.filter,
-              this.availableScalarFields
-            )
+            createFilterGroup(this.form?.value.filter)
           );
         }
       });
       this.form?.controls.name.valueChanges.subscribe((res) => {
         if (this.allQueries.find((x) => x === res)) {
           this.availableFields = this.queryBuilder.getFields(res);
-          this.form?.setControl(
-            'filter',
-            createFilterGroup(null, this.availableScalarFields)
-          );
+          this.form?.setControl('filter', createFilterGroup(null));
           this.form?.setControl(
             'fields',
             this.formBuilder.array([], Validators.required)
@@ -133,10 +127,7 @@ export class SafeQueryBuilderComponent implements OnInit {
           );
         } else {
           this.availableFields = [];
-          this.form?.setControl(
-            'filter',
-            createFilterGroup(null, this.availableScalarFields)
-          );
+          this.form?.setControl('filter', createFilterGroup(null));
           this.form?.setControl('fields', this.formBuilder.array([]));
           this.form?.setControl(
             'sort',

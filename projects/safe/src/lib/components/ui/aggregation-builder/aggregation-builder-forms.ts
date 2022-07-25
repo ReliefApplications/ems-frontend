@@ -47,7 +47,7 @@ export const addStage = (value: any): FormGroup => {
     case PipelineStage.FILTER: {
       return formBuilder.group({
         type: [PipelineStage.FILTER],
-        form: createFilterGroup(value.form ? value.form : {}, null),
+        form: createFilterGroup(value.form ? value.form : {}),
       });
     }
     case PipelineStage.SORT: {
