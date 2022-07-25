@@ -142,7 +142,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public loading = false;
   public error = false;
   private templateStructure = '';
-  public surveyLang = '';
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -393,7 +392,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         .subscribe((res) => {
           if (res.data.form.structure) {
             this.templateStructure = res.data.form.structure;
-            this.surveyLang = JSON.parse(this.templateStructure).locale;
           }
         });
   }

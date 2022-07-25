@@ -141,7 +141,7 @@
                 [filterService]="filterService"
                 [data]="field.meta.choices"
                 [field]="field.name"
-                textField="localeText"
+                textField="text"
                 valueField="value"
               >
               </safe-dropdown-filter-menu>
@@ -155,7 +155,7 @@
                 [filter]="filter"
                 [data]="field.meta.choices"
                 [field]="field.name"
-                textField="localeText"
+                textField="text"
                 valueField="value"
               >
               </safe-dropdown-filter>
@@ -423,7 +423,7 @@
           >
             <kendo-dropdownlist
               [data]="field.meta.choices"
-              textField="localeText"
+              textField="text"
               valueField="value"
               [valuePrimitive]="true"
               [formControl]="formGroup.get(field.name)"
@@ -499,7 +499,7 @@
             [filterService]="filterService"
             [data]="field.meta.choices || []"
             [field]="field.name"
-            textField="localeText"
+            textField="text"
             valueField="value"
           >
           </safe-array-filter-menu>
@@ -513,7 +513,7 @@
             [filter]="filter"
             [data]="field.meta.choices || []"
             [field]="field.name"
-            textField="localeText"
+            textField="text"
             valueField="value"
           >
           </safe-array-filter>
@@ -533,7 +533,7 @@
         >
           <kendo-multiselect
             [data]="field.meta.choices"
-            textField="localeText"
+            textField="text"
             valueField="value"
             [valuePrimitive]="true"
             [formControl]="formGroup.get(field.name)"
@@ -703,7 +703,7 @@
                       >
                         <kendo-dropdownlist
                           [data]="field.meta.choices"
-                          textField="localeText"
+                          textField="text"
                           [valueField]="'value'"
                           [valuePrimitive]="true"
                           [formControl]="
@@ -739,7 +739,7 @@
                       >
                         <kendo-dropdownlist
                           [data]="field.meta.choices"
-                          textField="localeText"
+                          textField="text"
                           [valueField]="'value'"
                           [valuePrimitive]="true"
                           [formControlName]="column.name"
@@ -758,7 +758,7 @@
                       >
                         <kendo-multiselect
                           [data]="field.meta.choices"
-                          textField="localeText"
+                          textField="text"
                           [valueField]="'value'"
                           [valuePrimitive]="true"
                           [formControlName]="column.name"

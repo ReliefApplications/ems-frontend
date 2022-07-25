@@ -242,6 +242,7 @@ export class SafeGridService {
   public async populateMetaFields(metaFields: any): Promise<void> {
     for (const fieldName of Object.keys(metaFields)) {
       const meta = metaFields[fieldName];
+      console.log(meta);
       if (meta.choicesByUrl) {
         const url: string = meta.choicesByUrl.url;
         const localRes = localStorage.getItem(url);
@@ -262,6 +263,15 @@ export class SafeGridService {
             choices: this.extractChoices(res, meta.choicesByUrl),
           };
         }
+      }
+      if (meta.choices) {
+        metaFields[fieldName] = {
+          ...meta,
+          choices: meta.choices.map((choice: any) => ({
+            value: choice.value,
+            text: choice.text.default || choice.text,
+          })),
+        };
       }
     }
   }

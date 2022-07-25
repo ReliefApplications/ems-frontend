@@ -3,11 +3,9 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
   Renderer2,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import {
@@ -49,7 +47,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
 import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component';
-import { get, has, isString } from 'lodash';
+import { get } from 'lodash';
 
 /**
  * Factory for creating scroll strategy
@@ -101,7 +99,7 @@ const matches = (el: any, selector: any) =>
     },
   ],
 })
-export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
+export class SafeGridComponent implements OnInit, AfterViewInit {
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
   // === DATA ===
@@ -110,7 +108,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() loading = false;
   @Input() error = false;
   @Input() blank = false;
-  @Input() surveyLang = '';
 
   // === EXPORT ===
   public exportSettings = EXPORT_SETTINGS;
@@ -227,44 +224,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     );
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.fields) {
-      // define a getter for locale text on choices so that kendo can call it
-      const self = this;
-      this.fields = this.fields.map((field) => ({
-        ...field,
-        meta: {
-          ...field.meta,
-          choices: field.meta?.choices?.map((choice: any) => ({
-            ...choice,
-            /** @returns Getter for the localeText */
-            get localeText() {
-              return self.getLocaleText(choice.text);
-            },
-          })),
-        },
-      }));
-    }
-  }
-
-  /**
-   *  Get the locale text of a localisable string
-   *
-   * @param obj - The property object to analyze
-   * @returns - The text in the default lang of the survey
-   */
-  private getLocaleText(obj: any): string {
-    if (isString(obj)) {
-      return obj;
-    }
-    // if the object has a translation for the default language
-    if (has(obj, this.surveyLang)) {
-      return get(obj, this.surveyLang);
-    }
-    // if not, take the first translation in the object
-    return obj[Object.keys(obj)[0]];
-  }
-
   // === DATA ===
   /**
    * Returns property value in object from path.
@@ -277,16 +236,15 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     const meta = this.fields.find((x) => x.name === path).meta;
     const value = get(item, path);
     if (meta.choices) {
+      console.log(meta.choices);
       if (Array.isArray(value)) {
         return meta.choices.reduce(
           (acc: string[], x: any) =>
-            value.includes(x.value) ? acc.push(x.localeText) : acc,
+            value.includes(x.value) ? acc.concat([x.text]) : acc,
           []
         );
       } else {
-        return (
-          meta.choices.find((x: any) => x.value === value)?.localeText || ''
-        );
+        return meta.choices.find((x: any) => x.value === value)?.text || '';
       }
     } else {
       return value;
