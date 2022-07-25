@@ -16,12 +16,13 @@
     <mat-label>
       {{ 'components.widget.settings.map.properties.zoom' | translate }}
       <safe-icon
-        icon="info"
+        icon="info_outline"
+        class="cursor-pointer"
         [matTooltip]="
           'components.widget.settings.map.properties.zoom' | translate
         "
         [inline]="true"
-        [size]="16"
+        [size]="18"
         variant="grey"
       ></safe-icon>
     </mat-label>
@@ -41,6 +42,7 @@
         <safe-icon
           matSuffix
           icon="info"
+          class="cursor-pointer"
           variant="grey"
           [matTooltip]="
             'components.widget.settings.map.tooltip.default.latitude'
@@ -61,6 +63,7 @@
         <safe-icon
           matSuffix
           icon="info"
+          class="cursor-pointer"
           variant="grey"
           [matTooltip]="
             'components.widget.settings.map.tooltip.default.longitude'

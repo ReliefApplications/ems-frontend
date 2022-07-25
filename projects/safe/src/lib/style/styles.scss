@@ -269,6 +269,14 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
+@mixin form-field($theme) {
+  mat-label {
+    safe-icon {
+      vertical-align: text-bottom;
+    }
+  }
+}
+
 // === GLOBAL STYLES ==
 .mat-table {
   box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
@@ -436,6 +444,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 @include slide-toggle($safe-theme);
 @include expansion-panel($safe-theme);
 @include checkbox($safe-theme);
+@include form-field($safe-theme);
 @include custom-theme($safe-theme);
 
 html,
