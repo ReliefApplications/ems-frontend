@@ -17,7 +17,6 @@ import {
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
-import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
 import {
   EXPORT_SETTINGS,
@@ -48,6 +47,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
 import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component';
+import { get } from 'lodash';
 
 /**
  * Factory for creating scroll strategy

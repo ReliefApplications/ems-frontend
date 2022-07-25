@@ -3,7 +3,6 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { saveAs } from '@progress/kendo-file-saver';
@@ -14,8 +13,7 @@ import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
 import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
-import get from 'lodash/get';
-import groupBy from 'lodash/groupBy';
+import { uniq, get, groupBy } from 'lodash';
 
 /**
  * Default file name for chart exports
@@ -48,6 +46,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
 
   /**
    * Get filename from the date and widget title
+   *
    * @returns filename
    */
   get fileName(): string {
@@ -168,10 +167,24 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
           );
           if (get(this.settings, 'chart.aggregation.mapping.series', null)) {
             const groups = groupBy(aggregationData, 'series');
-            this.series = Object.keys(groups).map((key) => ({
-              name: key,
-              data: groups[key],
-            }));
+            const categories = uniq(
+              aggregationData.map((x: any) => x.category)
+            );
+            this.series = Object.keys(groups).map((key) => {
+              const rawData = groups[key];
+              const data = Array.from(
+                categories,
+                (category) =>
+                  rawData.find((x) => x.category === category) || {
+                    category,
+                    field: null,
+                  }
+              );
+              return {
+                name: key,
+                data,
+              };
+            });
           } else {
             this.series = [
               {
