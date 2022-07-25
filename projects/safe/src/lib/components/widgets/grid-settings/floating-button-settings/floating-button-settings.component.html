@@ -161,7 +161,10 @@
         </div>
         <ng-container *ngIf="relatedForms.length > 0">
           <mat-checkbox formControlName="attachToRecord">
-            {{ 'components.widget.settings.grid.buttons.callback.attach' | translate }}
+            {{
+              'components.widget.settings.grid.buttons.callback.attach'
+                | translate
+            }}
             <safe-icon
               icon="info_outline"
               variant="grey"

@@ -11,7 +11,10 @@
   <div formGroupName="userManagement" class="form-group">
     <mat-radio-group formControlName="local" class="form-radio-group">
       <mat-radio-button [value]="true">
-        {{ 'components.users.advancedSettings.userManagement.local.title' | translate }}
+        {{
+          'components.users.advancedSettings.userManagement.local.title'
+            | translate
+        }}
         <safe-icon
           icon="info_outline"
           variant="grey"
