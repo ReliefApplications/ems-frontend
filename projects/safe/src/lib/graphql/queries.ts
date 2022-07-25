@@ -10,6 +10,7 @@ import { Workflow } from '../models/workflow.model';
 import { Dashboard } from '../models/dashboard.model';
 import { ReferenceData } from '../models/reference-data.model';
 import { RecordHistory } from '../models/recordsHistory';
+import { ApiConfiguration } from '../models/apiConfiguration.model';
 
 // === GET PROFILE ===
 
@@ -1140,4 +1141,40 @@ export const GET_RECORD_HISTORY_BY_ID = gql`
 export interface GetRecordHistoryByIdResponse {
   loading: boolean;
   recordHistory: RecordHistory;
+}
+
+/** Graphql query for getting multiple api configurations object with a cursor */
+export const GET_API_CONFIGURATIONS = gql`
+  query GetApiConfigurations($first: Int, $afterCursor: ID) {
+    apiConfigurations(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+/** Model for GetApiConfigurationsQueryResponse object */
+export interface GetApiConfigurationsQueryResponse {
+  loading: boolean;
+  apiConfigurations: {
+    edges: {
+      node: ApiConfiguration;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
 }

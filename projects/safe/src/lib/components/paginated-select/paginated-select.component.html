@@ -1,0 +1,20 @@
+<mat-form-field appearance="outline">
+  <mat-label>{{ label | translate }}</mat-label>
+  <mat-select
+    [(ngModel)]="value"
+    (openedChange)="onOpenSelect($event)"
+    [disabled]="disabled"
+    [required]="required"
+    (focusin)="onFocusIn($event)"
+    (focusout)="onFocusOut($event)"
+  >
+    <mat-option *ngFor="let element of elements$ | async" [value]="element.id">
+      {{ element.name }}
+    </mat-option>
+    <mat-spinner
+      *ngIf="loading"
+      diameter="24"
+      style="padding-top: 1em"
+    ></mat-spinner>
+  </mat-select>
+</mat-form-field>

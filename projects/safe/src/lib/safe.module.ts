@@ -40,6 +40,7 @@ import { SafeUserSummaryModule } from './components/user-summary/user-summary.mo
 import { SafeDateModule } from './pipes/date/date.module';
 import { SafeIconModule } from './components/ui/icon/icon.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
+import { SafePaginatedSelectModule } from './components/paginated-select/paginated-select.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -85,7 +86,7 @@ import { SafeRoleSummaryModule } from './components/role-summary/role-summary.mo
     SafeDateModule,
     SafeIconModule,
     SafeRoleSummaryModule,
+    SafePaginatedSelectModule,
   ],
-  declarations: [],
 })
 export class SafeModule {}
