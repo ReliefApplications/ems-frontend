@@ -1,9 +1,5 @@
-import {
-  ChoicesRestful,
-  JsonMetadata,
-  Question,
-  QuestionFile,
-} from 'survey-knockout';
+import { ChoicesRestful, JsonMetadata, QuestionFile } from 'survey-angular';
+import { Question } from '../types';
 
 /**
  * Add support for custom properties to the survey

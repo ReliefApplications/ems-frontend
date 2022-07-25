@@ -6,6 +6,7 @@ import {
   GetRolesFromApplicationsQueryResponse,
   GET_ROLES_FROM_APPLICATIONS,
 } from '../../graphql/queries';
+import { QuestionOwner } from '../types';
 
 /**
  * Inits the owner component.
@@ -41,7 +42,7 @@ export const init = (
       });
 
       const applicationEditor = {
-        render: (editor: any, htmlElement: any) => {
+        render: (editor: any, htmlElement: HTMLElement) => {
           const question = editor.object;
           const dropdown = domService.appendComponentToBody(
             SafeApplicationDropdownComponent,
@@ -58,7 +59,7 @@ export const init = (
         applicationEditor
       );
     },
-    onLoaded: (question: any): void => {
+    onLoaded: (question: QuestionOwner): void => {
       apollo
         .query<GetRolesFromApplicationsQueryResponse>({
           query: GET_ROLES_FROM_APPLICATIONS,
@@ -76,7 +77,7 @@ export const init = (
           }
         });
     },
-    onAfterRender: (question: any, el: any): void => {},
+    onAfterRender: (question: QuestionOwner, el: HTMLElement): void => {},
   };
   Survey.ComponentCollection.Instance.add(component);
 };

@@ -90,7 +90,6 @@ export class AdvancedSettingsComponent implements OnInit {
             { error: true }
           );
         } else {
-          console.log('FOo');
           const setting = res.data.setting;
           const isNotLocal =
             setting &&
