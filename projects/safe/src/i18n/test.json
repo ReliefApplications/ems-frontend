@@ -437,7 +437,6 @@
 		},
 		"formBuilder": {
 			"errors": {
-				"invalidRelatedName": "****** {{name}} ****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			}
@@ -673,7 +672,7 @@
 				"disallowRecordAccessibility": "****** {{form}}",
 				"disallowRecordCreation": "****** {{form}}",
 				"disallowRecordDeletion": "****** {{form}}",
-				"disallowRecordUpate": "****** {{form}}",
+				"disallowRecordUpdate": "****** {{form}}",
 				"hideFeature": "****** {{page}} ******",
 				"showFeature": "****** {{page}} ******"
 			},
@@ -1309,13 +1308,10 @@
 				"choices": {
 					"valueDuplicated": "****** {{question}}"
 				},
+				"dataFieldDuplicated": "****** {{name}} ******",
 				"missingName": "****** {{page}} ******",
 				"multipletext": {
 					"missingName": "****** {{question}}"
-				},
-				"resource": {
-					"invalidRelatedName": "****** {{relatedName}} ****** {{page}} ******",
-					"missingRelatedName": "****** {{question}} ****** {{page}} ******"
 				},
 				"snakecase": "****** {{name}} ****** {{page}} ******"
 			},

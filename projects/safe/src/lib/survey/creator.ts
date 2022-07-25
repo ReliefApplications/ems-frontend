@@ -1,4 +1,4 @@
-import { JsonMetadata, Question } from 'survey-knockout';
+import { JsonMetadata, Question } from 'survey-angular';
 
 /**
  * Edits general settings of the survey builder.

@@ -14,16 +14,15 @@
             | translate
         }}
         <safe-icon
-          class="info-tooltip"
-          [size]="18"
+          icon="info_outline"
           variant="grey"
+          [inline]="true"
+          [size]="18"
           [matTooltip]="
             'components.aggregationBuilder.tooltip.' + stageForm.value.type
               | translate
           "
           matTooltipPosition="right"
-          icon="info_outline"
-          [inline]="true"
         ></safe-icon>
       </mat-panel-title>
     </mat-expansion-panel-header>

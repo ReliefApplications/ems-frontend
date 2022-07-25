@@ -57,11 +57,14 @@
           icon="close"
           aria-label="Clear"
           (click)="routingKey = ''"
-        >
-        </safe-button>
-        <mat-hint>{{
-          'components.application.subscription.modal.hint.listenTo' | translate
-        }}</mat-hint>
+        ></safe-button>
+        <safe-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          matSuffix
+          [matTooltip]="'components.application.subscription.modal.hint.listenTo' | translate"
+        ></safe-icon>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>{{

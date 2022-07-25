@@ -159,24 +159,22 @@
             </safe-button>
           </div>
         </div>
-        <span class="info-row" *ngIf="relatedForms.length > 0">
-          <mat-checkbox formControlName="attachToRecord">{{
-            'components.widget.settings.grid.buttons.callback.attach'
-              | translate
-          }}</mat-checkbox>
-          <safe-icon
-            style="padding-left: 2px"
-            icon="info_outline"
-            variant="grey"
-            [size]="18"
-            [inline]="true"
-            [matTooltip]="
-              'components.widget.settings.grid.buttons.tooltip.attach'
-                | translate
-            "
-            matTooltipPosition="right"
-          ></safe-icon>
-        </span>
+        <ng-container *ngIf="relatedForms.length > 0">
+          <mat-checkbox formControlName="attachToRecord">
+            {{ 'components.widget.settings.grid.buttons.callback.attach' | translate }}
+            <safe-icon
+              icon="info_outline"
+              variant="grey"
+              [inline]="true"
+              [size]="18"
+              [matTooltip]="
+                'components.widget.settings.grid.buttons.tooltip.attach'
+                  | translate
+              "
+              matTooltipPosition="right"
+            ></safe-icon>
+          </mat-checkbox>
+        </ng-container>
         <div *ngIf="buttonForm.value.attachToRecord" class="sub-parameters">
           <mat-form-field appearance="outline">
             <mat-label>{{ 'models.form.select' | translate }}</mat-label>
@@ -215,12 +213,9 @@
             </safe-query-builder>
           </ng-container>
         </div>
-        <span class="info-row">
-          <mat-checkbox formControlName="notify">{{
-            'components.channel.dropdown.select' | translate
-          }}</mat-checkbox>
+        <mat-checkbox formControlName="notify">
+          {{ 'components.channel.dropdown.select' | translate }}
           <safe-icon
-            style="padding-left: 2px"
             icon="info_outline"
             variant="grey"
             [size]="18"
@@ -231,7 +226,7 @@
             "
             matTooltipPosition="right"
           ></safe-icon>
-        </span>
+        </mat-checkbox>
         <div *ngIf="buttonForm.value.notify" class="sub-parameters">
           <mat-form-field appearance="outline">
             <mat-label>{{ 'common.channel.one' | translate }}</mat-label>
@@ -254,12 +249,9 @@
             />
           </mat-form-field>
         </div>
-        <span class="info-row">
-          <mat-checkbox formControlName="publish">{{
-            'common.publish' | translate
-          }}</mat-checkbox>
+        <mat-checkbox formControlName="publish">
+          {{ 'common.publish' | translate }}
           <safe-icon
-            style="padding-left: 2px"
             icon="info_outline"
             variant="grey"
             [size]="18"
@@ -270,7 +262,7 @@
             "
             matTooltipPosition="right"
           ></safe-icon>
-        </span>
+        </mat-checkbox>
         <div *ngIf="buttonForm.value.publish" class="sub-parameters">
           <mat-form-field appearance="outline">
             <mat-label>{{ 'common.channel.one' | translate }}</mat-label>
