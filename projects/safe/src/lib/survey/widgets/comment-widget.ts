@@ -1,15 +1,5 @@
-import { surveyLocalization } from 'survey-angular';
-import {
-  Question,
-  QuestionComment as QuestionCommentSurveyJS,
-  SurveyModel,
-} from 'survey-knockout';
-
-/** Interface for question of type comment */
-interface QuestionComment extends QuestionCommentSurveyJS {
-  survey: SurveyModel;
-  allowEdition?: boolean;
-}
+import { surveyLocalization, SurveyModel } from 'survey-angular';
+import { Question, QuestionComment } from '../types';
 
 /**
  * Custom definition for overriding the comment question. Add edit functionality.
@@ -43,7 +33,7 @@ export const init = (Survey: any): void => {
         const btnEl = document.createElement('button');
         btnEl.innerText = surveyLocalization.getString(
           'oort:edit',
-          question.survey.locale
+          (question.survey as SurveyModel).locale
         );
         btnEl.style.width = '50px';
         mainDiv.appendChild(btnEl);
