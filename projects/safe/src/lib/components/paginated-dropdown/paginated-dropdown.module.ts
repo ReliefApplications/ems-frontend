@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafePaginatedSelectComponent } from './paginated-select.component';
+import { SafePaginatedDropdownComponent } from './paginated-dropdown.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -12,7 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
  * related to the form display.
  */
 @NgModule({
-  declarations: [SafePaginatedSelectComponent],
+  declarations: [SafePaginatedDropdownComponent],
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -22,6 +22,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     MatProgressSpinnerModule,
   ],
-  exports: [SafePaginatedSelectComponent],
+  exports: [SafePaginatedDropdownComponent],
 })
-export class SafePaginatedSelectModule {}
+export class SafePaginatedDropdownModule {}

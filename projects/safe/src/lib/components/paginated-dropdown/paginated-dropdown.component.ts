@@ -71,19 +71,22 @@ type AvailableQueries = keyof typeof AVAILABLE_QUERIES;
 
 /** Component for a dropdown with pagination */
 @Component({
-  selector: 'safe-paginated-select',
-  templateUrl: './paginated-select.component.html',
-  styleUrls: ['./paginated-select.component.scss'],
+  selector: 'safe-paginated-dropdown',
+  templateUrl: './paginated-dropdown.component.html',
+  styleUrls: ['./paginated-dropdown.component.scss'],
   providers: [
     {
       provide: MAT_SELECT_SCROLL_STRATEGY,
       useFactory: scrollFactory,
       deps: [Overlay],
     },
-    { provide: MatFormFieldControl, useExisting: SafePaginatedSelectComponent },
+    {
+      provide: MatFormFieldControl,
+      useExisting: SafePaginatedDropdownComponent,
+    },
   ],
 })
-export class SafePaginatedSelectComponent
+export class SafePaginatedDropdownComponent
   implements
     OnInit,
     OnDestroy,
@@ -110,7 +113,7 @@ export class SafePaginatedSelectComponent
 
   public stateChanges = new Subject<void>();
   @HostBinding()
-  id = `safe-paginated-select-${SafePaginatedSelectComponent.nextId++}`;
+  id = `safe-paginated-dropdown-${SafePaginatedDropdownComponent.nextId++}`;
 
   /**
    * Gets the placeholder for the select
@@ -200,7 +203,7 @@ export class SafePaginatedSelectComponent
     return this.selected.invalid && this.touched;
   }
 
-  public controlType = 'safe-paginated-select';
+  public controlType = 'safe-paginated-dropdown';
 
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
@@ -211,7 +214,7 @@ export class SafePaginatedSelectComponent
    */
   setDescribedByIds(ids: string[]) {
     const controlElement = this.elementRef.nativeElement.querySelector(
-      '.safe-paginated-select-container'
+      '.safe-paginated-dropdown-container'
     );
     if (!controlElement) return;
     controlElement.setAttribute('aria-describedby', ids.join(' '));
