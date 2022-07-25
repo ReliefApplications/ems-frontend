@@ -63,7 +63,9 @@
               variant="grey"
               [inline]="true"
               [size]="18"
-              [matTooltip]="'components.form.create.tooltip.template' | translate"
+              [matTooltip]="
+                'components.form.create.tooltip.template' | translate
+              "
             ></safe-icon>
           </mat-slide-toggle>
           <ng-container *ngIf="addForm.controls.inheritsTemplate.value">
