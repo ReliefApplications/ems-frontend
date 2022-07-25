@@ -12,26 +12,26 @@
         />
       </mat-form-field>
       <mat-radio-group formControlName="newResource" class="form-radio-group">
-        <span class="info-row">
-          <mat-radio-button [value]="true">{{
-            'components.form.create.choice.resource' | translate
-          }}</mat-radio-button>
-          <mat-icon
-            class="info-icon"
+        <mat-radio-button [value]="true">
+          {{ 'components.form.create.choice.resource' | translate }}
+          <safe-icon
+            icon="info_outline"
+            variant="grey"
+            [inline]="true"
+            [size]="18"
             [matTooltip]="'components.form.create.tooltip.resource' | translate"
-            >info</mat-icon
-          >
-        </span>
-        <span class="info-row">
-          <mat-radio-button [value]="false">{{
-            'components.form.create.choice.inherit' | translate
-          }}</mat-radio-button>
-          <mat-icon
-            class="info-icon"
+          ></safe-icon>
+        </mat-radio-button>
+        <mat-radio-button [value]="false">
+          {{ 'components.form.create.choice.inherit' | translate }}
+          <safe-icon
+            icon="info_outline"
+            variant="grey"
+            [inline]="true"
+            [size]="18"
             [matTooltip]="'components.form.create.tooltip.inherit' | translate"
-            >info</mat-icon
-          >
-        </span>
+          ></safe-icon>
+        </mat-radio-button>
       </mat-radio-group>
       <ng-container *ngIf="!addForm.value.newResource">
         <mat-form-field appearance="outline">
@@ -53,22 +53,19 @@
           </mat-select>
         </mat-form-field>
         <ng-container *ngIf="addForm.controls.resource.value !== null">
-          <div class="info-row">
-            <mat-slide-toggle
-              formControlName="inheritsTemplate"
-              class="form-slide-toggle"
-              >{{
-                'components.form.create.choice.template' | translate
-              }}</mat-slide-toggle
-            >
-            <mat-icon
-              class="info-icon"
-              [matTooltip]="
-                'components.form.create.tooltip.template' | translate
-              "
-              >info</mat-icon
-            >
-          </div>
+          <mat-slide-toggle
+            formControlName="inheritsTemplate"
+            class="form-slide-toggle"
+          >
+            {{ 'components.form.create.choice.template' | translate }}
+            <safe-icon
+              icon="info_outline"
+              variant="grey"
+              [inline]="true"
+              [size]="18"
+              [matTooltip]="'components.form.create.tooltip.template' | translate"
+            ></safe-icon>
+          </mat-slide-toggle>
           <ng-container *ngIf="addForm.controls.inheritsTemplate.value">
             <mat-form-field appearance="outline">
               <mat-label>{{

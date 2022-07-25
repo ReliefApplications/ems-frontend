@@ -12,7 +12,7 @@
     <div class="form-group">
       <div class="form-group-row">
         <mat-form-field appearance="outline" style="flex: 1">
-          <mat-label>{{ 'common.name' | translate }} *</mat-label>
+          <mat-label>{{ 'common.name' | translate }}</mat-label>
           <input
             type="text"
             [placeholder]="'common.placeholder.name' | translate"
@@ -49,11 +49,13 @@
             matInput
             formControlName="schedule"
           />
-          <mat-icon
+          <safe-icon
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
             matSuffix
             [matTooltip]="'components.pullJob.modal.hint.schedule' | translate"
-            >info</mat-icon
-          >
+          ></safe-icon>
         </mat-form-field>
         <mat-form-field appearance="outline" style="flex: 1">
           <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
@@ -81,11 +83,13 @@
             matInput
             formControlName="url"
           />
-          <mat-icon
+          <safe-icon
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
             matSuffix
             [matTooltip]="'components.pullJob.modal.hint.url' | translate"
-            >info</mat-icon
-          >
+          ></safe-icon>
         </mat-form-field>
         <mat-form-field appearance="outline" style="flex: 1">
           <mat-label>{{ 'models.pullJob.path' | translate }}</mat-label>
@@ -97,11 +101,13 @@
             matInput
             formControlName="path"
           />
-          <mat-icon
+          <safe-icon
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
             matSuffix
             [matTooltip]="'components.pullJob.modal.hint.path' | translate"
-            >info</mat-icon
-          >
+          ></safe-icon>
         </mat-form-field>
       </div>
       <div class="form-group-row">
