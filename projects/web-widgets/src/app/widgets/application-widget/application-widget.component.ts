@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { Page, SafeLayoutService } from '@safe/builder';
 
+/** Application web widget component */
 @Component({
   selector: 'app-application-widget',
   templateUrl: './application-widget.component.html',
@@ -25,6 +26,11 @@ export class ApplicationWidgetComponent implements OnInit {
 
   public showSidenav = false;
 
+  /**
+   * Application web widget component
+   *
+   * @param layoutService Shared layout service
+   */
   constructor(private layoutService: SafeLayoutService) {}
 
   ngOnInit(): void {

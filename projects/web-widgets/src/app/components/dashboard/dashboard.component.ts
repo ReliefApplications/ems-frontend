@@ -13,6 +13,9 @@ import {
   GET_DASHBOARD_BY_ID,
 } from './graphql/queries';
 
+/**
+ * Dashboard component
+ */
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -27,6 +30,11 @@ export class DashboardComponent implements OnInit, OnChanges {
   public tiles = [];
   public dashboard?: Dashboard;
 
+  /**
+   * Dashboard component
+   *
+   * @param apollo Apollo service
+   */
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
