@@ -29,6 +29,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Applications page module.
+ */
 @NgModule({
   declarations: [ApplicationsComponent, ChoseRoleComponent, FilterComponent],
   imports: [
