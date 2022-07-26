@@ -35,11 +35,7 @@ import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
-import {
-  CalendarDOMService,
-  MonthViewService,
-  WeekNamesService,
-} from '@progress/kendo-angular-dateinputs';
+// import { CalendarDOMService, MonthViewService, WeekNamesService } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { SafeGridService } from '../../../../services/grid.service';
@@ -79,9 +75,9 @@ const matches = (el: any, selector: any) =>
   providers: [
     PopupService,
     ResizeBatchService,
-    CalendarDOMService,
-    MonthViewService,
-    WeekNamesService,
+    // CalendarDOMService,
+    // MonthViewService,
+    // WeekNamesService,
     {
       provide: MAT_SELECT_SCROLL_STRATEGY,
       useFactory: scrollFactory,

@@ -33,15 +33,15 @@ registerLocaleData(localeEn);
 
 // Kendo datepicker for surveyjs
 import {
-  CalendarDOMService,
-  CenturyViewService,
-  DecadeViewService,
-  HoursService,
-  MinutesService,
-  MonthViewService,
-  TimePickerDOMService,
-  TOUCH_ENABLED,
-  YearViewService,
+  // CalendarDOMService,
+  // CenturyViewService,
+  // DecadeViewService,
+  // HoursService,
+  // MinutesService,
+  // MonthViewService,
+  // TimePickerDOMService,
+  // TOUCH_ENABLED,
+  // YearViewService,
 } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
@@ -131,20 +131,20 @@ export const httpTranslateLoader = (http: HttpClient) =>
       useValue: localStorage,
     },
     // TODO: check
-    {
-      provide: TOUCH_ENABLED,
-      useValue: [touchEnabled],
-    },
+    // {
+    //   provide: TOUCH_ENABLED,
+    //   useValue: [touchEnabled],
+    // },
     PopupService,
     ResizeBatchService,
-    CalendarDOMService,
-    TimePickerDOMService,
-    MonthViewService,
-    HoursService,
-    MinutesService,
-    YearViewService,
-    DecadeViewService,
-    CenturyViewService,
+    // CalendarDOMService,
+    // TimePickerDOMService,
+    // MonthViewService,
+    // HoursService,
+    // MinutesService,
+    // YearViewService,
+    // DecadeViewService,
+    // CenturyViewService,
   ],
   bootstrap: [AppComponent],
 })
