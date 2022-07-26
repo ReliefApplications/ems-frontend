@@ -11,6 +11,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Toolbar component visible when editing application.
+ * Appear on top of the view.
+ */
 @Component({
   selector: 'app-application-toolbar',
   templateUrl: './application-toolbar.component.html',
@@ -25,6 +29,15 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
   public canPublish = false;
   public user: any;
 
+  /**
+   * Toolbar component visible when editing application
+   *
+   * @param applicationService Shared application service
+   * @param router Angular router
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
+   */
   constructor(
     private applicationService: SafeApplicationService,
     private router: Router,

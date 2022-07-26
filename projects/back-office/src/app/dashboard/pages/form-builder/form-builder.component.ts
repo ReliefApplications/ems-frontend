@@ -25,6 +25,9 @@ import { map } from 'rxjs/operators';
 import { SafeStatusModalComponent, NOTIFICATIONS } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Form builder page
+ */
 @Component({
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
@@ -62,6 +65,17 @@ export class FormBuilderComponent implements OnInit {
   public nameForm: FormGroup = new FormGroup({});
   public hasChanges = false;
 
+  /**
+   * Form builder page
+   *
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param router Angular router
+   * @param snackBar Shared snackbar service
+   * @param dialog Material dialog service
+   * @param authService Shared authentication service
+   * @param translate Angular translate service
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -72,7 +86,11 @@ export class FormBuilderComponent implements OnInit {
     private translate: TranslateService
   ) {}
 
-  /** Shows modal confirmation before leave the page if has changes on form */
+  /**
+   * Show modal confirmation before leave the page if has changes on form
+   *
+   * @returns boolean of observable of boolean
+   */
   canDeactivate(): Observable<boolean> | boolean {
     if (this.hasChanges) {
       const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
@@ -151,13 +169,20 @@ export class FormBuilderComponent implements OnInit {
     }
   }
 
+  /**
+   * Activate or deactivate form
+   */
   toggleFormActive(): void {
     if (this.form?.canUpdate) {
       this.formActive = !this.formActive;
     }
   }
 
-  /** Save the form */
+  /**
+   * Save form structure
+   *
+   * @param structure form structure
+   */
   public onSave(structure: any): void {
     if (!this.form?.id) {
       alert('not valid');
@@ -216,7 +241,11 @@ export class FormBuilderComponent implements OnInit {
     }
   }
 
-  /** Update the status of the form. */
+  /**
+   * Update the status of the form.
+   *
+   * @param e new status
+   */
   public updateStatus(e: any): void {
     const statusModal = this.dialog.open(SafeStatusModalComponent, {
       disableClose: true,
@@ -248,7 +277,11 @@ export class FormBuilderComponent implements OnInit {
       });
   }
 
-  /** Available in previous version to change the template. */
+  /**
+   * Available in previous version to change the template.
+   *
+   * @param id id of version
+   */
   setTemplate(id: string): void {
     this.apollo
       .watchQuery<GetFormByIdQueryResponse>({
@@ -262,7 +295,11 @@ export class FormBuilderComponent implements OnInit {
       });
   }
 
-  /** Available in previous version to change the version. */
+  /**
+   * Available in previous version to change the version.
+   *
+   * @param e new version
+   */
   public onOpenVersion(e: any): void {
     this.activeVersion = e;
     this.structure = this.activeVersion.data;
@@ -270,7 +307,9 @@ export class FormBuilderComponent implements OnInit {
     // this.surveyCreator.saveSurveyFunc = null;
   }
 
-  /** Available in previous version to change the version. */
+  /**
+   * Available in previous version to change the version.
+   */
   public resetActiveVersion(): void {
     this.activeVersion = null;
     this.structure = this.form?.structure;
@@ -314,7 +353,11 @@ export class FormBuilderComponent implements OnInit {
       });
   }
 
-  /** Edit the permissions layer. */
+  /**
+   * Edit the permissions layer.
+   *
+   * @param e new permissions
+   */
   saveAccess(e: any): void {
     const statusModal = this.dialog.open(SafeStatusModalComponent, {
       disableClose: true,
@@ -346,6 +389,11 @@ export class FormBuilderComponent implements OnInit {
       });
   }
 
+  /**
+   * Called when form structure is updated
+   *
+   * @param event update event
+   */
   formStructureChange(event: any): void {
     this.hasChanges = event !== this.form?.structure;
     localStorage.setItem(`form:${this.id}`, event);

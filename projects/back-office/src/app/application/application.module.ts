@@ -5,6 +5,9 @@ import { ApplicationComponent } from './application.component';
 import { SafeLayoutModule, SafeConfirmModalModule } from '@safe/builder';
 import { ApplicationToolbarModule } from './components/application-toolbar/application-toolbar.module';
 
+/**
+ * Application module.
+ */
 @NgModule({
   declarations: [ApplicationComponent],
   imports: [

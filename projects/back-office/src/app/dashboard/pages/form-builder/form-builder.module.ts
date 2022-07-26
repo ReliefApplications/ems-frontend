@@ -16,6 +16,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Form builder module.
+ */
 @NgModule({
   declarations: [FormBuilderComponent, HistoryComponent],
   imports: [
