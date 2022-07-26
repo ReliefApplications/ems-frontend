@@ -33,8 +33,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
 
+/** Forms page component */
 @Component({
   selector: 'app-forms',
   templateUrl: './forms.component.html',
@@ -75,6 +77,16 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     endCursor: '',
   };
 
+  /**
+   * Forms page component
+   *
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param router Angular router
+   * @param snackBar Shared snackbar
+   * @param authService Shared authentication service
+   * @param translate Angular translate service
+   */
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
