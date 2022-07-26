@@ -419,6 +419,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Toggle visibility of application menu
+   * Get applications
+   */
   public onAppSelection(): void {
     this.showAppMenu = !this.showAppMenu;
     const authSubscription = this.authService.user$.subscribe(

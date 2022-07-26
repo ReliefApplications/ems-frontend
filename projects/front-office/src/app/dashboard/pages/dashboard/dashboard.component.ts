@@ -52,6 +52,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
+   * @param translate Angular translate service
    */
   constructor(
     private apollo: Apollo,

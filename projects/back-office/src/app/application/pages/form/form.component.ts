@@ -69,6 +69,7 @@ export class FormComponent implements OnInit, OnDestroy {
    * @param route Angular activated route
    * @param router Angular router
    * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -77,7 +78,7 @@ export class FormComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SafeSnackBarService,
-    private translateService: TranslateService
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -174,27 +175,19 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant('common.step.one'),
-                  error: res.errors[0].message,
-                }
-              ),
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.step.one'),
+                error: res.errors[0].message,
+              }),
               { error: true }
             );
           } else {
             if (res.data) {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService
-                      .instant('common.step.one')
-                      .toLowerCase(),
-                    value: tabName,
-                  }
-                )
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.step.one').toLowerCase(),
+                  value: tabName,
+                })
               );
               this.step = { ...this.step, name: res.data.editStep.name };
               this.workflowService.updateStepName(res.data.editStep);
@@ -213,29 +206,19 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService
-                    .instant('common.page.one')
-                    .toLowerCase(),
-                  error: res.errors[0].message,
-                }
-              ),
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one').toLowerCase(),
+                error: res.errors[0].message,
+              }),
               { error: true }
             );
           } else {
             if (res.data) {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService
-                      .instant('common.page.one')
-                      .toLowerCase(),
-                    value: tabName,
-                  }
-                )
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.page.one').toLowerCase(),
+                  value: tabName,
+                })
               );
               const newPage = { ...this.page, name: res.data.editPage.name };
               this.page = newPage;

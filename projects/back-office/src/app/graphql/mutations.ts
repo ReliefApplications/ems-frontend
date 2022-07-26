@@ -985,6 +985,7 @@ export interface EditPullJobMutationResponse {
 }
 
 // === ADD REFERENCE DATA===
+/** Add reference data mutation */
 export const ADD_REFERENCE_DATA = gql`
   mutation addReferenceData($name: String!) {
     addReferenceData(name: $name) {
@@ -1021,12 +1022,14 @@ export const ADD_REFERENCE_DATA = gql`
   }
 `;
 
+/** Add reference data mutation response */
 export interface AddReferenceDataMutationResponse {
   loading: boolean;
   addReferenceData: ReferenceData;
 }
 
 // === DELETE REFERENCE DATA ===
+/** Delete reference data mutation */
 export const DELETE_REFERENCE_DATA = gql`
   mutation deleteReferenceData($id: ID!) {
     deleteReferenceData(id: $id) {
@@ -1035,12 +1038,14 @@ export const DELETE_REFERENCE_DATA = gql`
   }
 `;
 
+/** Delete reference data mutation response */
 export interface DeleteReferenceDataMutationResponse {
   loading: boolean;
   deleteReferenceData: ReferenceData;
 }
 
 // === EDIT REFERENCE DATA ===
+/** Edit refenrece data mutation */
 export const EDIT_REFERENCE_DATA = gql`
   mutation editReferenceData(
     $id: ID!
@@ -1101,6 +1106,7 @@ export const EDIT_REFERENCE_DATA = gql`
   }
 `;
 
+/** Edit reference data mutation response */
 export interface EditReferenceDataMutationResponse {
   loading: boolean;
   editReferenceData: ReferenceData;

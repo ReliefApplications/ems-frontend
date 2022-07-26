@@ -50,6 +50,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
+   * @param translate Angular translate service
    */
   constructor(
     private apollo: Apollo,
@@ -58,7 +59,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
-    private translateService: TranslateService
+    private translate: TranslateService
   ) {}
 
   /**
@@ -86,10 +87,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
               this.loading = res.loading;
             } else {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
+                this.translate.instant(
                   'common.notifications.accessNotProvided',
                   {
-                    type: this.translateService
+                    type: this.translate
                       .instant('common.dashboard.one')
                       .toLowerCase(),
                     error: '',

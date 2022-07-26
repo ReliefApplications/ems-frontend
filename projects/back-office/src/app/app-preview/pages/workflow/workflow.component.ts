@@ -49,6 +49,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
    * @param snackBar Shared snackbar service
    * @param router Angular router
    * @param previewService Shared preview service
+   * @param translate Angular translate service
    */
   constructor(
     private apollo: Apollo,
@@ -56,7 +57,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private router: Router,
     private previewService: PreviewService,
-    private translateService: TranslateService
+    private translate: TranslateService
   ) {}
 
   /**
@@ -88,10 +89,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               }
             } else {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
+                this.translate.instant(
                   'common.notifications.accessNotProvided',
                   {
-                    type: this.translateService
+                    type: this.translate
                       .instant('common.workflow.one')
                       .toLowerCase(),
                     error: '',
@@ -132,16 +133,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else if (this.activeStep + 1 === this.steps.length) {
       this.onOpenStep(0);
       this.snackBar.openSnackBar(
-        this.translateService.instant(
-          'models.workflow.notifications.goToStep',
-          {
-            step: this.steps[0].name,
-          }
-        )
+        this.translate.instant('models.workflow.notifications.goToStep', {
+          step: this.steps[0].name,
+        })
       );
     } else {
       this.snackBar.openSnackBar(
-        this.translateService.instant(
+        this.translate.instant(
           'models.workflow.notifications.cannotGoToNextStep'
         ),
         { error: true }

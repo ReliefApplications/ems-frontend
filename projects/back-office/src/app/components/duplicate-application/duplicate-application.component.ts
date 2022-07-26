@@ -28,6 +28,7 @@ export class DuplicateApplicationComponent implements OnInit {
    * @param formBuilder Angular form builder
    * @param apollo Apollo service
    * @param dialogRef Material dialog ref
+   * @param translateService Angular translate service
    * @param data Injected dialog data
    */
   constructor(

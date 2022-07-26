@@ -19,6 +19,7 @@ export class ShareUrlComponent implements OnInit {
    * @param dialogRef Material dialog ref
    * @param data Injected dialog data
    * @param data.url active url
+   * @param translate Angular translate service
    */
   constructor(
     public snackBar: SafeSnackBarService,
@@ -28,7 +29,7 @@ export class ShareUrlComponent implements OnInit {
     public data: {
       url: string;
     },
-    private translateService: TranslateService
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {}
@@ -39,7 +40,7 @@ export class ShareUrlComponent implements OnInit {
   onCopy(): void {
     this.clipboard.copy(this.data.url);
     this.snackBar.openSnackBar(
-      this.translateService.instant('common.notifications.copiedToClipboard')
+      this.translate.instant('common.notifications.copiedToClipboard')
     );
     this.dialogRef.close();
   }

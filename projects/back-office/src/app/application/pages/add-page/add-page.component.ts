@@ -63,6 +63,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
+   * @param translate Angular translate service
    */
   constructor(
     private formBuilder: FormBuilder,
@@ -71,7 +72,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private translateService: TranslateService
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -193,10 +194,10 @@ export class AddPageComponent implements OnInit, OnDestroy {
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  this.translateService.instant(
+                  this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
-                      type: this.translateService
+                      type: this.translate
                         .instant('common.form.one')
                         .toLowerCase(),
                       error: res.errors[0].message,
@@ -208,15 +209,12 @@ export class AddPageComponent implements OnInit, OnDestroy {
                 const id = res.data?.addForm.id || '';
                 this.pageForm.controls.content.setValue(id);
                 this.snackBar.openSnackBar(
-                  this.translateService.instant(
-                    'common.notifications.objectCreated',
-                    {
-                      type: this.translateService
-                        .instant('common.page.one')
-                        .toLowerCase(),
-                      value: value.name,
-                    }
-                  )
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.page.one')
+                      .toLowerCase(),
+                    value: value.name,
+                  })
                 );
 
                 this.onSubmit();

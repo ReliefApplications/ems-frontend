@@ -62,6 +62,8 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
    * @param router Angular router
    * @param formBuilder Angular form builder
    * @param apiProxy Shared API proxy service
+   * @param translate Angular translate service
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(
     private apollo: Apollo,
@@ -70,7 +72,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     private router: Router,
     private formBuilder: FormBuilder,
     private apiProxy: SafeApiProxyService,
-    private translateService: TranslateService,
+    private translate: TranslateService,
     private breadcrumbService: SafeBreadcrumbService
   ) {}
 
@@ -120,10 +122,10 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
               this.loading = res.data.loading;
             } else {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
+                this.translate.instant(
                   'common.notifications.accessNotProvided',
                   {
-                    type: this.translateService
+                    type: this.translate
                       .instant('common.resource.one')
                       .toLowerCase(),
                     error: '',
@@ -267,15 +269,10 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            this.translateService.instant(
-              'common.notifications.objectNotUpdated',
-              {
-                type: this.translateService.instant(
-                  'common.apiConfiguration.one'
-                ),
-                error: res.errors[0].message,
-              }
-            ),
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.apiConfiguration.one'),
+              error: res.errors[0].message,
+            }),
             { error: true }
           );
           this.loading = false;
@@ -298,20 +295,20 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
         if (res) {
           if (res.access_token) {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
+              this.translate.instant(
                 'pages.apiConfiguration.notifications.authTokenFetched'
               )
             );
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
+              this.translate.instant(
                 'pages.apiConfiguration.notifications.pingReceived'
               )
             );
           }
         } else {
           this.snackBar.openSnackBar(
-            this.translateService.instant(
+            this.translate.instant(
               'pages.apiConfiguration.notifications.pingFailed'
             ),
             { error: true }

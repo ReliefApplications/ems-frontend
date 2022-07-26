@@ -76,6 +76,7 @@ export class FormBuilderComponent implements OnInit {
    * @param dialog Material dialog service
    * @param authService Shared authentication service
    * @param translate Angular translate service
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(
     private apollo: Apollo,
