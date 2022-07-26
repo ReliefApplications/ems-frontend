@@ -17,6 +17,7 @@ export const routes: Routes = [
       {
         path: '',
         redirectTo: 'applications',
+        pathMatch: 'full',
       },
       {
         path: 'profile',
