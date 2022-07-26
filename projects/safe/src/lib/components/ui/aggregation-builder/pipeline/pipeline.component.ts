@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder.service';
 import { Observable } from 'rxjs';
 import { PipelineStage } from './pipeline-stage.enum';
@@ -27,7 +27,7 @@ export class SafePipelineComponent implements OnInit {
   public fieldsPerStage: any[] = [];
 
   // === PARENT FORM ===
-  @Input() pipelineForm!: FormArray;
+  @Input() pipelineForm!: UntypedFormArray;
 
   /**
    * Aggregation pipeline component.

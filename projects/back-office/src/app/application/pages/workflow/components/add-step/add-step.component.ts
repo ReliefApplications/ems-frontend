@@ -1,6 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
   ContentType,
@@ -47,7 +47,7 @@ export class AddStepComponent implements OnInit, OnDestroy {
   @ViewChild('formSelect') formSelect?: MatSelect;
 
   // === REACTIVE FORM ===
-  public stepForm: FormGroup = new FormGroup({});
+  public stepForm: UntypedFormGroup = new UntypedFormGroup({});
   public stage = 1;
 
   // === PERMISSIONS ===
@@ -56,7 +56,7 @@ export class AddStepComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,

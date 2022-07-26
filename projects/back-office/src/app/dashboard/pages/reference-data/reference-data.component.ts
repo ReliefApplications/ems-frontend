@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -56,7 +56,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
   private apolloSubscription?: Subscription;
 
   // === FORM ===
-  public referenceForm: FormGroup = new FormGroup({});
+  public referenceForm: UntypedFormGroup = new UntypedFormGroup({});
   public referenceTypeChoices = Object.values(referenceDataType);
 
   private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
@@ -104,7 +104,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService,
     private breadcrumbService: SafeBreadcrumbService
   ) {}

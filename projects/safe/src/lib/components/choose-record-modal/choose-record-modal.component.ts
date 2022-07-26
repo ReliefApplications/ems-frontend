@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { Apollo } from 'apollo-angular';
@@ -39,7 +39,7 @@ interface IRecord {
 })
 export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
   // === REACTIVE FORM ===
-  chooseRecordForm: FormGroup = new FormGroup({});
+  chooseRecordForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === GRID SETTINGS ===
   public settings: GridSettings = {};
@@ -78,7 +78,7 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
    */
   constructor(
     private queryBuilder: QueryBuilderService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeChooseRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData

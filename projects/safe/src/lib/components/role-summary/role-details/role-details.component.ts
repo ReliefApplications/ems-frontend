@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Permission, Role } from '../../../models/user.model';
 import {
@@ -20,7 +20,7 @@ import { get } from 'lodash';
 export class RoleDetailsComponent implements OnInit {
   @Input() role!: Role;
   public permissions: Permission[] = [];
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
   @Output() edit = new EventEmitter();
 
   /** Setter for the loading state */
@@ -39,7 +39,7 @@ export class RoleDetailsComponent implements OnInit {
    * @param fb Angular form builder
    * @param apollo Apollo Client
    */
-  constructor(private fb: FormBuilder, private apollo: Apollo) {}
+  constructor(private fb: UntypedFormBuilder, private apollo: Apollo) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({

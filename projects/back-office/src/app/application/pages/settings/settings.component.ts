@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import {
   Application,
@@ -27,7 +27,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class SettingsComponent implements OnInit, OnDestroy {
   public applications = new MatTableDataSource<Application>([]);
-  public settingsForm?: FormGroup;
+  public settingsForm?: UntypedFormGroup;
   private applicationSubscription?: Subscription;
   public application?: Application;
   public user: any;
@@ -35,7 +35,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public lockedByUser: boolean | undefined = undefined;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     private router: Router,
     private snackBar: SafeSnackBarService,

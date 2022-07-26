@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
 
 /**
@@ -9,7 +9,7 @@ import { DashboardComponent } from './dashboard.component';
  * users
   Use lazy loading for performance.
  */
-export const routes = [
+export const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,

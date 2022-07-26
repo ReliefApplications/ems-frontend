@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -24,7 +24,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class SafeAggregationBuilderComponent implements OnInit {
   // === REACTIVE FORM ===
-  @Input() aggregationForm: FormGroup = new FormGroup({});
+  @Input() aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
 
   @Input() reload$!: Observable<boolean>;
 
@@ -61,8 +61,8 @@ export class SafeAggregationBuilderComponent implements OnInit {
    *
    * @returns the pipelines in a FormArray
    */
-  get pipelineForm(): FormArray {
-    return this.aggregationForm.get('pipeline') as FormArray;
+  get pipelineForm(): UntypedFormArray {
+    return this.aggregationForm.get('pipeline') as UntypedFormArray;
   }
 
   /**
@@ -121,7 +121,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
         this.loadingForm = true;
         if (isMongoId(form)) {
           this.aggregationForm.get('sourceFields')?.setValue([]);
-          (this.aggregationForm.get('pipeline') as FormArray).clear();
+          (this.aggregationForm.get('pipeline') as UntypedFormArray).clear();
           this.aggregationForm.get('mapping')?.reset();
           this.aggregationForm.updateValueAndValidity();
           this.initFields();

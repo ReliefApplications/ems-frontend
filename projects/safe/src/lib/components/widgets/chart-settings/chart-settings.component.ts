@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
 import { Subject } from 'rxjs';
@@ -35,7 +35,7 @@ import {
 /** Modal content for the settings of the chart widgets. */
 export class SafeChartSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
-  tileForm: FormGroup | undefined;
+  tileForm: UntypedFormGroup | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -60,15 +60,15 @@ export class SafeChartSettingsComponent implements OnInit {
   public reload$ = this.reload.asObservable();
 
   /** @returns the form for the chart */
-  public get chartForm(): FormGroup {
-    return (this.tileForm?.controls.chart as FormGroup) || null;
+  public get chartForm(): UntypedFormGroup {
+    return (this.tileForm?.controls.chart as UntypedFormGroup) || null;
   }
 
   /** @returns the aggregation form */
-  public get aggregationForm(): FormGroup {
+  public get aggregationForm(): UntypedFormGroup {
     return (
-      ((this.tileForm?.controls.chart as FormGroup).controls
-        .aggregation as FormGroup) || null
+      ((this.tileForm?.controls.chart as UntypedFormGroup).controls
+        .aggregation as UntypedFormGroup) || null
     );
   }
 
@@ -79,7 +79,7 @@ export class SafeChartSettingsComponent implements OnInit {
    * @param aggregationBuilder The aggregationBuilder service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private aggregationBuilder: AggregationBuilderService
   ) {}
 

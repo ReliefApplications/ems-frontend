@@ -3,7 +3,7 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeMappingComponent } from './mapping.component';
 import { SafeMappingModule } from './mapping.module';
 import { StorybookTranslateModule } from '../storybook-translate/storybook-translate-module';
-import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 
 export default {
@@ -32,13 +32,13 @@ export default {
   },
 } as Meta;
 
-const fb = new FormBuilder();
+const fb = new UntypedFormBuilder();
 
 const TEMPLATE: Story<SafeMappingComponent> = (args) => ({
   template: '<safe-mapping [mappingForm]="mappingForm"></safe-mapping>',
   props: {
     // Need to pass formArray there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602
-    mappingForm: new FormArray([
+    mappingForm: new UntypedFormArray([
       fb.group({
         field: ['externalAttributes.region'],
         path: ['userBaseLocation.region'],
@@ -63,7 +63,7 @@ const TEMPLATE_EMPTY: Story<SafeMappingComponent> = (args) => ({
   template: '<safe-mapping [mappingForm]="mappingForm"></safe-mapping>',
   props: {
     // Need to pass formArray there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602
-    mappingForm: new FormArray([]),
+    mappingForm: new UntypedFormArray([]),
   },
 });
 

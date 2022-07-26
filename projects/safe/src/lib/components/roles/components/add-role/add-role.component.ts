@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 
 /**
@@ -12,7 +12,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class SafeAddRoleComponent implements OnInit {
   // === REACTIVE FORM ===
-  roleForm: FormGroup = new FormGroup({});
+  roleForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -22,7 +22,7 @@ export class SafeAddRoleComponent implements OnInit {
    * @param dialogRef This is the reference of the dialog modal that will be opened
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<SafeAddRoleComponent>
   ) {}
 

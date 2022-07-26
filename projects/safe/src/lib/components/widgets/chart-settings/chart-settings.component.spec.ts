@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { environment } from 'projects/back-office/src/environments/environment';
 import {
   TranslateModule,
@@ -20,7 +20,7 @@ describe('SafeChartSettingsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
-        FormBuilder,
+        UntypedFormBuilder,
         { provide: 'environment', useValue: environment },
         TranslateService,
       ],

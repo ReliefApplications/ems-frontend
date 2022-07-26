@@ -1,6 +1,6 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 
 /**
  * List of query styles.
@@ -11,7 +11,7 @@ import { FormArray } from '@angular/forms';
   styleUrls: ['./query-style-list.component.scss'],
 })
 export class SafeQueryStyleListComponent implements OnInit {
-  @Input() form!: FormArray;
+  @Input() form!: UntypedFormArray;
   public styles: any[] = [];
   columns: string[] = ['name', 'preview', '_actions'];
 

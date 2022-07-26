@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 /**
  * Component that handles sorting
@@ -10,7 +10,7 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./tab-sort.component.scss'],
 })
 export class SafeTabSortComponent implements OnInit {
-  @Input() form: FormGroup = new FormGroup({});
+  @Input() form: UntypedFormGroup = new UntypedFormGroup({});
   @Input() fields: any[] = [];
 
   /**

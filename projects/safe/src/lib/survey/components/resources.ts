@@ -6,7 +6,7 @@ import {
 import { BehaviorSubject } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
 import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
@@ -43,7 +43,7 @@ export const init = (
   domService: DomService,
   apollo: Apollo,
   dialog: MatDialog,
-  formBuilder: FormBuilder
+  formBuilder: UntypedFormBuilder
 ): void => {
   const getResourceById = (data: {
     id: string;
@@ -205,7 +205,7 @@ export const init = (
 
           const convertFromRawToFormGroup = (
             gridSettingsRaw: any
-          ): FormGroup | null => {
+          ): UntypedFormGroup | null => {
             if (!gridSettingsRaw.fields) {
               return null;
             }
@@ -458,7 +458,7 @@ export const init = (
         visibleIf: (obj: any) => {
           obj.gridFieldsSettings = obj.resource
             ? obj.gridFieldsSettings
-            : new FormGroup({}).getRawValue();
+            : new UntypedFormGroup({}).getRawValue();
           return false;
         },
       });

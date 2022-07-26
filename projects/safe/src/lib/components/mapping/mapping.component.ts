@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder } from '@angular/forms';
+import { UntypedFormArray, FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ import { SafeMappingModalComponent } from './mapping-modal/mapping-modal.compone
 })
 export class SafeMappingComponent implements OnInit, OnDestroy {
   // === DATA ===
-  @Input() mappingForm!: FormArray;
+  @Input() mappingForm!: UntypedFormArray;
   private mappingSubscription?: Subscription;
   // === TABLE ===
   displayedColumns = ['field', 'path', 'value', 'text', 'actions'];

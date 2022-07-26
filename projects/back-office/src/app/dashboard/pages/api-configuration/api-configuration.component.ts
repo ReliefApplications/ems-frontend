@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -39,7 +39,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
   private apolloSubscription?: Subscription;
 
   // === FORM ===
-  public apiForm: FormGroup = new FormGroup({});
+  public apiForm: UntypedFormGroup = new UntypedFormGroup({});
   public status = status;
   public statusChoices = Object.values(status);
   public authType = authType;
@@ -54,7 +54,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apiProxy: SafeApiProxyService,
     private translateService: TranslateService,
     private breadcrumbService: SafeBreadcrumbService
@@ -136,7 +136,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
   }
 
   /** Create the settings form depending on the authType */
-  private buildSettingsForm(type: string): FormGroup {
+  private buildSettingsForm(type: string): UntypedFormGroup {
     if (type === authType.serviceToService) {
       return this.formBuilder.group({
         authTargetUrl: [

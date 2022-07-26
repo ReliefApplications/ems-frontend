@@ -4,7 +4,7 @@
 
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import * as SurveyJSWidgets from 'surveyjs-widgets';
 
 import { DomService } from '../services/dom.service';
@@ -40,7 +40,7 @@ export const initCustomSurvey = (
   domService: DomService,
   dialog: MatDialog,
   apollo: Apollo,
-  formBuilder: FormBuilder,
+  formBuilder: UntypedFormBuilder,
   authService: SafeAuthService,
   environment: any,
   referenceDataService: SafeReferenceDataService

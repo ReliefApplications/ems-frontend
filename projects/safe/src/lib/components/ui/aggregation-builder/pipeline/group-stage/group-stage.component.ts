@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { isEmpty } from 'lodash';
 import { AggregationBuilderService } from '../../../../../services/aggregation-builder.service';
 import { groupByRuleForm } from '../../aggregation-builder-forms';
@@ -22,12 +22,12 @@ export class SafeGroupStageComponent implements OnInit {
 
   /** @returns this for as form group */
   get formGroup() {
-    return this.form as FormGroup;
+    return this.form as UntypedFormGroup;
   }
 
   /** @returns list of addFields of the stage as Form array */
   get addFields() {
-    return this.formGroup.controls.addFields as FormArray;
+    return this.formGroup.controls.addFields as UntypedFormArray;
   }
 
   /**
@@ -35,8 +35,8 @@ export class SafeGroupStageComponent implements OnInit {
    *
    * @returns form array
    */
-  get groupBy(): FormArray {
-    return this.formGroup.controls.groupBy as FormArray;
+  get groupBy(): UntypedFormArray {
+    return this.formGroup.controls.groupBy as UntypedFormArray;
   }
 
   /**

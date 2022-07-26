@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   EditFormMutationResponse,
@@ -60,7 +60,7 @@ export class FormBuilderComponent implements OnInit {
 
   // === FORM EDITION ===
   public formActive = false;
-  public nameForm: FormGroup = new FormGroup({});
+  public nameForm: UntypedFormGroup = new UntypedFormGroup({});
   public hasChanges = false;
 
   constructor(
@@ -122,8 +122,8 @@ export class FormBuilderComponent implements OnInit {
                 '@form',
                 this.form.name as string
               );
-              this.nameForm = new FormGroup({
-                formName: new FormControl(this.form.name, Validators.required),
+              this.nameForm = new UntypedFormGroup({
+                formName: new UntypedFormControl(this.form.name, Validators.required),
               });
               const storedStructure = window.localStorage.getItem(
                 `form:${this.id}`

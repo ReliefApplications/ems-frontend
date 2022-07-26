@@ -1,4 +1,4 @@
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import {
   createAggregationForm,
@@ -30,8 +30,8 @@ const DEFAULT_PALETTE = [
 
 /** Class for the chart object */
 export class Chart {
-  public form: FormGroup;
-  private fb: FormBuilder;
+  public form: UntypedFormGroup;
+  private fb: UntypedFormBuilder;
 
   /**
    * The constructor for a chart
@@ -39,7 +39,7 @@ export class Chart {
    * @param settings The settings of the chart
    */
   constructor(settings?: any) {
-    this.fb = new FormBuilder();
+    this.fb = new UntypedFormBuilder();
     const legend = get(settings, 'legend', null);
     const title = get(settings, 'title', null);
     const labels = get(settings, 'labels', null);
@@ -148,7 +148,7 @@ export class Chart {
 
     this.form.get('type')?.valueChanges.subscribe((value) => {
       const mapping = this.form.get('aggregation.mapping');
-      const aggregation = this.form.get('aggregation') as FormGroup;
+      const aggregation = this.form.get('aggregation') as UntypedFormGroup;
       aggregation.setControl(
         'mapping',
         createMappingForm(mapping?.value, value)

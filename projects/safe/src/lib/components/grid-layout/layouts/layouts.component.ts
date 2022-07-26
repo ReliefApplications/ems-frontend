@@ -4,7 +4,7 @@ import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
 import { AddLayoutComponent } from '../add-layout/add-layout.component';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { SafeLayoutModalComponent } from '../layout-modal/layout-modal.component';
@@ -20,7 +20,7 @@ import { SafeLayoutModalComponent } from '../layout-modal/layout-modal.component
 export class LayoutsComponent implements OnInit, OnChanges {
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
-  @Input() selectedLayouts: FormControl | null = null;
+  @Input() selectedLayouts: UntypedFormControl | null = null;
 
   layouts: Layout[] = [];
   allLayouts: Layout[] = [];

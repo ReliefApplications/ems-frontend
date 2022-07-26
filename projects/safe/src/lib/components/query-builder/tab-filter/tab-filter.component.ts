@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { clone, get, isDate } from 'lodash';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { SafeGridService } from '../../../services/grid.service';
@@ -165,7 +165,7 @@ const AVAILABLE_TYPES = [
   styleUrls: ['./tab-filter.component.scss'],
 })
 export class SafeTabFilterComponent implements OnInit {
-  @Input() form: FormGroup = new FormGroup({});
+  @Input() form: UntypedFormGroup = new UntypedFormGroup({});
   @Input() fields: any[] = [];
   @Input() query: any;
   @Input() metaFields: any = {};
@@ -184,8 +184,8 @@ export class SafeTabFilterComponent implements OnInit {
    *
    * @returns The filters in an array
    */
-  get filters(): FormArray {
-    return this.form.get('filters') as FormArray;
+  get filters(): UntypedFormArray {
+    return this.form.get('filters') as UntypedFormArray;
   }
 
   private inputs = '';
@@ -200,7 +200,7 @@ export class SafeTabFilterComponent implements OnInit {
    * @param gridService Shared grid service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private queryBuilder: QueryBuilderService,
     private apiProxyService: SafeApiProxyService,
     private gridService: SafeGridService
@@ -247,7 +247,7 @@ export class SafeTabFilterComponent implements OnInit {
           if (['Date', 'DateTime'].includes(type)) {
             const valueAsDate = new Date(x.value);
             if (isDate(valueAsDate) && isNaN(valueAsDate.getTime())) {
-              const formGroup = this.filters.at(index) as FormGroup;
+              const formGroup = this.filters.at(index) as UntypedFormGroup;
               formGroup.get('useExpression')?.setValue(true);
             }
           }
@@ -280,7 +280,7 @@ export class SafeTabFilterComponent implements OnInit {
    * @param index index of filter field
    */
   onChangeEditor(index: number): void {
-    const formGroup = this.filters.at(index) as FormGroup;
+    const formGroup = this.filters.at(index) as UntypedFormGroup;
     formGroup
       .get('useExpression')
       ?.setValue(!formGroup.get('useExpression')?.value);

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
@@ -29,7 +29,7 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
   /** Current user */
   public user: any;
   /** Form to edit the user */
-  public userForm?: FormGroup;
+  public userForm?: UntypedFormGroup;
   /** Displayed columns of table */
   public displayedColumnsApps = [
     'name',
@@ -52,7 +52,7 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public translate: TranslateService
   ) {}
 

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -17,7 +17,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class AddReferenceDataComponent implements OnInit {
   // === REACTIVE FORM ===
-  referenceForm: FormGroup = new FormGroup({});
+  referenceForm: UntypedFormGroup = new UntypedFormGroup({});
 
   get name(): AbstractControl | null {
     return this.referenceForm.get('name');
@@ -30,7 +30,7 @@ export class AddReferenceDataComponent implements OnInit {
    * @param dialogRef Material dialog ref.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<AddReferenceDataComponent>
   ) {}
 

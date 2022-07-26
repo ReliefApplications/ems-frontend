@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import {
@@ -20,10 +20,10 @@ export class ChoseRoleComponent implements OnInit {
   public loading = true;
 
   // === REACTIVE FORM ===
-  roleForm: FormGroup = new FormGroup({});
+  roleForm: UntypedFormGroup = new UntypedFormGroup({});
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<ChoseRoleComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)

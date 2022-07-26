@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   SafeSnackBarService,
@@ -28,7 +28,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class AdvancedSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
-  settingForm: FormGroup = new FormGroup({});
+  settingForm: UntypedFormGroup = new UntypedFormGroup({});
   loading = true;
 
   private readonly ITEMS_PER_PAGE = 10;
@@ -50,10 +50,10 @@ export class AdvancedSettingsComponent implements OnInit {
    *
    * @returns mappingForm
    */
-  get mappingForm(): FormArray {
+  get mappingForm(): UntypedFormArray {
     return this.settingForm.get(
       'userManagement.attributesMapping'
-    ) as FormArray;
+    ) as UntypedFormArray;
   }
 
   /**
@@ -65,7 +65,7 @@ export class AdvancedSettingsComponent implements OnInit {
    * @param translateService Angular i18n service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private translateService: TranslateService

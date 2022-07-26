@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GetRolesQueryResponse, GET_ROLES } from '../../../graphql/queries';
 import { Role } from '../../../models/user.model';
@@ -27,7 +27,7 @@ export class SafeEditAccessComponent implements OnInit {
   public roles: Role[] = [];
 
   // === REACTIVE FORM ===
-  accessForm: FormGroup = new FormGroup({});
+  accessForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /**
    * The constructor function is used to create a new instance of the SafeEditAccessComponent class
@@ -39,7 +39,7 @@ export class SafeEditAccessComponent implements OnInit {
    * @param {DialogData} data This is the data that is passed to the dialog when it is opened.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeEditAccessComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData

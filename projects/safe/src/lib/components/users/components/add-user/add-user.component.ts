@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -24,14 +24,14 @@ interface DialogData {
   styleUrls: ['./add-user.component.scss'],
 })
 export class SafeAddUserComponent implements OnInit {
-  form: FormGroup = new FormGroup({});
+  form: UntypedFormGroup = new UntypedFormGroup({});
   public filteredUsers?: Observable<User[]>;
   private users: User[] = [];
 
   /** @returns The position attributes available */
-  get positionAttributes(): FormArray | null {
+  get positionAttributes(): UntypedFormArray | null {
     return this.form.get('positionAttributes')
-      ? (this.form.get('positionAttributes') as FormArray)
+      ? (this.form.get('positionAttributes') as UntypedFormArray)
       : null;
   }
 
@@ -45,7 +45,7 @@ export class SafeAddUserComponent implements OnInit {
    * @param translate The translation service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<SafeAddUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,

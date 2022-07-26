@@ -7,7 +7,7 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, UntypedFormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -51,7 +51,7 @@ const DEFAULT_ACTION_NAME = 'Action';
 })
 export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
-  tileForm: FormGroup | undefined;
+  tileForm: UntypedFormGroup | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -78,8 +78,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public resource: Resource | null = null;
 
   /** @returns List of the floating buttons */
-  get floatingButtons(): FormArray {
-    return (this.tileForm?.controls.floatingButtons as FormArray) || null;
+  get floatingButtons(): UntypedFormArray {
+    return (this.tileForm?.controls.floatingButtons as UntypedFormArray) || null;
   }
 
   /**
@@ -91,7 +91,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
    * @param queryBuilder The query builder service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
     private queryBuilder: QueryBuilderService
@@ -161,16 +161,16 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
           this.tileForm?.get('query.template')?.enable();
           const floatingButtons = this.tileForm?.get(
             'floatingButtons'
-          ) as FormArray;
+          ) as UntypedFormArray;
           for (const floatingButton of floatingButtons.controls) {
             const modifications = floatingButton.get(
               'modifications'
-            ) as FormArray;
+            ) as UntypedFormArray;
             modifications.clear();
             this.tileForm
               ?.get('floatingButton.modifySelectedRows')
               ?.setValue(false);
-            const bodyFields = floatingButton.get('bodyFields') as FormArray;
+            const bodyFields = floatingButton.get('bodyFields') as UntypedFormArray;
             bodyFields.clear();
           }
         }
@@ -220,7 +220,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
    * @param value default value ( if any )
    * @returns new form group for the floating button.
    */
-  private createFloatingButtonForm(value: any): FormGroup {
+  private createFloatingButtonForm(value: any): UntypedFormGroup {
     const buttonForm = this.formBuilder.group({
       show: [value && value.show ? value.show : false, Validators.required],
       name: [
@@ -308,7 +308,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
    * Adds a floating button configuration.
    */
   public addFloatingButton(): void {
-    const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
+    const floatingButtons = this.tileForm?.get('floatingButtons') as UntypedFormArray;
     floatingButtons.push(this.createFloatingButtonForm({ show: true }));
   }
 
@@ -316,7 +316,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
    * Deletes a floating button configuration.
    */
   public deleteFloatingButton(): void {
-    const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
+    const floatingButtons = this.tileForm?.get('floatingButtons') as UntypedFormArray;
     floatingButtons.removeAt(this.tabIndex);
     this.tabIndex = 0;
   }

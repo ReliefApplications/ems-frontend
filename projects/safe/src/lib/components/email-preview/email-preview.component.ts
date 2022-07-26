@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -26,7 +26,7 @@ interface DialogData {
 })
 export class SafeEmailPreviewComponent implements OnInit {
   /** mail is put in a form to use read-only inputs */
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
 
   /** tinymce editor */
   public editor: any = EMAIL_EDITOR_CONFIG;
@@ -45,7 +45,7 @@ export class SafeEmailPreviewComponent implements OnInit {
     @Inject('environment') environment: any,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<SafeEmailPreviewComponent>,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private translate: TranslateService
   ) {
     // Set the editor base url based on the environment file

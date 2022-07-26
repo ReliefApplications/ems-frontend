@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Form, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { Form, FormArray, UntypedFormControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {
   TranslateModule,
@@ -33,7 +33,7 @@ describe('SafeFormsDropdownComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeFormsDropdownComponent);
     component = fixture.componentInstance;
-    component.sourceControl = new FormControl();
+    component.sourceControl = new UntypedFormControl();
     component.forms$ = new Observable();
     fixture.detectChanges();
   });

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder.service';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
@@ -44,7 +44,7 @@ export class SafeQueryBuilderComponent implements OnInit {
     // return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
   }
 
-  @Input() form?: FormGroup;
+  @Input() form?: UntypedFormGroup;
   @Input() canExpand = true;
   @Input() canSelectDataSet = true;
   @Input() templates: Form[] = [];
@@ -63,7 +63,7 @@ export class SafeQueryBuilderComponent implements OnInit {
    * @param queryBuilder This is the service that will be used to build the query.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private queryBuilder: QueryBuilderService
   ) {}
 
@@ -157,7 +157,7 @@ export class SafeQueryBuilderComponent implements OnInit {
    *
    * @param newForm new form value.
    */
-  setForm(newForm: FormGroup): void {
+  setForm(newForm: UntypedFormGroup): void {
     this.form = newForm;
     this.buildSettings();
   }

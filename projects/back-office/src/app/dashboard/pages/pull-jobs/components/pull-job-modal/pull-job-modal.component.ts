@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import {
@@ -37,7 +37,7 @@ const DEFAULT_FIELDS = ['createdBy'];
 })
 export class PullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  pullJobForm: FormGroup = new FormGroup({});
+  pullJobForm: UntypedFormGroup = new UntypedFormGroup({});
   isHardcoded = true;
 
   // === FORMS ===
@@ -82,8 +82,8 @@ export class PullJobModalComponent implements OnInit {
   // === RAW JSON UTILITY ===
   public openRawJSON = false;
 
-  get mappingArray(): FormArray {
-    return this.pullJobForm.get('mapping') as FormArray;
+  get mappingArray(): UntypedFormArray {
+    return this.pullJobForm.get('mapping') as UntypedFormArray;
   }
 
   get defaultApiConfiguration(): ApiConfiguration | null {
@@ -99,7 +99,7 @@ export class PullJobModalComponent implements OnInit {
   }
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<SubscriptionModalComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)

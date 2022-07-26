@@ -10,7 +10,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
   GridDataResult,
@@ -138,7 +138,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === INLINE EDITION ===
   private originalItems: any[] = this.gridData.data;
   public updatedItems: any[] = [];
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   public loading = false;
   public error = false;
   private templateStructure = '';

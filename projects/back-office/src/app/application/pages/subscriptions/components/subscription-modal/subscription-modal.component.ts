@@ -1,6 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Application, Channel, Form, Subscription } from '@safe/builder';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -23,7 +23,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class SubscriptionModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  subscriptionForm: FormGroup = new FormGroup({});
+  subscriptionForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === DATA ===
   private forms = new BehaviorSubject<Form[]>([]);
@@ -59,7 +59,7 @@ export class SubscriptionModalComponent implements OnInit {
   }
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<SubscriptionModalComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)

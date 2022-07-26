@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -9,10 +9,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class AddChannelComponent implements OnInit {
   // === REACTIVE FORM ===
-  channelForm: FormGroup = new FormGroup({});
+  channelForm: UntypedFormGroup = new UntypedFormGroup({});
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<AddChannelComponent>
   ) {}
 

@@ -2,7 +2,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
 
 /** List of fields part of the schema but not selectable */
@@ -41,7 +41,7 @@ export class QueryBuilderService {
    * @param apollo Apollo client
    * @param formBuilder Angular form builder
    */
-  constructor(private apollo: Apollo, private formBuilder: FormBuilder) {
+  constructor(private apollo: Apollo, private formBuilder: UntypedFormBuilder) {
     this.apollo
       .query<GetQueryTypes>({
         query: GET_QUERY_TYPES,

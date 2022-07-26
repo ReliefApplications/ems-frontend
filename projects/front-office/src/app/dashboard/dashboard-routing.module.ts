@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { AccessGuard } from '../guards/access.guard';
 import { DashboardComponent } from './dashboard.component';
 
@@ -7,7 +7,7 @@ import { DashboardComponent } from './dashboard.component';
  * List of routes of the dashboard.
  * Uses lazy loading for performance.
  */
-export const routes = [
+export const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,

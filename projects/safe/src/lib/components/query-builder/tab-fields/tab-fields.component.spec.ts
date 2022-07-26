@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import {
   TranslateModule,
   TranslateService,
@@ -21,7 +21,7 @@ describe('SafeTabFieldsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [FormBuilder, TranslateService, QueryBuilderService],
+      providers: [UntypedFormBuilder, TranslateService, QueryBuilderService],
       declarations: [SafeTabFieldsComponent],
       imports: [
         TranslateModule.forRoot({

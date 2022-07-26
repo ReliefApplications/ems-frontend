@@ -1,6 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import {
   GetResourcesQueryResponse,
@@ -21,7 +21,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class AddFormComponent implements OnInit {
   // === REACTIVE FORM ===
-  public addForm: FormGroup = new FormGroup({});
+  public addForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === DATA ===
   private resources = new BehaviorSubject<Resource[]>([]);
@@ -38,7 +38,7 @@ export class AddFormComponent implements OnInit {
   @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<AddFormComponent>,
     private apollo: Apollo
   ) {}

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
@@ -36,7 +36,7 @@ describe('SafeFloatingButtonSettingsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        FormBuilder,
+        UntypedFormBuilder,
         { provide: 'environment', useValue: environment },
         OAuthService,
         UrlHelperService,
@@ -66,8 +66,8 @@ describe('SafeFloatingButtonSettingsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeFloatingButtonSettingsComponent);
     component = fixture.componentInstance;
-    component.buttonForm = new FormGroup({
-      distributionList: new FormControl([]),
+    component.buttonForm = new UntypedFormGroup({
+      distributionList: new UntypedFormControl([]),
     });
     fixture.detectChanges();
 

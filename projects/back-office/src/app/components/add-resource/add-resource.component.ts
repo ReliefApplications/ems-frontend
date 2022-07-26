@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 
 /**
@@ -11,7 +11,7 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./add-resource.component.scss'],
 })
 export class AddResourceComponent implements OnInit {
-  public addForm: FormGroup = new FormGroup({});
+  public addForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /**
    * Modal to add a new resource.
@@ -20,7 +20,7 @@ export class AddResourceComponent implements OnInit {
    * @param dialogRef Dialog reference
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<AddResourceComponent>
   ) {}
 

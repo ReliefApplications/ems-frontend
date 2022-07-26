@@ -7,7 +7,7 @@ import {
   AfterViewInit,
   Inject,
 } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import {
   EDITOR_LANGUAGE_PAIRS,
@@ -24,7 +24,7 @@ import {
 })
 export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
-  tileForm: FormGroup | undefined;
+  tileForm: UntypedFormGroup | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -45,7 +45,7 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
    */
   constructor(
     @Inject('environment') environment: any,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private translate: TranslateService
   ) {
     // Set the editor base url based on the environment file

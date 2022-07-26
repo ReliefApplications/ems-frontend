@@ -144,7 +144,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "azure-dev": {
@@ -176,7 +178,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "azure-uat": {
@@ -208,7 +212,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "azure-prod": {
@@ -240,7 +246,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "oort-dev": {
@@ -272,7 +280,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
               }
             },
             "oort-guyane": {
@@ -304,7 +314,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
               }
             },
             "oort-prod": {
@@ -336,7 +348,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
               }
             },
             "development": {
@@ -347,7 +361,9 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             }
           },
@@ -525,7 +541,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "azure-dev": {
@@ -555,7 +573,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "azure-uat": {
@@ -585,7 +605,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "azure-prod": {
@@ -615,7 +637,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             },
             "oort-dev": {
@@ -645,7 +669,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
               }
             },
             "oort-guyane": {
@@ -675,7 +701,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
               }
             },
             "oort-prod": {
@@ -705,7 +733,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/oort"
+                ]
               }
             },
             "development": {
@@ -716,7 +746,9 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             }
           },
@@ -872,7 +904,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               },
               "fileReplacements": [
                 {
@@ -902,7 +936,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               },
               "fileReplacements": [
                 {
@@ -920,7 +956,9 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+                "includePaths": [
+                  "projects/safe/src/lib/style/themes/default"
+                ]
               }
             }
           },
@@ -955,7 +993,9 @@
               "projects/web-widgets/src/favicon.ico",
               "projects/web-widgets/src/assets"
             ],
-            "styles": ["projects/web-widgets/src/styles.scss"],
+            "styles": [
+              "projects/web-widgets/src/styles.scss"
+            ],
             "scripts": []
           }
         },
@@ -1019,7 +1059,6 @@
       }
     }
   },
-  "defaultProject": "back-office",
   "cli": {
     "analytics": false
   }

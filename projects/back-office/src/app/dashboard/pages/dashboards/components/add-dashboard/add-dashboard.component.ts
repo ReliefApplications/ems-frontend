@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -9,10 +9,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class AddDashboardComponent implements OnInit {
   // === REACTIVE FORM ===
-  dashboardForm: FormGroup = new FormGroup({});
+  dashboardForm: UntypedFormGroup = new UntypedFormGroup({});
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<AddDashboardComponent>
   ) {}
 

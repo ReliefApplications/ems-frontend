@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import {
   ChecklistDatabase,
   TreeItemFlatNode,
@@ -17,9 +17,9 @@ import {
 export class SafeQueryStyleComponent implements OnInit {
   @Input() query: any;
   public selectedFields: any[] = [];
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
   @Input() scalarFields: any[] = [];
-  public wholeRow!: FormControl;
+  public wholeRow!: UntypedFormControl;
 
   @Output() closeEdition = new EventEmitter<any>();
 
@@ -35,9 +35,9 @@ export class SafeQueryStyleComponent implements OnInit {
     );
     const fields = this.form.get('fields')?.value || [];
     if (fields.length > 0) {
-      this.wholeRow = new FormControl(false);
+      this.wholeRow = new UntypedFormControl(false);
     } else {
-      this.wholeRow = new FormControl(true);
+      this.wholeRow = new UntypedFormControl(true);
     }
     this.wholeRow.valueChanges.subscribe((value) => {
       if (value) {

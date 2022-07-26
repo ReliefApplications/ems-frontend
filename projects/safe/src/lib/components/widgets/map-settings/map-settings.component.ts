@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { createQueryForm } from '../../query-builder/query-builder-forms';
 
@@ -12,7 +12,7 @@ import { createQueryForm } from '../../query-builder/query-builder-forms';
 /** Modal content for the settings of the map widgets. */
 export class SafeMapSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
-  tileForm: FormGroup | undefined;
+  tileForm: UntypedFormGroup | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -30,7 +30,7 @@ export class SafeMapSettingsComponent implements OnInit {
    * @param queryBuilder The queryBuilder service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private queryBuilder: QueryBuilderService
   ) {}
 
@@ -73,7 +73,7 @@ export class SafeMapSettingsComponent implements OnInit {
       this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
     }
 
-    const queryForm = this.tileForm.get('query') as FormGroup;
+    const queryForm = this.tileForm.get('query') as UntypedFormGroup;
 
     queryForm.controls.name.valueChanges.subscribe(() => {
       this.tileForm?.controls.latitude.setValue('');

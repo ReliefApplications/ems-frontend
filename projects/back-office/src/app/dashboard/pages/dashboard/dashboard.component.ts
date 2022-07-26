@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -54,7 +54,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // === DASHBOARD NAME EDITION ===
   public formActive = false;
-  public dashboardNameForm: FormGroup = new FormGroup({});
+  public dashboardNameForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === ROUTE ===
   private routeSubscription?: Subscription;
@@ -96,8 +96,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (res.data.dashboard) {
               this.dashboard = res.data.dashboard;
               this.dashboardService.openDashboard(this.dashboard);
-              this.dashboardNameForm = new FormGroup({
-                dashboardName: new FormControl(
+              this.dashboardNameForm = new UntypedFormGroup({
+                dashboardName: new UntypedFormControl(
                   this.dashboard.name,
                   Validators.required
                 ),

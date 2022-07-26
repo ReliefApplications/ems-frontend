@@ -5,7 +5,7 @@ import { SafeFormsDropdownComponent } from './forms-dropdown.component';
 import { SafeFormsDropdownModule } from './forms-dropdown.module';
 import { Form } from '../../../../models/form.model';
 import { StorybookTranslateModule } from '../../../storybook-translate/storybook-translate-module';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { delay } from 'rxjs/operators';
 
 export default {
@@ -115,7 +115,7 @@ DEFAULT.args = {
   forms$: new BehaviorSubject<Form[]>(DEFAULT_FORMS)
     .asObservable()
     .pipe(delay(500)),
-  sourceControl: new FormControl(''),
+  sourceControl: new UntypedFormControl(''),
 };
 
 /**
@@ -125,5 +125,5 @@ export const INITIAL_SOURCE = TEMPLATE.bind({});
 INITIAL_SOURCE.storyName = 'Initial source';
 INITIAL_SOURCE.args = {
   ...DEFAULT.args,
-  sourceControl: new FormControl('613b6c052921406adbfb54bd'),
+  sourceControl: new UntypedFormControl('613b6c052921406adbfb54bd'),
 };

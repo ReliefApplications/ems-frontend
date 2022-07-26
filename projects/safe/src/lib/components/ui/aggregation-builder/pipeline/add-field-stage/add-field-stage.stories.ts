@@ -3,7 +3,7 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeAddFieldStageComponent } from './add-field-stage.component';
 import { SafePipelineModule } from '../pipeline.module';
 import { StorybookTranslateModule } from '../../../../storybook-translate/storybook-translate-module';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Accumulators } from '../expressions/operators';
 
 export default {
@@ -62,7 +62,7 @@ const DEFAULT_FIELDS = [
 ];
 
 /** Creating a new instance of the FormBuilder class. */
-const fb = new FormBuilder();
+const fb = new UntypedFormBuilder();
 
 /**
  * Defines a template for the component SafeAddFieldStageComponent to use as/in a playground

@@ -9,7 +9,7 @@ import {
   ElementRef,
   Inject,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
 import { Form } from '../../../../models/form.model';
@@ -55,7 +55,7 @@ export function codesFactory(): () => any {
 })
 export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
-  @Input() buttonForm?: FormGroup;
+  @Input() buttonForm?: UntypedFormGroup;
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
   @Input() relatedForms: Form[] = [];
@@ -96,7 +96,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
    */
   constructor(
     @Inject('environment') environment: any,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private router: Router,
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
@@ -324,8 +324,8 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   }
 
   /** @returns An array of the modifications on button form */
-  get modificationsArray(): FormArray {
-    return this.buttonForm?.get('modifications') as FormArray;
+  get modificationsArray(): UntypedFormArray {
+    return this.buttonForm?.get('modifications') as UntypedFormArray;
   }
 
   /**
@@ -353,7 +353,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
    * Delete all the invalid modifications
    */
   private deleteInvalidModifications(): void {
-    const modifications = this.buttonForm?.get('modifications') as FormArray;
+    const modifications = this.buttonForm?.get('modifications') as UntypedFormArray;
     for (let i = 0; i < modifications.value.length; i++) {
       const modification = modifications.at(i);
       if (modification.invalid) {

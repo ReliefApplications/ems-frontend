@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { Role, User } from '../../../../models/user.model';
@@ -19,12 +19,12 @@ interface DialogData {
 })
 export class SafeEditUserComponent implements OnInit {
   // === REACTIVE FORM ===
-  userForm: FormGroup = new FormGroup({});
+  userForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /** @returns The position attributes available */
-  get positionAttributes(): FormArray | null {
+  get positionAttributes(): UntypedFormArray | null {
     return this.userForm.get('positionAttributes')
-      ? (this.userForm.get('positionAttributes') as FormArray)
+      ? (this.userForm.get('positionAttributes') as UntypedFormArray)
       : null;
   }
 
@@ -38,7 +38,7 @@ export class SafeEditUserComponent implements OnInit {
    * @param data The input data of the component
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<SafeEditUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
