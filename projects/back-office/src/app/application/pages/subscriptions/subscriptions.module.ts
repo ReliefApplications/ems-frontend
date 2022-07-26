@@ -23,6 +23,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+/**
+ * Application subscriptions page module.
+ */
 @NgModule({
   declarations: [SubscriptionsComponent, SubscriptionModalComponent],
   imports: [

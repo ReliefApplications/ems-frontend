@@ -20,6 +20,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
+/**
+ * Application workflow page module.
+ */
 @NgModule({
   declarations: [WorkflowComponent],
   imports: [

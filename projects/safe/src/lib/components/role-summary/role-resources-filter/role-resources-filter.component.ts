@@ -2,6 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
+/**
+ * Role filter component
+ */
 @Component({
   selector: 'safe-role-resources-filter',
   templateUrl: './role-resources-filter.component.html',
@@ -14,6 +17,11 @@ export class FilterComponent implements OnInit {
   @Output() filter = new EventEmitter<any>();
   @Input() loading = false;
 
+  /**
+   * Role filter component
+   *
+   * @param formBuilder Angular form builder
+   */
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
@@ -37,6 +45,8 @@ export class FilterComponent implements OnInit {
 
   /**
    * Emits the filter value, so the main component can get it.
+   *
+   * @param value filter value
    */
   private emitFilter(value: any): void {
     const filters: any[] = [];

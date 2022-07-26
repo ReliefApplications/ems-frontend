@@ -1195,6 +1195,7 @@ export interface GetPullJobsQueryResponse {
 }
 
 // === GET REFERENCE DATAS ===
+/** Get list of reference data query */
 export const GET_REFERENCE_DATAS = gql`
   query GetReferenceDatas($first: Int, $afterCursor: ID) {
     referenceDatas(first: $first, afterCursor: $afterCursor) {
@@ -1237,6 +1238,7 @@ export const GET_REFERENCE_DATAS = gql`
   }
 `;
 
+/** Get list of reference data query response */
 export interface GetReferenceDatasQueryResponse {
   loading: boolean;
   referenceDatas: {
@@ -1253,6 +1255,7 @@ export interface GetReferenceDatasQueryResponse {
 }
 
 // === GET REFERENCE DATA ===
+/** Get reference data */
 export const GET_REFERENCE_DATA = gql`
   query GetReferenceData($id: ID!) {
     referenceData(id: $id) {
@@ -1290,12 +1293,14 @@ export const GET_REFERENCE_DATA = gql`
   }
 `;
 
+/** Get reference data query response */
 export interface GetReferenceDataQueryResponse {
   loading: boolean;
   referenceData: ReferenceData;
 }
 
 // === GET SETTING ===
+/** Get settings query */
 export const GET_SETTING = gql`
   query GetSetting {
     setting {
@@ -1312,6 +1317,7 @@ export const GET_SETTING = gql`
   }
 `;
 
+/** Get settings query response */
 export interface GetSettingQueryResponse {
   loading: boolean;
   setting: Setting;
