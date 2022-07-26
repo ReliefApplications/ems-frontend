@@ -11,6 +11,9 @@ import { Subscription } from 'rxjs';
 
 import { SubscriptionModalComponent } from './components/subscription-modal/subscription-modal.component';
 
+/**
+ * Application subscriptions page component.
+ */
 @Component({
   selector: 'app-subscriptions',
   templateUrl: './subscriptions.component.html',
@@ -31,6 +34,13 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
   private applicationSubscription?: Subscription;
   private channels: Channel[] = [];
 
+  /**
+   * Application subscriptions page component
+   *
+   * @param applicationService Shared application service
+   * @param dialog Material dialog service
+   * @param apollo Apollo service
+   */
   constructor(
     private applicationService: SafeApplicationService,
     public dialog: MatDialog,
@@ -52,8 +62,10 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
       );
   }
 
-  /** Display the AddSubscription modal.
-    Create a new subscription linked to this application on close. */
+  /**
+   * Display the AddSubscription modal.
+   * Create a new subscription linked to this application on close.
+   */
   onAdd(): void {
     const dialogRef = this.dialog.open(SubscriptionModalComponent, {
       width: '400px',
@@ -77,12 +89,22 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * Delete subscription
+   *
+   * @param element subscription to delete
+   */
   onDelete(element: any): void {
     if (element) {
       this.applicationService.deleteSubscription(element.routingKey);
     }
   }
 
+  /**
+   * Edit subscription
+   *
+   * @param element subscription to edit
+   */
   onEdit(element: any): void {
     const dialogRef = this.dialog.open(SubscriptionModalComponent, {
       width: '400px',

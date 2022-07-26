@@ -7,6 +7,9 @@ import {
   GET_POSITION_ATTRIBUTES_FROM_CATEGORY,
 } from '../../../graphql/queries';
 
+/**
+ * Position attributes component.
+ */
 @Component({
   selector: 'app-position',
   templateUrl: './position-attributes.component.html',
@@ -21,6 +24,13 @@ export class PositionAttributesComponent implements OnInit {
   public positionAttributes: PositionAttribute[] = [];
   public backPath = '';
 
+  /**
+   * Position attributes component.
+   *
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param router Angular router
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,

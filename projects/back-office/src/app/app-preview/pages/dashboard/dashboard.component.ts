@@ -20,6 +20,9 @@ import {
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Dashboard component page, for application preview.
+ */
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -38,6 +41,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
+  /**
+   * Dashboar component page for application preview.
+   *
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param router Angular router
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param dashboardService Shared dashboard service
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,

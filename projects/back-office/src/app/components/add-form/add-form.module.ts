@@ -14,6 +14,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '@safe/builder';
 
+/**
+ * Add form module.
+ */
 @NgModule({
   declarations: [AddFormComponent],
   imports: [
