@@ -173,7 +173,6 @@ export class SafeAuthService {
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
       .then(() => {
-        this.router.initialNavigation(); // TEST
         this.isDoneLoading.next(true);
       })
       .catch((err) => {

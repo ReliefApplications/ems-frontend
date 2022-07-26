@@ -43,6 +43,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   /**
    * Workflow page component for application preview
+   *
    * @param apollo Apollo service
    * @param route Angular activated route
    * @param snackBar Shared snackbar service

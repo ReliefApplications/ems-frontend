@@ -25,6 +25,9 @@ import {
   GET_API_CONFIGURATION,
 } from '../../../graphql/queries';
 
+/**
+ * API configuration page component.
+ */
 @Component({
   selector: 'app-api-configuration',
   templateUrl: './api-configuration.component.html',
@@ -44,10 +47,21 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
   public authType = authType;
   public authTypeChoices = Object.values(authType);
 
+  /** @returns API configuration name */
   get name(): AbstractControl | null {
     return this.apiForm.get('name');
   }
 
+  /**
+   * API configuration page component
+   *
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param snackBar Shared snackar service
+   * @param router Angular router
+   * @param formBuilder Angular form builder
+   * @param apiProxy Shared API proxy service
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -119,7 +133,12 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Create the settings form depending on the authType */
+  /**
+   * Create the settings form depending on the authType
+   *
+   * @param type type of API connection
+   * @returns settings form group
+   */
   private buildSettingsForm(type: string): FormGroup {
     if (type === authType.serviceToService) {
       return this.formBuilder.group({
@@ -166,7 +185,11 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     return this.formBuilder.group({});
   }
 
-  /** Edit the permissions layer. */
+  /**
+   * Edit the permissions layer.
+   *
+   * @param e permissions
+   */
   saveAccess(e: any): void {
     if (this.apolloSubscription) {
       this.apolloSubscription.unsubscribe();

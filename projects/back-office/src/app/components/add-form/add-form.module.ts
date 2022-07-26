@@ -14,6 +14,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Add form module.
+ */
 @NgModule({
   declarations: [AddFormComponent],
   imports: [

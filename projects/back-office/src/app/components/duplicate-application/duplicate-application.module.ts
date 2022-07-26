@@ -8,6 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Duplicate Application module.
+ */
 @NgModule({
   declarations: [DuplicateApplicationComponent],
   imports: [

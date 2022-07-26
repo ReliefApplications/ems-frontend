@@ -16,6 +16,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Application position module.
+ */
 @NgModule({
   declarations: [PositionComponent, AddPositionComponent],
   imports: [

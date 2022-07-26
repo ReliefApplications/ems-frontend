@@ -2,12 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
 
-/** Divide the dashboard module into three modules:
-    * forms and resources
-    * dashboards
-    * users
-    Use lazy loading for performance.
-*/
+/**
+ * Divide the dashboard module into three modules:
+ * forms and resources
+ * dashboards
+ * users
+  Use lazy loading for performance.
+ */
 export const routes = [
   {
     path: '',
@@ -183,6 +184,10 @@ export const routes = [
     ],
   },
 ];
+
+/**
+ * MAIN BO Dashboard routing module.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

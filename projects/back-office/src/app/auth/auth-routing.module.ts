@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-/** Contain only one page, 'login'.
-    All routes starting with '/auth' should redirect to 'login' page.
-*/
+/**
+ * Contain only one page, 'login'.
+ * All routes starting with '/auth' should redirect to 'login' page.
+ */
 export const routes = [
   {
     path: '',
@@ -20,6 +21,10 @@ export const routes = [
     ],
   },
 ];
+
+/**
+ * Authentication page routing module.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
