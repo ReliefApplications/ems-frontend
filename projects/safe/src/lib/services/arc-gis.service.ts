@@ -18,6 +18,11 @@ export class SafeArcGISService {
 
   private authentication: any;
 
+  /**
+   * Shared ArcGIS service
+   *
+   * @param environment injected environment configuration
+   */
   constructor(@Inject('environment') environment: any) {
     this.authentication = new ApiKey({
       key: environment.esriApiKey,
@@ -25,9 +30,9 @@ export class SafeArcGISService {
   }
 
   /**
-   * Searchs through ArcGIS available layers, and returns filtered list.
+   * Search through ArcGIS available layers, and returns filtered list.
    *
-   * @param search search value
+   * @param searchTerm search value
    */
   public searchLayers(searchTerm: string): void {
     if (searchTerm === '') {
