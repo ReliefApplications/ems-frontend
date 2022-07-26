@@ -12,6 +12,7 @@ import {
 import { SafeLayoutService } from '@safe/builder';
 import { AppOverlayContainer } from '../../utils/overlay-container';
 
+/** Workflow web widget component */
 @Component({
   selector: 'app-workflow-widget',
   templateUrl: './workflow-widget.component.html',
@@ -26,6 +27,12 @@ export class WorkflowWidgetComponent implements OnInit, AfterViewInit {
 
   public showSidenav = false;
 
+  /**
+   * Workflow web widget component
+   *
+   * @param layoutService Shared layout service
+   * @param overlayContainer Angular overlay container
+   */
   constructor(
     private layoutService: SafeLayoutService,
     private overlayContainer: OverlayContainer

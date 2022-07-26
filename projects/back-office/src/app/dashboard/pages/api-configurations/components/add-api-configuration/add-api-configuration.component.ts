@@ -7,6 +7,9 @@ import {
 } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 
+/**
+ * Add API configuration component (modal)
+ */
 @Component({
   selector: 'app-add-api-configuration',
   templateUrl: './add-api-configuration.component.html',
@@ -16,10 +19,17 @@ export class AddApiConfigurationComponent implements OnInit {
   // === REACTIVE FORM ===
   apiForm: FormGroup = new FormGroup({});
 
+  /** @returns name for the API configuration */
   get name(): AbstractControl | null {
     return this.apiForm.get('name');
   }
 
+  /**
+   * Add API configuration component
+   *
+   * @param formBuilder Angular form builder
+   * @param dialogRef Material dialog ref
+   */
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<AddApiConfigurationComponent>

@@ -2,6 +2,7 @@
 	"common": {
 		"access": "******",
 		"add": "******",
+		"advancedSettings": "******",
 		"aggregation": {
 			"few": "******",
 			"none": "******",
@@ -435,7 +436,6 @@
 		},
 		"formBuilder": {
 			"errors": {
-				"invalidRelatedName": "****** {{name}} ****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			}
@@ -472,6 +472,13 @@
 		"logout": {
 			"confirmationMessage": "******",
 			"title": "******"
+		},
+		"mapping": {
+			"field": "******",
+			"path": "******",
+			"text": "******",
+			"title": "******",
+			"value": "******"
 		},
 		"notifications": {
 			"readAll": "******"
@@ -664,7 +671,7 @@
 				"disallowRecordAccessibility": "****** {{form}}",
 				"disallowRecordCreation": "****** {{form}}",
 				"disallowRecordDeletion": "****** {{form}}",
-				"disallowRecordUpate": "****** {{form}}",
+				"disallowRecordUpdate": "****** {{form}}",
 				"hideFeature": "****** {{page}} ******",
 				"showFeature": "****** {{page}} ******"
 			},
@@ -703,6 +710,24 @@
 			}
 		},
 		"users": {
+			"advancedSettings": {
+				"title": "******",
+				"userManagement": {
+					"api": {
+						"placeholder": "******",
+						"title": "******"
+					},
+					"external": {
+						"title": "******",
+						"tooltip": "******"
+					},
+					"local": {
+						"title": "******",
+						"tooltip": "******"
+					},
+					"title": "******"
+				}
+			},
 			"invite": {
 				"add": "******",
 				"confirm": "******",
@@ -1111,6 +1136,10 @@
 			"select": "******",
 			"template": "******"
 		},
+		"mapping": {
+			"add": "******",
+			"edit": "******"
+		},
 		"page": {
 			"add": "******",
 			"tooltip": {
@@ -1266,13 +1295,10 @@
 				"choices": {
 					"valueDuplicated": "****** {{question}}"
 				},
+				"dataFieldDuplicated": "****** {{name}} ******",
 				"missingName": "****** {{page}} ******",
 				"multipletext": {
 					"missingName": "****** {{question}}"
-				},
-				"resource": {
-					"invalidRelatedName": "****** {{relatedName}} ****** {{page}} ******",
-					"missingRelatedName": "****** {{question}} ****** {{page}} ******"
 				},
 				"snakecase": "****** {{name}} ****** {{page}} ******"
 			},

@@ -16,8 +16,8 @@ import { SafeSnackBarService } from '../../../services/snackbar.service';
 import {
   GetResourceFormsQueryResponse,
   GetResourcesQueryResponse,
-  GET_RESOURCES,
   GET_RESOURCE_FORMS,
+  GET_RESOURCES_EXTENDED,
 } from '../graphql/queries';
 import {
   EditFormAccessMutationResponse,
@@ -82,6 +82,10 @@ export class RoleResourcesComponent implements OnInit {
     Permission.DELETE,
   ];
 
+  // === FILTERING ===
+  public filter: any;
+  public filterLoading = false;
+
   // === PAGINATION ===
   public pageInfo = {
     pageIndex: 0,
@@ -101,9 +105,11 @@ export class RoleResourcesComponent implements OnInit {
   /** Load the resources. */
   ngOnInit(): void {
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
-      query: GET_RESOURCES,
+      query: GET_RESOURCES_EXTENDED,
       variables: {
         first: DEFAULT_PAGE_SIZE,
+        sortField: 'name',
+        sortOrder: 'asc',
       },
     });
 
@@ -117,6 +123,7 @@ export class RoleResourcesComponent implements OnInit {
       this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
       this.loading = res.loading;
       this.updating = res.loading;
+      this.filterLoading = false;
     });
   }
 
@@ -236,6 +243,36 @@ export class RoleResourcesComponent implements OnInit {
           }
         );
     }
+  }
+
+  /**
+   * Filters applications and updates table.
+   *
+   * @param filter filter event.
+   */
+  onFilter(filter: any): void {
+    this.filterLoading = true;
+    this.filter = filter;
+    this.cachedResources = [];
+    this.pageInfo.pageIndex = 0;
+    this.resourcesQuery.fetchMore({
+      variables: {
+        first: this.pageInfo.pageSize,
+        filter: this.filter,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign({}, prev, {
+          resources: {
+            edges: fetchMoreResult.resources.edges,
+            pageInfo: fetchMoreResult.resources.pageInfo,
+            totalCount: fetchMoreResult.resources.totalCount,
+          },
+        });
+      },
+    });
   }
 
   /**

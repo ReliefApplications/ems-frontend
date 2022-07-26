@@ -3,6 +3,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Application, User, Role, SafeApplicationService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
+/**
+ * Users page for application preview.
+ */
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
@@ -15,6 +18,11 @@ export class UsersComponent implements OnInit, OnDestroy {
   public roles: Role[] = [];
   private applicationSubscription?: Subscription;
 
+  /**
+   * Users page for application preview
+   *
+   * @param applicationService Shared application service
+   */
   constructor(public applicationService: SafeApplicationService) {}
 
   /**

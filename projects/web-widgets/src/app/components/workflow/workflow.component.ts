@@ -6,6 +6,9 @@ import {
   GET_WORKFLOW_BY_ID,
 } from './graphql/queries';
 
+/**
+ * Workflow component.
+ */
 @Component({
   selector: 'app-workflow',
   templateUrl: './workflow.component.html',
@@ -22,6 +25,12 @@ export class WorkflowComponent implements OnInit, OnChanges {
   // === ACTIVE STEP ===
   public activeStep = 0;
   public step: Step | null = null;
+
+  /**
+   * Workflow component
+   *
+   * @param apollo Apollo service
+   */
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
@@ -65,7 +74,9 @@ export class WorkflowComponent implements OnInit, OnChanges {
   }
 
   /**
-   * On Open Step.
+   * Open selected step
+   *
+   * @param index index of selected step
    */
   public onOpenStep(index: number): void {
     if (index >= 0 && index < this.steps.length) {
@@ -74,7 +85,11 @@ export class WorkflowComponent implements OnInit, OnChanges {
     }
   }
 
-  /** Get data from within selected step */
+  /**
+   * Go to next step
+   *
+   * @param elementRef router outlet ref
+   */
   onActivate(elementRef: any): void {
     if (elementRef.goToNextStep) {
       elementRef.goToNextStep.subscribe((event: any) => {

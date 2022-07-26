@@ -12,16 +12,14 @@ import { Role, User } from '@safe/builder';
 
 /**
  * Component which will show all the user in the app.
+ * Accessible with '/settings/users' route.
+ * Management of users.
  */
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-/**
-  Accessible with '/settings/users' route.
-  Management of users.
- */
 export class UsersComponent implements OnInit {
   // === DATA ===
   public loading = true;

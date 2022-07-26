@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeSkeletonDirective } from './skeleton.directive';
 
+/**
+ * Skeleton module.
+ */
 @NgModule({
   declarations: [SafeSkeletonDirective],
   imports: [CommonModule, IndicatorsModule],

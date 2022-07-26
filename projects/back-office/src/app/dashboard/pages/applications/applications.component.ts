@@ -31,8 +31,10 @@ import { DuplicateApplicationComponent } from '../../../components/duplicate-app
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
 
+/** Applications page component. */
 @Component({
   selector: 'app-applications',
   templateUrl: './applications.component.html',
@@ -72,6 +74,17 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
   canAdd = false;
   private authSubscription?: Subscription;
 
+  /**
+   * Applications page component
+   *
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param router Angular router
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param previewService Shared preview service
+   * @param translate Angular translate service
+   */
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -11,6 +10,9 @@ import { PositionAttributesComponent } from './position-attributes.component';
 import { SafePreviousButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Position attributes page module
+ */
 @NgModule({
   declarations: [PositionAttributesComponent],
   imports: [

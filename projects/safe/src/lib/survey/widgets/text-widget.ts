@@ -9,12 +9,8 @@ import { EmbeddedViewRef } from '@angular/core';
 import { ButtonCategory } from '../../components/ui/button/button-category.enum';
 import { SafeButtonComponent } from '../../components/ui/button/button.component';
 import { ButtonSize } from '../../components/ui/button/button-size.enum';
-import {
-  JsonMetadata,
-  Question,
-  QuestionText,
-  SurveyModel,
-} from 'survey-knockout';
+import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { Question, QuestionText } from '../types';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 

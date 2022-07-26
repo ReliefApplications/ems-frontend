@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DashboardsComponent } from './dashboards.component';
+import { SafeMappingModalComponent } from './mapping-modal.component';
 
-describe('DashboardsComponent', () => {
-  let component: DashboardsComponent;
-  let fixture: ComponentFixture<DashboardsComponent>;
+describe('SafeMappingModalComponent', () => {
+  let component: SafeMappingModalComponent;
+  let fixture: ComponentFixture<SafeMappingModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DashboardsComponent],
+      declarations: [SafeMappingModalComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardsComponent);
+    fixture = TestBed.createComponent(SafeMappingModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

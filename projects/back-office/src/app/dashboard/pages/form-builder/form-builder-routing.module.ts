@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { FormBuilderComponent } from './form-builder.component';
 import { CanDeactivateGuard } from '../../../guards/can-deactivate.guard';
 
+/** List of routes of form builder module */
 const routes: Routes = [
   {
     path: '',
@@ -11,6 +12,9 @@ const routes: Routes = [
   },
 ];
 
+/**
+ * Form builder routing module.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   providers: [CanDeactivateGuard],
