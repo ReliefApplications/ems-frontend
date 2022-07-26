@@ -1,15 +1,8 @@
-<kendo-chart
-  #chart
-  [categoryAxis]="categoryAxis"
-  [seriesColors]="options && options.palette"
->
-  <!-- <kendo-chart-value-axis>
-    <kendo-chart-value-axis-item
-      [min]="min"
-      [max]="max"
-    >
+<kendo-chart #chart [seriesColors]="options && options.palette">
+  <kendo-chart-value-axis>
+    <kendo-chart-value-axis-item [min]="min" [max]="max">
     </kendo-chart-value-axis-item>
-  </kendo-chart-value-axis> -->
+  </kendo-chart-value-axis>
   <kendo-chart-title
     *ngIf="title"
     [visible]="title.visible"
@@ -32,6 +25,7 @@
       [data]="serie.data"
       field="field"
       categoryField="category"
+      [name]="serie.name || ''"
       [color]="serie.color"
       [labels]="labels"
     ></kendo-chart-series-item>

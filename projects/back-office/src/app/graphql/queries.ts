@@ -489,8 +489,20 @@ export const GET_RESOURCES = gql`
 
 /** Graphql query for getting resources with a filter and more data */
 export const GET_RESOURCES_EXTENDED = gql`
-  query GetResourcesExtended($first: Int, $afterCursor: ID, $filter: JSON) {
-    resources(first: $first, afterCursor: $afterCursor, filter: $filter) {
+  query GetResourcesExtended(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sortField: String
+    $sortOrder: String
+  ) {
+    resources(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
       edges {
         node {
           id
