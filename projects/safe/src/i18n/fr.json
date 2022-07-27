@@ -700,6 +700,7 @@
 				"roles": {
 					"application": "Rôles d'application",
 					"backoffice": "Rôles de back-office",
+					"groups": "Groupes",
 					"selectedApplication": "Application sélectionnée",
 					"selectedRoles": "Rôles sélectionnés"
 				},
