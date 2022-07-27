@@ -143,7 +143,9 @@ export class SafeBackOfficeRolesComponent
    * Adds a role
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(SafeAddRoleComponent);
+    const dialogRef = this.dialog.open(SafeAddRoleComponent, {
+      data: { title: 'components.role.add.title' },
+    });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         if (this.inApplication) {

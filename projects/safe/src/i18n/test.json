@@ -449,6 +449,15 @@
 			"isCore": "******",
 			"parent": "******"
 		},
+		"group": {
+			"add": {
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			}
+		},
 		"header": {
 			"goToPlatform": "******",
 			"logout": "******",
@@ -1112,6 +1121,11 @@
 			},
 			"select": "******",
 			"template": "******"
+		},
+		"group": {
+			"create": "******",
+			"description": "******",
+			"title": "******"
 		},
 		"mapping": {
 			"add": "******",

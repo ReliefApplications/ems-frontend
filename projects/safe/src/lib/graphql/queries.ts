@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 import { Form } from '../models/form.model';
 import { Resource } from '../models/resource.model';
-import { Role, User, Permission } from '../models/user.model';
+import { Role, User, Permission, Group } from '../models/user.model';
 import { Record } from '../models/record.model';
 import { Notification } from '../models/notification.model';
 import { Application } from '../models/application.model';
@@ -1147,4 +1147,23 @@ export const GET_RECORD_HISTORY_BY_ID = gql`
 export interface GetRecordHistoryByIdResponse {
   loading: boolean;
   recordHistory: RecordHistory;
+}
+
+// === GET GROUPS ===
+
+/** Graphql request for getting groups (optionnally by an application id) */
+export const GET_GROUPS = gql`
+  query GetGroups($application: ID) {
+    groups(application: $application) {
+      id
+      title
+      usersCount
+    }
+  }
+`;
+
+/** Model for GetGroupsQueryResponse object */
+export interface GetGroupsQueryResponse {
+  loading: boolean;
+  groups: Group[];
 }
