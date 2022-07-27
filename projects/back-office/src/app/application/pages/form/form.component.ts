@@ -1,7 +1,11 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { Subscription } from 'rxjs';
 import {
   Form,
@@ -113,7 +117,10 @@ export class FormComponent implements OnInit, OnDestroy {
           .subscribe((res) => {
             this.form = res.data.form;
             this.tabNameForm = new UntypedFormGroup({
-              tabName: new UntypedFormControl(this.step?.name, Validators.required),
+              tabName: new UntypedFormControl(
+                this.step?.name,
+                Validators.required
+              ),
             });
             this.applicationId =
               this.step?.workflow?.page?.application?.id || '';
@@ -141,7 +148,10 @@ export class FormComponent implements OnInit, OnDestroy {
           .subscribe((res2) => {
             this.form = res2.data.form;
             this.tabNameForm = new UntypedFormGroup({
-              tabName: new UntypedFormControl(this.page?.name, Validators.required),
+              tabName: new UntypedFormControl(
+                this.page?.name,
+                Validators.required
+              ),
             });
             this.applicationId = this.page?.application?.id || '';
             this.loading = res2.data.loading;

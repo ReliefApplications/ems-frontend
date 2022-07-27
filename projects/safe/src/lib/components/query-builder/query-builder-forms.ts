@@ -1,4 +1,8 @@
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import get from 'lodash/get';
 import { prettifyLabel } from '../../utils/prettify';
 
@@ -40,7 +44,10 @@ export const createFilterGroup = (filter: any): UntypedFormGroup => {
  * @param newField Is the field new ?
  * @returns Field form
  */
-export const addNewField = (field: any, newField?: boolean): UntypedFormGroup => {
+export const addNewField = (
+  field: any,
+  newField?: boolean
+): UntypedFormGroup => {
   switch (newField ? field.type.kind : field.kind) {
     case 'LIST': {
       return formBuilder.group({
@@ -99,7 +106,10 @@ export const addNewField = (field: any, newField?: boolean): UntypedFormGroup =>
  * @param validators Enables or not the validators of the form
  * @returns Query form
  */
-export const createQueryForm = (value: any, validators = true): UntypedFormGroup =>
+export const createQueryForm = (
+  value: any,
+  validators = true
+): UntypedFormGroup =>
   formBuilder.group({
     name: [get(value, 'name', ''), validators ? Validators.required : null],
     template: [get(value, 'template', ''), null],

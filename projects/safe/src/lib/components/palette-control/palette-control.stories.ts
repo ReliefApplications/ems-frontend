@@ -1,5 +1,9 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  UntypedFormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { SafePaletteControlComponent } from './palette-control.component';
 import { SafePaletteControlModule } from './palette-control.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';

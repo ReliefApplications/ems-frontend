@@ -9,7 +9,12 @@ import {
   ElementRef,
   Inject,
 } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
 import { Form } from '../../../../models/form.model';
@@ -353,7 +358,9 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
    * Delete all the invalid modifications
    */
   private deleteInvalidModifications(): void {
-    const modifications = this.buttonForm?.get('modifications') as UntypedFormArray;
+    const modifications = this.buttonForm?.get(
+      'modifications'
+    ) as UntypedFormArray;
     for (let i = 0; i < modifications.value.length; i++) {
       const modification = modifications.at(i);
       if (modification.invalid) {

@@ -1,6 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { Subscription } from 'rxjs';
 import {
   Application,

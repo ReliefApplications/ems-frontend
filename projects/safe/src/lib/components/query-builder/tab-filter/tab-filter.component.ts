@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { clone, get, isDate } from 'lodash';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { SafeGridService } from '../../../services/grid.service';

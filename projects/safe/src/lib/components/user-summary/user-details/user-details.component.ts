@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { Permissions, User } from '../../../models/user.model';
 import { SafeAuthService } from '../../../services/auth.service';
 
@@ -34,7 +38,10 @@ export class UserDetailsComponent implements OnInit {
    * @param fb Angular form builder
    * @param authService Shared authentication service
    */
-  constructor(private fb: UntypedFormBuilder, private authService: SafeAuthService) {}
+  constructor(
+    private fb: UntypedFormBuilder,
+    private authService: SafeAuthService
+  ) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({

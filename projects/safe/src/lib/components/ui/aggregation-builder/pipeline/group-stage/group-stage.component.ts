@@ -1,5 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AbstractControl, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  UntypedFormArray,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { isEmpty } from 'lodash';
 import { AggregationBuilderService } from '../../../../../services/aggregation-builder.service';
 import { groupByRuleForm } from '../../aggregation-builder-forms';

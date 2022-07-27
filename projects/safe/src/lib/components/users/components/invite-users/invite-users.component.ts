@@ -7,7 +7,12 @@ import {
 import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { SafeAddUserComponent } from '../add-user/add-user.component';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { SafeDownloadService } from '../../../../services/download.service';

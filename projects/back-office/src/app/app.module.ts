@@ -32,17 +32,16 @@ registerLocaleData(localeFr);
 registerLocaleData(localeEn);
 
 // Kendo datepicker for surveyjs
-import {
-  // CalendarDOMService,
-  // CenturyViewService,
-  // DecadeViewService,
-  // HoursService,
-  // MinutesService,
-  // MonthViewService,
-  // TimePickerDOMService,
-  // TOUCH_ENABLED,
-  // YearViewService,
-} from '@progress/kendo-angular-dateinputs';
+import // CalendarDOMService,
+// CenturyViewService,
+// DecadeViewService,
+// HoursService,
+// MinutesService,
+// MonthViewService,
+// TimePickerDOMService,
+// TOUCH_ENABLED,
+// YearViewService,
+'@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { touchEnabled } from '@progress/kendo-common';

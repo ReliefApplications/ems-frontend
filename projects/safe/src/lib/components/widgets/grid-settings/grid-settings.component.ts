@@ -7,7 +7,12 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, Validators, UntypedFormArray } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  UntypedFormBuilder,
+  Validators,
+  UntypedFormArray,
+} from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -80,7 +85,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
 
   /** @returns List of the floating buttons */
   get floatingButtons(): UntypedFormArray {
-    return (this.tileForm?.controls.floatingButtons as UntypedFormArray) || null;
+    return (
+      (this.tileForm?.controls.floatingButtons as UntypedFormArray) || null
+    );
   }
 
   /**
@@ -171,7 +178,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
             this.tileForm
               ?.get('floatingButton.modifySelectedRows')
               ?.setValue(false);
-            const bodyFields = floatingButton.get('bodyFields') as UntypedFormArray;
+            const bodyFields = floatingButton.get(
+              'bodyFields'
+            ) as UntypedFormArray;
             bodyFields.clear();
           }
         }
@@ -309,7 +318,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
    * Adds a floating button configuration.
    */
   public addFloatingButton(): void {
-    const floatingButtons = this.tileForm?.get('floatingButtons') as UntypedFormArray;
+    const floatingButtons = this.tileForm?.get(
+      'floatingButtons'
+    ) as UntypedFormArray;
     floatingButtons.push(this.createFloatingButtonForm({ show: true }));
   }
 
@@ -317,7 +328,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
    * Deletes a floating button configuration.
    */
   public deleteFloatingButton(): void {
-    const floatingButtons = this.tileForm?.get('floatingButtons') as UntypedFormArray;
+    const floatingButtons = this.tileForm?.get(
+      'floatingButtons'
+    ) as UntypedFormArray;
     floatingButtons.removeAt(this.tabIndex);
     this.tabIndex = 0;
   }

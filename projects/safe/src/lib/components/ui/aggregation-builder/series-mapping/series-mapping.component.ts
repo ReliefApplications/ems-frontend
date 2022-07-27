@@ -30,7 +30,9 @@ export class SafeSeriesMappingComponent implements OnInit {
    * Sets the available fields.
    */
   ngOnInit(): void {
-    this.controlNames = Object.keys((this.mappingForm as UntypedFormGroup).controls);
+    this.controlNames = Object.keys(
+      (this.mappingForm as UntypedFormGroup).controls
+    );
     this.fields$.subscribe((fields: any[]) => {
       this.availableFields = [...fields];
     });

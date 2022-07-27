@@ -1,5 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { Role, User } from '../../../../models/user.model';

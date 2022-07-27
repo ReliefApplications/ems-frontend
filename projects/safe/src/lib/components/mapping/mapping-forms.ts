@@ -1,4 +1,8 @@
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import get from 'lodash/get';
 import { Mapping } from '../../models/setting.model';
 

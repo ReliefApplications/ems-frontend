@@ -1,6 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -97,7 +101,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (workflow) {
           this.steps = workflow.steps || [];
           this.workflowNameForm = new UntypedFormGroup({
-            workflowName: new UntypedFormControl(workflow.name, Validators.required),
+            workflowName: new UntypedFormControl(
+              workflow.name,
+              Validators.required
+            ),
           });
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {
