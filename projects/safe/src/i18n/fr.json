@@ -75,6 +75,11 @@
 			"one": "Formulaire"
 		},
 		"general": "Général",
+		"group": {
+			"few": "Groupes",
+			"none": "Pas de groupes",
+			"one": "Groupe"
+		},
 		"history": "Historique",
 		"id": "Id",
 		"input": {
@@ -700,7 +705,6 @@
 				"roles": {
 					"application": "Rôles d'application",
 					"backoffice": "Rôles de back-office",
-					"groups": "Groupes",
 					"selectedApplication": "Application sélectionnée",
 					"selectedRoles": "Rôles sélectionnés"
 				},

@@ -1,7 +1,4 @@
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
@@ -18,26 +15,21 @@ import { SafeConfirmModalModule } from '../../confirm-modal/confirm-modal.module
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
 import { SafeBackOfficeRolesComponent } from './back-office-roles.component';
-import { SafeAddRoleComponent } from './components/add-role/add-role.component';
 
 /**
  * BackOfficeRolesModule manages modules and components
  * related to the back-office roles tab
  */
 @NgModule({
-  declarations: [SafeBackOfficeRolesComponent, SafeAddRoleComponent],
+  declarations: [SafeBackOfficeRolesComponent],
   imports: [
     CommonModule,
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    MatDialogModule,
-    MatButtonModule,
     MatMenuModule,
     MatIconModule,
     SafeConfirmModalModule,

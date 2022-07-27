@@ -75,6 +75,11 @@
 			"one": "Form"
 		},
 		"general": "General",
+		"group": {
+			"few": "Groups",
+			"none": "No groups",
+			"one": "Group"
+		},
 		"history": "History",
 		"id": "Id",
 		"input": {
@@ -700,7 +705,6 @@
 				"roles": {
 					"application": "Application roles",
 					"backoffice": "Back-Office roles",
-					"groups": "Groups",
 					"selectedApplication": "Selected application",
 					"selectedRoles": "Selected roles"
 				},

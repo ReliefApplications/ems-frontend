@@ -15,7 +15,7 @@ import { Role } from '../../../models/user.model';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeApplicationService } from '../../../services/application.service';
-import { SafeAddRoleComponent } from '../back-office-roles/components/add-role/add-role.component';
+import { SafeAddRoleComponent } from '../components/add-role/add-role.component';
 import {
   AddRoleMutationResponse,
   ADD_ROLE,

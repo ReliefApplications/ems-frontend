@@ -75,6 +75,11 @@
 			"one": "******"
 		},
 		"general": "******",
+		"group": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"history": "******",
 		"id": "******",
 		"input": {
@@ -700,7 +705,6 @@
 				"roles": {
 					"application": "******",
 					"backoffice": "******",
-					"groups": "******",
 					"selectedApplication": "******",
 					"selectedRoles": "******"
 				},

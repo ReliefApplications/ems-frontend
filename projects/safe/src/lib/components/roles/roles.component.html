@@ -1,13 +1,18 @@
 <h1>{{ 'common.role.few' | translate }}</h1>
 <mat-tab-group>
-  <mat-tab [label]="'components.user.summary.roles.backoffice' | translate">
+  <mat-tab
+    [label]="
+      (inApplication ? 'common.application.few' : 'common.platform.backOffice')
+        | translate
+    "
+  >
     <ng-template matTabContent>
       <safe-back-office-roles
         [inApplication]="inApplication"
       ></safe-back-office-roles>
     </ng-template>
   </mat-tab>
-  <mat-tab [label]="'components.user.summary.roles.groups' | translate">
+  <mat-tab [label]="'common.group.few' | translate" *ngIf="!inApplication">
     <ng-template matTabContent>
       <safe-groups></safe-groups>
     </ng-template>
