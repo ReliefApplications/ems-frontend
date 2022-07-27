@@ -260,6 +260,12 @@ export class SafeTabFilterComponent implements OnInit {
     });
   }
 
+  /**
+   * Get meta from filter name
+   *
+   * @param name field name
+   * @returns meta or null
+   */
   getMeta(name: string): any {
     return get(this.metaFields, name, null);
   }

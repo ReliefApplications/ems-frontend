@@ -263,6 +263,15 @@ export class SafeGridService {
           };
         }
       }
+      if (meta.choices) {
+        metaFields[fieldName] = {
+          ...meta,
+          choices: meta.choices.map((choice: any) => ({
+            value: choice.value,
+            text: choice.text.default || choice.text,
+          })),
+        };
+      }
     }
   }
 

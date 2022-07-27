@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 
+/**
+ * Add channel component, act as modal.
+ */
 @Component({
   selector: 'app-add-channel',
   templateUrl: './add-channel.component.html',
@@ -11,6 +14,12 @@ export class AddChannelComponent implements OnInit {
   // === REACTIVE FORM ===
   channelForm: UntypedFormGroup = new UntypedFormGroup({});
 
+  /**
+   * Add channel component
+   *
+   * @param formBuilder Angular form builder
+   * @param dialogRef Material dialog ref
+   */
   constructor(
     private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<AddChannelComponent>

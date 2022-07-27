@@ -4,13 +4,23 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { SafeSnackBarService } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Component to display current url and copy it. */
 @Component({
   selector: 'app-share-url',
   templateUrl: './share-url.component.html',
   styleUrls: ['./share-url.component.css'],
 })
-/** Modal content to display an url. */
 export class ShareUrlComponent implements OnInit {
+  /**
+   * Component to display current url and copy it.
+   *
+   * @param snackBar Shared snackbar service
+   * @param clipboard Angular clipboard service
+   * @param dialogRef Material dialog ref
+   * @param data Injected dialog data
+   * @param data.url active url
+   * @param translate Angular translate service
+   */
   constructor(
     public snackBar: SafeSnackBarService,
     private clipboard: Clipboard,
@@ -19,7 +29,7 @@ export class ShareUrlComponent implements OnInit {
     public data: {
       url: string;
     },
-    private translateService: TranslateService
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {}
@@ -30,7 +40,7 @@ export class ShareUrlComponent implements OnInit {
   onCopy(): void {
     this.clipboard.copy(this.data.url);
     this.snackBar.openSnackBar(
-      this.translateService.instant('common.notifications.copiedToClipboard')
+      this.translate.instant('common.notifications.copiedToClipboard')
     );
     this.dialogRef.close();
   }

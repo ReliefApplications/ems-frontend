@@ -38,6 +38,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 
 /** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
+/** Available separator for csv */
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
 /**
@@ -80,10 +81,12 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     hasNextPage: true,
   };
 
+  /** @returns name of reference model */
   get name(): AbstractControl | null {
     return this.referenceForm.get('name');
   }
 
+  /** @returns type of reference model */
   get type(): string {
     return this.referenceForm.get('type')?.value;
   }

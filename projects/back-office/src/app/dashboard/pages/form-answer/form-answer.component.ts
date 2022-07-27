@@ -8,6 +8,9 @@ import {
   GET_SHORT_FORM_BY_ID,
 } from '../../../graphql/queries';
 
+/**
+ * Form answer page component.
+ */
 @Component({
   selector: 'app-form-answer',
   templateUrl: './form-answer.component.html',
@@ -23,6 +26,13 @@ export class FormAnswerComponent implements OnInit {
   public form?: Form;
   public completed = false;
 
+  /**
+   * Form answer page component.
+   *
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param breadcrumbService Shared breadcrumb service
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -50,10 +60,20 @@ export class FormAnswerComponent implements OnInit {
     }
   }
 
+  /**
+   * Handle completion of form
+   *
+   * @param e completion event
+   * @param e.completed completion status
+   * @param e.hideNewRecord does 'new record' appear ?
+   */
   onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;
   }
 
+  /**
+   * Reset the form, removing answers.
+   */
   clearForm(): void {
     this.formComponent?.reset();
   }

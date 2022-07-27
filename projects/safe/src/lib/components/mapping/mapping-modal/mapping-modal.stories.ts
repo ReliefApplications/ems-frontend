@@ -50,10 +50,19 @@ export default {
   },
 } as Meta;
 
+/**
+ * Template for stories
+ *
+ * @param args story args
+ * @returns story
+ */
 const TEMPLATE: Story<SafeMappingModalComponent> = (args) => ({
   template: '<safe-mapping-modal></safe-mapping-modal>',
 });
 
+/**
+ * Default story
+ */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Full';
 DEFAULT.args = {};

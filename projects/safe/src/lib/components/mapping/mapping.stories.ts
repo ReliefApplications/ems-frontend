@@ -3,7 +3,11 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeMappingComponent } from './mapping.component';
 import { SafeMappingModule } from './mapping.module';
 import { StorybookTranslateModule } from '../storybook-translate/storybook-translate-module';
-import { UntypedFormArray, UntypedFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 
 export default {
@@ -32,8 +36,15 @@ export default {
   },
 } as Meta;
 
+/** Angular form builder */
 const fb = new UntypedFormBuilder();
 
+/**
+ * Template for stories
+ *
+ * @param args stories args
+ * @returns story
+ */
 const TEMPLATE: Story<SafeMappingComponent> = (args) => ({
   template: '<safe-mapping [mappingForm]="mappingForm"></safe-mapping>',
   props: {
@@ -55,10 +66,19 @@ const TEMPLATE: Story<SafeMappingComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story
+ */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Full';
 DEFAULT.args = {};
 
+/**
+ * Story template with no mapping
+ *
+ * @param args story args
+ * @returns story
+ */
 const TEMPLATE_EMPTY: Story<SafeMappingComponent> = (args) => ({
   template: '<safe-mapping [mappingForm]="mappingForm"></safe-mapping>',
   props: {
@@ -67,6 +87,7 @@ const TEMPLATE_EMPTY: Story<SafeMappingComponent> = (args) => ({
   },
 });
 
+/** Story with no mapping */
 export const EMPTY = TEMPLATE_EMPTY.bind({});
 EMPTY.storyName = 'Empty';
 EMPTY.args = {};

@@ -9,6 +9,9 @@ import {
 import { Application, SafeSnackBarService } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Duplicate application component (modal)
+ */
 @Component({
   selector: 'app-duplicate-application',
   templateUrl: './duplicate-application.component.html',
@@ -18,6 +21,16 @@ export class DuplicateApplicationComponent implements OnInit {
   public currentApp: Application;
   public duplicateForm: UntypedFormGroup = new UntypedFormGroup({});
 
+  /**
+   * Duplicate application component.
+   *
+   * @param snackBar Shared snackbar service
+   * @param formBuilder Angular form builder
+   * @param apollo Apollo service
+   * @param dialogRef Material dialog ref
+   * @param translateService Angular translate service
+   * @param data Injected dialog data
+   */
   constructor(
     private snackBar: SafeSnackBarService,
     private formBuilder: UntypedFormBuilder,
@@ -35,6 +48,10 @@ export class DuplicateApplicationComponent implements OnInit {
     });
   }
 
+  /**
+   * Submit duplicate application form.
+   * Send mutation.
+   */
   onSubmit(): void {
     this.apollo
       .mutate<DuplicateApplicationMutationResponse>({
@@ -74,6 +91,9 @@ export class DuplicateApplicationComponent implements OnInit {
       });
   }
 
+  /**
+   * Close dialog.
+   */
   onCancel(): void {
     this.dialogRef.close();
   }

@@ -182,27 +182,6 @@ export const routes: Routes = [
         },
       },
       {
-        path: 'dashboards',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('./pages/dashboards/dashboards.module').then(
-                (m) => m.DashboardsModule
-              ),
-            // canActivate: [SafePermissionGuard]
-          },
-          {
-            path: ':id',
-            loadChildren: () =>
-              import('./pages/dashboard/dashboard.module').then(
-                (m) => m.DashboardModule
-              ),
-            // canActivate: [SafePermissionGuard]
-          },
-        ],
-      },
-      {
         path: 'applications',
         children: [
           {
@@ -335,6 +314,10 @@ export const routes: Routes = [
     ],
   },
 ];
+
+/**
+ * MAIN BO Dashboard routing module.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

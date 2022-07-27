@@ -26,10 +26,13 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 // eslint-disable-next-line max-len
 import { SubscriptionModalComponent } from '../../../../../application/pages/subscriptions/components/subscription-modal/subscription-modal.component';
 
+/** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
 
+/** Default fields */
 const DEFAULT_FIELDS = ['createdBy'];
 
+/** Pull job modal component */
 @Component({
   selector: 'app-pull-job-modal',
   templateUrl: './pull-job-modal.component.html',
@@ -82,22 +85,36 @@ export class PullJobModalComponent implements OnInit {
   // === RAW JSON UTILITY ===
   public openRawJSON = false;
 
+  /** @returns pull job mapping as form array */
   get mappingArray(): UntypedFormArray {
     return this.pullJobForm.get('mapping') as UntypedFormArray;
   }
 
+  /** @returns default API configuration */
   get defaultApiConfiguration(): ApiConfiguration | null {
     return this.data.pullJob?.apiConfiguration || null;
   }
 
+  /** @returns default convert to form */
   get defaultForm(): Form | null {
     return this.data.pullJob?.convertTo || null;
   }
 
+  /** @returns default channel */
   get defaultChannel(): Channel | null {
     return this.data.pullJob?.channel || null;
   }
 
+  /**
+   * Pull job modal component
+   *
+   * @param formBuilder Angular form builder
+   * @param dialogRef Material dialog ref
+   * @param apollo Apollo service
+   * @param data Modal injected data
+   * @param data.channels list of available channels
+   * @param data.pullJob pull job
+   */
   constructor(
     private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<SubscriptionModalComponent>,

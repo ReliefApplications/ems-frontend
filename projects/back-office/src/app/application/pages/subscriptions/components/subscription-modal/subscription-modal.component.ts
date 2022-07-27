@@ -14,8 +14,12 @@ import { map, startWith } from 'rxjs/operators';
 import { MatSelect } from '@angular/material/select';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 
+/** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Subscription modal component
+ */
 @Component({
   selector: 'app-subscription-modal',
   templateUrl: './subscription-modal.component.html',
@@ -50,14 +54,28 @@ export class SubscriptionModalComponent implements OnInit {
 
   @ViewChild('applicationSelect') applicationSelect?: MatAutocomplete;
 
+  /** @returns subscription routing key */
   get routingKey(): string {
     return this.subscriptionForm.value.routingKey;
   }
 
+  /**
+   * Set subscription key
+   */
   set routingKey(value: string) {
     this.subscriptionForm.controls.routingKey.setValue(value);
   }
 
+  /**
+   * Subscription modal component
+   *
+   * @param formBuilder Angular form builder
+   * @param dialogRef Material dialog ref
+   * @param apollo Apollo service
+   * @param data Injected dialog data
+   * @param data.channels list of channels
+   * @param data.subscription subscription
+   */
   constructor(
     private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<SubscriptionModalComponent>,
@@ -132,6 +150,12 @@ export class SubscriptionModalComponent implements OnInit {
     });
   }
 
+  /**
+   * Filter list of applications
+   *
+   * @param value value to search with
+   * @returns filtered list of applications.
+   */
   private filter(value: string): Application[] {
     const filterValue = value.toLowerCase();
     const applications = this.applications.getValue();
