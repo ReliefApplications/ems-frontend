@@ -357,6 +357,7 @@ export class SafeGridWidgetComponent implements OnInit {
         variables: {
           ids,
           data,
+          template: this.settings.query?.template,
         },
       })
       .toPromise();
