@@ -12,6 +12,8 @@ const authConfig: AuthConfig = {
   responseType: 'code',
   showDebugInformation: true,
   strictDiscoveryDocumentValidation: false,
+  preserveRequestedRoute: true,
+  clearHashAfterLogin: true,
 };
 
 /** Environment configuration */
