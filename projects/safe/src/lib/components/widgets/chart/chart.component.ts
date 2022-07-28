@@ -41,7 +41,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   public hasError = false;
   public legend: any[] = [];
   public legendEvent: Subject<any> = new Subject<any>();
-  public flexDirection: string = 'column';
+  public flexDirection = 'column';
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -217,48 +217,66 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
         }
         this.loading = res.loading;
         this.legend = [];
-        if (this.settings.chart.type === 'donut' || this.settings.chart.type === 'pie') {
+        if (
+          this.settings.chart.type === 'donut' ||
+          this.settings.chart.type === 'pie'
+        ) {
           this.series[0].data.map((value: any, index: number) => {
-            const palette = this.settings.chart.palette.enabled ? this.settings.chart.palette.value : CHART_DEFAULT_PALETTE;
+            const palette = this.settings.chart.palette.enabled
+              ? this.settings.chart.palette.value
+              : CHART_DEFAULT_PALETTE;
             const color = palette[index % palette.length];
             this.legend.push({
               value: value.category,
               id: value.id,
               active: true,
-              color
-            })
-          })
-        }
-        else if (this.settings.chart.aggregation.mapping.series) {
+              color,
+            });
+          });
+        } else if (this.settings.chart.aggregation.mapping.series) {
           this.series.map((value: any, index: number) => {
-            const palette = this.settings.chart.palette.enabled ? this.settings.chart.palette.value : CHART_DEFAULT_PALETTE;
+            const palette = this.settings.chart.palette.enabled
+              ? this.settings.chart.palette.value
+              : CHART_DEFAULT_PALETTE;
             const color = palette[index % palette.length];
             this.legend.push({
               value: value.name,
               active: true,
-              color
-            })
-          })
+              color,
+            });
+          });
         }
         this.dataSubscription?.unsubscribe();
       }
     });
   }
 
+  /**
+   * Emits an event that will hide/show the item/serie when clicked in the legend
+   *
+   * @param item Item to hide.
+   * @param index Index of the item in the data.
+   */
   public toggleSeries(item: any, index: number): void {
     console.log(index);
     this.legendEvent.next({
-      event: "toggleSeries",
+      event: 'toggleSeries',
       item,
-      index
+      index,
     });
   }
 
+  /**
+   * Emits an event that will toggle the highlight for the hovered item in the legend
+   *
+   * @param value Boolean to show/hide the highlight.
+   * @param id Id identifying the item, or a name in the case of a serie.
+   */
   public toggleSeriesHighlight(value: boolean, id: any): void {
     this.legendEvent.next({
-      event: "toggleSeriesHighlight",
+      event: 'toggleSeriesHighlight',
       value,
-      id
+      id,
     });
   }
 

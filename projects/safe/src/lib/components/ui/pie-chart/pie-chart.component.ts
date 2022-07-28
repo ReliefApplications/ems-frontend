@@ -1,5 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ChartComponent, SeriesItemComponent } from '@progress/kendo-angular-charts';
+import {
+  ChartComponent,
+  SeriesItemComponent,
+} from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
 /**
@@ -62,7 +65,7 @@ export class SafePieChartComponent implements OnInit {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
-  @ViewChild("series")
+  @ViewChild('series')
   public seriesComponent?: SeriesItemComponent;
 
   /**
@@ -88,10 +91,13 @@ export class SafePieChartComponent implements OnInit {
           this.seriesComponent?.togglePointVisibility(res.index);
           res.item.active = !res.item.active;
         } else if (res.event === 'toggleSeriesHighlight') {
-          this.chart?.toggleHighlight(res.value, p => p.dataItem.id === res.id);
+          this.chart?.toggleHighlight(
+            res.value,
+            (p) => p.dataItem.id === res.id
+          );
         }
       }
-    })
+    });
   }
 
   /**

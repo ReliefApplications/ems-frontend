@@ -1,5 +1,17 @@
-import { Component, Input, OnChanges, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { ChartComponent, SeriesItemComponent, SeriesStack } from '@progress/kendo-angular-charts';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import {
+  ChartComponent,
+  SeriesItemComponent,
+  SeriesStack,
+} from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
 /**
@@ -77,9 +89,8 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
   @ViewChild('chart')
   public chart?: ChartComponent;
 
-  @ViewChildren("series")
+  @ViewChildren('series')
   public seriesComponent?: QueryList<SeriesItemComponent>;
-
 
   /**
    * The function which returns the Chart series label content.
@@ -102,10 +113,13 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
           this.animateChart = false;
           res.item.active = !res.item.active;
         } else if (res.event === 'toggleSeriesHighlight') {
-          this.chart?.toggleHighlight(res.value, (p: any) => p.series.name === res.id);
+          this.chart?.toggleHighlight(
+            res.value,
+            (p: any) => p.series.name === res.id
+          );
         }
       }
-    })
+    });
   }
 
   ngOnChanges(): void {
