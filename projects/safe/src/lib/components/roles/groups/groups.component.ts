@@ -29,7 +29,6 @@ export class SafeGroupsComponent implements OnInit {
   public displayedColumns = ['title', 'usersCount', 'actions'];
 
   public searchText = '';
-  public usersFilter = '';
 
   /**
    * This component is used to display the groups tab in the platform
@@ -48,6 +47,26 @@ export class SafeGroupsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getGroups();
+
+    // sets up filtering on table
+    this.groups.filterPredicate = (data: any) =>
+      this.searchText.trim().length === 0 ||
+      (this.searchText.trim().length > 0 &&
+        data.title
+          .toLowerCase()
+          .includes(this.searchText.trim().toLowerCase()));
+  }
+
+  /**
+   * Applies filters to the list of roles on event
+   *
+   * @param event The event
+   */
+  applyFilter(event: any): void {
+    this.searchText = !!event
+      ? event.target.value.trim().toLowerCase()
+      : this.searchText;
+    this.groups.filter = '##';
   }
 
   /**

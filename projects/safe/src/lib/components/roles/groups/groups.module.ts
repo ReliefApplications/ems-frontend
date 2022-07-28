@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeGroupsComponent } from './groups.component';
 import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../../ui/button/button.module';
@@ -21,7 +20,6 @@ import { MatTableModule } from '@angular/material/table';
     CommonModule,
     TranslateModule,
     MatIconModule,
-    FormsModule,
     MatFormFieldModule,
     SafeButtonModule,
     MatInputModule,
