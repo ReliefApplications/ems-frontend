@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { CategoryAxis, ChartComponent } from '@progress/kendo-angular-charts';
+import { Component, Input, OnChanges, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { CategoryAxis, ChartComponent, SeriesItemComponent } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
 /**
@@ -9,15 +9,6 @@ interface ChartTitle {
   visible: boolean;
   text: string;
   position: 'top' | 'bottom';
-}
-
-/**
- * Interface containing the settings of the chart legend
- */
-interface ChartLegend {
-  visible: boolean;
-  orientation: 'horizontal' | 'vertical';
-  position: 'top' | 'bottom' | 'left' | 'right';
 }
 
 /**
@@ -54,8 +45,6 @@ interface ChartOptions {
 export class SafeLineChartComponent implements OnInit, OnChanges {
   @Input() title: ChartTitle | undefined;
 
-  @Input() legend: ChartLegend | undefined;
-
   @Input() series: ChartSeries[] = [];
 
   @Input() options: ChartOptions = {
@@ -63,12 +52,19 @@ export class SafeLineChartComponent implements OnInit, OnChanges {
     axes: null,
   };
 
-  public min: number | undefined;
+  @Input() legendEvent: any;
 
-  public max: number | undefined;
+  public animateChart = true;
 
   @ViewChild('chart')
   public chart?: ChartComponent;
+
+  @ViewChildren("series")
+  public seriesComponent?: QueryList<SeriesItemComponent>;
+
+  public min: number | undefined;
+
+  public max: number | undefined;
 
   public labels: any;
 
@@ -83,6 +79,17 @@ export class SafeLineChartComponent implements OnInit, OnChanges {
     this.labels = {
       visible: get(this.options, 'labels.showValue'),
     };
+    this.legendEvent.subscribe((res: any) => {
+      if (res) {
+        if (res.event === 'toggleSeries') {
+          this.seriesComponent?.get(res.index)?.toggleVisibility();
+          this.animateChart = false;
+          res.item.active = !res.item.active;
+        } else if (res.event === 'toggleSeriesHighlight') {
+          this.chart?.toggleHighlight(res.value, (p: any) => p.series.name === res.id);
+        }
+      }
+    })
   }
 
   ngOnChanges(): void {

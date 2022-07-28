@@ -37,3 +37,50 @@ mat-spinner {
     margin-top: 2px;
   }
 }
+
+.chart-container {
+  display: flex;
+  height: calc(100% - 39px);;
+}
+
+.chart-legend {
+  padding: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6px;
+  margin: auto;
+
+  .item {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+
+    .color {
+      width: 15px;
+      height: 3px;
+    }
+    p {
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px;
+    }
+  }
+  .item-inactive {
+    color: #aaa;
+    .color {
+      background-color: #aaa !important;
+    }
+  }
+}
+.vertical {
+  flex-direction: column;
+}
+
+.widget-content {
+  min-width: 50%;
+  min-height: 50%;
+}

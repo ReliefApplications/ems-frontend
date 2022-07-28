@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ChartComponent } from '@progress/kendo-angular-charts';
+import { ChartComponent, SeriesItemComponent } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
 /**
@@ -9,15 +9,6 @@ interface ChartTitle {
   visible: boolean;
   text: string;
   position: 'top' | 'bottom';
-}
-
-/**
- * Interface containing the settings of the chart legend
- */
-interface ChartLegend {
-  visible: boolean;
-  orientation: 'horizontal' | 'vertical';
-  position: 'top' | 'bottom' | 'left' | 'right';
 }
 
 /**
@@ -56,16 +47,21 @@ interface ChartOptions {
 export class SafePieChartComponent implements OnInit {
   @Input() title: ChartTitle | undefined;
 
-  @Input() legend: ChartLegend | undefined;
-
   @Input() series: ChartSeries[] = [];
 
   @Input() options: ChartOptions = {
     palette: [],
   };
 
+  @Input() legendEvent: any;
+
+  public animateChart = true;
+
   @ViewChild('chart')
   public chart?: ChartComponent;
+
+  @ViewChild("series")
+  public seriesComponent?: SeriesItemComponent;
 
   /**
    * The function which returns the Chart series label content.
@@ -83,6 +79,17 @@ export class SafePieChartComponent implements OnInit {
 
   ngOnInit(): void {
     this.setLabelContent();
+    this.legendEvent.subscribe((res: any) => {
+      if (res) {
+        if (res.event === 'toggleSeries') {
+          this.animateChart = false;
+          this.seriesComponent?.togglePointVisibility(res.index);
+          res.item.active = !res.item.active;
+        } else if (res.event === 'toggleSeriesHighlight') {
+          this.chart?.toggleHighlight(res.value, p => p.dataItem.id === res.id);
+        }
+      }
+    })
   }
 
   /**

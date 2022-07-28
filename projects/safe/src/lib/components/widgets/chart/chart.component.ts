@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { saveAs } from '@progress/kendo-file-saver';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
 import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
@@ -14,6 +14,7 @@ import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.compon
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import { uniq, get, groupBy } from 'lodash';
+import { CHART_DEFAULT_PALETTE } from '../chart-settings/charts/chart';
 
 /**
  * Default file name for chart exports
@@ -38,6 +39,9 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
 
   public lastUpdate = '';
   public hasError = false;
+  public legend: any[] = [];
+  public legendEvent: Subject<any> = new Subject<any>();
+  public flexDirection: string = 'column';
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -76,7 +80,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
    */
   constructor(private aggregationBuilder: AggregationBuilderService) {}
 
-  /** Detect changes of the settings to reload the data. */
+  /** Detect changes of the settings to reload the data and sets the direction of the chart depending on the legend. */
   ngOnChanges(): void {
     this.loading = true;
     this.dataQuery = this.aggregationBuilder.buildAggregation(
@@ -87,6 +91,22 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
       this.getData();
     } else {
       this.loading = false;
+    }
+    switch (this.settings.chart.legend?.position) {
+      case 'top':
+        this.flexDirection = 'column-reverse';
+        break;
+      case 'bottom':
+        this.flexDirection = 'column';
+        break;
+      case 'right':
+        this.flexDirection = 'row';
+        break;
+      case 'left':
+        this.flexDirection = 'row-reverse';
+        break;
+      default:
+        break;
     }
   }
 
@@ -196,8 +216,49 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
           this.series = res.data.recordsAggregation;
         }
         this.loading = res.loading;
+        this.legend = [];
+        if (this.settings.chart.type === 'donut' || this.settings.chart.type === 'pie') {
+          this.series[0].data.map((value: any, index: number) => {
+            const palette = this.settings.chart.palette.enabled ? this.settings.chart.palette.value : CHART_DEFAULT_PALETTE;
+            const color = palette[index % palette.length];
+            this.legend.push({
+              value: value.category,
+              id: value.id,
+              active: true,
+              color
+            })
+          })
+        }
+        else if (this.settings.chart.aggregation.mapping.series) {
+          this.series.map((value: any, index: number) => {
+            const palette = this.settings.chart.palette.enabled ? this.settings.chart.palette.value : CHART_DEFAULT_PALETTE;
+            const color = palette[index % palette.length];
+            this.legend.push({
+              value: value.name,
+              active: true,
+              color
+            })
+          })
+        }
         this.dataSubscription?.unsubscribe();
       }
+    });
+  }
+
+  public toggleSeries(item: any, index: number): void {
+    console.log(index);
+    this.legendEvent.next({
+      event: "toggleSeries",
+      item,
+      index
+    });
+  }
+
+  public toggleSeriesHighlight(value: boolean, id: any): void {
+    this.legendEvent.next({
+      event: "toggleSeriesHighlight",
+      value,
+      id
     });
   }
 

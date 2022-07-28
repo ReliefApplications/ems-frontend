@@ -1,4 +1,4 @@
-<kendo-chart #chart [seriesColors]="options && options.palette">
+<kendo-chart #chart [transitions]="animateChart" [seriesColors]="options && options.palette">
   <kendo-chart-title
     *ngIf="title"
     [visible]="title.visible"
@@ -6,16 +6,11 @@
     [position]="title.position"
   >
   </kendo-chart-title>
-  <kendo-chart-legend
-    *ngIf="legend"
-    [visible]="legend.visible"
-    [position]="legend.position"
-    [orientation]="legend.orientation"
-  >
-  </kendo-chart-legend>
   <kendo-chart-tooltip format="{0}"></kendo-chart-tooltip>
+  <kendo-chart-legend [visible]="false"></kendo-chart-legend>
   <kendo-chart-series>
     <kendo-chart-series-item
+      #series
       *ngFor="let serie of series"
       type="pie"
       [data]="serie.data"

@@ -5,7 +5,7 @@ import {
   createMappingForm,
 } from '../../../ui/aggregation-builder/aggregation-builder-forms';
 
-const DEFAULT_PALETTE = [
+export const CHART_DEFAULT_PALETTE = [
   '#ff6358',
   '#ffd246',
   '#78d237',
@@ -74,7 +74,7 @@ export class Chart {
             value:
               palette.length > 0
                 ? palette
-                : JSON.parse(JSON.stringify(DEFAULT_PALETTE)),
+                : JSON.parse(JSON.stringify(CHART_DEFAULT_PALETTE)),
             disabled: !get(settings, 'palette.enabled', false),
           },
         ],

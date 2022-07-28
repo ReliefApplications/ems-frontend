@@ -1,4 +1,4 @@
-<kendo-chart #chart [seriesColors]="options && options.palette">
+<kendo-chart #chart [transitions]="animateChart" [seriesColors]="options && options.palette">
   <kendo-chart-value-axis>
     <kendo-chart-value-axis-item [min]="min" [max]="max">
     </kendo-chart-value-axis-item>
@@ -18,8 +18,10 @@
   >
   </kendo-chart-legend>
   <kendo-chart-tooltip format="{0}"></kendo-chart-tooltip>
+  <kendo-chart-legend [visible]="false"></kendo-chart-legend>
   <kendo-chart-series>
     <kendo-chart-series-item
+      #series
       *ngFor="let serie of series"
       type="bar"
       field="field"

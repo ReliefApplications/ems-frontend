@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { ChartComponent, SeriesStack } from '@progress/kendo-angular-charts';
+import { Component, Input, OnChanges, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChartComponent, SeriesItemComponent, SeriesStack } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
 /**
@@ -81,8 +81,16 @@ export class SafeBarChartComponent implements OnInit, OnChanges {
 
   public stack: boolean | SeriesStack = false;
 
+  @Input() legendEvent: any;
+
+  public animateChart = true;
+
   @ViewChild('chart')
   public chart?: ChartComponent;
+
+  @ViewChildren("series")
+  public seriesComponent?: QueryList<SeriesItemComponent>;
+
 
   /**
    * Bar chart component, based on kendo chart component.
@@ -103,6 +111,15 @@ export class SafeBarChartComponent implements OnInit, OnChanges {
     this.max = get(this.options, 'axes.x.max');
     this.stack = this.series.length > 1 ? get(this.options, 'stack') : false;
     this.setLabelContent();
+    this.legendEvent.subscribe((res: any) => {
+      if (res.event === 'toggleSeries') {
+        this.seriesComponent?.get(res.index)?.toggleVisibility();
+        this.animateChart = false;
+        res.item.active = !res.item.active;
+      } else if (res.event === 'toggleSeriesHighlight') {
+        this.chart?.toggleHighlight(res.value, (p: any) => p.series.name === res.id);
+      }
+    })
   }
 
   ngOnChanges(): void {
