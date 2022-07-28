@@ -715,6 +715,7 @@
 					"application": "Application roles",
 					"backoffice": "Back-Office roles",
 					"selectedApplication": "Selected application",
+					"selectedGroups": "Selected groups",
 					"selectedRoles": "Selected roles"
 				},
 				"title": "Summary"

@@ -1151,10 +1151,10 @@ export interface GetRecordHistoryByIdResponse {
 
 // === GET GROUPS ===
 
-/** Graphql request for getting groups (optionnally by an application id) */
+/** Graphql request for getting groups */
 export const GET_GROUPS = gql`
-  query GetGroups($application: ID) {
-    groups(application: $application) {
+  query GetGroups {
+    groups {
       id
       title
       usersCount

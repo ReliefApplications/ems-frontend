@@ -37,6 +37,7 @@ export interface User {
   isAdmin?: boolean;
   name?: string;
   roles?: Role[];
+  groups?: Group[];
   permissions?: Permission[];
   oid?: string;
   applications?: Application[];

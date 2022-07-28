@@ -110,9 +110,14 @@ export class SafeUserSummaryComponent implements OnInit {
    *
    * @param event An object with the new data
    * @param event.roles the array of updated roles
+   * @param event.groups the array of updated groups
    * @param event.application the id of an application, if the roles are associated with it
    */
-  onEditRoles(event: { roles: string[]; application?: string }): void {
+  onEditRoles(event: {
+    roles?: string[];
+    groups?: string[];
+    application?: string;
+  }): void {
     this.loading = true;
     this.apollo
       .mutate<EditUserRolesMutationResponse>({
@@ -120,6 +125,7 @@ export class SafeUserSummaryComponent implements OnInit {
         variables: {
           id: this.id,
           roles: event.roles,
+          groups: event.groups,
           application: event.application,
         },
       })
