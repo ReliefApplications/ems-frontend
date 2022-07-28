@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { ReferenceData } from '@safe/builder';
 
 // === DELETE REFERENCE DATA ===
+/** Delete ref data gql mutation definition */
 export const DELETE_REFERENCE_DATA = gql`
   mutation deleteReferenceData($id: ID!) {
     deleteReferenceData(id: $id) {
@@ -10,12 +11,14 @@ export const DELETE_REFERENCE_DATA = gql`
   }
 `;
 
+/** Delete ref data gql mutation response interface */
 export interface DeleteReferenceDataMutationResponse {
   loading: boolean;
   deleteReferenceData: ReferenceData;
 }
 
 // === ADD REFERENCE DATA===
+/** Add ref data gql mutation definition */
 export const ADD_REFERENCE_DATA = gql`
   mutation addReferenceData($name: String!) {
     addReferenceData(name: $name) {
@@ -52,6 +55,7 @@ export const ADD_REFERENCE_DATA = gql`
   }
 `;
 
+/** Add ref data gql mutation response interface */
 export interface AddReferenceDataMutationResponse {
   loading: boolean;
   addReferenceData: ReferenceData;

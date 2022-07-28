@@ -6,6 +6,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { Role } from '@safe/builder';
 
+/**
+ * Chose role component, to preview application with selected role.
+ */
 @Component({
   selector: 'app-chose-role',
   templateUrl: './chose-role.component.html',
@@ -19,6 +22,15 @@ export class ChoseRoleComponent implements OnInit {
   // === REACTIVE FORM ===
   roleForm: FormGroup = new FormGroup({});
 
+  /**
+   * Chose role component, to preview application with selected role.
+   *
+   * @param formBuilder Angular form builder
+   * @param dialogRef Material dialog ref
+   * @param apollo Angular service
+   * @param data Injected modal data
+   * @param data.application application id
+   */
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<ChoseRoleComponent>,

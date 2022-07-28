@@ -4,6 +4,7 @@ import { ApplicationWidgetComponent } from './application-widget.component';
 import { ApplicationModule } from '../../components/application/application.module';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
+/** Application web widget module */
 @NgModule({
   declarations: [ApplicationWidgetComponent],
   imports: [CommonModule, ApplicationModule, MatSidenavModule],

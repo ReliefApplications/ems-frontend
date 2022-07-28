@@ -105,6 +105,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
    * @param dialog Used to display a dialog overlay.
    * @param translate Service used to get translations.
    * @param gridLayoutService Service used to manage the grid.
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(
     private apollo: Apollo,

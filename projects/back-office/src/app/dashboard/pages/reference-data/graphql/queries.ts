@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { ReferenceData, ApiConfiguration } from '@safe/builder';
 
 // === GET REFERENCE DATA ===
+/** Get ref data gql query definition */
 export const GET_REFERENCE_DATA = gql`
   query GetReferenceData($id: ID!) {
     referenceData(id: $id) {
@@ -39,6 +40,7 @@ export const GET_REFERENCE_DATA = gql`
   }
 `;
 
+/** Get ref data gql query response interface */
 export interface GetReferenceDataQueryResponse {
   loading: boolean;
   referenceData: ReferenceData;

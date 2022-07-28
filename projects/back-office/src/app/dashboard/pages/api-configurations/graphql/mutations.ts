@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { ApiConfiguration } from '@safe/builder';
 
 // === DELETE API CONFIGURATION ===
+/** Delete api config gql mutation definition */
 export const DELETE_API_CONFIGURATION = gql`
   mutation deleteApiConfiguration($id: ID!) {
     deleteApiConfiguration(id: $id) {
@@ -10,12 +11,14 @@ export const DELETE_API_CONFIGURATION = gql`
   }
 `;
 
+/** Delete api config gql mutation response interface */
 export interface DeleteApiConfigurationMutationResponse {
   loading: boolean;
   deleteApiConfiguration: ApiConfiguration;
 }
 
 // === ADD API CONFIGURATION ===
+/** Add api config gql mutation definition */
 export const ADD_API_CONFIGURATIION = gql`
   mutation addApiConfiguration($name: String!) {
     addApiConfiguration(name: $name) {
@@ -48,6 +51,7 @@ export const ADD_API_CONFIGURATIION = gql`
   }
 `;
 
+/** Add api config gql mutation response interface */
 export interface AddApiConfigurationMutationResponse {
   loading: boolean;
   addApiConfiguration: ApiConfiguration;

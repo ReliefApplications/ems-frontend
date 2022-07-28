@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { Application } from '@safe/builder';
 
 // === EDIT APPLICATION ===
+/** Edit application gql mutation definition */
 export const EDIT_APPLICATION = gql`
   mutation editApplication(
     $id: ID!
@@ -56,12 +57,14 @@ export const EDIT_APPLICATION = gql`
   }
 `;
 
+/** Edit application gql mutation response interface */
 export interface EditApplicationMutationResponse {
   loading: boolean;
   editApplication: Application;
 }
 
 // === ADD APPLICATION ===
+/** Add application gql mutation definition */
 export const ADD_APPLICATION = gql`
   mutation addApplication {
     addApplication {
@@ -79,12 +82,14 @@ export const ADD_APPLICATION = gql`
   }
 `;
 
+/** Add application gql mutation response interface */
 export interface AddApplicationMutationResponse {
   loading: boolean;
   addApplication: Application;
 }
 
 // === DELETE APPLICATION ===
+/** Delete application gql mutation definition */
 export const DELETE_APPLICATION = gql`
   mutation deleteApplication($id: ID!) {
     deleteApplication(id: $id) {
@@ -94,6 +99,7 @@ export const DELETE_APPLICATION = gql`
   }
 `;
 
+/** Delete application gql mutation response interface */
 export interface DeleteApplicationMutationResponse {
   loading: boolean;
   deleteApplication: Application;

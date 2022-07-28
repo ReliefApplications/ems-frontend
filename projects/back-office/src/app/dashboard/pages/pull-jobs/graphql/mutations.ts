@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { PullJob } from '@safe/builder';
 
 // === EDIT PULL JOB ===
+/** Edit pull job gql mutation definition */
 export const EDIT_PULL_JOB = gql`
   mutation editPullJob(
     $id: ID!
@@ -51,12 +52,14 @@ export const EDIT_PULL_JOB = gql`
   }
 `;
 
+/** Edit pull job gql mutation response interface */
 export interface EditPullJobMutationResponse {
   loading: boolean;
   editPullJob: PullJob;
 }
 
 // === DELETE PULL JOB ===
+/** Delete pull job gql mutation definition */
 export const DELETE_PULL_JOB = gql`
   mutation deletePullJob($id: ID!) {
     deletePullJob(id: $id) {
@@ -65,12 +68,14 @@ export const DELETE_PULL_JOB = gql`
   }
 `;
 
+/** Delete pull job gql mutation response interface */
 export interface DeletePullJobMutationResponse {
   loading: boolean;
   deletePullJob: PullJob;
 }
 
 // === ADD PULL JOB ===
+/** Add pull job gql mutation definition */
 export const ADD_PULL_JOB = gql`
   mutation addPullJob(
     $name: String!
@@ -118,6 +123,7 @@ export const ADD_PULL_JOB = gql`
   }
 `;
 
+/** Add pull job gql mutation response interface */
 export interface AddPullJobMutationResponse {
   loading: boolean;
   addPullJob: PullJob;

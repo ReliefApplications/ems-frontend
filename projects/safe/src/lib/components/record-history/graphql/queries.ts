@@ -23,6 +23,7 @@ export interface GetRecordByIdQueryResponse {
   record: Record;
 }
 
+/** GraphQL query definition to get record history by id */
 export const GET_RECORD_HISTORY_BY_ID = gql`
   query GetRecordHistoryByID($id: ID!, $lang: String) {
     recordHistory(id: $id, lang: $lang) {
@@ -44,6 +45,7 @@ export const GET_RECORD_HISTORY_BY_ID = gql`
   }
 `;
 
+/** Get record history query response interface */
 export interface GetRecordHistoryByIdResponse {
   loading: boolean;
   recordHistory: RecordHistory;

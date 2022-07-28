@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { ReferenceData } from '@safe/builder';
 
 // === EDIT REFERENCE DATA ===
+/** Edit ref data gql mutation definition */
 export const EDIT_REFERENCE_DATA = gql`
   mutation editReferenceData(
     $id: ID!
@@ -62,6 +63,7 @@ export const EDIT_REFERENCE_DATA = gql`
   }
 `;
 
+/** Edit ref data gql mutation response interface */
 export interface EditReferenceDataMutationResponse {
   loading: boolean;
   editReferenceData: ReferenceData;

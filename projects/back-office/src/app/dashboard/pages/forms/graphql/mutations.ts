@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { Form } from '@safe/builder';
 
 // === ADD FORM ===
+/** Add form gql mutation definition */
 export const ADD_FORM = gql`
   mutation addForm($name: String!, $resource: ID, $template: ID) {
     addForm(name: $name, resource: $resource, template: $template) {
@@ -16,12 +17,14 @@ export const ADD_FORM = gql`
   }
 `;
 
+/** Add form gql mutation response interface */
 export interface AddFormMutationResponse {
   loading: boolean;
   addForm: Form;
 }
 
 // === DELETE FORM ===
+/** Delete form gql mutation definition */
 export const DELETE_FORM = gql`
   mutation deleteForm($id: ID!) {
     deleteForm(id: $id) {
@@ -30,6 +33,7 @@ export const DELETE_FORM = gql`
   }
 `;
 
+/** Delete form gql mutation response interface */
 export interface DeleteFormMutationResponse {
   loading: boolean;
   deleteForm: Form;

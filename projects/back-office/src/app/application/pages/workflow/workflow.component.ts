@@ -25,6 +25,9 @@ import {
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Application workflow page component.
+ */
 @Component({
   selector: 'app-workflow',
   templateUrl: './workflow.component.html',
@@ -56,6 +59,19 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   public showAppMenu = false;
   public applications: Application[] = [];
 
+  /**
+   * Application workflow page component
+   *
+   * @param apollo Apollo service
+   * @param workflowService Shared workflow service
+   * @param applicationService Shared application service
+   * @param route Angular activated route
+   * @param router Angular router
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param translate Angular translate module.
+   */
   constructor(
     private apollo: Apollo,
     private workflowService: SafeWorkflowService,
@@ -186,6 +202,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Show or hide application selector.
+   * Get applications.
+   */
   public onAppSelection(): void {
     this.showAppMenu = !this.showAppMenu;
     const authSubscription = this.authService.user$.subscribe(
@@ -201,7 +221,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   /**
    * Deletes a step if authorized.
    *
-   * @param step step to delete
+   * @param index index of step to delete
    */
   onDeleteStep(index: number): void {
     if (index >= 0 && index < this.steps.length) {
@@ -263,7 +283,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.router.navigate(['./add-step'], { relativeTo: this.route });
   }
 
-  /** Get data from within selected step */
+  /**
+   * Go to next step
+   *
+   * @param elementRef Element ref of workflow component
+   */
   onActivate(elementRef: any): void {
     if (elementRef.goToNextStep) {
       elementRef.goToNextStep.subscribe((event: any) => {
@@ -337,7 +361,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * On Open Step.
+   * Open selected step
+   *
+   * @param index index of selected step
    */
   public onOpenStep(index: number): void {
     if (index >= 0 && index < this.steps.length) {

@@ -12,8 +12,12 @@ import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Resource } from '@safe/builder';
 
+/** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Add form component (modal)
+ */
 @Component({
   selector: 'app-add-form',
   templateUrl: './add-form.component.html',
@@ -37,6 +41,13 @@ export class AddFormComponent implements OnInit {
 
   @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 
+  /**
+   * Add form modal
+   *
+   * @param formBuilder Angular form builder
+   * @param dialogRef Material dialog ref
+   * @param apollo Apollo service
+   */
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<AddFormComponent>,
@@ -98,8 +109,12 @@ export class AddFormComponent implements OnInit {
     });
   }
 
-  /** Called on resource input change.
-    Load the templates linked to that resource. */
+  /**
+   * Called on resource input change.
+   * Load the templates linked to that resource.
+   *
+   * @param e resource event
+   */
   getResource(e: any): void {
     this.apollo
       .query<GetResourceByIdQueryResponse>({

@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { Workflow, Step, Page, Form } from '@safe/builder';
 
 // === EDIT WORKFLOW ===
+/** Edit workflow gql mutation definition */
 export const EDIT_WORKFLOW = gql`
   mutation editWorkflow($id: ID!, $name: String, $steps: [ID]) {
     editWorkflow(id: $id, name: $name, steps: $steps) {
@@ -11,12 +12,14 @@ export const EDIT_WORKFLOW = gql`
   }
 `;
 
+/** Edit workflow gql mutation response interface */
 export interface EditWorkflowMutationResponse {
   loading: boolean;
   editWorkflow: Workflow;
 }
 
 // === DELETE STEP ===
+/** Delete step gql mutation definition */
 export const DELETE_STEP = gql`
   mutation deleteStep($id: ID!) {
     deleteStep(id: $id) {
@@ -26,12 +29,14 @@ export const DELETE_STEP = gql`
   }
 `;
 
+/** Delete step gql mutation response interface */
 export interface DeleteStepMutationResponse {
   loading: boolean;
   deleteStep: Step;
 }
 
 // === EDIT PAGE ===
+/** Edit page gql mutation definition */
 export const EDIT_PAGE = gql`
   mutation editPage($id: ID!, $name: String, $permissions: JSON) {
     editPage(id: $id, name: $name, permissions: $permissions) {
@@ -55,12 +60,14 @@ export const EDIT_PAGE = gql`
   }
 `;
 
+/** Edit page gql mutation response interface */
 export interface EditPageMutationResponse {
   loading: boolean;
   editPage: Page;
 }
 
 // === ADD FORM ===
+/** Add form gql mutation definition */
 export const ADD_FORM = gql`
   mutation addForm($name: String!, $resource: ID, $template: ID) {
     addForm(name: $name, resource: $resource, template: $template) {
@@ -75,6 +82,7 @@ export const ADD_FORM = gql`
   }
 `;
 
+/** Add form gql mutation response interface */
 export interface AddFormMutationResponse {
   loading: boolean;
   addForm: Form;

@@ -24,6 +24,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
 
+/**
+ * List of reference data page module
+ */
 @NgModule({
   declarations: [ReferenceDatasComponent, AddReferenceDataComponent],
   imports: [

@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { Setting, ApiConfiguration } from '@safe/builder';
 
 // === GET SETTING ===
+/** Get settings gql query definition */
 export const GET_SETTING = gql`
   query GetSetting {
     setting {
@@ -18,6 +19,7 @@ export const GET_SETTING = gql`
   }
 `;
 
+/** Get settings gql query response interface */
 export interface GetSettingQueryResponse {
   loading: boolean;
   setting: Setting;

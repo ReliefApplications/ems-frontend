@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { Record } from '@safe/builder';
 
 // === RESTORE RECORD ===
+/** Restore record gql mutation definition */
 export const RESTORE_RECORD = gql`
   mutation restoreRecord($id: ID!) {
     restoreRecord(id: $id) {
@@ -10,12 +11,14 @@ export const RESTORE_RECORD = gql`
   }
 `;
 
+/** Restore record gql mutation response interface */
 export interface RestoreRecordMutationResponse {
   loading: boolean;
   restoreRecord: Record;
 }
 
 // === DELETE RECORD ===
+/** Delete record gql mutation definition */
 export const DELETE_RECORD = gql`
   mutation deleteRecord($id: ID!, $hardDelete: Boolean) {
     deleteRecord(id: $id, hardDelete: $hardDelete) {
@@ -24,12 +27,14 @@ export const DELETE_RECORD = gql`
   }
 `;
 
+/** Delete record gql mutation response interface */
 export interface DeleteRecordMutationResponse {
   loading: boolean;
   deleteRecord: Record;
 }
 
 // === EDIT RECORD ===
+/** Edit record gql mutation definition */
 export const EDIT_RECORD = gql`
   mutation editRecord($id: ID!, $data: JSON, $version: ID, $display: Boolean) {
     editRecord(id: $id, data: $data, version: $version) {
@@ -44,6 +49,7 @@ export const EDIT_RECORD = gql`
   }
 `;
 
+/** Edit record gql mutation response interface */
 export interface EditRecordMutationResponse {
   loading: boolean;
   editRecord: Record;

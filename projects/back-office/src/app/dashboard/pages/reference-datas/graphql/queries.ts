@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { ReferenceData } from '@safe/builder';
 
 // === GET REFERENCE DATAS ===
+/** Get list of ref data gql query definition */
 export const GET_REFERENCE_DATAS = gql`
   query GetReferenceDatas($first: Int, $afterCursor: ID) {
     referenceDatas(first: $first, afterCursor: $afterCursor) {
@@ -44,6 +45,7 @@ export const GET_REFERENCE_DATAS = gql`
   }
 `;
 
+/** Get list of ref data gql query response interface */
 export interface GetReferenceDatasQueryResponse {
   loading: boolean;
   referenceDatas: {

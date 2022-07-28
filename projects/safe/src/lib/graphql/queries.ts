@@ -516,7 +516,7 @@ export interface GetDashboardByIdQueryResponse {
 }
 
 // === GET REFERENCE DATAS ===
-
+/** Get reference data by id query */
 export const GET_REFERENCE_DATA_BY_ID = gql`
   query GetShortReferenceDataById($id: ID!) {
     referenceData(id: $id) {
@@ -538,6 +538,7 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
   }
 `;
 
+/** Get reference data query response interface */
 export interface GetReferenceDataByIdQueryResponse {
   loading: boolean;
   referenceData: ReferenceData;

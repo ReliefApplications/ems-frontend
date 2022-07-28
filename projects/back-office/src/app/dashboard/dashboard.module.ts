@@ -4,6 +4,9 @@ import { DashboardComponent } from './dashboard.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { SafeLayoutModule } from '@safe/builder';
 
+/**
+ * Main BO dashboard module.
+ */
 @NgModule({
   declarations: [DashboardComponent],
   imports: [CommonModule, SafeLayoutModule, DashboardRoutingModule],
