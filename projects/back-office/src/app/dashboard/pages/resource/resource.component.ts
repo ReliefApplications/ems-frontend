@@ -21,17 +21,16 @@ import {
   EDIT_RESOURCE,
   RestoreRecordMutationResponse,
   RESTORE_RECORD,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetResourceByIdQueryResponse,
   GetResourceRecordsQueryResponse,
   GET_RESOURCE_BY_ID,
   GET_RESOURCE_RECORDS,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
 
 /**
  * Quantity of resource that will be loaded at once.
@@ -106,6 +105,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
    * @param dialog Used to display a dialog overlay.
    * @param translate Service used to get translations.
    * @param gridLayoutService Service used to manage the grid.
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(
     private apollo: Apollo,

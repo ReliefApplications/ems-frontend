@@ -18,7 +18,7 @@ import {
   GetReferenceDatasQueryResponse,
   GET_REFERENCE_DATAS,
   GET_SHORT_REFERENCE_DATA_BY_ID,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../../utils/scroll-factory';
 
@@ -56,6 +56,11 @@ export class SafeReferenceDataDropdownComponent implements OnInit {
 
   @ViewChild('referenceDataSelect') referenceDataSelect?: MatSelect;
 
+  /**
+   * Reference data dropdown component
+   *
+   * @param apollo Apollo service
+   */
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {

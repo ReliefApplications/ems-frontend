@@ -5,8 +5,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { GetUsersQueryResponse } from '../../../../graphql/queries';
-import { GET_USERS } from '../../../../graphql/queries';
+import { GET_USERS, GetUsersQueryResponse } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 

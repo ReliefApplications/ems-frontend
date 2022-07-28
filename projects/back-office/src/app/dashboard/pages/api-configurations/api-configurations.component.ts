@@ -21,19 +21,23 @@ import { Subscription } from 'rxjs';
 import {
   GetApiConfigurationsQueryResponse,
   GET_API_CONFIGURATIONS,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
 import {
   AddApiConfigurationMutationResponse,
   ADD_API_CONFIGURATIION,
   DeleteApiConfigurationMutationResponse,
   DELETE_API_CONFIGURATION,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * API configurations page component.
+ */
 @Component({
   selector: 'app-api-configurations',
   templateUrl: './api-configurations.component.html',
@@ -68,6 +72,16 @@ export class ApiConfigurationsComponent
     endCursor: '',
   };
 
+  /**
+   * API configurations page component
+   *
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param router Angular router
+   * @param translate Angular translate service
+   */
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,

@@ -5,6 +5,7 @@ import {
   createMappingForm,
 } from '../../../ui/aggregation-builder/aggregation-builder-forms';
 
+/** Default list of colors for series */
 export const CHART_DEFAULT_PALETTE = [
   '#ff6358',
   '#ffd246',

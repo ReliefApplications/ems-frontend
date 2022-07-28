@@ -26,6 +26,9 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 
+/**
+ * Dashboard page module.
+ */
 @NgModule({
   declarations: [DashboardComponent, ShareUrlComponent],
   imports: [

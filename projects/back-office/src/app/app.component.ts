@@ -4,6 +4,9 @@ import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 
+/**
+ * Root component of back-office.
+ */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,6 +17,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private readonly destroying$ = new Subject<void>();
 
+  /**
+   * Root component of back-office
+   *
+   * @param authService Shared authentication service
+   * @param formService Shared form service
+   * @param translate Angular translate service
+   */
   constructor(
     private authService: SafeAuthService,
     // We need to initialize the service there

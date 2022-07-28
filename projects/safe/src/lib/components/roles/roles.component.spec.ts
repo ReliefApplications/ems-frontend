@@ -25,7 +25,7 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_ROLES } from '../../graphql/queries';
+import { GET_ROLES } from './graphql/queries';
 
 describe('SafeRolesComponent', () => {
   let component: SafeRolesComponent;

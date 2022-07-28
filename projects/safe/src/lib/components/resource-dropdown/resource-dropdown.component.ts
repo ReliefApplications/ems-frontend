@@ -18,7 +18,7 @@ import {
   GetResourcesQueryResponse,
   GET_RESOURCES,
   GET_SHORT_RESOURCE_BY_ID,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 
 /** A constant that is used to determine how many items should be on one page. */
