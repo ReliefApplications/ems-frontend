@@ -10,7 +10,7 @@ import {
   GET_SHORT_FORM_BY_ID,
   GET_PAGE_BY_ID,
   GET_STEP_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { Subscription } from 'rxjs';
 
 /**

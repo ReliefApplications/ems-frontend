@@ -10,7 +10,7 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_RESOURCES } from '../../graphql/queries';
+import { GET_RESOURCES } from './graphql/queries';
 
 describe('SafeResourceDropdownComponent', () => {
   let component: SafeResourceDropdownComponent;

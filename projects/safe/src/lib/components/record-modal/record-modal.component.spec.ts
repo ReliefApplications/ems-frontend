@@ -18,7 +18,7 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_RECORD_BY_ID } from '../../graphql/queries';
+import { GET_RECORD_BY_ID } from './graphql/queries';
 import {
   TranslateModule,
   TranslateService,

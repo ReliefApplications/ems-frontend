@@ -8,10 +8,7 @@ import {
   SafeSnackBarService,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  GetPullJobsQueryResponse,
-  GET_PULL_JOBS,
-} from '../../../graphql/queries';
+import { GetPullJobsQueryResponse, GET_PULL_JOBS } from './graphql/queries';
 import {
   AddPullJobMutationResponse,
   ADD_PULL_JOB,
@@ -19,7 +16,7 @@ import {
   DELETE_PULL_JOB,
   EditPullJobMutationResponse,
   EDIT_PULL_JOB,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { PullJobModalComponent } from './components/pull-job-modal/pull-job-modal.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';

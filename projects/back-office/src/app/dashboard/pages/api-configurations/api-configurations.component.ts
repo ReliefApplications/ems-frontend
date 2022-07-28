@@ -21,14 +21,14 @@ import { Subscription } from 'rxjs';
 import {
   GetApiConfigurationsQueryResponse,
   GET_API_CONFIGURATIONS,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
 import {
   AddApiConfigurationMutationResponse,
   ADD_API_CONFIGURATIION,
   DeleteApiConfigurationMutationResponse,
   DELETE_API_CONFIGURATION,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 

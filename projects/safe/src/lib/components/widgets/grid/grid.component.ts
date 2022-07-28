@@ -9,7 +9,7 @@ import {
   PUBLISH_NOTIFICATION,
   PublishMutationResponse,
   PublishNotificationMutationResponse,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { Form } from '../../../models/form.model';
@@ -18,7 +18,7 @@ import {
   GET_RECORD_DETAILS,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   Component,
   OnInit,

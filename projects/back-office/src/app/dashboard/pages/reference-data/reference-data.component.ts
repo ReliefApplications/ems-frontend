@@ -25,13 +25,13 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import {
   EditReferenceDataMutationResponse,
   EDIT_REFERENCE_DATA,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetApiConfigurationsQueryResponse,
   GetReferenceDataQueryResponse,
   GET_API_CONFIGURATIONS_NAMES,
   GET_REFERENCE_DATA,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { MatSelect } from '@angular/material/select';
 import { MatChipInputEvent } from '@angular/material/chips';
