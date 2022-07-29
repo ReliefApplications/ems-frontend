@@ -1,7 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
-import { GetRecordByIdQueryResponse, GET_RECORD_BY_ID } from '../../../graphql/queries';
+import {
+  GetRecordByIdQueryResponse,
+  GET_RECORD_BY_ID,
+} from '../../../graphql/queries';
 
 /**
  * Summary Card Widget component.
@@ -24,14 +27,14 @@ export class SafeSummaryCardComponent implements OnInit {
 
   /**
    * Summary Card Widget component.
+   *
+   * @param apollo Used to get the necessary records for the cards content.
+   * @param sanitizer Sanitizes the cards content so angular can show it up.
    */
-  constructor(
-    private apollo: Apollo,
-    private sanitizer: DomSanitizer
-  ) {}
+  constructor(private apollo: Apollo, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
-    console.log(this.settings)
+    console.log(this.settings);
     this.getCardsContent(this.settings.cards);
   }
 
@@ -51,7 +54,9 @@ export class SafeSummaryCardComponent implements OnInit {
 
     cards.map((card: any, i: number) => {
       newCardsContent.push({
-        html: card.html ? this.sanitizer.bypassSecurityTrustHtml(card.html) : null,
+        html: card.html
+          ? this.sanitizer.bypassSecurityTrustHtml(card.html)
+          : null,
         record: null,
       });
       if (
@@ -61,10 +66,7 @@ export class SafeSummaryCardComponent implements OnInit {
       ) {
         newCardsContent[i] = this.cardsContent[i];
         newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-          this.replaceRecordFields(
-            card.html,
-            newCardsContent[i].record
-          )
+          this.replaceRecordFields(card.html, newCardsContent[i].record)
         );
         this.cardsContent = newCardsContent;
       } else if (card.record) {
@@ -79,10 +81,7 @@ export class SafeSummaryCardComponent implements OnInit {
             if (res) {
               newCardsContent[i].record = res.data.record;
               newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-                this.replaceRecordFields(
-                  card.html,
-                  newCardsContent[i].record
-                )
+                this.replaceRecordFields(card.html, newCardsContent[i].record)
               );
               this.cardsContent = newCardsContent;
             }
@@ -96,6 +95,7 @@ export class SafeSummaryCardComponent implements OnInit {
    *
    * @param html String with the content html.
    * @param record Record object.
+   * @returns Returns the card content with the resource data.
    */
   private replaceRecordFields(html: string, record: any): string {
     const fields = this.getFieldsValue(record);
@@ -113,8 +113,9 @@ export class SafeSummaryCardComponent implements OnInit {
    * Returns an object with the record data keys paired with the values.
    *
    * @param record Record object.
+   * @returns Returns fields value.
    */
-  private getFieldsValue(record: any) {
+  private getFieldsValue(record: any): any {
     const fields: any = {};
     for (const [key, value] of Object.entries(record)) {
       if (!key.startsWith('__') && key !== 'form') {
