@@ -25,6 +25,17 @@ export class SafeSummaryCardComponent implements OnInit {
   // === CARDS CONTENTS ===
   cardsContent: any[] = [];
 
+  exportName(): string {
+    const today = new Date();
+    const formatDate = `${today.toLocaleString('en-us', {
+      month: 'short',
+      day: 'numeric',
+    })} ${today.getFullYear()}`;
+    return `${
+      this.settings.title ? this.settings.title : 'Summary Card'
+    } ${formatDate}.png`;
+  }
+
   /**
    * Summary Card Widget component.
    *

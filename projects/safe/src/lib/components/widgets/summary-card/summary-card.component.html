@@ -7,7 +7,7 @@
     [isIcon]="true"
     icon="get_app"
     class="export-button"
-    (click)="pdf.saveAs('document.pdf')"
+    (click)="pdf.saveAs(exportName())"
   ></safe-button>
   <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
   <kendo-tilelayout
