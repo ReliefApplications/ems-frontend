@@ -860,7 +860,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         this.layoutService.setRightSidenav({
           component: SafeRecordHistoryComponent,
           inputs: {
-            record: res.data.record,
+            id: res.data.record.id,
             revert: (record: any, dialog: any) => {
               this.confirmRevertDialog(res.data.record, record);
             },

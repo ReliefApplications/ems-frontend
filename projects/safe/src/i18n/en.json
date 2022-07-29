@@ -377,7 +377,20 @@
 			}
 		},
 		"history": {
+			"changes": {
+				"add": "Add value",
+				"from": "from",
+				"modify": "Change value",
+				"remove": "Delete value",
+				"to": "to",
+				"withValue": "with value"
+			},
 			"download": "Download history",
+			"empty": "No activity detected",
+			"field": {
+				"all": "All fields",
+				"select": "Select a field"
+			},
 			"preview": "Preview and revert"
 		},
 		"notifications": {

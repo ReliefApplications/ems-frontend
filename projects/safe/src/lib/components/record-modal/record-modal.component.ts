@@ -365,7 +365,7 @@ export class SafeRecordModalComponent implements OnInit {
       .subscribe((res) => {
         this.dialog.open(RecordHistoryModalComponent, {
           data: {
-            record: res.data.record,
+            id: res.data.record.id,
             revert: (item: any, dialog: any) => {
               this.confirmRevertDialog(res.data.record, item);
             },

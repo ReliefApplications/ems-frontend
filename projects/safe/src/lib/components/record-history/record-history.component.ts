@@ -11,6 +11,37 @@ import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeRecordModalComponent } from '../record-modal/record-modal.component';
 import { SafeDownloadService } from '../../services/download.service';
+import { Apollo } from 'apollo-angular';
+import {
+  GetRecordByIdQueryResponse,
+  GetRecordHistoryByIdResponse,
+  GET_RECORD_BY_ID_FOR_HISTORY,
+  GET_RECORD_HISTORY_BY_ID,
+} from './graphql/queries';
+import { Version } from '../../models/form.model';
+import { RecordHistory, Change } from '../../models/recordsHistory';
+import { TranslateService } from '@ngx-translate/core';
+
+/**
+ * Return the type of the old value if existing, else the type of the new value.
+ *
+ * @param oldVal The previous value
+ * @param newVal The next value
+ * @returns The type of the value: primitive, object or array
+ */
+const getValueType = (
+  oldVal: any,
+  newVal: any
+): 'primitive' | 'object' | 'array' => {
+  if (oldVal) {
+    if (Array.isArray(oldVal)) return 'array';
+    if (oldVal instanceof Object) return 'object';
+    return 'primitive';
+  }
+  if (Array.isArray(newVal)) return 'array';
+  if (newVal instanceof Object) return 'object';
+  return 'primitive';
+};
 
 /**
  * This is a component to access the history of a record
@@ -21,17 +52,19 @@ import { SafeDownloadService } from '../../services/download.service';
   styleUrls: ['./record-history.component.scss'],
 })
 export class SafeRecordHistoryComponent implements OnInit {
-  @Input() record: Record = {};
-  @Input() revert: any;
+  @Input() id!: string;
+  @Input() revert!: (version: Version) => void;
   @Input() template?: string;
   @Output() cancel = new EventEmitter();
 
-  public history: any[] = [];
-  public filterHistory: any[] = [];
+  public record!: Record;
+  public history: RecordHistory = [];
+  public filterHistory: RecordHistory = [];
   public loading = true;
   public showMore = false;
   public displayedColumns: string[] = ['position'];
   public filtersDate = { startDate: '', endDate: '' };
+  public sortedFields: any[] = [];
 
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
@@ -42,18 +75,202 @@ export class SafeRecordHistoryComponent implements OnInit {
    *
    * @param dialog This is the Material dialog service that we will use to open the dialog.
    * @param downloadService This is the service that will be used to download files
+   * @param apollo The apollo client
+   * @param translate The translation service
    */
   constructor(
     public dialog: MatDialog,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private apollo: Apollo,
+    private translate: TranslateService
   ) {}
 
+  /**
+   * Gets formated date string from date
+   *
+   * @param date The date string
+   * @param section wheater to get the time or date of the data string
+   * @returns The formated date string
+   */
+  getDateLocale(date: string, section: 'date' | 'time'): string {
+    const d = new Date(date);
+    switch (section) {
+      case 'date':
+        return d.toLocaleDateString(this.translate.currentLang);
+      case 'time':
+        return d.toLocaleTimeString(this.translate.currentLang);
+    }
+  }
+
   ngOnInit(): void {
-    this.history = this.getHistory(this.record).filter(
-      (item) => item.changes.length > 0
-    );
-    this.filterHistory = this.history;
-    this.loading = false;
+    // this.sortFields();
+
+    this.apollo
+      .query<GetRecordByIdQueryResponse>({
+        query: GET_RECORD_BY_ID_FOR_HISTORY,
+        variables: {
+          id: this.id,
+        },
+      })
+      .subscribe((res) => {
+        this.record = res.data.record;
+        this.sortedFields = this.sortFields(this.getFields());
+      });
+
+    this.apollo
+      .query<GetRecordHistoryByIdResponse>({
+        query: GET_RECORD_HISTORY_BY_ID,
+        variables: {
+          id: this.id,
+        },
+      })
+      .subscribe((res) => {
+        this.history = res.data.recordHistory.filter(
+          (item) => item.changes.length
+        );
+        this.filterHistory = this.history;
+        this.loading = false;
+      });
+  }
+
+  /**
+   * Transforms a object in a more readable inline string (or list)
+   *
+   * @param object The object
+   * @returns A 'readable' version of that object, in which the the format key (value1, value2)
+   */
+  toReadableObjectValue(object: any): any {
+    // base case
+    if (typeof object !== 'object') return object;
+
+    // arrys
+    if (Array.isArray(object)) {
+      return object.map((elem) => this.toReadableObjectValue(elem));
+    }
+
+    // objects - non arrays
+    const res: any[] = [];
+    const keys = Object.keys(object);
+    keys.forEach((key, i) => {
+      res.push(
+        `${i ? ' ' : ''}${key} (${this.toReadableObjectValue(object[key])})`
+      );
+    });
+
+    return res;
+  }
+
+  /**
+   * Gets the HTML element from a change object
+   *
+   * @param change The field change object
+   * @returns the innerHTML for the listing
+   */
+  getHTMLFromChange(change: Change) {
+    const translations = {
+      withValue: this.translate.instant('components.history.changes.withValue'),
+      from: this.translate.instant('components.history.changes.from'),
+      to: this.translate.instant('components.history.changes.to'),
+      add: this.translate.instant('components.history.changes.add'),
+      remove: this.translate.instant('components.history.changes.remove'),
+      modify: this.translate.instant('components.history.changes.modify'),
+    };
+
+    let oldVal = change.old ? JSON.parse(change.old) : undefined;
+    let newVal = change.new ? JSON.parse(change.new) : undefined;
+
+    const valueType = getValueType(oldVal, newVal);
+
+    if (valueType === 'object') {
+      if (oldVal) oldVal = this.toReadableObjectValue(oldVal);
+      if (newVal) newVal = this.toReadableObjectValue(newVal);
+    }
+
+    if (valueType === 'array') {
+      if (oldVal && !(oldVal[0] instanceof Object)) oldVal = oldVal.join(', ');
+      else if (oldVal) oldVal = this.toReadableObjectValue(oldVal);
+      if (newVal && !(newVal[0] instanceof Object)) newVal = newVal.join(', ');
+      else if (newVal) newVal = this.toReadableObjectValue(newVal);
+    }
+
+    switch (change.type) {
+      case 'remove':
+      case 'add':
+        return `
+            <p>
+              <span class="${change.type}-field">
+              ${translations[change.type]}
+              </span>
+              <b> ${change.displayName} </b>
+              ${translations.withValue}
+              <b> ${change.type === 'add' ? newVal : oldVal}</b>
+            <p>
+            `;
+      case 'modify':
+        return `
+            <p>
+              <span class="${change.type}-field">
+              ${translations[change.type]}
+              </span>
+              <b> ${change.displayName} </b>
+              ${translations.from}
+              <b> ${oldVal}</b>
+              ${translations.to}
+              <b> ${newVal}</b>
+            <p>
+            `;
+    }
+  }
+
+  /**
+   * Get fields from the form
+   *
+   * @returns Returns an array with all the fields.
+   */
+  private getFields(): any[] {
+    const fields: any[] = [];
+    // No form, break the display
+    if (this.record.form) {
+      // Take the fields from the form
+      this.record.form.fields?.map((field: any) => {
+        fields.push(Object.assign({}, field));
+      });
+      if (this.record.form.structure) {
+        const structure = JSON.parse(this.record.form.structure);
+        if (!structure.pages || !structure.pages.length) {
+          return [];
+        }
+        for (const page of structure.pages) {
+          this.extractFields(page, fields);
+        }
+      }
+    }
+    return fields;
+  }
+
+  /**
+   * Extract fields from form structure in order to get titles.
+   *
+   * @param object Structure to inspect, can be a page, a panel.
+   * @param fields Array of fields.
+   */
+  private extractFields(object: any, fields: any[]): void {
+    if (object.elements) {
+      for (const element of object.elements) {
+        if (element.type === 'panel') {
+          this.extractFields(element, fields);
+        } else {
+          const field = fields.find((x) => x.name === element.name);
+          if (field && element.title) {
+            if (typeof element.title === 'string') {
+              field.title = element.title;
+            } else {
+              field.title = element.title.default;
+            }
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -61,6 +278,22 @@ export class SafeRecordHistoryComponent implements OnInit {
    */
   onCancel(): void {
     this.cancel.emit(true);
+  }
+
+  /**
+   * Parses the structure of the record and sorts the fields
+   * based on their names or lables, if available
+   *
+   * @param fields Array of fields
+   * @returns sorted array of fields
+   */
+  sortFields(fields: any[]) {
+    const unsortedFields = [...fields];
+    return unsortedFields.sort((a, b) => {
+      const compA: string = a.title || a.name;
+      const compB: string = b.title || b.name;
+      return compA.toLowerCase() > compB.toLowerCase() ? 1 : -1;
+    });
   }
 
   /**
@@ -318,6 +551,26 @@ export class SafeRecordHistoryComponent implements OnInit {
   }
 
   /**
+   * Handle the download event. Send a request to the server to get excel / csv file.
+   *
+   * @param type Type of document to download
+   */
+  onDownload(type: string): void {
+    const path = `download/form/records/${this.id}/history`;
+    const fileName = `${this.record.incrementalId}.${type}`;
+    const queryString = new URLSearchParams({
+      type,
+      from: `${new Date(this.filtersDate.startDate).getTime()}`,
+      to: `${new Date(this.filtersDate.endDate).getTime()}`,
+    }).toString();
+    this.downloadService.getFile(
+      `${path}?${queryString}`,
+      `text/${type};charset=utf-8;`,
+      fileName
+    );
+  }
+
+  /**
    * Handles the revertion of items
    *
    * @param item The item to revert
@@ -354,32 +607,27 @@ export class SafeRecordHistoryComponent implements OnInit {
   }
 
   /**
-   * Applies a filter to the history
+   * Triggers when the selected date and field filters are changed
+   * and filters the history accordingly
    */
   applyFilter(): void {
-    const startDate = new Date(this.filtersDate.startDate).getTime();
-    const endDate = new Date(this.filtersDate.endDate).getTime();
-    this.filterHistory = this.history.filter(
-      (item) =>
+    const startDate = this.filtersDate.startDate
+      ? new Date(this.filtersDate.startDate)
+      : undefined;
+    if (startDate) startDate.setHours(0, 0, 0, 0);
+    const endDate = this.filtersDate.endDate
+      ? new Date(this.filtersDate.endDate)
+      : undefined;
+    if (endDate) endDate.setHours(23, 59, 59, 99);
+
+    // filtering by date
+    this.filterHistory = this.history.filter((item) => {
+      const createdAt = new Date(item.createdAt);
+      return (
         !startDate ||
         !endDate ||
-        (item.created >= startDate && item.created <= endDate)
-    );
-  }
-
-  /**
-   * Handles the download event
-   *
-   * @param type Type of document to download
-   */
-  onDownload(type: string): void {
-    const path = `download/form/records/${this.record.id}/history`;
-    const fileName = `${this.record.id}.${type}`;
-    const queryString = new URLSearchParams({ type }).toString();
-    this.downloadService.getFile(
-      `${path}?${queryString}`,
-      `text/${type};charset=utf-8;`,
-      fileName
-    );
+        (createdAt >= startDate && createdAt <= endDate)
+      );
+    });
   }
 }

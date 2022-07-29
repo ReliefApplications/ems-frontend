@@ -12,6 +12,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { SafeIconModule } from '../ui/icon/icon.module';
 
 /**
  * SafeRecordHistoryModule is a class used to manage all the modules and components
@@ -32,6 +34,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatMenuModule,
     SafeButtonModule,
     TranslateModule,
+    IndicatorsModule,
+    SafeIconModule,
   ],
   exports: [SafeRecordHistoryComponent],
 })

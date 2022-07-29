@@ -377,7 +377,20 @@
 			}
 		},
 		"history": {
+			"changes": {
+				"add": "******",
+				"from": "******",
+				"modify": "******",
+				"remove": "******",
+				"to": "******",
+				"withValue": "******"
+			},
 			"download": "******",
+			"empty": "******",
+			"field": {
+				"all": "******",
+				"select": "******"
+			},
 			"preview": "******"
 		},
 		"notifications": {

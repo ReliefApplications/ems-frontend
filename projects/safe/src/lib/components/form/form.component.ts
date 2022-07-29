@@ -580,7 +580,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
           this.layoutService.setRightSidenav({
             component: SafeRecordHistoryComponent,
             inputs: {
-              record: res.data.record,
+              id: res.data.record.id,
               revert: (item: any, dialog: any) => {
                 this.confirmRevertDialog(res.data.record, item);
               },
