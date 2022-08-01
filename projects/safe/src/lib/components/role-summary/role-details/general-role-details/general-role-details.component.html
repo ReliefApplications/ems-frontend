@@ -1,0 +1,43 @@
+<h2>{{ 'common.general' | translate }}</h2>
+<form [formGroup]="form">
+  <div class="form-group">
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'models.role.title' | translate }}
+      </mat-label>
+      <input matInput formControlName="title" type="text" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'models.role.description' | translate }}
+      </mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        [cdkTextareaAutosize]="true"
+        [cdkAutosizeMinRows]="5"
+      ></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        'components.role.update.permissions' | translate
+      }}</mat-label>
+      <mat-select formControlName="permissions" multiple>
+        <mat-option
+          *ngFor="let permission of permissions"
+          [value]="permission.id"
+        >
+          {{ permission.type }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</form>
+<safe-button
+  variant="primary"
+  category="secondary"
+  type="submit"
+  [disabled]="!form.valid"
+  (click)="onUpdate()"
+  >{{ 'common.saveChanges' | translate }}</safe-button
+>

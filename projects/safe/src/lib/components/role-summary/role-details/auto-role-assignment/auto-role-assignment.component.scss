@@ -1,5 +1,8 @@
 :host {
   display: flex;
   flex-direction: column;
-  gap: 1em;
+}
+
+safe-button {
+  align-self: end;
 }

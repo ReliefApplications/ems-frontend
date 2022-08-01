@@ -7,6 +7,7 @@
       <safe-role-details
         *ngIf="role"
         [role]="role"
+        [application]="application"
         (edit)="onEditRole($event)"
         [loading]="loading"
       ></safe-role-details>

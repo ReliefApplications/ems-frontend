@@ -657,6 +657,11 @@
 				"title": "Choose role to simulate"
 			},
 			"summary": {
+				"autoRoleAssignment": {
+					"add": "Create assignment rule",
+					"title": "Automatic assignment",
+					"userInGroup": "User is in group {{name}}"
+				},
 				"features": "Features",
 				"noFeatures": "No feature detected",
 				"noForms": "No forms detected",

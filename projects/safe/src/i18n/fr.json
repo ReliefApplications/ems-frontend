@@ -657,6 +657,11 @@
 				"title": "Choix du rôle à simuler"
 			},
 			"summary": {
+				"autoRoleAssignment": {
+					"add": "Créer une règle d'attribution",
+					"title": "Affectation automatique",
+					"userInGroup": "L'utilisateur est dans le groupe {{name}}"
+				},
 				"features": "Fonctionnalités",
 				"noFeatures": "Aucune fonctionnalité détectée",
 				"noForms": "Aucun formulaire détecté",
