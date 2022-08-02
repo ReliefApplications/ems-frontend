@@ -12,6 +12,7 @@ import { GeneralRoleDetailsComponent } from './general-role-details/general-role
 import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SafeAddRoleRuleComponent } from './auto-role-assignment/add-role-rule/add-role-rule.component';
 
 /**
  * General tab of Role Summary.
@@ -22,6 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     RoleDetailsComponent,
     AutoRoleAssignmentComponent,
     GeneralRoleDetailsComponent,
+    SafeAddRoleRuleComponent,
   ],
   imports: [
     CommonModule,
