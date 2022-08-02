@@ -11,6 +11,10 @@ export const GET_USER = gql`
       firstName
       lastName
       username
+      groups {
+        id
+        title
+      }
       roles {
         id
         title

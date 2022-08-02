@@ -75,6 +75,11 @@
 			"one": "Form"
 		},
 		"general": "General",
+		"group": {
+			"few": "Groups",
+			"none": "No groups",
+			"one": "Group"
+		},
 		"history": "History",
 		"id": "Id",
 		"input": {
@@ -444,6 +449,15 @@
 			"isCore": "Is core",
 			"parent": "Parent form"
 		},
+		"group": {
+			"add": {
+				"title": "Add new group"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the group {{name}}?",
+				"title": "Delete group"
+			}
+		},
 		"header": {
 			"goToPlatform": "Navigate to",
 			"logout": "Logout",
@@ -710,6 +724,7 @@
 					"application": "Application roles",
 					"backoffice": "Back-Office roles",
 					"selectedApplication": "Selected application",
+					"selectedGroups": "Selected groups",
 					"selectedRoles": "Selected roles"
 				},
 				"title": "Summary"
@@ -1116,6 +1131,11 @@
 			},
 			"select": "Select a Form",
 			"template": "Template"
+		},
+		"group": {
+			"create": "Create a group",
+			"description": "Description",
+			"title": "Title"
 		},
 		"mapping": {
 			"add": "Add a Mapping",

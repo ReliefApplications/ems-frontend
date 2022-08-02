@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 import { Notification } from '../models/notification.model';
 import { Record } from '../models/record.model';
-import { User, Role } from '../models/user.model';
+import { User, Role, Group } from '../models/user.model';
 import { Page } from '../models/page.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
@@ -1013,4 +1013,39 @@ export const DUPLICATE_PAGE = gql`
 export interface duplicatePageMutationResponse {
   loading: boolean;
   duplicatePage: Page;
+}
+
+// === ADD GROUP ===
+
+/** Graphql request for adding a new group to an application */
+export const ADD_GROUP = gql`
+  mutation addGroup($title: String!) {
+    addGroup(title: $title) {
+      id
+      title
+    }
+  }
+`;
+
+/** Model for AddGroupMutationResponse object */
+export interface AddGroupMutationResponse {
+  loading: boolean;
+  addGroup: Group;
+}
+
+// === DELETE GROUP ===
+
+/** Graphql request for deleting a group by its id */
+export const DELETE_GROUP = gql`
+  mutation deleteGroup($id: ID!) {
+    deleteGroup(id: $id) {
+      id
+    }
+  }
+`;
+
+/** Model for DeleteGroupMutationResponse object */
+export interface DeleteGroupMutationResponse {
+  loading: boolean;
+  deleteGroup: Group;
 }

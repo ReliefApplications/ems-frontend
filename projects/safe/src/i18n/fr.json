@@ -75,6 +75,11 @@
 			"one": "Formulaire"
 		},
 		"general": "Général",
+		"group": {
+			"few": "Groupes",
+			"none": "Pas de groupes",
+			"one": "Groupe"
+		},
 		"history": "Historique",
 		"id": "Id",
 		"input": {
@@ -444,6 +449,15 @@
 			"isCore": "Est un formulaire source",
 			"parent": "Formulaire parent"
 		},
+		"group": {
+			"add": {
+				"title": "Ajouter un nouveau groupe"
+			},
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du groupe {{name}}?",
+				"title": "Supprimer le groupe"
+			}
+		},
 		"header": {
 			"goToPlatform": "Naviguer vers",
 			"logout": "Se déconnecter",
@@ -710,6 +724,7 @@
 					"application": "Rôles d'application",
 					"backoffice": "Rôles de back-office",
 					"selectedApplication": "Application sélectionnée",
+					"selectedGroups": "Groupes sélectionnés",
 					"selectedRoles": "Rôles sélectionnés"
 				},
 				"title": "Résumé"
@@ -1116,6 +1131,11 @@
 			},
 			"select": "Sélectionner un formulaire",
 			"template": "Modèle"
+		},
+		"group": {
+			"create": "Créer un groupe",
+			"description": "Description",
+			"title": "Titre"
 		},
 		"mapping": {
 			"add": "Ajouter un rang à la table de correspondances",

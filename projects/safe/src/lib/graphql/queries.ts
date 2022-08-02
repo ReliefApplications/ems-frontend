@@ -1,12 +1,14 @@
 import { gql } from 'apollo-angular';
 import { Form } from '../models/form.model';
 import { Resource } from '../models/resource.model';
-import { User } from '../models/user.model';
+import { Role, User, Permission, Group } from '../models/user.model';
+import { Record } from '../models/record.model';
 import { Notification } from '../models/notification.model';
 import { Application } from '../models/application.model';
 import { Workflow } from '../models/workflow.model';
 import { Dashboard } from '../models/dashboard.model';
 import { ReferenceData } from '../models/reference-data.model';
+import { RecordHistory } from '../models/recordsHistory';
 
 // === GET PROFILE ===
 
@@ -542,4 +544,51 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
 export interface GetReferenceDataByIdQueryResponse {
   loading: boolean;
   referenceData: ReferenceData;
+}
+
+/** Get record history query */
+export const GET_RECORD_HISTORY_BY_ID = gql`
+  query GetRecordHistoryByID($id: ID!, $lang: String) {
+    recordHistory(id: $id, lang: $lang) {
+      createdAt
+      createdBy
+      changes {
+        type
+        field
+        displayName
+        old
+        new
+      }
+      version {
+        id
+        createdAt
+        data
+      }
+    }
+  }
+`;
+
+/** Get record history query response */
+export interface GetRecordHistoryByIdResponse {
+  loading: boolean;
+  recordHistory: RecordHistory;
+}
+
+// === GET GROUPS ===
+
+/** Graphql request for getting groups */
+export const GET_GROUPS = gql`
+  query GetGroups {
+    groups {
+      id
+      title
+      usersCount
+    }
+  }
+`;
+
+/** Model for GetGroupsQueryResponse object */
+export interface GetGroupsQueryResponse {
+  loading: boolean;
+  groups: Group[];
 }
