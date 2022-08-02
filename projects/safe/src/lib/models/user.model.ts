@@ -1,5 +1,6 @@
 import { Application } from './application.model';
 import { Channel } from './channel.model';
+import { PositionAttributeCategory } from './position-attribute-category.model';
 import { PositionAttribute } from './position-attribute.model';
 
 /** Model for Permission object. */
@@ -7,6 +8,18 @@ export interface Permission {
   id?: string;
   type?: string;
   global?: boolean;
+}
+
+/** Model for filter object  */
+export interface RoleRule {
+  logic: 'and' | 'or';
+  rules: (
+    | {
+        group?: Group;
+        attribute?: { category: PositionAttributeCategory; value: string };
+      }
+    | RoleRule
+  )[];
 }
 
 /** Model for Role object. */
@@ -18,6 +31,15 @@ export interface Role {
   permissions?: Permission[];
   application?: Application;
   channels?: Channel[];
+  rules?: RoleRule[];
+}
+
+/** Model for Group object. */
+export interface Group {
+  id?: string;
+  title?: string;
+  description?: string;
+  usersCount?: number;
 }
 
 /** Model for User object. */

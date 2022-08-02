@@ -9,6 +9,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { AutoRoleAssignmentComponent } from './auto-role-assignment/auto-role-assignment.component';
 import { GeneralRoleDetailsComponent } from './general-role-details/general-role-details.component';
+import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 /**
  * General tab of Role Summary.
@@ -29,6 +32,9 @@ import { GeneralRoleDetailsComponent } from './general-role-details/general-role
     MatInputModule,
     SafeButtonModule,
     MatSelectModule,
+    SafeSkeletonTableModule,
+    MatTableModule,
+    MatTooltipModule,
   ],
   exports: [RoleDetailsComponent],
 })

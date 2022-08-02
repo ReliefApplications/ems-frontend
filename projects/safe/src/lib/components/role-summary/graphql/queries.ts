@@ -12,6 +12,7 @@ export const GET_ROLE = gql`
       id
       title
       description
+      rules
       permissions {
         id
         type

@@ -1,4 +1,41 @@
 <h2>{{ 'components.role.summary.autoRoleAssignment.title' | translate }}</h2>
 <safe-button icon="add" variant="primary" category="secondary">{{
-  'components.role.summary.autoRoleAssignment.add' | translate
+  'components.role.summary.autoRoleAssignment.rule.add' | translate
 }}</safe-button>
+<safe-skeleton-table
+  *ngIf="loading"
+  [columns]="['components.role.summary.autoRoleAssignment.rule.title']"
+  [actions]="true"
+  [rows]="5"
+>
+</safe-skeleton-table>
+<table mat-table [dataSource]="rules" *ngIf="!loading">
+  <ng-container matColumnDef="filter">
+    <th mat-header-cell *matHeaderCellDef>
+      {{ 'components.role.summary.autoRoleAssignment.rule.title' | translate }}
+    </th>
+    <td mat-cell *matCellDef="let element" class="capitalize">
+      {{ getRuleString(element) }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <div style="display: flex">
+        <safe-button
+          [isIcon]="true"
+          icon="delete"
+          variant="grey"
+          [matTooltip]="
+            'components.role.summary.autoRoleAssignment.rule.delete' | translate
+          "
+          (click)="onDeleteRule(element)"
+        >
+        </safe-button>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+</table>

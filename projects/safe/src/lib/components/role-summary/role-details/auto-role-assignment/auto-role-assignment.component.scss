@@ -6,3 +6,11 @@
 safe-button {
   align-self: end;
 }
+
+.capitalize::first-letter {
+  text-transform: uppercase;
+}
+
+table {
+  margin-top: 1em;
+}

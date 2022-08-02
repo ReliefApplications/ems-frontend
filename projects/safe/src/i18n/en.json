@@ -658,9 +658,13 @@
 			},
 			"summary": {
 				"autoRoleAssignment": {
-					"add": "Create assignment rule",
+					"rule": {
+						"add": "Create assignment rule",
+						"delete": "Delete rule",
+						"title": "Rule"
+					},
 					"title": "Automatic assignment",
-					"userInGroup": "User is in group {{name}}"
+					"userInGroup": "user is in group \"{{name}}\""
 				},
 				"features": "Features",
 				"noFeatures": "No feature detected",

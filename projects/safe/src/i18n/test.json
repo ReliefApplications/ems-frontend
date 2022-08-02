@@ -658,9 +658,13 @@
 			},
 			"summary": {
 				"autoRoleAssignment": {
-					"add": "******",
+					"rule": {
+						"add": "******",
+						"delete": "******",
+						"title": "******"
+					},
 					"title": "******",
-					"userInGroup": "****** {{name}}"
+					"userInGroup": "****** {{name}} ******"
 				},
 				"features": "******",
 				"noFeatures": "******",

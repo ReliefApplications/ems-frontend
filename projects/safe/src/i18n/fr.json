@@ -658,9 +658,13 @@
 			},
 			"summary": {
 				"autoRoleAssignment": {
-					"add": "Créer une règle d'attribution",
+					"rule": {
+						"add": "Créer une règle d'attribution",
+						"delete": "Supprimer la règle",
+						"title": "Régner"
+					},
 					"title": "Affectation automatique",
-					"userInGroup": "L'utilisateur est dans le groupe {{name}}"
+					"userInGroup": "l'utilisateur est dans le groupe \"{{name}}\""
 				},
 				"features": "Fonctionnalités",
 				"noFeatures": "Aucune fonctionnalité détectée",
