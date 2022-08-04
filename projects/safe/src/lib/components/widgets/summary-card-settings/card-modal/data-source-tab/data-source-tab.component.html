@@ -41,13 +41,19 @@
     [singleInput] = true
     ></safe-layouts>
 
-    <h2>Layout styles</h2>
-    <mat-checkbox formControlName="useLayouts">Use layout styles</mat-checkbox>
+    <h2>{{ 'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title' | translate }}</h2>
+    <mat-checkbox formControlName="useLayouts">
+      {{ 'components.widget.settings.summaryCard.card.dataSource.layoutStyles.use' | translate }}
+    </mat-checkbox>
     <div *ngIf="this.form.value.useLayouts">
-      <p>Whole row styles:</p>
+      <p>{{ 'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.title' | translate }}</p>
       <mat-radio-group formControlName="wholeCardLayouts">
-        <mat-radio-button [value]="false">Apply to all fields</mat-radio-button>
-        <mat-radio-button [value]="true">Apply to the whole card</mat-radio-button>
+        <mat-radio-button [value]="false">
+          {{ 'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option1' | translate }}
+        </mat-radio-button>
+        <mat-radio-button [value]="true">
+          {{ 'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option2' | translate }}
+        </mat-radio-button>
       </mat-radio-group>
     </div>
   </form>
