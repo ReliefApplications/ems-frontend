@@ -201,6 +201,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe((value: any) => {
+      console.log(value);
       if (value) {
         this.cards.at(index).setValue(value);
       }

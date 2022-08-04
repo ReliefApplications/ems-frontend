@@ -21,7 +21,7 @@ export class SafePreviewTabComponent implements OnChanges {
   private recordSubscription: Subscription | undefined;
   private loadedRecord: any;
 
-  public formatedHtml: string = this.html;
+  public formattedHtml: string = this.html;
 
   /**
    * Constructor used by the SafePreviewTab component.
@@ -49,18 +49,18 @@ export class SafePreviewTabComponent implements OnChanges {
           .valueChanges.subscribe((res) => {
             if (res) {
               this.loadedRecord = res.data.record;
-              this.formatedHtml = this.replaceRecordFields(
+              this.formattedHtml = this.replaceRecordFields(
                 this.html,
                 this.loadedRecord
               );
             } else {
               this.loadedRecord = null;
-              this.formatedHtml = this.html;
+              this.formattedHtml = this.html;
             }
           });
       }
     } else {
-      this.formatedHtml = this.replaceRecordFields(
+      this.formattedHtml = this.replaceRecordFields(
         this.html,
         this.loadedRecord
       );

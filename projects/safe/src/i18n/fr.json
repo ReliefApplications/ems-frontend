@@ -29,6 +29,11 @@
 		"child": "Enfant",
 		"clear": "Annuler",
 		"close": "Fermer",
+		"column": {
+			"few": "Colonnes",
+			"none": "Aucune colonne",
+			"one": "Colonne"
+		},
 		"create": "Créer",
 		"createdOn": "Date de création",
 		"dashboard": {
@@ -1169,7 +1174,8 @@
 			"add": "Ajouter une référence de données"
 		},
 		"resource": {
-			"create": "Créer une ressource"
+			"create": "Créer une ressource",
+			"select": "Sélectionnez une ressource"
 		},
 		"role": {
 			"create": "Créer un rôle",

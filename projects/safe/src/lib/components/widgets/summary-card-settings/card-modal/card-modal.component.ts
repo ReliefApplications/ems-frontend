@@ -6,16 +6,16 @@ import {
   ViewChild,
   AfterViewInit,
 } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Apollo } from 'apollo-angular';
 import {
-  GET_GRID_RESOURCE_META,
+  GET_RESOURCE,
   GetResourceByIdQueryResponse,
-  GET_GRID_FORM_META,
+  GET_FORM,
   GetFormByIdQueryResponse,
-} from '../../../../graphql/queries';
+} from './graphql/queries';
 
 /**
  * Card modal component.
@@ -35,7 +35,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
 
   public gridSettings: any;
 
-  public form: any;
+  public form!: FormGroup;
 
   /**
    * Card modal component.
@@ -65,21 +65,24 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
     });
     this.form.patchValue({ layout: this.data.layout ? this.data.layout : [] });
 
+    console.log(this.form);
+    console.log(this.data);
+
     this.form.controls.resource.valueChanges.subscribe((value: any) => {
       this.apollo
         .query<GetResourceByIdQueryResponse>({
-          query: GET_GRID_RESOURCE_META,
+          query: GET_RESOURCE,
           variables: {
-            resource: value.resource.id,
+            id: value,
           },
         })
         .subscribe((res2) => {
           if (res2.errors) {
             this.apollo
               .query<GetFormByIdQueryResponse>({
-                query: GET_GRID_FORM_META,
+                query: GET_FORM,
                 variables: {
-                  id: value.resource.id,
+                  id: value,
                 },
               })
               .subscribe((res3) => {

@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDisplayTabComponent } from './display-tab.component';
 
-/** Data Source Module */
+/** Display tab Module for summary card edition */
 @NgModule({
   declarations: [SafeDisplayTabComponent],
   imports: [

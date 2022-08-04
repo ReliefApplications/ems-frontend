@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { SafeTextEditorTabComponent } from './text-editor-tab.component';
 
-/** Data Source Module */
+/** Text editor tab Module for summary cards edition */
 @NgModule({
   declarations: [SafeTextEditorTabComponent],
   imports: [

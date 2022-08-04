@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 /**
  * Component used in the card-modal-settings for selecting the record data.
@@ -9,7 +10,7 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./value-selector-tab.component.scss'],
 })
 export class SafeValueSelectorTabComponent implements OnInit {
-  @Input() form: any;
+  @Input() form!: FormGroup;
   @Input() settings: any;
 
   public selectedRows: string[] = [];
@@ -23,8 +24,8 @@ export class SafeValueSelectorTabComponent implements OnInit {
    * Gets the selected row if one is already selected.
    */
   ngOnInit(): void {
-    if (this.form.get('record').value) {
-      this.selectedRows = [this.form.get('record').value];
+    if (this.form.value.record) {
+      this.selectedRows = [this.form.value.record];
     }
   }
 

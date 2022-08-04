@@ -21,7 +21,7 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./data-source-tab.component.scss'],
 })
 export class SafeDataSourceTabComponent implements OnInit {
-  @Input() form: any;
+  @Input() form!: FormGroup;
   @Input() dataset: any;
 
   // === RADIO ===
