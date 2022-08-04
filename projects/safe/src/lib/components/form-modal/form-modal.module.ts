@@ -29,7 +29,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     SafeRecordHistoryModalModule,
     SafeRecordSummaryModule,
     TranslateModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   exports: [SafeFormModalComponent],
 })
