@@ -1,9 +1,22 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
+import { isEqual } from 'lodash';
 import { Application } from '../../../../models/application.model';
 import { RoleRule, Role } from '../../../../models/user.model';
+import {
+  EditRoleRulesMutationResponse,
+  EDIT_ROLE_RULES,
+} from '../../graphql/mutations';
+import { SafeAddRoleRuleComponent } from './add-role-rule/add-role-rule.component';
+
+/** New rule filter */
+const NEW_RULE: RoleRule = {
+  logic: 'and',
+  rules: [],
+};
 
 /** Auto role assignment section component of Role Summary. */
 @Component({
@@ -19,13 +32,35 @@ export class AutoRoleAssignmentComponent implements OnInit {
   public rules = new MatTableDataSource<RoleRule>([]);
   public displayedColumns: string[] = ['filter', 'actions'];
 
+  private opMap: {
+    [key: string]: string;
+  } = {
+    eq: this.translate.instant('kendo.grid.filterEqOperator'),
+    neq: this.translate.instant('kendo.grid.filterNotEqOperator'),
+    contains: this.translate.instant('kendo.grid.filterContainsOperator'),
+    doesnotcontain: this.translate.instant(
+      'kendo.grid.filterNotContainsOperator'
+    ),
+    startswith: this.translate.instant('kendo.grid.filterStartsWithOperator'),
+    endswith: this.translate.instant('kendo.grid.filterEndsWithOperator'),
+    isnull: this.translate.instant('kendo.grid.filterIsNullOperator'),
+    isnotnull: this.translate.instant('kendo.grid.filterIsNotNullOperator'),
+    isempty: this.translate.instant('kendo.grid.filterIsEmptyOperator'),
+    isnotempty: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
+  };
+
   /**
    * Auto role assignment section component of Role Summary.
    *
    * @param apollo Apollo service
    * @param translate Translate service
+   * @param dialog Shared dialog service
    */
-  constructor(private apollo: Apollo, private translate: TranslateService) {}
+  constructor(
+    private apollo: Apollo,
+    private translate: TranslateService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.rules.data = this.role.rules || [];
@@ -54,9 +89,9 @@ export class AutoRoleAssignmentComponent implements OnInit {
           );
         } else if (rule.attribute) {
           rulesStr.push(
-            `${rule.attribute.category?.title} ${this.translate
-              .instant('kendo.grid.filterEqOperator')
-              .toLowerCase()} ${rule.attribute.value}`.trim()
+            `${rule.attribute.category?.title} ${this.opMap[
+              rule.attribute.operator
+            ].toLowerCase()} ${rule.attribute.value}`.trim()
           );
         }
       }
@@ -72,12 +107,64 @@ export class AutoRoleAssignmentComponent implements OnInit {
   }
 
   /**
-   * Removes a rule from the role rules list.
+   * Opens modal to add or edit a rule to the role rules list.
+   *
+   * @param r Rule to be edited
+   */
+  handleAddRule(r?: RoleRule) {
+    const dialogRef = this.dialog.open(SafeAddRoleRuleComponent, {
+      data: {
+        rule: r || NEW_RULE,
+        positionAttributeCategories:
+          this.application.positionAttributeCategories,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value && !isEqual(value, r)) {
+        // if editing, add the new version of the rule and remove the old one
+        const changedRules = Object.assign(
+          {
+            add: [value],
+          },
+          r && { remove: [r] }
+        );
+        this.loading = true;
+        this.apollo
+          .mutate<EditRoleRulesMutationResponse>({
+            mutation: EDIT_ROLE_RULES,
+            variables: {
+              id: this.role.id,
+              rules: changedRules,
+            },
+          })
+          .subscribe((res) => {
+            this.rules.data = res.data?.editRole.rules || [];
+            this.loading = res.loading;
+          });
+      }
+    });
+  }
+
+  /**
+   * Removes rule from role rules list.
    *
    * @param r Rule to be deleted
    */
-  onDeleteRule(r: RoleRule): void {
-    const index = this.rules.data.indexOf(r);
-    this.rules.data.splice(index, 1);
+  public handleRemoveRule(r: RoleRule) {
+    this.loading = true;
+    this.apollo
+      .mutate<EditRoleRulesMutationResponse>({
+        mutation: EDIT_ROLE_RULES,
+        variables: {
+          id: this.role.id,
+          rules: {
+            remove: [r],
+          },
+        },
+      })
+      .subscribe((res) => {
+        this.rules.data = res.data?.editRole.rules || [];
+        this.loading = res.loading;
+      });
   }
 }

@@ -1,1 +1,15 @@
-<p>add-role-rule works!</p>
+<safe-tab-filter
+  *ngIf="!loading"
+  [form]="$any(ruleForm)"
+  [fields]="fields"
+  [metaFields]="groupsMeta"
+>
+</safe-tab-filter>
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>
+    {{ 'common.cancel' | translate }}
+  </button>
+  <button mat-flat-button color="primary" (click)="onSave()">
+    {{ 'common.save' | translate }}
+  </button>
+</div>

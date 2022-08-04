@@ -138,6 +138,10 @@ const TYPES: any = {
       'isnotempty',
     ],
   },
+  Group: {
+    defaultOperator: 'eq',
+    operators: ['eq'],
+  },
 };
 
 /**
@@ -154,6 +158,7 @@ const AVAILABLE_TYPES = [
   'JSON',
   'ID',
   'Form',
+  'Group',
 ];
 
 /**

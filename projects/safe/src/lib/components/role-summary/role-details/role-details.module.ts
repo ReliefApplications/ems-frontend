@@ -13,6 +13,9 @@ import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeAddRoleRuleComponent } from './auto-role-assignment/add-role-rule/add-role-rule.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
+import { MatButtonModule } from '@angular/material/button';
 
 /**
  * General tab of Role Summary.
@@ -37,6 +40,9 @@ import { SafeAddRoleRuleComponent } from './auto-role-assignment/add-role-rule/a
     SafeSkeletonTableModule,
     MatTableModule,
     MatTooltipModule,
+    MatDialogModule,
+    SafeQueryBuilderModule,
+    MatButtonModule,
   ],
   exports: [RoleDetailsComponent],
 })

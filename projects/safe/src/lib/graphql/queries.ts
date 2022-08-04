@@ -1,8 +1,7 @@
 import { gql } from 'apollo-angular';
 import { Form } from '../models/form.model';
 import { Resource } from '../models/resource.model';
-import { Role, User, Permission, Group } from '../models/user.model';
-import { Record } from '../models/record.model';
+import { User, Group, Role } from '../models/user.model';
 import { Notification } from '../models/notification.model';
 import { Application } from '../models/application.model';
 import { Workflow } from '../models/workflow.model';
@@ -591,4 +590,35 @@ export const GET_GROUPS = gql`
 export interface GetGroupsQueryResponse {
   loading: boolean;
   groups: Group[];
+}
+
+// === GET ROLES ===
+
+/** Graphql request for getting roles (optionnally by an application id) */
+export const GET_ROLES = gql`
+  query GetRoles($application: ID) {
+    roles(application: $application) {
+      id
+      title
+      permissions {
+        id
+        type
+      }
+      usersCount
+      channels {
+        id
+        title
+        application {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+/** Model for GetRolesQueryResponse object */
+export interface GetRolesQueryResponse {
+  loading: boolean;
+  roles: Role[];
 }

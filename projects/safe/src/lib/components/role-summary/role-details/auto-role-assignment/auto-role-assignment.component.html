@@ -1,7 +1,13 @@
 <h2>{{ 'components.role.summary.autoRoleAssignment.title' | translate }}</h2>
-<safe-button icon="add" variant="primary" category="secondary">{{
-  'components.role.summary.autoRoleAssignment.rule.add' | translate
-}}</safe-button>
+<safe-button
+  icon="add"
+  variant="primary"
+  category="secondary"
+  (click)="handleAddRule()"
+  >{{
+    'components.role.summary.autoRoleAssignment.rule.add' | translate
+  }}</safe-button
+>
 <safe-skeleton-table
   *ngIf="loading"
   [columns]="['components.role.summary.autoRoleAssignment.rule.title']"
@@ -29,7 +35,7 @@
           [matTooltip]="
             'components.role.summary.autoRoleAssignment.rule.delete' | translate
           "
-          (click)="onDeleteRule(element)"
+          (click)="handleRemoveRule(element)"
         >
         </safe-button>
       </div>
@@ -37,5 +43,10 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+  <tr
+    *matRowDef="let row; columns: displayedColumns"
+    mat-row
+    (click)="handleAddRule(row)"
+    style="cursor: pointer"
+  ></tr>
 </table>

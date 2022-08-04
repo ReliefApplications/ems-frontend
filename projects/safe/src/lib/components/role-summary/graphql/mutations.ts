@@ -114,3 +114,18 @@ export const EDIT_FORM_ACCESS = gql`
 export interface EditFormAccessMutationResponse {
   editForm: Form;
 }
+
+/** Edit Role rules mutation */
+export const EDIT_ROLE_RULES = gql`
+  mutation editRole($id: ID!, $rules: JSON) {
+    editRole(id: $id, rules: $rules) {
+      id
+      rules
+    }
+  }
+`;
+
+/** Interface of Edit Role Rules mutation response */
+export interface EditRoleRulesMutationResponse {
+  editRole: Role;
+}
