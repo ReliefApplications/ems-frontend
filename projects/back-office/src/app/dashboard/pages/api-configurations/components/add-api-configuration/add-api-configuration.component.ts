@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { graphQLValidator } from '../../../../../utils/nameValidation';
 
 /**
  * Add API configuration component (modal)
@@ -38,7 +39,7 @@ export class AddApiConfigurationComponent implements OnInit {
   /** Build the form. */
   ngOnInit(): void {
     this.apiForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.pattern('^[A-Za-z-_]+$')]],
+      name: ['', [Validators.required, Validators.pattern(graphQLValidator)]],
     });
   }
 

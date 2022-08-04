@@ -300,7 +300,7 @@
 		"apiConfiguration": {
 			"create": {
 				"errors": {
-					"name": "Seules les lettres, les tirets et les tirets bas sont acceptés."
+					"name": "Nom invalide: utilisez seulement des lettres, des chiffres et des tirets bas."
 				}
 			},
 			"delete": {
@@ -625,7 +625,7 @@
 		"referenceData": {
 			"create": {
 				"errors": {
-					"name": "Seules les lettres, les tirets et les tirets bas sont acceptés."
+					"name": "Nom invalide: utilisez seulement des lettres, des chiffres et des tirets bas."
 				},
 				"title": "Nouvelle référence de données"
 			},
@@ -1294,7 +1294,7 @@
 		"referenceData": {
 			"csv": "Fichier CSV d'entrée",
 			"errors": {
-				"name": "Seules les lettres, les tirets et les tirets bas sont acceptés"
+				"name": "Nom invalide: utilisez seulement des lettres, des chiffres et des tirets bas"
 			},
 			"fields": "Champs",
 			"graphQLFilter": "Paramètres de la requête GraphQL",

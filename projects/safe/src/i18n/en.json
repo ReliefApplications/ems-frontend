@@ -300,7 +300,7 @@
 		"apiConfiguration": {
 			"create": {
 				"errors": {
-					"name": "Only letters, hypens or underscores are accepted"
+					"name": "Invalid name: please only use letters, digits and underscores."
 				}
 			},
 			"delete": {
@@ -625,7 +625,7 @@
 		"referenceData": {
 			"create": {
 				"errors": {
-					"name": "Only letters, hypens or underscores are accepted"
+					"name": "Invalid name: please only use letters, digits and underscores."
 				},
 				"title": "New Reference Data"
 			},
@@ -1294,7 +1294,7 @@
 		"referenceData": {
 			"csv": "CSV input",
 			"errors": {
-				"name": "Only letters, hypens or underscores are accepted"
+				"name": "Invalid name: please only use letters, digits and underscores."
 			},
 			"fields": "Fields",
 			"graphQLFilter": "GraphQL query parameters",

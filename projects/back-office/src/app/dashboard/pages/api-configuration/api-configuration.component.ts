@@ -17,6 +17,7 @@ import {
 } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
+import { graphQLValidator } from '../../../utils/nameValidation';
 import {
   EditApiConfigurationMutationResponse,
   EDIT_API_CONFIGURATION,
@@ -97,7 +98,7 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
               this.apiForm = this.formBuilder.group({
                 name: [
                   this.apiConfiguration?.name,
-                  [Validators.required, Validators.pattern('^[A-Za-z-_]+$')],
+                  [Validators.required, Validators.pattern(graphQLValidator)],
                 ],
                 status: [this.apiConfiguration?.status, Validators.required],
                 authType: [

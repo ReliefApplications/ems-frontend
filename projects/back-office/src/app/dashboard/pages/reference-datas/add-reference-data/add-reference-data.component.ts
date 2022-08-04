@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { graphQLValidator } from '../../../../utils/nameValidation';
 
 /**
  * New Refence Data modal.
@@ -40,7 +41,7 @@ export class AddReferenceDataComponent implements OnInit {
    */
   ngOnInit(): void {
     this.referenceForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.pattern('^[A-Za-z-_]+$')]],
+      name: ['', [Validators.required, Validators.pattern(graphQLValidator)]],
     });
   }
 

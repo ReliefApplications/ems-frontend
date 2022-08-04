@@ -35,6 +35,7 @@ import {
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { MatSelect } from '@angular/material/select';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { graphQLValidator } from '../../../utils/nameValidation';
 
 /** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
@@ -144,7 +145,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
               this.referenceForm = this.formBuilder.group({
                 name: [
                   this.referenceData?.name,
-                  [Validators.required, Validators.pattern('^[A-Za-z-_]+$')],
+                  [Validators.required, Validators.pattern(graphQLValidator)],
                 ],
                 type: [this.referenceData?.type, Validators.required],
                 valueField: [
