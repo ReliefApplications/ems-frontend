@@ -19,6 +19,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Channels page module.
+ */
 @NgModule({
   declarations: [ChannelsComponent, AddChannelComponent, EditChannelComponent],
   imports: [

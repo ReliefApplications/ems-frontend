@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddDashboardComponent } from './add-dashboard.component';
+import { SafeMappingComponent } from './mapping.component';
 
-describe('AddDashboardComponent', () => {
-  let component: AddDashboardComponent;
-  let fixture: ComponentFixture<AddDashboardComponent>;
+describe('SafeMappingComponent', () => {
+  let component: SafeMappingComponent;
+  let fixture: ComponentFixture<SafeMappingComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AddDashboardComponent],
+      declarations: [SafeMappingComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddDashboardComponent);
+    fixture = TestBed.createComponent(SafeMappingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

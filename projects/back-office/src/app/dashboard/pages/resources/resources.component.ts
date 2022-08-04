@@ -18,18 +18,24 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import { AddResourceComponent } from '../../../components/add-resource/add-resource.component';
 
+/**
+ * Default number of resources that will be shown at once.
+ */
 const DEFAULT_PAGE_SIZE = 10;
 
+/**
+ * Component which will show all the resources in the app.
+ */
 @Component({
   selector: 'app-resources',
   templateUrl: './resources.component.html',
   styleUrls: ['./resources.component.scss'],
 })
-export class ResourcesComponent implements OnInit, AfterViewInit {
+export class ResourcesComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public filterLoading = false;
@@ -39,7 +45,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   public resources = new MatTableDataSource<Resource>([]);
 
   // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  public updating = false;
+  private sort: Sort = { active: '', direction: '' };
 
   // === FILTERING ===
   public filter: any;
@@ -52,6 +59,15 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     endCursor: '',
   };
 
+  /**
+   * ResourcesComponent constructor.
+   *
+   * @param dialog Used for opening a dialog.
+   * @param apollo Used for loading the resources.
+   * @param snackBar Service used to show the snackbar,
+   * @param translate Service used to get translations
+   * @param router Used to change the app route.
+   */
   constructor(
     private dialog: MatDialog,
     private apollo: Apollo,
@@ -78,6 +94,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       this.pageInfo.length = res.data.resources.totalCount;
       this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
       this.loading = res.loading;
+      this.updating = res.loading;
       this.filterLoading = false;
     });
   }
@@ -164,8 +181,65 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    this.resources.sort = this.sort || null;
+  /**
+   * Handle sort change.
+   *
+   * @param event sort event
+   */
+  onSort(event: Sort): void {
+    this.sort = event;
+    this.fetchResources(true);
+  }
+
+  /**
+   * Update resources query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchResources(refetch?: boolean): void {
+    this.updating = true;
+    if (refetch) {
+      this.cachedResources = [];
+      this.pageInfo.pageIndex = 0;
+      this.resourcesQuery
+        .refetch({
+          first: this.pageInfo.pageSize,
+          afterCursor: null,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        })
+        .then(() => {
+          this.loading = false;
+          this.updating = false;
+        });
+    } else {
+      this.loading = true;
+      this.resourcesQuery.fetchMore({
+        variables: {
+          first: this.pageInfo.pageSize,
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) {
+            return prev;
+          }
+          return Object.assign({}, prev, {
+            resources: {
+              edges: [
+                ...prev.resources.edges,
+                ...fetchMoreResult.resources.edges,
+              ],
+              pageInfo: fetchMoreResult.resources.pageInfo,
+              totalCount: fetchMoreResult.resources.totalCount,
+            },
+          });
+        },
+      });
+    }
   }
 
   /**

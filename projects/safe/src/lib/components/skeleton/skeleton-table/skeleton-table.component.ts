@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 /**
- *
+ * Skeleton table component.
  */
 @Component({
   selector: 'safe-skeleton-table',
@@ -17,7 +17,7 @@ export class SafeSkeletonTableComponent implements OnInit {
   dataSource: any[] = [];
 
   /**
-   *
+   * Skeleton table component.
    */
   constructor() {}
 

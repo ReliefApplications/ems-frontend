@@ -9,7 +9,7 @@ import { UserAppRolesComponent } from './user-app-roles/user-app-roles.component
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /**
- *
+ * User summary roles module
  */
 @NgModule({
   declarations: [

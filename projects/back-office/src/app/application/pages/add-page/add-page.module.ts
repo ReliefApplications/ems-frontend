@@ -16,6 +16,9 @@ import {
 } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Add page module.
+ */
 @NgModule({
   declarations: [AddPageComponent],
   imports: [

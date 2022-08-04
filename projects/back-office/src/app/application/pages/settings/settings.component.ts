@@ -15,11 +15,13 @@ import {
   DELETE_APPLICATION,
 } from '../../../graphql/mutations';
 import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
-
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Application settings page component.
+ */
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -34,6 +36,18 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public locked: boolean | undefined = undefined;
   public lockedByUser: boolean | undefined = undefined;
 
+  /**
+   * Application settings page component.
+   *
+   * @param formBuilder Angular form builder
+   * @param apollo Apollo service
+   * @param router Angular router
+   * @param snackBar Shared snackbar service
+   * @param applicationService Shared application service
+   * @param authService Shared authentication service
+   * @param dialog Material dialog service
+   * @param translate Angular translate service
+   */
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
@@ -64,11 +78,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * Submit settings form.
+   */
   onSubmit(): void {
     this.applicationService.editApplication(this.settingsForm?.value);
     this.settingsForm?.markAsPristine();
   }
 
+  /**
+   * Duplicate application.
+   */
   onDuplicate(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
@@ -86,6 +106,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Delete application.
+   * Prompt modal to confirm.
+   */
   onDelete(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(

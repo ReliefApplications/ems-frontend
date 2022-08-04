@@ -10,7 +10,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import {
   SafeAccessModule,
-  SafePreviousButtonModule,
   SafeButtonModule,
   SafeLayoutModalModule,
   SafeDateModule,
@@ -21,6 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
 
+/** Resource page module. */
 @NgModule({
   declarations: [ResourceComponent],
   imports: [
@@ -33,7 +33,6 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     MatMenuModule,
     MatChipsModule,
     SafeAccessModule,
-    SafePreviousButtonModule,
     SafeButtonModule,
     MatTooltipModule,
     MatPaginatorModule,

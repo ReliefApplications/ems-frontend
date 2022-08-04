@@ -15,6 +15,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
+/**
+ * Dashboard page module for application preview.
+ */
 @NgModule({
   declarations: [DashboardComponent],
   imports: [

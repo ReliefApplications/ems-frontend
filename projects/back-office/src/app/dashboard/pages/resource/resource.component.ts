@@ -10,6 +10,7 @@ import {
   SafeLayoutModalComponent,
   Layout,
   SafeGridLayoutService,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import {
   DeleteFormMutationResponse,
@@ -32,9 +33,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
 
+/**
+ * Quantity of resource that will be loaded at once.
+ */
 const ITEMS_PER_PAGE = 10;
+/**
+ * Default fields for the records.
+ */
 const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
 
+/**
+ * Component used to display resource in a table.
+ */
 @Component({
   selector: 'app-resource',
   templateUrl: './resource.component.html',
@@ -85,6 +95,19 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   public showUpload = false;
 
+  /**
+   * ResourceComponent constructor.
+   *
+   * @param apollo Used to load the resources.
+   * @param route Used to get route arguments.
+   * @param router Used to change app route.
+   * @param snackBar Service used to show a snackbar.
+   * @param downloadService Service used to download.
+   * @param dialog Used to display a dialog overlay.
+   * @param translate Service used to get translations.
+   * @param gridLayoutService Service used to manage the grid.
+   * @param breadcrumbService Shared breadcrumb service
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -93,7 +116,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
     private downloadService: SafeDownloadService,
     private dialog: MatDialog,
     private translate: TranslateService,
-    private gridLayoutService: SafeGridLayoutService
+    private gridLayoutService: SafeGridLayoutService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /** Load data from the id of the resource passed as a parameter. */
@@ -157,6 +181,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
         (res) => {
           if (res.data.resource) {
             this.resource = res.data.resource;
+            this.breadcrumbService.setBreadcrumb(
+              '@resource',
+              this.resource.name as string
+            );
             this.dataSourceForms = this.resource.forms;
             this.dataSourceLayouts = this.resource.layouts;
             this.setDisplayedColumns(false);
@@ -229,6 +257,11 @@ export class ResourceComponent implements OnInit, OnDestroy {
     this.displayedColumnsRecords = columns;
   }
 
+  /**
+   * Filters the shown columns.
+   *
+   * @param event Event trigger on filtering.
+   */
   public filterCore(event: any): void {
     this.setDisplayedColumns(event.value);
   }
@@ -236,7 +269,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   /**
    * Deletes a record if authorized, open a confirmation modal if it's a hard delete.
    *
-   * @param id Id of record to delete.
+   * @param element Element to delete.
    * @param e click event.
    */
   public onDeleteRecord(element: any, e: any): void {
@@ -293,7 +326,12 @@ export class ResourceComponent implements OnInit, OnDestroy {
       });
   }
 
-  /** Delete a form if authorized. */
+  /**
+   * Delete a form if authorized.
+   *
+   * @param id Id of the form to delete.
+   * @param e Used to prevent the default behaviour.
+   */
   deleteForm(id: any, e: any): void {
     e.stopPropagation();
     this.apollo
@@ -442,6 +480,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
     return this.resource.forms.filter((x: Form) => x.id !== record.form?.id);
   }
 
+  /**
+   * Adds a new layout for the resource.
+   */
   onAddLayout(): void {
     const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
       disableClose: true,

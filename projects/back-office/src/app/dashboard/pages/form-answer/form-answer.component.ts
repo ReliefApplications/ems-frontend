@@ -2,12 +2,15 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Form, SafeFormComponent } from '@safe/builder';
+import { Form, SafeBreadcrumbService, SafeFormComponent } from '@safe/builder';
 import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
 } from '../../../graphql/queries';
 
+/**
+ * Form answer page component.
+ */
 @Component({
   selector: 'app-form-answer',
   templateUrl: './form-answer.component.html',
@@ -23,7 +26,18 @@ export class FormAnswerComponent implements OnInit {
   public form?: Form;
   public completed = false;
 
-  constructor(private apollo: Apollo, private route: ActivatedRoute) {}
+  /**
+   * Form answer page component.
+   *
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param breadcrumbService Shared breadcrumb service
+   */
+  constructor(
+    private apollo: Apollo,
+    private route: ActivatedRoute,
+    private breadcrumbService: SafeBreadcrumbService
+  ) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
@@ -38,14 +52,28 @@ export class FormAnswerComponent implements OnInit {
         .valueChanges.subscribe((res) => {
           this.loading = res.loading;
           this.form = res.data.form;
+          this.breadcrumbService.setBreadcrumb(
+            '@form',
+            this.form.name as string
+          );
         });
     }
   }
 
+  /**
+   * Handle completion of form
+   *
+   * @param e completion event
+   * @param e.completed completion status
+   * @param e.hideNewRecord does 'new record' appear ?
+   */
   onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;
   }
 
+  /**
+   * Reset the form, removing answers.
+   */
   clearForm(): void {
     this.formComponent?.reset();
   }

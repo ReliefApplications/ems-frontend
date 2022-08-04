@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { UsersComponent } from './users.component';
 
+/** List of routes of application users module */
 const routes: Routes = [
   {
     path: '',
@@ -9,6 +10,9 @@ const routes: Routes = [
   },
 ];
 
+/**
+ * Application users routing module.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

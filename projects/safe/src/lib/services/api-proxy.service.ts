@@ -28,6 +28,8 @@ export class SafeApiProxyService {
 
   /**
    * Build headers with the authentication token to API url.
+   *
+   * @returns new Http headers, with token
    */
   private buildHeaders(): HttpHeaders {
     const token = localStorage.getItem('idtoken');

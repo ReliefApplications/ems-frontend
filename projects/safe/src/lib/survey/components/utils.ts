@@ -3,6 +3,7 @@ import { SafeFormModalComponent } from '../../components/form-modal/form-modal.c
 import { SafeResourceGridModalComponent } from '../../components/search-resource-grid-modal/search-resource-grid-modal.component';
 import { FormGroup } from '@angular/forms';
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
+import { surveyLocalization } from 'survey-angular';
 
 /**
  * Build the search button for resource and resources components
@@ -20,7 +21,10 @@ export const buildSearchButton = (
   dialog: MatDialog
 ): any => {
   const searchButton = document.createElement('button');
-  searchButton.innerText = 'Search';
+  searchButton.innerText = surveyLocalization.getString(
+    'oort:search',
+    question.survey.locale
+  );
   searchButton.style.marginRight = '8px';
   if (fieldsSettingsForm) {
     searchButton.onclick = () => {
@@ -69,7 +73,10 @@ export const buildAddButton = (
   gridComponent?: SafeCoreGridComponent
 ): any => {
   const addButton = document.createElement('button');
-  addButton.innerText = 'Add new record';
+  addButton.innerText = surveyLocalization.getString(
+    'oort:addNewRecord',
+    question.survey.locale
+  );
   if (question.addRecord && question.addTemplate) {
     addButton.onclick = () => {
       const dialogRef = dialog.open(SafeFormModalComponent, {

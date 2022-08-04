@@ -9,6 +9,10 @@ import { EmbeddedViewRef } from '@angular/core';
 import { ButtonCategory } from '../../components/ui/button/button-category.enum';
 import { SafeButtonComponent } from '../../components/ui/button/button.component';
 import { ButtonSize } from '../../components/ui/button/button-size.enum';
+import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { Question, QuestionText } from '../types';
+
+type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
@@ -20,68 +24,69 @@ export const init = (Survey: any, domService: DomService): void => {
   const widget = {
     name: 'text-widget',
     widgetIsLoaded: (): boolean => true,
-    isFit: (question: any): boolean => question.getType() === 'text',
+    isFit: (question: Question): boolean => question.getType() === 'text',
     init: (): void => {
+      const serializer: JsonMetadata = Survey.Serializer;
       // hide the min and max property for date, datetime and time types
-      Survey.Serializer.getProperty('text', 'min').visibleIf = (obj: any) =>
+      serializer.getProperty('text', 'min').visibleIf = (obj: QuestionText) =>
         ['number', 'month', 'week'].includes(obj.inputType || '');
-      Survey.Serializer.getProperty('text', 'max').visibleIf = (obj: any) =>
+      serializer.getProperty('text', 'max').visibleIf = (obj: QuestionText) =>
         ['number', 'month', 'week'].includes(obj.inputType || '');
       // create new min and max properties for date, datetime and time types
-      Survey.Serializer.addProperty('text', {
+      serializer.addProperty('text', {
         name: 'dateMin',
         type: 'date',
         category: 'general',
         visibleIndex: 8,
         dependsOn: 'inputType',
-        visibleIf: (obj: any) =>
+        visibleIf: (obj: QuestionText) =>
           ['date', 'datetime', 'datetime-local', 'time'].includes(
             obj.inputType || ''
           ),
-        onPropertyEditorUpdate: (obj: any, propertyEditor: any) => {
+        onPropertyEditorUpdate: (obj: QuestionText, propertyEditor: any) => {
           if (!!obj && !!obj.inputType) {
             propertyEditor.inputType = obj.inputType;
           }
         },
-        onSetValue: (obj: any, value: any) => {
+        onSetValue: (obj: QuestionText, value: any) => {
           obj.setPropertyValue('dateMin', value);
           obj.setPropertyValue('min', value);
         },
       });
-      Survey.Serializer.addProperty('text', {
+      serializer.addProperty('text', {
         name: 'dateMax',
         type: 'date',
         category: 'general',
         visibleIndex: 9,
         dependsOn: 'inputType',
-        visibleIf: (obj: any) =>
+        visibleIf: (obj: QuestionText) =>
           ['date', 'datetime', 'datetime-local', 'time'].includes(
             obj.inputType || ''
           ),
-        onPropertyEditorUpdate: (obj: any, propertyEditor: any) => {
+        onPropertyEditorUpdate: (obj: QuestionText, propertyEditor: any) => {
           if (!!obj && !!obj.inputType) {
             propertyEditor.inputType = obj.inputType;
           }
         },
-        onSetValue: (obj: any, value: any) => {
+        onSetValue: (obj: QuestionText, value: any) => {
           obj.setPropertyValue('dateMax', value);
           obj.setPropertyValue('max', value);
         },
       });
       // register the editor for type "date" with kendo date picker
       const dateEditor = {
-        render: (editor: any, htmlElement: any) => {
-          const question = editor.object;
+        render: (editor: any, htmlElement: HTMLElement) => {
+          const question = editor.object as QuestionText;
           const updatePickerInstance = () => {
             htmlElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
             const pickerInstance = createPickerInstance(
-              question.inputType,
+              question.inputType as DateInputFormat,
               htmlElement
             );
             if (pickerInstance) {
-              if (question[editor.property.name]) {
+              if (question[editor.property.name as keyof QuestionText]) {
                 pickerInstance.value = getDateDisplay(
-                  question[editor.property.name],
+                  question[editor.property.name as keyof QuestionText],
                   question.inputType
                 );
               }
@@ -110,17 +115,17 @@ export const init = (Survey: any, domService: DomService): void => {
       );
     },
     isDefaultRender: true,
-    afterRender: (question: any, el: any): void => {
+    afterRender: (question: QuestionText, el: HTMLInputElement): void => {
       // add kendo date pickers for text inputs with dates types
       const updateTextInput = () => {
-        el.parentElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
+        el.parentElement?.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
         if (
           ['date', 'datetime', 'datetime-local', 'time'].includes(
             question.inputType
           )
         ) {
           const pickerInstance = createPickerInstance(
-            question.inputType,
+            question.inputType as DateInputFormat,
             el.parentElement
           );
           if (pickerInstance) {
@@ -167,77 +172,81 @@ export const init = (Survey: any, domService: DomService): void => {
 
       // Adding an open url icon for urls inputs
       if (question.inputType === 'url') {
-        // Generate the dynamic component with its parameters
-        const button = domService.appendComponentToBody(
-          SafeButtonComponent,
-          el.parentElement
-        );
-        const instance: SafeButtonComponent = button.instance;
-        instance.isIcon = true;
-        instance.icon = 'open_in_new';
-        instance.size = ButtonSize.SMALL;
-        instance.category = ButtonCategory.TERTIARY;
-        instance.variant = 'default';
-        // we override the css of the component
-        const domElem = (button.hostView as EmbeddedViewRef<any>)
-          .rootNodes[0] as HTMLElement;
-        (domElem.firstChild as HTMLElement).style.minWidth = 'unset';
-        (domElem.firstChild as HTMLElement).style.backgroundColor = 'unset';
-        (domElem.firstChild as HTMLElement).style.color = 'black';
+        const parentElement = el.parentElement;
+        if (parentElement) {
+          // Generate the dynamic component with its parameters
+          const button = domService.appendComponentToBody(
+            SafeButtonComponent,
+            parentElement
+          );
+          const instance: SafeButtonComponent = button.instance;
+          instance.isIcon = true;
+          instance.icon = 'open_in_new';
+          instance.size = ButtonSize.SMALL;
+          instance.category = ButtonCategory.TERTIARY;
+          instance.variant = 'default';
+          // we override the css of the component
+          const domElem = (button.hostView as EmbeddedViewRef<any>)
+            .rootNodes[0] as HTMLElement;
+          (domElem.firstChild as HTMLElement).style.minWidth = 'unset';
+          (domElem.firstChild as HTMLElement).style.backgroundColor = 'unset';
+          (domElem.firstChild as HTMLElement).style.color = 'black';
 
-        // Set the default styling of the parent
-        el.parentElement.style.display = 'flex';
-        el.parentElement.style.alignItems = 'center';
-        el.parentElement.style.flexDirection = 'row';
-        el.parentElement.style.pointerEvents = 'auto';
-        el.parentElement.style.justifyContent = 'space-between';
-        el.parentElement.title =
-          'The URL should start with "http://" or "https://"';
+          // Set the default styling of the parent
+          parentElement.style.display = 'flex';
+          parentElement.style.alignItems = 'center';
+          parentElement.style.flexDirection = 'row';
+          parentElement.style.pointerEvents = 'auto';
+          parentElement.style.justifyContent = 'space-between';
+          parentElement.title =
+            'The URL should start with "http://" or "https://"';
 
-        // Create an <a> HTMLElement only used to verify the validity of the URL
-        const urlTester = document.createElement('a');
-        if (
-          el.value &&
-          !(el.value.startsWith('https://') || el.value.startsWith('http://'))
-        ) {
-          urlTester.href = 'https://' + el.value;
-        } else {
-          urlTester.href = el.value || '';
-        }
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        urlTester.host && urlTester.host !== window.location.host
-          ? (instance.disabled = false)
-          : (instance.disabled = true);
-
-        question.survey.onValueChanged.add((__: any, opt: any) => {
-          if (opt.question.name === question.name) {
-            if (
-              opt.question.value &&
-              !(
-                opt.question.value.startsWith('https://') ||
-                opt.question.value.startsWith('http://')
-              )
-            ) {
-              urlTester.href = 'https://' + opt.question.value;
-            } else {
-              urlTester.href = opt.question.value || '';
-            }
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            urlTester.host && urlTester.host !== window.location.host
-              ? (instance.disabled = false)
-              : (instance.disabled = true);
-          }
-        });
-
-        button.instance.emittedEventSubject.subscribe((eventType: string) => {
+          // Create an <a> HTMLElement only used to verify the validity of the URL
+          const urlTester = document.createElement('a');
           if (
-            eventType === 'click' &&
-            urlTester.host &&
-            urlTester.host !== window.location.host
+            question.value &&
+            !(
+              question.value.startsWith('https://') ||
+              question.value.startsWith('http://')
+            )
           ) {
-            window.open(urlTester.href, '_blank', 'noopener,noreferrer');
+            urlTester.href = 'https://' + question.value;
+          } else {
+            urlTester.href = question.value || '';
           }
-        });
+          instance.disabled =
+            !urlTester.host || urlTester.host === window.location.host;
+
+          (question.survey as SurveyModel).onValueChanged.add(
+            (__: any, opt: any) => {
+              if (opt.question.name === question.name) {
+                if (
+                  opt.question.value &&
+                  !(
+                    opt.question.value.startsWith('https://') ||
+                    opt.question.value.startsWith('http://')
+                  )
+                ) {
+                  urlTester.href = 'https://' + opt.question.value;
+                } else {
+                  urlTester.href = opt.question.value || '';
+                }
+                instance.disabled =
+                  !urlTester.host || urlTester.host === window.location.host;
+              }
+            }
+          );
+
+          button.instance.emittedEventSubject.subscribe((eventType: string) => {
+            if (
+              eventType === 'click' &&
+              urlTester.host &&
+              urlTester.host !== window.location.host
+            ) {
+              window.open(urlTester.href, '_blank', 'noopener,noreferrer');
+            }
+          });
+        }
       }
     },
   };
@@ -284,7 +293,7 @@ export const init = (Survey: any, domService: DomService): void => {
    * @returns The picker instance, or null if the type is not allowed
    */
   const createPickerInstance = (
-    inputType: 'date' | 'datetime' | 'datetime-local' | 'time',
+    inputType: DateInputFormat,
     element: any
   ):
     | DatePickerComponent
