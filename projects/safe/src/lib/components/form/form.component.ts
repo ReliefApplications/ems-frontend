@@ -102,7 +102,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param layoutService This is the service that will be used to create the layout of the form.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param translate This is the service used to translate text
-   * @param el Element reference.
    */
   constructor(
     @Inject('environment') environment: any,

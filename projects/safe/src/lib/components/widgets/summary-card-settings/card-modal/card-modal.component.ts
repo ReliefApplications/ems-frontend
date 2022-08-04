@@ -41,11 +41,11 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    * Card modal component.
    * Used as a Material Dialog.
    *
+   * @param data dialog data
    * @param dialogRef Material Dialog Ref of the component
    * @param fb Angular form builder
-   * @param data dialog data
-   * @param cdRef
-   * @param apollo
+   * @param cdRef Change detector
+   * @param apollo Apollo service
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,

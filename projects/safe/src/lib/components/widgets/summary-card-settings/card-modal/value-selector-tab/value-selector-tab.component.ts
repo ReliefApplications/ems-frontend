@@ -31,7 +31,7 @@ export class SafeValueSelectorTabComponent implements OnInit {
   /**
    * Updates the selected record when the selected row is changed.
    *
-   * @param event
+   * @param event selection event
    */
   onSelectionChange(event: any) {
     if (event.selectedRows.length > 0) {
