@@ -132,7 +132,6 @@ export class SafeAddRoleRuleComponent implements OnInit {
         kind: 'SCALAR',
       },
     });
-
     // Group meta
     this.groupsMeta = {
       [fieldTitle]: {

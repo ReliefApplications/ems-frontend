@@ -16,6 +16,7 @@ import { SafeAddRoleRuleComponent } from './auto-role-assignment/add-role-rule/a
 import { MatDialogModule } from '@angular/material/dialog';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 /**
  * General tab of Role Summary.
@@ -43,6 +44,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatDialogModule,
     SafeQueryBuilderModule,
     MatButtonModule,
+    MatProgressSpinnerModule,
   ],
   exports: [RoleDetailsComponent],
 })

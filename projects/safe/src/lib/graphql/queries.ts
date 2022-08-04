@@ -31,6 +31,16 @@ export const GET_PROFILE = gql`
           id
         }
       }
+      autoRoles {
+        id
+        title
+        application {
+          id
+        }
+        permissions {
+          id
+        }
+      }
       permissions {
         id
         type

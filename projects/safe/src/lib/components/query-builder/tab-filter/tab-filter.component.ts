@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { clone, get, isDate } from 'lodash';
+import { clone, get, isDate, isEqual } from 'lodash';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -417,5 +417,17 @@ export class SafeTabFilterComponent implements OnInit {
     });
     this.filters.push(filter);
     this.selectedFields.push({});
+  }
+
+  /**
+   * Checks if an option matches the value
+   *
+   * @param option Select option
+   * @param value Input value
+   * @returns If the option equals the value
+   */
+  compareOption(option: any, value: any) {
+    if (value instanceof Object) return isEqual(option, value);
+    return option === value;
   }
 }

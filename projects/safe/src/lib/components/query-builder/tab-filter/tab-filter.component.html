@@ -110,6 +110,7 @@
               >
                 <mat-select
                   formControlName="value"
+                  [compareWith]="compareOption"
                   *ngIf="
                     getMeta(selectedFields[i].name) &&
                     ['dropdown', 'radiogroup'].includes(
@@ -146,6 +147,7 @@
                 </mat-select>
                 <mat-select
                   formControlName="value"
+                  [compareWith]="compareOption"
                   multiple
                   *ngIf="getMeta(selectedFields[i].name)"
                 >
