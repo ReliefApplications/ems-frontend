@@ -5,6 +5,7 @@
   variant="danger"
   class="modal-close"
 ></safe-button>
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
   <safe-record-summary
     *ngIf="record"
