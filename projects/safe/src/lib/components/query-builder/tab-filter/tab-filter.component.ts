@@ -254,6 +254,7 @@ export class SafeTabFilterComponent implements OnInit {
    * Fetch choices from URL if needed
    */
   private async populateMetaFields(): Promise<void> {
+    const promises: Promise<any>[] = [];
     for (const fieldName of Object.keys(this.metaFields)) {
       const meta = this.metaFields[fieldName];
       if (meta.choicesByUrl) {
@@ -269,17 +270,22 @@ export class SafeTabFilterComponent implements OnInit {
             choicesByUrl: null,
           };
         } else {
-          const res: any =
-            await this.apiProxyService.promisedRequestWithHeaders(url);
-          localStorage.setItem(url, JSON.stringify(res));
-          this.metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(res, meta.choicesByUrl),
-            choicesByUrl: null,
-          };
+          promises.push(
+            this.apiProxyService
+              .promisedRequestWithHeaders(url)
+              .then((value: any) => {
+                localStorage.setItem(url, JSON.stringify(value));
+                this.metaFields[fieldName] = {
+                  ...meta,
+                  choices: this.extractChoices(value, meta.choicesByUrl),
+                  choicesByUrl: null,
+                };
+              })
+          );
         }
       }
     }
+    await Promise.all(promises);
   }
 
   /**
