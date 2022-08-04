@@ -18,6 +18,7 @@ import { LayoutsModule } from '../../../../grid-layout/layouts/layouts.module';
 import { SafeFormsDropdownModule } from '../../../../ui/aggregation-builder/public-api';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeDataSourceTabComponent } from './data-source-tab.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /** Data Source Module */
 @NgModule({
@@ -36,6 +37,7 @@ import { SafeDataSourceTabComponent } from './data-source-tab.component';
     SafeIconModule,
     MatProgressSpinnerModule,
     LayoutsModule,
+    MatCheckboxModule,
   ],
   exports: [SafeDataSourceTabComponent],
 })

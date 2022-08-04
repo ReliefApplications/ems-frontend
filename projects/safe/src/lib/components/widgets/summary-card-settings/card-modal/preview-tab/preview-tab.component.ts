@@ -1,5 +1,7 @@
 import { Component, Input, OnChanges } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
+import { SummaryCardService } from 'projects/safe/src/lib/services/summary-card.service';
 import { Subscription } from 'rxjs';
 
 /**
@@ -11,67 +13,61 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./preview-tab.component.scss'],
 })
 export class SafePreviewTabComponent implements OnChanges {
-  @Input() html = '';
   @Input() record: any;
+  @Input() gridSettings: any;
+  @Input() html: any;
+  @Input() useLayouts = true;
+  @Input() wholeCardLayouts: any;
 
-  public formatedHtml: string = this.html;
+  public formatedHtml = this.sanitizer.bypassSecurityTrustHtml('');
+
+  /**
+   * Get layouts from grid settings
+   *
+   * @returns Array of layouts
+   */
+  get layouts(): any {
+    if (
+      this.gridSettings &&
+      this.gridSettings.query &&
+      this.gridSettings.query.style
+    ) {
+      return this.gridSettings.query.style;
+    }
+    return [];
+  }
 
   /**
    * Constructor used by the SafePreviewTab component.
    *
-   * @param apollo Service used for getting the record queries.
+   * @param sanitizer Used to correctly display all styles in the preview.
+   * @param summaryCardService Used to get the card contents for preview.
    */
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private sanitizer: DomSanitizer,
+    private summaryCardService: SummaryCardService
+  ) {}
 
   /**
    * Detects when the html or record inputs change.
    */
   ngOnChanges(): void {
+    let html = this.html;
     if (this.record) {
-      this.formatedHtml = this.replaceRecordFields(this.html, this.record);
-    } else {
-      this.formatedHtml = this.html;
-    }
-  }
-
-  /**
-   * Replaces the html resource fields with the resource data.
-   *
-   * @param html String with the content html.
-   * @param record Record object.
-   */
-  private replaceRecordFields(html: string, record: any): string {
-    const fields = this.getFieldsValue(record);
-    let formatedHtml = html;
-    for (const [key, value] of Object.entries(fields)) {
-      if (value) {
-        const regex = new RegExp(`@\\bdata.${key}\\b`, 'gi');
-        formatedHtml = formatedHtml.replace(regex, value as string);
+      if (this.useLayouts) {
+        html = this.summaryCardService.replaceRecordFields(
+          this.html,
+          this.record,
+          this.layouts,
+          this.wholeCardLayouts
+        );
+      } else {
+        html = this.summaryCardService.replaceRecordFields(
+          this.html,
+          this.record
+        );
       }
     }
-    return formatedHtml;
-  }
-
-  /**
-   * Returns an object with the record data keys paired with the values.
-   *
-   * @param record Record object.
-   */
-  private getFieldsValue(record: any) {
-    const fields: any = {};
-    for (const [key, value] of Object.entries(record)) {
-      if (!key.startsWith('__') && key !== 'form') {
-        if (value instanceof Object) {
-          for (const [key2, value2] of Object.entries(value)) {
-            if (!key2.startsWith('__')) {
-              fields[(key === 'data' ? '' : key + '.') + key2] = value2;
-            }
-          }
-        } else {
-          fields[key] = value;
-        }
-      }
-    }
-    return fields;
+    this.formatedHtml = this.sanitizer.bypassSecurityTrustHtml(html);
   }
 }

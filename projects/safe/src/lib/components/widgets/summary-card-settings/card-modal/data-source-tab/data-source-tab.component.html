@@ -24,21 +24,33 @@
   (scrolled)="onScrollDataSource($event)"
   ></safe-forms-dropdown> -->
 
-  <mat-form-field [formGroup]='form' fxFlex>
-    <mat-label>Select a resource</mat-label>
-    <mat-select formControlName="resource" placeholder="Select a dataset">
-      <mat-option *ngFor="let resource of forms" [value]="resource">
-        {{ resource.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <form [formGroup]="form">
+    <mat-form-field [formGroup]='form' fxFlex>
+      <mat-label>Select a resource</mat-label>
+      <mat-select formControlName="resource" placeholder="Select a dataset">
+        <mat-option *ngFor="let resource of forms" [value]="resource">
+          {{ resource.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <safe-layouts
-  [form]="null"
-  [resource]="dataset"
-  [selectedLayouts]="$any(form).get('layout')"
-  [singleInput] = true
-  ></safe-layouts>
+    <safe-layouts
+    [form]="null"
+    [resource]="dataset"
+    [selectedLayouts]="$any(form).get('layout')"
+    [singleInput] = true
+    ></safe-layouts>
+
+    <h2>Layout styles</h2>
+    <mat-checkbox formControlName="useLayouts">Use layout styles</mat-checkbox>
+    <div *ngIf="this.form.value.useLayouts">
+      <p>Whole row styles:</p>
+      <mat-radio-group formControlName="wholeCardLayouts">
+        <mat-radio-button [value]="false">Apply to all fields</mat-radio-button>
+        <mat-radio-button [value]="true">Apply to the whole card</mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </form>
 </ng-container>
 
 

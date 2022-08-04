@@ -116,6 +116,18 @@ export interface GetFormByIdQueryResponse {
 
 // === GET RELATED FORMS FROM RESOURCE ===
 
+/** Graphql request for getting resource layouts */
+export const GET_GRID_RESOURCE_LAYOUTS = gql`
+  query GetGridResourceLayouts($resource: ID!) {
+    resource(id: $resource) {
+      layouts {
+        id
+        query
+      }
+    }
+  }
+`;
+
 /** Graphql request for getting resource meta date for a grid */
 export const GET_GRID_RESOURCE_META = gql`
   query GetGridResourceMeta($resource: ID!) {

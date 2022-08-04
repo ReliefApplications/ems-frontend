@@ -20,8 +20,12 @@ import { SafeCardModalComponent } from './card-modal/card-modal.component';
 import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
+  GetResourceByIdQueryResponse,
+  GET_GRID_RESOURCE_META,
+  GET_GRID_RESOURCE_LAYOUTS,
 } from '../../../graphql/queries';
 import { DomSanitizer } from '@angular/platform-browser';
+import { SummaryCardService } from '../../../services/summary-card.service';
 
 /** Define max height of widgets */
 const MAX_ROW_SPAN = 4;
@@ -84,12 +88,14 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * @param dialog Material Dialog Service.
    * @param apollo Used for getting the records query.
    * @param sanitizer Sanitizes the cards content so angular can show it up.
+   * @param summaryCardService Service used to get the cards contents.
    */
   constructor(
     private fb: FormBuilder,
     private dialog: MatDialog,
     private apollo: Apollo,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private summaryCardService: SummaryCardService
   ) {}
 
   /**
@@ -175,6 +181,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       layout: [get(value, 'layout', [])],
       record: get(value, 'record', null),
       html: get(value, 'html', null),
+      useLayouts: get(value, 'useLayouts', true),
+      wholeCardLayouts: get(value, 'wholeCardLayouts', false),
     });
   }
 
@@ -261,77 +269,98 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
           : null,
         record: null,
       });
-      if (
-        this.cardsContent[i] &&
-        this.cardsContent[i].record &&
-        this.cardsContent[i].record.id === card.record
-      ) {
-        newCardsContent[i] = this.cardsContent[i];
-        newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-          this.replaceRecordFields(card.html, newCardsContent[i].record)
-        );
-        this.cardsContent = newCardsContent;
-      } else if (card.record) {
+      if (card.useLayouts && card.layout.length > 0) {
         this.apollo
-          .watchQuery<GetRecordByIdQueryResponse>({
-            query: GET_RECORD_BY_ID,
+          .query<GetResourceByIdQueryResponse>({
+            query: GET_GRID_RESOURCE_LAYOUTS,
             variables: {
-              id: card.record,
+              resource: card.resource.resource.id,
             },
           })
-          .valueChanges.subscribe((res) => {
-            if (res) {
-              newCardsContent[i].record = res.data.record;
-              newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-                this.replaceRecordFields(card.html, newCardsContent[i].record)
-              );
-              this.cardsContent = newCardsContent;
+          .subscribe((res) => {
+            if (res.data.resource) {
+              const layout = this.findLayout(
+                res.data.resource.layouts,
+                card.layout[0]
+              ).query.style;
+              this.getCardContent(newCardsContent[i], card, i, layout);
+            } else {
+              this.getCardContent(newCardsContent[i], card, i);
             }
           });
+      } else {
+        this.getCardContent(newCardsContent[i], card, i);
       }
     });
+    this.cardsContent = newCardsContent;
   }
 
   /**
-   * Replaces the html resource fields with the resource data.
+   * Updates the card provided with layout styles and record values.
    *
-   * @param html String with the content html.
-   * @param record Record object.
-   * @returns Returns the card content with the resource data.
+   * @param cardToEdit Card that will be updated.
+   * @param card Card settings.
+   * @param i Position of the card.
+   * @param layout Optional layout style parameter.
    */
-  private replaceRecordFields(html: string, record: any): string {
-    const fields = this.getFieldsValue(record);
-    let formatedHtml = html;
-    for (const [key, value] of Object.entries(fields)) {
-      if (value) {
-        const regex = new RegExp(`@\\bdata.${key}\\b`, 'gi');
-        formatedHtml = formatedHtml.replace(regex, value as string);
-      }
-    }
-    return formatedHtml;
-  }
-
-  /**
-   * Returns an object with the record data keys paired with the values.
-   *
-   * @param record Record object.
-   * @returns Returns fields value.
-   */
-  private getFieldsValue(record: any) {
-    const fields: any = {};
-    for (const [key, value] of Object.entries(record)) {
-      if (!key.startsWith('__') && key !== 'form') {
-        if (value instanceof Object) {
-          for (const [key2, value2] of Object.entries(value)) {
-            if (!key2.startsWith('__')) {
-              fields[(key === 'data' ? '' : key + '.') + key2] = value2;
-            }
+  private getCardContent(
+    cardToEdit: any,
+    card: any,
+    i: number,
+    layout: any[] = []
+  ) {
+    if (
+      this.cardsContent[i] &&
+      this.cardsContent[i].record &&
+      this.cardsContent[i].record.id === card.record
+    ) {
+      cardToEdit = this.cardsContent[i];
+      cardToEdit.html = this.sanitizer.bypassSecurityTrustHtml(
+        this.summaryCardService.replaceRecordFields(
+          card.html,
+          cardToEdit.record,
+          layout,
+          card.wholeCardLayouts
+        )
+      );
+    } else if (card.record) {
+      this.apollo
+        .watchQuery<GetRecordByIdQueryResponse>({
+          query: GET_RECORD_BY_ID,
+          variables: {
+            id: card.record,
+          },
+        })
+        .valueChanges.subscribe((res) => {
+          if (res) {
+            cardToEdit.record = res.data.record;
+            cardToEdit.html = this.sanitizer.bypassSecurityTrustHtml(
+              this.summaryCardService.replaceRecordFields(
+                card.html,
+                cardToEdit.record,
+                layout,
+                card.wholeCardLayouts
+              )
+            );
           }
-        } else {
-          fields[key] = value;
-        }
-      }
+        });
     }
-    return fields;
+  }
+
+  /**
+   * Search the an specific layout in an array.
+   *
+   * @param layouts Array of layout objects.
+   * @param layoutToFind String with the layout id to find.
+   * @returns Returns the layout if found, if not null is returned.
+   */
+  private findLayout(layouts: any, layoutToFind: string): any {
+    let result = null;
+    layouts.map((layout: any) => {
+      if (layout.id === layoutToFind) {
+        result = layout;
+      }
+    });
+    return result;
   }
 }
