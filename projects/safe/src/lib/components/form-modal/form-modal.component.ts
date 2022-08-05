@@ -17,9 +17,7 @@ import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
   GET_FORM_BY_ID,
-  GetRecordDetailsQueryResponse,
-  GET_RECORD_DETAILS,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import * as Survey from 'survey-angular';
@@ -32,7 +30,7 @@ import {
   UPLOAD_FILE,
   EDIT_RECORDS,
   EditRecordsMutationResponse,
-} from '../../graphql/mutations';
+} from './graphql/mutations';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar.service';
@@ -44,6 +42,7 @@ import { RecordHistoryModalComponent } from '../record-history-modal/record-hist
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
 import { TranslateService } from '@ngx-translate/core';
+import { cleanRecord } from '../../utils/cleanRecord';
 
 /**
  * Interface of Dialog data.
@@ -112,7 +111,7 @@ export class SafeFormModalComponent implements OnInit {
    * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param translate This is the service that allows us to translate the text in our application.
-   * @param ngZone
+   * @param ngZone Angular Service to execute code inside Angular environment
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -424,12 +423,13 @@ export class SafeFormModalComponent implements OnInit {
    * @param survey current survey.
    */
   public updateMultipleData(ids: any, survey: any): void {
+    const data = cleanRecord(survey.data);
     this.apollo
       .mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data: survey.data,
+          data,
           template: this.data.template,
         },
       })

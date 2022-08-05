@@ -12,6 +12,7 @@ import {
 import { SafeFormService, SafeLayoutService } from '@safe/builder';
 import { AppOverlayContainer } from '../../utils/overlay-container';
 
+/** Form web widget component */
 @Component({
   selector: 'app-form-widget',
   templateUrl: './form-widget.component.html',
@@ -26,6 +27,13 @@ export class FormWidgetComponent implements OnInit, AfterViewInit {
 
   public showSidenav = false;
 
+  /**
+   * Form web widget component
+   *
+   * @param layoutService Shared layout service
+   * @param overlayContainer Angular overlay container
+   * @param formService Shared form service
+   */
   constructor(
     private layoutService: SafeLayoutService,
     private overlayContainer: OverlayContainer,

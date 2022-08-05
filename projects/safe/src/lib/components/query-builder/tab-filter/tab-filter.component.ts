@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { clone, get, isDate } from 'lodash';
-import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
@@ -196,13 +195,11 @@ export class SafeTabFilterComponent implements OnInit {
    *
    * @param formBuilder This is the service that will be used to build forms.
    * @param queryBuilder This is the service that will be used to build the query.
-   * @param apiProxyService This is the service that will be used to make the API call.
    * @param gridService Shared grid service
    */
   constructor(
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService,
-    private apiProxyService: SafeApiProxyService,
     private gridService: SafeGridService
   ) {}
 
@@ -229,8 +226,8 @@ export class SafeTabFilterComponent implements OnInit {
       this.gridService.populateMetaFields(this.metaFields);
     }
     this.form.value?.filters.forEach((x: any, index: number) => {
-      if (x.field) {
-        let field = this.fields.find((y) => y.name === x.field.split('.')[0]);
+      let field = this.fields.find((y) => y.name === x?.field?.split('.')[0]);
+      if (field) {
         let name = field.name;
         if (field.type.kind === 'OBJECT') {
           field = field.type.fields.find(
@@ -261,8 +258,10 @@ export class SafeTabFilterComponent implements OnInit {
   }
 
   /**
+   * Get meta from filter name
    *
-   * @param name
+   * @param name field name
+   * @returns meta or null
    */
   getMeta(name: string): any {
     return get(this.metaFields, name, null);

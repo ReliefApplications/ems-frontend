@@ -21,7 +21,7 @@ export const WIDGET_TYPES = [
     icon: '/assets/donut.svg',
     color: '#3B8CC4',
     settings: {
-      title: 'Donut chart',
+      title: 'Donut chart widget',
       chart: {
         type: 'donut',
       },
@@ -38,7 +38,7 @@ export const WIDGET_TYPES = [
     icon: '/assets/column.svg',
     color: '#EBA075',
     settings: {
-      title: 'Column chart',
+      title: 'Column chart widget',
       chart: {
         type: 'column',
       },
@@ -55,7 +55,7 @@ export const WIDGET_TYPES = [
     icon: '/assets/line.svg',
     color: '#F6C481',
     settings: {
-      title: 'Line chart',
+      title: 'Line chart widget',
       chart: {
         type: 'line',
       },
@@ -72,7 +72,7 @@ export const WIDGET_TYPES = [
     icon: '/assets/pie.svg',
     color: '#8CCDD5',
     settings: {
-      title: 'Pie chart',
+      title: 'Pie chart widget',
       chart: {
         type: 'pie',
       },
@@ -89,7 +89,7 @@ export const WIDGET_TYPES = [
     icon: '/assets/bar.svg',
     color: '#B5DC8D',
     settings: {
-      title: 'Bar chart',
+      title: 'Bar chart widget',
       chart: {
         type: 'bar',
       },
@@ -106,7 +106,7 @@ export const WIDGET_TYPES = [
     icon: '/assets/grid.svg',
     color: '#AC8CD5',
     settings: {
-      title: 'New grid',
+      title: 'Grid widget',
       sortable: false,
       from: 'resource',
       pageable: false,
@@ -126,7 +126,9 @@ export const WIDGET_TYPES = [
     name: 'Map',
     icon: '/assets/map.svg',
     color: '#D58CA6',
-    settings: {},
+    settings: {
+      title: 'Map widget',
+    },
     defaultCols: 4,
     defaultRows: 4,
     minRow: 1,
@@ -138,7 +140,10 @@ export const WIDGET_TYPES = [
     name: 'Text',
     icon: '/assets/text.svg',
     color: '#2F383E',
-    settings: { title: 'Enter a title', text: 'Enter a content' },
+    settings: {
+      title: 'Text widget',
+      text: 'Enter a content',
+    },
     defaultCols: 3,
     defaultRows: 3,
     minRow: 1,

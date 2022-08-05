@@ -5,6 +5,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Application toolbar module.
+ */
 @NgModule({
   declarations: [ApplicationToolbarComponent],
   imports: [

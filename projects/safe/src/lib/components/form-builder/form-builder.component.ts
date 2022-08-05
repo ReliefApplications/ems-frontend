@@ -9,10 +9,14 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
-import { SafeSnackBarService } from '../../services/snackbar.service';
 import * as Survey from 'survey-angular';
-import { Form } from '../../models/form.model';
 import { TranslateService } from '@ngx-translate/core';
+import { snakeCase, get, uniqBy, difference } from 'lodash';
+import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeReferenceDataService } from '../../services/reference-data.service';
+import { Form } from '../../models/form.model';
+import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { AnyQuestion } from '../../survey/types';
 
 /**
  * Array containing the different types of questions.
@@ -102,22 +106,60 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param dialog This is the Angular Material Dialog service used to display dialog modals
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
+   * @param referenceDataService Reference data service
    */
   constructor(
     @Inject('environment') environment: any,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private referenceDataService: SafeReferenceDataService
   ) {
     this.environment = environment;
     // translate the editor in the same language as the interface
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
     this.translate.onLangChange.subscribe(() => {
       SurveyCreator.localization.currentLocale = this.translate.currentLang;
+      this.setFormBuilder(this.surveyCreator.text);
     });
   }
 
   ngOnInit(): void {
+    this.setFormBuilder(get(this.form, 'structure', ''));
+  }
+
+  ngOnChanges(): void {
+    if (this.surveyCreator) {
+      this.surveyCreator.text = this.form.structure || '';
+      if (!this.form.structure) {
+        this.surveyCreator.survey.showQuestionNumbers = 'off';
+      }
+      // skip if form is core
+      if (!this.form.core) {
+        const coreFields =
+          this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
+        // Highlight core fields
+        this.addCustomClassToCoreFields(coreFields);
+      }
+
+      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
+        (survey: Survey.SurveyModel, options: any) =>
+          this.onSetCustomCss(options)
+      );
+
+      // add the rendering of custom properties
+      this.surveyCreator.survey.onAfterRenderQuestion.add(
+        renderGlobalProperties(this.referenceDataService)
+      );
+    }
+  }
+
+  /**
+   * Creates the form builder and sets up all the options.
+   *
+   * @param structure Optional param used as the form struc
+   */
+  private setFormBuilder(structure: string) {
     const creatorOptions = {
       showEmbededSurveyTab: false,
       showJSONEditorTab: false,
@@ -133,7 +175,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       creatorOptions
     );
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.text = this.form.structure || '';
+    this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
@@ -204,22 +246,27 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       // Highlight core fields
       this.addCustomClassToCoreFields(coreFields);
     }
-  }
 
-  ngOnChanges(): void {
-    if (this.surveyCreator) {
-      this.surveyCreator.text = this.form.structure || '';
-      if (!this.form.structure) {
-        this.surveyCreator.survey.showQuestionNumbers = 'off';
-      }
-      // skip if form is core
-      if (!this.form.core) {
-        const coreFields =
-          this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
-        // Highlight core fields
-        this.addCustomClassToCoreFields(coreFields);
-      }
-    }
+    // Scroll to question when adde
+    this.surveyCreator.onQuestionAdded.add((sender, opt) => {
+      const name = opt.question.name;
+      setTimeout(() => {
+        const el = document.querySelector('[data-name="' + name + '"]');
+        el?.scrollIntoView({ behavior: 'smooth' });
+        this.surveyCreator.showQuestionEditor(opt.question);
+      });
+    });
+
+    // add the rendering of custom properties
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      renderGlobalProperties(this.referenceDataService)
+    );
+    this.surveyCreator.onTestSurveyCreated.add((_, options) =>
+      options.survey.onAfterRenderQuestion.add(
+        renderGlobalProperties(this.referenceDataService)
+      )
+    );
+    this.surveyCreator.survey.locale = this.translate.currentLang;
   }
 
   /**
@@ -277,29 +324,41 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * Makes sure that value names are existent and snake case, to not cause backend problems.
    */
   private async validateValueNames(): Promise<void> {
-    const object = JSON.parse(this.surveyCreator.text);
-    await object.pages.forEach((page: any) => {
-      if (page.elements) {
-        page.elements.forEach((element: any) => {
-          this.setQuestionNames(element, page);
-        });
+    const survey = new Survey.SurveyModel(this.surveyCreator.JSON);
+    await survey.pages.forEach((page: Survey.Page) => {
+      page.elements.forEach((element: AnyQuestion) =>
+        this.setQuestionNames(element, page)
+      );
+      const duplicatedFields = difference(
+        page.elements as AnyQuestion[],
+        uniqBy(page.elements as AnyQuestion[], 'valueName')
+      );
+      if (duplicatedFields.length > 0) {
+        throw new Error(
+          this.translate.instant(
+            'pages.formBuilder.errors.dataFieldDuplicated',
+            {
+              name: duplicatedFields[0].valueName,
+            }
+          )
+        );
       }
     });
-    this.surveyCreator.text = JSON.stringify(object);
+    this.surveyCreator.JSON = survey.toJSON();
   }
 
   /**
-   * Takes a string and converts it to snake case.
+   * Convert a string to snake_case. Overrides the snakeCase function of lodash
+   * by first checking if the text is not already in snake case
    *
    * @param text The text to convert
-   * @returns The text in snake case
+   * @returns The text in snake_case
    */
   private toSnakeCase(text: string): string {
-    return text
-      .replace(/\W+/g, ' ')
-      .split(/ |\B(?=[A-Z])/)
-      .map((word) => word.toLowerCase())
-      .join('_');
+    if (this.isSnakeCase(text)) {
+      return text;
+    }
+    return snakeCase(text);
   }
 
   /**
@@ -318,157 +377,117 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param element The element of the form whose name we need to set
    * @param page The page of the form
    */
-  private setQuestionNames(element: any, page: any): void {
-    if (element.type === 'panel') {
-      if (element.elements) {
-        for (const el of element.elements) {
-          this.setQuestionNames(el, page);
-        }
+  private setQuestionNames(element: AnyQuestion, page: Survey.Page): void {
+    // create the valueName of the element in snake case
+    if (!element.valueName) {
+      if (element.title) {
+        element.valueName = this.toSnakeCase(element.title);
+      } else if (element.name) {
+        element.valueName = this.toSnakeCase(element.name);
+      } else {
+        throw new Error(
+          this.translate.instant('pages.formBuilder.errors.missingName', {
+            page: page.name,
+          })
+        );
       }
     } else {
-      if (!element.valueName) {
-        if (element.title) {
-          element.valueName = this.toSnakeCase(element.title);
-          if (!this.isSnakeCase(element.valueName)) {
-            throw new Error(
-              this.translate.instant('pages.formBuilder.errors.snakecase', {
-                name: element.valueName,
-                page: page.name,
-              })
-            );
-          }
-        } else if (element.name) {
-          element.valueName = this.toSnakeCase(element.name);
-          if (!this.isSnakeCase(element.valueName)) {
-            throw new Error(
-              this.translate.instant('pages.formBuilder.errors.snakecase', {
-                name: element.valueName,
-                page: page.name,
-              })
-            );
-          }
-        } else {
-          throw new Error(
-            this.translate.instant('pages.formBuilder.errors.missingName', {
-              page: page.name,
-            })
-          );
-        }
-      } else {
-        if (!this.isSnakeCase(element.valueName)) {
-          throw new Error(
-            this.translate.instant('pages.formBuilder.errors.snakecase', {
-              name: element.valueName,
-              page: page.name,
-            })
-          );
-        }
-      }
-      // if choices object exists, checks for duplicate values
-      if (element.choices) {
-        const values = element.choices.map(
-          (choice: { value: string; text: string }) => choice.value || choice
+      if (!this.isSnakeCase(element.valueName)) {
+        throw new Error(
+          this.translate.instant('pages.formBuilder.errors.snakecase', {
+            name: element.valueName,
+            page: page.name,
+          })
         );
-        const distinctValues = [...new Set(values)];
+      }
+    }
+    // if choices object exists, checks for duplicate values
+    if (element.choices) {
+      const values = element.choices.map(
+        (choice: { value: string; text: string }) => choice.value || choice
+      );
+      const distinctValues = [...new Set(values)];
 
-        if (values.length > distinctValues.length) {
+      if (values.length > distinctValues.length) {
+        throw new Error(
+          this.translate.instant(
+            'pages.formBuilder.errors.choices.valueDuplicated',
+            {
+              question: element.valueName,
+            }
+          )
+        );
+      }
+    }
+    if (element.getType() === 'multipletext') {
+      element.items.forEach((item: any) => {
+        if (!item.name && !item.title) {
           throw new Error(
             this.translate.instant(
-              'pages.formBuilder.errors.choices.valueDuplicated',
+              'pages.formBuilder.errors.multipletext.missingName',
               {
                 question: element.valueName,
               }
             )
           );
         }
+        item.name = this.toSnakeCase(item.name);
+      });
+    }
+    if (element.getType() === 'matrix') {
+      element.columns.forEach(
+        (x: any) => (x.value = this.toSnakeCase(x.value || x.text || x))
+      );
+      element.rows.forEach(
+        (x: any) => (x.value = this.toSnakeCase(x.value || x.text || x))
+      );
+    }
+    if (element.getType() === 'matrixdropdown') {
+      element.columns.forEach((x: any) => {
+        x.name = this.toSnakeCase(x.name || x.title || x);
+        x.title = x.title || x.name || x;
+      });
+      element.rows.forEach((x: any) => {
+        x.value = this.toSnakeCase(x.value || x.text || x);
+      });
+    }
+    if (['resource', 'resources'].includes(element.getType())) {
+      if (element.relatedName) {
+        element.relatedName = this.toSnakeCase(element.relatedName);
+      } else {
+        throw new Error(
+          this.translate.instant(
+            'components.formBuilder.errors.missingRelatedName',
+            {
+              question: element.name,
+              page: page.name,
+            }
+          )
+        );
       }
-      if (element.type === 'multipletext') {
-        element.items = element.items.map((e: any) => {
-          if (!e.name && !e.title) {
-            throw new Error(
-              this.translate.instant(
-                'pages.formBuilder.errors.multipletext.missingName',
-                {
-                  question: element.valueName,
-                }
-              )
-            );
-          }
-          return {
-            name: this.isSnakeCase(e.name) ? e.name : this.toSnakeCase(e.name),
-            title: e.title ? e.title : null,
-          };
-        });
-      }
-      if (element.type === 'matrix') {
-        element.columns = element.columns.map((x: any) => ({
-          value: x.value
-            ? this.toSnakeCase(x.value)
-            : this.toSnakeCase(x.text ? x.text : x),
-          text: x.text ? x.text : x,
-        }));
-        element.rows = element.rows.map((x: any) => ({
-          value: x.value
-            ? this.toSnakeCase(x.value)
-            : this.toSnakeCase(x.text ? x.text : x),
-          text: x.text ? x.text : x,
-        }));
-      }
-      if (element.type === 'matrixdropdown') {
-        element.columns = element.columns.map((x: any) => ({
-          name: x.name
-            ? this.toSnakeCase(x.name)
-            : this.toSnakeCase(x.title ? x.title : x),
-          title: x.title ? x.title : x.name ? x.name : x,
-          ...(x.cellType && { cellType: x.cellType }),
-          ...(x.isRequired && { isRequired: true }),
-        }));
-        element.rows = element.rows.map((x: any) => ({
-          value: x.value
-            ? this.toSnakeCase(x.value)
-            : this.toSnakeCase(x.text ? x.text : x),
-          text: x.text ? x.text : x,
-        }));
-      }
-      if (['resource', 'resources'].includes(element.type)) {
-        if (element.relatedName) {
-          element.relatedName = this.toSnakeCase(element.relatedName);
-          if (!this.isSnakeCase(element.relatedName)) {
-            throw new Error(
-              this.translate.instant(
-                'components.formBuilder.errors.invalidRelatedName',
-                {
-                  name: element.relatedName,
-                  question: element.name,
-                  page: page.name,
-                }
-              )
-            );
-          }
-        } else {
-          throw new Error(
-            this.translate.instant(
-              'components.formBuilder.errors.missingRelatedName',
-              {
-                question: element.name,
-                page: page.name,
-              }
-            )
-          );
-        }
 
-        if (element.addRecord && !element.addTemplate) {
-          throw new Error(
-            this.translate.instant(
-              'components.formBuilder.errors.missingTemplate',
-              {
-                question: element.name,
-                page: page.name,
-              }
-            )
-          );
-        }
+      if (element.addRecord && !element.addTemplate) {
+        throw new Error(
+          this.translate.instant(
+            'components.formBuilder.errors.missingTemplate',
+            {
+              question: element.name,
+              page: page.name,
+            }
+          )
+        );
       }
+    }
+    // if the element contains other elements, apply the same rule on them
+    if (element.elements) {
+      element.elements.forEach((elt: AnyQuestion) =>
+        this.setQuestionNames(elt, page)
+      );
+    }
+    if (element.templateElements) {
+      element.templateElements.forEach((elt: AnyQuestion) =>
+        this.setQuestionNames(elt, page)
+      );
     }
   }
 

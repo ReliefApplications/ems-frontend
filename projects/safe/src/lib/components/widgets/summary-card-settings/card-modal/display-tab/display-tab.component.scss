@@ -1,9 +1,5 @@
-.dual {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-
+.form-group-row {
   .mat-form-field {
-    width: 100%;
+    flex: 1;
   }
 }

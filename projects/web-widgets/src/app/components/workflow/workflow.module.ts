@@ -6,6 +6,9 @@ import { SafeWorkflowStepperModule } from '@safe/builder';
 import { DashboardModule } from '../dashboard/dashboard.module';
 import { FormModule } from '../form/form.module';
 
+/**
+ * Workflow module.
+ */
 @NgModule({
   declarations: [WorkflowComponent],
   imports: [

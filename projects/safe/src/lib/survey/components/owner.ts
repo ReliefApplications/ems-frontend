@@ -1,29 +1,24 @@
 import { Apollo } from 'apollo-angular';
-import { FormBuilder } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import { DomService } from '../../services/dom.service';
 import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
 import {
   GetRolesFromApplicationsQueryResponse,
   GET_ROLES_FROM_APPLICATIONS,
-} from '../../graphql/queries';
+} from '../graphql/queries';
+import { QuestionOwner } from '../types';
 
 /**
  * Inits the owner component.
  *
- * @param survey Survey class.
+ * @param Survey Survey library.
  * @param domService Dom service.
  * @param apollo Apollo client.
- * @param dialog Dialog service.
- * @param formBuilder Form Builder service.
  */
 export const init = (
-  survey: any,
+  Survey: any,
   domService: DomService,
-  apollo: Apollo,
-  dialog: MatDialog,
-  formBuilder: FormBuilder
+  apollo: Apollo
 ): void => {
   const component = {
     name: 'owner',
@@ -37,7 +32,7 @@ export const init = (
       choices: [] as any[],
     },
     onInit: (): void => {
-      survey.Serializer.addProperty('owner', {
+      Survey.Serializer.addProperty('owner', {
         name: 'applications',
         category: 'Owner properties',
         type: 'applicationsDropdown',
@@ -47,7 +42,7 @@ export const init = (
       });
 
       const applicationEditor = {
-        render: (editor: any, htmlElement: any) => {
+        render: (editor: any, htmlElement: HTMLElement) => {
           const question = editor.object;
           const dropdown = domService.appendComponentToBody(
             SafeApplicationDropdownComponent,
@@ -64,7 +59,7 @@ export const init = (
         applicationEditor
       );
     },
-    onLoaded: (question: any): void => {
+    onLoaded: (question: QuestionOwner): void => {
       apollo
         .query<GetRolesFromApplicationsQueryResponse>({
           query: GET_ROLES_FROM_APPLICATIONS,
@@ -82,7 +77,7 @@ export const init = (
           }
         });
     },
-    onAfterRender: (question: any, el: any): void => {},
+    onAfterRender: (question: QuestionOwner, el: HTMLElement): void => {},
   };
-  survey.ComponentCollection.Instance.add(component);
+  Survey.ComponentCollection.Instance.add(component);
 };

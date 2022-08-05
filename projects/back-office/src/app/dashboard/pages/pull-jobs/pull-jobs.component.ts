@@ -8,10 +8,7 @@ import {
   SafeSnackBarService,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  GetPullJobsQueryResponse,
-  GET_PULL_JOBS,
-} from '../../../graphql/queries';
+import { GetPullJobsQueryResponse, GET_PULL_JOBS } from './graphql/queries';
 import {
   AddPullJobMutationResponse,
   ADD_PULL_JOB,
@@ -19,13 +16,19 @@ import {
   DELETE_PULL_JOB,
   EditPullJobMutationResponse,
   EDIT_PULL_JOB,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { PullJobModalComponent } from './components/pull-job-modal/pull-job-modal.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Limit of pull jobs shown at once.
+ */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Shows all pull-jobs avilable.
+ */
 @Component({
   selector: 'app-pull-jobs',
   templateUrl: './pull-jobs.component.html',
@@ -56,6 +59,14 @@ export class PullJobsComponent implements OnInit, OnDestroy {
     endCursor: '',
   };
 
+  /**
+   * PullJobsComponent constructor.
+   *
+   * @param dialog Used to show popup dialog.
+   * @param apollo Loads the pull jobs.
+   * @param snackBar Service usde to show a snackbar.
+   * @param translate Service used to get the translations.
+   */
   constructor(
     public dialog: MatDialog,
     private apollo: Apollo,

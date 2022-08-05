@@ -19,7 +19,7 @@ import {
   GetRecordHistoryByIdResponse,
   GET_RECORD_BY_ID_FOR_HISTORY,
   GET_RECORD_HISTORY_BY_ID,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { Change, RecordHistory } from '../../models/recordsHistory';
 import { Version } from '../../models/form.model';
 

@@ -97,13 +97,18 @@
   <tr
     mat-row
     *matRowDef="let row; columns: displayedColumns"
-    class="clickable"
+    class="cursor-pointer"
     [routerLink]="['/referencedata', row.id]"
   ></tr>
 </table>
 <safe-skeleton-table
   *ngIf="loading"
-  [columns]="['common.name', 'common.apiConfiguration.one']"
+  [columns]="[
+    'common.name',
+    'pages.referenceData.type',
+    'common.apiConfiguration.one',
+    'common.modifiedOn'
+  ]"
   [actions]="true"
 >
 </safe-skeleton-table>

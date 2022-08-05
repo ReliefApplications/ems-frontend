@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { IconVariant } from './icon-variant.enum';
 
 /**
@@ -17,6 +17,11 @@ export class SafeIconComponent implements OnInit {
   @Input() variant: IconVariant | string = IconVariant.DEFAULT;
 
   @Input() size = 24;
+
+  /** @returns A getter that returns the display style of the host element. */
+  @HostBinding('style.display') get display() {
+    return this.inline ? 'inline-flex' : 'flex';
+  }
 
   /**
    * Formats the size input adding a 'px' suffix

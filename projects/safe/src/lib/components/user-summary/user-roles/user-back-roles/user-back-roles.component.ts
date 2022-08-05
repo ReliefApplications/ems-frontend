@@ -4,6 +4,7 @@ import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
+import { SafeSnackBarService } from '../../../../services/snackbar.service';
 
 /** Back-office roles section the user summary */
 @Component({
@@ -31,8 +32,13 @@ export class UserBackRolesComponent implements OnInit {
    *
    * @param fb Angular form builder
    * @param apollo Apollo client
+   * @param snackBar Shared snackbar service
    */
-  constructor(private fb: FormBuilder, private apollo: Apollo) {}
+  constructor(
+    private fb: FormBuilder,
+    private apollo: Apollo,
+    private snackBar: SafeSnackBarService
+  ) {}
 
   ngOnInit(): void {
     this.selectedRoles = this.fb.control(
@@ -49,11 +55,16 @@ export class UserBackRolesComponent implements OnInit {
       .query<GetRolesQueryResponse>({
         query: GET_ROLES,
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.roles = res.data.roles;
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.roles = res.data.roles;
+          }
+          this.loading = res.loading;
+        },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
         }
-        this.loading = res.loading;
-      });
+      );
   }
 }

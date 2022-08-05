@@ -6,18 +6,19 @@ import {
   ViewChild,
   AfterViewInit,
 } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Apollo } from 'apollo-angular';
 import {
-  GET_GRID_RESOURCE_META,
+  GET_RESOURCE,
   GetResourceByIdQueryResponse,
-  GET_GRID_FORM_META,
-  GetFormByIdQueryResponse,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-} from '../../../../graphql/queries';
+} from './graphql/queries';
+import { Layout } from '../../../../models/layout.model';
+import { Resource } from '../../../../models/resource.model';
+import get from 'lodash/get';
 
 /**
  * Card modal component.
@@ -34,28 +35,27 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   // === CURRENT TAB ===
   private activeTabIndex: number | undefined;
 
-  // === RESOURCE DATA ===
-  public dataset: any;
-
   // === GRID FOR RECORD SELECTION SETTINGS ===
   public gridSettings: any;
 
   // === RECORD DATA ===
-  public loadedRecord: any;
+  public selectedRecord: any;
   private recordSubscription: any;
 
-  // === FORM WITH CARD SETTINGS INFORMATION ===
-  public form: any;
+  public form!: FormGroup;
+
+  private layouts: Layout[] = [];
+  public selectedResource: Resource | null = null;
 
   /**
    * Card modal component.
    * Used as a Material Dialog.
    *
+   * @param data dialog data
    * @param dialogRef Material Dialog Ref of the component
    * @param fb Angular form builder
-   * @param data dialog data
-   * @param cdRef
-   * @param apollo
+   * @param cdRef Change detector
+   * @param apollo Apollo service
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -71,97 +71,92 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       ...this.data,
-      layout: [],
     });
-    this.form.patchValue({ layout: this.data.layout ? this.data.layout : [] });
 
-    this.form.controls.resource.valueChanges.subscribe((value: any) => {
-      this.apollo
-        .query<GetResourceByIdQueryResponse>({
-          query: GET_GRID_RESOURCE_META,
-          variables: {
-            resource: value.resource.id,
-          },
-        })
-        .subscribe((res2) => {
-          if (res2.errors) {
-            this.apollo
-              .query<GetFormByIdQueryResponse>({
-                query: GET_GRID_FORM_META,
-                variables: {
-                  id: value.resource.id,
-                },
-              })
-              .subscribe((res3) => {
-                if (res3.errors) {
-                  this.dataset = null;
-                } else {
-                  this.dataset = null;
-                }
-              });
-          } else {
-            this.dataset = res2.data.resource;
-            this.gridSettings = this.findLayout(
-              this.dataset.layouts,
-              this.form.value.layout[0]
-            );
-            if (!this.gridSettings) {
-              this.form.patchValue({
-                layout: [],
-                record: null,
-              });
-            }
-          }
-        });
-    });
+    if (this.form.value.resource) {
+      this.getResource(this.form.value.resource);
+    }
+
+    this.form.controls.resource.valueChanges.subscribe((value: any) =>
+      this.getResource(value)
+    );
 
     this.form.controls.layout.valueChanges.subscribe((value: any) => {
-      if (this.dataset) {
-        this.gridSettings = this.findLayout(this.dataset.layouts, value[0]);
+      if (this.layouts) {
+        this.gridSettings = this.findLayout(this.layouts, value);
       }
     });
 
     // Fetches the specified record data.
-
     if (this.form.value.record) {
-      this.recordSubscription = this.apollo
-        .watchQuery<GetRecordByIdQueryResponse>({
-          query: GET_RECORD_BY_ID,
-          variables: {
-            id: this.form.value.record,
-          },
-        })
-        .valueChanges.subscribe((res) => {
-          if (res) {
-            this.loadedRecord = res.data.record;
-          } else {
-            this.loadedRecord = null;
-          }
-        });
+      this.getRecord(this.form.value.record);
     }
     this.form.controls.record.valueChanges.subscribe((value: any) => {
-      if (!this.loadedRecord || this.loadedRecord.id !== value) {
-        if (this.recordSubscription) {
-          this.recordSubscription.unsubscribe();
-        }
-        if (value) {
-          this.recordSubscription = this.apollo
-            .watchQuery<GetRecordByIdQueryResponse>({
-              query: GET_RECORD_BY_ID,
-              variables: {
-                id: value,
-              },
-            })
-            .valueChanges.subscribe((res) => {
-              if (res) {
-                this.loadedRecord = res.data.record;
-              } else {
-                this.loadedRecord = null;
-              }
-            });
-        }
+      if (value) {
+        this.getRecord(value);
+      } else {
+        this.selectedRecord = null;
       }
     });
+  }
+
+  /**
+   * Get record by ID, doing graphQL request
+   *
+   * @param id record id
+   */
+  private getRecord(id: string): void {
+    this.apollo
+      .query<GetRecordByIdQueryResponse>({
+        query: GET_RECORD_BY_ID,
+        variables: {
+          id,
+        },
+      })
+      .subscribe((res) => {
+        if (res) {
+          this.selectedRecord = res.data.record;
+        } else {
+          this.selectedRecord = null;
+        }
+      });
+  }
+
+  /**
+   * Get resource by id, doing graphQL query
+   *
+   * @param id resource id
+   */
+  private getResource(id: string): void {
+    this.apollo
+      .query<GetResourceByIdQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          id,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          this.form.patchValue({
+            resource: null,
+            layout: null,
+            record: null,
+          });
+        } else {
+          this.selectedResource = res.data.resource;
+          this.layouts = get(res, 'data.resource.layouts', []);
+          this.gridSettings = this.findLayout(
+            this.layouts,
+            this.form.value.layout
+          );
+          if (!this.gridSettings) {
+            this.form.patchValue({
+              layout: null,
+              record: null,
+            });
+          }
+        }
+      });
   }
 
   /**

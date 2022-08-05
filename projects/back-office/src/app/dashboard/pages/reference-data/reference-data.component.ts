@@ -18,25 +18,27 @@ import {
   SafeSnackBarService,
   referenceDataType,
   ApiConfiguration,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import {
   EditReferenceDataMutationResponse,
   EDIT_REFERENCE_DATA,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetApiConfigurationsQueryResponse,
   GetReferenceDataQueryResponse,
   GET_API_CONFIGURATIONS_NAMES,
   GET_REFERENCE_DATA,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { MatSelect } from '@angular/material/select';
 import { MatChipInputEvent } from '@angular/material/chips';
 
 /** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
+/** Available separator for csv */
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
 /**
@@ -79,10 +81,12 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     hasNextPage: true,
   };
 
+  /** @returns name of reference model */
   get name(): AbstractControl | null {
     return this.referenceForm.get('name');
   }
 
+  /** @returns type of reference model */
   get type(): string {
     return this.referenceForm.get('type')?.value;
   }
@@ -96,6 +100,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
    * @param router Angular router
    * @param formBuilder Angular form builder
    * @param translateService Angular translate service
+   * @param breadcrumbService Setups the breadcrumb component variables
    */
   constructor(
     private apollo: Apollo,
@@ -103,7 +108,8 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /**
@@ -123,6 +129,10 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
           (res) => {
             if (res.data.referenceData) {
               this.referenceData = res.data.referenceData;
+              this.breadcrumbService.setBreadcrumb(
+                '@referenceData',
+                this.referenceData.name as string
+              );
               this.csvValue =
                 this.referenceData?.data && this.referenceData?.data.length > 0
                   ? this.convertToCSV(this.referenceData?.data)

@@ -13,6 +13,9 @@ import { Subscription } from 'rxjs';
 import { AddChannelComponent } from './components/add-channel/add-channel.component';
 import { EditChannelComponent } from './components/edit-channel/edit-channel.component';
 
+/**
+ * Channels page component.
+ */
 @Component({
   selector: 'app-channels',
   templateUrl: './channels.component.html',
@@ -28,6 +31,13 @@ export class ChannelsComponent implements OnInit, OnDestroy {
   // === SUBSCRIPTIONS ===
   private applicationSubscription?: Subscription;
 
+  /**
+   * Channels page component
+   *
+   * @param applicationService Shared application service
+   * @param dialog Material dialog service
+   * @param translate Angular translate service
+   */
   constructor(
     private applicationService: SafeApplicationService,
     public dialog: MatDialog,
@@ -65,8 +75,10 @@ export class ChannelsComponent implements OnInit, OnDestroy {
       );
   }
 
-  /** Display the AddChannel modal.
-    Create a new channel linked to this application on close. */
+  /**
+   * Display the AddChannel modal.
+   * Create a new channel linked to this application on close.
+   */
   onAdd(): void {
     const dialogRef = this.dialog.open(AddChannelComponent);
     dialogRef.afterClosed().subscribe((value: { title: string }) => {
@@ -76,6 +88,11 @@ export class ChannelsComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Edit channel, opening channel modal
+   *
+   * @param channel channel to edit
+   */
   onEdit(channel: Channel): void {
     const dialogRef = this.dialog.open(EditChannelComponent, {
       data: {
@@ -89,8 +106,12 @@ export class ChannelsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Display a modal to confirm the deletion of the channel.
-    If confirmed, the channel is removed from the system with all notifications linked to it. */
+  /**
+   * Display a modal to confirm the deletion of the channel.
+   * If confirmed, the channel is removed from the system with all notifications linked to it.
+   *
+   * @param channel channel to delete
+   */
   onDelete(channel: Channel): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {

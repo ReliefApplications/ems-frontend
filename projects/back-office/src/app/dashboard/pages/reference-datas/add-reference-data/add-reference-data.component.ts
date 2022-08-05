@@ -19,6 +19,7 @@ export class AddReferenceDataComponent implements OnInit {
   // === REACTIVE FORM ===
   referenceForm: FormGroup = new FormGroup({});
 
+  /** @returns name of reference data */
   get name(): AbstractControl | null {
     return this.referenceForm.get('name');
   }

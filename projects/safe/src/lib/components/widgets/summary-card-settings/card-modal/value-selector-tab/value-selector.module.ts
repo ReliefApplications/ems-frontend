@@ -4,7 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeCoreGridModule } from '../../../../ui/core-grid/core-grid.module';
 import { SafeValueSelectorTabComponent } from './value-selector-tab.component';
 
-/** Data Source Module */
+/** Value selector tab module for summary card edition */
 @NgModule({
   declarations: [SafeValueSelectorTabComponent],
   imports: [CommonModule, TranslateModule, SafeCoreGridModule],

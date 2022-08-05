@@ -16,7 +16,7 @@ import {
 import {
   GetApplicationsQueryResponse,
   GET_APPLICATIONS,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 
 /**

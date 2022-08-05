@@ -30,18 +30,18 @@ const TEMPLATE: Story<SafeBreadcrumbComponent> = (args) => ({
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {
-  items: [
+  breadcrumbs: [
     {
-      name: 'item 0',
-      href: '#',
+      text: 'item 0',
+      uri: '#',
     },
     {
-      name: 'item 1',
-      href: '#',
+      text: 'item 1',
+      uri: '#',
     },
     {
-      name: 'item 2',
-      href: '#',
+      text: 'item 2',
+      uri: '#',
     },
   ],
 };

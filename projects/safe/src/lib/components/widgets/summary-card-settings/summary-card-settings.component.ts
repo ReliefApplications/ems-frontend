@@ -20,7 +20,7 @@ import { SafeCardModalComponent } from './card-modal/card-modal.component';
 import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { DomSanitizer } from '@angular/platform-browser';
 
 /** Define max height of widgets */
@@ -204,6 +204,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe((value: any) => {
+      console.log(value);
       if (value) {
         this.cards.at(index).setValue(value);
       }
@@ -301,14 +302,14 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    */
   private replaceRecordFields(html: string, record: any): string {
     const fields = this.getFieldsValue(record);
-    let formatedHtml = html;
+    let formattedHtml = html;
     for (const [key, value] of Object.entries(fields)) {
       if (value) {
         const regex = new RegExp(`@\\bdata.${key}\\b`, 'gi');
-        formatedHtml = formatedHtml.replace(regex, value as string);
+        formattedHtml = formattedHtml.replace(regex, value as string);
       }
     }
-    return formatedHtml;
+    return formattedHtml;
   }
 
   /**

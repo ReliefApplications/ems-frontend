@@ -65,7 +65,10 @@
           class="widget-handle"
         >
         </safe-icon>
-        <div class="card-content" [innerHTML]="cardsContent[i] ? cardsContent[i].html : null"></div>
+        <div
+          class="card-content"
+          [innerHTML]="cardsContent[i] ? cardsContent[i].html : null"
+        ></div>
       </kendo-tilelayout-item>
     </kendo-tilelayout>
   </form>

@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { Subscription } from 'rxjs';
+import { Record } from '../../../../../models/record.model';
 
 /**
  * Component used in the card-modal-settings for previewing the final result.
@@ -12,9 +12,9 @@ import { Subscription } from 'rxjs';
 })
 export class SafePreviewTabComponent implements OnChanges {
   @Input() html = '';
-  @Input() record: any;
+  @Input() record: Record | null = null;
 
-  public formatedHtml: string = this.html;
+  public formattedHtml: string = this.html;
 
   /**
    * Constructor used by the SafePreviewTab component.
@@ -28,9 +28,9 @@ export class SafePreviewTabComponent implements OnChanges {
    */
   ngOnChanges(): void {
     if (this.record) {
-      this.formatedHtml = this.replaceRecordFields(this.html, this.record);
+      this.formattedHtml = this.replaceRecordFields(this.html, this.record);
     } else {
-      this.formatedHtml = this.html;
+      this.formattedHtml = this.html;
     }
   }
 
@@ -39,23 +39,25 @@ export class SafePreviewTabComponent implements OnChanges {
    *
    * @param html String with the content html.
    * @param record Record object.
+   * @returns formatted html
    */
   private replaceRecordFields(html: string, record: any): string {
     const fields = this.getFieldsValue(record);
-    let formatedHtml = html;
+    let formattedHtml = html;
     for (const [key, value] of Object.entries(fields)) {
       if (value) {
         const regex = new RegExp(`@\\bdata.${key}\\b`, 'gi');
-        formatedHtml = formatedHtml.replace(regex, value as string);
+        formattedHtml = formattedHtml.replace(regex, value as string);
       }
     }
-    return formatedHtml;
+    return formattedHtml;
   }
 
   /**
    * Returns an object with the record data keys paired with the values.
    *
    * @param record Record object.
+   * @returns fields
    */
   private getFieldsValue(record: any) {
     const fields: any = {};

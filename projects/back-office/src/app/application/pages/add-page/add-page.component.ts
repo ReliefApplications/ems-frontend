@@ -13,13 +13,19 @@ import {
 } from '@safe/builder';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
-import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
-import { GET_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
+import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
+import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import { MatSelect } from '@angular/material/select';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Number of items per page.
+ */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Add page component.
+ */
 @Component({
   selector: 'app-add-page',
   templateUrl: './add-page.component.html',
@@ -48,6 +54,17 @@ export class AddPageComponent implements OnInit, OnDestroy {
   canCreateForm = false;
   private authSubscription?: Subscription;
 
+  /**
+   * Add page component
+   *
+   * @param formBuilder Angular form builder
+   * @param apollo Apollo service
+   * @param applicationService Shared application service
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param translate Angular translate service
+   */
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
@@ -55,7 +72,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private translateService: TranslateService
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -96,6 +113,12 @@ export class AddPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Check if step is valid or not
+   *
+   * @param step step index
+   * @returns is step valid
+   */
   isStepValid(step: number): boolean {
     switch (step) {
       case 1: {
@@ -110,14 +133,23 @@ export class AddPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Submit form to application service for creation
+   */
   onSubmit(): void {
     this.applicationService.addPage(this.pageForm.value);
   }
 
+  /**
+   * Go to previous step.
+   */
   onBack(): void {
     this.step -= 1;
   }
 
+  /**
+   * Go to next step.
+   */
   onNext(): void {
     switch (this.step) {
       case 1: {
@@ -138,6 +170,9 @@ export class AddPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Add a new form.
+   */
   onAdd(): void {
     const dialogRef = this.dialog.open(AddFormComponent, {
       panelClass: 'add-dialog',
@@ -159,10 +194,10 @@ export class AddPageComponent implements OnInit, OnDestroy {
             (res) => {
               if (res.errors) {
                 this.snackBar.openSnackBar(
-                  this.translateService.instant(
+                  this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
-                      type: this.translateService
+                      type: this.translate
                         .instant('common.form.one')
                         .toLowerCase(),
                       error: res.errors[0].message,
@@ -174,15 +209,12 @@ export class AddPageComponent implements OnInit, OnDestroy {
                 const id = res.data?.addForm.id || '';
                 this.pageForm.controls.content.setValue(id);
                 this.snackBar.openSnackBar(
-                  this.translateService.instant(
-                    'common.notifications.objectCreated',
-                    {
-                      type: this.translateService
-                        .instant('common.page.one')
-                        .toLowerCase(),
-                      value: value.name,
-                    }
-                  )
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.page.one')
+                      .toLowerCase(),
+                    value: value.name,
+                  })
                 );
 
                 this.onSubmit();

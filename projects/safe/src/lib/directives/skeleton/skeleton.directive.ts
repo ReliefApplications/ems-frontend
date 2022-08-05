@@ -11,7 +11,7 @@ import { SkeletonComponent } from '@progress/kendo-angular-indicators';
 import random from 'lodash/random';
 
 /**
- * Dircetive to replace ng-container with skeleton indicators.
+ * Directive to replace ng-container with skeleton indicators.
  */
 @Directive({
   selector: '[safeSkeleton]',
@@ -27,10 +27,11 @@ export class SafeSkeletonDirective implements OnChanges {
   private factory = this.resolver.resolveComponentFactory(SkeletonComponent);
 
   /**
+   * Directive to replace ng-container with skeleton indicator
    *
-   * @param tpl
-   * @param vcr
-   * @param resolver
+   * @param tpl template reference
+   * @param vcr view container ref
+   * @param resolver component resolver
    */
   constructor(
     private tpl: TemplateRef<any>,
