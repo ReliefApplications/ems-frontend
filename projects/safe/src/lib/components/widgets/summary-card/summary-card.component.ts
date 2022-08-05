@@ -4,7 +4,7 @@ import { Apollo } from 'apollo-angular';
 import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 
 /**
  * Summary Card Widget component.
@@ -25,7 +25,12 @@ export class SafeSummaryCardComponent implements OnInit {
   // === CARDS CONTENTS ===
   cardsContent: any[] = [];
 
-  exportName(): string {
+  /**
+   * Get the summary card pdf name
+   *
+   * @returns export name of the summary card
+   */
+  get exportName(): string {
     const today = new Date();
     const formatDate = `${today.toLocaleString('en-us', {
       month: 'short',
@@ -33,7 +38,7 @@ export class SafeSummaryCardComponent implements OnInit {
     })} ${today.getFullYear()}`;
     return `${
       this.settings.title ? this.settings.title : 'Summary Card'
-    } ${formatDate}.png`;
+    } ${formatDate}.pdf`;
   }
 
   /**
