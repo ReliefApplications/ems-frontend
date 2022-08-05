@@ -6,7 +6,6 @@ import { Resource } from '../../models/resource.model';
 import { SafeBreadcrumbService } from '../../services/breadcrumb.service';
 import { EditRoleMutationResponse, EDIT_ROLE } from './graphql/mutations';
 import { GetRoleQueryResponse, GET_ROLE } from './graphql/queries';
-import { GetResourcesQueryResponse } from '../../graphql/queries';
 
 /** Default items per query for pagination */
 const DEFAULT_PAGE_SIZE = 10;

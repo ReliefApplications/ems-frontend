@@ -7,7 +7,7 @@ import {
   GET_RESOURCES,
   GetResourceByIdQueryResponse,
   GET_RESOURCE_BY_ID,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Resource } from '@safe/builder';

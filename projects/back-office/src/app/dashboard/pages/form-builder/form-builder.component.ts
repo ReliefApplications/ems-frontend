@@ -8,11 +8,11 @@ import {
   EDIT_FORM_PERMISSIONS,
   EDIT_FORM_STATUS,
   EDIT_FORM_STRUCTURE,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { MatDialog } from '@angular/material/dialog';
 import {
   SafeAuthService,

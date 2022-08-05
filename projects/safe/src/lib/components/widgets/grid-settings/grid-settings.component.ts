@@ -16,7 +16,7 @@ import {
   GetFormByIdQueryResponse,
   GET_GRID_RESOURCE_META,
   GetResourceByIdQueryResponse,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application.service';

@@ -2,7 +2,7 @@ import { Apollo } from 'apollo-angular';
 import {
   GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
-} from '../../graphql/queries';
+} from '../graphql/queries';
 import { BehaviorSubject } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
 import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
