@@ -24,6 +24,7 @@ interface ChartLegend {
  * Interface containing the settings of the chart series
  */
 interface ChartSeries {
+  name?: string;
   color?: string;
   data: {
     category: any;
@@ -32,10 +33,12 @@ interface ChartSeries {
   }[];
 }
 
+/** Interface of chart labels */
 interface ChartLabels {
   showValue: boolean;
 }
 
+/** Interface of chart options */
 interface ChartOptions {
   palette: string[];
   axes: any;
@@ -68,11 +71,6 @@ export class SafeLineChartComponent implements OnInit, OnChanges {
 
   @ViewChild('chart')
   public chart?: ChartComponent;
-
-  public categoryAxis: CategoryAxis = {
-    type: 'date',
-    maxDivisions: 10,
-  };
 
   public labels: any;
 

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { WorkflowComponent } from './workflow.component';
 
+/** List of routes of application workflow module */
 const routes: Routes = [
   {
     path: '',
@@ -49,6 +50,9 @@ const routes: Routes = [
   },
 ];
 
+/**
+ * Application workflow routing module.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

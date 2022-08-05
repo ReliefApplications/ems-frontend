@@ -22,6 +22,10 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddResourceModule } from '../../../components/add-resource/add-resource.module';
+
+/**
+ * Resources page module.
+ */
 @NgModule({
   declarations: [ResourcesComponent, FilterComponent],
   imports: [

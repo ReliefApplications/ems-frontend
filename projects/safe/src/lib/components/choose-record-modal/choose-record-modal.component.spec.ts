@@ -11,7 +11,7 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_QUERY_TYPES } from '../../graphql/queries';
+import { GET_QUERY_TYPES } from './graphql/queries';
 
 describe('SafeChooseRecordModalComponent', () => {
   let component: SafeChooseRecordModalComponent;

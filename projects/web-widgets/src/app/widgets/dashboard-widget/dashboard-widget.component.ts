@@ -12,6 +12,7 @@ import {
 import { SafeLayoutService } from '@safe/builder';
 import { AppOverlayContainer } from '../../utils/overlay-container';
 
+/** Dashboard web widget component */
 @Component({
   selector: 'app-dashboard-widget',
   templateUrl: './dashboard-widget.component.html',
@@ -26,6 +27,12 @@ export class DashboardWidgetComponent implements OnInit, AfterViewInit {
 
   public showSidenav = false;
 
+  /**
+   * Dashboard web widget component
+   *
+   * @param layoutService Shared layout service
+   * @param overlayContainer Angular overlay container
+   */
   constructor(
     private layoutService: SafeLayoutService,
     private overlayContainer: OverlayContainer

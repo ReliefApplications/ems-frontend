@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { Form } from '@safe/builder';
 
 // === GET FORM BY ID ===
+/** Get form query */
 export const GET_SHORT_FORM_BY_ID = gql`
   query GetShortFormById($id: ID!) {
     form(id: $id) {
@@ -21,6 +22,7 @@ export const GET_SHORT_FORM_BY_ID = gql`
   }
 `;
 
+/** Get form query response */
 export interface GetFormByIdQueryResponse {
   loading: boolean;
   form: Form;
