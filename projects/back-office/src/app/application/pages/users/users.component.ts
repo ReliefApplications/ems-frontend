@@ -9,6 +9,9 @@ import {
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
+/**
+ * Application users page component.
+ */
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
@@ -22,6 +25,11 @@ export class UsersComponent implements OnInit, OnDestroy {
   public positionAttributeCategories: PositionAttributeCategory[] = [];
   private applicationSubscription?: Subscription;
 
+  /**
+   * Application users page component
+   *
+   * @param applicationService Shared application service
+   */
   constructor(public applicationService: SafeApplicationService) {}
 
   ngOnInit(): void {

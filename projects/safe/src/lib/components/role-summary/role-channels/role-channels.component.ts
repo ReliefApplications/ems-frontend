@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
+import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { Role } from '../../../models/user.model';
 import { GetChannelsQueryResponse, GET_CHANNELS } from '../graphql/queries';
@@ -16,10 +17,22 @@ import { GetChannelsQueryResponse, GET_CHANNELS } from '../graphql/queries';
 })
 export class RoleChannelsComponent implements OnInit {
   @Input() role!: Role;
+  @Input() application?: Application;
+
   public channels: Channel[] = [];
   public applications: any[] = [];
   public form!: FormGroup;
   @Output() edit = new EventEmitter();
+
+  /** Setter for the loading state */
+  @Input() set loading(loading: boolean) {
+    if (loading) {
+      this.form?.disable();
+    } else {
+      this.form?.enable();
+      this.form?.get('email')?.disable();
+    }
+  }
 
   /**
    * Channels tab of Role Summary.
@@ -37,7 +50,7 @@ export class RoleChannelsComponent implements OnInit {
       .watchQuery<GetChannelsQueryResponse>({
         query: GET_CHANNELS,
         variables: {
-          application: this.role.application?.id,
+          application: this.application?.id,
         },
       })
       .valueChanges.subscribe((res) => {

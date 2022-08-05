@@ -22,6 +22,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * API configurations page module.
+ */
 @NgModule({
   declarations: [ApiConfigurationsComponent, AddApiConfigurationComponent],
   imports: [

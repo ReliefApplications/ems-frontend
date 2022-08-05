@@ -13,18 +13,22 @@ import {
   SafeSnackBarService,
   SafeApiProxyService,
   status,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import {
   EditApiConfigurationMutationResponse,
   EDIT_API_CONFIGURATION,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetApiConfigurationQueryResponse,
   GET_API_CONFIGURATION,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 
+/**
+ * API configuration page component.
+ */
 @Component({
   selector: 'app-api-configuration',
   templateUrl: './api-configuration.component.html',
@@ -44,10 +48,23 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
   public authType = authType;
   public authTypeChoices = Object.values(authType);
 
+  /** @returns API configuration name */
   get name(): AbstractControl | null {
     return this.apiForm.get('name');
   }
 
+  /**
+   * API configuration page component
+   *
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param snackBar Shared snackar service
+   * @param router Angular router
+   * @param formBuilder Angular form builder
+   * @param apiProxy Shared API proxy service
+   * @param translate Angular translate service
+   * @param breadcrumbService Shared breadcrumb service
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -55,7 +72,8 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     private router: Router,
     private formBuilder: FormBuilder,
     private apiProxy: SafeApiProxyService,
-    private translateService: TranslateService
+    private translate: TranslateService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -72,6 +90,10 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
           (res) => {
             if (res.data.apiConfiguration) {
               this.apiConfiguration = res.data.apiConfiguration;
+              this.breadcrumbService.setBreadcrumb(
+                '@api',
+                this.apiConfiguration.name as string
+              );
               this.apiForm = this.formBuilder.group({
                 name: [
                   this.apiConfiguration?.name,
@@ -100,10 +122,10 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
               this.loading = res.data.loading;
             } else {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
+                this.translate.instant(
                   'common.notifications.accessNotProvided',
                   {
-                    type: this.translateService
+                    type: this.translate
                       .instant('common.resource.one')
                       .toLowerCase(),
                     error: '',
@@ -129,7 +151,12 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Create the settings form depending on the authType */
+  /**
+   * Create the settings form depending on the authType
+   *
+   * @param type type of API connection
+   * @returns settings form group
+   */
   private buildSettingsForm(type: string): FormGroup {
     if (type === authType.serviceToService) {
       return this.formBuilder.group({
@@ -176,7 +203,11 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     return this.formBuilder.group({});
   }
 
-  /** Edit the permissions layer. */
+  /**
+   * Edit the permissions layer.
+   *
+   * @param e permissions
+   */
   saveAccess(e: any): void {
     if (this.apolloSubscription) {
       this.apolloSubscription.unsubscribe();
@@ -238,15 +269,10 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res.errors) {
           this.snackBar.openSnackBar(
-            this.translateService.instant(
-              'common.notifications.objectNotUpdated',
-              {
-                type: this.translateService.instant(
-                  'common.apiConfiguration.one'
-                ),
-                error: res.errors[0].message,
-              }
-            ),
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.apiConfiguration.one'),
+              error: res.errors[0].message,
+            }),
             { error: true }
           );
           this.loading = false;
@@ -269,20 +295,20 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
         if (res) {
           if (res.access_token) {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
+              this.translate.instant(
                 'pages.apiConfiguration.notifications.authTokenFetched'
               )
             );
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
+              this.translate.instant(
                 'pages.apiConfiguration.notifications.pingReceived'
               )
             );
           }
         } else {
           this.snackBar.openSnackBar(
-            this.translateService.instant(
+            this.translate.instant(
               'pages.apiConfiguration.notifications.pingFailed'
             ),
             { error: true }

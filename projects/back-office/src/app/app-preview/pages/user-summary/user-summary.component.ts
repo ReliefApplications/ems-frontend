@@ -40,7 +40,6 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
           }
         }
       );
-    // applicationSubscription.unsubscribe();
   }
 
   ngOnDestroy(): void {

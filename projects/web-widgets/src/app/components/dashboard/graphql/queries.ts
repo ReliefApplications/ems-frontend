@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { Dashboard } from '@safe/builder';
 
 // === GET DASHBOARD BY ID ===
+/** Get dashboard query */
 export const GET_DASHBOARD_BY_ID = gql`
   query GetDashboardById($id: ID!) {
     dashboard(id: $id) {
@@ -12,6 +13,7 @@ export const GET_DASHBOARD_BY_ID = gql`
   }
 `;
 
+/** Get dashboard query response */
 export interface GetDashboardByIdQueryResponse {
   loading: boolean;
   dashboard: Dashboard;

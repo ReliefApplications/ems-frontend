@@ -12,40 +12,63 @@
 </h1>
 <div mat-dialog-content class="mat-dialog-content">
   <form [formGroup]="form">
-    <mat-tab-group #tabGroup (selectedTabChange)="handleTabChange($event)" [selectedIndex]="0">
+    <mat-tab-group
+      #tabGroup
+      (selectedTabChange)="handleTabChange($event)"
+      [selectedIndex]="0"
+    >
+      <!-- Selection of data source -->
       <mat-tab
         [label]="
           'components.widget.settings.summaryCard.card.dataSource.title'
             | translate
         "
       >
-        <safe-data-source-tab [form]="form" [dataset]="dataset"></safe-data-source-tab>
+        <safe-data-source-tab
+          [form]="form"
+          [selectedResource]="selectedResource"
+        ></safe-data-source-tab>
       </mat-tab>
+      <!-- Selection of record -->
       <mat-tab
         [label]="
           'components.widget.settings.summaryCard.card.valueSelector.title'
             | translate
         "
       >
-        <safe-value-selector-tab [form]="form" [settings]="gridSettings"></safe-value-selector-tab>
+        <safe-value-selector-tab
+          [form]="form"
+          [settings]="gridSettings"
+        ></safe-value-selector-tab>
       </mat-tab>
+      <!-- Card display settings -->
       <mat-tab [label]="'common.display' | translate">
         <safe-display-tab [form]="form"></safe-display-tab>
       </mat-tab>
+      <!-- Card text editor -->
       <mat-tab
         [label]="
           'components.widget.settings.summaryCard.card.textEditor.title'
             | translate
         "
       >
-        <safe-text-editor-tab *ngIf="isEditorTab()" [form]="form" [record]="loadedRecord"></safe-text-editor-tab>
+        <safe-text-editor-tab
+          *ngIf="isEditorTab()"
+          [form]="form"
+          [record]="loadedRecord"
+        ></safe-text-editor-tab>
       </mat-tab>
+      <!-- Preview of card -->
       <mat-tab [label]="'common.preview' | translate">
-        <safe-preview-tab [html]="form.value.html" [record]="loadedRecord"></safe-preview-tab>
+        <safe-preview-tab
+          [html]="form.value.html"
+          [record]="loadedRecord"
+        ></safe-preview-tab>
       </mat-tab>
     </mat-tab-group>
   </form>
 </div>
+<!-- Modal actions ( close / save ) -->
 <div mat-dialog-actions class="mat-dialog-actions" align="end">
   <button mat-button (click)="onClose()">
     {{ 'common.close' | translate }}

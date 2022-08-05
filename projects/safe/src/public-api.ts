@@ -18,6 +18,7 @@ export * from './lib/services/grid-layout.service';
 export * from './lib/services/reference-data.service';
 export * from './lib/services/kendo-translation.service';
 export * from './lib/services/date-translate.service';
+export * from './lib/services/breadcrumb.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -44,6 +45,7 @@ export * from './lib/models/apiConfiguration.model';
 export * from './lib/models/pullJob.model';
 export * from './lib/models/layout.model';
 export * from './lib/models/reference-data.model';
+export * from './lib/models/setting.model';
 
 // === COMPONENTS ===
 export * from './lib/components/layout/public-api';
@@ -74,6 +76,7 @@ export * from './lib/components/applications-summary/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
 export * from './lib/components/reference-data-dropdown/public-api';
 export * from './lib/components/skeleton/skeleton-table/public-api';
+export * from './lib/components/mapping/public-api';
 export * from './lib/components/role-summary/public-api';
 
 /** Grid Layouts */

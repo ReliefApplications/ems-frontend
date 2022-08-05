@@ -2,6 +2,7 @@
 	"common": {
 		"access": "Access",
 		"add": "Add",
+		"advancedSettings": "Advanced settings",
 		"aggregation": {
 			"few": "Aggregations",
 			"none": "No aggregation",
@@ -28,6 +29,11 @@
 		"child": "Child",
 		"clear": "Clear",
 		"close": "Close",
+		"column": {
+			"few": "Columns",
+			"none": "No column",
+			"one": "Column"
+		},
 		"create": "Create",
 		"createdOn": "Created on",
 		"dashboard": {
@@ -133,7 +139,7 @@
 			"platformAccessNotGranted": "You don't have a valid access to this platform.",
 			"readAll": "Mark all as read",
 			"statusUpdated": "Status updated to {{value}}.",
-			"unlocked": "{{value}} edition has been unlocked by another user."
+			"unlocked": "{{name}} edition has been unlocked by another user."
 		},
 		"openFullScreen": "Open in Full Screen",
 		"page": {
@@ -435,7 +441,6 @@
 		},
 		"formBuilder": {
 			"errors": {
-				"invalidRelatedName": "Provided related name ({{name}}) for question {{question}} on page {{page}} is invalid. Please provide a valid related name (snake case format) to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
 			}
@@ -472,6 +477,13 @@
 		"logout": {
 			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
 			"title": "Exit without saving changes"
+		},
+		"mapping": {
+			"field": "User field",
+			"path": "Path",
+			"text": "Text",
+			"title": "Mapping",
+			"value": "Value"
 		},
 		"notifications": {
 			"readAll": "Mark all as read"
@@ -651,7 +663,22 @@
 			},
 			"summary": {
 				"features": "Features",
+				"noFeatures": "No feature detected",
+				"noForms": "No forms detected",
+				"noSteps": "No steps detected",
 				"title": "Summary"
+			},
+			"tooltip": {
+				"allowRecordAccessibility": "Allow this role to see records of {{form}}",
+				"allowRecordCreation": "Allow this role to create records with {{form}}",
+				"allowRecordDeletion": "Allow this role to remove records from {{form}}",
+				"allowRecordUpdate": "Allow this role to update records from {{form}}",
+				"disallowRecordAccessibility": "Disallow this role to see records of {{form}}",
+				"disallowRecordCreation": "Disallow this role to create records with {{form}}",
+				"disallowRecordDeletion": "Disallow this role to remove records from {{form}}",
+				"disallowRecordUpdate": "Disallow this role to update records from {{form}}",
+				"hideFeature": "Hide {{page}} from this role",
+				"showFeature": "Show {{page}} to this role"
 			},
 			"update": {
 				"permissions": "Permissions",
@@ -688,6 +715,24 @@
 			}
 		},
 		"users": {
+			"advancedSettings": {
+				"title": "Users advanced settings",
+				"userManagement": {
+					"api": {
+						"placeholder": "Enter a URL...",
+						"title": "Service API"
+					},
+					"external": {
+						"title": "External user management",
+						"tooltip": "When this option is selected, you need to specify from which API the external attributes will come from and define a mapping. This API should be accessible with the same Azure token used by this platform."
+					},
+					"local": {
+						"title": "Local user management",
+						"tooltip": "When this option is selected, user attributes will come from the authentication server."
+					},
+					"title": "User management"
+				}
+			},
 			"invite": {
 				"add": "Add new user",
 				"confirm": "Invite users",
@@ -1096,6 +1141,10 @@
 			"select": "Select a Form",
 			"template": "Template"
 		},
+		"mapping": {
+			"add": "Add a Mapping",
+			"edit": "Edit a Mapping"
+		},
 		"page": {
 			"add": "Add a Page",
 			"tooltip": {
@@ -1125,7 +1174,8 @@
 			"add": "Add new reference data"
 		},
 		"resource": {
-			"create": "Create a Resource"
+			"create": "Create a Resource",
+			"select": "Select a Resource"
 		},
 		"role": {
 			"create": "Create a role",
@@ -1251,13 +1301,10 @@
 				"choices": {
 					"valueDuplicated": "Please provide unique values for each of the choices of question: {{question}}"
 				},
+				"dataFieldDuplicated": "Data name duplicated : {{name}}. Please provide different value names for all questions.",
 				"missingName": "Missing value name for an element on page {{page}}. Please provide a valid data value name (snake_case) to save the form.",
 				"multipletext": {
 					"missingName": "Please provide name or title for each text of question: {{question}}"
-				},
-				"resource": {
-					"invalidRelatedName": "The related name {{relatedName}} on page {{page}} is invalid. Please conform to snake_case.",
-					"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake_case) to save the form."
 				},
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
 			},

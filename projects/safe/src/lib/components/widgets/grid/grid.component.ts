@@ -9,7 +9,7 @@ import {
   PUBLISH_NOTIFICATION,
   PublishMutationResponse,
   PublishNotificationMutationResponse,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { Form } from '../../../models/form.model';
@@ -18,7 +18,7 @@ import {
   GET_RECORD_DETAILS,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   Component,
   OnInit,
@@ -38,6 +38,7 @@ import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
+import { cleanRecord } from '../../../utils/cleanRecord';
 
 /** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
@@ -109,7 +110,7 @@ export class SafeGridWidgetComponent implements OnInit {
     this.gridSettings = { ...this.settings };
     if (this.settings.resource) {
       this.gridLayoutService
-        .getLayouts(this.settings.resource, [this.settings.layouts[0]])
+        .getLayouts(this.settings.resource, this.settings.layouts)
         .then((res) => {
           this.layouts = res;
           this.layout = this.layouts[0] || null;
@@ -140,7 +141,7 @@ export class SafeGridWidgetComponent implements OnInit {
             variables: {
               id: item.id,
               data,
-              template: this.settings.template,
+              template: this.settings.query?.template,
             },
           })
           .toPromise()
@@ -350,12 +351,14 @@ export class SafeGridWidgetComponent implements OnInit {
         );
       }
     }
+    const data = cleanRecord(update);
     return this.apollo
       .mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data: update,
+          data,
+          template: this.settings.query?.template,
         },
       })
       .toPromise();

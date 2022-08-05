@@ -4,7 +4,7 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeSkeletonDirective } from './skeleton.directive';
 
 /**
- *
+ * Skeleton module.
  */
 @NgModule({
   declarations: [SafeSkeletonDirective],

@@ -1,26 +1,20 @@
 import { Apollo } from 'apollo-angular';
-import { FormBuilder } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import * as SurveyCreator from 'survey-creator';
 import { DomService } from '../../services/dom.service';
 import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
-import { GetUsersQueryResponse, GET_USERS } from '../../graphql/queries';
+import { GetUsersQueryResponse, GET_USERS } from '../graphql/queries';
 
 /**
  * Inits the users component.
  *
- * @param survey survey class.
+ * @param Survey survey library
  * @param domService Dom service.
  * @param apollo Apollo client.
- * @param dialog Dialog service.
- * @param formBuilder Form Builder service.
  */
 export const init = (
-  survey: any,
+  Survey: any,
   domService: DomService,
-  apollo: Apollo,
-  dialog: MatDialog,
-  formBuilder: FormBuilder
+  apollo: Apollo
 ): void => {
   const component = {
     name: 'users',
@@ -34,7 +28,7 @@ export const init = (
       choices: [] as any[],
     },
     onInit: (): void => {
-      survey.Serializer.addProperty('users', {
+      Survey.Serializer.addProperty('users', {
         name: 'applications',
         category: 'Users properties',
         type: 'applicationsDropdown',
@@ -83,5 +77,5 @@ export const init = (
     },
     onAfterRender: (question: any, el: any): void => {},
   };
-  survey.ComponentCollection.Instance.add(component);
+  Survey.ComponentCollection.Instance.add(component);
 };

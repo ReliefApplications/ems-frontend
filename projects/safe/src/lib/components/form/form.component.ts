@@ -20,7 +20,7 @@ import {
   EDIT_RECORD,
   UploadFileMutationResponse,
   UPLOAD_FILE,
-} from '../../graphql/mutations';
+} from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar.service';
@@ -29,10 +29,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth.service';
-import {
-  GET_RECORD_DETAILS,
-  GetRecordDetailsQueryResponse,
-} from '../../graphql/queries';
 import { SafeLayoutService } from '../../services/layout.service';
 import { SafeFormBuilderService } from '../../services/form-builder.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
@@ -102,7 +98,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param layoutService This is the service that will be used to create the layout of the form.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param translate This is the service used to translate text
-   * @param el
    */
   constructor(
     @Inject('environment') environment: any,
@@ -113,8 +108,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private formBuilderService: SafeFormBuilderService,
-    private translate: TranslateService,
-    private el: ElementRef
+    private translate: TranslateService
   ) {
     this.environment = environment;
   }
@@ -230,6 +224,15 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     );
     this.survey.onValueChanged.add(this.valueChange.bind(this));
+
+    // Sets default language as form language if it is in survey locales
+    const currentLang = this.usedLocales.find(
+      (lang) => lang.value === this.translate.currentLang
+    );
+    if (currentLang) {
+      this.setLanguage(currentLang.text);
+      this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
+    }
   }
 
   ngAfterViewInit(): void {

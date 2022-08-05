@@ -3,15 +3,11 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import {
-  GetResourcesQueryResponse,
-  GET_RESOURCES,
-  GetFormsQueryResponse,
-  GET_FORMS,
   GetResourceByIdQueryResponse,
   GET_RESOURCE_BY_ID,
   GetFormByIdQueryResponse,
   GET_FORM_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 
 /** A component for the scheduler settings */
 @Component({

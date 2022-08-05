@@ -3,9 +3,9 @@ import {
   Inject,
   Input,
   OnChanges,
-  OnInit,
   SimpleChanges,
 } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import {
   EDITOR_LANGUAGE_PAIRS,
@@ -21,7 +21,7 @@ import {
   styleUrls: ['./text-editor-tab.component.scss'],
 })
 export class SafeTextEditorTabComponent implements OnChanges {
-  @Input() form: any;
+  @Input() form!: FormGroup;
 
   @Input() record: any;
 

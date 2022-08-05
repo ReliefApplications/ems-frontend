@@ -13,7 +13,7 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_QUERY_TYPES } from '../../graphql/queries';
+import { GET_QUERY_TYPES } from './graphql/queries';
 
 describe('ConfigDisplayGridFieldsModalComponent', () => {
   let component: ConfigDisplayGridFieldsModalComponent;

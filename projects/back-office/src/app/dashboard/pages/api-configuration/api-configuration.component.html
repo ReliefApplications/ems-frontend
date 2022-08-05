@@ -1,9 +1,6 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading && apiConfiguration">
   <div class="page-header">
-    <safe-previous-button
-      path="/settings/apiconfigurations"
-    ></safe-previous-button>
     <h1 class="page-title">
       {{ apiConfiguration?.name }}
     </h1>

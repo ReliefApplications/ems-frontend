@@ -7,7 +7,7 @@ import {
   GET_RESOURCE_BY_ID,
   GetFormByIdQueryResponse,
   GET_FORM_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 
 /** Component for scheduler widget */
 @Component({

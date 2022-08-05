@@ -10,6 +10,9 @@ import {
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
+/**
+ * Main component of Application view.
+ */
 @Component({
   selector: 'app-application',
   templateUrl: './application.component.html',
@@ -30,6 +33,15 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   // === ROUTE ===
   private routeSubscription?: Subscription;
 
+  /**
+   * Main component of application view
+   *
+   * @param applicationService Shared application service
+   * @param route Angular activated route
+   * @param router Angular router
+   * @param dialog Material dialog service
+   * @param translate Angular translate service
+   */
   constructor(
     private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
@@ -155,6 +167,12 @@ export class ApplicationComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * Get icons from type of page
+   *
+   * @param type type of page
+   * @returns icon as string
+   */
   private getNavIcon(type: string): string {
     switch (type) {
       case 'workflow':
@@ -166,6 +184,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Delete item, prompt for confirmation
+   *
+   * @param item item to delete
+   */
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -187,6 +210,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Reorder pages
+   *
+   * @param event Reorder event
+   */
   onReorder(event: any): void {
     this.applicationService.reorderPages(
       event.filter((x: any) => x.id).map((x: any) => x.id)

@@ -17,7 +17,7 @@ import {
   GetResourceRecordsQueryResponse,
   GET_RECORD_BY_ID,
   GET_RESOURCE_RECORDS,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Record } from '../../models/record.model';
 import { TranslateService } from '@ngx-translate/core';

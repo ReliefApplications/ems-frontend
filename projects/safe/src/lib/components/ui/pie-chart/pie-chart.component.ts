@@ -31,18 +31,14 @@ interface ChartSeries {
   }[];
 }
 
-/**
- *
- */
+/** Interface of chart labels */
 interface ChartLabels {
   showCategory: boolean;
   showValue: boolean;
   valueType: string;
 }
 
-/**
- *
- */
+/** Interface of chart options */
 interface ChartOptions {
   palette: string[];
   labels?: ChartLabels;

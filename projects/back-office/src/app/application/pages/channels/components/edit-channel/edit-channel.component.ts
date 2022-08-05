@@ -3,16 +3,26 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Channel } from '@safe/builder';
 
+/**
+ * Edit channel component, act as modal.
+ */
 @Component({
   selector: 'app-edit-channel',
   templateUrl: './edit-channel.component.html',
   styleUrls: ['./edit-channel.component.scss'],
 })
-/** Modal to edit a channel. */
 export class EditChannelComponent implements OnInit {
   // === REACTIVE FORM ===
   roleForm: FormGroup = new FormGroup({});
 
+  /**
+   * Edit channel component
+   *
+   * @param formBuilder Angular form builder
+   * @param dialogRef Material dialog ref
+   * @param data Injected dialog data
+   * @param data.channel channel to edit
+   */
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<EditChannelComponent>,

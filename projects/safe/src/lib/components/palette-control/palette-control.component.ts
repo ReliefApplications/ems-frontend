@@ -7,7 +7,7 @@ import {
 import { Subject } from 'rxjs';
 
 /**
- *
+ * Control value accessor
  */
 const CONTROL_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
@@ -38,32 +38,33 @@ export class SafePaletteControlComponent
   public colors: string[] = [];
   public disabled = false;
 
-  /**
-   *
-   */
+  /** Custom palette form control */
   constructor() {}
 
   ngOnInit(): void {}
 
   /**
+   * Register change of the control
    *
-   * @param fn
+   * @param fn callback
    */
   public registerOnChange(fn: any): void {
     this.onChanged = fn;
   }
 
   /**
+   * Register touch event
    *
-   * @param fn
+   * @param fn callback
    */
   public registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 
   /**
+   * Write new value
    *
-   * @param value
+   * @param value list of colors
    */
   writeValue(value: string[]): void {
     this.value = JSON.parse(JSON.stringify(value));
@@ -71,17 +72,19 @@ export class SafePaletteControlComponent
   }
 
   /**
+   * Set disabled state
    *
-   * @param isDisabled
+   * @param isDisabled is control disabled
    */
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
 
   /**
+   * Detect color change
    *
-   * @param e
-   * @param i
+   * @param e new color
+   * @param i index of color
    */
   onColorChange(e: any, i: number): void {
     this.onTouched();
@@ -89,16 +92,18 @@ export class SafePaletteControlComponent
   }
 
   /**
+   * Close the control
    *
-   * @param e
+   * @param e close event
    */
   onClose(e: any): void {
     this.onChanged(this.value);
   }
 
   /**
+   * Reorder colors
    *
-   * @param e
+   * @param e reorder event
    */
   onReorder(e: any): void {
     this.onTouched();
