@@ -214,6 +214,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       .subscribe((value) => {
         this.searchChange.emit(value);
       });
+    this.selectableSettings = {
+      ...this.selectableSettings,
+      mode: this.multiSelect ? 'multiple' : 'single',
+    };
   }
 
   ngAfterViewInit(): void {

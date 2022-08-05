@@ -111,7 +111,7 @@ export class SafeFormModalComponent implements OnInit {
    * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param translate This is the service that allows us to translate the text in our application.
-   * @param ngZone Angular ng zone
+   * @param ngZone Angular Service to execute code inside Angular environment
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,

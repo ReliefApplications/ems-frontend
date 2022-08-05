@@ -29,6 +29,11 @@
 		"child": "******",
 		"clear": "******",
 		"close": "******",
+		"column": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"create": "******",
 		"createdOn": "******",
 		"dashboard": {
@@ -1169,7 +1174,8 @@
 			"add": "******"
 		},
 		"resource": {
-			"create": "******"
+			"create": "******",
+			"select": "******"
 		},
 		"role": {
 			"create": "******",

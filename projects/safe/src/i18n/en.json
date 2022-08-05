@@ -29,6 +29,11 @@
 		"child": "Child",
 		"clear": "Clear",
 		"close": "Close",
+		"column": {
+			"few": "Columns",
+			"none": "No column",
+			"one": "Column"
+		},
 		"create": "Create",
 		"createdOn": "Created on",
 		"dashboard": {
@@ -1169,7 +1174,8 @@
 			"add": "Add new reference data"
 		},
 		"resource": {
-			"create": "Create a Resource"
+			"create": "Create a Resource",
+			"select": "Select a Resource"
 		},
 		"role": {
 			"create": "Create a role",
