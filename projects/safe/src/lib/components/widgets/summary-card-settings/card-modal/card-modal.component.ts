@@ -10,7 +10,12 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Apollo } from 'apollo-angular';
-import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
+import {
+  GET_RESOURCE,
+  GetResourceByIdQueryResponse,
+  GetRecordByIdQueryResponse,
+  GET_RECORD_BY_ID,
+} from './graphql/queries';
 import { Layout } from '../../../../models/layout.model';
 import { Resource } from '../../../../models/resource.model';
 import get from 'lodash/get';
@@ -27,9 +32,15 @@ import get from 'lodash/get';
 export class SafeCardModalComponent implements OnInit, AfterViewInit {
   @ViewChild('tabGroup') tabGroup: any;
 
+  // === CURRENT TAB ===
   private activeTabIndex: number | undefined;
 
+  // === GRID FOR RECORD SELECTION SETTINGS ===
   public gridSettings: any;
+
+  // === RECORD DATA ===
+  public selectedRecord: any;
+  private recordSubscription: any;
 
   public form!: FormGroup;
 
@@ -75,8 +86,47 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
         this.gridSettings = this.findLayout(this.layouts, value);
       }
     });
+
+    // Fetches the specified record data.
+    if (this.form.value.record) {
+      this.getRecord(this.form.value.record);
+    }
+    this.form.controls.record.valueChanges.subscribe((value: any) => {
+      if (value) {
+        this.getRecord(value);
+      } else {
+        this.selectedRecord = null;
+      }
+    });
   }
 
+  /**
+   * Get record by ID, doing graphQL request
+   *
+   * @param id record id
+   */
+  private getRecord(id: string): void {
+    this.apollo
+      .query<GetRecordByIdQueryResponse>({
+        query: GET_RECORD_BY_ID,
+        variables: {
+          id,
+        },
+      })
+      .subscribe((res) => {
+        if (res) {
+          this.selectedRecord = res.data.record;
+        } else {
+          this.selectedRecord = null;
+        }
+      });
+  }
+
+  /**
+   * Get resource by id, doing graphQL query
+   *
+   * @param id resource id
+   */
   private getResource(id: string): void {
     this.apollo
       .query<GetResourceByIdQueryResponse>({

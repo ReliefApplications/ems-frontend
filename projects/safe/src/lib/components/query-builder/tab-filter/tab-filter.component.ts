@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { clone, get, isDate } from 'lodash';
-import { SafeApiProxyService } from '../../../services/api-proxy.service';
 import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
