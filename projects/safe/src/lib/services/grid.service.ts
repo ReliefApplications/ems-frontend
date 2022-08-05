@@ -4,6 +4,7 @@ import { prettifyLabel } from '../utils/prettify';
 import get from 'lodash/get';
 import { SafeApiProxyService } from './api-proxy.service';
 import { MULTISELECT_TYPES } from '../components/ui/core-grid/grid/grid.constants';
+import { TranslateService } from '@ngx-translate/core';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -39,10 +40,12 @@ export class SafeGridService {
    *
    * @param formBuilder Angular form builder
    * @param apiProxyService Shared API proxy service
+   * @param translate Translate service
    */
   constructor(
     private formBuilder: FormBuilder,
-    private apiProxyService: SafeApiProxyService
+    private apiProxyService: SafeApiProxyService,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -264,11 +267,15 @@ export class SafeGridService {
         }
       }
       if (meta.choices) {
+        console.log(meta.choices, this.translate.currentLang);
         metaFields[fieldName] = {
           ...meta,
           choices: meta.choices.map((choice: any) => ({
             value: choice.value,
-            text: choice.text.default || choice.text,
+            text:
+              choice.text[this.translate.currentLang] ||
+              choice.text.default ||
+              choice.text,
           })),
         };
       }
