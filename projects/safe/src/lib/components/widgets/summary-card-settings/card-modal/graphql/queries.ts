@@ -31,30 +31,6 @@ export interface GetResourceByIdQueryResponse {
   resource: Resource;
 }
 
-/** Graphql request for getting the meta fields of a grid by form id */
-export const GET_FORM = gql`
-  query GetForm($id: ID!) {
-    form(id: $id) {
-      id
-      name
-      queryName
-      layouts {
-        id
-        name
-        createdAt
-        query
-        display
-      }
-    }
-  }
-`;
-
-/** Model for GetFormByIdQueryResponse object */
-export interface GetFormByIdQueryResponse {
-  loading: boolean;
-  form: Form;
-}
-
 // === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
@@ -86,17 +62,17 @@ export interface GetRecordByIdQueryResponse {
   record: Record;
 }
 
-/** Graphql request for getting forms */
-export const GET_FORMS = gql`
-  query GetFormNames($first: Int, $afterCursor: ID, $filter: JSON) {
-    forms(first: $first, afterCursor: $afterCursor, filter: $filter) {
+/** Graphql query for getting multiple resources with a cursor */
+export const GET_RESOURCES = gql`
+  query GetResources($first: Int, $afterCursor: ID) {
+    resources(first: $first, afterCursor: $afterCursor) {
       edges {
         node {
           id
           name
-          core
-          resource {
+          forms {
             id
+            name
           }
         }
         cursor
@@ -110,12 +86,12 @@ export const GET_FORMS = gql`
   }
 `;
 
-/** Model for GetFormsQueryResponse object */
-export interface GetFormsQueryResponse {
+/** Model for GetResourcesQueryResponse object */
+export interface GetResourcesQueryResponse {
   loading: boolean;
-  forms: {
+  resources: {
     edges: {
-      node: Form;
+      node: Resource;
       cursor: string;
     }[];
     pageInfo: {

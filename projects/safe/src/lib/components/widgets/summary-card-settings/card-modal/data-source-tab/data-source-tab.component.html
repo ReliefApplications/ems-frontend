@@ -16,18 +16,17 @@
 <ng-container *ngIf="radioValue"> </ng-container>
 
 <ng-container *ngIf="!radioValue">
-  <mat-form-field [formGroup]="form" fxFlex>
+  <mat-form-field [formGroup]="form" fxFlex  appearance="outline">
     <mat-label>{{ 'models.resource.select' | translate }}</mat-label>
     <mat-select formControlName="resource" placeholder="Select a dataset">
-      <mat-option *ngFor="let resource of forms" [value]="resource.id">
+      <mat-option *ngFor="let resource of resources" [value]="resource.id">
         {{ resource.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
 
   <safe-layouts
-    [form]="null"
-    [resource]="dataset"
+    [resource]="selectedResource"
     [selectedLayouts]="$any(form).get('layout')"
     [singleInput]="true"
   ></safe-layouts>

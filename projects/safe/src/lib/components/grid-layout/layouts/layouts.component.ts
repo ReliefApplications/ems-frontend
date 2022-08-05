@@ -75,13 +75,17 @@ export class LayoutsComponent implements OnInit, OnChanges {
    *
    * @param value form control value.
    */
-  private setSelectedLayouts(value: string[]): void {
-    this.layouts =
-      this.allLayouts
-        .filter((x) => x.id && value.includes(x.id))
-        .sort(
-          (a, b) => value.indexOf(a.id || '') - value.indexOf(b.id || '')
-        ) || [];
+  private setSelectedLayouts(value: string[] | string): void {
+    if (this.singleInput) {
+      this.layouts = this.allLayouts.filter((x) => x.id && value === x.id);
+    } else {
+      this.layouts =
+        this.allLayouts
+          .filter((x) => x.id && value.includes(x.id))
+          .sort(
+            (a, b) => value.indexOf(a.id || '') - value.indexOf(b.id || '')
+          ) || [];
+    }
   }
 
   /**
@@ -111,10 +115,10 @@ export class LayoutsComponent implements OnInit, OnChanges {
           }
         } else {
           if (typeof value === 'string') {
-            this.selectedLayouts?.setValue([value]);
+            this.selectedLayouts?.setValue(value);
           } else {
             this.allLayouts = [value];
-            this.selectedLayouts?.setValue([value.id]);
+            this.selectedLayouts?.setValue(value.id);
           }
         }
       }
@@ -161,9 +165,13 @@ export class LayoutsComponent implements OnInit, OnChanges {
    * @param layout Layout to remove.
    */
   onDeleteLayout(layout: Layout): void {
-    this.selectedLayouts?.setValue(
-      this.selectedLayouts?.value.filter((x: string) => x !== layout.id)
-    );
+    if (this.singleInput) {
+      this.selectedLayouts?.setValue(
+        this.selectedLayouts?.value.filter((x: string) => x !== layout.id)
+      );
+    } else {
+      this.selectedLayouts?.setValue(null);
+    }
   }
 
   /**
@@ -172,8 +180,10 @@ export class LayoutsComponent implements OnInit, OnChanges {
    * @param event drop event
    */
   public drop(event: any): void {
-    const layouts = [...this.selectedLayouts?.value];
-    moveItemInArray(layouts, event.previousIndex, event.currentIndex);
-    this.selectedLayouts?.setValue(layouts);
+    if (!this.singleInput) {
+      const layouts = [...this.selectedLayouts?.value];
+      moveItemInArray(layouts, event.previousIndex, event.currentIndex);
+      this.selectedLayouts?.setValue(layouts);
+    }
   }
 }

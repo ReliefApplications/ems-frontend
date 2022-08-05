@@ -2,7 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { createAggregationForm } from '../../../../ui/aggregation-builder/aggregation-builder-forms';
-import { GET_FORMS, GetFormsQueryResponse } from '../graphql/queries';
+import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
+import { Resource } from '../../../../../models/resource.model';
 
 /**
  * How many resources.forms will be shown on the selector.
@@ -19,19 +20,16 @@ const ITEMS_PER_PAGE = 10;
 })
 export class SafeDataSourceTabComponent implements OnInit {
   @Input() form!: FormGroup;
-  @Input() dataset: any;
+  @Input() selectedResource: Resource | null = null;
 
   // === RADIO ===
   public radioValue = false;
 
-  public selectedForm: any = null;
-  public selectedResource: any = null;
-
   // === DATA ===
-  public forms: any[] = [];
-  private formsQuery!: QueryRef<GetFormsQueryResponse>;
+  public resources: any[] = [];
+  private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public loading = true;
-  public loadingForm = false;
+  public loadingResource = false;
   public loadingMore = false;
   private pageInfo = {
     endCursor: '',
@@ -78,18 +76,17 @@ export class SafeDataSourceTabComponent implements OnInit {
         ],
       };
     }
-    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
-      query: GET_FORMS,
+    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+      query: GET_RESOURCES,
       variables,
     });
-    this.formsQuery.valueChanges.subscribe((res) => {
-      this.forms = res.data.forms.edges.map((x) => x.node);
-      this.pageInfo = res.data.forms.pageInfo;
+    this.resourcesQuery.valueChanges.subscribe((res) => {
+      this.resources = res.data.resources.edges.map((x) => x.node);
+      this.pageInfo = res.data.resources.pageInfo;
       this.loadingMore = res.loading;
       if (this.loading) {
         this.loading = res.loading;
       }
-      this.form.patchValue({ resource: this.forms[0] });
     });
   }
 
@@ -140,22 +137,24 @@ export class SafeDataSourceTabComponent implements OnInit {
     if (nextPage) {
       variables.afterCursor = this.pageInfo.endCursor;
     }
-    this.formsQuery.fetchMore({
+    this.resourcesQuery.fetchMore({
       variables,
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) {
           return prev;
         }
         return Object.assign({}, prev, {
-          forms: {
-            edges: prev.forms.edges.concat(
-              fetchMoreResult.forms.edges.filter(
+          resources: {
+            edges: prev.resources.edges.concat(
+              fetchMoreResult.resources.edges.filter(
                 (x: any) =>
-                  !prev.forms.edges.some((y: any) => y.node.id === x.node.id)
+                  !prev.resources.edges.some(
+                    (y: any) => y.node.id === x.node.id
+                  )
               )
             ),
-            pageInfo: fetchMoreResult.forms.pageInfo,
-            totalCount: fetchMoreResult.forms.totalCount,
+            pageInfo: fetchMoreResult.resources.pageInfo,
+            totalCount: fetchMoreResult.resources.totalCount,
           },
         });
       },

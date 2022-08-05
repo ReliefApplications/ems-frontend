@@ -10,12 +10,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Apollo } from 'apollo-angular';
-import {
-  GET_RESOURCE,
-  GetResourceByIdQueryResponse,
-  GET_FORM,
-  GetFormByIdQueryResponse,
-} from './graphql/queries';
+import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
+import { Layout } from '../../../../models/layout.model';
+import { Resource } from '../../../../models/resource.model';
+import get from 'lodash/get';
 
 /**
  * Card modal component.
@@ -31,11 +29,12 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
 
   private activeTabIndex: number | undefined;
 
-  public dataset: any;
-
   public gridSettings: any;
 
   public form!: FormGroup;
+
+  private layouts: Layout[] = [];
+  public selectedResource: Resource | null = null;
 
   /**
    * Card modal component.
@@ -61,58 +60,53 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       ...this.data,
-      layout: [],
     });
-    this.form.patchValue({ layout: this.data.layout ? this.data.layout : [] });
 
-    console.log(this.form);
-    console.log(this.data);
+    if (this.form.value.resource) {
+      this.getResource(this.form.value.resource);
+    }
 
-    this.form.controls.resource.valueChanges.subscribe((value: any) => {
-      this.apollo
-        .query<GetResourceByIdQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            id: value,
-          },
-        })
-        .subscribe((res2) => {
-          if (res2.errors) {
-            this.apollo
-              .query<GetFormByIdQueryResponse>({
-                query: GET_FORM,
-                variables: {
-                  id: value,
-                },
-              })
-              .subscribe((res3) => {
-                if (res3.errors) {
-                  this.dataset = null;
-                } else {
-                  this.dataset = null;
-                }
-              });
-          } else {
-            this.dataset = res2.data.resource;
-            this.gridSettings = this.findLayout(
-              this.dataset.layouts,
-              this.form.value.layout[0]
-            );
-            if (!this.gridSettings) {
-              this.form.patchValue({
-                layout: [],
-                record: null,
-              });
-            }
-          }
-        });
-    });
+    this.form.controls.resource.valueChanges.subscribe((value: any) =>
+      this.getResource(value)
+    );
 
     this.form.controls.layout.valueChanges.subscribe((value: any) => {
-      if (this.dataset) {
-        this.gridSettings = this.findLayout(this.dataset.layouts, value[0]);
+      if (this.layouts) {
+        this.gridSettings = this.findLayout(this.layouts, value);
       }
     });
+  }
+
+  private getResource(id: string): void {
+    this.apollo
+      .query<GetResourceByIdQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          id,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          this.form.patchValue({
+            resource: null,
+            layout: null,
+            record: null,
+          });
+        } else {
+          this.selectedResource = res.data.resource;
+          this.layouts = get(res, 'data.resource.layouts', []);
+          this.gridSettings = this.findLayout(
+            this.layouts,
+            this.form.value.layout
+          );
+          if (!this.gridSettings) {
+            this.form.patchValue({
+              layout: null,
+              record: null,
+            });
+          }
+        }
+      });
   }
 
   /**
