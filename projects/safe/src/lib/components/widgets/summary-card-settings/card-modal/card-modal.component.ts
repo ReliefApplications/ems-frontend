@@ -39,7 +39,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   public gridSettings: any;
 
   // === RECORD DATA ===
-  public loadedRecord: any;
+  public selectedRecord: any;
   private recordSubscription: any;
 
   public form!: FormGroup;
@@ -88,48 +88,45 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
     });
 
     // Fetches the specified record data.
-
     if (this.form.value.record) {
-      this.recordSubscription = this.apollo
-        .watchQuery<GetRecordByIdQueryResponse>({
-          query: GET_RECORD_BY_ID,
-          variables: {
-            id: this.form.value.record,
-          },
-        })
-        .valueChanges.subscribe((res) => {
-          if (res) {
-            this.loadedRecord = res.data.record;
-          } else {
-            this.loadedRecord = null;
-          }
-        });
+      this.getRecord(this.form.value.record);
     }
     this.form.controls.record.valueChanges.subscribe((value: any) => {
-      if (!this.loadedRecord || this.loadedRecord.id !== value) {
-        if (this.recordSubscription) {
-          this.recordSubscription.unsubscribe();
-        }
-        if (value) {
-          this.recordSubscription = this.apollo
-            .watchQuery<GetRecordByIdQueryResponse>({
-              query: GET_RECORD_BY_ID,
-              variables: {
-                id: value,
-              },
-            })
-            .valueChanges.subscribe((res) => {
-              if (res) {
-                this.loadedRecord = res.data.record;
-              } else {
-                this.loadedRecord = null;
-              }
-            });
-        }
+      if (value) {
+        this.getRecord(value);
+      } else {
+        this.selectedRecord = null;
       }
     });
   }
 
+  /**
+   * Get record by ID, doing graphQL request
+   *
+   * @param id record id
+   */
+  private getRecord(id: string): void {
+    this.apollo
+      .query<GetRecordByIdQueryResponse>({
+        query: GET_RECORD_BY_ID,
+        variables: {
+          id,
+        },
+      })
+      .subscribe((res) => {
+        if (res) {
+          this.selectedRecord = res.data.record;
+        } else {
+          this.selectedRecord = null;
+        }
+      });
+  }
+
+  /**
+   * Get resource by id, doing graphQL query
+   *
+   * @param id resource id
+   */
   private getResource(id: string): void {
     this.apollo
       .query<GetResourceByIdQueryResponse>({

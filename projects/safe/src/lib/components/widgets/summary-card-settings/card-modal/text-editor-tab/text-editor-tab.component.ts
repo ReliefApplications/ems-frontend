@@ -11,6 +11,7 @@ import {
   EDITOR_LANGUAGE_PAIRS,
   WIDGET_EDITOR_CONFIG,
 } from '../../../../../const/tinymce.const';
+import { Record } from '../../../../../models/record.model';
 
 /**
  * Component used in the card-modal-settings for editing the content of the card.
@@ -23,7 +24,7 @@ import {
 export class SafeTextEditorTabComponent implements OnChanges {
   @Input() form!: FormGroup;
 
-  @Input() record: any;
+  @Input() record: Record | null = null;
 
   /** tinymce editor */
   public editor: any = WIDGET_EDITOR_CONFIG;
@@ -64,15 +65,17 @@ export class SafeTextEditorTabComponent implements OnChanges {
     const keys = this.getDataKeys(this.record);
 
     /**
+     * Setup tinymce editor
      *
-     * @param editor
+     * @param editor tinymce editor
      */
     this.editor.setup = (editor: any) => {
       /**
+       * Register input action for autocompletion
        *
-       * @param autocompleteApi
-       * @param rng
-       * @param value
+       * @param autocompleteApi API for autocompletion options
+       * @param rng selection range
+       * @param value selected value
        */
       const onAction = (autocompleteApi: any, rng: any, value: any) => {
         editor.selection.setRng(rng);
@@ -81,8 +84,10 @@ export class SafeTextEditorTabComponent implements OnChanges {
       };
 
       /**
+       * Find keys from pattern
        *
-       * @param pattern
+       * @param pattern user input pattern
+       * @returns list of possible keys
        */
       const getMatchedKeys = (pattern: any) =>
         keys.filter((key: any) => key.indexOf(pattern) !== -1);
@@ -123,6 +128,7 @@ export class SafeTextEditorTabComponent implements OnChanges {
    * Returns an array with the record data keys.
    *
    * @param record Record object.
+   * @returns list of data keys
    */
   private getDataKeys(record: any): string[] {
     const fields: string[] = [];

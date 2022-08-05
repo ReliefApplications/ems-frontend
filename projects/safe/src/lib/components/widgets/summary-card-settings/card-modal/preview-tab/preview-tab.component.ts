@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { Apollo } from 'apollo-angular';
+import { Record } from '../../../../../models/record.model';
 
 /**
  * Component used in the card-modal-settings for previewing the final result.
@@ -11,7 +12,7 @@ import { Apollo } from 'apollo-angular';
 })
 export class SafePreviewTabComponent implements OnChanges {
   @Input() html = '';
-  @Input() record: any;
+  @Input() record: Record | null = null;
 
   public formattedHtml: string = this.html;
 

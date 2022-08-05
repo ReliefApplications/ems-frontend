@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Form } from '../../../../../models/form.model';
 import { Resource } from '../../../../../models/resource.model';
 import { Record } from '../../../../../models/record.model';
 
