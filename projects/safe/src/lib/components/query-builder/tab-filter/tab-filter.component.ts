@@ -212,13 +212,17 @@ export class SafeTabFilterComponent implements OnInit {
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.metaFields = Object.assign({}, res.data[field]);
-              this.populateMetaFields();
+              this.populateMetaFields().then(() => {
+                this.sortChoices();
+              });
             }
           }
         });
       }
     } else {
-      this.populateMetaFields();
+      this.populateMetaFields().then(() => {
+        this.sortChoices();
+      });
     }
     this.form.value?.filters.forEach((x: any, index: number) => {
       if (x.field) {
@@ -302,6 +306,23 @@ export class SafeTabFilterComponent implements OnInit {
             : x,
         }))
       : [];
+  }
+
+  /**
+   * Sorts all choices in Alphabetical order
+   */
+  private sortChoices(): void {
+    for (const fieldName of Object.keys(this.metaFields)) {
+      const meta = this.metaFields[fieldName];
+      if (meta.choices) {
+        const sortedChoices = [...meta.choices];
+        sortedChoices.sort((a: any, b: any) => a.text.localeCompare(b.text));
+        this.metaFields[fieldName] = {
+          ...meta,
+          choices: sortedChoices,
+        };
+      }
+    }
   }
 
   /**
