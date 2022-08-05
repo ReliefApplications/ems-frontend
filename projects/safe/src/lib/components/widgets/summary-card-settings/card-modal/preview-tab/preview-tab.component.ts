@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-} from '../../../../../graphql/queries';
+} from '../graphql/queries';
 
 /**
  * Component used in the card-modal-settings for previewing the final result.

@@ -20,7 +20,7 @@ import { SafeCardModalComponent } from './card-modal/card-modal.component';
 import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 
 /** Define max height of widgets */
 const MAX_ROW_SPAN = 4;

@@ -2,10 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { createAggregationForm } from '../../../../ui/aggregation-builder/aggregation-builder-forms';
-import {
-  GET_FORMS,
-  GetFormsQueryResponse,
-} from '../../../../../graphql/queries';
+import { GET_FORMS, GetFormsQueryResponse } from '../graphql/queries';
 
 /**
  * How many resources.forms will be shown on the selector.
@@ -153,7 +150,8 @@ export class SafeDataSourceTabComponent implements OnInit {
           forms: {
             edges: prev.forms.edges.concat(
               fetchMoreResult.forms.edges.filter(
-                (x) => !prev.forms.edges.some((y) => y.node.id === x.node.id)
+                (x: any) =>
+                  !prev.forms.edges.some((y: any) => y.node.id === x.node.id)
               )
             ),
             pageInfo: fetchMoreResult.forms.pageInfo,
