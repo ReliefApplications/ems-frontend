@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   GetDashboardByIdQueryResponse,
   GET_DASHBOARD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   Dashboard,
   SafeSnackBarService,

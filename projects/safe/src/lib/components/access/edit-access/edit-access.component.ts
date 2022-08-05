@@ -2,7 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { GetRolesQueryResponse, GET_ROLES } from '../../../graphql/queries';
+import { GetRolesQueryResponse, GET_ROLES } from './graphql/queries';
 import { Role } from '../../../models/user.model';
 
 /**
