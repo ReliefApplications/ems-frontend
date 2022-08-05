@@ -5,7 +5,7 @@ import { Apollo } from 'apollo-angular';
 import {
   GetPositionAttributesFromCategoryQueryResponse,
   GET_POSITION_ATTRIBUTES_FROM_CATEGORY,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 
 /**
  * Position attributes component.

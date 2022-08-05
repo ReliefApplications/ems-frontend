@@ -17,7 +17,7 @@ import {
   DeleteUsersMutationResponse,
   AddUsersMutationResponse,
   ADD_USERS,
-} from '../../graphql/mutations';
+} from './graphql/mutations';
 import { SafeEditUserComponent } from './components/edit-user/edit-user.component';
 import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';

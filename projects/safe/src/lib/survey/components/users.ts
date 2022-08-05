@@ -2,7 +2,7 @@ import { Apollo } from 'apollo-angular';
 import * as SurveyCreator from 'survey-creator';
 import { DomService } from '../../services/dom.service';
 import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
-import { GetUsersQueryResponse, GET_USERS } from '../../graphql/queries';
+import { GetUsersQueryResponse, GET_USERS } from '../graphql/queries';
 
 /**
  * Inits the users component.

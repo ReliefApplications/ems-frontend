@@ -5,11 +5,11 @@ import {
   DELETE_RESOURCE,
   AddFormMutationResponse,
   ADD_FORM,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetResourcesQueryResponse,
   GET_RESOURCES_EXTENDED,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   Resource,
   SafeConfirmModalComponent,

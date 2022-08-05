@@ -2,10 +2,6 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import {
-  GET_SHORT_FORMS,
-  GetFormsQueryResponse,
-} from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import {
   SafeSnackBarService,
@@ -15,12 +11,13 @@ import {
   SafeConfirmModalComponent,
   Form,
 } from '@safe/builder';
+import { GET_SHORT_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import {
   DeleteFormMutationResponse,
   DELETE_FORM,
   AddFormMutationResponse,
   ADD_FORM,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';

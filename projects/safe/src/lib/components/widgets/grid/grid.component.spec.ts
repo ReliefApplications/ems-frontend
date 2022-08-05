@@ -22,10 +22,7 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import {
-  GET_GRID_RESOURCE_META,
-  GET_QUERY_TYPES,
-} from '../../../graphql/queries';
+import { GET_GRID_RESOURCE_META, GET_QUERY_TYPES } from './graphql/queries';
 
 describe('SafeGridWidgetComponent', () => {
   let component: SafeGridWidgetComponent;

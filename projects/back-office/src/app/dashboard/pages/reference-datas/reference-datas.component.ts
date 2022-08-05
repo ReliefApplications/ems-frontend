@@ -21,13 +21,13 @@ import { Subscription } from 'rxjs';
 import {
   GetReferenceDatasQueryResponse,
   GET_REFERENCE_DATAS,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   AddReferenceDataMutationResponse,
   ADD_REFERENCE_DATA,
   DeleteReferenceDataMutationResponse,
   DELETE_REFERENCE_DATA,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';

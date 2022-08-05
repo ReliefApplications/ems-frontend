@@ -7,7 +7,7 @@ import {
   GetRecordByIdQueryResponse,
   GET_FORM_STRUCTURE,
   GET_RECORD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { Record, Form, SafeBreadcrumbService } from '@safe/builder';
 
 /**
