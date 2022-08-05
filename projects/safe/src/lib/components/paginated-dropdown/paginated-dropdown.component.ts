@@ -44,26 +44,11 @@ const ITEMS_PER_PAGE = 10;
 
 /** Array with available queries and its configuration */
 const AVAILABLE_QUERIES = {
-  resources: {
-    query: GET_RESOURCES,
-    label: 'common.resource.one',
-  },
-  forms: {
-    query: GET_FORMS,
-    label: 'common.form.one',
-  },
-  applications: {
-    query: GET_APPLICATIONS,
-    label: 'common.application.one',
-  },
-  apiConfigurations: {
-    query: GET_API_CONFIGURATIONS,
-    label: 'common.apiConfiguration.one',
-  },
-  referenceDatas: {
-    query: GET_REFERENCE_DATAS,
-    label: 'common.referenceData.one',
-  },
+  resources: GET_RESOURCES,
+  forms: GET_FORMS,
+  applications: GET_APPLICATIONS,
+  apiConfigurations: GET_API_CONFIGURATIONS,
+  referenceDatas: GET_REFERENCE_DATAS,
 };
 
 /** Available queries type */
@@ -262,8 +247,7 @@ export class SafePaginatedDropdownComponent
 
   /** The wanted query */
   @Input('query') queryName!: AvailableQueries;
-  public query = AVAILABLE_QUERIES[this.queryName]?.query;
-  public label = AVAILABLE_QUERIES[this.queryName]?.label;
+  public query = AVAILABLE_QUERIES[this.queryName];
 
   public selectedElement: any;
   private elements = new BehaviorSubject<any[]>([]);
@@ -301,8 +285,7 @@ export class SafePaginatedDropdownComponent
   }
 
   ngOnInit(): void {
-    this.query = AVAILABLE_QUERIES[this.queryName].query;
-    this.label = AVAILABLE_QUERIES[this.queryName].label;
+    this.query = AVAILABLE_QUERIES[this.queryName];
     this.queryRef = this.apollo.watchQuery<any>({
       query: this.query,
       variables: {
