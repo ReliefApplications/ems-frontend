@@ -9,4 +9,4 @@
  * Source:
  * https://spec.graphql.org/October2021/#sec-Names
  */
-export const graphQLValidator = /^[_A-Za-z]$|^(?:_[A-Za-z0-9]|[A-Za-z]\w)\w*$/;
+export const graphQLValidator = /^[_a-z]$|^(?:_[a-z0-9]|[a-z]\w)\w*$/i;
