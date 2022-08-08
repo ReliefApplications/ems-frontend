@@ -624,9 +624,6 @@
 		},
 		"referenceData": {
 			"create": {
-				"errors": {
-					"name": "Nom invalide: utilisez seulement des lettres, des chiffres et des tirets bas."
-				},
 				"title": "Nouvelle référence de données"
 			},
 			"delete": {
@@ -1293,9 +1290,6 @@
 		},
 		"referenceData": {
 			"csv": "Fichier CSV d'entrée",
-			"errors": {
-				"name": "Nom invalide: utilisez seulement des lettres, des chiffres et des tirets bas"
-			},
 			"fields": "Champs",
 			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",

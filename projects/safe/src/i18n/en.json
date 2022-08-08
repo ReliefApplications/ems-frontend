@@ -624,9 +624,6 @@
 		},
 		"referenceData": {
 			"create": {
-				"errors": {
-					"name": "Invalid name: please only use letters, digits and underscores."
-				},
 				"title": "New Reference Data"
 			},
 			"delete": {
@@ -1293,9 +1290,6 @@
 		},
 		"referenceData": {
 			"csv": "CSV input",
-			"errors": {
-				"name": "Invalid name: please only use letters, digits and underscores."
-			},
 			"fields": "Fields",
 			"graphQLFilter": "GraphQL query parameters",
 			"path": "Path",
