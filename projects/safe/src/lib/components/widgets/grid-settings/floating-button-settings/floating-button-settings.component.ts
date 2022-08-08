@@ -1,3 +1,4 @@
+import { Apollo } from 'apollo-angular';
 import {
   Component,
   Input,
@@ -21,8 +22,14 @@ import {
   MAT_CHIPS_DEFAULT_OPTIONS,
 } from '@angular/material/chips';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
+import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
+import {
+  GET_GRID_FORM_META,
+  GetFormByIdQueryResponse,
+  GET_GRID_RESOURCE_META,
+  GetResourceByIdQueryResponse,
+} from '../graphql/queries';
 import { MatDialog } from '@angular/material/dialog';
 import {
   EMAIL_EDITOR_CONFIG,
@@ -59,15 +66,22 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
   @Input() relatedForms: Form[] = [];
+  @Input() relatedQueries: any[] = [];
 
-  // Indicate is the page is a single dashboard.
+  // === DATASET AND TEMPLATES ===
+  public templates: any[] = [];
+  public availableQueries?: Observable<any[]>;
+  public allQueries: any[] = [];
+  public queryNameDataset = '';
+
+  // === Indicate is the page is a single dashboard. ===
   public isDashboard = false;
 
-  // Indicate if the next step is a Form and so we could potentially pass some data to it.
+  // === Indicate if the next step is a Form and so we could potentially pass some data to it. ===
   public canPassData = false;
   private workflowSubscription?: Subscription;
 
-  // Emails
+  // === Emails ===
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
   public emails: string[] = [];
 
@@ -93,6 +107,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
    * @param queryBuilder Shared Query Builder service
    * @param dialog Material dialog service
    * @param translate Angular Translate Service
+   * @param apollo The apollo client
    */
   constructor(
     @Inject('environment') environment: any,
@@ -101,7 +116,8 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
     public dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private apollo: Apollo
   ) {
     // Set the editor base url based on the environment file
     let url: string;
@@ -212,16 +228,31 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
     this.buttonForm?.get('attachToRecord')?.valueChanges.subscribe((value) => {
       if (value) {
-        this.buttonForm?.get('targetForm')?.setValidators(Validators.required);
+        this.buttonForm
+          ?.get('targetDataset')
+          ?.setValidators(Validators.required);
       } else {
-        this.buttonForm?.get('targetForm')?.clearValidators();
-        this.buttonForm?.get('targetForm')?.setValue(null);
+        this.buttonForm?.get('targetDataset')?.clearValidators();
+        this.buttonForm?.get('targetDataset')?.setValue(null);
       }
-      this.buttonForm?.get('targetForm')?.updateValueAndValidity();
+      this.buttonForm?.get('targetDataset')?.updateValueAndValidity();
     });
 
-    this.buttonForm?.get('targetForm')?.valueChanges.subscribe((value) => {
+    this.buttonForm?.get('targetDataset')?.valueChanges.subscribe((value) => {
       if (value) {
+        this.buttonForm
+          ?.get('targetTemplate')
+          ?.setValidators(Validators.required);
+      } else {
+        this.buttonForm?.get('targetTemplate')?.clearValidators();
+        this.buttonForm?.get('targetTemplate')?.setValue(null);
+      }
+      this.buttonForm?.get('targetTemplate')?.updateValueAndValidity();
+    });
+
+    this.buttonForm?.get('targetTemplate')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.buttonForm?.get('targetTemplate')?.setValue(value);
         this.buttonForm
           ?.get('targetFormField')
           ?.setValidators(Validators.required);
@@ -248,7 +279,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
     this.emails = [...this.buttonForm?.get('distributionList')?.value];
 
-    this.buttonForm?.get('targetForm')?.valueChanges.subscribe((target) => {
+    this.buttonForm?.get('targetTemplate')?.valueChanges.subscribe((target) => {
       if (target?.name) {
         const queryName = this.queryBuilder.getQueryNameFromResourceName(
           target?.name || ''
@@ -306,6 +337,25 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
           this.buttonForm?.get('selectAll')?.updateValueAndValidity();
         }
       });
+
+    this.availableQueries = this.queryBuilder.availableQueries$;
+    this.availableQueries.subscribe((res) => {
+      if (res && res.length > 0) {
+        this.allQueries = res.map((x) => x.name);
+      }
+    });
+
+    this.queryNameDataset = this.buttonForm?.get('targetDataset')?.value;
+    this.getQueryMetaData();
+
+    this.buttonForm?.get('targetDataset')?.valueChanges.subscribe((name) => {
+      if (name) {
+        this.queryNameDataset = this.buttonForm?.get('targetDataset')?.value;
+        this.getQueryMetaData();
+      } else {
+        this.fields = [];
+      }
+    });
   }
 
   /**
@@ -415,6 +465,51 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     }
     this.buttonForm?.get('distributionList')?.setValue(this.emails);
     this.buttonForm?.get('distributionList')?.updateValueAndValidity();
+  }
+
+  /**
+   * Gets query metadata for grid settings, from the query name
+   */
+  private getQueryMetaData(): void {
+    this.fields = this.queryBuilder.getFields(this.queryNameDataset);
+    const query = this.queryBuilder.sourceQuery(this.queryNameDataset);
+    if (query) {
+      query.subscribe((res1: { data: any }) => {
+        // eslint-disable-next-line no-underscore-dangle
+        const source = res1.data[`_${this.queryNameDataset}Meta`]._source;
+        this.buttonForm?.get('resource')?.setValue(source);
+        if (source) {
+          this.apollo
+            .query<GetResourceByIdQueryResponse>({
+              query: GET_GRID_RESOURCE_META,
+              variables: {
+                resource: source,
+              },
+            })
+            .subscribe((res2) => {
+              if (res2.errors) {
+                this.apollo
+                  .query<GetFormByIdQueryResponse>({
+                    query: GET_GRID_FORM_META,
+                    variables: {
+                      id: source,
+                    },
+                  })
+                  .subscribe((res3) => {
+                    if (res3.errors) {
+                      this.templates = [];
+                    } else {
+                      this.templates = [res3.data.form] || [];
+                    }
+                  });
+              } else {
+                this.templates = res2.data.resource.forms || [];
+              }
+            });
+        }
+      });
+    } else {
+    }
   }
 
   ngOnDestroy(): void {

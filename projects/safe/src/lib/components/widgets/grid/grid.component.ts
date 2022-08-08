@@ -197,7 +197,7 @@ export class SafeGridWidgetComponent implements OnInit {
     if (options.attachToRecord && this.grid.selectedRows.length > 0) {
       await this.promisedAttachToRecord(
         this.grid.selectedRows,
-        options.targetForm,
+        options.targetTemplate,
         options.targetFormField,
         options.targetFormQuery
       );

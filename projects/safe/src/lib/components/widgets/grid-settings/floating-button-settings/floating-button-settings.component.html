@@ -179,19 +179,39 @@
           </mat-checkbox>
         </ng-container>
         <div *ngIf="buttonForm.value.attachToRecord" class="sub-parameters">
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'models.form.select' | translate }}</mat-label>
-            <mat-select
-              formControlName="targetForm"
-              [compareWith]="compareFields"
-            >
-              <mat-option>--</mat-option>
-              <mat-option *ngFor="let form of relatedForms" [value]="form">
-                {{ form.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <ng-container *ngIf="buttonForm.value.targetForm">
+          <div class="form-group-row">
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                'components.queryBuilder.dataset.select' | translate
+              }}</mat-label>
+              <input
+                type="text"
+                [placeholder]="
+                  'components.queryBuilder.dataset.select' | translate
+                "
+                matInput
+                formControlName="targetDataset"                
+                [matAutocomplete]="auto"
+              />
+              <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let option of relatedQueries" [value]="option">
+                  {{ option }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'models.form.template' | translate }}</mat-label>
+              <mat-select formControlName="targetTemplate">
+                <mat-option>--</mat-option>
+                <mat-option
+                *ngFor="let template of templates"
+                [value]="template"
+                >{{ template.name }}</mat-option
+              >
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <ng-container *ngIf="buttonForm.value.targetTemplate">
             <mat-form-field appearance="outline">
               <mat-label>{{
                 'components.widget.settings.grid.buttons.callback.displayField'
@@ -200,7 +220,7 @@
               <mat-select formControlName="targetFormField">
                 <mat-option>--</mat-option>
                 <mat-option
-                  *ngFor="let field of buttonForm.value.targetForm.fields"
+                  *ngFor="let field of buttonForm.value.targetTemplate.fields"
                   [value]="field.name"
                 >
                   {{ field.name }}
@@ -208,7 +228,7 @@
               </mat-select>
             </mat-form-field>
           </ng-container>
-          <ng-container *ngIf="buttonForm.value.targetForm">
+          <ng-container *ngIf="buttonForm.value.targetTemplate">
             <safe-query-builder
               [form]="$any(buttonForm.controls.targetFormQuery)"
               [canSelectDataSet]="false"

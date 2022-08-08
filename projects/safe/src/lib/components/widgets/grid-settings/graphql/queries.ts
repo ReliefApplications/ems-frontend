@@ -34,6 +34,7 @@ export const GET_GRID_FORM_META = gql`
       id
       name
       queryName
+      fields
       layouts {
         id
         name
@@ -57,6 +58,7 @@ export const GET_GRID_RESOURCE_META = gql`
       forms {
         id
         name
+        fields
       }
       relatedForms {
         id

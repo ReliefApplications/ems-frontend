@@ -69,6 +69,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public queryName = '';
   public relatedForms: Form[] = [];
   public tabIndex = 0;
+  public relatedQueries: any[] = [];
 
   // === DATASET AND TEMPLATES ===
   public templates: Form[] = [];
@@ -136,6 +137,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
           : [this.createFloatingButtonForm(null)]
       ),
     });
+
     this.availableQueries = this.queryBuilder.availableQueries$;
     this.availableQueries.subscribe((res) => {
       if (res && res.length > 0) {
@@ -259,6 +261,12 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         value && value.attachToRecord ? value.attachToRecord : false,
       ],
       targetForm: [value && value.targetForm ? value.targetForm : null],
+      targetDataset: [
+        value && value.targetDataset ? value.targetDataset : null,
+      ],
+      targetTemplate: [
+        value && value.targetTemplate ? value.targetTemplate : null,
+      ],
       targetFormField: [
         value && value.targetFormField ? value.targetFormField : null,
       ],
@@ -370,6 +378,14 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
                 this.resource = res2.data.resource;
                 this.form = null;
                 this.relatedForms = res2.data.resource.relatedForms || [];
+                this.relatedQueries = [];
+                this.relatedForms.map((x) => {
+                  if (x.name) {
+                    const relatedQueries = this.filterQueries(x.name) || '';
+                    this.relatedQueries =
+                      this.relatedQueries.concat(relatedQueries);
+                  }
+                });
                 this.templates = res2.data.resource.forms || [];
               }
             });
@@ -377,6 +393,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       });
     } else {
       this.relatedForms = [];
+      this.relatedQueries = [];
       this.templates = [];
       this.form = null;
       this.resource = null;
