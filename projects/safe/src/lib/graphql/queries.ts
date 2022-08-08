@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 import { Form } from '../models/form.model';
 import { Resource } from '../models/resource.model';
-import { User } from '../models/user.model';
+import { User, Group } from '../models/user.model';
 import { Notification } from '../models/notification.model';
 import { Application } from '../models/application.model';
 import { Workflow } from '../models/workflow.model';

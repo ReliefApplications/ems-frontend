@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 /**
  * This component allows the user to add a role to the platform or to an application.
@@ -11,6 +11,8 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./add-role.component.scss'],
 })
 export class SafeAddRoleComponent implements OnInit {
+  title: string;
+
   // === REACTIVE FORM ===
   roleForm: FormGroup = new FormGroup({});
 
@@ -20,11 +22,19 @@ export class SafeAddRoleComponent implements OnInit {
    *
    * @param formBuilder This is the service used to build forms
    * @param dialogRef This is the reference of the dialog modal that will be opened
+   * @param data Injected dialog data
+   * @param data.title Title of the dialog modal
    */
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<SafeAddRoleComponent>
-  ) {}
+    public dialogRef: MatDialogRef<SafeAddRoleComponent>,
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      title: string;
+    }
+  ) {
+    this.title = data.title;
+  }
 
   /**
    * Build the form.

@@ -77,9 +77,19 @@ export const routes = [
                       import('./pages/role-summary/role-summary.module').then(
                         (m) => m.RoleSummaryModule
                       ),
+                    data: {
+                      breadcrumb: {
+                        alias: '@role',
+                      },
+                    },
                     // canActivate: [SafePermissionGuard]
                   },
                 ],
+                data: {
+                  breadcrumb: {
+                    key: 'common.role.few',
+                  },
+                },
               },
               {
                 path: 'users',
@@ -98,9 +108,19 @@ export const routes = [
                       import('./pages/user-summary/user-summary.module').then(
                         (m) => m.UserSummaryModule
                       ),
+                    data: {
+                      breadcrumb: {
+                        alias: '@user',
+                      },
+                    },
                     // canActivate: [SafePermissionGuard]
                   },
                 ],
+                data: {
+                  breadcrumb: {
+                    key: 'common.user.few',
+                  },
+                },
               },
               {
                 path: '**',
