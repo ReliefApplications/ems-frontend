@@ -6,8 +6,8 @@
   (focusin)="onFocusIn($event)"
   (focusout)="onFocusOut($event)"
 >
-  <mat-option *ngFor="let element of elements$ | async" [value]="element.id">
-    {{ element.name }}
+  <mat-option *ngFor="let element of elements$ | async" [value]="element[valueField]">
+    {{ element[textField] }}
   </mat-option>
   <mat-spinner
     *ngIf="loading"

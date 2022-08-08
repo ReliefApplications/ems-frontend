@@ -10,7 +10,7 @@ import {
   Self,
   ViewChild,
 } from '@angular/core';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
   MAT_SELECT_SCROLL_STRATEGY,
@@ -24,12 +24,7 @@ import {
   MatFormFieldControl,
   MAT_FORM_FIELD,
 } from '@angular/material/form-field';
-import {
-  FormBuilder,
-  FormControl,
-  NgControl,
-  ControlValueAccessor,
-} from '@angular/forms';
+import { FormControl, NgControl, ControlValueAccessor } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 /** A constant that is used to determine how many items should be added on scroll. */
@@ -37,9 +32,9 @@ const ITEMS_PER_RELOAD = 10;
 
 /** Component for a dropdown with pagination */
 @Component({
-  selector: 'safe-paginated-dropdown',
-  templateUrl: './paginated-dropdown.component.html',
-  styleUrls: ['./paginated-dropdown.component.scss'],
+  selector: 'safe-graphql-select',
+  templateUrl: './graphql-select.component.html',
+  styleUrls: ['./graphql-select.component.scss'],
   providers: [
     {
       provide: MAT_SELECT_SCROLL_STRATEGY,
@@ -48,11 +43,11 @@ const ITEMS_PER_RELOAD = 10;
     },
     {
       provide: MatFormFieldControl,
-      useExisting: SafePaginatedDropdownComponent,
+      useExisting: SafeGraphQLSelectComponent,
     },
   ],
 })
-export class SafePaginatedDropdownComponent
+export class SafeGraphQLSelectComponent
   implements
     OnInit,
     OnDestroy,
@@ -82,7 +77,7 @@ export class SafePaginatedDropdownComponent
 
   public stateChanges = new Subject<void>();
   @HostBinding()
-  id = `safe-paginated-dropdown-${SafePaginatedDropdownComponent.nextId++}`;
+  id = `safe-graphql-select-${SafeGraphQLSelectComponent.nextId++}`;
 
   /**
    * Gets the placeholder for the select
@@ -173,7 +168,7 @@ export class SafePaginatedDropdownComponent
     return this.selected.invalid && this.touched;
   }
 
-  public controlType = 'safe-paginated-dropdown';
+  public controlType = 'safe-graphql-select';
 
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
@@ -184,7 +179,7 @@ export class SafePaginatedDropdownComponent
    */
   setDescribedByIds(ids: string[]) {
     const controlElement = this.elementRef.nativeElement.querySelector(
-      '.safe-paginated-dropdown-container'
+      '.safe-graphql-select-container'
     );
     if (!controlElement) return;
     controlElement.setAttribute('aria-describedby', ids.join(' '));

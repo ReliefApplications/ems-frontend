@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafePaginatedDropdownComponent } from './paginated-dropdown.component';
+import { SafeGraphQLSelectComponent } from './graphql-select.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -11,7 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
  * Select module for GraphQL queries.
  */
 @NgModule({
-  declarations: [SafePaginatedDropdownComponent],
+  declarations: [SafeGraphQLSelectComponent],
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -21,6 +21,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     MatProgressSpinnerModule,
   ],
-  exports: [SafePaginatedDropdownComponent],
+  exports: [SafeGraphQLSelectComponent],
 })
-export class SafePaginatedDropdownModule {}
+export class SafeGraphQLSelectModule {}
