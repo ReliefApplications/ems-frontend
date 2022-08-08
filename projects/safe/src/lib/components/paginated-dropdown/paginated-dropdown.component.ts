@@ -31,28 +31,9 @@ import {
   ControlValueAccessor,
 } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import {
-  GET_APPLICATIONS,
-  GET_RESOURCES,
-  GET_API_CONFIGURATIONS,
-  GET_FORMS,
-  GET_REFERENCE_DATAS,
-} from '../../graphql/queries';
 
-/** A constant that is used to determine how many items should be on one page. */
-const ITEMS_PER_PAGE = 10;
-
-/** Array with available queries and its configuration */
-const AVAILABLE_QUERIES = {
-  resources: GET_RESOURCES,
-  forms: GET_FORMS,
-  applications: GET_APPLICATIONS,
-  apiConfigurations: GET_API_CONFIGURATIONS,
-  referenceDatas: GET_REFERENCE_DATAS,
-};
-
-/** Available queries type */
-type AvailableQueries = keyof typeof AVAILABLE_QUERIES;
+/** A constant that is used to determine how many items should be added on scroll. */
+const ITEMS_PER_RELOAD = 10;
 
 /** Component for a dropdown with pagination */
 @Component({
@@ -122,6 +103,7 @@ export class SafePaginatedDropdownComponent
   public touched = false;
   onTouched = () => {};
   onChange = (_: any) => {};
+
   /**
    * Gets the empty status
    *
@@ -245,14 +227,13 @@ export class SafePaginatedDropdownComponent
 
   public selected: FormControl;
 
-  /** The wanted query */
-  @Input('query') queryName!: AvailableQueries;
-  public query = AVAILABLE_QUERIES[this.queryName];
+  /** Query reference for getting the available contents */
+  @Input('query') query!: QueryRef<any>;
 
+  private queryName!: string;
   public selectedElement: any;
   private elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
-  private queryRef!: QueryRef<any>;
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -272,29 +253,20 @@ export class SafePaginatedDropdownComponent
    * @param ngControl form control shared service
    */
   constructor(
-    private apollo: Apollo,
-    private fb: FormBuilder,
     private elementRef: ElementRef<HTMLElement>,
     @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl
   ) {
-    this.selected = fb.control('');
+    this.selected = new FormControl('');
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
   }
 
   ngOnInit(): void {
-    this.query = AVAILABLE_QUERIES[this.queryName];
-    this.queryRef = this.apollo.watchQuery<any>({
-      query: this.query,
-      variables: {
-        first: ITEMS_PER_PAGE,
-      },
-    });
-
     this.elements$ = this.elements.asObservable();
-    this.queryRef.valueChanges.subscribe((res) => {
+    this.query.valueChanges.subscribe((res: any) => {
+      this.queryName = Object.keys(res.data)[0];
       this.elements.next(
         get(res.data, this.queryName).edges.map((x: any) => x.node)
       );
@@ -361,9 +333,9 @@ export class SafePaginatedDropdownComponent
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        this.queryRef.fetchMore({
+        this.query.fetchMore({
           variables: {
-            first: ITEMS_PER_PAGE,
+            first: ITEMS_PER_RELOAD,
             afterCursor: this.pageInfo.endCursor,
           },
           updateQuery: (prev, { fetchMoreResult }) => {
