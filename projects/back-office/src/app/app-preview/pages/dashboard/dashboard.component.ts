@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   GetDashboardByIdQueryResponse,
   GET_DASHBOARD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   Dashboard,
   SafeSnackBarService,
@@ -20,6 +20,9 @@ import {
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Dashboard component page, for application preview.
+ */
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -38,6 +41,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
+  /**
+   * Dashboar component page for application preview.
+   *
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param router Angular router
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param dashboardService Shared dashboard service
+   * @param translate Angular translate service
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
@@ -45,7 +59,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
-    private translateService: TranslateService
+    private translate: TranslateService
   ) {}
 
   /**
@@ -73,10 +87,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
               this.loading = res.loading;
             } else {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
+                this.translate.instant(
                   'common.notifications.accessNotProvided',
                   {
-                    type: this.translateService
+                    type: this.translate
                       .instant('common.dashboard.one')
                       .toLowerCase(),
                     error: '',

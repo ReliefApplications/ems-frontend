@@ -13,6 +13,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 
+/**
+ * Mapping module
+ */
 @NgModule({
   declarations: [SafeMappingComponent, SafeMappingModalComponent],
   imports: [

@@ -75,6 +75,11 @@
 			"one": "******"
 		},
 		"general": "******",
+		"group": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"history": "******",
 		"id": "******",
 		"input": {
@@ -444,6 +449,15 @@
 			"isCore": "******",
 			"parent": "******"
 		},
+		"group": {
+			"add": {
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			}
+		},
 		"header": {
 			"goToPlatform": "******",
 			"logout": "******",
@@ -671,7 +685,7 @@
 				"disallowRecordAccessibility": "****** {{form}}",
 				"disallowRecordCreation": "****** {{form}}",
 				"disallowRecordDeletion": "****** {{form}}",
-				"disallowRecordUpate": "****** {{form}}",
+				"disallowRecordUpdate": "****** {{form}}",
 				"hideFeature": "****** {{page}} ******",
 				"showFeature": "****** {{page}} ******"
 			},
@@ -701,6 +715,7 @@
 					"application": "******",
 					"backoffice": "******",
 					"selectedApplication": "******",
+					"selectedGroups": "******",
 					"selectedRoles": "******"
 				},
 				"title": "******"
@@ -1107,6 +1122,11 @@
 			},
 			"select": "******",
 			"template": "******"
+		},
+		"group": {
+			"create": "******",
+			"description": "******",
+			"title": "******"
 		},
 		"mapping": {
 			"add": "******",

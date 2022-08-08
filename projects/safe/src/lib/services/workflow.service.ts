@@ -35,6 +35,7 @@ export class SafeWorkflowService {
    * @param snackBar Shared snackbar service
    * @param router Angular router
    * @param applicationService Shared application service
+   * @param translate Angular translate service
    */
   constructor(
     private apollo: Apollo,

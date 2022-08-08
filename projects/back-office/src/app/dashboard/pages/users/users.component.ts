@@ -7,7 +7,7 @@ import {
   GET_USERS,
   GetRolesQueryResponse,
   GET_ROLES,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { Role, User } from '@safe/builder';
 
 /**

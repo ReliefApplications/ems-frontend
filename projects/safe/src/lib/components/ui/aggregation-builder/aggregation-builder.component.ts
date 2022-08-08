@@ -3,7 +3,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { GET_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
+import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import { Form } from '../../../models/form.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { SafeGridService } from '../../../services/grid.service';

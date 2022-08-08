@@ -1,83 +1,22 @@
-<div class="header">
-  <div class="filters">
-    <mat-form-field appearance="outline">
-      <mat-icon matPrefix>search</mat-icon>
-      <input
-        id="custom-search"
-        matInput
-        [ngModel]="searchText"
-        (keyup)="applyFilter('', $event)"
-        type="search"
-        [placeholder]="'common.placeholder.search' | translate"
-      />
-    </mat-form-field>
-  </div>
-  <div class="actions">
-    <safe-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-    >
-      {{ 'models.role.create' | translate }}
-    </safe-button>
-  </div>
-</div>
-
-<table *ngIf="!loading" mat-table [dataSource]="roles" matSort>
-  <ng-container matColumnDef="title">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
-        {{ 'common.title' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">{{ element.title }}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="usersCount">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
-        {{ 'common.user.few' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element">
-      <safe-button
-        [isIcon]="true"
-        icon="more_vert"
-        [matMenuTriggerFor]="menu"
-        (click)="$event.stopPropagation()"
-      >
-      </safe-button>
-      <mat-menu #menu="matMenu">
-        <!-- <button mat-menu-item (click)="onOpen(element)">
-          <mat-icon>edit</mat-icon>
-          {{ 'common.edit' | translate }}
-        </button>
-        <mat-divider></mat-divider> -->
-        <button mat-menu-item color="warn" (click)="onDelete(element)">
-          <mat-icon>delete</mat-icon>
-          {{ 'common.delete' | translate }}
-        </button>
-      </mat-menu>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: displayedColumns"
-    (click)="onOpen(row)"
-  ></tr>
-</table>
-
-<safe-skeleton-table
-  *ngIf="loading"
-  [columns]="['common.title', 'common.user.few']"
-  [actions]="true"
->
-</safe-skeleton-table>
+<h1>{{ 'common.role.few' | translate }}</h1>
+<!-- Not in application -->
+<mat-tab-group *ngIf="!inApplication">
+  <mat-tab
+    [label]="
+      (inApplication ? 'common.application.few' : 'common.platform.backOffice')
+        | translate
+    "
+  >
+    <ng-template matTabContent>
+      <safe-role-list [inApplication]="inApplication"></safe-role-list>
+    </ng-template>
+  </mat-tab>
+  <mat-tab [label]="'common.group.few' | translate" *ngIf="!inApplication">
+    <ng-template matTabContent>
+      <safe-group-list></safe-group-list>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
+<!-- In Application -->
+<safe-role-list *ngIf="inApplication" [inApplication]="inApplication">
+</safe-role-list>

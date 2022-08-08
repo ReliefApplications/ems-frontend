@@ -6,6 +6,7 @@ import { WorkflowModule } from '../workflow/workflow.module';
 import { DashboardModule } from '../dashboard/dashboard.module';
 import { FormModule } from '../form/form.module';
 
+/** Application module */
 @NgModule({
   declarations: [ApplicationComponent],
   imports: [

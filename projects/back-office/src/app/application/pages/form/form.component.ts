@@ -19,16 +19,19 @@ import {
   GET_PAGE_BY_ID,
   GetStepByIdQueryResponse,
   GET_STEP_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   EditStepMutationResponse,
   EDIT_STEP,
   EditPageMutationResponse,
   EDIT_PAGE,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { switchMap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Form page in application.
+ */
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
@@ -57,6 +60,17 @@ export class FormComponent implements OnInit, OnDestroy {
   private routeSubscription?: Subscription;
   public isStep = false;
 
+  /**
+   * Form page in application
+   *
+   * @param applicationService Shared application service
+   * @param workflowService Shared workflow service
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param router Angular router
+   * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
+   */
   constructor(
     private applicationService: SafeApplicationService,
     private workflowService: SafeWorkflowService,
@@ -64,7 +78,7 @@ export class FormComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SafeSnackBarService,
-    private translateService: TranslateService
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -136,6 +150,9 @@ export class FormComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Toggle activation of form.
+   */
   toggleFormActive(): void {
     if (this.step?.canUpdate || this.page?.canUpdate) {
       this.formActive = !this.formActive;
@@ -158,27 +175,19 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant('common.step.one'),
-                  error: res.errors[0].message,
-                }
-              ),
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.step.one'),
+                error: res.errors[0].message,
+              }),
               { error: true }
             );
           } else {
             if (res.data) {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService
-                      .instant('common.step.one')
-                      .toLowerCase(),
-                    value: tabName,
-                  }
-                )
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.step.one').toLowerCase(),
+                  value: tabName,
+                })
               );
               this.step = { ...this.step, name: res.data.editStep.name };
               this.workflowService.updateStepName(res.data.editStep);
@@ -197,29 +206,19 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.errors) {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService
-                    .instant('common.page.one')
-                    .toLowerCase(),
-                  error: res.errors[0].message,
-                }
-              ),
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one').toLowerCase(),
+                error: res.errors[0].message,
+              }),
               { error: true }
             );
           } else {
             if (res.data) {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService
-                      .instant('common.page.one')
-                      .toLowerCase(),
-                    value: tabName,
-                  }
-                )
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.page.one').toLowerCase(),
+                  value: tabName,
+                })
               );
               const newPage = { ...this.page, name: res.data.editPage.name };
               this.page = newPage;
@@ -230,7 +229,11 @@ export class FormComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Edit the permissions layer. */
+  /**
+   * Edit the permissions layer.
+   *
+   * @param e permissions
+   */
   saveAccess(e: any): void {
     if (this.isStep) {
       this.apollo
@@ -265,15 +268,28 @@ export class FormComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Complete form
+   *
+   * @param e completion event
+   * @param e.completed is completed
+   * @param e.hideNewRecord do we show new record button
+   */
   onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }
 
+  /**
+   * Clear status of the form.
+   */
   clearForm(): void {
     this.formComponent?.reset();
   }
 
+  /**
+   * Edit form. Open form builder.
+   */
   editForm(): void {
     if (this.isStep && this.step) {
       this.router.navigate([`./builder/${this.step.content}`], {

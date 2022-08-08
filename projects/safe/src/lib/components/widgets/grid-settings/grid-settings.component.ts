@@ -16,7 +16,7 @@ import {
   GetFormByIdQueryResponse,
   GET_GRID_RESOURCE_META,
   GetResourceByIdQueryResponse,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application.service';
@@ -32,6 +32,7 @@ import { scrollFactory } from '../../../utils/scroll-factory';
 import { Resource } from '../../../models/resource.model';
 import get from 'lodash/get';
 
+/** Default action name */
 const DEFAULT_ACTION_NAME = 'Action';
 
 /**

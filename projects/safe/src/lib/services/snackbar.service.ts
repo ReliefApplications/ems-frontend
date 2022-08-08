@@ -36,6 +36,7 @@ export class SafeSnackBarService {
    * Snackbar is a brief notification that appears for a short time as a popup.
    *
    * @param snackBar Material snackbar service
+   * @param translate Angular translate service
    */
   constructor(
     private snackBar: MatSnackBar,

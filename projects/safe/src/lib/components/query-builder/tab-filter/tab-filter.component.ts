@@ -196,13 +196,11 @@ export class SafeTabFilterComponent implements OnInit {
    *
    * @param formBuilder This is the service that will be used to build forms.
    * @param queryBuilder This is the service that will be used to build the query.
-   * @param apiProxyService This is the service that will be used to make the API call.
    * @param gridService Shared grid service
    */
   constructor(
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService,
-    private apiProxyService: SafeApiProxyService,
     private gridService: SafeGridService
   ) {}
 
@@ -260,6 +258,12 @@ export class SafeTabFilterComponent implements OnInit {
     });
   }
 
+  /**
+   * Get meta from filter name
+   *
+   * @param name field name
+   * @returns meta or null
+   */
   getMeta(name: string): any {
     return get(this.metaFields, name, null);
   }
