@@ -2,7 +2,7 @@ import { gql } from 'apollo-angular';
 import { Application } from '../../../models/application.model';
 import { Resource } from '../../../models/resource.model';
 import { Channel } from '../../../models/channel.model';
-import { Permission, Role } from '../../../models/user.model';
+import { Group, Permission, Role } from '../../../models/user.model';
 import { Workflow } from '../../../models/workflow.model';
 
 /** Get role by id GraphQL query */
@@ -217,4 +217,21 @@ export const GET_RESOURCE_FORMS = gql`
 /** Model for the response of the GetResourceForms query */
 export interface GetResourceFormsQueryResponse {
   resource: Resource;
+}
+
+/** Graphql request for getting groups */
+export const GET_GROUPS = gql`
+  query GetGroups {
+    groups {
+      id
+      title
+      usersCount
+    }
+  }
+`;
+
+/** Model for GetGroupsQueryResponse object */
+export interface GetGroupsQueryResponse {
+  loading: boolean;
+  groups: Group[];
 }
