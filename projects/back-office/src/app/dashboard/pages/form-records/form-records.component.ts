@@ -8,7 +8,7 @@ import {
   GET_FORM_BY_ID,
   GET_FORM_RECORDS,
   GET_RECORD_DETAILS,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   EditRecordMutationResponse,
   EDIT_RECORD,
@@ -16,7 +16,7 @@ import {
   DELETE_RECORD,
   RestoreRecordMutationResponse,
   RESTORE_RECORD,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { extractColumns } from '../../../utils/extractColumns';
 import {
   SafeRecordHistoryComponent,

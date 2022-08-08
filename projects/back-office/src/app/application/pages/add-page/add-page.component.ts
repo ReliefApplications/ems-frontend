@@ -13,8 +13,8 @@ import {
 } from '@safe/builder';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
-import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
-import { GET_FORMS, GetFormsQueryResponse } from '../../../graphql/queries';
+import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
+import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import { MatSelect } from '@angular/material/select';
 import { TranslateService } from '@ngx-translate/core';
 

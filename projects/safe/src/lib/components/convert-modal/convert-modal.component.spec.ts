@@ -10,7 +10,7 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_RECORD_DETAILS } from '../../graphql/queries';
+import { GET_RECORD_DETAILS } from './graphql/queries';
 
 describe('SafeConvertModalComponent', () => {
   let component: SafeConvertModalComponent;
