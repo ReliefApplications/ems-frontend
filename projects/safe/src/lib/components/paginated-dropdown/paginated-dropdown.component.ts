@@ -60,6 +60,9 @@ export class SafePaginatedDropdownComponent
     MatFormFieldControl<string>
 {
   static nextId = 0;
+
+  @Input() valueField = '';
+  @Input() textField = '';
   /**
    * Gets the value
    *

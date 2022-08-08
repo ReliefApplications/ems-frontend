@@ -8,8 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /**
- * SafeFormModule is a class used to manage all the modules and components
- * related to the form display.
+ * Select module for GraphQL queries.
  */
 @NgModule({
   declarations: [SafePaginatedDropdownComponent],
