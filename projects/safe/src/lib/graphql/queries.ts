@@ -543,22 +543,3 @@ export interface GetReferenceDataByIdQueryResponse {
   loading: boolean;
   referenceData: ReferenceData;
 }
-
-// === GET GROUPS ===
-
-/** Graphql request for getting groups */
-export const GET_GROUPS = gql`
-  query GetGroups {
-    groups {
-      id
-      title
-      usersCount
-    }
-  }
-`;
-
-/** Model for GetGroupsQueryResponse object */
-export interface GetGroupsQueryResponse {
-  loading: boolean;
-  groups: Group[];
-}

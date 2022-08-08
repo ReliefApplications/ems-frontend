@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeGroupsComponent } from './groups.component';
+import { SafeRoleListComponent } from './role-list.component';
 
-describe('SafeGroupsComponent', () => {
-  let component: SafeGroupsComponent;
-  let fixture: ComponentFixture<SafeGroupsComponent>;
+describe('SafeRoleListComponent', () => {
+  let component: SafeRoleListComponent;
+  let fixture: ComponentFixture<SafeRoleListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeGroupsComponent],
+      declarations: [SafeRoleListComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeGroupsComponent);
+    fixture = TestBed.createComponent(SafeRoleListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

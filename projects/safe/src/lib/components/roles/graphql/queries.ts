@@ -1,9 +1,9 @@
 import { gql } from 'apollo-angular';
-import { Role } from '../../../models/user.model';
+import { Group, Role } from '../../../models/user.model';
 
 // === GET ROLES ===
 
-/** Graphql request for getting roles (optionnally by an application id) */
+/** Graphql request for getting roles (optionally by an application id) */
 export const GET_ROLES = gql`
   query GetRoles($application: ID) {
     roles(application: $application) {
@@ -30,4 +30,21 @@ export const GET_ROLES = gql`
 export interface GetRolesQueryResponse {
   loading: boolean;
   roles: Role[];
+}
+
+/** Graphql request for getting groups */
+export const GET_GROUPS = gql`
+  query GetGroups {
+    groups {
+      id
+      title
+      usersCount
+    }
+  }
+`;
+
+/** Model for GetGroupsQueryResponse object */
+export interface GetGroupsQueryResponse {
+  loading: boolean;
+  groups: Group[];
 }
