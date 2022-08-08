@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeGroupsComponent } from './groups.component';
+import { SafeGroupListComponent } from './group-list.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../../ui/button/button.module';
+import { SafeButtonModule } from '../../../ui/button/button.module';
 import { MatInputModule } from '@angular/material/input';
-import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
+import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 
@@ -15,7 +15,7 @@ import { MatTableModule } from '@angular/material/table';
  * related to the groups tab
  */
 @NgModule({
-  declarations: [SafeGroupsComponent],
+  declarations: [SafeGroupListComponent],
   imports: [
     CommonModule,
     TranslateModule,
@@ -27,6 +27,6 @@ import { MatTableModule } from '@angular/material/table';
     MatMenuModule,
     MatTableModule,
   ],
-  exports: [SafeGroupsComponent],
+  exports: [SafeGroupListComponent],
 })
-export class SafeGroupsModule {}
+export class SafeGroupListModule {}

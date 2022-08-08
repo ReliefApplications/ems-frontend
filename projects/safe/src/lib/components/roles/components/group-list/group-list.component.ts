@@ -8,21 +8,21 @@ import {
   ADD_GROUP,
   DeleteGroupMutationResponse,
   DELETE_GROUP,
-} from '../../../graphql/mutations';
-import { GetGroupsQueryResponse, GET_GROUPS } from '../../../graphql/queries';
-import { SafeSnackBarService } from '../../../services/snackbar.service';
-import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
-import { SafeAddRoleComponent } from '../components/add-role/add-role.component';
+} from '../../graphql/mutations';
+import { GetGroupsQueryResponse, GET_GROUPS } from '../../graphql/queries';
+import { SafeSnackBarService } from '../../../../services/snackbar.service';
+import { SafeConfirmModalComponent } from '../../../confirm-modal/confirm-modal.component';
+import { SafeAddRoleComponent } from '../add-role/add-role.component';
 
 /**
  * This component is used to display the groups tab in the platform
  */
 @Component({
-  selector: 'safe-groups',
-  templateUrl: './groups.component.html',
-  styleUrls: ['./groups.component.scss'],
+  selector: 'safe-group-list',
+  templateUrl: './group-list.component.html',
+  styleUrls: ['./group-list.component.scss'],
 })
-export class SafeGroupsComponent implements OnInit {
+export class SafeGroupListComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public groups: MatTableDataSource<any> = new MatTableDataSource<any>([]);

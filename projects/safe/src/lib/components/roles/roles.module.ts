@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeRolesComponent } from './roles.component';
-import { SafeBackOfficeRolesModule } from './back-office-roles/back-office-roles.module';
-import { SafeGroupsModule } from './groups/groups.module';
+import { SafeRoleListModule } from './components/role-list/role-list.module';
+import { SafeGroupListModule } from './components/group-list/group-list.module';
 import { SafeAddRoleComponent } from './components/add-role/add-role.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,8 +19,8 @@ import { MatInputModule } from '@angular/material/input';
   declarations: [SafeRolesComponent, SafeAddRoleComponent],
   imports: [
     CommonModule,
-    SafeBackOfficeRolesModule,
-    SafeGroupsModule,
+    SafeRoleListModule,
+    SafeGroupListModule,
     TranslateModule,
     MatTabsModule,
     MatDialogModule,

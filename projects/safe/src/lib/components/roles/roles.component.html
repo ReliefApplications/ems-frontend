@@ -1,5 +1,6 @@
 <h1>{{ 'common.role.few' | translate }}</h1>
-<mat-tab-group>
+<!-- Not in application -->
+<mat-tab-group *ngIf="!inApplication">
   <mat-tab
     [label]="
       (inApplication ? 'common.application.few' : 'common.platform.backOffice')
@@ -7,14 +8,15 @@
     "
   >
     <ng-template matTabContent>
-      <safe-back-office-roles
-        [inApplication]="inApplication"
-      ></safe-back-office-roles>
+      <safe-role-list [inApplication]="inApplication"></safe-role-list>
     </ng-template>
   </mat-tab>
   <mat-tab [label]="'common.group.few' | translate" *ngIf="!inApplication">
     <ng-template matTabContent>
-      <safe-groups></safe-groups>
+      <safe-group-list></safe-group-list>
     </ng-template>
   </mat-tab>
 </mat-tab-group>
+<!-- In Application -->
+<safe-role-list *ngIf="inApplication" [inApplication]="inApplication">
+</safe-role-list>

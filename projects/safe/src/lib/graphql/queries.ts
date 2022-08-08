@@ -7,7 +7,6 @@ import { Application } from '../models/application.model';
 import { Workflow } from '../models/workflow.model';
 import { Dashboard } from '../models/dashboard.model';
 import { ReferenceData } from '../models/reference-data.model';
-import { RecordHistory } from '../models/recordsHistory';
 
 // === GET PROFILE ===
 
@@ -553,82 +552,4 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
 export interface GetReferenceDataByIdQueryResponse {
   loading: boolean;
   referenceData: ReferenceData;
-}
-
-/** Get record history query */
-export const GET_RECORD_HISTORY_BY_ID = gql`
-  query GetRecordHistoryByID($id: ID!, $lang: String) {
-    recordHistory(id: $id, lang: $lang) {
-      createdAt
-      createdBy
-      changes {
-        type
-        field
-        displayName
-        old
-        new
-      }
-      version {
-        id
-        createdAt
-        data
-      }
-    }
-  }
-`;
-
-/** Get record history query response */
-export interface GetRecordHistoryByIdResponse {
-  loading: boolean;
-  recordHistory: RecordHistory;
-}
-
-// === GET GROUPS ===
-
-/** Graphql request for getting groups */
-export const GET_GROUPS = gql`
-  query GetGroups {
-    groups {
-      id
-      title
-      usersCount
-    }
-  }
-`;
-
-/** Model for GetGroupsQueryResponse object */
-export interface GetGroupsQueryResponse {
-  loading: boolean;
-  groups: Group[];
-}
-
-// === GET ROLES ===
-
-/** Graphql request for getting roles (optionnally by an application id) */
-export const GET_ROLES = gql`
-  query GetRoles($application: ID) {
-    roles(application: $application) {
-      id
-      title
-      permissions {
-        id
-        type
-      }
-      usersCount
-      channels {
-        id
-        title
-        application {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
-
-/** Model for GetRolesQueryResponse object */
-export interface GetRolesQueryResponse {
-  loading: boolean;
-  roles: Role[];
 }
