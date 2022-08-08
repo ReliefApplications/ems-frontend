@@ -110,7 +110,7 @@ export class SafePaginatedDropdownComponent
    * @returns if an option is selected
    */
   get empty() {
-    return !!this.selected.value;
+    return !this.selected.value;
   }
 
   /**
@@ -246,8 +246,6 @@ export class SafePaginatedDropdownComponent
    * The constructor function is a special function that is called when a new instance of the class is
    * created
    *
-   * @param {Apollo} apollo - Apollo - This is the Apollo service that is used to create GraphQL queries.
-   * @param fb shared FormBuilder service
    * @param elementRef shared elementref service
    * @param formField MatFormField
    * @param ngControl form control shared service
@@ -298,6 +296,7 @@ export class SafePaginatedDropdownComponent
    */
   onFocusOut(event: FocusEvent) {
     if (
+      this.focused &&
       !this.elementRef.nativeElement.contains(event.relatedTarget as Element)
     ) {
       this.touched = true;

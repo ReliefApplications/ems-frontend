@@ -1,4 +1,10 @@
 <mat-select
+  [(ngModel)]="value"
+  (openedChange)="onOpenSelect($event)"
+  [disabled]="disabled"
+  [required]="required"
+  (focusin)="onFocusIn($event)"
+  (focusout)="onFocusOut($event)"
 >
   <mat-option *ngFor="let element of elements$ | async" [value]="element.id">
     {{ element.name }}
