@@ -6,6 +6,7 @@
     </h1>
     <safe-access
       [access]="referenceData?.permissions"
+      [objectTypeName]="'common.referenceData.one' | translate"
       (save)="saveAccess($event)"
       *ngIf="referenceData?.canUpdate"
     ></safe-access>

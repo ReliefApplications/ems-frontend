@@ -1,4 +1,6 @@
-<h1 mat-dialog-title>{{ 'components.access.description' | translate }}</h1>
+<h1 mat-dialog-title>{{
+  'components.access.description' | translate : { name: data.objectTypeName }
+}}</h1>
 <div mat-dialog-content>
   <form [formGroup]="accessForm" class="form-group">
     <mat-form-field>

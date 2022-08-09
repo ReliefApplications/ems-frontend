@@ -249,7 +249,7 @@
 			"canDelete": "Can delete",
 			"canSee": "Can see",
 			"canUpdate": "Can update",
-			"description": "Update access permissions",
+			"description": "Update {{name}} permissions",
 			"title": "Access"
 		},
 		"aggregationBuilder": {

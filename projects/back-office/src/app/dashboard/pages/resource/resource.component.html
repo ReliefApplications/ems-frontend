@@ -6,6 +6,7 @@
     </h1>
     <safe-access
       [access]="resource.permissions"
+      [objectTypeName]="'common.resource.one' | translate"
       (save)="saveAccess($event)"
       *ngIf="resource.canUpdate"
     >
