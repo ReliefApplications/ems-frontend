@@ -7,6 +7,8 @@ import { ApolloQueryResult } from '@apollo/client';
 
 /** List of fields part of the schema but not selectable */
 const NON_SELECTABLE_FIELDS = ['canUpdate', 'canDelete'];
+/** List of fields part of the schema but not selectable */
+const SELECTABLE_ID_FIELDS = ['id', 'incrementalId'];
 /** List of user fields */
 const USER_FIELDS = ['id', 'name', 'username'];
 /** ReferenceData identifier convention */
@@ -65,6 +67,38 @@ export class QueryBuilderService {
   }
 
   /**
+   * Gets list of fields from a type.
+   *
+   * @param type Corresponding type from availablTypes.
+   * @returns List of fields of this type.
+   */
+  private extractFieldsFromType(type: any): any[] {
+    return type.fields
+      .filter(
+        (x: any) =>
+          !NON_SELECTABLE_FIELDS.includes(x.name) &&
+          (SELECTABLE_ID_FIELDS.includes(x.name) || x.type.name !== 'ID') &&
+          (x.type.kind !== 'LIST' || x.type.ofType.name !== 'ID')
+      )
+      .map((x: any) => {
+        if (x.type.kind === 'OBJECT') {
+          return Object.assign({}, x, {
+            type: Object.assign({}, x.type, {
+              fields: x.type.fields.filter(
+                (y: any) =>
+                  y.type.kind === 'SCALAR' &&
+                  !NON_SELECTABLE_FIELDS.includes(y.name) &&
+                  (x.type.name !== 'User' || USER_FIELDS.includes(y.name))
+              ),
+            }),
+          });
+        }
+        return x;
+      })
+      .sort((a: any, b: any) => a.name.localeCompare(b.name));
+  }
+
+  /**
    * Gets list of fields from a query name.
    *
    * @param queryName Form / Resource query name.
@@ -78,25 +112,7 @@ export class QueryBuilderService {
     const type = this.availableTypes
       .getValue()
       .find((x) => x.name === typeName);
-    return type
-      ? type.fields
-          .filter((x: any) => !NON_SELECTABLE_FIELDS.includes(x.name))
-          .map((x: any) => {
-            if (x.type.kind === 'OBJECT') {
-              return Object.assign({}, x, {
-                kind: 'OBJECT',
-                fields: x.type.fields.filter(
-                  (y: any) =>
-                    y.type.kind === 'SCALAR' &&
-                    !NON_SELECTABLE_FIELDS.includes(y.name) &&
-                    (x.type.name !== 'User' || USER_FIELDS.includes(y.name))
-                ),
-              });
-            }
-            return x;
-          })
-          .sort((a: any, b: any) => a.name.localeCompare(b.name))
-      : [];
+    return type ? this.extractFieldsFromType(type) : [];
   }
 
   /**
@@ -112,47 +128,7 @@ export class QueryBuilderService {
     const type = this.availableTypes
       .getValue()
       .find((x) => x.name === typeName);
-    return type
-      ? type.fields
-          .filter((x: any) => !NON_SELECTABLE_FIELDS.includes(x.name))
-          .map((x: any) => {
-            if (x.type.kind === 'OBJECT') {
-              return Object.assign({}, x, {
-                type: Object.assign({}, x.type, {
-                  fields: x.type.fields.filter(
-                    (y: any) =>
-                      y.type.kind === 'SCALAR' &&
-                      !NON_SELECTABLE_FIELDS.includes(y.name) &&
-                      (x.type.name !== 'User' || USER_FIELDS.includes(y.name))
-                  ),
-                }),
-              });
-            }
-            return x;
-          })
-          .sort((a: any, b: any) => a.name.localeCompare(b.name))
-      : [];
-  }
-
-  /**
-   * Gets list of LIST fields from a query name.
-   *
-   * @param queryName Form / Resource query name.
-   * @returns List of LIST fields of this structure.
-   */
-  public getListFields(queryName: string): any[] {
-    const query = this.availableQueries
-      .getValue()
-      .find((x) => x.name === queryName);
-    const typeName = query?.type?.name.replace('Connection', '') || '';
-    const type = this.availableTypes
-      .getValue()
-      .find((x) => x.name === typeName);
-    return type
-      ? type.fields
-          .filter((x: any) => x.type.kind === 'LIST')
-          .sort((a: any, b: any) => a.name.localeCompare(b.name))
-      : [];
+    return type ? this.extractFieldsFromType(type) : [];
   }
 
   /**
