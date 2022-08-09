@@ -14,6 +14,7 @@ import { buildSearchButton, buildAddButton } from './utils';
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { TestBed } from '@angular/core/testing';
 
 /**
  * Inits the resource question component of for survey.
@@ -149,6 +150,12 @@ export const init = (
           btn.style.border = 'none';
           btn.style.padding = '10px';
           htmlElement.appendChild(btn);
+          const text = document.createElement('p');
+          text.innerText =
+            'If no custom filter is defined, grid filters will be used to get the available options';
+          text.style.margin = '0';
+          text.style.opacity = '0.8';
+          htmlElement.appendChild(text);
           btn.onclick = (ev: any) => {
             const currentQuestion = editor.object;
             getResourceById({ id: currentQuestion.resource }).subscribe(
@@ -541,6 +548,12 @@ export const init = (
       }
     },
     populateChoices: (question: QuestionResource): void => {
+      // Apply grid filters when no filter is applied to the custom question
+      if (filters.length === 1 && filters[0].field === '') {
+        if (question.gridFieldsSettings.filter) {
+          filters = question.gridFieldsSettings.filter;
+        }
+      }
       if (question.resource) {
         getResourceById({ id: question.resource, filters }).subscribe(
           (response) => {
