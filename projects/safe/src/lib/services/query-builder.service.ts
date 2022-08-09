@@ -159,21 +159,22 @@ export class QueryBuilderService {
    * Builds the fields part of the GraphQL query.
    *
    * @param fields List of fields to query.
+   * @param withId Boolean to add a default ID field.
    * @returns QL document to build the query.
    */
-  private buildFields(fields: any[]): any {
-    return ['id\n'].concat(
+  private buildFields(fields: any[], withId = true): string[] {
+    const defaultField: string[] = withId ? ['id\n'] : [];
+    return defaultField.concat(
       fields.map((x) => {
         switch (x.kind) {
           case 'SCALAR': {
             return x.name + '\n';
           }
           case 'LIST': {
-            console.log('X', x);
             if (x.type.endsWith(REFERENCE_DATA_END)) {
               return (
                 `${x.name} {
-              ${this.buildFields(x.fields)}
+              ${this.buildFields(x.fields, false)}
             }` + '\n'
               );
             }
@@ -190,7 +191,7 @@ export class QueryBuilderService {
           case 'OBJECT': {
             return (
               `${x.name} {
-            ${this.buildFields(x.fields)}
+            ${this.buildFields(x.fields, x.type.endsWith(REFERENCE_DATA_END))}
           }` + '\n'
             );
           }
