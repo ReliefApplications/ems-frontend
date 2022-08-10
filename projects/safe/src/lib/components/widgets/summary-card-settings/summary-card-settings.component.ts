@@ -150,6 +150,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   addCard() {
     const dialogRef = this.dialog.open(SafeAddCardComponent, {
       panelClass: 'preferences-dialog',
+      data: { isDynamic: this.tileForm?.value.isDynamic },
     });
     dialogRef.afterClosed().subscribe((res: any) => {
       if (res) {

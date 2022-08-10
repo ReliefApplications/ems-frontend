@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit, Input, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 /**
  * The component is used on a card creation in the summary-card widget
@@ -10,16 +10,19 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./add-card.component.scss'],
 })
 export class SafeAddCardComponent implements OnInit {
-  public data: any = {
-    isDynamic: false,
-  };
+  @Input() isDynamic: any;
 
   /**
    * Constructor for safe-add-card contructor
    *
    * @param dialogRef material dialog reference of the component
+   * @param data the data passed into the dialog
+   * @param data.isDynamic wether the added card will be dynamic or not
    */
-  constructor(public dialogRef: MatDialogRef<SafeAddCardComponent>) {}
+  constructor(
+    public dialogRef: MatDialogRef<SafeAddCardComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { isDynamic: any }
+  ) {}
 
   ngOnInit(): void {}
 
@@ -35,14 +38,5 @@ export class SafeAddCardComponent implements OnInit {
    */
   onCreate(): void {
     this.dialogRef.close(this.data);
-  }
-
-  /**
-   * Changes the isDynamic property on radio component change
-   *
-   * @param event dynamic change
-   */
-  radioChange(event: any): void {
-    this.data.isDynamic = event.value;
   }
 }

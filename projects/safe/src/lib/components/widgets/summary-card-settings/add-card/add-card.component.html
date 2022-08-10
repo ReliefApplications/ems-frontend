@@ -30,15 +30,21 @@
         | translate
     }}
   </h2>
+  <span *ngIf="data.isDynamic">
+    What is a dynamic summary card ?
+  </span>
   <mat-divider></mat-divider>
+  <h2>
+    {{
+      'components.widget.settings.summaryCard.create.choice.blank' | translate
+    }}
+  </h2>
   <safe-button
     variant="primary"
     category="tertiary"
     [block]="true"
     (click)="onCreate()"
-    >{{
-      'components.widget.settings.summaryCard.create.choice.blank' | translate
-    }}</safe-button
+    >+</safe-button
   >
 </div>
 <div mat-dialog-actions class="mat-dialog-actions" align="end">
