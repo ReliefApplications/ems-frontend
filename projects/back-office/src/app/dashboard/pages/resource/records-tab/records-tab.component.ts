@@ -1,38 +1,51 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { Record, Form, SafeConfirmModalComponent, SafeSnackBarService } from '@safe/builder'
+import {
+  Record,
+  Form,
+  SafeConfirmModalComponent,
+  SafeSnackBarService,
+} from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import {
   DeleteRecordMutationResponse,
   DELETE_RECORD,
   RestoreRecordMutationResponse,
   RESTORE_RECORD,
-} from '../../../../graphql/mutations';
+} from '../graphql/mutations';
 
+/**
+ * Records tab of resource page.
+ */
 @Component({
   selector: 'app-records-tab',
   templateUrl: './records-tab.component.html',
-  styleUrls: ['./records-tab.component.scss']
+  styleUrls: ['./records-tab.component.scss'],
 })
 export class RecordsTabComponent implements OnInit {
-
   @Input() dataSourceRecords: any;
   @Input() resource: any;
   @Input() showDeletedRecords: any;
   @Input() displayedColumnsRecords: any;
   @Input() recordsDefaultColumns: any;
 
-
+  /**
+   * Records tab of resource page
+   *
+   * @param apollo Apollo service
+   * @param translate Angular translate service
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   */
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
     private dialog: MatDialog,
     private snackBar: SafeSnackBarService
-  ) { }
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   /**
    * Deletes a record if authorized, open a confirmation modal if it's a hard delete.
@@ -125,5 +138,4 @@ export class RecordsTabComponent implements OnInit {
   public filterTemplates(record: Record): Form[] {
     return this.resource.forms.filter((x: Form) => x.id !== record.form?.id);
   }
-
 }

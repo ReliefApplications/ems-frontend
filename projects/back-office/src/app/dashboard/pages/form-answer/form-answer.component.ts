@@ -57,7 +57,7 @@ export class FormAnswerComponent implements OnInit {
             '@form',
             this.form.name as string
           );
-          this.breadcrumbService.setResourceName();
+          // this.breadcrumbService.setResourceName();
         });
     }
   }

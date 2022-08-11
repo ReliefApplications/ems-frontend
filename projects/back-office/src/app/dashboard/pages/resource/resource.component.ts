@@ -348,7 +348,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
   /**
    * Changes the route on tab change.
    *
-   * @param id Id of record to restore.
    * @param e click event.
    */
   onTabChanged(e: any) {

@@ -25,7 +25,12 @@ import { LayoutsTabComponent } from './layouts-tab/layouts-tab.component';
 
 /** Resource page module. */
 @NgModule({
-  declarations: [ResourceComponent, RecordsTabComponent, FormsTabComponent, LayoutsTabComponent],
+  declarations: [
+    ResourceComponent,
+    RecordsTabComponent,
+    FormsTabComponent,
+    LayoutsTabComponent,
+  ],
   imports: [
     CommonModule,
     ResourceRoutingModule,

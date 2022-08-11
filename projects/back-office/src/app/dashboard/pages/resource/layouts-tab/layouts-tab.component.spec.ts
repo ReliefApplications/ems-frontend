@@ -8,9 +8,8 @@ describe('LayoutsTabComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LayoutsTabComponent ]
-    })
-    .compileComponents();
+      declarations: [LayoutsTabComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

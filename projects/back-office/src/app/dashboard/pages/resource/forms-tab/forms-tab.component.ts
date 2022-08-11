@@ -1,15 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { SafeBreadcrumbService, SafeSnackBarService } from '@safe/builder';
+import { SafeSnackBarService } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  DeleteFormMutationResponse,
-  DELETE_FORM,
-} from '../../../../graphql/mutations';
-import { Router } from '@angular/router';
+import { DeleteFormMutationResponse, DELETE_FORM } from '../graphql/mutations';
 
 /**
- *
+ *Forms tab of resource page
  */
 @Component({
   selector: 'app-forms-tab',
@@ -29,19 +25,16 @@ export class FormsTabComponent implements OnInit {
   ];
 
   /**
+   * Forms tab of resource page
    *
-   * @param apollo
-   * @param snackBar
-   * @param translate
-   * @param breadcrumbService
-   * @param router
+   * @param apollo Apollo service
+   * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
    */
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService,
-    private router: Router
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {}
@@ -50,7 +43,7 @@ export class FormsTabComponent implements OnInit {
    * Delete a form if authorized.
    *
    * @param id Id of the form to delete.
-   * @param e Used to prevent the default behaviour.
+   * @param e Used to prevent the default behavior.
    */
   deleteForm(id: any, e: any): void {
     e.stopPropagation();

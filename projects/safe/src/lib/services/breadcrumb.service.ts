@@ -3,10 +3,6 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import {
-  GetResourceByIdQueryResponse,
-  GET_RESOURCE_BY_ID,
-} from '../graphql/queries';
 
 /** Interface of breadcrumb */
 export interface Breadcrumb {
@@ -27,8 +23,6 @@ export interface Breadcrumb {
 export class SafeBreadcrumbService {
   private breadcrumbs = new BehaviorSubject<Breadcrumb[]>([]);
   public breadcrumbs$ = this.breadcrumbs.asObservable();
-
-  private keepParent = false;
   private previousRoot: any;
 
   /**
@@ -37,13 +31,8 @@ export class SafeBreadcrumbService {
    *
    * @param activateRoute Angular activated route
    * @param router Angular router
-   * @param apollo Querie service
    */
-  constructor(
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private apollo: Apollo
-  ) {
+  constructor(private activateRoute: ActivatedRoute, private router: Router) {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
@@ -52,7 +41,6 @@ export class SafeBreadcrumbService {
             this.createBreadcrumbs(this.activateRoute.root)
           );
           this.previousRoot = this.activateRoute.root.children;
-          this.keepParent = false;
         }
       });
   }
@@ -114,28 +102,5 @@ export class SafeBreadcrumbService {
       breadcrumb.text = label[0].toUpperCase() + label.slice(1);
       this.breadcrumbs.next(breadcrumbs);
     }
-  }
-
-  /**
-   * Maps the breadcrumb values and if it finds an unamed resource it queries it to get its name.
-   */
-  public setResourceName() {
-    this.breadcrumbs.value.map((breadcrumb: any) => {
-      if (breadcrumb.alias && breadcrumb.alias === '@resource') {
-        const id = breadcrumb.uri.split('/').pop();
-        this.apollo
-          .watchQuery<GetResourceByIdQueryResponse>({
-            query: GET_RESOURCE_BY_ID,
-            variables: {
-              id,
-            },
-          })
-          .valueChanges.subscribe((res) => {
-            if (res.data && res.data.resource.name) {
-              this.setBreadcrumb('@resource', res.data.resource.name);
-            }
-          });
-      }
-    });
   }
 }

@@ -32,9 +32,6 @@ import { TranslateService } from '@ngx-translate/core';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
-/**
- *
- */
 
 /** Static columns ( appear whatever the form ) */
 const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
@@ -86,6 +83,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(
     private apollo: Apollo,

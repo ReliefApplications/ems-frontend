@@ -6,29 +6,37 @@ import {
   Layout,
   SafeGridLayoutService,
   SafeConfirmModalComponent,
-} from '@safe/builder'
+} from '@safe/builder';
 
+/**
+ * Layouts tab of resource page
+ */
 @Component({
   selector: 'app-layouts-tab',
   templateUrl: './layouts-tab.component.html',
-  styleUrls: ['./layouts-tab.component.scss']
+  styleUrls: ['./layouts-tab.component.scss'],
 })
 export class LayoutsTabComponent implements OnInit {
-
   @Input() dataSourceLayouts: any;
   @Input() resource: any;
   @Input() id: any;
 
   displayedColumnsLayouts: string[] = ['name', 'createdAt', '_actions'];
 
+  /**
+   * Layouts tab of resource page
+   *
+   * @param dialog Material dialog service
+   * @param gridLayoutService Grid layout service
+   * @param translate Angular translate service
+   */
   constructor(
     private dialog: MatDialog,
     private gridLayoutService: SafeGridLayoutService,
-    private translate: TranslateService,
-  ) { }
+    private translate: TranslateService
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   /**
    * Adds a new layout for the resource.
@@ -132,5 +140,4 @@ export class LayoutsTabComponent implements OnInit {
       }
     });
   }
-
 }
