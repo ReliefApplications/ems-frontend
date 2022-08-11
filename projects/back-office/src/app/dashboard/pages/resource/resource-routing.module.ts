@@ -22,19 +22,6 @@ const routes: Routes = [
             path: '',
             component: RecordsTabComponent,
           },
-          {
-            path: 'update/:id',
-            loadChildren: () =>
-              import('../../pages/update-record/update-record.module').then(
-                (m) => m.UpdateRecordModule
-              ),
-            data: {
-              breadcrumb: {
-                alias: '@record',
-              },
-            },
-            // canActivate: [SafePermissionGuard]
-          },
         ],
         data: {
           breadcrumb: {
@@ -48,45 +35,6 @@ const routes: Routes = [
           {
             path: '',
             component: FormsTabComponent,
-          },
-          {
-            path: ':id',
-            children: [
-              {
-                path: '',
-                redirectTo: 'answer',
-              },
-              {
-                path: 'builder',
-                loadChildren: () =>
-                  import('../../pages/form-builder/form-builder.module').then(
-                    (m) => m.FormBuilderModule
-                  ),
-                data: {
-                  breadcrumb: {
-                    key: 'common.edit',
-                  },
-                },
-              },
-              {
-                path: 'answer',
-                loadChildren: () =>
-                  import('../../pages/form-answer/form-answer.module').then(
-                    (m) => m.FormAnswerModule
-                  ),
-                data: {
-                  breadcrumb: {
-                    key: 'common.add',
-                  },
-                },
-                // canActivate: [SafePermissionGuard]
-              },
-            ],
-            data: {
-              breadcrumb: {
-                alias: '@form',
-              },
-            },
           },
         ],
         data: {
