@@ -16,6 +16,9 @@ import {
 } from '@safe/builder';
 import { UploadMenuModule } from 'projects/back-office/src/app/components/upload-menu/upload-menu.module';
 
+/**
+ * Records tab module for resource page.
+ */
 @NgModule({
   declarations: [RecordsTabComponent],
   imports: [

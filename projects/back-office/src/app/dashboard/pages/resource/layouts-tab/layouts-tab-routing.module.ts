@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutsTabComponent } from './layouts-tab.component';
 
+/** Pages of layouts tab */
 const routes: Routes = [
   {
     path: '',
@@ -9,6 +10,9 @@ const routes: Routes = [
   },
 ];
 
+/**
+ * Routing module of layouts tab
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

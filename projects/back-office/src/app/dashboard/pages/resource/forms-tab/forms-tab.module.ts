@@ -15,6 +15,9 @@ import {
   SafeSkeletonTableModule,
 } from '@safe/builder';
 
+/**
+ * Forms tab of resource page.
+ */
 @NgModule({
   declarations: [FormsTabComponent],
   imports: [

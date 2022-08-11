@@ -1,10 +1,9 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   SafeDownloadService,
   SafeSnackBarService,
-  Record,
   SafeBreadcrumbService,
 } from '@safe/builder';
 import {
@@ -15,7 +14,6 @@ import {
   GetResourceByIdQueryResponse,
   GET_RESOURCE_BY_ID,
 } from './graphql/queries';
-import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
@@ -31,9 +29,7 @@ const ROUTE_TABS: string[] = ['records', 'forms', 'layouts'];
   templateUrl: './resource.component.html',
   styleUrls: ['./resource.component.scss'],
 })
-export class ResourceComponent implements OnInit, OnDestroy {
-  // === DATA ===
-  private resourceSubscription?: Subscription;
+export class ResourceComponent implements OnInit {
   public loading = true;
   public id = '';
   public resource: any;
@@ -77,19 +73,16 @@ export class ResourceComponent implements OnInit, OnDestroy {
    */
   private getResourceData(): void {
     this.loading = true;
-    if (this.resourceSubscription) {
-      this.resourceSubscription.unsubscribe();
-    }
 
     // get the resource and the form linked
-    this.resourceSubscription = this.apollo
-      .watchQuery<GetResourceByIdQueryResponse>({
+    this.apollo
+      .query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_BY_ID,
         variables: {
           id: this.id,
         },
       })
-      .valueChanges.subscribe(
+      .subscribe(
         (res) => {
           if (res.data.resource) {
             this.resource = res.data.resource;
@@ -97,6 +90,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
               '@resource',
               this.resource.name as string
             );
+            history.pushState({ resource: this.resource }, '');
             this.loading = res.loading;
           } else {
             this.snackBar.openSnackBar(
@@ -137,25 +131,5 @@ export class ResourceComponent implements OnInit, OnDestroy {
           this.resource = res.data.editResource;
         }
       });
-  }
-
-  /**
-   * Changes the route on tab change.
-   *
-   * @param e click event.
-   */
-  onTabChanged(e: any) {
-    const tab = ROUTE_TABS[e.index];
-    const route = this.router.url.split('/').slice(0, -1).join('/') + '/' + tab;
-    this.router.navigate([route]);
-  }
-
-  /**
-   * Unsubscribe to subscriptions before destroying component.
-   */
-  ngOnDestroy(): void {
-    if (this.resourceSubscription) {
-      this.resourceSubscription.unsubscribe();
-    }
   }
 }

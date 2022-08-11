@@ -15,6 +15,9 @@ import {
 } from '@safe/builder';
 import { LayoutsTabComponent } from './layouts-tab.component';
 
+/**
+ * Layouts tab of resource page
+ */
 @NgModule({
   declarations: [LayoutsTabComponent],
   imports: [
