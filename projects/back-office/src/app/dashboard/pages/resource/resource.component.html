@@ -72,7 +72,16 @@
       </ng-template>
     </div>
   </div>
-  <mat-tab-group dynamicHeight
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+    <a mat-tab-link routerLink="./records">{{ 'common.record.few' | translate }} ( {{ pageInfo.length }} )</a>
+    <a mat-tab-link routerLink="./forms">{{ 'common.form.few' | translate }} ( {{ resource.forms.length }} )</a>
+    <a mat-tab-link routerLink="./layouts">{{ 'common.layout.few' | translate }} ( {{ dataSourceLayouts.length }} )</a>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <router-outlet></router-outlet>
+  </mat-tab-nav-panel>
+
+  <!-- <mat-tab-group dynamicHeight
   [(selectedIndex)]="selectedTab"
   (selectedTabChange)="onTabChanged($event)">
     <mat-tab>
@@ -115,5 +124,6 @@
         [id]="id"
       ></app-layouts-tab>
     </mat-tab>
-  </mat-tab-group>
+  </mat-tab-group> -->
 </ng-container>
+
