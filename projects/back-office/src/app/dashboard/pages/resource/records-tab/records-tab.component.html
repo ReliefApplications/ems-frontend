@@ -88,8 +88,5 @@
     </ng-container>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="displayedColumnsRecords"></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: displayedColumnsRecords"
-  ></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumnsRecords"></tr>
 </table>

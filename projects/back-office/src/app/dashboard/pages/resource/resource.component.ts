@@ -104,14 +104,14 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   /** Load data from the id of the resource passed as a parameter. */
   ngOnInit(): void {
+    const routeTab: string = this.router.url.split('/').pop() || '';
+    this.selectedTab = ROUTE_TABS.findIndex((tab) => tab === routeTab);
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.getResourceData();
     } else {
       this.router.navigate(['/resources']);
     }
-    const routeTab: any = this.router.url.split('/').pop();
-    this.selectedTab = ROUTE_TABS.findIndex((tab) => tab === routeTab);
   }
 
   /**

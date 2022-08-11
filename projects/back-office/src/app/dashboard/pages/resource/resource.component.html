@@ -73,18 +73,29 @@
     </div>
   </div>
   <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-    <a mat-tab-link routerLink="./records" [state]="{ records, resource }"
+    <a
+      mat-tab-link
+      (click)="selectedTab = 0"
+      [active]="selectedTab === 0"
+      routerLink="./records"
+      [state]="{ records, resource }"
       >{{ 'common.record.few' | translate }} ( {{ pageInfo.length }} )</a
     >
-    <a mat-tab-link routerLink="./forms" [state]="{ forms }"
+    <a
+      mat-tab-link
+      (click)="selectedTab = 1"
+      [active]="selectedTab === 1"
+      routerLink="./forms"
+      [state]="{ forms }"
       >{{ 'common.form.few' | translate }} ( {{ resource.forms.length }} )</a
     >
     <a
       mat-tab-link
+      (click)="selectedTab = 2"
+      [active]="selectedTab === 2"
       routerLink="./layouts"
       [state]="{ layouts, resource }"
-      >{{ 'common.layout.few' | translate }} (
-      {{ layouts.length }} )</a
+      >{{ 'common.layout.few' | translate }} ( {{ layouts.length }} )</a
     >
   </nav>
   <mat-tab-nav-panel #tabPanel>
