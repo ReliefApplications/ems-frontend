@@ -167,7 +167,7 @@ export class QueryBuilderService {
           case 'OBJECT': {
             return (
               `${x.name} {
-            ${this.buildFields(x.fields, x.type.endsWith(REFERENCE_DATA_END))}
+            ${this.buildFields(x.fields, !x.type.endsWith(REFERENCE_DATA_END))}
           }` + '\n'
             );
           }
