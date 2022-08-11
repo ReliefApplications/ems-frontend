@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Record,
@@ -7,8 +8,9 @@ import {
   SafeConfirmModalComponent,
   SafeSnackBarService,
   Resource,
+  SafeDownloadService,
 } from '@safe/builder';
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
   DeleteRecordMutationResponse,
@@ -16,6 +18,18 @@ import {
   RestoreRecordMutationResponse,
   RESTORE_RECORD,
 } from '../graphql/mutations';
+import {
+  GetResourceRecordsQueryResponse,
+  GET_RESOURCE_RECORDS,
+} from './graphql/queries';
+
+/** Quantity of resource that will be loaded at once. */
+const ITEMS_PER_PAGE = 10;
+
+/**
+ * Default fields for the records.
+ */
+const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
 
 /**
  * Records tab of resource page.
@@ -26,11 +40,22 @@ import {
   styleUrls: ['./records-tab.component.scss'],
 })
 export class RecordsTabComponent implements OnInit {
-  public records: Record[] = [];
+  private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  public dataSource = new MatTableDataSource<Record>([]);
+  private cachedRecords: Record[] = [];
   public resource!: Resource;
-  @Input() showDeletedRecords: any;
-  @Input() displayedColumnsRecords: any;
-  @Input() recordsDefaultColumns: any;
+  recordsDefaultColumns: string[] = RECORDS_DEFAULT_COLUMNS;
+  displayedColumnsRecords: string[] = [];
+
+  showDeletedRecords = false;
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: ITEMS_PER_PAGE,
+    length: 0,
+    endCursor: '',
+  };
+  public loading = true;
+  public showUpload = false;
 
   /**
    * Records tab of resource page
@@ -39,18 +64,41 @@ export class RecordsTabComponent implements OnInit {
    * @param translate Angular translate service
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
+   * @param downloadService Service used to download.
    */
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
     private dialog: MatDialog,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    private downloadService: SafeDownloadService
   ) {}
 
   ngOnInit(): void {
     const state = history.state;
-    this.records = get(state, 'records', []);
     this.resource = get(state, 'resource', null);
+    this.setDisplayedColumns(false);
+    this.recordsQuery = this.apollo.watchQuery<GetResourceRecordsQueryResponse>(
+      {
+        query: GET_RESOURCE_RECORDS,
+        variables: {
+          first: ITEMS_PER_PAGE,
+          id: this.resource.id,
+          display: false,
+          showDeletedRecords: this.showDeletedRecords,
+        },
+      }
+    );
+    this.recordsQuery.valueChanges.subscribe((res) => {
+      this.cachedRecords = res.data.resource.records.edges.map((x) => x.node);
+      this.dataSource.data = this.cachedRecords.slice(
+        this.pageInfo.pageSize * this.pageInfo.pageIndex,
+        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      );
+      this.pageInfo.length = res.data.resource.records.totalCount;
+      this.pageInfo.endCursor = res.data.resource.records.pageInfo.endCursor;
+      this.loading = res.loading;
+    });
   }
 
   /**
@@ -107,7 +155,7 @@ export class RecordsTabComponent implements OnInit {
             value: this.translate.instant('common.record.one'),
           })
         );
-        this.records = this.records.filter((x: any) => x.id !== id);
+        this.fetchRecords(true);
       });
   }
 
@@ -127,7 +175,7 @@ export class RecordsTabComponent implements OnInit {
         },
       })
       .subscribe((res) => {
-        this.records = this.records.filter((x: any) => x.id !== id);
+        this.fetchRecords(true);
       });
   }
 
@@ -141,5 +189,190 @@ export class RecordsTabComponent implements OnInit {
     return get(this.resource, 'forms', []).filter(
       (x: Form) => x.id !== record.form?.id
     );
+  }
+
+  /**
+   * Filters the shown columns.
+   *
+   * @param event Event trigger on filtering.
+   */
+  public filterCore(event: any): void {
+    // this.setDisplayedColumns(event.value);
+  }
+
+  /**
+   * Changes the list of displayed columns.
+   *
+   * @param core Is the form core.
+   */
+  private setDisplayedColumns(core: boolean): void {
+    let columns = [];
+    if (core) {
+      for (const field of this.resource.fields.filter(
+        (x: any) => x.isRequired === true
+      )) {
+        columns.push(field.name);
+      }
+    } else {
+      for (const field of this.resource.fields) {
+        columns.push(field.name);
+      }
+    }
+    columns = columns.concat(RECORDS_DEFAULT_COLUMNS);
+    this.displayedColumnsRecords = columns;
+  }
+  /**
+   * Downloads the list of records of the resource.
+   *
+   * @param type Type of the document to download ( excel or csv ).
+   */
+  onDownload(type: string): void {
+    const path = `download/resource/records/${this.resource.id}`;
+    const fileName = `${this.resource.name}.${type}`;
+    const queryString = new URLSearchParams({ type }).toString();
+    this.downloadService.getFile(
+      `${path}?${queryString}`,
+      `text/${type};charset=utf-8;`,
+      fileName
+    );
+  }
+
+  /**
+   * Get the records template, for upload.
+   */
+  onDownloadTemplate(): void {
+    const path = `download/resource/records/${this.resource.id}`;
+    const queryString = new URLSearchParams({
+      type: 'xlsx',
+      template: 'true',
+    }).toString();
+    this.downloadService.getFile(
+      `${path}?${queryString}`,
+      `text/xlsx;charset=utf-8;`,
+      `${this.resource.name}_template.xlsx`
+    );
+  }
+
+  /**
+   * Detects changes on the file.
+   *
+   * @param event new file event.
+   */
+  onFileChange(event: any): void {
+    const file = event.files[0].rawFile;
+    this.uploadFileData(file);
+  }
+
+  /**
+   * Calls rest endpoint to upload new records for the resource.
+   *
+   * @param file File to upload.
+   */
+  uploadFileData(file: any): void {
+    const path = `upload/resource/records/${this.resource.id}`;
+    this.downloadService.uploadFile(path, file).subscribe(
+      (res) => {
+        if (res.status === 'OK') {
+          this.fetchRecords(true);
+          this.showUpload = false;
+        }
+      },
+      (error: any) => {
+        this.snackBar.openSnackBar(error.error, { error: true });
+        this.showUpload = false;
+      }
+    );
+  }
+
+  /**
+   * Toggle archive / active view.
+   *
+   * @param e click event.
+   */
+  onSwitchView(e: any): void {
+    e.stopPropagation();
+    this.showDeletedRecords = !this.showDeletedRecords;
+    this.fetchRecords(true);
+  }
+
+  /**
+   * Handles page event.
+   *
+   * @param e page event.
+   */
+  onPage(e: any): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    // Checks if with new page/size more data needs to be fetched
+    if (
+      (e.pageIndex > e.previousPageIndex ||
+        e.pageSize > this.pageInfo.pageSize) &&
+      e.length > this.cachedRecords.length
+    ) {
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let first = e.pageSize;
+      // If the fetch is for a new page size, the old page size is substracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        first -= this.pageInfo.pageSize;
+      }
+      this.pageInfo.pageSize = first;
+      this.fetchRecords();
+    } else {
+      this.dataSource.data = this.cachedRecords.slice(
+        e.pageSize * this.pageInfo.pageIndex,
+        e.pageSize * (this.pageInfo.pageIndex + 1)
+      );
+    }
+    this.pageInfo.pageSize = e.pageSize;
+  }
+
+  /**
+   * Fetch records, using GraphQL
+   *
+   * @param refetch rebuild query
+   */
+  private fetchRecords(refetch?: boolean): void {
+    this.loading = true;
+    if (refetch) {
+      this.cachedRecords = [];
+      this.pageInfo.pageIndex = 0;
+      this.pageInfo.endCursor = '';
+      this.recordsQuery
+        .refetch({
+          first: this.pageInfo.pageSize,
+          afterCursor: null,
+          display: false,
+          showDeletedRecords: this.showDeletedRecords,
+        })
+        .then(() => {
+          this.loading = false;
+        });
+    } else {
+      this.recordsQuery.fetchMore({
+        variables: {
+          first: this.pageInfo.pageSize,
+          afterCursor: this.pageInfo.endCursor,
+          display: false,
+          showDeletedRecords: this.showDeletedRecords,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) {
+            return prev;
+          }
+          return Object.assign({}, prev, {
+            resource: {
+              records: {
+                edges: [
+                  ...prev.resource.records.edges,
+                  ...fetchMoreResult.resource.records.edges,
+                ],
+                pageInfo: fetchMoreResult.resource.records.pageInfo,
+                totalCount: fetchMoreResult.resource.records.totalCount,
+              },
+            },
+          });
+        },
+      });
+    }
   }
 }

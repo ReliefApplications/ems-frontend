@@ -10,67 +10,6 @@
       *ngIf="resource.canUpdate"
     >
     </safe-access>
-    <div class="actions">
-      <safe-button
-        *ngIf="resource.canUpdate && !showDeletedRecords"
-        icon="search_off"
-        category="primary"
-        variant="danger"
-        (click)="onSwitchView($event)"
-      >
-        {{ 'components.records.showArchived' | translate }}
-      </safe-button>
-      <safe-button
-        *ngIf="resource.canUpdate && showDeletedRecords"
-        icon="restore_page"
-        category="primary"
-        variant="success"
-        (click)="onSwitchView($event)"
-      >
-        {{ 'components.records.showActive' | translate }}
-      </safe-button>
-      <safe-button
-        icon="file_download"
-        category="secondary"
-        variant="primary"
-        [matMenuTriggerFor]="menu"
-      >
-        {{
-          'common.downloadObject'
-            | translate: { name: 'common.record.few' | translate }
-        }}
-      </safe-button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onDownload('csv')">.csv</button>
-        <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
-      </mat-menu>
-      <safe-button
-        icon="file_upload"
-        category="secondary"
-        variant="primary"
-        [matTooltip]="'components.records.upload.hint' | translate"
-        (click)="showUpload = !showUpload"
-        cdkOverlayOrigin
-        #uploadTrigger="cdkOverlayOrigin"
-        style="margin-left: 1rem"
-      >
-        {{
-          'common.uploadObject'
-            | translate: { name: 'common.record.few' | translate }
-        }}
-      </safe-button>
-      <ng-template
-        cdkConnectedOverlay
-        [cdkConnectedOverlayOrigin]="uploadTrigger"
-        [cdkConnectedOverlayOpen]="showUpload"
-      >
-        <app-upload-menu
-          (close)="showUpload = false"
-          (upload)="onFileChange($event)"
-          (download)="onDownloadTemplate()"
-        ></app-upload-menu>
-      </ng-template>
-    </div>
   </div>
   <nav mat-tab-nav-bar [tabPanel]="tabPanel">
     <a
@@ -78,7 +17,7 @@
       (click)="selectedTab = 0"
       [active]="selectedTab === 0"
       routerLink="./records"
-      [state]="{ records, resource }"
+      [state]="{ resource }"
       >{{ 'common.record.few' | translate }}</a
     >
     <a

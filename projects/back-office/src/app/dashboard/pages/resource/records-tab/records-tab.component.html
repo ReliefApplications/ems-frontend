@@ -1,4 +1,65 @@
-<table mat-table [dataSource]="records">
+<div *ngIf="!loading" class="actions">
+  <safe-button
+    *ngIf="resource.canUpdate && !showDeletedRecords"
+    icon="search_off"
+    category="primary"
+    variant="danger"
+    (click)="onSwitchView($event)"
+  >
+    {{ 'components.records.showArchived' | translate }}
+  </safe-button>
+  <safe-button
+    *ngIf="resource.canUpdate && showDeletedRecords"
+    icon="restore_page"
+    category="primary"
+    variant="success"
+    (click)="onSwitchView($event)"
+  >
+    {{ 'components.records.showActive' | translate }}
+  </safe-button>
+  <safe-button
+    icon="file_download"
+    category="secondary"
+    variant="primary"
+    [matMenuTriggerFor]="menu"
+  >
+    {{
+      'common.downloadObject'
+        | translate: { name: 'common.record.few' | translate }
+    }}
+  </safe-button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="onDownload('csv')">.csv</button>
+    <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
+  </mat-menu>
+  <safe-button
+    icon="file_upload"
+    category="secondary"
+    variant="primary"
+    [matTooltip]="'components.records.upload.hint' | translate"
+    (click)="showUpload = !showUpload"
+    cdkOverlayOrigin
+    #uploadTrigger="cdkOverlayOrigin"
+    style="margin-left: 1rem"
+  >
+    {{
+      'common.uploadObject'
+        | translate: { name: 'common.record.few' | translate }
+    }}
+  </safe-button>
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="uploadTrigger"
+    [cdkConnectedOverlayOpen]="showUpload"
+  >
+    <app-upload-menu
+      (close)="showUpload = false"
+      (upload)="onFileChange($event)"
+      (download)="onDownloadTemplate()"
+    ></app-upload-menu>
+  </ng-template>
+</div>
+<table *ngIf="!loading" mat-table [dataSource]="dataSource">
   <ng-container
     *ngFor="let column of displayedColumnsRecords"
     [matColumnDef]="column"
@@ -90,3 +151,17 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumnsRecords"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumnsRecords"></tr>
 </table>
+<safe-skeleton-table
+  *ngIf="loading"
+  [columns]="displayedColumnsRecords"
+  [actions]="true"
+>
+</safe-skeleton-table>
+<mat-paginator
+  [disabled]="loading"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [length]="pageInfo.length"
+  aria-label="Select page of records"
+  (page)="onPage($event)"
+></mat-paginator>
