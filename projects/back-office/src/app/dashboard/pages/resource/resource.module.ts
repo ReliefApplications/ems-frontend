@@ -13,6 +13,7 @@ import {
   SafeButtonModule,
   SafeLayoutModalModule,
   SafeDateModule,
+  SafeConfirmModalModule,
 } from '@safe/builder';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -49,6 +50,7 @@ import { LayoutsTabComponent } from './layouts-tab/layouts-tab.component';
     OverlayModule,
     UploadMenuModule,
     SafeDateModule,
+    SafeConfirmModalModule,
   ],
   exports: [ResourceComponent],
 })

@@ -1,8 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { SafeSnackBarService } from '@safe/builder';
+import {
+  Form,
+  SafeConfirmModalComponent,
+  SafeSnackBarService,
+} from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 import { DeleteFormMutationResponse, DELETE_FORM } from '../graphql/mutations';
+import get from 'lodash/get';
+import { MatDialog } from '@angular/material/dialog';
 
 /**
  *Forms tab of resource page
@@ -13,7 +19,7 @@ import { DeleteFormMutationResponse, DELETE_FORM } from '../graphql/mutations';
   styleUrls: ['./forms-tab.component.scss'],
 })
 export class FormsTabComponent implements OnInit {
-  @Input() dataSourceForms: any;
+  public forms: Form[] = [];
 
   displayedColumnsForms: string[] = [
     'name',
@@ -30,39 +36,62 @@ export class FormsTabComponent implements OnInit {
    * @param apollo Apollo service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param dialog Material dialog service
    */
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dialog: MatDialog
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const state = history.state;
+    this.forms = get(state, 'forms', []);
+  }
 
   /**
-   * Delete a form if authorized.
+   * Removes a form.
    *
-   * @param id Id of the form to delete.
-   * @param e Used to prevent the default behavior.
+   * @param form Form to delete.
+   * @param e click event.
    */
-  deleteForm(id: any, e: any): void {
+  deleteForm(form: Form, e: any): void {
     e.stopPropagation();
-    this.apollo
-      .mutate<DeleteFormMutationResponse>({
-        mutation: DELETE_FORM,
-        variables: {
-          id,
-        },
-      })
-      .subscribe((res) => {
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectDeleted', {
-            value: this.translate.instant('common.form.one'),
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+      data: {
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.form.one'),
+        }),
+        content: this.translate.instant(
+          'components.form.delete.confirmationMessage',
+          {
+            name: form.name,
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
+        confirmColor: 'warn',
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.apollo
+          .mutate<DeleteFormMutationResponse>({
+            mutation: DELETE_FORM,
+            variables: {
+              id: form.id,
+            },
           })
-        );
-        this.dataSourceForms = this.dataSourceForms.filter(
-          (x: any) => x.id !== id
-        );
-      });
+          .subscribe((res) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.form.one'),
+              })
+            );
+            this.forms = this.forms.filter((x: any) => x.id !== form.id);
+          });
+      }
+    });
   }
 }

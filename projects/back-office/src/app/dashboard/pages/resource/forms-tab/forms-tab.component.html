@@ -1,5 +1,5 @@
 
-<table mat-table [dataSource]="dataSourceForms">
+<table mat-table [dataSource]="forms">
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
       {{ 'common.name' | translate }}
@@ -93,7 +93,7 @@
         </button>
         <button
           mat-menu-item
-          (click)="deleteForm(element.id, $event)"
+          (click)="deleteForm(element, $event)"
           *ngIf="element.canDelete"
         >
           <mat-icon>delete</mat-icon>

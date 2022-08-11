@@ -6,6 +6,8 @@ import {
   SafeSnackBarService,
   Record,
   SafeBreadcrumbService,
+  Layout,
+  Form,
 } from '@safe/builder';
 import {
   EditResourceMutationResponse,
@@ -60,10 +62,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
   dataSourceRecords: any[] = [];
 
   // === FORMS ASSOCIATED ===
-  dataSourceForms: any[] = [];
+  forms: Form[] = [];
 
   // === LAYOUTS ===
-  dataSourceLayouts: any[] = [];
+  layouts: Layout[] = [];
 
   // === SHOW DELETED RECORDS ===
   showDeletedRecords = false;
@@ -167,8 +169,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
               '@resource',
               this.resource.name as string
             );
-            this.dataSourceForms = this.resource.forms;
-            this.dataSourceLayouts = this.resource.layouts;
+            this.forms = this.resource.forms;
+            this.layouts = this.resource.layouts;
             this.setDisplayedColumns(false);
             this.loading = res.loading;
           } else {
