@@ -6,8 +6,10 @@ import {
   Form,
   SafeConfirmModalComponent,
   SafeSnackBarService,
+  Resource,
 } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
+import get from 'lodash/get';
 import {
   DeleteRecordMutationResponse,
   DELETE_RECORD,
@@ -24,8 +26,8 @@ import {
   styleUrls: ['./records-tab.component.scss'],
 })
 export class RecordsTabComponent implements OnInit {
-  @Input() dataSourceRecords: any;
-  @Input() resource: any;
+  public records: Record[] = [];
+  public resource!: Resource;
   @Input() showDeletedRecords: any;
   @Input() displayedColumnsRecords: any;
   @Input() recordsDefaultColumns: any;
@@ -45,7 +47,11 @@ export class RecordsTabComponent implements OnInit {
     private snackBar: SafeSnackBarService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const state = history.state;
+    this.records = get(state, 'records', []);
+    this.resource = get(state, 'resource', null);
+  }
 
   /**
    * Deletes a record if authorized, open a confirmation modal if it's a hard delete.
@@ -101,9 +107,7 @@ export class RecordsTabComponent implements OnInit {
             value: this.translate.instant('common.record.one'),
           })
         );
-        this.dataSourceRecords = this.dataSourceRecords.filter(
-          (x: any) => x.id !== id
-        );
+        this.records = this.records.filter((x: any) => x.id !== id);
       });
   }
 
@@ -123,9 +127,7 @@ export class RecordsTabComponent implements OnInit {
         },
       })
       .subscribe((res) => {
-        this.dataSourceRecords = this.dataSourceRecords.filter(
-          (x: any) => x.id !== id
-        );
+        this.records = this.records.filter((x: any) => x.id !== id);
       });
   }
 
@@ -136,6 +138,8 @@ export class RecordsTabComponent implements OnInit {
    * @returns list of different forms than the one used to create the record.
    */
   public filterTemplates(record: Record): Form[] {
-    return this.resource.forms.filter((x: Form) => x.id !== record.form?.id);
+    return get(this.resource, 'forms', []).filter(
+      (x: Form) => x.id !== record.form?.id
+    );
   }
 }

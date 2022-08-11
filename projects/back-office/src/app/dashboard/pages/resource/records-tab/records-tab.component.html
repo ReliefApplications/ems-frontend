@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="dataSourceRecords">
+<table mat-table [dataSource]="records">
   <ng-container
     *ngFor="let column of displayedColumnsRecords"
     [matColumnDef]="column"
@@ -32,13 +32,13 @@
             [routerLink]="['update', element.id]"
             [matTooltip]="'Edit as ' + element.form.name"
             matTooltipPosition="above"
-            [matTooltipDisabled]="resource.forms.length <= 1"
+            [matTooltipDisabled]="(resource.forms?.length || 0) <= 1"
           >
             <mat-icon>edit</mat-icon>
             {{ 'common.edit' | translate }}
           </button>
           <button
-            *ngIf="resource.forms.length > 1"
+            *ngIf="(resource.forms?.length || 0) > 1"
             mat-menu-item
             [matMenuTriggerFor]="templates"
           >

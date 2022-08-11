@@ -73,7 +73,7 @@
     </div>
   </div>
   <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-    <a mat-tab-link routerLink="./records"
+    <a mat-tab-link routerLink="./records" [state]="{ records, resource }"
       >{{ 'common.record.few' | translate }} ( {{ pageInfo.length }} )</a
     >
     <a mat-tab-link routerLink="./forms" [state]="{ forms }"

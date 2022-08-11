@@ -59,7 +59,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   // === RECORDS ASSOCIATED ===
   recordsDefaultColumns: string[] = RECORDS_DEFAULT_COLUMNS;
   displayedColumnsRecords: string[] = [];
-  dataSourceRecords: any[] = [];
+  records: Record[] = [];
 
   // === FORMS ASSOCIATED ===
   forms: Form[] = [];
@@ -143,7 +143,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
         this.cachedRecords.push(
           ...res.data.resource.records.edges.map((x) => x.node)
         );
-        this.dataSourceRecords = this.cachedRecords.slice(
+        this.records = this.cachedRecords.slice(
           ITEMS_PER_PAGE * this.pageInfo.pageIndex,
           ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
         );
@@ -212,7 +212,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
         afterCursor: this.pageInfo.endCursor,
       });
     } else {
-      this.dataSourceRecords = this.cachedRecords.slice(
+      this.records = this.cachedRecords.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex,
         ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
       );
