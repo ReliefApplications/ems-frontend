@@ -1033,6 +1033,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
+    console.log('CURRENT LAYOUT FIELDS', currentLayout.fields);
+    console.log('QUERY FIELDS', this.settings.query.fields);
     const body = {
       ids,
       filter:

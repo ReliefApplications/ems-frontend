@@ -433,22 +433,46 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
 
   /** @returns Visible columns of the grid. */
   get visibleFields(): any {
+    const extractFieldFromColumn = (column: any): any => ({
+      [column.field]: {
+        field: column.field,
+        title: column.title,
+        width: column.width,
+        hidden: column.hidden,
+        order: column.orderIndex,
+        subFields:
+          this.fields.find((x) => x.name === column.field)?.subFields || [],
+      },
+    });
     return this.grid?.columns
       .toArray()
       .sort((a: any, b: any) => a.orderIndex - b.orderIndex)
-      .filter((x: any) => x.field)
+      .filter((x: any) => {
+        console.log('FIELD', x.field);
+        console.log('TITLE', x.title);
+        console.log('DISPLAY TITLE', x.displayTitle);
+        console.log('COLUMNGROUP', x.isColumnGroup);
+        console.log('HASCHILDREN', x.hasChildren);
+        console.log('CHILDRENARRAY', x.childrenArray);
+        if (x.hasChildren)
+          console.log(
+            'CHILDRENARRAY',
+            x.childrenArray.map((y: any) => y.title)
+          );
+        return x.field || x.hasChildren;
+      })
       .reduce(
         (obj, c: any) => ({
           ...obj,
-          [c.field]: {
-            field: c.field,
-            title: c.title,
-            width: c.width,
-            hidden: c.hidden,
-            order: c.orderIndex,
-            subFields:
-              this.fields.find((x) => x.name === c.field)?.subFields || [],
-          },
+          ...(c.field && extractFieldFromColumn(c)),
+          ...(c.hasChildren &&
+            c.childrenArray.reduce(
+              (objChildren: any, y: any) => ({
+                ...objChildren,
+                ...(y.field && extractFieldFromColumn(y)),
+              }),
+              {}
+            )),
         }),
         {}
       );
