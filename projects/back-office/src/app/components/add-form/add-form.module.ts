@@ -9,11 +9,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeGraphQLSelectModule, SafeIconModule } from '@safe/builder';
 
+/**
+ * Add form module.
+ */
 @NgModule({
   declarations: [AddFormComponent],
   imports: [
@@ -22,7 +25,6 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule,
     MatSelectModule,
     MatDialogModule,
     MatButtonModule,
@@ -31,6 +33,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSlideToggleModule,
     MatChipsModule,
     TranslateModule,
+    SafeIconModule,
+    SafeGraphQLSelectModule,
   ],
   exports: [AddFormComponent],
 })

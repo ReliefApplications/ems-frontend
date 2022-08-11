@@ -75,6 +75,11 @@
 			"one": "Form"
 		},
 		"general": "General",
+		"group": {
+			"few": "Groups",
+			"none": "No groups",
+			"one": "Group"
+		},
 		"history": "History",
 		"id": "Id",
 		"input": {
@@ -436,7 +441,6 @@
 		},
 		"formBuilder": {
 			"errors": {
-				"invalidRelatedName": "Provided related name ({{name}}) for question {{question}} on page {{page}} is invalid. Please provide a valid related name (snake case format) to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
 			}
@@ -444,6 +448,15 @@
 		"forms": {
 			"isCore": "Is core",
 			"parent": "Parent form"
+		},
+		"group": {
+			"add": {
+				"title": "Add new group"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the group {{name}}?",
+				"title": "Delete group"
+			}
 		},
 		"header": {
 			"goToPlatform": "Navigate to",
@@ -672,7 +685,7 @@
 				"disallowRecordAccessibility": "Disallow this role to see records of {{form}}",
 				"disallowRecordCreation": "Disallow this role to create records with {{form}}",
 				"disallowRecordDeletion": "Disallow this role to remove records from {{form}}",
-				"disallowRecordUpate": "Disallow this role to update records from {{form}}",
+				"disallowRecordUpdate": "Disallow this role to update records from {{form}}",
 				"hideFeature": "Hide {{page}} from this role",
 				"showFeature": "Show {{page}} to this role"
 			},
@@ -702,6 +715,7 @@
 					"application": "Application roles",
 					"backoffice": "Back-Office roles",
 					"selectedApplication": "Selected application",
+					"selectedGroups": "Selected groups",
 					"selectedRoles": "Selected roles"
 				},
 				"title": "Summary"
@@ -1109,6 +1123,11 @@
 			"select": "Select a Form",
 			"template": "Template"
 		},
+		"group": {
+			"create": "Create a group",
+			"description": "Description",
+			"title": "Title"
+		},
 		"mapping": {
 			"add": "Add a Mapping",
 			"edit": "Edit a Mapping"
@@ -1268,13 +1287,10 @@
 				"choices": {
 					"valueDuplicated": "Please provide unique values for each of the choices of question: {{question}}"
 				},
+				"dataFieldDuplicated": "Data name duplicated : {{name}}. Please provide different value names for all questions.",
 				"missingName": "Missing value name for an element on page {{page}}. Please provide a valid data value name (snake_case) to save the form.",
 				"multipletext": {
 					"missingName": "Please provide name or title for each text of question: {{question}}"
-				},
-				"resource": {
-					"invalidRelatedName": "The related name {{relatedName}} on page {{page}} is invalid. Please conform to snake_case.",
-					"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake_case) to save the form."
 				},
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
 			},

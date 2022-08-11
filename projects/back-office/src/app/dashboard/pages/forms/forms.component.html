@@ -172,7 +172,9 @@
   <tr
     mat-row
     *matRowDef="let row; columns: displayedColumns"
-    [ngClass]="{ clickable: row.canCreateRecords && row.status === 'active' }"
+    [ngClass]="{
+      'cursor-pointer': row.canCreateRecords && row.status === 'active'
+    }"
     [routerLink]="
       row.canCreateRecords && row.status === 'active'
         ? [row.id + '/answer']

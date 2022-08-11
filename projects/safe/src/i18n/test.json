@@ -75,6 +75,11 @@
 			"one": "******"
 		},
 		"general": "******",
+		"group": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"history": "******",
 		"id": "******",
 		"input": {
@@ -436,7 +441,6 @@
 		},
 		"formBuilder": {
 			"errors": {
-				"invalidRelatedName": "****** {{name}} ****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			}
@@ -444,6 +448,15 @@
 		"forms": {
 			"isCore": "******",
 			"parent": "******"
+		},
+		"group": {
+			"add": {
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			}
 		},
 		"header": {
 			"goToPlatform": "******",
@@ -672,7 +685,7 @@
 				"disallowRecordAccessibility": "****** {{form}}",
 				"disallowRecordCreation": "****** {{form}}",
 				"disallowRecordDeletion": "****** {{form}}",
-				"disallowRecordUpate": "****** {{form}}",
+				"disallowRecordUpdate": "****** {{form}}",
 				"hideFeature": "****** {{page}} ******",
 				"showFeature": "****** {{page}} ******"
 			},
@@ -702,6 +715,7 @@
 					"application": "******",
 					"backoffice": "******",
 					"selectedApplication": "******",
+					"selectedGroups": "******",
 					"selectedRoles": "******"
 				},
 				"title": "******"
@@ -1109,6 +1123,11 @@
 			"select": "******",
 			"template": "******"
 		},
+		"group": {
+			"create": "******",
+			"description": "******",
+			"title": "******"
+		},
 		"mapping": {
 			"add": "******",
 			"edit": "******"
@@ -1268,13 +1287,10 @@
 				"choices": {
 					"valueDuplicated": "****** {{question}}"
 				},
+				"dataFieldDuplicated": "****** {{name}} ******",
 				"missingName": "****** {{page}} ******",
 				"multipletext": {
 					"missingName": "****** {{question}}"
-				},
-				"resource": {
-					"invalidRelatedName": "****** {{relatedName}} ****** {{page}} ******",
-					"missingRelatedName": "****** {{question}} ****** {{page}} ******"
 				},
 				"snakecase": "****** {{name}} ****** {{page}} ******"
 			},

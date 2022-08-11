@@ -28,14 +28,17 @@ import {
   EDIT_PAGE,
   EditStepMutationResponse,
   EDIT_STEP,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetDashboardByIdQueryResponse,
   GET_DASHBOARD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Dashboard page.
+ */
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -66,6 +69,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public showAppMenu = false;
   public applications: Application[] = [];
 
+  /**
+   * Dashboard page
+   *
+   * @param applicationService Shared application service
+   * @param workflowService Shared workflow service
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param router Angular router
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param dashboardService Shared dashboard service
+   * @param translateService Angular translate service
+   * @param authService Shared authentication service
+   */
   constructor(
     private applicationService: SafeApplicationService,
     private workflowService: SafeWorkflowService,
@@ -146,7 +163,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.closeDashboard();
   }
 
-  /** Add a new widget to the dashboard. */
+  /**
+   * Add a new widget to the dashboard.
+   *
+   * @param e add event
+   */
   onAdd(e: any): void {
     const tile = JSON.parse(JSON.stringify(e));
     tile.id = this.generatedTiles;
@@ -228,7 +249,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Remove a widget from the dashboard. */
+  /**
+   * Remove a widget from the dashboard.
+   *
+   * @param e delete event
+   */
   onDeleteTile(e: any): void {
     this.tiles = this.tiles.filter((x) => x.id !== e.id);
     this.autoSaveChanges();
@@ -270,7 +295,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       );
   }
 
-  /** Edit the permissions layer. */
+  /**
+   * Edit the permissions layer.
+   *
+   * @param e edit event
+   */
   saveAccess(e: any): void {
     if (this.router.url.includes('/workflow/')) {
       this.apollo
@@ -305,6 +334,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Toggle visibility of form.
+   */
   toggleFormActive(): void {
     if (
       this.dashboard?.page
@@ -387,6 +419,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Toggle visibility of application menu
+   * Get applications
+   */
   public onAppSelection(): void {
     this.showAppMenu = !this.showAppMenu;
     const authSubscription = this.authService.user$.subscribe(

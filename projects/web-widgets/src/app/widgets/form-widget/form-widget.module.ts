@@ -4,6 +4,7 @@ import { FormWidgetComponent } from './form-widget.component';
 import { FormModule } from '../../components/form/form.module';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
+/** Form Web widget module. */
 @NgModule({
   declarations: [FormWidgetComponent],
   imports: [CommonModule, FormModule, MatSidenavModule],

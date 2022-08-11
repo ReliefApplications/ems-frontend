@@ -2,9 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { UpdateRecordComponent } from './update-record.component';
 
-/**
- * Declaration of routes for update records component.
- */
+/** List of update record routes */
 const routes: Routes = [
   {
     path: '',
@@ -12,9 +10,7 @@ const routes: Routes = [
   },
 ];
 
-/**
- * Routing export for update records component.
- */
+/** Update record page module. */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

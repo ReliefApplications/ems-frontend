@@ -9,6 +9,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { SafeButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Application settings module.
+ */
 @NgModule({
   declarations: [SettingsComponent],
   imports: [

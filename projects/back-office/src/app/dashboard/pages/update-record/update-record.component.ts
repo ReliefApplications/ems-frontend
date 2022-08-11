@@ -7,7 +7,7 @@ import {
   GetRecordByIdQueryResponse,
   GET_FORM_STRUCTURE,
   GET_RECORD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { Record, Form, SafeBreadcrumbService } from '@safe/builder';
 
 /**
@@ -31,7 +31,7 @@ export class UpdateRecordComponent implements OnInit {
    * @param apollo Used to get the form and the record data
    * @param route Used to get url params.
    * @param router Used to change the app route.
-   * @param breadcrumbService Used to update the breadcrumb component.
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(
     private apollo: Apollo,

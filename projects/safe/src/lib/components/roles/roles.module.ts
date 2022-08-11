@@ -1,51 +1,35 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeRolesComponent } from './roles.component';
-import { SafeAddRoleComponent } from './components/add-role/add-role.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
-import { MatSortModule } from '@angular/material/sort';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatDividerModule } from '@angular/material/divider';
-import { SafeButtonModule } from '../ui/button/button.module';
+import { MatTabsModule } from '@angular/material/tabs';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
+import { SafeRolesComponent } from './roles.component';
+import { SafeRoleListModule } from './components/role-list/role-list.module';
+import { SafeGroupListModule } from './components/group-list/group-list.module';
+import { SafeAddRoleComponent } from './components/add-role/add-role.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 
 /**
- * SafeRolesModule is a class used to manage all the modules and components
- * related to the roles page.
+ * SafeRolesModule manages modules and components for the roles page
  */
 @NgModule({
   declarations: [SafeRolesComponent, SafeAddRoleComponent],
   imports: [
     CommonModule,
+    SafeRoleListModule,
+    SafeGroupListModule,
+    TranslateModule,
+    MatTabsModule,
+    MatDialogModule,
+    TranslateModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatDialogModule,
     MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    SafeConfirmModalModule,
-    MatSortModule,
-    MatAutocompleteModule,
-    MatDividerModule,
-    SafeButtonModule,
-    TranslateModule,
-    SafeSkeletonTableModule,
+    MatInputModule,
   ],
   exports: [SafeRolesComponent],
 })

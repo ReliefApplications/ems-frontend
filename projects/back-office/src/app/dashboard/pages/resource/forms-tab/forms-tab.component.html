@@ -108,7 +108,7 @@
     mat-row
     *matRowDef="let row; columns: displayedColumnsForms"
     [ngClass]="{
-      clickable: row.canCreateRecords && row.status === 'active'
+      'cursor-pointer': row.canCreateRecords && row.status === 'active'
     }"
     [routerLink]="
       row.canCreateRecords && row.status === 'active'

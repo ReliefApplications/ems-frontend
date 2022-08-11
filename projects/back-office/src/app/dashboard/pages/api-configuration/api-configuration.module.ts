@@ -12,6 +12,9 @@ import { MatOptionModule } from '@angular/material/core';
 import { SafeButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * API configuration page module.
+ */
 @NgModule({
   declarations: [ApiConfigurationComponent],
   imports: [

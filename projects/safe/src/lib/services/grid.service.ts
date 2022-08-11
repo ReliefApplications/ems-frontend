@@ -4,6 +4,7 @@ import { prettifyLabel } from '../utils/prettify';
 import get from 'lodash/get';
 import { SafeApiProxyService } from './api-proxy.service';
 import { MULTISELECT_TYPES } from '../components/ui/core-grid/grid/grid.constants';
+import { TranslateService } from '@ngx-translate/core';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -39,10 +40,12 @@ export class SafeGridService {
    *
    * @param formBuilder Angular form builder
    * @param apiProxyService Shared API proxy service
+   * @param translate Translate service
    */
   constructor(
     private formBuilder: FormBuilder,
-    private apiProxyService: SafeApiProxyService
+    private apiProxyService: SafeApiProxyService,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -240,6 +243,7 @@ export class SafeGridService {
    * @param metaFields List of meta fields
    */
   public async populateMetaFields(metaFields: any): Promise<void> {
+    const promises: Promise<any>[] = [];
     for (const fieldName of Object.keys(metaFields)) {
       const meta = metaFields[fieldName];
       if (meta.choicesByUrl) {
@@ -252,18 +256,38 @@ export class SafeGridService {
               JSON.parse(localRes),
               meta.choicesByUrl
             ),
+            // choicesByUrl: null,
           };
         } else {
-          const res: any =
-            await this.apiProxyService.promisedRequestWithHeaders(url);
-          localStorage.setItem(url, JSON.stringify(res));
-          metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(res, meta.choicesByUrl),
-          };
+          promises.push(
+            this.apiProxyService
+              .promisedRequestWithHeaders(url)
+              .then((value: any) => {
+                localStorage.setItem(url, JSON.stringify(value));
+                metaFields[fieldName] = {
+                  ...meta,
+                  choices: this.extractChoices(value, meta.choicesByUrl),
+                  // choicesByUrl: null,
+                };
+              })
+          );
         }
       }
+      if (meta.choices) {
+        console.log(meta.choices, this.translate.currentLang);
+        metaFields[fieldName] = {
+          ...meta,
+          choices: meta.choices.map((choice: any) => ({
+            value: choice.value,
+            text:
+              choice.text[this.translate.currentLang] ||
+              choice.text.default ||
+              choice.text,
+          })),
+        };
+      }
     }
+    await Promise.all(promises);
   }
 
   /**
@@ -305,6 +329,7 @@ export class SafeGridService {
         text: choicesByUrl.otherText ? choicesByUrl.otherText : 'Other',
       });
     }
+    choices.sort((a: any, b: any) => a.text.localeCompare(b.text));
     return choices;
   }
 

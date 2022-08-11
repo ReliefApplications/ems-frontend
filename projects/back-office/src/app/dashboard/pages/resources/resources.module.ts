@@ -24,7 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AddResourceModule } from '../../../components/add-resource/add-resource.module';
 
 /**
- * Module declaration for resources component.
+ * Resources page module.
  */
 @NgModule({
   declarations: [ResourcesComponent, FilterComponent],

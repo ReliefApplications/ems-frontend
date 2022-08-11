@@ -2,10 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { UsersComponent } from './users.component';
 
-
-/**
- * Declaration of routes for user component.
- */
+/** List of users module routes */
 const routes: Routes = [
   {
     path: '',
@@ -25,9 +22,7 @@ const routes: Routes = [
   },
 ];
 
-/**
- * Routing export for users component.
- */
+/** Users routing module. */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

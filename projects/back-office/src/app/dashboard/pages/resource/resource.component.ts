@@ -10,13 +10,13 @@ import {
 import {
   EditResourceMutationResponse,
   EDIT_RESOURCE,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetResourceByIdQueryResponse,
   GetResourceRecordsQueryResponse,
   GET_RESOURCE_BY_ID,
   GET_RESOURCE_RECORDS,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -88,7 +88,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
    * @param snackBar Service used to show a snackbar.
    * @param downloadService Service used to download.
    * @param translate Service used to get translations.
-   * @param breadcrumbService
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(
     private apollo: Apollo,
@@ -348,7 +348,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
   /**
    * Changes the route on tab change.
    *
-   * @param e change tab event.
+   * @param id Id of record to restore.
+   * @param e click event.
    */
   onTabChanged(e: any) {
     const tab = ROUTE_TABS[e.index];

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ApplicationComponent } from './application.component';
 
-/** List of routes of an application */
+/** Routes of application module */
 const routes: Routes = [
   {
     path: '',
@@ -49,9 +49,19 @@ const routes: Routes = [
                   import('./pages/role-summary/role-summary.module').then(
                     (m) => m.RoleSummaryModule
                   ),
+                data: {
+                  breadcrumb: {
+                    alias: '@role',
+                  },
+                },
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                key: 'common.role.few',
+              },
+            },
           },
           {
             path: 'users',
@@ -70,9 +80,19 @@ const routes: Routes = [
                   import('./pages/user-summary/user-summary.module').then(
                     (m) => m.UserSummaryModule
                   ),
+                data: {
+                  breadcrumb: {
+                    alias: '@user',
+                  },
+                },
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                key: 'common.user.few',
+              },
+            },
           },
           {
             path: 'position',
@@ -152,7 +172,9 @@ const routes: Routes = [
   },
 ];
 
-/** Application page routing module */
+/**
+ * Application routing module.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

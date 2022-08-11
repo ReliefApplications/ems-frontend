@@ -1,10 +1,6 @@
 import get from 'lodash/get';
-import { JsonMetadata, Question } from 'survey-knockout';
-
-/** Question with tooltip interface */
-interface QuestionTooltip extends Question {
-  tooltip?: string;
-}
+import { JsonMetadata } from 'survey-angular';
+import { Question } from '../types';
 
 /**
  * Add support for custom properties to the survey
@@ -28,7 +24,7 @@ export const init = (Survey: any): void => {
  * @param question The question object
  * @param el The html element of the question
  */
-export const render = (question: QuestionTooltip, el: HTMLElement): void => {
+export const render = (question: Question, el: HTMLElement): void => {
   // Display the tooltip
   const header = el?.parentElement?.parentElement?.querySelector(
     '.sv_q_title'

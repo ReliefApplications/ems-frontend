@@ -2,10 +2,6 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import {
-  GET_SHORT_FORMS,
-  GetFormsQueryResponse,
-} from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import {
   SafeSnackBarService,
@@ -15,25 +11,22 @@ import {
   SafeConfirmModalComponent,
   Form,
 } from '@safe/builder';
+import { GET_SHORT_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import {
   DeleteFormMutationResponse,
   DELETE_FORM,
   AddFormMutationResponse,
   ADD_FORM,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { AddFormComponent } from '../../../components/add-form/add-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 
-/**
- *
- */
+/** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
 
-/**
- *
- */
+/** Forms page component */
 @Component({
   selector: 'app-forms',
   templateUrl: './forms.component.html',
@@ -74,13 +67,14 @@ export class FormsComponent implements OnInit, OnDestroy {
   };
 
   /**
+   * Forms page component
    *
-   * @param apollo
-   * @param dialog
-   * @param router
-   * @param snackBar
-   * @param authService
-   * @param translate
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param router Angular router
+   * @param snackBar Shared snackbar
+   * @param authService Shared authentication service
+   * @param translate Angular translate service
    */
   constructor(
     private apollo: Apollo,

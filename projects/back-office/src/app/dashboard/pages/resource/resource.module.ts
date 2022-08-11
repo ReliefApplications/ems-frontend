@@ -23,6 +23,7 @@ import { RecordsTabComponent } from './records-tab/records-tab.component';
 import { FormsTabComponent } from './forms-tab/forms-tab.component';
 import { LayoutsTabComponent } from './layouts-tab/layouts-tab.component';
 
+/** Resource page module. */
 @NgModule({
   declarations: [ResourceComponent, RecordsTabComponent, FormsTabComponent, LayoutsTabComponent],
   imports: [
