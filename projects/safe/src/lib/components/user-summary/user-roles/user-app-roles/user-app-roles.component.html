@@ -4,14 +4,13 @@
     <mat-label>{{
       'components.user.summary.roles.selectedApplication' | translate
     }}</mat-label>
-    <mat-select #applicationSelect [formControl]="selectedApplication">
-      <mat-option
-        *ngFor="let application of applications"
-        [value]="application.id"
-      >
-        {{ application.name }}
-      </mat-option>
-    </mat-select>
+    <safe-graphql-select
+      valueField="id"
+      textField="name"
+      [query]="applicationsQuery"
+      [formControl]="selectedApplication"
+    >
+    </safe-graphql-select>
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>{{

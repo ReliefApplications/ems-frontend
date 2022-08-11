@@ -4,11 +4,14 @@
   <form [formGroup]="roleForm" class="form-group" *ngIf="!loading">
     <mat-form-field>
       <mat-label>{{ 'common.role.one' | translate }}</mat-label>
-      <mat-select formControlName="role">
-        <mat-option *ngFor="let role of roles" [value]="role.id">
-          {{ role.title }}
-        </mat-option>
-      </mat-select>
+      <safe-graphql-select
+        valueField="id"
+        textField="title"
+        [required]="true"
+        [query]="rolesQuery"
+        formControlName="role"
+      >
+      </safe-graphql-select>
     </mat-form-field>
   </form>
 </div>

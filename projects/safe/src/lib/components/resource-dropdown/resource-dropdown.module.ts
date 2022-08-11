@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeGraphQLSelectModule } from '../graphql-select/graphql-select.module';
 
 /**
  * SafeResourceDropdownModule is a class used to manage all the modules and components
@@ -19,6 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatFormFieldModule,
     MatSelectModule,
     TranslateModule,
+    SafeGraphQLSelectModule,
   ],
   exports: [SafeResourceDropdownComponent],
 })

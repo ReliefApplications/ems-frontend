@@ -1,20 +1,11 @@
 <mat-form-field appearance="outline">
   <mat-label>{{ 'components.resource.dropdown.select' | translate }}</mat-label>
-  <mat-select
-    #resourceSelect
-    [(ngModel)]="resource"
-    name="resource"
-    (openedChange)="onOpenSelect($event)"
-    (selectionChange)="onSelect($event)"
+  <safe-graphql-select
+    valueField="id"
+    textField="name"
+    [query]="resourcesQuery"
+    [value]="resource"
+    (change)="onSelect($event)"
   >
-    <mat-option *ngIf="selectedResource" [value]="selectedResource.id">{{
-      selectedResource.name
-    }}</mat-option>
-    <mat-option
-      *ngFor="let resource of resources$ | async"
-      [value]="resource.id"
-    >
-      {{ resource.name }}
-    </mat-option>
-  </mat-select>
+  </safe-graphql-select>
 </mat-form-field>

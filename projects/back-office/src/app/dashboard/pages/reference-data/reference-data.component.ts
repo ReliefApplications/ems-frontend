@@ -60,9 +60,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
   public referenceForm: FormGroup = new FormGroup({});
   public referenceTypeChoices = Object.values(referenceDataType);
 
-  private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
-  private apiConfigurations = new BehaviorSubject<ApiConfiguration[]>([]);
-  public apiConfigurations$!: Observable<ApiConfiguration[]>;
+  public apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
 
   public valueFields: string[] = [];
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
@@ -72,7 +70,6 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
   public newData: any = [];
   public csvLoading = false;
 
-  @ViewChild('formSelect') apiConfSelect?: MatSelect;
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvData') csvData?: ElementRef<HTMLInputElement>;
 
@@ -220,13 +217,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
             first: ITEMS_PER_PAGE,
           },
         });
-
-      this.apiConfigurations$ = this.apiConfigurations.asObservable();
       this.apiConfigurationsQuery.valueChanges.subscribe((res) => {
-        this.apiConfigurations.next(
-          res.data.apiConfigurations.edges.map((x) => x.node)
-        );
-        this.pageInfo = res.data.apiConfigurations.pageInfo;
         this.loading = res.loading;
       });
     } else {
@@ -340,57 +331,6 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
           this.loading = res.data?.loading || false;
         }
       });
-  }
-
-  /**
-   * Add scroll listener to select.
-   *
-   * @param e open select event.
-   */
-  onOpenSelect(e: any): void {
-    if (e && this.apiConfSelect) {
-      const panel = this.apiConfSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
-      );
-    }
-  }
-
-  /**
-   * Fetches more forms on scroll.
-   *
-   * @param e scroll event.
-   */
-  private loadOnScroll(e: any): void {
-    if (
-      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
-      50
-    ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
-        this.loading = true;
-        this.apiConfigurationsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return Object.assign({}, prev, {
-              apiConfigurations: {
-                edges: [
-                  ...prev.apiConfigurations.edges,
-                  ...fetchMoreResult.apiConfigurations.edges,
-                ],
-                pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
-                totalCount: fetchMoreResult.apiConfigurations.totalCount,
-              },
-            });
-          },
-        });
-      }
-    }
   }
 
   /**

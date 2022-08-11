@@ -1,12 +1,14 @@
 import {
   Component,
   ElementRef,
+  EventEmitter,
   HostBinding,
   Inject,
   Input,
   OnDestroy,
   OnInit,
   Optional,
+  Output,
   Self,
   ViewChild,
 } from '@angular/core';
@@ -58,6 +60,8 @@ export class SafeGraphQLSelectComponent
 
   @Input() valueField = '';
   @Input() textField = '';
+
+  @Output() change = new EventEmitter<string | null>();
   /**
    * Gets the value
    *
@@ -73,6 +77,7 @@ export class SafeGraphQLSelectComponent
     this.selected.setValue(val || '');
     this.onChange(val);
     this.stateChanges.next();
+    this.change.emit(this.value);
   }
 
   public stateChanges = new Subject<void>();
@@ -225,6 +230,9 @@ export class SafeGraphQLSelectComponent
 
   public selected: FormControl;
 
+  /** Text value, used to add the passed value in the top of the query results */
+  @Input('textValue') textValue!: string | undefined;
+
   /** Query reference for getting the available contents */
   @Input('query') query!: QueryRef<any>;
 
@@ -263,9 +271,21 @@ export class SafeGraphQLSelectComponent
     this.elements$ = this.elements.asObservable();
     this.query.valueChanges.subscribe((res: any) => {
       this.queryName = Object.keys(res.data)[0];
-      this.elements.next(
-        get(res.data, this.queryName).edges.map((x: any) => x.node)
-      );
+      const nodes = get(res.data, this.queryName).edges
+        ? get(res.data, this.queryName).edges.map((x: any) => x.node)
+        : get(res.data, this.queryName);
+      if (this.textValue && this.value) {
+        this.elements.next([
+          {
+            [this.textField]: this.textValue,
+            [this.valueField]: this.value,
+          },
+          ...nodes.filter((x: any) => x[this.valueField] !== this.value),
+        ]);
+      } else {
+        this.elements.next(nodes);
+      }
+      console.log(this.elements.value, nodes);
       this.pageInfo = get(res.data, this.queryName).pageInfo;
       this.loading = res.loading;
     });
@@ -349,12 +369,15 @@ export class SafeGraphQLSelectComponent
                 this.selectedElement = null;
               }
             }
-            this.loading = fetchMoreResult.loading;
             return Object.assign({}, prev, {
               [this.queryName]: {
                 edges: [
-                  ...get(prev, this.queryName).edges,
-                  ...get(fetchMoreResult, this.queryName).edges,
+                  ...(get(prev, this.queryName).edges
+                    ? get(prev, this.queryName).edges
+                    : get(prev, this.queryName)),
+                  ...(get(fetchMoreResult, this.queryName).edges
+                    ? get(fetchMoreResult, this.queryName).edges
+                    : get(fetchMoreResult, this.queryName)),
                 ],
                 pageInfo: get(fetchMoreResult, this.queryName).pageInfo,
                 totalCount: get(fetchMoreResult, this.queryName).totalCount,

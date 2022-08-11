@@ -73,15 +73,12 @@
         <mat-label>{{
           'components.record.convert.select' | translate
         }}</mat-label>
-        <mat-select
-          #formSelect
+        <safe-graphql-select
+          valueField="id"
+          textField="name"
+          [query]="formsQuery"
           formControlName="convertTo"
-          (openedChange)="onOpenFormSelect($event)"
-        >
-          <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{
-            form.name
-          }}</mat-option>
-        </mat-select>
+        ></safe-graphql-select>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>{{
