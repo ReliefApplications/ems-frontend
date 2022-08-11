@@ -79,71 +79,26 @@
       [active]="selectedTab === 0"
       routerLink="./records"
       [state]="{ records, resource }"
-      >{{ 'common.record.few' | translate }} ( {{ pageInfo.length }} )</a
+      >{{ 'common.record.few' | translate }}</a
     >
     <a
       mat-tab-link
       (click)="selectedTab = 1"
       [active]="selectedTab === 1"
       routerLink="./forms"
-      [state]="{ forms }"
-      >{{ 'common.form.few' | translate }} ( {{ resource.forms.length }} )</a
+      [state]="{ resource }"
+      >{{ 'common.form.few' | translate }}</a
     >
     <a
       mat-tab-link
       (click)="selectedTab = 2"
       [active]="selectedTab === 2"
       routerLink="./layouts"
-      [state]="{ layouts, resource }"
-      >{{ 'common.layout.few' | translate }} ( {{ layouts.length }} )</a
+      [state]="{ resource }"
+      >{{ 'common.layout.few' | translate }}</a
     >
   </nav>
   <mat-tab-nav-panel #tabPanel>
     <router-outlet></router-outlet>
   </mat-tab-nav-panel>
-
-  <!-- <mat-tab-group dynamicHeight
-  [(selectedIndex)]="selectedTab"
-  (selectedTabChange)="onTabChanged($event)">
-    <mat-tab>
-      <ng-template mat-tab-label>
-        {{ 'common.record.few' | translate }} ( {{ pageInfo.length }} )
-      </ng-template>
-      <app-records-tab
-        class="table-container"
-        [dataSourceRecords]="dataSourceRecords"
-        [resource]="resource"
-        [showDeletedRecords]="showDeletedRecords"
-        [displayedColumnsRecords]="displayedColumnsRecords"
-        [recordsDefaultColumns]="recordsDefaultColumns"
-      ></app-records-tab>
-      <mat-paginator
-        [disabled]="loadingMore"
-        [pageSize]="pageInfo.pageSize"
-        [length]="pageInfo.length"
-        aria-label="Select page of records"
-        (page)="onPage($event)"
-      ></mat-paginator>
-    </mat-tab>
-    <mat-tab>
-      <ng-template mat-tab-label>
-        {{ 'common.form.few' | translate }} ( {{ resource.forms.length }} )
-      </ng-template>
-      <app-forms-tab
-        *ngIf="!loading"
-        [dataSourceForms]="dataSourceForms"
-      ></app-forms-tab>
-    </mat-tab>
-    <mat-tab>
-      <ng-template mat-tab-label>
-        {{ 'common.layout.few' | translate }} ( {{ dataSourceLayouts.length }} )
-      </ng-template>
-      <app-layouts-tab
-        *ngIf="!loading"
-        [dataSourceLayouts]="dataSourceLayouts"
-        [resource]="resource"
-        [id]="id"
-      ></app-layouts-tab>
-    </mat-tab>
-  </mat-tab-group> -->
 </ng-container>

@@ -2,13 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import {
   Form,
+  Resource,
   SafeConfirmModalComponent,
   SafeSnackBarService,
 } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
-import { DeleteFormMutationResponse, DELETE_FORM } from '../graphql/mutations';
+import { DeleteFormMutationResponse, DELETE_FORM } from './graphql/mutations';
 import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
+import { GetResourceByIdQueryResponse } from '../graphql/queries';
+import { GET_RESOURCE_FORMS } from './graphql/queries';
 
 /**
  *Forms tab of resource page
@@ -19,9 +22,11 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./forms-tab.component.scss'],
 })
 export class FormsTabComponent implements OnInit {
+  private resource!: Resource;
   public forms: Form[] = [];
+  public loading = true;
 
-  displayedColumnsForms: string[] = [
+  public displayedColumnsForms: string[] = [
     'name',
     'createdAt',
     'status',
@@ -47,7 +52,21 @@ export class FormsTabComponent implements OnInit {
 
   ngOnInit(): void {
     const state = history.state;
-    this.forms = get(state, 'forms', []);
+    this.resource = get(state, 'resource', null);
+
+    this.apollo
+      .query<GetResourceByIdQueryResponse>({
+        query: GET_RESOURCE_FORMS,
+        variables: {
+          id: this.resource.id,
+        },
+      })
+      .subscribe((res) => {
+        if (res.data.resource) {
+          this.forms = res.data.resource.forms || [];
+        }
+        this.loading = false;
+      });
   }
 
   /**

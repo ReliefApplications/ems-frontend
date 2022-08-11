@@ -61,12 +61,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
   displayedColumnsRecords: string[] = [];
   records: Record[] = [];
 
-  // === FORMS ASSOCIATED ===
-  forms: Form[] = [];
-
-  // === LAYOUTS ===
-  layouts: Layout[] = [];
-
   // === SHOW DELETED RECORDS ===
   showDeletedRecords = false;
 
@@ -169,8 +163,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
               '@resource',
               this.resource.name as string
             );
-            this.forms = this.resource.forms;
-            this.layouts = this.resource.layouts;
             this.setDisplayedColumns(false);
             this.loading = res.loading;
           } else {

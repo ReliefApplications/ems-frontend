@@ -8,7 +8,12 @@ import {
   SafeConfirmModalComponent,
   Resource,
 } from '@safe/builder';
+import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
+import {
+  GetResourceByIdQueryResponse,
+  GET_RESOURCE_LAYOUTS,
+} from './graphql/queries';
 
 /**
  * Layouts tab of resource page
@@ -19,19 +24,22 @@ import get from 'lodash/get';
   styleUrls: ['./layouts-tab.component.scss'],
 })
 export class LayoutsTabComponent implements OnInit {
-  public layouts: Layout[] = [];
   public resource!: Resource;
+  public layouts: Layout[] = [];
+  public loading = true;
 
-  displayedColumnsLayouts: string[] = ['name', 'createdAt', '_actions'];
+  public displayedColumnsLayouts: string[] = ['name', 'createdAt', '_actions'];
 
   /**
    * Layouts tab of resource page
    *
+   * @param apollo Apollo service
    * @param dialog Material dialog service
    * @param gridLayoutService Grid layout service
    * @param translate Angular translate service
    */
   constructor(
+    private apollo: Apollo,
     private dialog: MatDialog,
     private gridLayoutService: SafeGridLayoutService,
     private translate: TranslateService
@@ -39,8 +47,21 @@ export class LayoutsTabComponent implements OnInit {
 
   ngOnInit(): void {
     const state = history.state;
-    this.layouts = get(state, 'layouts', []);
     this.resource = get(state, 'resource', null);
+
+    this.apollo
+      .query<GetResourceByIdQueryResponse>({
+        query: GET_RESOURCE_LAYOUTS,
+        variables: {
+          id: this.resource.id,
+        },
+      })
+      .subscribe((res) => {
+        if (res.data.resource) {
+          this.layouts = res.data.resource.layouts || [];
+        }
+        this.loading = false;
+      });
   }
 
   /**
@@ -68,7 +89,6 @@ export class LayoutsTabComponent implements OnInit {
                 ...(this.resource.layouts || []),
                 res.data?.addLayout,
               ];
-              this.resource.layouts = this.layouts;
             }
           });
       }

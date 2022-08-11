@@ -1,17 +1,11 @@
-
-<div class="actions">
-  <safe-button
-    variant="primary"
-    category="secondary"
-    (click)="onAddLayout()"
-  >
+<div class="actions" *ngIf="!loading">
+  <safe-button variant="primary" category="secondary" (click)="onAddLayout()">
     {{
-      'components.widget.settings.grid.layouts.add.choice.create'
-        | translate
+      'components.widget.settings.grid.layouts.add.choice.create' | translate
     }}</safe-button
   >
 </div>
-<table mat-table [dataSource]="layouts">
+<table *ngIf="!loading" mat-table [dataSource]="layouts">
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
       {{ 'common.name' | translate }}
@@ -53,8 +47,11 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumnsLayouts"></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: displayedColumnsLayouts"
-  ></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumnsLayouts"></tr>
 </table>
+<safe-skeleton-table
+  *ngIf="loading"
+  [columns]="['common.name', 'common.createdOn']"
+  [actions]="true"
+>
+</safe-skeleton-table>

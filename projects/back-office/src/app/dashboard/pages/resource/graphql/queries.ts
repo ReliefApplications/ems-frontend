@@ -64,7 +64,7 @@ export interface GetResourceRecordsQueryResponse {
 }
 
 // === GET RESOURCE BY ID ===
-/** Graphq query for getting a resource by its id */
+/** Graphql query for getting a resource by its id */
 export const GET_RESOURCE_BY_ID = gql`
   query GetResourceById($id: ID!) {
     resource(id: $id) {

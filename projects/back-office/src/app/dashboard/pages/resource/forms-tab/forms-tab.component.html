@@ -1,5 +1,4 @@
-
-<table mat-table [dataSource]="forms">
+<table *ngIf="!loading" mat-table [dataSource]="forms">
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
       {{ 'common.name' | translate }}
@@ -117,3 +116,16 @@
     "
   ></tr>
 </table>
+
+<safe-skeleton-table
+  *ngIf="loading"
+  [columns]="[
+    'common.name',
+    'common.createdOn',
+    'common.status',
+    'common.record.few',
+    'components.forms.isCore'
+  ]"
+  [actions]="true"
+>
+</safe-skeleton-table>

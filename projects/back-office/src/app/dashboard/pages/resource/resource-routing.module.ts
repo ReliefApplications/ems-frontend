@@ -20,7 +20,10 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: RecordsTabComponent,
+            loadChildren: () =>
+              import('./records-tab/records-tab.module').then(
+                (m) => m.RecordsTabModule
+              ),
           },
         ],
         data: {
@@ -34,7 +37,10 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: FormsTabComponent,
+            loadChildren: () =>
+              import('./forms-tab/forms-tab.module').then(
+                (m) => m.FormsTabModule
+              ),
           },
         ],
         data: {
@@ -45,7 +51,10 @@ const routes: Routes = [
       },
       {
         path: 'layouts',
-        component: LayoutsTabComponent,
+        loadChildren: () =>
+          import('./layouts-tab/layouts-tab.module').then(
+            (m) => m.LayoutsTabModule
+          ),
         // canActivate: [SafePermissionGuard]
         data: {
           breadcrumb: {
