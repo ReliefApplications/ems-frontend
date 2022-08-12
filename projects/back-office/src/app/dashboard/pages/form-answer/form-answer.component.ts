@@ -41,6 +41,7 @@ export class FormAnswerComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
+    console.log(this.id);
     if (this.id !== null) {
       this.apollo
         .watchQuery<GetFormByIdQueryResponse>({
@@ -56,6 +57,11 @@ export class FormAnswerComponent implements OnInit {
             '@form',
             this.form.name as string
           );
+          this.breadcrumbService.setBreadcrumb(
+            '@resource',
+            this.form.resource?.name as string
+          );
+          // this.breadcrumbService.setResourceName();
         });
     }
   }

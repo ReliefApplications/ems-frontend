@@ -249,7 +249,7 @@
 			"canDelete": "Peut supprimer",
 			"canSee": "Peut voir",
 			"canUpdate": "Peut modifier",
-			"description": "Modifier les permissions d'accès",
+			"description": "Modifier les permissions de {{name}}",
 			"title": "Accès"
 		},
 		"aggregationBuilder": {
