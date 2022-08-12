@@ -8,11 +8,14 @@ import {
   ADD_GROUP,
   DeleteGroupMutationResponse,
   DELETE_GROUP,
+  FetchGroupsMutationResponse,
+  FETCH_GROUPS,
 } from '../../graphql/mutations';
 import { GetGroupsQueryResponse, GET_GROUPS } from '../../graphql/queries';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
 import { SafeConfirmModalComponent } from '../../../confirm-modal/confirm-modal.component';
 import { SafeAddRoleComponent } from '../add-role/add-role.component';
+import { SafeSnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 
 /**
  * This component is used to display the groups tab in the platform
@@ -25,7 +28,9 @@ import { SafeAddRoleComponent } from '../add-role/add-role.component';
 export class SafeGroupListComponent implements OnInit {
   // === DATA ===
   public loading = true;
+  public loadingFetch = false;
   public groups: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  public manualCreation = true;
   public displayedColumns = ['title', 'usersCount', 'actions'];
 
   public searchText = '';
@@ -78,7 +83,8 @@ export class SafeGroupListComponent implements OnInit {
         query: GET_GROUPS,
       })
       .valueChanges.subscribe((res) => {
-        this.groups.data = res.data.groups;
+        this.groups.data = res.data.groups.values;
+        this.manualCreation = res.data.groups.manualCreation;
         this.loading = res.loading;
       });
   }
@@ -115,6 +121,48 @@ export class SafeGroupListComponent implements OnInit {
           );
       }
     });
+  }
+
+  /** Fetches groups from service */
+  onFetchFromService() {
+    this.loadingFetch = true;
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SafeSnackbarSpinnerComponent,
+      {
+        duration: 0,
+        data: {
+          message: this.translate.instant(
+            'common.notifications.groups.processing'
+          ),
+          loading: true,
+        },
+      }
+    );
+    this.apollo
+      .mutate<FetchGroupsMutationResponse>({ mutation: FETCH_GROUPS })
+      .subscribe(
+        (res) => {
+          if (res.data) this.groups.data = res.data.fetchGroups || [];
+          this.loadingFetch = res.loading;
+          snackBarRef.instance.data = {
+            message: this.translate.instant(
+              'common.notifications.groups.ready'
+            ),
+            loading: false,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
+        },
+        () => {
+          snackBarRef.instance.data = {
+            message: this.translate.instant(
+              'common.notifications.groups.error'
+            ),
+            loading: false,
+            error: true,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
+        }
+      );
   }
 
   /**

@@ -13,12 +13,16 @@
   </div>
   <div class="actions">
     <safe-button
-      icon="add"
+      [disabled]="loading || loadingFetch"
+      [icon]="manualCreation ? 'add' : 'cloud_download'"
       category="secondary"
       variant="primary"
-      (click)="onAdd()"
+      (click)="manualCreation ? onAdd() : onFetchFromService()"
     >
-      {{ 'models.group.create' | translate }}
+      {{
+        (manualCreation ? 'models.group.create' : 'models.group.fetch')
+          | translate
+      }}
     </safe-button>
   </div>
 </div>

@@ -108,6 +108,7 @@
 				"ready": "******",
 				"sent": "******"
 			},
+			"fetchingGroups": "******",
 			"file": {
 				"download": {
 					"error": "******",
@@ -121,6 +122,11 @@
 				}
 			},
 			"formatInvalid": "****** {{format}} ******",
+			"groups": {
+				"error": "******",
+				"processing": "******",
+				"ready": "******"
+			},
 			"loadedFromCache": "{{type}} ******",
 			"noOpened": "****** {{value}} ******",
 			"objectCreated": "{{value}} ****** {{type}} ******",
@@ -1126,6 +1132,7 @@
 		"group": {
 			"create": "******",
 			"description": "******",
+			"fetch": "******",
 			"title": "******"
 		},
 		"mapping": {

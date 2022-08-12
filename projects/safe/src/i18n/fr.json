@@ -108,6 +108,7 @@
 				"ready": "E-mail prêt",
 				"sent": "E-mail envoyé"
 			},
+			"fetchingGroups": "Fetching groups from service...",
 			"file": {
 				"download": {
 					"error": "Un problème est survenu lors du téléchargement",
@@ -121,6 +122,11 @@
 				}
 			},
 			"formatInvalid": "Veuillez importer un fichier de format .{{format}}.",
+			"groups": {
+				"error": "Une erreur s'est produite lors de la tentative d'obtenir des groupes du service",
+				"processing": "Récupération des groupes à partir du service...",
+				"ready": "Groupes récupérés"
+			},
 			"loadedFromCache": "Objet de type {{type}} chargé depuis le cache.",
 			"noOpened": "Aucun objet {{value}} n'a été ouvert.",
 			"objectCreated": "{{value}} {{type}} créé.",
@@ -1126,6 +1132,7 @@
 		"group": {
 			"create": "Créer un groupe",
 			"description": "Description",
+			"fetch": "Récupérer les groupes du service",
 			"title": "Titre"
 		},
 		"mapping": {

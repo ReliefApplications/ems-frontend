@@ -86,9 +86,11 @@ export interface GetRolesQueryResponse {
 export const GET_GROUPS = gql`
   query GetGroups {
     groups {
-      id
-      title
-      usersCount
+      values {
+        id
+        title
+        usersCount
+      }
     }
   }
 `;
@@ -96,5 +98,8 @@ export const GET_GROUPS = gql`
 /** Model for GetGroupsQueryResponse object */
 export interface GetGroupsQueryResponse {
   loading: boolean;
-  groups: Group[];
+  groups: {
+    manualCreation: boolean;
+    values: Group[];
+  };
 }

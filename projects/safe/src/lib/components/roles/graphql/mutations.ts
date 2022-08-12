@@ -75,3 +75,21 @@ export interface DeleteGroupMutationResponse {
   loading: boolean;
   deleteGroup: Group;
 }
+
+// === FETCH GROUPS FROM SERVICE ===
+/** Graphql request for adding a new group to an application */
+export const FETCH_GROUPS = gql`
+  mutation FetchGroups {
+    fetchGroups {
+      id
+      title
+      usersCount
+    }
+  }
+`;
+
+/** Model for AddGroupMutationResponse object */
+export interface FetchGroupsMutationResponse {
+  loading: boolean;
+  fetchGroups: Group[];
+}
