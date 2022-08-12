@@ -137,6 +137,7 @@ export class FormBuilderComponent implements OnInit {
             if (res.data.form) {
               this.loading = res.loading;
               this.form = res.data.form;
+              // this.breadcrumbService.setResourceName();
               this.breadcrumbService.setBreadcrumb(
                 '@form',
                 this.form.name as string
