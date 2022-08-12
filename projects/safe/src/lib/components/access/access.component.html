@@ -9,7 +9,7 @@
     [isIcon]="true"
     icon="admin_panel_settings"
     matTooltipPosition="above"
-    [matTooltip]="'components.access.description' | translate"
+    [matTooltip]="'components.access.description' | translate : { name: objectTypeName }"
     (click)="onClick()"
     class="access-button"
   >
