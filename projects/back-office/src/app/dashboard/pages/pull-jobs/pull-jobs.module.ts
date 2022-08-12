@@ -54,7 +54,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatChipsModule,
     SafeSkeletonTableModule,
     SafeIconModule,
-    SafeGraphQLSelectModule
+    SafeGraphQLSelectModule,
   ],
 })
 export class PullJobsModule {}

@@ -64,7 +64,6 @@
             textField="name"
             [required]="true"
             [query]="apiConfigurationsQuery"
-            [textValue]="defaultApiConfiguration?.name"
             formControlName="apiConfiguration"
           >
           </safe-graphql-select>
@@ -116,7 +115,6 @@
           <safe-graphql-select
             valueField="id"
             textField="name"
-            [textValue]="data.pullJob?.convertTo?.name"
             [query]="formsQuery"
             formControlName="convertTo"
           >

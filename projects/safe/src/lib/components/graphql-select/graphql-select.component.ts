@@ -60,8 +60,9 @@ export class SafeGraphQLSelectComponent
 
   @Input() valueField = '';
   @Input() textField = '';
-
-  @Output() change = new EventEmitter<string | null>();
+  @Input()
+  @Output()
+  change = new EventEmitter<string | null>();
   /**
    * Gets the value
    *
@@ -231,13 +232,13 @@ export class SafeGraphQLSelectComponent
   public selected: FormControl;
 
   /** Text value, used to add the passed value in the top of the query results */
-  @Input('textValue') textValue!: string | undefined;
+  // @Input('textValue') textValue!: string | undefined;
 
   /** Query reference for getting the available contents */
   @Input('query') query!: QueryRef<any>;
 
   private queryName!: string;
-  public selectedElement: any;
+  @Input() selectedElements: any[] = [];
   private elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
   private pageInfo = {
@@ -271,21 +272,16 @@ export class SafeGraphQLSelectComponent
     this.elements$ = this.elements.asObservable();
     this.query.valueChanges.subscribe((res: any) => {
       this.queryName = Object.keys(res.data)[0];
-      const nodes = get(res.data, this.queryName).edges
+      const nodes: any[] = get(res.data, this.queryName).edges
         ? get(res.data, this.queryName).edges.map((x: any) => x.node)
         : get(res.data, this.queryName);
-      if (this.textValue && this.value) {
-        this.elements.next([
-          {
-            [this.textField]: this.textValue,
-            [this.valueField]: this.value,
-          },
-          ...nodes.filter((x: any) => x[this.valueField] !== this.value),
-        ]);
-      } else {
-        this.elements.next(nodes);
-      }
-      console.log(this.elements.value, nodes);
+      this.selectedElements = this.selectedElements.filter(
+        (element) =>
+          !nodes.find(
+            (node) => node[this.valueField] === element[this.valueField]
+          )
+      );
+      this.elements.next([...this.selectedElements, ...nodes]);
       this.pageInfo = get(res.data, this.queryName).pageInfo;
       this.loading = res.loading;
     });
@@ -359,15 +355,6 @@ export class SafeGraphQLSelectComponent
             if (!fetchMoreResult) {
               this.loading = false;
               return prev;
-            }
-            if (this.selectedElement) {
-              if (
-                get(fetchMoreResult, this.queryName).edges.find(
-                  (x: any) => x.node.id === this.selectedElement?.id
-                )
-              ) {
-                this.selectedElement = null;
-              }
             }
             return Object.assign({}, prev, {
               [this.queryName]: {

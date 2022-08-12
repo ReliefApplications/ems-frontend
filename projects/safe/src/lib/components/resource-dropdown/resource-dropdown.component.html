@@ -4,8 +4,9 @@
     valueField="id"
     textField="name"
     [query]="resourcesQuery"
-    [value]="resource"
+    [(ngModel)]="resource"
     (change)="onSelect($event)"
+    [selectedElements]="[selectedResource]"
   >
   </safe-graphql-select>
 </mat-form-field>

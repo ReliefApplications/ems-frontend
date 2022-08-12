@@ -61,7 +61,6 @@ export class UserAppRolesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.user);
     this.selectedRoles = this.fb.control(
       get(this.user, 'roles', []).filter((x: Role) => !x.application)
     );

@@ -44,13 +44,12 @@ export class ChoseRoleComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.rolesQuery =
-      this.apollo.watchQuery<GetRolesQueryResponse>({
-        query: GET_ROLES,
-        variables: {
-          application: this.data.application,
-        },
-      })
+    this.rolesQuery = this.apollo.watchQuery<GetRolesQueryResponse>({
+      query: GET_ROLES,
+      variables: {
+        application: this.data.application,
+      },
+    });
 
     this.rolesQuery.valueChanges.subscribe((res) => {
       this.loading = res.data.loading;

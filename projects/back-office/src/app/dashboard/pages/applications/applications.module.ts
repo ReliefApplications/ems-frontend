@@ -65,7 +65,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
-    SafeGraphQLSelectModule
+    SafeGraphQLSelectModule,
   ],
   exports: [ApplicationsComponent],
 })

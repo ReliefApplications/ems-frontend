@@ -50,7 +50,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     SafeIconModule,
     TranslateModule,
     MatTooltipModule,
-    SafeGraphQLSelectModule
+    SafeGraphQLSelectModule,
   ],
 })
 export class SubscriptionsModule {}
