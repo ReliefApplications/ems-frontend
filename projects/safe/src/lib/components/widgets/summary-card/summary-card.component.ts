@@ -148,4 +148,11 @@ export class SafeSummaryCardComponent implements OnInit {
     }
     return fields;
   }
+
+  /**
+   * Open the datasource modal
+   *
+   * @param card The card to open
+   */
+  public openDatasource(card: any) {}
 }

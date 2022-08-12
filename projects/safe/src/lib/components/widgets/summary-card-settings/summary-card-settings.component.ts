@@ -175,6 +175,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       layout: [get(value, 'layout', [])],
       record: get(value, 'record', null),
       html: get(value, 'html', null),
+      showDatasourceLink: get(value, 'showDatasourceLink', false),
     });
   }
 
@@ -335,4 +336,11 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     }
     return fields;
   }
+
+  /**
+   * Open the datasource modal
+   *
+   * @param card The card to open
+   */
+  public openDatasource(card: any) {}
 }
