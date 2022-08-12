@@ -23,6 +23,7 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 # Checklist:
 
 - [ ] My code follows the style guidelines of this project
+- [ ] Linting does not generate new warnings
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have put JSDoc comment in all required places
