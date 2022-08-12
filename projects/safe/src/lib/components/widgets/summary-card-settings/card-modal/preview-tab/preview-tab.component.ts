@@ -28,10 +28,29 @@ export class SafePreviewTabComponent implements OnChanges {
    */
   ngOnChanges(): void {
     if (this.record) {
-      this.formattedHtml = this.replaceRecordFields(this.html, this.record);
+      this.formattedHtml = this.applyOperations(this.replaceRecordFields(this.html, this.record));
     } else {
-      this.formattedHtml = this.html;
+      this.formattedHtml = this.applyOperations(this.html);
+
     }
+  }
+
+  private applyOperations(html: string): string {
+    // Round operations
+    const roundRegex = new RegExp('@\\bcalc.round\\b');
+    // for(let pos = html.search(roundRegex); pos >= 0;) {
+    //   const params = html.slice(html.indexOf('(', pos) + 1, html.indexOf(')', pos)).split(/,\s*/);
+    //   if (params.length > 2 || params.length < 2 || isNaN(parseFloat(params[0]))) {
+    //     html = html.replace(roundRegex, '@calc.round error: Bad parameter');
+    //   } else if (isNaN(parseFloat(params[1]))) {
+    //     html = html.replace(roundRegex, params[0]);
+    //   } else {
+    //     html = html.replace(roundRegex, parseFloat(params[0]).toFixed(parseInt(params[1])).toString());
+    //   }
+    //   pos = html.search(roundRegex);
+    //   console.log(html);
+    // }
+    return html;
   }
 
   /**

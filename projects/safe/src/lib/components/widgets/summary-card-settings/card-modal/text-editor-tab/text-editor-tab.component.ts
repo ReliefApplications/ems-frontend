@@ -145,6 +145,8 @@ export class SafeTextEditorTabComponent implements OnChanges {
         }
       }
     }
+    fields.push('@calc.round(number, digits)');
+    fields.push('@calc.percentage(number, total)');
     return fields;
   }
 }
