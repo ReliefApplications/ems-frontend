@@ -277,6 +277,7 @@ export class SafeGraphQLSelectComponent
         : get(res.data, this.queryName);
       this.selectedElements = this.selectedElements.filter(
         (element) =>
+          element &&
           !nodes.find(
             (node) => node[this.valueField] === element[this.valueField]
           )

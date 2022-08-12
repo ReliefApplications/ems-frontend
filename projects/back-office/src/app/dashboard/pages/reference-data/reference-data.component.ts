@@ -27,8 +27,10 @@ import {
   EDIT_REFERENCE_DATA,
 } from './graphql/mutations';
 import {
+  GetApiConfigurationQueryResponse,
   GetApiConfigurationsQueryResponse,
   GetReferenceDataQueryResponse,
+  GET_API_CONFIGURATION,
   GET_API_CONFIGURATIONS_NAMES,
   GET_REFERENCE_DATA,
 } from './graphql/queries';
@@ -60,6 +62,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
   public referenceForm: FormGroup = new FormGroup({});
   public referenceTypeChoices = Object.values(referenceDataType);
 
+  public selectedApiConfiguration?: ApiConfiguration;
   public apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
 
   public valueFields: string[] = [];
@@ -210,6 +213,21 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
       this.referenceForm.get('query')?.setValidators(Validators.required);
       this.referenceForm.get('fields')?.setValidators(Validators.required);
 
+      if (this.referenceForm.value.apiConfiguration) {
+        this.apollo
+          .query<GetApiConfigurationQueryResponse>({
+            query: GET_API_CONFIGURATION,
+            variables: {
+              id: this.referenceForm.value.apiConfiguration,
+            },
+          })
+          .subscribe((res) => {
+            if (res.data.apiConfiguration) {
+              this.selectedApiConfiguration = res.data.apiConfiguration;
+            }
+          });
+      }
+
       this.apiConfigurationsQuery =
         this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
           query: GET_API_CONFIGURATIONS_NAMES,
@@ -217,9 +235,9 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
             first: ITEMS_PER_PAGE,
           },
         });
-      this.apiConfigurationsQuery.valueChanges.subscribe((res) => {
-        this.loading = res.loading;
-      });
+      // this.apiConfigurationsQuery.valueChanges.subscribe((res) => {
+      //   this.loading = res.loading;
+      // });
     } else {
       this.referenceForm.get('apiConfiguration')?.clearValidators();
       this.referenceForm.get('query')?.clearValidators();
