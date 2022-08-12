@@ -9,19 +9,22 @@ import {
 } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { DomSanitizer } from '@angular/platform-browser';
 import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
 import { Apollo } from 'apollo-angular';
-import get from 'lodash/get';
+import { get, has, clone } from 'lodash';
 import { SafeAddCardComponent } from './add-card/add-card.component';
 import { SafeCardModalComponent } from './card-modal/card-modal.component';
+import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import {
   GetRecordByIdQueryResponse,
+  GetResourceLayoutsByIdQueryResponse,
   GET_RECORD_BY_ID,
+  GET_RESOURCE_LAYOUTS,
 } from './graphql/queries';
-import { DomSanitizer } from '@angular/platform-browser';
 
 /** Define max height of widgets */
 const MAX_ROW_SPAN = 4;
@@ -50,6 +53,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
 
   // === CARDS CONTENTS ===
   cardsContent: any[] = [];
+
+  // === RESOURCES AND LAYOUTS ===
+  private cardQueries = {};
 
   // === WIDGET ===
   @Input() tile: any;
@@ -342,5 +348,30 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    *
    * @param card The card to open
    */
-  public openDatasource(card: any) {}
+  public async openDatasource(card: any) {
+    const id = `${card.resource}-${card.layout}`;
+    if (!has(this.cardQueries, id)) {
+      // load and save the query object if not already saved
+      const res = await this.apollo
+        .query<GetResourceLayoutsByIdQueryResponse>({
+          query: GET_RESOURCE_LAYOUTS,
+          variables: {
+            id: card.resource,
+          },
+        })
+        .toPromise();
+      if (!res.errors) {
+        const layouts = res.data?.resource?.layouts || [];
+        Object.assign(this.cardQueries, {
+          [id]: layouts.find((l) => l.id === card.layout)?.query,
+        });
+      }
+    }
+    const query = get(this.cardQueries, id);
+    this.dialog.open(SafeResourceGridModalComponent, {
+      data: {
+        gridSettings: clone(query),
+      },
+    });
+  }
 }

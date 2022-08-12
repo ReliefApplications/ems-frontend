@@ -1,9 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
+import { get, has, clone } from 'lodash';
+import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import {
   GetRecordByIdQueryResponse,
+  GetResourceLayoutsByIdQueryResponse,
   GET_RECORD_BY_ID,
+  GET_RESOURCE_LAYOUTS,
 } from './graphql/queries';
 
 /**
@@ -24,6 +29,9 @@ export class SafeSummaryCardComponent implements OnInit {
 
   // === CARDS CONTENTS ===
   cardsContent: any[] = [];
+
+  // === RESOURCES AND LAYOUTS ===
+  private cardQueries = {};
 
   /**
    * Get the summary card pdf name
@@ -46,8 +54,13 @@ export class SafeSummaryCardComponent implements OnInit {
    *
    * @param apollo Used to get the necessary records for the cards content.
    * @param sanitizer Sanitizes the cards content so angular can show it up.
+   * @param dialog The material dialog service
    */
-  constructor(private apollo: Apollo, private sanitizer: DomSanitizer) {}
+  constructor(
+    private apollo: Apollo,
+    private sanitizer: DomSanitizer,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     console.log(this.settings);
@@ -154,5 +167,30 @@ export class SafeSummaryCardComponent implements OnInit {
    *
    * @param card The card to open
    */
-  public openDatasource(card: any) {}
+  public async openDatasource(card: any) {
+    const id = `${card.resource}-${card.layout}`;
+    if (!has(this.cardQueries, id)) {
+      // load and save the query object if not already saved
+      const res = await this.apollo
+        .query<GetResourceLayoutsByIdQueryResponse>({
+          query: GET_RESOURCE_LAYOUTS,
+          variables: {
+            id: card.resource,
+          },
+        })
+        .toPromise();
+      if (!res.errors) {
+        const layouts = res.data?.resource?.layouts || [];
+        Object.assign(this.cardQueries, {
+          [id]: layouts.find((l) => l.id === card.layout)?.query,
+        });
+      }
+    }
+    const query = get(this.cardQueries, id);
+    this.dialog.open(SafeResourceGridModalComponent, {
+      data: {
+        gridSettings: clone(query),
+      },
+    });
+  }
 }
