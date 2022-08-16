@@ -6,6 +6,7 @@ import { SafeSummaryCardComponent } from './summary-card.component';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 /** Summary Card Widget Module */
 @NgModule({
@@ -17,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
     PDFExportModule,
     SafeIconModule,
     MatButtonModule,
+    TranslateModule,
   ],
   exports: [SafeSummaryCardComponent],
 })

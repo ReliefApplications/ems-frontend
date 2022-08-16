@@ -918,6 +918,7 @@
 							"title": "Data source"
 						},
 						"display": {
+							"dataSource": "Show link to data source",
 							"header": "Header",
 							"title": "Display"
 						},
@@ -939,6 +940,9 @@
 					"dynamic": "Dynamic",
 					"static": "Static"
 				}
+			},
+			"summaryCard": {
+				"dataSource": "Data Source"
 			}
 		}
 	},

@@ -48,7 +48,8 @@
               (click)="openDatasource(card.value)"
               *ngIf="card.value.showDatasourceLink"
             >
-              Datasource <safe-icon icon="open_in_new" [inline]="true"></safe-icon>
+              {{ 'components.widget.summaryCard.dataSource' | translate }}
+              <safe-icon icon="open_in_new" [inline]="true"></safe-icon>
             </button>
           </div>
         </kendo-tilelayout-item-header>

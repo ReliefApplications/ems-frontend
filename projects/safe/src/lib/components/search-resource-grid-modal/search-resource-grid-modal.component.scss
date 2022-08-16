@@ -1,0 +1,15 @@
+.dialog-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    margin: 0;
+  }
+
+  safe-button {
+    height: 1em;
+    display: flex;
+    align-items: center;
+  }
+}

@@ -918,7 +918,8 @@
 							"title": "Source de données"
 						},
 						"display": {
-							"header": "Title",
+							"dataSource": "Afficher le lien vers la source de données",
+							"header": "Titre",
 							"title": "Affichage"
 						},
 						"preview": {},
@@ -939,6 +940,9 @@
 					"dynamic": "Dynamique",
 					"static": "Statique"
 				}
+			},
+			"summaryCard": {
+				"dataSource": "Source"
 			}
 		}
 	},
