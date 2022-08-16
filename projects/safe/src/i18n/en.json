@@ -942,7 +942,10 @@
 				}
 			},
 			"summaryCard": {
-				"dataSource": "Data Source"
+				"dataSource": "Data Source",
+				"errors": {
+					"invalidSource": "The data source is invalid: please edit the settings."
+				}
 			}
 		}
 	},

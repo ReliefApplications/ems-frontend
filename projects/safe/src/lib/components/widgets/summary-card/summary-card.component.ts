@@ -1,8 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { get, has, clone } from 'lodash';
+import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import {
   GetRecordByIdQueryResponse,
@@ -55,11 +57,15 @@ export class SafeSummaryCardComponent implements OnInit {
    * @param apollo Used to get the necessary records for the cards content.
    * @param sanitizer Sanitizes the cards content so angular can show it up.
    * @param dialog The material dialog service
+   * @param snackBar snackbar service for error messages
+   * @param translate translation service
    */
   constructor(
     private apollo: Apollo,
     private sanitizer: DomSanitizer,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -168,9 +174,10 @@ export class SafeSummaryCardComponent implements OnInit {
    * @param card The card to open
    */
   public async openDatasource(card: any) {
-    const id = `${card.resource}-${card.layout}`;
-    if (!has(this.cardQueries, id)) {
-      // load and save the query object if not already saved
+    // the key of the layout used to save it, to not load it each time
+    const key = `${card.resource}-${card.layout}`;
+    // load and save the query of the layout if not already saved
+    if (!has(this.cardQueries, key)) {
       const res = await this.apollo
         .query<GetResourceLayoutsByIdQueryResponse>({
           query: GET_RESOURCE_LAYOUTS,
@@ -181,16 +188,26 @@ export class SafeSummaryCardComponent implements OnInit {
         .toPromise();
       if (!res.errors) {
         const layouts = res.data?.resource?.layouts || [];
-        Object.assign(this.cardQueries, {
-          [id]: layouts.find((l) => l.id === card.layout)?.query,
-        });
+        const query = layouts.find((l) => l.id === card.layout)?.query;
+        if (query) {
+          Object.assign(this.cardQueries, { [key]: query });
+        }
       }
     }
-    const query = get(this.cardQueries, id);
-    this.dialog.open(SafeResourceGridModalComponent, {
-      data: {
-        gridSettings: clone(query),
-      },
-    });
+    const cardQuery = get(this.cardQueries, key, null);
+    if (cardQuery) {
+      this.dialog.open(SafeResourceGridModalComponent, {
+        data: {
+          gridSettings: clone(cardQuery),
+        },
+      });
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.widget.summaryCard.errors.invalidSource'
+        ),
+        { error: true }
+      );
+    }
   }
 }

@@ -14,8 +14,10 @@ import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
+import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { get, has, clone } from 'lodash';
+import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeAddCardComponent } from './add-card/add-card.component';
 import { SafeCardModalComponent } from './card-modal/card-modal.component';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
@@ -90,12 +92,16 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * @param dialog Material Dialog Service.
    * @param apollo Used for getting the records query.
    * @param sanitizer Sanitizes the cards content so angular can show it up.
+   * @param snackBar snackbar service for error messages
+   * @param translate translation service
    */
   constructor(
     private fb: FormBuilder,
     private dialog: MatDialog,
     private apollo: Apollo,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -349,9 +355,10 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * @param card The card to open
    */
   public async openDatasource(card: any) {
-    const id = `${card.resource}-${card.layout}`;
-    if (!has(this.cardQueries, id)) {
-      // load and save the query object if not already saved
+    // the key of the layout used to save it, to not load it each time
+    const key = `${card.resource}-${card.layout}`;
+    // load and save the query of the layout if not already saved
+    if (!has(this.cardQueries, key)) {
       const res = await this.apollo
         .query<GetResourceLayoutsByIdQueryResponse>({
           query: GET_RESOURCE_LAYOUTS,
@@ -362,16 +369,26 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
         .toPromise();
       if (!res.errors) {
         const layouts = res.data?.resource?.layouts || [];
-        Object.assign(this.cardQueries, {
-          [id]: layouts.find((l) => l.id === card.layout)?.query,
-        });
+        const query = layouts.find((l) => l.id === card.layout)?.query;
+        if (query) {
+          Object.assign(this.cardQueries, { [key]: query });
+        }
       }
     }
-    const query = get(this.cardQueries, id);
-    this.dialog.open(SafeResourceGridModalComponent, {
-      data: {
-        gridSettings: clone(query),
-      },
-    });
+    const cardQuery = get(this.cardQueries, key, null);
+    if (cardQuery) {
+      this.dialog.open(SafeResourceGridModalComponent, {
+        data: {
+          gridSettings: clone(cardQuery),
+        },
+      });
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.widget.summaryCard.errors.invalidSource'
+        ),
+        { error: true }
+      );
+    }
   }
 }
