@@ -17,6 +17,7 @@
         *ngFor="let card of settings.cards; let i = index"
         [colSpan]="card.width > colsNumber ? colsNumber : card.width"
         [rowSpan]="card.height"
+        class="kendo-tilelayout-item-correction"
       >
         <kendo-tilelayout-item-header class="widget-header">
           <span class="widget-title" [title]="card.title">{{

@@ -10,6 +10,16 @@ kendo-tilelayout {
     overflow: hidden;
     box-shadow: 0 2px 5px 0 rgba(134, 134, 134, 0.2);
 
+    &.kendo-tilelayout-item-correction {
+      /** Revert the css changes made by kendo when we click on the header */
+      position: relative !important;
+      left: unset !important;
+      top: unset !important;
+      width: unset !important;
+      height: unset !important;
+      z-index: 0 !important;
+    }
+
     .widget-options,
     .widget-handle {
       position: absolute;
