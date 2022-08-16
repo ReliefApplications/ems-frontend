@@ -89,6 +89,9 @@ export class AddFormComponent implements OnInit {
       } else {
         this.templates = [];
       }
+      this.form.patchValue({
+        template: null,
+      });
     });
 
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({

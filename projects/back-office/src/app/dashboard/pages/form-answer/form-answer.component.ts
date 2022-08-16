@@ -41,7 +41,6 @@ export class FormAnswerComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
-    console.log(this.id);
     if (this.id !== null) {
       this.apollo
         .watchQuery<GetFormByIdQueryResponse>({

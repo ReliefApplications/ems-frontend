@@ -1,5 +1,5 @@
 <mat-select
-  [(ngModel)]="value"
+  [formControl]="ngControl && $any(ngControl.control)"
   (openedChange)="onOpenSelect($event)"
   [disabled]="disabled"
   [required]="required"

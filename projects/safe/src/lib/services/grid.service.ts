@@ -274,7 +274,6 @@ export class SafeGridService {
         }
       }
       if (meta.choices) {
-        console.log(meta.choices, this.translate.currentLang);
         metaFields[fieldName] = {
           ...meta,
           choices: meta.choices.map((choice: any) => ({

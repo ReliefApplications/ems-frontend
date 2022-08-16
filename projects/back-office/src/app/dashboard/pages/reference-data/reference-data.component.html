@@ -44,17 +44,14 @@
         <!-- API Configuration -->
         <mat-form-field appearance="outline" style="flex: 2">
           <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
-          <mat-select
-            #apiConfSelect
+          <safe-graphql-select
+            valueField="id"
+            textField="name"
+            [query]="apiConfigurationsQuery"
             formControlName="apiConfiguration"
-            (openedChange)="onOpenSelect($event)"
+            [selectedElements]="[selectedApiConfiguration]"
           >
-            <mat-option
-              *ngFor="let apiConf of apiConfigurations$ | async"
-              [value]="apiConf.id"
-              >{{ apiConf.name }}</mat-option
-            >
-          </mat-select>
+          </safe-graphql-select>
         </mat-form-field>
         <!-- QueryName -->
         <mat-form-field appearance="outline" style="flex: 3">
