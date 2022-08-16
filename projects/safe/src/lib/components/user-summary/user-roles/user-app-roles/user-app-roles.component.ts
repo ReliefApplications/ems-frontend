@@ -45,7 +45,6 @@ export class UserAppRolesComponent implements OnInit {
   selectedApplication!: FormControl;
   public applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   private readonly PAGE_SIZE = 10;
-  @ViewChild('applicationSelect') applicationSelect!: MatSelect;
 
   /**
    * Roles tab for the user summary.
@@ -73,7 +72,10 @@ export class UserAppRolesComponent implements OnInit {
       }
     });
 
-    this.selectedApplication = this.fb.control({ value: '', disabled: true });
+    this.selectedApplication = this.fb.control({
+      value: get(this.application, 'id', ''),
+      disabled: !!this.application,
+    });
     this.selectedApplication.valueChanges.subscribe((value) => {
       this.selectedRoles.setValue([], { emitEvent: false });
       this.roles = [];
@@ -81,6 +83,9 @@ export class UserAppRolesComponent implements OnInit {
         this.getApplicationRoles(value);
       }
     });
+    if (this.application) {
+      this.getApplicationRoles(this.application.id as string);
+    }
 
     this.applicationsQuery =
       this.apollo.watchQuery<GetApplicationsQueryResponse>({

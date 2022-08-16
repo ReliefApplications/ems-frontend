@@ -99,6 +99,7 @@ export const init = (
           const instance: SafeResourceDropdownComponent = dropdown.instance;
           instance.resource = question.resource;
           instance.choice.subscribe((res) => editor.onChanged(res));
+          // instance.
         },
       };
 

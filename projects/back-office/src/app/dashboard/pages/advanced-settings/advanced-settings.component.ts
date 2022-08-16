@@ -138,7 +138,6 @@ export class AdvancedSettingsComponent implements OnInit {
               ),
             }),
           });
-          console.log(this.settingForm);
           // Subscribe to the form to update validators
           this.settingForm
             .get('userManagement.local')

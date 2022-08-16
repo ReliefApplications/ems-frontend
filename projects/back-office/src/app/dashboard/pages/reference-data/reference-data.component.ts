@@ -21,7 +21,7 @@ import {
   SafeBreadcrumbService,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import {
   EditReferenceDataMutationResponse,
   EDIT_REFERENCE_DATA,
@@ -35,7 +35,6 @@ import {
   GET_REFERENCE_DATA,
 } from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { MatSelect } from '@angular/material/select';
 import { MatChipInputEvent } from '@angular/material/chips';
 
 /** Default pagination parameter. */
@@ -75,11 +74,6 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
 
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvData') csvData?: ElementRef<HTMLInputElement>;
-
-  private pageInfo = {
-    endCursor: '',
-    hasNextPage: true,
-  };
 
   /** @returns name of reference model */
   get name(): AbstractControl | null {
@@ -212,7 +206,6 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
         ?.setValidators(Validators.required);
       this.referenceForm.get('query')?.setValidators(Validators.required);
       this.referenceForm.get('fields')?.setValidators(Validators.required);
-
       if (this.referenceForm.value.apiConfiguration) {
         this.apollo
           .query<GetApiConfigurationQueryResponse>({

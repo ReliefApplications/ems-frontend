@@ -11,8 +11,8 @@ import {
   GetFormsQueryResponse,
 } from '../../graphql/queries';
 import { map, startWith } from 'rxjs/operators';
-import { MatSelect } from '@angular/material/select';
 import { MatAutocomplete } from '@angular/material/autocomplete';
+import get from 'lodash/get';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -55,6 +55,11 @@ export class SubscriptionModalComponent implements OnInit {
    */
   set routingKey(value: string) {
     this.subscriptionForm.controls.routingKey.setValue(value);
+  }
+
+  /** @returns default convert to form */
+  get defaultForm(): Form | null {
+    return get(this.data, 'subscription.convertTo', null);
   }
 
   /**
@@ -124,6 +129,14 @@ export class SubscriptionModalComponent implements OnInit {
           map((value) => (typeof value === 'string' ? value : value.name)),
           map((x) => this.filter(x))
         );
+    });
+
+    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+      query: GET_FORM_NAMES,
+      variables: {
+        first: ITEMS_PER_PAGE,
+        sortField: 'name',
+      },
     });
   }
 

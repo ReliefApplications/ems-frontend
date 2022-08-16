@@ -6,8 +6,7 @@
       : ('models.pullJob.new' | translate)
   }}
 </h1>
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<div mat-dialog-content *ngIf="!loading">
+<div mat-dialog-content>
   <form [formGroup]="pullJobForm">
     <div class="form-group">
       <div class="form-group-row">
@@ -65,6 +64,7 @@
             [required]="true"
             [query]="apiConfigurationsQuery"
             formControlName="apiConfiguration"
+            [selectedElements]="[defaultApiConfiguration]"
           >
           </safe-graphql-select>
         </mat-form-field>
@@ -117,6 +117,7 @@
             textField="name"
             [query]="formsQuery"
             formControlName="convertTo"
+            [selectedElements]="[defaultForm]"
           >
           </safe-graphql-select>
         </mat-form-field>

@@ -5,7 +5,7 @@
     textField="name"
     [query]="resourcesQuery"
     [(ngModel)]="resource"
-    (change)="onSelect($event)"
+    (selectionChange)="onSelect($event)"
     [selectedElements]="[selectedResource]"
   >
   </safe-graphql-select>

@@ -23,8 +23,6 @@ import {
   GET_ROUTING_KEYS,
 } from '../../graphql/queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-// eslint-disable-next-line max-len
-import { SubscriptionModalComponent } from '../../../../../application/pages/subscriptions/components/subscription-modal/subscription-modal.component';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -44,7 +42,6 @@ export class PullJobModalComponent implements OnInit {
   isHardcoded = true;
 
   // === FORMS ===
-  private formsLoading = true;
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
 
   // === CHANNELS ===
@@ -59,12 +56,10 @@ export class PullJobModalComponent implements OnInit {
   };
 
   // === API ===
-  private apiConfigurationsLoading = true;
   public apiConfigurations: ApiConfiguration[] = [];
   public apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
 
   // === DATA ===
-  public loading = true;
   public statusChoices = Object.values(status);
   public fields: any[] = [];
   private fieldsSubscription?: Subscription;
@@ -104,7 +99,7 @@ export class PullJobModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<SubscriptionModalComponent>,
+    public dialogRef: MatDialogRef<PullJobModalComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)
     public data: {
@@ -167,12 +162,8 @@ export class PullJobModalComponent implements OnInit {
       query: GET_FORM_NAMES,
       variables: {
         first: ITEMS_PER_PAGE,
+        sortField: 'name',
       },
-    });
-
-    this.formsQuery.valueChanges.subscribe((res) => {
-      this.formsLoading = res.loading;
-      this.loading = false && this.apiConfigurationsLoading;
     });
 
     this.apiConfigurationsQuery =
@@ -182,20 +173,12 @@ export class PullJobModalComponent implements OnInit {
           first: ITEMS_PER_PAGE,
         },
       });
-
-    this.apiConfigurationsQuery.valueChanges.subscribe((res) => {
-      const nodes = res.data.apiConfigurations.edges.map((x) => x.node);
-      if (this.defaultApiConfiguration) {
-        this.apiConfigurations = [
-          this.defaultApiConfiguration,
-          ...nodes.filter((x) => x.id !== this.defaultApiConfiguration?.id),
-        ];
-      } else {
-        this.apiConfigurations = nodes;
-      }
-      this.apiConfigurationsLoading = res.loading;
-      this.loading = false && this.formsLoading;
-    });
+    this.apiConfigurationsQuery.valueChanges.subscribe(
+      (res) =>
+        (this.apiConfigurations = res.data.apiConfigurations.edges.map(
+          (x) => x.node
+        ))
+    );
 
     // Fetch form fields if any for mapping
     if (this.data.pullJob?.convertTo?.id) {
