@@ -1,18 +1,19 @@
+<safe-button
+  [isIcon]="true"
+  icon="close"
+  variant="danger"
+  mat-dialog-close
+  class="close-modal"
+  (click)="closeModal(false)"
+></safe-button>
 <h2 mat-dialog-title *ngIf="selectable">
   {{
     'common.searchObject'
       | translate: { name: ('common.record.few' | translate) }
   }}
 </h2>
-<div mat-dialog-title class="dialog-title" *ngIf="!selectable">
+<div mat-dialog-title *ngIf="!selectable">
   <h2>{{ 'common.record.few' | translate }}</h2>
-  <safe-button
-    [isIcon]="true"
-    icon="close"
-    variant="danger"
-    mat-dialog-close
-    (click)="closeModal(false)"
-  ></safe-button>
 </div>
 <mat-dialog-content>
   <safe-core-grid
@@ -29,12 +30,7 @@
   <button mat-button matDialogClose (click)="closeModal(false)">
     {{ 'common.cancel' | translate }}
   </button>
-  <button
-    mat-flat-button
-    matDialogClose
-    color="primary"
-    (click)="closeModal()"
-  >
+  <button mat-flat-button matDialogClose color="primary" (click)="closeModal()">
     {{ 'common.select' | translate }}
   </button>
 </mat-dialog-actions>

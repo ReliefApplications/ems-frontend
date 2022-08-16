@@ -69,7 +69,6 @@ export class SafeSummaryCardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.settings);
     this.getCardsContent(this.settings.cards);
   }
 
@@ -169,11 +168,11 @@ export class SafeSummaryCardComponent implements OnInit {
   }
 
   /**
-   * Open the datasource modal
+   * Open the dataSource modal
    *
    * @param card The card to open
    */
-  public async openDatasource(card: any) {
+  public async openDataSource(card: any) {
     // the key of the layout used to save it, to not load it each time
     const key = `${card.resource}-${card.layout}`;
     // load and save the query of the layout if not already saved
@@ -200,6 +199,7 @@ export class SafeSummaryCardComponent implements OnInit {
         data: {
           gridSettings: clone(cardQuery),
         },
+        panelClass: 'closable-dialog',
       });
     } else {
       this.snackBar.openSnackBar(

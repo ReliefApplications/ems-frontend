@@ -187,7 +187,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       layout: [get(value, 'layout', [])],
       record: get(value, 'record', null),
       html: get(value, 'html', null),
-      showDatasourceLink: get(value, 'showDatasourceLink', false),
+      showDataSourceLink: get(value, 'showDataSourceLink', false),
     });
   }
 
@@ -350,11 +350,11 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Open the datasource modal
+   * Open the data source modal
    *
    * @param card The card to open
    */
-  public async openDatasource(card: any) {
+  public async openDataSource(card: any) {
     // the key of the layout used to save it, to not load it each time
     const key = `${card.resource}-${card.layout}`;
     // load and save the query of the layout if not already saved
@@ -381,6 +381,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
         data: {
           gridSettings: clone(cardQuery),
         },
+        panelClass: 'closable-dialog',
       });
     } else {
       this.snackBar.openSnackBar(
