@@ -39,6 +39,7 @@ export const buildSearchButton = (
             : [],
           selectable: true,
         },
+        panelClass: 'closable-dialog',
       });
       dialogRef.afterClosed().subscribe((rows: any[]) => {
         if (!rows) {

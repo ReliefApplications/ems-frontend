@@ -918,6 +918,7 @@
 							"title": "******"
 						},
 						"display": {
+							"dataSource": "******",
 							"header": "******",
 							"title": "******"
 						},
@@ -938,6 +939,12 @@
 					},
 					"dynamic": "******",
 					"static": "******"
+				}
+			},
+			"summaryCard": {
+				"dataSource": "******",
+				"errors": {
+					"invalidSource": "******"
 				}
 			}
 		}

@@ -918,6 +918,7 @@
 							"title": "Data source"
 						},
 						"display": {
+							"dataSource": "Show link to data source",
 							"header": "Header",
 							"title": "Display"
 						},
@@ -938,6 +939,12 @@
 					},
 					"dynamic": "Dynamic",
 					"static": "Static"
+				}
+			},
+			"summaryCard": {
+				"dataSource": "Data Source",
+				"errors": {
+					"invalidSource": "The data source is invalid: please edit the settings."
 				}
 			}
 		}

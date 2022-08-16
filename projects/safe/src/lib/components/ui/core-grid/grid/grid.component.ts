@@ -47,7 +47,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
 import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component';
-import { get } from 'lodash';
+import { get, intersection } from 'lodash';
 
 /**
  * Factory for creating scroll strategy
@@ -122,6 +122,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   public gradientSettings = GRADIENT_SETTINGS;
   public editing = false;
 
+  private readonly rowActions = ['update', 'delete', 'history', 'convert'];
+
   // === ACTIONS ===
   @Input() actions = {
     add: false,
@@ -137,7 +139,14 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
 
   /** @returns A boolean indicating if actions are enabled */
   get hasEnabledActions(): boolean {
-    return Object.values(this.actions).includes(true);
+    return (
+      intersection(
+        Object.keys(this.actions).filter(
+          (key: string) => get(this.actions, key, false) === true
+        ),
+        this.rowActions
+      ).length > 0
+    );
   }
 
   // === DISPLAY ===
