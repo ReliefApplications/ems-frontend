@@ -217,7 +217,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     })} ${today.getFullYear()}`;
     return `${
       this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
-    } ${formatDate}.png`;
+    } ${formatDate}`;
   }
 
   /** @returns true if any updated item in the list */

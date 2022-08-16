@@ -231,8 +231,6 @@ export class FormsComponent implements OnInit, OnDestroy {
    * @param e click event.
    */
   onDelete(form: Form, e: any): void {
-    const warning =
-      'Deleting a core form will recursively delete linked forms and resources.';
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -326,7 +324,7 @@ export class FormsComponent implements OnInit, OnDestroy {
               } else {
                 if (res.data) {
                   const { id } = res.data.addForm;
-                  this.router.navigate(['/forms/builder', id]);
+                  this.router.navigate(['/forms/' + id + '/builder']);
                 }
               }
             },

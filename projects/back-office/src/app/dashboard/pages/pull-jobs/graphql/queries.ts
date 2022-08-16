@@ -104,8 +104,8 @@ export interface GetRoutingKeysQueryResponse {
 // === GET FORMS ===
 /** Graphql query for getting form names */
 export const GET_FORM_NAMES = gql`
-  query GetFormNames($first: Int, $afterCursor: ID) {
-    forms(first: $first, afterCursor: $afterCursor) {
+  query GetFormNames($first: Int, $afterCursor: ID, $sortField: String) {
+    forms(first: $first, afterCursor: $afterCursor, sortField: $sortField) {
       edges {
         node {
           id

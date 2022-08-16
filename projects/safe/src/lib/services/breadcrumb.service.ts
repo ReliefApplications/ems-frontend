@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Apollo } from 'apollo-angular';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -22,6 +23,7 @@ export interface Breadcrumb {
 export class SafeBreadcrumbService {
   private breadcrumbs = new BehaviorSubject<Breadcrumb[]>([]);
   public breadcrumbs$ = this.breadcrumbs.asObservable();
+  private previousRoot: any;
 
   /**
    * Shared Breadcrumb service.
@@ -33,9 +35,14 @@ export class SafeBreadcrumbService {
   constructor(private activateRoute: ActivatedRoute, private router: Router) {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() =>
-        this.breadcrumbs.next(this.createBreadcrumbs(this.activateRoute.root))
-      );
+      .subscribe(() => {
+        if (this.previousRoot !== this.activateRoute.root.children) {
+          this.breadcrumbs.next(
+            this.createBreadcrumbs(this.activateRoute.root)
+          );
+          this.previousRoot = this.activateRoute.root.children;
+        }
+      });
   }
 
   /**

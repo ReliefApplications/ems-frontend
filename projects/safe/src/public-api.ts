@@ -78,6 +78,7 @@ export * from './lib/components/reference-data-dropdown/public-api';
 export * from './lib/components/skeleton/skeleton-table/public-api';
 export * from './lib/components/mapping/public-api';
 export * from './lib/components/role-summary/public-api';
+export * from './lib/components/graphql-select/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/layout-modal/public-api';
