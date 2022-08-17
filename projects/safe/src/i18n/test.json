@@ -80,6 +80,11 @@
 			"one": "******"
 		},
 		"general": "******",
+		"group": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"history": "******",
 		"id": "******",
 		"input": {
@@ -249,7 +254,7 @@
 			"canDelete": "******",
 			"canSee": "******",
 			"canUpdate": "******",
-			"description": "******",
+			"description": "****** {{name}} ******",
 			"title": "******"
 		},
 		"aggregationBuilder": {
@@ -448,6 +453,15 @@
 		"forms": {
 			"isCore": "******",
 			"parent": "******"
+		},
+		"group": {
+			"add": {
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			}
 		},
 		"header": {
 			"goToPlatform": "******",
@@ -706,6 +720,7 @@
 					"application": "******",
 					"backoffice": "******",
 					"selectedApplication": "******",
+					"selectedGroups": "******",
 					"selectedRoles": "******"
 				},
 				"title": "******"
@@ -918,6 +933,7 @@
 							"title": "******"
 						},
 						"display": {
+							"dataSource": "******",
 							"header": "******",
 							"title": "******"
 						},
@@ -938,6 +954,12 @@
 					},
 					"dynamic": "******",
 					"static": "******"
+				}
+			},
+			"summaryCard": {
+				"dataSource": "******",
+				"errors": {
+					"invalidSource": "******"
 				}
 			}
 		}
@@ -1140,6 +1162,11 @@
 			},
 			"select": "******",
 			"template": "******"
+		},
+		"group": {
+			"create": "******",
+			"description": "******",
+			"title": "******"
 		},
 		"mapping": {
 			"add": "******",

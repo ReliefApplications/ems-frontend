@@ -30,6 +30,10 @@ kendo-tilelayout {
       cursor: grab;
       pointer-events: none;
     }
+
+    .widget-header {
+      padding: 0 5px 0 15px !important;
+    }
   }
 }
 

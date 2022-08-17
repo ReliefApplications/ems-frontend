@@ -76,19 +76,3 @@ export interface DeleteRecordMutationResponse {
   loading: boolean;
   deleteRecord: Record;
 }
-
-// === DELETE FORM ===
-/** Delete form gql mutation definition */
-export const DELETE_FORM = gql`
-  mutation deleteForm($id: ID!) {
-    deleteForm(id: $id) {
-      id
-    }
-  }
-`;
-
-/** Delete form gql mutation response interface */
-export interface DeleteFormMutationResponse {
-  loading: boolean;
-  deleteForm: Form;
-}

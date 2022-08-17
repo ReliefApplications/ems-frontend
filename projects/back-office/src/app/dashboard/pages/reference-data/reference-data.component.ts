@@ -21,19 +21,20 @@ import {
   SafeBreadcrumbService,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import {
   EditReferenceDataMutationResponse,
   EDIT_REFERENCE_DATA,
 } from './graphql/mutations';
 import {
+  GetApiConfigurationQueryResponse,
   GetApiConfigurationsQueryResponse,
   GetReferenceDataQueryResponse,
+  GET_API_CONFIGURATION,
   GET_API_CONFIGURATIONS_NAMES,
   GET_REFERENCE_DATA,
 } from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { MatSelect } from '@angular/material/select';
 import { MatChipInputEvent } from '@angular/material/chips';
 
 /** Default pagination parameter. */
@@ -60,9 +61,8 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
   public referenceForm: FormGroup = new FormGroup({});
   public referenceTypeChoices = Object.values(referenceDataType);
 
-  private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
-  private apiConfigurations = new BehaviorSubject<ApiConfiguration[]>([]);
-  public apiConfigurations$!: Observable<ApiConfiguration[]>;
+  public selectedApiConfiguration?: ApiConfiguration;
+  public apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
 
   public valueFields: string[] = [];
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
@@ -72,14 +72,8 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
   public newData: any = [];
   public csvLoading = false;
 
-  @ViewChild('formSelect') apiConfSelect?: MatSelect;
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvData') csvData?: ElementRef<HTMLInputElement>;
-
-  private pageInfo = {
-    endCursor: '',
-    hasNextPage: true,
-  };
 
   /** @returns name of reference model */
   get name(): AbstractControl | null {
@@ -212,6 +206,20 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
         ?.setValidators(Validators.required);
       this.referenceForm.get('query')?.setValidators(Validators.required);
       this.referenceForm.get('fields')?.setValidators(Validators.required);
+      if (this.referenceForm.value.apiConfiguration) {
+        this.apollo
+          .query<GetApiConfigurationQueryResponse>({
+            query: GET_API_CONFIGURATION,
+            variables: {
+              id: this.referenceForm.value.apiConfiguration,
+            },
+          })
+          .subscribe((res) => {
+            if (res.data.apiConfiguration) {
+              this.selectedApiConfiguration = res.data.apiConfiguration;
+            }
+          });
+      }
 
       this.apiConfigurationsQuery =
         this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
@@ -220,15 +228,9 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
             first: ITEMS_PER_PAGE,
           },
         });
-
-      this.apiConfigurations$ = this.apiConfigurations.asObservable();
-      this.apiConfigurationsQuery.valueChanges.subscribe((res) => {
-        this.apiConfigurations.next(
-          res.data.apiConfigurations.edges.map((x) => x.node)
-        );
-        this.pageInfo = res.data.apiConfigurations.pageInfo;
-        this.loading = res.loading;
-      });
+      // this.apiConfigurationsQuery.valueChanges.subscribe((res) => {
+      //   this.loading = res.loading;
+      // });
     } else {
       this.referenceForm.get('apiConfiguration')?.clearValidators();
       this.referenceForm.get('query')?.clearValidators();
@@ -340,57 +342,6 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
           this.loading = res.data?.loading || false;
         }
       });
-  }
-
-  /**
-   * Add scroll listener to select.
-   *
-   * @param e open select event.
-   */
-  onOpenSelect(e: any): void {
-    if (e && this.apiConfSelect) {
-      const panel = this.apiConfSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
-      );
-    }
-  }
-
-  /**
-   * Fetches more forms on scroll.
-   *
-   * @param e scroll event.
-   */
-  private loadOnScroll(e: any): void {
-    if (
-      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
-      50
-    ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
-        this.loading = true;
-        this.apiConfigurationsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return Object.assign({}, prev, {
-              apiConfigurations: {
-                edges: [
-                  ...prev.apiConfigurations.edges,
-                  ...fetchMoreResult.apiConfigurations.edges,
-                ],
-                pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
-                totalCount: fetchMoreResult.apiConfigurations.totalCount,
-              },
-            });
-          },
-        });
-      }
-    }
   }
 
   /**

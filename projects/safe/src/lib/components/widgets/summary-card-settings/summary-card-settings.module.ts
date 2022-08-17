@@ -15,6 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeAddCardModule } from './add-card/add-card.module';
 import { SafeCardModalModule } from './card-modal/card-modal.module';
+import { MatButtonModule } from '@angular/material/button';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -36,6 +37,7 @@ import { SafeCardModalModule } from './card-modal/card-modal.module';
     MatDividerModule,
     SafeAddCardModule,
     SafeCardModalModule,
+    MatButtonModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

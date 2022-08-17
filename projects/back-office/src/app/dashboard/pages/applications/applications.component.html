@@ -106,6 +106,7 @@
           <safe-access
             [menuItem]="true"
             [access]="element.permissions"
+            [objectTypeName]="'common.application.one' | translate"
             (save)="saveAccess($event, element)"
             *ngIf="element.canUpdate"
           ></safe-access>

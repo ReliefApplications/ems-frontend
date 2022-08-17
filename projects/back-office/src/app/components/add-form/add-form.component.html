@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>{{ 'models.form.new' | translate }}</h1>
 <div mat-dialog-content>
-  <form [formGroup]="addForm">
+  <form [formGroup]="form">
     <div class="form-group">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'common.name' | translate }}</mat-label>
@@ -33,26 +33,20 @@
           ></safe-icon>
         </mat-radio-button>
       </mat-radio-group>
-      <ng-container *ngIf="!addForm.value.newResource">
+      <ng-container *ngIf="!form.value.newResource">
         <mat-form-field appearance="outline">
           <mat-label>{{
             'components.form.create.template.title' | translate
           }}</mat-label>
-          <mat-select
-            #resourceSelect
+          <safe-graphql-select
+            valueField="id"
+            textField="name"
+            [query]="resourcesQuery"
             formControlName="resource"
-            (openedChange)="onOpenSelect($event)"
-            (selectionChange)="getResource($event)"
           >
-            <mat-option
-              *ngFor="let resource of resources$ | async"
-              [value]="resource.id"
-            >
-              {{ resource.name }}
-            </mat-option>
-          </mat-select>
+          </safe-graphql-select>
         </mat-form-field>
-        <ng-container *ngIf="addForm.controls.resource.value !== null">
+        <ng-container *ngIf="form.controls.resource.value !== null">
           <mat-slide-toggle
             formControlName="inheritsTemplate"
             class="form-slide-toggle"
@@ -68,7 +62,7 @@
               "
             ></safe-icon>
           </mat-slide-toggle>
-          <ng-container *ngIf="addForm.controls.inheritsTemplate.value">
+          <ng-container *ngIf="form.controls.inheritsTemplate.value">
             <mat-form-field appearance="outline">
               <mat-label>{{
                 'components.form.create.template.from' | translate
@@ -104,10 +98,10 @@
   </button>
   <button
     mat-flat-button
-    [mat-dialog-close]="addForm.value"
+    [mat-dialog-close]="form.value"
     cdkFocusInitial
     color="primary"
-    [disabled]="!addForm.valid"
+    [disabled]="!form.valid"
   >
     {{ 'common.create' | translate }}
   </button>

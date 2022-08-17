@@ -8,6 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeGraphQLSelectModule } from '../../../../graphql-select/graphql-select.module';
 import { LayoutsModule } from '../../../../grid-layout/layouts/layouts.module';
 import { SafeFormsDropdownModule } from '../../../../ui/aggregation-builder/public-api';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
@@ -30,6 +31,7 @@ import { SafeDataSourceTabComponent } from './data-source-tab.component';
     SafeIconModule,
     MatProgressSpinnerModule,
     LayoutsModule,
+    SafeGraphQLSelectModule,
   ],
   exports: [SafeDataSourceTabComponent],
 })

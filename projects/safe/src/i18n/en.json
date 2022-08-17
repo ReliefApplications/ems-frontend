@@ -80,6 +80,11 @@
 			"one": "Form"
 		},
 		"general": "General",
+		"group": {
+			"few": "Groups",
+			"none": "No groups",
+			"one": "Group"
+		},
 		"history": "History",
 		"id": "Id",
 		"input": {
@@ -249,7 +254,7 @@
 			"canDelete": "Can delete",
 			"canSee": "Can see",
 			"canUpdate": "Can update",
-			"description": "Update access permissions",
+			"description": "Update {{name}} permissions",
 			"title": "Access"
 		},
 		"aggregationBuilder": {
@@ -448,6 +453,15 @@
 		"forms": {
 			"isCore": "Is core",
 			"parent": "Parent form"
+		},
+		"group": {
+			"add": {
+				"title": "Add new group"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the group {{name}}?",
+				"title": "Delete group"
+			}
 		},
 		"header": {
 			"goToPlatform": "Navigate to",
@@ -706,6 +720,7 @@
 					"application": "Application roles",
 					"backoffice": "Back-Office roles",
 					"selectedApplication": "Selected application",
+					"selectedGroups": "Selected groups",
 					"selectedRoles": "Selected roles"
 				},
 				"title": "Summary"
@@ -918,6 +933,7 @@
 							"title": "Data source"
 						},
 						"display": {
+							"dataSource": "Show link to data source",
 							"header": "Header",
 							"title": "Display"
 						},
@@ -938,6 +954,12 @@
 					},
 					"dynamic": "Dynamic",
 					"static": "Static"
+				}
+			},
+			"summaryCard": {
+				"dataSource": "Data Source",
+				"errors": {
+					"invalidSource": "The data source is invalid: please edit the settings."
 				}
 			}
 		}
@@ -1140,6 +1162,11 @@
 			},
 			"select": "Select a Form",
 			"template": "Template"
+		},
+		"group": {
+			"create": "Create a group",
+			"description": "Description",
+			"title": "Title"
 		},
 		"mapping": {
 			"add": "Add a Mapping",

@@ -1,3 +1,9 @@
+<safe-user-groups
+  *ngIf="!application"
+  [user]="user"
+  (edit)="edit.emit($event)"
+  [loading]="loading"
+></safe-user-groups>
 <safe-user-back-roles
   *ngIf="!application"
   [user]="user"

@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SettingsRoutingModule } from './settings-routing.module';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { SafeButtonModule } from '@safe/builder';
+import { SafeButtonModule, SafeAccessModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -23,6 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     MatSelectModule,
     SafeButtonModule,
+    SafeAccessModule,
     TranslateModule,
   ],
 })

@@ -41,6 +41,7 @@ import { SafeDateModule } from './pipes/date/date.module';
 import { SafeIconModule } from './components/ui/icon/icon.module';
 import { SafeSummaryCardSettingsModule } from './components/widgets/summary-card-settings/summary-card-settings.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
+import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -87,7 +88,7 @@ import { SafeRoleSummaryModule } from './components/role-summary/role-summary.mo
     SafeIconModule,
     SafeSummaryCardSettingsModule,
     SafeRoleSummaryModule,
+    SafeGraphQLSelectModule,
   ],
-  declarations: [],
 })
 export class SafeModule {}

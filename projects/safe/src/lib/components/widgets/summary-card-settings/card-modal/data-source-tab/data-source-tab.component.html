@@ -15,14 +15,21 @@
 
 <ng-container *ngIf="radioValue"> </ng-container>
 
-<ng-container *ngIf="!radioValue">
-  <mat-form-field [formGroup]="form" fxFlex appearance="outline">
+<ng-container *ngIf="!radioValue" [formGroup]="form">
+  <mat-form-field fxFlex appearance="outline">
     <mat-label>{{ 'models.resource.select' | translate }}</mat-label>
-    <mat-select formControlName="resource" placeholder="Select a dataset">
+    <!-- <mat-select formControlName="resource" placeholder="Select a dataset">
       <mat-option *ngFor="let resource of resources" [value]="resource.id">
         {{ resource.name }}
       </mat-option>
-    </mat-select>
+    </mat-select> -->
+    <safe-graphql-select
+      valueField="id"
+      textField="name"
+      [query]="resourcesQuery"
+      formControlName="resource"
+      [selectedElements]="[selectedResource]"
+    ></safe-graphql-select>
   </mat-form-field>
 
   <safe-layouts
