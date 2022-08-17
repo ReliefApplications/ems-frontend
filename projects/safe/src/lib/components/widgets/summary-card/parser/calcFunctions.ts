@@ -8,6 +8,13 @@ const calcFunctions: Record<
 > = {
   round: {
     signature: 'round( value ; precision )',
+    /**
+     * Calculate the rounded value of a given value
+     *
+     * @param value The decimal value to round
+     * @param precision The precision we want, in number of decimals (optional, default to 0)
+     * @returns The rounded value
+     */
     call: (value, precision = '0') => {
       const parsedValue = parseFloat(value);
       const parsedPrecision = parseInt(precision, 10);
@@ -18,6 +25,14 @@ const calcFunctions: Record<
   },
   percentage: {
     signature: 'percentage( value ; total ; precision )',
+    /**
+     * Transform a value as a percentage
+     *
+     * @param value The value to transform
+     * @param total The total reference of the percentage (optional, default to 1)
+     * @param precision The precision we want, in number of decimals (optional, default to 2)
+     * @returns The value as a percentage
+     */
     call: (value, total = '1', precision = '2') => {
       const percent = (parseFloat(value) / parseFloat(total)) * 100;
       const parsedPrecision = parseInt(precision, 10);
