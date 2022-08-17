@@ -2,6 +2,11 @@ import { get } from 'lodash';
 import { Record } from '../../../../models/record.model';
 import calcFunctions from './calcFunctions';
 
+/** Prefix for data keys */
+const DATA_PREFIX = '@data.';
+/** Prefix for calc keys */
+const CALC_PREFIX = '@calc.';
+
 /**
  * Parse the html body of a summary card with the content of a record,
  * and calculate the calc functions.
@@ -31,7 +36,7 @@ const replaceRecordFields = (html: string, record: any): string => {
   let formattedHtml = html;
   for (const [key, value] of Object.entries(fields)) {
     if (value) {
-      const regex = new RegExp(`@\\bdata.${key}\\b`, 'gi');
+      const regex = new RegExp(`${DATA_PREFIX}${key}\\b`, 'gi');
       formattedHtml = formattedHtml.replace(regex, value as string);
     }
   }
@@ -69,7 +74,7 @@ const getFieldsValue = (record: any) => {
  * @returns The html body with the calculated result of the functions
  */
 const applyOperations = (html: string): string => {
-  const regex = /@calc\.(\w+)\(([^\)]+)\)/gm;
+  const regex = new RegExp(`${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)`, 'gm');
   let parsedHtml = html;
   let result = regex.exec(html);
   while (result !== null) {
@@ -81,10 +86,36 @@ const applyOperations = (html: string): string => {
         .split(';')
         .map((arg) => arg.replace(/[\s,]/gm, ''));
       // apply the function
-      const resultText = calcFunc.call(...args);
+      let resultText;
+      try {
+        resultText = calcFunc.call(...args);
+      } catch (err) {
+        resultText = `<span style="text-decoration: red wavy underline" title="${err}"> ${result[0]}</span>`;
+      }
       parsedHtml = parsedHtml.replace(result[0], resultText);
     }
     result = regex.exec(html);
   }
   return parsedHtml;
+};
+
+/**
+ * Returns an array with the record data keys.
+ *
+ * @param record Record object.
+ * @returns list of data keys
+ */
+export const getDataKeys = (record: Record | null): string[] => {
+  const fields = getFieldsValue(record);
+  return Object.keys(fields).map((field) => DATA_PREFIX + field);
+};
+
+/**
+ * Returns an array with the calc operations keys.
+ *
+ * @returns List of calc keys
+ */
+export const getCalcKeys = (): string[] => {
+  const calcObjects = Object.values(calcFunctions);
+  return calcObjects.map((obj) => CALC_PREFIX + obj.signature);
 };

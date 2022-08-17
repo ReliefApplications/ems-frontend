@@ -7,12 +7,13 @@ import {
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { Editor } from 'tinymce';
 import {
   EDITOR_LANGUAGE_PAIRS,
   WIDGET_EDITOR_CONFIG,
 } from '../../../../../const/tinymce.const';
 import { Record } from '../../../../../models/record.model';
-import calcFunctions from '../../../summary-card/parser/calcFunctions';
+import { getCalcKeys, getDataKeys } from '../../../summary-card/parser/utils';
 
 /**
  * Component used in the card-modal-settings for editing the content of the card.
@@ -24,11 +25,10 @@ import calcFunctions from '../../../summary-card/parser/calcFunctions';
 })
 export class SafeTextEditorTabComponent implements OnChanges {
   @Input() form!: FormGroup;
-
   @Input() record: Record | null = null;
 
   /** tinymce editor */
-  public editor: any = WIDGET_EDITOR_CONFIG;
+  public editor = WIDGET_EDITOR_CONFIG;
 
   /**
    * SafeTextEditorTabComponent constructor.
@@ -63,10 +63,8 @@ export class SafeTextEditorTabComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const dataKeys = this.getDataKeys(this.record);
-    const calcKeys = Object.values(calcFunctions).map(
-      (calcFunc) => calcFunc.signature
-    );
+    const dataKeys = getDataKeys(this.record);
+    const calcKeys = getCalcKeys();
     const keys = dataKeys.concat(calcKeys);
 
     /**
@@ -74,82 +72,34 @@ export class SafeTextEditorTabComponent implements OnChanges {
      *
      * @param editor tinymce editor
      */
-    this.editor.setup = (editor: any) => {
-      /**
-       * Register input action for autocompletion
-       *
-       * @param autocompleteApi API for autocompletion options
-       * @param rng selection range
-       * @param value selected value
-       */
-      const onAction = (autocompleteApi: any, rng: any, value: any) => {
-        editor.selection.setRng(rng);
-        editor.insertContent(value);
-        autocompleteApi.hide();
-      };
-
-      /**
-       * Find keys from pattern
-       *
-       * @param pattern user input pattern
-       * @returns list of possible keys
-       */
-      const getMatchedKeys = (pattern: any) =>
-        keys.filter((key: any) => key.indexOf(pattern) !== -1);
-
-      editor.ui.registry.addAutocompleter('specialchars_cardmenuitems', {
+    this.editor.setup = (editor: Editor) => {
+      // autocompleter with @ for data and calc keys
+      editor.ui.registry.addAutocompleter('keys_data_and_calc', {
         ch: '@',
-        minChars: 1,
-        columns: 1,
-        highlightOn: ['char_name'],
-        onAction,
-        fetch: (pattern: any) =>
-          new Promise((resolve: any) => {
-            const results = getMatchedKeys(pattern).map((key) => ({
-              type: 'cardmenuitem',
-              value: key,
-              label: key,
-              items: [
-                {
-                  type: 'cardcontainer',
-                  direction: 'vertical',
-                  items: [
-                    {
-                      type: 'cardtext',
-                      text: key,
-                      name: 'char_name',
-                    },
-                  ],
-                },
-              ],
-            }));
-            resolve(results);
-          }),
+        onAction: (autocompleteApi, rng, value) => {
+          editor.selection.setRng(rng);
+          editor.insertContent(value);
+          autocompleteApi.hide();
+        },
+        fetch: async (pattern: string) =>
+          keys
+            .filter((key) => key.includes(pattern))
+            .map((key) => ({ value: key, text: key })),
       });
-    };
-  }
 
-  /**
-   * Returns an array with the record data keys.
-   *
-   * @param record Record object.
-   * @returns list of data keys
-   */
-  private getDataKeys(record: any): string[] {
-    const fields: string[] = [];
-    for (const [key, value] of Object.entries(record)) {
-      if (!key.startsWith('__') && key !== 'form') {
-        if (value instanceof Object) {
-          for (const [key2] of Object.entries(value)) {
-            if (!key2.startsWith('__')) {
-              fields.push('@data.' + (key === 'data' ? '' : key + '.') + key2);
-            }
-          }
-        } else {
-          fields.push('@data.' + key);
-        }
-      }
-    }
-    return fields;
+      // autocompleter with = for calc keys
+      // editor.ui.registry.addAutocompleter('keys_calc', {
+      //   ch: '=',
+      //   onAction: (autocompleteApi, rng, value) => {
+      //     editor.selection.setRng(rng);
+      //     editor.insertContent(value);
+      //     autocompleteApi.hide();
+      //   },
+      //   fetch: async (pattern: string) =>
+      //     calcKeys
+      //       .filter((key) => key.includes(pattern))
+      //       .map((key) => ({ value: key, text: key })),
+      // });
+    };
   }
 }

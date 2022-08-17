@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
 import { Record } from '../../../../../models/record.model';
 import { parseHtml } from '../../../summary-card/parser/utils';
@@ -15,19 +16,22 @@ export class SafePreviewTabComponent implements OnChanges {
   @Input() html = '';
   @Input() record: Record | null = null;
 
-  public formattedHtml: string = this.html;
+  public formattedHtml?: SafeHtml;
 
   /**
    * Constructor used by the SafePreviewTab component.
    *
    * @param apollo Service used for getting the record queries.
+   * @param sanitizer Sanitizes the cards content so angular can show it up.
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private sanitizer: DomSanitizer) {}
 
   /**
    * Detects when the html or record inputs change.
    */
   ngOnChanges(): void {
-    this.formattedHtml = parseHtml(this.html, this.record);
+    this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
+      parseHtml(this.html, this.record)
+    );
   }
 }
