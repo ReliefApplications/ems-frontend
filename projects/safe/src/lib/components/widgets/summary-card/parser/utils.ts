@@ -76,8 +76,7 @@ const applyOperations = (html: string): string => {
   while (result !== null) {
     // get the function
     const calcFunc = getCalcFunction(result[1]);
-    // get the arguments, call the function recursively if nested operations,
-    // and clean the numbers to be parsed correctly
+    // get the arguments and clean the numbers to be parsed correctly
     const args = result[2].split(';').map((arg) => arg.replace(/[\s,]/gm, ''));
     // apply the function
     const resultText = calcFunc(...args);
