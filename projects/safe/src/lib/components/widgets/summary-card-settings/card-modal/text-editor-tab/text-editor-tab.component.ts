@@ -12,6 +12,7 @@ import {
   WIDGET_EDITOR_CONFIG,
 } from '../../../../../const/tinymce.const';
 import { Record } from '../../../../../models/record.model';
+import calcFunctions from '../../../summary-card/parser/calcFunctions';
 
 /**
  * Component used in the card-modal-settings for editing the content of the card.
@@ -62,7 +63,11 @@ export class SafeTextEditorTabComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const keys = this.getDataKeys(this.record);
+    const dataKeys = this.getDataKeys(this.record);
+    const calcKeys = Object.values(calcFunctions).map(
+      (calcFunc) => calcFunc.signature
+    );
+    const keys = dataKeys.concat(calcKeys);
 
     /**
      * Setup tinymce editor
@@ -145,8 +150,6 @@ export class SafeTextEditorTabComponent implements OnChanges {
         }
       }
     }
-    fields.push('@calc.round( number ; digit )');
-    fields.push('@calc.percentage( number ; total ; digit )');
     return fields;
   }
 }
