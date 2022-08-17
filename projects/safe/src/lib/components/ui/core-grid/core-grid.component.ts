@@ -217,7 +217,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     })} ${today.getFullYear()}`;
     return `${
       this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
-    } ${formatDate}.png`;
+    } ${formatDate}`;
   }
 
   /** @returns true if any updated item in the list */
@@ -1033,8 +1033,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
-    console.log('CURRENT LAYOUT FIELDS', currentLayout.fields);
-    console.log('QUERY FIELDS', this.settings.query.fields);
     const body = {
       ids,
       filter:

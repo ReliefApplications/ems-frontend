@@ -447,20 +447,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     return this.grid?.columns
       .toArray()
       .sort((a: any, b: any) => a.orderIndex - b.orderIndex)
-      .filter((x: any) => {
-        console.log('FIELD', x.field);
-        console.log('TITLE', x.title);
-        console.log('DISPLAY TITLE', x.displayTitle);
-        console.log('COLUMNGROUP', x.isColumnGroup);
-        console.log('HASCHILDREN', x.hasChildren);
-        console.log('CHILDRENARRAY', x.childrenArray);
-        if (x.hasChildren)
-          console.log(
-            'CHILDRENARRAY',
-            x.childrenArray.map((y: any) => y.title)
-          );
-        return x.field || x.hasChildren;
-      })
+      .filter((x: any) => x.field || x.hasChildren)
       .reduce(
         (obj, c: any) => ({
           ...obj,

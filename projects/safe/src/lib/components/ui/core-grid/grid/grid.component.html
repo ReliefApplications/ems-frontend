@@ -480,6 +480,7 @@
       >
         <ng-container *ngFor="let subField of field.subFields">
           <kendo-grid-column
+            [field]="subField.name"
             [title]="subField.title"
             [columnMenu]="false"
             [width]="subField.width"
