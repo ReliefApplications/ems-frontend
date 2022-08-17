@@ -23,8 +23,6 @@ import {
   GET_ROUTING_KEYS,
 } from '../../graphql/queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-// eslint-disable-next-line max-len
-import { SubscriptionModalComponent } from '../../../../../application/pages/subscriptions/components/subscription-modal/subscription-modal.component';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -44,15 +42,7 @@ export class PullJobModalComponent implements OnInit {
   isHardcoded = true;
 
   // === FORMS ===
-  @ViewChild('formSelect') formSelect?: MatSelect;
-  private formsLoading = true;
-  private forms = new BehaviorSubject<Form[]>([]);
-  public forms$!: Observable<Form[]>;
-  private formsQuery!: QueryRef<GetFormsQueryResponse>;
-  private formsPageInfo = {
-    endCursor: '',
-    hasNextPage: true,
-  };
+  public formsQuery!: QueryRef<GetFormsQueryResponse>;
 
   // === CHANNELS ===
   @ViewChild('channelSelect') channelSelect?: MatSelect;
@@ -66,18 +56,10 @@ export class PullJobModalComponent implements OnInit {
   };
 
   // === API ===
-  @ViewChild('apiSelect') apiSelect?: MatSelect;
-  private apiConfigurationsLoading = true;
-  public apiConfigurations = new BehaviorSubject<ApiConfiguration[]>([]);
-  public apiConfigurations$!: Observable<ApiConfiguration[]>;
-  private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
-  private apiPageInfo = {
-    endCursor: '',
-    hasNextPage: true,
-  };
+  public apiConfigurations: ApiConfiguration[] = [];
+  public apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
 
   // === DATA ===
-  public loading = true;
   public statusChoices = Object.values(status);
   public fields: any[] = [];
   private fieldsSubscription?: Subscription;
@@ -117,7 +99,7 @@ export class PullJobModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<SubscriptionModalComponent>,
+    public dialogRef: MatDialogRef<PullJobModalComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)
     public data: {
@@ -180,23 +162,8 @@ export class PullJobModalComponent implements OnInit {
       query: GET_FORM_NAMES,
       variables: {
         first: ITEMS_PER_PAGE,
+        sortField: 'name',
       },
-    });
-
-    this.forms$ = this.forms.asObservable();
-    this.formsQuery.valueChanges.subscribe((res) => {
-      const nodes = res.data.forms.edges.map((x) => x.node);
-      if (this.defaultForm) {
-        this.forms.next([
-          this.defaultForm,
-          ...nodes.filter((x) => x.id !== this.defaultForm?.id),
-        ]);
-      } else {
-        this.forms.next(nodes);
-      }
-      this.formsPageInfo = res.data.forms.pageInfo;
-      this.formsLoading = res.loading;
-      this.loading = false && this.apiConfigurationsLoading;
     });
 
     this.apiConfigurationsQuery =
@@ -206,22 +173,12 @@ export class PullJobModalComponent implements OnInit {
           first: ITEMS_PER_PAGE,
         },
       });
-
-    this.apiConfigurations$ = this.apiConfigurations.asObservable();
-    this.apiConfigurationsQuery.valueChanges.subscribe((res) => {
-      const nodes = res.data.apiConfigurations.edges.map((x) => x.node);
-      if (this.defaultApiConfiguration) {
-        this.apiConfigurations.next([
-          this.defaultApiConfiguration,
-          ...nodes.filter((x) => x.id !== this.defaultApiConfiguration?.id),
-        ]);
-      } else {
-        this.apiConfigurations.next(nodes);
-      }
-      this.apiPageInfo = res.data.apiConfigurations.pageInfo;
-      this.apiConfigurationsLoading = res.loading;
-      this.loading = false && this.formsLoading;
-    });
+    this.apiConfigurationsQuery.valueChanges.subscribe(
+      (res) =>
+        (this.apiConfigurations = res.data.apiConfigurations.edges.map(
+          (x) => x.node
+        ))
+    );
 
     // Fetch form fields if any for mapping
     if (this.data.pullJob?.convertTo?.id) {
@@ -267,7 +224,7 @@ export class PullJobModalComponent implements OnInit {
       .get('apiConfiguration')
       ?.valueChanges.subscribe((apiConfiguration: string) => {
         if (apiConfiguration) {
-          const api = this.apiConfigurations.value.find(
+          const api = this.apiConfigurations.find(
             (x) => x.id === apiConfiguration
           );
           this.isHardcoded = !(
@@ -398,105 +355,6 @@ export class PullJobModalComponent implements OnInit {
         ?.setValue(JSON.stringify(mapping, null, 2));
     }
     return this.pullJobForm.value;
-  }
-
-  /**
-   * Adds scroll listener to select.
-   *
-   * @param e open select event.
-   */
-  onOpenFormsSelect(e: any): void {
-    if (e && this.formSelect) {
-      const panel = this.formSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadFormsOnScroll(event)
-      );
-    }
-  }
-
-  /**
-   * Fetches more forms on scroll.
-   *
-   * @param e scroll event.
-   */
-  private loadFormsOnScroll(e: any): void {
-    if (
-      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
-      50
-    ) {
-      if (!this.formsLoading && this.formsPageInfo.hasNextPage) {
-        this.formsLoading = true;
-        this.formsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.formsPageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return Object.assign({}, prev, {
-              forms: {
-                edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
-                pageInfo: fetchMoreResult.forms.pageInfo,
-                totalCount: fetchMoreResult.forms.totalCount,
-              },
-            });
-          },
-        });
-      }
-    }
-  }
-
-  /**
-   * Adds scroll listener to select.
-   *
-   * @param e open select event.
-   */
-  onOpenApiSelect(e: any): void {
-    if (e && this.apiSelect) {
-      const panel = this.apiSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadApiOnScroll(event)
-      );
-    }
-  }
-
-  /**
-   * Fetches more API configurations on scroll.
-   *
-   * @param e scroll event.
-   */
-  private loadApiOnScroll(e: any): void {
-    if (
-      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
-      50
-    ) {
-      if (!this.apiConfigurationsLoading && this.apiPageInfo.hasNextPage) {
-        this.apiConfigurationsLoading = true;
-        this.apiConfigurationsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.apiPageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return Object.assign({}, prev, {
-              apiConfigurations: {
-                edges: [
-                  ...prev.apiConfigurations.edges,
-                  ...fetchMoreResult.apiConfigurations.edges,
-                ],
-                pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
-                totalCount: fetchMoreResult.apiConfigurations.totalCount,
-              },
-            });
-          },
-        });
-      }
-    }
   }
 
   /**

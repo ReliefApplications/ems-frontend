@@ -6,8 +6,7 @@
       : ('models.pullJob.new' | translate)
   }}
 </h1>
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<div mat-dialog-content *ngIf="!loading">
+<div mat-dialog-content>
   <form [formGroup]="pullJobForm">
     <div class="form-group">
       <div class="form-group-row">
@@ -59,17 +58,15 @@
         </mat-form-field>
         <mat-form-field appearance="outline" style="flex: 1">
           <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
-          <mat-select
-            #apiSelect
+          <safe-graphql-select
+            valueField="id"
+            textField="name"
+            [required]="true"
+            [query]="apiConfigurationsQuery"
             formControlName="apiConfiguration"
-            (openedChange)="onOpenApiSelect($event)"
+            [selectedElements]="[defaultApiConfiguration]"
           >
-            <mat-option
-              *ngFor="let apiConfiguration of apiConfigurations$ | async"
-              [value]="apiConfiguration.id"
-              >{{ apiConfiguration.name }}</mat-option
-            >
-          </mat-select>
+          </safe-graphql-select>
         </mat-form-field>
       </div>
       <div class="form-group-row" *ngIf="!isHardcoded">
@@ -115,15 +112,14 @@
           <mat-label>{{
             'components.record.convert.select' | translate
           }}</mat-label>
-          <mat-select
-            #formSelect
+          <safe-graphql-select
+            valueField="id"
+            textField="name"
+            [query]="formsQuery"
             formControlName="convertTo"
-            (openedChange)="onOpenFormsSelect($event)"
+            [selectedElements]="[defaultForm]"
           >
-            <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{
-              form.name
-            }}</mat-option>
-          </mat-select>
+          </safe-graphql-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline">

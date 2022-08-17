@@ -255,7 +255,7 @@
 			"canDelete": "******",
 			"canSee": "******",
 			"canUpdate": "******",
-			"description": "******",
+			"description": "****** {{name}} ******",
 			"title": "******"
 		},
 		"aggregationBuilder": {

@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -27,7 +26,7 @@ import { SafeSnackBarService } from '../../../../services/snackbar.service';
   templateUrl: './user-app-roles.component.html',
   styleUrls: ['./user-app-roles.component.scss'],
 })
-export class UserAppRolesComponent implements OnInit, AfterViewInit {
+export class UserAppRolesComponent implements OnInit {
   public roles: Role[] = [];
   @Input() user!: User;
   @Input() application?: Application;
@@ -42,18 +41,10 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
       this.selectedRoles?.enable({ emitEvent: false });
     }
   }
-  public loadingApplications = false;
 
   selectedApplication!: FormControl;
-  private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
-  public applications: Application[] = [];
-  private pageInfo = {
-    endCursor: '',
-    hasNextPage: true,
-  };
+  public applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   private readonly PAGE_SIZE = 10;
-  private readonly RELOAD_BOTTOM_SCROLL_POSITION = 50;
-  @ViewChild('applicationSelect') applicationSelect!: MatSelect;
 
   /**
    * Roles tab for the user summary.
@@ -81,7 +72,10 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.selectedApplication = this.fb.control({ value: '', disabled: true });
+    this.selectedApplication = this.fb.control({
+      value: get(this.application, 'id', ''),
+      disabled: !!this.application,
+    });
     this.selectedApplication.valueChanges.subscribe((value) => {
       this.selectedRoles.setValue([], { emitEvent: false });
       this.roles = [];
@@ -89,41 +83,24 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
         this.getApplicationRoles(value);
       }
     });
-
-    if (!this.application) {
-      this.loadingApplications = true;
-      this.applicationsQuery =
-        this.apollo.watchQuery<GetApplicationsQueryResponse>({
-          query: GET_APPLICATIONS,
-          variables: {
-            first: this.PAGE_SIZE,
-            sortField: 'name',
-          },
-        });
-      this.applicationsQuery.valueChanges.subscribe(
-        (res) => {
-          this.applications = res.data.applications.edges.map((x) => x.node);
-          this.pageInfo = res.data.applications.pageInfo;
-          this.loading = res.loading;
-          this.loadingApplications = res.loading;
-          this.selectedApplication.enable();
-        },
-        (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
-    } else {
-      this.applications = [this.application];
-      this.selectedApplication.setValue(this.application.id);
+    if (this.application) {
+      this.getApplicationRoles(this.application.id as string);
     }
-  }
 
-  ngAfterViewInit(): void {
-    this.applicationSelect.openedChange.subscribe((opened: boolean) => {
-      if (opened) {
-        this.registerScrollEvent();
+    this.applicationsQuery =
+      this.apollo.watchQuery<GetApplicationsQueryResponse>({
+        query: GET_APPLICATIONS,
+        variables: {
+          first: this.PAGE_SIZE,
+          sortField: 'name',
+        },
+      });
+    this.applicationsQuery.valueChanges.subscribe(
+      (res) => {},
+      (err) => {
+        this.snackBar.openSnackBar(err.message, { error: true });
       }
-    });
+    );
   }
 
   /**
@@ -157,56 +134,5 @@ export class UserAppRolesComponent implements OnInit, AfterViewInit {
           this.snackBar.openSnackBar(err.message, { error: true });
         }
       );
-  }
-
-  /** Adds a scroll event listener for the application dropdown */
-  private registerScrollEvent(): void {
-    const panel = this.applicationSelect.panel.nativeElement;
-    panel.addEventListener('scroll', (event: any) => this.loadOnScroll(event));
-  }
-
-  /**
-   * Triggers new page reaching scroll target
-   *
-   * @param event The scroll event
-   */
-  private loadOnScroll(event: any): void {
-    if (
-      event.target.scrollHeight -
-        (event.target.clientHeight + event.target.scrollTop) <
-      this.RELOAD_BOTTOM_SCROLL_POSITION
-    ) {
-      this.onLoadMore();
-    }
-  }
-
-  /** Fetches more applications when needed */
-  private onLoadMore(): void {
-    if (!this.loadingApplications && this.pageInfo.hasNextPage) {
-      this.loading = true;
-      this.loadingApplications = true;
-      this.applicationsQuery.fetchMore({
-        variables: {
-          first: this.PAGE_SIZE,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            this.loading = false;
-            this.loadingApplications = false;
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            applications: {
-              edges: [
-                ...prev.applications.edges,
-                ...fetchMoreResult.applications.edges,
-              ],
-              pageInfo: fetchMoreResult.applications.pageInfo,
-            },
-          });
-        },
-      });
-    }
   }
 }
