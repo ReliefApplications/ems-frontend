@@ -12,11 +12,12 @@ import { SafeEditAccessComponent } from './edit-access/edit-access.component';
 })
 export class SafeAccessComponent implements OnInit {
   // === PERMISSIONS LAYER OF CURRENT OBJECT ===
-  @Input() access: any;
+  @Input() access!: any;
   @Input() application?: string;
 
   // === DISPLAY ===
   @Input() menuItem = false;
+  @Input() objectTypeName!: string;
 
   // === PASS THE RESULT TO PARENT COMPONENT ===
   @Output() save: EventEmitter<any> = new EventEmitter();
@@ -39,6 +40,7 @@ export class SafeAccessComponent implements OnInit {
       data: {
         access: this.access,
         application: this.application,
+        objectTypeName: this.objectTypeName,
       },
     });
     dialogRef.afterClosed().subscribe((res) => {

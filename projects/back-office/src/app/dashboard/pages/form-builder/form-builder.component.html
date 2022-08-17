@@ -32,6 +32,7 @@
     <span class="flex-spacer"></span>
     <safe-access
       [access]="form.permissions"
+      [objectTypeName]="'common.form.one' | translate"
       (save)="saveAccess($event)"
       *ngIf="form.canUpdate"
     ></safe-access>

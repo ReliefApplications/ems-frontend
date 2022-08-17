@@ -17,6 +17,7 @@
         <safe-access
           [access]="dashboard.permissions"
           [application]="applicationId"
+          [objectTypeName]="'common.page.one' | translate"
           (save)="saveAccess($event)"
           *ngIf="
             dashboard.page

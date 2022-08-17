@@ -2,13 +2,15 @@
 <div mat-dialog-content>
   <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
   <form [formGroup]="roleForm" class="form-group" *ngIf="!loading">
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>{{ 'common.role.one' | translate }}</mat-label>
-      <mat-select formControlName="role">
-        <mat-option *ngFor="let role of roles" [value]="role.id">
-          {{ role.title }}
-        </mat-option>
-      </mat-select>
+      <safe-graphql-select
+        valueField="id"
+        textField="title"
+        [query]="rolesQuery"
+        formControlName="role"
+      >
+      </safe-graphql-select>
     </mat-form-field>
   </form>
 </div>

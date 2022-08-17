@@ -18,6 +18,7 @@ import {
   SafeApplicationsSummaryModule,
   SafeSkeletonTableModule,
   SafeDateModule,
+  SafeGraphQLSelectModule,
 } from '@safe/builder';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
@@ -64,6 +65,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
+    SafeGraphQLSelectModule,
   ],
   exports: [ApplicationsComponent],
 })

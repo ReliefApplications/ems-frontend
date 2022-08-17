@@ -11,6 +11,7 @@ import { Role } from '../../../models/user.model';
 interface DialogData {
   access: any;
   application: string;
+  objectTypeName: string;
 }
 
 /**

@@ -17,6 +17,7 @@ import {
   SafeButtonModule,
   SafeSkeletonTableModule,
   SafeIconModule,
+  SafeGraphQLSelectModule,
 } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -53,6 +54,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatChipsModule,
     SafeSkeletonTableModule,
     SafeIconModule,
+    SafeGraphQLSelectModule,
   ],
 })
 export class PullJobsModule {}
