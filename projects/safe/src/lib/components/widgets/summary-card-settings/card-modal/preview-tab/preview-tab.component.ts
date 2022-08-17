@@ -28,29 +28,71 @@ export class SafePreviewTabComponent implements OnChanges {
    */
   ngOnChanges(): void {
     if (this.record) {
-      this.formattedHtml = this.applyOperations(this.replaceRecordFields(this.html, this.record));
+      this.formattedHtml = this.applyOperations(
+        this.replaceRecordFields(this.html, this.record)
+      );
     } else {
       this.formattedHtml = this.applyOperations(this.html);
-
     }
   }
 
+  /**
+   * Apply the calc functions on the html body.
+   *
+   * @param html The html body on which we want to apply the functions
+   * @returns The html body with the calculated result of the functions
+   */
   private applyOperations(html: string): string {
-    // Round operations
-    const roundRegex = new RegExp('@\\bcalc.round\\b');
-    // for(let pos = html.search(roundRegex); pos >= 0;) {
-    //   const params = html.slice(html.indexOf('(', pos) + 1, html.indexOf(')', pos)).split(/,\s*/);
-    //   if (params.length > 2 || params.length < 2 || isNaN(parseFloat(params[0]))) {
-    //     html = html.replace(roundRegex, '@calc.round error: Bad parameter');
-    //   } else if (isNaN(parseFloat(params[1]))) {
-    //     html = html.replace(roundRegex, params[0]);
-    //   } else {
-    //     html = html.replace(roundRegex, parseFloat(params[0]).toFixed(parseInt(params[1])).toString());
-    //   }
-    //   pos = html.search(roundRegex);
-    //   console.log(html);
-    // }
-    return html;
+    const regex = /@calc\.(\w+)\(([^\)]+)\)/gm;
+    let parsedHtml = html;
+    let result = regex.exec(parsedHtml);
+    while (result !== null) {
+      const calcFunc = this.getCalcFunction(result[1]);
+      const args = result[2]
+        .split(';')
+        .map((arg) => arg.replace(/[\s,]/gm, '')); // remove spaces and commas
+      const resultText = calcFunc(...args);
+      parsedHtml = parsedHtml.replace(result[0], resultText);
+      result = regex.exec(parsedHtml);
+    }
+    return parsedHtml;
+  }
+
+  /**
+   * Get the function corresponding to the operation
+   *
+   * @param funcName The name of the function
+   * @returns A function corresponding to the operation
+   */
+  private getCalcFunction(funcName: string): (...args: string[]) => string {
+    switch (funcName) {
+      case 'round':
+        return (value, digit = '0') => {
+          try {
+            const parsedValue = parseFloat(value);
+            const parsedDigit = parseInt(digit, 10);
+            if (isNaN(parsedValue) || isNaN(parsedDigit))
+              throw new Error('Not a number');
+            return parsedValue.toFixed(parsedDigit);
+          } catch (err) {
+            return `[@calc.round ${err}]`;
+          }
+        };
+      case 'percentage':
+        return (value, total = '1', digit = '2') => {
+          try {
+            const percent = (parseFloat(value) / parseFloat(total)) * 100;
+            const parsedDigit = parseInt(digit, 10);
+            if (isNaN(percent) || isNaN(parsedDigit))
+              throw new Error('Not a number');
+            return percent.toFixed(parsedDigit) + '%';
+          } catch (err) {
+            return `[@calc.percentage ${err}]`;
+          }
+        };
+      default:
+        return () => `[@calc.${funcName} is unknown]`;
+    }
   }
 
   /**
