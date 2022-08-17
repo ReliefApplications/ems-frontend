@@ -56,7 +56,7 @@ export class UserGroupsComponent implements OnInit {
       .subscribe(
         (res) => {
           if (res.data) {
-            this.groups = res.data.groups.values;
+            this.groups = res.data.groups;
           }
           this.loading = res.loading;
         },
