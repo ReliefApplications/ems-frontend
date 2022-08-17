@@ -71,34 +71,20 @@ const getFieldsValue = (record: any) => {
 const applyOperations = (html: string): string => {
   const regex = /@calc\.(\w+)\(([^\)]+)\)/gm;
   let parsedHtml = html;
-  // search the first operation
-  let result = regex.exec(parsedHtml);
+  let result = regex.exec(html);
   while (result !== null) {
     // get the function
-    const calcFunc = getCalcFunction(result[1]);
-    // get the arguments and clean the numbers to be parsed correctly
-    const args = result[2].split(';').map((arg) => arg.replace(/[\s,]/gm, ''));
-    // apply the function
-    const resultText = calcFunc(...args);
-    parsedHtml = parsedHtml.replace(result[0], resultText);
-    // search the next operation
-    regex.lastIndex = 0;
-    result = regex.exec(parsedHtml);
+    const calcFunc = get(calcFunctions, result[1]);
+    if (calcFunc) {
+      // get the arguments and clean the numbers to be parsed correctly
+      const args = result[2]
+        .split(';')
+        .map((arg) => arg.replace(/[\s,]/gm, ''));
+      // apply the function
+      const resultText = calcFunc.call(...args);
+      parsedHtml = parsedHtml.replace(result[0], resultText);
+    }
+    result = regex.exec(html);
   }
   return parsedHtml;
-};
-
-/**
- * Get the function corresponding to the operation
- *
- * @param funcName The name of the function
- * @returns A function corresponding to the operation
- */
-const getCalcFunction = (funcName: string) => {
-  const func = get(calcFunctions, funcName);
-  if (func) {
-    return func.call;
-  } else {
-    return () => `[@calc.${funcName} is unknown]`;
-  }
 };
