@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,6 +14,9 @@ import {
 } from './graphql/queries';
 import { parseHtml } from './parser/utils';
 
+/** Maximum width of the widget in column units */
+const MAX_COL_SPAN = 8;
+
 /**
  * Summary Card Widget component.
  */
@@ -28,10 +31,10 @@ export class SafeSummaryCardComponent implements OnInit {
   @Input() settings: any = null;
 
   // === GRID ===
-  colsNumber = 8;
+  public colsNumber = MAX_COL_SPAN;
 
   // === CARDS CONTENTS ===
-  cardsContent: any[] = [];
+  public cardsContent: any[] = [];
 
   // === RESOURCES AND LAYOUTS ===
   private cardQueries = {};
@@ -53,6 +56,16 @@ export class SafeSummaryCardComponent implements OnInit {
   }
 
   /**
+   * Changes display when windows size changes.
+   *
+   * @param event window resize event
+   */
+  @HostListener('window:resize', ['$event'])
+  onWindowResize(event: any): void {
+    this.colsNumber = this.setColsNumber(event.target.innerWidth);
+  }
+
+  /**
    * Summary Card Widget component.
    *
    * @param apollo Used to get the necessary records for the cards content.
@@ -70,7 +83,30 @@ export class SafeSummaryCardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.colsNumber = this.setColsNumber(window.innerWidth);
     this.getCardsContent(this.settings.cards);
+  }
+
+  /**
+   * Changes the number of displayed columns.
+   *
+   * @param width width of the screen.
+   * @returns new number of cols.
+   */
+  private setColsNumber(width: number): number {
+    if (width <= 480) {
+      return 1;
+    }
+    if (width <= 600) {
+      return 2;
+    }
+    if (width <= 800) {
+      return 4;
+    }
+    if (width <= 1024) {
+      return 6;
+    }
+    return MAX_COL_SPAN;
   }
 
   /**
