@@ -139,8 +139,8 @@ const TYPES: any = {
     ],
   },
   Group: {
-    defaultOperator: 'eq',
-    operators: ['eq'],
+    defaultOperator: 'contains',
+    operators: ['contains', 'doesnotcontain', 'isempty', 'isnotempty'],
   },
 };
 
@@ -415,17 +415,5 @@ export class SafeTabFilterComponent implements OnInit {
     });
     this.filters.push(filter);
     this.selectedFields.push({});
-  }
-
-  /**
-   * Checks if an option matches the value
-   *
-   * @param option Select option
-   * @param value Input value
-   * @returns If the option equals the value
-   */
-  compareOption(option: any, value: any) {
-    if (value instanceof Object) return isEqual(option, value);
-    return option === value;
   }
 }

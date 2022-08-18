@@ -4,7 +4,7 @@
     icon="add"
     variant="primary"
     category="secondary"
-    (click)="handleAddRule()"
+    (click)="onAddRule()"
     >{{
       'components.role.summary.automaticAssignment.rule.add' | translate
     }}</safe-button
@@ -28,7 +28,7 @@
   </ng-container>
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element">
+    <td mat-cell *matCellDef="let i = index">
       <div style="display: flex">
         <safe-button
           [isIcon]="true"
@@ -38,7 +38,7 @@
             'components.role.summary.automaticAssignment.rule.delete'
               | translate
           "
-          (click)="handleRemoveRule(element)"
+          (click)="onDeleteRule(i)"
         >
         </safe-button>
       </div>
@@ -47,9 +47,9 @@
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr
-    *matRowDef="let row; columns: displayedColumns"
+    *matRowDef="let row; columns: displayedColumns; let i = index"
     mat-row
-    (click)="handleAddRule(row)"
+    (click)="onEditRule(i)"
     style="cursor: pointer"
   ></tr>
 </table>

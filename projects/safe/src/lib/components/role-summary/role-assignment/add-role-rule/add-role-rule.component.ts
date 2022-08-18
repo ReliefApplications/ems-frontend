@@ -48,6 +48,7 @@ export class SafeAddRoleRuleComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.data.rule);
     this.ruleForm = createFilterGroup(this.ruleToFilter(this.data.rule));
     this.initialForm = cloneDeep(this.ruleForm);
     this.apollo
@@ -68,28 +69,28 @@ export class SafeAddRoleRuleComponent implements OnInit {
    * @returns Filter format of rule
    */
   ruleToFilter(rule: RoleRule): any {
-    return {
-      logic: rule.logic,
-      filters: rule.rules.map((x) => {
-        if ('rules' in x) return this.ruleToFilter(x);
-        else {
-          if (x.group)
-            return {
-              field: this.translate.instant('common.group.one'),
-              operator: 'eq',
-              // eslint-disable-next-line no-underscore-dangle
-              value: { group: x.group.id },
-            };
-          else if (x.attribute)
-            return {
-              field: x.attribute.category.title,
-              operator: x.attribute.operator,
-              value: x.attribute.value,
-            };
-          else return null;
-        }
-      }),
-    };
+    return rule;
+    // return {
+    //   logic: rule.logic,
+    //   filters: rule.rules.map((x) => {
+    //     if ('rules' in x) return this.ruleToFilter(x);
+    //     else {
+    //       if (x.groups)
+    //         return {
+    //           field: this.translate.instant('common.group.one'),
+    //           operator: x.groups.operator,
+    //           value: x.groups.value
+    //         };
+    //       else if (x.attribute)
+    //         return {
+    //           field: x.attribute.category.title,
+    //           operator: x.attribute.operator,
+    //           value: x.attribute.value,
+    //         };
+    //       else return null;
+    //     }
+    //   }),
+    // };
   }
 
   /**
@@ -103,17 +104,16 @@ export class SafeAddRoleRuleComponent implements OnInit {
       logic: filter.logic,
       rules: filter.filters.map((x: any) => {
         if ('filters' in x) return this.filterToRule(x);
-        if (x.value instanceof Object && x.value.group)
-          return {
-            group: this.groups.find((g) => g.id === x.value.group),
-          };
         return {
-          attribute: {
-            category: this.attributes.find((a) => a.title === x.field),
-            operator: x.operator,
-            value: x.value,
-          },
+          group: x.value.group,
         };
+        // return {
+        //   attribute: {
+        //     category: this.attributes.find((a) => a.title === x.field),
+        //     operator: x.operator,
+        //     value: x.value,
+        //   },
+        // };
       }),
     };
   }
@@ -142,25 +142,28 @@ export class SafeAddRoleRuleComponent implements OnInit {
     };
 
     // Attributes fields
-    this.fields.push(
-      ...this.attributes.map((attribute) => ({
-        name: attribute.title,
-        type: {
-          name: 'String',
-          kind: 'SCALAR',
-        },
-      }))
-    );
+    // this.fields.push(
+    //   ...this.attributes.map((attribute) => ({
+    //     name: attribute.title,
+    //     type: {
+    //       name: 'String',
+    //       kind: 'SCALAR',
+    //     },
+    //   }))
+    // );
   }
 
   /** Handles save button click */
   public onSave(): void {
-    if (isEqual(this.ruleForm.value, this.initialForm.value))
-      this.dialogRef.close();
-    else {
-      // converting back to RoleRule format
-      const rule = this.filterToRule(this.ruleForm.value);
-      this.dialogRef.close(rule);
-    }
+    console.log(this.ruleForm.value);
+    this.dialogRef.close();
+    // if (isEqual(this.ruleForm.value, this.initialForm.value))
+    //   this.dialogRef.close();
+    // else {
+    //   // converting back to RoleRule format
+    //   // const rule = this.filterToRule(this.ruleForm.value);
+    //   console.log(this.ruleForm.value);
+    //   this.dialogRef.close(rule);
+    // }
   }
 }

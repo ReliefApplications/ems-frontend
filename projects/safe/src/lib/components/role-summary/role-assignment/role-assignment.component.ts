@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import { isEqual } from 'lodash';
 import { RoleRule, Role } from '../../../models/user.model';
 import {
   EditRoleRulesMutationResponse,
@@ -117,35 +116,57 @@ export class RoleAssignmentComponent implements OnInit {
     else return '';
   }
 
-  /**
-   * Opens modal to add or edit a rule to the role rules list.
-   *
-   * @param r Rule to be edited
-   */
-  handleAddRule(r?: RoleRule) {
+  onAddRule(): void {
     const dialogRef = this.dialog.open(SafeAddRoleRuleComponent, {
       data: {
-        rule: r || NEW_RULE,
-        // positionAttributeCategories:
-        //   this.application.positionAttributeCategories,
+        rule: NEW_RULE,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
-      if (value && !isEqual(value, r)) {
-        // if editing, add the new version of the rule and remove the old one
-        const changedRules = Object.assign(
-          {
-            add: [value],
-          },
-          r && { remove: [r] }
-        );
+      if (value) {
         this.loading = true;
         this.apollo
           .mutate<EditRoleRulesMutationResponse>({
             mutation: EDIT_ROLE_RULES,
             variables: {
               id: this.role.id,
-              rules: changedRules,
+              rules: {
+                add: [value],
+              },
+            },
+          })
+          .subscribe((res) => {
+            this.rules.data = res.data?.editRole.rules || [];
+            this.loading = res.loading;
+          });
+      }
+    });
+  }
+
+  /**
+   * Opens modal to add or edit a rule to the role rules list.
+   *
+   * @param index index of rule
+   */
+  onEditRule(index: number) {
+    const rule = this.rules.data[index];
+    const dialogRef = this.dialog.open(SafeAddRoleRuleComponent, {
+      data: {
+        rule,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.loading = true;
+        this.apollo
+          .mutate<EditRoleRulesMutationResponse>({
+            mutation: EDIT_ROLE_RULES,
+            variables: {
+              id: this.role.id,
+              rules: {
+                add: [value],
+                remove: [rule],
+              },
             },
           })
           .subscribe((res) => {
@@ -158,10 +179,8 @@ export class RoleAssignmentComponent implements OnInit {
 
   /**
    * Removes rule from role rules list.
-   *
-   * @param r Rule to be deleted
    */
-  public handleRemoveRule(r: RoleRule) {
+  public onDeleteRule(index: number) {
     this.loading = true;
     this.apollo
       .mutate<EditRoleRulesMutationResponse>({
@@ -169,7 +188,7 @@ export class RoleAssignmentComponent implements OnInit {
         variables: {
           id: this.role.id,
           rules: {
-            remove: [r],
+            remove: index,
           },
         },
       })

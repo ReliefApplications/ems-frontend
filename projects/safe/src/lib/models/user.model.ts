@@ -13,17 +13,7 @@ export interface Permission {
 /** Model for filter object  */
 export interface RoleRule {
   logic: 'and' | 'or';
-  rules: (
-    | {
-        group?: Group;
-        attribute?: {
-          category: PositionAttributeCategory;
-          operator: string;
-          value: string;
-        };
-      }
-    | RoleRule
-  )[];
+  rules: any[];
 }
 
 /** Model for Role object. */
