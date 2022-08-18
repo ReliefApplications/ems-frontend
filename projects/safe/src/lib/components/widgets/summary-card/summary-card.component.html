@@ -11,7 +11,7 @@
     class="export-button"
     (click)="pdf.saveAs(exportName)"
   ></safe-button>
-  <kendo-pdf-export #pdf paperSize="A4" margin="2cm" style="overflow: auto;">
+  <kendo-pdf-export #pdf paperSize="A4" margin="2cm" style="overflow: auto">
     <div
       class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
       style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
