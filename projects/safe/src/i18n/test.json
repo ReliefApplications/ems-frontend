@@ -116,6 +116,9 @@
 				}
 			},
 			"formatInvalid": "****** {{format}} ******",
+			"history": {
+				"error": "****** {{error}}"
+			},
 			"loadedFromCache": "{{type}} ******",
 			"noOpened": "****** {{value}} ******",
 			"objectCreated": "{{value}} ****** {{type}} ******",
