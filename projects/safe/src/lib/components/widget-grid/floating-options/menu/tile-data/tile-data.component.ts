@@ -55,13 +55,6 @@ export class SafeTileDataComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
-
-  /**
    * Closes the modal sending tile form value.
    */
   onSubmit(): void {

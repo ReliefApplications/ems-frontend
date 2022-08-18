@@ -1,59 +1,56 @@
-<safe-button
-  class="close-settings"
-  [isIcon]="true"
-  icon="close"
-  variant="danger"
-  mat-dialog-close
-></safe-button>
-<h1 mat-dialog-title>{{ 'components.preferences.title' | translate }}</h1>
-<mat-dialog-content>
-  <form [formGroup]="preferencesForm">
-    <mat-tab-group vertical animationDuration="0ms">
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <safe-icon icon="language" [size]="18"></safe-icon>
-          <span>{{ 'components.preferences.language' | translate }}</span>
-        </ng-template>
-        <div class="form-group">
-          <!-- LANGUAGE SELECTION -->
-          <mat-form-field appearance="outline">
-            <mat-label>{{
-              'components.preferences.language' | translate
-            }}</mat-label>
-            <mat-select formControlName="language">
-              <mat-option *ngFor="let lang of languages" [value]="lang.value">
-                {{ lang.name | titlecase }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <!-- DATE LANGUAGE SELECTION -->
-          <mat-form-field appearance="outline">
-            <mat-label>{{
-              'components.preferences.dateFormat' | translate
-            }}</mat-label>
-            <mat-select formControlName="dateFormat">
-              <mat-option
-                *ngFor="let dateLang of dateFormats"
-                [value]="dateLang.value"
-              >
-                {{ dateLang.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
-  </form>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>{{ 'common.cancel' | translate }}</button>
-  <button
-    mat-flat-button
-    color="primary"
-    [disabled]="!preferencesForm.valid"
-    [mat-dialog-close]="preferencesForm"
-    cdkFocusInitial
-  >
-    {{ 'common.save' | translate }}
-  </button>
-</mat-dialog-actions>
+<safe-modal [closable]="true">
+  <h1 mat-dialog-title>{{ 'components.preferences.title' | translate }}</h1>
+  <mat-dialog-content>
+    <form [formGroup]="preferencesForm">
+      <mat-tab-group vertical animationDuration="0ms">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <safe-icon icon="language" [size]="18"></safe-icon>
+            <span>{{ 'components.preferences.language' | translate }}</span>
+          </ng-template>
+          <div class="form-group">
+            <!-- LANGUAGE SELECTION -->
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                'components.preferences.language' | translate
+              }}</mat-label>
+              <mat-select formControlName="language">
+                <mat-option *ngFor="let lang of languages" [value]="lang.value">
+                  {{ lang.name | titlecase }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <!-- DATE LANGUAGE SELECTION -->
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                'components.preferences.dateFormat' | translate
+              }}</mat-label>
+              <mat-select formControlName="dateFormat">
+                <mat-option
+                  *ngFor="let dateLang of dateFormats"
+                  [value]="dateLang.value"
+                >
+                  {{ dateLang.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <safe-button mat-dialog-close>{{
+      'common.cancel' | translate
+    }}</safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [disabled]="!preferencesForm.valid"
+      [mat-dialog-close]="preferencesForm"
+      cdkFocusInitial
+    >
+      {{ 'common.save' | translate }}
+    </safe-button>
+  </mat-dialog-actions>
+</safe-modal>

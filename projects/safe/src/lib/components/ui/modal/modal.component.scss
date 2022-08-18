@@ -4,6 +4,7 @@
 
 .modal-close {
   position: absolute;
+  z-index: 1;
   right: -20px;
   top: -20px;
 }
