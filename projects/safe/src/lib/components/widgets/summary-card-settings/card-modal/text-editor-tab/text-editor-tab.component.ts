@@ -1,10 +1,4 @@
-import {
-  Component,
-  Inject,
-  Input,
-  OnChanges,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Inject, Input, OnChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Editor } from 'tinymce';
@@ -62,7 +56,7 @@ export class SafeTextEditorTabComponent implements OnChanges {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     const dataKeys = getDataKeys(this.record);
     const calcKeys = getCalcKeys();
     const keys = dataKeys.concat(calcKeys);

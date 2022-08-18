@@ -35,10 +35,8 @@ const replaceRecordFields = (html: string, record: any): string => {
   const fields = getFieldsValue(record);
   let formattedHtml = html;
   for (const [key, value] of Object.entries(fields)) {
-    if (value) {
-      const regex = new RegExp(`${DATA_PREFIX}${key}\\b`, 'gi');
-      formattedHtml = formattedHtml.replace(regex, value as string);
-    }
+    const regex = new RegExp(`${DATA_PREFIX}${key}\\b`, 'gi');
+    formattedHtml = formattedHtml.replace(regex, value as string);
   }
   return formattedHtml;
 };
