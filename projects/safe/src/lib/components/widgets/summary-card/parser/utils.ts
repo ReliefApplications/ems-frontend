@@ -87,8 +87,8 @@ const applyOperations = (html: string): string => {
       let resultText;
       try {
         resultText = calcFunc.call(...args);
-      } catch (err) {
-        resultText = `<span style="text-decoration: red wavy underline" title="${err}"> ${result[0]}</span>`;
+      } catch (err: any) {
+        resultText = `<span style="text-decoration: red wavy underline" title="${err.message}"> ${err.name}</span>`;
       }
       parsedHtml = parsedHtml.replace(result[0], resultText);
     }

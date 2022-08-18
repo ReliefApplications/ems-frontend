@@ -1,6 +1,23 @@
 import { ceil, floor, round } from 'lodash';
 
 /**
+ * Check that all arguments are number
+ * Throw an error if not
+ *
+ * @param {...any} args calc function arguments
+ */
+const checkNumberArguments = (...args: any): void => {
+  for (const arg of args) {
+    if (isNaN(arg)) {
+      const err = new Error('One of the arguments is not a number');
+      err.name = 'NaN';
+      throw err;
+    }
+  }
+  return;
+};
+
+/**
  * Definition of all supported functions for calculations inside the text of a
  * summary card
  */
@@ -20,9 +37,7 @@ const calcFunctions: Record<
     call: (value, precision = '0') => {
       const parsedValue = parseFloat(value);
       const parsedPrecision = parseInt(precision, 10);
-      // if (isNaN(parsedValue) || isNaN(parsedPrecision))
-      //   throw new Error('One of the arguments is not a number');
-      // return parsedValue.toFixed(parsedPrecision);
+      checkNumberArguments(parsedValue, parsedPrecision);
       return round(parsedValue, parsedPrecision).toString();
     },
   },
@@ -38,11 +53,7 @@ const calcFunctions: Record<
     call: (value, precision = '0') => {
       const parsedValue = parseFloat(value);
       const parsedPrecision = parseInt(precision, 10);
-      // const parsedValue = parseFloat(value);
-      // const parsedPrecision = parseInt(precision, 10);
-      // if (isNaN(parsedValue) || isNaN(parsedPrecision))
-      //   throw new Error('One of the arguments is not a number');
-      // return parsedValue.toFixed(parsedPrecision);
+      checkNumberArguments(parsedValue, parsedPrecision);
       return ceil(parsedValue, parsedPrecision).toString();
     },
   },
@@ -58,11 +69,7 @@ const calcFunctions: Record<
     call: (value, precision = '0') => {
       const parsedValue = parseFloat(value);
       const parsedPrecision = parseInt(precision, 10);
-      // const parsedValue = parseFloat(value);
-      // const parsedPrecision = parseInt(precision, 10);
-      // if (isNaN(parsedValue) || isNaN(parsedPrecision))
-      //   throw new Error('One of the arguments is not a number');
-      // return parsedValue.toFixed(parsedPrecision);
+      checkNumberArguments(parsedValue, parsedPrecision);
       return floor(parsedValue, parsedPrecision).toString();
     },
   },
@@ -79,8 +86,7 @@ const calcFunctions: Record<
     call: (value, total = '1', precision = '2') => {
       const percent = (parseFloat(value) / parseFloat(total)) * 100;
       const parsedPrecision = parseInt(precision, 10);
-      // if (isNaN(percent) || isNaN(parsedPrecision))
-      //   throw new Error('One of the arguments is not a number');
+      checkNumberArguments(percent, parsedPrecision);
       return percent.toFixed(parsedPrecision) + '%';
     },
   },
