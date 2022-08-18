@@ -23,7 +23,7 @@ const calcFunctions: Record<
       // if (isNaN(parsedValue) || isNaN(parsedPrecision))
       //   throw new Error('One of the arguments is not a number');
       // return parsedValue.toFixed(parsedPrecision);
-      return round(parsedValue, parsedPrecision).toFixed();
+      return round(parsedValue, parsedPrecision).toString();
     },
   },
   roundup: {
@@ -43,7 +43,7 @@ const calcFunctions: Record<
       // if (isNaN(parsedValue) || isNaN(parsedPrecision))
       //   throw new Error('One of the arguments is not a number');
       // return parsedValue.toFixed(parsedPrecision);
-      return ceil(parsedValue, parsedPrecision).toFixed();
+      return ceil(parsedValue, parsedPrecision).toString();
     },
   },
   rounddown: {
@@ -63,7 +63,7 @@ const calcFunctions: Record<
       // if (isNaN(parsedValue) || isNaN(parsedPrecision))
       //   throw new Error('One of the arguments is not a number');
       // return parsedValue.toFixed(parsedPrecision);
-      return floor(parsedValue, parsedPrecision).toFixed();
+      return floor(parsedValue, parsedPrecision).toString();
     },
   },
   percentage: {
