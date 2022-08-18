@@ -677,7 +677,7 @@
 				"title": "Choix du rôle à simuler"
 			},
 			"summary": {
-				"autoRoleAssignment": {
+				"automaticAssignment": {
 					"rule": {
 						"add": "Créer une règle d'attribution",
 						"delete": "Supprimer la règle",

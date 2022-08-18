@@ -677,7 +677,7 @@
 				"title": "Choose role to simulate"
 			},
 			"summary": {
-				"autoRoleAssignment": {
+				"automaticAssignment": {
 					"rule": {
 						"add": "Create assignment rule",
 						"delete": "Delete rule",

@@ -677,7 +677,7 @@
 				"title": "******"
 			},
 			"summary": {
-				"autoRoleAssignment": {
+				"automaticAssignment": {
 					"rule": {
 						"add": "******",
 						"delete": "******",

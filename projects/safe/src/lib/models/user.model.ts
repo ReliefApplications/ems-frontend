@@ -40,7 +40,6 @@ export interface Role {
 
 /** Model for Group object. */
 export interface Group {
-  _id?: string;
   id?: string;
   title?: string;
   description?: string;

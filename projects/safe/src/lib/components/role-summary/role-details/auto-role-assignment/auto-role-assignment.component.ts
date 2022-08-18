@@ -83,7 +83,7 @@ export class AutoRoleAssignmentComponent implements OnInit {
         if (rule.group) {
           rulesStr.push(
             `${this.translate.instant(
-              'components.role.summary.autoRoleAssignment.userInGroup',
+              'components.role.summary.automaticAssignment.userInGroup',
               { name: rule.group.title }
             )}`
           );

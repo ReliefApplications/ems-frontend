@@ -1,16 +1,16 @@
-<h2>{{ 'components.role.summary.autoRoleAssignment.title' | translate }}</h2>
+<h2>{{ 'components.role.summary.automaticAssignment.title' | translate }}</h2>
 <safe-button
   icon="add"
   variant="primary"
   category="secondary"
   (click)="handleAddRule()"
   >{{
-    'components.role.summary.autoRoleAssignment.rule.add' | translate
+    'components.role.summary.automaticAssignment.rule.add' | translate
   }}</safe-button
 >
 <safe-skeleton-table
   *ngIf="loading"
-  [columns]="['components.role.summary.autoRoleAssignment.rule.title']"
+  [columns]="['components.role.summary.automaticAssignment.rule.title']"
   [actions]="true"
   [rows]="5"
 >
@@ -18,7 +18,7 @@
 <table mat-table [dataSource]="rules" *ngIf="!loading">
   <ng-container matColumnDef="filter">
     <th mat-header-cell *matHeaderCellDef>
-      {{ 'components.role.summary.autoRoleAssignment.rule.title' | translate }}
+      {{ 'components.role.summary.automaticAssignment.rule.title' | translate }}
     </th>
     <td mat-cell *matCellDef="let element" class="capitalize">
       {{ getRuleString(element) }}
@@ -33,7 +33,7 @@
           icon="delete"
           variant="grey"
           [matTooltip]="
-            'components.role.summary.autoRoleAssignment.rule.delete' | translate
+            'components.role.summary.automaticAssignment.rule.delete' | translate
           "
           (click)="handleRemoveRule(element)"
         >

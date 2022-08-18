@@ -78,7 +78,7 @@ export class SafeAddRoleRuleComponent implements OnInit {
               field: this.translate.instant('common.group.one'),
               operator: 'eq',
               // eslint-disable-next-line no-underscore-dangle
-              value: { group: x.group._id },
+              value: { group: x.group.id },
             };
           else if (x.attribute)
             return {
