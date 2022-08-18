@@ -1,13 +1,15 @@
-<h2>{{ 'components.role.summary.automaticAssignment.title' | translate }}</h2>
-<safe-button
-  icon="add"
-  variant="primary"
-  category="secondary"
-  (click)="handleAddRule()"
-  >{{
-    'components.role.summary.automaticAssignment.rule.add' | translate
-  }}</safe-button
->
+<div class="header">
+  <h2>{{ 'components.role.summary.automaticAssignment.title' | translate }}</h2>
+  <safe-button
+    icon="add"
+    variant="primary"
+    category="secondary"
+    (click)="handleAddRule()"
+    >{{
+      'components.role.summary.automaticAssignment.rule.add' | translate
+    }}</safe-button
+  >
+</div>
 <safe-skeleton-table
   *ngIf="loading"
   [columns]="['components.role.summary.automaticAssignment.rule.title']"
@@ -33,7 +35,8 @@
           icon="delete"
           variant="grey"
           [matTooltip]="
-            'components.role.summary.automaticAssignment.rule.delete' | translate
+            'components.role.summary.automaticAssignment.rule.delete'
+              | translate
           "
           (click)="handleRemoveRule(element)"
         >

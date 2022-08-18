@@ -1,5 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Role } from '../../../models/user.model';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Apollo } from 'apollo-angular';
+import { Permission, Role } from '../../../models/user.model';
+import {
+  GetPermissionsQueryResponse,
+  GET_PERMISSIONS,
+} from '../graphql/queries';
+import { get } from 'lodash';
 
 /**
  * General tab of Role Summary.
@@ -10,18 +17,53 @@ import { Role } from '../../../models/user.model';
   templateUrl: './role-details.component.html',
   styleUrls: ['./role-details.component.scss'],
 })
-export class RoleDetailsComponent {
+export class RoleDetailsComponent implements OnInit {
   @Input() role!: Role;
-  @Input() loading = false;
-
+  public permissions: Permission[] = [];
+  public form!: FormGroup;
   @Output() edit = new EventEmitter();
 
+  /** Setter for the loading state */
+  @Input() set loading(loading: boolean) {
+    if (loading) {
+      this.form?.disable();
+    } else {
+      this.form?.enable();
+    }
+  }
+
+  /**
+   * General tab of Role Summary.
+   * Contain title / description of role + list of users and permissions.
+   *
+   * @param fb Angular form builder
+   * @param apollo Apollo Client
+   */
+  constructor(private fb: FormBuilder, private apollo: Apollo) {}
+
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      title: [this.role.title, Validators.required],
+      description: [this.role.description],
+      permissions: [get(this.role, 'permissions', []).map((x) => x.id)],
+    });
+    this.apollo
+      .query<GetPermissionsQueryResponse>({
+        query: GET_PERMISSIONS,
+        variables: {
+          application: this.role.application !== null,
+        },
+      })
+      .subscribe((res) => {
+        this.permissions = res.data.permissions;
+      });
+  }
   /**
    * Emit an event with new role value
    *
    * @param value new role value
    */
-  onUpdate(value: any): void {
-    this.edit.emit(value);
+  onUpdate(): void {
+    this.edit.emit(this.form.value);
   }
 }

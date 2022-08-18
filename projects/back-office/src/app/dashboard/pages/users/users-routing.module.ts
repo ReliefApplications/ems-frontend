@@ -8,18 +8,18 @@ const routes: Routes = [
     path: '',
     component: UsersComponent,
   },
-  {
-    path: 'advanced-settings',
-    loadChildren: () =>
-      import('../advanced-settings/advanced-settings.module').then(
-        (m) => m.AdvancedSettingsModule
-      ),
-    data: {
-      breadcrumb: {
-        key: 'components.users.advancedSettings.title',
-      },
-    },
-  },
+  // {
+  //   path: 'advanced-settings',
+  //   loadChildren: () =>
+  //     import('../advanced-settings/advanced-settings.module').then(
+  //       (m) => m.AdvancedSettingsModule
+  //     ),
+  //   data: {
+  //     breadcrumb: {
+  //       key: 'components.users.advancedSettings.title',
+  //     },
+  //   },
+  // },
 ];
 
 /** Users routing module. */

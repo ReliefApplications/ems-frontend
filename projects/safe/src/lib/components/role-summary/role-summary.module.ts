@@ -8,6 +8,7 @@ import { RoleChannelsModule } from './role-channels/role-channels.module';
 import { RoleDetailsModule } from './role-details/role-details.module';
 import { RoleFeaturesModule } from './role-features/role-features.module';
 import { RoleResourcesModule } from './role-resources/role-resources.module';
+import { RoleAssignmentModule } from './role-assignment/role-assignment.module';
 
 /**
  * Shared role summary component module.
@@ -24,6 +25,7 @@ import { RoleResourcesModule } from './role-resources/role-resources.module';
     RoleDetailsModule,
     RoleFeaturesModule,
     RoleResourcesModule,
+    RoleAssignmentModule,
   ],
   exports: [SafeRoleSummaryComponent],
 })

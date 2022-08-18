@@ -1,15 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { isEqual } from 'lodash';
-import { Application } from '../../../../models/application.model';
-import { RoleRule, Role } from '../../../../models/user.model';
+import { RoleRule, Role } from '../../../models/user.model';
 import {
   EditRoleRulesMutationResponse,
   EDIT_ROLE_RULES,
-} from '../../graphql/mutations';
+} from '../graphql/mutations';
 import { SafeAddRoleRuleComponent } from './add-role-rule/add-role-rule.component';
 
 /** New rule filter */
@@ -18,16 +17,17 @@ const NEW_RULE: RoleRule = {
   rules: [],
 };
 
-/** Auto role assignment section component of Role Summary. */
+/**
+ * Assignment tab of Role Summary
+ */
 @Component({
-  selector: 'safe-auto-role-assignment',
-  templateUrl: './auto-role-assignment.component.html',
-  styleUrls: ['./auto-role-assignment.component.scss'],
+  selector: 'safe-role-assignment',
+  templateUrl: './role-assignment.component.html',
+  styleUrls: ['./role-assignment.component.scss'],
 })
-export class AutoRoleAssignmentComponent implements OnInit {
-  @Input() application!: Application;
+export class RoleAssignmentComponent implements OnInit {
   @Input() role!: Role;
-  @Input() loading = true;
+  @Input() loading = false;
 
   public rules = new MatTableDataSource<RoleRule>([]);
   public displayedColumns: string[] = ['filter', 'actions'];
@@ -64,6 +64,17 @@ export class AutoRoleAssignmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.rules.data = this.role.rules || [];
+  }
+
+  @Output() edit = new EventEmitter();
+
+  /**
+   * Emit an event with new role value
+   *
+   * @param value new role value
+   */
+  onUpdate(value: any): void {
+    this.edit.emit(value);
   }
 
   /**
@@ -115,8 +126,8 @@ export class AutoRoleAssignmentComponent implements OnInit {
     const dialogRef = this.dialog.open(SafeAddRoleRuleComponent, {
       data: {
         rule: r || NEW_RULE,
-        positionAttributeCategories:
-          this.application.positionAttributeCategories,
+        // positionAttributeCategories:
+        //   this.application.positionAttributeCategories,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

@@ -1,11 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Group, RoleRule } from '../../../../../models/user.model';
-import { PositionAttributeCategory } from '../../../../../models/position-attribute-category.model';
+import { Group, RoleRule } from '../../../../models/user.model';
+import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { GetGroupsQueryResponse, GET_GROUPS } from '../../../graphql/queries';
-import { createFilterGroup } from '../../../../query-builder/query-builder-forms';
+import { GetGroupsQueryResponse, GET_GROUPS } from '../../graphql/queries';
+import { createFilterGroup } from '../../../query-builder/query-builder-forms';
 import { TranslateService } from '@ngx-translate/core';
 import { cloneDeep, isEqual } from 'lodash';
 
