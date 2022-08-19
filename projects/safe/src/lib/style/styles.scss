@@ -515,14 +515,15 @@ body {
   }
 }
 
-.preferences-dialog {
+.standard-dialog {
   width: 90%;
   max-width: 750px !important;
+}
 
-  mat-dialog-container {
-    width: 100%;
-    position: relative;
-  }
+.fullscreen-dialog {
+  max-width: unset !important;
+  width: 100%;
+  height: calc(100% - 72px);
 }
 
 .no-padding-dialog {

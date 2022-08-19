@@ -9,7 +9,9 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class SafeModalComponent implements OnInit {
   @Input() closable = false;
 
-  constructor(private dialogRef: MatDialogRef<SafeModalComponent>) {}
+  constructor(private dialogRef: MatDialogRef<SafeModalComponent>) {
+    this.dialogRef.addPanelClass('fullscreen-dialog');
+  }
 
   ngOnInit(): void {}
 }
