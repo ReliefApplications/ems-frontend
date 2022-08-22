@@ -75,6 +75,11 @@
 			"one": "******"
 		},
 		"general": "******",
+		"group": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"history": "******",
 		"id": "******",
 		"input": {
@@ -103,6 +108,7 @@
 				"ready": "******",
 				"sent": "******"
 			},
+			"fetchingGroups": "******",
 			"file": {
 				"download": {
 					"error": "******",
@@ -116,6 +122,11 @@
 				}
 			},
 			"formatInvalid": "****** {{format}} ******",
+			"groups": {
+				"error": "******",
+				"processing": "******",
+				"ready": "******"
+			},
 			"history": {
 				"error": "****** {{error}}"
 			},
@@ -247,7 +258,7 @@
 			"canDelete": "******",
 			"canSee": "******",
 			"canUpdate": "******",
-			"description": "******",
+			"description": "****** {{name}} ******",
 			"title": "******"
 		},
 		"aggregationBuilder": {
@@ -446,6 +457,15 @@
 		"forms": {
 			"isCore": "******",
 			"parent": "******"
+		},
+		"group": {
+			"add": {
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			}
 		},
 		"header": {
 			"goToPlatform": "******",
@@ -704,6 +724,7 @@
 					"application": "******",
 					"backoffice": "******",
 					"selectedApplication": "******",
+					"selectedGroups": "******",
 					"selectedRoles": "******"
 				},
 				"title": "******"
@@ -1110,6 +1131,12 @@
 			},
 			"select": "******",
 			"template": "******"
+		},
+		"group": {
+			"create": "******",
+			"description": "******",
+			"fetch": "******",
+			"title": "******"
 		},
 		"mapping": {
 			"add": "******",

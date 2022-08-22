@@ -22,6 +22,7 @@ export class SafeSkeletonTableComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.columns = [...this.columns];
     // Adds a select column to be able to display checkboxes
     if (this.checkbox) {
       this.columns.unshift('select');

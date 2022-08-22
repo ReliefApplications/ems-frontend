@@ -75,6 +75,11 @@
 			"one": "Form"
 		},
 		"general": "General",
+		"group": {
+			"few": "Groups",
+			"none": "No groups",
+			"one": "Group"
+		},
 		"history": "History",
 		"id": "Id",
 		"input": {
@@ -103,6 +108,7 @@
 				"ready": "Email ready",
 				"sent": "Email sent"
 			},
+			"fetchingGroups": "Fetching groups from service...",
 			"file": {
 				"download": {
 					"error": "Something went wrong during the download",
@@ -116,6 +122,11 @@
 				}
 			},
 			"formatInvalid": "Please upload a valid .{{format}} file.",
+			"groups": {
+				"error": "Something went wrong trying to get groups from service",
+				"processing": "Fetching groups from service...",
+				"ready": "Groups fetched"
+			},
 			"history": {
 				"error": "Something went wrong during the history generation. {{error}}"
 			},
@@ -247,7 +258,7 @@
 			"canDelete": "Can delete",
 			"canSee": "Can see",
 			"canUpdate": "Can update",
-			"description": "Update access permissions",
+			"description": "Update {{name}} permissions",
 			"title": "Access"
 		},
 		"aggregationBuilder": {
@@ -446,6 +457,15 @@
 		"forms": {
 			"isCore": "Is core",
 			"parent": "Parent form"
+		},
+		"group": {
+			"add": {
+				"title": "Add new group"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the group {{name}}?",
+				"title": "Delete group"
+			}
 		},
 		"header": {
 			"goToPlatform": "Navigate to",
@@ -704,6 +724,7 @@
 					"application": "Application roles",
 					"backoffice": "Back-Office roles",
 					"selectedApplication": "Selected application",
+					"selectedGroups": "Selected groups",
 					"selectedRoles": "Selected roles"
 				},
 				"title": "Summary"
@@ -1110,6 +1131,12 @@
 			},
 			"select": "Select a Form",
 			"template": "Template"
+		},
+		"group": {
+			"create": "Create a group",
+			"description": "Description",
+			"fetch": "Fetch groups from service",
+			"title": "Title"
 		},
 		"mapping": {
 			"add": "Add a Mapping",

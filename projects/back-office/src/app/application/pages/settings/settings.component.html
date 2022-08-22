@@ -1,6 +1,11 @@
 <form [formGroup]="settingsForm" *ngIf="settingsForm" class="settings-form">
   <h1>{{ 'common.general' | translate }}</h1>
   <div class="app-status">
+    <safe-access
+      [access]="application?.permissions"
+      [objectTypeName]="'common.application.one' | translate"
+      (save)="saveAccess($event)"
+    ></safe-access>
     <mat-form-field appearance="outline">
       <mat-label>{{ 'common.status' | translate }}</mat-label>
       <mat-select formControlName="status">

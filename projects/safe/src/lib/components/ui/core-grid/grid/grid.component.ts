@@ -421,7 +421,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    */
   onColumnResize(): void {
     this.columnChange.emit();
-    console.log('FIELDS', this.fields);
   }
 
   /**

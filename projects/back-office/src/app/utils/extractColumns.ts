@@ -1,4 +1,3 @@
-/**  */
 /**
  * Get all fields from an object.
  *

@@ -4,7 +4,6 @@ import {
   FormControl,
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
-import { Subject } from 'rxjs';
 
 /**
  * Control value accessor

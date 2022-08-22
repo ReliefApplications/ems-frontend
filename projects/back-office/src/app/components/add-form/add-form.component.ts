@@ -9,8 +9,6 @@ import {
   GET_RESOURCE_BY_ID,
 } from './graphql/queries';
 import { MatSelect } from '@angular/material/select';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Resource } from '@safe/builder';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -25,17 +23,10 @@ const ITEMS_PER_PAGE = 10;
 })
 export class AddFormComponent implements OnInit {
   // === REACTIVE FORM ===
-  public addForm: FormGroup = new FormGroup({});
+  public form!: FormGroup;
 
   // === DATA ===
-  private resources = new BehaviorSubject<Resource[]>([]);
-  public resources$!: Observable<Resource[]>;
-  private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
-  private pageInfo = {
-    endCursor: '',
-    hasNextPage: true,
-  };
-  private loading = true;
+  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
   public templates: any[] = [];
 
@@ -56,7 +47,7 @@ export class AddFormComponent implements OnInit {
 
   /** Load the resources and build the form. */
   ngOnInit(): void {
-    this.addForm = this.formBuilder.group({
+    this.form = this.formBuilder.group({
       name: ['', Validators.required],
       newResource: [true],
       resource: [null],
@@ -64,35 +55,44 @@ export class AddFormComponent implements OnInit {
       template: [null],
     });
 
-    this.addForm
-      .get('newResource')
-      ?.valueChanges.subscribe((value: boolean) => {
-        if (value) {
-          this.addForm.get('resource')?.clearValidators();
-          this.addForm.patchValue({
-            resource: null,
-            inheritsTemplate: false,
-            template: null,
-          });
-        } else {
-          this.addForm.get('resource')?.setValidators([Validators.required]);
-        }
-        this.addForm.get('resource')?.updateValueAndValidity();
-      });
+    this.form.get('newResource')?.valueChanges.subscribe((value: boolean) => {
+      if (value) {
+        this.form.get('resource')?.clearValidators();
+        this.form.patchValue({
+          resource: null,
+          inheritsTemplate: false,
+          template: null,
+        });
+      } else {
+        this.form.get('resource')?.setValidators([Validators.required]);
+      }
+      this.form.get('resource')?.updateValueAndValidity();
+    });
 
-    this.addForm
+    this.form
       .get('inheritsTemplate')
       ?.valueChanges.subscribe((value: boolean) => {
         if (value) {
-          this.addForm.get('template')?.setValidators([Validators.required]);
+          this.form.get('template')?.setValidators([Validators.required]);
         } else {
-          this.addForm.get('template')?.clearValidators();
-          this.addForm.patchValue({
+          this.form.get('template')?.clearValidators();
+          this.form.patchValue({
             template: null,
           });
         }
-        this.addForm.get('template')?.updateValueAndValidity();
+        this.form.get('template')?.updateValueAndValidity();
       });
+
+    this.form.get('resource')?.valueChanges.subscribe((value: string) => {
+      if (value) {
+        this.getResource(value);
+      } else {
+        this.templates = [];
+      }
+      this.form.patchValue({
+        template: null,
+      });
+    });
 
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES,
@@ -100,27 +100,20 @@ export class AddFormComponent implements OnInit {
         first: ITEMS_PER_PAGE,
       },
     });
-
-    this.resources$ = this.resources.asObservable();
-    this.resourcesQuery.valueChanges.subscribe((res) => {
-      this.resources.next(res.data.resources.edges.map((x) => x.node));
-      this.pageInfo = res.data.resources.pageInfo;
-      this.loading = res.loading;
-    });
   }
 
   /**
    * Called on resource input change.
    * Load the templates linked to that resource.
    *
-   * @param e resource event
+   * @param id resource id
    */
-  getResource(e: any): void {
+  getResource(id: string): void {
     this.apollo
       .query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_BY_ID,
         variables: {
-          id: e.value,
+          id,
         },
       })
       .subscribe((res) => {
@@ -131,56 +124,5 @@ export class AddFormComponent implements OnInit {
   /** Close the modal without sending any data. */
   onClose(): void {
     this.dialogRef.close();
-  }
-
-  /**
-   * Adds scroll listener to select.
-   *
-   * @param e open select event.
-   */
-  onOpenSelect(e: any): void {
-    if (e && this.resourceSelect) {
-      const panel = this.resourceSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
-      );
-    }
-  }
-
-  /**
-   * Fetches more resources on scroll.
-   *
-   * @param e scroll event.
-   */
-  private loadOnScroll(e: any): void {
-    if (
-      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
-      50
-    ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
-        this.loading = true;
-        this.resourcesQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return Object.assign({}, prev, {
-              resources: {
-                edges: [
-                  ...prev.resources.edges,
-                  ...fetchMoreResult.resources.edges,
-                ],
-                pageInfo: fetchMoreResult.resources.pageInfo,
-                totalCount: fetchMoreResult.resources.totalCount,
-              },
-            });
-          },
-        });
-      }
-    }
   }
 }
