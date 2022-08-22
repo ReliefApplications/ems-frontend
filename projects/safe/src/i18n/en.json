@@ -127,6 +127,9 @@
 				"processing": "Fetching groups from service...",
 				"ready": "Groups fetched"
 			},
+			"history": {
+				"error": "Something went wrong during the history generation. {{error}}"
+			},
 			"loadedFromCache": "{{type}} loaded from cache.",
 			"noOpened": "No opened {{value}}.",
 			"objectCreated": "{{value}} {{type}} created.",

@@ -127,6 +127,9 @@
 				"processing": "Récupération des groupes à partir du service...",
 				"ready": "Groupes récupérés"
 			},
+			"history": {
+				"error": "Un problème est survenu lors de la génération de l'historique. {{error}}"
+			},
 			"loadedFromCache": "Objet de type {{type}} chargé depuis le cache.",
 			"noOpened": "Aucun objet {{value}} n'a été ouvert.",
 			"objectCreated": "{{value}} {{type}} créé.",
