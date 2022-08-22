@@ -111,7 +111,10 @@
     <ng-container *ngFor="let field of fields">
       <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
       <kendo-grid-column
-        *ngIf="field.type !== 'JSON' && (!field.meta || field.meta.type !== 'referenceData')"
+        *ngIf="
+          field.type !== 'JSON' &&
+          (!field.meta || field.meta.type !== 'referenceData')
+        "
         [field]="field.name"
         [title]="field.title"
         [format]="field.format"
@@ -493,7 +496,13 @@
                 class="textbox-container"
                 [style]="getStyle(dataItem, field.name)"
               >
-                {{ getReferenceDataPropertyValue(dataItem, field.name, subField.meta.name) }}
+                {{
+                  getReferenceDataPropertyValue(
+                    dataItem,
+                    field.name,
+                    subField.meta.name
+                  )
+                }}
               </div>
             </ng-template>
           </kendo-grid-column>
