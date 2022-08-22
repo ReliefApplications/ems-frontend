@@ -23,8 +23,8 @@ export interface GetResourceByIdQueryResponse {
 
 /** Graphql request for getting resources */
 export const GET_RESOURCES = gql`
-  query GetResources($first: Int, $afterCursor: ID) {
-    resources(first: $first, afterCursor: $afterCursor) {
+  query GetResources($first: Int, $afterCursor: ID, $sortField: String) {
+    resources(first: $first, afterCursor: $afterCursor, sortField: $sortField) {
       edges {
         node {
           id

@@ -296,6 +296,42 @@ export class SafeApplicationService {
   }
 
   /**
+   * Edits current permissions.
+   *
+   * @param newPermissions New application value.
+   */
+  editPermissions(newPermissions: any): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<EditApplicationMutationResponse>({
+          mutation: EDIT_APPLICATION,
+          variables: {
+            id: application?.id,
+            permissions: newPermissions,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.access').toLowerCase(),
+                value: application?.name,
+              })
+            );
+            if (res.data?.editApplication) {
+              const newApplication = {
+                ...application,
+                permissions: res.data.editApplication.permissions,
+              };
+              this.application.next(newApplication);
+            }
+          }
+        });
+    }
+  }
+
+  /**
    * Updates the application status to published.
    */
   publish(): void {

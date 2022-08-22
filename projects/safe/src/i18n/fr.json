@@ -75,6 +75,11 @@
 			"one": "Formulaire"
 		},
 		"general": "Général",
+		"group": {
+			"few": "Groupes",
+			"none": "Pas de groupes",
+			"one": "Groupe"
+		},
 		"history": "Historique",
 		"id": "Id",
 		"input": {
@@ -103,6 +108,7 @@
 				"ready": "E-mail prêt",
 				"sent": "E-mail envoyé"
 			},
+			"fetchingGroups": "Fetching groups from service...",
 			"file": {
 				"download": {
 					"error": "Un problème est survenu lors du téléchargement",
@@ -116,6 +122,11 @@
 				}
 			},
 			"formatInvalid": "Veuillez importer un fichier de format .{{format}}.",
+			"groups": {
+				"error": "Une erreur s'est produite lors de la tentative d'obtenir des groupes du service",
+				"processing": "Récupération des groupes à partir du service...",
+				"ready": "Groupes récupérés"
+			},
 			"loadedFromCache": "Objet de type {{type}} chargé depuis le cache.",
 			"noOpened": "Aucun objet {{value}} n'a été ouvert.",
 			"objectCreated": "{{value}} {{type}} créé.",
@@ -244,7 +255,7 @@
 			"canDelete": "Peut supprimer",
 			"canSee": "Peut voir",
 			"canUpdate": "Peut modifier",
-			"description": "Modifier les permissions d'accès",
+			"description": "Modifier les permissions de {{name}}",
 			"title": "Accès"
 		},
 		"aggregationBuilder": {
@@ -443,6 +454,15 @@
 		"forms": {
 			"isCore": "Est un formulaire source",
 			"parent": "Formulaire parent"
+		},
+		"group": {
+			"add": {
+				"title": "Ajouter un nouveau groupe"
+			},
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du groupe {{name}}?",
+				"title": "Supprimer le groupe"
+			}
 		},
 		"header": {
 			"goToPlatform": "Naviguer vers",
@@ -701,6 +721,7 @@
 					"application": "Rôles d'application",
 					"backoffice": "Rôles de back-office",
 					"selectedApplication": "Application sélectionnée",
+					"selectedGroups": "Groupes sélectionnés",
 					"selectedRoles": "Rôles sélectionnés"
 				},
 				"title": "Résumé"
@@ -1107,6 +1128,12 @@
 			},
 			"select": "Sélectionner un formulaire",
 			"template": "Modèle"
+		},
+		"group": {
+			"create": "Créer un groupe",
+			"description": "Description",
+			"fetch": "Récupérer les groupes du service",
+			"title": "Titre"
 		},
 		"mapping": {
 			"add": "Ajouter un rang à la table de correspondances",
