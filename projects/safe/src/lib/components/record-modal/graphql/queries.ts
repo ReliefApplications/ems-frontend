@@ -24,6 +24,7 @@ export const GET_RECORD_BY_ID = gql`
         permissions {
           recordsUnicity
         }
+        fields
       }
     }
   }

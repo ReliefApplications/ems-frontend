@@ -162,7 +162,8 @@ export class SafeRecordModalComponent implements AfterViewInit {
     // INIT SURVEY
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
     this.survey = this.formBuilderService.createSurvey(
-      this.form?.structure || ''
+      this.form?.structure || '',
+      this.form?.fields
     );
     this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
       this.onDownloadFile(survey, options)

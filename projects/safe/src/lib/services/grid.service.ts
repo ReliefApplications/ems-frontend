@@ -75,6 +75,12 @@ export class SafeGridService {
     return flatDeep(
       fields.map((f) => {
         const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
+        const hidden: boolean =
+          (f.canSee !== undefined && !f.canSee) || options.hidden || false;
+        const disabled: boolean =
+          (f.canUpdate !== undefined && !f.canUpdate) ||
+          options.disabled ||
+          false;
         switch (f.kind) {
           case 'OBJECT': {
             return this.getFields(
@@ -84,7 +90,7 @@ export class SafeGridService {
               fullName,
               {
                 disabled: true,
-                hidden: options.hidden,
+                hidden,
                 filter: prefix ? false : options.filter,
               }
             );
@@ -111,7 +117,7 @@ export class SafeGridService {
               filter: prefix ? '' : this.getFieldFilter(f.type),
               meta: metaData,
               disabled: true,
-              hidden: options.hidden || cachedField?.hidden || false,
+              hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
               query: {
@@ -135,10 +141,10 @@ export class SafeGridService {
               filter: !options.filter ? '' : this.getFieldFilter(f.type),
               meta: metaData,
               disabled:
-                options.disabled ||
+                disabled ||
                 DISABLED_FIELDS.includes(f.name) ||
                 metaData?.readOnly,
-              hidden: options.hidden || cachedField?.hidden || false,
+              hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
             };
