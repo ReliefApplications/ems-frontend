@@ -8,7 +8,7 @@ import { ApolloQueryResult } from '@apollo/client';
 /** List of fields part of the schema but not selectable */
 const NON_SELECTABLE_FIELDS = ['canUpdate', 'canDelete'];
 /** List of fields part of the schema but not selectable */
-const SELECTABLE_ID_FIELDS = ['id', 'incrementalId'];
+const SELECTABLE_ID_FIELDS = ['id', 'incrementalId', 'form'];
 /** List of user fields */
 const USER_FIELDS = ['id', 'name', 'username'];
 /** ReferenceData identifier convention */
