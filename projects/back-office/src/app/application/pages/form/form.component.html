@@ -8,6 +8,7 @@
       <safe-access
         [access]="page ? page.permissions : step ? step.permissions : null"
         [application]="applicationId"
+        [objectTypeName]="'common.page.one' | translate"
         (save)="saveAccess($event)"
         *ngIf="page ? page.canUpdate : step ? step.canUpdate : false"
       ></safe-access>
