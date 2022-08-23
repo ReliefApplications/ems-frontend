@@ -1122,6 +1122,7 @@
 			"core": "Core",
 			"create": "Create a Form",
 			"field": {
+				"exportCap": "Export cap",
 				"label": "Label",
 				"name": "Field name"
 			},

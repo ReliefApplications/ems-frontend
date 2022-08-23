@@ -2,9 +2,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { prettifyLabel } from '../../utils/prettify';
 
-/** Constant with the maximum number of related records to retrieve */
-const RELATED_RECORDS_CAP = 10;
-
 /** Creating a new instance of the FormBuilder class. */
 const formBuilder = new FormBuilder();
 
@@ -64,7 +61,7 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
         filter: newField
           ? formBuilder.group({})
           : createFilterGroup(field.filter),
-        first: RELATED_RECORDS_CAP,
+        first: [field.first],
       });
     }
     case 'OBJECT': {

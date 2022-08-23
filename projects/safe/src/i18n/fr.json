@@ -1122,6 +1122,7 @@
 			"core": "Source",
 			"create": "Créer un formulaire",
 			"field": {
+				"exportCap": "Plafond d'exportation",
 				"label": "Étiquette",
 				"name": "Nom du champ"
 			},
