@@ -647,9 +647,6 @@
 		},
 		"referenceData": {
 			"create": {
-				"errors": {
-					"name": "******"
-				},
 				"title": "******"
 			},
 			"delete": {
@@ -1323,9 +1320,6 @@
 		},
 		"referenceData": {
 			"csv": "******",
-			"errors": {
-				"name": "******"
-			},
 			"fields": "******",
 			"graphQLFilter": "******",
 			"path": "******",
