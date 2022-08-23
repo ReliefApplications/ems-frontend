@@ -10,3 +10,8 @@
  * https://spec.graphql.org/October2021/#sec-Names
  */
 export const graphQLValidator = /^[_a-z]$|^(?:_[a-z0-9]|[a-z]\w)\w*$/i;
+
+/**
+ * APi name validator.
+ */
+export const apiValidator = /^[A-Za-z-_]+$/i;
