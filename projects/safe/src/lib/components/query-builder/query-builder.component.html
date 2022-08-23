@@ -54,9 +54,9 @@
           <mat-label>{{ 'models.form.field.label' | translate }}</mat-label>
           <input matInput formControlName="label" type="text" />
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" *ngIf="isEmail">
           <mat-label>{{ 'models.form.field.exportCap' | translate }}</mat-label>
-          <input matInput formControlName="first" type="number" />
+          <input matInput formControlName="first" type="number" min="1" />
         </mat-form-field>
       </div>
     </ng-container>

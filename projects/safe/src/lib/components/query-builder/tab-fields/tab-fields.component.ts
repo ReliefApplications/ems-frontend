@@ -27,6 +27,7 @@ import { SafeQueryBuilderComponent } from '../query-builder.component';
 export class SafeTabFieldsComponent implements OnInit, OnChanges {
   @Input() form: FormArray = new FormArray([]);
   @Input() fields: any[] = [];
+  @Input() isEmail = false;
   @ViewChild('childTemplate', { read: ViewContainerRef })
   childTemplate?: ViewContainerRef;
 
@@ -176,6 +177,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
         );
         componentRef.instance.setForm(this.fieldForm);
         componentRef.instance.canExpand = this.fieldForm.value.kind === 'LIST';
+        componentRef.instance.isEmail = this.isEmail;
         componentRef.instance.closeField.subscribe(() => {
           this.onCloseField();
           componentRef.destroy();
