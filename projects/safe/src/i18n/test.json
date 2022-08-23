@@ -127,6 +127,9 @@
 				"processing": "******",
 				"ready": "******"
 			},
+			"history": {
+				"error": "****** {{error}}"
+			},
 			"loadedFromCache": "{{type}} ******",
 			"noOpened": "****** {{value}} ******",
 			"objectCreated": "{{value}} ****** {{type}} ******",
