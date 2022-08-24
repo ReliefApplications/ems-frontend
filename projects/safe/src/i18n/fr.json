@@ -561,6 +561,10 @@
 				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
 				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
 			},
+			"pagination": {
+				"first": "Limite",
+				"title": "Pagination"
+			},
 			"sort": {
 				"ascending": "Croissant",
 				"descending": "Décroissant",
@@ -597,6 +601,9 @@
 						"useExpression": "Utiliser une expression",
 						"usePicker": "Choisir une date"
 					}
+				},
+				"pagination": {
+					"first": "Limite le nombre d'éléments renvoyés"
 				}
 			}
 		},
@@ -1119,7 +1126,6 @@
 			"core": "Source",
 			"create": "Créer un formulaire",
 			"field": {
-				"exportCap": "Plafond d'exportation",
 				"label": "Étiquette",
 				"name": "Nom du champ"
 			},

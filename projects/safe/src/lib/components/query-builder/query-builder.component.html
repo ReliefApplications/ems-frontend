@@ -54,10 +54,6 @@
           <mat-label>{{ 'models.form.field.label' | translate }}</mat-label>
           <input matInput formControlName="label" type="text" />
         </mat-form-field>
-        <mat-form-field appearance="outline" *ngIf="isEmail">
-          <mat-label>{{ 'models.form.field.exportCap' | translate }}</mat-label>
-          <input matInput formControlName="first" type="number" min="1" />
-        </mat-form-field>
       </div>
     </ng-container>
     <mat-tab-group
@@ -83,6 +79,13 @@
             [form]="$any(form.controls.sort)"
             [fields]="availableScalarFields"
           ></safe-tab-sort>
+        </ng-template>
+      </mat-tab>
+      <mat-tab [label]="'components.queryBuilder.pagination.title' | translate" *ngIf="form.get('first')">
+        <ng-template matTabContent>
+          <safe-tab-pagination
+            [form]="form"
+          ></safe-tab-pagination>
         </ng-template>
       </mat-tab>
       <mat-tab

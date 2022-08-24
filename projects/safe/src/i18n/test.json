@@ -561,6 +561,10 @@
 				"sortingDisabled": "******",
 				"style": "******"
 			},
+			"pagination": {
+				"first": "******",
+				"title": "******"
+			},
 			"sort": {
 				"ascending": "******",
 				"descending": "******",
@@ -597,6 +601,9 @@
 						"useExpression": "******",
 						"usePicker": "******"
 					}
+				},
+				"pagination": {
+					"first": "******"
 				}
 			}
 		},
@@ -1119,7 +1126,6 @@
 			"core": "******",
 			"create": "******",
 			"field": {
-				"exportCap": "******",
 				"label": "******",
 				"name": "******"
 			},
