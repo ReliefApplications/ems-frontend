@@ -136,10 +136,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
                   ? this.referenceData?.data
                   : [];
               this.referenceForm = this.formBuilder.group({
-                name: [
-                  this.referenceData?.name,
-                  [Validators.required, Validators.pattern('^[A-Za-z-_]+$')],
-                ],
+                name: [this.referenceData?.name, Validators.required],
                 type: [this.referenceData?.type, Validators.required],
                 valueField: [
                   this.referenceData?.valueField,
