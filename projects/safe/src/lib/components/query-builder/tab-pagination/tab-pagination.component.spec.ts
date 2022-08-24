@@ -8,9 +8,8 @@ describe('SafeTabPaginationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeTabPaginationComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeTabPaginationComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
