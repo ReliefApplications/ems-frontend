@@ -81,11 +81,12 @@
           ></safe-tab-sort>
         </ng-template>
       </mat-tab>
-      <mat-tab [label]="'components.queryBuilder.pagination.title' | translate" *ngIf="form.get('first')">
+      <mat-tab
+        [label]="'components.queryBuilder.pagination.title' | translate"
+        *ngIf="showPagination && form.get('first')"
+      >
         <ng-template matTabContent>
-          <safe-tab-pagination
-            [form]="form"
-          ></safe-tab-pagination>
+          <safe-tab-pagination [form]="form"></safe-tab-pagination>
         </ng-template>
       </mat-tab>
       <mat-tab
