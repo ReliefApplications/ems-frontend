@@ -51,6 +51,9 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() queryName? = '';
   @Input() layoutPreviewData: LayoutPreviewData | null = null;
 
+  // Tab options
+  @Input() showPagination = false;
+
   // === FIELD EDITION ===
   public isField = false;
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();

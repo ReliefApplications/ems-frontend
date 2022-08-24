@@ -561,6 +561,10 @@
 				"sortingDisabled": "Sorting fields is disabled when search is active",
 				"style": "Styling rules make records with important information stand out. When a record matches more than one rule, the first rule is used."
 			},
+			"pagination": {
+				"first": "Limit",
+				"title": "Pagination"
+			},
 			"sort": {
 				"ascending": "Ascending",
 				"descending": "Descending",
@@ -597,6 +601,9 @@
 						"useExpression": "Use Expression editor",
 						"usePicker": "Use Date picker"
 					}
+				},
+				"pagination": {
+					"first": "If provided, limit the number of queried items"
 				}
 			}
 		},
