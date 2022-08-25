@@ -40,6 +40,7 @@
         <safe-filter-group
           class="filter-group-item"
           [form]="$any(filter)"
+          [fields]="fields"
           (delete)="deleteFilter(i)"
         ></safe-filter-group>
       </ng-container>
@@ -48,6 +49,7 @@
         <safe-filter-row
           class="filter-group-item"
           [form]="$any(filter)"
+          [fields]="fields"
           (delete)="deleteFilter(i)"
         ></safe-filter-row>
       </ng-container>

@@ -8,6 +8,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 })
 export class FilterGroupComponent implements OnInit {
   @Input() form!: FormGroup;
+  @Input() fields: any[] = [];
   @Output() delete = new EventEmitter();
 
   /**
