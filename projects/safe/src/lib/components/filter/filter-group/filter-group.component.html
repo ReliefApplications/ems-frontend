@@ -34,7 +34,7 @@
     class="filter-group-filters"
     *ngIf="filters.length > 0"
   >
-    <div *ngFor="let filter of filters.controls; let i = index">
+    <ng-container *ngFor="let filter of filters.controls; let i = index">
       <ng-container *ngIf="filter.value.logic">
         <!-- NESTED FILTER GROUP -->
         <safe-filter-group
@@ -51,6 +51,6 @@
           (delete)="deleteFilter(i)"
         ></safe-filter-row>
       </ng-container>
-    </div>
+    </ng-container>
   </div>
 </form>

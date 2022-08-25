@@ -9,8 +9,8 @@
 }
 
 .filter-group-filters {
+  padding-top: 4px;
   padding-left: 16px;
-  // border-left: 2px solid gray;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -18,25 +18,32 @@
 }
 
 .filter-group-item {
+  position: relative;
   padding-left: 8px;
 
-  // ::before {
-  //   background-color: rgba(0, 0, 0, 0.08);
-  //   content: '';
-  //   position: absolute;
-  //   width: 8px;
-  //   height: 1px;
-  //   top: 50%;
-  //   left: -8px;
-  // }
+  &::before {
+    background-color: rgba(0, 0, 0, 0.08);
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 1px;
+    top: 30px;
+    left: -8px;
+  }
 
-  // ::after {
-  //   background-color: rgba(0, 0, 0, 0.08);
-  //   content: '';
-  //   position: absolute;
-  //   width: 1px;
-  //   top: calc(-4px - 1px);
-  //   bottom: 50%;
-  //   left: -8px;
-  // }
+  &::after {
+    background-color: rgba(0, 0, 0, 0.08);
+    content: '';
+    position: absolute;
+    width: 1px;
+    top: 0px;
+    left: -8px;
+    height: calc(100% + 8px);
+  }
+
+  &:last-child {
+    &::after {
+      height: 30px;
+    }
+  }
 }
