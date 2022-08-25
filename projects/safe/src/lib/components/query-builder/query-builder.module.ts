@@ -32,6 +32,7 @@ import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.component';
+import { SafeFilterModule } from '../filter/filter.module';
 
 /**
  * SafeQueryBuilderModule is a class used to manage all the modules and components
@@ -75,6 +76,7 @@ import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.comp
     SafeCheckboxTreeModule,
     SafeCoreGridModule,
     MatDatepickerModule,
+    SafeFilterModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

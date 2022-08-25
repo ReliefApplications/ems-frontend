@@ -1,4 +1,5 @@
-<form [formGroup]="form">
+<safe-filter></safe-filter>
+<!-- <form [formGroup]="form">
   <div class="filter-header">
     <mat-form-field appearance="outline">
       <mat-label>{{
@@ -83,82 +84,6 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-              <ng-container
-                *ngIf="['Int', 'Float'].includes(selectedFields[i].type)"
-              >
-                <input matInput formControlName="value" type="number" />
-              </ng-container>
-              <ng-container *ngIf="selectedFields[i].type === 'Boolean'">
-                <mat-select formControlName="value">
-                  <mat-option [value]="true">{{
-                    'common.true' | translate
-                  }}</mat-option>
-                  <mat-option [value]="false">{{
-                    'common.false' | translate
-                  }}</mat-option>
-                  <mat-option [value]="null">{{
-                    'common.input.none' | translate
-                  }}</mat-option>
-                </mat-select>
-              </ng-container>
-              <ng-container
-                *ngIf="
-                  ['String', 'Time', 'ID', 'Form'].includes(
-                    selectedFields[i].type
-                  )
-                "
-              >
-                <mat-select
-                  formControlName="value"
-                  *ngIf="
-                    getMeta(selectedFields[i].name) &&
-                    ['dropdown', 'radiogroup'].includes(
-                      getMeta(selectedFields[i].name).type
-                    )
-                  "
-                >
-                  <mat-option
-                    *ngFor="
-                      let choice of getMeta(selectedFields[i].name).choices
-                    "
-                    [value]="choice.value"
-                    >{{ choice.text }}</mat-option
-                  >
-                </mat-select>
-                <input
-                  *ngIf="
-                    !getMeta(selectedFields[i].name) ||
-                    !['dropdown', 'radiogroup'].includes(
-                      getMeta(selectedFields[i].name).type
-                    )
-                  "
-                  matInput
-                  formControlName="value"
-                  type="string"
-                />
-              </ng-container>
-              <ng-container *ngIf="selectedFields[i].type === 'JSON'">
-                <mat-select
-                  formControlName="value"
-                  *ngIf="!getMeta(selectedFields[i].name)"
-                >
-                  <mat-option>{{ 'common.input.none' | translate }}</mat-option>
-                </mat-select>
-                <mat-select
-                  formControlName="value"
-                  multiple
-                  *ngIf="getMeta(selectedFields[i].name)"
-                >
-                  <mat-option
-                    *ngFor="
-                      let choice of getMeta(selectedFields[i].name).choices
-                    "
-                    [value]="choice.value"
-                    >{{ choice.text }}</mat-option
-                  >
-                </mat-select>
-              </ng-container>
-              <ng-container
                 *ngIf="
                   ['Date', 'DateTime'].includes(selectedFields[i].type) &&
                   $any(filters.at(i)).get('useExpression')?.value
@@ -227,4 +152,4 @@
       'components.queryBuilder.filter.newGroup' | translate
     }}</safe-button>
   </div>
-</form>
+</form> -->

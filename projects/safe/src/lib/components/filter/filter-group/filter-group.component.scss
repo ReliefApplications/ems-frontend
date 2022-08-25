@@ -1,0 +1,42 @@
+.filter-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  ::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}
+
+.filter-group-filters {
+  padding-left: 16px;
+  // border-left: 2px solid gray;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.filter-group-item {
+  padding-left: 8px;
+
+  // ::before {
+  //   background-color: rgba(0, 0, 0, 0.08);
+  //   content: '';
+  //   position: absolute;
+  //   width: 8px;
+  //   height: 1px;
+  //   top: 50%;
+  //   left: -8px;
+  // }
+
+  // ::after {
+  //   background-color: rgba(0, 0, 0, 0.08);
+  //   content: '';
+  //   position: absolute;
+  //   width: 1px;
+  //   top: calc(-4px - 1px);
+  //   bottom: 50%;
+  //   left: -8px;
+  // }
+}
