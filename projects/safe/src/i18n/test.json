@@ -75,6 +75,11 @@
 			"one": "******"
 		},
 		"general": "******",
+		"group": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"history": "******",
 		"id": "******",
 		"input": {
@@ -104,6 +109,7 @@
 				"ready": "******",
 				"sent": "******"
 			},
+			"fetchingGroups": "******",
 			"file": {
 				"download": {
 					"error": "******",
@@ -117,6 +123,14 @@
 				}
 			},
 			"formatInvalid": "****** {{format}} ******",
+			"groups": {
+				"error": "******",
+				"processing": "******",
+				"ready": "******"
+			},
+			"history": {
+				"error": "****** {{error}}"
+			},
 			"loadedFromCache": "{{type}} ******",
 			"noOpened": "****** {{value}} ******",
 			"objectCreated": "{{value}} ****** {{type}} ******",
@@ -245,7 +259,7 @@
 			"canDelete": "******",
 			"canSee": "******",
 			"canUpdate": "******",
-			"description": "******",
+			"description": "****** {{name}} ******",
 			"title": "******"
 		},
 		"aggregationBuilder": {
@@ -445,6 +459,15 @@
 			"isCore": "******",
 			"parent": "******"
 		},
+		"group": {
+			"add": {
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			}
+		},
 		"header": {
 			"goToPlatform": "******",
 			"logout": "******",
@@ -539,6 +562,10 @@
 				"sortingDisabled": "******",
 				"style": "******"
 			},
+			"pagination": {
+				"first": "******",
+				"title": "******"
+			},
 			"sort": {
 				"ascending": "******",
 				"descending": "******",
@@ -575,6 +602,9 @@
 						"useExpression": "******",
 						"usePicker": "******"
 					}
+				},
+				"pagination": {
+					"first": "******"
 				}
 			}
 		},
@@ -625,9 +655,6 @@
 		},
 		"referenceData": {
 			"create": {
-				"errors": {
-					"name": "******"
-				},
 				"title": "******"
 			},
 			"delete": {
@@ -702,6 +729,7 @@
 					"application": "******",
 					"backoffice": "******",
 					"selectedApplication": "******",
+					"selectedGroups": "******",
 					"selectedRoles": "******"
 				},
 				"title": "******"
@@ -1149,6 +1177,12 @@
 			"select": "******",
 			"template": "******"
 		},
+		"group": {
+			"create": "******",
+			"description": "******",
+			"fetch": "******",
+			"title": "******"
+		},
 		"mapping": {
 			"add": "******",
 			"edit": "******"
@@ -1334,9 +1368,6 @@
 		},
 		"referenceData": {
 			"csv": "******",
-			"errors": {
-				"name": "******"
-			},
 			"fields": "******",
 			"graphQLFilter": "******",
 			"path": "******",

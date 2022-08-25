@@ -367,7 +367,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
         if (res.data) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('action.access').toLowerCase(),
+              type: this.translate.instant('common.access').toLowerCase(),
               value: element.name,
             })
           );

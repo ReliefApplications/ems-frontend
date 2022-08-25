@@ -84,7 +84,7 @@ export class AdvancedSettingsComponent implements OnInit {
                 type: this.translateService.instant(
                   'components.users.advancedSettings.title'
                 ),
-                error: res.errors[0],
+                error: res.errors[0].message,
               }
             ),
             { error: true }

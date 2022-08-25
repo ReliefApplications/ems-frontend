@@ -1,0 +1,25 @@
+.header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: top;
+
+  .filters {
+    mat-form-field {
+      margin-top: -0.25em;
+
+      #custom-search {
+        position: relative;
+        top: -0.15em;
+      }
+    }
+    ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+      padding: 0.42em 0px !important;
+    }
+  }
+
+  .actions {
+    margin-left: auto;
+  }
+}

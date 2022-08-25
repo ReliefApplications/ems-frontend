@@ -111,7 +111,10 @@
     <ng-container *ngFor="let field of fields">
       <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
       <kendo-grid-column
-        *ngIf="field.type !== 'JSON'"
+        *ngIf="
+          field.type !== 'JSON' &&
+          (!field.meta || field.meta.type !== 'referenceData')
+        "
         [field]="field.name"
         [title]="field.title"
         [format]="field.format"
@@ -473,6 +476,38 @@
           ></kendo-datetimepicker>
         </ng-template>
       </kendo-grid-column>
+      <!-- REFERENCE DATA MULTI SELECT -->
+      <kendo-grid-column-group
+        [title]="field.title"
+        *ngIf="field.meta && field.meta.type === 'referenceData'"
+      >
+        <ng-container *ngFor="let subField of field.subFields">
+          <kendo-grid-column
+            [field]="subField.name"
+            [title]="subField.title"
+            [columnMenu]="false"
+            [width]="subField.width"
+            [hidden]="subField.hidden"
+            [minResizableWidth]="50"
+            [editable]="!subField.disabled"
+          >
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <div
+                class="textbox-container"
+                [style]="getStyle(dataItem, field.name)"
+              >
+                {{
+                  getReferenceDataPropertyValue(
+                    dataItem,
+                    field.name,
+                    subField.meta.name
+                  )
+                }}
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+        </ng-container>
+      </kendo-grid-column-group>
       <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->
       <kendo-grid-column
         *ngIf="

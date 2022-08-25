@@ -75,6 +75,11 @@
 			"one": "Formulaire"
 		},
 		"general": "Général",
+		"group": {
+			"few": "Groupes",
+			"none": "Pas de groupes",
+			"one": "Groupe"
+		},
 		"history": "Historique",
 		"id": "Id",
 		"input": {
@@ -104,6 +109,7 @@
 				"ready": "E-mail prêt",
 				"sent": "E-mail envoyé"
 			},
+			"fetchingGroups": "Fetching groups from service...",
 			"file": {
 				"download": {
 					"error": "Un problème est survenu lors du téléchargement",
@@ -117,6 +123,14 @@
 				}
 			},
 			"formatInvalid": "Veuillez importer un fichier de format .{{format}}.",
+			"groups": {
+				"error": "Une erreur s'est produite lors de la tentative d'obtenir des groupes du service",
+				"processing": "Récupération des groupes à partir du service...",
+				"ready": "Groupes récupérés"
+			},
+			"history": {
+				"error": "Un problème est survenu lors de la génération de l'historique. {{error}}"
+			},
 			"loadedFromCache": "Objet de type {{type}} chargé depuis le cache.",
 			"noOpened": "Aucun objet {{value}} n'a été ouvert.",
 			"objectCreated": "{{value}} {{type}} créé.",
@@ -245,7 +259,7 @@
 			"canDelete": "Peut supprimer",
 			"canSee": "Peut voir",
 			"canUpdate": "Peut modifier",
-			"description": "Modifier les permissions d'accès",
+			"description": "Modifier les permissions de {{name}}",
 			"title": "Accès"
 		},
 		"aggregationBuilder": {
@@ -301,7 +315,7 @@
 		"apiConfiguration": {
 			"create": {
 				"errors": {
-					"name": "Seules les lettres, les tirets et les tirets bas sont acceptés."
+					"name": "Nom invalide: utilisez seulement des lettres, des chiffres et des tirets bas."
 				}
 			},
 			"delete": {
@@ -445,6 +459,15 @@
 			"isCore": "Est un formulaire source",
 			"parent": "Formulaire parent"
 		},
+		"group": {
+			"add": {
+				"title": "Ajouter un nouveau groupe"
+			},
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du groupe {{name}}?",
+				"title": "Supprimer le groupe"
+			}
+		},
 		"header": {
 			"goToPlatform": "Naviguer vers",
 			"logout": "Se déconnecter",
@@ -539,6 +562,10 @@
 				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
 				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
 			},
+			"pagination": {
+				"first": "Limite",
+				"title": "Pagination"
+			},
 			"sort": {
 				"ascending": "Croissant",
 				"descending": "Décroissant",
@@ -575,6 +602,9 @@
 						"useExpression": "Utiliser une expression",
 						"usePicker": "Choisir une date"
 					}
+				},
+				"pagination": {
+					"first": "Limite le nombre d'éléments renvoyés"
 				}
 			}
 		},
@@ -625,9 +655,6 @@
 		},
 		"referenceData": {
 			"create": {
-				"errors": {
-					"name": "Seules les lettres, les tirets et les tirets bas sont acceptés."
-				},
 				"title": "Nouvelle référence de données"
 			},
 			"delete": {
@@ -702,6 +729,7 @@
 					"application": "Rôles d'application",
 					"backoffice": "Rôles de back-office",
 					"selectedApplication": "Application sélectionnée",
+					"selectedGroups": "Groupes sélectionnés",
 					"selectedRoles": "Rôles sélectionnés"
 				},
 				"title": "Résumé"
@@ -1149,6 +1177,12 @@
 			"select": "Sélectionner un formulaire",
 			"template": "Modèle"
 		},
+		"group": {
+			"create": "Créer un groupe",
+			"description": "Description",
+			"fetch": "Récupérer les groupes du service",
+			"title": "Titre"
+		},
 		"mapping": {
 			"add": "Ajouter un rang à la table de correspondances",
 			"edit": "Modifier un rang de la table de correspondances"
@@ -1334,9 +1368,6 @@
 		},
 		"referenceData": {
 			"csv": "Fichier CSV d'entrée",
-			"errors": {
-				"name": "Seules les lettres, les tirets et les tirets bas sont acceptés"
-			},
 			"fields": "Champs",
 			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",

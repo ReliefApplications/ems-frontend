@@ -46,6 +46,21 @@ export interface GetReferenceDataQueryResponse {
   referenceData: ReferenceData;
 }
 
+/** Get API configuration gl query */
+export const GET_API_CONFIGURATION = gql`
+  query GetApiConfiguration($id: ID!) {
+    apiConfiguration(id: $id) {
+      id
+      name
+    }
+  }
+`;
+
+/** Interface of API configuration gl query response */
+export interface GetApiConfigurationQueryResponse {
+  apiConfiguration: ApiConfiguration;
+}
+
 // === GET API CONFGIURATIONS NAME ===
 /** API configuration names query */
 export const GET_API_CONFIGURATIONS_NAMES = gql`
