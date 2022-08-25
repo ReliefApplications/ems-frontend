@@ -316,11 +316,19 @@
             animationDuration="0ms"
             dynamicHeight
             style="min-height: 100px"
+            [selectedIndex]="0"
+            (selectedTabChange)="handleTabChange($event)"
           >
             <mat-tab>
-              <ng-template mat-tab-label> Default </ng-template>
+              <ng-template mat-tab-label>{{
+                'components.emailBuilder.default' | translate
+              }}</ng-template>
               <ng-template matTabContent>
-                <editor [init]="editor" formControlName="bodyText"></editor>
+                <editor
+                  [init]="editor"
+                  formControlName="bodyText"
+                  *ngIf="isActiveTab && selectedTab === 0"
+                ></editor>
                 <mat-checkbox formControlName="export">{{
                   'components.widget.settings.grid.buttons.callback.export'
                     | translate
@@ -335,11 +343,14 @@
               </ng-template>
             </mat-tab>
             <mat-tab>
-              <ng-template mat-tab-label> Without record </ng-template>
+              <ng-template mat-tab-label>{{
+                'components.emailBuilder.withoutRecords' | translate
+              }}</ng-template>
               <ng-template matTabContent>
                 <editor
                   [init]="editor"
                   formControlName="bodyTextAlternate"
+                  *ngIf="isActiveTab && selectedTab === 1"
                 ></editor>
               </ng-template>
             </mat-tab>

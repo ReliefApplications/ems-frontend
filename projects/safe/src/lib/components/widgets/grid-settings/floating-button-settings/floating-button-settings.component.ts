@@ -29,6 +29,7 @@ import {
   EDITOR_LANGUAGE_PAIRS,
 } from '../../../../const/tinymce.const';
 import { TranslateService } from '@ngx-translate/core';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 /** List fo diabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
@@ -59,6 +60,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
   @Input() relatedForms: Form[] = [];
+  @Input() isActiveTab = false;
 
   // Indicate is the page is a single dashboard.
   public isDashboard = false;
@@ -73,6 +75,9 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
   /** tinymce editor */
   public editor: any = EMAIL_EDITOR_CONFIG;
+
+  /** Stores the selected tab */
+  public selectedTab = 0;
 
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
 
@@ -421,5 +426,14 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     if (this.workflowSubscription) {
       this.workflowSubscription.unsubscribe();
     }
+  }
+
+  /**
+   *  Handles the a tab change event
+   *
+   * @param event Event triggered on tab switch
+   */
+  handleTabChange(event: MatTabChangeEvent): void {
+    this.selectedTab = event.index;
   }
 }

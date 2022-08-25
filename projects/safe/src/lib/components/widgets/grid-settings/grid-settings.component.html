@@ -1,6 +1,10 @@
 <ng-container *ngIf="tileForm">
   <form [formGroup]="tileForm">
-    <mat-tab-group vertical animationDuration="0ms">
+    <mat-tab-group
+      vertical
+      animationDuration="0ms"
+      (selectedTabChange)="handleTabChange($event)"
+    >
       <!-- MAIN PARAMETERS / SELECTION OF LAYOUTS -->
       <mat-tab>
         <ng-template mat-tab-label>
@@ -159,6 +163,7 @@
                     [channels]="channels"
                     [relatedForms]="relatedForms"
                     (deleteButton)="deleteFloatingButton()"
+                    [isActiveTab]="selectedTab === 2"
                   ></safe-floating-button-settings>
                 </ng-template>
               </mat-tab>

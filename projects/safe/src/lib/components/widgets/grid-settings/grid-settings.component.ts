@@ -31,6 +31,7 @@ import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { Resource } from '../../../models/resource.model';
 import get from 'lodash/get';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 /** Default action name */
 const DEFAULT_ACTION_NAME = 'Action';
@@ -77,6 +78,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public filteredQueries: any[] = [];
   public form: Form | null = null;
   public resource: Resource | null = null;
+
+  /** Stores the selected tab */
+  public selectedTab = 0;
 
   /** @returns List of the floating buttons */
   get floatingButtons(): FormArray {
@@ -392,5 +396,14 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   private filterQueries(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.allQueries.filter((x) => x.toLowerCase().includes(filterValue));
+  }
+
+  /**
+   *  Handles the a tab change event
+   *
+   * @param event Event triggered on tab switch
+   */
+  handleTabChange(event: MatTabChangeEvent): void {
+    this.selectedTab = event.index;
   }
 }
