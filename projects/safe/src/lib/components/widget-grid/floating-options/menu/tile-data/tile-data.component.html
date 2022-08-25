@@ -1,9 +1,9 @@
-<safe-modal [closable]="true">
+<safe-modal [closable]="true" size="fullscreen">
   <h1 mat-dialog-title>{{ 'common.settings' | translate }}</h1>
-  <div mat-dialog-content class="mat-dialog-content">
+  <mat-dialog-content>
     <template #settingsContainer></template>
-  </div>
-  <div mat-dialog-actions class="mat-dialog-actions" align="end">
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
     <safe-button mat-dialog-close>
       {{ 'common.close' | translate }}
     </safe-button>
@@ -16,5 +16,5 @@
     >
       {{ 'common.save' | translate }}
     </safe-button>
-  </div>
+  </mat-dialog-actions>
 </safe-modal>

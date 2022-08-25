@@ -254,6 +254,12 @@
 		}
 	},
 	"components": {
+    "share": {
+      "modal": {
+        "title": "Share dashboard url",
+        "copy": "Copy to clipboard"
+      }
+    },
 		"access": {
 			"canDelete": "Can delete",
 			"canSee": "Can see",

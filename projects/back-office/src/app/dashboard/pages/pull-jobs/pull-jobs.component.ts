@@ -141,7 +141,6 @@ export class PullJobsComponent implements OnInit, OnDestroy {
    */
   onAdd(): void {
     const dialogRef = this.dialog.open(PullJobModalComponent, {
-      width: '600px',
       autoFocus: false,
       data: {
         channels: this.channels,
@@ -275,7 +274,6 @@ export class PullJobsComponent implements OnInit, OnDestroy {
    */
   onEdit(element: any): void {
     const dialogRef = this.dialog.open(PullJobModalComponent, {
-      width: '600px',
       data: {
         channels: this.channels,
         pullJob: element,

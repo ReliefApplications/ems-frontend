@@ -1,5 +1,8 @@
 :host {
   position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-close {
@@ -12,9 +15,4 @@
 .standard-modal {
   width: 90%;
   max-width: 750px !important;
-
-  mat-dialog-container {
-    width: 100%;
-    position: relative;
-  }
 }

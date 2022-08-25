@@ -7,6 +7,9 @@ import { SafeButtonModule } from '../button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '../icon/icon.module';
 
+/**
+ *
+ */
 @NgModule({
   declarations: [SafeModalComponent],
   imports: [

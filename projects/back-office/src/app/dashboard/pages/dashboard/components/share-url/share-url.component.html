@@ -1,9 +1,13 @@
-<h1 mat-dialog-title>Share dashboard url</h1>
-<div mat-dialog-content>
-  <div class="share-url">{{ data.url }}</div>
-</div>
-<div mat-dialog-actions align="center">
-  <button mat-flat-button (click)="onCopy()" color="primary">
-    Copy to clipboard
-  </button>
-</div>
+<safe-modal>
+  <h1 mat-dialog-title>
+    {{ 'components.share.modal.title' | translate }}
+  </h1>
+  <div mat-dialog-content>
+    <div class="share-url">{{ data.url }}</div>
+  </div>
+  <div mat-dialog-actions align="center">
+    <button mat-flat-button (click)="onCopy()" color="primary">
+      {{ 'components.share.modal.copy' | translate }}
+    </button>
+  </div>
+</safe-modal>

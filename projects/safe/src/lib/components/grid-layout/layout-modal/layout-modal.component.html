@@ -1,8 +1,8 @@
-<safe-modal [closable]="true">
+<safe-modal [closable]="true" size="fullscreen">
   <h1 mat-dialog-title>
     {{ 'components.widget.settings.grid.layouts.edit.title' | translate }}
   </h1>
-  <div mat-dialog-content class="mat-dialog-content" *ngIf="form">
+  <mat-dialog-content *ngIf="form">
     <form [formGroup]="form">
       <div class="form-group">
         <div class="form-group-title">{{ 'common.general' | translate }}</div>
@@ -20,8 +20,8 @@
         ></safe-query-builder>
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions class="mat-dialog-actions" align="end">
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
     <safe-button mat-dialog-close>
       {{ 'common.close' | translate }}
     </safe-button>
@@ -34,5 +34,5 @@
     >
       {{ 'common.save' | translate }}
     </safe-button>
-  </div>
+  </mat-dialog-actions>
 </safe-modal>

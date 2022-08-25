@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
+import { SafeConfirmModalModule, SafeButtonModule, SafeModalModule } from '@safe/builder';
 import { AddChannelComponent } from './components/add-channel/add-channel.component';
 import { EditChannelComponent } from './components/edit-channel/edit-channel.component';
 import { MatSelectModule } from '@angular/material/select';
@@ -42,6 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeButtonModule,
     MatButtonModule,
     TranslateModule,
+    SafeModalModule
   ],
 })
 export class ChannelsModule {}

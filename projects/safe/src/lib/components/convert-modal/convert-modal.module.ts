@@ -12,6 +12,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * SafeConvertModalModule is a class used to manage all the modules and components
@@ -32,6 +33,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatListModule,
     MatProgressSpinnerModule,
     TranslateModule,
+    SafeModalModule,
   ],
   exports: [SafeConvertModalComponent],
 })

@@ -8,6 +8,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeLayoutModule } from '../../layout/layout.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { SafeModalModule } from '../../ui/modal/modal.module';
 
 /**
  * Module for the addLayout component
@@ -23,6 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatSelectModule,
     SafeLayoutModule,
     SafeButtonModule,
+    SafeModalModule,
   ],
   exports: [AddLayoutComponent],
 })

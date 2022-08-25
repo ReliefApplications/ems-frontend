@@ -73,11 +73,6 @@ export class LayoutsTabComponent implements OnInit {
       data: {
         queryName: this.resource.queryName,
       },
-      position: {
-        bottom: '0',
-        right: '0',
-      },
-      panelClass: 'tile-settings-dialog',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -106,11 +101,6 @@ export class LayoutsTabComponent implements OnInit {
       data: {
         layout,
       },
-      position: {
-        bottom: '0',
-        right: '0',
-      },
-      panelClass: 'tile-settings-dialog',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

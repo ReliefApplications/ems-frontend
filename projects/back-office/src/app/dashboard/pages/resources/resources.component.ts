@@ -310,9 +310,7 @@ export class ResourcesComponent implements OnInit {
    * Creates a new form on closed if result.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddResourceComponent, {
-      panelClass: 'add-dialog',
-    });
+    const dialogRef = this.dialog.open(AddResourceComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };

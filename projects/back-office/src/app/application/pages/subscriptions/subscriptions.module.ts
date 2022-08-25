@@ -17,6 +17,7 @@ import {
   SafeButtonModule,
   SafeIconModule,
   SafeGraphQLSelectModule,
+  SafeModalModule,
 } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -51,6 +52,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     TranslateModule,
     MatTooltipModule,
     SafeGraphQLSelectModule,
+    SafeModalModule
   ],
 })
 export class SubscriptionsModule {}

@@ -76,7 +76,6 @@ export class PositionComponent implements OnInit, OnDestroy {
    */
   onEdit(positionCategory: PositionAttributeCategory): void {
     const dialogRef = this.dialog.open(AddPositionComponent, {
-      width: '400px',
       data: {
         edit: true,
         title: positionCategory.title,

@@ -290,9 +290,7 @@ export class FormsComponent implements OnInit, OnDestroy {
    * Creates a new form on closed if result.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddFormComponent, {
-      panelClass: 'add-dialog',
-    });
+    const dialogRef = this.dialog.open(AddFormComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };

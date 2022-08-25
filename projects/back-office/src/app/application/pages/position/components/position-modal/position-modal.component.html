@@ -1,37 +1,39 @@
-<h1 mat-dialog-title>
-  {{
-    data.add
-      ? ('models.positionAttribute.new' | translate)
-      : ('common.editObject'
-        | translate: { name: 'common.positionAttribute.one' | translate })
-  }}
-</h1>
-<div mat-dialog-content>
-  <form [formGroup]="positionForm">
-    <mat-form-field>
-      <mat-label>{{ 'common.title' | translate }}</mat-label>
-      <input
-        matInput
-        formControlName="title"
-        type="text"
-        [placeholder]="
-          data.add ? ('common.placeholder.title' | translate) : data.title
-        "
-      />
-    </mat-form-field>
-  </form>
-</div>
-<div mat-dialog-actions align="end">
-  <button mat-button (click)="onClose()">
-    {{ 'common.close' | translate }}
-  </button>
-  <button
-    mat-flat-button
-    [mat-dialog-close]="positionForm.value"
-    cdkFocusInitial
-    color="primary"
-    [disabled]="!positionForm.valid"
-  >
-    {{ (data.add ? 'common.create' : 'common.update') | translate }}
-  </button>
-</div>
+<safe-modal size="medium">
+  <h1 mat-dialog-title>
+    {{
+      data.add
+        ? ('models.positionAttribute.new' | translate)
+        : ('common.editObject'
+          | translate: { name: 'common.positionAttribute.one' | translate })
+    }}
+  </h1>
+  <div mat-dialog-content>
+    <form [formGroup]="positionForm">
+      <mat-form-field>
+        <mat-label>{{ 'common.title' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="title"
+          type="text"
+          [placeholder]="
+            data.add ? ('common.placeholder.title' | translate) : data.title
+          "
+        />
+      </mat-form-field>
+    </form>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-button (click)="onClose()">
+      {{ 'common.close' | translate }}
+    </button>
+    <button
+      mat-flat-button
+      [mat-dialog-close]="positionForm.value"
+      cdkFocusInitial
+      color="primary"
+      [disabled]="!positionForm.valid"
+    >
+      {{ (data.add ? 'common.create' : 'common.update') | translate }}
+    </button>
+  </div>
+</safe-modal>

@@ -1,12 +1,5 @@
 @import '../../style/survey.scss';
 
-:host {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  position: relative;
-}
-
 mat-dialog-content {
   flex: 1;
   max-height: unset !important;

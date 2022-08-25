@@ -7,6 +7,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '@safe/builder';
 
 /**
  * Modal to add a new resource
@@ -22,6 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatDialogModule,
     MatButtonModule,
     TranslateModule,
+    SafeModalModule
   ],
   exports: [AddResourceComponent],
 })
