@@ -21,7 +21,6 @@ import {
   MAT_CHIPS_DEFAULT_OPTIONS,
 } from '@angular/material/chips';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -31,7 +30,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 
-/** List fo diabled fields */
+/** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 /** Key codes of separators */
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
@@ -39,7 +38,7 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 /**
  * Function that create a function which returns an object with the separator keys
  *
- * @returns A function which returns an object with the separtor keys
+ * @returns A function which returns an object with the separator keys
  */
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function codesFactory(): () => any {
@@ -47,20 +46,18 @@ export function codesFactory(): () => any {
   return codes;
 }
 
-/** Component for floating button settings */
 @Component({
-  selector: 'safe-floating-button-settings',
-  templateUrl: './floating-button-settings.component.html',
-  styleUrls: ['./floating-button-settings.component.scss'],
+  selector: 'safe-button-config',
+  templateUrl: './button-config.component.html',
+  styleUrls: ['./button-config.component.scss'],
   providers: [{ provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory }],
 })
-export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
+export class ButtonConfigComponent implements OnInit, OnDestroy {
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
-  @Input() buttonForm?: FormGroup;
+  @Input() formGroup!: FormGroup;
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
   @Input() relatedForms: Form[] = [];
-  @Input() isActiveTab = false;
 
   // Indicate is the page is a single dashboard.
   public isDashboard = false;
@@ -76,9 +73,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   /** tinymce editor */
   public editor: any = EMAIL_EDITOR_CONFIG;
 
-  /** Stores the selected tab */
-  public selectedTab = 0;
-
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
 
   /** @returns The list of fields which are of type scalar and not disabled */
@@ -89,8 +83,6 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Constructor of the component
-   *
    * @param environment Environment file used to get main url of the page
    * @param formBuilder Form builder
    * @param router Angular Router service
@@ -161,53 +153,53 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
       );
     }
 
-    this.buttonForm?.get('prefillForm')?.valueChanges.subscribe((value) => {
+    this.formGroup?.get('prefillForm')?.valueChanges.subscribe((value) => {
       if (value) {
-        this.buttonForm
+        this.formGroup
           ?.get('prefillTargetForm')
           ?.setValidators(Validators.required);
       } else {
-        this.buttonForm?.get('prefillTargetForm')?.clearValidators();
+        this.formGroup?.get('prefillTargetForm')?.clearValidators();
       }
-      this.buttonForm?.get('prefillTargetForm')?.updateValueAndValidity();
+      this.formGroup?.get('prefillTargetForm')?.updateValueAndValidity();
     });
 
-    this.buttonForm?.get('notify')?.valueChanges.subscribe((value) => {
+    this.formGroup?.get('notify')?.valueChanges.subscribe((value) => {
       if (value) {
-        this.buttonForm
+        this.formGroup
           ?.get('notificationChannel')
           ?.setValidators(Validators.required);
-        this.buttonForm
+        this.formGroup
           ?.get('notificationMessage')
           ?.setValidators(Validators.required);
       } else {
-        this.buttonForm?.get('notificationChannel')?.clearValidators();
-        this.buttonForm?.get('notificationMessage')?.clearValidators();
+        this.formGroup?.get('notificationChannel')?.clearValidators();
+        this.formGroup?.get('notificationMessage')?.clearValidators();
       }
-      this.buttonForm?.get('notificationChannel')?.updateValueAndValidity();
-      this.buttonForm?.get('notificationMessage')?.updateValueAndValidity();
+      this.formGroup?.get('notificationChannel')?.updateValueAndValidity();
+      this.formGroup?.get('notificationMessage')?.updateValueAndValidity();
     });
 
-    this.buttonForm?.get('publish')?.valueChanges.subscribe((value) => {
+    this.formGroup?.get('publish')?.valueChanges.subscribe((value) => {
       if (value) {
-        this.buttonForm
+        this.formGroup
           ?.get('publicationChannel')
           ?.setValidators(Validators.required);
       } else {
-        this.buttonForm?.get('publicationChannel')?.clearValidators();
+        this.formGroup?.get('publicationChannel')?.clearValidators();
       }
-      this.buttonForm?.get('publicationChannel')?.updateValueAndValidity();
+      this.formGroup?.get('publicationChannel')?.updateValueAndValidity();
     });
 
-    this.buttonForm?.get('show')?.valueChanges.subscribe((value) => {
+    this.formGroup?.get('show')?.valueChanges.subscribe((value) => {
       if (!value) {
         this.deleteInvalidModifications();
-        this.buttonForm?.controls.notify.setValue(false);
-        this.buttonForm?.controls.publish.setValue(false);
+        this.formGroup?.controls.notify.setValue(false);
+        this.formGroup?.controls.publish.setValue(false);
       }
     });
 
-    this.buttonForm
+    this.formGroup
       ?.get('modifySelectedRows')
       ?.valueChanges.subscribe((value) => {
         if (!value) {
@@ -215,100 +207,100 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.buttonForm?.get('attachToRecord')?.valueChanges.subscribe((value) => {
+    this.formGroup?.get('attachToRecord')?.valueChanges.subscribe((value) => {
       if (value) {
-        this.buttonForm?.get('targetForm')?.setValidators(Validators.required);
+        this.formGroup?.get('targetForm')?.setValidators(Validators.required);
       } else {
-        this.buttonForm?.get('targetForm')?.clearValidators();
-        this.buttonForm?.get('targetForm')?.setValue(null);
+        this.formGroup?.get('targetForm')?.clearValidators();
+        this.formGroup?.get('targetForm')?.setValue(null);
       }
-      this.buttonForm?.get('targetForm')?.updateValueAndValidity();
+      this.formGroup?.get('targetForm')?.updateValueAndValidity();
     });
 
-    this.buttonForm?.get('targetForm')?.valueChanges.subscribe((value) => {
+    this.formGroup?.get('targetForm')?.valueChanges.subscribe((value) => {
       if (value) {
-        this.buttonForm
+        this.formGroup
           ?.get('targetFormField')
           ?.setValidators(Validators.required);
       } else {
-        this.buttonForm?.get('targetFormField')?.clearValidators();
-        this.buttonForm?.get('targetFormField')?.setValue(null);
+        this.formGroup?.get('targetFormField')?.clearValidators();
+        this.formGroup?.get('targetFormField')?.setValue(null);
       }
-      this.buttonForm?.get('targetFormField')?.updateValueAndValidity();
+      this.formGroup?.get('targetFormField')?.updateValueAndValidity();
     });
 
-    this.buttonForm?.get('sendMail')?.valueChanges.subscribe((value) => {
+    this.formGroup?.get('sendMail')?.valueChanges.subscribe((value) => {
       if (value) {
-        this.buttonForm
+        this.formGroup
           ?.get('distributionList')
           ?.setValidators(Validators.required);
-        this.buttonForm?.get('subject')?.setValidators(Validators.required);
+        this.formGroup?.get('subject')?.setValidators(Validators.required);
       } else {
-        this.buttonForm?.get('distributionList')?.clearValidators();
-        this.buttonForm?.get('subject')?.clearValidators();
+        this.formGroup?.get('distributionList')?.clearValidators();
+        this.formGroup?.get('subject')?.clearValidators();
       }
-      this.buttonForm?.get('distributionList')?.updateValueAndValidity();
-      this.buttonForm?.get('subject')?.updateValueAndValidity();
+      this.formGroup?.get('distributionList')?.updateValueAndValidity();
+      this.formGroup?.get('subject')?.updateValueAndValidity();
     });
 
-    this.emails = [...this.buttonForm?.get('distributionList')?.value];
+    this.emails = [...this.formGroup?.get('distributionList')?.value];
 
-    this.buttonForm?.get('targetForm')?.valueChanges.subscribe((target) => {
+    this.formGroup?.get('targetForm')?.valueChanges.subscribe((target) => {
       if (target?.name) {
         const queryName = this.queryBuilder.getQueryNameFromResourceName(
           target?.name || ''
         );
-        this.buttonForm?.get('targetFormQuery.name')?.setValue(queryName);
-        this.buttonForm
+        this.formGroup?.get('targetFormQuery.name')?.setValue(queryName);
+        this.formGroup
           ?.get('targetFormQuery.fields')
           ?.setValidators([Validators.required]);
       } else {
-        this.buttonForm?.get('targetFormQuery')?.clearValidators();
+        this.formGroup?.get('targetFormQuery')?.clearValidators();
       }
-      this.buttonForm?.get('targetFormQuery')?.updateValueAndValidity();
+      this.formGroup?.get('targetFormQuery')?.updateValueAndValidity();
     });
 
-    this.buttonForm
+    this.formGroup
       ?.get('sendMail')
       ?.valueChanges.subscribe((sendEmail: boolean) => {
         if (sendEmail) {
-          this.buttonForm
+          this.formGroup
             ?.get('bodyFields')
             ?.setValidators([Validators.required]);
         } else {
-          this.buttonForm?.get('bodyFields')?.clearValidators();
+          this.formGroup?.get('bodyFields')?.clearValidators();
         }
-        this.buttonForm?.get('bodyFields')?.updateValueAndValidity();
+        this.formGroup?.get('bodyFields')?.updateValueAndValidity();
       });
 
-    this.buttonForm
+    this.formGroup
       ?.get('closeWorkflow')
       ?.valueChanges.subscribe((closeWorkflow: boolean) => {
         if (closeWorkflow) {
-          this.buttonForm
+          this.formGroup
             ?.get('confirmationText')
             ?.setValidators([Validators.required]);
         } else {
-          this.buttonForm?.get('confirmationText')?.clearValidators();
+          this.formGroup?.get('confirmationText')?.clearValidators();
         }
-        this.buttonForm?.get('confirmationText')?.updateValueAndValidity();
+        this.formGroup?.get('confirmationText')?.updateValueAndValidity();
       });
 
-    this.buttonForm
+    this.formGroup
       ?.get('selectAll')
       ?.valueChanges.subscribe((selectAll: boolean) => {
         if (selectAll) {
-          this.buttonForm?.controls.selectPage.setValue(false);
-          this.buttonForm?.get('selectPage')?.updateValueAndValidity();
+          this.formGroup?.controls.selectPage.setValue(false);
+          this.formGroup?.get('selectPage')?.updateValueAndValidity();
         }
       });
 
-    this.buttonForm
+    this.formGroup
       ?.get('selectPage')
       ?.valueChanges.subscribe((selectPage: boolean) => {
         if (selectPage) {
-          this.buttonForm?.controls.selectAll.setValue(false);
-          this.buttonForm?.get('selectAll')?.updateValueAndValidity();
+          this.formGroup?.controls.selectAll.setValue(false);
+          this.formGroup?.get('selectAll')?.updateValueAndValidity();
         }
       });
   }
@@ -330,7 +322,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
 
   /** @returns An array of the modifications on button form */
   get modificationsArray(): FormArray {
-    return this.buttonForm?.get('modifications') as FormArray;
+    return this.formGroup?.get('modifications') as FormArray;
   }
 
   /**
@@ -358,7 +350,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
    * Delete all the invalid modifications
    */
   private deleteInvalidModifications(): void {
-    const modifications = this.buttonForm?.get('modifications') as FormArray;
+    const modifications = this.formGroup?.get('modifications') as FormArray;
     for (let i = 0; i < modifications.value.length; i++) {
       const modification = modifications.at(i);
       if (modification.invalid) {
@@ -397,8 +389,8 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
         if ((value || '').trim()) {
           this.emails.push(value.trim());
         }
-        this.buttonForm?.get('distributionList')?.setValue(this.emails);
-        this.buttonForm?.get('distributionList')?.updateValueAndValidity();
+        this.formGroup?.get('distributionList')?.setValue(this.emails);
+        this.formGroup?.get('distributionList')?.updateValueAndValidity();
         // Reset the input value
         if (input) {
           input.value = '';
@@ -418,8 +410,8 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     if (index >= 0) {
       this.emails.splice(index, 1);
     }
-    this.buttonForm?.get('distributionList')?.setValue(this.emails);
-    this.buttonForm?.get('distributionList')?.updateValueAndValidity();
+    this.formGroup?.get('distributionList')?.setValue(this.emails);
+    this.formGroup?.get('distributionList')?.updateValueAndValidity();
   }
 
   ngOnDestroy(): void {
@@ -433,7 +425,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
    *
    * @param event Event triggered on tab switch
    */
-  handleTabChange(event: MatTabChangeEvent): void {
-    this.selectedTab = event.index;
-  }
+  // handleTabChange(event: MatTabChangeEvent): void {
+  //   this.selectedTab = event.index;
+  // }
 }
