@@ -56,7 +56,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     SafeSearchMenuModule,
     SafeSkeletonModule,
     SafeAlertModule,
-    SafeModalModule
+    SafeModalModule,
   ],
   exports: [DashboardComponent],
 })

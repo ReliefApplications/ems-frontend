@@ -52,7 +52,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     TranslateModule,
     MatTooltipModule,
     SafeGraphQLSelectModule,
-    SafeModalModule
+    SafeModalModule,
   ],
 })
 export class SubscriptionsModule {}

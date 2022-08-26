@@ -12,7 +12,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeGraphQLSelectModule, SafeIconModule, SafeModalModule } from '@safe/builder';
+import {
+  SafeGraphQLSelectModule,
+  SafeIconModule,
+  SafeModalModule,
+} from '@safe/builder';
 
 /**
  * Add form module.
@@ -35,7 +39,7 @@ import { SafeGraphQLSelectModule, SafeIconModule, SafeModalModule } from '@safe/
     TranslateModule,
     SafeIconModule,
     SafeGraphQLSelectModule,
-    SafeModalModule
+    SafeModalModule,
   ],
   exports: [AddFormComponent],
 })

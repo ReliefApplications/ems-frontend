@@ -49,7 +49,7 @@ import { AddReferenceDataComponent } from './add-reference-data/add-reference-da
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
-    SafeModalModule
+    SafeModalModule,
   ],
   exports: [ReferenceDatasComponent],
 })

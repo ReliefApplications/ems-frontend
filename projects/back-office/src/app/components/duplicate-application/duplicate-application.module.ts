@@ -23,7 +23,7 @@ import { SafeModalModule } from '@safe/builder';
     MatButtonModule,
     MatDialogModule,
     TranslateModule,
-    SafeModalModule
+    SafeModalModule,
   ],
   exports: [DuplicateApplicationComponent],
 })

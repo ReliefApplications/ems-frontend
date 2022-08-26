@@ -23,7 +23,7 @@ import { SafeModalModule } from '@safe/builder';
     MatDialogModule,
     MatButtonModule,
     TranslateModule,
-    SafeModalModule
+    SafeModalModule,
   ],
   exports: [AddResourceComponent],
 })
