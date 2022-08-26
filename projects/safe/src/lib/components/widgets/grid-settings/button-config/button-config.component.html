@@ -305,10 +305,7 @@
               'components.emailBuilder.default' | translate
             }}</ng-template>
             <ng-template matTabContent>
-              <editor
-                [init]="editor"
-                formControlName="bodyText"
-              ></editor>
+              <editor [init]="editor" formControlName="bodyText"></editor>
               <mat-checkbox formControlName="export">{{
                 'components.widget.settings.grid.buttons.callback.export'
                   | translate
