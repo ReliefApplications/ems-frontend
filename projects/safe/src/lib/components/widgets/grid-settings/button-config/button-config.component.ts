@@ -28,7 +28,6 @@ import {
   EDITOR_LANGUAGE_PAIRS,
 } from '../../../../const/tinymce.const';
 import { TranslateService } from '@ngx-translate/core';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
@@ -46,6 +45,9 @@ export function codesFactory(): () => any {
   return codes;
 }
 
+/**
+ * Configuration component for grid widget button.
+ */
 @Component({
   selector: 'safe-button-config',
   templateUrl: './button-config.component.html',
@@ -83,6 +85,8 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Configuration component for grid widget button.
+   *
    * @param environment Environment file used to get main url of the page
    * @param formBuilder Form builder
    * @param router Angular Router service
@@ -419,13 +423,4 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
       this.workflowSubscription.unsubscribe();
     }
   }
-
-  /**
-   *  Handles the a tab change event
-   *
-   * @param event Event triggered on tab switch
-   */
-  // handleTabChange(event: MatTabChangeEvent): void {
-  //   this.selectedTab = event.index;
-  // }
 }

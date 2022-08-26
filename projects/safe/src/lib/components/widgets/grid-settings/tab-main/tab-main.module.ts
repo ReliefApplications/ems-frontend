@@ -9,6 +9,9 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
 import { LayoutsModule } from '../../../grid-layout/layouts/layouts.module';
 
+/**
+ * Main Tab of grid widget configuration modal.
+ */
 @NgModule({
   declarations: [TabMainComponent],
   imports: [

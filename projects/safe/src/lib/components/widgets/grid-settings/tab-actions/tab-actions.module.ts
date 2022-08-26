@@ -5,6 +5,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
+/**
+ * Actions tab of grid widget configuration modal.
+ */
 @NgModule({
   declarations: [TabActionsComponent],
   imports: [

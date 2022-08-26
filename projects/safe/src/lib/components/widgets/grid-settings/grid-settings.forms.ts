@@ -99,6 +99,13 @@ export const createButtonFormGroup = (value: any): FormGroup => {
   return formGroup;
 };
 
+/**
+ * Create a grid widget form group.
+ *
+ * @param id id of the widget
+ * @param configuration previous configuration
+ * @returns form group
+ */
 export const createGridWidgetFormGroup = (
   id: string,
   configuration: any

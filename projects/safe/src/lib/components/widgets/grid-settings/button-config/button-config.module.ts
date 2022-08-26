@@ -16,6 +16,9 @@ import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.mod
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+/**
+ * Button config component for grid widget.
+ */
 @NgModule({
   declarations: [ButtonConfigComponent],
   imports: [

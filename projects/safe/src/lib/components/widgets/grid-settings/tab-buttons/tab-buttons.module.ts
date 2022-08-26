@@ -8,6 +8,9 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ButtonConfigModule } from '../button-config/button-config.module';
 
+/**
+ * Buttons tab of grid widget configuration modal.
+ */
 @NgModule({
   declarations: [TabButtonsComponent],
   imports: [
