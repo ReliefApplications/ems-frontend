@@ -36,18 +36,18 @@
       </ng-container>
     </div>
     <div mat-dialog-actions align="end">
-      <button mat-button (click)="onClose()">
-        {{ 'common.close' | translate }}
-      </button>
-      <button
-        mat-flat-button
+      <safe-button (click)="onClose()">{{
+        'common.close' | translate
+      }}</safe-button>
+      <safe-button
+        category="secondary"
+        variant="primary"
         [mat-dialog-close]="convertForm.value"
         cdkFocusInitial
-        color="primary"
         [disabled]="!convertForm.valid"
       >
         {{ 'models.record.convert' | translate }}
-      </button>
+      </safe-button>
     </div>
   </div>
 </safe-modal>

@@ -31,8 +31,15 @@
   <p>{{ 'components.widget.grid.validation.help' | translate }}</p>
 </div>
 <div mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>{{ 'common.close' | translate }}</button>
-  <button mat-flat-button color="primary" [mat-dialog-close]="true">
+  <safe-button mat-dialog-close>
+    {{ 'common.close' | translate }}
+  </safe-button>
+  <safe-button
+    category="secondary"
+    variant="primary"
+    [mat-dialog-close]="true"
+    cdkFocusInitial
+  >
     {{ 'common.update' | translate }}
-  </button>
+  </safe-button>
 </div>

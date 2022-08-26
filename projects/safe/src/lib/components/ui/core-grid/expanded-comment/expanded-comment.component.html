@@ -10,15 +10,17 @@
     ></textarea>
   </div>
   <div mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>{{ 'common.close' | translate }}</button>
-    <button
-      mat-flat-button
+    <safe-button mat-dialog-close>
+      {{ 'common.close' | translate }}
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
       [mat-dialog-close]="comment"
       cdkFocusInitial
-      color="primary"
       *ngIf="!data.readonly"
     >
       {{ 'common.save' | translate }}
-    </button>
+    </safe-button>
   </div>
 </safe-modal>

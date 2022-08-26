@@ -65,17 +65,17 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">
+    <safe-button  (click)="onClose()">
       {{ 'common.close' | translate }}
-    </button>
-    <button
-      type="submit"
-      mat-flat-button
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
       [mat-dialog-close]="form.value"
-      color="primary"
+      cdkFocusInitial
       [disabled]="!form.valid"
     >
-      {{ 'components.user.invite.confirm' | translate }}
-    </button>
+    {{ 'components.user.invite.confirm' | translate }}
+    </safe-button>
   </div>
 </safe-modal>

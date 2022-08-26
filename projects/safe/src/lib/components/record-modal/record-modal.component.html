@@ -38,46 +38,53 @@
     </ng-container>
   </mat-dialog-content>
   <mat-dialog-actions align="end" *ngIf="!loading && data.compareTo">
-    <button mat-button (click)="onClose()">
+    <safe-button (click)="onClose()">
       {{ 'common.close' | translate }}
-    </button>
-    <button
-      mat-flat-button
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
       mat-dialog-close="true"
       cdkFocusInitial
-      color="primary"
     >
       {{ 'components.record.history.revert' | translate }}
-    </button>
+    </safe-button>
   </mat-dialog-actions>
   <mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo">
-    <button mat-button color="warn" (click)="onClose()">
+    <safe-button (click)="onClose()" variant="danger">
       {{ 'common.close' | translate }}
-    </button>
+    </safe-button>
+
     <ng-container *ngIf="pages$ | async as pages">
-      <button
-        *ngIf="pages.length > 1"
-        [disabled]="survey.isFirstPage"
-        mat-button
-        color="primary"
-        (click)="survey.prevPage()"
+      <safe-button
+      category="secondary"
+      variant="primary"
+      cdkFocusInitial
+      *ngIf="pages.length > 1"
+      (click)="survey.prevPage()"
+      [disabled]="survey.isFirstPage"
       >
         {{ 'common.previous' | translate }}
-      </button>
-      <button
-        *ngIf="pages.length > 1"
-        [disabled]="survey.isLastPage"
-        mat-button
-        color="primary"
-        (click)="survey.nextPage()"
+      </safe-button>
+      <safe-button
+      category="secondary"
+      variant="primary"
+      cdkFocusInitial
+      *ngIf="pages.length > 1"
+      (click)="survey.nextPage()"
+      [disabled]="survey.isLastPage"
       >
         {{ 'common.next' | translate }}
-      </button>
+      </safe-button>
     </ng-container>
-    <button *ngIf="canEdit" mat-flat-button color="primary" (click)="onEdit()">
-      {{
-        'common.editObject' | translate: { name: 'common.record.one' | translate }
-      }}
-    </button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      cdkFocusInitial
+      *ngIf="canEdit"
+      (click)="onEdit()"
+    >
+      {{ 'common.editObject' | translate: { name: 'common.record.one' | translate } }}
+    </safe-button>
   </mat-dialog-actions>
 </safe-modal>

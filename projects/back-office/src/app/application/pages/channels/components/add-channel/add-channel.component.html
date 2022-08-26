@@ -14,17 +14,17 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">
-      {{ 'common.close' | translate }}
-    </button>
-    <button
-      mat-flat-button
+    <safe-button (click)="onClose()">{{
+      'common.close' | translate
+    }}</safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
       [mat-dialog-close]="channelForm.value"
       cdkFocusInitial
-      color="primary"
       [disabled]="!channelForm.valid"
     >
       {{ 'common.create' | translate }}
-    </button>
+    </safe-button>
   </div>
 </safe-modal>

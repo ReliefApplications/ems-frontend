@@ -1,4 +1,4 @@
-<safe-modal size="medium">
+<safe-modal size="small">
   <mat-dialog-content class="safe-grid-export">
     <!-- RECORDS -->
     <label id="export-options-records">{{
@@ -49,14 +49,16 @@
     </mat-radio-group>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>{{ 'common.close' | translate }}</button>
-    <button
-      mat-button
+    <safe-button mat-dialog-close>
+      {{ 'common.close' | translate }}
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
       [mat-dialog-close]="export"
-      mat-flat-button
-      color="primary"
+      cdkFocusInitial
     >
-      {{ 'common.export' | translate }}
-    </button>
+    {{ 'common.export' | translate }}
+    </safe-button>
   </mat-dialog-actions>
 </safe-modal>

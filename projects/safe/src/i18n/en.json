@@ -40,6 +40,7 @@
 		"deleteObject": "Delete {{name}}",
 		"deleted": "Deleted",
 		"dismiss": "Dismiss",
+    "send": "Send",
 		"display": "Display",
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
@@ -254,12 +255,6 @@
 		}
 	},
 	"components": {
-    "share": {
-      "modal": {
-        "title": "Share dashboard url",
-        "copy": "Copy to clipboard"
-      }
-    },
 		"access": {
 			"canDelete": "Can delete",
 			"canSee": "Can see",
@@ -707,6 +702,12 @@
 			"update": {
 				"permissions": "Permissions",
 				"title": "Update role permissions and channels"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "Copy to clipboard",
+				"title": "Share dashboard url"
 			}
 		},
 		"user": {

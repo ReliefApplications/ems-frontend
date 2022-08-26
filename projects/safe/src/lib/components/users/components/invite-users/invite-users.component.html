@@ -98,17 +98,17 @@
     </kendo-grid>
   </div>
   <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">
+    <safe-button (click)="onClose()">
       {{ 'common.close' | translate }}
-    </button>
-    <button
-      type="submit"
-      mat-flat-button
-      color="primary"
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
       (click)="onSubmit()"
+      cdkFocusInitial
       [disabled]="gridData.data.length === 0"
     >
-      {{ 'components.users.invite.confirm' | translate }}
-    </button>
+      {{ 'common.save' | translate }}
+    </safe-button>
   </div>
 </safe-modal>

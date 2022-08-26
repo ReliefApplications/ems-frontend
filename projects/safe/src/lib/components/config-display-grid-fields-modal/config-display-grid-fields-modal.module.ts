@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeButtonModule } from '../ui/button/button.module';
 
 /**
  * ConfigDisplayGridFieldsModalModule is a class used to manage all the modules and components
@@ -27,6 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatInputModule,
     TranslateModule,
+    SafeButtonModule,
   ],
   exports: [ConfigDisplayGridFieldsModalComponent],
 })

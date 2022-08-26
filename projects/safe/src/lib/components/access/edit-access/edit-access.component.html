@@ -35,17 +35,17 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">
-      {{ 'common.close' | translate }}
-    </button>
-    <button
-      mat-flat-button
+    <safe-button (click)="onClose()">{{
+      'common.close' | translate
+    }}</safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
       [mat-dialog-close]="accessForm.value"
       cdkFocusInitial
-      color="primary"
       [disabled]="!accessForm.valid"
     >
       {{ 'common.update' | translate }}
-    </button>
+    </safe-button>
   </div>
 </safe-modal>

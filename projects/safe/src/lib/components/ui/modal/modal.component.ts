@@ -15,9 +15,9 @@ export class SafeModalComponent implements OnInit {
   @Input() padding = true;
 
   /**
-   * Used to acces the dialog properties
+   * Constructor for the modal component
    *
-   * @param dialogRef
+   * @param dialogRef Used to acces the dialog properties
    */
   constructor(private dialogRef: MatDialogRef<SafeModalComponent>) {}
 

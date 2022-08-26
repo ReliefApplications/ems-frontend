@@ -17,17 +17,18 @@
     </safe-core-grid>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button matDialogClose (click)="closeModal(false)">
+    <safe-button mat-dialog-close (click)="closeModal(false)">
       {{ 'common.cancel' | translate }}
-    </button>
-    <button
-      mat-flat-button
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
       matDialogClose
-      color="primary"
+      cdkFocusInitial
       (click)="closeModal()"
       *ngIf="selectable"
     >
       {{ 'common.select' | translate }}
-    </button>
+    </safe-button>
   </mat-dialog-actions>
 </safe-modal>

@@ -38,16 +38,16 @@
   </form>
 </div>
 <div mat-dialog-actions align="end">
-  <button mat-button (click)="onClose()">
+  <safe-button  (click)="onClose()">
     {{ 'common.close' | translate }}
-  </button>
-  <button
-    mat-flat-button
+  </safe-button>
+  <safe-button
+    category="secondary"
+    variant="primary"
     [mat-dialog-close]="userForm.value"
     cdkFocusInitial
-    color="primary"
     [disabled]="!userForm.valid"
   >
-    {{ 'common.update' | translate }}
-  </button>
+    {{ 'common.save' | translate }}
+  </safe-button>
 </div>
