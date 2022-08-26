@@ -30,7 +30,7 @@
       <mat-label>{{ 'common.field.one' | translate }}</mat-label>
       <mat-select formControlName="field">
         <mat-option *ngFor="let field of fields" [value]="field.name">
-          {{ field.label }}
+          {{ field.text || field.name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -72,10 +72,16 @@
   <ng-template #selectEditor>
     <mat-form-field appearance="outline">
       <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-      <mat-select formControlName="value" [multiple]="field.multiSelect">
+      <mat-select *ngIf="!field.multiSelect" formControlName="value">
         <mat-option>{{ 'common.input.none' | translate }}</mat-option>
         <mat-option *ngFor="let option of field.options" [value]="option.value">
-          {{ option.label }}
+          {{ option.text }}
+        </mat-option>
+      </mat-select>
+      <mat-select *ngIf="field.multiSelect" formControlName="value" multiple="true">
+        <mat-option>{{ 'common.input.none' | translate }}</mat-option>
+        <mat-option *ngFor="let option of field.options" [value]="option.value">
+          {{ option.text }}
         </mat-option>
       </mat-select>
     </mat-form-field>

@@ -79,6 +79,22 @@ export const FIELD_TYPES = [
     ],
   },
   {
+    editor: 'time',
+    defaultOperator: 'eq',
+    operators: [
+      'eq',
+      'neq',
+      'contains',
+      'doesnotcontain',
+      'startswith',
+      'endswith',
+      'isnull',
+      'isnotnull',
+      'isempty',
+      'isnotempty',
+    ],
+  },
+  {
     editor: 'boolean',
     defaultOperator: 'eq',
     operators: ['eq', 'neq'],
@@ -102,6 +118,11 @@ export const FIELD_TYPES = [
   },
   {
     editor: 'date',
+    defaultOperator: 'eq',
+    operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull'],
+  },
+  {
+    editor: 'datetime',
     defaultOperator: 'eq',
     operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull'],
   },

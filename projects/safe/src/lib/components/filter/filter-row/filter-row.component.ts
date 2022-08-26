@@ -2,6 +2,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
   TemplateRef,
@@ -15,36 +16,10 @@ import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
   templateUrl: './filter-row.component.html',
   styleUrls: ['./filter-row.component.scss'],
 })
-export class FilterRowComponent implements OnInit {
+export class FilterRowComponent implements OnInit, OnChanges {
   @Input() form!: FormGroup;
   @Output() delete = new EventEmitter();
-  @Input() fields = [
-    {
-      name: 'text',
-      label: 'Text Field',
-      editor: 'text',
-    },
-    {
-      name: 'boolean',
-      label: 'Boolean Field',
-      editor: 'boolean',
-    },
-    {
-      name: 'numeric',
-      label: 'numeric Field',
-      editor: 'numeric',
-    },
-    {
-      name: 'select',
-      label: 'select Field',
-      editor: 'select',
-    },
-    {
-      name: 'date',
-      label: 'date Field',
-      editor: 'date',
-    },
-  ];
+  @Input() fields: any[] = [];
 
   public field?: any;
   public editor?: TemplateRef<any>;
@@ -65,15 +40,7 @@ export class FilterRowComponent implements OnInit {
     this.form.get('field')?.valueChanges.subscribe((value) => {
       // remove value
       this.form.get('value')?.setValue(null);
-      // get field, and operators
-      this.field = this.fields.find((x) => x.name === value);
-      const type = FIELD_TYPES.find((x) => x.editor === this.field.editor);
-      this.form.get('operator')?.setValue(type?.defaultOperator);
-      this.operators = FILTER_OPERATORS.filter((x) =>
-        type?.operators.includes(x.value)
-      );
-      // set operator template
-      this.setEditor(this.field);
+      this.setField(value, true);
     });
     this.form.get('operator')?.valueChanges.subscribe((value) => {
       const operator = this.operators.find((x) => x.value === value);
@@ -83,6 +50,39 @@ export class FilterRowComponent implements OnInit {
         this.form.get('value')?.enable();
       }
     });
+
+    const initialField = this.form.get('field')?.value;
+    if (initialField && this.fields.length > 0) {
+      this.setField(initialField);
+    }
+  }
+
+  ngOnChanges(): void {
+    const initialField = this.form.get('field')?.value;
+    if (initialField && this.fields.length > 0) {
+      this.setField(initialField);
+    }
+  }
+
+  private setField(name: string, init?: true) {
+    // get field, and operators
+    this.field = this.fields.find((x) => x.name === name);
+    if (this.field) {
+      const type = {
+        ...FIELD_TYPES.find((x) => x.editor === this.field.editor),
+        ...this.field.filter,
+      };
+      this.operators = FILTER_OPERATORS.filter((x) =>
+        type?.operators.includes(x.value)
+      );
+      if (init) {
+        this.form.get('operator')?.setValue(type?.defaultOperator);
+      } else {
+        this.form.get('operator')?.setValue(this.form.value.operator);
+      }
+      // set operator template
+      this.setEditor(this.field);
+    }
   }
 
   private setEditor(field: any) {
@@ -103,6 +103,7 @@ export class FilterRowComponent implements OnInit {
         this.editor = this.numericEditor;
         break;
       }
+      case 'datetime':
       case 'date': {
         this.editor = this.dateEditor;
         break;

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { clone, get, isDate } from 'lodash';
+import { FormArray, FormGroup } from '@angular/forms';
+import { clone, get } from 'lodash';
 import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
@@ -110,10 +110,7 @@ export class SafeTabFilterComponent implements OnInit {
   @Input() canDelete = false;
   @Output() delete: EventEmitter<any> = new EventEmitter();
 
-  // public types: any = TYPES;
-  private metaQuery: any;
-
-  // public operators: any = OPERATORS;
+  public filterFields: any[] = [];
 
   /**
    * Getter for the filters
@@ -130,7 +127,6 @@ export class SafeTabFilterComponent implements OnInit {
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param formBuilder This is the service that will be used to build forms.
    * @param queryBuilder This is the service that will be used to build the query.
    * @param gridService Shared grid service
    */
@@ -140,27 +136,40 @@ export class SafeTabFilterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.fields);
     // TODO: move somewhere else
     if (this.query) {
-      // Get MetaData from all scalar fields of the datasource
-      const queryWithAllScalarField = clone(this.query);
-      queryWithAllScalarField.fields = this.fields;
-      this.metaQuery = this.queryBuilder.buildMetaQuery(
-        queryWithAllScalarField
-      );
-      if (this.metaQuery) {
-        this.metaQuery.subscribe(async (res: any) => {
+      const sourceQuery = this.queryBuilder.getQuerySource(this.query);
+      if (sourceQuery) {
+        sourceQuery.subscribe(async (res: any) => {
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              this.metaFields = Object.assign({}, res.data[field]);
-              await this.gridService.populateMetaFields(this.metaFields);
+              const source = get(res.data[field], '_source', null);
+              if (source) {
+                this.queryBuilder.getQueryMetaData(source).subscribe((res2) => {
+                  if (res2.data.form) {
+                    this.filterFields = get(
+                      res2.data.form,
+                      'metadata',
+                      []
+                    ).filter((x: any) => x.filterable !== false);
+                  }
+                  if (res2.data.resource) {
+                    this.filterFields = get(
+                      res2.data.resource,
+                      'metadata',
+                      []
+                    ).filter((x: any) => x.filterable !== false);
+                  }
+                  // await this.gridService.populateMetaFields(this.metaFields);
+                });
+              }
             }
           }
         });
       }
     } else {
       this.gridService.populateMetaFields(this.metaFields);
+      console.log(this.metaFields);
     }
     // this.form.value?.filters.forEach((x: any, index: number) => {
     //   let field = this.fields.find((y) => y.name === x?.field?.split('.')[0]);

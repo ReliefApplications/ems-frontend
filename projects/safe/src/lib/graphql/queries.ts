@@ -75,6 +75,24 @@ export const GET_GRID_FORM_META = gql`
   }
 `;
 
+export const GET_QUERY_META_DATA = gql`
+  query GetQueryMetaData($id: ID!) {
+    form(id: $id) {
+      id
+      metadata
+    }
+    resource(id: $id) {
+      id
+      metadata
+    }
+  }
+`;
+
+export interface GetQueryMetaDataQueryResponse {
+  form: Form;
+  resource: Resource;
+}
+
 /** Model for GetFormByIdQueryResponse object */
 export interface GetFormByIdQueryResponse {
   loading: boolean;
