@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { get } from 'lodash';
 import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
@@ -21,15 +21,6 @@ export class SafeTabFilterComponent implements OnInit {
   @Output() delete: EventEmitter<any> = new EventEmitter();
 
   public filterFields: any[] = [];
-
-  /**
-   * Getter for the filters
-   *
-   * @returns The filters in an array
-   */
-  get filters(): FormArray {
-    return this.form.get('filters') as FormArray;
-  }
 
   private inputs = '';
 
@@ -76,10 +67,13 @@ export class SafeTabFilterComponent implements OnInit {
             }
           }
         });
+      } else {
+        this.filterFields = [];
       }
     } else {
       this.gridService.populateMetaFields(this.metaFields);
       console.log(this.metaFields);
+      this.filterFields = [];
     }
   }
 
@@ -109,11 +103,11 @@ export class SafeTabFilterComponent implements OnInit {
    * @param index index of filter field
    */
   onChangeEditor(index: number): void {
-    const formGroup = this.filters.at(index) as FormGroup;
-    formGroup
-      .get('useExpression')
-      ?.setValue(!formGroup.get('useExpression')?.value);
-    formGroup.get('value')?.setValue(null);
+    // const formGroup = this.filters.at(index) as FormGroup;
+    // formGroup
+    //   .get('useExpression')
+    //   ?.setValue(!formGroup.get('useExpression')?.value);
+    // formGroup.get('value')?.setValue(null);
   }
 
   /**
