@@ -326,6 +326,12 @@ export class QueryBuilderService {
     }
   }
 
+  /**
+   * Get source query ( form / resource ) from query
+   *
+   * @param query custom query
+   * @returns apollo query to get source
+   */
   public getQuerySource(query: any): Observable<ApolloQueryResult<any>> | null {
     if (query) {
       const sourceQuery = gql`
@@ -345,6 +351,12 @@ export class QueryBuilderService {
     }
   }
 
+  /**
+   * Get metadata of form or resource
+   *
+   * @param id id of form or resource
+   * @returns metadata query
+   */
   public getQueryMetaData(id: string) {
     return this.apollo.query<GetQueryMetaDataQueryResponse>({
       query: GET_QUERY_META_DATA,

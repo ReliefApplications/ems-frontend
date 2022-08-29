@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FilterGroupComponent } from './filter-group.component';
+import { DateFilterEditorComponent } from './date-filter-editor.component';
 
-describe('FilterGroupComponent', () => {
-  let component: FilterGroupComponent;
-  let fixture: ComponentFixture<FilterGroupComponent>;
+describe('DateFilterEditorComponent', () => {
+  let component: DateFilterEditorComponent;
+  let fixture: ComponentFixture<DateFilterEditorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FilterGroupComponent],
+      declarations: [DateFilterEditorComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FilterGroupComponent);
+    fixture = TestBed.createComponent(DateFilterEditorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

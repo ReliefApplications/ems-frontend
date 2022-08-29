@@ -13,7 +13,10 @@
     </mat-select>
   </mat-form-field>
   <ng-container *ngIf="field && editor">
-    <ng-container [ngTemplateOutlet]="editor"></ng-container>
+    <ng-container
+      [ngTemplateOutlet]="editor"
+      [ngTemplateOutletContext]="{ valueControl: valueControl }"
+    ></ng-container>
   </ng-container>
   <!-- DELETE ROW -->
   <safe-button

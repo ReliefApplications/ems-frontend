@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
+/**
+ * Composite filter component.
+ */
 @Component({
   selector: 'safe-filter',
   templateUrl: './filter.component.html',
@@ -9,8 +12,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class SafeFilterComponent implements OnInit {
   @Input() form!: FormGroup;
   @Input() fields: any[] = [];
-
-  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {}
 }

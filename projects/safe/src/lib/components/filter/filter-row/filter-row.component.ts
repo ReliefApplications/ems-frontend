@@ -8,10 +8,13 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { clone } from 'lodash';
+import { FormControl, FormGroup } from '@angular/forms';
+import { clone, get } from 'lodash';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 
+/**
+ * Composite filter row.
+ */
 @Component({
   selector: 'safe-filter-row',
   templateUrl: './filter-row.component.html',
@@ -25,6 +28,11 @@ export class FilterRowComponent implements OnInit, OnChanges {
   public field?: any;
   public editor?: TemplateRef<any>;
 
+  /** @returns value form field as form control. */
+  get valueControl(): FormControl {
+    return this.form.get('value') as FormControl;
+  }
+
   @ViewChild('textEditor', { static: false }) textEditor!: TemplateRef<any>;
   @ViewChild('booleanEditor', { static: false })
   booleanEditor!: TemplateRef<any>;
@@ -34,8 +42,6 @@ export class FilterRowComponent implements OnInit, OnChanges {
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
 
   public operators: any[] = [];
-
-  constructor() {}
 
   ngOnInit(): void {
     this.form.get('field')?.valueChanges.subscribe((value) => {
@@ -65,6 +71,12 @@ export class FilterRowComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Set field.
+   *
+   * @param name field name
+   * @param init is new field or not
+   */
   private setField(name: string, init?: true) {
     // get field, and operators
     const nameFragments = name.split('.');
@@ -72,9 +84,7 @@ export class FilterRowComponent implements OnInit, OnChanges {
     let field = null;
     // Loop over name fragments to find correct field
     for (const fragment of nameFragments) {
-      console.log(fragment);
       field = fields.find((x) => x.name === fragment);
-      console.log(field);
       fields = clone(field.fields);
     }
     if (field) {
@@ -96,31 +106,40 @@ export class FilterRowComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Set field editor.
+   *
+   * @param field filter field
+   */
   private setEditor(field: any) {
-    switch (field.editor) {
-      case 'text': {
-        this.editor = this.textEditor;
-        break;
-      }
-      case 'boolean': {
-        this.editor = this.booleanEditor;
-        break;
-      }
-      case 'select': {
-        this.editor = this.selectEditor;
-        break;
-      }
-      case 'numeric': {
-        this.editor = this.numericEditor;
-        break;
-      }
-      case 'datetime':
-      case 'date': {
-        this.editor = this.dateEditor;
-        break;
-      }
-      default: {
-        this.editor = this.textEditor;
+    if (get(field, 'filter.template', null)) {
+      this.editor = field.filter.template;
+    } else {
+      switch (field.editor) {
+        case 'text': {
+          this.editor = this.textEditor;
+          break;
+        }
+        case 'boolean': {
+          this.editor = this.booleanEditor;
+          break;
+        }
+        case 'select': {
+          this.editor = this.selectEditor;
+          break;
+        }
+        case 'numeric': {
+          this.editor = this.numericEditor;
+          break;
+        }
+        case 'datetime':
+        case 'date': {
+          this.editor = this.dateEditor;
+          break;
+        }
+        default: {
+          this.editor = this.textEditor;
+        }
       }
     }
   }

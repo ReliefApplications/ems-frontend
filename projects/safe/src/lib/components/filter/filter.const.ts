@@ -1,3 +1,6 @@
+/**
+ * Available operators.
+ */
 export const FILTER_OPERATORS = [
   {
     value: 'eq',
@@ -61,6 +64,9 @@ export const FILTER_OPERATORS = [
   },
 ];
 
+/**
+ * Available field types.
+ */
 export const FIELD_TYPES = [
   {
     editor: 'text',

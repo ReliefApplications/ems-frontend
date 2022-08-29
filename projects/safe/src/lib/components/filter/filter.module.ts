@@ -12,6 +12,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+/**
+ * Composite Filter module.
+ */
 @NgModule({
   declarations: [SafeFilterComponent, FilterGroupComponent, FilterRowComponent],
   imports: [
