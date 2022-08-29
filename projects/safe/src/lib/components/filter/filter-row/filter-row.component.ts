@@ -9,6 +9,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { clone } from 'lodash';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 
 @Component({
@@ -66,8 +67,18 @@ export class FilterRowComponent implements OnInit, OnChanges {
 
   private setField(name: string, init?: true) {
     // get field, and operators
-    this.field = this.fields.find((x) => x.name === name);
-    if (this.field) {
+    const nameFragments = name.split('.');
+    let fields = clone(this.fields);
+    let field = null;
+    // Loop over name fragments to find correct field
+    for (const fragment of nameFragments) {
+      console.log(fragment);
+      field = fields.find((x) => x.name === fragment);
+      console.log(field);
+      fields = clone(field.fields);
+    }
+    if (field) {
+      this.field = field;
       const type = {
         ...FIELD_TYPES.find((x) => x.editor === this.field.editor),
         ...this.field.filter,

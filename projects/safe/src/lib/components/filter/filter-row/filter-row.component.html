@@ -29,9 +29,19 @@
     <mat-form-field appearance="outline">
       <mat-label>{{ 'common.field.one' | translate }}</mat-label>
       <mat-select formControlName="field">
-        <mat-option *ngFor="let field of fields" [value]="field.name">
-          {{ field.text || field.name }}
-        </mat-option>
+        <ng-container *ngFor="let field of fields">
+          <mat-option *ngIf="!field.fields" [value]="field.name">
+            {{ field.text || field.name }}
+          </mat-option>
+          <mat-optgroup *ngIf="field.fields" [label]="field.text || field.name">
+            <mat-option
+              *ngFor="let subField of field.fields"
+              [value]="field.name + '.' + subField.name"
+            >
+              {{ field.name }} - {{ subField.text || subField.name }}
+            </mat-option>
+          </mat-optgroup>
+        </ng-container>
       </mat-select>
     </mat-form-field>
   </ng-template>
@@ -78,7 +88,11 @@
           {{ option.text }}
         </mat-option>
       </mat-select>
-      <mat-select *ngIf="field.multiSelect" formControlName="value" multiple="true">
+      <mat-select
+        *ngIf="field.multiSelect"
+        formControlName="value"
+        multiple="true"
+      >
         <mat-option>{{ 'common.input.none' | translate }}</mat-option>
         <mat-option *ngFor="let option of field.options" [value]="option.value">
           {{ option.text }}
@@ -92,10 +106,7 @@
     <mat-form-field appearance="outline">
       <mat-label>{{ 'common.value.one' | translate }}</mat-label>
       <input matInput [matDatepicker]="datePicker" formControlName="value" />
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="datePicker"
-      >
+      <mat-datepicker-toggle matSuffix [for]="datePicker">
       </mat-datepicker-toggle>
       <mat-datepicker #datePicker></mat-datepicker>
     </mat-form-field>
