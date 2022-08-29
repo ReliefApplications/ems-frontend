@@ -45,7 +45,6 @@ export class FilterGroupComponent implements OnInit {
    * Add new filter row
    */
   addFilter(): void {
-    console.log(this.filters);
     const filter = this.fb.group({
       field: '',
       operator: 'eq',
