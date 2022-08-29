@@ -388,9 +388,11 @@
 		},
 		"emailBuilder": {
 			"body": "Corps du texte",
+			"default": "Défaut",
 			"distribution": "Liste de distribution",
 			"fields": "Sélectionner les champs à écrire dans le corps du texte",
-			"subject": "Objet"
+			"subject": "Objet",
+			"withoutRecords": "Sans enregistrements"
 		},
 		"form": {
 			"create": {

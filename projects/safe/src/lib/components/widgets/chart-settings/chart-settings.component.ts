@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { scrollFactory } from '../../../utils/scroll-factory';
-import { codesFactory } from '../grid-settings/floating-button-settings/floating-button-settings.component';
+import { codesFactory } from '../grid-settings/button-config/button-config.component';
 import { Chart } from './charts/chart';
 import {
   CHART_TYPES,
