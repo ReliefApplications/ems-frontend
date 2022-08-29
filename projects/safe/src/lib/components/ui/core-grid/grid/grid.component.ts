@@ -265,7 +265,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   ): any {
     const values = get(item, path);
     if (Array.isArray(values)) {
-      return values.map((x) => x[attribute]);
+      return values.map((x) => x[attribute]).join(', ');
     }
   }
 
