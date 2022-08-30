@@ -50,7 +50,6 @@ export class SafeSummaryCardComponent implements OnInit {
   constructor(private apollo: Apollo, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
-    console.log(this.settings);
     this.getCardsContent(this.settings.cards);
   }
 

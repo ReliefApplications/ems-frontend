@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 /**
  * The component is used on a card creation in the summary-card widget
@@ -11,20 +12,39 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class SafeAddCardComponent implements OnInit {
   @Input() isDynamic: any;
+  private templatesUrl = '';
+  public templates: any = [];
 
   /**
-   * Constructor for safe-add-card contructor
+   * Constructor for safe-add-card constructor
    *
+   * @param environment Injection of the environment file.
+   * @param http Angular http client
    * @param dialogRef material dialog reference of the component
    * @param data the data passed into the dialog
    * @param data.isDynamic wether the added card will be dynamic or not
    */
   constructor(
     public dialogRef: MatDialogRef<SafeAddCardComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { isDynamic: any }
-  ) {}
+    @Inject('environment') environment: any,
+    @Inject(MAT_DIALOG_DATA) public data: { isDynamic: any },
+    private http: HttpClient
+  ) {
+    this.templatesUrl = environment.apiUrl + '/summarycards/templates/';
+  }
 
-  ngOnInit(): void {}
+  async ngOnInit(): Promise<void> {
+    const token = localStorage.getItem('idtoken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    await this.http
+      .get(this.templatesUrl, { headers })
+      .toPromise()
+      .then((data: any) => {
+        this.templates = data;
+      });
+  }
 
   /**
    * Closes the modal without sending any data.
