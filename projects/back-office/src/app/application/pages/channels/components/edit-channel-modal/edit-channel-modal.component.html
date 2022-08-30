@@ -1,13 +1,13 @@
-<safe-modal>
+<safe-modal size="small">
   <h1 mat-dialog-title>
     {{
       'common.editObject' | translate: { name: 'common.channel.one' | translate }
     }}
   </h1>
   <div mat-dialog-content>
-    <form [formGroup]="roleForm">
+    <form [formGroup]="roleForm" class="form-group">
       <div class="form-group">
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>{{ 'common.title' | translate }}</mat-label>
           <input
             matInput

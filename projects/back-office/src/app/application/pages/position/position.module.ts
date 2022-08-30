@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { PositionRoutingModule } from './position-routing.module';
 import { PositionComponent } from './position.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
@@ -15,7 +14,7 @@ import {
   SafeButtonModule,
   SafeModalModule,
 } from '@safe/builder';
-import { AddPositionComponent } from './components/position-modal/position-modal.component';
+import { PositionModalComponent } from './components/position-modal/position-modal.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
@@ -24,7 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
  * Application position module.
  */
 @NgModule({
-  declarations: [PositionComponent, AddPositionComponent],
+  declarations: [PositionComponent, PositionModalComponent],
   imports: [
     CommonModule,
     PositionRoutingModule,
@@ -35,7 +34,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    MatDialogModule,
     MatIconModule,
     MatMenuModule,
     SafeConfirmModalModule,

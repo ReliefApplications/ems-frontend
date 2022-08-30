@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '../icon/icon.module';
 
 /**
- *
+ * Modal component, used as a generic wrapper for all modals
  */
 @NgModule({
   declarations: [SafeModalComponent],

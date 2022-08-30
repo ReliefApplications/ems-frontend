@@ -7,11 +7,11 @@ import { Channel } from '@safe/builder';
  * Edit channel component, act as modal.
  */
 @Component({
-  selector: 'app-edit-channel',
-  templateUrl: './edit-channel.component.html',
-  styleUrls: ['./edit-channel.component.scss'],
+  selector: 'app-edit-channel-modal',
+  templateUrl: './edit-channel-modal.component.html',
+  styleUrls: ['./edit-channel-modal.component.scss'],
 })
-export class EditChannelComponent implements OnInit {
+export class EditChannelModalComponent implements OnInit {
   // === REACTIVE FORM ===
   roleForm: FormGroup = new FormGroup({});
 
@@ -25,7 +25,7 @@ export class EditChannelComponent implements OnInit {
    */
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<EditChannelComponent>,
+    public dialogRef: MatDialogRef<EditChannelModalComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       channel: Channel;
