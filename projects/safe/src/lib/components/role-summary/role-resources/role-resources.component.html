@@ -18,17 +18,32 @@
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">
-      <safe-button
-        [isIcon]="true"
-        [icon]="
-          openedResourceId === element.id
-            ? 'keyboard_arrow_up'
-            : 'keyboard_arrow_down'
-        "
-        (click)="toggleResource(element)"
-        [disabled]="loading || updating"
-      >
-      </safe-button>
+      <div style="display: flex">
+        <ng-container *ngFor="let action of permissionTypes">
+          <safe-button
+            [isIcon]="true"
+            [icon]="getIcon(action, element)"
+            [variant]="getVariant(action, element)"
+            (click)="onEditAccess(action, element)"
+            [disabled]="loading || updating"
+            [matTooltip]="
+              getTooltip(action, element) | translate: { form: element.name }
+            "
+          >
+          </safe-button>
+        </ng-container>
+        <safe-button
+          [isIcon]="true"
+          [icon]="
+            openedResourceId === element.id
+              ? 'keyboard_arrow_up'
+              : 'keyboard_arrow_down'
+          "
+          (click)="toggleResource(element)"
+          [disabled]="loading || updating"
+        >
+        </safe-button>
+      </div>
     </td>
   </ng-container>
   <ng-container matColumnDef="expandedDetail">
@@ -43,7 +58,7 @@
           element.id === openedResourceId ? 'expanded' : 'collapsed'
         "
       >
-        <table mat-table [dataSource]="forms" *ngIf="forms.length > 0">
+        <!-- <table mat-table [dataSource]="forms" *ngIf="forms.length > 0">
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>
               {{ 'common.form.one' | translate }}
@@ -95,7 +110,7 @@
           *ngIf="loadingForms"
           [columns]="['common.form.one']"
           [rows]="3"
-        ></safe-skeleton-table>
+        ></safe-skeleton-table> -->
       </div>
     </td>
   </ng-container>

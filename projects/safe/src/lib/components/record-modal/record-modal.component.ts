@@ -362,7 +362,6 @@ export class SafeRecordModalComponent implements AfterViewInit {
         revert: (version: any) =>
           this.confirmRevertDialog(this.record, version),
       },
-      panelClass: 'no-padding-dialog',
       autoFocus: false,
     });
   }

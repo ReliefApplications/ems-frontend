@@ -124,12 +124,6 @@ export const GET_RESOURCES = gql`
         node {
           id
           name
-          permissions {
-            canSee {
-              id
-              title
-            }
-          }
         }
         cursor
       }
@@ -166,6 +160,7 @@ export const GET_RESOURCES_EXTENDED = gql`
     $filter: JSON
     $sortField: String
     $sortOrder: String
+    $role: ID!
   ) {
     resources(
       first: $first
@@ -181,6 +176,7 @@ export const GET_RESOURCES_EXTENDED = gql`
           createdAt
           recordsCount
           canDelete
+          rolePermissions(role: $role)
           fields
         }
         cursor

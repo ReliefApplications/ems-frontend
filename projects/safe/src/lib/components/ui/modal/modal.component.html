@@ -1,0 +1,11 @@
+<safe-button
+  *ngIf="closable"
+  mat-dialog-close
+  class="modal-close"
+  [isIcon]="true"
+  icon="close"
+  variant="danger"
+  [matTooltip]="'common.close' | translate"
+>
+</safe-button>
+<ng-content></ng-content>
