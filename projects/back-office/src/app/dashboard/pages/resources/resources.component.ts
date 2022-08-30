@@ -82,6 +82,8 @@ export class ResourcesComponent implements OnInit {
       query: GET_RESOURCES_EXTENDED,
       variables: {
         first: DEFAULT_PAGE_SIZE,
+        sortField: 'name',
+        sortOrder: 'asc',
       },
     });
 
@@ -122,7 +124,7 @@ export class ResourcesComponent implements OnInit {
       this.loading = true;
       this.resourcesQuery.fetchMore({
         variables: {
-          first,
+          first: this.pageInfo.pageSize,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter,
         },
