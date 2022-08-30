@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { get, has } from 'lodash';
+import { has } from 'lodash';
 import {
   animate,
   state,
@@ -11,7 +11,6 @@ import {
 } from '@angular/animations';
 import { Resource } from '../../../models/resource.model';
 import { Role } from '../../../models/user.model';
-import { Form } from '../../../models/form.model';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import {
   GetResourcesQueryResponse,
@@ -198,40 +197,11 @@ export class RoleResourcesComponent implements OnInit {
    * @param resource The resource element for the resource to be toggled
    */
   toggleResource(resource: Resource): void {
-    // this.forms = [];
-    // if (resource.id === this.openedResourceId) {
-    //   this.openedResourceId = '';
-    // } else {
-    //   this.loadingForms = true;
-    //   this.openedResourceId = resource.id as string;
-    //   this.apollo
-    //     .query<GetResourceFormsQueryResponse>({
-    //       query: GET_RESOURCE_FORMS,
-    //       variables: {
-    //         resource: resource.id,
-    //       },
-    //     })
-    //     .subscribe(
-    //       (res) => {
-    //         if (res.data) {
-    //           this.forms = get(res.data.resource, 'forms', []);
-    //           for (const permission of this.permissionTypes) {
-    //             this.formsPermissions[permission] = this.forms
-    //               .filter((x) =>
-    //                 get(x, `permissions.${permission}`, [])
-    //                   .map((y: any) => y.role || y.id)
-    //                   .includes(this.role.id)
-    //               )
-    //               .map((x) => x.id as string);
-    //           }
-    //         }
-    //         this.loadingForms = false;
-    //       },
-    //       (err) => {
-    //         this.snackBar.openSnackBar(err.message, { error: true });
-    //       }
-    //     );
-    // }
+    if (resource.id === this.openedResourceId) {
+      this.openedResourceId = '';
+    } else {
+      this.openedResourceId = resource.id as string;
+    }
   }
 
   /**
