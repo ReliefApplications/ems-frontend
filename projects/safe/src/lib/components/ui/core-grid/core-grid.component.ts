@@ -826,9 +826,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         locale: 'en',
         template: this.settings.template || null,
       },
-      // height: '98%',
-      // width: '100vw',
-      // panelClass: 'full-screen-modal',
       autoFocus: false,
     });
     dialogRef.afterClosed().subscribe((value) => {

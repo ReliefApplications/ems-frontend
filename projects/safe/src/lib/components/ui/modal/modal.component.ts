@@ -14,36 +14,6 @@ export class SafeModalComponent implements OnInit {
   @Input() closable = false;
   @Input() padding = true;
   @Input() size: ModalSize | string = '';
-  /**
-   * Set the size of the modal.
-   */
-  // @Input() set size(value: string) {
-  //   switch (value) {
-  //     case ModalSize.FULLSCREEN: {
-  //       this.dialogRef.addPanelClass('fullscreen-dialog');
-  //       break;
-  //     }
-  //     case ModalSize.SMALL: {
-  //       this.dialogRef.removePanelClass('fullscreen-dialog');
-  //       this.dialogRef.updateSize('300px');
-  //       break;
-  //     }
-  //     case ModalSize.MEDIUM: {
-  //       this.dialogRef.removePanelClass('fullscreen-dialog');
-  //       this.dialogRef.updateSize('700px');
-  //       break;
-  //     }
-  //     case ModalSize.BIG: {
-  //       this.dialogRef.removePanelClass('fullscreen-dialog');
-  //       this.dialogRef.updateSize('100vw', '98%');
-  //       break;
-  //     }
-  //     default: {
-  //       this.dialogRef.removePanelClass('fullscreen-dialog');
-  //       break;
-  //     }
-  //   }
-  // }
 
   /**
    * Constructor for the modal component
