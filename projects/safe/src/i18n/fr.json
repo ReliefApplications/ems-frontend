@@ -216,6 +216,7 @@
 		"saveChanges": "Sauvegarder les changements",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
+		"send": "Envoyer",
 		"settings": "Paramètres",
 		"status": "Statut",
 		"status_active": "Actif",
@@ -707,6 +708,12 @@
 			"update": {
 				"permissions": "Permissions",
 				"title": "Modifier les permissions des rôles et les canaux de diffusion"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "Copier dans le presse-papiers",
+				"title": "Partager l'url du dashboard"
 			}
 		},
 		"user": {

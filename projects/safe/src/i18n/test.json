@@ -216,6 +216,7 @@
 		"saveChanges": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"send": "******",
 		"settings": "******",
 		"status": "******",
 		"status_active": "******",
@@ -706,6 +707,12 @@
 			},
 			"update": {
 				"permissions": "******",
+				"title": "******"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "******",
 				"title": "******"
 			}
 		},

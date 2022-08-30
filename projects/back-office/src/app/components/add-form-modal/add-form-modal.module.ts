@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AddFormComponent } from './add-form.component';
+import { AddFormModalComponent } from './add-form-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
@@ -12,13 +11,17 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeGraphQLSelectModule, SafeIconModule } from '@safe/builder';
+import {
+  SafeGraphQLSelectModule,
+  SafeIconModule,
+  SafeModalModule,
+} from '@safe/builder';
 
 /**
  * Add form module.
  */
 @NgModule({
-  declarations: [AddFormComponent],
+  declarations: [AddFormModalComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -26,7 +29,6 @@ import { SafeGraphQLSelectModule, SafeIconModule } from '@safe/builder';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatDialogModule,
     MatButtonModule,
     MatRadioModule,
     MatTooltipModule,
@@ -35,7 +37,8 @@ import { SafeGraphQLSelectModule, SafeIconModule } from '@safe/builder';
     TranslateModule,
     SafeIconModule,
     SafeGraphQLSelectModule,
+    SafeModalModule,
   ],
-  exports: [AddFormComponent],
+  exports: [AddFormModalComponent],
 })
 export class AddFormModule {}

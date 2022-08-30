@@ -1,31 +1,33 @@
-<h1 mat-dialog-title>{{ 'models.apiConfiguration.new' | translate }}</h1>
-<div mat-dialog-content>
-  <form [formGroup]="apiForm">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.name' | translate }}</mat-label>
-      <input
-        matInput
-        formControlName="name"
-        type="text"
-        [placeholder]="'common.placeholder.name' | translate"
-      />
-      <mat-error *ngIf="name?.errors">
-        {{ 'components.apiConfiguration.create.errors.name' | translate }}
-      </mat-error>
-    </mat-form-field>
-  </form>
-</div>
-<div mat-dialog-actions align="end">
-  <button mat-button (click)="onClose()">
-    {{ 'common.close' | translate }}
-  </button>
-  <button
-    mat-flat-button
-    [mat-dialog-close]="apiForm.value"
-    cdkFocusInitial
-    color="primary"
-    [disabled]="!apiForm.valid"
-  >
-    {{ 'common.create' | translate }}
-  </button>
-</div>
+<safe-modal size="small">
+  <h1 mat-dialog-title>{{ 'models.apiConfiguration.new' | translate }}</h1>
+  <div mat-dialog-content>
+    <form [formGroup]="apiForm" class="form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'common.name' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="name"
+          type="text"
+          [placeholder]="'common.placeholder.name' | translate"
+        />
+        <mat-error *ngIf="name?.errors">
+          {{ 'components.apiConfiguration.create.errors.name' | translate }}
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </div>
+  <div mat-dialog-actions align="end">
+    <safe-button (click)="onClose()">{{
+      'common.close' | translate
+    }}</safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [mat-dialog-close]="apiForm.value"
+      cdkFocusInitial
+      [disabled]="!apiForm.valid"
+    >
+      {{ 'common.create' | translate }}
+    </safe-button>
+  </div>
+</safe-modal>

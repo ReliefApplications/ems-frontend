@@ -4,11 +4,11 @@ import { SafeEmailPreviewComponent } from './email-preview.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * Preview Email Component Module.
@@ -22,10 +22,10 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule,
     MatChipsModule,
     UploadsModule,
     EditorModule,
+    SafeModalModule,
   ],
   exports: [SafeEmailPreviewComponent],
   providers: [

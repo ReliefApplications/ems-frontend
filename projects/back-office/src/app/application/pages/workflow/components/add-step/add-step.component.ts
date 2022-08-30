@@ -15,7 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from '../../graphql/queries';
-import { AddFormComponent } from '../../../../../components/add-form/add-form.component';
+import { AddFormModalComponent } from '../../../../../components/add-form-modal/add-form-modal.component';
 import { MatSelect } from '@angular/material/select';
 
 /** Default items per query for pagination */
@@ -171,9 +171,7 @@ export class AddStepComponent implements OnInit, OnDestroy {
    * Open add form component
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddFormComponent, {
-      panelClass: 'add-dialog',
-    });
+    const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };

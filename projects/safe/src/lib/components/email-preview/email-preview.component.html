@@ -1,32 +1,41 @@
-<h1 mat-dialog-title>Email Preview</h1>
-<div mat-dialog-content>
-  <form [formGroup]="form" *ngIf="form">
-    <mat-form-field>
-      <mat-label>Subject</mat-label>
-      <input matInput formControlName="subject" type="text" />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>From</mat-label>
-      <input matInput formControlName="from" type="text" />
-    </mat-form-field>
-    <mat-form-field id="previewEmailTo">
-      <mat-label>To</mat-label>
-      <mat-chip-list formControlName="to">
-        <mat-chip *ngFor="let email of form.controls.to.value">
-          {{ email }}
-        </mat-chip>
-      </mat-chip-list>
-    </mat-form-field>
-    <kendo-fileselect
-      [multiple]="true"
-      formControlName="files"
-    ></kendo-fileselect>
-    <editor [init]="editor" formControlName="html"></editor>
-  </form>
-</div>
-<div mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Dismiss</button>
-  <button mat-flat-button color="primary" [mat-dialog-close]="form.value">
-    Send
-  </button>
-</div>
+<safe-modal>
+  <h1 mat-dialog-title>Email Preview</h1>
+  <div mat-dialog-content>
+    <form [formGroup]="form" *ngIf="form">
+      <mat-form-field>
+        <mat-label>Subject</mat-label>
+        <input matInput formControlName="subject" type="text" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>From</mat-label>
+        <input matInput formControlName="from" type="text" />
+      </mat-form-field>
+      <mat-form-field id="previewEmailTo">
+        <mat-label>To</mat-label>
+        <mat-chip-list formControlName="to">
+          <mat-chip *ngFor="let email of form.controls.to.value">
+            {{ email }}
+          </mat-chip>
+        </mat-chip-list>
+      </mat-form-field>
+      <kendo-fileselect
+        [multiple]="true"
+        formControlName="files"
+      ></kendo-fileselect>
+      <editor [init]="editor" formControlName="html"></editor>
+    </form>
+  </div>
+  <div mat-dialog-actions align="end">
+    <safe-button mat-dialog-close>
+      {{ 'common.dismiss' | translate }}
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [mat-dialog-close]="form.value"
+      cdkFocusInitial
+    >
+      {{ 'common.send' | translate }}
+    </safe-button>
+  </div>
+</safe-modal>

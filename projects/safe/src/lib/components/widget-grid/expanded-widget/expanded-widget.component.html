@@ -1,15 +1,10 @@
-<safe-button
-  mat-dialog-close
-  [isIcon]="true"
-  icon="close"
-  variant="danger"
-  class="close-settings"
->
-</safe-button>
-<div mat-dialog-content class="mat-dialog-content">
-  <safe-widget
-    [widget]="data.widget"
-    [header]="false"
-    (goToNextStep)="goToNextStep.emit($event)"
-  ></safe-widget>
-</div>
+<safe-modal [closable]="true" size="fullscreen">
+  <div mat-dialog-content class="mat-dialog-content">
+    <safe-widget
+      [widget]="data.widget"
+      [header]="false"
+      (goToNextStep)="goToNextStep.emit($event)"
+    ></safe-widget>
+  </div>
+</safe-modal>
+
