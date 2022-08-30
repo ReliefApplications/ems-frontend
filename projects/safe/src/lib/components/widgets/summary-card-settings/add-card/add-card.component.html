@@ -30,9 +30,9 @@
         | translate
     }}
   </h2>
-  <span *ngIf="data.isDynamic">
-    What is a dynamic summary card ?
-  </span>
+  <div class="info-text" *ngIf="data.isDynamic">
+    {{ 'components.widget.settings.summaryCard.create.tipDynamic' | translate }}
+  </div>
   <mat-divider></mat-divider>
   <h2>
     {{
