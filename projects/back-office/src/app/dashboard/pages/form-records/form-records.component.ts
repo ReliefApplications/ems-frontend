@@ -209,7 +209,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     const structure = JSON.parse(this.form.structure);
     if (structure && structure.pages) {
       for (const page of JSON.parse(this.form.structure).pages) {
-        extractColumns(page, columns);
+        extractColumns(page, columns, this.form.userAccessToFields);
       }
     }
     columns = columns.concat(DEFAULT_COLUMNS);

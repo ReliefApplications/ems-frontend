@@ -1,8 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { FormsTabComponent } from './forms-tab/forms-tab.component';
-import { LayoutsTabComponent } from './layouts-tab/layouts-tab.component';
-import { RecordsTabComponent } from './records-tab/records-tab.component';
 import { ResourceComponent } from './resource.component';
 
 /** List of routes of Resource page module */

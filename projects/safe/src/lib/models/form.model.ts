@@ -36,6 +36,9 @@ export interface Form {
   core?: boolean;
   records?: Record[];
   fields?: any[];
+  userAccessToFields?: {
+    [key: string]: { canSee: boolean; canUpdate: boolean };
+  };
   permissions?: any;
   resource?: Resource;
   canSee?: boolean;

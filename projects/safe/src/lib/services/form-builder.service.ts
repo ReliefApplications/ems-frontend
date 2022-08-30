@@ -38,11 +38,13 @@ export class SafeFormBuilderService {
     }
     if (fields.length > 0) {
       for (const f of fields) {
+        const accessible = !!f.permissions?.canSee;
+        const editable = !!f.permissions?.canUpdate;
         const hidden: boolean = (f.canSee !== undefined && !f.canSee) || false;
         const disabled: boolean =
           (f.canUpdate !== undefined && !f.canUpdate) || false;
-        survey.getQuestionByName(f.name).visible = !hidden;
-        survey.getQuestionByName(f.name).readOnly = disabled;
+        survey.getQuestionByName(f.name).visible = !hidden && accessible;
+        survey.getQuestionByName(f.name).readOnly = disabled || !editable;
       }
     }
     return survey;

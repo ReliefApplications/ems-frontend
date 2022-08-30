@@ -160,7 +160,9 @@ export class SafeGridService {
           }
         }
       })
-    ).sort((a, b) => a.order - b.order);
+    )
+      .filter((f) => f.meta.permissions?.canSee)
+      .sort((a, b) => a.order - b.order);
   }
 
   /**
