@@ -1,9 +1,15 @@
 import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
+import {
+  GetQueryMetaDataQueryResponse,
+  GetQueryTypes,
+  GET_QUERY_META_DATA,
+  GET_QUERY_TYPES,
+} from '../graphql/queries';
 import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
+import get from 'lodash/get';
 
 /** List of fields part of the schema but not selectable */
 const NON_SELECTABLE_FIELDS = ['canUpdate', 'canDelete'];
@@ -213,26 +219,28 @@ export class QueryBuilderService {
             return x.name + '\n';
           }
           case 'LIST': {
-            return x.fields && x.fields.length > 0
-              ? `${x.name} {
-                ${
-                  x.fields && x.fields.length > 0
-                    ? this.buildMetaFields(x.fields)
-                    : ''
-                }
-              }` + '\n'
-              : x.name + '\n';
+            const subFields = get(x, 'fields', []) || get(x, 'type.fields', []);
+            if (subFields.length > 0) {
+              return (
+                `${x.name} {
+              ${this.buildMetaFields(subFields)}
+            }` + '\n'
+              );
+            } else {
+              return '';
+            }
           }
           case 'OBJECT': {
-            return (
-              `${x.name} {
-            ${
-              x.fields && x.fields.length > 0
-                ? this.buildMetaFields(x.fields)
-                : ''
+            const subFields = get(x, 'fields', []) || get(x, 'type.fields', []);
+            if (subFields.length > 0) {
+              return (
+                `${x.name} {
+              ${this.buildMetaFields(subFields)}
+            }` + '\n'
+              );
+            } else {
+              return '';
             }
-          }` + '\n'
-            );
           }
           default: {
             return '';
@@ -316,6 +324,47 @@ export class QueryBuilderService {
     } else {
       return null;
     }
+  }
+
+  /**
+   * Get source query ( form / resource ) from query
+   *
+   * @param query custom query
+   * @returns apollo query to get source
+   */
+  public getQuerySource(query: any): Observable<ApolloQueryResult<any>> | null {
+    if (query) {
+      const sourceQuery = gql`
+      query GetSourceQuery {
+        _${query.name}Meta {
+          _source
+        }
+      }
+    `;
+      return this.apollo.query<any>({
+        query: sourceQuery,
+        variables: {},
+        fetchPolicy: 'cache-first',
+      });
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Get metadata of form or resource
+   *
+   * @param id id of form or resource
+   * @returns metadata query
+   */
+  public getQueryMetaData(id: string) {
+    return this.apollo.query<GetQueryMetaDataQueryResponse>({
+      query: GET_QUERY_META_DATA,
+      variables: {
+        id,
+        fetchPolicy: 'cache-first',
+      },
+    });
   }
 
   /**

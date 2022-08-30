@@ -17,16 +17,15 @@
         </mat-form-field>
       </div>
 
+      <!-- DEFINITION OF FILTERS -->
       <div class="field-form">
         <span class="field-name">{{
           'components.queryBuilder.style.edit.criteria' | translate
         }}</span>
-        <safe-tab-filter
+        <safe-filter
           [form]="$any(form?.controls?.filter)"
-          [fields]="scalarFields"
-          [query]="query"
-        >
-        </safe-tab-filter>
+          [fields]="filterFields"
+        ></safe-filter>
       </div>
 
       <ng-container formGroupName="background">

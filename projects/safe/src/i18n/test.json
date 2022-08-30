@@ -216,6 +216,7 @@
 		"saveChanges": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"send": "******",
 		"settings": "******",
 		"status": "******",
 		"status_active": "******",
@@ -388,9 +389,11 @@
 		},
 		"emailBuilder": {
 			"body": "******",
+			"default": "******",
 			"distribution": "******",
 			"fields": "******",
-			"subject": "******"
+			"subject": "******",
+			"withoutRecords": "******"
 		},
 		"form": {
 			"create": {
@@ -561,6 +564,10 @@
 				"sortingDisabled": "******",
 				"style": "******"
 			},
+			"pagination": {
+				"first": "******",
+				"title": "******"
+			},
 			"sort": {
 				"ascending": "******",
 				"descending": "******",
@@ -597,6 +604,9 @@
 						"useExpression": "******",
 						"usePicker": "******"
 					}
+				},
+				"pagination": {
+					"first": "******"
 				}
 			}
 		},
@@ -647,9 +657,6 @@
 		},
 		"referenceData": {
 			"create": {
-				"errors": {
-					"name": "******"
-				},
 				"title": "******"
 			},
 			"delete": {
@@ -700,6 +707,12 @@
 			},
 			"update": {
 				"permissions": "******",
+				"title": "******"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "******",
 				"title": "******"
 			}
 		},
@@ -1323,9 +1336,6 @@
 		},
 		"referenceData": {
 			"csv": "******",
-			"errors": {
-				"name": "******"
-			},
 			"fields": "******",
 			"graphQLFilter": "******",
 			"path": "******",

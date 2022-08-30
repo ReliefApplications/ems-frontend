@@ -477,10 +477,7 @@
         </ng-template>
       </kendo-grid-column>
       <!-- REFERENCE DATA MULTI SELECT -->
-      <kendo-grid-column-group
-        [title]="field.title"
-        *ngIf="field.meta && field.meta.type === 'referenceData'"
-      >
+      <ng-container *ngIf="field.meta && field.meta.type === 'referenceData'">
         <ng-container *ngFor="let subField of field.subFields">
           <kendo-grid-column
             [field]="subField.name"
@@ -507,7 +504,7 @@
             </ng-template>
           </kendo-grid-column>
         </ng-container>
-      </kendo-grid-column-group>
+      </ng-container>
       <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->
       <kendo-grid-column
         *ngIf="
