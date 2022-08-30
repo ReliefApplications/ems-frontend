@@ -79,6 +79,14 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
         </table>
+        <safe-resource-fields
+          [resource]="element"
+          [role]="role"
+          [updating]="updating"
+          (onToggle)="
+            onEditFieldAccess($event.resource, $event.field, $event.permission)
+          "
+        ></safe-resource-fields>
         <div *ngIf="forms.length === 0 && !loadingForms" class="empty-form">
           <safe-icon icon="folder_open"></safe-icon>
           <h3>{{ 'components.role.summary.noForms' | translate }}</h3>

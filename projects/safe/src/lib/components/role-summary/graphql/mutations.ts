@@ -3,6 +3,7 @@ import { Page } from '../../../models/page.model';
 import { Step } from '../../../models/step.model';
 import { Role } from '../../../models/user.model';
 import { Form } from '../../../models/form.model';
+import { Resource } from '../../../models/resource.model';
 
 /** Edit role mutation of role summary component */
 export const EDIT_ROLE = gql`
@@ -113,4 +114,19 @@ export const EDIT_FORM_ACCESS = gql`
 /** Interface of Edit Form Access mutation response */
 export interface EditFormAccessMutationResponse {
   editForm: Form;
+}
+
+/** Edits the permissions for a resource field */
+export const EDIT_RESOURCE_FIELD_PERMISSION = gql`
+  mutation editResourceFields($id: ID!, $fieldsPermissions: JSON) {
+    editResource(id: $id, fieldsPermissions: $fieldsPermissions) {
+      id
+      fields
+    }
+  }
+`;
+
+/** Interface of edit resource field permission mutation response */
+export interface EditResourceFieldPermissionMutationResponse {
+  editResource: Resource;
 }

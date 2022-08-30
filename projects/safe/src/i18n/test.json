@@ -684,10 +684,14 @@
 				"title": "******"
 			},
 			"tooltip": {
+				"allowFieldAccessibility": "****** {{field}}",
+				"allowFieldUpdate": "****** {{field}}",
 				"allowRecordAccessibility": "****** {{form}}",
 				"allowRecordCreation": "****** {{form}}",
 				"allowRecordDeletion": "****** {{form}}",
 				"allowRecordUpdate": "****** {{form}}",
+				"disallowFieldAccessibility": "****** {{field}}",
+				"disallowFieldUpdate": "****** {{field}}",
 				"disallowRecordAccessibility": "****** {{form}}",
 				"disallowRecordCreation": "****** {{form}}",
 				"disallowRecordDeletion": "****** {{form}}",

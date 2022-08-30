@@ -684,10 +684,14 @@
 				"title": "Résumé"
 			},
 			"tooltip": {
+				"allowFieldAccessibility": "Autoriser ce rôle à voir le champ {{field}}",
+				"allowFieldUpdate": "Autoriser ce rôle à mettre à jour le champ {{field}}",
 				"allowRecordAccessibility": "Autoriser ce rôle à voir les enregistrements de {{form}}",
 				"allowRecordCreation": "Autoriser ce rôle à créer des enregistrements dans {{form}}",
 				"allowRecordDeletion": "Autoriser ce rôle à supprimer des enregistrements de {{form}}",
 				"allowRecordUpdate": "Autoriser ce rôle à mettre à jour les enregistrements de {{form}}",
+				"disallowFieldAccessibility": "Interdire ce rôle pour voir le champ {{field}}",
+				"disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
 				"disallowRecordAccessibility": "Interdire ce rôle pour voir les enregistrements de {{form}}",
 				"disallowRecordCreation": "Interdire à ce rôle de créer des enregistrements dans {{form}}",
 				"disallowRecordDeletion": "Interdire ce rôle pour supprimer des enregistrements de {{form}}",

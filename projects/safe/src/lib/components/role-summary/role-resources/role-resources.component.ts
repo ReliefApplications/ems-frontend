@@ -21,7 +21,9 @@ import {
 } from '../graphql/queries';
 import {
   EditFormAccessMutationResponse,
+  EDIT_RESOURCE_FIELD_PERMISSION,
   EDIT_FORM_ACCESS,
+  EditResourceFieldPermissionMutationResponse,
 } from '../graphql/mutations';
 
 /** Default page size  */
@@ -340,6 +342,66 @@ export class RoleResourcesComponent implements OnInit {
             }
           }
           this.updating = false;
+        },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+          this.updating = false;
+        }
+      );
+  }
+
+  /**
+   * Edits the specified field permissions array
+   *
+   * @param resource the resource containing the field to be updated
+   * @param field the field to be edited
+   * @param field.name the name of the field to be edited
+   * @param field.canSee whether the field can be seen
+   * @param field.canUpdate whether the field can be edited
+   * @param action the permission to be edited
+   */
+  onEditFieldAccess(
+    resource: Resource,
+    field: { name: string; canSee: boolean; canUpdate: boolean },
+    action: 'canSee' | 'canUpdate'
+  ): void {
+    if (!this.role.id) return;
+
+    this.updating = true;
+    const updatedPermissions: {
+      add?: { field: string; role: string };
+      remove?: { field: string; role: string };
+    } = {};
+
+    if (field[action]) {
+      Object.assign(updatedPermissions, {
+        remove: { field: field.name, role: this.role.id },
+      });
+    } else
+      Object.assign(updatedPermissions, {
+        add: { field: field.name, role: this.role.id },
+      });
+
+    this.apollo
+      .mutate<EditResourceFieldPermissionMutationResponse>({
+        mutation: EDIT_RESOURCE_FIELD_PERMISSION,
+        variables: {
+          id: resource.id,
+          fieldsPermissions: {
+            [action]: updatedPermissions,
+          },
+        },
+      })
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            const editedResource = this.resources.data.find(
+              (r) => r.id === resource.id
+            );
+            this.updating = false;
+            if (!editedResource) return;
+            editedResource.fields = res.data.editResource.fields;
+          }
         },
         (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });

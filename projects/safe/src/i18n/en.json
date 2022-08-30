@@ -684,10 +684,14 @@
 				"title": "Summary"
 			},
 			"tooltip": {
+				"allowFieldAccessibility": "Allow this role to see the field {{field}}",
+				"allowFieldUpdate": "Allow this role to update the field {{field}}",
 				"allowRecordAccessibility": "Allow this role to see records of {{form}}",
 				"allowRecordCreation": "Allow this role to create records with {{form}}",
 				"allowRecordDeletion": "Allow this role to remove records from {{form}}",
 				"allowRecordUpdate": "Allow this role to update records from {{form}}",
+				"disallowFieldAccessibility": "Disallow this role to see the field {{field}}",
+				"disallowFieldUpdate": "Disallow this role to update the field {{field}}",
 				"disallowRecordAccessibility": "Disallow this role to see records of {{form}}",
 				"disallowRecordCreation": "Disallow this role to create records with {{form}}",
 				"disallowRecordDeletion": "Disallow this role to remove records from {{form}}",

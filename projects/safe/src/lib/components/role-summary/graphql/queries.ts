@@ -181,6 +181,7 @@ export const GET_RESOURCES_EXTENDED = gql`
           createdAt
           recordsCount
           canDelete
+          fields
         }
         cursor
       }
