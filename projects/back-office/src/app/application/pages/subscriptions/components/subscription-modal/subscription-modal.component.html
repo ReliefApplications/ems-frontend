@@ -87,7 +87,9 @@
             'components.channel.dropdown.select' | translate
           }}</mat-label>
           <mat-select formControlName="channel">
-            <mat-option *ngFor="let channel of data.channels" [value]="channel.id"
+            <mat-option
+              *ngFor="let channel of data.channels"
+              [value]="channel.id"
               >{{ channel.title }}
             </mat-option>
           </mat-select>

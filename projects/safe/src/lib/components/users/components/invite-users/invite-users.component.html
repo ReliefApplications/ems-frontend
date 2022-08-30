@@ -75,7 +75,9 @@
               <ng-container *ngIf="positionAttributes">
                 <textarea
                   rows="2"
-                  [formControl]="$any(positionAttributes.at(index).get('value'))"
+                  [formControl]="
+                    $any(positionAttributes.at(index).get('value'))
+                  "
                   kendoGridFocusable
                   class="k-textbox"
                 ></textarea>

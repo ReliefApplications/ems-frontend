@@ -22,7 +22,8 @@
         [block]="true"
         (click)="onCreate()"
         >{{
-          'components.widget.settings.grid.layouts.add.choice.create' | translate
+          'components.widget.settings.grid.layouts.add.choice.create'
+            | translate
         }}</safe-button
       >
     </div>
@@ -35,7 +36,8 @@
         ></safe-button>
         <div>
           {{
-            'components.widget.settings.grid.layouts.add.choice.load' | translate
+            'components.widget.settings.grid.layouts.add.choice.load'
+              | translate
           }}
         </div>
       </div>
@@ -52,8 +54,6 @@
     </div>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{
-      'common.close' | translate
-    }}</safe-button>
+    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
   </div>
 </safe-modal>

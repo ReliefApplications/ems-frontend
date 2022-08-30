@@ -54,11 +54,15 @@
               class="cursor-pointer"
               variant="grey"
               matSuffix
-              [matTooltip]="'components.pullJob.modal.hint.schedule' | translate"
+              [matTooltip]="
+                'components.pullJob.modal.hint.schedule' | translate
+              "
             ></safe-icon>
           </mat-form-field>
           <mat-form-field appearance="outline" style="flex: 1">
-            <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
+            <mat-label>{{
+              'common.apiConfiguration.one' | translate
+            }}</mat-label>
             <safe-graphql-select
               valueField="id"
               textField="name"
@@ -184,7 +188,10 @@
               [formGroup]="$any(element)"
               *ngFor="let element of mappingArray.controls; index as i"
             >
-              <mat-form-field appearance="outline" style="margin-bottom: -1.25em">
+              <mat-form-field
+                appearance="outline"
+                style="margin-bottom: -1.25em"
+              >
                 <mat-label>{{ 'common.field.one' | translate }}</mat-label>
                 <mat-select formControlName="name">
                   <mat-option

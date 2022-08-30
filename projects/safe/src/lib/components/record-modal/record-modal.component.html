@@ -22,7 +22,9 @@
           <span>{{ data.compareTo.createdAt | safeDate: 'short' }}</span>
         </div>
         <div class="version-info">
-          <div>{{ 'components.record.history.version.current' | translate }}</div>
+          <div>
+            {{ 'components.record.history.version.current' | translate }}
+          </div>
           <span>{{ record.modifiedAt | safeDate: 'short' }}</span>
         </div>
       </div>
@@ -57,22 +59,22 @@
 
     <ng-container *ngIf="pages$ | async as pages">
       <safe-button
-      category="secondary"
-      variant="primary"
-      cdkFocusInitial
-      *ngIf="pages.length > 1"
-      (click)="survey.prevPage()"
-      [disabled]="survey.isFirstPage"
+        category="secondary"
+        variant="primary"
+        cdkFocusInitial
+        *ngIf="pages.length > 1"
+        (click)="survey.prevPage()"
+        [disabled]="survey.isFirstPage"
       >
         {{ 'common.previous' | translate }}
       </safe-button>
       <safe-button
-      category="secondary"
-      variant="primary"
-      cdkFocusInitial
-      *ngIf="pages.length > 1"
-      (click)="survey.nextPage()"
-      [disabled]="survey.isLastPage"
+        category="secondary"
+        variant="primary"
+        cdkFocusInitial
+        *ngIf="pages.length > 1"
+        (click)="survey.nextPage()"
+        [disabled]="survey.isLastPage"
       >
         {{ 'common.next' | translate }}
       </safe-button>
@@ -84,7 +86,10 @@
       *ngIf="canEdit"
       (click)="onEdit()"
     >
-      {{ 'common.editObject' | translate: { name: 'common.record.one' | translate } }}
+      {{
+        'common.editObject'
+          | translate: { name: 'common.record.one' | translate }
+      }}
     </safe-button>
   </mat-dialog-actions>
 </safe-modal>
