@@ -4,7 +4,6 @@ import { SafeEmailPreviewComponent } from './email-preview.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { UploadsModule } from '@progress/kendo-angular-upload';
@@ -23,7 +22,6 @@ import { SafeModalModule } from '../ui/modal/modal.module';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule,
     MatChipsModule,
     UploadsModule,
     EditorModule,

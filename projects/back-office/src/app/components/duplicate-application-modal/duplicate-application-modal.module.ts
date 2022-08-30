@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DuplicateApplicationComponent } from './duplicate-application.component';
+import { DuplicateApplicationModalComponent } from './duplicate-application-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -13,7 +13,7 @@ import { SafeModalModule } from '@safe/builder';
  * Duplicate Application module.
  */
 @NgModule({
-  declarations: [DuplicateApplicationComponent],
+  declarations: [DuplicateApplicationModalComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -25,6 +25,6 @@ import { SafeModalModule } from '@safe/builder';
     TranslateModule,
     SafeModalModule,
   ],
-  exports: [DuplicateApplicationComponent],
+  exports: [DuplicateApplicationModalComponent],
 })
-export class DuplicateApplicationModule {}
+export class DuplicateApplicationModalModule {}

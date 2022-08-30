@@ -1,4 +1,4 @@
-<safe-modal>
+<safe-modal [size]="isSearchActivated ? 'big' : 'medium'">
   <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
   <div *ngIf="!loading">
     <h1 mat-dialog-title>
@@ -10,8 +10,8 @@
     <div mat-dialog-content>
       <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated">
         <div class="form-group">
-          <mat-form-field>
-            <mat-label>Record</mat-label>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'common.record.one' | translate }}</mat-label>
             <mat-select formControlName="record">
               <mat-option
                 *ngFor="let record of records$ | async"

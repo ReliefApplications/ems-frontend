@@ -1,23 +1,21 @@
-<safe-modal size="medium">
+<safe-modal size="small">
   <h1 mat-dialog-title>
     {{ 'components.referenceData.create.title' | translate }}
   </h1>
   <div mat-dialog-content>
-    <form [formGroup]="referenceForm">
-      <div>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.name' | translate }}</mat-label>
-          <input
-            matInput
-            formControlName="name"
-            type="text"
-            [placeholder]="'common.placeholder.name' | translate"
-          />
-          <mat-error *ngIf="name?.errors">
-            {{ 'components.referenceData.create.errors.name' | translate }}
-          </mat-error>
-        </mat-form-field>
-      </div>
+    <form [formGroup]="referenceForm" class="form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'common.name' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="name"
+          type="text"
+          [placeholder]="'common.placeholder.name' | translate"
+        />
+        <mat-error *ngIf="name?.errors">
+          {{ 'components.referenceData.create.errors.name' | translate }}
+        </mat-error>
+      </mat-form-field>
     </form>
   </div>
   <div mat-dialog-actions align="end">

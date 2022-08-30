@@ -11,14 +11,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SafeSnackBarService } from '../../services/snackbar.service';
 import { User, Role, Permissions } from '../../models/user.model';
 import {
-  EditUserMutationResponse,
-  EDIT_USER,
   DELETE_USERS,
   DeleteUsersMutationResponse,
   AddUsersMutationResponse,
   ADD_USERS,
 } from './graphql/mutations';
-import { SafeEditUserComponent } from './components/edit-user/edit-user.component';
 import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
@@ -187,63 +184,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               );
             }
           });
-      }
-    });
-  }
-
-  /**
-   * Show a dialog to edit a user
-   *
-   * @param user The user to edit
-   */
-  onEdit(user: User): void {
-    const dialogRef = this.dialog.open(SafeEditUserComponent, {
-      data: {
-        user,
-        availableRoles: this.roles,
-        ...(this.positionAttributeCategories && {
-          positionAttributeCategories: this.positionAttributeCategories,
-        }),
-      },
-    });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-        if (this.applicationService) {
-          this.applicationService.editUser(user, value);
-        } else {
-          this.apollo
-            .mutate<EditUserMutationResponse>({
-              mutation: EDIT_USER,
-              variables: {
-                id: user.id,
-                roles: value.roles,
-              },
-            })
-            .subscribe((res) => {
-              if (res.data) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'models.user.notifications.rolesUpdated',
-                    {
-                      username: user.username,
-                    }
-                  )
-                );
-                this.users.data = this.users.data.map((x) => {
-                  if (x.id === user.id) {
-                    x = {
-                      ...x,
-                      roles: res.data?.editUser?.roles?.filter(
-                        (role) => !role.application
-                      ),
-                    };
-                  }
-                  return x;
-                });
-                this.authService.getProfile();
-              }
-            });
-        }
       }
     });
   }

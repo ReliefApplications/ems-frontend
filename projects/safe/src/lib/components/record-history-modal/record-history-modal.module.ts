@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecordHistoryModalComponent } from './record-history-modal.component';
-import { MatDialogModule } from '@angular/material/dialog';
 import { SafeRecordHistoryModule } from '../record-history/record-history.module';
 import { SafeModalModule } from '../ui/modal/modal.module';
 
@@ -11,12 +10,7 @@ import { SafeModalModule } from '../ui/modal/modal.module';
  */
 @NgModule({
   declarations: [RecordHistoryModalComponent],
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    SafeRecordHistoryModule,
-    SafeModalModule,
-  ],
+  imports: [CommonModule, SafeRecordHistoryModule, SafeModalModule],
   exports: [RecordHistoryModalComponent],
 })
 export class SafeRecordHistoryModalModule {}
