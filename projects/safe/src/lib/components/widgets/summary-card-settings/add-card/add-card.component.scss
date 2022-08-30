@@ -1,3 +1,8 @@
+.templates {
+  display: flex;
+  gap: 34px;
+}
+
 .close-settings {
   position: absolute;
   top: 0;
@@ -13,4 +18,8 @@ mat-radio-group {
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+.cards-description {
+  color: #939393
 }

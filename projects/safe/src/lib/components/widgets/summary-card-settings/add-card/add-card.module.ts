@@ -8,10 +8,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeAddCardComponent } from './add-card.component';
+import { MatRippleModule } from '@angular/material/core';
+import { SafeCardTemplateComponent } from './card-template/card-template.component';
+import { SafeIconModule } from '../../../ui/icon/icon.module';
 
 /** Module to add new card in summary card widget */
 @NgModule({
-  declarations: [SafeAddCardComponent],
+  declarations: [SafeAddCardComponent, SafeCardTemplateComponent],
   imports: [
     CommonModule,
     MatTooltipModule,
@@ -21,7 +24,9 @@ import { SafeAddCardComponent } from './add-card.component';
     TranslateModule,
     MatRadioModule,
     MatDividerModule,
+    MatRippleModule,
+    SafeIconModule,
   ],
-  exports: [SafeAddCardComponent],
+  exports: [SafeAddCardComponent, SafeCardTemplateComponent],
 })
 export class SafeAddCardModule {}

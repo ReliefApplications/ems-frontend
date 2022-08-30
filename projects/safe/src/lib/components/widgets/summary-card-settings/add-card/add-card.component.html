@@ -30,8 +30,13 @@
         | translate
     }}
   </h2>
-  <div class="info-text" *ngIf="data.isDynamic">
+  <div class="cards-description" *ngIf="data.isDynamic">
     {{ 'components.widget.settings.summaryCard.create.tipDynamic' | translate }}
+  </div>
+  <div class="templates">  
+    <safe-card-template></safe-card-template>
+    <safe-card-template></safe-card-template>
+    <safe-card-template></safe-card-template>
   </div>
   <mat-divider></mat-divider>
   <h2>

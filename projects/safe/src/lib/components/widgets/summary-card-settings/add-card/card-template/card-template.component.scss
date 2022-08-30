@@ -1,0 +1,21 @@
+.cardTemplate {
+    width: 200px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 1px solid #2f383e33;
+  
+    safe-icon {
+      margin-top: 72px;
+    }
+  
+    span {
+      font-weight: 500;
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+  }
