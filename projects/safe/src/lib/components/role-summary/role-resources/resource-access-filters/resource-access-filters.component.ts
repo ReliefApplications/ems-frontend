@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { cloneDeep, isArray, isEqual } from 'lodash';
+import { cloneDeep, get, isArray, isEqual } from 'lodash';
 import {
   animate,
   state,
@@ -74,44 +74,34 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
   public permissionTypes = Object.values(Permission);
   public isEqual = isEqual;
 
-  public resource: Resource;
+  @Input() resource!: Resource;
+  @Input() role!: string;
+  @Input() permissions?: ResourceRolePermissions;
+
   public fields: any;
-  private role: string;
-  private metaQuery$: Observable<ApolloQueryResult<any>> | null;
-  public metaFields: any;
+  public filterFields: any[] = [];
 
   public displayedColumns: string[] = ['filter', 'actions'];
   public accesses = new MatTableDataSource<AccessPermissions>([]);
-  private initialAccesses: AccessPermissions[];
+  private initialAccesses!: AccessPermissions[];
   public editingAccess?: AccessPermissions;
   public editingAccessResource?: FormGroup;
 
   /**
    * Modal for the definition of access/permissions for a given resource
    *
-   * @param data Object containing the name and initial permissions for a resource and role
-   * @param data.resource The selected resource
-   * @param data.permissions The permissions for the selected resource
-   * @param data.role The role id
    * @param translate Angular translate service
    * @param queryBuilder Shared query builder service
-   * @param aggregationBuilder Shared aggregation builder service
    * @param dialogRef Dialog ref
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      resource: Resource;
-      permissions?: ResourceRolePermissions;
-      role?: string;
-    },
     public translate: TranslateService,
-    private queryBuilder: QueryBuilderService,
-    private aggregationBuilder: AggregationBuilderService,
-    private dialogRef: MatDialogRef<SafeRoleResourceFiltersComponent>
-  ) {
-    if (data.permissions) {
-      const cpyPerm = cloneDeep(data.permissions);
+    private queryBuilder: QueryBuilderService
+  ) {}
+
+  ngOnInit(): void {
+    if (this.permissions) {
+      const cpyPerm = cloneDeep(this.permissions);
 
       // filters out permissions without access object defined
       Object.values(Permission).forEach((permission) => {
@@ -135,20 +125,17 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
       });
     }
     this.initialAccesses = cloneDeep(this.accesses.data);
-    this.resource = data.resource;
-    this.role = data.role || '';
-    console.log(this.resource.queryName);
-    this.fields = this.queryBuilder.getFields(this.resource.queryName || '');
-
-    this.metaQuery$ = this.queryBuilder.buildMetaQuery({
-      fields: this.aggregationBuilder.formatFields(this.fields || []),
-      name: this.resource.queryName,
-    });
-    if (this.metaQuery$) {
-      this.metaQuery$.subscribe((res) => {
-        this.metaFields = res.data[`_${this.resource.queryName}Meta`];
+    this.queryBuilder
+      .getQueryMetaData(this.resource.id as string)
+      .subscribe((res) => {
+        if (res.data.resource) {
+          const filterFields = get(res.data.resource, 'metadata', [])
+            .filter((x: any) => x.filterable !== false)
+            .map((x: any) => ({ ...x }));
+          console.log(filterFields);
+          this.filterFields = filterFields;
+        }
       });
-    }
   }
 
   /**
@@ -260,30 +247,30 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
    * @returns the prettified value
    */
   getPrettyValue(field: string, value: any) {
-    if (!this.metaFields) return value;
-    const fieldMeta = this.metaFields[field];
-    if (!fieldMeta) return value;
+    return value;
+    // const fieldMeta = this.metaFields[field];
+    // if (!fieldMeta) return value;
 
-    switch (fieldMeta.type) {
-      case 'dropdown':
-      case 'radiogroup':
-        const choice = fieldMeta.choices.find((x: any) => x.value === value);
-        return choice ? choice.text : value;
-      case 'tagbox':
-      case 'checkbox':
-        if (!isArray(value)) return value;
-        return value.map((op: any) => {
-          const choices = fieldMeta.choices.find((x: any) => x.value === op);
-          return choices ? choices.text : op;
-        });
-      case 'boolean':
-        if (typeof value !== 'boolean') return value;
-        return value
-          ? this.translate.instant('common.true')
-          : this.translate.instant('common.false');
-      default:
-        return value;
-    }
+    // switch (fieldMeta.type) {
+    //   case 'dropdown':
+    //   case 'radiogroup':
+    //     const choice = fieldMeta.choices.find((x: any) => x.value === value);
+    //     return choice ? choice.text : value;
+    //   case 'tagbox':
+    //   case 'checkbox':
+    //     if (!isArray(value)) return value;
+    //     return value.map((op: any) => {
+    //       const choices = fieldMeta.choices.find((x: any) => x.value === op);
+    //       return choices ? choices.text : op;
+    //     });
+    //   case 'boolean':
+    //     if (typeof value !== 'boolean') return value;
+    //     return value
+    //       ? this.translate.instant('common.true')
+    //       : this.translate.instant('common.false');
+    //   default:
+    //     return value;
+    // }
   }
 
   /** Adds new access filter to access list and toggles the edition for it */
@@ -417,8 +404,6 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
         }
       });
     });
-    this.dialogRef.close({ id: this.resource.id, permissions: ops });
+    // this.dialogRef.close({ id: this.resource.id, permissions: ops });
   }
-
-  ngOnInit(): void {}
 }

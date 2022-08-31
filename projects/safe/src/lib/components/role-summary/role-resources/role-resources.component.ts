@@ -13,8 +13,10 @@ import { Resource } from '../../../models/resource.model';
 import { Role } from '../../../models/user.model';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import {
+  GetResourceQueryResponse,
   GetResourcesQueryResponse,
-  GET_RESOURCES_EXTENDED,
+  GET_RESOURCE,
+  GET_RESOURCES,
 } from '../graphql/queries';
 import {
   EditResourceAccessMutationResponse,
@@ -28,6 +30,17 @@ import { Permission, ResourceRolePermissions } from './permissions.types';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
+
+/** Interface of table elements */
+interface TableResourceElement {
+  resource: Resource;
+  permissions: {
+    name: string;
+    icon: string;
+    variant: string;
+    tooltip: string;
+  }[];
+}
 
 /**
  * Resource tab of Role Summary component.
@@ -48,33 +61,24 @@ const DEFAULT_PAGE_SIZE = 10;
   ],
 })
 export class RoleResourcesComponent implements OnInit {
-  // === RESOURCES ===
-  @Input() role!: Role;
-  public loading = true;
-  public updating = false;
-  public resources = new MatTableDataSource<Resource>([]);
-  private resourcesPermissions: {
-    resource?: string;
-    permissions: ResourceRolePermissions;
-  }[] = [];
-  public cachedResources: Resource[] = [];
-  public openedResourceId = '';
-  public displayedColumns: string[] = ['name', 'actions'];
-  private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  @Input() role!: Role; // Opened role
 
-  // === FORMS ===
-  public permissionTypes = [
-    Permission.SEE,
-    Permission.CREATE,
-    Permission.UPDATE,
-    Permission.DELETE,
-  ];
+  // === TABLE ELEMENTS ===
+  private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public displayedColumns: string[] = ['name', 'actions'];
+  public resources = new MatTableDataSource<TableResourceElement>([]);
+  public cachedResources: Resource[] = [];
+
+  // === SINGLE ELEMENT ===
+  public updating = false; // Update of resource
+  public openedResource?: Resource;
 
   // === FILTERING ===
   public filter: any;
   public filterLoading = false;
 
   // === PAGINATION ===
+  public loading = true; // First load && pagination
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
@@ -86,19 +90,14 @@ export class RoleResourcesComponent implements OnInit {
    * Resource tab of Role Summary component.
    *
    * @param apollo Apollo client service
-   * @param dialog Material dialog service
    * @param snackBar shared snackbar service
    */
-  constructor(
-    private apollo: Apollo,
-    private dialog: MatDialog,
-    private snackBar: SafeSnackBarService
-  ) {}
+  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
 
   /** Load the resources. */
   ngOnInit(): void {
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
-      query: GET_RESOURCES_EXTENDED,
+      query: GET_RESOURCES,
       variables: {
         first: DEFAULT_PAGE_SIZE,
         sortField: 'name',
@@ -109,9 +108,11 @@ export class RoleResourcesComponent implements OnInit {
 
     this.resourcesQuery.valueChanges.subscribe((res) => {
       this.cachedResources = res.data.resources.edges.map((x) => x.node);
-      this.resources.data = this.cachedResources.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      this.resources.data = this.setTableElements(
+        this.cachedResources.slice(
+          this.pageInfo.pageSize * this.pageInfo.pageIndex,
+          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+        )
       );
       this.pageInfo.length = res.data.resources.totalCount;
       this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
@@ -119,6 +120,39 @@ export class RoleResourcesComponent implements OnInit {
       this.updating = res.loading;
       this.filterLoading = false;
     });
+  }
+
+  /**
+   * Serialize single table element from resource
+   *
+   * @param resource resource to serialize
+   * @returns serialized element
+   */
+  private setTableElement(resource: Resource): TableResourceElement {
+    return {
+      resource,
+      permissions: [
+        Permission.SEE,
+        Permission.CREATE,
+        Permission.UPDATE,
+        Permission.DELETE,
+      ].map((x) => ({
+        name: x,
+        icon: this.getIcon(resource, x),
+        variant: this.getVariant(resource, x),
+        tooltip: this.getTooltip(resource, x),
+      })),
+    };
+  }
+
+  /**
+   * Serialize list of table elements from resource
+   *
+   * @param resources resources to serialize
+   * @returns serialized elements
+   */
+  private setTableElements(resources: Resource[]): TableResourceElement[] {
+    return resources.map((x: Resource) => this.setTableElement(x));
   }
 
   /**
@@ -144,9 +178,11 @@ export class RoleResourcesComponent implements OnInit {
       this.pageInfo.pageSize = first;
       this.fetchResources();
     } else {
-      this.resources.data = this.cachedResources.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
+      this.resources.data = this.setTableElements(
+        this.cachedResources.slice(
+          e.pageSize * this.pageInfo.pageIndex,
+          e.pageSize * (this.pageInfo.pageIndex + 1)
+        )
       );
     }
     this.pageInfo.pageSize = e.pageSize;
@@ -203,10 +239,24 @@ export class RoleResourcesComponent implements OnInit {
    * @param resource The resource element for the resource to be toggled
    */
   toggleResource(resource: Resource): void {
-    if (resource.id === this.openedResourceId) {
-      this.openedResourceId = '';
+    if (resource.id === this.openedResource?.id) {
+      this.openedResource = undefined;
     } else {
-      this.openedResourceId = resource.id as string;
+      this.updating = true;
+      this.apollo
+        .query<GetResourceQueryResponse>({
+          query: GET_RESOURCE,
+          variables: {
+            id: resource.id,
+            role: this.role.id,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data.resource) {
+            this.openedResource = res.data.resource;
+          }
+          this.updating = false;
+        });
     }
   }
 
@@ -241,82 +291,82 @@ export class RoleResourcesComponent implements OnInit {
   }
 
   /**
-   * Edits the specified resource permissions array
+   * Edit the specified resource permissions array
    *
-   * @param permission the permission to be edited
    * @param resource the resource object to be updated
+   * @param permission the permission to be edited
    */
-  onEditAccess(permission: Permission, resource: Resource): void {
+  onEditAccess(resource: Resource, permission: Permission): void {
     if (!this.role.id) return;
 
-    this.updating = true;
-    const updatedPermissions: {
-      add?: string[] | { role: string }[];
-      remove?: string[] | { role: string }[];
-    } = {};
-    console.log(resource);
-    console.log(has(resource, `rolePermissions.${permission}`));
-    console.log(`rolePermissions.${permission}`);
-    const hasCurrPermission = has(resource, `rolePermissions.${permission}`);
-    Object.assign(updatedPermissions, {
-      [hasCurrPermission ? 'remove' : 'add']: [{ role: this.role.id }],
-    });
+    // this.updating = true;
+    // const updatedPermissions: {
+    //   add?: string[] | { role: string }[];
+    //   remove?: string[] | { role: string }[];
+    // } = {};
+    // console.log(resource);
+    // console.log(has(resource, `rolePermissions.${permission}`));
+    // console.log(`rolePermissions.${permission}`);
+    // const hasCurrPermission = has(resource, `rolePermissions.${permission}`);
+    // Object.assign(updatedPermissions, {
+    //   [hasCurrPermission ? 'remove' : 'add']: [{ role: this.role.id }],
+    // });
 
-    this.apollo
-      .mutate<EditResourceAccessMutationResponse>({
-        mutation: EDIT_RESOURCE_ACCESS,
-        variables: {
-          id: resource.id,
-          permissions: {
-            [permission]: updatedPermissions,
-          },
-          role: this.role.id,
-        },
-      })
-      .subscribe(
-        (res) => {
-          if (res.data?.editResource) {
-            const index = this.resources.data.findIndex(
-              (x) => x.id === resource.id
-            );
-            const resources = [...this.resources.data];
-            resources[index] = res.data?.editResource;
-            this.resources.data = resources;
-            this.resourcesPermissions = resources.map((f) => {
-              const permissions: ResourceRolePermissions = {
-                canSeeRecords: [],
-                canCreateRecords: [],
-                canUpdateRecords: [],
-                canDeleteRecords: [],
-              };
-              for (const p of this.permissionTypes) {
-                permissions[p] = get(f, `permissions.${p}`, [])
-                  .filter((x: any) => {
-                    switch (p) {
-                      case Permission.CREATE:
-                        return x.id === this.role.id;
-                      default:
-                        return x.role === this.role.id;
-                    }
-                  })
-                  .map((x: any) => {
-                    const roleId = p === Permission.CREATE ? x.id : x.role;
-                    return { role: roleId, access: x.access };
-                  });
-              }
-              return {
-                form: f.id,
-                permissions,
-              };
-            });
-          }
-          this.updating = false;
-        },
-        (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-          this.updating = false;
-        }
-      );
+    // this.apollo
+    //   .mutate<EditResourceAccessMutationResponse>({
+    //     mutation: EDIT_RESOURCE_ACCESS,
+    //     variables: {
+    //       id: resource.id,
+    //       permissions: {
+    //         [permission]: updatedPermissions,
+    //       },
+    //       role: this.role.id,
+    //     },
+    //   })
+    //   .subscribe(
+    //     (res) => {
+    //       if (res.data?.editResource) {
+    //         const index = this.resources.data.findIndex(
+    //           (x) => x.id === resource.id
+    //         );
+    //         const resources = [...this.resources.data];
+    //         resources[index] = res.data?.editResource;
+    //         this.resources.data = resources;
+    //         this.resourcesPermissions = resources.map((f) => {
+    //           const permissions: ResourceRolePermissions = {
+    //             canSeeRecords: [],
+    //             canCreateRecords: [],
+    //             canUpdateRecords: [],
+    //             canDeleteRecords: [],
+    //           };
+    //           for (const p of this.permissionTypes) {
+    //             permissions[p] = get(f, `permissions.${p}`, [])
+    //               .filter((x: any) => {
+    //                 switch (p) {
+    //                   case Permission.CREATE:
+    //                     return x.id === this.role.id;
+    //                   default:
+    //                     return x.role === this.role.id;
+    //                 }
+    //               })
+    //               .map((x: any) => {
+    //                 const roleId = p === Permission.CREATE ? x.id : x.role;
+    //                 return { role: roleId, access: x.access };
+    //               });
+    //           }
+    //           return {
+    //             form: f.id,
+    //             permissions,
+    //           };
+    //         });
+    //       }
+    //       this.updating = false;
+    //     },
+    //     (err) => {
+    //       this.snackBar.openSnackBar(err.message, { error: true });
+    //       this.updating = false;
+    //     }
+    //   );
   }
 
   /**
@@ -336,57 +386,57 @@ export class RoleResourcesComponent implements OnInit {
   ): void {
     if (!this.role.id) return;
 
-    this.updating = true;
-    const updatedPermissions: {
-      add?: { field: string; role: string };
-      remove?: { field: string; role: string };
-    } = {};
+    // this.updating = true;
+    // const updatedPermissions: {
+    //   add?: { field: string; role: string };
+    //   remove?: { field: string; role: string };
+    // } = {};
 
-    if (field[action]) {
-      Object.assign(updatedPermissions, {
-        remove: { field: field.name, role: this.role.id },
-      });
-    } else
-      Object.assign(updatedPermissions, {
-        add: { field: field.name, role: this.role.id },
-      });
+    // if (field[action]) {
+    //   Object.assign(updatedPermissions, {
+    //     remove: { field: field.name, role: this.role.id },
+    //   });
+    // } else
+    //   Object.assign(updatedPermissions, {
+    //     add: { field: field.name, role: this.role.id },
+    //   });
 
-    this.apollo
-      .mutate<EditResourceFieldPermissionMutationResponse>({
-        mutation: EDIT_RESOURCE_FIELD_PERMISSION,
-        variables: {
-          id: resource.id,
-          fieldsPermissions: {
-            [action]: updatedPermissions,
-          },
-        },
-      })
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            const editedResource = this.resources.data.find(
-              (r) => r.id === resource.id
-            );
-            this.updating = false;
-            if (!editedResource) return;
-            editedResource.fields = res.data.editResource.fields;
-          }
-        },
-        (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-          this.updating = false;
-        }
-      );
+    // this.apollo
+    //   .mutate<EditResourceFieldPermissionMutationResponse>({
+    //     mutation: EDIT_RESOURCE_FIELD_PERMISSION,
+    //     variables: {
+    //       id: resource.id,
+    //       fieldsPermissions: {
+    //         [action]: updatedPermissions,
+    //       },
+    //     },
+    //   })
+    //   .subscribe(
+    //     (res) => {
+    //       if (res.data) {
+    //         const editedResource = this.resources.data.find(
+    //           (r) => r.id === resource.id
+    //         );
+    //         this.updating = false;
+    //         if (!editedResource) return;
+    //         editedResource.fields = res.data.editResource.fields;
+    //       }
+    //     },
+    //     (err) => {
+    //       this.snackBar.openSnackBar(err.message, { error: true });
+    //       this.updating = false;
+    //     }
+    //   );
   }
 
   /**
    * Gets the correspondent icon for a given permission
    *
-   * @param permission The permission name
    * @param resource A resource
+   * @param permission The permission name
    * @returns the name of the icon to be displayed
    */
-  getIcon(permission: Permission, resource: Resource) {
+  private getIcon(resource: Resource, permission: Permission) {
     const hasPermission = has(resource, `rolePermissions.${permission}`);
     switch (permission) {
       case Permission.SEE:
@@ -403,22 +453,22 @@ export class RoleResourcesComponent implements OnInit {
   /**
    * Gets the correspondent variant for a given permission
    *
-   * @param permission The permission name
    * @param resource A resource
+   * @param permission The permission name
    * @returns the name of the icon to be displayed
    */
-  getVariant(permission: Permission, resource: Resource) {
+  private getVariant(resource: Resource, permission: Permission) {
     const hasPermission = has(resource, `rolePermissions.${permission}`);
     return hasPermission ? 'primary' : 'grey';
   }
   /**
    * Gets the correspondent tooltip for a given permission
    *
-   * @param permission The permission name
    * @param resource A resource
+   * @param permission The permission name
    * @returns the name of the icon to be displayed
    */
-  getTooltip(permission: Permission, resource: Resource) {
+  private getTooltip(resource: Resource, permission: Permission) {
     const hasPermission = has(resource, `rolePermissions.${permission}`);
     switch (permission) {
       case Permission.SEE:
@@ -440,82 +490,87 @@ export class RoleResourcesComponent implements OnInit {
     }
   }
 
+  // rolePermissions(id: string | undefined) {
+  //   return this.resourcesPermissions.find((x) => x.resource === id)
+  //     ?.permissions;
+  // }
+
   /**
    * Opens a modal where the user can set access filters for a given resource
    *
    * @param resource The selected resource
    */
-  openAccessFilters(resource: Resource): void {
-    const initPerm = this.resourcesPermissions.find(
-      (x) => x.resource === resource.id
-    );
-    const dialogRef = this.dialog.open(SafeRoleResourceFiltersComponent, {
-      data: {
-        resource,
-        permissions: initPerm?.permissions,
-        role: this.role.id,
-      },
-      panelClass: 'resource-access-dialog',
-    });
-    dialogRef.afterClosed().subscribe((changes) => {
-      if (!changes) return;
-      this.apollo
-        .mutate<EditResourceAccessMutationResponse>({
-          mutation: EDIT_RESOURCE_ACCESS,
-          variables: changes,
-        })
-        .subscribe(
-          (res) => {
-            if (res.data) {
-              const index = this.resources.data.findIndex(
-                (x) => x.id === res.data?.editResource.id
-              );
-              const resources = [...this.resources.data];
-              resources[index] = {
-                ...resources[index],
-                ...res.data.editResource,
-              };
-              this.resources.data = resources;
-              this.resourcesPermissions = this.resources.data.map((r) => {
-                const permissions: ResourceRolePermissions = {
-                  canSeeRecords: [],
-                  canCreateRecords: [],
-                  canUpdateRecords: [],
-                  canDeleteRecords: [],
-                };
-                for (const permission of this.permissionTypes) {
-                  permissions[permission] = get(
-                    r,
-                    `permissions.${permission}`,
-                    []
-                  )
-                    .filter((x: any) => {
-                      switch (permission) {
-                        case Permission.CREATE:
-                          return x.id === this.role.id;
-                        default:
-                          return x.role === this.role.id;
-                      }
-                    })
-                    .map((x: any) => {
-                      const roleId =
-                        permission === Permission.CREATE ? x.id : x.role;
-                      return { role: roleId, access: x.access };
-                    });
-                }
-                return {
-                  resource: r.id,
-                  permissions,
-                };
-              });
-            }
-            this.updating = false;
-          },
-          (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-            this.updating = false;
-          }
-        );
-    });
-  }
+  // openAccessFilters(resource: Resource): void {
+  //   const initPerm = this.resourcesPermissions.find(
+  //     (x) => x.resource === resource.id
+  //   );
+  //   const dialogRef = this.dialog.open(SafeRoleResourceFiltersComponent, {
+  //     data: {
+  //       resource,
+  //       permissions: initPerm?.permissions,
+  //       role: this.role.id,
+  //     },
+  //     panelClass: 'resource-access-dialog',
+  //   });
+  //   dialogRef.afterClosed().subscribe((changes) => {
+  //     if (!changes) return;
+  //     this.apollo
+  //       .mutate<EditResourceAccessMutationResponse>({
+  //         mutation: EDIT_RESOURCE_ACCESS,
+  //         variables: changes,
+  //       })
+  //       .subscribe(
+  //         (res) => {
+  //           if (res.data) {
+  //             const index = this.resources.data.findIndex(
+  //               (x) => x.id === res.data?.editResource.id
+  //             );
+  //             const resources = [...this.resources.data];
+  //             resources[index] = {
+  //               ...resources[index],
+  //               ...res.data.editResource,
+  //             };
+  //             this.resources.data = resources;
+  //             this.resourcesPermissions = this.resources.data.map((r) => {
+  //               const permissions: ResourceRolePermissions = {
+  //                 canSeeRecords: [],
+  //                 canCreateRecords: [],
+  //                 canUpdateRecords: [],
+  //                 canDeleteRecords: [],
+  //               };
+  //               for (const permission of this.permissionTypes) {
+  //                 permissions[permission] = get(
+  //                   r,
+  //                   `permissions.${permission}`,
+  //                   []
+  //                 )
+  //                   .filter((x: any) => {
+  //                     switch (permission) {
+  //                       case Permission.CREATE:
+  //                         return x.id === this.role.id;
+  //                       default:
+  //                         return x.role === this.role.id;
+  //                     }
+  //                   })
+  //                   .map((x: any) => {
+  //                     const roleId =
+  //                       permission === Permission.CREATE ? x.id : x.role;
+  //                     return { role: roleId, access: x.access };
+  //                   });
+  //               }
+  //               return {
+  //                 resource: r.id,
+  //                 permissions,
+  //               };
+  //             });
+  //           }
+  //           this.updating = false;
+  //         },
+  //         (err) => {
+  //           this.snackBar.openSnackBar(err.message, { error: true });
+  //           this.updating = false;
+  //         }
+  //       );
+  //   });
+  // }
 }

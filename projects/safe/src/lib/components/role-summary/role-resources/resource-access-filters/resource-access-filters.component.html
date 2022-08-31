@@ -1,4 +1,6 @@
-<h1>{{ resource.name }}</h1>
+<!-- Header -->
+<h2>Filters</h2>
+<!-- Content -->
 <div *ngIf="accesses.data.length === 0" class="empty-resource">
   <safe-icon icon="folder_open"></safe-icon>
   <h3>{{ 'components.role.summary.noForms' | translate }}</h3>
@@ -55,11 +57,12 @@
               : 'collapsed'
           "
         >
-          <safe-tab-filter
+          <safe-filter
             *ngIf="isEqual(element.access, editingAccess?.access)"
             [form]="$any(editingAccessResource)"
+            [fields]="filterFields"
           >
-          </safe-tab-filter>
+          </safe-filter>
           <safe-button
             *ngIf="isEqual(element.access, editingAccess?.access)"
             variant="danger"
@@ -92,11 +95,4 @@
   >
     {{ 'components.role.summary.addFilter' | translate }}
   </safe-button>
-</div>
-
-<div mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>{{ 'common.cancel' | translate }}</button>
-  <button mat-flat-button color="primary" (click)="getDifference()">
-    {{ 'common.save' | translate }}
-  </button>
 </div>

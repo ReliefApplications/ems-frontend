@@ -116,45 +116,9 @@ export interface GetWorkflowStepsQueryResponse {
   workflow: Workflow;
 }
 
-/** Graphql request for getting resources */
-export const GET_RESOURCES = gql`
-  query GetResources($first: Int, $afterCursor: ID) {
-    resources(first: $first, afterCursor: $afterCursor) {
-      edges {
-        node {
-          id
-          name
-        }
-        cursor
-      }
-      totalCount
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-    }
-  }
-`;
-
-/** Model for GetResourcesQueryResponse object */
-export interface GetResourcesQueryResponse {
-  loading: boolean;
-  resources: {
-    edges: {
-      node: Resource;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}
-
 /** Graphql query for getting resources with a filter and more data */
-export const GET_RESOURCES_EXTENDED = gql`
-  query GetResourcesExtended(
+export const GET_RESOURCES = gql`
+  query GetResources(
     $first: Int
     $afterCursor: ID
     $filter: JSON
@@ -171,12 +135,9 @@ export const GET_RESOURCES_EXTENDED = gql`
     ) {
       edges {
         node {
-          queryName
           id
+          queryName
           name
-          createdAt
-          recordsCount
-          canDelete
           rolePermissions(role: $role)
           fields
         }
@@ -191,29 +152,37 @@ export const GET_RESOURCES_EXTENDED = gql`
   }
 `;
 
-/** Graphql request for getting forms of a resource */
-export const GET_RESOURCE_FORMS = gql`
-  query GetResourceForms($resource: ID!) {
-    resource(id: $resource) {
-      forms {
-        id
-        name
-        fields
-        queryName
-        permissions {
-          canCreateRecords {
-            id
-          }
-          canSeeRecords
-          canUpdateRecords
-          canDeleteRecords
-        }
-      }
+/** Interface of Get Resources Query response */
+export interface GetResourcesQueryResponse {
+  loading: boolean;
+  resources: {
+    edges: {
+      node: Resource;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
+}
+
+/** GraphQL query to get a single resource */
+export const GET_RESOURCE = gql`
+  query GetResources($id: ID!, $role: ID!) {
+    resource(id: $id) {
+      id
+      queryName
+      name
+      rolePermissions(role: $role)
+      metadata
+      fields
     }
   }
 `;
 
-/** Model for the response of the GetResourceForms query */
-export interface GetResourceFormsQueryResponse {
+/** Interface of Get Resource Query response */
+export interface GetResourceQueryResponse {
   resource: Resource;
 }

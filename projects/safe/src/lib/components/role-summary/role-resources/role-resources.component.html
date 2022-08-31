@@ -1,52 +1,51 @@
+<!-- Filtering -->
 <safe-role-resources-filter
   (filter)="onFilter($event)"
   [loading]="filterLoading"
 ></safe-role-resources-filter>
+<!-- Resource Table -->
 <table
   *ngIf="!loading"
   mat-table
   [dataSource]="resources"
   multiTemplateDataRows
 >
+  <!-- Resource Name -->
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
       {{ 'common.name' | translate }}
     </th>
-    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    <td mat-cell *matCellDef="let element">{{ element.resource.name }}</td>
   </ng-container>
-
+  <!-- Resource Actions & Permissions -->
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">
       <div style="display: flex">
-        <ng-container *ngFor="let action of permissionTypes">
+        <!-- Permissions -->
+        <ng-container *ngFor="let permission of element.permissions">
           <safe-button
             [isIcon]="true"
-            [icon]="getIcon(action, element)"
-            [variant]="getVariant(action, element)"
-            (click)="onEditAccess(action, element)"
+            [icon]="permission.icon"
+            [variant]="permission.variant"
+            (click)="onEditAccess(element.resource, permission.name)"
             [disabled]="loading || updating"
             [matTooltip]="
-              getTooltip(action, element) | translate: { form: element.name }
+              permission.tooltip
+                | translate: { resource: element.resource.name }
             "
           >
           </safe-button>
         </ng-container>
-        <safe-button
-          [isIcon]="true"
-          icon="build"
-          (click)="openAccessFilters(element)"
-          [matTooltip]="'components.role.summary.editFilters' | translate"
-        >
-        </safe-button>
+        <!-- Open Resource -->
         <safe-button
           [isIcon]="true"
           [icon]="
-            openedResourceId === element.id
+            element.resource.id === openedResource?.id
               ? 'keyboard_arrow_up'
               : 'keyboard_arrow_down'
           "
-          (click)="toggleResource(element)"
+          (click)="toggleResource(element.resource)"
           [disabled]="loading || updating"
         >
         </safe-button>
@@ -62,9 +61,16 @@
       <div
         class="expanded-form"
         [@detailExpand]="
-          element.id === openedResourceId ? 'expanded' : 'collapsed'
+          element.resource.id === openedResource?.id ? 'expanded' : 'collapsed'
         "
       >
+        <div>ok</div>
+        <!-- <safe-resource-access-filters
+          [resource]="element"
+          [role]="role.id!"
+          [permissions]="rolePermissions(role.id)"
+        >
+        </safe-resource-access-filters>
         <safe-resource-fields
           [resource]="element"
           [role]="role"
@@ -72,7 +78,7 @@
           (onToggle)="
             onEditFieldAccess($event.resource, $event.field, $event.permission)
           "
-        ></safe-resource-fields>
+        ></safe-resource-fields> -->
       </div>
     </td>
   </ng-container>
@@ -92,7 +98,7 @@
   [pageSize]="pageInfo.pageSize"
   [pageSizeOptions]="[10, 25, 50]"
   [length]="pageInfo.length"
-  aria-label="Select page of applications"
+  aria-label="Select page of resources"
   (page)="onPage($event)"
 >
 </mat-paginator>
