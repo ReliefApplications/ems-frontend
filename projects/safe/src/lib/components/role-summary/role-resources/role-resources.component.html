@@ -34,6 +34,13 @@
         </ng-container>
         <safe-button
           [isIcon]="true"
+          icon="build"
+          (click)="openAccessFilters(element)"
+          [matTooltip]="'components.role.summary.editFilters' | translate"
+        >
+        </safe-button>
+        <safe-button
+          [isIcon]="true"
           [icon]="
             openedResourceId === element.id
               ? 'keyboard_arrow_up'

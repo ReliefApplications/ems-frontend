@@ -553,7 +553,7 @@
 			"filter": {
 				"and": "And",
 				"logic": "Filter logic",
-				"new": "Add new fiter",
+				"new": "Add new filter",
 				"newGroup": "Add new filter group",
 				"operator": "Operator",
 				"or": "Or",

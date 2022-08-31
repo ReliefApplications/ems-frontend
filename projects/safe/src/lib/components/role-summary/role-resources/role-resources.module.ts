@@ -18,11 +18,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ResourceFieldsComponent } from './resource-fields/resource-fields.component';
-import { RoleFormsComponent } from './role-forms/role-forms.component';
-import { SafeRoleFormFiltersComponent } from './role-forms/role-form-filters/role-form-filters.component';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { SafeRoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
 
 /**
  * Resources tab of Role Summary component.
@@ -32,8 +31,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     RoleResourcesComponent,
     FilterComponent,
     ResourceFieldsComponent,
-    RoleFormsComponent,
-    SafeRoleFormFiltersComponent,
+    SafeRoleResourceFiltersComponent,
   ],
   imports: [
     CommonModule,

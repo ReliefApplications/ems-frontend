@@ -9,16 +9,16 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Form } from '../../../../../models/form.model';
+import { Resource } from '../../../../models/resource.model';
 import {
   Access,
-  FormRolePermissions,
+  ResourceRolePermissions,
   Permission,
-} from '../role-forms.component';
-import { createFilterGroup } from '../../../../query-builder/query-builder-forms';
+} from '../permissions.types';
+import { createFilterGroup } from '../../../query-builder/query-builder-forms';
 import { FormGroup } from '@angular/forms';
-import { QueryBuilderService } from '../../../../../services/query-builder.service';
-import { AggregationBuilderService } from '../../../../../services/aggregation-builder.service';
+import { QueryBuilderService } from '../../../../services/query-builder.service';
+import { AggregationBuilderService } from '../../../../services/aggregation-builder.service';
 import { Observable } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 import { MatTableDataSource } from '@angular/material/table';
@@ -38,11 +38,11 @@ type AccessPermissions = {
   };
 };
 
-/** Modal for the definition of access/permissions for a given form */
+/** Modal for the definition of access/permissions for a given resource */
 @Component({
-  selector: 'safe-role-form-filters',
-  templateUrl: './role-form-filters.component.html',
-  styleUrls: ['./role-form-filters.component.scss'],
+  selector: 'safe-resource-access-filters',
+  templateUrl: './resource-access-filters.component.html',
+  styleUrls: ['./resource-access-filters.component.scss'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),
@@ -54,7 +54,7 @@ type AccessPermissions = {
     ]),
   ],
 })
-export class SafeRoleFormFiltersComponent implements OnInit {
+export class SafeRoleResourceFiltersComponent implements OnInit {
   private opMap: {
     [key: string]: string;
   } = {
@@ -74,7 +74,7 @@ export class SafeRoleFormFiltersComponent implements OnInit {
   public permissionTypes = Object.values(Permission);
   public isEqual = isEqual;
 
-  public form: Form;
+  public resource: Resource;
   public fields: any;
   private role: string;
   private metaQuery$: Observable<ApolloQueryResult<any>> | null;
@@ -84,14 +84,14 @@ export class SafeRoleFormFiltersComponent implements OnInit {
   public accesses = new MatTableDataSource<AccessPermissions>([]);
   private initialAccesses: AccessPermissions[];
   public editingAccess?: AccessPermissions;
-  public editingAceessForm?: FormGroup;
+  public editingAccessResource?: FormGroup;
 
   /**
-   * Modal for the definition of access/permissions for a given form
+   * Modal for the definition of access/permissions for a given resource
    *
-   * @param data Object containing the name and initial permissions for a form and role
-   * @param data.form The selected form
-   * @param data.permissions The permissions for the selected form
+   * @param data Object containing the name and initial permissions for a resource and role
+   * @param data.resource The selected resource
+   * @param data.permissions The permissions for the selected resource
    * @param data.role The role id
    * @param translate Angular translate service
    * @param queryBuilder Shared query builder service
@@ -101,14 +101,14 @@ export class SafeRoleFormFiltersComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: {
-      form: Form;
-      permissions?: FormRolePermissions;
+      resource: Resource;
+      permissions?: ResourceRolePermissions;
       role?: string;
     },
     public translate: TranslateService,
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService,
-    private dialogRef: MatDialogRef<SafeRoleFormFiltersComponent>
+    private dialogRef: MatDialogRef<SafeRoleResourceFiltersComponent>
   ) {
     if (data.permissions) {
       const cpyPerm = cloneDeep(data.permissions);
@@ -135,17 +135,18 @@ export class SafeRoleFormFiltersComponent implements OnInit {
       });
     }
     this.initialAccesses = cloneDeep(this.accesses.data);
-    this.form = data.form;
+    this.resource = data.resource;
     this.role = data.role || '';
-    this.fields = this.queryBuilder.getFields(this.form.queryName || '');
+    console.log(this.resource.queryName);
+    this.fields = this.queryBuilder.getFields(this.resource.queryName || '');
 
     this.metaQuery$ = this.queryBuilder.buildMetaQuery({
       fields: this.aggregationBuilder.formatFields(this.fields || []),
-      name: this.form.queryName,
+      name: this.resource.queryName,
     });
     if (this.metaQuery$) {
       this.metaQuery$.subscribe((res) => {
-        this.metaFields = res.data[`_${this.form.queryName}Meta`];
+        this.metaFields = res.data[`_${this.resource.queryName}Meta`];
       });
     }
   }
@@ -242,8 +243,8 @@ export class SafeRoleFormFiltersComponent implements OnInit {
       isEqual(x.access, access.access)
     );
     if (accessIndex < 0) return;
-    this.editingAceessForm = createFilterGroup(access.access);
-    this.editingAceessForm.valueChanges.subscribe(
+    this.editingAccessResource = createFilterGroup(access.access);
+    this.editingAccessResource.valueChanges.subscribe(
       (res) => (this.accesses.data[accessIndex].access = res)
     );
     this.editingAccess = isEqual(this.editingAccess, access)
@@ -416,7 +417,7 @@ export class SafeRoleFormFiltersComponent implements OnInit {
         }
       });
     });
-    this.dialogRef.close({ id: this.form.id, permissions: ops });
+    this.dialogRef.close({ id: this.resource.id, permissions: ops });
   }
 
   ngOnInit(): void {}

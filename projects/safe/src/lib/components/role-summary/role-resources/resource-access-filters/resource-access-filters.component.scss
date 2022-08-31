@@ -19,7 +19,7 @@
   cursor: pointer;
 }
 
-.expanded-form {
+.expanded-resource {
   padding-block: 1em;
   display: flex;
   flex-direction: column;
@@ -31,7 +31,7 @@
   text-transform: uppercase;
 }
 
-.empty-form {
+.empty-resource {
   display: flex;
   flex-direction: column;
   padding: 16px;

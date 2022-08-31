@@ -11,7 +11,6 @@ import {
 } from '@angular/animations';
 import { Resource } from '../../../models/resource.model';
 import { Role } from '../../../models/user.model';
-import { Form } from '../../../models/form.model';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import {
   GetResourcesQueryResponse,
@@ -23,17 +22,12 @@ import {
   EDIT_RESOURCE_ACCESS,
   EditResourceFieldPermissionMutationResponse,
 } from '../graphql/mutations';
+import { SafeRoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
+import { MatDialog } from '@angular/material/dialog';
+import { Permission, ResourceRolePermissions } from './permissions.types';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
-
-/** Permission type for Form */
-enum Permission {
-  SEE = 'canSeeRecords',
-  CREATE = 'canCreateRecords',
-  UPDATE = 'canUpdateRecords',
-  DELETE = 'canDeleteRecords',
-}
 
 /**
  * Resource tab of Role Summary component.
@@ -59,6 +53,10 @@ export class RoleResourcesComponent implements OnInit {
   public loading = true;
   public updating = false;
   public resources = new MatTableDataSource<Resource>([]);
+  private resourcesPermissions: {
+    resource?: string;
+    permissions: ResourceRolePermissions;
+  }[] = [];
   public cachedResources: Resource[] = [];
   public openedResourceId = '';
   public displayedColumns: string[] = ['name', 'actions'];
@@ -88,9 +86,14 @@ export class RoleResourcesComponent implements OnInit {
    * Resource tab of Role Summary component.
    *
    * @param apollo Apollo client service
+   * @param dialog Material dialog service
    * @param snackBar shared snackbar service
    */
-  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
+  constructor(
+    private apollo: Apollo,
+    private dialog: MatDialog,
+    private snackBar: SafeSnackBarService
+  ) {}
 
   /** Load the resources. */
   ngOnInit(): void {
@@ -279,6 +282,33 @@ export class RoleResourcesComponent implements OnInit {
             const resources = [...this.resources.data];
             resources[index] = res.data?.editResource;
             this.resources.data = resources;
+            this.resourcesPermissions = resources.map((f) => {
+              const permissions: ResourceRolePermissions = {
+                canSeeRecords: [],
+                canCreateRecords: [],
+                canUpdateRecords: [],
+                canDeleteRecords: [],
+              };
+              for (const p of this.permissionTypes) {
+                permissions[p] = get(f, `permissions.${p}`, [])
+                  .filter((x: any) => {
+                    switch (p) {
+                      case Permission.CREATE:
+                        return x.id === this.role.id;
+                      default:
+                        return x.role === this.role.id;
+                    }
+                  })
+                  .map((x: any) => {
+                    const roleId = p === Permission.CREATE ? x.id : x.role;
+                    return { role: roleId, access: x.access };
+                  });
+              }
+              return {
+                form: f.id,
+                permissions,
+              };
+            });
           }
           this.updating = false;
         },
@@ -408,5 +438,84 @@ export class RoleResourcesComponent implements OnInit {
           ? 'components.role.tooltip.disallowRecordDeletion'
           : 'components.role.tooltip.allowRecordDeletion';
     }
+  }
+
+  /**
+   * Opens a modal where the user can set access filters for a given resource
+   *
+   * @param resource The selected resource
+   */
+  openAccessFilters(resource: Resource): void {
+    const initPerm = this.resourcesPermissions.find(
+      (x) => x.resource === resource.id
+    );
+    const dialogRef = this.dialog.open(SafeRoleResourceFiltersComponent, {
+      data: {
+        resource,
+        permissions: initPerm?.permissions,
+        role: this.role.id,
+      },
+      panelClass: 'resource-access-dialog',
+    });
+    dialogRef.afterClosed().subscribe((changes) => {
+      if (!changes) return;
+      this.apollo
+        .mutate<EditResourceAccessMutationResponse>({
+          mutation: EDIT_RESOURCE_ACCESS,
+          variables: changes,
+        })
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              const index = this.resources.data.findIndex(
+                (x) => x.id === res.data?.editResource.id
+              );
+              const resources = [...this.resources.data];
+              resources[index] = {
+                ...resources[index],
+                ...res.data.editResource,
+              };
+              this.resources.data = resources;
+              this.resourcesPermissions = this.resources.data.map((r) => {
+                const permissions: ResourceRolePermissions = {
+                  canSeeRecords: [],
+                  canCreateRecords: [],
+                  canUpdateRecords: [],
+                  canDeleteRecords: [],
+                };
+                for (const permission of this.permissionTypes) {
+                  permissions[permission] = get(
+                    r,
+                    `permissions.${permission}`,
+                    []
+                  )
+                    .filter((x: any) => {
+                      switch (permission) {
+                        case Permission.CREATE:
+                          return x.id === this.role.id;
+                        default:
+                          return x.role === this.role.id;
+                      }
+                    })
+                    .map((x: any) => {
+                      const roleId =
+                        permission === Permission.CREATE ? x.id : x.role;
+                      return { role: roleId, access: x.access };
+                    });
+                }
+                return {
+                  resource: r.id,
+                  permissions,
+                };
+              });
+            }
+            this.updating = false;
+          },
+          (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+            this.updating = false;
+          }
+        );
+    });
   }
 }

@@ -1,5 +1,5 @@
-<h1>{{ form.name }}</h1>
-<div *ngIf="accesses.data.length === 0" class="empty-form">
+<h1>{{ resource.name }}</h1>
+<div *ngIf="accesses.data.length === 0" class="empty-resource">
   <safe-icon icon="folder_open"></safe-icon>
   <h3>{{ 'components.role.summary.noForms' | translate }}</h3>
 </div>
@@ -47,7 +47,7 @@
       >
         <div
           [ngClass]="{
-            'expanded-form': isEqual(element.access, editingAccess?.access)
+            'expanded-resource': isEqual(element.access, editingAccess?.access)
           }"
           [@detailExpand]="
             isEqual(element.access, editingAccess?.access)
@@ -57,9 +57,7 @@
         >
           <safe-tab-filter
             *ngIf="isEqual(element.access, editingAccess?.access)"
-            [form]="$any(editingAceessForm)"
-            [fields]="fields"
-            [metaFields]="metaFields"
+            [form]="$any(editingAccessResource)"
           >
           </safe-tab-filter>
           <safe-button

@@ -171,6 +171,7 @@ export const GET_RESOURCES_EXTENDED = gql`
     ) {
       edges {
         node {
+          queryName
           id
           name
           createdAt
