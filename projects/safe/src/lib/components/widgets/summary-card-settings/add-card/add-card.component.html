@@ -34,9 +34,9 @@
     {{ 'components.widget.settings.summaryCard.create.tipDynamic' | translate }}
   </div>
   <div class="templates">  
-    <safe-card-template></safe-card-template>
-    <safe-card-template></safe-card-template>
-    <safe-card-template></safe-card-template>
+    <safe-card-template [isDynamic]="false"></safe-card-template>
+    <safe-card-template [isDynamic]="true"></safe-card-template>
+    <safe-card-template [isDynamic]="true"></safe-card-template>
   </div>
   <mat-divider></mat-divider>
   <h2>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 /**
  * This component is used to display the add application button
@@ -9,6 +9,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./card-template.component.scss'],
 })
 export class SafeCardTemplateComponent implements OnInit {
+  @Input() title = '';
+  @Input() dashboardName = '';
+  @Input() isDynamic = false;
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.

@@ -1,3 +1,12 @@
 <div matRipple class="cardTemplate">
-    <span>Example template</span>
+    <div>
+        <div class = "cardTitle">Title</div>
+        <div class = "cardDashboardName">Name of the Dashboard</div>
+        <div *ngIf="isDynamic">
+            <safe-icon class = "dynamicIcon" icon="dynamic_feed" [size]="45"></safe-icon>
+        </div>
+        <div *ngIf="!isDynamic">
+            <safe-icon class = "dynamicIcon" icon="wysiwyg" [size]="45"></safe-icon>
+        </div>
+    </div>
 </div>
