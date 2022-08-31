@@ -2,7 +2,7 @@ import { gql } from 'apollo-angular';
 import { Page } from '../../../models/page.model';
 import { Step } from '../../../models/step.model';
 import { Role } from '../../../models/user.model';
-import { Form } from '../../../models/form.model';
+import { Resource } from '../../../models/resource.model';
 
 /** Edit role mutation of role summary component */
 export const EDIT_ROLE = gql`
@@ -93,24 +93,17 @@ export interface EditStepAccessMutationResponse {
 }
 
 /** Edit Form access mutation */
-export const EDIT_FORM_ACCESS = gql`
-  mutation editForm($id: ID!, $permissions: JSON) {
-    editForm(id: $id, permissions: $permissions) {
+export const EDIT_RESOURCE_ACCESS = gql`
+  mutation editResource($id: ID!, $permissions: JSON, $role: ID!) {
+    editResource(id: $id, permissions: $permissions) {
       id
       name
-      permissions {
-        canCreateRecords {
-          id
-        }
-        canSeeRecords
-        canUpdateRecords
-        canDeleteRecords
-      }
+      rolePermissions(role: $role)
     }
   }
 `;
 
-/** Interface of Edit Form Access mutation response */
-export interface EditFormAccessMutationResponse {
-  editForm: Form;
+/** Interface of Edit Resource Access mutation response */
+export interface EditResourceAccessMutationResponse {
+  editResource: Resource;
 }

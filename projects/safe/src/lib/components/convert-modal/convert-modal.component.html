@@ -1,51 +1,56 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<div style="width: 320px" *ngIf="!loading">
-  <h1 mat-dialog-title>{{ data.title }}</h1>
-  <div mat-dialog-content>
-    <form [formGroup]="convertForm">
-      <div class="form-group">
-        <mat-form-field>
-          <mat-label>{{
-            'components.record.convert.select' | translate
-          }}</mat-label>
-          <mat-select formControlName="targetForm">
-            <mat-option *ngFor="let form of availableForms" [value]="form">
-              {{ form.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-radio-group formControlName="copyRecord" class="form-radio-group">
-          <mat-radio-button [value]="true">{{
-            'components.record.convert.choice.copy' | translate
-          }}</mat-radio-button>
-          <mat-radio-button [value]="false">{{
-            'components.record.convert.choice.overwrite' | translate
-          }}</mat-radio-button>
-        </mat-radio-group>
-      </div>
-    </form>
+<safe-modal>
+  <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+  <div style="width: 320px" *ngIf="!loading">
+    <h1 mat-dialog-title>{{ data.title }}</h1>
+    <div mat-dialog-content>
+      <form [formGroup]="convertForm">
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>{{
+              'components.record.convert.select' | translate
+            }}</mat-label>
+            <mat-select formControlName="targetForm">
+              <mat-option *ngFor="let form of availableForms" [value]="form">
+                {{ form.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-radio-group
+            formControlName="copyRecord"
+            class="form-radio-group"
+          >
+            <mat-radio-button [value]="true">{{
+              'components.record.convert.choice.copy' | translate
+            }}</mat-radio-button>
+            <mat-radio-button [value]="false">{{
+              'components.record.convert.choice.overwrite' | translate
+            }}</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </form>
+    </div>
+    <div *ngIf="convertForm.controls.targetForm.value">
+      <ng-container *ngIf="ignoredFields.length > 0">
+        <a>{{ 'components.record.convert.result.force' | translate }}</a> <br />
+        <span *ngFor="let field of ignoredFields">{{ field.name }}, </span>
+      </ng-container>
+      <ng-container *ngIf="ignoredFields.length === 0">
+        <a>{{ 'components.record.convert.result.smooth' | translate }}</a>
+      </ng-container>
+    </div>
+    <div mat-dialog-actions align="end">
+      <safe-button (click)="onClose()">{{
+        'common.close' | translate
+      }}</safe-button>
+      <safe-button
+        category="secondary"
+        variant="primary"
+        [mat-dialog-close]="convertForm.value"
+        cdkFocusInitial
+        [disabled]="!convertForm.valid"
+      >
+        {{ 'models.record.convert' | translate }}
+      </safe-button>
+    </div>
   </div>
-  <div *ngIf="convertForm.controls.targetForm.value">
-    <ng-container *ngIf="ignoredFields.length > 0">
-      <a>{{ 'components.record.convert.result.force' | translate }}</a> <br />
-      <span *ngFor="let field of ignoredFields">{{ field.name }}, </span>
-    </ng-container>
-    <ng-container *ngIf="ignoredFields.length === 0">
-      <a>{{ 'components.record.convert.result.smooth' | translate }}</a>
-    </ng-container>
-  </div>
-  <div mat-dialog-actions align="end">
-    <button mat-button (click)="onClose()">
-      {{ 'common.close' | translate }}
-    </button>
-    <button
-      mat-flat-button
-      [mat-dialog-close]="convertForm.value"
-      cdkFocusInitial
-      color="primary"
-      [disabled]="!convertForm.valid"
-    >
-      {{ 'models.record.convert' | translate }}
-    </button>
-  </div>
-</div>
+</safe-modal>
