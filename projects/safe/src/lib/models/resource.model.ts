@@ -11,10 +11,19 @@ export interface Resource {
   relatedForms?: Form[];
   createdAt?: Date;
   records?: RecordConnection;
+  userAccessToFields?: {
+    [key: string]: { canSee: boolean; canUpdate: boolean };
+  };
   fields?: any;
   canSee?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
   coreForm?: Form;
   layouts?: Layout[];
+  rolePermissions?: {
+    canCreateRecords: any;
+    canSeeRecords: any;
+    canUpdateRecords: any;
+    canDeleteRecords: any;
+  };
 }

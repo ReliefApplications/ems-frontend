@@ -16,6 +16,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {
   SafeButtonModule,
   SafeDateModule,
+  SafeModalModule,
   SafeSkeletonTableModule,
 } from '@safe/builder';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,6 +25,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
 
+/**
+ * List of reference data page module
+ */
 @NgModule({
   declarations: [ReferenceDatasComponent, AddReferenceDataComponent],
   imports: [
@@ -45,6 +49,7 @@ import { AddReferenceDataComponent } from './add-reference-data/add-reference-da
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
+    SafeModalModule,
   ],
   exports: [ReferenceDatasComponent],
 })

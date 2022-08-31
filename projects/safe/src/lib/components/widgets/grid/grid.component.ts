@@ -9,7 +9,7 @@ import {
   PUBLISH_NOTIFICATION,
   PublishMutationResponse,
   PublishNotificationMutationResponse,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { Form } from '../../../models/form.model';
@@ -18,7 +18,7 @@ import {
   GET_RECORD_DETAILS,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   Component,
   OnInit,
@@ -141,7 +141,7 @@ export class SafeGridWidgetComponent implements OnInit {
             variables: {
               id: item.id,
               data,
-              template: this.settings.template,
+              template: this.settings.query?.template,
             },
           })
           .toPromise()
@@ -291,9 +291,6 @@ export class SafeGridWidgetComponent implements OnInit {
           prefillRecords: records,
           askForConfirm: false,
         },
-        height: '98%',
-        width: '100vw',
-        panelClass: 'full-screen-modal',
         autoFocus: false,
       });
     }
@@ -358,6 +355,7 @@ export class SafeGridWidgetComponent implements OnInit {
         variables: {
           ids,
           data,
+          template: this.settings.query?.template,
         },
       })
       .toPromise();
@@ -490,9 +488,6 @@ export class SafeGridWidgetComponent implements OnInit {
                       recordId: record.id,
                       locale: 'en',
                     },
-                    height: '98%',
-                    width: '100vw',
-                    panelClass: 'full-screen-modal',
                     autoFocus: false,
                   });
                 }

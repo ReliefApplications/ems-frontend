@@ -20,6 +20,14 @@ export interface Role {
   channels?: Channel[];
 }
 
+/** Model for Group object. */
+export interface Group {
+  id?: string;
+  title?: string;
+  description?: string;
+  usersCount?: number;
+}
+
 /** Model for User object. */
 export interface User {
   id?: string;
@@ -29,6 +37,7 @@ export interface User {
   isAdmin?: boolean;
   name?: string;
   roles?: Role[];
+  groups?: Group[];
   permissions?: Permission[];
   oid?: string;
   applications?: Application[];

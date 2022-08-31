@@ -12,7 +12,7 @@ import {
   GetSettingQueryResponse,
   GET_API_CONFIGURATIONS,
   GET_SETTING,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { EditSettingMutationResponse, EDIT_SETTING } from './graphql/mutations';
 import { MatSelect } from '@angular/material/select';
@@ -84,13 +84,12 @@ export class AdvancedSettingsComponent implements OnInit {
                 type: this.translateService.instant(
                   'components.users.advancedSettings.title'
                 ),
-                error: res.errors[0],
+                error: res.errors[0].message,
               }
             ),
             { error: true }
           );
         } else {
-          console.log('FOo');
           const setting = res.data.setting;
           const isNotLocal =
             setting &&

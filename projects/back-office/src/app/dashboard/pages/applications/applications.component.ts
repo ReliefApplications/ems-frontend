@@ -14,7 +14,7 @@ import {
 import {
   GetApplicationsQueryResponse,
   GET_APPLICATIONS,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
@@ -22,17 +22,19 @@ import {
   ADD_APPLICATION,
   EditApplicationMutationResponse,
   EDIT_APPLICATION,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
-import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
+import { DuplicateApplicationModalComponent } from '../../../components/duplicate-application-modal/duplicate-application-modal.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
 
+/** Applications page component. */
 @Component({
   selector: 'app-applications',
   templateUrl: './applications.component.html',
@@ -72,6 +74,17 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
   canAdd = false;
   private authSubscription?: Subscription;
 
+  /**
+   * Applications page component
+   *
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param router Angular router
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param previewService Shared preview service
+   * @param translate Angular translate service
+   */
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -354,7 +367,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
         if (res.data) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('action.access').toLowerCase(),
+              type: this.translate.instant('common.access').toLowerCase(),
               value: element.name,
             })
           );
@@ -392,7 +405,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
    * @param application application to duplicate.
    */
   onClone(application: Application): void {
-    const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
+    const dialogRef = this.dialog.open(DuplicateApplicationModalComponent, {
       data: {
         id: application.id,
         name: application.name,

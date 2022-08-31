@@ -18,6 +18,7 @@ export class SafeIconComponent implements OnInit {
 
   @Input() size = 24;
 
+  /** @returns A getter that returns the display style of the host element. */
   @HostBinding('style.display') get display() {
     return this.inline ? 'inline-flex' : 'flex';
   }

@@ -17,10 +17,16 @@
   </div>
 </div>
 
-<table *ngIf="!loading" mat-table [dataSource]="resources" matSort>
+<table
+  *ngIf="!loading"
+  mat-table
+  [dataSource]="resources"
+  matSort
+  (matSortChange)="onSort($event)"
+>
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
+      <span class="headerTitle" mat-sort-header="name">
         {{ 'common.name' | translate }}
       </span>
     </th>
@@ -29,7 +35,7 @@
 
   <ng-container matColumnDef="createdAt">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
+      <span class="headerTitle" mat-sort-header="createdAt">
         {{ 'common.createdOn' | translate }}
       </span>
     </th>
@@ -40,7 +46,7 @@
 
   <ng-container matColumnDef="recordsCount">
     <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
+      <span class="headerTitle">
         {{ 'common.record.few' | translate }}
       </span>
     </th>
@@ -69,7 +75,7 @@
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr
-    class="clickable"
+    class="cursor-pointer"
     mat-row
     *matRowDef="let row; columns: displayedColumns"
     [routerLink]="['/resources', row.id]"
@@ -85,7 +91,7 @@
   [pageSize]="pageInfo.pageSize"
   [pageSizeOptions]="[10, 25, 50]"
   [length]="pageInfo.length"
-  aria-label="Select page of applications"
+  aria-label="Select page of resources"
   (page)="onPage($event)"
 >
 </mat-paginator>

@@ -20,7 +20,7 @@ import {
   GET_RECORD_BY_ID,
   GetFormByIdQueryResponse,
   GET_FORM_STRUCTURE,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeDownloadService } from '../../services/download.service';
 import { SafeAuthService } from '../../services/auth.service';
@@ -162,7 +162,8 @@ export class SafeRecordModalComponent implements AfterViewInit {
     // INIT SURVEY
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
     this.survey = this.formBuilderService.createSurvey(
-      this.form?.structure || ''
+      this.form?.structure || '',
+      this.form?.fields
     );
     this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
       this.onDownloadFile(survey, options)
@@ -361,7 +362,6 @@ export class SafeRecordModalComponent implements AfterViewInit {
         revert: (version: any) =>
           this.confirmRevertDialog(this.record, version),
       },
-      panelClass: 'no-padding-dialog',
       autoFocus: false,
     });
   }

@@ -9,6 +9,15 @@ import { SafeSkeletonTableModule } from '../../../components/skeleton/skeleton-t
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../ui/icon/icon.module';
+import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ResourceFieldsComponent } from './resource-fields/resource-fields.component';
 import { RoleFormsComponent } from './role-forms/role-forms.component';
 import { SafeRoleFormFiltersComponent } from './role-forms/role-form-filters/role-form-filters.component';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
@@ -21,6 +30,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 @NgModule({
   declarations: [
     RoleResourcesComponent,
+    FilterComponent,
+    ResourceFieldsComponent,
     RoleFormsComponent,
     SafeRoleFormFiltersComponent,
   ],
@@ -34,6 +45,14 @@ import { MatDialogModule } from '@angular/material/dialog';
     SafeIconModule,
     SafeButtonModule,
     SafeSkeletonTableModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatDatepickerModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
     SafeQueryBuilderModule,
     MatButtonModule,
     MatDialogModule,

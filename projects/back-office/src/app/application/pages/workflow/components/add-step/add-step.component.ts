@@ -13,19 +13,17 @@ import {
 } from '@safe/builder';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import {
-  AddFormMutationResponse,
-  ADD_FORM,
-} from '../../../../../graphql/mutations';
-import {
-  GET_FORMS,
-  GetFormsQueryResponse,
-} from '../../../../../graphql/queries';
-import { AddFormComponent } from '../../../../../components/add-form/add-form.component';
+import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
+import { GET_FORMS, GetFormsQueryResponse } from '../../graphql/queries';
+import { AddFormModalComponent } from '../../../../../components/add-form-modal/add-form-modal.component';
 import { MatSelect } from '@angular/material/select';
 
+/** Default items per query for pagination */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * Add step page component.
+ */
 @Component({
   selector: 'app-add-step',
   templateUrl: './add-step.component.html',
@@ -54,6 +52,17 @@ export class AddStepComponent implements OnInit, OnDestroy {
   canCreateForm = false;
   private authSubscription?: Subscription;
 
+  /**
+   * Add step page component
+   *
+   * @param route Angular activated route
+   * @param formBuilder Angular form builder
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param apollo Apollo service
+   * @param workflowServive Shared workflow service
+   */
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -101,6 +110,12 @@ export class AddStepComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Check if form stage is valid
+   *
+   * @param stage index of stage
+   * @returns is stage valid
+   */
   isStageValid(stage: number): boolean {
     switch (stage) {
       case 1: {
@@ -115,14 +130,23 @@ export class AddStepComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Submit form to workflow service
+   */
   onSubmit(): void {
     this.workflowServive.addStep(this.stepForm.value, this.route);
   }
 
+  /**
+   * Go to previous stage
+   */
   onBack(): void {
     this.stage -= 1;
   }
 
+  /**
+   * Go to next stage
+   */
   onNext(): void {
     switch (this.stage) {
       case 1: {
@@ -143,10 +167,11 @@ export class AddStepComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Open add form component
+   */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddFormComponent, {
-      panelClass: 'add-dialog',
-    });
+    const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };

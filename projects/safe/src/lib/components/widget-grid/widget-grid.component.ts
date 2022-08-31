@@ -125,11 +125,6 @@ export class SafeWidgetGridComponent implements OnInit {
         widget,
       },
       autoFocus: false,
-      position: {
-        bottom: '0',
-        right: '0',
-      },
-      panelClass: 'expanded-widget-dialog',
     });
     dialogRef.componentInstance.goToNextStep.subscribe((event: any) => {
       this.goToNextStep.emit(event);

@@ -12,7 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
-
+import { SafeModalModule } from '../ui/modal/modal.module';
 /**
  * SafeAccessModule is a class used to manage all the modules and components related to the access properties.
  */
@@ -31,6 +31,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTooltipModule,
     SafeButtonModule,
     TranslateModule,
+    SafeModalModule,
   ],
   exports: [SafeAccessComponent],
 })

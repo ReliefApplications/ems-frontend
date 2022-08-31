@@ -4,6 +4,8 @@ import { prettifyLabel } from '../utils/prettify';
 import get from 'lodash/get';
 import { SafeApiProxyService } from './api-proxy.service';
 import { MULTISELECT_TYPES } from '../components/ui/core-grid/grid/grid.constants';
+import { TranslateService } from '@ngx-translate/core';
+import { REFERENCE_DATA_END } from './query-builder.service';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -39,10 +41,12 @@ export class SafeGridService {
    *
    * @param formBuilder Angular form builder
    * @param apiProxyService Shared API proxy service
+   * @param translate Translate service
    */
   constructor(
     private formBuilder: FormBuilder,
-    private apiProxyService: SafeApiProxyService
+    private apiProxyService: SafeApiProxyService,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -72,6 +76,12 @@ export class SafeGridService {
     return flatDeep(
       fields.map((f) => {
         const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
+        const hidden: boolean =
+          (f.canSee !== undefined && !f.canSee) || options.hidden || false;
+        const disabled: boolean =
+          (f.canUpdate !== undefined && !f.canUpdate) ||
+          options.disabled ||
+          false;
         switch (f.kind) {
           case 'OBJECT': {
             return this.getFields(
@@ -81,7 +91,7 @@ export class SafeGridService {
               fullName,
               {
                 disabled: true,
-                hidden: options.hidden,
+                hidden,
                 filter: prefix ? false : options.filter,
               }
             );
@@ -89,7 +99,11 @@ export class SafeGridService {
           case 'LIST': {
             let metaData = get(metaFields, fullName);
             metaData = Object.assign([], metaData);
-            metaData.type = 'records';
+            if (f.type.endsWith(REFERENCE_DATA_END)) {
+              metaData.type = 'referenceData';
+            } else {
+              metaData.type = 'records';
+            }
             const cachedField = get(layoutFields, fullName);
             const title = f.label ? f.label : prettifyLabel(f.name);
             const subFields = this.getFields(
@@ -97,7 +111,11 @@ export class SafeGridService {
               metaFields,
               layoutFields,
               fullName,
-              { disabled: true, hidden: true, filter: false }
+              {
+                disabled: true,
+                hidden: !f.type.endsWith(REFERENCE_DATA_END),
+                filter: false,
+              }
             );
             return {
               name: fullName,
@@ -108,7 +126,7 @@ export class SafeGridService {
               filter: prefix ? '' : this.getFieldFilter(f.type),
               meta: metaData,
               disabled: true,
-              hidden: options.hidden || cachedField?.hidden || false,
+              hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
               query: {
@@ -132,17 +150,19 @@ export class SafeGridService {
               filter: !options.filter ? '' : this.getFieldFilter(f.type),
               meta: metaData,
               disabled:
-                options.disabled ||
+                disabled ||
                 DISABLED_FIELDS.includes(f.name) ||
                 metaData?.readOnly,
-              hidden: options.hidden || cachedField?.hidden || false,
+              hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
             };
           }
         }
       })
-    ).sort((a, b) => a.order - b.order);
+    )
+      .filter((f) => f.meta.permissions?.canSee)
+      .sort((a, b) => a.order - b.order);
   }
 
   /**
@@ -240,6 +260,7 @@ export class SafeGridService {
    * @param metaFields List of meta fields
    */
   public async populateMetaFields(metaFields: any): Promise<void> {
+    const promises: Promise<any>[] = [];
     for (const fieldName of Object.keys(metaFields)) {
       const meta = metaFields[fieldName];
       if (meta.choicesByUrl) {
@@ -252,18 +273,37 @@ export class SafeGridService {
               JSON.parse(localRes),
               meta.choicesByUrl
             ),
+            // choicesByUrl: null,
           };
         } else {
-          const res: any =
-            await this.apiProxyService.promisedRequestWithHeaders(url);
-          localStorage.setItem(url, JSON.stringify(res));
-          metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(res, meta.choicesByUrl),
-          };
+          promises.push(
+            this.apiProxyService
+              .promisedRequestWithHeaders(url)
+              .then((value: any) => {
+                localStorage.setItem(url, JSON.stringify(value));
+                metaFields[fieldName] = {
+                  ...meta,
+                  choices: this.extractChoices(value, meta.choicesByUrl),
+                  // choicesByUrl: null,
+                };
+              })
+          );
         }
       }
+      if (meta.choices) {
+        metaFields[fieldName] = {
+          ...meta,
+          choices: meta.choices.map((choice: any) => ({
+            value: choice.value,
+            text:
+              choice.text[this.translate.currentLang] ||
+              choice.text.default ||
+              choice.text,
+          })),
+        };
+      }
     }
+    await Promise.all(promises);
   }
 
   /**
@@ -305,6 +345,7 @@ export class SafeGridService {
         text: choicesByUrl.otherText ? choicesByUrl.otherText : 'Other',
       });
     }
+    choices.sort((a: any, b: any) => a.text.localeCompare(b.text));
     return choices;
   }
 

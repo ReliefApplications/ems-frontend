@@ -18,11 +18,13 @@ import {
   SafeApplicationsSummaryModule,
   SafeSkeletonTableModule,
   SafeDateModule,
+  SafeGraphQLSelectModule,
+  SafeModalModule,
 } from '@safe/builder';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
-import { DuplicateApplicationModule } from '../../../components/duplicate-application/duplicate-application.module';
+import { DuplicateApplicationModalModule } from '../../../components/duplicate-application-modal/duplicate-application-modal.module';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
@@ -31,6 +33,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Applications page module.
+ */
 @NgModule({
   declarations: [ApplicationsComponent, ChoseRoleComponent, FilterComponent],
   imports: [
@@ -50,7 +55,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatChipsModule,
     SafeConfirmModalModule,
     SafeAccessModule,
-    DuplicateApplicationModule,
+    DuplicateApplicationModalModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatDividerModule,
@@ -61,6 +66,8 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
+    SafeGraphQLSelectModule,
+    SafeModalModule,
   ],
   exports: [ApplicationsComponent],
 })

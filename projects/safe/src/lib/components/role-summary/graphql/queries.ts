@@ -124,12 +124,6 @@ export const GET_RESOURCES = gql`
         node {
           id
           name
-          permissions {
-            canSee {
-              id
-              title
-            }
-          }
         }
         cursor
       }
@@ -157,6 +151,44 @@ export interface GetResourcesQueryResponse {
     totalCount: number;
   };
 }
+
+/** Graphql query for getting resources with a filter and more data */
+export const GET_RESOURCES_EXTENDED = gql`
+  query GetResourcesExtended(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sortField: String
+    $sortOrder: String
+    $role: ID!
+  ) {
+    resources(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
+      edges {
+        node {
+          id
+          name
+          createdAt
+          recordsCount
+          canDelete
+          rolePermissions(role: $role)
+          fields
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
 
 /** Graphql request for getting forms of a resource */
 export const GET_RESOURCE_FORMS = gql`

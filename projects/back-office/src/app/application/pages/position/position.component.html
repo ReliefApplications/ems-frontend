@@ -43,7 +43,7 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr
-      class="clickable"
+      class="cursor-pointer"
       mat-row
       *matRowDef="let row; columns: displayedColumns"
       [routerLink]="[row.id]"

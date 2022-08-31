@@ -16,6 +16,9 @@ import {
   SafeConfirmModalModule,
   SafeButtonModule,
   SafeSkeletonTableModule,
+  SafeIconModule,
+  SafeGraphQLSelectModule,
+  SafeModalModule,
 } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -25,6 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+/** Pull Jobs page module. */
 @NgModule({
   declarations: [PullJobsComponent, PullJobModalComponent],
   imports: [
@@ -50,6 +54,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     TranslateModule,
     MatChipsModule,
     SafeSkeletonTableModule,
+    SafeIconModule,
+    SafeGraphQLSelectModule,
+    SafeModalModule,
   ],
 })
 export class PullJobsModule {}

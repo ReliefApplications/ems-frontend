@@ -1,3 +1,7 @@
+<safe-role-resources-filter
+  (filter)="onFilter($event)"
+  [loading]="filterLoading"
+></safe-role-resources-filter>
 <table
   *ngIf="!loading"
   mat-table
@@ -14,17 +18,32 @@
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">
-      <safe-button
-        [isIcon]="true"
-        [icon]="
-          openedResourceId === element.id
-            ? 'keyboard_arrow_up'
-            : 'keyboard_arrow_down'
-        "
-        (click)="toggleResource(element)"
-        [disabled]="loading || updating"
-      >
-      </safe-button>
+      <div style="display: flex">
+        <ng-container *ngFor="let action of permissionTypes">
+          <safe-button
+            [isIcon]="true"
+            [icon]="getIcon(action, element)"
+            [variant]="getVariant(action, element)"
+            (click)="onEditAccess(action, element)"
+            [disabled]="loading || updating"
+            [matTooltip]="
+              getTooltip(action, element) | translate: { form: element.name }
+            "
+          >
+          </safe-button>
+        </ng-container>
+        <safe-button
+          [isIcon]="true"
+          [icon]="
+            openedResourceId === element.id
+              ? 'keyboard_arrow_up'
+              : 'keyboard_arrow_down'
+          "
+          (click)="toggleResource(element)"
+          [disabled]="loading || updating"
+        >
+        </safe-button>
+      </div>
     </td>
   </ng-container>
   <ng-container matColumnDef="expandedDetail">
@@ -39,11 +58,14 @@
           element.id === openedResourceId ? 'expanded' : 'collapsed'
         "
       >
-        <safe-role-forms
+        <safe-resource-fields
           [resource]="element"
           [role]="role"
-          *ngIf="element.id === openedResourceId"
-        ></safe-role-forms>
+          [updating]="updating"
+          (onToggle)="
+            onEditFieldAccess($event.resource, $event.field, $event.permission)
+          "
+        ></safe-resource-fields>
       </div>
     </td>
   </ng-container>

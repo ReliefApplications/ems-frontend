@@ -35,11 +35,8 @@ import {
   DELETE_RECORDS,
   EditRecordMutationResponse,
   EDIT_RECORD,
-} from '../../../graphql/mutations';
-import {
-  GetFormByIdQueryResponse,
-  GET_FORM_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/mutations';
+import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from './graphql/queries';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
@@ -220,7 +217,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     })} ${today.getFullYear()}`;
     return `${
       this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
-    } ${formatDate}.png`;
+    } ${formatDate}`;
   }
 
   /** @returns true if any updated item in the list */
@@ -754,9 +751,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           locale: 'en',
           askForConfirm: false,
         },
-        height: '98%',
-        width: '100vw',
-        panelClass: 'full-screen-modal',
         autoFocus: false,
       });
       dialogRef.afterClosed().subscribe((value) => {
@@ -808,9 +802,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             items.canUpdate,
           ...(!isArray && { template: this.settings.template }),
         },
-        height: '98%',
-        width: '100vw',
-        panelClass: 'full-screen-modal',
         autoFocus: false,
       });
       dialogRef.afterClosed().subscribe((value) => {
@@ -835,9 +826,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         locale: 'en',
         template: this.settings.template || null,
       },
-      height: '98%',
-      width: '100vw',
-      panelClass: 'full-screen-modal',
       autoFocus: false,
     });
     dialogRef.afterClosed().subscribe((value) => {

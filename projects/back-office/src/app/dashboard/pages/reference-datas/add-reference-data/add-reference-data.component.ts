@@ -19,6 +19,7 @@ export class AddReferenceDataComponent implements OnInit {
   // === REACTIVE FORM ===
   referenceForm: FormGroup = new FormGroup({});
 
+  /** @returns name of reference data */
   get name(): AbstractControl | null {
     return this.referenceForm.get('name');
   }
@@ -39,7 +40,7 @@ export class AddReferenceDataComponent implements OnInit {
    */
   ngOnInit(): void {
     this.referenceForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.pattern('^[A-Za-z-_]+$')]],
+      name: ['', Validators.required],
     });
   }
 

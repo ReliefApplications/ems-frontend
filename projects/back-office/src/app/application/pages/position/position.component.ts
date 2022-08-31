@@ -8,8 +8,11 @@ import {
   SafeConfirmModalComponent,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
-import { AddPositionComponent } from './components/position-modal/position-modal.component';
+import { PositionModalComponent } from './components/position-modal/position-modal.component';
 
+/**
+ * Application position component.
+ */
 @Component({
   selector: 'app-position',
   templateUrl: './position.component.html',
@@ -22,6 +25,13 @@ export class PositionComponent implements OnInit, OnDestroy {
   public displayedColumns = ['title', 'actions'];
   private applicationSubscription?: Subscription;
 
+  /**
+   * Application position component
+   *
+   * @param dialog Material dialog service
+   * @param applicationService Shared application service
+   * @param translate Angular translate service
+   */
   constructor(
     public dialog: MatDialog,
     private applicationService: SafeApplicationService,
@@ -43,8 +53,11 @@ export class PositionComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * Add new position
+   */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddPositionComponent, {
+    const dialogRef = this.dialog.open(PositionModalComponent, {
       data: {
         add: true,
       },
@@ -56,9 +69,13 @@ export class PositionComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Edit position category
+   *
+   * @param positionCategory position category to edit
+   */
   onEdit(positionCategory: PositionAttributeCategory): void {
-    const dialogRef = this.dialog.open(AddPositionComponent, {
-      width: '400px',
+    const dialogRef = this.dialog.open(PositionModalComponent, {
       data: {
         edit: true,
         title: positionCategory.title,
@@ -74,6 +91,11 @@ export class PositionComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Delete position category
+   *
+   * @param positionCategory position category to delete
+   */
   onDelete(positionCategory: PositionAttributeCategory): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
