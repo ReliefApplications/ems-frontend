@@ -190,17 +190,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     }
 
-    if (navigator.language) {
-      const clientLanguage = navigator.language.substring(0, 2);
-      const code = this.survey.getUsedLocales().includes(clientLanguage)
-        ? clientLanguage
-        : 'en';
-      this.surveyLanguage = (LANGUAGES as any)[code];
-      this.survey.locale = code;
-    } else {
-      this.survey.locale = 'en';
-    }
-
     this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showNavigationButtons = false;
     this.setPages();
@@ -234,10 +223,25 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     if (currentLang) {
       this.setLanguage(currentLang.text);
       this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
+    } else {
+      this.survey.locale = this.translate.currentLang;
     }
   }
 
   ngAfterViewInit(): void {
+    this.translate.onLangChange.subscribe(() => {
+      const currentLang = this.usedLocales.find(
+        (lang) => lang.value === this.translate.currentLang
+      );
+      if (currentLang && currentLang.text !== this.survey.locale) {
+        this.setLanguage(currentLang.text);
+        this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
+      } else if (!currentLang && this.survey.locale !== this.translate.currentLang) {
+        this.survey.locale = this.translate.currentLang;
+        this.surveyLanguage = (LANGUAGES as any).en;
+        this.survey.render()
+      }
+    });
     this.survey.render(this.formContainer.nativeElement);
     setTimeout(() => {}, 100);
   }
