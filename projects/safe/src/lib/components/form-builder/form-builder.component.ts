@@ -311,8 +311,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * Custom SurveyJS method, save the form when edited.
    */
   saveMySurvey = () => {
+    console.log(this.surveyCreator.JSON);
     this.validateValueNames()
       .then(() => {
+        console.log(this.surveyCreator.JSON);
         this.save.emit(this.surveyCreator.text);
       })
       .catch((error) => {
@@ -344,7 +346,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         );
       }
     });
-    this.surveyCreator.JSON = survey.toJSON();
+    const JSONsurvey = survey.toJSON();
+    JSONsurvey.locale = survey.getLocale();
+    this.surveyCreator.JSON = JSONsurvey;
   }
 
   /**
