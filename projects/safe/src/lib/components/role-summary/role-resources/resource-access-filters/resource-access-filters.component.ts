@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { cloneDeep, get, has, isEqual } from 'lodash';
+import { get } from 'lodash';
 import {
   animate,
   state,
@@ -9,14 +9,11 @@ import {
   trigger,
 } from '@angular/animations';
 import { Resource } from '../../../../models/resource.model';
-import {
-  Access,
-  ResourceRolePermissions,
-  Permission,
-} from '../permissions.types';
+import { Access, Permission } from '../permissions.types';
 import { createFilterGroup } from '../../../query-builder/query-builder-forms';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { timeout } from 'rxjs/operators';
 
 type AccessPermissions = {
   access: Access;
@@ -70,6 +67,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
   // === EDITION ===
   public openedFilterIndex: number | null = null;
   public filtersFormArray!: FormArray;
+  public openedFilterFormGroup?: FormGroup;
 
   // === TABLE ELEMENTS ===
   public displayedColumns: string[] = ['filter', 'actions'];
@@ -116,8 +114,8 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
       this.filters.data.map((x) => this.createAccessFilterFormGroup(x))
     );
     this.filtersFormArray.valueChanges.subscribe((res) => {
+      console.log('update');
       this.filters.data = this.setTableElements(res);
-      console.log(this.filters.data)
     });
     this.filterFields = this.resource.metadata
       .filter((x: any) => x.filterable !== false)
@@ -231,7 +229,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
    * @returns the name of the icon to be displayed
    */
   private getIcon(access: AccessPermissions, permission: Permission) {
-    const hasPermission = has(access, `permissions.${permission}`);
+    const hasPermission = get(access, `permissions.${permission}`, false);
     switch (permission) {
       case Permission.SEE:
         return hasPermission ? 'visibility' : 'visibility_off';
@@ -252,7 +250,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
    * @returns the name of the icon to be displayed
    */
   private getVariant(access: AccessPermissions, permission: Permission) {
-    const hasPermission = has(access, `permissions.${permission}`);
+    const hasPermission = get(access, `permissions.${permission}`, false);
     return hasPermission ? 'primary' : 'grey';
   }
 
@@ -264,7 +262,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
    * @returns the name of the icon to be displayed
    */
   private getTooltip(access: AccessPermissions, permission: Permission) {
-    const hasPermission = has(access, `permissions.${permission}`);
+    const hasPermission = get(access, `permissions.${permission}`, false);
     switch (permission) {
       case Permission.SEE:
         return hasPermission
@@ -289,15 +287,15 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
   toggleFilterEdition(index: number) {
     if (index < 0) return;
     if (index !== this.openedFilterIndex) {
-      // this.editingAccessResource = this.filtersFormArray
-      //   .at(index)
-      //   .get('access') as FormGroup;
-      // this.editingAccessResource.valueChanges.subscribe(
-      //   (res) => (this.accesses.data[index].access = res)
-      // );
-      this.openedFilterIndex = index;
+      console.log('I open');
+      console.log(index);
+      const filterFormGroup = this.filtersFormArray.at(index).get('access');
+      if (filterFormGroup) {
+        console.log(filterFormGroup);
+        this.openedFilterFormGroup = filterFormGroup as FormGroup;
+        this.openedFilterIndex = index;
+      }
     } else {
-      // this.editingAccess = undefined;
       this.openedFilterIndex = null;
     }
   }
@@ -338,8 +336,8 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
 
   /** Adds new access filter to access list and toggles the edition for it */
   addFilter() {
+    console.log('I add');
     const accessFilterGroup = this.createAccessFilterFormGroup();
-    // this.accesses.data = [...this.accesses.data, accessFilterGroup.value];
     this.filtersFormArray.push(accessFilterGroup);
     this.toggleFilterEdition(this.filters.data.length - 1);
   }
@@ -350,11 +348,10 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
    * @param index index of filter to remove
    */
   deleteFilter(index: number) {
-    // this.editingAccess = undefined;
+    console.log('I delete');
+    this.openedFilterIndex = null;
+    this.openedFilterFormGroup = undefined;
     this.filtersFormArray.removeAt(index);
-    // const filters = this.accesses.data.splice(index, 1);
-    // required to update the table
-    // this.accesses.data = filters;
   }
 
   /**
