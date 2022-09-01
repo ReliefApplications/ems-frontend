@@ -35,7 +35,7 @@
   </div>
   <div class="templates">
     <ng-container *ngFor="let item of templates">
-      <safe-card-template [isDynamic]="item.isDynamic" [title]="item.title" [dashboardName]="item.dashboardName"></safe-card-template>
+      <safe-card-template (click)="onCreate()" [isDynamic]="item.isDynamic" [title]="item.title" [dashboardName]="item.dashboardName"></safe-card-template>
     </ng-container>
   </div>
   <mat-divider></mat-divider>
