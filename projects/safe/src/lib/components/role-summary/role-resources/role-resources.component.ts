@@ -296,77 +296,72 @@ export class RoleResourcesComponent implements OnInit {
    * @param resource the resource object to be updated
    * @param permission the permission to be edited
    */
-  onEditAccess(resource: Resource, permission: Permission): void {
-    if (!this.role.id) return;
+  editResourceAccess(resource: Resource, permission: Permission): void {
+    this.updating = true;
+    const updatedPermissions: {
+      add?: string[] | { role: string }[];
+      remove?: string[] | { role: string }[];
+    } = {};
+    const hasCurrPermission = has(resource, `rolePermissions.${permission}`);
+    Object.assign(updatedPermissions, {
+      [hasCurrPermission ? 'remove' : 'add']: [{ role: this.role.id }],
+    });
 
-    // this.updating = true;
-    // const updatedPermissions: {
-    //   add?: string[] | { role: string }[];
-    //   remove?: string[] | { role: string }[];
-    // } = {};
-    // console.log(resource);
-    // console.log(has(resource, `rolePermissions.${permission}`));
-    // console.log(`rolePermissions.${permission}`);
-    // const hasCurrPermission = has(resource, `rolePermissions.${permission}`);
-    // Object.assign(updatedPermissions, {
-    //   [hasCurrPermission ? 'remove' : 'add']: [{ role: this.role.id }],
-    // });
-
-    // this.apollo
-    //   .mutate<EditResourceAccessMutationResponse>({
-    //     mutation: EDIT_RESOURCE_ACCESS,
-    //     variables: {
-    //       id: resource.id,
-    //       permissions: {
-    //         [permission]: updatedPermissions,
-    //       },
-    //       role: this.role.id,
-    //     },
-    //   })
-    //   .subscribe(
-    //     (res) => {
-    //       if (res.data?.editResource) {
-    //         const index = this.resources.data.findIndex(
-    //           (x) => x.id === resource.id
-    //         );
-    //         const resources = [...this.resources.data];
-    //         resources[index] = res.data?.editResource;
-    //         this.resources.data = resources;
-    //         this.resourcesPermissions = resources.map((f) => {
-    //           const permissions: ResourceRolePermissions = {
-    //             canSeeRecords: [],
-    //             canCreateRecords: [],
-    //             canUpdateRecords: [],
-    //             canDeleteRecords: [],
-    //           };
-    //           for (const p of this.permissionTypes) {
-    //             permissions[p] = get(f, `permissions.${p}`, [])
-    //               .filter((x: any) => {
-    //                 switch (p) {
-    //                   case Permission.CREATE:
-    //                     return x.id === this.role.id;
-    //                   default:
-    //                     return x.role === this.role.id;
-    //                 }
-    //               })
-    //               .map((x: any) => {
-    //                 const roleId = p === Permission.CREATE ? x.id : x.role;
-    //                 return { role: roleId, access: x.access };
-    //               });
-    //           }
-    //           return {
-    //             form: f.id,
-    //             permissions,
-    //           };
-    //         });
-    //       }
-    //       this.updating = false;
-    //     },
-    //     (err) => {
-    //       this.snackBar.openSnackBar(err.message, { error: true });
-    //       this.updating = false;
-    //     }
-    //   );
+    this.apollo
+      .mutate<EditResourceAccessMutationResponse>({
+        mutation: EDIT_RESOURCE_ACCESS,
+        variables: {
+          id: resource.id,
+          permissions: {
+            [permission]: updatedPermissions,
+          },
+          role: this.role.id as string,
+        },
+      })
+      .subscribe(
+        (res) => {
+          if (res.data?.editResource) {
+            const index = this.resources.data.findIndex(
+              (x) => x.resource.id === resource.id
+            );
+            const tableElements = [...this.resources.data];
+            tableElements[index].resource = res.data?.editResource;
+            this.resources.data = tableElements;
+            // this.resourcesPermissions = tableElements.map((f) => {
+            //   const permissions: ResourceRolePermissions = {
+            //     canSeeRecords: [],
+            //     canCreateRecords: [],
+            //     canUpdateRecords: [],
+            //     canDeleteRecords: [],
+            //   };
+            //   for (const p of this.permissionTypes) {
+            //     permissions[p] = get(f, `permissions.${p}`, [])
+            //       .filter((x: any) => {
+            //         switch (p) {
+            //           case Permission.CREATE:
+            //             return x.id === this.role.id;
+            //           default:
+            //             return x.role === this.role.id;
+            //         }
+            //       })
+            //       .map((x: any) => {
+            //         const roleId = p === Permission.CREATE ? x.id : x.role;
+            //         return { role: roleId, access: x.access };
+            //       });
+            //   }
+            //   return {
+            //     form: f.id,
+            //     permissions,
+            //   };
+            // });
+          }
+          this.updating = false;
+        },
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+          this.updating = false;
+        }
+      );
   }
 
   /**

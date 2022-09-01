@@ -28,7 +28,7 @@
             [isIcon]="true"
             [icon]="permission.icon"
             [variant]="permission.variant"
-            (click)="onEditAccess(element.resource, permission.name)"
+            (click)="editResourceAccess(element.resource, permission.name)"
             [disabled]="loading || updating"
             [matTooltip]="
               permission.tooltip
