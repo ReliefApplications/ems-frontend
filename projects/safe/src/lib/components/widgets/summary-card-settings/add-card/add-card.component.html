@@ -33,10 +33,10 @@
   <div class="cards-description" *ngIf="data.isDynamic">
     {{ 'components.widget.settings.summaryCard.create.tipDynamic' | translate }}
   </div>
-  <div class="templates">  
-    <safe-card-template [isDynamic]="false"></safe-card-template>
-    <safe-card-template [isDynamic]="true"></safe-card-template>
-    <safe-card-template [isDynamic]="true"></safe-card-template>
+  <div class="templates">
+    <ng-container *ngFor="let item of templates">
+      <safe-card-template [isDynamic]="item.isDynamic" [title]="item.title" [dashboardName]="item.dashboardName"></safe-card-template>
+    </ng-container>
   </div>
   <mat-divider></mat-divider>
   <h2>

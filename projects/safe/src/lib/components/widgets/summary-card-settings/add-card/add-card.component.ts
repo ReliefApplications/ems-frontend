@@ -44,6 +44,7 @@ export class SafeAddCardComponent implements OnInit {
       .then((data: any) => {
         this.templates = data;
       });
+    this.templates = this.templates.slice(-3).reverse();
   }
 
   /**
