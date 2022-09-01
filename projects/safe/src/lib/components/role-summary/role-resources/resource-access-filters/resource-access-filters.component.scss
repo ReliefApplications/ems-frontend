@@ -5,21 +5,21 @@
   height: 100%;
 }
 
-.content {
-  flex-grow: 1;
-  max-height: 100%;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1em;
-}
+// .content {
+//   flex-grow: 1;
+//   max-height: 100%;
+//   overflow-y: auto;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   gap: 1em;
+// }
 
 .mat-row {
   cursor: pointer;
 }
 
-.expanded-resource {
+.expanded-filter {
   padding-block: 1em;
   display: flex;
   flex-direction: column;
@@ -27,11 +27,7 @@
   cursor: auto;
 }
 
-.capitalize::first-letter {
-  text-transform: uppercase;
-}
-
-.empty-resource {
+.empty-indicator {
   display: flex;
   flex-direction: column;
   padding: 16px;

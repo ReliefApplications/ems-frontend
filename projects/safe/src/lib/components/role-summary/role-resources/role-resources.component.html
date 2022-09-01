@@ -64,21 +64,21 @@
           element.resource.id === openedResource?.id ? 'expanded' : 'collapsed'
         "
       >
-        <div>ok</div>
-        <!-- <safe-resource-access-filters
-          [resource]="element"
-          [role]="role.id!"
-          [permissions]="rolePermissions(role.id)"
-        >
-        </safe-resource-access-filters>
-        <safe-resource-fields
-          [resource]="element"
-          [role]="role"
-          [updating]="updating"
-          (onToggle)="
-            onEditFieldAccess($event.resource, $event.field, $event.permission)
-          "
-        ></safe-resource-fields> -->
+        <ng-container *ngIf="openedResource && element.resource.id === openedResource?.id">
+          <safe-resource-access-filters
+            [role]="role.id!"
+            [resource]="openedResource"
+          >
+          </safe-resource-access-filters>
+          <!-- <safe-resource-fields
+        [resource]="element"
+        [role]="role"
+        [updating]="updating"
+        (onToggle)="
+          onEditFieldAccess($event.resource, $event.field, $event.permission)
+        "
+      ></safe-resource-fields> -->
+        </ng-container>
       </div>
     </td>
   </ng-container>

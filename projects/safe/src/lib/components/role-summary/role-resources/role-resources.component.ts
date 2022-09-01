@@ -456,6 +456,7 @@ export class RoleResourcesComponent implements OnInit {
     const hasPermission = has(resource, `rolePermissions.${permission}`);
     return hasPermission ? 'primary' : 'grey';
   }
+
   /**
    * Gets the correspondent tooltip for a given permission
    *

@@ -66,7 +66,10 @@
 			"apply": "Apply",
 			"clear": "Clear Filter",
 			"empty": "No result",
+			"few": "Filters",
 			"hide": "Hide Filter",
+			"none": "No filter",
+			"one": "Filter",
 			"show": "Show Filter"
 		},
 		"form": {
@@ -712,7 +715,7 @@
 				"disallowFieldUpdate": "Disallow this role to update the field {{field}}",
 				"disallowFilterAccessibility": "Disallow this role to see records that satisfies this filter",
 				"disallowFilterDeletion": "Disallow this role to remove records that satisfies this filter",
-				"disallowFilterUpate": "Disallow this role to update records that satisfies this filter",
+				"disallowFilterUpdate": "Disallow this role to update records that satisfies this filter",
 				"disallowRecordAccessibility": "Disallow this role to see records of {{resource}}",
 				"disallowRecordCreation": "Disallow this role to create records with {{resource}}",
 				"disallowRecordDeletion": "Disallow this role to remove records from {{resource}}",

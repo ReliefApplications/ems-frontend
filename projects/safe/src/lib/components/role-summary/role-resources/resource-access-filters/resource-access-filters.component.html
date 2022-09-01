@@ -1,98 +1,95 @@
 <!-- Header -->
-<h2>Filters</h2>
+<h2>{{ 'common.filter.few' | translate }}</h2>
 <!-- Content -->
-<div *ngIf="accesses.data.length === 0" class="empty-resource">
+<div *ngIf="filters.data.length === 0" class="empty-indicator">
   <safe-icon icon="folder_open"></safe-icon>
-  <h3>{{ 'components.role.summary.noForms' | translate }}</h3>
+  <h3>{{ 'components.role.summary.noFilters' | translate }}</h3>
 </div>
-<div class="content">
-  <table
-    mat-table
-    [dataSource]="accesses"
-    *ngIf="accesses.data.length > 0"
-    multiTemplateDataRows
-  >
-    <ng-container matColumnDef="filter">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ 'components.queryBuilder.filter.title' | translate }}
-      </th>
-      <td mat-cell *matCellDef="let element" class="capitalize">
-        {{ getAccessString(element.access) }}
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let element">
-        <div style="display: flex">
-          <ng-container *ngFor="let action of permissionTypes">
-            <safe-button
-              *ngIf="action !== 'canCreateRecords'"
-              [isIcon]="true"
-              [icon]="getIcon(action, element)"
-              [variant]="element.permissions[action] ? 'primary' : 'grey'"
-              [matTooltip]="getTooltip(action, element) | translate"
-              (click)="
-                $event.stopPropagation();
-                element.permissions[action] = !element.permissions[action]
-              "
-            >
-            </safe-button>
-          </ng-container>
-        </div>
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="expandedDetail">
-      <td
-        mat-cell
-        *matCellDef="let element"
-        [attr.colspan]="displayedColumns.length"
-      >
-        <div
-          [ngClass]="{
-            'expanded-resource': isEqual(element.access, editingAccess?.access)
-          }"
-          [@detailExpand]="
-            isEqual(element.access, editingAccess?.access)
-              ? 'expanded'
-              : 'collapsed'
-          "
-        >
-          <safe-filter
-            *ngIf="isEqual(element.access, editingAccess?.access)"
-            [form]="$any(editingAccessResource)"
-            [fields]="filterFields"
-          >
-          </safe-filter>
+<table
+  mat-table
+  [dataSource]="filters"
+  *ngIf="filters.data.length > 0"
+  multiTemplateDataRows
+>
+  <ng-container matColumnDef="filter">
+    <th mat-header-cell *matHeaderCellDef>
+      {{ 'components.queryBuilder.filter.title' | translate }}
+    </th>
+    <td mat-cell *matCellDef="let element">
+      {{ getAccessString(element.access) | titlecase }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>
+      <safe-button [disabled]="filtersFormArray.untouched">{{ 'common.save' | translate }}</safe-button>
+    </th>
+    <td mat-cell *matCellDef="let element; let i = dataIndex">
+      <div style="display: flex">
+        <ng-container *ngFor="let permission of element.permissions">
           <safe-button
-            *ngIf="isEqual(element.access, editingAccess?.access)"
-            variant="danger"
-            category="secondary"
-            icon="delete"
-            (click)="handleRemoveFilter(element)"
+            *ngIf="permission.name !== 'canCreateRecords'"
+            [isIcon]="true"
+            [icon]="permission.icon"
+            [variant]="permission.variant"
+            [matTooltip]="permission.tooltip | translate"
+            (click)="
+              $event.stopPropagation();
+              toggleFilterAccess(i, permission.name)
+            "
           >
-            {{ 'components.role.summary.removeFilter' | translate }}
           </safe-button>
-        </div>
-      </td>
-    </ng-container>
+        </ng-container>
+      </div>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="expandedDetail">
+    <td
+      mat-cell
+      *matCellDef="let element; let i = dataIndex"
+      [attr.colspan]="displayedColumns.length"
+    >
+      <div
+        [ngClass]="{
+          'expanded-filter': i === openedFilterIndex
+        }"
+        [@detailExpand]="i === openedFilterIndex ? 'expanded' : 'collapsed'"
+      >
+        <safe-filter
+          *ngIf="i === openedFilterIndex"
+          [form]="$any(filtersFormArray.at(i).get('access'))"
+          [fields]="filterFields"
+        >
+        </safe-filter>
+        <safe-button
+          *ngIf="i === openedFilterIndex"
+          variant="danger"
+          category="secondary"
+          icon="delete"
+          (click)="deleteFilter(i)"
+        >
+          {{ 'components.role.summary.removeFilter' | translate }}
+        </safe-button>
+      </div>
+    </td>
+  </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      *matRowDef="let row; columns: displayedColumns"
-      mat-row
-      (click)="toggleEdition(row)"
-    ></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: ['expandedDetail']"
-      style="height: 0"
-    ></tr>
-  </table>
-  <safe-button
-    variant="primary"
-    category="secondary"
-    (click)="handleNewFilter()"
-  >
-    {{ 'components.role.summary.addFilter' | translate }}
-  </safe-button>
-</div>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    *matRowDef="let row; columns: displayedColumns; let i = dataIndex"
+    mat-row
+    (click)="toggleFilterEdition(i)"
+  ></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: ['expandedDetail']"
+    style="height: 0"
+  ></tr>
+</table>
+<safe-button
+  variant="primary"
+  category="secondary"
+  (click)="addFilter()"
+  style="align-self: center"
+>
+  {{ 'components.role.summary.addFilter' | translate }}
+</safe-button>

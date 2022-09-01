@@ -45,6 +45,7 @@ export class FilterRowComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.form.get('field')?.valueChanges.subscribe((value) => {
+      console.log('field');
       // remove value
       this.form.get('value')?.setValue(null);
       this.setField(value, true);
