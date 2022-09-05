@@ -10,7 +10,7 @@ export const GET_RESOURCE_BY_ID = gql`
       queryName
       createdAt
       fields
-      userAccessToFields
+      metadata
       layouts {
         id
         name

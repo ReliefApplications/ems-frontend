@@ -104,7 +104,7 @@ export const GET_FORM_BY_ID = gql`
       name
       createdAt
       structure
-      userAccessToFields
+      metadata
       fields
       status
       versions {

@@ -219,7 +219,7 @@ export class RecordsTabComponent implements OnInit {
       }
     }
     columns = columns
-      .filter((x) => this.resource.userAccessToFields?.[x].canSee)
+      .filter((x) => get(this.resource, `metadata.${x}.canSee`, false))
       .concat(RECORDS_DEFAULT_COLUMNS);
     this.displayedColumnsRecords = columns;
   }

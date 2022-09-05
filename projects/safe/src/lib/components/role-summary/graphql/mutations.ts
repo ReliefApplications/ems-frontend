@@ -123,9 +123,12 @@ export interface EditResourceAccessMutationResponse {
 
 /** Edits the permissions for a resource field */
 export const EDIT_RESOURCE_FIELD_PERMISSION = gql`
-  mutation editResourceFields($id: ID!, $fieldsPermissions: JSON) {
+  mutation editResourceFields($id: ID!, $fieldsPermissions: JSON, $role: ID!) {
     editResource(id: $id, fieldsPermissions: $fieldsPermissions) {
       id
+      name
+      rolePermissions(role: $role)
+      metadata
       fields
     }
   }

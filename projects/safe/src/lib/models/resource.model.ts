@@ -11,9 +11,6 @@ export interface Resource {
   relatedForms?: Form[];
   createdAt?: Date;
   records?: RecordConnection;
-  userAccessToFields?: {
-    [key: string]: { canSee: boolean; canUpdate: boolean };
-  };
   fields?: any;
   canSee?: boolean;
   canUpdate?: boolean;

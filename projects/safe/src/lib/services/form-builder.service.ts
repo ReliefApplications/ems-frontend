@@ -37,9 +37,9 @@ export class SafeFormBuilderService {
       });
     }
     if (fields.length > 0) {
-      for (const f of fields) {
-        const accessible = !!f.permissions?.canSee;
-        const editable = !!f.permissions?.canUpdate;
+      for (const f of fields.filter((x) => !x.automated)) {
+        const accessible = !!f.canSee;
+        const editable = !!f.canUpdate;
         const hidden: boolean = (f.canSee !== undefined && !f.canSee) || false;
         const disabled: boolean =
           (f.canUpdate !== undefined && !f.canUpdate) || false;
