@@ -11,7 +11,7 @@ type ResourceField = {
 
 /**
  * Component containing table with fields of a resource.
- * In this table, it's possible to toggle the visibility and editability of a field.
+ * In this table, it's possible to toggle if field is visible / editable.
  */
 @Component({
   selector: 'safe-resource-fields',
@@ -40,7 +40,7 @@ export class ResourceFieldsComponent implements OnInit {
   }
 
   /**
-   * Emits an event to toggle the visibility/editability of a field.
+   * Emits an event to toggle if field is visible / editable.
    *
    * @param field Field to toggle permission for.
    * @param permission Permission type to toggle.
