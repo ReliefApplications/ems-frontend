@@ -16,12 +16,14 @@
       {{ 'components.queryBuilder.filter.title' | translate }}
     </th>
     <td mat-cell *matCellDef="let element">
-      {{ getAccessString(element.access) | titlecase }}
+      {{ getAccessString(element.access) }}
     </td>
   </ng-container>
   <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef>
-      <!-- <safe-button [disabled]="filtersFormArray.untouched">{{ 'common.save' | translate }}</safe-button> -->
+    <th mat-header-cell *matHeaderCellDef style="text-align: end;">
+      <safe-button variant="primary" category="tertiary" (click)="save()">{{
+        'common.save' | translate
+      }}</safe-button>
     </th>
     <td mat-cell *matCellDef="let element; let i = dataIndex">
       <div style="display: flex">
@@ -33,8 +35,7 @@
             [variant]="permission.variant"
             [matTooltip]="permission.tooltip | translate"
             (click)="
-              $event.stopPropagation();
-              toggleFilterAccess(i, permission.name)
+              $event.stopPropagation(); toggleFilterAccess(i, permission.name)
             "
           >
           </safe-button>

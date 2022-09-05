@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { get } from 'lodash';
+import { get, isEqual, set } from 'lodash';
 import {
   animate,
   state,
@@ -13,13 +13,20 @@ import { Access, Permission } from '../permissions.types';
 import { createFilterGroup } from '../../../query-builder/query-builder-forms';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { timeout } from 'rxjs/operators';
 
 type AccessPermissions = {
   access: Access;
   permissions: {
     [key in Permission]: boolean;
   };
+};
+
+/** Permissions to apply by default to all access filters */
+const BASE_PERMISSIONS = {
+  canCreateRecords: false,
+  canSeeRecords: false,
+  canUpdateRecords: false,
+  canDeleteRecords: false,
 };
 
 /** Modal for the definition of access/permissions for a given resource */
@@ -58,22 +65,21 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
   public permissionTypes = Object.values(Permission);
 
   @Input() role!: string; // Opened role
-  // @Input() permissions?: ResourceRolePermissions;
 
   // === RESOURCE ===
   @Input() resource!: Resource; // Opened resource
   public filterFields: any[] = [];
 
   // === EDITION ===
+  private initialValue!: AccessPermissions[];
   public openedFilterIndex: number | null = null;
   public filtersFormArray!: FormArray;
   public openedFilterFormGroup?: FormGroup;
+  @Output() update = new EventEmitter();
 
   // === TABLE ELEMENTS ===
   public displayedColumns: string[] = ['filter', 'actions'];
   public filters = new MatTableDataSource<AccessPermissions>([]);
-  // private initialAccesses!: AccessPermissions[];
-  // public editingAccess?: AccessPermissions;
 
   /**
    * Modal for the definition of access/permissions for a given resource
@@ -84,39 +90,36 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
   constructor(public translate: TranslateService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    // if (this.permissions) {
-    //   const cpyPerm = cloneDeep(this.permissions);
-
-    //   // filters out permissions without access object defined
-    //   Object.values(Permission).forEach((permission) => {
-    //     cpyPerm[permission] = cpyPerm[permission].filter((x) => x.access);
-    //     cpyPerm[permission].forEach((entry) => {
-    //       if (!entry.access) return;
-    //       const accessIndex = this.accesses.data.findIndex((x) =>
-    //         isEqual(x.access, entry.access)
-    //       );
-    //       if (accessIndex >= 0)
-    //         this.accesses.data[accessIndex].permissions[permission] = true;
-    //       else
-    //         this.accesses.data.push({
-    //           access: entry.access,
-    //           permissions: {
-    //             ...BASE_PERMISSIONS,
-    //             [permission]: true,
-    //           },
-    //         });
-    //     });
-    //   });
-    // }
-    // this.initialAccesses = cloneDeep(this.accesses.data);
-    this.filters.data = [];
-    this.filtersFormArray = this.fb.array(
-      this.filters.data.map((x) => this.createAccessFilterFormGroup(x))
+    const filters: AccessPermissions[] = [];
+    Object.keys(get(this.resource, 'rolePermissions', {})).forEach(
+      (permission) => {
+        const access = get(
+          this.resource,
+          `rolePermissions.${permission}.access`,
+          {}
+        );
+        for (const filter of get(access, 'filters', [])) {
+          const existingFilter = filters.find((x) => isEqual(x.access, filter));
+          if (existingFilter) {
+            set(existingFilter, `permissions.${permission}`, true);
+          } else {
+            filters.push({
+              access: filter,
+              permissions: {
+                ...BASE_PERMISSIONS,
+                [permission]: true,
+              },
+            });
+          }
+        }
+      }
     );
-    this.filtersFormArray.valueChanges.subscribe((res) => {
-      console.log('update');
-      this.filters.data = this.setTableElements(res);
-    });
+
+    this.filters.data = this.setTableElements(filters);
+    this.filtersFormArray = this.fb.array(
+      filters.map((x) => this.createAccessFilterFormGroup(x))
+    );
+    this.initialValue = this.filtersFormArray.value;
     this.filterFields = this.resource.metadata
       .filter((x: any) => x.filterable !== false)
       .map((x: any) => ({ ...x }));
@@ -150,6 +153,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
     const formGroup = this.filtersFormArray.at(index);
     const formControl = formGroup.get(`permissions.${action}`);
     formControl?.setValue(!formControl.value);
+    this.filters.data = this.setTableElements(this.filtersFormArray.value);
   }
 
   /**
@@ -287,16 +291,15 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
   toggleFilterEdition(index: number) {
     if (index < 0) return;
     if (index !== this.openedFilterIndex) {
-      console.log('I open');
-      console.log(index);
+      this.filters.data = this.setTableElements(this.filtersFormArray.value);
       const filterFormGroup = this.filtersFormArray.at(index).get('access');
       if (filterFormGroup) {
-        console.log(filterFormGroup);
         this.openedFilterFormGroup = filterFormGroup as FormGroup;
         this.openedFilterIndex = index;
       }
     } else {
       this.openedFilterIndex = null;
+      this.filters.data = this.setTableElements(this.filtersFormArray.value);
     }
   }
 
@@ -336,9 +339,9 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
 
   /** Adds new access filter to access list and toggles the edition for it */
   addFilter() {
-    console.log('I add');
     const accessFilterGroup = this.createAccessFilterFormGroup();
     this.filtersFormArray.push(accessFilterGroup);
+    this.filters.data = this.setTableElements(this.filtersFormArray.value);
     this.toggleFilterEdition(this.filters.data.length - 1);
   }
 
@@ -348,10 +351,10 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
    * @param index index of filter to remove
    */
   deleteFilter(index: number) {
-    console.log('I delete');
     this.openedFilterIndex = null;
     this.openedFilterFormGroup = undefined;
     this.filtersFormArray.removeAt(index);
+    this.filters.data = this.setTableElements(this.filtersFormArray.value);
   }
 
   /**
@@ -359,99 +362,100 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
    * and the current one, closes the dialog ang returns the array of updates needed
    * to go from the initial value to the current one
    */
-  // getDifference() {
-  //   const initial = this.initialAccesses;
-  //   const current = cloneDeep(this.filters.data);
+  save() {
+    const initial = this.initialValue;
+    const current = this.filtersFormArray.value as AccessPermissions[];
 
-  //   const ops: {
-  //     [key in Permission]?: {
-  //       add?: { role: string; access: Access }[];
-  //       remove?: { role: string; access: Access }[];
-  //     };
-  //   } = {};
+    const update: {
+      [key in Permission]?: {
+        add?: { role: string; access: Access }[];
+        remove?: { role: string; access: Access }[];
+      };
+    } = {};
 
-  //   // Loops thorugh the initial array. If element is not in the current array,
-  //   // the permissions for that access should be removed, if it is in the current array
-  //   // and permissions are different, they should be upated.
-  //   initial.forEach((init) => {
-  //     const currIndex = current.findIndex((x) =>
-  //       isEqual(x.access, init.access)
-  //     );
-  //     if (currIndex >= 0) {
-  //       // Filter still exists, checking for permission differences
-  //       const [access] = current.splice(currIndex, 1);
-  //       if (!isEqual(init.permissions, access.permissions)) {
-  //         this.permissionTypes.forEach((permission) => {
-  //           if (
-  //             init.permissions[permission] !== access.permissions[permission]
-  //           ) {
-  //             // if its different and the current one is True, should add / else => remove
-  //             const action = access.permissions[permission] ? 'add' : 'remove';
-  //             const opPerm = ops[permission];
-  //             if (!opPerm)
-  //               Object.assign(ops, {
-  //                 [permission]: {
-  //                   [action]: [{ role: this.role, access: access.access }],
-  //                 },
-  //               });
-  //             else if (opPerm && !opPerm?.hasOwnProperty(action)) {
-  //               opPerm[action] = [{ role: this.role, access: access.access }];
-  //             } else {
-  //               opPerm[action]?.push({
-  //                 role: this.role,
-  //                 access: access.access,
-  //               });
-  //             }
-  //           }
-  //         });
-  //       }
-  //     } else {
-  //       // Filter no longer exists, remove if previously had access
-  //       this.permissionTypes.forEach((permission) => {
-  //         if (init.permissions[permission]) {
-  //           const opPerm = ops[permission];
-  //           if (!opPerm)
-  //             Object.assign(ops, {
-  //               [permission]: {
-  //                 remove: [{ role: this.role, access: init.access }],
-  //               },
-  //             });
-  //           else if (opPerm && !opPerm.remove) {
-  //             opPerm.remove = [{ role: this.role, access: init.access }];
-  //           } else {
-  //             opPerm.remove?.push({
-  //               role: this.role,
-  //               access: init.access,
-  //             });
-  //           }
-  //         }
-  //       });
-  //     }
-  //   });
+    // Loops through the initial array. If element is not in the current array,
+    // the permissions for that access should be removed, if it is in the current array
+    // and permissions are different, they should be updated.
+    initial.forEach((init) => {
+      const currIndex = current.findIndex((x) =>
+        isEqual(x.access, init.access)
+      );
+      if (currIndex >= 0) {
+        // Filter still exists, checking for permission differences
+        const [access] = current.splice(currIndex, 1);
+        if (!isEqual(init.permissions, access.permissions)) {
+          this.permissionTypes.forEach((permission) => {
+            if (
+              init.permissions[permission] !== access.permissions[permission]
+            ) {
+              // if its different and the current one is True, should add / else => remove
+              const action = access.permissions[permission] ? 'add' : 'remove';
+              const opPerm = update[permission];
+              if (!opPerm)
+                Object.assign(update, {
+                  [permission]: {
+                    [action]: [{ role: this.role, access: access.access }],
+                  },
+                });
+              else if (opPerm && !opPerm?.hasOwnProperty(action)) {
+                opPerm[action] = [{ role: this.role, access: access.access }];
+              } else {
+                opPerm[action]?.push({
+                  role: this.role,
+                  access: access.access,
+                });
+              }
+            }
+          });
+        }
+      } else {
+        // Filter no longer exists, remove if previously had access
+        this.permissionTypes.forEach((permission) => {
+          if (init.permissions[permission]) {
+            const opPerm = update[permission];
+            if (!opPerm)
+              Object.assign(update, {
+                [permission]: {
+                  remove: [{ role: this.role, access: init.access }],
+                },
+              });
+            else if (opPerm && !opPerm.remove) {
+              opPerm.remove = [{ role: this.role, access: init.access }];
+            } else {
+              opPerm.remove?.push({
+                role: this.role,
+                access: init.access,
+              });
+            }
+          }
+        });
+      }
+    });
 
-  //   // Loops thorugh the remaining elements of the current array
-  //   // each one lasting (not spliced in the previous loop) should be pushed
-  //   current.forEach((curr) => {
-  //     this.permissionTypes.forEach((permission) => {
-  //       if (curr.permissions[permission]) {
-  //         const opPerm = ops[permission];
-  //         if (!opPerm)
-  //           Object.assign(ops, {
-  //             [permission]: {
-  //               add: [{ role: this.role, access: curr.access }],
-  //             },
-  //           });
-  //         else if (opPerm && !opPerm.add) {
-  //           opPerm.add = [{ role: this.role, access: curr.access }];
-  //         } else {
-  //           opPerm.add?.push({
-  //             role: this.role,
-  //             access: curr.access,
-  //           });
-  //         }
-  //       }
-  //     });
-  //   });
-  //   // this.dialogRef.close({ id: this.resource.id, permissions: ops });
-  // }
+    // Loops through the remaining elements of the current array
+    // each one lasting (not spliced in the previous loop) should be pushed
+    current.forEach((curr) => {
+      this.permissionTypes.forEach((permission) => {
+        if (curr.permissions[permission]) {
+          const opPerm = update[permission];
+          if (!opPerm)
+            Object.assign(update, {
+              [permission]: {
+                add: [{ role: this.role, access: curr.access }],
+              },
+            });
+          else if (opPerm && !opPerm.add) {
+            opPerm.add = [{ role: this.role, access: curr.access }];
+          } else {
+            opPerm.add?.push({
+              role: this.role,
+              access: curr.access,
+            });
+          }
+        }
+      });
+    });
+
+    this.update.emit(update);
+  }
 }

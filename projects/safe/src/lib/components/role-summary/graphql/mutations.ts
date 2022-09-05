@@ -92,13 +92,26 @@ export interface EditStepAccessMutationResponse {
   editStep: Step;
 }
 
-/** Edit Form access mutation */
+/** Edit Resource access mutation */
 export const EDIT_RESOURCE_ACCESS = gql`
   mutation editResource($id: ID!, $permissions: JSON, $role: ID!) {
     editResource(id: $id, permissions: $permissions) {
       id
       name
       rolePermissions(role: $role)
+    }
+  }
+`;
+
+/** Edit Resource access mutation extended */
+export const EDIT_FULL_RESOURCE_ACCESS = gql`
+  mutation editResource($id: ID!, $permissions: JSON, $role: ID!) {
+    editResource(id: $id, permissions: $permissions) {
+      id
+      name
+      rolePermissions(role: $role)
+      metadata
+      fields
     }
   }
 `;

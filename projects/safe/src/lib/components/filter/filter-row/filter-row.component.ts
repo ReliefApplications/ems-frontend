@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -20,7 +21,7 @@ import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
   templateUrl: './filter-row.component.html',
   styleUrls: ['./filter-row.component.scss'],
 })
-export class FilterRowComponent implements OnInit, OnChanges {
+export class FilterRowComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() form!: FormGroup;
   @Output() delete = new EventEmitter();
   @Input() fields: any[] = [];
@@ -57,7 +58,9 @@ export class FilterRowComponent implements OnInit, OnChanges {
         this.form.get('value')?.enable();
       }
     });
+  }
 
+  ngAfterViewInit(): void {
     const initialField = this.form.get('field')?.value;
     if (initialField && this.fields.length > 0) {
       this.setField(initialField);

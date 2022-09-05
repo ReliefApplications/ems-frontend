@@ -66,7 +66,10 @@
 			"apply": "Appliquer",
 			"clear": "Supprimer le filtre",
 			"empty": "Aucun résultat",
+			"few": "Filtres",
 			"hide": "Cacher le filtre",
+			"none": "Pas de filtre",
+			"one": "Filtre",
 			"show": "Afficher le filtre"
 		},
 		"form": {
@@ -712,7 +715,7 @@
 				"disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
 				"disallowFilterAccessibility": "Interdire ce rôle pour voir les enregistrements qui satisfont ce filtre",
 				"disallowFilterDeletion": "Interdire ce rôle pour supprimer les enregistrements qui satisfont ce filtre",
-				"disallowFilterUpate": "Interdire ce rôle pour mettre à jour les enregistrements qui satisfont ce filtre",
+				"disallowFilterUpdate": "Interdire ce rôle pour mettre à jour les enregistrements qui satisfont ce filtre",
 				"disallowRecordAccessibility": "Interdire ce rôle pour voir les enregistrements de {{resource}}",
 				"disallowRecordCreation": "Interdire à ce rôle de créer des enregistrements dans {{resource}}",
 				"disallowRecordDeletion": "Interdire ce rôle pour supprimer des enregistrements de {{resource}}",

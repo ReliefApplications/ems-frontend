@@ -68,6 +68,7 @@
           <safe-resource-access-filters
             [role]="role.id!"
             [resource]="openedResource"
+            (update)="editResourceAccessFilter(element.resource, $event)"
           >
           </safe-resource-access-filters>
           <!-- <safe-resource-fields
