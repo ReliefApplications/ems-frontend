@@ -60,4 +60,13 @@ export class SafeAddCardComponent implements OnInit {
   onCreate(): void {
     this.dialogRef.close(this.data);
   }
+
+  /**
+   * Closes the modal when a template is selected, sending the modal data.
+   *
+   * @param item The summary card template item chosen
+   */
+  onCreateFromTemplate(item: any): void {
+    this.dialogRef.close(item);
+  }
 }
