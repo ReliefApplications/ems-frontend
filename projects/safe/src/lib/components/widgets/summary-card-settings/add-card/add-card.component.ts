@@ -18,11 +18,11 @@ export class SafeAddCardComponent implements OnInit {
   /**
    * Constructor for safe-add-card constructor
    *
-   * @param environment Injection of the environment file.
-   * @param http Angular http client
    * @param dialogRef material dialog reference of the component
+   * @param environment Injection of the environment file.
    * @param data the data passed into the dialog
    * @param data.isDynamic wether the added card will be dynamic or not
+   * @param http Angular http client
    */
   constructor(
     public dialogRef: MatDialogRef<SafeAddCardComponent>,
