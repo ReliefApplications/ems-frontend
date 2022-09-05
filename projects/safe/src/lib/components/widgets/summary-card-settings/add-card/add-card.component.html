@@ -33,9 +33,24 @@
   <div class="cards-description" *ngIf="data.isDynamic">
     {{ 'components.widget.settings.summaryCard.create.tipDynamic' | translate }}
   </div>
+  <div class="templates" *ngIf="loading">
+    <ng-container *ngFor="let item of [].constructor(3); let i = index">
+      <kendo-skeleton
+        shape="rectangle"
+        animation="pulse"
+        width="200px"
+        height="150px"
+      ></kendo-skeleton>
+    </ng-container>
+  </div>
   <div class="templates">
     <ng-container *ngFor="let item of templates">
-      <safe-card-template (click)="onCreateFromTemplate(item)" [isDynamic]="item.isDynamic" [title]="item.title" [dashboardName]="item.dashboardName"></safe-card-template>
+      <safe-card-template
+        (click)="onCreateFromTemplate(item)"
+        [isDynamic]="item.isDynamic"
+        [title]="item.title"
+        [dashboardName]="item.dashboardName"
+      ></safe-card-template>
     </ng-container>
   </div>
   <mat-divider></mat-divider>

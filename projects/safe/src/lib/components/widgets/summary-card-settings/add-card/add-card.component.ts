@@ -12,6 +12,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class SafeAddCardComponent implements OnInit {
   @Input() isDynamic: any;
+  public loading = true;
   private templatesUrl = '';
   public templates: any = [];
 
@@ -44,6 +45,7 @@ export class SafeAddCardComponent implements OnInit {
       .then((data: any) => {
         this.templates = data;
       });
+    this.loading = false;
     this.templates = this.templates.slice(-3).reverse();
   }
 

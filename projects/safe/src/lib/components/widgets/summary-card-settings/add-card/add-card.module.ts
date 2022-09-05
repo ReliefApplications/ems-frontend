@@ -11,6 +11,12 @@ import { SafeAddCardComponent } from './add-card.component';
 import { MatRippleModule } from '@angular/material/core';
 import { SafeCardTemplateComponent } from './card-template/card-template.component';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
+import { SafeSkeletonModule } from '../../../../directives/skeleton/skeleton.module';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { LayoutModule } from '@progress/kendo-angular-layout';
+import { ButtonsModule } from '@progress/kendo-angular-buttons';
 
 /** Module to add new card in summary card widget */
 @NgModule({
@@ -26,6 +32,12 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
     MatDividerModule,
     MatRippleModule,
     SafeIconModule,
+    SafeSkeletonModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    IndicatorsModule,
+    LayoutModule,
+    ButtonsModule,
   ],
   exports: [SafeAddCardComponent, SafeCardTemplateComponent],
 })
