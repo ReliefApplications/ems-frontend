@@ -161,7 +161,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * Open a modal before adding it.
    */
   addCard() {
-    const dialogRef = this.dialog.open(SafeAddCardComponent);
+    const dialogRef = this.dialog.open(SafeAddCardComponent, {
+      data: { isDynamic: this.tileForm?.value.isDynamic },
+    });
     dialogRef.afterClosed().subscribe((res: any) => {
       if (res) {
         this.cards.push(this.cardForm(res));
@@ -216,7 +218,6 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe((value: any) => {
-      console.log(value);
       if (value) {
         this.cards.at(index).setValue(value);
       }

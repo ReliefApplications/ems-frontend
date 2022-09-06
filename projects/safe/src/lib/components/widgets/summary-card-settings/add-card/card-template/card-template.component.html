@@ -1,0 +1,18 @@
+<div matRipple class="card-template">
+  <div class="card-template-header">
+    <div *ngIf="isDynamic">
+      <safe-icon
+        class="card-template-icon"
+        icon="dynamic_feed"
+        [size]="25"
+      ></safe-icon>
+    </div>
+    <div *ngIf="!isDynamic">
+      <safe-icon class="card-template-icon" icon="wysiwyg" [size]="25"></safe-icon>
+    </div>
+  </div>
+  <div class="card-template-content">
+    <div class="card-template-title">{{ title }}</div>
+    <div class="card-template-dashboard">{{ dashboardName }}</div>
+  </div>
+</div>
