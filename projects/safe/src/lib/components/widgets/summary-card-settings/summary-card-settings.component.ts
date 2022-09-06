@@ -7,7 +7,7 @@ import {
   AfterViewInit,
   HostListener,
 } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import {
@@ -29,14 +29,14 @@ import {
 } from './graphql/queries';
 import { parseHtml } from '../summary-card/parser/utils';
 
-/** Define max height of widgets */
+/** Define max height of summary card */
 const MAX_ROW_SPAN = 4;
-/** Define max width of widgets */
+/** Define max width of summary card */
 const MAX_COL_SPAN = 8;
 
-/** Define maxc height of widgets */
+/** Define default height of summary card */
 const DEFAULT_CARD_HEIGHT = 2;
-/** Define max width of widgets */
+/** Define default width of summary card */
 const DEFAULT_CARD_WIDTH = 2;
 
 /**
@@ -181,8 +181,14 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     return this.fb.group({
       title: get(value, 'title', 'New Card'),
       isDynamic: value.isDynamic,
-      height: get(value, 'height', DEFAULT_CARD_HEIGHT),
-      width: get(value, 'width', DEFAULT_CARD_WIDTH),
+      height: [
+        get(value, 'height', DEFAULT_CARD_HEIGHT),
+        [Validators.min(1), Validators.max(MAX_ROW_SPAN)],
+      ],
+      width: [
+        get(value, 'width', DEFAULT_CARD_WIDTH),
+        [Validators.min(1), Validators.max(MAX_COL_SPAN)],
+      ],
       isAggregation: get(value, 'isAggregation', true),
       resource: get(value, 'resource', null),
       layout: [get(value, 'layout', [])],
@@ -209,7 +215,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   openCard(index: number) {
     const dialogRef = this.dialog.open(SafeCardModalComponent, {
       disableClose: true,
-      data: this.cards.at(index).value,
+      data: this.cards.at(index),
       position: {
         bottom: '0',
         right: '0',

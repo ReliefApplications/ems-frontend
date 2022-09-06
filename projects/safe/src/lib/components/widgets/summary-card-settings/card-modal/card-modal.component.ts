@@ -51,28 +51,26 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    * Card modal component.
    * Used as a Material Dialog.
    *
-   * @param data dialog data
+   * @param cardForm card form
    * @param dialogRef Material Dialog Ref of the component
    * @param fb Angular form builder
    * @param cdRef Change detector
    * @param apollo Apollo service
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public cardForm: any,
     public dialogRef: MatDialogRef<SafeCardModalComponent>,
     public fb: FormBuilder,
     private cdRef: ChangeDetectorRef,
     private apollo: Apollo
-  ) {}
+  ) {
+    this.form = cardForm;
+  }
 
   /**
    * Creates a formGroup with the data provided in the modal creation and gets the resource data used in the card.
    */
   ngOnInit(): void {
-    this.form = this.fb.group({
-      ...this.data,
-    });
-
     if (this.form.value.resource) {
       this.getResource(this.form.value.resource);
     }
