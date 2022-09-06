@@ -137,7 +137,7 @@ export class SafeSummaryCardComponent implements OnInit {
       ) {
         newCardsContent[i] = this.cardsContent[i];
         newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-          parseHtml(card.html, newCardsContent[i].record)
+          parseHtml(card.html, newCardsContent[i].record, card.availableFields)
         );
         this.cardsContent = newCardsContent;
       } else if (card.record) {
@@ -152,7 +152,11 @@ export class SafeSummaryCardComponent implements OnInit {
             if (res) {
               newCardsContent[i].record = res.data.record;
               newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-                parseHtml(card.html, newCardsContent[i].record)
+                parseHtml(
+                  card.html,
+                  newCardsContent[i].record,
+                  card.availableFields
+                )
               );
               this.cardsContent = newCardsContent;
             }

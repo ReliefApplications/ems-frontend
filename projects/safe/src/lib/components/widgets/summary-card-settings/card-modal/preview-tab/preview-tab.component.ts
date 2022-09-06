@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, ViewEncapsulation } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
 import { Record } from '../../../../../models/record.model';
@@ -11,9 +11,11 @@ import { parseHtml } from '../../../summary-card/parser/utils';
   selector: 'safe-preview-tab',
   templateUrl: './preview-tab.component.html',
   styleUrls: ['./preview-tab.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class SafePreviewTabComponent implements OnChanges {
   @Input() html = '';
+  @Input() fields: any[] = [];
   @Input() record: Record | null = null;
 
   public formattedHtml?: SafeHtml;
@@ -31,7 +33,7 @@ export class SafePreviewTabComponent implements OnChanges {
    */
   ngOnChanges(): void {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.html, this.record)
+      parseHtml(this.html, this.record, this.fields)
     );
   }
 }

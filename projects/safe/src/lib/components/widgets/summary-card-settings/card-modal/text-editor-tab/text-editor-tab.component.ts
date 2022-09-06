@@ -6,7 +6,6 @@ import {
   EDITOR_LANGUAGE_PAIRS,
   WIDGET_EDITOR_CONFIG,
 } from '../../../../../const/tinymce.const';
-import { Record } from '../../../../../models/record.model';
 import { getCalcKeys, getDataKeys } from '../../../summary-card/parser/utils';
 
 /**
@@ -19,7 +18,6 @@ import { getCalcKeys, getDataKeys } from '../../../summary-card/parser/utils';
 })
 export class SafeTextEditorTabComponent implements OnChanges {
   @Input() form!: FormGroup;
-  @Input() record: Record | null = null;
 
   /** tinymce editor */
   public editor = WIDGET_EDITOR_CONFIG;
@@ -57,7 +55,7 @@ export class SafeTextEditorTabComponent implements OnChanges {
   }
 
   ngOnChanges(): void {
-    const dataKeys = getDataKeys(this.record);
+    const dataKeys = getDataKeys(this.form.value.availableFields);
     const calcKeys = getCalcKeys();
     const keys = dataKeys.concat(calcKeys);
 

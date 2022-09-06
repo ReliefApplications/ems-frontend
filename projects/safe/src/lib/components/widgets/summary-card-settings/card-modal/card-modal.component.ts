@@ -84,6 +84,9 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
     this.form.controls.layout.valueChanges.subscribe((value: any) => {
       if (this.layouts) {
         this.gridSettings = this.findLayout(this.layouts, value);
+        this.form.patchValue({
+          availableFields: this.gridSettings.query.fields,
+        });
       }
     });
 
@@ -149,6 +152,9 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
             this.layouts,
             this.form.value.layout
           );
+          this.form.patchValue({
+            availableFields: this.gridSettings.query.fields,
+          });
           if (!this.gridSettings) {
             this.form.patchValue({
               layout: null,

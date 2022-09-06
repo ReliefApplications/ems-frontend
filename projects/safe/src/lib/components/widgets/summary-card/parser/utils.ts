@@ -13,11 +13,12 @@ const CALC_PREFIX = '@calc.';
  *
  * @param html The html text
  * @param record The record to fill the text with
+ * @param fields Available fields
  * @returns The parsed html
  */
-export const parseHtml = (html: string, record: Record | null) => {
+export const parseHtml = (html: string, record: Record | null, fields: any) => {
   if (record) {
-    const htmlWithRecord = replaceRecordFields(html, record);
+    const htmlWithRecord = replaceRecordFields(html, record, fields);
     return applyOperations(htmlWithRecord);
   } else {
     return applyOperations(html);
@@ -29,14 +30,77 @@ export const parseHtml = (html: string, record: Record | null) => {
  *
  * @param html String with the content html.
  * @param record Record object.
+ * @param fields Available fields
  * @returns formatted html
  */
-const replaceRecordFields = (html: string, record: any): string => {
-  const fields = getFieldsValue(record);
+const replaceRecordFields = (
+  html: string,
+  record: any,
+  fields: any
+): string => {
+  const fieldsValue = getFieldsValue(record);
   let formattedHtml = html;
-  for (const [key, value] of Object.entries(fields)) {
-    const regex = new RegExp(`${DATA_PREFIX}${key}\\b`, 'gi');
-    formattedHtml = formattedHtml.replace(regex, value as string);
+  if (fields) {
+    for (const field of fields) {
+      const value = fieldsValue[field.name];
+      let convertedValue: any;
+
+      // Formats urls
+      if (
+        field.type === 'String' &&
+        value &&
+        value.match(/(https?:\/\/[^\s]+)/)
+      ) {
+        convertedValue =
+          '<a href="' + value + '" target="_blank">' + value + '</a>';
+        // Formats emails
+      } else if (
+        field.type === 'String' &&
+        value &&
+        value.match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+      ) {
+        convertedValue =
+          '<a href="mailto: ' + value + '" target="_blank">' + value + '</a>';
+        // Formats dates
+      } else if (field.type === 'Date' && value) {
+        const date = new Date(value);
+        convertedValue = date.toLocaleString().split(',')[0];
+        // Formats date and time
+      } else if (field.type === 'DateTime' && value) {
+        const date = new Date(value);
+        const hour =
+          date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
+        const minutes =
+          date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+        const time = date.getHours() >= 12 ? 'PM' : 'AM';
+        convertedValue =
+          date.toLocaleString().split(',')[0] +
+          ', ' +
+          hour +
+          ':' +
+          minutes +
+          ' ' +
+          time;
+        // Formats booleans
+      } else if (field.type === 'Boolean') {
+        const checked = value ? 'checked' : '';
+        convertedValue =
+          '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
+          checked +
+          ' disabled></input>';
+        // Formats file inputs
+      } else if (field.type === 'JSON') {
+        console.log(value);
+        convertedValue = value;
+      } else {
+        convertedValue = fieldsValue[field.name];
+      }
+
+      const regex = new RegExp(`${DATA_PREFIX}${field.name}\\b`, 'gi');
+      formattedHtml = formattedHtml.replace(regex, convertedValue as string);
+    }
   }
   return formattedHtml;
 };
@@ -98,15 +162,15 @@ const applyOperations = (html: string): string => {
 };
 
 /**
- * Returns an array with the record data keys.
+ * Returns an array with the layout available fields.
  *
- * @param record Record object.
+ * @param fields Array of fields.
  * @returns list of data keys
  */
-export const getDataKeys = (record: Record | null): string[] => {
-  const fields = getFieldsValue(record);
-  return Object.keys(fields).map((field) => DATA_PREFIX + field);
-};
+export const getDataKeys = (fields: any): string[] =>
+  // const fields = getFieldsValue(record);
+  // return Object.keys(fields).map((field) => DATA_PREFIX + field);
+  fields.map((field: any) => DATA_PREFIX + field.name);
 
 /**
  * Returns an array with the calc operations keys.
