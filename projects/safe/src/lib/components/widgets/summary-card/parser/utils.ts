@@ -1,5 +1,6 @@
 import { get } from 'lodash';
 import { Record } from '../../../../models/record.model';
+import { Layout } from '../../../../models/layout.model';
 import calcFunctions from './calcFunctions';
 
 /** Prefix for data keys */
@@ -115,14 +116,32 @@ const applyOperations = (html: string): string => {
 };
 
 /**
- * Returns an array with the record data keys.
+ * Returns an array with the layout data keys.
  *
- * @param record Record object.
+ * @param layout Layout object.
  * @returns list of data keys
  */
-export const getDataKeys = (record: Record | null): string[] => {
-  const fields = getFieldsValue(record);
-  return Object.keys(fields).map((field) => DATA_PREFIX + field);
+export const getDataKeys = (layout: Layout): string[] => {
+  const getNestedFields = (field: any): string[] => {
+    const allFields: string[] = [];
+    if (field.fields) {
+      for (const nestedField of field.fields) {
+        allFields.push(
+          ...getNestedFields(nestedField).map((f) => field.name + '.' + f)
+        );
+      }
+    } else allFields.push(field.name);
+    return allFields;
+  };
+
+  const fields: string[] = [];
+  for (const field of layout.query?.fields) {
+    if (field.name !== 'form') {
+      fields.push(...getNestedFields(field));
+    }
+  }
+
+  return fields.map((f) => DATA_PREFIX + f);
 };
 
 /**
