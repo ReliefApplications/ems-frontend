@@ -1,6 +1,9 @@
-.templates {
+.card-templates {
   display: flex;
-  gap: 50px;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-content: center;
 }
 
 mat-radio-group {
@@ -12,10 +15,6 @@ mat-radio-group {
   display: flex;
   flex-direction: column;
   gap: 24px;
-}
-
-.cards-description {
-  color: #939393
 }
 
 h2{

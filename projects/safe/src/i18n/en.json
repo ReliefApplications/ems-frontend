@@ -972,10 +972,12 @@
 						"choice": {
 							"blank": "Start from blank",
 							"template": "Start from template"
-						},
-						"tipDynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
+						}
 					},
 					"dynamic": "Dynamic",
+					"hint": {
+						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
+					},
 					"static": "Static"
 				}
 			},

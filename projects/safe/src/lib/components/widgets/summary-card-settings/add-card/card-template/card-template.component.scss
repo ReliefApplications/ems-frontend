@@ -1,4 +1,4 @@
-.cardTemplate {
+.card-template {
   width: 200px;
   height: 150px;
   background-color: white;
@@ -12,13 +12,17 @@
   border: 1px solid #008dc9;
 }
 
-.dynamicIcon {
+.card-template-header{
+  align-self: normal;
+}
+
+.card-template-icon {
   margin-left: 0.6rem;
   margin-top: 0.6rem;
   color: #2f383e33;
 }
 
-.cardTitle {
+.card-template-title {
   color: #6e7478;
   font-weight: 500;
   font-size: 20px;
@@ -30,16 +34,12 @@
   text-overflow: ellipsis;
 }
 
-.cardDashboardName {
+.card-template-dashboard {
   text-align: center;
   color: #6e7478;
 }
 
-.header{
-  align-self: normal;
-}
-
-.content{
+.card-template-content {
   position: absolute;
   top: 50%;
   transform: translateY(-40%);

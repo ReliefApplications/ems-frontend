@@ -972,10 +972,12 @@
 						"choice": {
 							"blank": "******",
 							"template": "******"
-						},
-						"tipDynamic": "******"
+						}
 					},
 					"dynamic": "******",
+					"hint": {
+						"dynamic": "******"
+					},
 					"static": "******"
 				}
 			},

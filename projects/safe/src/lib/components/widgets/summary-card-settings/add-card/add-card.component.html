@@ -1,4 +1,4 @@
-<safe-modal [closable]="true" size="small">
+<safe-modal [closable]="true" size="medium">
   <h1 mat-dialog-title>
     {{ 'components.widget.settings.summaryCard.add' | translate }}
   </h1>
@@ -16,52 +16,55 @@
       }}</mat-radio-button>
     </mat-radio-group> -->
 
-  <h2>
-    {{
-      'components.widget.settings.summaryCard.create.choice.template'
-        | translate
-    }}
-  </h2>
-  <div class="cards-description" *ngIf="data.isDynamic">
-    {{ 'components.widget.settings.summaryCard.create.tipDynamic' | translate }}
+    <h2>
+      {{
+        'components.widget.settings.summaryCard.create.choice.template'
+          | translate
+      }}
+    </h2>
+    <safe-alert *ngIf="data.isDynamic">
+      <safe-icon icon="info"></safe-icon>
+      {{
+        'components.widget.settings.summaryCard.hint.dynamic' | translate
+      }}
+    </safe-alert>
+    <div class="card-templates">
+      <ng-container *ngIf="loading">
+        <ng-container *ngFor="let item of [].constructor(3); let i = index">
+          <kendo-skeleton
+            shape="rectangle"
+            animation="pulse"
+            width="200px"
+            height="150px"
+          ></kendo-skeleton>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="!loading">
+        <ng-container *ngFor="let item of templates">
+          <safe-card-template
+            (click)="onCreateFromTemplate(item)"
+            [isDynamic]="item.isDynamic"
+            [title]="item.title"
+            [dashboardName]="item.dashboardName"
+          ></safe-card-template>
+        </ng-container>
+      </ng-container>
+    </div>
+    <mat-divider></mat-divider>
+    <safe-button
+      variant="primary"
+      category="secondary"
+      [block]="true"
+      (click)="onCreate()"
+    >
+      {{
+        'components.widget.settings.summaryCard.create.choice.blank' | translate
+      }}</safe-button
+    >
+  </mat-dialog-content>
+  <div mat-dialog-actions class="mat-dialog-actions" align="end">
+    <safe-button mat-dialog-close>
+      {{ 'common.close' | translate }}
+    </safe-button>
   </div>
-  <div class="templates" *ngIf="loading">
-    <ng-container *ngFor="let item of [].constructor(3); let i = index">
-      <kendo-skeleton
-        shape="rectangle"
-        animation="pulse"
-        width="200px"
-        height="150px"
-      ></kendo-skeleton>
-    </ng-container>
-  </div>
-  <div class="templates">
-    <ng-container *ngFor="let item of templates">
-      <safe-card-template
-        (click)="onCreateFromTemplate(item)"
-        [isDynamic]="item.isDynamic"
-        [title]="item.title"
-        [dashboardName]="item.dashboardName"
-      ></safe-card-template>
-    </ng-container>
-  </div>
-  <mat-divider></mat-divider>
-  <h2>
-    {{
-      'components.widget.settings.summaryCard.create.choice.blank' | translate
-    }}
-  </h2>
-  <safe-button
-    variant="primary"
-    category="tertiary"
-    [block]="true"
-    (click)="onCreate()"
-    >+</safe-button
-  >
-</div>
-<div mat-dialog-actions class="mat-dialog-actions" align="end">
-  <safe-button mat-dialog-close>
-    {{ 'common.close' | translate }}
-  </safe-button>
-</div>
 </safe-modal>
