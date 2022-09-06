@@ -25,7 +25,6 @@ import { SafeModalModule } from '../ui/modal/modal.module';
     SafeApplicationDropdownModule,
     SafeRecordDropdownModule,
     SafeCoreGridModule,
-    SafeButtonModule,
     TranslateModule,
     SafeModalModule,
   ],

@@ -161,9 +161,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * Open a modal before adding it.
    */
   addCard() {
-    const dialogRef = this.dialog.open(SafeAddCardComponent, {
-      panelClass: 'preferences-dialog',
-    });
+    const dialogRef = this.dialog.open(SafeAddCardComponent);
     dialogRef.afterClosed().subscribe((res: any) => {
       if (res) {
         this.cards.push(this.cardForm(res));
