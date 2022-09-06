@@ -320,7 +320,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         languages: this.languages,
       },
-      panelClass: 'preferences-dialog',
     });
     dialogRef.afterClosed().subscribe((form) => {
       if (form && form.touched) {

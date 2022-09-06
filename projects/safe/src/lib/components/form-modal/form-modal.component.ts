@@ -711,7 +711,6 @@ export class SafeFormModalComponent implements OnInit {
           revert: (version: any) =>
             this.confirmRevertDialog(this.record, version),
         },
-        panelClass: 'no-padding-dialog',
         autoFocus: false,
       });
     }

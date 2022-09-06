@@ -37,6 +37,8 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public searchAvailable = '';
   public searchSelected = '';
 
+  @Input() showPagination = false;
+
   /**
    * The constructor function is a special function that is called when a new instance of the class is created.
    *
@@ -176,6 +178,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
         );
         componentRef.instance.setForm(this.fieldForm);
         componentRef.instance.canExpand = this.fieldForm.value.kind === 'LIST';
+        componentRef.instance.showPagination = this.showPagination;
         componentRef.instance.closeField.subscribe(() => {
           this.onCloseField();
           componentRef.destroy();

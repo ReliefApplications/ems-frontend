@@ -1,5 +1,4 @@
-.close-settings {
-  position: absolute;
-  top: 72px;
-  right: 0;
+mat-dialog-content {
+  flex: 1;
+  max-height: unset !important;
 }

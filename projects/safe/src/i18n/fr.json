@@ -113,6 +113,7 @@
 				"ready": "E-mail prêt",
 				"sent": "E-mail envoyé"
 			},
+			"fetchingGroups": "Fetching groups from service...",
 			"file": {
 				"download": {
 					"error": "Un problème est survenu lors du téléchargement",
@@ -126,6 +127,14 @@
 				}
 			},
 			"formatInvalid": "Veuillez importer un fichier de format .{{format}}.",
+			"groups": {
+				"error": "Une erreur s'est produite lors de la tentative d'obtenir des groupes du service",
+				"processing": "Récupération des groupes à partir du service...",
+				"ready": "Groupes récupérés"
+			},
+			"history": {
+				"error": "Un problème est survenu lors de la génération de l'historique. {{error}}"
+			},
 			"loadedFromCache": "Objet de type {{type}} chargé depuis le cache.",
 			"noOpened": "Aucun objet {{value}} n'a été ouvert.",
 			"objectCreated": "{{value}} {{type}} créé.",
@@ -212,6 +221,7 @@
 		"saveChanges": "Sauvegarder les changements",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
+		"send": "Envoyer",
 		"settings": "Paramètres",
 		"status": "Statut",
 		"status_active": "Actif",
@@ -310,7 +320,7 @@
 		"apiConfiguration": {
 			"create": {
 				"errors": {
-					"name": "Seules les lettres, les tirets et les tirets bas sont acceptés."
+					"name": "Nom invalide: utilisez seulement des lettres, des chiffres et des tirets bas."
 				}
 			},
 			"delete": {
@@ -384,9 +394,11 @@
 		},
 		"emailBuilder": {
 			"body": "Corps du texte",
+			"default": "Défaut",
 			"distribution": "Liste de distribution",
 			"fields": "Sélectionner les champs à écrire dans le corps du texte",
-			"subject": "Objet"
+			"subject": "Objet",
+			"withoutRecords": "Sans enregistrements"
 		},
 		"form": {
 			"create": {
@@ -557,6 +569,10 @@
 				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
 				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
 			},
+			"pagination": {
+				"first": "Limite",
+				"title": "Pagination"
+			},
 			"sort": {
 				"ascending": "Croissant",
 				"descending": "Décroissant",
@@ -593,6 +609,9 @@
 						"useExpression": "Utiliser une expression",
 						"usePicker": "Choisir une date"
 					}
+				},
+				"pagination": {
+					"first": "Limite le nombre d'éléments renvoyés"
 				}
 			}
 		},
@@ -643,9 +662,6 @@
 		},
 		"referenceData": {
 			"create": {
-				"errors": {
-					"name": "Seules les lettres, les tirets et les tirets bas sont acceptés."
-				},
 				"title": "Nouvelle référence de données"
 			},
 			"delete": {
@@ -697,6 +713,12 @@
 			"update": {
 				"permissions": "Permissions",
 				"title": "Modifier les permissions des rôles et les canaux de diffusion"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "Copier dans le presse-papiers",
+				"title": "Partager l'url du dashboard"
 			}
 		},
 		"user": {
@@ -1166,6 +1188,7 @@
 		"group": {
 			"create": "Créer un groupe",
 			"description": "Description",
+			"fetch": "Récupérer les groupes du service",
 			"title": "Titre"
 		},
 		"mapping": {
@@ -1354,9 +1377,6 @@
 		},
 		"referenceData": {
 			"csv": "Fichier CSV d'entrée",
-			"errors": {
-				"name": "Seules les lettres, les tirets et les tirets bas sont acceptés"
-			},
 			"fields": "Champs",
 			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",

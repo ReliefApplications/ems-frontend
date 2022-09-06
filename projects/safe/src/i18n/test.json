@@ -113,6 +113,7 @@
 				"ready": "******",
 				"sent": "******"
 			},
+			"fetchingGroups": "******",
 			"file": {
 				"download": {
 					"error": "******",
@@ -126,6 +127,14 @@
 				}
 			},
 			"formatInvalid": "****** {{format}} ******",
+			"groups": {
+				"error": "******",
+				"processing": "******",
+				"ready": "******"
+			},
+			"history": {
+				"error": "****** {{error}}"
+			},
 			"loadedFromCache": "{{type}} ******",
 			"noOpened": "****** {{value}} ******",
 			"objectCreated": "{{value}} ****** {{type}} ******",
@@ -212,6 +221,7 @@
 		"saveChanges": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"send": "******",
 		"settings": "******",
 		"status": "******",
 		"status_active": "******",
@@ -384,9 +394,11 @@
 		},
 		"emailBuilder": {
 			"body": "******",
+			"default": "******",
 			"distribution": "******",
 			"fields": "******",
-			"subject": "******"
+			"subject": "******",
+			"withoutRecords": "******"
 		},
 		"form": {
 			"create": {
@@ -557,6 +569,10 @@
 				"sortingDisabled": "******",
 				"style": "******"
 			},
+			"pagination": {
+				"first": "******",
+				"title": "******"
+			},
 			"sort": {
 				"ascending": "******",
 				"descending": "******",
@@ -593,6 +609,9 @@
 						"useExpression": "******",
 						"usePicker": "******"
 					}
+				},
+				"pagination": {
+					"first": "******"
 				}
 			}
 		},
@@ -643,9 +662,6 @@
 		},
 		"referenceData": {
 			"create": {
-				"errors": {
-					"name": "******"
-				},
 				"title": "******"
 			},
 			"delete": {
@@ -696,6 +712,12 @@
 			},
 			"update": {
 				"permissions": "******",
+				"title": "******"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "******",
 				"title": "******"
 			}
 		},
@@ -1166,6 +1188,7 @@
 		"group": {
 			"create": "******",
 			"description": "******",
+			"fetch": "******",
 			"title": "******"
 		},
 		"mapping": {
@@ -1354,9 +1377,6 @@
 		},
 		"referenceData": {
 			"csv": "******",
-			"errors": {
-				"name": "******"
-			},
 			"fields": "******",
 			"graphQLFilter": "******",
 			"path": "******",

@@ -246,7 +246,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @returns Value of the property.
    */
   public getPropertyValue(item: any, path: string): any {
-    const meta = this.fields.find((x) => x.name === path).meta;
+    const meta = this.fields.find((x) => x.name === path)?.meta;
     const value = get(item, path);
     if (meta.choices) {
       if (Array.isArray(value)) {
@@ -260,6 +260,25 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       }
     } else {
       return value;
+    }
+  }
+
+  /**
+   * Returns property value in object from path. Specific for multiselect reference data.
+   *
+   * @param item Item to get property of.
+   * @param path Path of the property.
+   * @param attribute Path of the final attribute.
+   * @returns Value of the property.
+   */
+  public getReferenceDataPropertyValue(
+    item: any,
+    path: string,
+    attribute: string
+  ): any {
+    const values = get(item, path);
+    if (Array.isArray(values)) {
+      return values.map((x) => x[attribute]).join(', ');
     }
   }
 
@@ -426,22 +445,33 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
 
   /** @returns Visible columns of the grid. */
   get visibleFields(): any {
+    const extractFieldFromColumn = (column: any): any => ({
+      [column.field]: {
+        field: column.field,
+        title: column.title,
+        width: column.width,
+        hidden: column.hidden,
+        order: column.orderIndex,
+        subFields:
+          this.fields.find((x) => x.name === column.field)?.subFields || [],
+      },
+    });
     return this.grid?.columns
       .toArray()
       .sort((a: any, b: any) => a.orderIndex - b.orderIndex)
-      .filter((x: any) => x.field)
+      .filter((x: any) => x.field || x.hasChildren)
       .reduce(
         (obj, c: any) => ({
           ...obj,
-          [c.field]: {
-            field: c.field,
-            title: c.title,
-            width: c.width,
-            hidden: c.hidden,
-            order: c.orderIndex,
-            subFields:
-              this.fields.find((x) => x.name === c.field)?.subFields || [],
-          },
+          ...(c.field && extractFieldFromColumn(c)),
+          ...(c.hasChildren &&
+            c.childrenArray.reduce(
+              (objChildren: any, y: any) => ({
+                ...objChildren,
+                ...(y.field && extractFieldFromColumn(y)),
+              }),
+              {}
+            )),
         }),
         {}
       );
@@ -611,11 +641,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         readonly: !this.actions.update,
       },
       autoFocus: false,
-      position: {
-        bottom: '0',
-        right: '0',
-      },
-      panelClass: 'expanded-widget-dialog',
     });
     dialogRef.afterClosed().subscribe((res) => {
       if (res && res !== get(item, field)) {
