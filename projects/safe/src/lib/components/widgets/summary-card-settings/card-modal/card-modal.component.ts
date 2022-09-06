@@ -19,6 +19,7 @@ import {
 import { Layout } from '../../../../models/layout.model';
 import { Resource } from '../../../../models/resource.model';
 import get from 'lodash/get';
+import { cloneDeep } from 'lodash';
 
 /**
  * Card modal component.
@@ -64,7 +65,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
     private cdRef: ChangeDetectorRef,
     private apollo: Apollo
   ) {
-    this.form = cardForm;
+    this.form = cloneDeep(cardForm);
   }
 
   /**
@@ -177,7 +178,9 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    * @returns Returns a boolean.
    */
   isEditorTab(): boolean {
-    return this.activeTabIndex === 3;
+    return this.form.get('isDynamic')?.value
+      ? this.activeTabIndex === 2
+      : this.activeTabIndex === 3;
   }
 
   /**

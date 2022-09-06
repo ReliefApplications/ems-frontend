@@ -27,6 +27,7 @@
             'components.widget.settings.summaryCard.card.valueSelector.title'
               | translate
           "
+          *ngIf="!form.get('isDynamic')?.value"
         >
           <safe-value-selector-tab
             [form]="form"
