@@ -17,11 +17,11 @@ const ITEMS_PER_PAGE = 10;
  * Add form component (modal)
  */
 @Component({
-  selector: 'app-add-form',
-  templateUrl: './add-form.component.html',
-  styleUrls: ['./add-form.component.scss'],
+  selector: 'app-add-form-modal',
+  templateUrl: './add-form-modal.component.html',
+  styleUrls: ['./add-form-modal.component.scss'],
 })
-export class AddFormComponent implements OnInit {
+export class AddFormModalComponent implements OnInit {
   // === REACTIVE FORM ===
   public form!: FormGroup;
 
@@ -41,7 +41,7 @@ export class AddFormComponent implements OnInit {
    */
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<AddFormComponent>,
+    public dialogRef: MatDialogRef<AddFormModalComponent>,
     private apollo: Apollo
   ) {}
 

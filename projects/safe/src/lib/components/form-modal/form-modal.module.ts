@@ -10,6 +10,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * SafeFormModalModule is a class used to manage all the modules and components
@@ -28,6 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeRecordHistoryModalModule,
     SafeRecordSummaryModule,
     TranslateModule,
+    SafeModalModule,
   ],
   exports: [SafeFormModalComponent],
 })

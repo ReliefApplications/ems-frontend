@@ -10,7 +10,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   templateUrl: './position-modal.component.html',
   styleUrls: ['./position-modal.component.scss'],
 })
-export class AddPositionComponent implements OnInit {
+export class PositionModalComponent implements OnInit {
   // === REACTIVE FORM ===
   positionForm: FormGroup = new FormGroup({});
 
@@ -26,7 +26,7 @@ export class AddPositionComponent implements OnInit {
    */
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<AddPositionComponent>,
+    public dialogRef: MatDialogRef<PositionModalComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       add: boolean;

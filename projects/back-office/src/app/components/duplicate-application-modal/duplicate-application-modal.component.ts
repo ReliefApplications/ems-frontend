@@ -13,11 +13,11 @@ import { TranslateService } from '@ngx-translate/core';
  * Duplicate application component (modal)
  */
 @Component({
-  selector: 'app-duplicate-application',
-  templateUrl: './duplicate-application.component.html',
-  styleUrls: ['./duplicate-application.component.scss'],
+  selector: 'app-duplicate-application-modal',
+  templateUrl: './duplicate-application-modal.component.html',
+  styleUrls: ['./duplicate-application-modal.component.scss'],
 })
-export class DuplicateApplicationComponent implements OnInit {
+export class DuplicateApplicationModalComponent implements OnInit {
   public currentApp: Application;
   public duplicateForm: FormGroup = new FormGroup({});
 
@@ -35,7 +35,7 @@ export class DuplicateApplicationComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     private formBuilder: FormBuilder,
     private apollo: Apollo,
-    public dialogRef: MatDialogRef<DuplicateApplicationComponent>,
+    public dialogRef: MatDialogRef<DuplicateApplicationModalComponent>,
     private translateService: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {

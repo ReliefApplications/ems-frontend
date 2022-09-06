@@ -14,7 +14,7 @@ import {
   SafeSkeletonTableModule,
   SafeDateModule,
 } from '@safe/builder';
-import { AddFormModule } from '../../../components/add-form/add-form.module';
+import { AddFormModule } from '../../../components/add-form-modal/add-form-modal.module';
 import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';

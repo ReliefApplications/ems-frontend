@@ -216,6 +216,7 @@
 		"saveChanges": "Save changes",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
+		"send": "Send",
 		"settings": "Settings",
 		"status": "Status",
 		"status_active": "Active",
@@ -707,6 +708,12 @@
 			"update": {
 				"permissions": "Permissions",
 				"title": "Update role permissions and channels"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "Copy to clipboard",
+				"title": "Share dashboard url"
 			}
 		},
 		"user": {

@@ -41,6 +41,7 @@ import { SafeDateModule } from './pipes/date/date.module';
 import { SafeIconModule } from './components/ui/icon/icon.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
 import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
+import { SafeModalModule } from './components/ui/modal/modal.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -87,6 +88,7 @@ import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-sel
     SafeIconModule,
     SafeRoleSummaryModule,
     SafeGraphQLSelectModule,
+    SafeModalModule,
   ],
 })
 export class SafeModule {}

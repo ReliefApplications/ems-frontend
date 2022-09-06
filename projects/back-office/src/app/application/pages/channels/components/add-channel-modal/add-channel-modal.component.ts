@@ -6,11 +6,11 @@ import { MatDialogRef } from '@angular/material/dialog';
  * Add channel component, act as modal.
  */
 @Component({
-  selector: 'app-add-channel',
-  templateUrl: './add-channel.component.html',
-  styleUrls: ['./add-channel.component.scss'],
+  selector: 'app-add-channel-modal',
+  templateUrl: './add-channel-modal.component.html',
+  styleUrls: ['./add-channel-modal.component.scss'],
 })
-export class AddChannelComponent implements OnInit {
+export class AddChannelModalComponent implements OnInit {
   // === REACTIVE FORM ===
   channelForm: FormGroup = new FormGroup({});
 
@@ -22,7 +22,7 @@ export class AddChannelComponent implements OnInit {
    */
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<AddChannelComponent>
+    public dialogRef: MatDialogRef<AddChannelModalComponent>
   ) {}
 
   ngOnInit(): void {

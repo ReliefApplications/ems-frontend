@@ -6,11 +6,11 @@ import { MatDialogRef } from '@angular/material/dialog';
  * Modal to add a new resource.
  */
 @Component({
-  selector: 'app-add-resource',
-  templateUrl: './add-resource.component.html',
-  styleUrls: ['./add-resource.component.scss'],
+  selector: 'app-add-resource-modal',
+  templateUrl: './add-resource-modal.component.html',
+  styleUrls: ['./add-resource-modal.component.scss'],
 })
-export class AddResourceComponent implements OnInit {
+export class AddResourceModalComponent implements OnInit {
   public addForm: FormGroup = new FormGroup({});
 
   /**
@@ -21,7 +21,7 @@ export class AddResourceComponent implements OnInit {
    */
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<AddResourceComponent>
+    public dialogRef: MatDialogRef<AddResourceModalComponent>
   ) {}
 
   /**
