@@ -4,6 +4,8 @@ import { prettifyLabel } from '../utils/prettify';
 import get from 'lodash/get';
 import { SafeApiProxyService } from './api-proxy.service';
 import { MULTISELECT_TYPES } from '../components/ui/core-grid/grid/grid.constants';
+import { TranslateService } from '@ngx-translate/core';
+import { REFERENCE_DATA_END } from './query-builder.service';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -39,10 +41,12 @@ export class SafeGridService {
    *
    * @param formBuilder Angular form builder
    * @param apiProxyService Shared API proxy service
+   * @param translate Translate service
    */
   constructor(
     private formBuilder: FormBuilder,
-    private apiProxyService: SafeApiProxyService
+    private apiProxyService: SafeApiProxyService,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -89,7 +93,11 @@ export class SafeGridService {
           case 'LIST': {
             let metaData = get(metaFields, fullName);
             metaData = Object.assign([], metaData);
-            metaData.type = 'records';
+            if (f.type.endsWith(REFERENCE_DATA_END)) {
+              metaData.type = 'referenceData';
+            } else {
+              metaData.type = 'records';
+            }
             const cachedField = get(layoutFields, fullName);
             const title = f.label ? f.label : prettifyLabel(f.name);
             const subFields = this.getFields(
@@ -97,7 +105,11 @@ export class SafeGridService {
               metaFields,
               layoutFields,
               fullName,
-              { disabled: true, hidden: true, filter: false }
+              {
+                disabled: true,
+                hidden: !f.type.endsWith(REFERENCE_DATA_END),
+                filter: false,
+              }
             );
             return {
               name: fullName,
@@ -275,7 +287,10 @@ export class SafeGridService {
           ...meta,
           choices: meta.choices.map((choice: any) => ({
             value: choice.value,
-            text: choice.text.default || choice.text,
+            text:
+              choice.text[this.translate.currentLang] ||
+              choice.text.default ||
+              choice.text,
           })),
         };
       }

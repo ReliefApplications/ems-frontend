@@ -1,35 +1,23 @@
-kendo-tilelayout {
+.summary-card-container {
+  display: grid;
+  grid-auto-rows: 200px;
+  gap: 16px;
+  padding: 16px;
   min-height: 100%;
   grid-auto-flow: row;
   background-color: unset;
   overflow: auto;
 
-  kendo-tilelayout-item {
+  .widget-header {
+    padding: 0 5px 0 15px !important;
+    z-index: 0;
+  }
+
+  .k-card {
     border: none;
     border-radius: 0;
     overflow: hidden;
     box-shadow: 0 2px 5px 0 rgba(134, 134, 134, 0.2);
-
-    .widget-options,
-    .widget-handle {
-      position: absolute;
-      color: darkgray;
-      z-index: 1100;
-    }
-
-    .widget-options {
-      top: 0;
-      right: 0;
-      width: 40px;
-      height: 40px;
-    }
-
-    .widget-handle {
-      left: 8px;
-      top: 8px;
-      cursor: grab;
-      pointer-events: none;
-    }
   }
 }
 

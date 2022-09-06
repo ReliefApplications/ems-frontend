@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -15,6 +14,7 @@ import { SafeValueSelectorTabModule } from './value-selector-tab/value-selector.
 import { SafeDisplayTabModule } from './display-tab/display.module';
 import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { SafePreviewTabModule } from './preview-tab/preview.module';
+import { SafeModalModule } from '../../../ui/modal/modal.module';
 
 /** Card Modal Module */
 @NgModule({
@@ -24,7 +24,6 @@ import { SafePreviewTabModule } from './preview-tab/preview.module';
     SafeButtonModule,
     TranslateModule,
     MatTooltipModule,
-    MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -36,6 +35,7 @@ import { SafePreviewTabModule } from './preview-tab/preview.module';
     SafeDisplayTabModule,
     SafeTextEditorTabModule,
     SafePreviewTabModule,
+    SafeModalModule,
   ],
   exports: [SafeCardModalComponent],
 })

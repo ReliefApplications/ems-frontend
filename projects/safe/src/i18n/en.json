@@ -80,6 +80,11 @@
 			"one": "Form"
 		},
 		"general": "General",
+		"group": {
+			"few": "Groups",
+			"none": "No groups",
+			"one": "Group"
+		},
 		"history": "History",
 		"id": "Id",
 		"input": {
@@ -108,6 +113,7 @@
 				"ready": "Email ready",
 				"sent": "Email sent"
 			},
+			"fetchingGroups": "Fetching groups from service...",
 			"file": {
 				"download": {
 					"error": "Something went wrong during the download",
@@ -121,6 +127,14 @@
 				}
 			},
 			"formatInvalid": "Please upload a valid .{{format}} file.",
+			"groups": {
+				"error": "Something went wrong trying to get groups from service",
+				"processing": "Fetching groups from service...",
+				"ready": "Groups fetched"
+			},
+			"history": {
+				"error": "Something went wrong during the history generation. {{error}}"
+			},
 			"loadedFromCache": "{{type}} loaded from cache.",
 			"noOpened": "No opened {{value}}.",
 			"objectCreated": "{{value}} {{type}} created.",
@@ -207,6 +221,7 @@
 		"saveChanges": "Save changes",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
+		"send": "Send",
 		"settings": "Settings",
 		"status": "Status",
 		"status_active": "Active",
@@ -249,7 +264,7 @@
 			"canDelete": "Can delete",
 			"canSee": "Can see",
 			"canUpdate": "Can update",
-			"description": "Update access permissions",
+			"description": "Update {{name}} permissions",
 			"title": "Access"
 		},
 		"aggregationBuilder": {
@@ -305,7 +320,7 @@
 		"apiConfiguration": {
 			"create": {
 				"errors": {
-					"name": "Only letters, hypens or underscores are accepted"
+					"name": "Invalid name: please only use letters, digits and underscores."
 				}
 			},
 			"delete": {
@@ -379,9 +394,11 @@
 		},
 		"emailBuilder": {
 			"body": "Body",
+			"default": "Default",
 			"distribution": "Distribution list",
 			"fields": "Select fields to write in body",
-			"subject": "Subject"
+			"subject": "Subject",
+			"withoutRecords": "Without records"
 		},
 		"form": {
 			"create": {
@@ -448,6 +465,15 @@
 		"forms": {
 			"isCore": "Is core",
 			"parent": "Parent form"
+		},
+		"group": {
+			"add": {
+				"title": "Add new group"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the group {{name}}?",
+				"title": "Delete group"
+			}
 		},
 		"header": {
 			"goToPlatform": "Navigate to",
@@ -543,6 +569,10 @@
 				"sortingDisabled": "Sorting fields is disabled when search is active",
 				"style": "Styling rules make records with important information stand out. When a record matches more than one rule, the first rule is used."
 			},
+			"pagination": {
+				"first": "Limit",
+				"title": "Pagination"
+			},
 			"sort": {
 				"ascending": "Ascending",
 				"descending": "Descending",
@@ -579,6 +609,9 @@
 						"useExpression": "Use Expression editor",
 						"usePicker": "Use Date picker"
 					}
+				},
+				"pagination": {
+					"first": "If provided, limit the number of queried items"
 				}
 			}
 		},
@@ -629,9 +662,6 @@
 		},
 		"referenceData": {
 			"create": {
-				"errors": {
-					"name": "Only letters, hypens or underscores are accepted"
-				},
 				"title": "New Reference Data"
 			},
 			"delete": {
@@ -685,6 +715,12 @@
 				"title": "Update role permissions and channels"
 			}
 		},
+		"share": {
+			"modal": {
+				"copy": "Copy to clipboard",
+				"title": "Share dashboard url"
+			}
+		},
 		"user": {
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the user {{name}}?",
@@ -706,6 +742,7 @@
 					"application": "Application roles",
 					"backoffice": "Back-Office roles",
 					"selectedApplication": "Selected application",
+					"selectedGroups": "Selected groups",
 					"selectedRoles": "Selected roles"
 				},
 				"title": "Summary"
@@ -918,6 +955,7 @@
 							"title": "Data source"
 						},
 						"display": {
+							"dataSource": "Show link to data source",
 							"header": "Header",
 							"title": "Display"
 						},
@@ -939,6 +977,12 @@
 					},
 					"dynamic": "Dynamic",
 					"static": "Static"
+				}
+			},
+			"summaryCard": {
+				"dataSource": "Data Source",
+				"errors": {
+					"invalidSource": "The data source is invalid: please edit the settings."
 				}
 			}
 		}
@@ -1142,6 +1186,12 @@
 			"select": "Select a Form",
 			"template": "Template"
 		},
+		"group": {
+			"create": "Create a group",
+			"description": "Description",
+			"fetch": "Fetch groups from service",
+			"title": "Title"
+		},
 		"mapping": {
 			"add": "Add a Mapping",
 			"edit": "Edit a Mapping"
@@ -1328,9 +1378,6 @@
 		},
 		"referenceData": {
 			"csv": "CSV input",
-			"errors": {
-				"name": "Only letters, hypens or underscores are accepted"
-			},
 			"fields": "Fields",
 			"graphQLFilter": "GraphQL query parameters",
 			"path": "Path",

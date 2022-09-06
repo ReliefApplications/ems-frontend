@@ -7,6 +7,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { UserBackRolesComponent } from './user-back-roles/user-back-roles.component';
 import { UserAppRolesComponent } from './user-app-roles/user-app-roles.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UserGroupsComponent } from './user-groups/user-groups.component';
+import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.module';
 
 /**
  * User summary roles module
@@ -16,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     UserRolesComponent,
     UserBackRolesComponent,
     UserAppRolesComponent,
+    UserGroupsComponent,
   ],
   imports: [
     CommonModule,
@@ -24,6 +27,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
+    SafeGraphQLSelectModule,
   ],
   exports: [UserRolesComponent],
 })

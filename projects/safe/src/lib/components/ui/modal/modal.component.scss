@@ -1,0 +1,13 @@
+:host {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-close {
+  position: absolute;
+  z-index: 1;
+  right: -20px;
+  top: -20px;
+}

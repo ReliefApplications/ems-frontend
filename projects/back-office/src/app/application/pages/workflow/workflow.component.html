@@ -23,6 +23,7 @@
       <safe-access
         [access]="workflow.permissions"
         [application]="workflow.page?.application?.id"
+        [objectTypeName]="'common.page.one' | translate"
         (save)="saveAccess($event)"
         *ngIf="workflow.page?.canUpdate || false"
       ></safe-access>

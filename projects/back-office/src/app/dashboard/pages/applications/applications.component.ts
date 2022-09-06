@@ -27,7 +27,7 @@ import { ChoseRoleComponent } from './components/chose-role/chose-role.component
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
-import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
+import { DuplicateApplicationModalComponent } from '../../../components/duplicate-application-modal/duplicate-application-modal.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -367,7 +367,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
         if (res.data) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('action.access').toLowerCase(),
+              type: this.translate.instant('common.access').toLowerCase(),
               value: element.name,
             })
           );
@@ -405,7 +405,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
    * @param application application to duplicate.
    */
   onClone(application: Application): void {
-    const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
+    const dialogRef = this.dialog.open(DuplicateApplicationModalComponent, {
       data: {
         id: application.id,
         name: application.name,

@@ -56,6 +56,11 @@ export class FormAnswerComponent implements OnInit {
             '@form',
             this.form.name as string
           );
+          this.breadcrumbService.setBreadcrumb(
+            '@resource',
+            this.form.resource?.name as string
+          );
+          // this.breadcrumbService.setResourceName();
         });
     }
   }

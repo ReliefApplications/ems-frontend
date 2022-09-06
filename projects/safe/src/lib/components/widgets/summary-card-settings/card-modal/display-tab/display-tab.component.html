@@ -16,5 +16,15 @@
         <input matInput formControlName="width" type="number" />
       </mat-form-field>
     </div>
+    <mat-divider class="space-divider"></mat-divider>
+    <mat-slide-toggle
+      formControlName="showDataSourceLink"
+      class="slide-toggle-field"
+    >
+      {{
+        'components.widget.settings.summaryCard.card.display.dataSource'
+          | translate
+      }}
+    </mat-slide-toggle>
   </div>
 </form>
