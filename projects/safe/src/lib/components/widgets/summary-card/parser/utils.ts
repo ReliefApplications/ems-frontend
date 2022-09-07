@@ -7,6 +7,39 @@ const DATA_PREFIX = '@data.';
 /** Prefix for calc keys */
 const CALC_PREFIX = '@calc.';
 
+const ICON_EXTENSIONS: any = {
+  bmp: 'k-i-file-programming',
+  csv: 'k-i-file-csv',
+  doc: 'k-i-file-word',
+  docm: 'k-i-file-word',
+  docx: 'k-i-file-word',
+  eml: 'k-i-file',
+  epub: 'k-i-file',
+  gif: 'k-i-file-video',
+  gz: 'k-i-file-zip',
+  htm: 'k-i-file-programming',
+  html: 'k-i-file-programming',
+  jpg: 'k-i-file-image',
+  jpeg: 'k-i-file-image',
+  msg: 'k-i-file',
+  odp: 'k-i-file-presentation',
+  odt: 'k-i-file-txt',
+  ods: 'k-i-file-data',
+  pdf: 'k-i-file-pdf',
+  png: 'k-i-file-image',
+  ppt: 'k-i-file-ppt',
+  pptx: 'k-i-file-ppt',
+  pptm: 'k-i-file-ppt',
+  rtf: 'k-i-file-txt',
+  txt: 'k-i-file-txt',
+  xls: 'k-i-file-excel',
+  xlsx: 'k-i-file-excel',
+  xps: 'k-i-file',
+  zip: 'k-i-file-zip',
+  xlsm: 'k-i-file-excel',
+  xml: 'k-i-file-excel',
+};
+
 /**
  * Parse the html body of a summary card with the content of a record,
  * and calculate the calc functions.
@@ -40,6 +73,7 @@ const replaceRecordFields = (
 ): string => {
   const fieldsValue = getFieldsValue(record);
   let formattedHtml = html;
+  console.log(fields);
   if (fields) {
     for (const field of fields) {
       const value = fieldsValue[field.name];
@@ -92,8 +126,22 @@ const replaceRecordFields = (
           ' disabled></input>';
         // Formats file inputs
       } else if (field.type === 'JSON') {
-        console.log(value);
-        convertedValue = value;
+        if (value || value.length > 0) {
+          if (typeof value[0] === 'string') {
+            convertedValue = value;
+          } else {
+            convertedValue = '';
+            for (let file of value) {
+              const fileExt = file.name.split('.').pop();
+              const fileIcon = (fileExt && ICON_EXTENSIONS[fileExt]) ? ICON_EXTENSIONS[fileExt] : 'k-i-file'
+              const fileName = (fileExt && ICON_EXTENSIONS[fileExt]) ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1) : file.name
+              convertedValue += '<button style="border: none; padding: 4px 6px;" title="' + file.name + '">' +
+              fileName +
+              ' <span class="k-icon ' + fileIcon + '"></span>' +
+              '</button>'/** file extension icon */
+            }
+          }
+        }
       } else {
         convertedValue = fieldsValue[field.name];
       }
