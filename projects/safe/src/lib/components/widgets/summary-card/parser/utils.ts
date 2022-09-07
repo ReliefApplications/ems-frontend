@@ -76,12 +76,13 @@ const replaceRecordFields = (
 ): string => {
   const fieldsValue = getFieldsValue(record);
   let formattedHtml = html;
-  console.log(fields);
   if (fields) {
     for (const field of fields) {
-      const value = fieldsValue[field.name];
+      let value = fieldsValue[field.name];
       let convertedValue: any;
-
+      if (field.name === 'file') {
+        value = [{ name: 'invoice.pdf' }];
+      }
       if (
         // Formats urls
         field.type === 'String' &&
@@ -175,11 +176,8 @@ const replaceRecordFields = (
         convertedValue = value;
       }
 
-      // Only changes the tag if a value exists
-      if (value && value.length > 0) {
-        const regex = new RegExp(`${DATA_PREFIX}${field.name}\\b`, 'gi');
-        formattedHtml = formattedHtml.replace(regex, convertedValue as string);
-      }
+      const regex = new RegExp(`${DATA_PREFIX}${field.name}\\b`, 'gi');
+      formattedHtml = formattedHtml.replace(regex, convertedValue as string);
     }
   }
   return formattedHtml;
