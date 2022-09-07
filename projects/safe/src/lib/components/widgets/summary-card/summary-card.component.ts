@@ -1,24 +1,29 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import { get, has, clone, reduce } from 'lodash';
+import { get, has, clone } from 'lodash';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import {
   GetRecordByIdQueryResponse,
   GetResourceLayoutsByIdQueryResponse,
-  GetResourceRecordsQueryResponse,
   GET_RECORD_BY_ID,
   GET_RESOURCE_LAYOUTS,
-  GET_RESOURCE_RECORDS,
 } from './graphql/queries';
 import { parseHtml } from './parser/utils';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
 
+/** Card type */
+type Card = {
+  html: SafeHtml | null;
+  record: any;
+  settings: any;
+};
 /**
  * Summary Card Widget component.
  */
@@ -36,10 +41,23 @@ export class SafeSummaryCardComponent implements OnInit {
   public colsNumber = MAX_COL_SPAN;
 
   // === CARDS CONTENTS ===
-  public cards: any[] = [];
+  public cards: Card[] = [];
 
   // === RESOURCES AND LAYOUTS ===
   private cardQueries = {};
+
+  // === DYNAMIC CARDS QUERY ===
+  private dynamicCardQuery: {
+    builtQuery: any;
+    sort: any;
+    filter: any;
+    name: string;
+  } | null = null;
+
+  // === DYNAMIC CARDS PAGINATION ===
+  public pageSize = 10;
+  public hasNextPage = true;
+  public loading = false;
 
   /**
    * Get the summary card pdf name
@@ -75,19 +93,23 @@ export class SafeSummaryCardComponent implements OnInit {
    * @param dialog The material dialog service
    * @param snackBar snackbar service for error messages
    * @param translate translation service
+   * @param queryBuilder query builder service
    */
   constructor(
     private apollo: Apollo,
     private sanitizer: DomSanitizer,
     private dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private queryBuilder: QueryBuilderService
   ) {}
 
   async ngOnInit() {
     this.colsNumber = this.setColsNumber(window.innerWidth);
-    if (this.settings.isDynamic) this.populateDynamicCard();
-    else this.getCardsContent(this.settings.cards);
+    if (this.settings.isDynamic) {
+      await this.getDynamicCardQuery();
+      this.getMoreCards();
+    } else this.getStaticCardsContent(this.settings.cards);
   }
 
   /**
@@ -123,8 +145,8 @@ export class SafeSummaryCardComponent implements OnInit {
    *
    * @param cards Array of cards form value.
    */
-  private getCardsContent(cards: any[]) {
-    const newCardsContent: any[] = [];
+  private getStaticCardsContent(cards: any[]) {
+    const newCardsContent: Card[] = [];
 
     cards.map((card: any, i: number) => {
       newCardsContent.push({
@@ -165,61 +187,70 @@ export class SafeSummaryCardComponent implements OnInit {
     });
   }
 
-  /**
-   * Loops through the cards, when finds a dynamic card
-   * fetches the records and creates a card for each one.
-   * @todo refactor this function to use selected layout
-   */
-  private async populateDynamicCard() {
-    const populatedCards: any[] = [];
-
+  /** Gets the query for fetching the dynamic cards records. */
+  private async getDynamicCardQuery() {
     // only one dynamic card is allowed per widget
     const [card] = this.settings.cards;
-
     if (!card) return;
 
-    this.apollo
-      .query<GetResourceRecordsQueryResponse>({
-        query: GET_RESOURCE_RECORDS,
+    const res = await this.apollo
+      .query<GetResourceLayoutsByIdQueryResponse>({
+        query: GET_RESOURCE_LAYOUTS,
         variables: {
           id: card.resource,
-          first: 10,
-        },
-      })
-      .subscribe((res) => {
-        if (res.data) {
-          const records = res.data.resource.records.edges.map((e) => e.node);
-          for (const record of records) {
-            populatedCards.push({
-              settings: card,
-              html: this.sanitizer.bypassSecurityTrustHtml(
-                parseHtml(card.html, record)
-              ),
-              record,
-            });
-          }
-        }
-      });
-
-    this.cards = populatedCards;
-  }
-
-  /**
-   * Fetches the records for a dynamic card.
-   *
-   * @param card The card setting to get resource id from
-   * @returns Promise for the resource records
-   */
-  private async getRecords(card: any) {
-    return this.apollo
-      .query<GetResourceRecordsQueryResponse>({
-        query: GET_RESOURCE_RECORDS,
-        variables: {
-          id: card.resource,
-          first: 10,
         },
       })
       .toPromise();
+    const layouts = res.data?.resource?.layouts || [];
+    const query = layouts.find((l) => l.id === card.layout)?.query;
+    if (!query) return;
+
+    this.dynamicCardQuery = {
+      builtQuery: this.queryBuilder.buildQuery({ query }),
+      sort: query.sort,
+      filter: query.filter,
+      name: query.name,
+    };
+  }
+
+  /**
+   * Fetches the next page of records for the dynamic card.
+   */
+  public async getMoreCards() {
+    const query = this.dynamicCardQuery;
+    if (!query?.builtQuery) return;
+
+    this.loading = true;
+    const newCardsContent: Card[] = [];
+    this.apollo
+      .watchQuery<any>({
+        query: query.builtQuery,
+        variables: {
+          first: this.pageSize,
+          skip: this.cards.length,
+          filter: query.filter,
+          sort: query.sort,
+        },
+      })
+      .valueChanges.subscribe((res2) => {
+        if (res2?.data) {
+          res2.data[query.name].edges.map((e: any) => {
+            const rec = e.node;
+            newCardsContent.push({
+              html: this.sanitizer.bypassSecurityTrustHtml(
+                parseHtml(this.settings.cards[0].html, rec)
+              ),
+              record: rec,
+              settings: this.settings.cards[0],
+            });
+          });
+
+          this.cards = [...this.cards, ...newCardsContent];
+          this.hasNextPage =
+            res2.data[query.name].totalCount > this.cards.length;
+        }
+        this.loading = res2.loading;
+      });
   }
 
   /**

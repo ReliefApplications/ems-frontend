@@ -7,6 +7,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
 /** Summary Card Widget Module */
 @NgModule({
@@ -19,6 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeIconModule,
     MatButtonModule,
     TranslateModule,
+    IndicatorsModule,
   ],
   exports: [SafeSummaryCardComponent],
 })

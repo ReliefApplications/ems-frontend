@@ -55,34 +55,3 @@ export interface GetResourceLayoutsByIdQueryResponse {
     }[];
   };
 }
-
-/** Graphql request for getting resource records */
-export const GET_RESOURCE_RECORDS = gql`
-  query GetRecords($id: ID!, $first: Int) {
-    resource(id: $id) {
-      records(first: $first) {
-        edges {
-          node {
-            id
-            incrementalId
-            createdAt
-            modifiedAt
-            data
-          }
-        }
-      }
-    }
-  }
-`;
-
-/** Model for GetResourceRecordsQueryResponse object */
-export interface GetResourceRecordsQueryResponse {
-  loading: boolean;
-  resource: {
-    records: {
-      edges: {
-        node: Record;
-      }[];
-    };
-  };
-}

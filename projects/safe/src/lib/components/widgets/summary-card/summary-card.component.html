@@ -46,6 +46,26 @@
         </div>
         <div class="card-content" [innerHTML]="card.html"></div>
       </div>
+      <ng-container *ngIf="loading && settings.isDynamic">
+        <ng-container *ngFor="let _ of [].constructor(pageSize); let i = index">
+          <kendo-skeleton
+            shape="rectangle"
+            animation="pulse"
+            [style.order]="cards.length - i + 1"
+            style.grid-column-end="{{
+              'span ' +
+                (settings.cards[0].width > colsNumber
+                  ? colsNumber
+                  : settings.cards[0].width)
+            }}"
+            style.grid-row-end="{{ 'span ' + settings.cards[0].height }}"
+          ></kendo-skeleton>
+        </ng-container>
+      </ng-container>
     </div>
+    <!-- TODO: replace button with final trigger for pagination -->
+    <button (click)="getMoreCards()" *ngIf="hasNextPage && !loading">
+      load more
+    </button>
   </kendo-pdf-export>
 </div>
