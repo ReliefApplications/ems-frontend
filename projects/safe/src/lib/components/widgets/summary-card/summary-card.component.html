@@ -17,34 +17,34 @@
       style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
     >
       <div
-        *ngFor="let card of settings.cards; let i = index"
+        *ngFor="let card of cards; let i = index"
         class="k-tilelayout-item k-card"
         [style.order]="i"
         style.grid-column-end="{{
-          'span ' + (card.width > colsNumber ? colsNumber : card.width)
+          'span ' +
+            (card.settings.width > colsNumber
+              ? colsNumber
+              : card.settings.width)
         }}"
-        style.grid-row-end="{{ 'span ' + card.height }}"
+        style.grid-row-end="{{ 'span ' + card.settings.height }}"
       >
         <div class="widget-header k-card-header">
-          <span class="widget-title" [title]="card.title">{{
-            card.title
+          <span class="widget-title" [title]="card.settings.title">{{
+            card.settings.title
           }}</span>
           <div class="floating-button">
             <button
               mat-button
               color="primary"
               (click)="openDataSource(card)"
-              *ngIf="card.showDataSourceLink"
+              *ngIf="card.settings.showDataSourceLink"
             >
               {{ 'components.widget.summaryCard.dataSource' | translate }}
               <safe-icon icon="open_in_new" [inline]="true"></safe-icon>
             </button>
           </div>
         </div>
-        <div
-          class="card-content"
-          [innerHTML]="cardsContent[i] ? cardsContent[i].html : null"
-        ></div>
+        <div class="card-content" [innerHTML]="card.html"></div>
       </div>
     </div>
   </kendo-pdf-export>

@@ -3,14 +3,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import { get, has, clone } from 'lodash';
+import { get, has, clone, reduce } from 'lodash';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import {
   GetRecordByIdQueryResponse,
   GetResourceLayoutsByIdQueryResponse,
+  GetResourceRecordsQueryResponse,
   GET_RECORD_BY_ID,
   GET_RESOURCE_LAYOUTS,
+  GET_RESOURCE_RECORDS,
 } from './graphql/queries';
 import { parseHtml } from './parser/utils';
 
@@ -34,7 +36,7 @@ export class SafeSummaryCardComponent implements OnInit {
   public colsNumber = MAX_COL_SPAN;
 
   // === CARDS CONTENTS ===
-  public cardsContent: any[] = [];
+  public cards: any[] = [];
 
   // === RESOURCES AND LAYOUTS ===
   private cardQueries = {};
@@ -82,9 +84,10 @@ export class SafeSummaryCardComponent implements OnInit {
     private translate: TranslateService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.colsNumber = this.setColsNumber(window.innerWidth);
-    this.getCardsContent(this.settings.cards);
+    const populatedCards = await this.populateDynamicCards();
+    this.getCards(populatedCards);
   }
 
   /**
@@ -120,45 +123,109 @@ export class SafeSummaryCardComponent implements OnInit {
    *
    * @param cards Array of cards form value.
    */
-  private getCardsContent(cards: any[]) {
-    const newCardsContent: any[] = [];
+  private getCards(cards: any[]) {
+    const newcards: any[] = [];
 
     cards.map((card: any, i: number) => {
-      newCardsContent.push({
-        html: card.html
-          ? this.sanitizer.bypassSecurityTrustHtml(card.html)
+      const isDynamic = card.settings.isDynamic;
+      const newCard = {
+        html: isDynamic
+          ? card.html
+          : card.settings.html
+          ? this.sanitizer.bypassSecurityTrustHtml(card.settings.html)
           : null,
-        record: null,
-      });
+        record: isDynamic ? card.record : null,
+        settings: card.settings,
+      };
+      newcards.push(newCard);
       if (
-        this.cardsContent[i] &&
-        this.cardsContent[i].record &&
-        this.cardsContent[i].record.id === card.record
+        this.cards[i] &&
+        this.cards[i].record &&
+        this.cards[i].record.id === card.settings.record
       ) {
-        newCardsContent[i] = this.cardsContent[i];
-        newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-          parseHtml(card.html, newCardsContent[i].record)
+        newcards[i] = this.cards[i];
+        newcards[i].html = this.sanitizer.bypassSecurityTrustHtml(
+          parseHtml(card.settings.html, newcards[i].record)
         );
-        this.cardsContent = newCardsContent;
-      } else if (card.record) {
+      } else if (card.settings.record && !card.settings.isDynamic) {
         this.apollo
           .watchQuery<GetRecordByIdQueryResponse>({
             query: GET_RECORD_BY_ID,
             variables: {
-              id: card.record,
+              id: card.settings.record,
             },
           })
           .valueChanges.subscribe((res) => {
             if (res) {
-              newCardsContent[i].record = res.data.record;
-              newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-                parseHtml(card.html, newCardsContent[i].record)
+              newcards[i].record = res.data.record;
+              newcards[i].html = this.sanitizer.bypassSecurityTrustHtml(
+                parseHtml(card.settings.html, newcards[i].record)
               );
-              this.cardsContent = newCardsContent;
             }
           });
       }
+
+      this.cards = newcards;
     });
+  }
+
+  /**
+   * Loops through the cards, when finds a dynamic card
+   * fetches the records and creates a card for each one.
+   * @todo refactor this function to use selected layout
+   */
+  private async populateDynamicCards() {
+    const populatedCards: any[] = [];
+    for (const card of this.settings.cards) {
+      if (!card.isDynamic) {
+        populatedCards.push({
+          html: null,
+          record: null,
+          settings: card,
+        });
+      } else {
+        const res = await this.getRecords(card);
+        if (res.data) {
+          const records = res.data.resource.records.edges.map((e) => e.node);
+          for (const record of records) {
+            populatedCards.push({
+              settings: { ...card },
+              html: this.sanitizer.bypassSecurityTrustHtml(
+                parseHtml(card.html, record)
+              ),
+              record,
+            });
+          }
+        }
+        // for (const record of records) {
+        //   populatedCards.push({
+        //     html: this.sanitizer.bypassSecurityTrustHtml(
+        //       parseHtml(card.html, record)
+        //     ),
+        //     record,
+        //   });
+        // }
+      }
+    }
+    return populatedCards;
+  }
+
+  /**
+   * Fetches the records for a dynamic card.
+   *
+   * @param card The card setting to get resource id from
+   * @returns Promise for the resource records
+   */
+  private async getRecords(card: any) {
+    return this.apollo
+      .query<GetResourceRecordsQueryResponse>({
+        query: GET_RESOURCE_RECORDS,
+        variables: {
+          id: card.resource,
+          first: 10,
+        },
+      })
+      .toPromise();
   }
 
   /**
