@@ -7,6 +7,9 @@ const DATA_PREFIX = '@data.';
 /** Prefix for calc keys */
 const CALC_PREFIX = '@calc.';
 
+/**
+ *
+ */
 const ICON_EXTENSIONS: any = {
   bmp: 'k-i-file-programming',
   csv: 'k-i-file-csv',
@@ -79,16 +82,16 @@ const replaceRecordFields = (
       const value = fieldsValue[field.name];
       let convertedValue: any;
 
-      // Formats urls
       if (
+        // Formats urls
         field.type === 'String' &&
         value &&
         value.match(/(https?:\/\/[^\s]+)/)
       ) {
         convertedValue =
           '<a href="' + value + '" target="_blank">' + value + '</a>';
-        // Formats emails
       } else if (
+        // Formats emails
         field.type === 'String' &&
         value &&
         value.match(
@@ -97,12 +100,18 @@ const replaceRecordFields = (
       ) {
         convertedValue =
           '<a href="mailto: ' + value + '" target="_blank">' + value + '</a>';
+      } else if (
         // Formats dates
-      } else if (field.type === 'Date' && value) {
+        field.type === 'Date' &&
+        value
+      ) {
         const date = new Date(value);
         convertedValue = date.toLocaleString().split(',')[0];
+      } else if (
         // Formats date and time
-      } else if (field.type === 'DateTime' && value) {
+        field.type === 'DateTime' &&
+        value
+      ) {
         const date = new Date(value);
         const hour =
           date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
@@ -117,37 +126,60 @@ const replaceRecordFields = (
           minutes +
           ' ' +
           time;
+      } else if (
         // Formats booleans
-      } else if (field.type === 'Boolean') {
+        field.type === 'Boolean'
+      ) {
         const checked = value ? 'checked' : '';
         convertedValue =
           '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
           checked +
           ' disabled></input>';
+      } else if (
         // Formats file inputs
-      } else if (field.type === 'JSON') {
-        if (value || value.length > 0) {
-          if (typeof value[0] === 'string') {
-            convertedValue = value;
-          } else {
-            convertedValue = '';
-            for (let file of value) {
-              const fileExt = file.name.split('.').pop();
-              const fileIcon = (fileExt && ICON_EXTENSIONS[fileExt]) ? ICON_EXTENSIONS[fileExt] : 'k-i-file'
-              const fileName = (fileExt && ICON_EXTENSIONS[fileExt]) ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1) : file.name
-              convertedValue += '<button style="border: none; padding: 4px 6px;" title="' + file.name + '">' +
-              fileName +
-              ' <span class="k-icon ' + fileIcon + '"></span>' +
-              '</button>'/** file extension icon */
-            }
-          }
+        field.type === 'JSON' &&
+        value &&
+        value.length > 0 &&
+        typeof value[0] !== 'string'
+      ) {
+        convertedValue = '';
+        for (const file of value) {
+          const fileExt = file.name.split('.').pop();
+          const fileIcon =
+            fileExt && ICON_EXTENSIONS[fileExt]
+              ? ICON_EXTENSIONS[fileExt]
+              : 'k-i-file';
+          const fileName =
+            fileExt && ICON_EXTENSIONS[fileExt]
+              ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
+              : file.name;
+          convertedValue +=
+            '<button style="border: none; padding: 4px 6px;" title="' +
+            file.name +
+            '">' +
+            fileName +
+            ' <span class="k-icon ' +
+            fileIcon +
+            '"></span>' +
+            '</button>';
         }
+      } else if (
+        // Formats custom questions
+        field.kind === 'LIST' &&
+        value &&
+        value.length > 0
+      ) {
+        convertedValue = value.length + ' items';
       } else {
-        convertedValue = fieldsValue[field.name];
+        // Anything else
+        convertedValue = value;
       }
 
-      const regex = new RegExp(`${DATA_PREFIX}${field.name}\\b`, 'gi');
-      formattedHtml = formattedHtml.replace(regex, convertedValue as string);
+      // Only changes the tag if a value exists
+      if (value && value.length > 0) {
+        const regex = new RegExp(`${DATA_PREFIX}${field.name}\\b`, 'gi');
+        formattedHtml = formattedHtml.replace(regex, convertedValue as string);
+      }
     }
   }
   return formattedHtml;
