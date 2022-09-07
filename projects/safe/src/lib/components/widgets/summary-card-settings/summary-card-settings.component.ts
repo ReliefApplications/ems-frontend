@@ -16,7 +16,7 @@ import {
 } from '@progress/kendo-angular-layout';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import { get, has, clone } from 'lodash';
+import { get, has, clone, cloneDeep } from 'lodash';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { SafeAddCardComponent } from './add-card/add-card.component';
 import { SafeCardModalComponent } from './card-modal/card-modal.component';
@@ -28,6 +28,7 @@ import {
   GET_RESOURCE_LAYOUTS,
 } from './graphql/queries';
 import { parseHtml } from '../summary-card/parser/utils';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 
 /** Define max height of summary card */
 const MAX_ROW_SPAN = 4;
@@ -86,6 +87,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     return this.tileForm?.get('cards') as FormArray;
   }
 
+  private cachedCards: any = undefined;
+
   /**
    * Summary Card Settings component.
    *
@@ -95,6 +98,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * @param sanitizer Sanitizes the cards content so angular can show it up.
    * @param snackBar snackbar service for error messages
    * @param translate translation service
+   * @param queryBuilder query builder service
    */
   constructor(
     private fb: FormBuilder,
@@ -102,7 +106,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     private apollo: Apollo,
     private sanitizer: DomSanitizer,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private queryBuilder: QueryBuilderService
   ) {}
 
   /**
@@ -121,6 +126,30 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     this.getCardsContent(this.cards.value);
     this.cards.valueChanges.subscribe((value: any) => {
       this.getCardsContent(value);
+    });
+
+    // Prevents user from having both dynamic and static cards
+    this.tileForm.get('isDynamic')?.valueChanges.subscribe(() => {
+      // caches the cards of the other type
+      const newCache = {
+        settings: cloneDeep(this.cards.value),
+        content: cloneDeep(this.cardsContent),
+      };
+
+      // removes the cards of the other type
+      this.cards.clear();
+      this.cardsContent = [];
+
+      // add cards from cache
+      if (this.cachedCards) {
+        this.cachedCards.settings.forEach((card: any) => {
+          this.cards.push(this.cardForm(card));
+        });
+        this.cardsContent = this.cachedCards.content;
+      }
+
+      // update cache
+      this.cachedCards = newCache;
     });
     this.change.emit(this.tileForm);
   }
@@ -273,8 +302,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    */
   private getCardsContent(cards: any[]) {
     const newCardsContent: any[] = [];
-
-    cards.map((card: any, i: number) => {
+    cards.map(async (card: any, i: number) => {
       newCardsContent.push({
         html: card.html
           ? this.sanitizer.bypassSecurityTrustHtml(card.html)
@@ -308,6 +336,44 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
               this.cardsContent = newCardsContent;
             }
           });
+      } else if (card.isDynamic) {
+        // Gets first record as an example for the dynamic card
+        const res = await this.apollo
+          .query<GetResourceLayoutsByIdQueryResponse>({
+            query: GET_RESOURCE_LAYOUTS,
+            variables: {
+              id: card.resource,
+            },
+          })
+          .toPromise();
+        if (!res.errors) {
+          const layouts = res.data?.resource?.layouts || [];
+          const query = layouts.find((l) => l.id === card.layout)?.query;
+          if (query) {
+            const builtQuery = this.queryBuilder.buildQuery({ query });
+
+            this.apollo
+              .watchQuery<any>({
+                query: builtQuery,
+                variables: {
+                  first: 1,
+                  filter: query.filter,
+                  sort: query.sort,
+                },
+              })
+              .valueChanges.subscribe((res2) => {
+                if (res2?.data) {
+                  newCardsContent[i].record =
+                    res2.data[query.name].edges[0].node;
+                  newCardsContent[i].html =
+                    this.sanitizer.bypassSecurityTrustHtml(
+                      parseHtml(card.html, newCardsContent[i].record)
+                    );
+                }
+              });
+          }
+        }
+        this.cardsContent = newCardsContent;
       }
     });
   }

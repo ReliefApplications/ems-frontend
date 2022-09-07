@@ -86,8 +86,8 @@ export class SafeSummaryCardComponent implements OnInit {
 
   async ngOnInit() {
     this.colsNumber = this.setColsNumber(window.innerWidth);
-    const populatedCards = await this.populateDynamicCards();
-    this.getCards(populatedCards);
+    if (this.settings.isDynamic) this.populateDynamicCard();
+    else this.getCardsContent(this.settings.cards);
   }
 
   /**
@@ -123,49 +123,45 @@ export class SafeSummaryCardComponent implements OnInit {
    *
    * @param cards Array of cards form value.
    */
-  private getCards(cards: any[]) {
-    const newcards: any[] = [];
+  private getCardsContent(cards: any[]) {
+    const newCardsContent: any[] = [];
 
     cards.map((card: any, i: number) => {
-      const isDynamic = card.settings.isDynamic;
-      const newCard = {
-        html: isDynamic
-          ? card.html
-          : card.settings.html
-          ? this.sanitizer.bypassSecurityTrustHtml(card.settings.html)
+      newCardsContent.push({
+        html: card.html
+          ? this.sanitizer.bypassSecurityTrustHtml(card.html)
           : null,
-        record: isDynamic ? card.record : null,
-        settings: card.settings,
-      };
-      newcards.push(newCard);
+        record: null,
+        settings: card,
+      });
       if (
         this.cards[i] &&
         this.cards[i].record &&
-        this.cards[i].record.id === card.settings.record
+        this.cards[i].record.id === card.record
       ) {
-        newcards[i] = this.cards[i];
-        newcards[i].html = this.sanitizer.bypassSecurityTrustHtml(
-          parseHtml(card.settings.html, newcards[i].record)
+        newCardsContent[i] = this.cards[i];
+        newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
+          parseHtml(card.html, newCardsContent[i].record)
         );
-      } else if (card.settings.record && !card.settings.isDynamic) {
+        this.cards = newCardsContent;
+      } else if (card.record) {
         this.apollo
           .watchQuery<GetRecordByIdQueryResponse>({
             query: GET_RECORD_BY_ID,
             variables: {
-              id: card.settings.record,
+              id: card.record,
             },
           })
           .valueChanges.subscribe((res) => {
             if (res) {
-              newcards[i].record = res.data.record;
-              newcards[i].html = this.sanitizer.bypassSecurityTrustHtml(
-                parseHtml(card.settings.html, newcards[i].record)
+              newCardsContent[i].record = res.data.record;
+              newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
+                parseHtml(card.html, newCardsContent[i].record)
               );
+              this.cards = newCardsContent;
             }
           });
       }
-
-      this.cards = newcards;
     });
   }
 
@@ -174,22 +170,28 @@ export class SafeSummaryCardComponent implements OnInit {
    * fetches the records and creates a card for each one.
    * @todo refactor this function to use selected layout
    */
-  private async populateDynamicCards() {
+  private async populateDynamicCard() {
     const populatedCards: any[] = [];
-    for (const card of this.settings.cards) {
-      if (!card.isDynamic) {
-        populatedCards.push({
-          html: null,
-          record: null,
-          settings: card,
-        });
-      } else {
-        const res = await this.getRecords(card);
+
+    // only one dynamic card is allowed per widget
+    const [card] = this.settings.cards;
+
+    if (!card) return;
+
+    this.apollo
+      .query<GetResourceRecordsQueryResponse>({
+        query: GET_RESOURCE_RECORDS,
+        variables: {
+          id: card.resource,
+          first: 10,
+        },
+      })
+      .subscribe((res) => {
         if (res.data) {
           const records = res.data.resource.records.edges.map((e) => e.node);
           for (const record of records) {
             populatedCards.push({
-              settings: { ...card },
+              settings: card,
               html: this.sanitizer.bypassSecurityTrustHtml(
                 parseHtml(card.html, record)
               ),
@@ -197,17 +199,9 @@ export class SafeSummaryCardComponent implements OnInit {
             });
           }
         }
-        // for (const record of records) {
-        //   populatedCards.push({
-        //     html: this.sanitizer.bypassSecurityTrustHtml(
-        //       parseHtml(card.html, record)
-        //     ),
-        //     record,
-        //   });
-        // }
-      }
-    }
-    return populatedCards;
+      });
+
+    this.cards = populatedCards;
   }
 
   /**
