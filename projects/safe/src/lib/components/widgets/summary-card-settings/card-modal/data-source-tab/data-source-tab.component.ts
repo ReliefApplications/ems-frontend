@@ -72,18 +72,6 @@ export class SafeDataSourceTabComponent implements OnInit {
   }
 
   /**
-   * Filters data sources by names.
-   *
-   * @param value string used to filter.
-   */
-  // public onFilterDataSource(value: string): void {
-  //   if (!this.loadingMore) {
-  //     this.loadingMore = true;
-  //     this.fetchMoreDataSources(false, value);
-  //   }
-  // }
-
-  /**
    * Changes the form value assigned to the radio component.
    *
    * @param event Event with the change values.

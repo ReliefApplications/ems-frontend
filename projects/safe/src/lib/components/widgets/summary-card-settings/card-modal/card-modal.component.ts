@@ -40,12 +40,12 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
 
   // === RECORD DATA ===
   public selectedRecord: any;
-  private recordSubscription: any;
 
   public form!: FormGroup;
 
   private layouts: Layout[] = [];
   public selectedResource: Resource | null = null;
+  public fields: any[] = [];
 
   /**
    * Card modal component.
@@ -111,6 +111,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
         query: GET_RECORD_BY_ID,
         variables: {
           id,
+          display: true,
         },
       })
       .subscribe((res) => {
@@ -144,6 +145,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
           });
         } else {
           this.selectedResource = res.data.resource;
+          this.fields = get(res, 'data.resource.metadata', []);
           this.layouts = get(res, 'data.resource.layouts', []);
           this.gridSettings = this.findLayout(
             this.layouts,

@@ -8,16 +8,53 @@ const DATA_PREFIX = '@data.';
 const CALC_PREFIX = '@calc.';
 
 /**
+ *
+ */
+const ICON_EXTENSIONS: any = {
+  bmp: 'k-i-file-programming',
+  csv: 'k-i-file-csv',
+  doc: 'k-i-file-word',
+  docm: 'k-i-file-word',
+  docx: 'k-i-file-word',
+  eml: 'k-i-file',
+  epub: 'k-i-file',
+  gif: 'k-i-file-video',
+  gz: 'k-i-file-zip',
+  htm: 'k-i-file-programming',
+  html: 'k-i-file-programming',
+  jpg: 'k-i-file-image',
+  jpeg: 'k-i-file-image',
+  msg: 'k-i-file',
+  odp: 'k-i-file-presentation',
+  odt: 'k-i-file-txt',
+  ods: 'k-i-file-data',
+  pdf: 'k-i-file-pdf',
+  png: 'k-i-file-image',
+  ppt: 'k-i-file-ppt',
+  pptx: 'k-i-file-ppt',
+  pptm: 'k-i-file-ppt',
+  rtf: 'k-i-file-txt',
+  txt: 'k-i-file-txt',
+  xls: 'k-i-file-excel',
+  xlsx: 'k-i-file-excel',
+  xps: 'k-i-file',
+  zip: 'k-i-file-zip',
+  xlsm: 'k-i-file-excel',
+  xml: 'k-i-file-excel',
+};
+
+/**
  * Parse the html body of a summary card with the content of a record,
  * and calculate the calc functions.
  *
  * @param html The html text
  * @param record The record to fill the text with
+ * @param fields Available fields
  * @returns The parsed html
  */
-export const parseHtml = (html: string, record: Record | null) => {
+export const parseHtml = (html: string, record: Record | null, fields: any) => {
   if (record) {
-    const htmlWithRecord = replaceRecordFields(html, record);
+    const htmlWithRecord = replaceRecordFields(html, record, fields);
     return applyOperations(htmlWithRecord);
   } else {
     return applyOperations(html);
@@ -29,14 +66,169 @@ export const parseHtml = (html: string, record: Record | null) => {
  *
  * @param html String with the content html.
  * @param record Record object.
+ * @param fields Available fields
  * @returns formatted html
  */
-const replaceRecordFields = (html: string, record: any): string => {
-  const fields = getFieldsValue(record);
+const replaceRecordFields = (
+  html: string,
+  record: any,
+  fields: any
+): string => {
+  const fieldsValue = getFieldsValue(record);
   let formattedHtml = html;
-  for (const [key, value] of Object.entries(fields)) {
-    const regex = new RegExp(`${DATA_PREFIX}${key}\\b`, 'gi');
-    formattedHtml = formattedHtml.replace(regex, value as string);
+  if (fields) {
+    for (const field of fields) {
+      const value = fieldsValue[field.name];
+      let convertedValue: any;
+      switch (field.type) {
+        case 'url':
+          convertedValue =
+            '<a href="' + value + '" target="_blank">' + value + '</a>';
+          break;
+        case 'email':
+          convertedValue =
+            '<a href="mailto: ' + value + '" target="_blank">' + value + '</a>';
+          break;
+        case 'date':
+          convertedValue = new Date(value).toLocaleString().split(',')[0];
+          break;
+        case 'datetime':
+          const date = new Date(value);
+          const hour =
+            date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
+          const minutes =
+            date.getMinutes() < 10
+              ? '0' + date.getMinutes()
+              : date.getMinutes();
+          const time = date.getHours() >= 12 ? 'PM' : 'AM';
+          convertedValue =
+            date.toLocaleString().split(',')[0] +
+            ', ' +
+            hour +
+            ':' +
+            minutes +
+            ' ' +
+            time;
+          break;
+        case 'boolean':
+          const checked = value ? 'checked' : '';
+          convertedValue =
+            '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
+            checked +
+            ' disabled></input>';
+          break;
+        case 'file':
+          convertedValue = '';
+          for (const file of value) {
+            const fileExt = file.name.split('.').pop();
+            const fileIcon =
+              fileExt && ICON_EXTENSIONS[fileExt]
+                ? ICON_EXTENSIONS[fileExt]
+                : 'k-i-file';
+            const fileName =
+              fileExt && ICON_EXTENSIONS[fileExt]
+                ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
+                : file.name;
+            convertedValue +=
+              '<button style="border: none; padding: 4px 6px;" title="' +
+              file.name +
+              '">' +
+              fileName +
+              ' <span class="k-icon ' +
+              fileIcon +
+              '"></span>' +
+              '</button>';
+          }
+          break;
+        case 'owner':
+        case 'users':
+        case 'resources':
+          convertedValue = value.length + ' items';
+          break;
+        default:
+          convertedValue = value;
+          break;
+      }
+      //   if ( field.type === 'url' && value ) { // Formats urls
+      //     convertedValue =
+      //       '<a href="' + value + '" target="_blank">' + value + '</a>';
+      //   } else if ( field.type === 'email' && value ) { // Formats emails
+      //     convertedValue =
+      //       '<a href="mailto: ' + value + '" target="_blank">' + value + '</a>';
+      //   } else if ( field.type === 'date' && value ) { // Formats dates
+      //     const date = new Date(value);
+      //     convertedValue = date.toLocaleString().split(',')[0];
+      //   } else if (
+      //     // Formats date and time
+      //     field.type === 'DateTime' &&
+      //     value
+      //   ) {
+      //     const date = new Date(value);
+      //     const hour =
+      //       date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
+      //     const minutes =
+      //       date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+      //     const time = date.getHours() >= 12 ? 'PM' : 'AM';
+      //     convertedValue =
+      //       date.toLocaleString().split(',')[0] +
+      //       ', ' +
+      //       hour +
+      //       ':' +
+      //       minutes +
+      //       ' ' +
+      //       time;
+      //   } else if (
+      //     // Formats booleans
+      //     field.type === 'Boolean'
+      //   ) {
+      //     const checked = value ? 'checked' : '';
+      //     convertedValue =
+      //       '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
+      //       checked +
+      //       ' disabled></input>';
+      //   } else if (
+      //     // Formats file inputs
+      //     field.type === 'JSON' &&
+      //     value &&
+      //     value.length > 0 &&
+      //     typeof value[0] !== 'string'
+      //   ) {
+      //     convertedValue = '';
+      //     for (const file of value) {
+      //       const fileExt = file.name.split('.').pop();
+      //       const fileIcon =
+      //         fileExt && ICON_EXTENSIONS[fileExt]
+      //           ? ICON_EXTENSIONS[fileExt]
+      //           : 'k-i-file';
+      //       const fileName =
+      //         fileExt && ICON_EXTENSIONS[fileExt]
+      //           ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
+      //           : file.name;
+      //       convertedValue +=
+      //         '<button style="border: none; padding: 4px 6px;" title="' +
+      //         file.name +
+      //         '">' +
+      //         fileName +
+      //         ' <span class="k-icon ' +
+      //         fileIcon +
+      //         '"></span>' +
+      //         '</button>';
+      //     }
+      //   } else if (
+      //     // Formats custom questions
+      //     field.kind === 'LIST' &&
+      //     value &&
+      //     value.length > 0
+      //   ) {
+      //     convertedValue = value.length + ' items';
+      //   } else {
+      //     // Anything else
+      //     convertedValue = value;
+      //   }
+
+      const regex = new RegExp(`${DATA_PREFIX}${field.name}\\b`, 'gi');
+      formattedHtml = formattedHtml.replace(regex, convertedValue as string);
+    }
   }
   return formattedHtml;
 };
@@ -62,23 +254,6 @@ const getFieldsValue = (record: any) => {
       }
     }
   }
-  // if (record !== undefined && record !== null) {
-  //   for (const [key, value] of Object.entries(record)) {
-  //     if (!key.startsWith('__') && key !== 'form') {
-  //       if (value instanceof Object) {
-  //         for (const [key2] of Object.entries(value)) {
-  //           if (!key2.startsWith('__')) {
-  //             fields.push(
-  //               '@data.' + (key === 'data' ? '' : key + '.') + key2
-  //             );
-  //           }
-  //         }
-  //       } else {
-  //         fields.push('@data.' + key);
-  //       }
-  //     }
-  //   }
-  // }
   return fields;
 };
 
@@ -115,15 +290,13 @@ const applyOperations = (html: string): string => {
 };
 
 /**
- * Returns an array with the record data keys.
+ * Returns an array with the layout available fields.
  *
- * @param record Record object.
+ * @param fields Array of fields.
  * @returns list of data keys
  */
-export const getDataKeys = (record: Record | null): string[] => {
-  const fields = getFieldsValue(record);
-  return Object.keys(fields).map((field) => DATA_PREFIX + field);
-};
+export const getDataKeys = (fields: any): string[] =>
+  fields.map((field: any) => DATA_PREFIX + field.name);
 
 /**
  * Returns an array with the calc operations keys.

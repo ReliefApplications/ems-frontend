@@ -189,6 +189,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       record: get(value, 'record', null),
       html: get(value, 'html', null),
       showDataSourceLink: get(value, 'showDataSourceLink', false),
+      availableFields: [get(value, 'availableFields', [])],
     });
   }
 
@@ -282,7 +283,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       ) {
         newCardsContent[i] = this.cardsContent[i];
         newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-          parseHtml(card.html, newCardsContent[i].record)
+          parseHtml(card.html, newCardsContent[i].record, card.availableFields)
         );
         this.cardsContent = newCardsContent;
       } else if (card.record) {
@@ -297,7 +298,11 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
             if (res) {
               newCardsContent[i].record = res.data.record;
               newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-                parseHtml(card.html, newCardsContent[i].record)
+                parseHtml(
+                  card.html,
+                  newCardsContent[i].record,
+                  card.availableFields
+                )
               );
               this.cardsContent = newCardsContent;
             }
