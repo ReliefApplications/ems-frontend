@@ -20,7 +20,7 @@ export const GET_RESOURCE = gql`
         createdAt
         display
       }
-      fields
+      metadata
     }
   }
 `;
@@ -34,7 +34,7 @@ export interface GetResourceByIdQueryResponse {
 // === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
-  query GetRecordById($id: ID!) {
+  query GetRecordById($id: ID!, $display: Boolean) {
     record(id: $id) {
       id
       incrementalId
@@ -46,7 +46,7 @@ export const GET_RECORD_BY_ID = gql`
       modifiedBy {
         name
       }
-      data
+      data(display: $display)
       form {
         id
         name

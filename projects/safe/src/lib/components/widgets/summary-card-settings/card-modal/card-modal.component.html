@@ -47,6 +47,7 @@
           <safe-text-editor-tab
             *ngIf="isEditorTab()"
             [form]="form"
+            [fields]="fields"
           ></safe-text-editor-tab>
         </mat-tab>
         <!-- Preview of card -->
@@ -54,7 +55,7 @@
           <safe-preview-tab
             [html]="form.value.html"
             [record]="selectedRecord"
-            [fields]="form.value.availableFields"
+            [fields]="fields"
           ></safe-preview-tab>
         </mat-tab>
       </mat-tab-group>

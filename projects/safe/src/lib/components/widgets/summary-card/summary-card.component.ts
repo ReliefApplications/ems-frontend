@@ -84,7 +84,7 @@ export class SafeSummaryCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
-    this.getCardsContent(this.settings.cards);
+    this.getCardsContent(get(this.settings, 'cards', []));
   }
 
   /**
@@ -114,12 +114,6 @@ export class SafeSummaryCardComponent implements OnInit {
    *
    * @param cards Array of cards form value.
    */
-
-  /**
-   * Updates the card content array.
-   *
-   * @param cards Array of cards form value.
-   */
   private getCardsContent(cards: any[]) {
     const newCardsContent: any[] = [];
 
@@ -137,7 +131,11 @@ export class SafeSummaryCardComponent implements OnInit {
       ) {
         newCardsContent[i] = this.cardsContent[i];
         newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-          parseHtml(card.html, newCardsContent[i].record, card.availableFields)
+          parseHtml(
+            card.html,
+            newCardsContent[i].record,
+            get(newCardsContent[i], 'record.form.resource.metadata', [])
+          )
         );
         this.cardsContent = newCardsContent;
       } else if (card.record) {
@@ -146,6 +144,7 @@ export class SafeSummaryCardComponent implements OnInit {
             query: GET_RECORD_BY_ID,
             variables: {
               id: card.record,
+              display: true,
             },
           })
           .valueChanges.subscribe((res) => {
@@ -155,7 +154,7 @@ export class SafeSummaryCardComponent implements OnInit {
                 parseHtml(
                   card.html,
                   newCardsContent[i].record,
-                  card.availableFields
+                  get(newCardsContent[i], 'record.form.resource.metadata', [])
                 )
               );
               this.cardsContent = newCardsContent;

@@ -18,6 +18,7 @@ import { getCalcKeys, getDataKeys } from '../../../summary-card/parser/utils';
 })
 export class SafeTextEditorTabComponent implements OnChanges {
   @Input() form!: FormGroup;
+  @Input() fields: any[] = [];
 
   /** tinymce editor */
   public editor = WIDGET_EDITOR_CONFIG;
@@ -55,7 +56,7 @@ export class SafeTextEditorTabComponent implements OnChanges {
   }
 
   ngOnChanges(): void {
-    const dataKeys = getDataKeys(this.form.value.availableFields);
+    const dataKeys = getDataKeys(this.fields);
     const calcKeys = getCalcKeys();
     const keys = dataKeys.concat(calcKeys);
 

@@ -254,23 +254,6 @@ const getFieldsValue = (record: any) => {
       }
     }
   }
-  // if (record !== undefined && record !== null) {
-  //   for (const [key, value] of Object.entries(record)) {
-  //     if (!key.startsWith('__') && key !== 'form') {
-  //       if (value instanceof Object) {
-  //         for (const [key2] of Object.entries(value)) {
-  //           if (!key2.startsWith('__')) {
-  //             fields.push(
-  //               '@data.' + (key === 'data' ? '' : key + '.') + key2
-  //             );
-  //           }
-  //         }
-  //       } else {
-  //         fields.push('@data.' + key);
-  //       }
-  //     }
-  //   }
-  // }
   return fields;
 };
 
@@ -313,8 +296,6 @@ const applyOperations = (html: string): string => {
  * @returns list of data keys
  */
 export const getDataKeys = (fields: any): string[] =>
-  // const fields = getFieldsValue(record);
-  // return Object.keys(fields).map((field) => DATA_PREFIX + field);
   fields.map((field: any) => DATA_PREFIX + field.name);
 
 /**
