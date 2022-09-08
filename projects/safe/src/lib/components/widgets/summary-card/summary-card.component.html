@@ -16,7 +16,7 @@
       class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
       style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
     >
-      <div
+      <safe-summary-card-item
         *ngFor="let card of settings.cards; let i = index"
         class="k-tilelayout-item k-card"
         [style.order]="i"
@@ -24,28 +24,9 @@
           'span ' + (card.width > colsNumber ? colsNumber : card.width)
         }}"
         style.grid-row-end="{{ 'span ' + card.height }}"
+        [card]="card"
       >
-        <div class="widget-header k-card-header">
-          <span class="widget-title" [title]="card.title">{{
-            card.title
-          }}</span>
-          <div class="floating-button">
-            <button
-              mat-button
-              color="primary"
-              (click)="openDataSource(card)"
-              *ngIf="card.showDataSourceLink"
-            >
-              {{ 'components.widget.summaryCard.dataSource' | translate }}
-              <safe-icon icon="open_in_new" [inline]="true"></safe-icon>
-            </button>
-          </div>
-        </div>
-        <div
-          class="card-content"
-          [innerHTML]="cardsContent[i] ? cardsContent[i].html : null"
-        ></div>
-      </div>
+      </safe-summary-card-item>
     </div>
   </kendo-pdf-export>
 </div>

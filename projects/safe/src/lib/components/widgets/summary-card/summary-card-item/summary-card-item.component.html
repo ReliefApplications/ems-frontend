@@ -1,0 +1,19 @@
+<div class="widget-header k-card-header">
+  <span class="widget-title" [title]="card.title">{{ card.title }}</span>
+  <div class="floating-button">
+    <safe-button
+      variant="primary"
+      icon="open_in_new"
+      (click)="openDataSource()"
+      *ngIf="card.showDataSourceLink"
+    >
+      {{ 'components.widget.summaryCard.dataSource' | translate }}
+    </safe-button>
+  </div>
+</div>
+<safe-summary-card-item-content
+  [html]="card.html"
+  [fields]="fields"
+  [record]="record"
+>
+</safe-summary-card-item-content>
