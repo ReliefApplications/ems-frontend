@@ -11,8 +11,11 @@ import {
   GET_RESOURCE_LAYOUTS,
 } from '../graphql/queries';
 import { Record } from '../../../../models/record.model';
-import { get } from 'lodash';
+import { clone, get } from 'lodash';
 
+/**
+ * Single Item component of Summary card widget.
+ */
 @Component({
   selector: 'safe-summary-card-item',
   templateUrl: './summary-card-item.component.html',
@@ -22,7 +25,16 @@ export class SummaryCardItemComponent implements OnInit {
   @Input() card!: any;
   public fields: any[] = [];
   public record: Record | null = null;
+  public loading = true;
 
+  /**
+   * Single item component of summary card widget.
+   *
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackBar service
+   * @param translate Angular translate service
+   */
   constructor(
     private apollo: Apollo,
     private dialog: MatDialog,
@@ -31,10 +43,13 @@ export class SummaryCardItemComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getContent();
+    this.setContent();
   }
 
-  private getContent(): void {
+  /**
+   * Set content of the card item, querying associated record.
+   */
+  private setContent(): void {
     if (this.card.record) {
       this.apollo
         .query<GetRecordByIdQueryResponse>({
@@ -56,12 +71,13 @@ export class SummaryCardItemComponent implements OnInit {
               { error: true }
             );
           }
+          this.loading = false;
         });
     }
   }
 
   /**
-   * Open the dataSource modal
+   * Open the dataSource modal.
    */
   public openDataSource(): void {
     this.apollo
@@ -74,12 +90,10 @@ export class SummaryCardItemComponent implements OnInit {
       .subscribe((res) => {
         const layouts = res.data?.resource?.layouts || [];
         const query = layouts.find((l) => l.id === this.card.layout)?.query;
-        console.log(this.card);
-        console.log(query);
         if (query) {
           this.dialog.open(SafeResourceGridModalComponent, {
             data: {
-              gridSettings: query,
+              gridSettings: clone(query),
             },
           });
         } else {

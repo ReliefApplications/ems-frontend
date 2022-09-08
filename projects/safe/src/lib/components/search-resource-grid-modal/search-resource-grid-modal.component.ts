@@ -52,7 +52,6 @@ export class SafeResourceGridModalComponent implements OnInit {
       this.selectedRows = [...this.data.selectedRows];
 
     if (this.data.gridSettings.sort && !this.data.gridSettings.sort.field) {
-      console.log(this.data.gridSettings.sort);
       delete this.data.gridSettings.sort;
     }
     this.gridSettings = {

@@ -9,6 +9,10 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Record } from '../../../../models/record.model';
 import { parseHtml } from '../parser/utils';
 
+/**
+ * Content component of Single Item of Summary Card.
+ * Build html from item definition and queried record.
+ */
 @Component({
   selector: 'safe-summary-card-item-content',
   templateUrl: './summary-card-item-content.component.html',
@@ -23,7 +27,7 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   public formattedHtml?: SafeHtml;
 
   /**
-   * Constructor used by the SafePreviewTab component.
+   * Content component of Single Item of Summary Card.
    *
    * @param sanitizer Sanitizes the cards content so angular can show it up.
    */
