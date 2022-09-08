@@ -33,6 +33,7 @@ export const parseHtml = (html: string, record: Record | null) => {
  * @returns formatted html
  */
 const replaceRecordFields = (html: string, record: any): string => {
+  if (html === null) return '';
   const fields = getFieldsValue(record);
   let formattedHtml = html;
   for (const [key, value] of Object.entries(fields)) {
