@@ -20,6 +20,7 @@ export const GET_RESOURCE = gql`
         createdAt
         display
       }
+      fields
     }
   }
 `;

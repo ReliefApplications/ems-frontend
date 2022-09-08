@@ -83,98 +83,151 @@ const replaceRecordFields = (
       if (field.name === 'file') {
         value = [{ name: 'invoice.pdf' }];
       }
-      if (
-        // Formats urls
-        field.type === 'String' &&
-        value &&
-        value.match(/(https?:\/\/[^\s]+)/)
-      ) {
-        convertedValue =
-          '<a href="' + value + '" target="_blank">' + value + '</a>';
-      } else if (
-        // Formats emails
-        field.type === 'String' &&
-        value &&
-        value.match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        )
-      ) {
-        convertedValue =
-          '<a href="mailto: ' + value + '" target="_blank">' + value + '</a>';
-      } else if (
-        // Formats dates
-        field.type === 'Date' &&
-        value
-      ) {
-        const date = new Date(value);
-        convertedValue = date.toLocaleString().split(',')[0];
-      } else if (
-        // Formats date and time
-        field.type === 'DateTime' &&
-        value
-      ) {
-        const date = new Date(value);
-        const hour =
-          date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
-        const minutes =
-          date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
-        const time = date.getHours() >= 12 ? 'PM' : 'AM';
-        convertedValue =
-          date.toLocaleString().split(',')[0] +
-          ', ' +
-          hour +
-          ':' +
-          minutes +
-          ' ' +
-          time;
-      } else if (
-        // Formats booleans
-        field.type === 'Boolean'
-      ) {
-        const checked = value ? 'checked' : '';
-        convertedValue =
-          '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
-          checked +
-          ' disabled></input>';
-      } else if (
-        // Formats file inputs
-        field.type === 'JSON' &&
-        value &&
-        value.length > 0 &&
-        typeof value[0] !== 'string'
-      ) {
-        convertedValue = '';
-        for (const file of value) {
-          const fileExt = file.name.split('.').pop();
-          const fileIcon =
-            fileExt && ICON_EXTENSIONS[fileExt]
-              ? ICON_EXTENSIONS[fileExt]
-              : 'k-i-file';
-          const fileName =
-            fileExt && ICON_EXTENSIONS[fileExt]
-              ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
-              : file.name;
-          convertedValue +=
-            '<button style="border: none; padding: 4px 6px;" title="' +
-            file.name +
-            '">' +
-            fileName +
-            ' <span class="k-icon ' +
-            fileIcon +
-            '"></span>' +
-            '</button>';
-        }
-      } else if (
-        // Formats custom questions
-        field.kind === 'LIST' &&
-        value &&
-        value.length > 0
-      ) {
-        convertedValue = value.length + ' items';
-      } else {
-        // Anything else
-        convertedValue = value;
+      switch (field.type) {
+        case 'url':
+          convertedValue =
+            '<a href="' + value + '" target="_blank">' + value + '</a>';
+          break;
+        case 'email':
+          convertedValue =
+            '<a href="mailto: ' + value + '" target="_blank">' + value + '</a>';
+          break;
+        case 'date':
+          convertedValue = new Date(value).toLocaleString().split(',')[0];
+          break;
+        case 'datetime':
+          const date = new Date(value);
+          const hour =
+            date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
+          const minutes =
+            date.getMinutes() < 10
+              ? '0' + date.getMinutes()
+              : date.getMinutes();
+          const time = date.getHours() >= 12 ? 'PM' : 'AM';
+          convertedValue =
+            date.toLocaleString().split(',')[0] +
+            ', ' +
+            hour +
+            ':' +
+            minutes +
+            ' ' +
+            time;
+          break;
+        case 'boolean':
+          const checked = value ? 'checked' : '';
+          convertedValue =
+            '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
+            checked +
+            ' disabled></input>';
+          break;
+        case 'file':
+          convertedValue = '';
+          for (const file of value) {
+            const fileExt = file.name.split('.').pop();
+            const fileIcon =
+              fileExt && ICON_EXTENSIONS[fileExt]
+                ? ICON_EXTENSIONS[fileExt]
+                : 'k-i-file';
+            const fileName =
+              fileExt && ICON_EXTENSIONS[fileExt]
+                ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
+                : file.name;
+            convertedValue +=
+              '<button style="border: none; padding: 4px 6px;" title="' +
+              file.name +
+              '">' +
+              fileName +
+              ' <span class="k-icon ' +
+              fileIcon +
+              '"></span>' +
+              '</button>';
+          }
+          break;
+        case 'owner':
+        case 'users':
+        case 'resources':
+          convertedValue = value.length + ' items';
+          break;
+        default:
+          convertedValue = value;
+          break;
       }
+      //   if ( field.type === 'url' && value ) { // Formats urls
+      //     convertedValue =
+      //       '<a href="' + value + '" target="_blank">' + value + '</a>';
+      //   } else if ( field.type === 'email' && value ) { // Formats emails
+      //     convertedValue =
+      //       '<a href="mailto: ' + value + '" target="_blank">' + value + '</a>';
+      //   } else if ( field.type === 'date' && value ) { // Formats dates
+      //     const date = new Date(value);
+      //     convertedValue = date.toLocaleString().split(',')[0];
+      //   } else if (
+      //     // Formats date and time
+      //     field.type === 'DateTime' &&
+      //     value
+      //   ) {
+      //     const date = new Date(value);
+      //     const hour =
+      //       date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
+      //     const minutes =
+      //       date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+      //     const time = date.getHours() >= 12 ? 'PM' : 'AM';
+      //     convertedValue =
+      //       date.toLocaleString().split(',')[0] +
+      //       ', ' +
+      //       hour +
+      //       ':' +
+      //       minutes +
+      //       ' ' +
+      //       time;
+      //   } else if (
+      //     // Formats booleans
+      //     field.type === 'Boolean'
+      //   ) {
+      //     const checked = value ? 'checked' : '';
+      //     convertedValue =
+      //       '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
+      //       checked +
+      //       ' disabled></input>';
+      //   } else if (
+      //     // Formats file inputs
+      //     field.type === 'JSON' &&
+      //     value &&
+      //     value.length > 0 &&
+      //     typeof value[0] !== 'string'
+      //   ) {
+      //     convertedValue = '';
+      //     for (const file of value) {
+      //       const fileExt = file.name.split('.').pop();
+      //       const fileIcon =
+      //         fileExt && ICON_EXTENSIONS[fileExt]
+      //           ? ICON_EXTENSIONS[fileExt]
+      //           : 'k-i-file';
+      //       const fileName =
+      //         fileExt && ICON_EXTENSIONS[fileExt]
+      //           ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
+      //           : file.name;
+      //       convertedValue +=
+      //         '<button style="border: none; padding: 4px 6px;" title="' +
+      //         file.name +
+      //         '">' +
+      //         fileName +
+      //         ' <span class="k-icon ' +
+      //         fileIcon +
+      //         '"></span>' +
+      //         '</button>';
+      //     }
+      //   } else if (
+      //     // Formats custom questions
+      //     field.kind === 'LIST' &&
+      //     value &&
+      //     value.length > 0
+      //   ) {
+      //     convertedValue = value.length + ' items';
+      //   } else {
+      //     // Anything else
+      //     convertedValue = value;
+      //   }
 
       const regex = new RegExp(`${DATA_PREFIX}${field.name}\\b`, 'gi');
       formattedHtml = formattedHtml.replace(regex, convertedValue as string);

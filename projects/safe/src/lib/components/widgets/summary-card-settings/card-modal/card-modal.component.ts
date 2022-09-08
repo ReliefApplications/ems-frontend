@@ -62,7 +62,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<SafeCardModalComponent>,
     public fb: FormBuilder,
     private cdRef: ChangeDetectorRef,
-    private apollo: Apollo
+    private apollo: Apollo,
   ) {}
 
   /**
@@ -153,7 +153,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
             this.form.value.layout
           );
           this.form.patchValue({
-            availableFields: this.gridSettings.query.fields,
+            availableFields: this.selectedResource.fields,
           });
           if (!this.gridSettings) {
             this.form.patchValue({
