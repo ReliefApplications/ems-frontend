@@ -55,7 +55,7 @@ export class SafeSummaryCardComponent implements OnInit {
   } | null = null;
 
   // === DYNAMIC CARDS PAGINATION ===
-  public pageSize = 10;
+  public pageSize = 2;
   public hasNextPage = true;
   public loading = false;
 
@@ -238,7 +238,7 @@ export class SafeSummaryCardComponent implements OnInit {
             const rec = e.node;
             newCardsContent.push({
               html: this.sanitizer.bypassSecurityTrustHtml(
-                parseHtml(this.settings.cards[0].html, rec)
+                parseHtml(this.settings.cards[0]?.html, rec)
               ),
               record: rec,
               settings: this.settings.cards[0],

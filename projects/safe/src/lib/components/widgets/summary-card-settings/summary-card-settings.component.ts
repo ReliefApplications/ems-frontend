@@ -364,7 +364,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
               .valueChanges.subscribe((res2) => {
                 if (res2?.data) {
                   newCardsContent[i].record =
-                    res2.data[query.name].edges[0].node;
+                    res2.data[query.name].edges[0]?.node;
                   newCardsContent[i].html =
                     this.sanitizer.bypassSecurityTrustHtml(
                       parseHtml(card.html, newCardsContent[i].record)
