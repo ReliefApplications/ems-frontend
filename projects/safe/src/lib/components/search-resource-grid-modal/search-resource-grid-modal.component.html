@@ -1,36 +1,35 @@
-<safe-button
-  [isIcon]="true"
-  icon="close"
-  variant="danger"
-  mat-dialog-close
-  class="close-modal"
-  (click)="closeModal(false)"
-></safe-button>
-<h2 mat-dialog-title *ngIf="selectable">
-  {{
-    'common.searchObject'
-      | translate: { name: ('common.record.few' | translate) }
-  }}
-</h2>
-<div mat-dialog-title *ngIf="!selectable">
-  <h2>{{ 'common.record.few' | translate }}</h2>
-</div>
-<mat-dialog-content>
-  <safe-core-grid
-    [settings]="gridSettings"
-    [multiSelect]="multiSelect"
-    [selectedRows]="selectedRows"
-    (selectionChange)="onSelectionChange($event)"
-    style="height: 410px"
-    [selectable]="selectable"
-  >
-  </safe-core-grid>
-</mat-dialog-content>
-<mat-dialog-actions align="end" *ngIf="selectable">
-  <button mat-button matDialogClose (click)="closeModal(false)">
-    {{ 'common.cancel' | translate }}
-  </button>
-  <button mat-flat-button matDialogClose color="primary" (click)="closeModal()">
-    {{ 'common.select' | translate }}
-  </button>
-</mat-dialog-actions>
+<safe-modal [closable]="true">
+  <h2 mat-dialog-title *ngIf="selectable">
+    {{
+      'common.searchObject'
+        | translate: { name: ('common.record.few' | translate) }
+    }}
+  </h2>
+  <h2 *ngIf="!selectable">{{ 'common.record.few' | translate }}</h2>
+  <mat-dialog-content>
+    <safe-core-grid
+      [settings]="gridSettings"
+      [multiSelect]="multiSelect"
+      [selectedRows]="selectedRows"
+      (selectionChange)="onSelectionChange($event)"
+      style="height: 410px"
+      [selectable]="selectable"
+    >
+    </safe-core-grid>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" *ngIf="selectable">
+    <safe-button mat-dialog-close (click)="closeModal(false)">
+      {{ 'common.cancel' | translate }}
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      matDialogClose
+      cdkFocusInitial
+      (click)="closeModal()"
+      *ngIf="selectable"
+    >
+      {{ 'common.select' | translate }}
+    </safe-button>
+  </mat-dialog-actions>
+</safe-modal>

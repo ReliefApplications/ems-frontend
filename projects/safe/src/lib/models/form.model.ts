@@ -44,4 +44,5 @@ export interface Form {
   canCreateRecords?: boolean;
   uniqueRecord?: Record;
   layouts?: Layout[];
+  metadata?: any[];
 }

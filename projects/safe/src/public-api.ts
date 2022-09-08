@@ -79,6 +79,7 @@ export * from './lib/components/skeleton/skeleton-table/public-api';
 export * from './lib/components/mapping/public-api';
 export * from './lib/components/role-summary/public-api';
 export * from './lib/components/graphql-select/public-api';
+export * from './lib/components/ui/modal/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/layout-modal/public-api';

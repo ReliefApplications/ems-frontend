@@ -42,6 +42,7 @@ import { SafeIconModule } from './components/ui/icon/icon.module';
 import { SafeSummaryCardSettingsModule } from './components/widgets/summary-card-settings/summary-card-settings.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
 import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
+import { SafeModalModule } from './components/ui/modal/modal.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -89,6 +90,7 @@ import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-sel
     SafeSummaryCardSettingsModule,
     SafeRoleSummaryModule,
     SafeGraphQLSelectModule,
+    SafeModalModule,
   ],
 })
 export class SafeModule {}

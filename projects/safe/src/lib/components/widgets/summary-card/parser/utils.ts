@@ -254,6 +254,23 @@ const getFieldsValue = (record: any) => {
       }
     }
   }
+  // if (record !== undefined && record !== null) {
+  //   for (const [key, value] of Object.entries(record)) {
+  //     if (!key.startsWith('__') && key !== 'form') {
+  //       if (value instanceof Object) {
+  //         for (const [key2] of Object.entries(value)) {
+  //           if (!key2.startsWith('__')) {
+  //             fields.push(
+  //               '@data.' + (key === 'data' ? '' : key + '.') + key2
+  //             );
+  //           }
+  //         }
+  //       } else {
+  //         fields.push('@data.' + key);
+  //       }
+  //     }
+  //   }
+  // }
   return fields;
 };
 

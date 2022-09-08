@@ -9,7 +9,7 @@ import { SafeApplicationDropdownModule } from '../application-dropdown/applicati
 import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../ui/button/button.module';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * Resource grid modal component module.
@@ -25,8 +25,8 @@ import { SafeButtonModule } from '../ui/button/button.module';
     SafeApplicationDropdownModule,
     SafeRecordDropdownModule,
     SafeCoreGridModule,
-    SafeButtonModule,
     TranslateModule,
+    SafeModalModule,
   ],
   exports: [SafeResourceGridModalComponent],
 })

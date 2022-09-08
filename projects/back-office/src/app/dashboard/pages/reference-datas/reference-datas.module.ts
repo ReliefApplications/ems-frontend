@@ -16,6 +16,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {
   SafeButtonModule,
   SafeDateModule,
+  SafeModalModule,
   SafeSkeletonTableModule,
 } from '@safe/builder';
 import { MatIconModule } from '@angular/material/icon';
@@ -48,6 +49,7 @@ import { AddReferenceDataComponent } from './add-reference-data/add-reference-da
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
+    SafeModalModule,
   ],
   exports: [ReferenceDatasComponent],
 })

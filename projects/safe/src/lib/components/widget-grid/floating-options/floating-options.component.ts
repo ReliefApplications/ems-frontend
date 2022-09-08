@@ -77,12 +77,6 @@ export class SafeFloatingOptionsComponent implements OnInit {
           tile: this.widget,
           template: this.dashboardService.findSettingsTemplate(this.widget),
         },
-        // hasBackdrop: false,
-        position: {
-          bottom: '0',
-          right: '0',
-        },
-        panelClass: 'tile-settings-dialog-with-tile-layout',
       });
       dialogRef.afterClosed().subscribe((res) => {
         if (res) {

@@ -13,7 +13,7 @@ export interface IWidgetType {
   color: string;
 }
 
-/** List of Widget types with their proeprties */
+/** List of Widget types with their properties */
 export const WIDGET_TYPES = [
   {
     id: 'donut-chart',

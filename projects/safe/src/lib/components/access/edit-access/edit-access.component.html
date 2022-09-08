@@ -1,49 +1,51 @@
-<h1 mat-dialog-title>
-  {{
-    'components.access.description' | translate: { name: data.objectTypeName }
-  }}
-</h1>
-<div mat-dialog-content>
-  <form [formGroup]="accessForm" class="form-group">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'components.access.canSee' | translate }}</mat-label>
-      <mat-select formControlName="canSee" multiple>
-        <mat-option *ngFor="let role of roles" [value]="role.id">
-          {{ role.title }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <ng-container *ngIf="!data.application">
+<safe-modal>
+  <h1 mat-dialog-title>
+    {{
+      'components.access.description' | translate: { name: data.objectTypeName }
+    }}
+  </h1>
+  <div mat-dialog-content>
+    <form [formGroup]="accessForm" class="form-group">
       <mat-form-field appearance="outline">
-        <mat-label>{{ 'components.access.canUpdate' | translate }}</mat-label>
-        <mat-select formControlName="canUpdate" multiple>
+        <mat-label>{{ 'components.access.canSee' | translate }}</mat-label>
+        <mat-select formControlName="canSee" multiple>
           <mat-option *ngFor="let role of roles" [value]="role.id">
             {{ role.title }}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'components.access.canDelete' | translate }}</mat-label>
-        <mat-select formControlName="canDelete" multiple>
-          <mat-option *ngFor="let role of roles" [value]="role.id">
-            {{ role.title }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-  </form>
-</div>
-<div mat-dialog-actions align="end">
-  <button mat-button (click)="onClose()">
-    {{ 'common.close' | translate }}
-  </button>
-  <button
-    mat-flat-button
-    [mat-dialog-close]="accessForm.value"
-    cdkFocusInitial
-    color="primary"
-    [disabled]="!accessForm.valid"
-  >
-    {{ 'common.update' | translate }}
-  </button>
-</div>
+      <ng-container *ngIf="!data.application">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'components.access.canUpdate' | translate }}</mat-label>
+          <mat-select formControlName="canUpdate" multiple>
+            <mat-option *ngFor="let role of roles" [value]="role.id">
+              {{ role.title }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'components.access.canDelete' | translate }}</mat-label>
+          <mat-select formControlName="canDelete" multiple>
+            <mat-option *ngFor="let role of roles" [value]="role.id">
+              {{ role.title }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+    </form>
+  </div>
+  <div mat-dialog-actions align="end">
+    <safe-button (click)="onClose()">{{
+      'common.close' | translate
+    }}</safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [mat-dialog-close]="accessForm.value"
+      cdkFocusInitial
+      [disabled]="!accessForm.valid"
+    >
+      {{ 'common.update' | translate }}
+    </safe-button>
+  </div>
+</safe-modal>

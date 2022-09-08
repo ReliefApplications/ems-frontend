@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit, Input, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 /**
  * The component is used on a card creation in the summary-card widget
@@ -10,18 +11,43 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./add-card.component.scss'],
 })
 export class SafeAddCardComponent implements OnInit {
-  public data: any = {
-    isDynamic: false,
-  };
+  @Input() isDynamic: any;
+  public loading = true;
+  private templatesUrl = '';
+  public templates: any = [];
 
   /**
-   * Constructor for safe-add-card contructor
+   * Constructor for safe-add-card constructor
    *
    * @param dialogRef material dialog reference of the component
+   * @param environment Injection of the environment file.
+   * @param data the data passed into the dialog
+   * @param data.isDynamic wether the added card will be dynamic or not
+   * @param http Angular http client
    */
-  constructor(public dialogRef: MatDialogRef<SafeAddCardComponent>) {}
+  constructor(
+    public dialogRef: MatDialogRef<SafeAddCardComponent>,
+    @Inject('environment') environment: any,
+    @Inject(MAT_DIALOG_DATA) public data: { isDynamic: any },
+    private http: HttpClient
+  ) {
+    this.templatesUrl = environment.apiUrl + '/summarycards/templates/';
+  }
 
-  ngOnInit(): void {}
+  async ngOnInit(): Promise<void> {
+    const token = localStorage.getItem('idtoken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    await this.http
+      .get(this.templatesUrl, { headers })
+      .toPromise()
+      .then((data: any) => {
+        this.templates = data;
+      });
+    this.loading = false;
+    this.templates = this.templates.slice(-3).reverse();
+  }
 
   /**
    * Closes the modal without sending any data.
@@ -38,11 +64,11 @@ export class SafeAddCardComponent implements OnInit {
   }
 
   /**
-   * Changes the isDynamic property on radio component change
+   * Closes the modal when a template is selected, sending the modal data.
    *
-   * @param event dynamic change
+   * @param item The summary card template item chosen
    */
-  radioChange(event: any): void {
-    this.data.isDynamic = event.value;
+  onCreateFromTemplate(item: any): void {
+    this.dialogRef.close(item);
   }
 }

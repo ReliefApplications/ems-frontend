@@ -1,255 +1,264 @@
-<h1 mat-dialog-title>
-  {{
-    data.pullJob
-      ? ('common.editObject'
-        | translate: { name: 'common.pullJob.one' | translate })
-      : ('models.pullJob.new' | translate)
-  }}
-</h1>
-<div mat-dialog-content>
-  <form [formGroup]="pullJobForm">
-    <div class="form-group">
-      <div class="form-group-row">
-        <mat-form-field appearance="outline" style="flex: 1">
-          <mat-label>{{ 'common.name' | translate }}</mat-label>
-          <input
-            type="text"
-            [placeholder]="'common.placeholder.name' | translate"
-            matInput
-            formControlName="name"
-          />
-        </mat-form-field>
-        <mat-form-field appearance="outline" style="flex: 1">
-          <mat-label>{{ 'common.status' | translate }}</mat-label>
-          <mat-select formControlName="status">
+<safe-modal size="medium">
+  <h1 mat-dialog-title>
+    {{
+      data.pullJob
+        ? ('common.editObject'
+          | translate: { name: 'common.pullJob.one' | translate })
+        : ('models.pullJob.new' | translate)
+    }}
+  </h1>
+  <div mat-dialog-content>
+    <form [formGroup]="pullJobForm">
+      <div class="form-group">
+        <div class="form-group-row">
+          <mat-form-field appearance="outline" style="flex: 1">
+            <mat-label>{{ 'common.name' | translate }}</mat-label>
+            <input
+              type="text"
+              [placeholder]="'common.placeholder.name' | translate"
+              matInput
+              formControlName="name"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="flex: 1">
+            <mat-label>{{ 'common.status' | translate }}</mat-label>
+            <mat-select formControlName="status">
+              <mat-option
+                *ngFor="let statusChoice of statusChoices"
+                [value]="statusChoice"
+                >{{
+                  (statusChoice === 'active'
+                    ? 'common.status_active'
+                    : statusChoice === 'pending'
+                    ? 'common.status_pending'
+                    : 'common.status_archived'
+                  ) | translate
+                }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="form-group-row">
+          <mat-form-field appearance="outline" style="flex: 1">
+            <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
+            <input
+              type="text"
+              [placeholder]="
+                'components.pullJob.modal.placeholder.schedule' | translate
+              "
+              matInput
+              formControlName="schedule"
+            />
+            <safe-icon
+              icon="info"
+              class="cursor-pointer"
+              variant="grey"
+              matSuffix
+              [matTooltip]="
+                'components.pullJob.modal.hint.schedule' | translate
+              "
+            ></safe-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="flex: 1">
+            <mat-label>{{
+              'common.apiConfiguration.one' | translate
+            }}</mat-label>
+            <safe-graphql-select
+              valueField="id"
+              textField="name"
+              [required]="true"
+              [query]="apiConfigurationsQuery"
+              formControlName="apiConfiguration"
+              [selectedElements]="[defaultApiConfiguration]"
+            >
+            </safe-graphql-select>
+          </mat-form-field>
+        </div>
+        <div class="form-group-row" *ngIf="!isHardcoded">
+          <mat-form-field appearance="outline" style="flex: 1">
+            <mat-label>{{ 'models.pullJob.url' | translate }}</mat-label>
+            <input
+              type="text"
+              [placeholder]="
+                'components.pullJob.modal.placeholder.url' | translate
+              "
+              matInput
+              formControlName="url"
+            />
+            <safe-icon
+              icon="info"
+              class="cursor-pointer"
+              variant="grey"
+              matSuffix
+              [matTooltip]="'components.pullJob.modal.hint.url' | translate"
+            ></safe-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="flex: 1">
+            <mat-label>{{ 'models.pullJob.path' | translate }}</mat-label>
+            <input
+              type="text"
+              [placeholder]="
+                'components.pullJob.modal.placeholder.path' | translate
+              "
+              matInput
+              formControlName="path"
+            />
+            <safe-icon
+              icon="info"
+              class="cursor-pointer"
+              variant="grey"
+              matSuffix
+              [matTooltip]="'components.pullJob.modal.hint.path' | translate"
+            ></safe-icon>
+          </mat-form-field>
+        </div>
+        <div class="form-group-row">
+          <mat-form-field appearance="outline" style="flex: 1">
+            <mat-label>{{
+              'components.record.convert.select' | translate
+            }}</mat-label>
+            <safe-graphql-select
+              valueField="id"
+              textField="name"
+              [query]="formsQuery"
+              formControlName="convertTo"
+              [selectedElements]="[defaultForm]"
+            >
+            </safe-graphql-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{
+              'components.channel.dropdown.select' | translate
+            }}</mat-label>
+            <mat-select
+              #channelSelect
+              formControlName="channel"
+              placeholder="Select a channel"
+              (opened)="onOpenApplicationSelect()"
+            >
+              <mat-optgroup
+                *ngFor="let application of applications | async"
+                [label]="application.name || ''"
+              >
+                <mat-option
+                  *ngFor="let channel of application.channels"
+                  [value]="channel.id"
+                >
+                  {{ channel.title }}
+                </mat-option>
+              </mat-optgroup>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <mat-expansion-panel
+          [expanded]="false"
+          [disabled]="!pullJobForm.value.convertTo"
+          class="input-list"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ 'components.pullJob.modal.mapping' | translate }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="actions">
+            <safe-button
+              icon="edit_note"
+              category="secondary"
+              variant="primary"
+              (click)="toggleRawJSON()"
+            >
+              {{ 'components.pullJob.modal.switch' | translate }}
+            </safe-button>
+          </div>
+          <ng-container *ngIf="openRawJSON">
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-label>{{ 'common.input.rawJson' | translate }}</mat-label>
+              <textarea
+                matInput
+                formControlName="rawMapping"
+                placeholder="Please enter a JSON for the data mapping between the API and the Form."
+                [cdkTextareaAutosize]="true"
+                [cdkAutosizeMinRows]="2"
+              ></textarea>
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="!openRawJSON">
+            <form
+              [formGroup]="$any(element)"
+              *ngFor="let element of mappingArray.controls; index as i"
+            >
+              <mat-form-field
+                appearance="outline"
+                style="margin-bottom: -1.25em"
+              >
+                <mat-label>{{ 'common.field.one' | translate }}</mat-label>
+                <mat-select formControlName="name">
+                  <mat-option
+                    *ngFor="let field of filteredFields(element.value.name)"
+                    [value]="field.name"
+                    >{{ field.name }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field
+                appearance="outline"
+                *ngIf="element.value.name"
+                style="margin-bottom: -1.25em"
+              >
+                <mat-label>{{ 'common.value.one' | translate }}</mat-label>
+                <input matInput formControlName="value" type="string" />
+              </mat-form-field>
+              <safe-button
+                [isIcon]="true"
+                icon="remove_circle_outline"
+                variant="danger"
+                (click)="onDeleteElement(i)"
+              >
+              </safe-button>
+            </form>
+            <safe-button
+              *ngIf="filteredFields('').length > 0"
+              [isIcon]="true"
+              icon="add_circle_outline"
+              variant="primary"
+              (click)="onAddElement()"
+            >
+            </safe-button>
+          </ng-container>
+        </mat-expansion-panel>
+        <mat-form-field
+          *ngIf="mappingArray.controls.length > 0"
+          appearance="outline"
+        >
+          <mat-label>{{
+            'components.pullJob.modal.identifier' | translate
+          }}</mat-label>
+          <mat-select formControlName="uniqueIdentifiers" multiple>
             <mat-option
-              *ngFor="let statusChoice of statusChoices"
-              [value]="statusChoice"
-              >{{
-                (statusChoice === 'active'
-                  ? 'common.status_active'
-                  : statusChoice === 'pending'
-                  ? 'common.status_pending'
-                  : 'common.status_archived'
-                ) | translate
-              }}
+              *ngFor="let element of mappingArray.controls"
+              [value]="element.value.value"
+            >
+              {{ element.value.value }}
             </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="form-group-row">
-        <mat-form-field appearance="outline" style="flex: 1">
-          <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
-          <input
-            type="text"
-            [placeholder]="
-              'components.pullJob.modal.placeholder.schedule' | translate
-            "
-            matInput
-            formControlName="schedule"
-          />
-          <safe-icon
-            icon="info"
-            class="cursor-pointer"
-            variant="grey"
-            matSuffix
-            [matTooltip]="'components.pullJob.modal.hint.schedule' | translate"
-          ></safe-icon>
-        </mat-form-field>
-        <mat-form-field appearance="outline" style="flex: 1">
-          <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
-          <safe-graphql-select
-            valueField="id"
-            textField="name"
-            [required]="true"
-            [query]="apiConfigurationsQuery"
-            formControlName="apiConfiguration"
-            [selectedElements]="[defaultApiConfiguration]"
-          >
-          </safe-graphql-select>
-        </mat-form-field>
-      </div>
-      <div class="form-group-row" *ngIf="!isHardcoded">
-        <mat-form-field appearance="outline" style="flex: 1">
-          <mat-label>{{ 'models.pullJob.url' | translate }}</mat-label>
-          <input
-            type="text"
-            [placeholder]="
-              'components.pullJob.modal.placeholder.url' | translate
-            "
-            matInput
-            formControlName="url"
-          />
-          <safe-icon
-            icon="info"
-            class="cursor-pointer"
-            variant="grey"
-            matSuffix
-            [matTooltip]="'components.pullJob.modal.hint.url' | translate"
-          ></safe-icon>
-        </mat-form-field>
-        <mat-form-field appearance="outline" style="flex: 1">
-          <mat-label>{{ 'models.pullJob.path' | translate }}</mat-label>
-          <input
-            type="text"
-            [placeholder]="
-              'components.pullJob.modal.placeholder.path' | translate
-            "
-            matInput
-            formControlName="path"
-          />
-          <safe-icon
-            icon="info"
-            class="cursor-pointer"
-            variant="grey"
-            matSuffix
-            [matTooltip]="'components.pullJob.modal.hint.path' | translate"
-          ></safe-icon>
-        </mat-form-field>
-      </div>
-      <div class="form-group-row">
-        <mat-form-field appearance="outline" style="flex: 1">
-          <mat-label>{{
-            'components.record.convert.select' | translate
-          }}</mat-label>
-          <safe-graphql-select
-            valueField="id"
-            textField="name"
-            [query]="formsQuery"
-            formControlName="convertTo"
-            [selectedElements]="[defaultForm]"
-          >
-          </safe-graphql-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>{{
-            'components.channel.dropdown.select' | translate
-          }}</mat-label>
-          <mat-select
-            #channelSelect
-            formControlName="channel"
-            placeholder="Select a channel"
-            (opened)="onOpenApplicationSelect()"
-          >
-            <mat-optgroup
-              *ngFor="let application of applications | async"
-              [label]="application.name || ''"
-            >
-              <mat-option
-                *ngFor="let channel of application.channels"
-                [value]="channel.id"
-              >
-                {{ channel.title }}
-              </mat-option>
-            </mat-optgroup>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <mat-expansion-panel
-        [expanded]="false"
-        [disabled]="!pullJobForm.value.convertTo"
-        class="input-list"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{ 'components.pullJob.modal.mapping' | translate }}
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class="actions">
-          <safe-button
-            icon="edit_note"
-            category="secondary"
-            variant="primary"
-            (click)="toggleRawJSON()"
-          >
-            {{ 'components.pullJob.modal.switch' | translate }}
-          </safe-button>
-        </div>
-        <ng-container *ngIf="openRawJSON">
-          <mat-form-field appearance="outline" style="width: 100%">
-            <mat-label>{{ 'common.input.rawJson' | translate }}</mat-label>
-            <textarea
-              matInput
-              formControlName="rawMapping"
-              placeholder="Please enter a JSON for the data mapping between the API and the Form."
-              [cdkTextareaAutosize]="true"
-              [cdkAutosizeMinRows]="2"
-            ></textarea>
-          </mat-form-field>
-        </ng-container>
-        <ng-container *ngIf="!openRawJSON">
-          <form
-            [formGroup]="$any(element)"
-            *ngFor="let element of mappingArray.controls; index as i"
-          >
-            <mat-form-field appearance="outline" style="margin-bottom: -1.25em">
-              <mat-label>{{ 'common.field.one' | translate }}</mat-label>
-              <mat-select formControlName="name">
-                <mat-option
-                  *ngFor="let field of filteredFields(element.value.name)"
-                  [value]="field.name"
-                  >{{ field.name }}</mat-option
-                >
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field
-              appearance="outline"
-              *ngIf="element.value.name"
-              style="margin-bottom: -1.25em"
-            >
-              <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-              <input matInput formControlName="value" type="string" />
-            </mat-form-field>
-            <safe-button
-              [isIcon]="true"
-              icon="remove_circle_outline"
-              variant="danger"
-              (click)="onDeleteElement(i)"
-            >
-            </safe-button>
-          </form>
-          <safe-button
-            *ngIf="filteredFields('').length > 0"
-            [isIcon]="true"
-            icon="add_circle_outline"
-            variant="primary"
-            (click)="onAddElement()"
-          >
-          </safe-button>
-        </ng-container>
-      </mat-expansion-panel>
-      <mat-form-field
-        *ngIf="mappingArray.controls.length > 0"
-        appearance="outline"
-      >
-        <mat-label>{{
-          'components.pullJob.modal.identifier' | translate
-        }}</mat-label>
-        <mat-select formControlName="uniqueIdentifiers" multiple>
-          <mat-option
-            *ngFor="let element of mappingArray.controls"
-            [value]="element.value.value"
-          >
-            {{ element.value.value }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-  </form>
-</div>
-<div mat-dialog-actions align="end">
-  <button mat-button (click)="onClose()">
-    {{ 'common.close' | translate }}
-  </button>
-  <button
-    mat-flat-button
-    [mat-dialog-close]="returnFormValue()"
-    cdkFocusInitial
-    color="primary"
-    [disabled]="!pullJobForm.valid"
-    (click)="toggleRawJSON()"
-  >
-    {{ (data.pullJob ? 'common.update' : 'common.create') | translate }}
-  </button>
-</div>
+    </form>
+  </div>
+  <div mat-dialog-actions align="end">
+    <safe-button (click)="onClose()">{{
+      'common.close' | translate
+    }}</safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [mat-dialog-close]="returnFormValue()"
+      cdkFocusInitial
+      [disabled]="!pullJobForm.valid"
+      (click)="toggleRawJSON()"
+    >
+      {{ (data.pullJob ? 'common.update' : 'common.create') | translate }}
+    </safe-button>
+  </div>
+</safe-modal>

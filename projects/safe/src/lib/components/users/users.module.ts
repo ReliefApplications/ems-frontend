@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeUsersComponent } from './users.component';
-import { SafeEditUserComponent } from './components/edit-user/edit-user.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -26,7 +25,7 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
 
 /** Module for components related to users */
 @NgModule({
-  declarations: [SafeUsersComponent, SafeEditUserComponent],
+  declarations: [SafeUsersComponent],
   imports: [
     CommonModule,
     FormsModule,

@@ -19,11 +19,12 @@ import {
   SafeSkeletonTableModule,
   SafeDateModule,
   SafeGraphQLSelectModule,
+  SafeModalModule,
 } from '@safe/builder';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
-import { DuplicateApplicationModule } from '../../../components/duplicate-application/duplicate-application.module';
+import { DuplicateApplicationModalModule } from '../../../components/duplicate-application-modal/duplicate-application-modal.module';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
@@ -54,7 +55,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatChipsModule,
     SafeConfirmModalModule,
     SafeAccessModule,
-    DuplicateApplicationModule,
+    DuplicateApplicationModalModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatDividerModule,
@@ -66,6 +67,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeSkeletonTableModule,
     SafeDateModule,
     SafeGraphQLSelectModule,
+    SafeModalModule,
   ],
   exports: [ApplicationsComponent],
 })

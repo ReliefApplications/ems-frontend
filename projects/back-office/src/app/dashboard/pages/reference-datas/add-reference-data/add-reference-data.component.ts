@@ -40,7 +40,7 @@ export class AddReferenceDataComponent implements OnInit {
    */
   ngOnInit(): void {
     this.referenceForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.pattern('^[A-Za-z-_]+$')]],
+      name: ['', Validators.required],
     });
   }
 
