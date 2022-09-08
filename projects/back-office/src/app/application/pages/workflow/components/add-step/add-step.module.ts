@@ -11,6 +11,9 @@ import { MatRippleModule } from '@angular/material/core';
 import { SafeButtonModule, SafeContentChoiceModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Add step module
+ */
 @NgModule({
   declarations: [AddStepComponent],
   imports: [

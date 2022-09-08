@@ -15,6 +15,9 @@ import {
 } from '../../../graphql/queries';
 import { PreviewService } from '../../../services/preview.service';
 
+/**
+ * Workflow page component for application preview.
+ */
 @Component({
   selector: 'app-workflow',
   templateUrl: './workflow.component.html',
@@ -38,6 +41,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   // === PREVIEWED ROLE ===
   public role = '';
 
+  /**
+   * Workflow page component for application preview
+   *
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param snackBar Shared snackbar service
+   * @param router Angular router
+   * @param previewService Shared preview service
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,

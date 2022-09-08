@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ApplicationComponent } from './application.component';
 
+/** Routes of application module */
 const routes: Routes = [
   {
     path: '',
@@ -121,6 +122,9 @@ const routes: Routes = [
   },
 ];
 
+/**
+ * Application routing module.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

@@ -33,8 +33,12 @@ import {
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
 
+/**
+ * API configurations page component.
+ */
 @Component({
   selector: 'app-api-configurations',
   templateUrl: './api-configurations.component.html',
@@ -69,6 +73,16 @@ export class ApiConfigurationsComponent
     endCursor: '',
   };
 
+  /**
+   * API configurations page component
+   *
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param router Angular router
+   * @param translate Angular translate service
+   */
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,

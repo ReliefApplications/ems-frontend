@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Main BO dashboard component
+ */
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -13,6 +16,11 @@ export class DashboardComponent implements OnInit {
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
   public navGroups: any[] = [];
 
+  /**
+   * Main BO dashboard component
+   *
+   * @param translate Angular translate service
+   */
   constructor(private translate: TranslateService) {
     this.setNavGroups();
     translate.onLangChange.subscribe(() => {
@@ -22,6 +30,9 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  /**
+   * Set the navigation items, from the permissions of user.
+   */
   setNavGroups(): void {
     this.navGroups = [
       {

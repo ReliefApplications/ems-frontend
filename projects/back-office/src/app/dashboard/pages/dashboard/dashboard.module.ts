@@ -22,6 +22,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Dashboard page module.
+ */
 @NgModule({
   declarations: [DashboardComponent, ShareUrlComponent],
   imports: [

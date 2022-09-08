@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { SafeLayoutService } from '@safe/builder';
 
+/** Form web widget component */
 @Component({
   selector: 'app-form-widget',
   templateUrl: './form-widget.component.html',
@@ -18,6 +19,11 @@ export class FormWidgetComponent implements OnInit {
 
   public showSidenav = false;
 
+  /**
+   * Form web widget component
+   *
+   * @param layoutService Shared layout service
+   */
   constructor(private layoutService: SafeLayoutService) {}
 
   ngOnInit(): void {

@@ -18,6 +18,9 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDividerModule } from '@angular/material/divider';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Application subscriptions page module.
+ */
 @NgModule({
   declarations: [SubscriptionsComponent, SubscriptionModalComponent],
   imports: [

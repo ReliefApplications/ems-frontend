@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { isDate } from 'lodash';
+import { clone, isDate } from 'lodash';
 import { SafeApiProxyService } from '../../../services/api-proxy.service';
+import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
 /**
@@ -195,30 +196,35 @@ export class SafeTabFilterComponent implements OnInit {
    *
    * @param formBuilder This is the service that will be used to build forms.
    * @param queryBuilder This is the service that will be used to build the query.
-   * @param apiProxyService This is the service that will be used to make the API call.
+   * @param gridService Shared grid service
    */
   constructor(
     private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService,
-    private apiProxyService: SafeApiProxyService
+    private gridService: SafeGridService
   ) {}
 
   ngOnInit(): void {
     // TODO: move somewhere else
     if (this.query) {
-      this.metaQuery = this.queryBuilder.buildMetaQuery(this.query);
+      // Get MetaData from all scalar fields of the datasource
+      const queryWithAllScalarField = clone(this.query);
+      queryWithAllScalarField.fields = this.fields;
+      this.metaQuery = this.queryBuilder.buildMetaQuery(
+        queryWithAllScalarField
+      );
       if (this.metaQuery) {
-        this.metaQuery.subscribe((res: any) => {
+        this.metaQuery.subscribe(async (res: any) => {
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.metaFields = Object.assign({}, res.data[field]);
-              this.populateMetaFields();
+              await this.gridService.populateMetaFields(this.metaFields);
             }
           }
         });
       }
     } else {
-      this.populateMetaFields();
+      this.gridService.populateMetaFields(this.metaFields);
     }
     this.form.value?.filters.forEach((x: any, index: number) => {
       if (x.field) {
@@ -243,65 +249,6 @@ export class SafeTabFilterComponent implements OnInit {
         this.selectedFields.splice(index, 1, {});
       }
     });
-  }
-
-  /**
-   * Fetch choices from URL if needed
-   */
-  private async populateMetaFields(): Promise<void> {
-    for (const fieldName of Object.keys(this.metaFields)) {
-      const meta = this.metaFields[fieldName];
-      if (meta.choicesByUrl) {
-        const url: string = meta.choicesByUrl.url;
-        const localRes = localStorage.getItem(url);
-        if (localRes) {
-          this.metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(
-              JSON.parse(localRes),
-              meta.choicesByUrl
-            ),
-            choicesByUrl: null,
-          };
-        } else {
-          const res: any =
-            await this.apiProxyService.promisedRequestWithHeaders(url);
-          localStorage.setItem(url, JSON.stringify(res));
-          this.metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(res, meta.choicesByUrl),
-            choicesByUrl: null,
-          };
-        }
-      }
-    }
-  }
-
-  /**
-   * Extracts choices using choicesByUrl properties
-   *
-   * @param res Result of http request.
-   * @param choicesByUrl Choices By Url property.
-   * @param choicesByUrl.path Path of the choice
-   * @param choicesByUrl.value Value of the choice
-   * @param choicesByUrl.text Text of the choice
-   * @returns list of choices.
-   */
-  private extractChoices(
-    res: any,
-    choicesByUrl: { path?: string; value?: string; text?: string }
-  ): { value: string; text: string }[] {
-    const choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
-    return choices
-      ? choices.map((x: any) => ({
-          value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
-          text: choicesByUrl.text
-            ? x[choicesByUrl.text]
-            : choicesByUrl.value
-            ? x[choicesByUrl.value]
-            : x,
-        }))
-      : [];
   }
 
   /**

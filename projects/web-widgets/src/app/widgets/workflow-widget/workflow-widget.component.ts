@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { SafeLayoutService } from '@safe/builder';
 
+/** Workflow web widget component */
 @Component({
   selector: 'app-workflow-widget',
   templateUrl: './workflow-widget.component.html',
@@ -18,6 +19,11 @@ export class WorkflowWidgetComponent implements OnInit {
 
   public showSidenav = false;
 
+  /**
+   * Workflow web widget component
+   *
+   * @param layoutService Shared layout service
+   */
   constructor(private layoutService: SafeLayoutService) {}
 
   ngOnInit(): void {

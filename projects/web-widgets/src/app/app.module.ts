@@ -10,7 +10,6 @@ import { BrowserModule } from '@angular/platform-browser';
 // Http
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
-import { NewsComponent } from './news/news.component';
 import { ApplicationWidgetComponent } from './widgets/application-widget/application-widget.component';
 import { ApplicationWidgetModule } from './widgets/application-widget/application-widget.module';
 import { DashboardWidgetComponent } from './widgets/dashboard-widget/dashboard-widget.component';
@@ -59,8 +58,11 @@ const initializeAuth =
 export const httpTranslateLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http);
 
+/**
+ * Web Widget project root module.
+ */
 @NgModule({
-  declarations: [AppComponent, NewsComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -109,11 +111,21 @@ export const httpTranslateLoader = (http: HttpClient) =>
   ],
 })
 export class AppModule implements DoBootstrap {
+  /**
+   * Main project root module
+   *
+   * @param injector Angular injector
+   * @param translate Angular translate service
+   */
   constructor(private injector: Injector, private translate: TranslateService) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang('en');
   }
 
+  /**
+   * Bootstrap the project.
+   * Create the web elements.
+   */
   ngDoBootstrap(): void {
     // Dashboard
     const dashboard = createCustomElement(DashboardWidgetComponent, {

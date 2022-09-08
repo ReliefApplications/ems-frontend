@@ -6,6 +6,7 @@ import { SafeFormModule, SafePreviousButtonModule } from '@safe/builder';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
+/** Update record module. */
 @NgModule({
   declarations: [UpdateRecordComponent],
   imports: [

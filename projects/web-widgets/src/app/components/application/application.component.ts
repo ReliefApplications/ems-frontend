@@ -14,6 +14,9 @@ import {
   GET_APPLICATION_BY_ID,
 } from './graphql/queries';
 
+/**
+ * Application component
+ */
 @Component({
   selector: 'app-application',
   templateUrl: './application.component.html',
@@ -21,6 +24,10 @@ import {
 })
 export class ApplicationComponent implements OnInit, OnChanges {
   @Input() id = '618274079eb6019bfc301540';
+
+  /**
+   * Set page id
+   */
   @Input()
   set pageId(id: string) {
     const pages = this.application?.pages || [];
@@ -35,6 +42,11 @@ export class ApplicationComponent implements OnInit, OnChanges {
 
   public readonly contentType = ContentType;
 
+  /**
+   * Application component
+   *
+   * @param apollo Apollo service
+   */
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {

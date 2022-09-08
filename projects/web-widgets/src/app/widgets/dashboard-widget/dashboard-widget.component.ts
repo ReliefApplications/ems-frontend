@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { SafeLayoutService } from '@safe/builder';
 
+/** Dashboard web widget component */
 @Component({
   selector: 'app-dashboard-widget',
   templateUrl: './dashboard-widget.component.html',
@@ -18,6 +19,11 @@ export class DashboardWidgetComponent implements OnInit {
 
   public showSidenav = false;
 
+  /**
+   * Dashboard web widget component
+   *
+   * @param layoutService Shared layout service
+   */
   constructor(private layoutService: SafeLayoutService) {}
 
   ngOnInit(): void {

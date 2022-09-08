@@ -29,6 +29,9 @@ import {
 } from '../../../graphql/mutations';
 import { switchMap } from 'rxjs/operators';
 
+/**
+ * Form page in application.
+ */
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
@@ -57,6 +60,16 @@ export class FormComponent implements OnInit, OnDestroy {
   private routeSubscription?: Subscription;
   public isStep = false;
 
+  /**
+   * Form page in application
+   *
+   * @param applicationService Shared application service
+   * @param workflowService Shared workflow service
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param router Angular router
+   * @param snackBar Shared snackbar service
+   */
   constructor(
     private applicationService: SafeApplicationService,
     private workflowService: SafeWorkflowService,
@@ -135,6 +148,9 @@ export class FormComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Toggle activation of form.
+   */
   toggleFormActive(): void {
     if (this.step?.canUpdate || this.page?.canUpdate) {
       this.formActive = !this.formActive;
@@ -199,7 +215,11 @@ export class FormComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Edit the permissions layer. */
+  /**
+   * Edit the permissions layer.
+   *
+   * @param e permissions
+   */
   saveAccess(e: any): void {
     if (this.isStep) {
       this.apollo
@@ -234,15 +254,28 @@ export class FormComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Complete form
+   *
+   * @param e completion event
+   * @param e.completed is completed
+   * @param e.hideNewRecord do we show new record button
+   */
   onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }
 
+  /**
+   * Clear status of the form.
+   */
   clearForm(): void {
     this.formComponent?.reset();
   }
 
+  /**
+   * Edit form. Open form builder.
+   */
   editForm(): void {
     if (this.isStep && this.step) {
       this.router.navigate([`./builder/${this.step.content}`], {

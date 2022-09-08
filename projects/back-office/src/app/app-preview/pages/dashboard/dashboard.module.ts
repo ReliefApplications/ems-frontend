@@ -16,6 +16,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+/**
+ * Dashboard page module for application preview.
+ */
 @NgModule({
   declarations: [DashboardComponent],
   imports: [

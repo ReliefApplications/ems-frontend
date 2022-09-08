@@ -4,6 +4,7 @@ import { FormComponent } from './form.component';
 import { SafeButtonModule, SafeFormModule } from '@safe/builder';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+/** Form module. */
 @NgModule({
   declarations: [FormComponent],
   imports: [

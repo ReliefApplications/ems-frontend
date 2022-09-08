@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
+/**
+ * Form history component.
+ */
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',
@@ -14,11 +17,18 @@ export class HistoryComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() open: EventEmitter<any> = new EventEmitter();
 
+  /**
+   * Form history component
+   */
   constructor() {}
 
   ngOnInit(): void {}
 
-  /** Emit a version. */
+  /**
+   * Open selected version
+   *
+   * @param version version to display
+   */
   openVersion(version: any): void {
     this.open.emit(version);
   }

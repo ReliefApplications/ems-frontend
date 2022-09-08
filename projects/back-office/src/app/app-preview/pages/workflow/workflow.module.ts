@@ -5,6 +5,9 @@ import { WorkflowComponent } from './workflow.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SafeWorkflowStepperModule } from '@safe/builder';
 
+/**
+ * Workflow module for application preview.
+ */
 @NgModule({
   declarations: [WorkflowComponent],
   imports: [
