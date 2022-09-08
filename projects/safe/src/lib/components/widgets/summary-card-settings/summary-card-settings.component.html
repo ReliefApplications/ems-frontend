@@ -37,22 +37,27 @@
         "
         [rowSpan]="card.value.height"
       >
-        <kendo-tilelayout-item-header class="widget-header">
-          <span class="widget-title" [title]="card.value.title">{{
-            card.value.title
-          }}</span>
-          <div class="floating-button">
-            <button
-              mat-button
-              color="primary"
-              (click)="openDataSource(card.value)"
-              *ngIf="card.value.showDataSourceLink"
-            >
-              {{ 'components.widget.summaryCard.dataSource' | translate }}
-              <safe-icon icon="open_in_new" [inline]="true"></safe-icon>
-            </button>
-          </div>
-        </kendo-tilelayout-item-header>
+        <!--  -->
+        <safe-summary-card-item
+          [card]="card.value"
+          [headerTemplate]="cardItemHeader"
+        ></safe-summary-card-item>
+        <ng-template #cardItemHeader>
+          <kendo-tilelayout-item-header class="widget-header">
+            <span class="widget-title" [title]="card.value.title">{{
+              card.value.title
+            }}</span>
+            <div class="floating-button">
+              <safe-button
+                variant="primary"
+                icon="open_in_new"
+                *ngIf="card.value.showDataSourceLink"
+              >
+                {{ 'components.widget.summaryCard.dataSource' | translate }}
+              </safe-button>
+            </div>
+          </kendo-tilelayout-item-header>
+        </ng-template>
         <safe-button
           icon="more_vert"
           [isIcon]="true"
@@ -76,10 +81,6 @@
           class="widget-handle"
         >
         </safe-icon>
-        <div
-          class="card-content"
-          [innerHTML]="cardsContent[i] ? cardsContent[i].html : null"
-        ></div>
       </kendo-tilelayout-item>
     </kendo-tilelayout>
   </form>

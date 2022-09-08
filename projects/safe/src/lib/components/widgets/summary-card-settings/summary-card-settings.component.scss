@@ -40,12 +40,9 @@ kendo-tilelayout {
       cursor: grab;
       pointer-events: none;
     }
-  }
-}
 
-.card-content {
-  padding: 15px;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
+    safe-summary-card-item {
+      flex: 1;
+    }
+  }
 }

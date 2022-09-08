@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
@@ -26,6 +26,8 @@ export class SummaryCardItemComponent implements OnInit {
   public fields: any[] = [];
   public record: Record | null = null;
   public loading = true;
+
+  @Input() headerTemplate?: TemplateRef<any>;
 
   /**
    * Single item component of summary card widget.

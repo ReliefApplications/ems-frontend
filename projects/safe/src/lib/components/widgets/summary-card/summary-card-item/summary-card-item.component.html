@@ -1,6 +1,11 @@
 <ng-container *ngIf="!loading">
-  <!-- Header -->
-  <div class="widget-header k-card-header">
+  <!-- Template Header, injected from parent -->
+  <ng-container
+    *ngIf="headerTemplate"
+    [ngTemplateOutlet]="headerTemplate"
+  ></ng-container>
+  <!-- Default Header -->
+  <div class="widget-header k-card-header" *ngIf="!headerTemplate">
     <!-- Title -->
     <span class="widget-title" [title]="card.title">{{ card.title }}</span>
     <!-- Actions -->

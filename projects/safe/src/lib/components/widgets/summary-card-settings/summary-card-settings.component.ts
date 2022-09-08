@@ -9,25 +9,13 @@ import {
 } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
 import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
-import { TranslateService } from '@ngx-translate/core';
-import { Apollo } from 'apollo-angular';
-import { get, has, clone } from 'lodash';
-import { SafeSnackBarService } from '../../../services/snackbar.service';
+import { get } from 'lodash';
 import { SafeAddCardComponent } from './add-card/add-card.component';
 import { SafeCardModalComponent } from './card-modal/card-modal.component';
-import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
-import {
-  GetRecordByIdQueryResponse,
-  GetResourceLayoutsByIdQueryResponse,
-  GET_RECORD_BY_ID,
-  GET_RESOURCE_LAYOUTS,
-} from './graphql/queries';
-import { parseHtml } from '../summary-card/parser/utils';
 
 /** Define max height of widgets */
 const MAX_ROW_SPAN = 4;
@@ -53,12 +41,6 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
-
-  // === CARDS CONTENTS ===
-  cardsContent: any[] = [];
-
-  // === RESOURCES AND LAYOUTS ===
-  private cardQueries = {};
 
   // === WIDGET ===
   @Input() tile: any;
@@ -91,19 +73,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    *
    * @param fb Angular Form Builder.
    * @param dialog Material Dialog Service.
-   * @param apollo Used for getting the records query.
-   * @param sanitizer Sanitizes the cards content so angular can show it up.
-   * @param snackBar snackbar service for error messages
-   * @param translate translation service
    */
-  constructor(
-    private fb: FormBuilder,
-    private dialog: MatDialog,
-    private apollo: Apollo,
-    private sanitizer: DomSanitizer,
-    private snackBar: SafeSnackBarService,
-    private translate: TranslateService
-  ) {}
+  constructor(private fb: FormBuilder, private dialog: MatDialog) {}
 
   /**
    * Build the settings form, using the widget saved parameters.
@@ -117,10 +88,6 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       cards: this.fb.array(
         get(this.tile, 'settings.cards', []).map((x: any) => this.cardForm(x))
       ),
-    });
-    this.getCardsContent(this.cards.value);
-    this.cards.valueChanges.subscribe((value: any) => {
-      this.getCardsContent(value);
     });
     this.change.emit(this.tileForm);
   }
@@ -259,99 +226,5 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       height: e.newRowSpan,
       width: e.newColSpan,
     });
-  }
-
-  /**
-   * Updates the card content array.
-   *
-   * @param cards Array of cards form value.
-   */
-  private getCardsContent(cards: any[]) {
-    const newCardsContent: any[] = [];
-
-    cards.map((card: any, i: number) => {
-      newCardsContent.push({
-        html: card.html
-          ? this.sanitizer.bypassSecurityTrustHtml(card.html)
-          : null,
-        record: null,
-      });
-      if (
-        this.cardsContent[i] &&
-        this.cardsContent[i].record &&
-        this.cardsContent[i].record.id === card.record
-      ) {
-        newCardsContent[i] = this.cardsContent[i];
-        newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-          parseHtml(card.html, newCardsContent[i].record, card.availableFields)
-        );
-        this.cardsContent = newCardsContent;
-      } else if (card.record) {
-        this.apollo
-          .watchQuery<GetRecordByIdQueryResponse>({
-            query: GET_RECORD_BY_ID,
-            variables: {
-              id: card.record,
-            },
-          })
-          .valueChanges.subscribe((res) => {
-            if (res) {
-              newCardsContent[i].record = res.data.record;
-              newCardsContent[i].html = this.sanitizer.bypassSecurityTrustHtml(
-                parseHtml(
-                  card.html,
-                  newCardsContent[i].record,
-                  card.availableFields
-                )
-              );
-              this.cardsContent = newCardsContent;
-            }
-          });
-      }
-    });
-  }
-
-  /**
-   * Open the data source modal
-   *
-   * @param card The card to open
-   */
-  public async openDataSource(card: any) {
-    // the key of the layout used to save it, to not load it each time
-    const key = `${card.resource}-${card.layout}`;
-    // load and save the query of the layout if not already saved
-    if (!has(this.cardQueries, key)) {
-      const res = await this.apollo
-        .query<GetResourceLayoutsByIdQueryResponse>({
-          query: GET_RESOURCE_LAYOUTS,
-          variables: {
-            id: card.resource,
-          },
-        })
-        .toPromise();
-      if (!res.errors) {
-        const layouts = res.data?.resource?.layouts || [];
-        const query = layouts.find((l) => l.id === card.layout)?.query;
-        if (query) {
-          Object.assign(this.cardQueries, { [key]: query });
-        }
-      }
-    }
-    const cardQuery = get(this.cardQueries, key, null);
-    if (cardQuery) {
-      this.dialog.open(SafeResourceGridModalComponent, {
-        data: {
-          gridSettings: clone(cardQuery),
-        },
-        panelClass: 'closable-dialog',
-      });
-    } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant(
-          'components.widget.summaryCard.errors.invalidSource'
-        ),
-        { error: true }
-      );
-    }
   }
 }
