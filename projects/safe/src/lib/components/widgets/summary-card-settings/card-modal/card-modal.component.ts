@@ -62,7 +62,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<SafeCardModalComponent>,
     public fb: FormBuilder,
     private cdRef: ChangeDetectorRef,
-    private apollo: Apollo,
+    private apollo: Apollo
   ) {}
 
   /**
