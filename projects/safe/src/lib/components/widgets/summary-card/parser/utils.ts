@@ -78,11 +78,8 @@ const replaceRecordFields = (
   let formattedHtml = html;
   if (fields) {
     for (const field of fields) {
-      let value = fieldsValue[field.name];
+      const value = fieldsValue[field.name];
       let convertedValue: any;
-      if (field.name === 'file') {
-        value = [{ name: 'invoice.pdf' }];
-      }
       switch (field.type) {
         case 'url':
           convertedValue =
