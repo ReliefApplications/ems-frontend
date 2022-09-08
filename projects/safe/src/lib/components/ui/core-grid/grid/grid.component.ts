@@ -628,11 +628,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         readonly: !this.actions.update,
       },
       autoFocus: false,
-      position: {
-        bottom: '0',
-        right: '0',
-      },
-      panelClass: 'expanded-widget-dialog',
     });
     dialogRef.afterClosed().subscribe((res) => {
       if (res && res !== get(item, field)) {

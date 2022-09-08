@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '../../../ui/modal/modal.module';
 
 /** Module for the add user component */
 @NgModule({
@@ -24,6 +25,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatAutocompleteModule,
     MatInputModule,
     TranslateModule,
+    SafeModalModule,
   ],
   exports: [SafeAddUserComponent],
 })

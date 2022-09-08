@@ -8,7 +8,7 @@ import {
   SafeConfirmModalComponent,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
-import { AddPositionComponent } from './components/position-modal/position-modal.component';
+import { PositionModalComponent } from './components/position-modal/position-modal.component';
 
 /**
  * Application position component.
@@ -57,7 +57,7 @@ export class PositionComponent implements OnInit, OnDestroy {
    * Add new position
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddPositionComponent, {
+    const dialogRef = this.dialog.open(PositionModalComponent, {
       data: {
         add: true,
       },
@@ -75,8 +75,7 @@ export class PositionComponent implements OnInit, OnDestroy {
    * @param positionCategory position category to edit
    */
   onEdit(positionCategory: PositionAttributeCategory): void {
-    const dialogRef = this.dialog.open(AddPositionComponent, {
-      width: '400px',
+    const dialogRef = this.dialog.open(PositionModalComponent, {
       data: {
         edit: true,
         title: positionCategory.title,

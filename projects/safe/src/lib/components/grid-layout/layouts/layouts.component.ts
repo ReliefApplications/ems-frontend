@@ -93,7 +93,6 @@ export class LayoutsComponent implements OnInit, OnChanges {
         form: this.form,
         resource: this.resource,
       },
-      width: '400px',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -122,11 +121,6 @@ export class LayoutsComponent implements OnInit, OnChanges {
       data: {
         layout,
       },
-      position: {
-        bottom: '0',
-        right: '0',
-      },
-      panelClass: 'tile-settings-dialog',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

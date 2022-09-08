@@ -17,4 +17,10 @@ export interface Resource {
   canDelete?: boolean;
   coreForm?: Form;
   layouts?: Layout[];
+  rolePermissions?: {
+    canCreateRecords: any;
+    canSeeRecords: any;
+    canUpdateRecords: any;
+    canDeleteRecords: any;
+  };
 }

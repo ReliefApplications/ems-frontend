@@ -6,6 +6,7 @@ import { SafeExpandedCommentComponent } from './expanded-comment.component';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '../../modal/modal.module';
 
 /** Module for expanded comment component */
 @NgModule({
@@ -17,6 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatIconModule,
     TranslateModule,
+    SafeModalModule,
   ],
   exports: [SafeExpandedCommentComponent],
 })

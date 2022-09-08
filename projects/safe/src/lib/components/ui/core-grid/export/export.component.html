@@ -1,60 +1,64 @@
-<mat-dialog-content class="safe-grid-export">
-  <!-- RECORDS -->
-  <label id="export-options-records">{{
-    'components.widget.grid.export.dataset.title' | translate
-  }}</label>
-  <mat-radio-group
-    [(ngModel)]="export.records"
-    class="form-radio-group"
-    required
-    aria-labelledby="export-options-records"
-  >
-    <mat-radio-button value="all">{{
-      'components.widget.grid.export.dataset.choice.all' | translate
-    }}</mat-radio-button>
-    <mat-radio-button value="selected">{{
-      'components.widget.grid.export.dataset.choice.selected' | translate
-    }}</mat-radio-button>
-  </mat-radio-group>
-  <!-- COLUMNS -->
-  <label id="export-options-columns">{{
-    'components.widget.grid.export.columns.title' | translate
-  }}</label>
-  <mat-radio-group
-    [(ngModel)]="export.fields"
-    class="form-radio-group"
-    required
-    aria-labelledby="export-options-columns"
-  >
-    <mat-radio-button value="all">{{
-      'components.widget.grid.export.columns.choice.all' | translate
-    }}</mat-radio-button>
-    <mat-radio-button value="visible">{{
-      'components.widget.grid.export.columns.choice.visible' | translate
-    }}</mat-radio-button>
-  </mat-radio-group>
-  <!-- FORMAT -->
-  <label id="export-options-format">{{
-    'components.widget.grid.export.format.title' | translate
-  }}</label>
-  <mat-radio-group
-    [(ngModel)]="export.format"
-    class="form-radio-group"
-    requires
-    aria-labelledby="export-options-format"
-  >
-    <mat-radio-button value="csv">.csv</mat-radio-button>
-    <mat-radio-button value="xlsx">.xlsx</mat-radio-button>
-  </mat-radio-group>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>{{ 'common.close' | translate }}</button>
-  <button
-    mat-button
-    [mat-dialog-close]="export"
-    mat-flat-button
-    color="primary"
-  >
-    {{ 'common.export' | translate }}
-  </button>
-</mat-dialog-actions>
+<safe-modal size="small">
+  <mat-dialog-content class="safe-grid-export">
+    <!-- RECORDS -->
+    <label id="export-options-records">{{
+      'components.widget.grid.export.dataset.title' | translate
+    }}</label>
+    <mat-radio-group
+      [(ngModel)]="export.records"
+      class="form-radio-group"
+      required
+      aria-labelledby="export-options-records"
+    >
+      <mat-radio-button value="all">{{
+        'components.widget.grid.export.dataset.choice.all' | translate
+      }}</mat-radio-button>
+      <mat-radio-button value="selected">{{
+        'components.widget.grid.export.dataset.choice.selected' | translate
+      }}</mat-radio-button>
+    </mat-radio-group>
+    <!-- COLUMNS -->
+    <label id="export-options-columns">{{
+      'components.widget.grid.export.columns.title' | translate
+    }}</label>
+    <mat-radio-group
+      [(ngModel)]="export.fields"
+      class="form-radio-group"
+      required
+      aria-labelledby="export-options-columns"
+    >
+      <mat-radio-button value="all">{{
+        'components.widget.grid.export.columns.choice.all' | translate
+      }}</mat-radio-button>
+      <mat-radio-button value="visible">{{
+        'components.widget.grid.export.columns.choice.visible' | translate
+      }}</mat-radio-button>
+    </mat-radio-group>
+    <!-- FORMAT -->
+    <label id="export-options-format">{{
+      'components.widget.grid.export.format.title' | translate
+    }}</label>
+    <mat-radio-group
+      [(ngModel)]="export.format"
+      class="form-radio-group"
+      requires
+      aria-labelledby="export-options-format"
+    >
+      <mat-radio-button value="csv">.csv</mat-radio-button>
+      <mat-radio-button value="xlsx">.xlsx</mat-radio-button>
+    </mat-radio-group>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <safe-button mat-dialog-close>
+      {{ 'common.close' | translate }}
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [mat-dialog-close]="export"
+      cdkFocusInitial
+    >
+      {{ 'common.export' | translate }}
+    </safe-button>
+  </mat-dialog-actions>
+</safe-modal>

@@ -63,11 +63,6 @@ export class AddLayoutComponent {
       data: {
         queryName: this.resource?.queryName || this.form?.queryName,
       },
-      position: {
-        bottom: '0',
-        right: '0',
-      },
-      panelClass: 'tile-settings-dialog',
     });
     dialogRef.afterClosed().subscribe((layout) => {
       if (layout) {

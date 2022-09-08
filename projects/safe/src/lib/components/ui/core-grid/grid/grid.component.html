@@ -482,12 +482,42 @@
           <kendo-grid-column
             [field]="subField.name"
             [title]="subField.title"
-            [columnMenu]="false"
+            [filterable]="true"
             [width]="subField.width"
             [hidden]="subField.hidden"
             [minResizableWidth]="50"
             [editable]="!subField.disabled"
           >
+            <ng-template
+              kendoGridFilterMenuTemplate
+              let-filter
+              let-column="column"
+              let-filterService="filterService"
+            >
+              <safe-array-filter-menu
+                [filter]="filter"
+                [filterService]="filterService"
+                [data]="subField.meta.choices || []"
+                [field]="subField.name"
+                textField="text"
+                valueField="value"
+              >
+              </safe-array-filter-menu>
+            </ng-template>
+            <ng-template
+              kendoGridFilterCellTemplate
+              let-filter
+              let-dataItem="dataItem"
+            >
+              <safe-array-filter
+                [filter]="filter"
+                [data]="subField.meta.choices || []"
+                [field]="subField.name"
+                textField="text"
+                valueField="value"
+              >
+              </safe-array-filter>
+            </ng-template>
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
               <div
                 class="textbox-container"

@@ -10,8 +10,8 @@ import {
   SafeConfirmModalComponent,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
-import { AddChannelComponent } from './components/add-channel/add-channel.component';
-import { EditChannelComponent } from './components/edit-channel/edit-channel.component';
+import { AddChannelModalComponent } from './components/add-channel-modal/add-channel-modal.component';
+import { EditChannelModalComponent } from './components/edit-channel-modal/edit-channel-modal.component';
 
 /**
  * Channels page component.
@@ -80,7 +80,7 @@ export class ChannelsComponent implements OnInit, OnDestroy {
    * Create a new channel linked to this application on close.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddChannelComponent);
+    const dialogRef = this.dialog.open(AddChannelModalComponent);
     dialogRef.afterClosed().subscribe((value: { title: string }) => {
       if (value) {
         this.applicationService.addChannel(value);
@@ -94,7 +94,7 @@ export class ChannelsComponent implements OnInit, OnDestroy {
    * @param channel channel to edit
    */
   onEdit(channel: Channel): void {
-    const dialogRef = this.dialog.open(EditChannelComponent, {
+    const dialogRef = this.dialog.open(EditChannelModalComponent, {
       data: {
         channel,
       },

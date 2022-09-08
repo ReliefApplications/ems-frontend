@@ -4,7 +4,6 @@ import { SubscriptionsComponent } from './subscriptions.component';
 import { SubscriptionModalComponent } from './components/subscription-modal/subscription-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -17,6 +16,7 @@ import {
   SafeButtonModule,
   SafeIconModule,
   SafeGraphQLSelectModule,
+  SafeModalModule,
 } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -35,7 +35,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -51,6 +50,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     TranslateModule,
     MatTooltipModule,
     SafeGraphQLSelectModule,
+    SafeModalModule,
   ],
 })
 export class SubscriptionsModule {}

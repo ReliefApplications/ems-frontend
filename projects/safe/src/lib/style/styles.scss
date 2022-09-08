@@ -269,6 +269,12 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
+@mixin modal($theme) {
+  .mat-dialog-actions {
+    gap: 8px;
+  }
+}
+
 // === GLOBAL STYLES ==
 .mat-table {
   box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
@@ -436,6 +442,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 @include slide-toggle($safe-theme);
 @include expansion-panel($safe-theme);
 @include checkbox($safe-theme);
+@include modal($safe-theme);
 @include custom-theme($safe-theme);
 
 html,
@@ -502,20 +509,12 @@ body {
 }
 
 // === DIALOGS ===
-.add-dialog {
-  mat-dialog-container {
-    width: 700px;
-  }
-}
 
-.preferences-dialog {
-  width: 90%;
-  max-width: 750px !important;
-
-  mat-dialog-container {
-    width: 100%;
-    position: relative;
-  }
+.fullscreen-dialog {
+  margin-top: 72px;
+  max-width: unset !important;
+  width: 100%;
+  height: calc(100% - 72px);
 }
 
 .no-padding-dialog {
@@ -528,31 +527,6 @@ body {
   mat-dialog-container {
     box-shadow: none;
     background: none;
-  }
-}
-
-.tile-settings-dialog,
-.expanded-widget-dialog {
-  max-width: unset !important;
-  width: 100%;
-  height: calc(100% - 72px);
-
-  mat-dialog-container {
-    position: relative;
-    border-radius: 4px 4px 0 0;
-    width: 100%;
-  }
-
-  .mat-dialog-content {
-    max-height: calc(100% - 68px - 32px);
-    height: 100%;
-  }
-}
-
-.expanded-widget-dialog {
-  .mat-dialog-content {
-    max-height: unset;
-    height: 100%;
   }
 }
 

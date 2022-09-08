@@ -1,31 +1,34 @@
-<h2 mat-dialog-title>
-  {{
-    'common.searchObject'
-      | translate: { name: ('common.record.few' | translate) }
-  }}
-</h2>
-<mat-dialog-content>
-  <safe-core-grid
-    [settings]="gridSettings"
-    [multiSelect]="multiSelect"
-    [selectedRows]="selectedRows"
-    (selectionChange)="onSelectionChange($event)"
-    style="height: 410px"
-    [selectable]="selectable"
-  >
-  </safe-core-grid>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button matDialogClose (click)="closeModal(false)">
-    {{ 'common.cancel' | translate }}
-  </button>
-  <button
-    mat-flat-button
-    matDialogClose
-    color="primary"
-    (click)="closeModal()"
-    *ngIf="selectable"
-  >
-    {{ 'common.select' | translate }}
-  </button>
-</mat-dialog-actions>
+<safe-modal>
+  <h2 mat-dialog-title>
+    {{
+      'common.searchObject'
+        | translate: { name: ('common.record.few' | translate) }
+    }}
+  </h2>
+  <mat-dialog-content>
+    <safe-core-grid
+      [settings]="gridSettings"
+      [multiSelect]="multiSelect"
+      [selectedRows]="selectedRows"
+      (selectionChange)="onSelectionChange($event)"
+      style="height: 410px"
+      [selectable]="selectable"
+    >
+    </safe-core-grid>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <safe-button mat-dialog-close (click)="closeModal(false)">
+      {{ 'common.cancel' | translate }}
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      matDialogClose
+      cdkFocusInitial
+      (click)="closeModal()"
+      *ngIf="selectable"
+    >
+      {{ 'common.select' | translate }}
+    </safe-button>
+  </mat-dialog-actions>
+</safe-modal>
