@@ -262,6 +262,19 @@
 			"description": "Update {{name}} permissions",
 			"title": "Access"
 		},
+		"aggregation": {
+			"add": {
+				"choice": {
+					"create": "Create a new aggregation",
+					"load": "Load existing aggregation"
+				},
+				"select": "Select an aggregation",
+				"title": "Add new aggregation"
+			},
+			"edit": {
+				"title": "Aggregation configuration"
+			}
+		},
 		"aggregationBuilder": {
 			"accumulators": "Accumulators",
 			"addField": "Add field",
@@ -943,16 +956,6 @@
 						}
 					}
 				}
-			}
-		},
-		"aggregation": {
-			"add": {
-				"title": "Add new aggregation",
-				"choice": {
-					"create": "Create a new aggregation",
-					"load":"Load existing aggregation"
-				},
-				"select": "Select an aggregation"
 			}
 		}
 	},

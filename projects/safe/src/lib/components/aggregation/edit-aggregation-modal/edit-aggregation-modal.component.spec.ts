@@ -5,7 +5,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { SafeLayoutModalComponent } from './layout-modal.component';
+import { SafeEditAggregationModalComponent } from './edit-aggregation-modal.component';
 import {
   TranslateModule,
   TranslateService,
@@ -13,9 +13,9 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 
-describe('SafeLayoutModalComponent', () => {
-  let component: SafeLayoutModalComponent;
-  let fixture: ComponentFixture<SafeLayoutModalComponent>;
+describe('SafeEditAggregationModalComponent', () => {
+  let component: SafeEditAggregationModalComponent;
+  let fixture: ComponentFixture<SafeEditAggregationModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -30,7 +30,7 @@ describe('SafeLayoutModalComponent', () => {
           },
         },
       ],
-      declarations: [SafeLayoutModalComponent],
+      declarations: [SafeEditAggregationModalComponent],
       imports: [
         MatDialogModule,
         TranslateModule.forRoot({
@@ -44,7 +44,7 @@ describe('SafeLayoutModalComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeLayoutModalComponent);
+    fixture = TestBed.createComponent(SafeEditAggregationModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

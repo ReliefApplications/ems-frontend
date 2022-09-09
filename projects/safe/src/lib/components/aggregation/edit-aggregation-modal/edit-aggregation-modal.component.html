@@ -1,24 +1,25 @@
 <safe-modal [closable]="true" size="fullscreen">
   <h1 mat-dialog-title>
-    {{ 'components.widget.settings.grid.layouts.edit.title' | translate }}
+    {{ 'components.aggregation.edit.title' | translate }}
   </h1>
   <mat-dialog-content *ngIf="form">
     <form [formGroup]="form">
       <div class="form-group">
         <div class="form-group-title">{{ 'common.general' | translate }}</div>
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.title' | translate }}</mat-label>
+          <mat-label>{{ 'common.name' | translate }}</mat-label>
           <input matInput formControlName="name" type="string" />
         </mat-form-field>
       </div>
-      <div class="form-group">
+      <!-- TODO: replace with aggregation builder -->
+      <!-- <div class="form-group">
         <safe-query-builder
           [form]="$any(form.controls.query)"
           [templates]="templates"
           [queryName]="data.queryName"
           [layoutPreviewData]="layoutPreviewData"
         ></safe-query-builder>
-      </div>
+      </div> -->
     </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end">

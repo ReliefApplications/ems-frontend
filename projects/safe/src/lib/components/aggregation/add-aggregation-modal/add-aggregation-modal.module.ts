@@ -26,4 +26,4 @@ import { SafeModalModule } from '../../ui/modal/modal.module';
   ],
   exports: [AddAggregationModalComponent],
 })
-export class AddLayoutModule {}
+export class AddAggregationModalModule {}
