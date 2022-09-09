@@ -42,7 +42,7 @@ export class AddAggregationModalComponent {
    * @param dialogRef Material dialog reference
    * @param dialog Material dialog instance
    * @param data Data used by the modal
-   * @param gaggregationService Shared aggregation service
+   * @param aggregationService Shared aggregation service
    */
   constructor(
     private dialogRef: MatDialogRef<AddAggregationModalComponent>,

@@ -23,6 +23,9 @@ import { SafeGridModule } from '../../../ui/core-grid/grid/grid.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 
+/**
+ * Main tab of chart settings modal.
+ */
 @NgModule({
   declarations: [TabMainComponent],
   imports: [

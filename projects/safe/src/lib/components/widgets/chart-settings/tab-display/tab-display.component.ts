@@ -6,6 +6,9 @@ import {
   TITLE_POSITIONS,
 } from '../constants';
 
+/**
+ * Display tab of the chart settings modal.
+ */
 @Component({
   selector: 'safe-tab-display',
   templateUrl: './tab-display.component.html',
@@ -28,8 +31,6 @@ export class TabDisplayComponent implements OnInit {
   public get aggregationForm(): FormGroup {
     return this.formGroup.get('chart.aggregation') as FormGroup;
   }
-
-  constructor() {}
 
   ngOnInit(): void {}
 }

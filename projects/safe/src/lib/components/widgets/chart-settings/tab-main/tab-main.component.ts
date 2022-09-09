@@ -3,6 +3,9 @@ import { FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { CHART_TYPES } from '../constants';
 
+/**
+ * Main tab of chart settings modal.
+ */
 @Component({
   selector: 'safe-tab-main',
   templateUrl: './tab-main.component.html',
@@ -23,8 +26,6 @@ export class TabMainComponent implements OnInit {
 
   private reload = new Subject<boolean>();
   public reload$ = this.reload.asObservable();
-
-  constructor() {}
 
   ngOnInit(): void {
     this.formGroup.get('chart.type')?.valueChanges.subscribe((value) => {
