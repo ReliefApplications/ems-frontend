@@ -1,48 +1,44 @@
-<ng-container *ngIf="tileForm">
-  <form [formGroup]="tileForm" class="widget-form-container">
-    <div class="form-group">
-      <div class="form-group-title">{{ 'common.general' | translate }}</div>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.title' | translate }}</mat-label>
-        <input matInput formControlName="title" type="string" />
-      </mat-form-field>
-      <ng-container formGroupName="chart" *ngIf="chartForm">
-        <mat-form-field appearance="outline">
-          <mat-label>{{
-            'components.widget.settings.chart.type' | translate
-          }}</mat-label>
-          <mat-select formControlName="type">
-            <mat-select-trigger>
-              <img class="chart-icon" [src]="type.icon" />{{
-                type.name | uppercase
-              }}
-            </mat-select-trigger>
-            <mat-option *ngFor="let type of types" [value]="type.name">
-              <img class="chart-icon" [src]="type.icon" />
-              {{ type.name | uppercase }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </ng-container>
-    </div>
+<mat-tab-group
+  vertical
+  animationDuration="0ms"
+  (selectedTabChange)="handleTabChange($event)"
+>
+  <!-- Main Parameters -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <safe-icon icon="settings" [size]="24"></safe-icon>
+      <span>{{ 'common.general' | translate }}</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <safe-tab-main [formGroup]="formGroup"></safe-tab-main>
+    </ng-template>
+  </mat-tab>
+  <!-- Display options -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <safe-icon icon="tune" [size]="24"></safe-icon>
+      <span>{{ 'common.display' | translate }}</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <safe-tab-display></safe-tab-display>
+    </ng-template>
+  </mat-tab>
+  <!-- Preview -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <safe-icon icon="preview" [size]="24"></safe-icon>
+      <span>{{ 'common.preview' | translate }}</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <safe-tab-preview></safe-tab-preview>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
+
+<ng-container *ngIf="formGroup">
+  <form [formGroup]="formGroup" class="widget-form-container">
     <div formGroupName="chart" *ngIf="chartForm">
       <mat-tab-group animationDuration="0ms" preserveContent="true">
-        <mat-tab>
-          <ng-template mat-tab-label>
-            {{ 'common.aggregation.one' | translate }}
-            <safe-icon
-              *ngIf="aggregationForm.invalid"
-              icon="error_outline"
-              variant="danger"
-              [inline]="true"
-              [size]="18"
-            ></safe-icon>
-          </ng-template>
-          <safe-aggregation-builder
-            [reload$]="reload$"
-            [aggregationForm]="aggregationForm"
-          ></safe-aggregation-builder>
-        </mat-tab>
         <mat-tab [label]="'common.display' | translate">
           <mat-accordion class="collapsible-form-group">
             <!-- === LEGEND === -->

@@ -1,0 +1,37 @@
+<div [formGroup]="formGroup" class="form-group">
+  <h2>{{ 'common.general' | translate }}</h2>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'common.title' | translate }}</mat-label>
+    <input matInput formControlName="title" type="string" />
+  </mat-form-field>
+  <ng-container formGroupName="chart">
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        'components.widget.settings.chart.type' | translate
+      }}</mat-label>
+      <mat-select formControlName="type">
+        <mat-select-trigger>
+          <img class="chart-icon" [src]="type.icon" />{{
+            type.name | uppercase
+          }}
+        </mat-select-trigger>
+        <mat-option *ngFor="let type of types" [value]="type.name">
+          <img class="chart-icon" [src]="type.icon" />
+          {{ type.name | uppercase }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+  <!-- <safe-icon
+    *ngIf="aggregationForm.invalid"
+    icon="error_outline"
+    variant="danger"
+    [inline]="true"
+    [size]="18"
+  ></safe-icon> -->
+  <h2>{{ 'common.aggregation.one' | translate }}</h2>
+  <safe-aggregation-builder
+    [reload$]="reload$"
+    [aggregationForm]="aggregationForm"
+  ></safe-aggregation-builder>
+</div>
