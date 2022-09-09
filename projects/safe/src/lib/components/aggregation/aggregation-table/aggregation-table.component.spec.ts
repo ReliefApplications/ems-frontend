@@ -8,16 +8,16 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 
-import { LayoutsComponent } from './layouts-parameters.component';
+import { AggregationTableComponent } from './aggregation-table.component';
 
-describe('LayoutsComponent', () => {
-  let component: LayoutsComponent;
-  let fixture: ComponentFixture<LayoutsComponent>;
+describe('AggregationTableComponent', () => {
+  let component: AggregationTableComponent;
+  let fixture: ComponentFixture<AggregationTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [TranslateService],
-      declarations: [LayoutsComponent],
+      declarations: [AggregationTableComponent],
       imports: [
         MatDialogModule,
         MatSnackBarModule,
@@ -32,7 +32,7 @@ describe('LayoutsComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LayoutsComponent);
+    fixture = TestBed.createComponent(AggregationTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

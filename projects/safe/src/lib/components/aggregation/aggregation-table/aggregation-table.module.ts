@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LayoutsComponent } from './layouts.component';
+import { AggregationTableComponent } from './aggregation-table.component';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
-import { AddLayoutModule } from '../add-layout/add-layout.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { SafeLayoutModalModule } from '../layout-modal/layout-modal.module';
 import { SafeDateModule } from '../../../pipes/date/date.module';
+import { AddAggregationModalModule } from '../add-aggregation-modal/add-aggregation-modal.module';
+import { SafeEditAggregationModalModule } from '../edit-aggregation-modal/edit-aggregation-modal.module';
 
-/** Module for layout component in grid widget settings */
+/** Module for aggregation table component */
 @NgModule({
-  declarations: [LayoutsComponent],
+  declarations: [AggregationTableComponent],
   imports: [
     CommonModule,
     TranslateModule,
@@ -22,10 +22,10 @@ import { SafeDateModule } from '../../../pipes/date/date.module';
     MatIconModule,
     DragDropModule,
     SafeButtonModule,
-    AddLayoutModule,
-    SafeLayoutModalModule,
+    AddAggregationModalModule,
+    SafeEditAggregationModalModule,
     SafeDateModule,
   ],
-  exports: [LayoutsComponent],
+  exports: [AggregationTableComponent],
 })
-export class LayoutsModule {}
+export class AggregationTableModule {}

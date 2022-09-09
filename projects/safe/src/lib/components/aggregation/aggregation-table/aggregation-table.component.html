@@ -1,9 +1,9 @@
 <table
   mat-table
-  [dataSource]="layouts"
+  [dataSource]="aggregations"
   cdkDropList
   (cdkDropListDropped)="drop($event)"
-  [cdkDropListData]="layouts"
+  [cdkDropListData]="aggregations"
 >
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>{{ 'common.name' | translate }}</th>
@@ -30,11 +30,11 @@
       >
       </safe-button>
       <mat-menu #resMenu="matMenu">
-        <button mat-menu-item (click)="onEditLayout(element)">
+        <button mat-menu-item (click)="onEditAggregation(element)">
           <mat-icon>edit</mat-icon>
           {{ 'common.edit' | translate }}
         </button>
-        <button mat-menu-item (click)="onDeleteLayout(element)">
+        <button mat-menu-item (click)="onDeleteAggregation(element)">
           <mat-icon>delete</mat-icon>
           {{ 'common.delete' | translate }}
         </button>
@@ -58,7 +58,7 @@
     (click)="onAdd()"
     [disabled]="!resource && !form"
     >{{
-      'components.widget.settings.grid.layouts.add.title' | translate
+      'components.aggregation.add.title' | translate
     }}</safe-button
   >
 </div>
