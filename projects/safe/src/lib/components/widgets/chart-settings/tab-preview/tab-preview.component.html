@@ -1,1 +1,30 @@
-<p>tab-preview works!</p>
+<div class="form-group">
+  <h2>{{ 'common.preview' | translate }}</h2>
+  <div class="chart-preview-container">
+    <div class="sub-container">
+      <safe-chart
+        class="widget-content"
+        [header]="false"
+        [export]="false"
+        [settings]="settings"
+      >
+      </safe-chart>
+    </div>
+    <div class="sub-container">
+      <safe-grid
+        *ngIf="grid"
+        [loading]="grid.loading"
+        [fields]="grid.fields"
+        [data]="grid.data"
+        [resizable]="false"
+        [reorderable]="false"
+        [selectable]="false"
+        [multiSelect]="false"
+        [filterable]="false"
+        [sortable]="false"
+        [searchable]="false"
+        [hasDetails]="false"
+      ></safe-grid>
+    </div>
+  </div>
+</div>

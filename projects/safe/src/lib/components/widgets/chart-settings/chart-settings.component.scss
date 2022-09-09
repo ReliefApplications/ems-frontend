@@ -1,32 +1,8 @@
-.advanced-filtering {
+:host {
+  flex: 1;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
 }
 
-.widget-form-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.preview-container {
-  display: flex;
-  gap: 8px;
-
-  .sub-container {
-    flex: 1;
-    height: 400px;
-    min-width: 300px;
-  }
-}
-
-.axis-container {
-  display: flex;
-  gap: 8px;
-
-  mat-slide-toggle {
-    margin-top: 15px;
-  }
+mat-tab-group {
+  flex: 1;
 }

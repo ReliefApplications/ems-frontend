@@ -4,17 +4,10 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { debounceTime } from 'rxjs/operators';
-import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { codesFactory } from '../grid-settings/button-config/button-config.component';
 import { Chart } from './charts/chart';
-import {
-  CHART_TYPES,
-  LEGEND_ORIENTATIONS,
-  LEGEND_POSITIONS,
-  TITLE_POSITIONS,
-} from './constants';
+import { CHART_TYPES } from './constants';
 
 /**
  * Chart settings component
@@ -46,9 +39,6 @@ export class SafeChartSettingsComponent implements OnInit {
 
   // === DATA ===
   public types = CHART_TYPES;
-  public legendPositions = LEGEND_POSITIONS;
-  public legendOrientations = LEGEND_ORIENTATIONS;
-  public titlePositions = TITLE_POSITIONS;
   public chart?: Chart;
   public type: any;
 
@@ -76,12 +66,8 @@ export class SafeChartSettingsComponent implements OnInit {
    * Constructor for the chart settings component
    *
    * @param formBuilder The formBuilder service
-   * @param aggregationBuilder The aggregationBuilder service
    */
-  constructor(
-    private formBuilder: FormBuilder,
-    private aggregationBuilder: AggregationBuilderService
-  ) {}
+  constructor(private formBuilder: FormBuilder) {}
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
@@ -114,17 +100,6 @@ export class SafeChartSettingsComponent implements OnInit {
     this.chartForm.controls.type.valueChanges.subscribe((value) => {
       this.type = this.types.find((x) => x.name === value);
       // this.reload.next(true);
-    });
-
-    this.settings = this.formGroup?.value;
-    this.aggregationForm.valueChanges
-      .pipe(debounceTime(1000))
-      .subscribe((value) => {
-        this.settings = this.formGroup?.value;
-      });
-
-    this.aggregationBuilder.getPreviewGrid().subscribe((value) => {
-      this.grid = value;
     });
   }
 
