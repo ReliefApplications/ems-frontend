@@ -4,8 +4,8 @@ import { Resource } from '../../../../models/resource.model';
 // === GET RESOURCES ===
 /** Graphql query for getting multiple resources with a cursor */
 export const GET_RESOURCES = gql`
-  query GetResources($first: Int, $afterCursor: ID) {
-    resources(first: $first, afterCursor: $afterCursor) {
+  query GetResources($first: Int, $afterCursor: ID, $sortField: String) {
+    resources(first: $first, afterCursor: $afterCursor, sortField: $sortField) {
       edges {
         node {
           id
@@ -40,4 +40,34 @@ export interface GetResourcesQueryResponse {
     };
     totalCount: number;
   };
+}
+
+/** Graphql request to get resource */
+export const GET_RESOURCE = gql`
+  query GetResource($id: ID!) {
+    resource(id: $id) {
+      id
+      name
+      queryName
+      forms {
+        id
+        name
+      }
+      aggregations {
+        id
+        name
+        dataSource
+        sourceFields
+        pipeline
+        mapping
+        createdAt
+      }
+    }
+  }
+`;
+
+/** Model for GetResourceByIdQueryResponse object */
+export interface GetResourceByIdQueryResponse {
+  loading: boolean;
+  resource: Resource;
 }

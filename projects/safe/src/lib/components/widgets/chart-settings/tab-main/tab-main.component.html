@@ -23,14 +23,13 @@
     </mat-form-field>
   </ng-container>
   <mat-form-field appearance="outline">
-    <mat-label>{{
-      'common.resource.one' | translate
-    }}</mat-label>
+    <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
     <safe-graphql-select
       valueField="id"
       textField="name"
       [query]="resourcesQuery"
       formControlName="resource"
+      [selectedElements]="[resource]"
     >
     </safe-graphql-select>
   </mat-form-field>
@@ -41,8 +40,12 @@
     [inline]="true"
     [size]="18"
   ></safe-icon> -->
-  <h2>{{ 'common.aggregation.one' | translate }}</h2>
-  <safe-aggregation-table [resource]="formGroup.value.dataSource"></safe-aggregation-table>
+  <ng-container *ngIf="resource">
+    <h2>{{ 'common.aggregation.one' | translate }}</h2>
+    <safe-aggregation-table
+      [resource]="resource"
+    ></safe-aggregation-table>
+  </ng-container>
   <!-- <safe-aggregation-builder
     [reload$]="reload$"
     [aggregationForm]="aggregationForm"
