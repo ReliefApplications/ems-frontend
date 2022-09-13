@@ -22,6 +22,8 @@ import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeGridModule } from '../../../ui/core-grid/grid/grid.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
+import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
+import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 
 /**
  * Main tab of chart settings modal.
@@ -52,6 +54,8 @@ import { SafeChartModule } from '../../chart/chart.module';
     SafeGridModule,
     SafeIconModule,
     SafePaletteControlModule,
+    AggregationTableModule,
+    SafeGraphQLSelectModule,
   ],
   exports: [TabMainComponent],
 })

@@ -5,11 +5,11 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
-import { SafeAggregationService } from '../../../services/aggregation.service';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
-import { SafeAggregationModalComponent } from '../aggregation-modal/aggregation-modal.component';
+import { SafeEditAggregationModalComponent } from '../edit-aggregation-modal/edit-aggregation-modal.component';
 import { Aggregation } from '../../../models/aggregation.model';
+import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
@@ -59,7 +59,7 @@ export class AddAggregationModalComponent {
    * Opens the panel to create a new aggregation.
    */
   public onCreate(): void {
-    const dialogRef = this.dialog.open(SafeAggregationModalComponent, {
+    const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
       disableClose: true,
       data: {
         queryName: this.resource?.queryName || this.form?.queryName,

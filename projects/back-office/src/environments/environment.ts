@@ -14,7 +14,7 @@ import { theme } from '../themes/default/default.local';
 // };
 
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
   issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
@@ -31,10 +31,10 @@ const authConfig: AuthConfig = {
  */
 export const environment = {
   production: false,
-  apiUrl: 'https://oort-dev.oortcloud.tech/api',
-  subscriptionApiUrl: 'wss://oort-dev.oortcloud.tech/api',
-  // apiUrl: 'http://localhost:3000',
-  // subscriptionApiUrl: 'ws://localhost:3000',
+  // apiUrl: 'https://oort-dev.oortcloud.tech/api',
+  // subscriptionApiUrl: 'wss://oort-dev.oortcloud.tech/api',
+  apiUrl: 'http://localhost:3000',
+  subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
   module: 'backoffice',
