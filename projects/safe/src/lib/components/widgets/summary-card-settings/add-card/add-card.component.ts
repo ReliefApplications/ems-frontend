@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /**
  * The component is used on a card creation in the summary-card widget
@@ -15,6 +17,7 @@ export class SafeAddCardComponent implements OnInit {
   public loading = true;
   private templatesUrl = '';
   public templates: any = [];
+  public searchControl = new FormControl('');
 
   /**
    * Constructor for safe-add-card constructor
@@ -35,18 +38,35 @@ export class SafeAddCardComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.getTemplates();
+    this.searchControl.valueChanges
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((res) => {
+        this.getTemplates(res);
+      });
+  }
+
+  /**
+   * Query a list of templates
+   *
+   * @param search (optional) search text
+   */
+  private getTemplates(search?: string): void {
+    this.loading = true;
     const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
-    await this.http
-      .get(this.templatesUrl, { headers })
+    const params = {
+      ...(search && { search }),
+    };
+    this.http
+      .get(this.templatesUrl, { headers, params })
       .toPromise()
       .then((data: any) => {
-        this.templates = data;
+        this.templates = data.slice(-3).reverse();
+        this.loading = false;
       });
-    this.loading = false;
-    this.templates = this.templates.slice(-3).reverse();
   }
 
   /**

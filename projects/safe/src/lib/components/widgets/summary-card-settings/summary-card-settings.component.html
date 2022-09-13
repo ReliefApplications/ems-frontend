@@ -37,8 +37,9 @@
         "
         [rowSpan]="card.value.height"
       >
-        <!--  -->
+        <!-- CARD ITEM -->
         <safe-summary-card-item
+          [id]="'card-' + i"
           [card]="card.value"
           [headerTemplate]="cardItemHeader"
         ></safe-summary-card-item>
