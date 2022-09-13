@@ -14,17 +14,14 @@ export const GET_GRID_RESOURCE_META = gql`
         id
         name
       }
-      relatedForms {
+      aggregations {
         id
         name
-        fields
-      }
-      layouts {
-        id
-        name
-        query
+        dataSource
+        sourceFields
+        pipeline
+        mapping
         createdAt
-        display
       }
     }
   }
@@ -45,12 +42,14 @@ export const GET_GRID_FORM_META = gql`
       id
       name
       queryName
-      layouts {
+      aggregations {
         id
         name
+        dataSource
+        sourceFields
+        pipeline
+        mapping
         createdAt
-        query
-        display
       }
     }
   }
