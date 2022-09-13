@@ -7,24 +7,30 @@ import {
   AfterViewInit,
   HostListener,
 } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
-import { get } from 'lodash';
+import { Apollo } from 'apollo-angular';
+import { cloneDeep, get } from 'lodash';
+import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeAddCardComponent } from './add-card/add-card.component';
 import { SafeCardModalComponent } from './card-modal/card-modal.component';
+import {
+  GetResourceLayoutsByIdQueryResponse,
+  GET_RESOURCE_LAYOUTS,
+} from './graphql/queries';
 
-/** Define max height of widgets */
+/** Define max height of summary card */
 const MAX_ROW_SPAN = 4;
-/** Define max width of widgets */
+/** Define max width of summary card */
 const MAX_COL_SPAN = 8;
 
-/** Define maxc height of widgets */
+/** Define default height of summary card */
 const DEFAULT_CARD_HEIGHT = 2;
-/** Define max width of widgets */
+/** Define max width of summary card */
 const DEFAULT_CARD_WIDTH = 2;
 
 /**
@@ -68,6 +74,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     return this.tileForm?.get('cards') as FormArray;
   }
 
+  private cachedCards: any = undefined;
+
   /**
    * Summary Card Settings component.
    *
@@ -79,7 +87,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   /**
    * Build the settings form, using the widget saved parameters.
    */
-  ngOnInit(): void {
+  async ngOnInit() {
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.tileForm = this.fb.group({
       id: this.tile.id,
@@ -90,6 +98,28 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       ),
     });
     this.change.emit(this.tileForm);
+
+    // Prevents user from having both dynamic and static cards
+    this.tileForm.get('isDynamic')?.valueChanges.subscribe(() => {
+      if (!this.tileForm?.value.isDynamic) {
+      }
+
+      // caches the cards of the other type
+      const newCache = cloneDeep(this.cards.value);
+
+      // removes the cards of the other type
+      this.cards.clear();
+
+      // add cards from cache
+      if (this.cachedCards) {
+        this.cachedCards.forEach((card: any) => {
+          this.cards.push(this.cardForm(card));
+        });
+      }
+
+      // update cache
+      this.cachedCards = newCache;
+    });
   }
 
   /**
@@ -148,8 +178,14 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     return this.fb.group({
       title: get(value, 'title', 'New Card'),
       isDynamic: value.isDynamic,
-      height: get(value, 'height', DEFAULT_CARD_HEIGHT),
-      width: get(value, 'width', DEFAULT_CARD_WIDTH),
+      height: [
+        get(value, 'height', DEFAULT_CARD_HEIGHT),
+        [Validators.min(1), Validators.max(MAX_ROW_SPAN)],
+      ],
+      width: [
+        get(value, 'width', DEFAULT_CARD_WIDTH),
+        [Validators.min(1), Validators.max(MAX_COL_SPAN)],
+      ],
       isAggregation: get(value, 'isAggregation', true),
       resource: get(value, 'resource', null),
       layout: [get(value, 'layout', [])],

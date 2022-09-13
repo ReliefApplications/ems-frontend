@@ -17,7 +17,7 @@
       style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
     >
       <safe-summary-card-item
-        *ngFor="let card of settings.cards; let i = index"
+        *ngFor="let card of cards; let i = index"
         class="k-tilelayout-item k-card"
         [style.order]="i"
         style.grid-column-end="{{
@@ -28,5 +28,9 @@
       >
       </safe-summary-card-item>
     </div>
+    <!-- TODO: replace button with final trigger for pagination -->
+    <button (click)="getMoreCards()" *ngIf="hasNextPage && !loading">
+      load more
+    </button>
   </kendo-pdf-export>
 </div>
