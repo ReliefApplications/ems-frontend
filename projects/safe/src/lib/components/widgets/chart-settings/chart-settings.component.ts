@@ -91,7 +91,7 @@ export class SafeChartSettingsComponent implements OnInit {
       ],
       chart: this.chart?.form,
       resource: [null, Validators.required],
-      aggregation: [null, Validators.required],
+      // aggregation: [null, Validators.required],
     });
     this.change.emit(this.formGroup);
 

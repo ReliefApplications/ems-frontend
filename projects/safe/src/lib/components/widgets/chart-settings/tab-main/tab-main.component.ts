@@ -10,6 +10,10 @@ import {
   GET_RESOURCE,
   GET_RESOURCES,
 } from '../graphql/queries';
+import { AddAggregationModalComponent } from '../../../aggregation/add-aggregation-modal/add-aggregation-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { Aggregation } from '../../../../models/aggregation.model';
+import { AggregationBuilderService } from '../../../../services/aggregation-builder.service';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -28,6 +32,8 @@ export class TabMainComponent implements OnInit {
   public types = CHART_TYPES;
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public resource?: Resource;
+  public aggregation?: Aggregation;
+  public availableSeriesFields: any[] = [];
 
   /** @returns the aggregation form */
   public get aggregationForm(): FormGroup {
@@ -40,7 +46,11 @@ export class TabMainComponent implements OnInit {
   private reload = new Subject<boolean>();
   public reload$ = this.reload.asObservable();
 
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private apollo: Apollo,
+    private dialog: MatDialog,
+    private aggregationBuilder: AggregationBuilderService
+  ) {}
 
   ngOnInit(): void {
     this.formGroup.get('chart.type')?.valueChanges.subscribe((value) => {
@@ -72,5 +82,38 @@ export class TabMainComponent implements OnInit {
       .subscribe((res) => {
         this.resource = res.data.resource;
       });
+  }
+
+  /**
+   * Adds a new aggregation to the list.
+   */
+  public addAggregation(): void {
+    const dialogRef = this.dialog.open(AddAggregationModalComponent, {
+      data: {
+        aggregations: this.resource?.aggregations,
+        resource: this.resource,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        if (typeof value === 'string') {
+          this.formGroup.get('chart.aggregationId')?.setValue(value);
+          this.aggregation = this.resource?.aggregations?.find(
+            (x) => x.id === value
+          );
+          this.availableSeriesFields = this.aggregationBuilder.fieldsAfter(
+            this.aggregation?.sourceFields,
+            this.aggregation?.pipeline
+          );
+        } else {
+          this.formGroup.get('chart.aggregationId')?.setValue(value.id);
+          this.aggregation = value;
+          this.availableSeriesFields = this.aggregationBuilder.fieldsAfter(
+            this.aggregation?.sourceFields,
+            this.aggregation?.pipeline
+          );
+        }
+      }
+    });
   }
 }

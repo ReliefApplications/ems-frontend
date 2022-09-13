@@ -1,17 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
-import { Form } from '../../../models/form.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import { isMongoId } from '../../../utils/is-mongo-id';
-
-/** A constant that is used to set the number of items per page. */
-const ITEMS_PER_PAGE = 10;
+import { Resource } from '../../../models/resource.model';
+import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
+import { scrollFactory } from '../../config-display-grid-fields-modal/config-display-grid-fields-modal.component';
+import { Overlay } from '@angular/cdk/overlay';
 
 /**
  * Main component of Aggregation builder.
@@ -21,24 +20,32 @@ const ITEMS_PER_PAGE = 10;
   selector: 'safe-aggregation-builder',
   templateUrl: './aggregation-builder.component.html',
   styleUrls: ['./aggregation-builder.component.scss'],
+  providers: [
+    {
+      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+  ],
 })
 export class SafeAggregationBuilderComponent implements OnInit {
   // === REACTIVE FORM ===
   @Input() aggregationForm: FormGroup = new FormGroup({});
+  @Input() resource!: Resource;
 
   @Input() reload$!: Observable<boolean>;
 
   // === DATA ===
-  private forms = new BehaviorSubject<Form[]>([]);
-  public forms$!: Observable<Form[]>;
-  private formsQuery!: QueryRef<GetFormsQueryResponse>;
+  // private forms = new BehaviorSubject<Form[]>([]);
+  // public forms$!: Observable<Form[]>;
+  // private formsQuery!: QueryRef<GetFormsQueryResponse>;
   public loading = true;
-  public loadingForm = false;
-  public loadingMore = false;
-  private pageInfo = {
-    endCursor: '',
-    hasNextPage: true,
-  };
+  // public loadingForm = false;
+  // public loadingMore = false;
+  // private pageInfo = {
+  //   endCursor: '',
+  //   hasNextPage: true,
+  // };
   public loadingGrid = true;
   public gridData: any = {
     data: [],
@@ -82,52 +89,53 @@ export class SafeAggregationBuilderComponent implements OnInit {
 
   ngOnInit(): void {
     // Data source query
-    const variables: any = {
-      first: ITEMS_PER_PAGE,
-    };
-    if (this.aggregationForm.value.dataSource) {
-      variables.filter = {
-        logic: 'and',
-        filters: [
-          {
-            field: 'ids',
-            operator: 'in',
-            value: [this.aggregationForm.value.dataSource],
-          },
-        ],
-      };
-    }
-    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
-      query: GET_FORMS,
-      variables,
-    });
-    this.forms$ = this.forms.asObservable();
-    this.formsQuery.valueChanges.subscribe((res) => {
-      this.forms.next(res.data.forms.edges.map((x) => x.node));
-      this.pageInfo = res.data.forms.pageInfo;
-      this.loadingMore = res.loading;
-      if (this.loading) {
-        this.loading = res.loading;
-        this.initFields();
-      }
-    });
+    // const variables: any = {
+    //   first: ITEMS_PER_PAGE,
+    // };
+    // if (this.aggregationForm.value.dataSource) {
+    //   variables.filter = {
+    //     logic: 'and',
+    //     filters: [
+    //       {
+    //         field: 'ids',
+    //         operator: 'in',
+    //         value: [this.aggregationForm.value.dataSource],
+    //       },
+    //     ],
+    //   };
+    // }
+    // this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+    //   query: GET_FORMS,
+    //   variables,
+    // });
+    // this.forms$ = this.forms.asObservable();
+    // this.formsQuery.valueChanges.subscribe((res) => {
+    //   this.forms.next(res.data.forms.edges.map((x) => x.node));
+    //   this.pageInfo = res.data.forms.pageInfo;
+    //   this.loadingMore = res.loading;
+    //   if (this.loading) {
+    //     this.loading = res.loading;
+    //     this.initFields();
+    //   }
+    // });
+    this.initFields();
 
     // Fields query
     this.fields$ = this.fields.asObservable();
-    this.aggregationForm
-      .get('dataSource')
-      ?.valueChanges.pipe(debounceTime(300))
-      .subscribe((form: string) => {
-        this.loadingForm = true;
-        if (isMongoId(form)) {
-          this.aggregationForm.get('sourceFields')?.setValue([]);
-          (this.aggregationForm.get('pipeline') as FormArray).clear();
-          this.aggregationForm.get('mapping')?.reset();
-          this.aggregationForm.updateValueAndValidity();
-          this.initFields();
-          this.loadingForm = false;
-        }
-      });
+    // this.aggregationForm
+    //   .get('dataSource')
+    //   ?.valueChanges.pipe(debounceTime(300))
+    //   .subscribe((form: string) => {
+    //     this.loadingForm = true;
+    //     if (isMongoId(form)) {
+    //       this.aggregationForm.get('sourceFields')?.setValue([]);
+    //       (this.aggregationForm.get('pipeline') as FormArray).clear();
+    //       this.aggregationForm.get('mapping')?.reset();
+    //       this.aggregationForm.updateValueAndValidity();
+    //       this.initFields();
+    //       this.loadingForm = false;
+    //     }
+    //   });
 
     // Meta selected fields query
     this.selectedFields$ = this.selectedFields.asObservable();
@@ -165,19 +173,20 @@ export class SafeAggregationBuilderComponent implements OnInit {
         );
       });
 
-    this.reload$.subscribe(() => {
-      this.loading = true;
-      setTimeout(() => {
-        this.loading = false;
-      }, 1000);
-    });
+    // this.reload$.subscribe(() => {
+    //   this.loading = true;
+    //   setTimeout(() => {
+    //     this.loading = false;
+    //   }, 1000);
+    // });
+    this.loading = false;
   }
 
   /**
    * Initializes all data necessary for the reactive form to work.
    */
   private initFields(): void {
-    this.updateFields(this.aggregationForm.value.dataSource);
+    this.updateFields();
     this.updateSelectedAndMetaFields(this.aggregationForm.value.sourceFields);
     this.aggregationBuilder.initGrid(
       this.aggregationForm,
@@ -189,27 +198,20 @@ export class SafeAggregationBuilderComponent implements OnInit {
 
   /**
    * Updates fields depending on selected form.
-   *
-   * @param form New form to fetch fields from.
    */
-  private updateFields(form: string): void {
-    if (form) {
-      const formName = this.forms.value.find((x) => x.id === form)?.name;
-      this.queryName = formName
-        ? this.queryBuilder.getQueryNameFromResourceName(formName)
-        : '';
-      const fields = this.queryBuilder
-        .getFields(this.queryName)
-        .filter(
-          (field: any) =>
-            !(
-              field.name.includes('_id') &&
-              (field.type.name === 'ID' ||
-                (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
-            )
-        );
-      this.fields.next(fields);
-    }
+  private updateFields(): void {
+    const fields = this.queryBuilder
+      .getFields(this.resource.queryName as string)
+      .filter(
+        (field: any) =>
+          !(
+            field.name.includes('_id') &&
+            (field.type.name === 'ID' ||
+              (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+          )
+      );
+    console.log(fields);
+    this.fields.next(fields);
   }
 
   /**
@@ -263,24 +265,24 @@ export class SafeAggregationBuilderComponent implements OnInit {
    *
    * @param value string used to filter.
    */
-  public onFilterDataSource(value: string): void {
-    if (!this.loadingMore) {
-      this.loadingMore = true;
-      this.fetchMoreDataSources(false, value);
-    }
-  }
+  // public onFilterDataSource(value: string): void {
+  //   if (!this.loadingMore) {
+  //     this.loadingMore = true;
+  //     this.fetchMoreDataSources(false, value);
+  //   }
+  // }
 
   /**
    * Fetches next page of data source to add to list.
    *
    * @param value string used to filter.
    */
-  public onScrollDataSource(value: boolean): void {
-    if (!this.loadingMore && this.pageInfo.hasNextPage) {
-      this.loadingMore = true;
-      this.fetchMoreDataSources(value);
-    }
-  }
+  // public onScrollDataSource(value: boolean): void {
+  //   if (!this.loadingMore && this.pageInfo.hasNextPage) {
+  //     this.loadingMore = true;
+  //     this.fetchMoreDataSources(value);
+  //   }
+  // }
 
   /**
    * Fetches more data sources using filtering and pagination.
@@ -288,41 +290,41 @@ export class SafeAggregationBuilderComponent implements OnInit {
    * @param nextPage boolean to indicate if we must fetch the next page.
    * @param filter the data sources fetched must respect this filter
    */
-  public fetchMoreDataSources(nextPage: boolean = false, filter: string = '') {
-    const variables: any = {
-      first: ITEMS_PER_PAGE,
-    };
-    variables.filter = {
-      logic: 'and',
-      filters: [
-        {
-          field: 'name',
-          operator: 'contains',
-          value: filter,
-        },
-      ],
-    };
-    if (nextPage) {
-      variables.afterCursor = this.pageInfo.endCursor;
-    }
-    this.formsQuery.fetchMore({
-      variables,
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          forms: {
-            edges: prev.forms.edges.concat(
-              fetchMoreResult.forms.edges.filter(
-                (x) => !prev.forms.edges.some((y) => y.node.id === x.node.id)
-              )
-            ),
-            pageInfo: fetchMoreResult.forms.pageInfo,
-            totalCount: fetchMoreResult.forms.totalCount,
-          },
-        });
-      },
-    });
-  }
+  // public fetchMoreDataSources(nextPage: boolean = false, filter: string = '') {
+  //   const variables: any = {
+  //     first: ITEMS_PER_PAGE,
+  //   };
+  //   variables.filter = {
+  //     logic: 'and',
+  //     filters: [
+  //       {
+  //         field: 'name',
+  //         operator: 'contains',
+  //         value: filter,
+  //       },
+  //     ],
+  //   };
+  //   if (nextPage) {
+  //     variables.afterCursor = this.pageInfo.endCursor;
+  //   }
+  //   this.formsQuery.fetchMore({
+  //     variables,
+  //     updateQuery: (prev, { fetchMoreResult }) => {
+  //       if (!fetchMoreResult) {
+  //         return prev;
+  //       }
+  //       return Object.assign({}, prev, {
+  //         forms: {
+  //           edges: prev.forms.edges.concat(
+  //             fetchMoreResult.forms.edges.filter(
+  //               (x) => !prev.forms.edges.some((y) => y.node.id === x.node.id)
+  //             )
+  //           ),
+  //           pageInfo: fetchMoreResult.forms.pageInfo,
+  //           totalCount: fetchMoreResult.forms.totalCount,
+  //         },
+  //       });
+  //     },
+  //   });
+  // }
 }

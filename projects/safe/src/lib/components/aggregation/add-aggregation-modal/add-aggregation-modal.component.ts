@@ -62,7 +62,7 @@ export class AddAggregationModalComponent {
     const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
       disableClose: true,
       data: {
-        queryName: this.resource?.queryName || this.form?.queryName,
+        resource: this.resource,
       },
     });
     dialogRef.afterClosed().subscribe((aggregation) => {

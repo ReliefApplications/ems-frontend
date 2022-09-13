@@ -1,18 +1,16 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Aggregation } from '../../../models/aggregation.model';
-import {
-  createDisplayForm,
-  createQueryForm,
-} from '../../query-builder/query-builder-forms';
+import { Resource } from '../../../models/resource.model';
+import { createAggregationForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
 interface DialogData {
   aggregation?: Aggregation;
-  queryName?: string;
+  resource: Resource;
 }
 
 /**
@@ -24,31 +22,31 @@ interface DialogData {
   styleUrls: ['./edit-aggregation-modal.component.scss'],
 })
 export class SafeEditAggregationModalComponent implements OnInit {
-  @Input() aggregation: any;
-  public form?: FormGroup;
+  public formGroup!: FormGroup;
+  public resource!: Resource;
   // public templates: any[] = [];
   // public layoutPreviewData!: { form: FormGroup; defaultLayout: any };
 
   /**
    * Modal to edit aggregation.
    *
-   * @param formBuilder This is the service used to build forms.
    * @param dialogRef This is the reference of the dialog that will be opened.
    * @param data This is the data that is passed to the modal when it is opened.
    */
   constructor(
-    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeEditAggregationModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
   ngOnInit(): void {
+    this.resource = this.data.resource;
+    this.formGroup = createAggregationForm(this.data.aggregation);
     // TODO: edit with the parameters the aggregation has
-    this.form = this.formBuilder.group({
-      name: [this.data.aggregation?.name, Validators.required],
-      // query: createQueryForm(this.data.aggregation?.query),
-      // display: createDisplayForm(this.data.aggregation?.display),
-    });
+    // this.formGroup = this.formBuilder.group({
+    //   name: [this.data.aggregation?.name, Validators.required],
+    //   query: createQueryForm(this.data.aggregation?.query),
+    //   display: createDisplayForm(this.data.aggregation?.display),
+    // });
     // this.layoutPreviewData = {
     //   form: this.form,
     //   defaultLayout: this.data.layout?.display,
@@ -62,6 +60,6 @@ export class SafeEditAggregationModalComponent implements OnInit {
    * Closes the modal sending tile form value.
    */
   onSubmit(): void {
-    this.dialogRef.close(this.form?.getRawValue());
+    this.dialogRef.close(this.formGroup?.getRawValue());
   }
 }

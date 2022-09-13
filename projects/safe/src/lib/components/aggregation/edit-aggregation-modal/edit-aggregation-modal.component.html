@@ -2,8 +2,8 @@
   <h1 mat-dialog-title>
     {{ 'components.aggregation.edit.title' | translate }}
   </h1>
-  <mat-dialog-content *ngIf="form">
-    <form [formGroup]="form">
+  <mat-dialog-content>
+    <form [formGroup]="formGroup">
       <div class="form-group">
         <div class="form-group-title">{{ 'common.general' | translate }}</div>
         <mat-form-field appearance="outline">
@@ -11,15 +11,12 @@
           <input matInput formControlName="name" type="string" />
         </mat-form-field>
       </div>
-      <!-- TODO: replace with aggregation builder -->
-      <!-- <div class="form-group">
-        <safe-query-builder
-          [form]="$any(form.controls.query)"
-          [templates]="templates"
-          [queryName]="data.queryName"
-          [layoutPreviewData]="layoutPreviewData"
-        ></safe-query-builder>
-      </div> -->
+      <div class="form-group">
+        <safe-aggregation-builder
+          [resource]="resource"
+          [aggregationForm]="formGroup"
+        ></safe-aggregation-builder>
+      </div>
     </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
@@ -31,7 +28,7 @@
       variant="primary"
       (click)="onSubmit()"
       cdkFocusInitial
-      [disabled]="!form || !form.valid"
+      [disabled]="!formGroup.valid"
     >
       {{ 'common.save' | translate }}
     </safe-button>

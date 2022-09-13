@@ -50,14 +50,19 @@ export class Chart {
 
     // build form
     this.form = this.fb.group({
-      type: [
-        settings && settings.type ? settings.type : null,
+      type: [get(settings, 'type', null), Validators.required],
+      aggregationId: [
+        get(settings, 'aggregationId', null),
         Validators.required,
       ],
-      aggregation: createAggregationForm(
-        get(settings, 'aggregation', null),
-        get(settings, 'type', '')
+      mapping: createMappingForm(
+        get(settings, 'mapping', null),
+        get(settings, 'type', null)
       ),
+      // aggregation: createAggregationForm(
+      //   get(settings, 'aggregation', null),
+      //   get(settings, 'type', '')
+      // ),
       legend: this.fb.group({
         visible: [legend ? legend.visible : true],
         position: [legend ? legend.position : 'bottom'],
@@ -148,12 +153,9 @@ export class Chart {
     });
 
     this.form.get('type')?.valueChanges.subscribe((value) => {
-      const mapping = this.form.get('aggregation.mapping');
-      const aggregation = this.form.get('aggregation') as FormGroup;
-      aggregation.setControl(
-        'mapping',
-        createMappingForm(mapping?.value, value)
-      );
+      const mapping = this.form.get('mapping');
+      // const aggregation = this.form.get('mapping') as FormGroup;
+      this.form.setControl('mapping', createMappingForm(mapping?.value, value));
     });
 
     // Update of palette

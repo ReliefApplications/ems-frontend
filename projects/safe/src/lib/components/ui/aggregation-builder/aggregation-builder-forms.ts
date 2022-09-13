@@ -177,18 +177,18 @@ export const createMappingForm = (value: any, widgetType: string): FormGroup =>
  * @returns New aggregation form
  */
 export const createAggregationForm = (
-  value: any,
-  widgetType: string
+  value: any
+  // widgetType: string
 ): FormGroup =>
   formBuilder.group({
-    dataSource: [get(value, 'dataSource', null), Validators.required],
+    name: [get(value, 'name', null), Validators.required],
     sourceFields: [get(value, 'sourceFields', []), Validators.required],
     pipeline: formBuilder.array(
       value && value.pipeline && value.pipeline.length
         ? value.pipeline.map((x: any) => addStage(x))
         : []
     ),
-    mapping: createMappingForm(get(value, 'mapping', null), widgetType),
+    // mapping: createMappingForm(get(value, 'mapping', null), widgetType),
   });
 
 /**

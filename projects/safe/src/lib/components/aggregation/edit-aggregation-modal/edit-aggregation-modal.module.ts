@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { SafeModalModule } from '../../ui/modal/modal.module';
+import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
 
 /**
  * Modal to edit aggregation settings.
@@ -18,6 +19,7 @@ import { SafeModalModule } from '../../ui/modal/modal.module';
     MatFormFieldModule,
     MatInputModule,
     SafeModalModule,
+    SafeAggregationBuilderModule,
   ],
   exports: [SafeEditAggregationModalComponent],
 })

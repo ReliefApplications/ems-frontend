@@ -13,11 +13,10 @@ import { startWith, delay } from 'rxjs/operators';
 })
 export class SafeSeriesMappingComponent implements OnInit {
   // === DATA ===
-  @Input() fields$!: Observable<any[]>;
-  public availableFields: any[] = [];
+  @Input() availableFields: any[] = [];
   public fieldsByControl: any = {};
   // === REACTIVE FORM ===
-  @Input() mappingForm!: AbstractControl;
+  @Input() formGroup!: AbstractControl;
   public controlNames: string[] = [];
 
   /**
@@ -30,27 +29,24 @@ export class SafeSeriesMappingComponent implements OnInit {
    * Sets the available fields.
    */
   ngOnInit(): void {
-    this.controlNames = Object.keys((this.mappingForm as FormGroup).controls);
-    this.fields$.subscribe((fields: any[]) => {
-      this.availableFields = [...fields];
-    });
+    this.controlNames = Object.keys((this.formGroup as FormGroup).controls);
+    // this.fields$.subscribe((fields: any[]) => {
+    //   this.availableFields = [...fields];
+    // });
     // Remove fields from other controls list when selected
     merge(
       ...this.controlNames.map(
-        (controlName) => this.mappingForm.get(controlName)?.valueChanges || 0
-      ),
-      this.fields$
+        (controlName) => this.formGroup.get(controlName)?.valueChanges || 0
+      )
+      // this.fields$
     )
       .pipe(startWith(null), delay(100))
       .subscribe(() => {
         for (const controlName of this.controlNames) {
           const excludedFields: string[] = [];
           for (const control of this.controlNames) {
-            if (
-              control !== controlName &&
-              this.mappingForm.get(control)?.valid
-            ) {
-              excludedFields.push(this.mappingForm.get(control)?.value);
+            if (control !== controlName && this.formGroup.get(control)?.valid) {
+              excludedFields.push(this.formGroup.get(control)?.value);
             }
           }
           // Filter fields AND subfields

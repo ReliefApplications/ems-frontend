@@ -42,12 +42,28 @@
   ></safe-icon> -->
   <ng-container *ngIf="resource">
     <h2>{{ 'common.aggregation.one' | translate }}</h2>
-    <safe-aggregation-table
-      [resource]="resource"
-    ></safe-aggregation-table>
+    <ng-container *ngIf="formGroup.value.chart.aggregationId">
+      <mat-form-field appearance="outline" *ngIf="aggregation">
+        <mat-label>{{ 'common.aggregation.one' | translate }}</mat-label>
+        <mat-select [disabled]="true" [value]="aggregation.id">
+          <mat-option [value]="aggregation.id">{{
+            aggregation.name
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <safe-series-mapping
+        [availableFields]="availableSeriesFields"
+        [formGroup]="$any(formGroup.get('chart.mapping'))"
+      ></safe-series-mapping>
+    </ng-container>
+    <ng-container *ngIf="!formGroup.value.chart.aggregationId">
+      <safe-button
+        [block]="true"
+        category="tertiary"
+        variant="primary"
+        (click)="addAggregation()"
+        >{{ 'components.aggregation.add.title' | translate }}</safe-button
+      >
+    </ng-container>
   </ng-container>
-  <!-- <safe-aggregation-builder
-    [reload$]="reload$"
-    [aggregationForm]="aggregationForm"
-  ></safe-aggregation-builder> -->
 </div>

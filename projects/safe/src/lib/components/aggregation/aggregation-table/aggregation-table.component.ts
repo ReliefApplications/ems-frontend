@@ -124,7 +124,8 @@ export class AggregationTableComponent implements OnInit, OnChanges {
     const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
       disableClose: true,
       data: {
-        layout: aggregation,
+        aggregation,
+        resource: this.resource,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
