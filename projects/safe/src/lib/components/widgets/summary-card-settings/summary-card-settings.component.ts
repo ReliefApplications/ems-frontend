@@ -134,6 +134,10 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe((res: any) => {
       if (res) {
         this.cards.push(this.cardForm(res));
+        setTimeout(() => {
+          const el = document.getElementById(`card-${this.cards.length - 1}`);
+          el?.scrollIntoView({ behavior: 'smooth' });
+        });
       }
     });
   }

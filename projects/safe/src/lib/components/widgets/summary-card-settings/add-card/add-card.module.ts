@@ -12,6 +12,11 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeSkeletonModule } from '../../../../directives/skeleton/skeleton.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeAlertModule } from '../../../ui/alert/alert.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { SafeSpinnerModule } from '../../../ui/spinner/spinner.module';
+import { MatIconModule } from '@angular/material/icon';
 
 /** Module to add new card in summary card widget */
 @NgModule({
@@ -28,6 +33,12 @@ import { SafeAlertModule } from '../../../ui/alert/alert.module';
     SafeSkeletonModule,
     IndicatorsModule,
     SafeAlertModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    SafeSpinnerModule,
+    MatIconModule,
   ],
   exports: [SafeAddCardComponent, SafeCardTemplateComponent],
 })

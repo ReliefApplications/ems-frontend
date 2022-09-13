@@ -75,6 +75,8 @@ export class SummaryCardItemComponent implements OnInit {
           }
           this.loading = false;
         });
+    } else {
+      this.loading = false;
     }
   }
 
