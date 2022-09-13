@@ -1389,7 +1389,7 @@
 			},
 			"queryName": "******",
 			"tooltip": {
-				"graphQLFilter": "******"
+				"graphQLFilter": "****** {{lastUpdate}} ******"
 			},
 			"type": "******",
 			"validateCsv": "******",

@@ -95,7 +95,7 @@ export class SafeEmailService {
   public async sendMail(
     recipient: string[],
     subject: string,
-    body: string = '{dataset}',
+    body: string,
     filter: CompositeFilterDescriptor,
     query: {
       name: string;
@@ -185,7 +185,7 @@ export class SafeEmailService {
   public async previewMail(
     recipient: string[],
     subject: string,
-    body: string = '{dataset}',
+    body: string,
     filter: CompositeFilterDescriptor,
     query: {
       name: string;

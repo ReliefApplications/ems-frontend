@@ -1389,7 +1389,7 @@
 			},
 			"queryName": "Query Name",
 			"tooltip": {
-				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use $$LAST_UPDATE to insert dynamically the last fetch date in SQL format."
+				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use {{lastUpdate}} to insert dynamically the last fetch date in SQL format."
 			},
 			"type": "Type",
 			"validateCsv": "Validate CSV",
