@@ -345,12 +345,10 @@ export class SafeGraphQLSelectComponent
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {
-    console.log('scroll');
     if (
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      console.log(this.pageInfo.hasNextPage);
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
         this.query.fetchMore({
