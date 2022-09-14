@@ -57,11 +57,13 @@ export class LayoutsComponent implements OnInit, OnChanges {
    */
   private setAllLayouts(): void {
     if (this.form) {
-      this.allLayouts = this.form.layouts ? [...this.form.layouts] : [];
+      this.allLayouts = this.form.layouts
+        ? this.form.layouts.edges?.map((e) => e.node)
+        : [];
     } else {
       if (this.resource) {
         this.allLayouts = this.resource.layouts
-          ? [...this.resource.layouts]
+          ? this.resource.layouts.edges?.map((e) => e.node)
           : [];
       } else {
         this.allLayouts = [];
@@ -87,9 +89,13 @@ export class LayoutsComponent implements OnInit, OnChanges {
    * Adds a new layout to the list.
    */
   public onAdd(): void {
+    const layouts =
+      (this.form ? this.form.layouts : this.resource?.layouts)?.edges?.map(
+        (e) => e.node
+      ) || [];
     const dialogRef = this.dialog.open(AddLayoutComponent, {
       data: {
-        layouts: this.form ? this.form.layouts : this.resource?.layouts,
+        layouts,
         form: this.form,
         resource: this.resource,
       },

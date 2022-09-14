@@ -59,17 +59,26 @@ export interface GetProfileQueryResponse {
 // === GET FORM BY ID ===
 /** Graphql request for getting the meta fields of a grid by form id */
 export const GET_GRID_FORM_META = gql`
-  query GetFormAsTemplate($id: ID!) {
-    form(id: $id) {
+  query GetFormAsTemplate($id: ID!, $first: Int, $afterCursor: ID) {
+    form(id: $id, layoutFilters: { first: $first, afterCursor: $afterCursor }) {
       id
       name
       queryName
       layouts {
-        id
-        name
-        createdAt
-        query
-        display
+        edges {
+          node {
+            id
+            name
+            query
+            createdAt
+            display
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
       }
     }
   }
@@ -106,8 +115,11 @@ export interface GetFormByIdQueryResponse {
 // === GET RELATED FORMS FROM RESOURCE ===
 /** Graphql request for getting resource meta date for a grid */
 export const GET_GRID_RESOURCE_META = gql`
-  query GetGridResourceMeta($resource: ID!) {
-    resource(id: $resource) {
+  query GetGridResourceMeta(
+    $resource: ID!
+    $layoutFilters: LayoutFiltersInputType
+  ) {
+    resource(id: $resource, layoutFilters: $layoutFilters) {
       id
       name
       queryName
@@ -121,11 +133,20 @@ export const GET_GRID_RESOURCE_META = gql`
         fields
       }
       layouts {
-        id
-        name
-        query
-        createdAt
-        display
+        edges {
+          node {
+            id
+            name
+            query
+            createdAt
+            display
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
       }
     }
   }

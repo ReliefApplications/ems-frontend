@@ -5,6 +5,7 @@
   [required]="required"
   (focusin)="onFocusIn($event)"
   (focusout)="onFocusOut($event)"
+  (selectionChange)="onSelectionChange($event)"
 >
   <mat-option
     *ngFor="let element of elements$ | async"

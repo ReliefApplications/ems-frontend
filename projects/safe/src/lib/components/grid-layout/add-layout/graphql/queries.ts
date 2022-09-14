@@ -1,0 +1,71 @@
+import { gql } from 'apollo-angular';
+import { Resource } from '../../../../models/resource.model';
+import { Form } from '../../../../models/form.model';
+
+// === FETCH LAYOUTS ===
+
+/** Graphql request for getting resource layouts by its id */
+export const GET_RESOURCE_LAYOUTS = gql`
+  query GetResourceLayouts($resource: ID!, $first: Int, $afterCursor: ID) {
+    resource(
+      id: $resource
+      layoutFilters: { first: $first, afterCursor: $afterCursor }
+    ) {
+      layouts {
+        edges {
+          node {
+            id
+            name
+            query
+            createdAt
+            display
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+    }
+  }
+`;
+
+/** Model for GetResourceDetailsQueryResponse object */
+export interface GetResourceLayoutsResponse {
+  loading: boolean;
+  resource: Resource;
+}
+
+/** Graphql request for getting form layouts by its id */
+export const GET_FORM_LAYOUTS = gql`
+  query GetFormLayouts($form: ID!, $first: Int, $afterCursor: ID) {
+    form(
+      id: $form
+      layoutFilters: { first: $first, afterCursor: $afterCursor }
+    ) {
+      layouts {
+        edges {
+          node {
+            id
+            name
+            query
+            createdAt
+            display
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+    }
+  }
+`;
+
+/** Model for GetFormDetailsQueryResponse object */
+export interface GetFormLayoutsResponse {
+  loading: boolean;
+  form: Form;
+}

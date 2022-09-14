@@ -17,10 +17,11 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
   MAT_SELECT_SCROLL_STRATEGY,
   MatSelect,
+  MatSelectChange,
 } from '@angular/material/select';
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../../utils/scroll-factory';
-import { get } from 'lodash';
+import { cloneDeep, get, set } from 'lodash';
 import {
   MatFormField,
   MatFormFieldControl,
@@ -69,7 +70,7 @@ export class SafeGraphQLSelectComponent
    * @returns the value
    */
   @Input() get value(): string | string[] | null {
-    return this.ngControl.value;
+    return this.ngControl?.value;
   }
 
   /** Sets the value */
@@ -113,7 +114,7 @@ export class SafeGraphQLSelectComponent
    */
   get empty() {
     // return !this.selected.value;
-    return !this.ngControl.control?.value;
+    return !this.ngControl?.control?.value;
   }
 
   /**
@@ -152,14 +153,14 @@ export class SafeGraphQLSelectComponent
    */
   @Input()
   get disabled(): boolean {
-    return this.ngControl.disabled || false;
+    return this.ngControl?.disabled || false;
   }
 
   /** Sets whether the field is disabled */
   set disabled(value: boolean) {
     const isDisabled = coerceBooleanProperty(value);
-    if (isDisabled) this.ngControl.control?.disable();
-    else this.ngControl.control?.enable();
+    if (isDisabled) this.ngControl?.control?.disable();
+    else this.ngControl?.control?.enable();
     this.stateChanges.next();
   }
 
@@ -169,7 +170,7 @@ export class SafeGraphQLSelectComponent
    * @returns whether the input is in an error state
    */
   get errorState(): boolean {
-    return (this.ngControl.invalid && this.touched) || false;
+    return (this.ngControl?.invalid && this.touched) || false;
     // return this.ngControl.invalid && this.touched;
     // return this.selected.invalid && this.touched;
   }
@@ -235,6 +236,8 @@ export class SafeGraphQLSelectComponent
   @Input('query') query!: QueryRef<any>;
 
   private queryName!: string;
+  @Input() basePath = '';
+  @Input() variables: any = {};
   @Input() selectedElements: any[] = [];
   private elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
@@ -267,7 +270,7 @@ export class SafeGraphQLSelectComponent
   ngOnInit(): void {
     this.elements$ = this.elements.asObservable();
     this.query.valueChanges.subscribe((res: any) => {
-      this.queryName = Object.keys(res.data)[0];
+      this.queryName = this.basePath || Object.keys(res.data)[0];
       const nodes: any[] = get(res.data, this.queryName).edges
         ? get(res.data, this.queryName).edges.map((x: any) => x.node)
         : get(res.data, this.queryName);
@@ -282,7 +285,7 @@ export class SafeGraphQLSelectComponent
       this.pageInfo = get(res.data, this.queryName).pageInfo;
       this.loading = res.loading;
     });
-    this.ngControl.valueChanges?.subscribe((value) => {
+    this.ngControl?.valueChanges?.subscribe((value) => {
       this.selectionChange.emit(value);
     });
   }
@@ -348,6 +351,7 @@ export class SafeGraphQLSelectComponent
         this.loading = true;
         this.query.fetchMore({
           variables: {
+            ...this.variables,
             first: ITEMS_PER_RELOAD,
             afterCursor: this.pageInfo.endCursor,
           },
@@ -356,23 +360,32 @@ export class SafeGraphQLSelectComponent
               this.loading = false;
               return prev;
             }
-            return Object.assign({}, prev, {
-              [this.queryName]: {
-                edges: [
-                  ...(get(prev, this.queryName).edges
-                    ? get(prev, this.queryName).edges
-                    : get(prev, this.queryName)),
-                  ...(get(fetchMoreResult, this.queryName).edges
-                    ? get(fetchMoreResult, this.queryName).edges
-                    : get(fetchMoreResult, this.queryName)),
-                ],
-                pageInfo: get(fetchMoreResult, this.queryName).pageInfo,
-                totalCount: get(fetchMoreResult, this.queryName).totalCount,
-              },
+            const prevCpy = cloneDeep(prev);
+            set(prevCpy, this.queryName, {
+              edges: [
+                ...(get(prev, this.queryName).edges
+                  ? get(prev, this.queryName).edges
+                  : get(prev, this.queryName)),
+                ...(get(fetchMoreResult, this.queryName).edges
+                  ? get(fetchMoreResult, this.queryName).edges
+                  : get(fetchMoreResult, this.queryName)),
+              ],
+              pageInfo: get(fetchMoreResult, this.queryName).pageInfo,
+              totalCount: get(fetchMoreResult, this.queryName).totalCount,
             });
+            return prevCpy;
           },
         });
       }
     }
+  }
+
+  /**
+   * Triggers on selection change
+   *
+   * @param event the selection change event
+   */
+  public onSelectionChange(event: MatSelectChange) {
+    this.value = event.value;
   }
 }

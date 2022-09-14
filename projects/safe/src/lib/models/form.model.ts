@@ -1,4 +1,4 @@
-import { Layout } from './layout.model';
+import { LayoutConnection } from './layout.model';
 import { Record } from './record.model';
 import { Resource } from './resource.model';
 
@@ -43,6 +43,6 @@ export interface Form {
   canDelete?: boolean;
   canCreateRecords?: boolean;
   uniqueRecord?: Record;
-  layouts?: Layout[];
+  layouts?: LayoutConnection;
   metadata?: any[];
 }

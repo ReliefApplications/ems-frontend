@@ -88,8 +88,11 @@ export interface GetRecordDetailsQueryResponse {
 
 /** Graphql request for getting resource meta date for a grid */
 export const GET_GRID_RESOURCE_META = gql`
-  query GetGridResourceMeta($resource: ID!) {
-    resource(id: $resource) {
+  query GetGridResourceMeta($resource: ID!, $first: Int, $afterCursor: ID) {
+    resource(
+      id: $resource
+      layoutFilters: { first: $first, afterCursor: $afterCursor }
+    ) {
       id
       name
       queryName
@@ -103,11 +106,20 @@ export const GET_GRID_RESOURCE_META = gql`
         fields
       }
       layouts {
-        id
-        name
-        query
-        createdAt
-        display
+        edges {
+          node {
+            id
+            name
+            query
+            createdAt
+            display
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
       }
     }
   }

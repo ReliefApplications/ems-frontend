@@ -3,19 +3,31 @@ import { Resource } from '@safe/builder';
 
 /** Graphql query for getting a resource by its id */
 export const GET_RESOURCE_BY_ID = gql`
-  query GetResourceById($id: ID!) {
-    resource(id: $id) {
+  query GetResourceById($id: ID!, $first: Int, $afterCursor: ID) {
+    resource(
+      id: $id
+      layoutFilters: { first: $first, afterCursor: $afterCursor }
+    ) {
       id
       name
       queryName
       createdAt
       fields
       layouts {
-        id
-        name
-        createdAt
-        query
-        display
+        edges {
+          node {
+            id
+            name
+            query
+            createdAt
+            display
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
       }
       forms {
         id

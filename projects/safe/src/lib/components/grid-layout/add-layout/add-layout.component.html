@@ -45,11 +45,17 @@
         <mat-label>{{
           'components.widget.settings.grid.layouts.add.select' | translate
         }}</mat-label>
-        <mat-select (selectionChange)="onSelect($event)">
-          <mat-option *ngFor="let layout of layouts" [value]="layout.id">{{
-            layout.name
-          }}</mat-option>
-        </mat-select>
+        <safe-graphql-select
+          *ngIf="queryRef"
+          valueField="id"
+          textField="name"
+          [basePath]="'resource.layouts'"
+          [required]="true"
+          [variables]="{ resource: resource?.id }"
+          [query]="queryRef"
+          (selectionChange)="onSelect($event)"
+        >
+        </safe-graphql-select>
       </mat-form-field>
     </div>
   </div>
