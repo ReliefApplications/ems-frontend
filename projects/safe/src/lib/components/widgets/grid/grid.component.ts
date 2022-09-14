@@ -337,7 +337,6 @@ export class SafeGridWidgetComponent implements OnInit {
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
-      // modificationFields.push(modification.field.name);
       if (['Date', 'DateTime'].includes(modification.field.type.name)) {
         update[modification.field.name] = this.getDateForFilter(
           modification.value
@@ -346,6 +345,8 @@ export class SafeGridWidgetComponent implements OnInit {
         update[modification.field.name] = this.getTimeForFilter(
           modification.value
         );
+      } else {
+        update[modification.field.name] = modification.value;
       }
     }
     const data = cleanRecord(update);
