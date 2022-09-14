@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { SafeSeriesMappingComponent } from './series-mapping.component';
 import { SafeSeriesMappingModule } from './series-mapping.module';
 import { StorybookTranslateModule } from '../../../storybook-translate/storybook-translate-module';
-import { createAggregationForm, createMappingForm } from '../aggregation-builder-forms';
+import { createMappingForm } from '../aggregation-builder-forms';
 import { delay } from 'rxjs/operators';
 
 export default {
