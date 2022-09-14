@@ -262,6 +262,19 @@
 			"description": "****** {{name}} ******",
 			"title": "******"
 		},
+		"aggregation": {
+			"add": {
+				"choice": {
+					"create": "******",
+					"load": "******"
+				},
+				"select": "******",
+				"title": "******"
+			},
+			"edit": {
+				"title": "******"
+			}
+		},
 		"aggregationBuilder": {
 			"accumulators": "******",
 			"addField": "******",

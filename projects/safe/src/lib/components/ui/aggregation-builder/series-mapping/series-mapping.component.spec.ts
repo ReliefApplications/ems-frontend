@@ -17,7 +17,7 @@ describe('SafeSeriesMappingComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeSeriesMappingComponent);
     component = fixture.componentInstance;
-    component.mappingForm = new FormGroup({});
+    component.formGroup = new FormGroup({});
     component.fields$ = new Observable();
     fixture.detectChanges();
   });

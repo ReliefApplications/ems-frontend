@@ -1,13 +1,13 @@
 <safe-spinner *ngIf="loading"></safe-spinner>
 <ng-container *ngIf="!loading">
   <div class="aggregation-data-source">
-    <safe-forms-dropdown
+    <!-- <safe-forms-dropdown
       [forms$]="forms$"
       [loadingMore]="loadingMore"
       [sourceControl]="aggregationForm.controls.dataSource"
       (filter)="onFilterDataSource($event)"
       (scrolled)="onScrollDataSource($event)"
-    ></safe-forms-dropdown>
+    ></safe-forms-dropdown> -->
     <safe-tagbox
       [choices$]="fields$"
       [parentControl]="aggregationForm.controls.sourceFields"
@@ -20,9 +20,5 @@
       [metaFields$]="metaFields$"
       [pipelineForm]="pipelineForm"
     ></safe-pipeline>
-    <safe-series-mapping
-      [fields$]="mappingFields$"
-      [mappingForm]="aggregationForm.controls.mapping"
-    ></safe-series-mapping>
   </div>
 </ng-container>

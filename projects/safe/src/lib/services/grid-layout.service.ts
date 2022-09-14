@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { SafeSnackBarService } from './snackbar.service';
 import {
   AddLayoutMutationResponse,
   ADD_LAYOUT,
@@ -27,10 +26,9 @@ export class SafeGridLayoutService {
   /**
    * Constructor the SafeGridLayoutService
    *
-   * @param snackBar The snackbar service
    * @param apollo The apollo service
    */
-  constructor(private snackBar: SafeSnackBarService, private apollo: Apollo) {}
+  constructor(private apollo: Apollo) {}
 
   /**
    * Gets list of layouts from source
