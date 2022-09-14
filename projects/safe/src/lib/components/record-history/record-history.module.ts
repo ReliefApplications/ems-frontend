@@ -15,7 +15,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeIconModule } from '../ui/icon/icon.module';
-import { SafeEmptyStateModule } from '../ui/empty-state/empty-state.module';
 
 /**
  * SafeRecordHistoryModule is a class used to manage all the modules and components
@@ -39,7 +38,6 @@ import { SafeEmptyStateModule } from '../ui/empty-state/empty-state.module';
     SafeDateModule,
     MatSelectModule,
     IndicatorsModule,
-    SafeEmptyStateModule,
   ],
   exports: [SafeRecordHistoryComponent],
 })

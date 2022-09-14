@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeEmptyStateComponent } from './empty-state.component';
+import { SafeEmptyComponent } from './empty.component';
 
-describe('SafeEmptyStateComponent', () => {
-  let component: SafeEmptyStateComponent;
-  let fixture: ComponentFixture<SafeEmptyStateComponent>;
+describe('SafeEmptyComponent', () => {
+  let component: SafeEmptyComponent;
+  let fixture: ComponentFixture<SafeEmptyComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeEmptyStateComponent],
+      declarations: [SafeEmptyComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeEmptyStateComponent);
+    fixture = TestBed.createComponent(SafeEmptyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

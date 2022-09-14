@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeEmptyStateComponent } from './empty-state.component';
+import { SafeEmptyComponent } from './empty.component';
 import { SafeIconModule } from '../icon/icon.module';
 
 /** Module for the donut chart component */
 @NgModule({
-  declarations: [SafeEmptyStateComponent],
+  declarations: [SafeEmptyComponent],
   imports: [CommonModule, SafeIconModule],
-  exports: [SafeEmptyStateComponent],
+  exports: [SafeEmptyComponent],
 })
-export class SafeEmptyStateModule {}
+export class SafeEmptyModule {}

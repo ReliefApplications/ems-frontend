@@ -1,13 +1,13 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { SafeEmptyStateComponent } from './empty-state.component';
-import { SafeEmptyStateModule } from './empty-state.module';
+import { SafeEmptyComponent } from './empty.component';
+import { SafeEmptyModule } from './empty.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
-  component: SafeEmptyStateComponent,
+  component: SafeEmptyComponent,
   decorators: [
     moduleMetadata({
-      imports: [SafeEmptyStateModule, BrowserAnimationsModule],
+      imports: [SafeEmptyModule, BrowserAnimationsModule],
       providers: [],
     }),
   ],

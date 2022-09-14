@@ -4,11 +4,11 @@ import { Component, Input, TemplateRef } from '@angular/core';
  * Empty state component, this component can be used in different situation when no data is present, all parameters are optional.
  */
 @Component({
-  selector: 'safe-empty-state',
-  templateUrl: './empty-state.component.html',
-  styleUrls: ['./empty-state.component.scss'],
+  selector: 'safe-empty',
+  templateUrl: './empty.component.html',
+  styleUrls: ['./empty.component.scss'],
 })
-export class SafeEmptyStateComponent {
+export class SafeEmptyComponent {
   // Material icon name, has priority over an image
   @Input() icon?: string;
   // Image URL
