@@ -17,11 +17,6 @@ export class SafeEmptyComponent {
   @Input() title?: string;
   // Subtitle of the component
   @Input() subtitle?: string;
-  // Action template, will be inserted after everythin else
-  @Input() action?: TemplateRef<any>;
-
-  /**
-   * Constructor for Empty state component
-   */
-  constructor() {}
+  // Footer template, will be inserted after everything else
+  @Input() footerTemplate?: TemplateRef<any>;
 }

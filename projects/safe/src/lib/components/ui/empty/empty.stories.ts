@@ -11,18 +11,18 @@ export default {
       providers: [],
     }),
   ],
-  title: 'UI/Charts/Donut Chart',
-  argTypes: {
-    series: {
-      control: { type: 'object' },
-    },
-    legend: {
-      control: { type: 'object' },
-    },
-    title: {
-      control: { type: 'object' },
-    },
-  },
+  title: 'UI/Empty',
+  // argTypes: {
+  //   series: {
+  //     control: { type: 'object' },
+  //   },
+  //   legend: {
+  //     control: { type: 'object' },
+  //   },
+  //   title: {
+  //     control: { type: 'object' },
+  //   },
+  // },
 } as Meta;
 
 /**
@@ -31,8 +31,8 @@ export default {
  * @param args Arguments used by the component
  * @returns Returns an object used as the stories template
  */
-const TEMPLATE: Story<SafeEmptyStateComponent> = (args) => ({
-  template: '<safe-empty-state></safe-empty-state></div>',
+const TEMPLATE: Story<SafeEmptyComponent> = (args) => ({
+  // template: '<safe-empty></safe-empty></div>',
   props: {
     ...args,
   },

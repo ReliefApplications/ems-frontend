@@ -1,28 +1,28 @@
-.container {
+:host {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 4px;
 
   img {
     max-width: 100%;
     height: 72px;
   }
 
-  .text {
+  .empty-content {
+    color: #6e7478;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 12px 0;
+    gap: 4px;
 
-    h2 {
+    h3 {
       margin: 0;
-      text-align: center;
     }
 
-    p {
+    span {
       opacity: 0.6;
       margin: 0;
-      text-align: center;
     }
   }
 }
