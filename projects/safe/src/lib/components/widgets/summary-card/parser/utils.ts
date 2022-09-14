@@ -3,9 +3,11 @@ import { Record } from '../../../../models/record.model';
 import calcFunctions from './calcFunctions';
 
 /** Prefix for data keys */
-const DATA_PREFIX = '@data.';
+const DATA_PREFIX = '{{data.';
 /** Prefix for calc keys */
-const CALC_PREFIX = '@calc.';
+const CALC_PREFIX = '{{calc.';
+/** Suffix for all keys */
+const SUFFIX = '}}';
 
 /**
  * Parse the html body of a summary card with the content of a record,
@@ -35,7 +37,7 @@ const replaceRecordFields = (html: string, record: any): string => {
   const fields = getFieldsValue(record);
   let formattedHtml = html;
   for (const [key, value] of Object.entries(fields)) {
-    const regex = new RegExp(`${DATA_PREFIX}${key}\\b`, 'gi');
+    const regex = new RegExp(`${DATA_PREFIX}${key}\\b${SUFFIX}`, 'gi');
     formattedHtml = formattedHtml.replace(regex, value as string);
   }
   return formattedHtml;
@@ -89,7 +91,10 @@ const getFieldsValue = (record: any) => {
  * @returns The html body with the calculated result of the functions
  */
 const applyOperations = (html: string): string => {
-  const regex = new RegExp(`${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)`, 'gm');
+  const regex = new RegExp(
+    `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${SUFFIX}`,
+    'gm'
+  );
   let parsedHtml = html;
   let result = regex.exec(html);
   while (result !== null) {
@@ -122,7 +127,7 @@ const applyOperations = (html: string): string => {
  */
 export const getDataKeys = (record: Record | null): string[] => {
   const fields = getFieldsValue(record);
-  return Object.keys(fields).map((field) => DATA_PREFIX + field);
+  return Object.keys(fields).map((field) => DATA_PREFIX + field + SUFFIX);
 };
 
 /**
@@ -132,5 +137,5 @@ export const getDataKeys = (record: Record | null): string[] => {
  */
 export const getCalcKeys = (): string[] => {
   const calcObjects = Object.values(calcFunctions);
-  return calcObjects.map((obj) => CALC_PREFIX + obj.signature);
+  return calcObjects.map((obj) => CALC_PREFIX + obj.signature + SUFFIX);
 };
