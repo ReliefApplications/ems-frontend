@@ -42,6 +42,7 @@ import { SafeIconModule } from './components/ui/icon/icon.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
 import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
 import { SafeModalModule } from './components/ui/modal/modal.module';
+import { SafeEmptyStateModule } from '../public-api';
 
 /** Main module for the safe project */
 @NgModule({
@@ -89,6 +90,8 @@ import { SafeModalModule } from './components/ui/modal/modal.module';
     SafeRoleSummaryModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
+    SafeEmptyStateModule,
   ],
+  declarations: [],
 })
 export class SafeModule {}

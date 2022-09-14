@@ -1,0 +1,11 @@
+<div class="container">
+  <safe-icon *ngIf="icon" [icon]="icon" [size]="72"></safe-icon>
+  <img *ngIf="image && !icon" [src]="image">
+  <div class="text" *ngIf="title || subtitle">
+    <h2 *ngIf="title">{{title}}</h2>
+    <p *ngIf="subtitle">{{subtitle}}</p>
+  </div>
+  <ng-container *ngIf="action">
+    <ng-container *ngTemplateOutlet="action"></ng-container>
+  </ng-container>
+</div>
