@@ -163,13 +163,10 @@ export class AggregationBuilderService {
    * @returns Fields remaining at the end of the pipeline.
    */
   public fieldsAfter(initialFields: any[], pipeline: any[]): any[] {
-    console.log('gogo');
     let fields = [...initialFields];
     for (const stage of pipeline) {
-      console.log(stage);
       switch (stage.type) {
         case PipelineStage.GROUP: {
-          console.log(stage.form);
           const newFields = [];
           for (const rule of stage.form.groupBy) {
             if (rule.field) {
@@ -201,7 +198,6 @@ export class AggregationBuilderService {
           }
           fields = newFields;
           if (stage.form.addFields) {
-            console.log('there');
             this.addFields(fields, stage.form.addFields, initialFields);
           }
           break;

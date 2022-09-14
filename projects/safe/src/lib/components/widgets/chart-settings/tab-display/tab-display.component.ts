@@ -27,10 +27,5 @@ export class TabDisplayComponent implements OnInit {
     return this.formGroup.get('chart') as FormGroup;
   }
 
-  /** @returns the aggregation form */
-  public get aggregationForm(): FormGroup {
-    return this.formGroup.get('chart.aggregation') as FormGroup;
-  }
-
   ngOnInit(): void {}
 }

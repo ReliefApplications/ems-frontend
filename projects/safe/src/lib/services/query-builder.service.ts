@@ -374,7 +374,6 @@ export class QueryBuilderService {
    * @returns Query name
    */
   public getQueryNameFromResourceName(resourceName: string): any {
-    console.log(resourceName);
     const nameTrimmed = resourceName
       .replace(/_|-/g, '')
       .replace(/\s+(?=\d)/g, '_')

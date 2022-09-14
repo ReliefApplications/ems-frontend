@@ -33,13 +33,6 @@
     >
     </safe-graphql-select>
   </mat-form-field>
-  <!-- <safe-icon
-    *ngIf="aggregationForm.invalid"
-    icon="error_outline"
-    variant="danger"
-    [inline]="true"
-    [size]="18"
-  ></safe-icon> -->
   <ng-container *ngIf="resource">
     <h2>{{ 'common.aggregation.one' | translate }}</h2>
     <ng-container *ngIf="formGroup.value.chart.aggregationId">

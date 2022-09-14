@@ -84,7 +84,6 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   ngOnChanges(): void {
     this.loading = true;
     if (this.settings.resource) {
-      console.log(this.settings);
       this.aggregationService
         .getAggregations(this.settings.resource, [
           get(this.settings, 'chart.aggregationId', null),
@@ -188,7 +187,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
           const aggregationData = JSON.parse(
             JSON.stringify(res.data.recordsAggregation)
           );
-          if (get(this.settings, 'chart.aggregation.mapping.series', null)) {
+          if (get(this.settings, 'chart.mapping.series', null)) {
             const groups = groupBy(aggregationData, 'series');
             const categories = uniq(
               aggregationData.map((x: any) => x.category)

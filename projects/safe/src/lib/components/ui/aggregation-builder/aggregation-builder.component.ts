@@ -195,7 +195,6 @@ export class SafeAggregationBuilderComponent implements OnInit {
               (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
           )
       );
-    console.log(fields);
     this.fields.next(fields);
   }
 

@@ -38,14 +38,6 @@ export class TabMainComponent implements OnInit {
   public aggregation?: Aggregation;
   public availableSeriesFields: any[] = [];
 
-  /** @returns the aggregation form */
-  public get aggregationForm(): FormGroup {
-    return (
-      ((this.formGroup?.controls.chart as FormGroup).controls
-        .aggregation as FormGroup) || null
-    );
-  }
-
   private reload = new Subject<boolean>();
   public reload$ = this.reload.asObservable();
 
@@ -58,7 +50,6 @@ export class TabMainComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.formGroup.value);
     this.formGroup.get('chart.type')?.valueChanges.subscribe((value) => {
       this.reload.next(true);
     });

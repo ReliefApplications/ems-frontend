@@ -145,7 +145,7 @@
               chartForm.value.labels.showValue &&
               (['donut', 'pie'].includes(type.name) ||
                 (['bar', 'column'].includes(type.name) &&
-                  aggregationForm.value.mapping.series))
+                  chartForm.value.mapping.series))
             "
           >
             <mat-label>{{
@@ -246,7 +246,7 @@
         formGroupName="stack"
         *ngIf="
           ['bar', 'column'].includes(type.name) &&
-          aggregationForm.value.mapping.series
+          chartForm.value.mapping.series
         "
       >
         <mat-expansion-panel-header>

@@ -52,14 +52,6 @@ export class SafeChartSettingsComponent implements OnInit {
     return (this.formGroup?.controls.chart as FormGroup) || null;
   }
 
-  /** @returns the aggregation form */
-  public get aggregationForm(): FormGroup {
-    return (
-      ((this.formGroup?.controls.chart as FormGroup).controls
-        .aggregation as FormGroup) || null
-    );
-  }
-
   /** Stores the selected tab */
   public selectedTab = 0;
 
@@ -84,7 +76,6 @@ export class SafeChartSettingsComponent implements OnInit {
       this.type = null;
       this.chart = new Chart(tileSettings);
     }
-    console.log(tileSettings);
     this.formGroup = this.formBuilder.group({
       id: this.tile.id,
       title: [get(tileSettings, 'title', ''), Validators.required],
