@@ -59,10 +59,6 @@ export class Chart {
         get(settings, 'mapping', null),
         get(settings, 'type', null)
       ),
-      // aggregation: createAggregationForm(
-      //   get(settings, 'aggregation', null),
-      //   get(settings, 'type', '')
-      // ),
       legend: this.fb.group({
         visible: [legend ? legend.visible : true],
         position: [legend ? legend.position : 'bottom'],
@@ -156,6 +152,13 @@ export class Chart {
       const mapping = this.form.get('mapping');
       // const aggregation = this.form.get('mapping') as FormGroup;
       this.form.setControl('mapping', createMappingForm(mapping?.value, value));
+    });
+
+    this.form.get('aggregationId')?.valueChanges.subscribe((value) => {
+      this.form.setControl(
+        'mapping',
+        createMappingForm(null, this.form.get('type')?.value)
+      );
     });
 
     // Update of palette

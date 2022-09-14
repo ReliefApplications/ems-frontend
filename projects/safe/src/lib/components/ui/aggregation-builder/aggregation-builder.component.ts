@@ -6,7 +6,6 @@ import { debounceTime } from 'rxjs/operators';
 import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { SafeGridService } from '../../../services/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
-import { isMongoId } from '../../../utils/is-mongo-id';
 import { Resource } from '../../../models/resource.model';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { scrollFactory } from '../../config-display-grid-fields-modal/config-display-grid-fields-modal.component';
@@ -122,20 +121,6 @@ export class SafeAggregationBuilderComponent implements OnInit {
 
     // Fields query
     this.fields$ = this.fields.asObservable();
-    // this.aggregationForm
-    //   .get('dataSource')
-    //   ?.valueChanges.pipe(debounceTime(300))
-    //   .subscribe((form: string) => {
-    //     this.loadingForm = true;
-    //     if (isMongoId(form)) {
-    //       this.aggregationForm.get('sourceFields')?.setValue([]);
-    //       (this.aggregationForm.get('pipeline') as FormArray).clear();
-    //       this.aggregationForm.get('mapping')?.reset();
-    //       this.aggregationForm.updateValueAndValidity();
-    //       this.initFields();
-    //       this.loadingForm = false;
-    //     }
-    //   });
 
     // Meta selected fields query
     this.selectedFields$ = this.selectedFields.asObservable();

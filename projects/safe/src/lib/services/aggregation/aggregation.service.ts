@@ -9,9 +9,7 @@ import {
 } from './graphql/mutations';
 import {
   GetResourceByIdQueryResponse,
-  GET_GRID_RESOURCE_META,
-  GetFormByIdQueryResponse,
-  GET_GRID_FORM_META,
+  GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
 import { Aggregation } from '../../models/aggregation.model';
 import { Apollo } from 'apollo-angular';
@@ -31,44 +29,27 @@ export class SafeAggregationService {
   constructor(private apollo: Apollo) {}
 
   /**
-   * Gets list of aggregation from source
+   * Gets list of aggregation from resourceId
    *
-   * @param source source id
+   * @param resourceId resourceId id
    * @param ids selected aggregation ( optional )
    * @returns list of aggregation
    */
   async getAggregations(
-    source: string,
+    resourceId: string,
     ids?: string[]
   ): Promise<Aggregation[]> {
     return await this.apollo
       .query<GetResourceByIdQueryResponse>({
-        query: GET_GRID_RESOURCE_META,
+        query: GET_RESOURCE_AGGREGATIONS,
         variables: {
-          resource: source,
+          resource: resourceId,
         },
       })
       .toPromise()
       .then(async (res) => {
         if (res.errors) {
-          return await this.apollo
-            .query<GetFormByIdQueryResponse>({
-              query: GET_GRID_FORM_META,
-              variables: {
-                id: source,
-              },
-            })
-            .toPromise()
-            .then((res2) => {
-              if (res2.errors) {
-                return [];
-              } else {
-                const aggregations = res2.data.form.aggregations || [];
-                return ids
-                  ? aggregations.filter((x) => x.id && ids.includes(x.id))
-                  : [];
-              }
-            });
+          return [];
         } else {
           const aggregations = res.data.resource.aggregations || [];
           return ids

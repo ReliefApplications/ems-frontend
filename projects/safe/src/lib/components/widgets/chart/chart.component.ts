@@ -14,6 +14,7 @@ import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.compon
 import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import { uniq, get, groupBy } from 'lodash';
+import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
  * Default file name for chart exports
@@ -74,17 +75,39 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
    *
    * @param aggregationBuilder Share aggregation builder service
    */
-  constructor(private aggregationBuilder: AggregationBuilderService) {}
+  constructor(
+    private aggregationService: SafeAggregationService,
+    private aggregationBuilder: AggregationBuilderService
+  ) {}
 
   /** Detect changes of the settings to reload the data. */
   ngOnChanges(): void {
     this.loading = true;
-    this.dataQuery = this.aggregationBuilder.buildAggregation(
-      this.settings.chart.aggregation
-    );
-    if (this.dataQuery) {
-      this.getOptions();
-      this.getData();
+    if (this.settings.resource) {
+      console.log(this.settings);
+      this.aggregationService
+        .getAggregations(this.settings.resource, [
+          get(this.settings, 'chart.aggregationId', null),
+        ])
+        .then((res) => {
+          const aggregation = res[0] || null;
+          if (aggregation) {
+            this.dataQuery = this.aggregationBuilder.buildAggregation(
+              this.settings.resource,
+              aggregation,
+              get(this.settings, 'chart.mapping', null)
+            );
+            if (this.dataQuery) {
+              this.getOptions();
+              this.getData();
+            } else {
+              this.loading = false;
+            }
+          } else {
+            this.loading = false;
+          }
+        })
+        .catch(() => (this.loading = false));
     } else {
       this.loading = false;
     }

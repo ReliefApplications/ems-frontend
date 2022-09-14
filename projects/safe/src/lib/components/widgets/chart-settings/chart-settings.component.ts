@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import get from 'lodash/get';
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { codesFactory } from '../grid-settings/button-config/button-config.component';
 import { Chart } from './charts/chart';
@@ -83,14 +84,12 @@ export class SafeChartSettingsComponent implements OnInit {
       this.type = null;
       this.chart = new Chart(tileSettings);
     }
+    console.log(tileSettings);
     this.formGroup = this.formBuilder.group({
       id: this.tile.id,
-      title: [
-        tileSettings && tileSettings.title ? tileSettings.title : '',
-        Validators.required,
-      ],
+      title: [get(tileSettings, 'title', ''), Validators.required],
       chart: this.chart?.form,
-      resource: [null, Validators.required],
+      resource: [get(tileSettings, 'resource', null), Validators.required],
       // aggregation: [null, Validators.required],
     });
     this.change.emit(this.formGroup);
