@@ -52,14 +52,20 @@
         </mat-select>
         <safe-button
           matSuffix
+          variant="primary"
+          [isIcon]="true"
+          icon="edit"
+          (click)="editAggregation()"
+        ></safe-button>
+        <safe-button
+          matSuffix
           variant="danger"
           [isIcon]="true"
           icon="close"
           (click)="formGroup.get('chart.aggregationId')?.setValue(null)"
-          ></safe-button
-        >
+        ></safe-button>
       </mat-form-field>
-      <h3>{{'components.mapping.title' | translate }}</h3>
+      <h3>{{ 'components.mapping.title' | translate }}</h3>
       <safe-series-mapping
         [availableFields]="availableSeriesFields"
         [formGroup]="$any(formGroup.get('chart.mapping'))"

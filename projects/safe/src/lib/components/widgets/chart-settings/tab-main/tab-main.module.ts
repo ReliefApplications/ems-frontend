@@ -25,6 +25,7 @@ import { SafeChartModule } from '../../chart/chart.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { AddAggregationModalModule } from '../../../aggregation/add-aggregation-modal/add-aggregation-modal.module';
 import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-mapping/series-mapping.module';
+import { SafeEditAggregationModalModule } from '../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.module';
 
 /**
  * Main tab of chart settings modal.
@@ -57,6 +58,7 @@ import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-
     SafePaletteControlModule,
     SafeGraphQLSelectModule,
     AddAggregationModalModule,
+    SafeEditAggregationModalModule,
     SafeSeriesMappingModule,
   ],
   exports: [TabMainComponent],

@@ -15,6 +15,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder.service';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
+import { SafeEditAggregationModalComponent } from '../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
+import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -51,7 +53,8 @@ export class TabMainComponent implements OnInit {
     private apollo: Apollo,
     private dialog: MatDialog,
     private aggregationBuilder: AggregationBuilderService,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private aggregationService: SafeAggregationService
   ) {}
 
   ngOnInit(): void {
@@ -137,6 +140,27 @@ export class TabMainComponent implements OnInit {
           this.getResource(this.resource?.id as string);
           // this.getAggregation(value.id);
         }
+      }
+    });
+  }
+
+  public editAggregation(): void {
+    const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
+      disableClose: true,
+      data: {
+        resource: this.resource,
+        aggregation: this.aggregation,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value && this.aggregation) {
+        this.aggregationService
+          .editAggregation(this.aggregation, value, this.resource?.id)
+          .subscribe((res) => {
+            if (res.data?.editAggregation) {
+              this.getResource(this.resource?.id as string);
+            }
+          });
       }
     });
   }
