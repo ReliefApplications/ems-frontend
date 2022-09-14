@@ -409,6 +409,11 @@
 			"withoutRecords": "Sans enregistrements"
 		},
 		"form": {
+			"aggregation": {
+				"delete": {
+					"confirmationMessage": "Confirmez-vous la suppression de l'agrégation {{name}}?"
+				}
+			},
 			"create": {
 				"choice": {
 					"inherit": "Copier un modèle de ressources existant",
@@ -886,6 +891,13 @@
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
 						"update": "Modifier les enregistrements"
+					},
+					"aggregations": {
+						"add": {
+							"choice": {
+								"create": "Créer une nouvelle agrégation"
+							}
+						}
 					},
 					"buttons": {
 						"callback": {

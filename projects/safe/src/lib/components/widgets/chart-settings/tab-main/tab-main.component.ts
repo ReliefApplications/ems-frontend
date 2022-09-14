@@ -129,7 +129,9 @@ export class TabMainComponent implements OnInit {
    * @param id aggregation id
    */
   private getAggregation(id: string): void {
-    this.aggregation = this.resource?.aggregations?.find((x) => x.id === id);
+    this.aggregation = this.resource?.aggregations?.edges.find(
+      (x) => x.node.id === id
+    )?.node;
     this.setAvailableSeriesFields();
   }
 

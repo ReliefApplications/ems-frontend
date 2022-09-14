@@ -409,6 +409,11 @@
 			"withoutRecords": "******"
 		},
 		"form": {
+			"aggregation": {
+				"delete": {
+					"confirmationMessage": "****** {{name}} ******"
+				}
+			},
 			"create": {
 				"choice": {
 					"inherit": "******",
@@ -886,6 +891,13 @@
 						"showDetails": "******",
 						"title": "******",
 						"update": "******"
+					},
+					"aggregations": {
+						"add": {
+							"choice": {
+								"create": "******"
+							}
+						}
 					},
 					"buttons": {
 						"callback": {

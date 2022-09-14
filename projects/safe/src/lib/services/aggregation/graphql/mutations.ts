@@ -7,10 +7,10 @@ export const ADD_AGGREGATION = gql`
     addAggregation(resource: $resource, aggregation: $aggregation) {
       id
       name
-      dataSource
+      ${/** dataSource */ ''}
       sourceFields
       pipeline
-      mapping
+      ${/** mapping */ ''}
       createdAt
     }
   }
@@ -32,10 +32,10 @@ export const EDIT_AGGREGATION = gql`
     editAggregation(resource: $resource, aggregation: $aggregation, id: $id) {
       id
       name
-      dataSource
+      ${/** dataSource */ ''}
       sourceFields
       pipeline
-      mapping
+      ${/** mapping */ ''}
       createdAt
     }
   }
@@ -53,10 +53,10 @@ export const DELETE_AGGREGATION = gql`
     deleteAggregation(resource: $resource, id: $id) {
       id
       name
-      dataSource
+      ${/** dataSource */ ''}
       sourceFields
       pipeline
-      mapping
+      ${/** mapping */ ''}
       createdAt
     }
   }

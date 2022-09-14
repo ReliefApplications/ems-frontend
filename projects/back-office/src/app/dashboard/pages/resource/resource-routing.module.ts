@@ -1,8 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { FormsTabComponent } from './forms-tab/forms-tab.component';
-import { LayoutsTabComponent } from './layouts-tab/layouts-tab.component';
-import { RecordsTabComponent } from './records-tab/records-tab.component';
 import { ResourceComponent } from './resource.component';
 
 /** List of routes of Resource page module */
@@ -54,6 +51,19 @@ const routes: Routes = [
         loadChildren: () =>
           import('./layouts-tab/layouts-tab.module').then(
             (m) => m.LayoutsTabModule
+          ),
+        // canActivate: [SafePermissionGuard]
+        data: {
+          breadcrumb: {
+            key: 'common.layout.few',
+          },
+        },
+      },
+      {
+        path: 'aggregations',
+        loadChildren: () =>
+          import('./aggregations-tab/aggregations-tab.module').then(
+            (m) => m.AggregationsTabModule
           ),
         // canActivate: [SafePermissionGuard]
         data: {

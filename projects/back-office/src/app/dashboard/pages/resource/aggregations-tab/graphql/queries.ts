@@ -1,35 +1,34 @@
 import { gql } from 'apollo-angular';
-import { Resource } from '../../../models/resource.model';
+import { Resource } from '@safe/builder';
 
-// === GET RELATED FORMS FROM RESOURCE ===
-/** Graphql request to get resource aggregations */
-export const GET_RESOURCE_AGGREGATIONS = gql`
-  query GetGridResourceMeta($resource: ID!) {
-    resource(id: $resource) {
+/** Graphql query for getting a resource by its id */
+export const GET_RESOURCE_LAYOUTS = gql`
+  query GetResourceById($id: ID!, $first: Int, $afterCursor: ID) {
+    resource(id: $id) {
       id
-      name
-      queryName
-      aggregations {
+      aggregations(first: $first, afterCursor: $afterCursor) {
         edges {
           node {
             id
             name
+            ${/** dataSource */ ''}
             sourceFields
             pipeline
+            ${/** mapping */ ''}
             createdAt
           }
         }
-        totalCount
         pageInfo {
           hasNextPage
           endCursor
         }
+        totalCount
       }
+      canUpdate
     }
   }
 `;
 
-// === GET RESOURCE BY ID ===
 /** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceByIdQueryResponse {
   loading: boolean;
