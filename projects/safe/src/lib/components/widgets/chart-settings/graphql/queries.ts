@@ -56,10 +56,8 @@ export const GET_RESOURCE = gql`
       aggregations {
         id
         name
-        dataSource
         sourceFields
         pipeline
-        mapping
         createdAt
       }
     }

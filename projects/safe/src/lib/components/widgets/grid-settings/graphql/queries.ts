@@ -30,11 +30,11 @@ export interface GetChannelsQueryResponse {
 /** Graphql request for getting the meta fields of a grid by form id */
 export const GET_GRID_FORM_META = gql`
   query GetFormAsTemplate($id: ID!, $layoutIds: [ID], $first: Int) {
-    form(id: $id, layoutFilters: { ids: $layoutIds, first: $first }) {
+    form(id: $id) {
       id
       name
       queryName
-      layouts {
+      layouts(ids: $layoutIds, first: $first) {
         edges {
           node {
             id
@@ -59,7 +59,7 @@ export const GET_GRID_FORM_META = gql`
 /** Graphql request for getting resource meta date for a grid */
 export const GET_GRID_RESOURCE_META = gql`
   query GetGridResourceMeta($resource: ID!, $layoutIds: [ID], $first: Int) {
-    resource(id: $resource, layoutFilters: { ids: $layoutIds, first: $first }) {
+    resource(id: $resource) {
       id
       name
       queryName
@@ -72,7 +72,7 @@ export const GET_GRID_RESOURCE_META = gql`
         name
         fields
       }
-      layouts {
+      layouts(ids: $layoutIds, first: $first) {
         edges {
           node {
             id

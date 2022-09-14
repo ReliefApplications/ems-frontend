@@ -7,11 +7,8 @@ import { Form } from '../../../../models/form.model';
 /** Graphql request for getting resource layouts by its id */
 export const GET_RESOURCE_LAYOUTS = gql`
   query GetResourceLayouts($resource: ID!, $first: Int, $afterCursor: ID) {
-    resource(
-      id: $resource
-      layoutFilters: { first: $first, afterCursor: $afterCursor }
-    ) {
-      layouts {
+    resource(id: $resource) {
+      layouts(first: $first, afterCursor: $afterCursor) {
         edges {
           node {
             id
@@ -40,11 +37,8 @@ export interface GetResourceLayoutsResponse {
 /** Graphql request for getting form layouts by its id */
 export const GET_FORM_LAYOUTS = gql`
   query GetFormLayouts($form: ID!, $first: Int, $afterCursor: ID) {
-    form(
-      id: $form
-      layoutFilters: { first: $first, afterCursor: $afterCursor }
-    ) {
-      layouts {
+    form(id: $form) {
+      layouts(first: $first, afterCursor: $afterCursor) {
         edges {
           node {
             id

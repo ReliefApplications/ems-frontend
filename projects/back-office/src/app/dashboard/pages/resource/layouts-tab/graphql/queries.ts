@@ -4,12 +4,9 @@ import { Resource } from '@safe/builder';
 /** Graphql query for getting a resource by its id */
 export const GET_RESOURCE_LAYOUTS = gql`
   query GetResourceById($id: ID!, $first: Int, $afterCursor: ID) {
-    resource(
-      id: $id
-      layoutFilters: { first: $first, afterCursor: $afterCursor }
-    ) {
+    resource(id: $id) {
       id
-      layouts {
+      layouts(first: $first, afterCursor: $afterCursor) {
         edges {
           node {
             id

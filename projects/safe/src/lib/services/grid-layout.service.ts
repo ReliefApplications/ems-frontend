@@ -59,15 +59,15 @@ export class SafeGridLayoutService {
    */
   async getLayouts(
     source: string,
-    filters?: LayoutFilters
+    options: { ids?: string[]; first?: number }
   ): Promise<LayoutConnection> {
-    const layoutFilters = Object.assign({}, filters ?? {});
     return await this.apollo
       .query<GetResourceByIdQueryResponse>({
         query: GET_GRID_RESOURCE_META,
         variables: {
           resource: source,
-          layoutFilters,
+          ids: options.ids,
+          first: options.first,
         },
       })
       .toPromise()
@@ -78,7 +78,8 @@ export class SafeGridLayoutService {
               query: GET_GRID_FORM_META,
               variables: {
                 id: source,
-                layoutFilters,
+                ids: options.ids,
+                first: options.first,
               },
             })
             .toPromise()
