@@ -70,7 +70,7 @@ export class SafeGraphQLSelectComponent
    * @returns the value
    */
   @Input() get value(): string | string[] | null {
-    return this.ngControl?.value;
+    return this.ngControl.value;
   }
 
   /** Sets the value */
@@ -114,7 +114,7 @@ export class SafeGraphQLSelectComponent
    */
   get empty() {
     // return !this.selected.value;
-    return !this.ngControl?.control?.value;
+    return !this.ngControl.control?.value;
   }
 
   /**
@@ -153,14 +153,14 @@ export class SafeGraphQLSelectComponent
    */
   @Input()
   get disabled(): boolean {
-    return this.ngControl?.disabled || false;
+    return this.ngControl.disabled || false;
   }
 
   /** Sets whether the field is disabled */
   set disabled(value: boolean) {
     const isDisabled = coerceBooleanProperty(value);
-    if (isDisabled) this.ngControl?.control?.disable();
-    else this.ngControl?.control?.enable();
+    if (isDisabled) this.ngControl.control?.disable();
+    else this.ngControl.control?.enable();
     this.stateChanges.next();
   }
 
@@ -170,7 +170,7 @@ export class SafeGraphQLSelectComponent
    * @returns whether the input is in an error state
    */
   get errorState(): boolean {
-    return (this.ngControl?.invalid && this.touched) || false;
+    return (this.ngControl.invalid && this.touched) || false;
     // return this.ngControl.invalid && this.touched;
     // return this.selected.invalid && this.touched;
   }
@@ -236,8 +236,7 @@ export class SafeGraphQLSelectComponent
   @Input('query') query!: QueryRef<any>;
 
   private queryName!: string;
-  @Input() basePath = '';
-  @Input() variables: any = {};
+  @Input() path = '';
   @Input() selectedElements: any[] = [];
   private elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
@@ -270,10 +269,13 @@ export class SafeGraphQLSelectComponent
   ngOnInit(): void {
     this.elements$ = this.elements.asObservable();
     this.query.valueChanges.subscribe((res: any) => {
-      this.queryName = this.basePath || Object.keys(res.data)[0];
-      const nodes: any[] = get(res.data, this.queryName).edges
-        ? get(res.data, this.queryName).edges.map((x: any) => x.node)
-        : get(res.data, this.queryName);
+      this.queryName = Object.keys(res.data)[0];
+      const path = this.path
+        ? `${this.queryName}.${this.path}`
+        : this.queryName;
+      const nodes: any[] = get(res.data, path).edges
+        ? get(res.data, path).edges.map((x: any) => x.node)
+        : get(res.data, path);
       this.selectedElements = this.selectedElements.filter(
         (element) =>
           element &&
@@ -282,10 +284,10 @@ export class SafeGraphQLSelectComponent
           )
       );
       this.elements.next([...this.selectedElements, ...nodes]);
-      this.pageInfo = get(res.data, this.queryName).pageInfo;
+      this.pageInfo = get(res.data, path).pageInfo;
       this.loading = res.loading;
     });
-    this.ngControl?.valueChanges?.subscribe((value) => {
+    this.ngControl.valueChanges?.subscribe((value) => {
       this.selectionChange.emit(value);
     });
   }
@@ -343,15 +345,17 @@ export class SafeGraphQLSelectComponent
    * @param e scroll event.
    */
   private loadOnScroll(e: any): void {
+    console.log('scroll');
     if (
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
+      console.log(this.pageInfo.hasNextPage);
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
         this.query.fetchMore({
           variables: {
-            ...this.variables,
+            ...this.query.variables,
             first: ITEMS_PER_RELOAD,
             afterCursor: this.pageInfo.endCursor,
           },
@@ -361,17 +365,20 @@ export class SafeGraphQLSelectComponent
               return prev;
             }
             const prevCpy = cloneDeep(prev);
-            set(prevCpy, this.queryName, {
+            const path = this.path
+              ? `${this.queryName}.${this.path}`
+              : this.queryName;
+            set(prevCpy, path, {
               edges: [
-                ...(get(prev, this.queryName).edges
-                  ? get(prev, this.queryName).edges
-                  : get(prev, this.queryName)),
-                ...(get(fetchMoreResult, this.queryName).edges
-                  ? get(fetchMoreResult, this.queryName).edges
-                  : get(fetchMoreResult, this.queryName)),
+                ...(get(prev, path).edges
+                  ? get(prev, path).edges
+                  : get(prev, path)),
+                ...(get(fetchMoreResult, path).edges
+                  ? get(fetchMoreResult, path).edges
+                  : get(fetchMoreResult, path)),
               ],
-              pageInfo: get(fetchMoreResult, this.queryName).pageInfo,
-              totalCount: get(fetchMoreResult, this.queryName).totalCount,
+              pageInfo: get(fetchMoreResult, path).pageInfo,
+              totalCount: get(fetchMoreResult, path).totalCount,
             });
             return prevCpy;
           },

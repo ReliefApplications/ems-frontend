@@ -49,11 +49,10 @@
           *ngIf="queryRef"
           valueField="id"
           textField="name"
-          [basePath]="'resource.layouts'"
+          path="layouts"
           [required]="true"
-          [variables]="{ resource: resource?.id }"
           [query]="queryRef"
-          (selectionChange)="onSelect($event)"
+          [formControl]="selectedLayoutControl"
         >
         </safe-graphql-select>
       </mat-form-field>

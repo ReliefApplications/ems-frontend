@@ -84,46 +84,7 @@ export interface GetRecordDetailsQueryResponse {
   record: Record;
 }
 
-// === GET RELATED FORMS FROM RESOURCE ===
-
-/** Graphql request for getting resource meta date for a grid */
-export const GET_GRID_RESOURCE_META = gql`
-  query GetGridResourceMeta($resource: ID!, $first: Int, $afterCursor: ID) {
-    resource(id: $resource) {
-      id
-      name
-      queryName
-      forms {
-        id
-        name
-      }
-      relatedForms {
-        id
-        name
-        fields
-      }
-      layouts(first: $first, afterCursor: $afterCursor) {
-        edges {
-          node {
-            id
-            name
-            query
-            createdAt
-            display
-          }
-        }
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
-        totalCount
-      }
-    }
-  }
-`;
-
 // === GET QUERY TYPES ===
-
 /** Graphql request for getting query types */
 export const GET_QUERY_TYPES = gql`
   query GetQueryTypes {

@@ -1,11 +1,9 @@
 <mat-select
   [formControl]="ngControl && $any(ngControl.control)"
   (openedChange)="onOpenSelect($event)"
-  [disabled]="disabled"
   [required]="required"
   (focusin)="onFocusIn($event)"
   (focusout)="onFocusOut($event)"
-  (selectionChange)="onSelectionChange($event)"
 >
   <mat-option
     *ngFor="let element of elements$ | async"

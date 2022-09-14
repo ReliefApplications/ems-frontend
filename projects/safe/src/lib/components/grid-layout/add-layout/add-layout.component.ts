@@ -16,6 +16,7 @@ import {
   GetFormLayoutsResponse,
   GET_FORM_LAYOUTS,
 } from './graphql/queries';
+import { FormControl } from '@angular/forms';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource
@@ -44,10 +45,10 @@ export class AddLayoutComponent implements OnInit {
     | QueryRef<GetResourceLayoutsResponse>
     | QueryRef<GetFormLayoutsResponse>
     | null;
-  public selectedLayout: any;
+  public selectedLayoutControl = new FormControl('');
 
   /**
-   * Contructor for safe-add-layout component
+   * Add layout modal component.
    *
    * @param dialogRef Material dialog reference
    * @param dialog Material dialog instance
@@ -82,6 +83,21 @@ export class AddLayoutComponent implements OnInit {
           form: this.form?.id,
         },
       });
+
+    this.selectedLayoutControl.valueChanges.subscribe((value) => {
+      this.dialogRef.close(value);
+      // if (!this.queryRef || !value) return;
+      // const currRes = this.queryRef.getCurrentResult() as any;
+      // const queryName = this.resource ? 'resource' : 'form';
+      // const addedLayout = currRes.data?.[queryName]?.layouts?.edges.find(
+      //   (edge: any) => edge.node.id === value
+      // )?.node;
+
+      // if (addedLayout) {
+      //   this.layouts.push(addedLayout);
+      //   this.dialogRef.close(addedLayout);
+      // }
+    });
   }
 
   /**
@@ -107,24 +123,5 @@ export class AddLayoutComponent implements OnInit {
           });
       }
     });
-  }
-
-  /**
-   * Selects an existing layout.
-   *
-   * @param choice layout choice.
-   */
-  public onSelect(choice: any): void {
-    if (!this.queryRef || !choice) return;
-    const currRes = this.queryRef.getCurrentResult() as any;
-    const queryName = this.resource ? 'resource' : 'form';
-    const addedLayout = currRes.data?.[queryName]?.layouts?.edges.find(
-      (edge: any) => edge.node.id === choice
-    )?.node;
-
-    if (addedLayout) {
-      this.layouts.push(addedLayout);
-      this.dialogRef.close(addedLayout);
-    }
   }
 }
