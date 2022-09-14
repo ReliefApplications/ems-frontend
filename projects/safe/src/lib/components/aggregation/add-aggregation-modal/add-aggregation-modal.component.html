@@ -11,9 +11,7 @@
         [block]="true"
         (click)="nextStep = true"
         [disabled]="aggregations.length < 1"
-        >{{
-          'components.aggregation.add.choice.load' | translate
-        }}</safe-button
+        >{{ 'components.aggregation.add.choice.load' | translate }}</safe-button
       >
       <!-- Add a new aggregation -->
       <safe-button
@@ -22,8 +20,7 @@
         [block]="true"
         (click)="onCreate()"
         >{{
-          'components.aggregation.add.choice.create'
-            | translate
+          'components.aggregation.add.choice.create' | translate
         }}</safe-button
       >
     </div>
@@ -35,10 +32,7 @@
           (click)="nextStep = false"
         ></safe-button>
         <div>
-          {{
-            'components.aggregation.add.choice.load'
-              | translate
-          }}
+          {{ 'components.aggregation.add.choice.load' | translate }}
         </div>
       </div>
       <mat-form-field appearance="outline">
@@ -46,9 +40,11 @@
           'components.aggregation.add.select' | translate
         }}</mat-label>
         <mat-select (selectionChange)="onSelect($event)">
-          <mat-option *ngFor="let aggregation of aggregations" [value]="aggregation.id">{{
-            aggregation.name
-          }}</mat-option>
+          <mat-option
+            *ngFor="let aggregation of aggregations"
+            [value]="aggregation.id"
+            >{{ aggregation.name }}</mat-option
+          >
         </mat-select>
       </mat-form-field>
     </div>
