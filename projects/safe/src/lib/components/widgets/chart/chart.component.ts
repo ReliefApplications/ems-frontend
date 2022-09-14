@@ -73,7 +73,8 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   /**
    * Chart widget using KendoUI.
    *
-   * @param aggregationBuilder Share aggregation builder service
+   * @param aggregationService Shared aggregation service
+   * @param aggregationBuilder Shared aggregation builder service
    */
   constructor(
     private aggregationService: SafeAggregationService,

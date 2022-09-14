@@ -173,13 +173,9 @@ export const createMappingForm = (value: any, widgetType: string): FormGroup =>
  * Generates a new aggregation form.
  *
  * @param value initial value
- * @param widgetType type of chart widget
  * @returns New aggregation form
  */
-export const createAggregationForm = (
-  value: any
-  // widgetType: string
-): FormGroup =>
+export const createAggregationForm = (value: any): FormGroup =>
   formBuilder.group({
     name: [get(value, 'name', null), Validators.required],
     sourceFields: [get(value, 'sourceFields', []), Validators.required],
@@ -188,7 +184,6 @@ export const createAggregationForm = (
         ? value.pipeline.map((x: any) => addStage(x))
         : []
     ),
-    // mapping: createMappingForm(get(value, 'mapping', null), widgetType),
   });
 
 /**

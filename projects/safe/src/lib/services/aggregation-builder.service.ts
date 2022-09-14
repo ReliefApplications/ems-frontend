@@ -119,8 +119,9 @@ export class AggregationBuilderService {
   /**
    * Builds the aggregation query from aggregation definition
    *
+   * @param resource Resource Id
    * @param aggregation Aggregation definition
-   * @param withMapping Wether if we should inculde the mapping in the aggregation.
+   * @param mapping aggregation mapping ( category, field, series )
    * @returns Aggregation query
    */
   public buildAggregation(

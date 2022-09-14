@@ -41,6 +41,15 @@ export class TabMainComponent implements OnInit {
   private reload = new Subject<boolean>();
   public reload$ = this.reload.asObservable();
 
+  /**
+   * Main tab of chart settings modal.
+   *
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param aggregationBuilder Shared aggregation builder service
+   * @param queryBuilder Shared query builder service
+   * @param aggregationService Shared aggregation service
+   */
   constructor(
     private apollo: Apollo,
     private dialog: MatDialog,
@@ -69,6 +78,11 @@ export class TabMainComponent implements OnInit {
     });
   }
 
+  /**
+   * Get a resource by id and associated aggregations
+   *
+   * @param id resource id
+   */
   private getResource(id: string): void {
     this.apollo
       .query<GetResourceByIdQueryResponse>({
@@ -85,6 +99,9 @@ export class TabMainComponent implements OnInit {
       });
   }
 
+  /**
+   * Set available series fields, from resource fields and aggregation definition.
+   */
   private setAvailableSeriesFields(): void {
     if (this.aggregation) {
       this.availableSeriesFields = this.aggregationBuilder.fieldsAfter(
@@ -106,6 +123,11 @@ export class TabMainComponent implements OnInit {
     }
   }
 
+  /**
+   * Get aggregation by id in list of available aggregations.
+   *
+   * @param id aggregation id
+   */
   private getAggregation(id: string): void {
     this.aggregation = this.resource?.aggregations?.find((x) => x.id === id);
     this.setAvailableSeriesFields();
@@ -135,6 +157,9 @@ export class TabMainComponent implements OnInit {
     });
   }
 
+  /**
+   * Edit chosen aggregation, in a modal. If saved, update it.
+   */
   public editAggregation(): void {
     const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
       disableClose: true,
