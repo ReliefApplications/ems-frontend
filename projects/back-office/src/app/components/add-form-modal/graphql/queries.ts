@@ -12,37 +12,10 @@ export const GET_RESOURCE_BY_ID = gql`
       queryName
       createdAt
       fields
-      layouts {
-        id
-        name
-        createdAt
-        query
-        display
-      }
       forms {
         id
         name
-        status
-        createdAt
-        recordsCount
         core
-        canUpdate
-        canDelete
-        canCreateRecords
-      }
-      permissions {
-        canSee {
-          id
-          title
-        }
-        canUpdate {
-          id
-          title
-        }
-        canDelete {
-          id
-          title
-        }
       }
       canUpdate
     }

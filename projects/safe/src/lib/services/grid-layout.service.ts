@@ -14,7 +14,27 @@ import {
   GetFormByIdQueryResponse,
   GET_GRID_FORM_META,
 } from '../graphql/queries';
-import { Layout } from '../models/layout.model';
+import { Layout, LayoutConnection } from '../models/layout.model';
+
+/** Default page size for layouts */
+const DEFAULT_PAGE_SIZE = 10;
+
+type LayoutFilters = {
+  first?: number;
+  endCursor?: string;
+  ids?: string[];
+};
+
+/** Fallback LayoutConnection */
+const FALLBACK_LAYOUTS: LayoutConnection = {
+  edges: [],
+  totalCount: 0,
+  pageInfo: {
+    startCursor: null,
+    endCursor: null,
+    hasNextPage: false,
+  },
+};
 
 /**
  * Shared service to manage grid predefined layouts.
@@ -33,16 +53,23 @@ export class SafeGridLayoutService {
   /**
    * Gets list of layouts from source
    *
+   *
    * @param source source id
-   * @param ids selected layouts ( optional )
-   * @returns list of layouts
+   * @param options query options
+   * @param options.ids list of layout id
+   * @param options.first number of items to get
    */
-  async getLayouts(source: string, ids?: string[]): Promise<Layout[]> {
+  async getLayouts(
+    source: string,
+    options: { ids?: string[]; first?: number }
+  ): Promise<LayoutConnection> {
     return await this.apollo
       .query<GetResourceByIdQueryResponse>({
         query: GET_GRID_RESOURCE_META,
         variables: {
           resource: source,
+          ids: options.ids,
+          first: options.first,
         },
       })
       .toPromise()
@@ -53,28 +80,20 @@ export class SafeGridLayoutService {
               query: GET_GRID_FORM_META,
               variables: {
                 id: source,
+                ids: options.ids,
+                first: options.first,
               },
             })
             .toPromise()
             .then((res2) => {
               if (res2.errors) {
-                return [];
+                return FALLBACK_LAYOUTS;
               } else {
-                const layouts = res2.data.form.layouts || [];
-                return ids
-                  ? layouts.filter((x) => x.id && ids.includes(x.id))
-                  : [];
+                return res2.data.form.layouts || FALLBACK_LAYOUTS;
               }
             });
         } else {
-          const layouts = res.data.resource.layouts || [];
-          return ids
-            ? layouts
-                .filter((x) => x.id && ids.includes(x.id))
-                .sort(
-                  (a, b) => ids.indexOf(a.id || '') - ids.indexOf(b.id || '')
-                )
-            : [];
+          return res.data.resource.layouts || FALLBACK_LAYOUTS;
         }
       });
   }

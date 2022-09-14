@@ -1,15 +1,22 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   MatDialog,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Form } from '../../../models/form.model';
 import { Layout } from '../../../models/layout.model';
 import { Resource } from '../../../models/resource.model';
 import { SafeLayoutModalComponent } from '../layout-modal/layout-modal.component';
+import { Apollo, QueryRef } from 'apollo-angular';
+import {
+  GetResourceLayoutsResponse,
+  GET_RESOURCE_LAYOUTS,
+  GetFormLayoutsResponse,
+  GET_FORM_LAYOUTS,
+} from './graphql/queries';
+import { FormControl } from '@angular/forms';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource
@@ -29,29 +36,68 @@ interface DialogData {
   templateUrl: './add-layout.component.html',
   styleUrls: ['./add-layout.component.scss'],
 })
-export class AddLayoutComponent {
+export class AddLayoutComponent implements OnInit {
   private form?: Form;
-  private resource?: Resource;
+  public resource?: Resource;
   public layouts: Layout[] = [];
   public nextStep = false;
+  public queryRef!:
+    | QueryRef<GetResourceLayoutsResponse>
+    | QueryRef<GetFormLayoutsResponse>
+    | null;
+  public selectedLayoutControl = new FormControl('');
 
   /**
-   * Contructor for safe-add-layout component
+   * Add layout modal component.
    *
    * @param dialogRef Material dialog reference
    * @param dialog Material dialog instance
    * @param data Data used by the modal
    * @param gridLayoutService Grid layout service
+   * @param apollo Apollo service
    */
   constructor(
     private dialogRef: MatDialogRef<AddLayoutComponent>,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private gridLayoutService: SafeGridLayoutService
+    private gridLayoutService: SafeGridLayoutService,
+    private apollo: Apollo
   ) {
     this.layouts = data.layouts;
     this.form = data.form;
     this.resource = data.resource;
+  }
+
+  ngOnInit() {
+    if (this.resource)
+      this.queryRef = this.apollo.watchQuery<GetResourceLayoutsResponse>({
+        query: GET_RESOURCE_LAYOUTS,
+        variables: {
+          resource: this.resource?.id,
+        },
+      });
+    else if (this.form)
+      this.queryRef = this.apollo.watchQuery<GetFormLayoutsResponse>({
+        query: GET_FORM_LAYOUTS,
+        variables: {
+          form: this.form?.id,
+        },
+      });
+
+    this.selectedLayoutControl.valueChanges.subscribe((value) => {
+      this.dialogRef.close(value);
+      // if (!this.queryRef || !value) return;
+      // const currRes = this.queryRef.getCurrentResult() as any;
+      // const queryName = this.resource ? 'resource' : 'form';
+      // const addedLayout = currRes.data?.[queryName]?.layouts?.edges.find(
+      //   (edge: any) => edge.node.id === value
+      // )?.node;
+
+      // if (addedLayout) {
+      //   this.layouts.push(addedLayout);
+      //   this.dialogRef.close(addedLayout);
+      // }
+    });
   }
 
   /**
@@ -77,14 +123,5 @@ export class AddLayoutComponent {
           });
       }
     });
-  }
-
-  /**
-   * Selects an existing layout.
-   *
-   * @param choice layout choice.
-   */
-  public onSelect(choice: MatSelectChange): void {
-    this.dialogRef.close(choice.value);
   }
 }

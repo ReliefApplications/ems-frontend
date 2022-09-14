@@ -8,6 +8,8 @@ import { SafeLayoutModule } from '../../layout/layout.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { SafeModalModule } from '../../ui/modal/modal.module';
+import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Module for the addLayout component
@@ -23,6 +25,9 @@ import { SafeModalModule } from '../../ui/modal/modal.module';
     SafeLayoutModule,
     SafeButtonModule,
     SafeModalModule,
+    SafeGraphQLSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   exports: [AddLayoutComponent],
 })
