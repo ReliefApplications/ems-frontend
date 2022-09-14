@@ -10,11 +10,10 @@
     <h4></h4>
     <input type="color" matInput formControlName="color" />
   </mat-form-field>
-  <safe-tab-filter
+  <safe-filter
     [form]="$any(form.controls.filter)"
     [fields]="fields"
-    [query]="query.getRawValue()"
-  ></safe-tab-filter>
+  ></safe-filter>
 </form>
 <div mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>{{ 'common.close' | translate }}</button>

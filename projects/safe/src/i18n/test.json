@@ -217,6 +217,7 @@
 		"saveChanges": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"send": "******",
 		"settings": "******",
 		"status": "******",
 		"status_active": "******",
@@ -261,6 +262,19 @@
 			"canUpdate": "******",
 			"description": "****** {{name}} ******",
 			"title": "******"
+		},
+		"aggregation": {
+			"add": {
+				"choice": {
+					"create": "******",
+					"load": "******"
+				},
+				"select": "******",
+				"title": "******"
+			},
+			"edit": {
+				"title": "******"
+			}
 		},
 		"aggregationBuilder": {
 			"accumulators": "******",
@@ -389,9 +403,11 @@
 		},
 		"emailBuilder": {
 			"body": "******",
+			"default": "******",
 			"distribution": "******",
 			"fields": "******",
-			"subject": "******"
+			"subject": "******",
+			"withoutRecords": "******"
 		},
 		"form": {
 			"create": {
@@ -705,6 +721,12 @@
 			},
 			"update": {
 				"permissions": "******",
+				"title": "******"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "******",
 				"title": "******"
 			}
 		},

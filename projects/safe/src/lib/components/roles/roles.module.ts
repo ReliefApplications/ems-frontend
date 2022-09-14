@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * SafeRolesModule manages modules and components for the roles page
@@ -30,6 +31,7 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatButtonModule,
     MatInputModule,
+    SafeModalModule,
   ],
   exports: [SafeRolesComponent],
 })

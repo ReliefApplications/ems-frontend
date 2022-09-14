@@ -39,15 +39,13 @@
   (edit)="onEditAccess($event)"
   [search]="search.toLowerCase().trim()"
 ></safe-role-workflows>
-<div
+<safe-empty
   *ngIf="
     !loading &&
     dashboards.length === 0 &&
     forms.length === 0 &&
     workflows.length === 0
   "
-  class="empty-features"
+  [title]="'components.role.summary.noFeatures' | translate"
 >
-  <safe-icon icon="folder_open"></safe-icon>
-  <h3>{{ 'components.role.summary.noFeatures' | translate }}</h3>
-</div>
+</safe-empty>

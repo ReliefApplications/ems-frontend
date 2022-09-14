@@ -8,7 +8,7 @@ import {
   SafeConfirmModalComponent,
   Resource,
 } from '@safe/builder';
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
   GetResourceByIdQueryResponse,
@@ -30,6 +30,16 @@ export class LayoutsTabComponent implements OnInit {
 
   public displayedColumnsLayouts: string[] = ['name', 'createdAt', '_actions'];
 
+  // ==== PAGINATION ====
+  private layoutsQuery!: QueryRef<GetResourceByIdQueryResponse>;
+  private cachedLayouts: Layout[] = [];
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: 10,
+    length: 0,
+    endCursor: '',
+  };
+
   /**
    * Layouts tab of resource page
    *
@@ -49,19 +59,91 @@ export class LayoutsTabComponent implements OnInit {
     const state = history.state;
     this.resource = get(state, 'resource', null);
 
-    this.apollo
-      .query<GetResourceByIdQueryResponse>({
-        query: GET_RESOURCE_LAYOUTS,
-        variables: {
-          id: this.resource.id,
-        },
-      })
-      .subscribe((res) => {
-        if (res.data.resource) {
-          this.layouts = res.data.resource.layouts || [];
+    this.layoutsQuery = this.apollo.watchQuery<GetResourceByIdQueryResponse>({
+      query: GET_RESOURCE_LAYOUTS,
+      variables: {
+        id: this.resource.id,
+      },
+    });
+
+    this.layoutsQuery.valueChanges.subscribe((res) => {
+      this.loading = false;
+      if (res.data.resource) {
+        this.cachedLayouts =
+          res.data.resource.layouts?.edges.map((e) => e.node) || [];
+        this.layouts = this.cachedLayouts.slice(
+          this.pageInfo.pageSize * this.pageInfo.pageIndex,
+          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+        );
+        this.pageInfo.length = res.data.resource.layouts?.totalCount || 0;
+        this.pageInfo.endCursor =
+          res.data.resource.layouts?.pageInfo.endCursor || '';
+      }
+    });
+  }
+
+  /**
+   * Handles page event.
+   *
+   * @param e page event.
+   */
+  onPage(e: any): void {
+    this.pageInfo.pageIndex = e.pageIndex;
+    // Checks if with new page/size more data needs to be fetched
+    if (
+      (e.pageIndex > e.previousPageIndex ||
+        e.pageSize > this.pageInfo.pageSize) &&
+      e.length > this.cachedLayouts.length
+    ) {
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let first = e.pageSize;
+      // If the fetch is for a new page size, the old page size is substracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        first -= this.pageInfo.pageSize;
+      }
+      this.fetchLayouts();
+    } else {
+      this.layouts = this.cachedLayouts.slice(
+        e.pageSize * this.pageInfo.pageIndex,
+        e.pageSize * (this.pageInfo.pageIndex + 1)
+      );
+    }
+    this.pageInfo.pageSize = e.pageSize;
+  }
+
+  /**
+   * Fetches layouts from resource.
+   *
+   */
+  private fetchLayouts(): void {
+    this.loading = true;
+    this.layoutsQuery.fetchMore({
+      variables: {
+        id: this.resource.id,
+        first: this.pageInfo.pageSize,
+        afterCursor: this.pageInfo.endCursor,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult?.resource.layouts || !prev.resource?.layouts) {
+          return prev;
         }
-        this.loading = false;
-      });
+        return {
+          resource: {
+            ...fetchMoreResult.resource,
+            layouts: {
+              edges: [
+                ...prev.resource.layouts.edges,
+                ...fetchMoreResult.resource.layouts.edges,
+              ],
+              pageInfo: fetchMoreResult.resource.layouts.pageInfo,
+              totalCount: fetchMoreResult.resource.layouts.totalCount,
+            },
+          },
+          loading: fetchMoreResult.loading,
+        };
+      },
+    });
   }
 
   /**
@@ -73,11 +155,6 @@ export class LayoutsTabComponent implements OnInit {
       data: {
         queryName: this.resource.queryName,
       },
-      position: {
-        bottom: '0',
-        right: '0',
-      },
-      panelClass: 'tile-settings-dialog',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -85,10 +162,7 @@ export class LayoutsTabComponent implements OnInit {
           .addLayout(value, this.resource.id)
           .subscribe((res: any) => {
             if (res.data.addLayout) {
-              this.layouts = [
-                ...(this.resource.layouts || []),
-                res.data?.addLayout,
-              ];
+              this.layouts = [...this.layouts, res.data?.addLayout];
             }
           });
       }
@@ -106,11 +180,6 @@ export class LayoutsTabComponent implements OnInit {
       data: {
         layout,
       },
-      position: {
-        bottom: '0',
-        right: '0',
-      },
-      panelClass: 'tile-settings-dialog',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

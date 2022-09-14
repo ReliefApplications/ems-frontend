@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeConfirmModalComponent } from './confirm-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * SafeConfirmModalModule is a class used to manage all the modules and components
@@ -10,6 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
  */
 @NgModule({
   declarations: [SafeConfirmModalComponent],
-  imports: [CommonModule, MatDialogModule, MatButtonModule],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, SafeModalModule],
 })
 export class SafeConfirmModalModule {}

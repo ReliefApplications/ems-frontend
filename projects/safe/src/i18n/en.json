@@ -217,6 +217,7 @@
 		"saveChanges": "Save changes",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
+		"send": "Send",
 		"settings": "Settings",
 		"status": "Status",
 		"status_active": "Active",
@@ -261,6 +262,19 @@
 			"canUpdate": "Can update",
 			"description": "Update {{name}} permissions",
 			"title": "Access"
+		},
+		"aggregation": {
+			"add": {
+				"choice": {
+					"create": "Create a new aggregation",
+					"load": "Load existing aggregation"
+				},
+				"select": "Select an aggregation",
+				"title": "Add new aggregation"
+			},
+			"edit": {
+				"title": "Aggregation configuration"
+			}
 		},
 		"aggregationBuilder": {
 			"accumulators": "Accumulators",
@@ -389,9 +403,11 @@
 		},
 		"emailBuilder": {
 			"body": "Body",
+			"default": "Default",
 			"distribution": "Distribution list",
 			"fields": "Select fields to write in body",
-			"subject": "Subject"
+			"subject": "Subject",
+			"withoutRecords": "Without records"
 		},
 		"form": {
 			"create": {
@@ -706,6 +722,12 @@
 			"update": {
 				"permissions": "Permissions",
 				"title": "Update role permissions and channels"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "Copy to clipboard",
+				"title": "Share dashboard url"
 			}
 		},
 		"user": {

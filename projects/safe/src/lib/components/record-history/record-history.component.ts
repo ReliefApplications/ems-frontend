@@ -244,9 +244,6 @@ export class SafeRecordHistoryComponent implements OnInit {
           ?.version,
         template: this.template,
       },
-      height: '98%',
-      width: '100vw',
-      panelClass: 'full-screen-modal',
       autoFocus: false,
     });
     dialogRef.afterClosed().subscribe((value) => {

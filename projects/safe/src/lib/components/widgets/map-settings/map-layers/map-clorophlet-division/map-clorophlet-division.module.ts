@@ -7,7 +7,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { SafeQueryBuilderModule } from '../../../../query-builder/query-builder.module';
+import { SafeFilterModule } from '../../../../filter/filter.module';
 
 /**
  * Single Division of clorophlet configuration module.
@@ -23,7 +23,7 @@ import { SafeQueryBuilderModule } from '../../../../query-builder/query-builder.
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    SafeQueryBuilderModule,
+    SafeFilterModule,
   ],
   exports: [MapClorophletDivisionComponent],
 })

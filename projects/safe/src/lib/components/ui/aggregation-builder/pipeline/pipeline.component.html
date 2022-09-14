@@ -28,12 +28,10 @@
     </mat-expansion-panel-header>
     <ng-container [ngSwitch]="stageForm.value.type">
       <ng-container *ngSwitchCase="stageType.FILTER">
-        <safe-tab-filter
+        <safe-filter
           [form]="$any(stageForm).controls.form"
           [fields]="fieldsPerStage[index]"
-          [metaFields]="metaFields"
-        >
-        </safe-tab-filter>
+        ></safe-filter>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.SORT">
         <safe-tab-sort

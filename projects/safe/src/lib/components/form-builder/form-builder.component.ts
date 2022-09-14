@@ -266,7 +266,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         renderGlobalProperties(this.referenceDataService)
       )
     );
-    this.surveyCreator.survey.locale = this.translate.currentLang;
+    // this.surveyCreator.survey.locale = this.translate.currentLang; // -> set the defaultLanguage property also
   }
 
   /**

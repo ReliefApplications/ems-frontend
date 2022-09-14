@@ -17,6 +17,7 @@ import { SafeFieldDropdownComponent } from './field-dropdown/field-dropdown.comp
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../icon/icon.module';
+import { SafeFilterModule } from '../../../filter/filter.module';
 
 /**
  * Aggregation builder pipeline module.
@@ -44,6 +45,7 @@ import { SafeIconModule } from '../../icon/icon.module';
     DragDropModule,
     SafeIconModule,
     MatTooltipModule,
+    SafeFilterModule,
   ],
   exports: [
     SafePipelineComponent,

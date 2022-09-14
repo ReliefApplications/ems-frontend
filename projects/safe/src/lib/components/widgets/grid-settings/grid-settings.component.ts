@@ -7,7 +7,7 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -21,19 +21,13 @@ import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application.service';
 import { Form } from '../../../models/form.model';
-import {
-  addNewField,
-  createQueryForm,
-} from '../../query-builder/query-builder-forms';
 import { Observable } from 'rxjs';
 import { Overlay } from '@angular/cdk/overlay';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { Resource } from '../../../models/resource.model';
-import get from 'lodash/get';
-
-/** Default action name */
-const DEFAULT_ACTION_NAME = 'Action';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { createGridWidgetFormGroup } from './grid-settings.forms';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -52,7 +46,7 @@ const DEFAULT_ACTION_NAME = 'Action';
 })
 export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
-  tileForm: FormGroup | undefined;
+  public formGroup!: FormGroup;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -68,31 +62,26 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public fields: any[] = [];
   public queryName = '';
   public relatedForms: Form[] = [];
-  public tabIndex = 0;
 
   // === DATASET AND TEMPLATES ===
   public templates: Form[] = [];
-  public availableQueries?: Observable<any[]>;
-  public allQueries: any[] = [];
+  private availableQueries?: Observable<any[]>;
+  private allQueries: any[] = [];
   public filteredQueries: any[] = [];
   public form: Form | null = null;
   public resource: Resource | null = null;
 
-  /** @returns List of the floating buttons */
-  get floatingButtons(): FormArray {
-    return (this.tileForm?.controls.floatingButtons as FormArray) || null;
-  }
+  /** Stores the selected tab */
+  public selectedTab = 0;
 
   /**
    * Constructor of the grid settings component
    *
-   * @param formBuilder The form builder of Angular
    * @param apollo The apollo client
    * @param applicationService The application service
    * @param queryBuilder The query builder service
    */
   constructor(
-    private formBuilder: FormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
     private queryBuilder: QueryBuilderService
@@ -101,66 +90,32 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
-    this.tileForm = this.formBuilder.group({
-      id: this.tile.id,
-      title: [
-        tileSettings && tileSettings.title ? tileSettings.title : '',
-        Validators.required,
-      ],
-      query: this.formBuilder.group({
-        name: [
-          tileSettings.query ? tileSettings.query.name : '',
-          Validators.required,
-        ],
-        template: [tileSettings.query ? tileSettings.query.template : '', null],
-      }),
-      layouts: [tileSettings?.layouts || [], Validators.required],
-      resource: [
-        tileSettings && tileSettings.resource ? tileSettings.resource : null,
-      ],
-      actions: this.formBuilder.group({
-        delete: [get(tileSettings, 'actions.delete', true)],
-        history: [get(tileSettings, 'actions.history', true)],
-        convert: [get(tileSettings, 'actions.convert', true)],
-        update: [get(tileSettings, 'actions.update', true)],
-        inlineEdition: [get(tileSettings, 'actions.inlineEdition', true)],
-        addRecord: [get(tileSettings, 'actions.addRecord', false)],
-        export: [get(tileSettings, 'actions.export', true)],
-        showDetails: [get(tileSettings, 'actions.showDetails', true)],
-      }),
-      floatingButtons: this.formBuilder.array(
-        tileSettings.floatingButtons && tileSettings.floatingButtons.length
-          ? tileSettings.floatingButtons.map((x: any) =>
-              this.createFloatingButtonForm(x)
-            )
-          : [this.createFloatingButtonForm(null)]
-      ),
-    });
+    this.formGroup = createGridWidgetFormGroup(this.tile.id, tileSettings);
     this.availableQueries = this.queryBuilder.availableQueries$;
     this.availableQueries.subscribe((res) => {
       if (res && res.length > 0) {
         this.allQueries = res.map((x) => x.name);
         this.filteredQueries = this.filterQueries(
-          this.tileForm?.value.query.name
+          this.formGroup?.value.query.name
         );
       }
     });
-    this.tileForm?.get('query.name')?.valueChanges.subscribe((res) => {
+    this.formGroup?.get('query.name')?.valueChanges.subscribe((res) => {
       this.filteredQueries = this.filterQueries(res);
     });
 
-    this.queryName = this.tileForm.get('query')?.value.name;
+    this.queryName = this.formGroup.get('query')?.value.name;
     this.getQueryMetaData();
 
-    this.tileForm.get('query.name')?.valueChanges.subscribe((name) => {
+    this.formGroup.get('query.name')?.valueChanges.subscribe((name) => {
       if (name) {
         // Check if the query changed to clean modifications and fields for email in floating button
         if (name !== this.queryName) {
           this.queryName = name;
-          this.tileForm?.get('layouts')?.setValue([]);
-          this.tileForm?.get('query.template')?.setValue(null);
-          this.tileForm?.get('query.template')?.enable();
-          const floatingButtons = this.tileForm?.get(
+          this.formGroup?.get('layouts')?.setValue([]);
+          this.formGroup?.get('query.template')?.setValue(null);
+          this.formGroup?.get('query.template')?.enable();
+          const floatingButtons = this.formGroup?.get(
             'floatingButtons'
           ) as FormArray;
           for (const floatingButton of floatingButtons.controls) {
@@ -168,7 +123,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
               'modifications'
             ) as FormArray;
             modifications.clear();
-            this.tileForm
+            this.formGroup
               ?.get('floatingButton.modifySelectedRows')
               ?.setValue(false);
             const bodyFields = floatingButton.get('bodyFields') as FormArray;
@@ -183,9 +138,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.tileForm) {
-      this.tileForm.valueChanges.subscribe(() => {
-        this.change.emit(this.tileForm);
+    if (this.formGroup) {
+      this.formGroup.valueChanges.subscribe(() => {
+        this.change.emit(this.formGroup);
       });
 
       this.applicationService.application$.subscribe(
@@ -216,129 +171,26 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Floating button form factory.
-   *
-   * @param value default value ( if any )
-   * @returns new form group for the floating button.
-   */
-  private createFloatingButtonForm(value: any): FormGroup {
-    const buttonForm = this.formBuilder.group({
-      show: [value && value.show ? value.show : false, Validators.required],
-      name: [
-        value && value.name ? value.name : DEFAULT_ACTION_NAME,
-        Validators.required,
-      ],
-      selectAll: [value && value.selectAll ? value.selectAll : false],
-      selectPage: [value && value.selectPage ? value.selectPage : false],
-      goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
-      prefillForm: [value && value.prefillForm ? value.prefillForm : false],
-      prefillTargetForm: [
-        value && value.prefillTargetForm ? value.prefillTargetForm : null,
-        value && value.prefillForm ? Validators.required : null,
-      ],
-      closeWorkflow: [
-        value && value.closeWorkflow ? value.closeWorkflow : false,
-      ],
-      confirmationText: [
-        value && value.confirmationText ? value.confirmationText : '',
-        value && value.closeWorkflow ? Validators.required : null,
-      ],
-      autoSave: [value && value.autoSave ? value.autoSave : false],
-      modifySelectedRows: [value ? value.modifySelectedRows : false],
-      modifications: this.formBuilder.array(
-        value && value.modifications && value.modifications.length
-          ? value.modifications.map((x: any) =>
-              this.formBuilder.group({
-                field: [x.field, Validators.required],
-                value: [x.value, Validators.required],
-              })
-            )
-          : []
-      ),
-      attachToRecord: [
-        value && value.attachToRecord ? value.attachToRecord : false,
-      ],
-      targetForm: [value && value.targetForm ? value.targetForm : null],
-      targetFormField: [
-        value && value.targetFormField ? value.targetFormField : null,
-      ],
-      targetFormQuery: createQueryForm(
-        value && value.targetFormQuery ? value.targetFormQuery : null,
-        Boolean(value && value.targetForm)
-      ),
-      notify: [value && value.notify ? value.notify : false],
-      notificationChannel: [
-        value && value.notificationChannel ? value.notificationChannel : null,
-        value && value.notify ? Validators.required : null,
-      ],
-      notificationMessage: [
-        value && value.notificationMessage
-          ? value.notificationMessage
-          : 'Records update',
-      ],
-      publish: [value && value.publish ? value.publish : false],
-      publicationChannel: [
-        value && value.publicationChannel ? value.publicationChannel : null,
-        value && value.publish ? Validators.required : null,
-      ],
-      sendMail: [value && value.sendMail ? value.sendMail : false],
-      distributionList: [
-        value && value.distributionList ? value.distributionList : [],
-        value && value.sendMail ? Validators.required : null,
-      ],
-      subject: [
-        value && value.subject ? value.subject : '',
-        value && value.sendMail ? Validators.required : null,
-      ],
-      export: [value && value.export ? value.export : false],
-      bodyFields: this.formBuilder.array(
-        value && value.bodyFields
-          ? value.bodyFields.map((x: any) => addNewField(x))
-          : [],
-        value && value.sendMail ? Validators.required : null
-      ),
-      bodyText: [value && value.bodyText ? value.bodyText : ''],
-      bodyTextAlternate: [
-        value && value.bodyTextAlternate ? value.bodyTextAlternate : '',
-      ],
-    });
-    return buttonForm;
-  }
-
-  /**
-   * Adds a floating button configuration.
-   */
-  public addFloatingButton(): void {
-    const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
-    floatingButtons.push(this.createFloatingButtonForm({ show: true }));
-  }
-
-  /**
-   * Deletes a floating button configuration.
-   */
-  public deleteFloatingButton(): void {
-    const floatingButtons = this.tileForm?.get('floatingButtons') as FormArray;
-    floatingButtons.removeAt(this.tabIndex);
-    this.tabIndex = 0;
-  }
-
-  /**
    * Gets query metadata for grid settings, from the query name
    */
   private getQueryMetaData(): void {
     this.fields = this.queryBuilder.getFields(this.queryName);
     const query = this.queryBuilder.sourceQuery(this.queryName);
     if (query) {
+      const layoutIDs: string[] | undefined =
+        this.formGroup?.get('layouts')?.value;
       query.subscribe((res1: { data: any }) => {
         // eslint-disable-next-line no-underscore-dangle
         const source = res1.data[`_${this.queryName}Meta`]._source;
-        this.tileForm?.get('resource')?.setValue(source);
+        this.formGroup?.get('resource')?.setValue(source);
         if (source) {
           this.apollo
             .query<GetResourceByIdQueryResponse>({
               query: GET_GRID_RESOURCE_META,
               variables: {
                 resource: source,
+                layoutIds: layoutIDs,
+                first: layoutIDs?.length || 10,
               },
             })
             .subscribe((res2) => {
@@ -348,6 +200,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
                     query: GET_GRID_FORM_META,
                     variables: {
                       id: source,
+                      layoutIds: layoutIDs,
+                      first: layoutIDs?.length || 10,
                     },
                   })
                   .subscribe((res3) => {
@@ -360,10 +214,10 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
                       this.form = res3.data.form;
                       this.resource = null;
                       this.templates = [res3.data.form] || [];
-                      this.tileForm
+                      this.formGroup
                         ?.get('query.template')
                         ?.setValue(res3.data.form.id);
-                      this.tileForm?.get('query.template')?.disable();
+                      this.formGroup?.get('query.template')?.disable();
                     }
                   });
               } else {
@@ -392,5 +246,14 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   private filterQueries(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.allQueries.filter((x) => x.toLowerCase().includes(filterValue));
+  }
+
+  /**
+   *  Handles the a tab change event
+   *
+   * @param event Event triggered on tab switch
+   */
+  handleTabChange(event: MatTabChangeEvent): void {
+    this.selectedTab = event.index;
   }
 }

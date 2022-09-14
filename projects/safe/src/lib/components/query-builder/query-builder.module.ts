@@ -33,6 +33,8 @@ import { SafeIconModule } from '../ui/icon/icon.module';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.component';
+import { SafeFilterModule } from '../filter/filter.module';
+import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
 
 /**
  * SafeQueryBuilderModule is a class used to manage all the modules and components
@@ -50,6 +52,7 @@ import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.comp
     SafeQueryStyleComponent,
     SafeQueryStylePreviewComponent,
     SafeTabPaginationComponent,
+    DateFilterEditorComponent,
   ],
   imports: [
     CommonModule,
@@ -77,6 +80,7 @@ import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.comp
     SafeCoreGridModule,
     MatSliderModule,
     MatDatepickerModule,
+    SafeFilterModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

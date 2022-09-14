@@ -1,0 +1,36 @@
+<safe-modal [closable]="true" size="fullscreen">
+  <h1 mat-dialog-title>
+    {{ 'components.aggregation.edit.title' | translate }}
+  </h1>
+  <mat-dialog-content>
+    <form [formGroup]="formGroup">
+      <div class="form-group">
+        <div class="form-group-title">{{ 'common.general' | translate }}</div>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'common.name' | translate }}</mat-label>
+          <input matInput formControlName="name" type="string" />
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <safe-aggregation-builder
+          [resource]="resource"
+          [aggregationForm]="formGroup"
+        ></safe-aggregation-builder>
+      </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <safe-button mat-dialog-close>
+      {{ 'common.close' | translate }}
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      cdkFocusInitial
+      [disabled]="!formGroup.valid"
+    >
+      {{ 'common.save' | translate }}
+    </safe-button>
+  </mat-dialog-actions>
+</safe-modal>

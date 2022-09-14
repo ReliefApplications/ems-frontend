@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   DeleteResourceMutationResponse,
   DELETE_RESOURCE,
@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
-import { AddResourceComponent } from '../../../components/add-resource/add-resource.component';
+import { AddResourceModalComponent } from '../../../components/add-resource-modal/add-resource-modal.component';
 
 /**
  * Default number of resources that will be shown at once.
@@ -82,6 +82,8 @@ export class ResourcesComponent implements OnInit {
       query: GET_RESOURCES_EXTENDED,
       variables: {
         first: DEFAULT_PAGE_SIZE,
+        sortField: 'name',
+        sortOrder: 'asc',
       },
     });
 
@@ -122,7 +124,7 @@ export class ResourcesComponent implements OnInit {
       this.loading = true;
       this.resourcesQuery.fetchMore({
         variables: {
-          first,
+          first: this.pageInfo.pageSize,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter,
         },
@@ -310,9 +312,7 @@ export class ResourcesComponent implements OnInit {
    * Creates a new form on closed if result.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddResourceComponent, {
-      panelClass: 'add-dialog',
-    });
+    const dialogRef = this.dialog.open(AddResourceModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };

@@ -1,0 +1,18 @@
+:host {
+  flex: 1;
+  display: flex;
+}
+
+mat-tab-group {
+  flex: 1;
+}
+
+.map-default-settings {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  mat-form-field {
+    flex: 1;
+  }
+}

@@ -6,12 +6,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
-import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule } from '@angular/material/select';
 import { MapClorophletDivisionModule } from '../map-clorophlet-division/map-clorophlet-division.module';
+import { SafeModalModule } from '../../../../ui/modal/modal.module';
 
 /**
  * Single Clorophlet Configuration in Map Settings Module.
@@ -26,12 +25,11 @@ import { MapClorophletDivisionModule } from '../map-clorophlet-division/map-clor
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
     MatTableModule,
     MatSliderModule,
     MatSelectModule,
-    SafeButtonModule,
     MapClorophletDivisionModule,
+    SafeModalModule,
   ],
   exports: [MapClorophletComponent],
 })
