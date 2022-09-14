@@ -145,8 +145,8 @@
       </ng-template>
     </mat-expansion-panel>
   </ng-container>
-  <div *ngIf="filterHistory.length === 0" class="empty-history">
-    <safe-icon icon="folder_open"></safe-icon>
-    <h3>{{ 'components.history.empty' | translate }}</h3>
-  </div>
+  <safe-empty
+    *ngIf="filterHistory.length === 0"
+    [title]="'components.history.empty' | translate"
+  ></safe-empty>
 </div>

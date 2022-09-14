@@ -1,3 +1,4 @@
+import { Aggregation } from './aggregation.model';
 import { LayoutConnection } from './layout.model';
 import { Record } from './record.model';
 import { Resource } from './resource.model';
@@ -44,5 +45,6 @@ export interface Form {
   canCreateRecords?: boolean;
   uniqueRecord?: Record;
   layouts?: LayoutConnection;
+  aggregations?: Aggregation[];
   metadata?: any[];
 }

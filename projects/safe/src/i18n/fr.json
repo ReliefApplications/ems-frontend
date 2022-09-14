@@ -262,6 +262,19 @@
 			"description": "Modifier les permissions de {{name}}",
 			"title": "Accès"
 		},
+		"aggregation": {
+			"add": {
+				"choice": {
+					"create": "Créer une nouvelle agrégation",
+					"load": "Charger une agrégation"
+				},
+				"select": "Sélectionner une agrégation",
+				"title": "Ajouter une agrégation"
+			},
+			"edit": {
+				"title": "Paramètres d'agrégation"
+			}
+		},
 		"aggregationBuilder": {
 			"accumulators": "Accumulateurs",
 			"addField": "Ajouter un champ",
