@@ -42,7 +42,7 @@ import { SafeIconModule } from './components/ui/icon/icon.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
 import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
 import { SafeModalModule } from './components/ui/modal/modal.module';
-import { SafeEmptyModule } from '../public-api';
+import { SafeEmptyModule } from './components/ui/empty/empty.module';
 
 /** Main module for the safe project */
 @NgModule({
