@@ -99,10 +99,11 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
           </table>
-          <div *ngIf="filteredSteps.length === 0" class="empty-steps">
-            <safe-icon icon="folder_open"></safe-icon>
-            <h3>{{ 'components.role.summary.noSteps' | translate }}</h3>
-          </div>
+          <safe-empty
+            *ngIf="filteredSteps.length === 0"
+            [title]="'components.role.summary.noSteps' | translate"
+          >
+          </safe-empty>
         </div>
       </td>
     </ng-container>
