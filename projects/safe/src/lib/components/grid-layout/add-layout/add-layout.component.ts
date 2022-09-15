@@ -22,7 +22,7 @@ import { FormControl } from '@angular/forms';
  * Data needed for the dialog, should contain a layouts array, a form and a resource
  */
 interface DialogData {
-  layouts: Layout[];
+  hasLayouts: boolean;
   form?: Form;
   resource?: Resource;
 }
@@ -39,7 +39,7 @@ interface DialogData {
 export class AddLayoutComponent implements OnInit {
   private form?: Form;
   public resource?: Resource;
-  public layouts: Layout[] = [];
+  public hasLayouts = false;
   public nextStep = false;
   public queryRef!:
     | QueryRef<GetResourceLayoutsResponse>
@@ -63,7 +63,7 @@ export class AddLayoutComponent implements OnInit {
     private gridLayoutService: SafeGridLayoutService,
     private apollo: Apollo
   ) {
-    this.layouts = data.layouts;
+    this.hasLayouts = data.hasLayouts;
     this.form = data.form;
     this.resource = data.resource;
   }

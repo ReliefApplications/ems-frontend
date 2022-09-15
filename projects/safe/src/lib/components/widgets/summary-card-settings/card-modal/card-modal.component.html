@@ -19,6 +19,8 @@
           <safe-data-source-tab
             [form]="form"
             [selectedResource]="selectedResource"
+            [selectedLayout]="selectedLayout"
+            (layoutChange)="handleLayoutChange($event)"
           ></safe-data-source-tab>
         </mat-tab>
         <!-- Selection of record -->
@@ -31,7 +33,7 @@
         >
           <safe-value-selector-tab
             [form]="form"
-            [settings]="gridSettings"
+            [settings]="selectedLayout"
           ></safe-value-selector-tab>
         </mat-tab>
         <!-- Card display settings -->

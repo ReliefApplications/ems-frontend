@@ -94,13 +94,11 @@ export class LayoutsComponent implements OnInit, OnChanges {
    * Adds a new layout to the list.
    */
   public onAdd(): void {
-    const layouts =
-      (this.form ? this.form.layouts : this.resource?.layouts)?.edges?.map(
-        (e) => e.node
-      ) || [];
+    const layoutsCount =
+      (this.form ? this.form.layouts : this.resource?.layouts)?.totalCount || 0;
     const dialogRef = this.dialog.open(AddLayoutComponent, {
       data: {
-        layouts,
+        hasLayouts: layoutsCount > 0,
         form: this.form,
         resource: this.resource,
       },
