@@ -39,13 +39,16 @@
         <mat-label>{{
           'components.aggregation.add.select' | translate
         }}</mat-label>
-        <mat-select (selectionChange)="onSelect($event)">
-          <mat-option
-            *ngFor="let aggregation of aggregations"
-            [value]="aggregation.id"
-            >{{ aggregation.name }}</mat-option
-          >
-        </mat-select>
+        <safe-graphql-select
+          *ngIf="queryRef"
+          valueField="id"
+          textField="name"
+          path="aggregations"
+          [required]="true"
+          [query]="queryRef"
+          [formControl]="selectedAggregationControl"
+        >
+        </safe-graphql-select>
       </mat-form-field>
     </div>
   </div>
