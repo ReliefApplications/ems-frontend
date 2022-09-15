@@ -10,13 +10,6 @@ export const GET_RESOURCE_BY_ID = gql`
       queryName
       createdAt
       fields
-      layouts {
-        id
-        name
-        createdAt
-        query
-        display
-      }
       forms {
         id
         name

@@ -177,6 +177,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     this.fields = this.queryBuilder.getFields(this.queryName);
     const query = this.queryBuilder.sourceQuery(this.queryName);
     if (query) {
+      const layoutIDs: string[] | undefined =
+        this.formGroup?.get('layouts')?.value;
       query.subscribe((res1: { data: any }) => {
         // eslint-disable-next-line no-underscore-dangle
         const source = res1.data[`_${this.queryName}Meta`]._source;
@@ -187,6 +189,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
               query: GET_GRID_RESOURCE_META,
               variables: {
                 resource: source,
+                layoutIds: layoutIDs,
+                first: layoutIDs?.length || 10,
               },
             })
             .subscribe((res2) => {
@@ -196,6 +200,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
                     query: GET_GRID_FORM_META,
                     variables: {
                       id: source,
+                      layoutIds: layoutIDs,
+                      first: layoutIDs?.length || 10,
                     },
                   })
                   .subscribe((res3) => {

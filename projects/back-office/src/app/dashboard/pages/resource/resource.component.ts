@@ -1,11 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  SafeDownloadService,
-  SafeSnackBarService,
-  SafeBreadcrumbService,
-} from '@safe/builder';
+import { SafeSnackBarService, SafeBreadcrumbService } from '@safe/builder';
 import {
   EditResourceMutationResponse,
   EDIT_RESOURCE,
@@ -19,7 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 /**
  * Array of tab names sorted by position index.
  */
-const ROUTE_TABS: string[] = ['records', 'forms', 'layouts'];
+const ROUTE_TABS: string[] = ['records', 'forms', 'layouts', 'aggregations'];
 
 /**
  * Component used to display resource in a table.
@@ -42,7 +38,6 @@ export class ResourceComponent implements OnInit {
    * @param route Used to get route arguments.
    * @param router Used to change app route.
    * @param snackBar Service used to show a snackbar.
-   * @param downloadService Service used to download.
    * @param translate Service used to get translations.
    * @param breadcrumbService Shared breadcrumb service
    */
@@ -51,7 +46,6 @@ export class ResourceComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SafeSnackBarService,
-    private downloadService: SafeDownloadService,
     private translate: TranslateService,
     private breadcrumbService: SafeBreadcrumbService
   ) {}

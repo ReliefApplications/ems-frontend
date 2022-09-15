@@ -14,6 +14,7 @@ import {
   SafeSkeletonTableModule,
 } from '@safe/builder';
 import { LayoutsTabComponent } from './layouts-tab.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 /**
  * Layouts tab of resource page
@@ -33,6 +34,7 @@ import { LayoutsTabComponent } from './layouts-tab.component';
     OverlayModule,
     SafeDateModule,
     SafeSkeletonTableModule,
+    MatPaginatorModule,
   ],
 })
 export class LayoutsTabModule {}
