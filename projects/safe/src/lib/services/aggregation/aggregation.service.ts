@@ -11,9 +11,22 @@ import {
   GetResourceByIdQueryResponse,
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
-import { Aggregation } from '../../models/aggregation.model';
+import {
+  Aggregation,
+  AggregationConnection,
+} from '../../models/aggregation.model';
 import { Apollo } from 'apollo-angular';
 
+/** Fallback AggregationConnection */
+const FALLBACK_AGGREGATIONS: AggregationConnection = {
+  edges: [],
+  totalCount: 0,
+  pageInfo: {
+    startCursor: null,
+    endCursor: null,
+    hasNextPage: false,
+  },
+};
 /**
  * Shared service to manage aggregations.
  */
@@ -32,33 +45,29 @@ export class SafeAggregationService {
    * Gets list of aggregation from resourceId
    *
    * @param resourceId resourceId id
-   * @param ids selected aggregation ( optional )
-   * @returns list of aggregation
+   * @param options query options
+   * @param options.ids list of aggregation id
+   * @param options.first number of items to get
    */
   async getAggregations(
     resourceId: string,
-    ids?: string[]
-  ): Promise<Aggregation[]> {
+    options: { ids?: string[]; first?: number }
+  ): Promise<AggregationConnection> {
     return await this.apollo
       .query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_AGGREGATIONS,
         variables: {
           resource: resourceId,
+          ids: options.ids,
+          first: options.first,
         },
       })
       .toPromise()
       .then(async (res) => {
         if (res.errors) {
-          return [];
+          return FALLBACK_AGGREGATIONS;
         } else {
-          const aggregations = res.data.resource.aggregations || [];
-          return ids
-            ? aggregations
-                .filter((x) => x.id && ids.includes(x.id))
-                .sort(
-                  (a, b) => ids.indexOf(a.id || '') - ids.indexOf(b.id || '')
-                )
-            : [];
+          return res.data.resource.aggregations || FALLBACK_AGGREGATIONS;
         }
       });
   }

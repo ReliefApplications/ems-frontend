@@ -86,11 +86,12 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     this.loading = true;
     if (this.settings.resource) {
       this.aggregationService
-        .getAggregations(this.settings.resource, [
-          get(this.settings, 'chart.aggregationId', null),
-        ])
+        .getAggregations(this.settings.resource, {
+          ids: [get(this.settings, 'chart.aggregationId', null)],
+          first: 1,
+        })
         .then((res) => {
-          const aggregation = res[0] || null;
+          const aggregation = res.edges[0]?.node || null;
           if (aggregation) {
             this.dataQuery = this.aggregationBuilder.buildAggregation(
               this.settings.resource,

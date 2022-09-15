@@ -7,3 +7,17 @@ export interface Aggregation {
   sourceFields?: any;
   pipeline?: any;
 }
+
+/** Model for AggregationConnection object */
+export interface AggregationConnection {
+  totalCount: number;
+  edges: {
+    node: Aggregation;
+    cursor: string;
+  }[];
+  pageInfo: {
+    startCursor: string | null;
+    endCursor: string | null;
+    hasNextPage: boolean;
+  };
+}

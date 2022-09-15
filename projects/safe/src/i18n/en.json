@@ -410,6 +410,11 @@
 			"withoutRecords": "Without records"
 		},
 		"form": {
+			"aggregation": {
+				"delete": {
+					"confirmationMessage": "Do you confirm the deletion of the aggregation {{name}}?"
+				}
+			},
 			"create": {
 				"choice": {
 					"inherit": "Create from template",
@@ -887,6 +892,13 @@
 						"showDetails": "Show record details",
 						"title": "Enabled actions",
 						"update": "Update records"
+					},
+					"aggregations": {
+						"add": {
+							"choice": {
+								"create": "Create a new aggregation"
+							}
+						}
 					},
 					"buttons": {
 						"callback": {

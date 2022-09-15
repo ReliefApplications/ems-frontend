@@ -19,24 +19,32 @@
       [active]="selectedTab === 0"
       routerLink="./records"
       [state]="{ resource }"
-      >{{ 'common.record.few' | translate }}</a
-    >
+      >{{ 'common.record.few' | translate }}
+    </a>
     <a
       mat-tab-link
       (click)="selectedTab = 1"
       [active]="selectedTab === 1"
       routerLink="./forms"
       [state]="{ resource }"
-      >{{ 'common.form.few' | translate }}</a
-    >
+      >{{ 'common.form.few' | translate }}
+    </a>
     <a
       mat-tab-link
       (click)="selectedTab = 2"
       [active]="selectedTab === 2"
       routerLink="./layouts"
       [state]="{ resource }"
-      >{{ 'common.layout.few' | translate }}</a
-    >
+      >{{ 'common.layout.few' | translate }}
+    </a>
+    <a
+      mat-tab-link
+      (click)="selectedTab = 3"
+      [active]="selectedTab === 3"
+      routerLink="./aggregations"
+      [state]="{ resource }"
+      >{{ 'common.aggregation.few' | translate }}
+    </a>
   </nav>
   <mat-tab-nav-panel #tabPanel>
     <router-outlet></router-outlet>

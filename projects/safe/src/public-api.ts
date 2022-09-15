@@ -19,6 +19,7 @@ export * from './lib/services/reference-data.service';
 export * from './lib/services/kendo-translation.service';
 export * from './lib/services/date-translate.service';
 export * from './lib/services/breadcrumb.service';
+export * from './lib/services/aggregation/aggregation.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -44,10 +45,12 @@ export * from './lib/models/position-attribute.model';
 export * from './lib/models/apiConfiguration.model';
 export * from './lib/models/pullJob.model';
 export * from './lib/models/layout.model';
+export * from './lib/models/aggregation.model';
 export * from './lib/models/reference-data.model';
 export * from './lib/models/setting.model';
 
 // === COMPONENTS ===
+export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 export * from './lib/components/layout/public-api';
 export * from './lib/components/access/public-api';
 export * from './lib/components/form/public-api';

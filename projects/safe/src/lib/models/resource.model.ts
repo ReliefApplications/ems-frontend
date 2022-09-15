@@ -1,4 +1,4 @@
-import { Aggregation } from './aggregation.model';
+import { AggregationConnection } from './aggregation.model';
 import { Form } from './form.model';
 import { LayoutConnection } from './layout.model';
 import { RecordConnection } from './record.model';
@@ -18,7 +18,7 @@ export interface Resource {
   canDelete?: boolean;
   coreForm?: Form;
   layouts?: LayoutConnection;
-  aggregations?: Aggregation[];
+  aggregations?: AggregationConnection;
   rolePermissions?: {
     canCreateRecords: any;
     canSeeRecords: any;
