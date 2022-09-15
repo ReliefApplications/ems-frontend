@@ -84,17 +84,20 @@ export class TabMainComponent implements OnInit {
    * @param id resource id
    */
   private getResource(id: string): void {
+    const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
     this.apollo
       .query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE,
         variables: {
           id,
+          aggregationId,
         },
       })
       .subscribe((res) => {
         this.resource = res.data.resource;
-        if (this.formGroup.get('chart.aggregationId')) {
-          this.getAggregation(this.formGroup.get('chart.aggregationId')?.value);
+        if (aggregationId && this.resource.aggregations?.edges[0]) {
+          this.aggregation = this.resource.aggregations.edges[0].node;
+          this.setAvailableSeriesFields();
         }
       });
   }
@@ -124,18 +127,6 @@ export class TabMainComponent implements OnInit {
   }
 
   /**
-   * Get aggregation by id in list of available aggregations.
-   *
-   * @param id aggregation id
-   */
-  private getAggregation(id: string): void {
-    this.aggregation = this.resource?.aggregations?.edges.find(
-      (x) => x.node.id === id
-    )?.node;
-    this.setAvailableSeriesFields();
-  }
-
-  /**
    * Adds a new aggregation to the list.
    */
   public addAggregation(): void {
@@ -147,14 +138,8 @@ export class TabMainComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        if (typeof value === 'string') {
-          this.formGroup.get('chart.aggregationId')?.setValue(value);
-          this.getAggregation(value);
-        } else {
-          this.formGroup.get('chart.aggregationId')?.setValue(value.id);
-          this.getResource(this.resource?.id as string);
-          // this.getAggregation(value.id);
-        }
+        this.formGroup.get('chart.aggregationId')?.setValue(value.id);
+        this.aggregation = value;
       }
     });
   }

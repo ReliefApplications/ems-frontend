@@ -8,6 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { SafeModalModule } from '../../ui/modal/modal.module';
 import { SafeEditAggregationModalModule } from '../edit-aggregation-modal/edit-aggregation-modal.module';
+import { SafeGraphQLSelectModule } from '../../../components/graphql-select/graphql-select.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Modal to add new aggregation
@@ -23,6 +25,8 @@ import { SafeEditAggregationModalModule } from '../edit-aggregation-modal/edit-a
     SafeButtonModule,
     SafeModalModule,
     SafeEditAggregationModalModule,
+    SafeGraphQLSelectModule,
+    ReactiveFormsModule,
   ],
   exports: [AddAggregationModalComponent],
 })

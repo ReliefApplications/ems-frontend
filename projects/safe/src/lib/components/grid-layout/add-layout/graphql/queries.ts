@@ -28,7 +28,7 @@ export const GET_RESOURCE_LAYOUTS = gql`
   }
 `;
 
-/** Model for GetResourceDetailsQueryResponse object */
+/** Model for GetResourceLayoutsResponse object */
 export interface GetResourceLayoutsResponse {
   loading: boolean;
   resource: Resource;
@@ -58,7 +58,7 @@ export const GET_FORM_LAYOUTS = gql`
   }
 `;
 
-/** Model for GetFormDetailsQueryResponse object */
+/** Model for GetFormLayoutsResponse object */
 export interface GetFormLayoutsResponse {
   loading: boolean;
   form: Form;
