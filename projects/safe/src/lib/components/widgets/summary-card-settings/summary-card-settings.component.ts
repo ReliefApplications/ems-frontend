@@ -13,15 +13,9 @@ import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
-import { Apollo } from 'apollo-angular';
 import { cloneDeep, get } from 'lodash';
-import { QueryBuilderService } from '../../../services/query-builder.service';
 import { SafeAddCardComponent } from './add-card/add-card.component';
 import { SafeCardModalComponent } from './card-modal/card-modal.component';
-import {
-  GetResourceLayoutsByIdQueryResponse,
-  GET_RESOURCE_LAYOUTS,
-} from './graphql/queries';
 
 /** Define max height of summary card */
 const MAX_ROW_SPAN = 4;

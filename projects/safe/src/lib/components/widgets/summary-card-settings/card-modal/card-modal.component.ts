@@ -19,7 +19,6 @@ import {
 import { Layout } from '../../../../models/layout.model';
 import { Resource } from '../../../../models/resource.model';
 import get from 'lodash/get';
-import { cloneDeep } from 'lodash';
 
 /**
  * Card modal component.
