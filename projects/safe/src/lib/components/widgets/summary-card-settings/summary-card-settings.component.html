@@ -21,9 +21,11 @@
       <safe-button
         (click)="addCard()"
         icon="add"
-        [disabled]="tileForm.get('isDynamic')?.value && this.cards.length === 1">{{
-        'components.widget.settings.summaryCard.add' | translate
-      }}</safe-button>
+        [disabled]="tileForm.get('isDynamic')?.value && this.cards.length === 1"
+        >{{
+          'components.widget.settings.summaryCard.add' | translate
+        }}</safe-button
+      >
     </div>
     <kendo-tilelayout
       [columns]="colsNumber"
