@@ -30,9 +30,9 @@ export class SafeDataSourceTabComponent implements OnInit {
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
   /** @returns the aggregation form */
-  public get aggregationForm(): FormGroup {
-    return createAggregationForm(null, '');
-  }
+  // public get aggregationForm(): FormGroup {
+  //   return createAggregationForm(null, '');
+  // }
 
   /**
    * SafeDataSourceTabComponent constructor
@@ -53,18 +53,18 @@ export class SafeDataSourceTabComponent implements OnInit {
       first: ITEMS_PER_PAGE,
       sortField: 'name',
     };
-    if (this.aggregationForm.value.dataSource) {
-      variables.filter = {
-        logic: 'and',
-        filters: [
-          {
-            field: 'ids',
-            operator: 'in',
-            value: [this.aggregationForm.value.dataSource],
-          },
-        ],
-      };
-    }
+    // if (this.aggregationForm.value.dataSource) {
+    //   variables.filter = {
+    //     logic: 'and',
+    //     filters: [
+    //       {
+    //         field: 'ids',
+    //         operator: 'in',
+    //         value: [this.aggregationForm.value.dataSource],
+    //       },
+    //     ],
+    //   };
+    // }
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables,

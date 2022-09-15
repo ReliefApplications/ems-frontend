@@ -134,8 +134,9 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     if (!card) return;
 
     this.gridLayoutService
-      .getLayouts(card.resource, [card.layout])
-      .then((layouts) => {
+      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
+      .then((res) => {
+        const layouts = res.edges.map((edge) => edge.node);
         if (layouts.length > 0) {
           const layoutQuery = layouts[0].query;
           const builtQuery = this.queryBuilder.buildQuery({
@@ -152,19 +153,19 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             fetchPolicy: 'network-only',
             nextFetchPolicy: 'cache-first',
           });
-          this.dataQuery.valueChanges.subscribe((res) => {
-            for (const field in res.data) {
-              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-                const newCards = res.data[field].edges.map((e: any) => ({
+          this.dataQuery.valueChanges.subscribe((res2) => {
+            for (const field in res2.data) {
+              if (Object.prototype.hasOwnProperty.call(res2.data, field)) {
+                const newCards = res2.data[field].edges.map((e: any) => ({
                   ...this.settings.cards[0],
                   record: e.node.id,
                 }));
                 this.cards = [...this.cards, ...newCards];
                 this.pageInfo.hasNextPage =
-                  get(res.data[field], 'totalCount', 0) > this.cards.length;
+                  get(res2.data[field], 'totalCount', 0) > this.cards.length;
               }
             }
-            this.loading = res.loading;
+            this.loading = res2.loading;
           });
         }
       });
