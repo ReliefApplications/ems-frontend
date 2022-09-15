@@ -88,6 +88,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
       this.aggregationService
         .getAggregations(this.settings.resource, {
           ids: [get(this.settings, 'chart.aggregationId', null)],
+          first: 1,
         })
         .then((res) => {
           const aggregation = res.edges[0]?.node || null;

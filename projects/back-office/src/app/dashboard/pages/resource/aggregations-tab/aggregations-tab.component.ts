@@ -12,7 +12,7 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
   GetResourceByIdQueryResponse,
-  GET_RESOURCE_LAYOUTS,
+  GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
 
 /**
@@ -65,7 +65,7 @@ export class AggregationsTabComponent implements OnInit {
 
     this.aggregationsQuery =
       this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-        query: GET_RESOURCE_LAYOUTS,
+        query: GET_RESOURCE_AGGREGATIONS,
         variables: {
           id: this.resource.id,
         },

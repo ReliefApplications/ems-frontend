@@ -1,8 +1,8 @@
 import { gql } from 'apollo-angular';
 import { Resource } from '@safe/builder';
 
-/** Graphql query for getting a resource by its id */
-export const GET_RESOURCE_LAYOUTS = gql`
+/** Graphql query for getting resource aggregations */
+export const GET_RESOURCE_AGGREGATIONS = gql`
   query GetResourceById($id: ID!, $first: Int, $afterCursor: ID) {
     resource(id: $id) {
       id
@@ -11,10 +11,8 @@ export const GET_RESOURCE_LAYOUTS = gql`
           node {
             id
             name
-            ${/** dataSource */ ''}
             sourceFields
             pipeline
-            ${/** mapping */ ''}
             createdAt
           }
         }

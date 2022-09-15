@@ -10,9 +10,7 @@ import { SafeEditAggregationModalComponent } from '../edit-aggregation-modal/edi
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import {
-  GetFormAggregationsResponse,
   GetResourceAggregationsResponse,
-  GET_FORM_AGGREGATIONS,
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -42,10 +40,7 @@ export class AddAggregationModalComponent implements OnInit {
   public aggregations: Aggregation[] = [];
   public nextStep = false;
 
-  public queryRef!:
-    | QueryRef<GetResourceAggregationsResponse>
-    | QueryRef<GetFormAggregationsResponse>
-    | null;
+  public queryRef!: QueryRef<GetResourceAggregationsResponse>;
 
   public selectedAggregationControl = new FormControl('');
 
@@ -72,30 +67,16 @@ export class AddAggregationModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.resource)
-      this.queryRef = this.apollo.watchQuery<GetResourceAggregationsResponse>({
-        query: GET_RESOURCE_AGGREGATIONS,
-        variables: {
-          resource: this.resource?.id,
-        },
-      });
-    else if (this.form)
-      this.queryRef = this.apollo.watchQuery<GetFormAggregationsResponse>({
-        query: GET_FORM_AGGREGATIONS,
-        variables: {
-          form: this.form?.id,
-        },
-      });
+    this.queryRef = this.apollo.watchQuery<GetResourceAggregationsResponse>({
+      query: GET_RESOURCE_AGGREGATIONS,
+      variables: {
+        resource: this.resource?.id,
+      },
+    });
 
     // emits selected aggregation
     this.selectedAggregationControl.valueChanges.subscribe((value) => {
-      if (!this.queryRef || !value) return;
-      const currRes = this.queryRef.getCurrentResult() as any;
-      const queryName = this.resource ? 'resource' : 'form';
-      const selectedAggregation = currRes.data?.[
-        queryName
-      ]?.aggregations?.edges.find((edge: any) => edge.node.id === value)?.node;
-      this.dialogRef.close(selectedAggregation);
+      this.dialogRef.close(value);
     });
   }
 

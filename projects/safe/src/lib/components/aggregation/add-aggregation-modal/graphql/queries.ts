@@ -33,33 +33,3 @@ export interface GetResourceAggregationsResponse {
   loading: boolean;
   resource: Resource;
 }
-
-/** Graphql request for getting form aggregations by its id */
-export const GET_FORM_AGGREGATIONS = gql`
-  query GetFormAggregations($form: ID!, $first: Int, $afterCursor: ID) {
-    form(id: $form) {
-      aggregations(first: $first, afterCursor: $afterCursor) {
-        edges {
-          node {
-            id
-            name
-            sourceFields
-            pipeline
-            createdAt
-          }
-        }
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
-        totalCount
-      }
-    }
-  }
-`;
-
-/** Model for GetFormAggregationsResponse object */
-export interface GetFormAggregationsResponse {
-  loading: boolean;
-  form: Form;
-}

@@ -4,12 +4,12 @@ import { Resource } from '../../../models/resource.model';
 // === GET RELATED FORMS FROM RESOURCE ===
 /** Graphql request to get resource aggregations */
 export const GET_RESOURCE_AGGREGATIONS = gql`
-  query GetGridResourceMeta($resource: ID!) {
+  query GetGridResourceMeta($resource: ID!, $ids: [ID], $first: Int) {
     resource(id: $resource) {
       id
       name
       queryName
-      aggregations {
+      aggregations(ids: $ids, first: $first) {
         edges {
           node {
             id
