@@ -85,6 +85,8 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
           }
           this.loading = false;
         });
+    } else {
+      this.loading = false;
     }
   }
 
