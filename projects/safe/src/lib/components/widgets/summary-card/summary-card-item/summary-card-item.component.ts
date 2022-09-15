@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  TemplateRef,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
@@ -21,7 +27,7 @@ import { clone, get } from 'lodash';
   templateUrl: './summary-card-item.component.html',
   styleUrls: ['./summary-card-item.component.scss'],
 })
-export class SummaryCardItemComponent implements OnInit {
+export class SummaryCardItemComponent implements OnInit, OnChanges {
   @Input() card!: any;
   public fields: any[] = [];
   public record: Record | null = null;
@@ -45,6 +51,10 @@ export class SummaryCardItemComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.setContent();
+  }
+
+  ngOnChanges() {
     this.setContent();
   }
 

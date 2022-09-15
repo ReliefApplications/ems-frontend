@@ -13,11 +13,12 @@
   ></safe-button>
   <kendo-pdf-export #pdf paperSize="A4" margin="2cm" style="overflow: auto">
     <div
+      #summaryCardGrid
       class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
       style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
     >
       <safe-summary-card-item
-        *ngFor="let card of settings.cards; let i = index"
+        *ngFor="let card of cards; let i = index"
         class="k-tilelayout-item k-card"
         [style.order]="i"
         style.grid-column-end="{{

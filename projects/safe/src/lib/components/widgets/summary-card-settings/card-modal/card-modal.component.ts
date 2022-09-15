@@ -51,7 +51,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    * Card modal component.
    * Used as a Material Dialog.
    *
-   * @param data dialog data
+   * @param data card form value
    * @param dialogRef Material Dialog Ref of the component
    * @param fb Angular form builder
    * @param cdRef Change detector
@@ -69,10 +69,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    * Creates a formGroup with the data provided in the modal creation and gets the resource data used in the card.
    */
   ngOnInit(): void {
-    this.form = this.fb.group({
-      ...this.data,
-    });
-
+    this.form = this.fb.group({ ...this.data });
     if (this.form.value.resource) {
       this.getResource(this.form.value.resource);
     }
@@ -181,7 +178,9 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    * @returns Returns a boolean.
    */
   isEditorTab(): boolean {
-    return this.activeTabIndex === 3;
+    return this.form.get('isDynamic')?.value
+      ? this.activeTabIndex === 2
+      : this.activeTabIndex === 3;
   }
 
   /**

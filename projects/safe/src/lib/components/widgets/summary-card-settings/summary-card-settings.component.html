@@ -18,7 +18,10 @@
           'components.widget.settings.summaryCard.dynamic' | translate
         }}</mat-radio-button>
       </mat-radio-group>
-      <safe-button (click)="addCard()" icon="add">{{
+      <safe-button
+        (click)="addCard()"
+        icon="add"
+        [disabled]="tileForm.get('isDynamic')?.value && this.cards.length === 1">{{
         'components.widget.settings.summaryCard.add' | translate
       }}</safe-button>
     </div>
