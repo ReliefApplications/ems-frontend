@@ -74,6 +74,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     return this.tileForm?.get('cards') as FormArray;
   }
 
+  // To prevent issues where dynamic would erase all cards
   private cachedCards: any = undefined;
 
   /**
@@ -87,7 +88,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   /**
    * Build the settings form, using the widget saved parameters.
    */
-  async ngOnInit() {
+  ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.tileForm = this.fb.group({
       id: this.tile.id,
