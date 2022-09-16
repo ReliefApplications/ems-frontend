@@ -27,6 +27,10 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
   toolbar_mode: 'sliding',
   contextmenu: 'link image imagetools table',
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
+  help_tabs: [
+    'shortcuts', // the default shortcuts tab
+    'keyboardnav', // the default keyboard navigation tab
+  ],
 };
 
 /** Email Editor tinymce configuration. */
