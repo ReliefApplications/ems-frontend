@@ -7,7 +7,7 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormArray, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -70,6 +70,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public filteredQueries: any[] = [];
   public form: Form | null = null;
   public resource: Resource | null = null;
+  public aggregation: any = null;
 
   /** Stores the selected tab */
   public selectedTab = 0;
@@ -135,6 +136,22 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         this.fields = [];
       }
     });
+
+    this.formGroup
+      .get('useAggregationBuilder')
+      ?.valueChanges.subscribe((val) => {
+        if (!this.formGroup.value.useAggregationBuilder) {
+          this.formGroup.controls.aggregationId.setValidators([
+            Validators.required,
+          ]);
+          this.formGroup.controls.layouts.clearValidators();
+        } else {
+          this.formGroup.controls.aggregationId.clearValidators();
+          this.formGroup.controls.layouts.setValidators([Validators.required]);
+        }
+        this.formGroup.controls.aggregationId.updateValueAndValidity();
+        this.formGroup.controls.layouts.updateValueAndValidity();
+      });
   }
 
   ngAfterViewInit(): void {

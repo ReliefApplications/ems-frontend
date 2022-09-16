@@ -21,8 +21,7 @@ export class TabMainComponent implements OnChanges {
   @Input() resource: Resource | null = null;
   @Input() queries: any[] = [];
   @Input() templates: Form[] = [];
-
-  public aggregation: any;
+  @Input() aggregation: any;
 
   /**
    * Constructor for tab-main component on grid-settings
