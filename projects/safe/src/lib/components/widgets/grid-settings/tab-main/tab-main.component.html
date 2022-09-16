@@ -36,14 +36,57 @@
       </mat-form-field>
     </div>
   </ng-container>
-</div>
-<div class="form-group" *ngIf="form || resource">
-  <h2>
-    {{ 'components.widget.settings.grid.layouts.title' | translate }}
-  </h2>
-  <safe-layouts
-    [form]="form"
-    [resource]="resource"
-    [selectedLayouts]="$any(formGroup).get('layouts')"
-  ></safe-layouts>
+  <mat-slide-toggle formControlName="useAggregationBuilder">
+    Use aggregation builder
+  </mat-slide-toggle>
+  <ng-container *ngIf="!formGroup.value.useAggregationBuilder">
+    <div class="form-group" *ngIf="form || resource">
+      <h2>
+        {{ 'components.widget.settings.grid.layouts.title' | translate }}
+      </h2>
+      <safe-layouts
+        [form]="form"
+        [resource]="resource"
+        [selectedLayouts]="$any(formGroup).get('layouts')"
+      ></safe-layouts>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="formGroup.value.useAggregationBuilder">
+    <div class="form-group" *ngIf="resource">
+      <h2>{{ 'common.aggregation.one' | translate }}</h2>
+      <ng-container *ngIf="formGroup.value.aggregationId && aggregation">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'common.aggregation.one' | translate }}</mat-label>
+          <mat-select [disabled]="true" [value]="aggregation.id">
+            <mat-option [value]="aggregation.id">{{
+              aggregation.name
+            }}</mat-option>
+          </mat-select>
+          <safe-button
+            matSuffix
+            variant="primary"
+            [isIcon]="true"
+            icon="edit"
+            (click)="editAggregation()"
+          ></safe-button>
+          <safe-button
+            matSuffix
+            variant="danger"
+            [isIcon]="true"
+            icon="close"
+            (click)="removeAggregation()"
+          ></safe-button>
+        </mat-form-field>
+      </ng-container>
+      <ng-container *ngIf="!formGroup.value.aggregationId">
+        <safe-button
+          [block]="true"
+          category="tertiary"
+          variant="primary"
+          (click)="addAggregation()"
+          >{{ 'components.aggregation.add.title' | translate }}</safe-button
+        >
+      </ng-container>
+    </div>
+  </ng-container>
 </div>

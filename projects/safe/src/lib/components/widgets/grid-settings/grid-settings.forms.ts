@@ -116,6 +116,11 @@ export const createGridWidgetFormGroup = (
       configuration && configuration.title ? configuration.title : '',
       Validators.required,
     ],
+    useAggregationBuilder: [
+      configuration.useAggregationBuilder
+        ? configuration.useAggregationBuilder
+        : false,
+    ],
     query: fb.group({
       name: [
         configuration.query ? configuration.query.name : '',
@@ -124,6 +129,7 @@ export const createGridWidgetFormGroup = (
       template: [configuration.query ? configuration.query.template : '', null],
     }),
     layouts: [configuration?.layouts || [], Validators.required],
+    aggregationId: [configuration?.aggregationId || null],
     resource: [
       configuration && configuration.resource ? configuration.resource : null,
     ],

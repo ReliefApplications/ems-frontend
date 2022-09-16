@@ -5,10 +5,12 @@
       settings.title
     }}</span>
     <ng-container *ngTemplateOutlet="layoutsTemplate"></ng-container>
-    <ng-container *ngTemplateOutlet="floatingButtons"></ng-container>
+    <ng-container *ngIf="!gridSettings.useAggregationBuilder">
+      <ng-container *ngTemplateOutlet="floatingButtons"></ng-container>
+    </ng-container>
   </kendo-tilelayout-item-header>
   <!-- FULL WINDOW VIEW -->
-  <ng-container *ngIf="!header">
+  <ng-container *ngIf="!header && !gridSettings.useAggregationBuilder">
     <ng-container *ngTemplateOutlet="floatingButtons"></ng-container>
   </ng-container>
   <!-- GRID CONTENT -->

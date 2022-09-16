@@ -292,17 +292,32 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public configureGrid(): void {
     // define row actions
     this.actions = {
-      add:
-        get(this.settings, 'actions.addRecord', false) &&
-        this.settings.template,
-      history: get(this.settings, 'actions.history', false),
-      update: get(this.settings, 'actions.update', false),
-      delete: get(this.settings, 'actions.delete', false),
-      convert: get(this.settings, 'actions.convert', false),
-      export: get(this.settings, 'actions.export', true),
-      showDetails: get(this.settings, 'actions.showDetails', true),
+      add: this.settings.useAggregationBuilder
+        ? false
+        : get(this.settings, 'actions.addRecord', false) &&
+          this.settings.template,
+      history: this.settings.useAggregationBuilder
+        ? false
+        : get(this.settings, 'actions.history', false),
+      update: this.settings.useAggregationBuilder
+        ? false
+        : get(this.settings, 'actions.update', false),
+      delete: this.settings.useAggregationBuilder
+        ? false
+        : get(this.settings, 'actions.delete', false),
+      convert: this.settings.useAggregationBuilder
+        ? false
+        : get(this.settings, 'actions.convert', false),
+      export: this.settings.useAggregationBuilder
+        ? false
+        : get(this.settings, 'actions.export', true),
+      showDetails: this.settings.useAggregationBuilder
+        ? false
+        : get(this.settings, 'actions.showDetails', true),
     };
-    this.editable = this.settings.actions?.inlineEdition;
+    this.editable = this.settings.useAggregationBuilder
+      ? false
+      : this.settings.actions?.inlineEdition;
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
     this.hasLayoutChanges = this.settings.defaultLayout
       ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout))
