@@ -8,6 +8,7 @@ import { FormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { SafeLayoutModalComponent } from '../layout-modal/layout-modal.component';
+import get from 'lodash/get';
 
 /**
  * Layouts list configuration for grid widgets
@@ -90,14 +91,11 @@ export class LayoutsComponent implements OnInit, OnChanges {
    * Adds a new layout to the list.
    */
   public onAdd(): void {
-    const layoutsCount =
-      (this.form
-        ? this.form.layouts?.totalCount
-        : this.resource?.layouts?.totalCount) || 0;
-
     const dialogRef = this.dialog.open(AddLayoutComponent, {
       data: {
-        hasLayouts: layoutsCount > 0,
+        hasLayouts:
+          get(this.form ? this.form : this.resource, 'layouts.totalCount', 0) >
+          0, // check if at least one existing layout
         form: this.form,
         resource: this.resource,
       },

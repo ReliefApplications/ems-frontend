@@ -58,6 +58,7 @@ export class SafeDataSourceTabComponent implements OnInit {
    * Gets the selected resource data
    */
   ngOnInit(): void {
+    console.log(this.selectedResource);
     // Initialize radioValue
     this.radioValue = this.form.value.isAggregation;
 
@@ -96,11 +97,10 @@ export class SafeDataSourceTabComponent implements OnInit {
 
   /** Opens modal for layout selection/creation */
   public addLayout() {
-    const layoutsCount = this.selectedResource?.layouts?.totalCount || 0;
     const dialogRef = this.dialog.open(AddLayoutComponent, {
       data: {
         resource: this.selectedResource,
-        hasLayouts: layoutsCount > 0,
+        hasLayouts: get(this.selectedResource, 'layouts.totalCount', 0) > 0,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

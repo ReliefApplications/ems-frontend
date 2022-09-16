@@ -6,7 +6,6 @@ import {
 } from '@angular/material/dialog';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Form } from '../../../models/form.model';
-import { Layout } from '../../../models/layout.model';
 import { Resource } from '../../../models/resource.model';
 import { SafeLayoutModalComponent } from '../layout-modal/layout-modal.component';
 import { Apollo, QueryRef } from 'apollo-angular';
