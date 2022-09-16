@@ -50,4 +50,8 @@ export const EMAIL_EDITOR_CONFIG: RawEditorSettings = {
   contextmenu: 'link image imagetools table',
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
   file_browser_callback: false, // removes possibility to upload files
+  help_tabs: [
+    'shortcuts', // the default shortcuts tab
+    'keyboardnav', // the default keyboard navigation tab
+  ],
 };
