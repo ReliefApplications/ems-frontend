@@ -50,6 +50,6 @@ export const EMAIL_EDITOR_CONFIG = {
   file_browser_callback: false, // removes possibility to upload files
   help_tabs: [
     'shortcuts', // the default shortcuts tab
-    'keyboardnav' // the default keyboard navigation tab
-  ]
+    'keyboardnav', // the default keyboard navigation tab
+  ],
 };
