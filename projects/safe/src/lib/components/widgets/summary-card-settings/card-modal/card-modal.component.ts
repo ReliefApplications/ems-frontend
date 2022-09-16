@@ -15,6 +15,8 @@ import {
   GetResourceByIdQueryResponse,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
+  GetLayoutQueryResponse,
+  GET_LAYOUT,
 } from './graphql/queries';
 import { Layout } from '../../../../models/layout.model';
 import { Resource } from '../../../../models/resource.model';
@@ -35,15 +37,12 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   // === CURRENT TAB ===
   private activeTabIndex: number | undefined;
 
-  // === GRID FOR RECORD SELECTION SETTINGS ===
-  public gridSettings: any;
-
   // === RECORD DATA ===
   public selectedRecord: any;
 
   public form!: FormGroup;
 
-  private layouts: Layout[] = [];
+  public selectedLayout: Layout | null = null;
   public selectedResource: Resource | null = null;
   public fields: any[] = [];
 
@@ -74,13 +73,18 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
       this.getResource(this.form.value.resource);
     }
 
-    this.form.controls.resource.valueChanges.subscribe((value: any) =>
-      this.getResource(value)
-    );
+    this.form.controls.resource.valueChanges.subscribe((value: any) => {
+      this.form.get('layout')?.setValue(null);
+      this.form.get('record')?.setValue(null);
+      this.selectedLayout = null;
+      this.getResource(value);
+    });
 
-    this.form.controls.layout.valueChanges.subscribe((value: any) => {
-      if (this.layouts) {
-        this.gridSettings = this.findLayout(this.layouts, value);
+    this.form.controls.layout.valueChanges.subscribe((value: string) => {
+      if (value) {
+        this.getLayout(value);
+      } else {
+        this.selectedLayout = null;
       }
     });
 
@@ -126,11 +130,13 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    * @param id resource id
    */
   private getResource(id: string): void {
+    const layoutID = this.form.value.layout;
     this.apollo
       .query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE,
         variables: {
           id,
+          layout: layoutID ? [layoutID] : undefined,
         },
       })
       .subscribe((res) => {
@@ -143,18 +149,30 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
         } else {
           this.selectedResource = res.data.resource;
           this.fields = get(res, 'data.resource.metadata', []);
-          this.layouts = get(res, 'data.resource.layouts', []);
-          this.gridSettings = this.findLayout(
-            this.layouts,
-            this.form.value.layout
-          );
-          if (!this.gridSettings) {
-            this.form.patchValue({
-              layout: null,
-              record: null,
-            });
-          }
+          if (layoutID)
+            this.selectedLayout =
+              res.data?.resource.layouts?.edges[0]?.node || null;
         }
+      });
+  }
+
+  /**
+   * Gets the resource's layout by id.
+   *
+   * @param id layout id
+   */
+  private getLayout(id: string): void {
+    this.apollo
+      .query<GetLayoutQueryResponse>({
+        query: GET_LAYOUT,
+        variables: {
+          id,
+          resource: this.selectedResource?.id,
+        },
+      })
+      .subscribe((res) => {
+        this.selectedLayout =
+          res.data?.resource.layouts?.edges[0]?.node || null;
       });
   }
 
@@ -193,27 +211,19 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Updates modified layout
+   *
+   * @param layout the modified layout
+   */
+  handleLayoutChange(layout: Layout) {
+    this.selectedLayout = layout;
+  }
+
+  /**
    * Initializes the active tab variable.
    */
   ngAfterViewInit() {
     this.activeTabIndex = this.tabGroup.selectedIndex;
     this.cdRef.detectChanges();
-  }
-
-  /**
-   * Search the an specific layout in an array.
-   *
-   * @param layouts Array of layout objects.
-   * @param layoutToFind String with the layout id to find.
-   * @returns Returns the layout if found, if not null is returned.
-   */
-  private findLayout(layouts: any[], layoutToFind: string): any {
-    let result = null;
-    layouts.map((layout: any) => {
-      if (layout.id === layoutToFind) {
-        result = layout;
-      }
-    });
-    return result;
   }
 }

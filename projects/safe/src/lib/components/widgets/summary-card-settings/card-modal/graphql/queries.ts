@@ -4,7 +4,7 @@ import { Record } from '../../../../../models/record.model';
 
 /** Graphql request for getting resource meta date for a grid */
 export const GET_RESOURCE = gql`
-  query GetResource($id: ID!) {
+  query GetResource($id: ID!, $layoutIds: [ID]) {
     resource(id: $id) {
       id
       name
@@ -13,12 +13,17 @@ export const GET_RESOURCE = gql`
         id
         name
       }
-      layouts {
-        id
-        name
-        query
-        createdAt
-        display
+      layouts(ids: $layoutIds) {
+        edges {
+          node {
+            id
+            name
+            query
+            createdAt
+            display
+          }
+        }
+        totalCount
       }
       metadata
     }
@@ -74,6 +79,9 @@ export const GET_RESOURCES = gql`
             id
             name
           }
+          layouts {
+            totalCount
+          }
         }
         cursor
       }
@@ -100,4 +108,29 @@ export interface GetResourcesQueryResponse {
     };
     totalCount: number;
   };
+}
+
+/** Graphql request for getting resource layout */
+export const GET_LAYOUT = gql`
+  query GetLayout($resource: ID!, $id: ID) {
+    resource(id: $resource) {
+      layouts(ids: [$id]) {
+        edges {
+          node {
+            id
+            name
+            query
+            createdAt
+            display
+          }
+        }
+      }
+    }
+  }
+`;
+
+/** Model for GetLayoutQueryResponse object */
+export interface GetLayoutQueryResponse {
+  loading: boolean;
+  resource: Resource;
 }

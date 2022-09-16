@@ -8,6 +8,7 @@ import { FormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { SafeLayoutModalComponent } from '../layout-modal/layout-modal.component';
+import get from 'lodash/get';
 
 /**
  * Layouts list configuration for grid widgets
@@ -77,30 +78,24 @@ export class LayoutsComponent implements OnInit, OnChanges {
    *
    * @param value form control value.
    */
-  private setSelectedLayouts(value: string[] | string): void {
-    if (this.singleInput) {
-      this.layouts = this.allLayouts.filter((x) => x.id && value === x.id);
-    } else {
-      this.layouts =
-        this.allLayouts
-          .filter((x) => x.id && value.includes(x.id))
-          .sort(
-            (a, b) => value.indexOf(a.id || '') - value.indexOf(b.id || '')
-          ) || [];
-    }
+  private setSelectedLayouts(value: string[]): void {
+    this.layouts =
+      this.allLayouts
+        .filter((x) => x.id && value.includes(x.id))
+        .sort(
+          (a, b) => value.indexOf(a.id || '') - value.indexOf(b.id || '')
+        ) || [];
   }
 
   /**
    * Adds a new layout to the list.
    */
   public onAdd(): void {
-    const layouts =
-      (this.form ? this.form.layouts : this.resource?.layouts)?.edges?.map(
-        (e) => e.node
-      ) || [];
     const dialogRef = this.dialog.open(AddLayoutComponent, {
       data: {
-        layouts,
+        hasLayouts:
+          get(this.form ? this.form : this.resource, 'layouts.totalCount', 0) >
+          0, // check if at least one existing layout
         form: this.form,
         resource: this.resource,
       },
@@ -120,10 +115,10 @@ export class LayoutsComponent implements OnInit, OnChanges {
           }
         } else {
           if (typeof value === 'string') {
-            this.selectedLayouts?.setValue(value);
+            this.selectedLayouts?.setValue([value]);
           } else {
             this.allLayouts = [value];
-            this.selectedLayouts?.setValue(value.id);
+            this.selectedLayouts?.setValue([value.id]);
           }
         }
       }
@@ -165,13 +160,9 @@ export class LayoutsComponent implements OnInit, OnChanges {
    * @param layout Layout to remove.
    */
   onDeleteLayout(layout: Layout): void {
-    if (this.singleInput) {
-      this.selectedLayouts?.setValue(
-        this.selectedLayouts?.value.filter((x: string) => x !== layout.id)
-      );
-    } else {
-      this.selectedLayouts?.setValue(null);
-    }
+    this.selectedLayouts?.setValue(
+      this.selectedLayouts?.value.filter((x: string) => x !== layout.id)
+    );
   }
 
   /**
@@ -180,10 +171,8 @@ export class LayoutsComponent implements OnInit, OnChanges {
    * @param event drop event
    */
   public drop(event: any): void {
-    if (!this.singleInput) {
-      const layouts = [...this.selectedLayouts?.value];
-      moveItemInArray(layouts, event.previousIndex, event.currentIndex);
-      this.selectedLayouts?.setValue(layouts);
-    }
+    const layouts = [...this.selectedLayouts?.value];
+    moveItemInArray(layouts, event.previousIndex, event.currentIndex);
+    this.selectedLayouts?.setValue(layouts);
   }
 }
