@@ -19,7 +19,7 @@ export interface Role {
   permissions?: Permission[];
   application?: Application;
   channels?: Channel[];
-  autoAssignments?: CompositeFilterDescriptor[];
+  autoAssignment?: CompositeFilterDescriptor[];
 }
 
 /** Model for Group object. */

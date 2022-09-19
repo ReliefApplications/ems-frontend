@@ -705,19 +705,20 @@
 				"title": "Choose role to simulate"
 			},
 			"summary": {
-				"features": "Features",
-				"noFeatures": "No feature detected",
-				"noForms": "No forms detected",
-				"noSteps": "No steps detected",
-				"title": "Summary",
 				"autoAssignment": {
 					"rule": {
 						"add": "Create assignment rule",
 						"delete": "Delete rule",
+						"edit": "Edit assignment rule",
 						"title": "Rule"
 					},
 					"title": "Automatic assignment"
-				}
+				},
+				"features": "Features",
+				"noFeatures": "No feature detected",
+				"noForms": "No forms detected",
+				"noSteps": "No steps detected",
+				"title": "Summary"
 			},
 			"tooltip": {
 				"allowRecordAccessibility": "Allow this role to see records of {{form}}",

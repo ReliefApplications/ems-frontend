@@ -7,7 +7,11 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatTableModule } from '@angular/material/table';
 import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { EditRoleAutoAssignmentModalModule } from './edit-role-auto-assignment-modal/edit-role-auto-assignment-modal.module';
 
+/**
+ * Component for Auto assignment of role
+ */
 @NgModule({
   declarations: [RoleAutoAssignmentComponent],
   imports: [
@@ -19,6 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatTableModule,
     SafeSkeletonTableModule,
     MatTooltipModule,
+    EditRoleAutoAssignmentModalModule,
   ],
   exports: [RoleAutoAssignmentComponent],
 })
