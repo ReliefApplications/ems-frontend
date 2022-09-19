@@ -5,11 +5,15 @@ import { createAggregationForm } from '../../../../ui/aggregation-builder/aggreg
 import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
 import { Resource } from '../../../../../models/resource.model';
 import { Layout } from '../../../../../models/layout.model';
+import { Aggregation } from '../../../../../models/aggregation.model';
 import { MatDialog } from '@angular/material/dialog';
 import { AddLayoutComponent } from '../../../../grid-layout/add-layout/add-layout.component';
 import { SafeLayoutModalComponent } from '../../../../grid-layout/layout-modal/layout-modal.component';
 import { SafeGridLayoutService } from '../../../../../services/grid-layout.service';
+import { SafeAggregationService } from '../../../../../services/aggregation/aggregation.service';
 import { get } from 'lodash';
+import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
+import { AddAggregationModalComponent } from '../../../../aggregation/add-aggregation-modal/add-aggregation-modal.component';
 
 /**
  * How many resources.forms will be shown on the selector.
@@ -26,9 +30,13 @@ const ITEMS_PER_PAGE = 10;
 })
 export class SafeDataSourceTabComponent implements OnInit {
   @Input() form!: FormGroup;
+
   @Input() selectedResource: Resource | null = null;
   @Input() selectedLayout: Layout | null = null;
-  @Output() layoutChange = new EventEmitter<Layout>();
+  @Input() selectedAggregation: Aggregation | null = null;
+
+  @Output() layoutChange = new EventEmitter<Layout | null>();
+  @Output() aggregationChange = new EventEmitter<Aggregation | null>();
 
   // === RADIO ===
   public radioValue = false;
@@ -36,29 +44,25 @@ export class SafeDataSourceTabComponent implements OnInit {
   // === DATA ===
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
-  /** @returns the aggregation form */
-  // public get aggregationForm(): FormGroup {
-  //   return createAggregationForm(null, '');
-  // }
-
   /**
    * SafeDataSourceTabComponent constructor
    *
    * @param apollo Used for getting the resources and layouts query
    * @param dialog Used for opening the modal for layout selection/creation
-   * @param gridLayoutService Used for editing the layout
+   * @param gridLayoutService Used for editing/adding layouts
+   * @param aggregationService Used for editing/adding aggregations
    */
   constructor(
     private apollo: Apollo,
     private dialog: MatDialog,
-    private gridLayoutService: SafeGridLayoutService
+    private gridLayoutService: SafeGridLayoutService,
+    private aggregationService: SafeAggregationService
   ) {}
 
   /**
    * Gets the selected resource data
    */
   ngOnInit(): void {
-    console.log(this.selectedResource);
     // Initialize radioValue
     this.radioValue = this.form.value.isAggregation;
 
@@ -67,18 +71,7 @@ export class SafeDataSourceTabComponent implements OnInit {
       first: ITEMS_PER_PAGE,
       sortField: 'name',
     };
-    // if (this.aggregationForm.value.dataSource) {
-    //   variables.filter = {
-    //     logic: 'and',
-    //     filters: [
-    //       {
-    //         field: 'ids',
-    //         operator: 'in',
-    //         value: [this.aggregationForm.value.dataSource],
-    //       },
-    //     ],
-    //   };
-    // }
+
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables,
@@ -130,6 +123,54 @@ export class SafeDataSourceTabComponent implements OnInit {
           .editLayout(this.selectedLayout, value, this.selectedResource?.id)
           .subscribe((res: any) => {
             this.layoutChange.emit(res.data?.editLayout || null);
+          });
+      }
+    });
+  }
+
+  /**
+   * Adds a new aggregation for the resource.
+   */
+  addAggregation(): void {
+    const dialogRef = this.dialog.open(AddAggregationModalComponent, {
+      data: {
+        hasAggregations:
+          get(this.selectedResource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
+        resource: this.selectedResource,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        if (typeof value === 'string') {
+          this.form.get('aggregation')?.setValue(value);
+        } else {
+          this.form.get('aggregation')?.setValue(value.id);
+        }
+      }
+    });
+  }
+
+  /**
+   * Edit chosen aggregation, in a modal. If saved, update it.
+   */
+  public editAggregation(): void {
+    const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
+      disableClose: true,
+      data: {
+        resource: this.selectedResource,
+        aggregation: this.selectedAggregation,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value && this.selectedAggregation) {
+        this.aggregationService
+          .editAggregation(
+            this.selectedAggregation,
+            value,
+            this.selectedResource?.id
+          )
+          .subscribe((res) => {
+            this.aggregationChange.emit(res.data?.editAggregation || null);
           });
       }
     });

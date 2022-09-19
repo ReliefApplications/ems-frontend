@@ -17,8 +17,11 @@ import {
   GET_RECORD_BY_ID,
   GetLayoutQueryResponse,
   GET_LAYOUT,
+  GetAggregationQueryResponse,
+  GET_AGGREGATION,
 } from './graphql/queries';
 import { Layout } from '../../../../models/layout.model';
+import { Aggregation } from '../../../../models/aggregation.model';
 import { Resource } from '../../../../models/resource.model';
 import get from 'lodash/get';
 
@@ -43,6 +46,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   public form!: FormGroup;
 
   public selectedLayout: Layout | null = null;
+  public selectedAggregation: Aggregation | null = null;
   public selectedResource: Resource | null = null;
   public fields: any[] = [];
 
@@ -69,17 +73,31 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    */
   ngOnInit(): void {
     this.form = this.fb.group({ ...this.data });
+
+    /** === INITIALIZING FROM SAVED SETTINGS === */
+    // Fetches the specified resource
     if (this.form.value.resource) {
       this.getResource(this.form.value.resource);
     }
 
+    // Fetches the specified record data.
+    if (this.form.value.record) {
+      this.getRecord(this.form.value.record);
+    }
+
+    /** === SETTING UP LISTENERS FOR FORM INPUT === */
+    // Clears layout/record/aggregation inputs and fetches new resource on resource change.
     this.form.controls.resource.valueChanges.subscribe((value: any) => {
       this.form.get('layout')?.setValue(null);
+      this.form.get('aggregation')?.setValue(null);
       this.form.get('record')?.setValue(null);
       this.selectedLayout = null;
+      this.selectedAggregation = null;
+      this.selectedRecord = null;
       this.getResource(value);
     });
 
+    // Fetches new layout on layout selection change
     this.form.controls.layout.valueChanges.subscribe((value: string) => {
       if (value) {
         this.getLayout(value);
@@ -88,10 +106,16 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
       }
     });
 
-    // Fetches the specified record data.
-    if (this.form.value.record) {
-      this.getRecord(this.form.value.record);
-    }
+    // Fetches new aggregation on aggregation selection change
+    this.form.controls.aggregation.valueChanges.subscribe((value: string) => {
+      if (value) {
+        this.getAggregation(value);
+      } else {
+        this.selectedAggregation = null;
+      }
+    });
+
+    // Fetches new record on record selection change
     this.form.controls.record.valueChanges.subscribe((value: any) => {
       if (value) {
         this.getRecord(value);
@@ -131,12 +155,14 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    */
   private getResource(id: string): void {
     const layoutID = this.form.value.layout;
+    const aggregationID = this.form.value.aggregation;
     this.apollo
       .query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE,
         variables: {
           id,
           layout: layoutID ? [layoutID] : undefined,
+          aggregation: aggregationID ? [aggregationID] : undefined,
         },
       })
       .subscribe((res) => {
@@ -144,6 +170,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
           this.form.patchValue({
             resource: null,
             layout: null,
+            aggregation: null,
             record: null,
           });
         } else {
@@ -152,6 +179,10 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
           if (layoutID)
             this.selectedLayout =
               res.data?.resource.layouts?.edges[0]?.node || null;
+
+          if (aggregationID)
+            this.selectedAggregation =
+              res.data?.resource.aggregations?.edges[0]?.node || null;
         }
       });
   }
@@ -173,6 +204,26 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
       .subscribe((res) => {
         this.selectedLayout =
           res.data?.resource.layouts?.edges[0]?.node || null;
+      });
+  }
+
+  /**
+   * Gets the resource's aggregation by id.
+   *
+   * @param id aggregation id
+   */
+  private getAggregation(id: string): void {
+    this.apollo
+      .query<GetAggregationQueryResponse>({
+        query: GET_AGGREGATION,
+        variables: {
+          id,
+          resource: this.selectedResource?.id,
+        },
+      })
+      .subscribe((res) => {
+        this.selectedAggregation =
+          res.data?.resource.aggregations?.edges[0]?.node || null;
       });
   }
 
@@ -215,8 +266,17 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    *
    * @param layout the modified layout
    */
-  handleLayoutChange(layout: Layout) {
+  handleLayoutChange(layout: Layout | null) {
     this.selectedLayout = layout;
+  }
+
+  /**
+   * Updates modified aggregation
+   *
+   * @param aggregation the modified aggregation
+   */
+  handleAggregationChange(aggregation: Aggregation | null) {
+    this.selectedAggregation = aggregation;
   }
 
   /**

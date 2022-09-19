@@ -17,6 +17,7 @@ import { AggregationBuilderService } from '../../../../services/aggregation-buil
 import { QueryBuilderService } from '../../../../services/query-builder.service';
 import { SafeEditAggregationModalComponent } from '../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
+import { get } from 'lodash';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -132,7 +133,7 @@ export class TabMainComponent implements OnInit {
   public addAggregation(): void {
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        aggregations: this.resource?.aggregations,
+        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
         resource: this.resource,
       },
     });

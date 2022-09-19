@@ -4,7 +4,7 @@ import { Record } from '../../../../../models/record.model';
 
 /** Graphql request for getting resource meta date for a grid */
 export const GET_RESOURCE = gql`
-  query GetResource($id: ID!, $layoutIds: [ID]) {
+  query GetResource($id: ID!, $layout: [ID], $aggregation: [ID]) {
     resource(id: $id) {
       id
       name
@@ -13,7 +13,7 @@ export const GET_RESOURCE = gql`
         id
         name
       }
-      layouts(ids: $layoutIds) {
+      layouts(ids: $layout) {
         edges {
           node {
             id
@@ -21,6 +21,18 @@ export const GET_RESOURCE = gql`
             query
             createdAt
             display
+          }
+        }
+        totalCount
+      }
+      aggregations(ids: $aggregation) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
           }
         }
         totalCount
@@ -131,6 +143,31 @@ export const GET_LAYOUT = gql`
 
 /** Model for GetLayoutQueryResponse object */
 export interface GetLayoutQueryResponse {
+  loading: boolean;
+  resource: Resource;
+}
+
+/** Graphql request for getting resource aggregation */
+export const GET_AGGREGATION = gql`
+  query GetAggregation($resource: ID!, $id: ID) {
+    resource(id: $resource) {
+      aggregations(ids: [$id]) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+      }
+    }
+  }
+`;
+
+/** Model for GetAggregationQueryResponse object */
+export interface GetAggregationQueryResponse {
   loading: boolean;
   resource: Resource;
 }

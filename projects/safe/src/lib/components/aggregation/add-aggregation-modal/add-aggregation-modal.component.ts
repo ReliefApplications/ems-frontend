@@ -20,7 +20,7 @@ import { FormControl } from '@angular/forms';
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
  */
 interface DialogData {
-  aggregations: Aggregation[];
+  hasAggregations: boolean;
   form?: Form;
   resource?: Resource;
 }
@@ -37,7 +37,7 @@ interface DialogData {
 export class AddAggregationModalComponent implements OnInit {
   private form?: Form;
   private resource?: Resource;
-  public aggregations: Aggregation[] = [];
+  public hasAggregations = false;
   public nextStep = false;
 
   public queryRef!: QueryRef<GetResourceAggregationsResponse>;
@@ -61,7 +61,7 @@ export class AddAggregationModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private aggregationService: SafeAggregationService
   ) {
-    this.aggregations = data.aggregations;
+    this.hasAggregations = data.hasAggregations;
     this.form = data.form;
     this.resource = data.resource;
   }

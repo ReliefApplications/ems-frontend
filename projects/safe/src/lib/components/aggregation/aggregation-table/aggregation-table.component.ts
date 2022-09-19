@@ -9,6 +9,7 @@ import { AddAggregationModalComponent } from '../add-aggregation-modal/add-aggre
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeEditAggregationModalComponent } from '../edit-aggregation-modal/edit-aggregation-modal.component';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
+import { get } from 'lodash';
 
 /**
  * Aggregation table component.
@@ -59,12 +60,12 @@ export class AggregationTableComponent implements OnInit, OnChanges {
   private setAllAggregations(): void {
     if (this.form) {
       this.allAggregations = this.form.aggregations
-        ? [...this.form.aggregations]
+        ? this.form.aggregations.edges?.map((e) => e.node)
         : [];
     } else {
       if (this.resource) {
         this.allAggregations = this.resource.aggregations
-          ? [...this.resource.aggregations]
+          ? this.resource.aggregations.edges?.map((e) => e.node)
           : [];
       } else {
         this.allAggregations = [];
@@ -92,9 +93,12 @@ export class AggregationTableComponent implements OnInit, OnChanges {
   public onAdd(): void {
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        aggregations: this.form
-          ? this.form.aggregations
-          : this.resource?.aggregations,
+        hasAggregations:
+          get(
+            this.form ? this.form : this.resource,
+            'aggregations.totalCount',
+            0
+          ) > 0, // check if at least one existing aggregation
         form: this.form,
         resource: this.resource,
       },

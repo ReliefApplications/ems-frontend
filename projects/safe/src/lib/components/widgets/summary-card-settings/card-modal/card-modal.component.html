@@ -20,7 +20,9 @@
             [form]="form"
             [selectedResource]="selectedResource"
             [selectedLayout]="selectedLayout"
+            [selectedAggregation]="selectedAggregation"
             (layoutChange)="handleLayoutChange($event)"
+            (aggregationChange)="handleAggregationChange($event)"
           ></safe-data-source-tab>
         </mat-tab>
         <!-- Selection of record -->
@@ -29,7 +31,9 @@
             'components.widget.settings.summaryCard.card.valueSelector.title'
               | translate
           "
-          *ngIf="!form.get('isDynamic')?.value"
+          *ngIf="
+            !form.get('isDynamic')?.value && !form.get('isAggregation')?.value
+          "
         >
           <safe-value-selector-tab
             [form]="form"
