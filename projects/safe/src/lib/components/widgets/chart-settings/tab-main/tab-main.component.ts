@@ -91,7 +91,7 @@ export class TabMainComponent implements OnInit {
         query: GET_RESOURCE,
         variables: {
           id,
-          aggregationId,
+          aggregationId: aggregationId ? [aggregationId] : undefined,
         },
       })
       .subscribe((res) => {
