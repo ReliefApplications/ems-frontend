@@ -17,7 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class UserBackRolesComponent implements OnInit {
   public roles: Role[] = [];
   @Input() user!: User;
-  selectedRoles!: FormControl;
+  public selectedRoles!: FormControl;
   @Output() edit = new EventEmitter();
 
   /** Setter for the loading state */
@@ -81,11 +81,21 @@ export class UserBackRolesComponent implements OnInit {
    */
   openDialog() {
     const dialogRef = this.dialog.open(SafeUserBackRolesModalComponent, {
-      data: { roles: ['test', 'test2'] },
+      data: {
+        selectedRoles: this.selectedRoles,
+        roles: this.roles,
+        edit: this.edit,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log('Dialog result: ${result}');
+      console.log('TEEEEEEEEEEST');
+      this.selectedRoles = this.fb.control(
+        get(this.user, 'roles', [])
+          .filter((x: Role) => !x.application)
+          .map((x) => x.id)
+      );
+      this.selectedRoles.disable();
     });
   }
 }

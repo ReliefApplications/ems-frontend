@@ -5,6 +5,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { SafeModalModule } from '../../../../ui/modal/modal.module';
 import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeUserBackRolesModalComponent } from './user-back-roles-modal.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /**
  * SafeUserBackRolesModalModul is a class used to manage all the modules and components
@@ -18,6 +21,10 @@ import { SafeUserBackRolesModalComponent } from './user-back-roles-modal.compone
     MatButtonModule,
     SafeModalModule,
     SafeButtonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   exports: [SafeUserBackRolesModalComponent],
 })

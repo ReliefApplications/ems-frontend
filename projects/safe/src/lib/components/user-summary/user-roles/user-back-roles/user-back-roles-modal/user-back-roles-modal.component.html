@@ -1,21 +1,18 @@
 <safe-modal>
     <h1 mat-dialog-title>{{ title }}</h1>
-    <mat-dialog-content>{{ roles }}</mat-dialog-content>
+    <mat-form-field appearance="outline">
+      <mat-select [formControl]="selectedRoles" multiple>
+        <mat-option *ngFor="let role of roles" [value]="role.id">
+          {{ role.title }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
     <div mat-dialog-actions align="end">
-      <!-- <button mat-button mat-dialog-close>{{ cancelText }}</button>
-      <button
-        mat-flat-button
-        [color]="confirmColor"
-        cdkFocusInitial
-        [mat-dialog-close]="true"
-      >
-        {{ confirmText }}
-      </button> -->
       <safe-button mat-dialog-close>{{ cancelText }}</safe-button>
       <safe-button
         category="secondary"
         variant="primary"
-        [mat-dialog-close]="true"
+        (click)="onUpdate()" 
         cdkFocusInitial
       >
         {{ confirmText }}

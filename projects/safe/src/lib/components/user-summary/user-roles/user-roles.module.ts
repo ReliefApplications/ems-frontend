@@ -11,7 +11,6 @@ import { UserGroupsComponent } from './user-groups/user-groups.component';
 import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.module';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeUserBackRolesModalModule } from './user-back-roles/user-back-roles-modal/user-back-roles-modal.module';
-import { MatListModule } from '@angular/material/list';
 
 /**
  * User summary roles module
@@ -33,7 +32,6 @@ import { MatListModule } from '@angular/material/list';
     SafeGraphQLSelectModule,
     SafeButtonModule,
     SafeUserBackRolesModalModule,
-    MatListModule,
   ],
   exports: [UserRolesComponent],
 })
