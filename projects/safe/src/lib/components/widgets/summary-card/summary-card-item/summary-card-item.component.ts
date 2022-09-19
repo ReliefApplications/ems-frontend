@@ -33,6 +33,15 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   public record: Record | null = null;
   public loading = true;
 
+  /**
+   * Gets the aggregation data for the current card
+   *
+   * @returns The aggregation data
+   */
+  public get cardAggregationData() {
+    return this.card.cardAggregationData;
+  }
+
   @Input() headerTemplate?: TemplateRef<any>;
 
   /**
@@ -58,10 +67,16 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
     this.setContent();
   }
 
+  /** Sets the content of the card */
+  private setContent() {
+    if (this.card.isAggregation) this.setContentFromAggregation();
+    else this.setContentFromLayout();
+  }
+
   /**
    * Set content of the card item, querying associated record.
    */
-  private setContent(): void {
+  private setContentFromLayout(): void {
     if (this.card.record) {
       this.apollo
         .query<GetRecordByIdQueryResponse>({
@@ -88,6 +103,19 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
     } else {
       this.loading = false;
     }
+  }
+
+  /**
+   * Set content of the card item from aggregation data.
+   */
+  private setContentFromAggregation(): void {
+    this.loading = false;
+    if (!this.cardAggregationData) return;
+    // @TODO: get the fields' types from the aggregation data
+    this.fields = Object.keys(this.cardAggregationData).map((key) => ({
+      name: key,
+      editor: 'text',
+    }));
   }
 
   /**

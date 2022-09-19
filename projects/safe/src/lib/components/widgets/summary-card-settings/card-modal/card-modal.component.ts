@@ -24,6 +24,7 @@ import { Layout } from '../../../../models/layout.model';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { Resource } from '../../../../models/resource.model';
 import get from 'lodash/get';
+import { AggregationBuilderService } from '../../../../services/aggregation-builder.service';
 
 /**
  * Card modal component.
@@ -37,18 +38,24 @@ import get from 'lodash/get';
 export class SafeCardModalComponent implements OnInit, AfterViewInit {
   @ViewChild('tabGroup') tabGroup: any;
 
+  public form!: FormGroup;
+  public fields: any[] = [];
+
   // === CURRENT TAB ===
   private activeTabIndex: number | undefined;
 
   // === RECORD DATA ===
   public selectedRecord: any;
 
-  public form!: FormGroup;
-
-  public selectedLayout: Layout | null = null;
-  public selectedAggregation: Aggregation | null = null;
+  // === RESOURCE DATA ===
   public selectedResource: Resource | null = null;
-  public fields: any[] = [];
+
+  // === LAYOUT DATA ===
+  public selectedLayout: Layout | null = null;
+
+  // === AGGREGATION DATA ===
+  public selectedAggregation: Aggregation | null = null;
+  public customAggregation: any;
 
   /**
    * Card modal component.
@@ -59,13 +66,15 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    * @param fb Angular form builder
    * @param cdRef Change detector
    * @param apollo Apollo service
+   * @param aggregationBuilder Aggregation builder service
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<SafeCardModalComponent>,
     public fb: FormBuilder,
     private cdRef: ChangeDetectorRef,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private aggregationBuilder: AggregationBuilderService
   ) {}
 
   /**
@@ -180,9 +189,11 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
             this.selectedLayout =
               res.data?.resource.layouts?.edges[0]?.node || null;
 
-          if (aggregationID)
+          if (aggregationID) {
             this.selectedAggregation =
               res.data?.resource.aggregations?.edges[0]?.node || null;
+            this.getCustomAggregation();
+          }
         }
       });
   }
@@ -224,6 +235,32 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
       .subscribe((res) => {
         this.selectedAggregation =
           res.data?.resource.aggregations?.edges[0]?.node || null;
+        this.getCustomAggregation();
+      });
+  }
+
+  /**
+   * Gets the custom aggregation
+   * for the selected resource and aggregation.
+   */
+  private getCustomAggregation(): void {
+    if (!this.selectedAggregation || !this.selectedResource?.id) return;
+    this.aggregationBuilder
+      .buildAggregation(
+        this.selectedResource.id,
+        this.selectedAggregation.id || ''
+      )
+      ?.subscribe((res) => {
+        if (res.data?.recordsAggregation) {
+          this.customAggregation = res.data.recordsAggregation;
+          // @TODO: Figure out fields' types from aggregation
+          this.fields = this.customAggregation[0]
+            ? Object.keys(this.customAggregation[0]).map((f) => ({
+                name: f,
+                editor: 'text',
+              }))
+            : [];
+        }
       });
   }
 
@@ -277,6 +314,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    */
   handleAggregationChange(aggregation: Aggregation | null) {
     this.selectedAggregation = aggregation;
+    this.getCustomAggregation();
   }
 
   /**

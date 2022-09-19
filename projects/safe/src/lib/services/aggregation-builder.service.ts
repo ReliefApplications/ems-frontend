@@ -66,7 +66,7 @@ export class AggregationBuilderService {
           metaFields,
           {}
         );
-        const query = this.buildAggregation(aggregationForm.value, false);
+        const query = this.buildAggregation(aggregationForm.value, '');
         if (query) {
           query.subscribe((res: any) => {
             if (res.data.recordsAggregation) {
@@ -126,14 +126,14 @@ export class AggregationBuilderService {
    */
   public buildAggregation(
     resource: string,
-    aggregation: any,
+    aggregation: string,
     mapping?: any
   ): Observable<ApolloQueryResult<any>> | null {
     if (aggregation) {
       const query = gql`
         query GetCustomAggregation(
           $resource: ID!
-          $aggregation: JSON!
+          $aggregation: ID!
           $mapping: JSON
         ) {
           recordsAggregation(

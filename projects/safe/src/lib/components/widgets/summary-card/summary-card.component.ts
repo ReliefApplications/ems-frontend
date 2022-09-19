@@ -1,7 +1,6 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   HostListener,
   Input,
   OnInit,
@@ -9,6 +8,7 @@ import {
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
+import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
 
@@ -46,6 +46,16 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
 
   private dataQuery?: QueryRef<any>;
 
+  /**
+   * Gets whether the cards that will be displayed
+   * are from an aggregation
+   *
+   * @returns if the cards are from an aggregation
+   */
+  private get isAggregation(): boolean {
+    return !!this.settings.cards[0]?.isAggregation;
+  }
+
   @ViewChild('pdf') pdfExport!: any;
 
   /**
@@ -80,16 +90,18 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * @param apollo Apollo service
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
+   * @param aggregationBuilder Aggregation builder service
    */
   constructor(
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService,
-    private gridLayoutService: SafeGridLayoutService
+    private gridLayoutService: SafeGridLayoutService,
+    private aggregationBuilder: AggregationBuilderService
   ) {}
 
   ngOnInit(): void {
     if (this.settings.isDynamic) {
-      this.createDynamicQuery();
+      this.setupDynamicCards();
     } else {
       this.cards = this.settings.cards;
     }
@@ -97,7 +109,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.settings.isDynamic) {
+    if (this.settings.isDynamic && !this.isAggregation) {
       this.pdfExport.element.nativeElement.addEventListener(
         'scroll',
         (event: any) => this.loadOnScroll(event)
@@ -128,11 +140,21 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   }
 
   /** Gets the query for fetching the dynamic cards records. */
-  private async createDynamicQuery() {
+  private async setupDynamicCards() {
     // only one dynamic card is allowed per widget
     const [card] = this.settings.cards;
     if (!card) return;
 
+    if (card.isAggregation) this.getCardsFromAggregation(card);
+    else this.createDynamicQueryFromLayout(card);
+  }
+
+  /**
+   * Gets the query for fetching the dynamic cards records from a card's settings
+   *
+   * @param card Card settings
+   */
+  private async createDynamicQueryFromLayout(card: any) {
     this.gridLayoutService
       .getLayouts(card.resource, { ids: [card.layout], first: 1 })
       .then((res) => {
@@ -168,6 +190,23 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             this.loading = res2.loading;
           });
         }
+      });
+  }
+
+  /**
+   * Gets the query for fetching the dynamic cards records from a card's settings
+   *
+   * @param card Card settings
+   */
+  private async getCardsFromAggregation(card: any) {
+    this.aggregationBuilder
+      .buildAggregation(card.resource, card.aggregation)
+      ?.subscribe((res) => {
+        if (!res.data) return;
+        this.cards = res.data.recordsAggregation.map((x: any) => ({
+          ...this.settings.cards[0],
+          cardAggregationData: x,
+        }));
       });
   }
 
