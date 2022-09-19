@@ -44,7 +44,7 @@ export const addFieldsForm = (value: any, validators = true): FormGroup =>
  */
 export const groupByRuleForm = (value: any): FormGroup =>
   formBuilder.group({
-    field: [get(value, 'field', ''), Validators.required],
+    field: get(value, 'field', ''),
     expression: expressionForm(get(value, 'expression', false), false),
   });
 
