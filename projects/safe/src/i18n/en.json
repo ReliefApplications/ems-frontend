@@ -709,7 +709,15 @@
 				"noFeatures": "No feature detected",
 				"noForms": "No forms detected",
 				"noSteps": "No steps detected",
-				"title": "Summary"
+				"title": "Summary",
+				"autoAssignment": {
+					"rule": {
+						"add": "Create assignment rule",
+						"delete": "Delete rule",
+						"title": "Rule"
+					},
+					"title": "Automatic assignment"
+				}
 			},
 			"tooltip": {
 				"allowRecordAccessibility": "Allow this role to see records of {{form}}",
