@@ -284,7 +284,8 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    * @returns Returns a boolean.
    */
   isEditorTab(): boolean {
-    return this.form.get('isDynamic')?.value
+    return this.form.get('isDynamic')?.value ||
+      this.form.get('isAggregation')?.value
       ? this.activeTabIndex === 2
       : this.activeTabIndex === 3;
   }

@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
+import { AggregationBuilderService } from '../../../../services/aggregation-builder.service';
 import { SafeResourceGridModalComponent } from '../../../search-resource-grid-modal/search-resource-grid-modal.component';
 import {
   GetRecordByIdQueryResponse,
@@ -32,15 +33,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   public fields: any[] = [];
   public record: Record | null = null;
   public loading = true;
-
-  /**
-   * Gets the aggregation data for the current card
-   *
-   * @returns The aggregation data
-   */
-  public get cardAggregationData() {
-    return this.card.cardAggregationData;
-  }
+  public cardAggregationData: any = null;
 
   @Input() headerTemplate?: TemplateRef<any>;
 
@@ -51,12 +44,14 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    * @param dialog Material dialog service
    * @param snackBar Shared snackBar service
    * @param translate Angular translate service
+   * @param aggregationBuilder Aggregation builder service
    */
   constructor(
     private apollo: Apollo,
     private dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private aggregationBuilder: AggregationBuilderService
   ) {}
 
   ngOnInit(): void {
@@ -68,9 +63,23 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   }
 
   /** Sets the content of the card */
-  private setContent() {
-    if (this.card.isAggregation) this.setContentFromAggregation();
-    else this.setContentFromLayout();
+  private async setContent() {
+    if (this.card.isAggregation) {
+      this.cardAggregationData = this.card.cardAggregationData;
+      if (!this.card.isDynamic) await this.getAggregationData();
+      this.setContentFromAggregation();
+    } else this.setContentFromLayout();
+  }
+
+  /** Get the aggregation data for the current card, if not dynamic. */
+  private async getAggregationData() {
+    const res = await this.aggregationBuilder
+      .buildAggregation(this.card.resource, this.card.aggregation)
+      ?.toPromise();
+
+    // for static cards with aggregation, assume the response is an array with one element
+    if (res?.data?.recordsAggregation)
+      this.cardAggregationData = res.data.recordsAggregation[0];
   }
 
   /**
