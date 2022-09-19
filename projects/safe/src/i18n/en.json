@@ -756,7 +756,8 @@
 					"backoffice": "Back-Office roles",
 					"selectedApplication": "Selected application",
 					"selectedGroups": "Selected groups",
-					"selectedRoles": "Selected roles"
+					"selectedRoles": "Selected roles",
+					"updateUserRoles": "Update user roles"
 				},
 				"title": "Summary"
 			},

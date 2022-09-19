@@ -26,6 +26,7 @@ export class UserBackRolesComponent implements OnInit {
       this.selectedRoles?.disable({ emitEvent: false });
     } else {
       this.selectedRoles?.enable({ emitEvent: false });
+      this.selectedRoles?.disable();
     }
   }
 
@@ -50,6 +51,7 @@ export class UserBackRolesComponent implements OnInit {
         .filter((x: Role) => !x.application)
         .map((x) => x.id)
     );
+
     /*
     this.selectedRoles.valueChanges.subscribe((value) => {
       this.edit.emit({ roles: value });

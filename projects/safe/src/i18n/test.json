@@ -756,7 +756,8 @@
 					"backoffice": "******",
 					"selectedApplication": "******",
 					"selectedGroups": "******",
-					"selectedRoles": "******"
+					"selectedRoles": "******",
+					"updateUserRoles": "******"
 				},
 				"title": "******"
 			},
