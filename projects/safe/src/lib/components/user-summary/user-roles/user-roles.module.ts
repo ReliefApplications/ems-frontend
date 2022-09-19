@@ -9,6 +9,8 @@ import { UserAppRolesComponent } from './user-app-roles/user-app-roles.component
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserGroupsComponent } from './user-groups/user-groups.component';
 import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.module';
+import { SafeButtonModule } from '../../ui/button/button.module';
+import { SafeUserBackRolesModalModule } from './user-back-roles/user-back-roles-modal/user-back-roles-modal.module';
 
 /**
  * User summary roles module
@@ -28,6 +30,8 @@ import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.mod
     FormsModule,
     ReactiveFormsModule,
     SafeGraphQLSelectModule,
+    SafeButtonModule,
+    SafeUserBackRolesModalModule,
   ],
   exports: [UserRolesComponent],
 })

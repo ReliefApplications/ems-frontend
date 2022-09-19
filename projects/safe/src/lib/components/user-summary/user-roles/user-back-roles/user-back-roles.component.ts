@@ -5,6 +5,8 @@ import { get } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { SafeSnackBarService } from '../../../../services/snackbar.service';
+import { SafeUserBackRolesModalComponent } from './user-back-roles-modal/user-back-roles-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 /** Back-office roles section the user summary */
 @Component({
@@ -33,11 +35,13 @@ export class UserBackRolesComponent implements OnInit {
    * @param fb Angular form builder
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
+   * @param dialog Material dialogs service
    */
   constructor(
     private fb: FormBuilder,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService
+    private snackBar: SafeSnackBarService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -46,9 +50,11 @@ export class UserBackRolesComponent implements OnInit {
         .filter((x: Role) => !x.application)
         .map((x) => x.id)
     );
+    /*
     this.selectedRoles.valueChanges.subscribe((value) => {
       this.edit.emit({ roles: value });
     });
+    */
 
     this.loading = true;
     this.apollo
@@ -66,5 +72,18 @@ export class UserBackRolesComponent implements OnInit {
           this.snackBar.openSnackBar(err.message, { error: true });
         }
       );
+  }
+
+  /**
+   * Opens the modal "SafeUserBackRolesModal"
+   */
+  openDialog() {
+    const dialogRef = this.dialog.open(SafeUserBackRolesModalComponent, {
+      data: { roles: ['test', 'test2'] },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('Dialog result: ${result}');
+    });
   }
 }
