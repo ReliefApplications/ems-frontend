@@ -9,14 +9,7 @@ export const GET_DASHBOARD_BY_ID = gql`
       id
       name
       createdAt
-      structure {
-        id
-        name
-        component
-        defaultCols
-        defaultRows
-        settings
-      }
+      structure
       permissions {
         canSee {
           id

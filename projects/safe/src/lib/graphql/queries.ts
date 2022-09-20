@@ -546,6 +546,14 @@ export interface GetWorkflowByIdQueryResponse {
   workflow: Workflow;
 }
 
+// === GET DASHBOARD BY ID ===
+
+/** Model for GetDashboardByIdQueryResponse object */
+export interface GetDashboardByIdQueryResponse {
+  loading: boolean;
+  dashboard: Dashboard;
+}
+
 // === GET REFERENCE DATAS ===
 /** Get reference data by id query */
 export const GET_REFERENCE_DATA_BY_ID = gql`
