@@ -128,7 +128,7 @@ export const createGridWidgetFormGroup = (
       ],
       template: [configuration.query ? configuration.query.template : '', null],
     }),
-    layouts: [configuration?.layouts || [], Validators.required],
+    layouts: [configuration?.layouts || []],
     aggregationId: [configuration?.aggregationId || null],
     resource: [
       configuration && configuration.resource ? configuration.resource : null,

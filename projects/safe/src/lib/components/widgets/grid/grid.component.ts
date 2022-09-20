@@ -40,6 +40,7 @@ import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
+import { Aggregation } from '../../../models/aggregation.model';
 
 /** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
@@ -64,6 +65,9 @@ export class SafeGridWidgetComponent implements OnInit {
   // === CACHED CONFIGURATION ===
   public layout: Layout | null = null;
   public layouts: Layout[] = [];
+
+  // === AGGREGATION ===
+  public aggregation?: Aggregation;
 
   // === VERIFICATION IF USER IS ADMIN ===
   public isAdmin: boolean;
@@ -111,6 +115,7 @@ export class SafeGridWidgetComponent implements OnInit {
     this.gridSettings = { ...this.settings };
     if (
       this.settings.resource &&
+      !this.settings.useAggregationBuilder &&
       get(this.settings, 'layouts', []).length > 0
     ) {
       this.gridLayoutService

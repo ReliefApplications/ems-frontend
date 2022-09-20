@@ -114,6 +114,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         if (name !== this.queryName) {
           this.queryName = name;
           this.formGroup?.get('layouts')?.setValue([]);
+          this.formGroup?.get('aggregationId')?.setValue(null);
           this.formGroup?.get('query.template')?.setValue(null);
           this.formGroup?.get('query.template')?.enable();
           const floatingButtons = this.formGroup?.get(
@@ -136,6 +137,18 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         this.fields = [];
       }
     });
+
+    if (!this.formGroup.value.useAggregationBuilder) {
+      this.formGroup.controls.aggregationId.setValidators([
+        Validators.required,
+      ]);
+      this.formGroup.controls.layouts.clearValidators();
+    } else {
+      this.formGroup.controls.aggregationId.clearValidators();
+      this.formGroup.controls.layouts.setValidators([Validators.required]);
+    }
+    this.formGroup.controls.aggregationId.updateValueAndValidity();
+    this.formGroup.controls.layouts.updateValueAndValidity();
 
     this.formGroup
       .get('useAggregationBuilder')

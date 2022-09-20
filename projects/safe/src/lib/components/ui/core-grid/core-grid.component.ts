@@ -53,6 +53,9 @@ import { SafeGridComponent } from './grid/grid.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
 import { SafeDateTranslateService } from '../../../services/date-translate.service';
+import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
+import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
+import { addNewField } from '../../query-builder/query-builder-forms';
 
 /**
  * Default file name when exporting grid data.
@@ -122,7 +125,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public fields: any[] = [];
   private metaFields: any;
   public detailsField?: any;
-  private dataQuery!: QueryRef<any>;
+  private dataQuery!: any;
   private metaQuery: any;
   private dataSubscription?: Subscription;
   private columnsOrder: any[] = [];
@@ -253,6 +256,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param gridService Shared grid service
    * @param translate Angular translate service
    * @param dateTranslate Shared date translate service
+   * @param aggregationService Used to get the aggregation from an id
+   * @param aggregationBuilder Used to get the data from an aggregation
    */
   constructor(
     @Inject('environment') environment: any,
@@ -265,7 +270,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private authService: SafeAuthService,
     private gridService: SafeGridService,
     private translate: TranslateService,
-    private dateTranslate: SafeDateTranslateService
+    private dateTranslate: SafeDateTranslateService,
+    private aggregationService: SafeAggregationService,
+    private aggregationBuilder: AggregationBuilderService
   ) {
     this.apiUrl = environment.apiUrl;
     this.isAdmin =
@@ -282,7 +289,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   ngOnChanges(changes?: SimpleChanges): void {
     if (changes?.settings) {
-      this.configureGrid();
+      if (this.settings.useAggregationBuilder) {
+        this.configureGridAggregation();
+      } else {
+        this.configureGrid();
+      }
     }
   }
 
@@ -292,32 +303,17 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public configureGrid(): void {
     // define row actions
     this.actions = {
-      add: this.settings.useAggregationBuilder
-        ? false
-        : get(this.settings, 'actions.addRecord', false) &&
-          this.settings.template,
-      history: this.settings.useAggregationBuilder
-        ? false
-        : get(this.settings, 'actions.history', false),
-      update: this.settings.useAggregationBuilder
-        ? false
-        : get(this.settings, 'actions.update', false),
-      delete: this.settings.useAggregationBuilder
-        ? false
-        : get(this.settings, 'actions.delete', false),
-      convert: this.settings.useAggregationBuilder
-        ? false
-        : get(this.settings, 'actions.convert', false),
-      export: this.settings.useAggregationBuilder
-        ? false
-        : get(this.settings, 'actions.export', true),
-      showDetails: this.settings.useAggregationBuilder
-        ? false
-        : get(this.settings, 'actions.showDetails', true),
+      add:
+        get(this.settings, 'actions.addRecord', false) &&
+        this.settings.template,
+      history: get(this.settings, 'actions.history', false),
+      update: get(this.settings, 'actions.update', false),
+      delete: get(this.settings, 'actions.delete', false),
+      convert: get(this.settings, 'actions.convert', false),
+      export: get(this.settings, 'actions.export', true),
+      showDetails: get(this.settings, 'actions.showDetails', true),
     };
-    this.editable = this.settings.useAggregationBuilder
-      ? false
-      : this.settings.actions?.inlineEdition;
+    this.editable = this.settings.actions?.inlineEdition;
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
     this.hasLayoutChanges = this.settings.defaultLayout
       ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout))
@@ -378,6 +374,94 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.error = true;
     }
     this.loadTemplate();
+  }
+
+  /**
+   * Configure the grid when an aggregation is used
+   */
+  public configureGridAggregation(): void {
+    this.actions = {
+      add: false,
+      history: false,
+      update: false,
+      delete: false,
+      convert: false,
+      export: false,
+      showDetails: false,
+    };
+    this.editable = false;
+    this.selectable = false;
+    this.aggregationService
+      .getAggregations(this.settings.resource, {
+        ids: [this.settings.aggregationId],
+        first: 1,
+      })
+      .then((res) => {
+        const aggregation = res.edges[0]?.node || null;
+        if (aggregation) {
+          const fields = this.queryBuilder
+            .getFields(this.settings.query.name)
+            .filter(
+              (field: any) =>
+                !(
+                  field.name.includes('_id') &&
+                  (field.type.name === 'ID' ||
+                    (field.type.kind === 'LIST' &&
+                      field.type.ofType.name === 'ID'))
+                )
+            );
+          const fieldsNames = aggregation.sourceFields;
+          if (fieldsNames && fieldsNames.length) {
+            const currentFields = fields;
+            const selectedFields = fieldsNames.map((x: string) => {
+              const field = { ...currentFields.find((y) => x === y.name) };
+              if (field.type.kind !== 'SCALAR') {
+                field.fields = this.queryBuilder
+                  .getFieldsFromType(
+                    field.type.kind === 'OBJECT'
+                      ? field.type.name
+                      : field.type.ofType.name
+                  )
+                  .filter(
+                    (y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'
+                  );
+              }
+              return field;
+            });
+            const formattedFields =
+              this.aggregationBuilder.formatFields(selectedFields);
+            this.queryBuilder
+              .buildMetaQuery({
+                name: this.settings.query.name,
+                fields: formattedFields,
+              })
+              ?.subscribe((res2) => {
+                for (const field in res2.data) {
+                  if (Object.prototype.hasOwnProperty.call(res2.data, field)) {
+                    this.metaFields = res2.data[field];
+                    this.fields = this.gridService.getFields(
+                      this.aggregationBuilder.formatFields(selectedFields),
+                      this.metaFields,
+                      {}
+                    );
+                  }
+                }
+              });
+          } else {
+            this.metaFields = [];
+            this.fields = [];
+          }
+          this.dataQuery = this.aggregationBuilder.buildAggregation(
+            this.settings.resource,
+            aggregation,
+            null
+          );
+          this.getRecords();
+        } else {
+          this.loading = false;
+          this.error = true;
+        }
+      });
   }
 
   /**
@@ -579,44 +663,59 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.updatedItems = [];
     if (this.dataQuery) {
-      this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-        (res: any) => {
+      // Default record loading
+      if (!this.settings.useAggregationBuilder) {
+        this.dataSubscription = this.dataQuery.valueChanges.subscribe(
+          (res: any) => {
+            this.loading = false;
+            this.error = false;
+            for (const field in res.data) {
+              if (
+                Object.prototype.hasOwnProperty.call(res.data, field) &&
+                res.data[field]
+              ) {
+                const nodes =
+                  res.data[field].edges.map((x: any) => ({
+                    ...x.node,
+                    _meta: {
+                      style: x.meta.style,
+                    },
+                  })) || [];
+                this.totalCount = res.data[field].totalCount;
+                this.items = cloneData(nodes);
+                this.convertDateFields(this.items);
+                this.originalItems = cloneData(this.items);
+                this.loadItems();
+                for (const updatedItem of this.updatedItems) {
+                  const item: any = this.items.find(
+                    (x) => x.id === updatedItem.id
+                  );
+                  if (item) {
+                    Object.assign(item, updatedItem);
+                    item.saved = false;
+                  }
+                }
+                // if (!this.readOnly) {
+                //   this.initSelectedRows();
+                // }
+              }
+            }
+          },
+          () => {
+            this.error = true;
+            this.loading = false;
+          }
+        );
+        // Aggregation record loading
+      } else {
+        this.dataSubscription = this.dataQuery.subscribe((res: any) => {
           this.loading = false;
           this.error = false;
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              const nodes =
-                res.data[field].edges.map((x: any) => ({
-                  ...x.node,
-                  _meta: {
-                    style: x.meta.style,
-                  },
-                })) || [];
-              this.totalCount = res.data[field].totalCount;
-              this.items = cloneData(nodes);
-              this.convertDateFields(this.items);
-              this.originalItems = cloneData(this.items);
-              this.loadItems();
-              for (const updatedItem of this.updatedItems) {
-                const item: any = this.items.find(
-                  (x) => x.id === updatedItem.id
-                );
-                if (item) {
-                  Object.assign(item, updatedItem);
-                  item.saved = false;
-                }
-              }
-              // if (!this.readOnly) {
-              //   this.initSelectedRows();
-              // }
-            }
-          }
-        },
-        () => {
-          this.error = true;
-          this.loading = false;
-        }
-      );
+          this.items = res.data.recordsAggregation;
+          this.totalCount = res.data.recordsAggregation.length;
+          this.loadItems();
+        });
+      }
     } else {
       this.loading = false;
     }

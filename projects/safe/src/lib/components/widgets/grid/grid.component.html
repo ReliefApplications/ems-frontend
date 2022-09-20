@@ -39,7 +39,7 @@
 </ng-template>
 
 <ng-template #layoutsTemplate>
-  <ng-container *ngIf="layouts.length > 1">
+  <ng-container *ngIf="layouts.length > 1 && !gridSettings.useAggregationBuilder">
     <kendo-dropdownlist
       class="grid-layout-dropdown"
       [data]="layouts"
