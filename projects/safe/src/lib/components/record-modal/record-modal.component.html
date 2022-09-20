@@ -1,10 +1,17 @@
 <safe-modal size="big" [closable]="true">
   <ng-container *ngIf="!loading">
-    <safe-record-summary
-      *ngIf="!data.compareTo"
-      [record]="record"
-      (showHistory)="onShowHistory()"
-    ></safe-record-summary>
+    <div class="form-infos">
+      <safe-record-summary
+        *ngIf="!data.compareTo"
+        [record]="record"
+        (showHistory)="onShowHistory()"
+      ></safe-record-summary>
+
+      <safe-form-actions
+        [survey]="survey"
+        [surveyNext]="surveyNext || undefined"
+      ></safe-form-actions>
+    </div>
     <div mat-dialog-title>
       <mat-tab-group
         animationDuration="0ms"

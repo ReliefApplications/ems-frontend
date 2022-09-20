@@ -239,7 +239,6 @@ export class SafeRecordHistoryComponent implements OnInit {
     const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
         recordId: this.id,
-        locale: 'en',
         compareTo: this.history.find((item) => item.version?.id === version.id)
           ?.version,
         template: this.template,
