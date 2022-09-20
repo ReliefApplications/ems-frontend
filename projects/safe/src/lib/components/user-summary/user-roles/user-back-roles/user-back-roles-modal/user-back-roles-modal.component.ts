@@ -44,7 +44,7 @@ export class SafeUserBackRolesModalComponent implements OnInit {
     public dialogRef: MatDialogRef<SafeUserBackRolesModalComponent>
   ) {
     this.title = this.translate.instant(
-      'components.user.summary.roles.updateUserRoles'
+      'components.user.summary.roles.selectedRoles'
     );
     this.cancelText = this.translate.instant('kendo.editor.dialogCancel');
     this.confirmText = this.translate.instant('kendo.editor.dialogUpdate');
@@ -65,7 +65,6 @@ export class SafeUserBackRolesModalComponent implements OnInit {
     const update = { roles: this.selectedRoles.value };
     console.log(update);
     this.edit.emit(update);
-    console.log('UPDATE');
-    this.dialogRef.close();
+    this.dialogRef.close(true);
   }
 }

@@ -52,12 +52,6 @@ export class UserBackRolesComponent implements OnInit {
         .map((x) => x.id)
     );
 
-    /*
-    this.selectedRoles.valueChanges.subscribe((value) => {
-      this.edit.emit({ roles: value });
-    });
-    */
-
     this.loading = true;
     this.apollo
       .query<GetRolesQueryResponse>({
@@ -77,9 +71,11 @@ export class UserBackRolesComponent implements OnInit {
   }
 
   /**
-   * Opens the modal "SafeUserBackRolesModal"
+   * Opens the modal "SafeUserBackRolesModal" with the required data.
+   * After closed, update the selectedRoles content
    */
   openDialog() {
+    const oldValue = this.selectedRoles.value;
     const dialogRef = this.dialog.open(SafeUserBackRolesModalComponent, {
       data: {
         selectedRoles: this.selectedRoles,
@@ -88,14 +84,13 @@ export class UserBackRolesComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('TEEEEEEEEEEST');
-      this.selectedRoles = this.fb.control(
-        get(this.user, 'roles', [])
-          .filter((x: Role) => !x.application)
-          .map((x) => x.id)
-      );
+    dialogRef.afterClosed().subscribe((isUpdated) => {
       this.selectedRoles.disable();
+      if (isUpdated) {
+        this.selectedRoles.setValue(this.selectedRoles.value);
+      } else {
+        this.selectedRoles.setValue(oldValue);
+      }
     });
   }
 }

@@ -754,6 +754,7 @@
 				"roles": {
 					"application": "Rôles d'application",
 					"backoffice": "Rôles de back-office",
+					"currentRoles": "Rôles actuels",
 					"selectedApplication": "Application sélectionnée",
 					"selectedGroups": "Groupes sélectionnés",
 					"selectedRoles": "Rôles sélectionnés",
