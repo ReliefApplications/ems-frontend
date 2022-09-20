@@ -706,6 +706,15 @@
 				"title": "Choix du rôle à simuler"
 			},
 			"summary": {
+				"autoAssignment": {
+					"rule": {
+						"add": "Ajouter une règle d'attribution",
+						"delete": "Supprimer la règle",
+						"edit": "Mettre à jour la règle d'attribution",
+						"title": "Règle"
+					},
+					"title": "Attribution automatique"
+				},
 				"features": "Fonctionnalités",
 				"noFeatures": "Aucune fonctionnalité détectée",
 				"noForms": "Aucun formulaire détecté",

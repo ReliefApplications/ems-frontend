@@ -102,7 +102,6 @@ export class LayoutsComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        console.log(value);
         if (typeof value === 'string') {
           this.selectedLayouts?.setValue(
             this.selectedLayouts?.value.concat(value)

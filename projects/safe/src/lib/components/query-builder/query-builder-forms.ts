@@ -24,7 +24,6 @@ export const createFilterGroup = (filter: any): FormGroup => {
       field: filter.field,
       operator: filter.operator || 'eq',
       value: Array.isArray(filter.value) ? [filter.value] : filter.value,
-      useExpression: get(filter, 'useExpression', false),
     });
   }
   return formBuilder.group({
