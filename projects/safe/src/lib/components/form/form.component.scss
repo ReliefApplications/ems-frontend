@@ -7,13 +7,10 @@
 .form-infos {
   display: flex;
   flex-wrap: wrap;
-
-  safe-record-summary {
-    margin: 0 20px 8px 0;
-  }
-  safe-form-actions {
-    margin: 4px 0 12px auto;
-  }
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 mat-tab-group {
