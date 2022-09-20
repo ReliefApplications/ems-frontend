@@ -14,6 +14,7 @@ import {
 import { Page, SafeLayoutService } from '@safe/builder';
 import { AppOverlayContainer } from '../../utils/overlay-container';
 
+/** Application web widget component */
 @Component({
   selector: 'app-application-widget',
   templateUrl: './application-widget.component.html',
@@ -32,6 +33,12 @@ export class ApplicationWidgetComponent implements OnInit, AfterViewInit {
 
   public showSidenav = false;
 
+  /**
+   * Application web widget component
+   *
+   * @param layoutService Shared layout service
+   * @param overlayContainer Angular overlay container
+   */
   constructor(
     private layoutService: SafeLayoutService,
     private overlayContainer: OverlayContainer

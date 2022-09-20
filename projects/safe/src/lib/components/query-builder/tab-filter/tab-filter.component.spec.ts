@@ -19,7 +19,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { GET_QUERY_TYPES } from '../../../graphql/queries';
+import { GET_QUERY_TYPES } from '../graphql/queries';
 
 describe('SafeTabFilterComponent', () => {
   let component: SafeTabFilterComponent;

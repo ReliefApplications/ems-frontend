@@ -17,9 +17,7 @@ import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
   GET_FORM_BY_ID,
-  GetRecordDetailsQueryResponse,
-  GET_RECORD_DETAILS,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import * as Survey from 'survey-angular';
@@ -32,7 +30,7 @@ import {
   UPLOAD_FILE,
   EDIT_RECORDS,
   EditRecordsMutationResponse,
-} from '../../graphql/mutations';
+} from './graphql/mutations';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar.service';
@@ -112,7 +110,7 @@ export class SafeFormModalComponent implements OnInit {
    * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param translate This is the service that allows us to translate the text in our application.
-   * @param ngZone The ngZone service
+   * @param ngZone Angular ng zone
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -711,7 +709,6 @@ export class SafeFormModalComponent implements OnInit {
           revert: (version: any) =>
             this.confirmRevertDialog(this.record, version),
         },
-        panelClass: 'no-padding-dialog',
         autoFocus: false,
       });
     }

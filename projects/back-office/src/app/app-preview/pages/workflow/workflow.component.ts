@@ -11,10 +11,13 @@ import { Subscription } from 'rxjs';
 import {
   GetWorkflowByIdQueryResponse,
   GET_WORKFLOW_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { PreviewService } from '../../../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Workflow page component for application preview.
+ */
 @Component({
   selector: 'app-workflow',
   templateUrl: './workflow.component.html',
@@ -38,13 +41,23 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   // === PREVIEWED ROLE ===
   public role = '';
 
+  /**
+   * Workflow page component for application preview
+   *
+   * @param apollo Apollo service
+   * @param route Angular activated route
+   * @param snackBar Shared snackbar service
+   * @param router Angular router
+   * @param previewService Shared preview service
+   * @param translate Angular translate service
+   */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router,
     private previewService: PreviewService,
-    private translateService: TranslateService
+    private translate: TranslateService
   ) {}
 
   /**
@@ -76,10 +89,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               }
             } else {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
+                this.translate.instant(
                   'common.notifications.accessNotProvided',
                   {
-                    type: this.translateService
+                    type: this.translate
                       .instant('common.workflow.one')
                       .toLowerCase(),
                     error: '',
@@ -120,16 +133,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else if (this.activeStep + 1 === this.steps.length) {
       this.onOpenStep(0);
       this.snackBar.openSnackBar(
-        this.translateService.instant(
-          'models.workflow.notifications.goToStep',
-          {
-            step: this.steps[0].name,
-          }
-        )
+        this.translate.instant('models.workflow.notifications.goToStep', {
+          step: this.steps[0].name,
+        })
       );
     } else {
       this.snackBar.openSnackBar(
-        this.translateService.instant(
+        this.translate.instant(
           'models.workflow.notifications.cannotGoToNextStep'
         ),
         { error: true }

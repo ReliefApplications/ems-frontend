@@ -106,6 +106,7 @@
           <safe-access
             [menuItem]="true"
             [access]="element.permissions"
+            [objectTypeName]="'common.application.one' | translate"
             (save)="saveAccess($event, element)"
             *ngIf="element.canUpdate"
           ></safe-access>
@@ -130,7 +131,7 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr
-      class="clickable"
+      class="cursor-pointer"
       mat-row
       *matRowDef="let row; columns: displayedColumns"
       [routerLink]="['/applications', row.id]"

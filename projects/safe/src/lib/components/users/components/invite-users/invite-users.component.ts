@@ -84,7 +84,6 @@ export class SafeInviteUsersComponent implements OnInit {
   onAdd(): void {
     const invitedUsers = this.gridData.data.map((x) => x.email);
     const dialogRef = this.dialog.open(SafeAddUserComponent, {
-      panelClass: 'add-dialog',
       data: {
         roles: this.data.roles,
         users: this.data.users.filter(

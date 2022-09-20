@@ -1,5 +1,7 @@
-<safe-record-history
-  (cancel)="closeModal($event)"
-  [id]="data.id"
-  [revert]="data.revert"
-></safe-record-history>
+<safe-modal [padding]="false">
+  <safe-record-history
+    (cancel)="closeModal($event)"
+    [id]="data.id"
+    [revert]="data.revert"
+  ></safe-record-history>
+</safe-modal>

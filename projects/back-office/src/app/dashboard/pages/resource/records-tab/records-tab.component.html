@@ -1,0 +1,168 @@
+<div *ngIf="!loading" class="actions">
+  <safe-button
+    *ngIf="resource.canUpdate && !showDeletedRecords"
+    icon="search_off"
+    category="primary"
+    variant="danger"
+    (click)="onSwitchView($event)"
+  >
+    {{ 'components.records.showArchived' | translate }}
+  </safe-button>
+  <safe-button
+    *ngIf="resource.canUpdate && showDeletedRecords"
+    icon="restore_page"
+    category="primary"
+    variant="success"
+    (click)="onSwitchView($event)"
+  >
+    {{ 'components.records.showActive' | translate }}
+  </safe-button>
+  <safe-button
+    icon="file_download"
+    category="secondary"
+    variant="primary"
+    [matMenuTriggerFor]="menu"
+  >
+    {{
+      'common.downloadObject'
+        | translate: { name: 'common.record.few' | translate }
+    }}
+  </safe-button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="onDownload('csv')">.csv</button>
+    <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
+  </mat-menu>
+  <safe-button
+    icon="file_upload"
+    category="secondary"
+    variant="primary"
+    [matTooltip]="'components.records.upload.hint' | translate"
+    (click)="showUpload = !showUpload"
+    cdkOverlayOrigin
+    #uploadTrigger="cdkOverlayOrigin"
+  >
+    {{
+      'common.uploadObject'
+        | translate: { name: 'common.record.few' | translate }
+    }}
+  </safe-button>
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="uploadTrigger"
+    [cdkConnectedOverlayOpen]="showUpload"
+  >
+    <app-upload-menu
+      (close)="showUpload = false"
+      (upload)="onFileChange($event)"
+      (download)="onDownloadTemplate()"
+    ></app-upload-menu>
+  </ng-template>
+</div>
+<div class="table-container">
+  <table *ngIf="!loading" mat-table [dataSource]="dataSource">
+    <ng-container
+      *ngFor="let column of displayedColumnsRecords"
+      [matColumnDef]="column"
+      [stickyEnd]="column === '_actions'"
+    >
+      <ng-container *ngIf="!recordsDefaultColumns.includes(column)">
+        <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+        <td mat-cell *matCellDef="let element" class="table-column">
+          <div>{{ element.data[column] }}</div>
+        </td>
+      </ng-container>
+      <ng-container *ngIf="column === '_incrementalId'">
+        <th mat-header-cell *matHeaderCellDef class="table-column">ID</th>
+        <td mat-cell *matCellDef="let element" class="table-column">
+          <div>{{ element.incrementalId }}</div>
+        </td>
+      </ng-container>
+      <ng-container *ngIf="column === '_actions'">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <safe-button
+            [isIcon]="true"
+            icon="more_vert"
+            [matMenuTriggerFor]="recMenu"
+            (click)="$event.stopPropagation()"
+          >
+          </safe-button>
+          <mat-menu #recMenu="matMenu">
+            <button
+              mat-menu-item
+              [routerLink]="['update', element.id]"
+              [matTooltip]="'Edit as ' + element.form.name"
+              matTooltipPosition="above"
+              [matTooltipDisabled]="(resource.forms?.length || 0) <= 1"
+            >
+              <mat-icon>edit</mat-icon>
+              {{ 'common.edit' | translate }}
+            </button>
+            <button
+              *ngIf="(resource.forms?.length || 0) > 1"
+              mat-menu-item
+              [matMenuTriggerFor]="templates"
+            >
+              <mat-icon>edit_note</mat-icon>
+              {{
+                'common.editObject'
+                  | translate: { name: 'common.child' | translate }
+              }}
+            </button>
+            <button
+              *ngIf="!showDeletedRecords"
+              mat-menu-item
+              (click)="onDeleteRecord(element, $event)"
+            >
+              <mat-icon>delete</mat-icon>
+              {{ 'common.delete' | translate }}
+            </button>
+            <button
+              *ngIf="showDeletedRecords"
+              mat-menu-item
+              (click)="onDeleteRecord(element, $event)"
+            >
+              <mat-icon>delete_forever</mat-icon>
+              {{ 'components.record.delete.permanently' | translate }}
+            </button>
+            <button
+              *ngIf="showDeletedRecords"
+              mat-menu-item
+              (click)="onRestoreRecord(element.id, $event)"
+            >
+              <mat-icon>unarchive</mat-icon>
+              {{ 'models.record.restore' | translate }}
+            </button>
+          </mat-menu>
+          <mat-menu #templates="matMenu">
+            <ng-container *ngFor="let form of filterTemplates(element)">
+              <button
+                mat-menu-item
+                [routerLink]="['./update', element.id]"
+                [state]="{ template: form.id }"
+              >
+                {{ form.name }}
+              </button>
+            </ng-container>
+          </mat-menu>
+        </td>
+      </ng-container>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsRecords"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsRecords"></tr>
+  </table>
+</div>
+<safe-skeleton-table
+  *ngIf="loading"
+  [columns]="displayedColumnsRecords"
+  [actions]="true"
+>
+</safe-skeleton-table>
+<mat-paginator
+  [disabled]="loading"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [length]="pageInfo.length"
+  aria-label="Select page of records"
+  (page)="onPage($event)"
+></mat-paginator>

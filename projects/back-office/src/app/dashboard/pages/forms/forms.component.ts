@@ -2,10 +2,6 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import {
-  GET_SHORT_FORMS,
-  GetFormsQueryResponse,
-} from '../../../graphql/queries';
 import { Subscription } from 'rxjs';
 import {
   SafeSnackBarService,
@@ -15,19 +11,22 @@ import {
   SafeConfirmModalComponent,
   Form,
 } from '@safe/builder';
+import { GET_SHORT_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import {
   DeleteFormMutationResponse,
   DELETE_FORM,
   AddFormMutationResponse,
   ADD_FORM,
-} from '../../../graphql/mutations';
-import { AddFormComponent } from '../../../components/add-form/add-form.component';
+} from './graphql/mutations';
+import { AddFormModalComponent } from '../../../components/add-form-modal/add-form-modal.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
 
+/** Forms page component */
 @Component({
   selector: 'app-forms',
   templateUrl: './forms.component.html',
@@ -67,6 +66,16 @@ export class FormsComponent implements OnInit, OnDestroy {
     endCursor: '',
   };
 
+  /**
+   * Forms page component
+   *
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param router Angular router
+   * @param snackBar Shared snackbar
+   * @param authService Shared authentication service
+   * @param translate Angular translate service
+   */
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
@@ -222,8 +231,6 @@ export class FormsComponent implements OnInit, OnDestroy {
    * @param e click event.
    */
   onDelete(form: Form, e: any): void {
-    const warning =
-      'Deleting a core form will recursively delete linked forms and resources.';
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -283,9 +290,7 @@ export class FormsComponent implements OnInit, OnDestroy {
    * Creates a new form on closed if result.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddFormComponent, {
-      panelClass: 'add-dialog',
-    });
+    const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };
@@ -317,7 +322,7 @@ export class FormsComponent implements OnInit, OnDestroy {
               } else {
                 if (res.data) {
                   const { id } = res.data.addForm;
-                  this.router.navigate(['/forms/builder', id]);
+                  this.router.navigate(['/forms/' + id + '/builder']);
                 }
               }
             },

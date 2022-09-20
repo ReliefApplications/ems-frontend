@@ -121,6 +121,7 @@ export class SafeApplicationService {
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
    * @param router Angular router
+   * @param translate Angular translate service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -286,6 +287,42 @@ export class SafeApplicationService {
                 name: res.data.editApplication.name,
                 description: res.data.editApplication.description,
                 status: res.data.editApplication.status,
+              };
+              this.application.next(newApplication);
+            }
+          }
+        });
+    }
+  }
+
+  /**
+   * Edits current permissions.
+   *
+   * @param newPermissions New application value.
+   */
+  editPermissions(newPermissions: any): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<EditApplicationMutationResponse>({
+          mutation: EDIT_APPLICATION,
+          variables: {
+            id: application?.id,
+            permissions: newPermissions,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.access').toLowerCase(),
+                value: application?.name,
+              })
+            );
+            if (res.data?.editApplication) {
+              const newApplication = {
+                ...application,
+                permissions: res.data.editApplication.permissions,
               };
               this.application.next(newApplication);
             }

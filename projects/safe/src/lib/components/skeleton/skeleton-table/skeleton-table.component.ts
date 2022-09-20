@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 
+/**
+ * Skeleton table component.
+ */
 @Component({
   selector: 'safe-skeleton-table',
   templateUrl: './skeleton-table.component.html',
@@ -13,9 +16,13 @@ export class SafeSkeletonTableComponent implements OnInit {
 
   dataSource: any[] = [];
 
+  /**
+   * Skeleton table component.
+   */
   constructor() {}
 
   ngOnInit(): void {
+    this.columns = [...this.columns];
     // Adds a select column to be able to display checkboxes
     if (this.checkbox) {
       this.columns.unshift('select');

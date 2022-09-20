@@ -235,6 +235,46 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
+// === RADIO STYlING ===
+@mixin radio($theme) {
+  .mat-radio-label-content {
+    safe-icon {
+      vertical-align: text-bottom;
+    }
+  }
+}
+
+// === SLIDE TOGGLE STYLING ===
+@mixin slide-toggle($theme) {
+  .mat-slide-toggle-content {
+    safe-icon {
+      vertical-align: text-bottom;
+    }
+  }
+}
+
+// === EXPANSION PANEL STYLING ===
+@mixin expansion-panel($theme) {
+  .mat-expansion-panel-header-title {
+    gap: 4px;
+  }
+}
+
+// === CHECKBOX STYLING ===
+@mixin checkbox($theme) {
+  .mat-checkbox-label {
+    safe-icon {
+      vertical-align: text-bottom;
+    }
+  }
+}
+
+@mixin modal($theme) {
+  .mat-dialog-actions {
+    gap: 8px;
+  }
+}
+
 // === GLOBAL STYLES ==
 .mat-table {
   box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
@@ -300,12 +340,6 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     white-space: nowrap;
     text-overflow: ellipsis;
     margin: 0;
-  }
-}
-
-.clickable {
-  &:hover {
-    cursor: pointer;
   }
 }
 
@@ -399,10 +433,16 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
+// === ADDITIONAL MATERIAL STYLING ===
 @include mat.all-component-themes($safe-theme);
 @include chip($safe-theme);
 @include button($safe-theme);
 @include alert($safe-theme);
+@include radio($safe-theme);
+@include slide-toggle($safe-theme);
+@include expansion-panel($safe-theme);
+@include checkbox($safe-theme);
+@include modal($safe-theme);
 @include custom-theme($safe-theme);
 
 html,
@@ -469,20 +509,12 @@ body {
 }
 
 // === DIALOGS ===
-.add-dialog {
-  mat-dialog-container {
-    width: 700px;
-  }
-}
 
-.preferences-dialog {
-  width: 90%;
-  max-width: 750px !important;
-
-  mat-dialog-container {
-    width: 100%;
-    position: relative;
-  }
+.fullscreen-dialog {
+  margin-top: 72px;
+  max-width: unset !important;
+  width: 100%;
+  height: calc(100% - 72px);
 }
 
 .no-padding-dialog {
@@ -498,36 +530,12 @@ body {
   }
 }
 
-.tile-settings-dialog,
-.expanded-widget-dialog {
-  max-width: unset !important;
-  width: 100%;
-  height: calc(100% - 72px);
-
-  mat-dialog-container {
-    position: relative;
-    border-radius: 4px 4px 0 0;
-    width: 100%;
-  }
-
-  .mat-dialog-content {
-    max-height: calc(100% - 68px - 32px);
-    height: 100%;
-  }
-}
-
-.expanded-widget-dialog {
-  .mat-dialog-content {
-    max-height: unset;
-    height: 100%;
-  }
-}
-
 // === UTILS ===
-.info-icon {
-  color: #939393;
-  font-size: 22px;
-  cursor: pointer;
+// Correct a bug of angular, see https://github.com/angular/components/issues/14311
+.mat-form-field-suffix,
+.mat-form-field-prefix {
+  display: inline-flex;
+  align-items: center;
 }
 
 .info-text {
@@ -535,19 +543,15 @@ body {
   margin-bottom: 32px;
 }
 
-.info-row {
-  display: flex;
-  .info-icon {
-    margin-left: 6px;
-  }
-}
-
 // === SURVEY BUILDER ===
 .core-question {
   color: mat.get-color-from-palette($safe-warn) !important;
 }
 
+// === KENDO THEME ===
 @import 'theme.scss';
+// === UTILITY ===
+@import 'utils.scss';
 
 // === VERTICAL TABS ===
 mat-tab-group[vertical] {

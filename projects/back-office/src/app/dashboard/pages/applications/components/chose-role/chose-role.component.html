@@ -1,28 +1,38 @@
-<h1 mat-dialog-title>{{ 'components.role.impersonate.title' | translate }}</h1>
-<div mat-dialog-content>
-  <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-  <form [formGroup]="roleForm" class="form-group" *ngIf="!loading">
-    <mat-form-field>
-      <mat-label>{{ 'common.role.one' | translate }}</mat-label>
-      <mat-select formControlName="role">
-        <mat-option *ngFor="let role of roles" [value]="role.id">
-          {{ role.title }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </form>
-</div>
-<div mat-dialog-actions align="end">
-  <button mat-button (click)="onClose()">
-    {{ 'common.close' | translate }}
-  </button>
-  <button
-    mat-flat-button
-    [mat-dialog-close]="roleForm.value"
-    cdkFocusInitial
-    color="primary"
-    [disabled]="!roleForm.valid"
-  >
-    {{ 'common.preview' | translate }}
-  </button>
-</div>
+<safe-modal size="small">
+  <h1 mat-dialog-title>
+    {{ 'components.role.impersonate.title' | translate }}
+  </h1>
+  <div mat-dialog-content>
+    <mat-spinner
+      diameter="45"
+      class="page-loader"
+      *ngIf="loading"
+    ></mat-spinner>
+    <form [formGroup]="roleForm" class="form-group" *ngIf="!loading">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'common.role.one' | translate }}</mat-label>
+        <safe-graphql-select
+          valueField="id"
+          textField="title"
+          [query]="rolesQuery"
+          formControlName="role"
+        >
+        </safe-graphql-select>
+      </mat-form-field>
+    </form>
+  </div>
+  <div mat-dialog-actions align="end">
+    <safe-button (click)="onClose()">{{
+      'common.close' | translate
+    }}</safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [mat-dialog-close]="roleForm.value"
+      cdkFocusInitial
+      [disabled]="!roleForm.valid"
+    >
+      {{ 'common.preview' | translate }}
+    </safe-button>
+  </div>
+</safe-modal>

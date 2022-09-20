@@ -71,6 +71,9 @@ export const httpTranslateLoader = (http: HttpClient) =>
 const provideOverlay = (_platform: Platform): AppOverlayContainer =>
   new AppOverlayContainer(_platform);
 
+/**
+ * Web Widget project root module.
+ */
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -134,11 +137,21 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
   ],
 })
 export class AppModule implements DoBootstrap {
+  /**
+   * Main project root module
+   *
+   * @param injector Angular injector
+   * @param translate Angular translate service
+   */
   constructor(private injector: Injector, private translate: TranslateService) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang(environment.availableLanguages[0]);
   }
 
+  /**
+   * Bootstrap the project.
+   * Create the web elements.
+   */
   ngDoBootstrap(): void {
     // Dashboard
     const dashboard = createCustomElement(DashboardWidgetComponent, {

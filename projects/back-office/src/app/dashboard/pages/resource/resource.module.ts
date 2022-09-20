@@ -13,6 +13,7 @@ import {
   SafeButtonModule,
   SafeLayoutModalModule,
   SafeDateModule,
+  SafeConfirmModalModule,
 } from '@safe/builder';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -20,6 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
 
+/** Resource page module. */
 @NgModule({
   declarations: [ResourceComponent],
   imports: [
@@ -40,6 +42,7 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     OverlayModule,
     UploadMenuModule,
     SafeDateModule,
+    SafeConfirmModalModule,
   ],
   exports: [ResourceComponent],
 })

@@ -3,18 +3,12 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import get from 'lodash/get';
 import { scrollFactory } from '../../../utils/scroll-factory';
-import { codesFactory } from '../grid-settings/floating-button-settings/floating-button-settings.component';
+import { codesFactory } from '../grid-settings/button-config/button-config.component';
 import { Chart } from './charts/chart';
-import {
-  CHART_TYPES,
-  LEGEND_ORIENTATIONS,
-  LEGEND_POSITIONS,
-  TITLE_POSITIONS,
-} from './constants';
+import { CHART_TYPES } from './constants';
 
 /**
  * Chart settings component
@@ -35,7 +29,7 @@ import {
 /** Modal content for the settings of the chart widgets. */
 export class SafeChartSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
-  tileForm: FormGroup | undefined;
+  public formGroup!: FormGroup;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -46,9 +40,6 @@ export class SafeChartSettingsComponent implements OnInit {
 
   // === DATA ===
   public types = CHART_TYPES;
-  public legendPositions = LEGEND_POSITIONS;
-  public legendOrientations = LEGEND_ORIENTATIONS;
-  public titlePositions = TITLE_POSITIONS;
   public chart?: Chart;
   public type: any;
 
@@ -56,32 +47,20 @@ export class SafeChartSettingsComponent implements OnInit {
   public settings: any;
   public grid: any;
 
-  private reload = new Subject<boolean>();
-  public reload$ = this.reload.asObservable();
-
   /** @returns the form for the chart */
   public get chartForm(): FormGroup {
-    return (this.tileForm?.controls.chart as FormGroup) || null;
+    return (this.formGroup?.controls.chart as FormGroup) || null;
   }
 
-  /** @returns the aggregation form */
-  public get aggregationForm(): FormGroup {
-    return (
-      ((this.tileForm?.controls.chart as FormGroup).controls
-        .aggregation as FormGroup) || null
-    );
-  }
+  /** Stores the selected tab */
+  public selectedTab = 0;
 
   /**
    * Constructor for the chart settings component
    *
    * @param formBuilder The formBuilder service
-   * @param aggregationBuilder The aggregationBuilder service
    */
-  constructor(
-    private formBuilder: FormBuilder,
-    private aggregationBuilder: AggregationBuilderService
-  ) {}
+  constructor(private formBuilder: FormBuilder) {}
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
@@ -97,34 +76,31 @@ export class SafeChartSettingsComponent implements OnInit {
       this.type = null;
       this.chart = new Chart(tileSettings);
     }
-    this.tileForm = this.formBuilder.group({
+    this.formGroup = this.formBuilder.group({
       id: this.tile.id,
-      title: [
-        tileSettings && tileSettings.title ? tileSettings.title : '',
-        Validators.required,
-      ],
+      title: [get(tileSettings, 'title', ''), Validators.required],
       chart: this.chart?.form,
+      resource: [get(tileSettings, 'resource', null), Validators.required],
+      // aggregation: [null, Validators.required],
     });
-    this.change.emit(this.tileForm);
+    this.change.emit(this.formGroup);
 
-    this.tileForm?.valueChanges.subscribe(() => {
-      this.change.emit(this.tileForm);
+    this.formGroup?.valueChanges.subscribe(() => {
+      this.change.emit(this.formGroup);
     });
 
     this.chartForm.controls.type.valueChanges.subscribe((value) => {
       this.type = this.types.find((x) => x.name === value);
-      this.reload.next(true);
+      // this.reload.next(true);
     });
+  }
 
-    this.settings = this.tileForm?.value;
-    this.aggregationForm.valueChanges
-      .pipe(debounceTime(1000))
-      .subscribe((value) => {
-        this.settings = this.tileForm?.value;
-      });
-
-    this.aggregationBuilder.getPreviewGrid().subscribe((value) => {
-      this.grid = value;
-    });
+  /**
+   *  Handles the a tab change event
+   *
+   * @param event Event triggered on tab switch
+   */
+  handleTabChange(event: MatTabChangeEvent): void {
+    this.selectedTab = event.index;
   }
 }

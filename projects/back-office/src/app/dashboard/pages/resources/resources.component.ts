@@ -1,15 +1,15 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   DeleteResourceMutationResponse,
   DELETE_RESOURCE,
   AddFormMutationResponse,
   ADD_FORM,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetResourcesQueryResponse,
   GET_RESOURCES_EXTENDED,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   Resource,
   SafeConfirmModalComponent,
@@ -18,9 +18,9 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
-import { AddResourceComponent } from '../../../components/add-resource/add-resource.component';
+import { AddResourceModalComponent } from '../../../components/add-resource-modal/add-resource-modal.component';
 
 /**
  * Default number of resources that will be shown at once.
@@ -35,7 +35,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './resources.component.html',
   styleUrls: ['./resources.component.scss'],
 })
-export class ResourcesComponent implements OnInit, AfterViewInit {
+export class ResourcesComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public filterLoading = false;
@@ -45,7 +45,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
   public resources = new MatTableDataSource<Resource>([]);
 
   // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  public updating = false;
+  private sort: Sort = { active: '', direction: '' };
 
   // === FILTERING ===
   public filter: any;
@@ -81,6 +82,8 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       query: GET_RESOURCES_EXTENDED,
       variables: {
         first: DEFAULT_PAGE_SIZE,
+        sortField: 'name',
+        sortOrder: 'asc',
       },
     });
 
@@ -93,6 +96,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       this.pageInfo.length = res.data.resources.totalCount;
       this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
       this.loading = res.loading;
+      this.updating = res.loading;
       this.filterLoading = false;
     });
   }
@@ -120,7 +124,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       this.loading = true;
       this.resourcesQuery.fetchMore({
         variables: {
-          first,
+          first: this.pageInfo.pageSize,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter,
         },
@@ -179,8 +183,65 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    this.resources.sort = this.sort || null;
+  /**
+   * Handle sort change.
+   *
+   * @param event sort event
+   */
+  onSort(event: Sort): void {
+    this.sort = event;
+    this.fetchResources(true);
+  }
+
+  /**
+   * Update resources query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchResources(refetch?: boolean): void {
+    this.updating = true;
+    if (refetch) {
+      this.cachedResources = [];
+      this.pageInfo.pageIndex = 0;
+      this.resourcesQuery
+        .refetch({
+          first: this.pageInfo.pageSize,
+          afterCursor: null,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        })
+        .then(() => {
+          this.loading = false;
+          this.updating = false;
+        });
+    } else {
+      this.loading = true;
+      this.resourcesQuery.fetchMore({
+        variables: {
+          first: this.pageInfo.pageSize,
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) {
+            return prev;
+          }
+          return Object.assign({}, prev, {
+            resources: {
+              edges: [
+                ...prev.resources.edges,
+                ...fetchMoreResult.resources.edges,
+              ],
+              pageInfo: fetchMoreResult.resources.pageInfo,
+              totalCount: fetchMoreResult.resources.totalCount,
+            },
+          });
+        },
+      });
+    }
   }
 
   /**
@@ -251,9 +312,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
    * Creates a new form on closed if result.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddResourceComponent, {
-      panelClass: 'add-dialog',
-    });
+    const dialogRef = this.dialog.open(AddResourceModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };

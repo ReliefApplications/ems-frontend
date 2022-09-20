@@ -20,7 +20,7 @@ import {
   EDIT_RECORD,
   UploadFileMutationResponse,
   UPLOAD_FILE,
-} from '../../graphql/mutations';
+} from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar.service';
@@ -173,7 +173,14 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.modifiedAt = this.record.modifiedAt || null;
     }
 
-    // set some settings on the survey
+    // if (this.survey.getUsedLocales().length > 1) {
+    //   this.survey.getUsedLocales().forEach((lang) => {
+    //     const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
+    //     this.usedLocales.push({ value: lang, text: nativeName });
+    //     this.dropdownLocales.push(nativeName);
+    //   });
+    // }
+
     this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showNavigationButtons = false;
     this.setPages();
@@ -199,9 +206,36 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     );
     this.survey.onValueChanged.add(this.valueChange.bind(this));
+
+    // Sets default language as form language if it is in survey locales
+    // const currentLang = this.usedLocales.find(
+    //   (lang) => lang.value === this.translate.currentLang
+    // );
+    // if (currentLang) {
+    //   this.setLanguage(currentLang.text);
+    //   this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
+    // } else {
+    //   this.survey.locale = this.translate.currentLang;
+    // }
   }
 
   ngAfterViewInit(): void {
+    // this.translate.onLangChange.subscribe(() => {
+    //   const currentLang = this.usedLocales.find(
+    //     (lang) => lang.value === this.translate.currentLang
+    //   );
+    //   if (currentLang && currentLang.text !== this.survey.locale) {
+    //     this.setLanguage(currentLang.text);
+    //     this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
+    //   } else if (
+    //     !currentLang &&
+    //     this.survey.locale !== this.translate.currentLang
+    //   ) {
+    //     this.survey.locale = this.translate.currentLang;
+    //     this.surveyLanguage = (LANGUAGES as any).en;
+    //     this.survey.render();
+    //   }
+    // });
     this.survey.render(this.formContainer.nativeElement);
     setTimeout(() => {}, 100);
   }

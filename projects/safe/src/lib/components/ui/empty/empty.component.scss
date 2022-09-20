@@ -1,0 +1,28 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  img {
+    max-width: 100%;
+    height: 72px;
+  }
+
+  .empty-content {
+    color: #6e7478;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    h3 {
+      margin: 0;
+    }
+
+    span {
+      opacity: 0.6;
+      margin: 0;
+    }
+  }
+}

@@ -14,12 +14,13 @@ import { SafeDownloadService } from '../../services/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDateTranslateService } from '../../services/date-translate.service';
 import { Apollo } from 'apollo-angular';
+import { SafeSnackBarService } from '../../services/snackbar.service';
 import {
   GetRecordByIdQueryResponse,
   GetRecordHistoryByIdResponse,
   GET_RECORD_BY_ID_FOR_HISTORY,
   GET_RECORD_HISTORY_BY_ID,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { Change, RecordHistory } from '../../models/recordsHistory';
 import { Version } from '../../models/form.model';
 
@@ -80,13 +81,15 @@ export class SafeRecordHistoryComponent implements OnInit {
    * @param translate The translation service
    * @param dateFormat The dateTranslation service
    * @param apollo The apollo client
+   * @param snackBar The snackbar service
    */
   constructor(
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
     private translate: TranslateService,
     private dateFormat: SafeDateTranslateService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private snackBar: SafeSnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -113,11 +116,21 @@ export class SafeRecordHistoryComponent implements OnInit {
         },
       })
       .subscribe((res) => {
-        this.history = res.data.recordHistory.filter(
-          (item) => item.changes.length
-        );
-        this.filterHistory = this.history;
-        this.loading = false;
+        if (res.errors) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.history.error', {
+              error: res.errors[0].message,
+            }),
+            { error: true }
+          );
+          this.cancel.emit(true);
+        } else {
+          this.history = res.data.recordHistory.filter(
+            (item) => item.changes.length
+          );
+          this.filterHistory = this.history;
+          this.loading = false;
+        }
       });
   }
 
@@ -230,9 +243,6 @@ export class SafeRecordHistoryComponent implements OnInit {
           ?.version,
         template: this.template,
       },
-      height: '98%',
-      width: '100vw',
-      panelClass: 'full-screen-modal',
       autoFocus: false,
     });
     dialogRef.afterClosed().subscribe((value) => {

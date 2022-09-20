@@ -75,6 +75,11 @@
 			"one": "******"
 		},
 		"general": "******",
+		"group": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"history": "******",
 		"id": "******",
 		"input": {
@@ -103,6 +108,7 @@
 				"ready": "******",
 				"sent": "******"
 			},
+			"fetchingGroups": "******",
 			"file": {
 				"download": {
 					"error": "******",
@@ -116,6 +122,14 @@
 				}
 			},
 			"formatInvalid": "****** {{format}} ******",
+			"groups": {
+				"error": "******",
+				"processing": "******",
+				"ready": "******"
+			},
+			"history": {
+				"error": "****** {{error}}"
+			},
 			"loadedFromCache": "{{type}} ******",
 			"noOpened": "****** {{value}} ******",
 			"objectCreated": "{{value}} ****** {{type}} ******",
@@ -202,6 +216,7 @@
 		"saveChanges": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"send": "******",
 		"settings": "******",
 		"status": "******",
 		"status_active": "******",
@@ -244,8 +259,21 @@
 			"canDelete": "******",
 			"canSee": "******",
 			"canUpdate": "******",
-			"description": "******",
+			"description": "****** {{name}} ******",
 			"title": "******"
+		},
+		"aggregation": {
+			"add": {
+				"choice": {
+					"create": "******",
+					"load": "******"
+				},
+				"select": "******",
+				"title": "******"
+			},
+			"edit": {
+				"title": "******"
+			}
 		},
 		"aggregationBuilder": {
 			"accumulators": "******",
@@ -374,11 +402,18 @@
 		},
 		"emailBuilder": {
 			"body": "******",
+			"default": "******",
 			"distribution": "******",
 			"fields": "******",
-			"subject": "******"
+			"subject": "******",
+			"withoutRecords": "******"
 		},
 		"form": {
+			"aggregation": {
+				"delete": {
+					"confirmationMessage": "****** {{name}} ******"
+				}
+			},
 			"create": {
 				"choice": {
 					"inherit": "******",
@@ -436,7 +471,6 @@
 		},
 		"formBuilder": {
 			"errors": {
-				"invalidRelatedName": "****** {{name}} ****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			}
@@ -444,6 +478,15 @@
 		"forms": {
 			"isCore": "******",
 			"parent": "******"
+		},
+		"group": {
+			"add": {
+				"title": "******"
+			},
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"title": "******"
+			}
 		},
 		"header": {
 			"goToPlatform": "******",
@@ -539,6 +582,10 @@
 				"sortingDisabled": "******",
 				"style": "******"
 			},
+			"pagination": {
+				"first": "******",
+				"title": "******"
+			},
 			"sort": {
 				"ascending": "******",
 				"descending": "******",
@@ -575,6 +622,9 @@
 						"useExpression": "******",
 						"usePicker": "******"
 					}
+				},
+				"pagination": {
+					"first": "******"
 				}
 			}
 		},
@@ -625,9 +675,6 @@
 		},
 		"referenceData": {
 			"create": {
-				"errors": {
-					"name": "******"
-				},
 				"title": "******"
 			},
 			"delete": {
@@ -658,6 +705,15 @@
 				"title": "******"
 			},
 			"summary": {
+				"autoAssignment": {
+					"rule": {
+						"add": "******",
+						"delete": "******",
+						"edit": "******",
+						"title": "******"
+					},
+					"title": "******"
+				},
 				"features": "******",
 				"noFeatures": "******",
 				"noForms": "******",
@@ -672,12 +728,18 @@
 				"disallowRecordAccessibility": "****** {{form}}",
 				"disallowRecordCreation": "****** {{form}}",
 				"disallowRecordDeletion": "****** {{form}}",
-				"disallowRecordUpate": "****** {{form}}",
+				"disallowRecordUpdate": "****** {{form}}",
 				"hideFeature": "****** {{page}} ******",
 				"showFeature": "****** {{page}} ******"
 			},
 			"update": {
 				"permissions": "******",
+				"title": "******"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "******",
 				"title": "******"
 			}
 		},
@@ -702,6 +764,7 @@
 					"application": "******",
 					"backoffice": "******",
 					"selectedApplication": "******",
+					"selectedGroups": "******",
 					"selectedRoles": "******"
 				},
 				"title": "******"
@@ -837,6 +900,13 @@
 						"showDetails": "******",
 						"title": "******",
 						"update": "******"
+					},
+					"aggregations": {
+						"add": {
+							"choice": {
+								"create": "******"
+							}
+						}
 					},
 					"buttons": {
 						"callback": {
@@ -1109,6 +1179,12 @@
 			"select": "******",
 			"template": "******"
 		},
+		"group": {
+			"create": "******",
+			"description": "******",
+			"fetch": "******",
+			"title": "******"
+		},
 		"mapping": {
 			"add": "******",
 			"edit": "******"
@@ -1268,13 +1344,10 @@
 				"choices": {
 					"valueDuplicated": "****** {{question}}"
 				},
+				"dataFieldDuplicated": "****** {{name}} ******",
 				"missingName": "****** {{page}} ******",
 				"multipletext": {
 					"missingName": "****** {{question}}"
-				},
-				"resource": {
-					"invalidRelatedName": "****** {{relatedName}} ****** {{page}} ******",
-					"missingRelatedName": "****** {{question}} ****** {{page}} ******"
 				},
 				"snakecase": "****** {{name}} ****** {{page}} ******"
 			},
@@ -1297,9 +1370,6 @@
 		},
 		"referenceData": {
 			"csv": "******",
-			"errors": {
-				"name": "******"
-			},
 			"fields": "******",
 			"graphQLFilter": "******",
 			"path": "******",

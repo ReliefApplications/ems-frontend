@@ -21,7 +21,11 @@ import {
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { AddResourceModule } from '../../../components/add-resource/add-resource.module';
+import { AddResourceModalModule } from '../../../components/add-resource-modal/add-resource-modal.module';
+
+/**
+ * Resources page module.
+ */
 @NgModule({
   declarations: [ResourcesComponent, FilterComponent],
   imports: [
@@ -42,7 +46,7 @@ import { AddResourceModule } from '../../../components/add-resource/add-resource
     MatPaginatorModule,
     ReactiveFormsModule,
     TranslateModule,
-    AddResourceModule,
+    AddResourceModalModule,
     SafeSkeletonTableModule,
     SafeDateModule,
   ],

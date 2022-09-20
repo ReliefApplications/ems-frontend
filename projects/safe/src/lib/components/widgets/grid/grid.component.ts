@@ -9,7 +9,7 @@ import {
   PUBLISH_NOTIFICATION,
   PublishMutationResponse,
   PublishNotificationMutationResponse,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { Form } from '../../../models/form.model';
@@ -18,7 +18,7 @@ import {
   GET_RECORD_DETAILS,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   Component,
   OnInit,
@@ -39,6 +39,7 @@ import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
+import get from 'lodash/get';
 
 /** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
@@ -108,11 +109,17 @@ export class SafeGridWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.gridSettings = { ...this.settings };
-    if (this.settings.resource) {
+    if (
+      this.settings.resource &&
+      get(this.settings, 'layouts', []).length > 0
+    ) {
       this.gridLayoutService
-        .getLayouts(this.settings.resource, this.settings.layouts)
+        .getLayouts(this.settings.resource, {
+          ids: this.settings.layouts,
+          first: this.settings.layouts?.length,
+        })
         .then((res) => {
-          this.layouts = res;
+          this.layouts = res.edges.map((edge) => edge.node);
           this.layout = this.layouts[0] || null;
           this.gridSettings = {
             ...this.settings,
@@ -141,7 +148,7 @@ export class SafeGridWidgetComponent implements OnInit {
             variables: {
               id: item.id,
               data,
-              template: this.settings.template,
+              template: this.settings.query?.template,
             },
           })
           .toPromise()
@@ -290,9 +297,6 @@ export class SafeGridWidgetComponent implements OnInit {
           prefillRecords: records,
           askForConfirm: false,
         },
-        height: '98%',
-        width: '100vw',
-        panelClass: 'full-screen-modal',
         autoFocus: false,
       });
     }
@@ -339,7 +343,6 @@ export class SafeGridWidgetComponent implements OnInit {
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
-      // modificationFields.push(modification.field.name);
       if (['Date', 'DateTime'].includes(modification.field.type.name)) {
         update[modification.field.name] = this.getDateForFilter(
           modification.value
@@ -348,6 +351,8 @@ export class SafeGridWidgetComponent implements OnInit {
         update[modification.field.name] = this.getTimeForFilter(
           modification.value
         );
+      } else {
+        update[modification.field.name] = modification.value;
       }
     }
     const data = cleanRecord(update);
@@ -357,6 +362,7 @@ export class SafeGridWidgetComponent implements OnInit {
         variables: {
           ids,
           data,
+          template: this.settings.query?.template,
         },
       })
       .toPromise();
@@ -488,9 +494,6 @@ export class SafeGridWidgetComponent implements OnInit {
                     data: {
                       recordId: record.id,
                     },
-                    height: '98%',
-                    width: '100vw',
-                    panelClass: 'full-screen-modal',
                     autoFocus: false,
                   });
                 }
