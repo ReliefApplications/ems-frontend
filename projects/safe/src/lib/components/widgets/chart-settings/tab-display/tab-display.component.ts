@@ -28,4 +28,31 @@ export class TabDisplayComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  /**
+   * Toggles boolean controls for title style and update font.
+   *
+   * @param controlName name of form control.
+   */
+  onToggleStyle(controlName: string): void {
+    const control = this.chartForm.get(controlName);
+    control?.setValue(!control.value);
+
+    let new_font = '';
+    if (this.chartForm.get('title.bold')?.value) {
+      new_font = new_font + 'bold ';
+    }
+    if (this.chartForm.get('title.italic')?.value) {
+      new_font = new_font + 'italic ';
+    }
+    new_font = new_font + '24pt sans-serif';
+    if (this.chartForm.get('title.underline')?.value) {
+      new_font = new_font + '; text-decoration: underline;';
+    }
+
+    console.log(new_font);
+
+    const font_control = this.chartForm.get('title.font');
+    font_control?.setValue(new_font);
+  }
 }

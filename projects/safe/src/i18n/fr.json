@@ -875,6 +875,7 @@
 						},
 						"title": "Séries"
 					},
+					"style": "Style",
 					"text": "Texte",
 					"type": "Graphique",
 					"xAxis": "Axe X",

@@ -7,6 +7,7 @@ interface ChartTitle {
   visible: boolean;
   text: string;
   position: 'top' | 'bottom';
+  font: string;
 }
 
 /** Interface for the chart legend */

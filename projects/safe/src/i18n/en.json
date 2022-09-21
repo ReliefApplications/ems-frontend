@@ -875,6 +875,7 @@
 						},
 						"title": "Series"
 					},
+					"style": "Style",
 					"text": "Text",
 					"type": "Chart Type",
 					"xAxis": "X Axis",

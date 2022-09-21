@@ -68,6 +68,10 @@ export class Chart {
         visible: [title ? title.visible : true],
         text: [title ? title.text : null],
         position: [title ? title.position : 'top'],
+        bold: [title ? title.bold : false],
+        italic: [title ? title.italic : false],
+        underline: [title ? title.underline : false],
+        font: [title ? title.font : ''],
       }),
       palette: this.fb.group({
         enabled: get(settings, 'palette.enabled', false),
