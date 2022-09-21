@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeLayoutModalComponent } from './layout-modal.component';
+import { SafeEditLayoutModalComponent } from './edit-layout-modal.component';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -9,11 +9,10 @@ import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { SafeModalModule } from '../../ui/modal/modal.module';
 
 /**
- * SafeLayoutModalModule is a class used to manage all the modules and components
- * related to the layout modals.
+ * Edit layout modal component.
  */
 @NgModule({
-  declarations: [SafeLayoutModalComponent],
+  declarations: [SafeEditLayoutModalComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -24,6 +23,6 @@ import { SafeModalModule } from '../../ui/modal/modal.module';
     SafeCoreGridModule,
     SafeModalModule,
   ],
-  exports: [SafeLayoutModalComponent],
+  exports: [SafeEditLayoutModalComponent],
 })
-export class SafeLayoutModalModule {}
+export class SafeEditLayoutModalModule {}
