@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LayoutsComponent } from './layouts.component';
+import { LayoutTableComponent } from './layout-table.component';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -13,7 +13,7 @@ import { SafeDateModule } from '../../../pipes/date/date.module';
 
 /** Module for layout component in grid widget settings */
 @NgModule({
-  declarations: [LayoutsComponent],
+  declarations: [LayoutTableComponent],
   imports: [
     CommonModule,
     TranslateModule,
@@ -26,6 +26,6 @@ import { SafeDateModule } from '../../../pipes/date/date.module';
     SafeLayoutModalModule,
     SafeDateModule,
   ],
-  exports: [LayoutsComponent],
+  exports: [LayoutTableComponent],
 })
-export class LayoutsModule {}
+export class LayoutTableModule {}

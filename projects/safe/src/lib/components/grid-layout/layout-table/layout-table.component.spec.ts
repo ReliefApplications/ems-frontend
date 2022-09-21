@@ -8,16 +8,16 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 
-import { LayoutsComponent } from './layouts-parameters.component';
+import { LayoutTableComponent } from './layout-table.component';
 
-describe('LayoutsComponent', () => {
-  let component: LayoutsComponent;
-  let fixture: ComponentFixture<LayoutsComponent>;
+describe('LayoutTableComponent', () => {
+  let component: LayoutTableComponent;
+  let fixture: ComponentFixture<LayoutTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [TranslateService],
-      declarations: [LayoutsComponent],
+      declarations: [LayoutTableComponent],
       imports: [
         MatDialogModule,
         MatSnackBarModule,
@@ -32,7 +32,7 @@ describe('LayoutsComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LayoutsComponent);
+    fixture = TestBed.createComponent(LayoutTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

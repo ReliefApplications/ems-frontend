@@ -13,11 +13,11 @@ import { SafeLayoutModalComponent } from '../layout-modal/layout-modal.component
  * Layouts list configuration for grid widgets
  */
 @Component({
-  selector: 'safe-layouts',
-  templateUrl: './layouts.component.html',
-  styleUrls: ['./layouts.component.scss'],
+  selector: 'safe-layout-table',
+  templateUrl: './layout-table.component.html',
+  styleUrls: ['./layout-table.component.scss'],
 })
-export class LayoutsComponent implements OnInit, OnChanges {
+export class LayoutTableComponent implements OnInit, OnChanges {
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
   @Input() selectedLayouts: FormControl | null = null;
