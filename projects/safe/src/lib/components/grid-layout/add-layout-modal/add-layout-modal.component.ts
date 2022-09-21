@@ -33,11 +33,11 @@ interface DialogData {
  * Modal is then added to the grid, and to the related form / resource if new.
  */
 @Component({
-  selector: 'safe-add-layout',
-  templateUrl: './add-layout.component.html',
-  styleUrls: ['./add-layout.component.scss'],
+  selector: 'safe-add-layout-modal',
+  templateUrl: './add-layout-modal.component.html',
+  styleUrls: ['./add-layout-modal.component.scss'],
 })
-export class AddLayoutComponent implements OnInit {
+export class AddLayoutModalComponent implements OnInit {
   private form?: Form;
   public resource?: Resource;
   public layouts: Layout[] = [];
@@ -62,7 +62,7 @@ export class AddLayoutComponent implements OnInit {
    * @param apollo Apollo service
    */
   constructor(
-    private dialogRef: MatDialogRef<AddLayoutComponent>,
+    private dialogRef: MatDialogRef<AddLayoutModalComponent>,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private gridLayoutService: SafeGridLayoutService,

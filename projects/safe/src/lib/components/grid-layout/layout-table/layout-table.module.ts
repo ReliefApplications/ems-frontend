@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
-import { AddLayoutModule } from '../add-layout/add-layout.module';
+import { AddLayoutModalModule } from '../add-layout-modal/add-layout-modal.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeEditLayoutModalModule } from '../edit-layout-modal/edit-layout-modal.module';
 import { SafeDateModule } from '../../../pipes/date/date.module';
@@ -22,7 +22,7 @@ import { SafeDateModule } from '../../../pipes/date/date.module';
     MatIconModule,
     DragDropModule,
     SafeButtonModule,
-    AddLayoutModule,
+    AddLayoutModalModule,
     SafeEditLayoutModalModule,
     SafeDateModule,
   ],

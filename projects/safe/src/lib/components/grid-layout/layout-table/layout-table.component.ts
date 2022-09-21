@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
-import { AddLayoutComponent } from '../add-layout/add-layout.component';
+import { AddLayoutModalComponent } from '../add-layout-modal/add-layout-modal.component';
 import { FormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
@@ -93,7 +93,7 @@ export class LayoutTableComponent implements OnInit, OnChanges {
       (this.form ? this.form.layouts : this.resource?.layouts)?.edges?.map(
         (e) => e.node
       ) || [];
-    const dialogRef = this.dialog.open(AddLayoutComponent, {
+    const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
         layouts,
         form: this.form,
