@@ -1,2 +1,2 @@
-export * from './layout-modal.component';
-export * from './layout-modal.module';
+export * from './edit-layout-modal.component';
+export * from './edit-layout-modal.module';

@@ -4,7 +4,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AddLayoutModalComponent } from './add-layout-modal.component';
 import { MatButtonModule } from '@angular/material/button';
 import { SafeButtonModule } from '../../ui/button/button.module';
-import { SafeLayoutModule } from '../../layout/layout.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { SafeModalModule } from '../../ui/modal/modal.module';
@@ -22,7 +21,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatButtonModule,
     MatFormFieldModule,
     MatSelectModule,
-    SafeLayoutModule,
     SafeButtonModule,
     SafeModalModule,
     SafeGraphQLSelectModule,
