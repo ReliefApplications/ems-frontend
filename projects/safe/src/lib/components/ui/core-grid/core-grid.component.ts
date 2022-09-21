@@ -451,10 +451,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             this.metaFields = [];
             this.fields = [];
           }
+
           this.dataQuery = this.aggregationBuilder.buildAggregation(
             this.settings.resource,
-            aggregation,
-            null
+            aggregation
           );
           this.getRecords();
         } else {
@@ -1196,38 +1196,40 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param event Page change event.
    */
   public onPageChange(event: PageChangeEvent): void {
-    this.loading = true;
-    this.skip = event.skip;
-    this.pageSize = event.take;
-    this.pageSizeChanged.emit(this.pageSize);
-    this.dataQuery.fetchMore({
-      variables: {
-        first: this.pageSize,
-        skip: this.skip,
-        filter: this.queryFilter,
-        sortField: this.sortField,
-        sortOrder: this.sortOrder,
-        styles: this.style,
-      },
-      updateQuery: (prev: any, { fetchMoreResult }: any) => {
-        // this.loading = false;
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        for (const field in fetchMoreResult) {
-          if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
-            this.loading = false;
-            return Object.assign({}, prev, {
-              [field]: {
-                edges: fetchMoreResult[field].edges,
-                totalCount: fetchMoreResult[field].totalCount,
-              },
-            });
+    if (!this.settings.useAggregationBuilder) {
+      this.loading = true;
+      this.skip = event.skip;
+      this.pageSize = event.take;
+      this.pageSizeChanged.emit(this.pageSize);
+      this.dataQuery.fetchMore({
+        variables: {
+          first: this.pageSize,
+          skip: this.skip,
+          filter: this.queryFilter,
+          sortField: this.sortField,
+          sortOrder: this.sortOrder,
+          styles: this.style,
+        },
+        updateQuery: (prev: any, { fetchMoreResult }: any) => {
+          // this.loading = false;
+          if (!fetchMoreResult) {
+            return prev;
           }
-        }
-        return prev;
-      },
-    });
+          for (const field in fetchMoreResult) {
+            if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
+              this.loading = false;
+              return Object.assign({}, prev, {
+                [field]: {
+                  edges: fetchMoreResult[field].edges,
+                  totalCount: fetchMoreResult[field].totalCount,
+                },
+              });
+            }
+          }
+          return prev;
+        },
+      });
+    }
   }
 
   // === FILTERING ===
