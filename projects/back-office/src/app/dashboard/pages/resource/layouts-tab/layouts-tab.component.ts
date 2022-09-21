@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  SafeLayoutModalComponent,
+  SafeEditLayoutModalComponent,
   Layout,
   SafeGridLayoutService,
   SafeConfirmModalComponent,
@@ -150,7 +150,7 @@ export class LayoutsTabComponent implements OnInit {
    * Adds a new layout for the resource.
    */
   onAddLayout(): void {
-    const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
+    const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
       disableClose: true,
       data: {
         queryName: this.resource.queryName,
@@ -175,7 +175,7 @@ export class LayoutsTabComponent implements OnInit {
    * @param layout Layout to edit
    */
   onEditLayout(layout: Layout): void {
-    const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
+    const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
       disableClose: true,
       data: {
         layout,

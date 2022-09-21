@@ -19,11 +19,11 @@ interface DialogData {
  * Component used to display modals regarding layouts
  */
 @Component({
-  selector: 'safe-layout-modal',
-  templateUrl: './layout-modal.component.html',
-  styleUrls: ['./layout-modal.component.scss'],
+  selector: 'safe-edit-layout-modal',
+  templateUrl: './edit-layout-modal.component.html',
+  styleUrls: ['./edit-layout-modal.component.scss'],
 })
-export class SafeLayoutModalComponent implements OnInit {
+export class SafeEditLayoutModalComponent implements OnInit {
   @Input() layout: any;
   public form?: FormGroup;
   public templates: any[] = [];
@@ -38,7 +38,7 @@ export class SafeLayoutModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<SafeLayoutModalComponent>,
+    public dialogRef: MatDialogRef<SafeEditLayoutModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 

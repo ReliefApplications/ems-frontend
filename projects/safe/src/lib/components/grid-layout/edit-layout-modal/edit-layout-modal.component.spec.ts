@@ -5,7 +5,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { SafeLayoutModalComponent } from './layout-modal.component';
+import { SafeEditLayoutModalComponent } from './edit-layout-modal.component';
 import {
   TranslateModule,
   TranslateService,
@@ -13,9 +13,9 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 
-describe('SafeLayoutModalComponent', () => {
-  let component: SafeLayoutModalComponent;
-  let fixture: ComponentFixture<SafeLayoutModalComponent>;
+describe('SafeEditLayoutModalComponent', () => {
+  let component: SafeEditLayoutModalComponent;
+  let fixture: ComponentFixture<SafeEditLayoutModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -30,7 +30,7 @@ describe('SafeLayoutModalComponent', () => {
           },
         },
       ],
-      declarations: [SafeLayoutModalComponent],
+      declarations: [SafeEditLayoutModalComponent],
       imports: [
         MatDialogModule,
         TranslateModule.forRoot({
@@ -44,7 +44,7 @@ describe('SafeLayoutModalComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeLayoutModalComponent);
+    fixture = TestBed.createComponent(SafeEditLayoutModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
