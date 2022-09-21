@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MatDialogRef,
@@ -17,6 +17,7 @@ import {
   GET_FORM_LAYOUTS,
 } from './graphql/queries';
 import { FormControl } from '@angular/forms';
+import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.component';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource
@@ -46,6 +47,10 @@ export class AddLayoutComponent implements OnInit {
     | QueryRef<GetFormLayoutsResponse>
     | null;
   public selectedLayoutControl = new FormControl('');
+
+  /** Reference to graphql select for layout */
+  @ViewChild(SafeGraphQLSelectComponent)
+  layoutSelect?: SafeGraphQLSelectComponent;
 
   /**
    * Add layout modal component.
@@ -85,18 +90,11 @@ export class AddLayoutComponent implements OnInit {
       });
 
     this.selectedLayoutControl.valueChanges.subscribe((value) => {
-      this.dialogRef.close(value);
-      // if (!this.queryRef || !value) return;
-      // const currRes = this.queryRef.getCurrentResult() as any;
-      // const queryName = this.resource ? 'resource' : 'form';
-      // const addedLayout = currRes.data?.[queryName]?.layouts?.edges.find(
-      //   (edge: any) => edge.node.id === value
-      // )?.node;
-
-      // if (addedLayout) {
-      //   this.layouts.push(addedLayout);
-      //   this.dialogRef.close(addedLayout);
-      // }
+      if (value) {
+        this.dialogRef.close(
+          this.layoutSelect?.elements.getValue().find((x) => x.id === value)
+        );
+      }
     });
   }
 

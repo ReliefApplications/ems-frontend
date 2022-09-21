@@ -102,16 +102,10 @@ export class LayoutsComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        if (typeof value === 'string') {
-          this.selectedLayouts?.setValue(
-            this.selectedLayouts?.value.concat(value)
-          );
-        } else {
-          this.allLayouts.push(value);
-          this.selectedLayouts?.setValue(
-            this.selectedLayouts?.value.concat(value.id)
-          );
-        }
+        this.allLayouts.push(value);
+        this.selectedLayouts?.setValue(
+          this.selectedLayouts?.value.concat(value.id)
+        );
       }
     });
   }
