@@ -710,6 +710,15 @@
 				"title": "******"
 			},
 			"summary": {
+				"autoAssignment": {
+					"rule": {
+						"add": "******",
+						"delete": "******",
+						"edit": "******",
+						"title": "******"
+					},
+					"title": "******"
+				},
 				"features": "******",
 				"noFeatures": "******",
 				"noForms": "******",

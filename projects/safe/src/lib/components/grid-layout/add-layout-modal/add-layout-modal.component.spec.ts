@@ -12,11 +12,11 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 
-import { AddLayoutComponent } from './add-layout.component';
+import { AddLayoutModalComponent } from './add-layout-modal.component';
 
-describe('AddLayoutComponent', () => {
-  let component: AddLayoutComponent;
-  let fixture: ComponentFixture<AddLayoutComponent>;
+describe('AddLayoutModalComponent', () => {
+  let component: AddLayoutModalComponent;
+  let fixture: ComponentFixture<AddLayoutModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -25,7 +25,7 @@ describe('AddLayoutComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: {} },
         TranslateService,
       ],
-      declarations: [AddLayoutComponent],
+      declarations: [AddLayoutModalComponent],
       imports: [
         MatDialogModule,
         MatSnackBarModule,
@@ -40,7 +40,7 @@ describe('AddLayoutComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddLayoutComponent);
+    fixture = TestBed.createComponent(AddLayoutModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -238,7 +238,7 @@ export class SafeGraphQLSelectComponent
   private queryName!: string;
   @Input() path = '';
   @Input() selectedElements: any[] = [];
-  private elements = new BehaviorSubject<any[]>([]);
+  public elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
   private pageInfo = {
     endCursor: '',
