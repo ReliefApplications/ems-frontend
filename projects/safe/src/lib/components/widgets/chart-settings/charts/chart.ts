@@ -73,7 +73,7 @@ export class Chart {
         underline: [title ? title.underline : false],
         font: [title ? title.font : ''],
         size: [title ? title.size : 12],
-        color: [title ? title.color : ''],
+        color: [title ? title.color : '#000000'],
       }),
       palette: this.fb.group({
         enabled: get(settings, 'palette.enabled', false),
