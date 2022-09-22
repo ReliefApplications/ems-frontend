@@ -41,9 +41,9 @@
   <h2>
     {{ 'components.widget.settings.grid.layouts.title' | translate }}
   </h2>
-  <safe-layouts
+  <safe-layout-table
     [form]="form"
     [resource]="resource"
     [selectedLayouts]="$any(formGroup).get('layouts')"
-  ></safe-layouts>
+  ></safe-layout-table>
 </div>

@@ -13,6 +13,17 @@
       <safe-spinner *ngIf="loading"></safe-spinner>
     </ng-template>
   </mat-tab>
+  <mat-tab [label]="'components.role.summary.autoAssignment.title' | translate">
+    <ng-template matTabContent>
+      <safe-role-auto-assignment
+        *ngIf="role"
+        [role]="role"
+        (edit)="onEditRole($event)"
+        [loading]="loading"
+      ></safe-role-auto-assignment>
+      <safe-spinner *ngIf="loading"></safe-spinner>
+    </ng-template>
+  </mat-tab>
   <mat-tab [label]="'common.resource.few' | translate">
     <ng-template matTabContent>
       <safe-role-resources *ngIf="role" [role]="role"></safe-role-resources>

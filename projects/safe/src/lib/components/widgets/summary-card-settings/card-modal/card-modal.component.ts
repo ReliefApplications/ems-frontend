@@ -165,6 +165,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   private getResource(id: string): void {
     const layoutID = this.form.value.layout;
     const aggregationID = this.form.value.aggregation;
+    this.fields = [];
     this.apollo
       .query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE,
@@ -184,11 +185,11 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
           });
         } else {
           this.selectedResource = res.data.resource;
-          this.fields = get(res, 'data.resource.metadata', []);
-          if (layoutID)
+          if (layoutID) {
             this.selectedLayout =
               res.data?.resource.layouts?.edges[0]?.node || null;
-
+            this.fields = get(res, 'data.resource.metadata', []);
+          }
           if (aggregationID) {
             this.selectedAggregation =
               res.data?.resource.aggregations?.edges[0]?.node || null;

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MatDialogRef,
@@ -15,6 +15,7 @@ import {
 } from './graphql/queries';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { FormControl } from '@angular/forms';
+import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.component';
 
 /**
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
@@ -43,6 +44,10 @@ export class AddAggregationModalComponent implements OnInit {
   public queryRef!: QueryRef<GetResourceAggregationsResponse>;
 
   public selectedAggregationControl = new FormControl('');
+
+  /** Reference to graphql select for layout */
+  @ViewChild(SafeGraphQLSelectComponent)
+  aggregationSelect?: SafeGraphQLSelectComponent;
 
   /**
    * Modal to add or select an aggregation.
@@ -76,7 +81,13 @@ export class AddAggregationModalComponent implements OnInit {
 
     // emits selected aggregation
     this.selectedAggregationControl.valueChanges.subscribe((value) => {
-      this.dialogRef.close(value);
+      if (value) {
+        this.dialogRef.close(
+          this.aggregationSelect?.elements
+            .getValue()
+            .find((x) => x.id === value)
+        );
+      }
     });
   }
 

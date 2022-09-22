@@ -139,14 +139,10 @@ export class TabMainComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        if (typeof value === 'string') {
-          this.formGroup.get('chart.aggregationId')?.setValue(value);
-        } else {
-          this.formGroup.get('chart.aggregationId')?.setValue(value.id);
-          this.aggregation = value;
-          this.setAvailableSeriesFields();
-        }
-        this.getResource(this.resource?.id as string);
+        this.formGroup.get('chart.aggregationId')?.setValue(value.id);
+        this.aggregation = value;
+        this.setAvailableSeriesFields();
+        // this.getResource(this.resource?.id as string);
       }
     });
   }

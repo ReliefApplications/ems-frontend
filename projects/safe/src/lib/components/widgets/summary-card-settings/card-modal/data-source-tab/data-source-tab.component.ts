@@ -7,8 +7,8 @@ import { Resource } from '../../../../../models/resource.model';
 import { Layout } from '../../../../../models/layout.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
 import { MatDialog } from '@angular/material/dialog';
-import { AddLayoutComponent } from '../../../../grid-layout/add-layout/add-layout.component';
-import { SafeLayoutModalComponent } from '../../../../grid-layout/layout-modal/layout-modal.component';
+import { AddLayoutModalComponent } from '../../../../grid-layout/add-layout-modal/add-layout-modal.component';
+import { SafeEditLayoutModalComponent } from '../../../../grid-layout/edit-layout-modal/edit-layout-modal.component';
 import { SafeGridLayoutService } from '../../../../../services/grid-layout.service';
 import { SafeAggregationService } from '../../../../../services/aggregation/aggregation.service';
 import { get } from 'lodash';
@@ -90,7 +90,7 @@ export class SafeDataSourceTabComponent implements OnInit {
 
   /** Opens modal for layout selection/creation */
   public addLayout() {
-    const dialogRef = this.dialog.open(AddLayoutComponent, {
+    const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
         resource: this.selectedResource,
         hasLayouts: get(this.selectedResource, 'layouts.totalCount', 0) > 0,
@@ -111,7 +111,7 @@ export class SafeDataSourceTabComponent implements OnInit {
    * Edit chosen layout, in a modal. If saved, update it.
    */
   public editLayout(): void {
-    const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
+    const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
       disableClose: true,
       data: {
         layout: this.selectedLayout,

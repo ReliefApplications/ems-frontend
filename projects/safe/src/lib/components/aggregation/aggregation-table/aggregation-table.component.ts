@@ -60,12 +60,12 @@ export class AggregationTableComponent implements OnInit, OnChanges {
   private setAllAggregations(): void {
     if (this.form) {
       this.allAggregations = this.form.aggregations
-        ? this.form.aggregations.edges?.map((e) => e.node)
+        ? [...this.form.aggregations.edges?.map((e) => e.node)]
         : [];
     } else {
       if (this.resource) {
         this.allAggregations = this.resource.aggregations
-          ? this.resource.aggregations.edges?.map((e) => e.node)
+          ? [...this.resource.aggregations.edges?.map((e) => e.node)]
           : [];
       } else {
         this.allAggregations = [];
@@ -105,16 +105,10 @@ export class AggregationTableComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        if (typeof value === 'string') {
-          this.selectedAggregations?.setValue(
-            this.selectedAggregations?.value.concat(value)
-          );
-        } else {
-          this.allAggregations.push(value);
-          this.selectedAggregations?.setValue(
-            this.selectedAggregations?.value.concat(value.id)
-          );
-        }
+        this.allAggregations.push(value);
+        this.selectedAggregations?.setValue(
+          this.selectedAggregations?.value.concat(value.id)
+        );
       }
     });
   }
