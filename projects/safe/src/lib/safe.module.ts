@@ -43,6 +43,7 @@ import { SafeRoleSummaryModule } from './components/role-summary/role-summary.mo
 import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
 import { SafeModalModule } from './components/ui/modal/modal.module';
 import { SafeEmptyModule } from './components/ui/empty/empty.module';
+import { SafeDividerModule } from './components/ui/divider/divider.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -91,6 +92,7 @@ import { SafeEmptyModule } from './components/ui/empty/empty.module';
     SafeGraphQLSelectModule,
     SafeModalModule,
     SafeEmptyModule,
+    SafeDividerModule,
   ],
   declarations: [],
 })
