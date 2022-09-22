@@ -1,5 +1,4 @@
 :host {
-
   &.safe-divider-vertical {
     position: relative;
     // top: -0.06em;
@@ -35,7 +34,7 @@
       border-top-color: inherit;
       border-bottom: 0;
       transform: translateY(50%);
-      content: "";
+      content: '';
     }
 
     &::after {
@@ -46,7 +45,7 @@
       border-top-color: inherit;
       border-bottom: 0;
       transform: translateY(50%);
-      content: "";
+      content: '';
     }
   }
 
