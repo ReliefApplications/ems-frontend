@@ -72,6 +72,8 @@ export class Chart {
         italic: [title ? title.italic : false],
         underline: [title ? title.underline : false],
         font: [title ? title.font : ''],
+        size: [title ? title.size : 12],
+        color: [title ? title.color : ''],
       }),
       palette: this.fb.group({
         enabled: get(settings, 'palette.enabled', false),

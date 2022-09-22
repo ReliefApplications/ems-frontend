@@ -875,6 +875,7 @@
 						},
 						"title": "Séries"
 					},
+					"size": "Taille",
 					"style": "Style",
 					"text": "Texte",
 					"type": "Graphique",

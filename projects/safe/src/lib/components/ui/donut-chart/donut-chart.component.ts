@@ -8,6 +8,7 @@ interface ChartTitle {
   text: string;
   position: 'top' | 'bottom';
   font: string;
+  color: string;
 }
 
 /** Interface for the chart legend */
