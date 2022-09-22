@@ -12,6 +12,7 @@ export const EDIT_ROLE = gql`
     $channels: [ID]
     $title: String
     $description: String
+    $autoAssignment: JSON
   ) {
     editRole(
       id: $id
@@ -19,6 +20,7 @@ export const EDIT_ROLE = gql`
       channels: $channels
       title: $title
       description: $description
+      autoAssignment: $autoAssignment
     ) {
       id
       title
@@ -38,6 +40,7 @@ export const EDIT_ROLE = gql`
           name
         }
       }
+      autoAssignment
     }
   }
 `;
@@ -107,3 +110,13 @@ export const EDIT_RESOURCE_ACCESS = gql`
 export interface EditResourceAccessMutationResponse {
   editResource: Resource;
 }
+
+/** Edit Role auto assignment mutation */
+export const EDIT_ROLE_AUTO_ASSIGNMENT = gql`
+  mutation editRole($id: ID!, $autoAssignment: JSON) {
+    editRole(id: $id, autoAssignment: $autoAssignment) {
+      id
+      autoAssignment
+    }
+  }
+`;

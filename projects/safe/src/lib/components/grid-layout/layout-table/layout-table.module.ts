@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LayoutsComponent } from './layouts.component';
+import { LayoutTableComponent } from './layout-table.component';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
-import { AddLayoutModule } from '../add-layout/add-layout.module';
+import { AddLayoutModalModule } from '../add-layout-modal/add-layout-modal.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { SafeLayoutModalModule } from '../layout-modal/layout-modal.module';
+import { SafeEditLayoutModalModule } from '../edit-layout-modal/edit-layout-modal.module';
 import { SafeDateModule } from '../../../pipes/date/date.module';
 
 /** Module for layout component in grid widget settings */
 @NgModule({
-  declarations: [LayoutsComponent],
+  declarations: [LayoutTableComponent],
   imports: [
     CommonModule,
     TranslateModule,
@@ -22,10 +22,10 @@ import { SafeDateModule } from '../../../pipes/date/date.module';
     MatIconModule,
     DragDropModule,
     SafeButtonModule,
-    AddLayoutModule,
-    SafeLayoutModalModule,
+    AddLayoutModalModule,
+    SafeEditLayoutModalModule,
     SafeDateModule,
   ],
-  exports: [LayoutsComponent],
+  exports: [LayoutTableComponent],
 })
-export class LayoutsModule {}
+export class LayoutTableModule {}

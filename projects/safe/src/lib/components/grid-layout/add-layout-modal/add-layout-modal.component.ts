@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MatDialogRef,
@@ -8,7 +8,7 @@ import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Form } from '../../../models/form.model';
 import { Layout } from '../../../models/layout.model';
 import { Resource } from '../../../models/resource.model';
-import { SafeLayoutModalComponent } from '../layout-modal/layout-modal.component';
+import { SafeEditLayoutModalComponent } from '../edit-layout-modal/edit-layout-modal.component';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GetResourceLayoutsResponse,
@@ -17,6 +17,7 @@ import {
   GET_FORM_LAYOUTS,
 } from './graphql/queries';
 import { FormControl } from '@angular/forms';
+import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.component';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource
@@ -32,11 +33,11 @@ interface DialogData {
  * Modal is then added to the grid, and to the related form / resource if new.
  */
 @Component({
-  selector: 'safe-add-layout',
-  templateUrl: './add-layout.component.html',
-  styleUrls: ['./add-layout.component.scss'],
+  selector: 'safe-add-layout-modal',
+  templateUrl: './add-layout-modal.component.html',
+  styleUrls: ['./add-layout-modal.component.scss'],
 })
-export class AddLayoutComponent implements OnInit {
+export class AddLayoutModalComponent implements OnInit {
   private form?: Form;
   public resource?: Resource;
   public layouts: Layout[] = [];
@@ -46,6 +47,10 @@ export class AddLayoutComponent implements OnInit {
     | QueryRef<GetFormLayoutsResponse>
     | null;
   public selectedLayoutControl = new FormControl('');
+
+  /** Reference to graphql select for layout */
+  @ViewChild(SafeGraphQLSelectComponent)
+  layoutSelect?: SafeGraphQLSelectComponent;
 
   /**
    * Add layout modal component.
@@ -57,7 +62,7 @@ export class AddLayoutComponent implements OnInit {
    * @param apollo Apollo service
    */
   constructor(
-    private dialogRef: MatDialogRef<AddLayoutComponent>,
+    private dialogRef: MatDialogRef<AddLayoutModalComponent>,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private gridLayoutService: SafeGridLayoutService,
@@ -85,18 +90,11 @@ export class AddLayoutComponent implements OnInit {
       });
 
     this.selectedLayoutControl.valueChanges.subscribe((value) => {
-      this.dialogRef.close(value);
-      // if (!this.queryRef || !value) return;
-      // const currRes = this.queryRef.getCurrentResult() as any;
-      // const queryName = this.resource ? 'resource' : 'form';
-      // const addedLayout = currRes.data?.[queryName]?.layouts?.edges.find(
-      //   (edge: any) => edge.node.id === value
-      // )?.node;
-
-      // if (addedLayout) {
-      //   this.layouts.push(addedLayout);
-      //   this.dialogRef.close(addedLayout);
-      // }
+      if (value) {
+        this.dialogRef.close(
+          this.layoutSelect?.elements.getValue().find((x) => x.id === value)
+        );
+      }
     });
   }
 
@@ -104,7 +102,7 @@ export class AddLayoutComponent implements OnInit {
    * Opens the panel to create a new layout.
    */
   public onCreate(): void {
-    const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
+    const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
       disableClose: true,
       data: {
         queryName: this.resource?.queryName || this.form?.queryName,

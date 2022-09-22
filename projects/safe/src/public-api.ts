@@ -92,7 +92,7 @@ export * from './lib/components/ui/modal/public-api';
 export * from './lib/components/ui/empty/public-api';
 
 /** Grid Layouts */
-export * from './lib/components/grid-layout/layout-modal/public-api';
+export * from './lib/components/grid-layout/edit-layout-modal/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
 
 // === UI ===

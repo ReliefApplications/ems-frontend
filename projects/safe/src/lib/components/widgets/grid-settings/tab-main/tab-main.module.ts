@@ -7,9 +7,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
-import { LayoutsModule } from '../../../grid-layout/layouts/layouts.module';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SafeButtonModule } from '../../../ui/button/button.module';
+import { LayoutTableModule } from '../../../grid-layout/layout-table/layout-table.module';
 
 /**
  * Main Tab of grid widget configuration modal.
@@ -25,9 +25,9 @@ import { SafeButtonModule } from '../../../ui/button/button.module';
     MatInputModule,
     MatAutocompleteModule,
     MatSelectModule,
-    LayoutsModule,
     MatSlideToggleModule,
     SafeButtonModule,
+    LayoutTableModule,
   ],
   exports: [TabMainComponent],
 })

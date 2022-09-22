@@ -3,21 +3,21 @@ import { MatDialog } from '@angular/material/dialog';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
-import { AddLayoutComponent } from '../add-layout/add-layout.component';
+import { AddLayoutModalComponent } from '../add-layout-modal/add-layout-modal.component';
 import { FormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { SafeGridLayoutService } from '../../../services/grid-layout.service';
-import { SafeLayoutModalComponent } from '../layout-modal/layout-modal.component';
+import { SafeEditLayoutModalComponent } from '../edit-layout-modal/edit-layout-modal.component';
 
 /**
  * Layouts list configuration for grid widgets
  */
 @Component({
-  selector: 'safe-layouts',
-  templateUrl: './layouts.component.html',
-  styleUrls: ['./layouts.component.scss'],
+  selector: 'safe-layout-table',
+  templateUrl: './layout-table.component.html',
+  styleUrls: ['./layout-table.component.scss'],
 })
-export class LayoutsComponent implements OnInit, OnChanges {
+export class LayoutTableComponent implements OnInit, OnChanges {
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
   @Input() selectedLayouts: FormControl | null = null;
@@ -93,7 +93,7 @@ export class LayoutsComponent implements OnInit, OnChanges {
       (this.form ? this.form.layouts : this.resource?.layouts)?.edges?.map(
         (e) => e.node
       ) || [];
-    const dialogRef = this.dialog.open(AddLayoutComponent, {
+    const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
         layouts,
         form: this.form,
@@ -102,17 +102,10 @@ export class LayoutsComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        console.log(value);
-        if (typeof value === 'string') {
-          this.selectedLayouts?.setValue(
-            this.selectedLayouts?.value.concat(value)
-          );
-        } else {
-          this.allLayouts.push(value);
-          this.selectedLayouts?.setValue(
-            this.selectedLayouts?.value.concat(value.id)
-          );
-        }
+        this.allLayouts.push(value);
+        this.selectedLayouts?.setValue(
+          this.selectedLayouts?.value.concat(value.id)
+        );
       }
     });
   }
@@ -123,7 +116,7 @@ export class LayoutsComponent implements OnInit, OnChanges {
    * @param layout The layout to edit
    */
   onEditLayout(layout: Layout): void {
-    const dialogRef = this.dialog.open(SafeLayoutModalComponent, {
+    const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
       disableClose: true,
       data: {
         layout,

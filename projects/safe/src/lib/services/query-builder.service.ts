@@ -362,8 +362,8 @@ export class QueryBuilderService {
       query: GET_QUERY_META_DATA,
       variables: {
         id,
-        fetchPolicy: 'cache-first',
       },
+      fetchPolicy: 'cache-first',
     });
   }
 

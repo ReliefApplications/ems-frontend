@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeFormComponent } from './form.component';
-import { SafeFormModalModule } from '../form-modal/form-modal.module';
-import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { MatTabsModule } from '@angular/material/tabs';
-import { SafeButtonModule } from '../ui/button/button.module';
-import { SafeIconModule } from '../ui/icon/icon.module';
-import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
+import { SafeFormComponent } from './form.component';
+import { SafeFormModalModule } from '../form-modal/form-modal.module';
+import { SafeFormActionsModule } from '../form-actions/form-actions.module';
+import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
+import { SafeButtonModule } from '../ui/button/button.module';
+import { SafeIconModule } from '../ui/icon/icon.module';
 
 /**
  * SafeFormModule is a class used to manage all the modules and components
@@ -19,11 +19,11 @@ import { DateInputModule } from '@progress/kendo-angular-dateinputs';
   imports: [
     CommonModule,
     SafeFormModalModule,
-    DropDownListModule,
     MatTabsModule,
     SafeButtonModule,
     SafeIconModule,
     SafeRecordSummaryModule,
+    SafeFormActionsModule,
     TranslateModule,
     DateInputModule,
   ],

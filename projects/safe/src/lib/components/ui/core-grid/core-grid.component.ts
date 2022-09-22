@@ -862,7 +862,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         disableClose: true,
         data: {
           template: this.settings.template,
-          locale: 'en',
           askForConfirm: false,
         },
         autoFocus: false,
@@ -909,7 +908,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       const dialogRef = this.dialog.open(SafeRecordModalComponent, {
         data: {
           recordId: isArray ? items[0].id : items.id,
-          locale: 'en',
           canUpdate:
             this.settings.actions &&
             this.settings.actions.update &&
@@ -937,7 +935,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       disableClose: true,
       data: {
         recordId: ids.length > 1 ? ids : ids[0],
-        locale: 'en',
         template: this.settings.template || null,
       },
       autoFocus: false,

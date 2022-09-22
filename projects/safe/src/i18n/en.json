@@ -705,6 +705,15 @@
 				"title": "Choose role to simulate"
 			},
 			"summary": {
+				"autoAssignment": {
+					"rule": {
+						"add": "Create assignment rule",
+						"delete": "Delete rule",
+						"edit": "Edit assignment rule",
+						"title": "Rule"
+					},
+					"title": "Automatic assignment"
+				},
 				"features": "Features",
 				"noFeatures": "No feature detected",
 				"noForms": "No forms detected",
