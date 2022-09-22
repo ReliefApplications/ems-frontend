@@ -667,8 +667,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   public getFileIcon(name: string): string {
     const fileExt = name.split('.').pop();
     return fileExt && ICON_EXTENSIONS[fileExt]
-        ? ICON_EXTENSIONS[fileExt]
-        : 'k-i-file';
+      ? ICON_EXTENSIONS[fileExt]
+      : 'k-i-file';
   }
 
   /**
@@ -680,7 +680,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   public removeFileExtension(name: string): string {
     const fileExt = name.split('.').pop();
     return fileExt && ICON_EXTENSIONS[fileExt]
-    ? name.slice(0, name.lastIndexOf(fileExt) - 1)
-    : name;
+      ? name.slice(0, name.lastIndexOf(fileExt) - 1)
+      : name;
   }
 }

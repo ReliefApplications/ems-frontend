@@ -44,7 +44,7 @@ export const EXPORT_SETTINGS = {
 /**
  * Kendo icons assigned to each file extension
  */
- export const ICON_EXTENSIONS: any = {
+export const ICON_EXTENSIONS: any = {
   bmp: 'k-i-file-programming',
   csv: 'k-i-file-csv',
   doc: 'k-i-file-word',
