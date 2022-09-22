@@ -46,20 +46,20 @@ export class TabDisplayComponent implements OnInit {
     const control = this.chartForm.get(controlName);
     control?.setValue(!control.value);
 
-    let new_font = '';
+    let font = '';
     if (this.chartForm.get('title.bold')?.value) {
-      new_font = new_font + 'bold ';
+      font = font + 'bold ';
     }
     if (this.chartForm.get('title.italic')?.value) {
-      new_font = new_font + 'italic ';
+      font = font + 'italic ';
     }
-    new_font = new_font + this.chartForm.get('title.size')?.value.toString();
-    new_font = new_font + 'pt sans-serif';
+    font = font + this.chartForm.get('title.size')?.value.toString();
+    font = font + 'pt sans-serif';
     if (this.chartForm.get('title.underline')?.value) {
-      new_font = new_font + '; text-decoration: underline;';
+      font = font + '; text-decoration: underline;';
     }
 
     const font_control = this.chartForm.get('title.font');
-    font_control?.setValue(new_font);
+    font_control?.setValue(font);
   }
 }
