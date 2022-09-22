@@ -15,7 +15,10 @@
         <mat-tab>
           <ng-template mat-tab-label>
             <safe-icon icon="settings" [size]="24"></safe-icon>
-            <span>{{ 'components.widget.settings.summaryCard.card.dataSource.title' | translate }}</span>
+            <span>{{
+              'components.widget.settings.summaryCard.card.dataSource.title'
+                | translate
+            }}</span>
           </ng-template>
           <ng-template matTabContent>
             <safe-data-source-tab
@@ -27,12 +30,13 @@
           </ng-template>
         </mat-tab>
         <!-- Selection of record -->
-        <mat-tab
-          *ngIf="!form.get('isDynamic')?.value"
-        >
+        <mat-tab *ngIf="!form.get('isDynamic')?.value">
           <ng-template mat-tab-label>
             <safe-icon icon="list" [size]="24"></safe-icon>
-            <span>{{ 'components.widget.settings.summaryCard.card.valueSelector.title' | translate }}</span>
+            <span>{{
+              'components.widget.settings.summaryCard.card.valueSelector.title'
+                | translate
+            }}</span>
           </ng-template>
           <ng-template matTabContent>
             <safe-value-selector-tab
@@ -55,7 +59,10 @@
         <mat-tab>
           <ng-template mat-tab-label>
             <safe-icon icon="article" [size]="24"></safe-icon>
-            <span>{{ 'components.widget.settings.summaryCard.card.textEditor.title' | translate }}</span>
+            <span>{{
+              'components.widget.settings.summaryCard.card.textEditor.title'
+                | translate
+            }}</span>
           </ng-template>
           <ng-template matTabContent>
             <safe-text-editor-tab
