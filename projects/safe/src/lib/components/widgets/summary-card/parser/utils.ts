@@ -49,13 +49,26 @@ const ICON_EXTENSIONS: any = {
  *
  * @param html The html text
  * @param record The record to fill the text with
+ * @param aggregationData The aggregation data to fill the text with
  * @param fields Available fields
  * @returns The parsed html
  */
-export const parseHtml = (html: string, record: Record | null, fields: any) => {
+export const parseHtml = (
+  html: string,
+  record: Record | null,
+  aggregationData: any,
+  fields: any
+) => {
   if (record) {
     const htmlWithRecord = replaceRecordFields(html, record, fields);
     return applyOperations(htmlWithRecord);
+  } else if (aggregationData) {
+    const htmlWithAggregation = replaceRecordFields(
+      html,
+      { data: aggregationData } as Record,
+      fields
+    );
+    return applyOperations(htmlWithAggregation);
   } else {
     return applyOperations(html);
   }

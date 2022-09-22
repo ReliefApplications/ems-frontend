@@ -60,12 +60,12 @@ export class LayoutTableComponent implements OnInit, OnChanges {
   private setAllLayouts(): void {
     if (this.form) {
       this.allLayouts = this.form.layouts
-        ? this.form.layouts.edges?.map((e) => e.node)
+        ? [...this.form.layouts.edges?.map((e) => e.node)]
         : [];
     } else {
       if (this.resource) {
         this.allLayouts = this.resource.layouts
-          ? this.resource.layouts.edges?.map((e) => e.node)
+          ? [...this.resource.layouts.edges?.map((e) => e.node)]
           : [];
       } else {
         this.allLayouts = [];

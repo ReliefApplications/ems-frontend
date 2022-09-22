@@ -87,6 +87,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.queryName = this.resource.queryName ?? '';
     // Data source query
     // const variables: any = {
     //   first: ITEMS_PER_PAGE,

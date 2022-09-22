@@ -10,7 +10,7 @@
         category="secondary"
         [block]="true"
         (click)="nextStep = true"
-        [disabled]="aggregations.length < 1"
+        [disabled]="!hasAggregations"
         >{{ 'components.aggregation.add.choice.load' | translate }}</safe-button
       >
       <!-- Add a new aggregation -->
