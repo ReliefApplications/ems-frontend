@@ -884,6 +884,8 @@
 						},
 						"title": "Series"
 					},
+					"size": "Size",
+					"style": "Style",
 					"text": "Text",
 					"type": "Chart Type",
 					"xAxis": "X Axis",

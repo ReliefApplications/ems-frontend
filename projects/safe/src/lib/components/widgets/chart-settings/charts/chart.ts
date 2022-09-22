@@ -65,9 +65,15 @@ export class Chart {
         orientation: [legend ? legend.orientation : 'horizontal'],
       }),
       title: this.fb.group({
-        visible: [title ? title.visible : true],
-        text: [title ? title.text : null],
-        position: [title ? title.position : 'top'],
+        visible: [get(title, 'visible', true)],
+        text: [get(title, 'text', null)],
+        position: [get(title, 'position', 'top')],
+        bold: [get(title, 'bold', false)],
+        italic: [get(title, 'italic', false)],
+        underline: [get(title, 'underline', false)],
+        font: [get(title, 'font', '')],
+        size: [get(title, 'size', 12)],
+        color: [get(title, 'color', null)],
       }),
       palette: this.fb.group({
         enabled: get(settings, 'palette.enabled', false),
