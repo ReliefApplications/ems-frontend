@@ -454,7 +454,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
           this.dataQuery = this.aggregationBuilder.buildAggregation(
             this.settings.resource,
-            aggregation
+            aggregation.id || ''
           );
           this.getRecords();
         } else {
