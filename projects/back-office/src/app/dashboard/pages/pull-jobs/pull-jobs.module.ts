@@ -19,10 +19,10 @@ import {
   SafeIconModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
+  SafeDividerModule,
 } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatChipsModule } from '@angular/material/chips';
@@ -48,7 +48,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatTableModule,
     SafeConfirmModalModule,
     MatExpansionModule,
-    MatDividerModule,
+    SafeDividerModule,
     SafeButtonModule,
     MatPaginatorModule,
     TranslateModule,
