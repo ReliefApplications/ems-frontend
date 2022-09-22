@@ -38,3 +38,12 @@ mat-dialog-content {
   border: none;
   padding: 0;
 }
+
+.form-infos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}

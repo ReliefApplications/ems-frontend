@@ -32,7 +32,7 @@ import { SafeApplicationsSummaryModule } from './components/applications-summary
 import { SafeSearchMenuModule } from './components/search-menu/search-menu.module';
 import { SafeAggregationBuilderModule } from './components/ui/aggregation-builder/aggregation-builder.module';
 import { SafeTagboxModule } from './components/ui/tagbox/tagbox.module';
-import { SafeLayoutModalModule } from './components/grid-layout/layout-modal/layout-modal.module';
+import { SafeEditLayoutModalModule } from './components/grid-layout/edit-layout-modal/edit-layout-modal.module';
 import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackbar-spinner.module';
 import { SafeSkeletonTableModule } from './components/skeleton/skeleton-table/skeleton-table.module';
 import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
@@ -43,6 +43,7 @@ import { SafeRoleSummaryModule } from './components/role-summary/role-summary.mo
 import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
 import { SafeModalModule } from './components/ui/modal/modal.module';
 import { SafeEmptyModule } from './components/ui/empty/empty.module';
+import { SafeDividerModule } from './components/ui/divider/divider.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -80,7 +81,7 @@ import { SafeEmptyModule } from './components/ui/empty/empty.module';
     SafeSearchMenuModule,
     SafeAggregationBuilderModule,
     SafeTagboxModule,
-    SafeLayoutModalModule,
+    SafeEditLayoutModalModule,
     SafeSnackbarSpinnerModule,
     SafeSkeletonTableModule,
     SafeSkeletonModule,
@@ -91,6 +92,7 @@ import { SafeEmptyModule } from './components/ui/empty/empty.module';
     SafeGraphQLSelectModule,
     SafeModalModule,
     SafeEmptyModule,
+    SafeDividerModule,
   ],
   declarations: [],
 })

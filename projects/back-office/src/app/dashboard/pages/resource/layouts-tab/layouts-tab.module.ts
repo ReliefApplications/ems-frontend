@@ -9,7 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
-  SafeLayoutModalModule,
+  SafeEditLayoutModalModule,
   SafeDateModule,
   SafeSkeletonTableModule,
 } from '@safe/builder';
@@ -30,7 +30,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     SafeButtonModule,
     MatTooltipModule,
     TranslateModule,
-    SafeLayoutModalModule,
+    SafeEditLayoutModalModule,
     OverlayModule,
     SafeDateModule,
     SafeSkeletonTableModule,

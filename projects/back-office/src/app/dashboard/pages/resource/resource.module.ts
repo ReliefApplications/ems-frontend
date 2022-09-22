@@ -11,7 +11,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import {
   SafeAccessModule,
   SafeButtonModule,
-  SafeLayoutModalModule,
   SafeDateModule,
   SafeConfirmModalModule,
 } from '@safe/builder';
@@ -38,7 +37,6 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     MatTooltipModule,
     MatPaginatorModule,
     TranslateModule,
-    SafeLayoutModalModule,
     OverlayModule,
     UploadMenuModule,
     SafeDateModule,

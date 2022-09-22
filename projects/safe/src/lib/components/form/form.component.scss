@@ -4,23 +4,13 @@
   position: relative;
 }
 
-.survey-actions {
-  position: relative;
-  width: 100%;
+.form-infos {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 16px;
-}
-
-#langSelect {
-  z-index: 99;
-  border: 1px solid #777777;
-  border-radius: 3px;
-}
-
-safe-record-summary {
-  margin-bottom: 8px;
 }
 
 mat-tab-group {
