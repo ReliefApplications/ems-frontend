@@ -28,6 +28,7 @@ import {
 } from './graphql/mutations';
 import { switchMap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { threadId } from 'worker_threads';
 
 /**
  * Form page in application.
@@ -249,6 +250,10 @@ export class FormComponent implements OnInit, OnDestroy {
             ...this.form,
             permissions: res.data?.editStep.permissions,
           };
+          this.step = {
+            ...this.page,
+            permissions: res.data?.editStep.permissions,
+          };
         });
     } else {
       this.apollo
@@ -262,6 +267,10 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           this.form = {
             ...this.form,
+            permissions: res.data?.editPage.permissions,
+          };
+          this.page = {
+            ...this.page,
             permissions: res.data?.editPage.permissions,
           };
         });
