@@ -618,12 +618,15 @@
         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
           <button
             kendoButton
-            icon="file-data"
             *ngFor="let file of dataItem[field.name]"
             [look]="'flat'"
             [matTooltip]="file.name"
             (click)="onDownload(file)"
-          ></button>
+            class="file"
+          >
+            <span [class]="'k-icon ' + getFileIcon(file.name)"></span>
+            <span class="textbox">{{removeFileExtension(file.name)}}</span>
+          </button>
         </ng-template>
       </kendo-grid-column>
       <!-- COMPLEX QUESTION TYPES ( matrix / matrixdropdown / matrixdynamic / multipletext ) -->

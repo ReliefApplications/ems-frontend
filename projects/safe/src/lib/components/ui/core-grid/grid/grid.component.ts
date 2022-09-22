@@ -24,6 +24,7 @@ import {
   MULTISELECT_TYPES,
   PAGER_SETTINGS,
   SELECTABLE_SETTINGS,
+  ICON_EXTENSIONS,
 } from './grid.constants';
 import {
   CompositeFilterDescriptor,
@@ -655,5 +656,31 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         this.action.emit({ action: 'update', item });
       }
     });
+  }
+
+  /**
+   * Gets the kendo class icon for the file extension
+   *
+   * @param name Name of the file with the extension
+   * @returns String with the name of the icon class
+   */
+  public getFileIcon(name: string): string {
+    const fileExt = name.split('.').pop();
+    return fileExt && ICON_EXTENSIONS[fileExt]
+        ? ICON_EXTENSIONS[fileExt]
+        : 'k-i-file';
+  }
+
+  /**
+   * Removes file estension from the file name
+   *
+   * @param name Name of the file with the extension
+   * @returns String with the name of the file without the extension
+   */
+  public removeFileExtension(name: string): string {
+    const fileExt = name.split('.').pop();
+    return fileExt && ICON_EXTENSIONS[fileExt]
+    ? name.slice(0, name.lastIndexOf(fileExt) - 1)
+    : name;
   }
 }
