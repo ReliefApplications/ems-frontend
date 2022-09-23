@@ -28,7 +28,6 @@ import {
 } from './graphql/mutations';
 import { switchMap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { threadId } from 'worker_threads';
 
 /**
  * Form page in application.
