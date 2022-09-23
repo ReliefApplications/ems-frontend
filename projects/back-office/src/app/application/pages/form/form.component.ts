@@ -251,7 +251,7 @@ export class FormComponent implements OnInit, OnDestroy {
             permissions: res.data?.editStep.permissions,
           };
           this.step = {
-            ...this.page,
+            ...this.step,
             permissions: res.data?.editStep.permissions,
           };
         });
