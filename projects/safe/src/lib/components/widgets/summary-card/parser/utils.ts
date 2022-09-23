@@ -146,10 +146,10 @@ const replaceRecordFields = (
               '<button style="border: none; padding: 4px 6px;" title="' +
               file.name +
               '">' +
-              fileName +
               ' <span class="k-icon ' +
               fileIcon +
               '"></span>' +
+              fileName +
               '</button>';
           }
           break;
