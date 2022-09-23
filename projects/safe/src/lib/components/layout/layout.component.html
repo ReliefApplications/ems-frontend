@@ -77,17 +77,17 @@
     <button mat-menu-item (click)="onOpenProfile()">
       {{ 'pages.profile.title' | translate }}
     </button>
-    <mat-divider></mat-divider>
+    <safe-divider style="margin: unset"></safe-divider>
     <button mat-menu-item (click)="onOpenPreferences()" *ngIf="showPreferences">
       {{ 'components.preferences.title' | translate }}
     </button>
     <ng-container *ngIf="user && user.isAdmin">
-      <mat-divider></mat-divider>
+      <safe-divider style="margin: unset"></safe-divider>
       <button mat-menu-item (click)="onSwitchOffice()">
         {{ 'components.header.goToPlatform' | translate }} {{ otherOffice }}
       </button>
     </ng-container>
-    <mat-divider></mat-divider>
+    <safe-divider style="margin: unset"></safe-divider>
     <button mat-menu-item (click)="logout()" class="warn">
       {{ 'components.header.logout' | translate }}
     </button>
@@ -212,7 +212,10 @@
             </div>
           </ng-container>
         </div>
-        <mat-divider *ngIf="i < filteredNavGroups.length - 1"></mat-divider>
+        <safe-divider
+          style="margin: unset"
+          *ngIf="i < filteredNavGroups.length - 1"
+        ></safe-divider>
       </ng-container>
     </mat-nav-list>
   </mat-sidenav>

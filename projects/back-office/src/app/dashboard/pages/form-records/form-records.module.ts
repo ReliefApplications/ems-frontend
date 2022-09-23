@@ -5,8 +5,11 @@ import { FormRecordsComponent } from './form-records.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { SafeRecordHistoryModule, SafeButtonModule } from '@safe/builder';
-import { MatDividerModule } from '@angular/material/divider';
+import {
+  SafeRecordHistoryModule,
+  SafeButtonModule,
+  SafeDividerModule,
+} from '@safe/builder';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -24,7 +27,7 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     MatIconModule,
     MatMenuModule,
     SafeRecordHistoryModule,
-    MatDividerModule,
+    SafeDividerModule,
     MatTooltipModule,
     SafeButtonModule,
     MatProgressSpinnerModule,
