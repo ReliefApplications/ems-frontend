@@ -83,6 +83,60 @@
             </div>
             <div>
               <h3>
+                {{ 'components.widget.settings.chart.style' | translate }}
+              </h3>
+              <mat-form-field appearance="outline">
+                <mat-label>{{
+                  'components.widget.settings.chart.size' | translate
+                }}</mat-label>
+                <mat-select formControlName="size">
+                  <mat-option *ngFor="let size of sizes" [value]="size">
+                    {{ size }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div class="style-options">
+                <safe-button
+                  icon="format_bold"
+                  (click)="onToggleStyle('title.bold')"
+                  [category]="
+                    chartForm.get('title.bold')?.value
+                      ? 'secondary'
+                      : 'tertiary'
+                  "
+                  [variant]="chartForm.get('title.bold')?.value && 'primary'"
+                ></safe-button>
+                <safe-button
+                  icon="format_italic"
+                  (click)="onToggleStyle('title.italic')"
+                  [category]="
+                    chartForm.get('title.italic')?.value
+                      ? 'secondary'
+                      : 'tertiary'
+                  "
+                  [variant]="chartForm.get('title.italic')?.value && 'primary'"
+                ></safe-button>
+                <safe-button
+                  (click)="onToggleStyle('title.underline')"
+                  icon="format_underline"
+                  [category]="
+                    chartForm.get('title.underline')?.value
+                      ? 'secondary'
+                      : 'tertiary'
+                  "
+                  [variant]="
+                    chartForm.get('title.underline')?.value && 'primary'
+                  "
+                ></safe-button>
+                <div>
+                  <kendo-colorpicker
+                    formControlName="color"
+                  ></kendo-colorpicker>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3>
                 {{ 'components.widget.settings.chart.position' | translate }}
               </h3>
               <div>
