@@ -17,6 +17,8 @@
     [settings]="gridSettings"
     [admin]="isAdmin"
     (defaultLayoutReset)="onResetLayout()"
+    (edit)="onEditWidget($event)"
+    [widget]="widget"
   ></safe-core-grid>
 </div>
 

@@ -927,5 +927,11 @@
         : 'components.widget.grid.empty'
       ) | translate
     }}
+    <button class="settings-button"
+      *ngIf="error"
+      kendoButton
+      (click)="onSettingsToggle()"
+      >{{ 'common.settings' | translate }}
+    </button>
   </ng-template>
 </kendo-grid>

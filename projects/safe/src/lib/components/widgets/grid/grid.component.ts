@@ -59,6 +59,7 @@ export class SafeGridWidgetComponent implements OnInit {
   private grid!: SafeCoreGridComponent;
 
   // === DATA ===
+  @Input() widget: any;
   public loading = true;
 
   // === CACHED CONFIGURATION ===
@@ -76,6 +77,9 @@ export class SafeGridWidgetComponent implements OnInit {
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+
+  // === EMIT EVENT ===
+  @Output() edit: EventEmitter<any> = new EventEmitter();
 
   /**
    * Heavy constructor for the grid widget component
@@ -522,5 +526,14 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   onResetLayout(): void {
     this.onLayoutChange(this.layout || {});
+  }
+
+  /**
+   * Emits edition event.
+   *
+   * @param e widget to edit.
+   */
+  onEditWidget(e: any): void {
+    this.edit.emit(e);
   }
 }

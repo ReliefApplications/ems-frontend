@@ -10,6 +10,9 @@ export class SafeWidgetComponent implements OnInit {
   @Input() widget: any;
   @Input() header = true;
 
+  // === EMIT EVENT ===
+  @Output() edit: EventEmitter<any> = new EventEmitter();
+
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
@@ -17,4 +20,13 @@ export class SafeWidgetComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
+
+  /**
+   * Emits edition event.
+   *
+   * @param e widget to edit.
+   */
+  onEditWidget(e: any): void {
+    this.edit.emit(e);
+  }
 }

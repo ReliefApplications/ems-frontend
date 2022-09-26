@@ -18,6 +18,8 @@
     [header]="header"
     [settings]="widget.settings"
     (goToNextStep)="goToNextStep.emit($event)"
+    (edit)="onEditWidget($event)"
+    [widget]="widget"
   ></safe-grid-widget>
 </ng-container>
 <ng-container *ngIf="widget.component === 'map'">
