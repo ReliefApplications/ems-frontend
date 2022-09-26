@@ -11,13 +11,6 @@ export const GET_RESOURCE_BY_ID = gql`
       createdAt
       fields
       metadata
-      layouts {
-        id
-        name
-        createdAt
-        query
-        display
-      }
       forms {
         id
         name
