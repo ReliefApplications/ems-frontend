@@ -73,6 +73,7 @@ export class SafeGridWidgetComponent implements OnInit {
   @Input() header = true;
   @Input() settings: any = null;
   @Input() id = '';
+  @Input() canUpdate = false;
   public gridSettings: any = null;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===

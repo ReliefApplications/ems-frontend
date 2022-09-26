@@ -927,11 +927,14 @@
         : 'components.widget.grid.empty'
       ) | translate
     }}
-    <button class="settings-button"
-      *ngIf="error"
-      kendoButton
-      (click)="onSettingsToggle()"
-      >{{ 'common.settings' | translate }}
-    </button>
+    <div class="settings-button">
+      <safe-button
+        *ngIf="error && canUpdate"
+        variant="primary"
+        category="secondary"
+        (click)="onSettingsToggle()"
+        >{{ 'kendo.grid.openSettings' | translate }}
+      </safe-button>
+    </div>
   </ng-template>
 </kendo-grid>

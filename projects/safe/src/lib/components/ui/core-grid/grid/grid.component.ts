@@ -111,6 +111,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   @Input() error = false;
   @Input() blank = false;
   @Input() widget: any;
+  @Input() canUpdate = false;
 
   // === EXPORT ===
   public exportSettings = EXPORT_SETTINGS;
@@ -667,6 +668,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * Emit an event to open settings window
    */
   public onSettingsToggle(): void {
+    console.log(this.editable);
     const dialogRef = this.dialog.open(SafeTileDataComponent, {
       disableClose: true,
       data: {

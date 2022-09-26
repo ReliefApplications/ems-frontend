@@ -118,6 +118,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === DATA ===
   @Input() widget: any;
+  @Input() canUpdate = false;
   public gridData: GridDataResult = { data: [], total: 0 };
   private totalCount = 0;
   private items: any[] = [];

@@ -20,6 +20,7 @@
     (goToNextStep)="goToNextStep.emit($event)"
     (edit)="onEditWidget($event)"
     [widget]="widget"
+    [canUpdate]="canUpdate"
   ></safe-grid-widget>
 </ng-container>
 <ng-container *ngIf="widget.component === 'map'">
