@@ -59,6 +59,19 @@ const routes: Routes = [
           },
         },
       },
+      {
+        path: 'aggregations',
+        loadChildren: () =>
+          import('./aggregations-tab/aggregations-tab.module').then(
+            (m) => m.AggregationsTabModule
+          ),
+        // canActivate: [SafePermissionGuard]
+        data: {
+          breadcrumb: {
+            key: 'common.layout.few',
+          },
+        },
+      },
     ],
   },
 ];

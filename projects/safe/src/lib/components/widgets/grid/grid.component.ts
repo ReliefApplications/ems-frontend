@@ -39,6 +39,7 @@ import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
+import get from 'lodash/get';
 
 /** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
@@ -108,11 +109,17 @@ export class SafeGridWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.gridSettings = { ...this.settings };
-    if (this.settings.resource) {
+    if (
+      this.settings.resource &&
+      get(this.settings, 'layouts', []).length > 0
+    ) {
       this.gridLayoutService
-        .getLayouts(this.settings.resource, this.settings.layouts)
+        .getLayouts(this.settings.resource, {
+          ids: this.settings.layouts,
+          first: this.settings.layouts?.length,
+        })
         .then((res) => {
-          this.layouts = res;
+          this.layouts = res.edges.map((edge) => edge.node);
           this.layout = this.layouts[0] || null;
           this.gridSettings = {
             ...this.settings,
@@ -287,7 +294,6 @@ export class SafeGridWidgetComponent implements OnInit {
       this.dialog.open(SafeFormModalComponent, {
         data: {
           template: options.prefillTargetForm,
-          locale: 'en',
           prefillRecords: records,
           askForConfirm: false,
         },
@@ -337,7 +343,6 @@ export class SafeGridWidgetComponent implements OnInit {
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
-      // modificationFields.push(modification.field.name);
       if (['Date', 'DateTime'].includes(modification.field.type.name)) {
         update[modification.field.name] = this.getDateForFilter(
           modification.value
@@ -346,6 +351,8 @@ export class SafeGridWidgetComponent implements OnInit {
         update[modification.field.name] = this.getTimeForFilter(
           modification.value
         );
+      } else {
+        update[modification.field.name] = modification.value;
       }
     }
     const data = cleanRecord(update);
@@ -486,7 +493,6 @@ export class SafeGridWidgetComponent implements OnInit {
                     disableClose: true,
                     data: {
                       recordId: record.id,
-                      locale: 'en',
                     },
                     autoFocus: false,
                   });

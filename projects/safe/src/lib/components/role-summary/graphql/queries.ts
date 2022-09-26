@@ -2,7 +2,7 @@ import { gql } from 'apollo-angular';
 import { Application } from '../../../models/application.model';
 import { Resource } from '../../../models/resource.model';
 import { Channel } from '../../../models/channel.model';
-import { Permission, Role } from '../../../models/user.model';
+import { Group, Permission, Role } from '../../../models/user.model';
 import { Workflow } from '../../../models/workflow.model';
 
 /** Get role by id GraphQL query */
@@ -19,6 +19,7 @@ export const GET_ROLE = gql`
       application {
         id
       }
+      autoAssignment
     }
   }
 `;
@@ -185,4 +186,19 @@ export const GET_RESOURCE = gql`
 /** Interface of Get Resource Query response */
 export interface GetResourceQueryResponse {
   resource: Resource;
+}
+
+/** Graphql request for getting groups */
+export const GET_GROUPS = gql`
+  query GetGroups {
+    groups {
+      id
+      title
+    }
+  }
+`;
+
+/** Model for GetGroupsQueryResponse object */
+export interface GetGroupsQueryResponse {
+  groups: Group[];
 }

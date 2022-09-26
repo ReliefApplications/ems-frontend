@@ -17,10 +17,11 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
   MAT_SELECT_SCROLL_STRATEGY,
   MatSelect,
+  MatSelectChange,
 } from '@angular/material/select';
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../../utils/scroll-factory';
-import { get } from 'lodash';
+import { cloneDeep, get, set } from 'lodash';
 import {
   MatFormField,
   MatFormFieldControl,
@@ -235,8 +236,9 @@ export class SafeGraphQLSelectComponent
   @Input('query') query!: QueryRef<any>;
 
   private queryName!: string;
+  @Input() path = '';
   @Input() selectedElements: any[] = [];
-  private elements = new BehaviorSubject<any[]>([]);
+  public elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
   private pageInfo = {
     endCursor: '',
@@ -268,9 +270,12 @@ export class SafeGraphQLSelectComponent
     this.elements$ = this.elements.asObservable();
     this.query.valueChanges.subscribe((res: any) => {
       this.queryName = Object.keys(res.data)[0];
-      const nodes: any[] = get(res.data, this.queryName).edges
-        ? get(res.data, this.queryName).edges.map((x: any) => x.node)
-        : get(res.data, this.queryName);
+      const path = this.path
+        ? `${this.queryName}.${this.path}`
+        : this.queryName;
+      const nodes: any[] = get(res.data, path).edges
+        ? get(res.data, path).edges.map((x: any) => x.node)
+        : get(res.data, path);
       this.selectedElements = this.selectedElements.filter(
         (element) =>
           element &&
@@ -279,7 +284,7 @@ export class SafeGraphQLSelectComponent
           )
       );
       this.elements.next([...this.selectedElements, ...nodes]);
-      this.pageInfo = get(res.data, this.queryName).pageInfo;
+      this.pageInfo = get(res.data, path).pageInfo;
       this.loading = res.loading;
     });
     this.ngControl.valueChanges?.subscribe((value) => {
@@ -348,6 +353,7 @@ export class SafeGraphQLSelectComponent
         this.loading = true;
         this.query.fetchMore({
           variables: {
+            ...this.query.variables,
             first: ITEMS_PER_RELOAD,
             afterCursor: this.pageInfo.endCursor,
           },
@@ -356,23 +362,35 @@ export class SafeGraphQLSelectComponent
               this.loading = false;
               return prev;
             }
-            return Object.assign({}, prev, {
-              [this.queryName]: {
-                edges: [
-                  ...(get(prev, this.queryName).edges
-                    ? get(prev, this.queryName).edges
-                    : get(prev, this.queryName)),
-                  ...(get(fetchMoreResult, this.queryName).edges
-                    ? get(fetchMoreResult, this.queryName).edges
-                    : get(fetchMoreResult, this.queryName)),
-                ],
-                pageInfo: get(fetchMoreResult, this.queryName).pageInfo,
-                totalCount: get(fetchMoreResult, this.queryName).totalCount,
-              },
+            const prevCpy = cloneDeep(prev);
+            const path = this.path
+              ? `${this.queryName}.${this.path}`
+              : this.queryName;
+            set(prevCpy, path, {
+              edges: [
+                ...(get(prev, path).edges
+                  ? get(prev, path).edges
+                  : get(prev, path)),
+                ...(get(fetchMoreResult, path).edges
+                  ? get(fetchMoreResult, path).edges
+                  : get(fetchMoreResult, path)),
+              ],
+              pageInfo: get(fetchMoreResult, path).pageInfo,
+              totalCount: get(fetchMoreResult, path).totalCount,
             });
+            return prevCpy;
           },
         });
       }
     }
+  }
+
+  /**
+   * Triggers on selection change
+   *
+   * @param event the selection change event
+   */
+  public onSelectionChange(event: MatSelectChange) {
+    this.value = event.value;
   }
 }

@@ -1,25 +1,14 @@
-<safe-record-summary
-  [record]="record"
-  [cacheDate]="storageDate"
-  (clear)="onClear()"
-  (showHistory)="onShowHistory()"
-></safe-record-summary>
-<div class="survey-actions" *ngIf="surveyActive">
-  <kendo-dropdownlist
-    *ngIf="!!survey && survey.getUsedLocales().length > 1"
-    id="langSelect"
-    [data]="dropdownLocales"
-    [value]="surveyLanguage.nativeName.split(',')[0]"
-    (selectionChange)="setLanguage($event)"
-  >
-    <ng-template
-      kendoDropDownListValueTemplate
-      let-dataItem
-      style="text-transform: capitalize"
-    >
-      {{ dataItem }}
-    </ng-template>
-  </kendo-dropdownlist>
+<div class="form-infos">
+  <safe-record-summary
+    [record]="record"
+    [cacheDate]="storageDate"
+    (clear)="onClear()"
+    (showHistory)="onShowHistory()"
+  ></safe-record-summary>
+  <safe-form-actions
+    [survey]="survey"
+    [surveyActive]="surveyActive"
+  ></safe-form-actions>
 </div>
 <mat-tab-group
   animationDuration="0ms"

@@ -7,11 +7,11 @@ import { MatRippleModule } from '@angular/material/core';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonModule } from '../../directives/skeleton/skeleton.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
+import { SafeDividerModule } from '../ui/divider/divider.module';
 
 /**
  * SafeApplicationsSummaryModule is a class used to manage all the modules and components
@@ -29,11 +29,11 @@ import { SafeDateModule } from '../../pipes/date/date.module';
     SafeIconModule,
     MatMenuModule,
     MatIconModule,
-    MatDividerModule,
     SafeButtonModule,
     TranslateModule,
     SafeSkeletonModule,
     SafeDateModule,
+    SafeDividerModule,
   ],
   exports: [
     SafeApplicationsSummaryComponent,

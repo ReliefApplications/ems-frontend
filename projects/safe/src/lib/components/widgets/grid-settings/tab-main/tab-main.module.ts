@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
-import { LayoutsModule } from '../../../grid-layout/layouts/layouts.module';
+import { LayoutTableModule } from '../../../grid-layout/layout-table/layout-table.module';
 
 /**
  * Main Tab of grid widget configuration modal.
@@ -23,7 +23,7 @@ import { LayoutsModule } from '../../../grid-layout/layouts/layouts.module';
     MatInputModule,
     MatAutocompleteModule,
     MatSelectModule,
-    LayoutsModule,
+    LayoutTableModule,
   ],
   exports: [TabMainComponent],
 })

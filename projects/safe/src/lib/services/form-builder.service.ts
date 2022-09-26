@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import * as Survey from 'survey-angular';
 import { SafeReferenceDataService } from './reference-data.service';
 import { renderGlobalProperties } from '../survey/render-global-properties';
@@ -15,8 +16,12 @@ export class SafeFormBuilderService {
    * Constructor of the service
    *
    * @param referenceDataService Reference data service
+   * @param translate Translation service
    */
-  constructor(private referenceDataService: SafeReferenceDataService) {}
+  constructor(
+    private referenceDataService: SafeReferenceDataService,
+    private translate: TranslateService
+  ) {}
 
   /**
    * Creates new survey from the structure and add on complete expression to it.
@@ -45,6 +50,16 @@ export class SafeFormBuilderService {
           (f.canUpdate !== undefined && !f.canUpdate) || false;
         survey.getQuestionByName(f.name).visible = !hidden && accessible;
         survey.getQuestionByName(f.name).readOnly = disabled || !editable;
+      }
+    }
+    // set the lang of the survey
+    const surveyLang = localStorage.getItem('surveyLang');
+    if (surveyLang && survey.getUsedLocales().includes(surveyLang)) {
+      survey.locale = surveyLang;
+    } else {
+      const lang = this.translate.currentLang || this.translate.defaultLang;
+      if (survey.getUsedLocales().includes(lang)) {
+        survey.locale = lang;
       }
     }
     return survey;

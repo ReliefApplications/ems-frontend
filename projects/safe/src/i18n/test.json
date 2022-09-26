@@ -265,6 +265,19 @@
 			"description": "****** {{name}} ******",
 			"title": "******"
 		},
+		"aggregation": {
+			"add": {
+				"choice": {
+					"create": "******",
+					"load": "******"
+				},
+				"select": "******",
+				"title": "******"
+			},
+			"edit": {
+				"title": "******"
+			}
+		},
 		"aggregationBuilder": {
 			"accumulators": "******",
 			"addField": "******",
@@ -399,6 +412,11 @@
 			"withoutRecords": "******"
 		},
 		"form": {
+			"aggregation": {
+				"delete": {
+					"confirmationMessage": "****** {{name}} ******"
+				}
+			},
 			"create": {
 				"choice": {
 					"inherit": "******",
@@ -691,6 +709,15 @@
 			},
 			"summary": {
 				"addFilter": "******",
+				"autoAssignment": {
+					"rule": {
+						"add": "******",
+						"delete": "******",
+						"edit": "******",
+						"title": "******"
+					},
+					"title": "******"
+				},
 				"editFilters": "******",
 				"features": "******",
 				"newFilter": "******",
@@ -875,6 +902,8 @@
 						},
 						"title": "******"
 					},
+					"size": "******",
+					"style": "******",
 					"text": "******",
 					"type": "******",
 					"xAxis": "******",
@@ -891,6 +920,13 @@
 						"showDetails": "******",
 						"title": "******",
 						"update": "******"
+					},
+					"aggregations": {
+						"add": {
+							"choice": {
+								"create": "******"
+							}
+						}
 					},
 					"buttons": {
 						"callback": {

@@ -9,11 +9,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
-  SafeLayoutModalModule,
+  SafeEditLayoutModalModule,
   SafeDateModule,
   SafeSkeletonTableModule,
 } from '@safe/builder';
 import { LayoutsTabComponent } from './layouts-tab.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 /**
  * Layouts tab of resource page
@@ -29,10 +30,11 @@ import { LayoutsTabComponent } from './layouts-tab.component';
     SafeButtonModule,
     MatTooltipModule,
     TranslateModule,
-    SafeLayoutModalModule,
+    SafeEditLayoutModalModule,
     OverlayModule,
     SafeDateModule,
     SafeSkeletonTableModule,
+    MatPaginatorModule,
   ],
 })
 export class LayoutsTabModule {}

@@ -20,7 +20,7 @@
       >{{ currentApplication.name }}</safe-button
     >
   </div>
-  <mat-divider *ngIf="currentApplication"></mat-divider>
+  <safe-divider *ngIf="currentApplication" style="margin: unset"></safe-divider>
   <div class="search-application-list">
     <safe-button
       *ngFor="let item of searchResults"

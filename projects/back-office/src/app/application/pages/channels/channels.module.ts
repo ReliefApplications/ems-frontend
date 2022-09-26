@@ -12,11 +12,11 @@ import {
   SafeConfirmModalModule,
   SafeButtonModule,
   SafeModalModule,
+  SafeDividerModule,
 } from '@safe/builder';
 import { AddChannelModalComponent } from './components/add-channel-modal/add-channel-modal.component';
 import { EditChannelModalComponent } from './components/edit-channel-modal/edit-channel-modal.component';
 import { MatSelectModule } from '@angular/material/select';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
@@ -43,7 +43,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTableModule,
     MatSelectModule,
     SafeConfirmModalModule,
-    MatDividerModule,
+    SafeDividerModule,
     SafeButtonModule,
     MatButtonModule,
     TranslateModule,

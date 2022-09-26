@@ -50,7 +50,6 @@ import { cleanRecord } from '../../utils/cleanRecord';
 interface DialogData {
   template?: string;
   recordId?: string | [];
-  locale?: string;
   prefillRecords?: Record[];
   prefillData?: any;
   askForConfirm?: boolean;
@@ -247,7 +246,6 @@ export class SafeFormModalComponent implements OnInit {
         this.setPages();
       }
     );
-    this.survey.locale = this.data.locale ? this.data.locale : 'en';
     if (this.data.recordId && this.record) {
       addCustomFunctions(Survey, this.authService, this.apollo, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;

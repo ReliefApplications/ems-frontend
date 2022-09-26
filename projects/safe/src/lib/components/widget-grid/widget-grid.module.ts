@@ -14,7 +14,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeFloatingOptionsComponent } from './floating-options/floating-options.component';
 import { SafeTileDataComponent } from './floating-options/menu/tile-data/tile-data.component';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
-import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,7 +21,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeModalModule } from '../ui/modal/modal.module';
-
+import { SafeDividerModule } from '../ui/divider/divider.module';
 /** Module for the widget-related components */
 @NgModule({
   declarations: [
@@ -45,7 +44,7 @@ import { SafeModalModule } from '../ui/modal/modal.module';
     MatTooltipModule,
     MatDialogModule,
     MatMenuModule,
-    MatDividerModule,
+    SafeDividerModule,
     SafeButtonModule,
     TranslateModule,
     SafeIconModule,

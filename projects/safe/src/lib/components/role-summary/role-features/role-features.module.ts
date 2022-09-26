@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SafeEmptyModule } from '../../ui/empty/empty.module';
 
 /**
  * Features tab of Role Summary component.
@@ -37,6 +38,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatTableModule,
     SafeButtonModule,
     SafeIconModule,
+    SafeEmptyModule,
   ],
   exports: [RoleFeaturesComponent],
 })

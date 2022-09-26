@@ -24,7 +24,6 @@ import {
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar.service';
-import { LANGUAGES } from '../../utils/languages';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SafeDownloadService } from '../../services/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
@@ -53,12 +52,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // === SURVEYJS ===
   public survey!: Survey.Model;
-  public surveyLanguage: { name: string; nativeName: string } = {
-    name: 'English',
-    nativeName: 'English',
-  };
-  public usedLocales: Array<{ text: string; value: string }> = [];
-  public dropdownLocales: any[] = [];
   public surveyActive = true;
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
@@ -98,7 +91,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param layoutService This is the service that will be used to create the layout of the form.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param translate This is the service used to translate text
-   * @param el Element reference.
    */
   constructor(
     @Inject('environment') environment: any,
@@ -109,8 +101,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private formBuilderService: SafeFormBuilderService,
-    private translate: TranslateService,
-    private el: ElementRef
+    private translate: TranslateService
   ) {
     this.environment = environment;
   }
@@ -183,13 +174,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       this.modifiedAt = this.record.modifiedAt || null;
     }
 
-    if (this.survey.getUsedLocales().length > 1) {
-      this.survey.getUsedLocales().forEach((lang) => {
-        const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
-        this.usedLocales.push({ value: lang, text: nativeName });
-        this.dropdownLocales.push(nativeName);
-      });
-    }
+    // if (this.survey.getUsedLocales().length > 1) {
+    //   this.survey.getUsedLocales().forEach((lang) => {
+    //     const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
+    //     this.usedLocales.push({ value: lang, text: nativeName });
+    //     this.dropdownLocales.push(nativeName);
+    //   });
+    // }
 
     this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showNavigationButtons = false;
@@ -218,34 +209,34 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.survey.onValueChanged.add(this.valueChange.bind(this));
 
     // Sets default language as form language if it is in survey locales
-    const currentLang = this.usedLocales.find(
-      (lang) => lang.value === this.translate.currentLang
-    );
-    if (currentLang) {
-      this.setLanguage(currentLang.text);
-      this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
-    } else {
-      this.survey.locale = this.translate.currentLang;
-    }
+    // const currentLang = this.usedLocales.find(
+    //   (lang) => lang.value === this.translate.currentLang
+    // );
+    // if (currentLang) {
+    //   this.setLanguage(currentLang.text);
+    //   this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
+    // } else {
+    //   this.survey.locale = this.translate.currentLang;
+    // }
   }
 
   ngAfterViewInit(): void {
-    this.translate.onLangChange.subscribe(() => {
-      const currentLang = this.usedLocales.find(
-        (lang) => lang.value === this.translate.currentLang
-      );
-      if (currentLang && currentLang.text !== this.survey.locale) {
-        this.setLanguage(currentLang.text);
-        this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
-      } else if (
-        !currentLang &&
-        this.survey.locale !== this.translate.currentLang
-      ) {
-        this.survey.locale = this.translate.currentLang;
-        this.surveyLanguage = (LANGUAGES as any).en;
-        this.survey.render();
-      }
-    });
+    // this.translate.onLangChange.subscribe(() => {
+    //   const currentLang = this.usedLocales.find(
+    //     (lang) => lang.value === this.translate.currentLang
+    //   );
+    //   if (currentLang && currentLang.text !== this.survey.locale) {
+    //     this.setLanguage(currentLang.text);
+    //     this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
+    //   } else if (
+    //     !currentLang &&
+    //     this.survey.locale !== this.translate.currentLang
+    //   ) {
+    //     this.survey.locale = this.translate.currentLang;
+    //     this.surveyLanguage = (LANGUAGES as any).en;
+    //     this.survey.render();
+    //   }
+    // });
     this.survey.render(this.formContainer.nativeElement);
     setTimeout(() => {}, 100);
   }
@@ -383,19 +374,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
   };
-
-  /**
-   * Change language of the form.
-   *
-   * @param lang selected language
-   */
-  setLanguage(lang: string): void {
-    this.survey.locale = this.usedLocales.filter(
-      (locale) => locale.text === lang
-    )[0].value;
-    this.survey.render();
-    // this.survey.render(this.containerId);
-  }
 
   /**
    * Handles the clear files event

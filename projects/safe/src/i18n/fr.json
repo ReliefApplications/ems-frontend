@@ -265,6 +265,19 @@
 			"description": "Modifier les permissions de {{name}}",
 			"title": "Accès"
 		},
+		"aggregation": {
+			"add": {
+				"choice": {
+					"create": "Créer une nouvelle agrégation",
+					"load": "Charger une agrégation"
+				},
+				"select": "Sélectionner une agrégation",
+				"title": "Ajouter une agrégation"
+			},
+			"edit": {
+				"title": "Paramètres d'agrégation"
+			}
+		},
 		"aggregationBuilder": {
 			"accumulators": "Accumulateurs",
 			"addField": "Ajouter un champ",
@@ -399,6 +412,11 @@
 			"withoutRecords": "Sans enregistrements"
 		},
 		"form": {
+			"aggregation": {
+				"delete": {
+					"confirmationMessage": "Confirmez-vous la suppression de l'agrégation {{name}}?"
+				}
+			},
 			"create": {
 				"choice": {
 					"inherit": "Copier un modèle de ressources existant",
@@ -691,6 +709,15 @@
 			},
 			"summary": {
 				"addFilter": "Ajouter un filtre",
+				"autoAssignment": {
+					"rule": {
+						"add": "Ajouter une règle d'attribution",
+						"delete": "Supprimer la règle",
+						"edit": "Mettre à jour la règle d'attribution",
+						"title": "Règle"
+					},
+					"title": "Attribution automatique"
+				},
 				"editFilters": "Modifier les filtres",
 				"features": "Fonctionnalités",
 				"newFilter": "Nouveau filtre",
@@ -875,6 +902,8 @@
 						},
 						"title": "Séries"
 					},
+					"size": "Taille",
+					"style": "Style",
 					"text": "Texte",
 					"type": "Graphique",
 					"xAxis": "Axe X",
@@ -891,6 +920,13 @@
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
 						"update": "Modifier les enregistrements"
+					},
+					"aggregations": {
+						"add": {
+							"choice": {
+								"create": "Créer une nouvelle agrégation"
+							}
+						}
 					},
 					"buttons": {
 						"callback": {
