@@ -45,6 +45,7 @@ export const GET_FORM_STRUCTURE = gql`
     form(id: $id) {
       id
       structure
+      metadata
     }
   }
 `;

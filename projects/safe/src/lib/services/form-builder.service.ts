@@ -41,6 +41,7 @@ export class SafeFormBuilderService {
         survey.runExpression(onCompleteExpression);
       });
     }
+    console.log(fields);
     if (fields.length > 0) {
       for (const f of fields.filter((x) => !x.automated)) {
         const accessible = !!f.canSee;
@@ -48,6 +49,7 @@ export class SafeFormBuilderService {
         const hidden: boolean = (f.canSee !== undefined && !f.canSee) || false;
         const disabled: boolean =
           (f.canUpdate !== undefined && !f.canUpdate) || false;
+        console.log('there');
         survey.getQuestionByName(f.name).visible = !hidden && accessible;
         survey.getQuestionByName(f.name).readOnly = disabled || !editable;
       }
