@@ -7,7 +7,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Http
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // Env
 import { environment } from '../environments/environment';
@@ -22,7 +22,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
-import { KendoTranslationService } from '@safe/builder';
+import { KendoTranslationService, SafeAuthInterceptorService } from '@safe/builder';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
@@ -134,6 +134,11 @@ export const httpTranslateLoader = (http: HttpClient) =>
     {
       provide: TOUCH_ENABLED,
       useValue: [touchEnabled],
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: SafeAuthInterceptorService,
+      multi: true
     },
     PopupService,
     ResizeBatchService,
