@@ -718,6 +718,17 @@
 					},
 					"title": "******"
 				},
+				"details": {
+					"access": {
+						"channels": "******",
+						"fullAccess": "****** {{accessible}} ****** {{total}}",
+						"limitedAccess": "****** {{accessible}} ****** {{total}}",
+						"noAccess": "****** {{accessible}} ****** {{total}}",
+						"pages": "******",
+						"resources": "******",
+						"title": "******"
+					}
+				},
 				"editFilters": "******",
 				"features": "******",
 				"newFilter": "******",

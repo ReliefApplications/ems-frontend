@@ -55,6 +55,7 @@ export class RoleDetailsComponent implements OnInit {
    *
    * @param fb Angular form builder
    * @param apollo Apollo Client
+   * @param http http client
    */
   constructor(
     private fb: FormBuilder,
@@ -79,7 +80,10 @@ export class RoleDetailsComponent implements OnInit {
         this.permissions = res.data.permissions;
       });
     const url = `http://localhost:3000/roles/${this.role.id}/summary`;
-    this.http.get(url).subscribe((res: any) => (this.roleStats = res));
+    this.http.get(url).subscribe((res: any) => {
+      this.roleStats = res;
+      console.log(res);
+    });
   }
 
   /**
