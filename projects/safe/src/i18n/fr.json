@@ -718,6 +718,17 @@
 					},
 					"title": "Attribution automatique"
 				},
+				"details": {
+					"access": {
+						"channels": "Canaux accessibles",
+						"fullAccess": "Accès complet à {{accessible}} / {{total}}",
+						"limitedAccess": "Accès limité à {{accessible}} / {{total}}",
+						"noAccess": "Pas d'accès à {{accessible}} / {{total}}",
+						"pages": "Pages accessibles",
+						"resources": "Ressources accessibles",
+						"title": "Accès"
+					}
+				},
 				"editFilters": "Modifier les filtres",
 				"features": "Fonctionnalités",
 				"newFilter": "Nouveau filtre",

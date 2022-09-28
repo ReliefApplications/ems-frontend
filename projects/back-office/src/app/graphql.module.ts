@@ -27,17 +27,6 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
     },
   }));
 
-  const auth = setContext((operation, context) => {
-    // Get the authentication token from local storage if it exists
-    const token = localStorage.getItem('idtoken');
-    return {
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  });
-
   const http = httpLink.create({
     uri: `${environment.apiUrl}/graphql`,
     extractFiles,
@@ -68,7 +57,6 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
 
   const link = ApolloLink.from([
     basic,
-    auth,
     split(
       ({ query }) => {
         const { kind, operation }: Definition = getMainDefinition(query);

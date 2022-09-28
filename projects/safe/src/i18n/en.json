@@ -718,6 +718,17 @@
 					},
 					"title": "Automatic assignment"
 				},
+				"details": {
+					"access": {
+						"channels": "Channels access",
+						"fullAccess": "Full access to {{accessible}} / {{total}}",
+						"limitedAccess": "Limited access to {{accessible}} / {{total}}",
+						"noAccess": "No access to {{accessible}} / {{total}}",
+						"pages": "Pages access",
+						"resources": "Resources access",
+						"title": "Access summary"
+					}
+				},
 				"editFilters": "Edit filters",
 				"features": "Features",
 				"newFilter": "New filter",

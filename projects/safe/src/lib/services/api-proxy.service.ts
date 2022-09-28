@@ -32,12 +32,9 @@ export class SafeApiProxyService {
    * @returns new Http headers, with token
    */
   private buildHeaders(): HttpHeaders {
-    const token = localStorage.getItem('idtoken');
     return new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Authorization: `Bearer ${token}`,
     });
   }
 
