@@ -5,14 +5,25 @@ import {
 } from '@angular/cdk/drag-drop';
 import {
   Component,
+  Inject,
   Input,
   OnChanges,
   OnInit,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { Editor } from 'tinymce';
+import {
+  EDITOR_LANGUAGE_PAIRS,
+  FIELD_EDITOR_CONFIG,
+} from '../../../const/tinymce.const';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import {
+  getCalcKeys,
+  getDataKeys,
+} from '../../widgets/summary-card/parser/utils';
 import { addNewField } from '../query-builder-forms';
 import { SafeQueryBuilderComponent } from '../query-builder.component';
 
@@ -37,14 +48,44 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public searchAvailable = '';
   public searchSelected = '';
 
+  /** tinymce editor */
+  public editor: any = FIELD_EDITOR_CONFIG;
+
   @Input() showPagination = false;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is created.
    *
+   * @param environment Environment specific data
    * @param queryBuilder The service used to build queries
+   * @param translate Translate service
    */
-  constructor(private queryBuilder: QueryBuilderService) {}
+  constructor(
+    @Inject('environment') environment: any,
+    private queryBuilder: QueryBuilderService,
+    private translate: TranslateService
+  ) {
+    // Set the editor base url based on the environment file
+    let url: string;
+    if (environment.module === 'backoffice') {
+      url = new URL(environment.backOfficeUri).pathname;
+    } else {
+      url = new URL(environment.frontOfficeUri).pathname;
+    }
+    if (url !== '/') {
+      this.editor.base_url = url.slice(0, -1) + '/tinymce';
+    } else {
+      this.editor.base_url = '/tinymce';
+    }
+    // Set the editor language
+    const lang = this.translate.currentLang;
+    const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
+    if (editorLang) {
+      this.editor.language = editorLang.tinymceKey;
+    } else {
+      this.editor.language = 'en';
+    }
+  }
 
   ngOnInit(): void {
     const selectedFields: string[] = this.form.getRawValue().map((x) => x.name);
@@ -171,7 +212,35 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
    */
   public onEdit(index: number): void {
     this.fieldForm = this.form.at(index) as FormGroup;
-    if (this.fieldForm.value.kind !== 'SCALAR') {
+    console.log(this.fieldForm.value);
+    if (this.fieldForm.value.kind === 'SCALAR') {
+      const dataKeys = getDataKeys([
+        { name: this.fieldForm.controls.name.value },
+      ]);
+      const calcKeys = getCalcKeys();
+      const keys = dataKeys.concat(calcKeys);
+
+      /**
+       * Setup tinymce editor
+       *
+       * @param editor tinymce editor
+       */
+      this.editor.setup = (editor: Editor) => {
+        // autocompleter with @ for data and calc keys
+        editor.ui.registry.addAutocompleter('keys_data_and_calc', {
+          ch: '@',
+          onAction: (autocompleteApi, rng, value) => {
+            editor.selection.setRng(rng);
+            editor.insertContent(value);
+            autocompleteApi.hide();
+          },
+          fetch: async (pattern: string) =>
+            keys
+              .filter((key) => key.includes(pattern))
+              .map((key) => ({ value: key, text: key })),
+        });
+      };
+    } else {
       if (this.childTemplate) {
         const componentRef = this.childTemplate.createComponent(
           SafeQueryBuilderComponent

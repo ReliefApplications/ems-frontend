@@ -49,6 +49,7 @@ import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
 import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component';
 import { get, intersection } from 'lodash';
+import { applyLayoutFormat } from '../../../widgets/summary-card/parser/utils';
 
 /**
  * Factory for creating scroll strategy
@@ -695,5 +696,16 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     return fileExt && ICON_EXTENSIONS[fileExt]
       ? name.slice(0, name.lastIndexOf(fileExt) - 1)
       : name;
+  }
+
+  /**
+   * Calls layout format from utils.ts to get the formated fields
+   *
+   * @param name Content of the field as a string
+   * @param field Field data
+   * @returns Formatted field content as a string
+   */
+  public applyFieldFormat(name: string | null, field: any): string | null {
+    return applyLayoutFormat(name, field);
   }
 }
