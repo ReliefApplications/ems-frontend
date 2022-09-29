@@ -82,7 +82,6 @@ export class RoleDetailsComponent implements OnInit {
     const url = `http://localhost:3000/roles/${this.role.id}/summary`;
     this.http.get(url).subscribe((res: any) => {
       this.roleStats = res;
-      console.log(res);
     });
   }
 
