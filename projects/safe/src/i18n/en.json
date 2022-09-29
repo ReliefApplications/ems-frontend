@@ -71,7 +71,10 @@
 			"apply": "Apply",
 			"clear": "Clear Filter",
 			"empty": "No result",
+			"few": "Filters",
 			"hide": "Hide Filter",
+			"none": "No filter",
+			"one": "Filter",
 			"show": "Show Filter"
 		},
 		"form": {
@@ -580,7 +583,7 @@
 			"filter": {
 				"and": "And",
 				"logic": "Filter logic",
-				"new": "Add new fiter",
+				"new": "Add new filter",
 				"newGroup": "Add new filter group",
 				"operator": "Operator",
 				"or": "Or",
@@ -714,6 +717,7 @@
 				"title": "Choose role to simulate"
 			},
 			"summary": {
+				"addFilter": "Add filter",
 				"autoAssignment": {
 					"rule": {
 						"add": "Create assignment rule",
@@ -723,21 +727,46 @@
 					},
 					"title": "Automatic assignment"
 				},
+				"details": {
+					"access": {
+						"channels": "Channels access",
+						"fullAccess": "Full access to {{accessible}} / {{total}}",
+						"limitedAccess": "Limited access to {{accessible}} / {{total}}",
+						"noAccess": "No access to {{accessible}} / {{total}}",
+						"pages": "Pages access",
+						"resources": "Resources access",
+						"title": "Access summary"
+					}
+				},
+				"editFilters": "Edit filters",
 				"features": "Features",
+				"newFilter": "New filter",
 				"noFeatures": "No feature detected",
+				"noFilters": "No access filters detected",
 				"noForms": "No forms detected",
 				"noSteps": "No steps detected",
+				"removeFilter": "Remove filter",
 				"title": "Summary"
 			},
 			"tooltip": {
-				"allowRecordAccessibility": "Allow this role to see records of {{form}}",
-				"allowRecordCreation": "Allow this role to create records with {{form}}",
-				"allowRecordDeletion": "Allow this role to remove records from {{form}}",
-				"allowRecordUpdate": "Allow this role to update records from {{form}}",
-				"disallowRecordAccessibility": "Disallow this role to see records of {{form}}",
-				"disallowRecordCreation": "Disallow this role to create records with {{form}}",
-				"disallowRecordDeletion": "Disallow this role to remove records from {{form}}",
-				"disallowRecordUpdate": "Disallow this role to update records from {{form}}",
+				"allowFieldAccessibility": "Allow this role to see the field {{field}}",
+				"allowFieldUpdate": "Allow this role to update the field {{field}}",
+				"allowFilterAccessibility": "Allow this role to see records that satisfies this filter",
+				"allowFilterDeletion": "Allow this role to remove records that satisfies this filter",
+				"allowFilterUpdate": "Allow this role to update records that satisfies this filter",
+				"allowRecordAccessibility": "Allow this role to see records of {{resource}}",
+				"allowRecordCreation": "Allow this role to create records with {{resource}}",
+				"allowRecordDeletion": "Allow this role to remove records from {{resource}}",
+				"allowRecordUpdate": "Allow this role to update records from {{resource}}",
+				"disallowFieldAccessibility": "Disallow this role to see the field {{field}}",
+				"disallowFieldUpdate": "Disallow this role to update the field {{field}}",
+				"disallowFilterAccessibility": "Disallow this role to see records that satisfies this filter",
+				"disallowFilterDeletion": "Disallow this role to remove records that satisfies this filter",
+				"disallowFilterUpdate": "Disallow this role to update records that satisfies this filter",
+				"disallowRecordAccessibility": "Disallow this role to see records of {{resource}}",
+				"disallowRecordCreation": "Disallow this role to create records with {{resource}}",
+				"disallowRecordDeletion": "Disallow this role to remove records from {{resource}}",
+				"disallowRecordUpdate": "Disallow this role to update records from {{resource}}",
 				"hideFeature": "Hide {{page}} from this role",
 				"showFeature": "Show {{page}} to this role"
 			},

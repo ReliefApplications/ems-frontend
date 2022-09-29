@@ -17,10 +17,10 @@ import {
   SafeIconModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
+  SafeDividerModule,
 } from '@safe/builder';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatDividerModule } from '@angular/material/divider';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -44,7 +44,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatTableModule,
     SafeConfirmModalModule,
     MatAutocompleteModule,
-    MatDividerModule,
+    SafeDividerModule,
     SafeButtonModule,
     SafeIconModule,
     TranslateModule,

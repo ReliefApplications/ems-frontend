@@ -215,7 +215,8 @@ export class SafeFormModalComponent implements OnInit {
    */
   private initSurvey(): void {
     this.survey = this.formBuilderService.createSurvey(
-      this.form?.structure || ''
+      this.form?.structure || '',
+      this.form?.metadata
     );
     this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
       this.onClearFiles(survey, options)
