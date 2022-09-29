@@ -1,5 +1,4 @@
 import { get } from 'lodash';
-import { Record } from '../../../../models/record.model';
 import calcFunctions from './calcFunctions';
 
 /** Prefix for data keys */
@@ -48,27 +47,14 @@ const ICON_EXTENSIONS: any = {
  * and calculate the calc functions.
  *
  * @param html The html text
- * @param record The record to fill the text with
- * @param aggregationData The aggregation data to fill the text with
+ * @param fieldsValue Field value
  * @param fields Available fields
  * @returns The parsed html
  */
-export const parseHtml = (
-  html: string,
-  record: Record | null,
-  aggregationData: any,
-  fields: any
-) => {
-  if (record) {
-    const htmlWithRecord = replaceRecordFields(html, record, fields);
+export const parseHtml = (html: string, fieldsValue: any, fields: any) => {
+  if (fieldsValue) {
+    const htmlWithRecord = replaceRecordFields(html, fieldsValue, fields);
     return applyOperations(htmlWithRecord);
-  } else if (aggregationData) {
-    const htmlWithAggregation = replaceRecordFields(
-      html,
-      { data: aggregationData } as Record,
-      fields
-    );
-    return applyOperations(htmlWithAggregation);
   } else {
     return applyOperations(html);
   }
@@ -78,16 +64,15 @@ export const parseHtml = (
  * Replaces the html resource fields with the resource data.
  *
  * @param html String with the content html.
- * @param record Record object.
- * @param fields Available fields
- * @returns formatted html
+ * @param fieldsValue Content of the fields.
+ * @param fields Available fields.
+ * @returns formatted html.
  */
 const replaceRecordFields = (
   html: string,
-  record: any,
+  fieldsValue: any[],
   fields: any
 ): string => {
-  const fieldsValue = getFieldsValue(record);
   let formattedHtml = html;
   if (fields) {
     for (const field of fields) {
@@ -103,10 +88,12 @@ const replaceRecordFields = (
             '<a href="mailto: ' + value + '" target="_blank">' + value + '</a>';
           break;
         case 'date':
-          convertedValue = new Date(value).toLocaleString().split(',')[0];
+          convertedValue = new Date(parseInt(value, 10))
+            .toLocaleString()
+            .split(',')[0];
           break;
         case 'datetime':
-          const date = new Date(value);
+          const date = new Date(parseInt(value, 10));
           const hour =
             date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
           const minutes =
@@ -148,7 +135,7 @@ const replaceRecordFields = (
               '">' +
               ' <span class="k-icon ' +
               fileIcon +
-              '"></span>' +
+              '" style="margin-right: 4px"></span>' +
               fileName +
               '</button>';
           }
@@ -252,7 +239,7 @@ const replaceRecordFields = (
  * @param record Record object.
  * @returns fields
  */
-const getFieldsValue = (record: any) => {
+export const getFieldsValue = (record: any) => {
   const fields: any = {};
   for (const [key, value] of Object.entries(record)) {
     if (!key.startsWith('__') && key !== 'form') {

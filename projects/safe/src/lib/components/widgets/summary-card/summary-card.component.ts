@@ -162,7 +162,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
         if (layouts.length > 0) {
           const layoutQuery = layouts[0].query;
           const builtQuery = this.queryBuilder.buildQuery({
-            query: layoutQuery,
+            query: { ...layoutQuery, fields: [{}] },
           });
           this.dataQuery = this.apollo.watchQuery<any>({
             query: builtQuery,
@@ -181,6 +181,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
                 const newCards = res2.data[field].edges.map((e: any) => ({
                   ...this.settings.cards[0],
                   record: e.node.id,
+                  layout: layoutQuery,
                 }));
                 this.cards = [...this.cards, ...newCards];
                 this.pageInfo.hasNextPage =
@@ -203,6 +204,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       .buildAggregation(card.resource, card.aggregation)
       ?.subscribe((res) => {
         if (!res.data) return;
+        console.log(res);
         this.cards = res.data.recordsAggregation.map((x: any) => ({
           ...this.settings.cards[0],
           cardAggregationData: x,

@@ -22,8 +22,7 @@ import { parseHtml } from '../parser/utils';
 export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   @Input() html = '';
   @Input() fields: any[] = [];
-  @Input() record: Record | null = null;
-  @Input() aggregationData: any;
+  @Input() fieldsValue: any;
 
   public formattedHtml?: SafeHtml;
 
@@ -36,7 +35,7 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.html, this.record, this.aggregationData, this.fields)
+      parseHtml(this.html, this.fieldsValue, this.fields)
     );
   }
 
@@ -45,7 +44,7 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    */
   ngOnChanges(): void {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.html, this.record, this.aggregationData, this.fields)
+      parseHtml(this.html, this.fieldsValue, this.fields)
     );
   }
 }

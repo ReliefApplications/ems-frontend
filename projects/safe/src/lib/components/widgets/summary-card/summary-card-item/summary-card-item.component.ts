@@ -17,8 +17,12 @@ import {
   GET_RECORD_BY_ID,
   GET_RESOURCE_LAYOUTS,
 } from '../graphql/queries';
-import { Record } from '../../../../models/record.model';
 import { clone, get } from 'lodash';
+import {
+  GetLayoutQueryResponse,
+  GET_LAYOUT,
+} from '../../summary-card-settings/card-modal/graphql/queries';
+import { getFieldsValue } from '../parser/utils';
 
 /**
  * Single Item component of Summary card widget.
@@ -31,9 +35,8 @@ import { clone, get } from 'lodash';
 export class SummaryCardItemComponent implements OnInit, OnChanges {
   @Input() card!: any;
   public fields: any[] = [];
-  public record: Record | null = null;
+  public fieldsValue: any = null;
   public loading = true;
-  public cardAggregationData: any = null;
 
   @Input() headerTemplate?: TemplateRef<any>;
 
@@ -65,7 +68,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Sets the content of the card */
   private async setContent() {
     if (this.card.isAggregation) {
-      this.cardAggregationData = this.card.cardAggregationData;
+      this.fieldsValue = this.card.cardAggregationData;
       if (!this.card.isDynamic) await this.getAggregationData();
       this.setContentFromAggregation();
     } else this.setContentFromLayout();
@@ -79,7 +82,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
 
     // for static cards with aggregation, assume the response is an array with one element
     if (res?.data?.recordsAggregation)
-      this.cardAggregationData = res.data.recordsAggregation[0];
+      this.fieldsValue = res.data.recordsAggregation[0];
   }
 
   /**
@@ -97,8 +100,56 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
         })
         .subscribe((res) => {
           if (res.data.record) {
-            this.record = res.data.record;
-            this.fields = get(res.data.record, 'form.resource.metadata', []);
+            this.fieldsValue = getFieldsValue(res.data.record);
+            if (typeof this.card.layout === 'string') {
+              this.apollo
+                .query<GetLayoutQueryResponse>({
+                  query: GET_LAYOUT,
+                  variables: {
+                    id: this.card.layout,
+                    resource: this.card.resource,
+                  },
+                })
+                .subscribe((res2) => {
+                  if (res2) {
+                    this.fields = [];
+                    get(res.data.record, 'form.resource.metadata', []).map(
+                      (metafield: any) => {
+                        get(
+                          res2.data.resource.layouts?.edges[0].node,
+                          'query.fields',
+                          []
+                        ).map((field: any) => {
+                          if (field.name === metafield.name) {
+                            const type = metafield.type;
+                            this.fields.push({ ...field, type });
+                          }
+                        });
+                      }
+                    );
+                  } else {
+                    this.fields = get(
+                      res.data.record,
+                      'form.resource.metadata',
+                      []
+                    );
+                  }
+                  this.loading = false;
+                });
+            } else if (typeof this.card.layout === 'object') {
+              this.fields = [];
+              get(res.data.record, 'form.resource.metadata', []).map(
+                (metafield: any) => {
+                  get(this.card.layout, 'fields', []).map((field: any) => {
+                    if (field.name === metafield.name) {
+                      const type = metafield.type;
+                      this.fields.push({ ...field, type });
+                    }
+                  });
+                }
+              );
+              this.loading = false;
+            }
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant(
@@ -106,9 +157,22 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
               ),
               { error: true }
             );
+            this.loading = false;
           }
-          this.loading = false;
         });
+    } else if (this.card.record && typeof this.card.record === 'object') {
+      this.fields = this.card.layout.fields;
+      // this.fields = [];
+      // get(this.layout, 'form.resource.metadata', []).map((metafield: any) => {
+      //   get(this.card, 'layout.fields', []).map((field: any) => {
+      //     if (field.name === metafield.name) {
+      //       const editor = metafield.editor
+      //       this.fields.push({...field, editor});
+      //     }
+      //   })
+      // });
+      this.fieldsValue = this.card.record;
+      this.loading = false;
     } else {
       this.loading = false;
     }
@@ -119,9 +183,9 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    */
   private setContentFromAggregation(): void {
     this.loading = false;
-    if (!this.cardAggregationData) return;
+    if (!this.fieldsValue) return;
     // @TODO: get the fields' types from the aggregation data
-    this.fields = Object.keys(this.cardAggregationData).map((key) => ({
+    this.fields = Object.keys(this.fieldsValue).map((key) => ({
       name: key,
       editor: 'text',
     }));

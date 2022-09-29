@@ -176,6 +176,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
         },
       })
       .subscribe((res) => {
+        console.log(res);
         if (res.errors) {
           this.form.patchValue({
             resource: null,
@@ -188,7 +189,15 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
           if (layoutID) {
             this.selectedLayout =
               res.data?.resource.layouts?.edges[0]?.node || null;
-            this.fields = get(res, 'data.resource.metadata', []);
+            this.fields = [];
+            get(res, 'data.resource.metadata', []).map((metafield: any) => {
+              get(this.selectedLayout, 'query.fields', []).map((field: any) => {
+                if (field.name === metafield.name) {
+                  const type = metafield.type;
+                  this.fields.push({ ...field, type });
+                }
+              });
+            });
           }
           if (aggregationID) {
             this.selectedAggregation =
