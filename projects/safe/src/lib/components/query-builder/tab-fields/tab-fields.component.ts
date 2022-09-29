@@ -212,7 +212,6 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
    */
   public onEdit(index: number): void {
     this.fieldForm = this.form.at(index) as FormGroup;
-    console.log(this.fieldForm.value);
     if (this.fieldForm.value.kind === 'SCALAR') {
       const dataKeys = getDataKeys([
         { name: this.fieldForm.controls.name.value },
