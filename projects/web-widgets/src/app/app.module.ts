@@ -8,7 +8,11 @@ import {
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 // Http
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { ApplicationWidgetComponent } from './widgets/application-widget/application-widget.component';
 import { ApplicationWidgetModule } from './widgets/application-widget/application-widget.module';
@@ -29,7 +33,10 @@ import {
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MessageService } from '@progress/kendo-angular-l10n';
-import { KendoTranslationService, SafeAuthInterceptorService } from '@safe/builder';
+import {
+  KendoTranslationService,
+  SafeAuthInterceptorService,
+} from '@safe/builder';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';

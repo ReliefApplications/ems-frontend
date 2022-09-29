@@ -24,5 +24,8 @@
   (searchChange)="onSearchChange($event)"
   (export)="onExport($event)"
   [blank]="!settings.query"
+  (edit)="edit.emit($event)"
+  [widget]="widget"
+  [canUpdate]="canUpdate"
 >
 </safe-grid>

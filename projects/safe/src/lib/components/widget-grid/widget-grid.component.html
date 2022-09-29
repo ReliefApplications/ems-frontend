@@ -44,6 +44,8 @@
         [widget]="widget"
         (goToNextStep)="goToNextStep.emit($event)"
         [id]="'widget-' + widget.id"
+        (edit)="onEditWidget($event)"
+        [canUpdate]="canUpdate"
       ></safe-widget>
       <safe-icon *ngIf="canUpdate" icon="drag_indicator" class="widget-handle">
       </safe-icon>
