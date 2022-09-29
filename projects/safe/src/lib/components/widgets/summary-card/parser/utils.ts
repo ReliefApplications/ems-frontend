@@ -265,7 +265,7 @@ export const getCalcKeys = (): string[] => {
  *
  * @param name Original value of the field
  * @param field Field information, used to get field name and format
- * @returns Formated field
+ * @returns Formatted field value
  */
 export const applyLayoutFormat = (
   name: string | null,
