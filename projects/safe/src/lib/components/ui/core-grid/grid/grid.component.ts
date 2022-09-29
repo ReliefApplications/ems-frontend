@@ -626,7 +626,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       data: {
         title: field.title,
         comment: get(item, field),
-        readonly: !this.actions.update,
+        readonly:
+          !this.actions.update ||
+          !item.canUpdate ||
+          this.fields.find((val) => val.name === field).meta.readOnly,
       },
       autoFocus: false,
     });
