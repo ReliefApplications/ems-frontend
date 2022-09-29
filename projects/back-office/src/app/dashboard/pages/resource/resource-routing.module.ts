@@ -68,7 +68,19 @@ const routes: Routes = [
         // canActivate: [SafePermissionGuard]
         data: {
           breadcrumb: {
-            key: 'common.layout.few',
+            key: 'common.aggregation.few',
+          },
+        },
+      },
+      {
+        path: 'derived-fields',
+        loadChildren: () =>
+          import('./derived-fields-tab/derived-fields-tab.module').then(
+            (m) => m.DerivedFieldsTabModule
+          ),
+        data: {
+          breadcrumb: {
+            key: 'common.deriviedField.few',
           },
         },
       },

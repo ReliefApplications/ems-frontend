@@ -44,6 +44,11 @@
 		"delete": "Delete",
 		"deleteObject": "Delete {{name}}",
 		"deleted": "Deleted",
+		"deriviedField": {
+			"few": "Derived Fields",
+			"none": "No derived field",
+			"one": "Derived Field"
+		},
 		"dismiss": "Dismiss",
 		"display": "Display",
 		"downloadObject": "Download {{name}}",
@@ -404,6 +409,11 @@
 			"confirm": "Confirm",
 			"delete": "Delete",
 			"title": "Confirm"
+		},
+		"deriviedFields": {
+			"add": "Create a new derived field",
+			"definition": "Definition",
+			"edit": "Edit derived field"
 		},
 		"emailBuilder": {
 			"body": "Body",
