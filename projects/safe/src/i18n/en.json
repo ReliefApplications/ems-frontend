@@ -66,7 +66,10 @@
 			"apply": "Apply",
 			"clear": "Clear Filter",
 			"empty": "No result",
+			"few": "Filters",
 			"hide": "Hide Filter",
+			"none": "No filter",
+			"one": "Filter",
 			"show": "Show Filter"
 		},
 		"form": {
@@ -75,6 +78,11 @@
 			"one": "Form"
 		},
 		"general": "General",
+		"group": {
+			"few": "Groups",
+			"none": "No groups",
+			"one": "Group"
+		},
 		"history": "History",
 		"id": "Id",
 		"input": {
@@ -103,6 +111,7 @@
 				"ready": "Email ready",
 				"sent": "Email sent"
 			},
+			"fetchingGroups": "Fetching groups from service...",
 			"file": {
 				"download": {
 					"error": "Something went wrong during the download",
@@ -116,6 +125,14 @@
 				}
 			},
 			"formatInvalid": "Please upload a valid .{{format}} file.",
+			"groups": {
+				"error": "Something went wrong trying to get groups from service",
+				"processing": "Fetching groups from service...",
+				"ready": "Groups fetched"
+			},
+			"history": {
+				"error": "Something went wrong during the history generation. {{error}}"
+			},
 			"loadedFromCache": "{{type}} loaded from cache.",
 			"noOpened": "No opened {{value}}.",
 			"objectCreated": "{{value}} {{type}} created.",
@@ -202,6 +219,7 @@
 		"saveChanges": "Save changes",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
+		"send": "Send",
 		"settings": "Settings",
 		"status": "Status",
 		"status_active": "Active",
@@ -244,8 +262,21 @@
 			"canDelete": "Can delete",
 			"canSee": "Can see",
 			"canUpdate": "Can update",
-			"description": "Update access permissions",
+			"description": "Update {{name}} permissions",
 			"title": "Access"
+		},
+		"aggregation": {
+			"add": {
+				"choice": {
+					"create": "Create a new aggregation",
+					"load": "Load existing aggregation"
+				},
+				"select": "Select an aggregation",
+				"title": "Add new aggregation"
+			},
+			"edit": {
+				"title": "Aggregation configuration"
+			}
 		},
 		"aggregationBuilder": {
 			"accumulators": "Accumulators",
@@ -300,7 +331,7 @@
 		"apiConfiguration": {
 			"create": {
 				"errors": {
-					"name": "Only letters, hypens or underscores are accepted"
+					"name": "Invalid name: please only use letters, digits and underscores."
 				}
 			},
 			"delete": {
@@ -374,11 +405,18 @@
 		},
 		"emailBuilder": {
 			"body": "Body",
+			"default": "Default",
 			"distribution": "Distribution list",
 			"fields": "Select fields to write in body",
-			"subject": "Subject"
+			"subject": "Subject",
+			"withoutRecords": "Without records"
 		},
 		"form": {
+			"aggregation": {
+				"delete": {
+					"confirmationMessage": "Do you confirm the deletion of the aggregation {{name}}?"
+				}
+			},
 			"create": {
 				"choice": {
 					"inherit": "Create from template",
@@ -443,6 +481,15 @@
 		"forms": {
 			"isCore": "Is core",
 			"parent": "Parent form"
+		},
+		"group": {
+			"add": {
+				"title": "Add new group"
+			},
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the group {{name}}?",
+				"title": "Delete group"
+			}
 		},
 		"header": {
 			"goToPlatform": "Navigate to",
@@ -527,7 +574,7 @@
 			"filter": {
 				"and": "And",
 				"logic": "Filter logic",
-				"new": "Add new fiter",
+				"new": "Add new filter",
 				"newGroup": "Add new filter group",
 				"operator": "Operator",
 				"or": "Or",
@@ -537,6 +584,10 @@
 				"fields": "Select data points below and drag them to 'selected fields' on the right",
 				"sortingDisabled": "Sorting fields is disabled when search is active",
 				"style": "Styling rules make records with important information stand out. When a record matches more than one rule, the first rule is used."
+			},
+			"pagination": {
+				"first": "Limit",
+				"title": "Pagination"
 			},
 			"sort": {
 				"ascending": "Ascending",
@@ -574,6 +625,9 @@
 						"useExpression": "Use Expression editor",
 						"usePicker": "Use Date picker"
 					}
+				},
+				"pagination": {
+					"first": "If provided, limit the number of queried items"
 				}
 			}
 		},
@@ -624,9 +678,6 @@
 		},
 		"referenceData": {
 			"create": {
-				"errors": {
-					"name": "Only letters, hypens or underscores are accepted"
-				},
 				"title": "New Reference Data"
 			},
 			"delete": {
@@ -657,27 +708,68 @@
 				"title": "Choose role to simulate"
 			},
 			"summary": {
+				"addFilter": "Add filter",
+				"autoAssignment": {
+					"rule": {
+						"add": "Create assignment rule",
+						"delete": "Delete rule",
+						"edit": "Edit assignment rule",
+						"title": "Rule"
+					},
+					"title": "Automatic assignment"
+				},
+				"details": {
+					"access": {
+						"channels": "Channels access",
+						"fullAccess": "Full access to {{accessible}} / {{total}}",
+						"limitedAccess": "Limited access to {{accessible}} / {{total}}",
+						"noAccess": "No access to {{accessible}} / {{total}}",
+						"pages": "Pages access",
+						"resources": "Resources access",
+						"title": "Access summary"
+					}
+				},
+				"editFilters": "Edit filters",
 				"features": "Features",
+				"newFilter": "New filter",
 				"noFeatures": "No feature detected",
+				"noFilters": "No access filters detected",
 				"noForms": "No forms detected",
 				"noSteps": "No steps detected",
+				"removeFilter": "Remove filter",
 				"title": "Summary"
 			},
 			"tooltip": {
-				"allowRecordAccessibility": "Allow this role to see records of {{form}}",
-				"allowRecordCreation": "Allow this role to create records with {{form}}",
-				"allowRecordDeletion": "Allow this role to remove records from {{form}}",
-				"allowRecordUpdate": "Allow this role to update records from {{form}}",
-				"disallowRecordAccessibility": "Disallow this role to see records of {{form}}",
-				"disallowRecordCreation": "Disallow this role to create records with {{form}}",
-				"disallowRecordDeletion": "Disallow this role to remove records from {{form}}",
-				"disallowRecordUpdate": "Disallow this role to update records from {{form}}",
+				"allowFieldAccessibility": "Allow this role to see the field {{field}}",
+				"allowFieldUpdate": "Allow this role to update the field {{field}}",
+				"allowFilterAccessibility": "Allow this role to see records that satisfies this filter",
+				"allowFilterDeletion": "Allow this role to remove records that satisfies this filter",
+				"allowFilterUpdate": "Allow this role to update records that satisfies this filter",
+				"allowRecordAccessibility": "Allow this role to see records of {{resource}}",
+				"allowRecordCreation": "Allow this role to create records with {{resource}}",
+				"allowRecordDeletion": "Allow this role to remove records from {{resource}}",
+				"allowRecordUpdate": "Allow this role to update records from {{resource}}",
+				"disallowFieldAccessibility": "Disallow this role to see the field {{field}}",
+				"disallowFieldUpdate": "Disallow this role to update the field {{field}}",
+				"disallowFilterAccessibility": "Disallow this role to see records that satisfies this filter",
+				"disallowFilterDeletion": "Disallow this role to remove records that satisfies this filter",
+				"disallowFilterUpdate": "Disallow this role to update records that satisfies this filter",
+				"disallowRecordAccessibility": "Disallow this role to see records of {{resource}}",
+				"disallowRecordCreation": "Disallow this role to create records with {{resource}}",
+				"disallowRecordDeletion": "Disallow this role to remove records from {{resource}}",
+				"disallowRecordUpdate": "Disallow this role to update records from {{resource}}",
 				"hideFeature": "Hide {{page}} from this role",
 				"showFeature": "Show {{page}} to this role"
 			},
 			"update": {
 				"permissions": "Permissions",
 				"title": "Update role permissions and channels"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "Copy to clipboard",
+				"title": "Share dashboard url"
 			}
 		},
 		"user": {
@@ -701,6 +793,7 @@
 					"application": "Application roles",
 					"backoffice": "Back-Office roles",
 					"selectedApplication": "Selected application",
+					"selectedGroups": "Selected groups",
 					"selectedRoles": "Selected roles"
 				},
 				"title": "Summary"
@@ -784,6 +877,7 @@
 				"layout": {
 					"reset": "Reset default Layout"
 				},
+				"openSettings": "Open settings",
 				"tooltip": {
 					"saved": "Changes saved",
 					"unsaved": "Click on save button to upload changes",
@@ -820,6 +914,8 @@
 						},
 						"title": "Series"
 					},
+					"size": "Size",
+					"style": "Style",
 					"text": "Text",
 					"type": "Chart Type",
 					"xAxis": "X Axis",
@@ -836,6 +932,13 @@
 						"showDetails": "Show record details",
 						"title": "Enabled actions",
 						"update": "Update records"
+					},
+					"aggregations": {
+						"add": {
+							"choice": {
+								"create": "Create a new aggregation"
+							}
+						}
 					},
 					"buttons": {
 						"callback": {
@@ -1108,6 +1211,12 @@
 			"select": "Select a Form",
 			"template": "Template"
 		},
+		"group": {
+			"create": "Create a group",
+			"description": "Description",
+			"fetch": "Fetch groups from service",
+			"title": "Title"
+		},
 		"mapping": {
 			"add": "Add a Mapping",
 			"edit": "Edit a Mapping"
@@ -1293,9 +1402,6 @@
 		},
 		"referenceData": {
 			"csv": "CSV input",
-			"errors": {
-				"name": "Only letters, hypens or underscores are accepted"
-			},
 			"fields": "Fields",
 			"graphQLFilter": "GraphQL query parameters",
 			"path": "Path",

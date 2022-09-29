@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { RoleUsersModule } from '../role-users/role-users.module';
 
 /**
  * General tab of Role Summary.
@@ -23,6 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatInputModule,
     SafeButtonModule,
     MatSelectModule,
+    RoleUsersModule,
   ],
   exports: [RoleDetailsComponent],
 })

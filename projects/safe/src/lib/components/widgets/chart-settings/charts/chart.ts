@@ -50,13 +50,14 @@ export class Chart {
 
     // build form
     this.form = this.fb.group({
-      type: [
-        settings && settings.type ? settings.type : null,
+      type: [get(settings, 'type', null), Validators.required],
+      aggregationId: [
+        get(settings, 'aggregationId', null),
         Validators.required,
       ],
-      aggregation: createAggregationForm(
-        get(settings, 'aggregation', null),
-        get(settings, 'type', '')
+      mapping: createMappingForm(
+        get(settings, 'mapping', null),
+        get(settings, 'type', null)
       ),
       legend: this.fb.group({
         visible: [legend ? legend.visible : true],
@@ -64,9 +65,15 @@ export class Chart {
         orientation: [legend ? legend.orientation : 'horizontal'],
       }),
       title: this.fb.group({
-        visible: [title ? title.visible : true],
-        text: [title ? title.text : null],
-        position: [title ? title.position : 'top'],
+        visible: [get(title, 'visible', true)],
+        text: [get(title, 'text', null)],
+        position: [get(title, 'position', 'top')],
+        bold: [get(title, 'bold', false)],
+        italic: [get(title, 'italic', false)],
+        underline: [get(title, 'underline', false)],
+        font: [get(title, 'font', '')],
+        size: [get(title, 'size', 12)],
+        color: [get(title, 'color', null)],
       }),
       palette: this.fb.group({
         enabled: get(settings, 'palette.enabled', false),
@@ -148,11 +155,15 @@ export class Chart {
     });
 
     this.form.get('type')?.valueChanges.subscribe((value) => {
-      const mapping = this.form.get('aggregation.mapping');
-      const aggregation = this.form.get('aggregation') as FormGroup;
-      aggregation.setControl(
+      const mapping = this.form.get('mapping');
+      // const aggregation = this.form.get('mapping') as FormGroup;
+      this.form.setControl('mapping', createMappingForm(mapping?.value, value));
+    });
+
+    this.form.get('aggregationId')?.valueChanges.subscribe((value) => {
+      this.form.setControl(
         'mapping',
-        createMappingForm(mapping?.value, value)
+        createMappingForm(null, this.form.get('type')?.value)
       );
     });
 

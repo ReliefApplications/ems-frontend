@@ -15,6 +15,7 @@ import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.com
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import { uniq, get, groupBy } from 'lodash';
 import { CHART_DEFAULT_PALETTE } from '../chart-settings/charts/chart';
+import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
  * Default file name for chart exports
@@ -76,19 +77,42 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   /**
    * Chart widget using KendoUI.
    *
-   * @param aggregationBuilder Share aggregation builder service
+   * @param aggregationService Shared aggregation service
+   * @param aggregationBuilder Shared aggregation builder service
    */
-  constructor(private aggregationBuilder: AggregationBuilderService) {}
+  constructor(
+    private aggregationService: SafeAggregationService,
+    private aggregationBuilder: AggregationBuilderService
+  ) {}
 
   /** Detect changes of the settings to reload the data and sets the direction of the chart depending on the legend. */
   ngOnChanges(): void {
     this.loading = true;
-    this.dataQuery = this.aggregationBuilder.buildAggregation(
-      this.settings.chart.aggregation
-    );
-    if (this.dataQuery) {
-      this.getOptions();
-      this.getData();
+    if (this.settings.resource) {
+      this.aggregationService
+        .getAggregations(this.settings.resource, {
+          ids: [get(this.settings, 'chart.aggregationId', null)],
+          first: 1,
+        })
+        .then((res) => {
+          const aggregation = res.edges[0]?.node || null;
+          if (aggregation) {
+            this.dataQuery = this.aggregationBuilder.buildAggregation(
+              this.settings.resource,
+              aggregation.id || '',
+              get(this.settings, 'chart.mapping', null)
+            );
+            if (this.dataQuery) {
+              this.getOptions();
+              this.getData();
+            } else {
+              this.loading = false;
+            }
+          } else {
+            this.loading = false;
+          }
+        })
+        .catch(() => (this.loading = false));
     } else {
       this.loading = false;
     }
@@ -185,7 +209,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
           const aggregationData = JSON.parse(
             JSON.stringify(res.data.recordsAggregation)
           );
-          if (get(this.settings, 'chart.aggregation.mapping.series', null)) {
+          if (get(this.settings, 'chart.mapping.series', null)) {
             const groups = groupBy(aggregationData, 'series');
             const categories = uniq(
               aggregationData.map((x: any) => x.category)

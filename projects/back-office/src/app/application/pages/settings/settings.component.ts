@@ -14,7 +14,7 @@ import {
   DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
 } from './graphql/mutations';
-import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
+import { DuplicateApplicationModalComponent } from '../../../components/duplicate-application-modal/duplicate-application-modal.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -97,7 +97,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         })
       );
     } else {
-      this.dialog.open(DuplicateApplicationComponent, {
+      this.dialog.open(DuplicateApplicationModalComponent, {
         data: {
           id: this.application?.id,
           name: this.application?.name,
@@ -162,5 +162,14 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();
     }
+  }
+
+  /**
+   * Edits the permissions layer.
+   *
+   * @param e permissions.
+   */
+  saveAccess(e: any): void {
+    this.applicationService.editPermissions(e);
   }
 }

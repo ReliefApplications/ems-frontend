@@ -9,7 +9,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatDividerModule } from '@angular/material/divider';
 import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeButtonModule } from '../ui/button/button.module';
@@ -21,6 +20,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { SafePreferencesModalModule } from '../preferences-modal/preferences-modal.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
+import { SafeDividerModule } from '../ui/divider/divider.module';
 
 /**
  * SafeLayoutModule is a class used to manage all the modules and components
@@ -39,7 +39,7 @@ import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
     MatSidenavModule,
     MatListModule,
     DragDropModule,
-    MatDividerModule,
+    SafeDividerModule,
     SafeConfirmModalModule,
     MatTooltipModule,
     SafeButtonModule,

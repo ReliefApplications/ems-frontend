@@ -1,3 +1,4 @@
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Application } from './application.model';
 import { Channel } from './channel.model';
 import { PositionAttribute } from './position-attribute.model';
@@ -18,6 +19,15 @@ export interface Role {
   permissions?: Permission[];
   application?: Application;
   channels?: Channel[];
+  autoAssignment?: CompositeFilterDescriptor[];
+}
+
+/** Model for Group object. */
+export interface Group {
+  id?: string;
+  title?: string;
+  description?: string;
+  usersCount?: number;
 }
 
 /** Model for User object. */
@@ -29,6 +39,7 @@ export interface User {
   isAdmin?: boolean;
   name?: string;
   roles?: Role[];
+  groups?: Group[];
   permissions?: Permission[];
   oid?: string;
   applications?: Application[];

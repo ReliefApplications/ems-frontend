@@ -141,6 +141,11 @@ export class FormBuilderComponent implements OnInit {
                 '@form',
                 this.form.name as string
               );
+              this.breadcrumbService.setBreadcrumb(
+                '@resource',
+                this.form.resource?.name as string
+              );
+              // this.breadcrumbService.setResourceName();
               this.nameForm = new FormGroup({
                 formName: new FormControl(this.form.name, Validators.required),
               });

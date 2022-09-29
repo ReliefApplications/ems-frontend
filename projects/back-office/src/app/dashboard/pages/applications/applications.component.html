@@ -106,6 +106,7 @@
           <safe-access
             [menuItem]="true"
             [access]="element.permissions"
+            [objectTypeName]="'common.application.one' | translate"
             (save)="saveAccess($event, element)"
             *ngIf="element.canUpdate"
           ></safe-access>
@@ -118,7 +119,7 @@
             {{ 'common.duplicate' | translate }}
           </button>
           <ng-container *ngIf="element.canDelete">
-            <mat-divider></mat-divider>
+            <safe-divider style="margin: unset"></safe-divider>
             <button mat-menu-item (click)="onDelete(element, $event)">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}

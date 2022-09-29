@@ -24,7 +24,6 @@ export const createFilterGroup = (filter: any): FormGroup => {
       field: filter.field,
       operator: filter.operator || 'eq',
       value: Array.isArray(filter.value) ? [filter.value] : filter.value,
-      useExpression: get(filter, 'useExpression', false),
     });
   }
   return formBuilder.group({
@@ -61,6 +60,7 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
         filter: newField
           ? formBuilder.group({})
           : createFilterGroup(field.filter),
+        first: [field.first, Validators.min(0)],
       });
     }
     case 'OBJECT': {

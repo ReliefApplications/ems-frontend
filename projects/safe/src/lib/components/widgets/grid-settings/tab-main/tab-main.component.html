@@ -1,0 +1,49 @@
+<div [formGroup]="formGroup" class="form-group">
+  <h2>{{ 'common.general' | translate }}</h2>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'common.title' | translate }}</mat-label>
+    <input matInput formControlName="title" type="string" />
+  </mat-form-field>
+  <ng-container formGroupName="query">
+    <div class="form-group-row">
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.queryBuilder.dataset.select' | translate
+        }}</mat-label>
+        <input
+          type="text"
+          [placeholder]="'components.queryBuilder.dataset.select' | translate"
+          matInput
+          formControlName="name"
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-option *ngFor="let option of queries" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'models.form.template' | translate }}</mat-label>
+        <mat-select formControlName="template">
+          <mat-option>-</mat-option>
+          <mat-option
+            *ngFor="let template of templates"
+            [value]="template.id"
+            >{{ template.name }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </ng-container>
+</div>
+<div class="form-group" *ngIf="form || resource">
+  <h2>
+    {{ 'components.widget.settings.grid.layouts.title' | translate }}
+  </h2>
+  <safe-layout-table
+    [form]="form"
+    [resource]="resource"
+    [selectedLayouts]="$any(formGroup).get('layouts')"
+  ></safe-layout-table>
+</div>

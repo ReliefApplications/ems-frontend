@@ -1,0 +1,14 @@
+.axis-container {
+  display: flex;
+  gap: 8px;
+
+  mat-slide-toggle {
+    margin-top: 15px;
+  }
+}
+
+.style-options {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}

@@ -4,6 +4,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { SafeStatusModalComponent } from './status-modal.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * SafeStatusModalModule is a class used to manage all the modules and components
@@ -16,6 +17,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatDialogModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    SafeModalModule,
   ],
 })
 export class SafeStatusModalModule {}

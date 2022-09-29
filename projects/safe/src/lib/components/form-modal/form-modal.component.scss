@@ -1,20 +1,15 @@
 @import '../../style/survey.scss';
 
-:host {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  position: relative;
-}
-
 mat-dialog-content {
   flex: 1;
   max-height: unset !important;
 }
 
-.modal-close {
-  position: absolute;
-  top: -24px;
-  right: -24px;
-  z-index: 1002;
+.form-infos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
 }

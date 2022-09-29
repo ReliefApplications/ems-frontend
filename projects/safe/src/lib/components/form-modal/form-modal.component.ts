@@ -50,7 +50,6 @@ import { cleanRecord } from '../../utils/cleanRecord';
 interface DialogData {
   template?: string;
   recordId?: string | [];
-  locale?: string;
   prefillRecords?: Record[];
   prefillData?: any;
   askForConfirm?: boolean;
@@ -216,7 +215,8 @@ export class SafeFormModalComponent implements OnInit {
    */
   private initSurvey(): void {
     this.survey = this.formBuilderService.createSurvey(
-      this.form?.structure || ''
+      this.form?.structure || '',
+      this.form?.metadata
     );
     this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
       this.onClearFiles(survey, options)
@@ -246,7 +246,6 @@ export class SafeFormModalComponent implements OnInit {
         this.setPages();
       }
     );
-    this.survey.locale = this.data.locale ? this.data.locale : 'en';
     if (this.data.recordId && this.record) {
       addCustomFunctions(Survey, this.authService, this.apollo, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
@@ -711,7 +710,6 @@ export class SafeFormModalComponent implements OnInit {
           revert: (version: any) =>
             this.confirmRevertDialog(this.record, version),
         },
-        panelClass: 'no-padding-dialog',
         autoFocus: false,
       });
     }

@@ -68,7 +68,6 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
    */
   onAdd(): void {
     const dialogRef = this.dialog.open(SubscriptionModalComponent, {
-      width: '400px',
       data: {
         channels: this.channels,
       },
@@ -107,7 +106,6 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
    */
   onEdit(element: any): void {
     const dialogRef = this.dialog.open(SubscriptionModalComponent, {
-      width: '400px',
       data: {
         channels: this.channels,
         subscription: element,

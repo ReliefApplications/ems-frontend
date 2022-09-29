@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { SafeSeriesMappingComponent } from './series-mapping.component';
 import { SafeSeriesMappingModule } from './series-mapping.module';
 import { StorybookTranslateModule } from '../../../storybook-translate/storybook-translate-module';
-import { createAggregationForm } from '../aggregation-builder-forms';
+import { createMappingForm } from '../aggregation-builder-forms';
 import { delay } from 'rxjs/operators';
 
 export default {
@@ -159,12 +159,10 @@ const TEMPLATE: Story<SafeSeriesMappingComponent> = (args) => ({
     fields$: new BehaviorSubject(DEFAULT_FIELDS)
       .asObservable()
       .pipe(delay(500)),
-    mappingForm: createAggregationForm(
+    mappingForm: createMappingForm(
       {
-        mapping: {
-          category: 'date',
-          field: 'follow',
-        },
+        category: 'date',
+        field: 'follow',
       },
       'column'
     ).controls.mapping,

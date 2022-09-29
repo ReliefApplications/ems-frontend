@@ -1,8 +1,10 @@
-.advanced-filtering {
+:host {
+  flex: 1;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+}
+
+mat-tab-group {
+  flex: 1;
 }
 
 .map-default-settings {

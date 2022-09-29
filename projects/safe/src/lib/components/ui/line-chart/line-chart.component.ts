@@ -21,6 +21,8 @@ interface ChartTitle {
   visible: boolean;
   text: string;
   position: 'top' | 'bottom';
+  font: string;
+  color: string;
 }
 
 /**

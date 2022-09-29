@@ -107,6 +107,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
   @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
+  @Output() edit: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -116,6 +117,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private grid?: SafeGridComponent;
 
   // === DATA ===
+  @Input() widget: any;
+  @Input() canUpdate = false;
   public gridData: GridDataResult = { data: [], total: 0 };
   private totalCount = 0;
   private items: any[] = [];
@@ -217,7 +220,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     })} ${today.getFullYear()}`;
     return `${
       this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
-    } ${formatDate}.png`;
+    } ${formatDate}`;
   }
 
   /** @returns true if any updated item in the list */
@@ -319,6 +322,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
+    if (!builtQuery) {
+      this.error = true;
+    }
     this.dataQuery = this.apollo.watchQuery<any>({
       query: builtQuery,
       variables: {
@@ -748,12 +754,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         disableClose: true,
         data: {
           template: this.settings.template,
-          locale: 'en',
           askForConfirm: false,
         },
-        height: '98%',
-        width: '100vw',
-        panelClass: 'full-screen-modal',
         autoFocus: false,
       });
       dialogRef.afterClosed().subscribe((value) => {
@@ -798,16 +800,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       const dialogRef = this.dialog.open(SafeRecordModalComponent, {
         data: {
           recordId: isArray ? items[0].id : items.id,
-          locale: 'en',
           canUpdate:
             this.settings.actions &&
             this.settings.actions.update &&
             items.canUpdate,
           ...(!isArray && { template: this.settings.template }),
         },
-        height: '98%',
-        width: '100vw',
-        panelClass: 'full-screen-modal',
         autoFocus: false,
       });
       dialogRef.afterClosed().subscribe((value) => {
@@ -829,12 +827,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       disableClose: true,
       data: {
         recordId: ids.length > 1 ? ids : ids[0],
-        locale: 'en',
         template: this.settings.template || null,
       },
-      height: '98%',
-      width: '100vw',
-      panelClass: 'full-screen-modal',
       autoFocus: false,
     });
     dialogRef.afterClosed().subscribe((value) => {

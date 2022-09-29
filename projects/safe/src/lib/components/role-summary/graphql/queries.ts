@@ -2,7 +2,7 @@ import { gql } from 'apollo-angular';
 import { Application } from '../../../models/application.model';
 import { Resource } from '../../../models/resource.model';
 import { Channel } from '../../../models/channel.model';
-import { Permission, Role } from '../../../models/user.model';
+import { Group, Permission, Role } from '../../../models/user.model';
 import { Workflow } from '../../../models/workflow.model';
 
 /** Get role by id GraphQL query */
@@ -19,6 +19,7 @@ export const GET_ROLE = gql`
       application {
         id
       }
+      autoAssignment
     }
   }
 `;
@@ -116,20 +117,30 @@ export interface GetWorkflowStepsQueryResponse {
   workflow: Workflow;
 }
 
-/** Graphql request for getting resources */
+/** Graphql query for getting resources with a filter and more data */
 export const GET_RESOURCES = gql`
-  query GetResources($first: Int, $afterCursor: ID) {
-    resources(first: $first, afterCursor: $afterCursor) {
+  query GetResources(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sortField: String
+    $sortOrder: String
+    $role: ID!
+  ) {
+    resources(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
       edges {
         node {
           id
+          queryName
           name
-          permissions {
-            canSee {
-              id
-              title
-            }
-          }
+          rolePermissions(role: $role)
+          fields
         }
         cursor
       }
@@ -142,7 +153,7 @@ export const GET_RESOURCES = gql`
   }
 `;
 
-/** Model for GetResourcesQueryResponse object */
+/** Interface of Get Resources Query response */
 export interface GetResourcesQueryResponse {
   loading: boolean;
   resources: {
@@ -158,62 +169,36 @@ export interface GetResourcesQueryResponse {
   };
 }
 
-/** Graphql query for getting resources with a filter and more data */
-export const GET_RESOURCES_EXTENDED = gql`
-  query GetResourcesExtended(
-    $first: Int
-    $afterCursor: ID
-    $filter: JSON
-    $sortField: String
-    $sortOrder: String
-  ) {
-    resources(
-      first: $first
-      afterCursor: $afterCursor
-      filter: $filter
-      sortField: $sortField
-      sortOrder: $sortOrder
-    ) {
-      edges {
-        node {
-          id
-          name
-          createdAt
-          recordsCount
-          canDelete
-        }
-        cursor
-      }
-      totalCount
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+/** GraphQL query to get a single resource */
+export const GET_RESOURCE = gql`
+  query GetResources($id: ID!, $role: ID!) {
+    resource(id: $id) {
+      id
+      queryName
+      name
+      rolePermissions(role: $role)
+      metadata
+      fields
     }
   }
 `;
 
-/** Graphql request for getting forms of a resource */
-export const GET_RESOURCE_FORMS = gql`
-  query GetResourceForms($resource: ID!) {
-    resource(id: $resource) {
-      forms {
-        id
-        name
-        permissions {
-          canCreateRecords {
-            id
-          }
-          canSeeRecords
-          canUpdateRecords
-          canDeleteRecords
-        }
-      }
-    }
-  }
-`;
-
-/** Model for the response of the GetResourceForms query */
-export interface GetResourceFormsQueryResponse {
+/** Interface of Get Resource Query response */
+export interface GetResourceQueryResponse {
   resource: Resource;
+}
+
+/** Graphql request for getting groups */
+export const GET_GROUPS = gql`
+  query GetGroups {
+    groups {
+      id
+      title
+    }
+  }
+`;
+
+/** Model for GetGroupsQueryResponse object */
+export interface GetGroupsQueryResponse {
+  groups: Group[];
 }

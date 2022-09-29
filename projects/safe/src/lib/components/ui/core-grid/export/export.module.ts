@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '../../modal/modal.module';
 
 /** Module for the export component */
 @NgModule({
@@ -17,6 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatRadioModule,
     MatButtonModule,
     TranslateModule,
+    SafeModalModule,
   ],
   exports: [SafeExportComponent],
 })

@@ -1,0 +1,68 @@
+<div class="actions" *ngIf="!loading">
+  <safe-button variant="primary" category="secondary" (click)="onAddLayout()">
+    {{
+      'components.widget.settings.grid.layouts.add.choice.create' | translate
+    }}</safe-button
+  >
+</div>
+<div>
+  <table *ngIf="!loading" mat-table [dataSource]="layouts">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'common.name' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdAt">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'common.createdOn' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.createdAt | safeDate }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="_actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <safe-button
+          [isIcon]="true"
+          icon="more_vert"
+          [matMenuTriggerFor]="resMenu"
+          (click)="$event.stopPropagation()"
+          [disabled]="!resource.canUpdate"
+        >
+        </safe-button>
+        <mat-menu #resMenu="matMenu">
+          <button mat-menu-item (click)="onEditLayout(element)">
+            <mat-icon>edit</mat-icon>
+            {{ 'common.edit' | translate }}
+          </button>
+          <button mat-menu-item (click)="onDeleteLayout(element)">
+            <mat-icon>delete</mat-icon>
+            {{ 'common.delete' | translate }}
+          </button>
+        </mat-menu>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsLayouts"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsLayouts"></tr>
+  </table>
+  <safe-skeleton-table
+    *ngIf="loading"
+    [columns]="['common.name', 'common.createdOn']"
+    [actions]="true"
+  >
+  </safe-skeleton-table>
+  <mat-paginator
+    [disabled]="loading"
+    [pageIndex]="pageInfo.pageIndex"
+    [pageSize]="pageInfo.pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
+    [length]="pageInfo.length"
+    (page)="onPage($event)"
+  >
+  </mat-paginator>
+</div>

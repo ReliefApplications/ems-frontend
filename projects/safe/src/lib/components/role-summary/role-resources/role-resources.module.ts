@@ -17,12 +17,20 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ResourceFieldsComponent } from './resource-fields/resource-fields.component';
+import { SafeRoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
+import { SafeFilterModule } from '../../filter/filter.module';
 
 /**
  * Resources tab of Role Summary component.
  */
 @NgModule({
-  declarations: [RoleResourcesComponent, FilterComponent],
+  declarations: [
+    RoleResourcesComponent,
+    FilterComponent,
+    ResourceFieldsComponent,
+    SafeRoleResourceFiltersComponent,
+  ],
   imports: [
     CommonModule,
     MatTableModule,
@@ -41,6 +49,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatInputModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    SafeFilterModule,
   ],
   exports: [RoleResourcesComponent],
 })

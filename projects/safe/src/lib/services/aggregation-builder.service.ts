@@ -2,7 +2,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { PipelineStage } from '../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
 import { Accumulators } from '../components/ui/aggregation-builder/pipeline/expressions/operators';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { addNewField } from '../components/query-builder/query-builder-forms';
 import { ApolloQueryResult } from '@apollo/client';
 import { SafeGridService } from './grid.service';
@@ -16,7 +16,7 @@ import { SafeGridService } from './grid.service';
   providedIn: 'root',
 })
 export class AggregationBuilderService {
-  private gridSubject = new Subject<any>();
+  private gridSubject = new BehaviorSubject<any>(null);
 
   /**
    * Shared aggregation service.
@@ -66,7 +66,7 @@ export class AggregationBuilderService {
           metaFields,
           {}
         );
-        const query = this.buildAggregation(aggregationForm.value, false);
+        const query = this.buildAggregation(aggregationForm.value, '');
         if (query) {
           query.subscribe((res: any) => {
             if (res.data.recordsAggregation) {
@@ -109,7 +109,11 @@ export class AggregationBuilderService {
       const formattedForm = addNewField(field, true);
       formattedForm.enable();
       const formattedField = formattedForm.value;
-      if (formattedField.kind !== 'SCALAR' && field.fields.length) {
+      if (
+        formattedField.kind !== 'SCALAR' &&
+        field.fields &&
+        field.fields.length
+      ) {
         formattedField.fields = this.formatFields(field.fields);
       }
       return formattedField;
@@ -119,28 +123,36 @@ export class AggregationBuilderService {
   /**
    * Builds the aggregation query from aggregation definition
    *
+   * @param resource Resource Id
    * @param aggregation Aggregation definition
-   * @param withMapping Wether if we should inculde the mapping in the aggregation.
+   * @param mapping aggregation mapping ( category, field, series )
    * @returns Aggregation query
    */
   public buildAggregation(
-    aggregation: any,
-    withMapping = true
+    resource: string,
+    aggregation: string,
+    mapping?: any
   ): Observable<ApolloQueryResult<any>> | null {
     if (aggregation) {
       const query = gql`
-        query GetCustomAggregation($aggregation: JSON!, $withMapping: Boolean) {
+        query GetCustomAggregation(
+          $resource: ID!
+          $aggregation: ID!
+          $mapping: JSON
+        ) {
           recordsAggregation(
+            resource: $resource
             aggregation: $aggregation
-            withMapping: $withMapping
+            mapping: $mapping
           )
         }
       `;
       return this.apollo.query<any>({
         query,
         variables: {
+          resource,
           aggregation,
-          withMapping,
+          mapping,
         },
       });
     } else {

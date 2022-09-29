@@ -11,8 +11,8 @@ import {
   GetFormsQueryResponse,
 } from '../../graphql/queries';
 import { map, startWith } from 'rxjs/operators';
-import { MatSelect } from '@angular/material/select';
 import { MatAutocomplete } from '@angular/material/autocomplete';
+import get from 'lodash/get';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -30,16 +30,7 @@ export class SubscriptionModalComponent implements OnInit {
   subscriptionForm: FormGroup = new FormGroup({});
 
   // === DATA ===
-  private forms = new BehaviorSubject<Form[]>([]);
-  public forms$!: Observable<Form[]>;
-  private formsQuery!: QueryRef<GetFormsQueryResponse>;
-  private formsPageInfo = {
-    endCursor: '',
-    hasNextPage: true,
-  };
-  private formsLoading = true;
-
-  @ViewChild('formSelect') formSelect?: MatSelect;
+  public formsQuery!: QueryRef<GetFormsQueryResponse>;
 
   // === DATA ===
   private applications = new BehaviorSubject<Application[]>([]);
@@ -64,6 +55,11 @@ export class SubscriptionModalComponent implements OnInit {
    */
   set routingKey(value: string) {
     this.subscriptionForm.controls.routingKey.setValue(value);
+  }
+
+  /** @returns default convert to form */
+  get defaultForm(): Form | null {
+    return get(this.data, 'subscription.convertTo', null);
   }
 
   /**
@@ -108,20 +104,6 @@ export class SubscriptionModalComponent implements OnInit {
           : '',
       ],
     });
-    // Get forms and set pagination logic
-    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
-      query: GET_FORM_NAMES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-      },
-    });
-
-    this.forms$ = this.forms.asObservable();
-    this.formsQuery.valueChanges.subscribe((res) => {
-      this.forms.next(res.data.forms.edges.map((x) => x.node));
-      this.formsPageInfo = res.data.forms.pageInfo;
-      this.formsLoading = res.loading;
-    });
 
     // Get applications and set pagination logic
     this.applicationsQuery =
@@ -148,6 +130,14 @@ export class SubscriptionModalComponent implements OnInit {
           map((x) => this.filter(x))
         );
     });
+
+    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+      query: GET_FORM_NAMES,
+      variables: {
+        first: ITEMS_PER_PAGE,
+        sortField: 'name',
+      },
+    });
   }
 
   /**
@@ -172,54 +162,6 @@ export class SubscriptionModalComponent implements OnInit {
   }
 
   /**
-   * Adds scroll listener to select.
-   *
-   * @param e open select event.
-   */
-  onOpenFormSelect(e: any): void {
-    if (e && this.formSelect) {
-      const panel = this.formSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScrollForm(event)
-      );
-    }
-  }
-
-  /**
-   * Fetches more forms on scroll.
-   *
-   * @param e scroll event.
-   */
-  private loadOnScrollForm(e: any): void {
-    if (
-      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
-      50
-    ) {
-      if (!this.formsLoading && this.formsPageInfo.hasNextPage) {
-        this.formsLoading = true;
-        this.formsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.formsPageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return Object.assign({}, prev, {
-              forms: {
-                edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
-                pageInfo: fetchMoreResult.forms.pageInfo,
-                totalCount: fetchMoreResult.forms.totalCount,
-              },
-            });
-          },
-        });
-      }
-    }
-  }
-
-  /**
    * Adds scroll listener to auto complete.
    */
   onOpenApplicationSelect(): void {
@@ -232,7 +174,7 @@ export class SubscriptionModalComponent implements OnInit {
   }
 
   /**
-   * Fetches more forms on scroll.
+   * Fetches more applications on scroll.
    *
    * @param e scroll event.
    */

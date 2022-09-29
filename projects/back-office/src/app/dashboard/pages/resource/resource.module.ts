@@ -11,8 +11,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import {
   SafeAccessModule,
   SafeButtonModule,
-  SafeLayoutModalModule,
   SafeDateModule,
+  SafeConfirmModalModule,
 } from '@safe/builder';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -37,10 +37,10 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     MatTooltipModule,
     MatPaginatorModule,
     TranslateModule,
-    SafeLayoutModalModule,
     OverlayModule,
     UploadMenuModule,
     SafeDateModule,
+    SafeConfirmModalModule,
   ],
   exports: [ResourceComponent],
 })

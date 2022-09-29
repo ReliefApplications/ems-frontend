@@ -19,6 +19,8 @@ export * from './lib/services/reference-data.service';
 export * from './lib/services/kendo-translation.service';
 export * from './lib/services/date-translate.service';
 export * from './lib/services/breadcrumb.service';
+export * from './lib/services/aggregation/aggregation.service';
+export * from './lib/services/auth-interceptor/auth-interceptor.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -44,10 +46,12 @@ export * from './lib/models/position-attribute.model';
 export * from './lib/models/apiConfiguration.model';
 export * from './lib/models/pullJob.model';
 export * from './lib/models/layout.model';
+export * from './lib/models/aggregation.model';
 export * from './lib/models/reference-data.model';
 export * from './lib/models/setting.model';
 
 // === COMPONENTS ===
+export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 export * from './lib/components/layout/public-api';
 export * from './lib/components/access/public-api';
 export * from './lib/components/form/public-api';
@@ -84,9 +88,13 @@ export * from './lib/components/reference-data-dropdown/public-api';
 export * from './lib/components/skeleton/skeleton-table/public-api';
 export * from './lib/components/mapping/public-api';
 export * from './lib/components/role-summary/public-api';
+export * from './lib/components/graphql-select/public-api';
+export * from './lib/components/ui/modal/public-api';
+export * from './lib/components/ui/empty/public-api';
+export * from './lib/components/ui/divider/public-api';
 
 /** Grid Layouts */
-export * from './lib/components/grid-layout/layout-modal/public-api';
+export * from './lib/components/grid-layout/edit-layout-modal/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
 
 // === UI ===

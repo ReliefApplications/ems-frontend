@@ -66,7 +66,10 @@
 			"apply": "Appliquer",
 			"clear": "Supprimer le filtre",
 			"empty": "Aucun résultat",
+			"few": "Filtres",
 			"hide": "Cacher le filtre",
+			"none": "Pas de filtre",
+			"one": "Filtre",
 			"show": "Afficher le filtre"
 		},
 		"form": {
@@ -75,6 +78,11 @@
 			"one": "Formulaire"
 		},
 		"general": "Général",
+		"group": {
+			"few": "Groupes",
+			"none": "Pas de groupes",
+			"one": "Groupe"
+		},
 		"history": "Historique",
 		"id": "Id",
 		"input": {
@@ -103,6 +111,7 @@
 				"ready": "E-mail prêt",
 				"sent": "E-mail envoyé"
 			},
+			"fetchingGroups": "Fetching groups from service...",
 			"file": {
 				"download": {
 					"error": "Un problème est survenu lors du téléchargement",
@@ -116,6 +125,14 @@
 				}
 			},
 			"formatInvalid": "Veuillez importer un fichier de format .{{format}}.",
+			"groups": {
+				"error": "Une erreur s'est produite lors de la tentative d'obtenir des groupes du service",
+				"processing": "Récupération des groupes à partir du service...",
+				"ready": "Groupes récupérés"
+			},
+			"history": {
+				"error": "Un problème est survenu lors de la génération de l'historique. {{error}}"
+			},
 			"loadedFromCache": "Objet de type {{type}} chargé depuis le cache.",
 			"noOpened": "Aucun objet {{value}} n'a été ouvert.",
 			"objectCreated": "{{value}} {{type}} créé.",
@@ -202,6 +219,7 @@
 		"saveChanges": "Sauvegarder les changements",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
+		"send": "Envoyer",
 		"settings": "Paramètres",
 		"status": "Statut",
 		"status_active": "Actif",
@@ -244,8 +262,21 @@
 			"canDelete": "Peut supprimer",
 			"canSee": "Peut voir",
 			"canUpdate": "Peut modifier",
-			"description": "Modifier les permissions d'accès",
+			"description": "Modifier les permissions de {{name}}",
 			"title": "Accès"
+		},
+		"aggregation": {
+			"add": {
+				"choice": {
+					"create": "Créer une nouvelle agrégation",
+					"load": "Charger une agrégation"
+				},
+				"select": "Sélectionner une agrégation",
+				"title": "Ajouter une agrégation"
+			},
+			"edit": {
+				"title": "Paramètres d'agrégation"
+			}
 		},
 		"aggregationBuilder": {
 			"accumulators": "Accumulateurs",
@@ -300,7 +331,7 @@
 		"apiConfiguration": {
 			"create": {
 				"errors": {
-					"name": "Seules les lettres, les tirets et les tirets bas sont acceptés."
+					"name": "Nom invalide: utilisez seulement des lettres, des chiffres et des tirets bas."
 				}
 			},
 			"delete": {
@@ -374,11 +405,18 @@
 		},
 		"emailBuilder": {
 			"body": "Corps du texte",
+			"default": "Défaut",
 			"distribution": "Liste de distribution",
 			"fields": "Sélectionner les champs à écrire dans le corps du texte",
-			"subject": "Objet"
+			"subject": "Objet",
+			"withoutRecords": "Sans enregistrements"
 		},
 		"form": {
+			"aggregation": {
+				"delete": {
+					"confirmationMessage": "Confirmez-vous la suppression de l'agrégation {{name}}?"
+				}
+			},
 			"create": {
 				"choice": {
 					"inherit": "Copier un modèle de ressources existant",
@@ -443,6 +481,15 @@
 		"forms": {
 			"isCore": "Est un formulaire source",
 			"parent": "Formulaire parent"
+		},
+		"group": {
+			"add": {
+				"title": "Ajouter un nouveau groupe"
+			},
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du groupe {{name}}?",
+				"title": "Supprimer le groupe"
+			}
 		},
 		"header": {
 			"goToPlatform": "Naviguer vers",
@@ -538,6 +585,10 @@
 				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
 				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
 			},
+			"pagination": {
+				"first": "Limite",
+				"title": "Pagination"
+			},
 			"sort": {
 				"ascending": "Croissant",
 				"descending": "Décroissant",
@@ -574,6 +625,9 @@
 						"useExpression": "Utiliser une expression",
 						"usePicker": "Choisir une date"
 					}
+				},
+				"pagination": {
+					"first": "Limite le nombre d'éléments renvoyés"
 				}
 			}
 		},
@@ -624,9 +678,6 @@
 		},
 		"referenceData": {
 			"create": {
-				"errors": {
-					"name": "Seules les lettres, les tirets et les tirets bas sont acceptés."
-				},
 				"title": "Nouvelle référence de données"
 			},
 			"delete": {
@@ -657,27 +708,68 @@
 				"title": "Choix du rôle à simuler"
 			},
 			"summary": {
+				"addFilter": "Ajouter un filtre",
+				"autoAssignment": {
+					"rule": {
+						"add": "Ajouter une règle d'attribution",
+						"delete": "Supprimer la règle",
+						"edit": "Mettre à jour la règle d'attribution",
+						"title": "Règle"
+					},
+					"title": "Attribution automatique"
+				},
+				"details": {
+					"access": {
+						"channels": "Canaux accessibles",
+						"fullAccess": "Accès complet à {{accessible}} / {{total}}",
+						"limitedAccess": "Accès limité à {{accessible}} / {{total}}",
+						"noAccess": "Pas d'accès à {{accessible}} / {{total}}",
+						"pages": "Pages accessibles",
+						"resources": "Ressources accessibles",
+						"title": "Accès"
+					}
+				},
+				"editFilters": "Modifier les filtres",
 				"features": "Fonctionnalités",
+				"newFilter": "Nouveau filtre",
 				"noFeatures": "Aucune fonctionnalité détectée",
+				"noFilters": "Aucun filtre d'accès détecté",
 				"noForms": "Aucun formulaire détecté",
 				"noSteps": "Aucune étape détectée",
+				"removeFilter": "Supprimer le filtre",
 				"title": "Résumé"
 			},
 			"tooltip": {
-				"allowRecordAccessibility": "Autoriser ce rôle à voir les enregistrements de {{form}}",
-				"allowRecordCreation": "Autoriser ce rôle à créer des enregistrements dans {{form}}",
-				"allowRecordDeletion": "Autoriser ce rôle à supprimer des enregistrements de {{form}}",
-				"allowRecordUpdate": "Autoriser ce rôle à mettre à jour les enregistrements de {{form}}",
-				"disallowRecordAccessibility": "Interdire ce rôle pour voir les enregistrements de {{form}}",
-				"disallowRecordCreation": "Interdire à ce rôle de créer des enregistrements dans {{form}}",
-				"disallowRecordDeletion": "Interdire ce rôle pour supprimer des enregistrements de {{form}}",
-				"disallowRecordUpdate": "Interdire ce rôle pour mettre à jour les enregistrements de {{form}}",
+				"allowFieldAccessibility": "Autoriser ce rôle à voir le champ {{field}}",
+				"allowFieldUpdate": "Autoriser ce rôle à mettre à jour le champ {{field}}",
+				"allowFilterAccessibility": "Autoriser ce rôle à voir les enregistrements qui satisfont ce filtre",
+				"allowFilterDeletion": "Autoriser ce rôle à supprimer les enregistrements qui satisfont à ce filtre",
+				"allowFilterUpdate": "Autoriser ce rôle à mettre à jour les enregistrements qui satisfont ce filtre",
+				"allowRecordAccessibility": "Autoriser ce rôle à voir les enregistrements de {{resource}}",
+				"allowRecordCreation": "Autoriser ce rôle à créer des enregistrements dans {{resource}}",
+				"allowRecordDeletion": "Autoriser ce rôle à supprimer des enregistrements de {{resource}}",
+				"allowRecordUpdate": "Autoriser ce rôle à mettre à jour les enregistrements de {{resource}}",
+				"disallowFieldAccessibility": "Interdire ce rôle pour voir le champ {{field}}",
+				"disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
+				"disallowFilterAccessibility": "Interdire ce rôle pour voir les enregistrements qui satisfont ce filtre",
+				"disallowFilterDeletion": "Interdire ce rôle pour supprimer les enregistrements qui satisfont ce filtre",
+				"disallowFilterUpdate": "Interdire ce rôle pour mettre à jour les enregistrements qui satisfont ce filtre",
+				"disallowRecordAccessibility": "Interdire ce rôle pour voir les enregistrements de {{resource}}",
+				"disallowRecordCreation": "Interdire à ce rôle de créer des enregistrements dans {{resource}}",
+				"disallowRecordDeletion": "Interdire ce rôle pour supprimer des enregistrements de {{resource}}",
+				"disallowRecordUpdate": "Interdire ce rôle pour mettre à jour les enregistrements de {{resource}}",
 				"hideFeature": "Masquer {{page}} pour ce rôle",
 				"showFeature": "Afficher {{page}} pour ce rôle"
 			},
 			"update": {
 				"permissions": "Permissions",
 				"title": "Modifier les permissions des rôles et les canaux de diffusion"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "Copier dans le presse-papiers",
+				"title": "Partager l'url du dashboard"
 			}
 		},
 		"user": {
@@ -701,6 +793,7 @@
 					"application": "Rôles d'application",
 					"backoffice": "Rôles de back-office",
 					"selectedApplication": "Application sélectionnée",
+					"selectedGroups": "Groupes sélectionnés",
 					"selectedRoles": "Rôles sélectionnés"
 				},
 				"title": "Résumé"
@@ -784,6 +877,7 @@
 				"layout": {
 					"reset": "Réinitialiser la mise en page par défaut"
 				},
+				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
 					"saved": "Changements sauvegardés",
 					"unsaved": "Cliquez sur sauvegarder pour enregistrer les changements",
@@ -820,6 +914,8 @@
 						},
 						"title": "Séries"
 					},
+					"size": "Taille",
+					"style": "Style",
 					"text": "Texte",
 					"type": "Graphique",
 					"xAxis": "Axe X",
@@ -836,6 +932,13 @@
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
 						"update": "Modifier les enregistrements"
+					},
+					"aggregations": {
+						"add": {
+							"choice": {
+								"create": "Créer une nouvelle agrégation"
+							}
+						}
 					},
 					"buttons": {
 						"callback": {
@@ -1108,6 +1211,12 @@
 			"select": "Sélectionner un formulaire",
 			"template": "Modèle"
 		},
+		"group": {
+			"create": "Créer un groupe",
+			"description": "Description",
+			"fetch": "Récupérer les groupes du service",
+			"title": "Titre"
+		},
 		"mapping": {
 			"add": "Ajouter un rang à la table de correspondances",
 			"edit": "Modifier un rang de la table de correspondances"
@@ -1293,9 +1402,6 @@
 		},
 		"referenceData": {
 			"csv": "Fichier CSV d'entrée",
-			"errors": {
-				"name": "Seules les lettres, les tirets et les tirets bas sont acceptés"
-			},
 			"fields": "Champs",
 			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",

@@ -1,66 +1,71 @@
-<safe-button
-  (click)="onClose()"
-  [isIcon]="true"
-  icon="close"
-  variant="danger"
-  class="modal-close"
-></safe-button>
-<ng-container *ngIf="!loading">
-  <safe-record-summary
-    *ngIf="record"
-    [record]="record"
-    (showHistory)="onShowHistory()"
-  ></safe-record-summary>
-  <div mat-dialog-title>
-    <mat-tab-group
-      animationDuration="0ms"
-      [selectedIndex]="selectedTabIndex"
-      (selectedIndexChange)="onShowPage($event)"
-    >
-      <mat-tab
-        *ngFor="let page of pages$ | async"
-        [label]="page.title ? page.title : page.name"
+<safe-modal size="big" [closable]="true">
+  <ng-container *ngIf="!loading">
+    <div class="form-infos">
+      <safe-record-summary
+        *ngIf="record"
+        [record]="record"
+        (showHistory)="onShowHistory()"
+      ></safe-record-summary>
+      <safe-form-actions *ngIf="survey" [survey]="survey"></safe-form-actions>
+    </div>
+    <div mat-dialog-title>
+      <mat-tab-group
+        animationDuration="0ms"
+        [selectedIndex]="selectedTabIndex"
+        (selectedIndexChange)="onShowPage($event)"
       >
-        <ng-template mat-tab-label>
-          {{ page.title ? page.title : page.name }}
-          <safe-icon
-            *ngIf="page.containsErrors"
-            icon="error"
-            variant="danger"
-            [inline]="true"
-            [size]="20"
-          ></safe-icon>
-        </ng-template>
-      </mat-tab>
-    </mat-tab-group>
-  </div>
-</ng-container>
-<mat-dialog-content #formContainer></mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button color="warn" (click)="onClose()">
-    {{ 'common.cancel' | translate }}
-  </button>
-  <ng-container *ngIf="pages$ | async as pages">
-    <button
-      *ngIf="pages.length > 1"
-      [disabled]="!survey || survey.isFirstPage"
-      mat-button
-      color="primary"
-      (click)="survey && survey.prevPage()"
-    >
-      {{ 'common.previous' | translate }}
-    </button>
-    <button
-      *ngIf="pages.length > 1"
-      [disabled]="!survey || survey.isLastPage"
-      mat-button
-      color="primary"
-      (click)="survey && survey.nextPage()"
-    >
-      {{ 'common.next' | translate }}
-    </button>
+        <mat-tab
+          *ngFor="let page of pages$ | async"
+          [label]="page.title ? page.title : page.name"
+        >
+          <ng-template mat-tab-label>
+            {{ page.title ? page.title : page.name }}
+            <safe-icon
+              *ngIf="page.containsErrors"
+              icon="error"
+              variant="danger"
+              [inline]="true"
+              [size]="20"
+            ></safe-icon>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
   </ng-container>
-  <button mat-flat-button color="primary" (click)="submit()">
-    {{ 'components.record.modal.update' | translate }}
-  </button>
-</mat-dialog-actions>
+  <mat-dialog-content #formContainer></mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <safe-button (click)="onClose()" variant="danger">{{
+      'common.cancel' | translate
+    }}</safe-button>
+    <ng-container *ngIf="pages$ | async as pages">
+      <safe-button
+        category="secondary"
+        variant="primary"
+        *ngIf="pages.length > 1"
+        (click)="survey && survey.prevPage()"
+        cdkFocusInitial
+        [disabled]="!survey || survey.isFirstPage"
+      >
+        {{ 'components.previous' | translate }}
+      </safe-button>
+      <safe-button
+        category="secondary"
+        variant="primary"
+        *ngIf="pages.length > 1"
+        (click)="survey && survey.nextPage()"
+        cdkFocusInitial
+        [disabled]="!survey || survey.isLastPage"
+      >
+        {{ 'components.next' | translate }}
+      </safe-button>
+    </ng-container>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      (click)="submit()"
+      cdkFocusInitial
+    >
+      {{ 'components.record.modal.update' | translate }}
+    </safe-button>
+  </mat-dialog-actions>
+</safe-modal>

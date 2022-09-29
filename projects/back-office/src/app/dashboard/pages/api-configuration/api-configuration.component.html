@@ -6,6 +6,7 @@
     </h1>
     <safe-access
       [access]="apiConfiguration?.permissions"
+      [objectTypeName]="'common.apiConfiguration.one' | translate"
       (save)="saveAccess($event)"
       *ngIf="apiConfiguration?.canUpdate"
     ></safe-access>

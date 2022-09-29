@@ -18,7 +18,7 @@ import {
   AddFormMutationResponse,
   ADD_FORM,
 } from './graphql/mutations';
-import { AddFormComponent } from '../../../components/add-form/add-form.component';
+import { AddFormModalComponent } from '../../../components/add-form-modal/add-form-modal.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
@@ -231,8 +231,6 @@ export class FormsComponent implements OnInit, OnDestroy {
    * @param e click event.
    */
   onDelete(form: Form, e: any): void {
-    const warning =
-      'Deleting a core form will recursively delete linked forms and resources.';
     e.stopPropagation();
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
@@ -292,9 +290,7 @@ export class FormsComponent implements OnInit, OnDestroy {
    * Creates a new form on closed if result.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddFormComponent, {
-      panelClass: 'add-dialog',
-    });
+    const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         const data = { name: value.name };
@@ -326,7 +322,7 @@ export class FormsComponent implements OnInit, OnDestroy {
               } else {
                 if (res.data) {
                   const { id } = res.data.addForm;
-                  this.router.navigate(['/forms/builder', id]);
+                  this.router.navigate(['/forms/' + id + '/builder']);
                 }
               }
             },
