@@ -3,12 +3,14 @@ import { Record } from '../../../../models/record.model';
 import calcFunctions from './calcFunctions';
 
 /** Prefix for data keys */
-const DATA_PREFIX = '@data.';
+const DATA_PREFIX = '{{data.';
 /** Prefix for calc keys */
-const CALC_PREFIX = '@calc.';
+const CALC_PREFIX = '{{calc.';
+/** Suffix for all keys */
+const PLACEHOLDER_SUFFIX = '}}';
 
 /**
- *
+ * Mapping of file types / kendo icons.
  */
 const ICON_EXTENSIONS: any = {
   bmp: 'k-i-file-programming',
@@ -178,7 +180,10 @@ const replaceRecordFields = (
           break;
       }
 
-      const regex = new RegExp(`${DATA_PREFIX}${field.name}\\b`, 'gi');
+      const regex = new RegExp(
+        `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
+        'gi'
+      );
       formattedHtml = formattedHtml.replace(regex, convertedValue);
     }
   }
@@ -216,7 +221,10 @@ const getFieldsValue = (record: any) => {
  * @returns The html body with the calculated result of the functions
  */
 const applyOperations = (html: string): string => {
-  const regex = new RegExp(`${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)`, 'gm');
+  const regex = new RegExp(
+    `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
+    'gm'
+  );
   let parsedHtml = html;
   let result = regex.exec(html);
   while (result !== null) {
@@ -248,7 +256,7 @@ const applyOperations = (html: string): string => {
  * @returns list of data keys
  */
 export const getDataKeys = (fields: any): string[] =>
-  fields.map((field: any) => DATA_PREFIX + field.name);
+  fields.map((field: any) => DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX);
 
 /**
  * Returns an array with the calc operations keys.
@@ -257,7 +265,9 @@ export const getDataKeys = (fields: any): string[] =>
  */
 export const getCalcKeys = (): string[] => {
   const calcObjects = Object.values(calcFunctions);
-  return calcObjects.map((obj) => CALC_PREFIX + obj.signature);
+  return calcObjects.map(
+    (obj) => CALC_PREFIX + obj.signature + PLACEHOLDER_SUFFIX
+  );
 };
 
 /**
@@ -272,7 +282,10 @@ export const applyLayoutFormat = (
   field: any
 ): string | null => {
   if (name && field.layoutFormat && field.layoutFormat.length > 1) {
-    const regex = new RegExp(`${DATA_PREFIX}${field.name}\\b`, 'gi');
+    const regex = new RegExp(
+      `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
+      'gi'
+    );
     const value = field.layoutFormat
       .replace(/<(.|\n)*?>/g, '')
       .replace(regex, name);

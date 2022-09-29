@@ -1458,7 +1458,7 @@
 			},
 			"queryName": "Nom de la requête",
 			"tooltip": {
-				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés. Vous pouvez utiliser le code $$LAST_UPDATE pour insérer dynamiquement la date de la dernière mise à jour des choix dans un format compatible SQL."
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés. Vous pouvez utiliser le code {{lastUpdate}} pour insérer dynamiquement la date de la dernière mise à jour des choix dans un format compatible SQL."
 			},
 			"type": "Type",
 			"validateCsv": "Valider le CSV",
