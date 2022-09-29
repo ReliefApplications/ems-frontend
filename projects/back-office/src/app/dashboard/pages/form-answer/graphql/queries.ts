@@ -18,6 +18,7 @@ export const GET_SHORT_FORM_BY_ID = gql`
         modifiedAt
         data
       }
+      metadata
       permissions {
         canSee {
           id

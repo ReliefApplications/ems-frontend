@@ -217,4 +217,13 @@ export class SafeAuthService {
       errorPolicy: 'all',
     });
   }
+
+  /**
+   * Get the authentication token from local storage if it exists
+   *
+   * @returns token as stored in local storage
+   */
+  public getAuthToken(): string | null {
+    return localStorage.getItem('idtoken');
+  }
 }

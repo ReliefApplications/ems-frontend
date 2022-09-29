@@ -87,3 +87,10 @@ textarea {
   display: flex;
   justify-content: center;
 }
+
+.file {
+  width: 100%;
+  justify-content: flex-start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
