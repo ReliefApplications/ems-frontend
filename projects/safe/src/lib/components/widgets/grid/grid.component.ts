@@ -41,11 +41,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
 
-/** Regex for the pattern "today()+[number of days to add]" */
-const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
-/** Regex for the pattern "today()-[number of days to substract]" */
-const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
-
 /** Component for the grid widget */
 @Component({
   selector: 'safe-grid-widget',
@@ -343,17 +338,7 @@ export class SafeGridWidgetComponent implements OnInit {
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
-      if (['Date', 'DateTime'].includes(modification.field.type.name)) {
-        update[modification.field.name] = this.getDateForFilter(
-          modification.value
-        );
-      } else if (['Time'].includes(modification.field.type.name)) {
-        update[modification.field.name] = this.getTimeForFilter(
-          modification.value
-        );
-      } else {
-        update[modification.field.name] = modification.value;
-      }
+      update[modification.field.name] = modification.value;
     }
     const data = cleanRecord(update);
     return this.apollo
@@ -366,57 +351,6 @@ export class SafeGridWidgetComponent implements OnInit {
         },
       })
       .toPromise();
-  }
-
-  /**
-   * Gets from input date value the three dates used for filtering.
-   *
-   * @param value input date value
-   * @returns calculated day, beginning of day, and ending of day
-   */
-  private getDateForFilter(value: any): Date {
-    // today's date
-    let date: Date;
-    if (value === 'today()') {
-      date = new Date();
-      // today + number of days
-    } else if (REGEX_PLUS.test(value)) {
-      const difference = parseInt(value.split('+')[1], 10);
-      date = new Date();
-      date.setDate(date.getDate() + difference);
-      // today - number of days
-    } else if (REGEX_MINUS.test(value)) {
-      const difference = -parseInt(value.split('-')[1], 10);
-      date = new Date();
-      date.setDate(date.getDate() + difference);
-      // classic date
-    } else {
-      date = new Date(value);
-    }
-    return date;
-  }
-
-  /**
-   * Gets from input time value a time value display.
-   *
-   * @param value record value
-   * @returns calculated time
-   */
-  private getTimeForFilter(value: any): string {
-    if (value === 'now()') {
-      const time = new Date()
-        .toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-        .split(/:| /);
-      if (
-        (time[2] === 'PM' && time[0] !== '12') ||
-        (time[2] === 'AM' && time[0] === '12')
-      ) {
-        time[0] = (parseInt(time[0], 10) + 12).toString();
-      }
-      return time[0] + ':' + time[1];
-    } else {
-      return value;
-    }
   }
 
   /**

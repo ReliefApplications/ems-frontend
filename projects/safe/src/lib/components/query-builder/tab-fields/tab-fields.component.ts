@@ -227,7 +227,8 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
       this.editor.setup = (editor: Editor) => {
         // autocompleter with @ for data and calc keys
         editor.ui.registry.addAutocompleter('keys_data_and_calc', {
-          ch: '@',
+          ch: '{',
+          minChars: 0,
           onAction: (autocompleteApi, rng, value) => {
             editor.selection.setRng(rng);
             editor.insertContent(value);
