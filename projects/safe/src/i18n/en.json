@@ -572,6 +572,10 @@
 			},
 			"fields": {
 				"available": "Available fields",
+				"format": {
+					"info": "Left empty to ignore formatting",
+					"title": "Display format"
+				},
 				"search": "Search fields...",
 				"selected": "Selected fields",
 				"title": "Fields"

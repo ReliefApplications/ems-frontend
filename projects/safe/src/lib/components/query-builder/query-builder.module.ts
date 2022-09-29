@@ -34,6 +34,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.component';
 import { SafeFilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 /**
  * SafeQueryBuilderModule is a class used to manage all the modules and components
@@ -79,6 +80,7 @@ import { DateFilterEditorComponent } from './date-filter-editor/date-filter-edit
     SafeCoreGridModule,
     MatDatepickerModule,
     SafeFilterModule,
+    EditorModule,
   ],
   exports: [
     SafeQueryBuilderComponent,
@@ -86,6 +88,9 @@ import { DateFilterEditorComponent } from './date-filter-editor/date-filter-edit
     SafeTabFilterComponent,
     SafeTabSortComponent,
     SafeTabPaginationComponent,
+  ],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
   ],
 })
 export class SafeQueryBuilderModule {}

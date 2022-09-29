@@ -572,6 +572,10 @@
 			},
 			"fields": {
 				"available": "******",
+				"format": {
+					"info": "******",
+					"title": "******"
+				},
 				"search": "******",
 				"selected": "******",
 				"title": "******"

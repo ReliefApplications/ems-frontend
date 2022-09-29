@@ -145,6 +145,7 @@ export class SafeGridService {
               name: fullName,
               title,
               type: f.type,
+              layoutFormat: f.format,
               format: this.getFieldFormat(f.type),
               editor: this.getFieldEditor(f.type),
               filter: !options.filter ? '' : this.getFieldFilter(f.type),

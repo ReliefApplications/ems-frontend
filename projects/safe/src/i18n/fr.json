@@ -572,6 +572,10 @@
 			},
 			"fields": {
 				"available": "Champs disponibles",
+				"format": {
+					"info": "Laissez vide pour utiliser le mode classique",
+					"title": "Mode d'affichage"
+				},
 				"search": "Rechercher des champs...",
 				"selected": "Champs sélectionnés",
 				"title": "Champs"
