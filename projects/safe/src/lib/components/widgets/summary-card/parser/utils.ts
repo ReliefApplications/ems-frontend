@@ -10,7 +10,7 @@ const CALC_PREFIX = '{{calc.';
 const PLACEHOLDER_SUFFIX = '}}';
 
 /**
- *
+ * Mapping of file types / kendo icons.
  */
 const ICON_EXTENSIONS: any = {
   bmp: 'k-i-file-programming',
