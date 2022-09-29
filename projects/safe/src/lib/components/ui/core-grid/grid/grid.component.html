@@ -937,11 +937,11 @@
     }}
     <div class="settings-button">
       <safe-button
-        *ngIf="error && canUpdate"
+        *ngIf="canUpdate && (error || blank)"
         variant="primary"
         category="secondary"
-        (click)="onSettingsToggle()"
-        >{{ 'kendo.grid.openSettings' | translate }}
+        (click)="openSettings()"
+        >{{ 'components.widget.grid.openSettings' | translate }}
       </safe-button>
     </div>
   </ng-template>

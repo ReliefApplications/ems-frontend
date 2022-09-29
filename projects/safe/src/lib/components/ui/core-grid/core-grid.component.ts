@@ -1199,13 +1199,4 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   resetDefaultLayout(): void {
     this.defaultLayoutReset.emit();
   }
-
-  /**
-   * Emits edition event.
-   *
-   * @param e widget to edit.
-   */
-  onEditWidget(e: any): void {
-    this.edit.emit(e);
-  }
 }

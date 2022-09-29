@@ -17,7 +17,7 @@
     [settings]="gridSettings"
     [admin]="isAdmin"
     (defaultLayoutReset)="onResetLayout()"
-    (edit)="onEditWidget($event)"
+    (edit)="edit.emit($event)"
     [widget]="widget"
     [canUpdate]="canUpdate"
   ></safe-core-grid>

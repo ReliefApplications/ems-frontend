@@ -18,7 +18,7 @@
     [header]="header"
     [settings]="widget.settings"
     (goToNextStep)="goToNextStep.emit($event)"
-    (edit)="onEditWidget($event)"
+    (edit)="edit.emit($event)"
     [widget]="widget"
     [canUpdate]="canUpdate"
   ></safe-grid-widget>

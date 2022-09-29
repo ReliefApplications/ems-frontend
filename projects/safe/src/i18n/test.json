@@ -877,6 +877,7 @@
 				"layout": {
 					"reset": "******"
 				},
+				"openSettings": "******",
 				"tooltip": {
 					"saved": "******",
 					"unsaved": "******",
@@ -1135,7 +1136,6 @@
 			"loading": "******",
 			"lock": "******",
 			"noRecords": "******",
-			"openSettings": "******",
 			"pagerFirstPage": "******",
 			"pagerItems": "******",
 			"pagerItemsPerPage": "******",

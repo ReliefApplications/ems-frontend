@@ -21,13 +21,4 @@ export class SafeWidgetComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
-
-  /**
-   * Emits edition event.
-   *
-   * @param e widget to edit.
-   */
-  onEditWidget(e: any): void {
-    this.edit.emit(e);
-  }
 }

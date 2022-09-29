@@ -24,7 +24,7 @@
   (searchChange)="onSearchChange($event)"
   (export)="onExport($event)"
   [blank]="!settings.query"
-  (edit)="onEditWidget($event)"
+  (edit)="edit.emit($event)"
   [widget]="widget"
   [canUpdate]="canUpdate"
 >

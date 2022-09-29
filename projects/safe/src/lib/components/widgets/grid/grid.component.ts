@@ -114,6 +114,7 @@ export class SafeGridWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.gridSettings = { ...this.settings };
+    delete this.gridSettings.query;
     if (
       this.settings.resource &&
       get(this.settings, 'layouts', []).length > 0
@@ -527,14 +528,5 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   onResetLayout(): void {
     this.onLayoutChange(this.layout || {});
-  }
-
-  /**
-   * Emits edition event.
-   *
-   * @param e widget to edit.
-   */
-  onEditWidget(e: any): void {
-    this.edit.emit(e);
   }
 }

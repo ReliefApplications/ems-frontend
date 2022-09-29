@@ -668,8 +668,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   /**
    * Emit an event to open settings window
    */
-  public onSettingsToggle(): void {
-    console.log(this.editable);
+  public openSettings(): void {
     const dialogRef = this.dialog.open(SafeTileDataComponent, {
       disableClose: true,
       data: {

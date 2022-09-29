@@ -877,6 +877,7 @@
 				"layout": {
 					"reset": "Réinitialiser la mise en page par défaut"
 				},
+				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
 					"saved": "Changements sauvegardés",
 					"unsaved": "Cliquez sur sauvegarder pour enregistrer les changements",
@@ -1135,7 +1136,6 @@
 			"loading": "Chargement",
 			"lock": "Verrouiller",
 			"noRecords": "Aucun enregistrement disponible",
-			"openSettings": "Ouvrir les paramètres",
 			"pagerFirstPage": "Aller à la première page",
 			"pagerItems": "éléments",
 			"pagerItemsPerPage": "éléments par page",
