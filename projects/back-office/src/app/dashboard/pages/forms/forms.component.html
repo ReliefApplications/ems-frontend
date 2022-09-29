@@ -158,7 +158,7 @@
           </button>
         </ng-container>
         <ng-container *ngIf="element.canDelete">
-          <mat-divider></mat-divider>
+          <safe-divider style="margin: unset"></safe-divider>
           <button mat-menu-item (click)="onDelete(element, $event)">
             <mat-icon>delete</mat-icon>
             {{ 'common.delete' | translate }}

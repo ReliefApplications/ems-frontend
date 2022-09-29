@@ -71,7 +71,10 @@
 			"apply": "Appliquer",
 			"clear": "Supprimer le filtre",
 			"empty": "Aucun résultat",
+			"few": "Filtres",
 			"hide": "Cacher le filtre",
+			"none": "Pas de filtre",
+			"one": "Filtre",
 			"show": "Afficher le filtre"
 		},
 		"form": {
@@ -710,6 +713,7 @@
 				"title": "Choix du rôle à simuler"
 			},
 			"summary": {
+				"addFilter": "Ajouter un filtre",
 				"autoAssignment": {
 					"rule": {
 						"add": "Ajouter une règle d'attribution",
@@ -719,21 +723,46 @@
 					},
 					"title": "Attribution automatique"
 				},
+				"details": {
+					"access": {
+						"channels": "Canaux accessibles",
+						"fullAccess": "Accès complet à {{accessible}} / {{total}}",
+						"limitedAccess": "Accès limité à {{accessible}} / {{total}}",
+						"noAccess": "Pas d'accès à {{accessible}} / {{total}}",
+						"pages": "Pages accessibles",
+						"resources": "Ressources accessibles",
+						"title": "Accès"
+					}
+				},
+				"editFilters": "Modifier les filtres",
 				"features": "Fonctionnalités",
+				"newFilter": "Nouveau filtre",
 				"noFeatures": "Aucune fonctionnalité détectée",
+				"noFilters": "Aucun filtre d'accès détecté",
 				"noForms": "Aucun formulaire détecté",
 				"noSteps": "Aucune étape détectée",
+				"removeFilter": "Supprimer le filtre",
 				"title": "Résumé"
 			},
 			"tooltip": {
-				"allowRecordAccessibility": "Autoriser ce rôle à voir les enregistrements de {{form}}",
-				"allowRecordCreation": "Autoriser ce rôle à créer des enregistrements dans {{form}}",
-				"allowRecordDeletion": "Autoriser ce rôle à supprimer des enregistrements de {{form}}",
-				"allowRecordUpdate": "Autoriser ce rôle à mettre à jour les enregistrements de {{form}}",
-				"disallowRecordAccessibility": "Interdire ce rôle pour voir les enregistrements de {{form}}",
-				"disallowRecordCreation": "Interdire à ce rôle de créer des enregistrements dans {{form}}",
-				"disallowRecordDeletion": "Interdire ce rôle pour supprimer des enregistrements de {{form}}",
-				"disallowRecordUpdate": "Interdire ce rôle pour mettre à jour les enregistrements de {{form}}",
+				"allowFieldAccessibility": "Autoriser ce rôle à voir le champ {{field}}",
+				"allowFieldUpdate": "Autoriser ce rôle à mettre à jour le champ {{field}}",
+				"allowFilterAccessibility": "Autoriser ce rôle à voir les enregistrements qui satisfont ce filtre",
+				"allowFilterDeletion": "Autoriser ce rôle à supprimer les enregistrements qui satisfont à ce filtre",
+				"allowFilterUpdate": "Autoriser ce rôle à mettre à jour les enregistrements qui satisfont ce filtre",
+				"allowRecordAccessibility": "Autoriser ce rôle à voir les enregistrements de {{resource}}",
+				"allowRecordCreation": "Autoriser ce rôle à créer des enregistrements dans {{resource}}",
+				"allowRecordDeletion": "Autoriser ce rôle à supprimer des enregistrements de {{resource}}",
+				"allowRecordUpdate": "Autoriser ce rôle à mettre à jour les enregistrements de {{resource}}",
+				"disallowFieldAccessibility": "Interdire ce rôle pour voir le champ {{field}}",
+				"disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
+				"disallowFilterAccessibility": "Interdire ce rôle pour voir les enregistrements qui satisfont ce filtre",
+				"disallowFilterDeletion": "Interdire ce rôle pour supprimer les enregistrements qui satisfont ce filtre",
+				"disallowFilterUpdate": "Interdire ce rôle pour mettre à jour les enregistrements qui satisfont ce filtre",
+				"disallowRecordAccessibility": "Interdire ce rôle pour voir les enregistrements de {{resource}}",
+				"disallowRecordCreation": "Interdire à ce rôle de créer des enregistrements dans {{resource}}",
+				"disallowRecordDeletion": "Interdire ce rôle pour supprimer des enregistrements de {{resource}}",
+				"disallowRecordUpdate": "Interdire ce rôle pour mettre à jour les enregistrements de {{resource}}",
 				"hideFeature": "Masquer {{page}} pour ce rôle",
 				"showFeature": "Afficher {{page}} pour ce rôle"
 			},

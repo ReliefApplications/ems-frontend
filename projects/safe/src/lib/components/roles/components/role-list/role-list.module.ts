@@ -7,7 +7,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatDividerModule } from '@angular/material/divider';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -15,6 +14,7 @@ import { SafeConfirmModalModule } from '../../../confirm-modal/confirm-modal.mod
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 import { SafeRoleListComponent } from './role-list.component';
+import { SafeDividerModule } from '../../../ui/divider/divider.module';
 
 /**
  * BackOfficeRolesModule manages modules and components
@@ -35,7 +35,7 @@ import { SafeRoleListComponent } from './role-list.component';
     SafeConfirmModalModule,
     MatSortModule,
     MatAutocompleteModule,
-    MatDividerModule,
+    SafeDividerModule,
     SafeButtonModule,
     TranslateModule,
     SafeSkeletonTableModule,
