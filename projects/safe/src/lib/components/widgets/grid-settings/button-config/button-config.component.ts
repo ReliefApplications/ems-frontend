@@ -7,7 +7,6 @@ import {
   EventEmitter,
   ViewChild,
   ElementRef,
-  Inject,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -23,12 +22,8 @@ import {
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
-import {
-  EMAIL_EDITOR_CONFIG,
-  EDITOR_LANGUAGE_PAIRS,
-} from '../../../../const/tinymce.const';
-import { TranslateService } from '@ngx-translate/core';
-import { EditorService } from '../../../../services/editor/editor.service';
+import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
+import { SafeEditorService } from '../../../../services/editor/editor.service';
 
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
@@ -93,7 +88,6 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
    * @param workflowService Shared workflow service
    * @param queryBuilder Shared Query Builder service
    * @param dialog Material dialog service
-   * @param translate Angular Translate Service
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(
@@ -102,13 +96,12 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
     public dialog: MatDialog,
-    private translate: TranslateService,
-    private editorService: EditorService
+    private editorService: SafeEditorService
   ) {
     // Set the editor base url based on the environment file
-    this.editor.base_url = editorService.getUrl();
+    this.editor.base_url = editorService.url;
     // Set the editor language
-    this.editor.language = editorService.getLanguage();
+    this.editor.language = editorService.language;
   }
 
   ngOnInit(): void {

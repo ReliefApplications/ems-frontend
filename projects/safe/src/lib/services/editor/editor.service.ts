@@ -9,29 +9,16 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
   providedIn: 'root',
 })
-export class EditorService {
+export class SafeEditorService {
   /** environment variable */
   private environment: any;
-
-  /**
-   * Configuration component for editor service
-   *
-   * @param environment Environment file used to get main url of the page
-   * @param translate Angular Translate Service
-   */
-  constructor(
-    @Inject('environment') environment: any,
-    private translate: TranslateService
-  ) {
-    this.environment = environment;
-  }
 
   /**
    * Compute the base url based on the environment file
    *
    * @returns the base url
    */
-  getUrl(): string {
+  get url(): string {
     let url: string;
     if (this.environment.module === 'backoffice') {
       url = new URL(this.environment.backOfficeUri).pathname;
@@ -52,7 +39,7 @@ export class EditorService {
    *
    * @returns the current language
    */
-  getLanguage(): string {
+  get language(): string {
     const lang = this.translate.currentLang;
     const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
     let language: string;
@@ -62,5 +49,18 @@ export class EditorService {
       language = 'en';
     }
     return language;
+  }
+
+  /**
+   * Configuration component for editor service
+   *
+   * @param environment Environment file used to get main url of the page
+   * @param translate Angular Translate Service
+   */
+  constructor(
+    @Inject('environment') environment: any,
+    private translate: TranslateService
+  ) {
+    this.environment = environment;
   }
 }

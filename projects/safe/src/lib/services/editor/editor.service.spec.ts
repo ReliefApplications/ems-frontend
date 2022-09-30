@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EditorService } from './editor.service';
+import { SafeEditorService } from './editor.service';
 
-describe('EditorService', () => {
-  let service: EditorService;
+describe('SafeEditorService', () => {
+  let service: SafeEditorService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(EditorService);
+    service = TestBed.inject(SafeEditorService);
   });
 
   it('should be created', () => {
