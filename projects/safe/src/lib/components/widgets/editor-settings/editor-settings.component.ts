@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { EditorManager } from 'tinymce';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { EditorService } from '../../../services/editor/editor.service';
 
