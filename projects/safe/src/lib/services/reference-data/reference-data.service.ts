@@ -6,12 +6,12 @@ import localForage from 'localforage';
 import {
   ReferenceData,
   referenceDataType,
-} from '../models/reference-data.model';
+} from '../../models/reference-data.model';
 import {
   GetReferenceDataByIdQueryResponse,
   GET_REFERENCE_DATA_BY_ID,
-} from '../graphql/queries';
-import { SafeApiProxyService } from './api-proxy.service';
+} from '../../graphql/queries';
+import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';

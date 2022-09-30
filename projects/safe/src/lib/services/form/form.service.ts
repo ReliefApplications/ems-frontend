@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@angular/core';
 import * as SurveyKo from 'survey-knockout';
 import * as Survey from 'survey-angular';
-import { initCreatorSettings } from '../survey/creator';
-import { initCustomSurvey } from '../survey/init';
-import { DomService } from './dom.service';
+import { initCreatorSettings } from '../../survey/creator';
+import { initCustomSurvey } from '../../survey/init';
+import { DomService } from '../dom/dom.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
 import { FormBuilder } from '@angular/forms';
-import { SafeAuthService } from './auth.service';
-import { SafeReferenceDataService } from './reference-data.service';
+import { SafeAuthService } from '../auth/auth.service';
+import { SafeReferenceDataService } from '../reference-data/reference-data.service';
 
 /**
  * Shared survey service.

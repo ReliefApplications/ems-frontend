@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Permissions, User } from '../../../models/user.model';
-import { SafeAuthService } from '../../../services/auth.service';
+import { SafeAuthService } from '../../../services/auth/auth.service';
 
 /**
  * User summary details component.

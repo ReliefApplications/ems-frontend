@@ -2,11 +2,11 @@ import { Apollo } from 'apollo-angular';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { User, Role } from '../models/user.model';
-import { Page, ContentType } from '../models/page.model';
-import { Application } from '../models/application.model';
-import { Channel } from '../models/channel.model';
-import { SafeSnackBarService } from './snackbar.service';
+import { User, Role } from '../../models/user.model';
+import { Page, ContentType } from '../../models/page.model';
+import { Application } from '../../models/application.model';
+import { Channel } from '../../models/channel.model';
+import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import {
   AddPageMutationResponse,
   ADD_PAGE,
@@ -48,19 +48,19 @@ import {
   TOGGLE_APPLICATION_LOCK,
   duplicatePageMutationResponse,
   DUPLICATE_PAGE,
-} from '../graphql/mutations';
+} from '../../graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
   GET_APPLICATION_BY_ID,
-} from '../graphql/queries';
-import { PositionAttributeCategory } from '../models/position-attribute-category.model';
+} from '../../graphql/queries';
+import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import {
   ApplicationEditedSubscriptionResponse,
   ApplicationUnlockedSubscriptionResponse,
   APPLICATION_EDITED_SUBSCRIPTION,
   APPLICATION_UNLOCKED_SUBSCRIPTION,
-} from '../graphql/subscriptions';
-import { SafeAuthService } from './auth.service';
+} from '../../graphql/subscriptions';
+import { SafeAuthService } from '../auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 
 /**

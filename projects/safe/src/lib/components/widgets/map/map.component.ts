@@ -5,7 +5,7 @@ import 'leaflet.markercluster';
 
 import { Record } from '../../../models/record.model';
 import { Subscription } from 'rxjs';
-import { QueryBuilderService } from '../../../services/query-builder.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 
 /** Default options for the marker */
 const MARKER_OPTIONS = {

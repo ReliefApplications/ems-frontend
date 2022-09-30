@@ -5,13 +5,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import {
   GetWorkflowByIdQueryResponse,
   GET_WORKFLOW_BY_ID,
-} from '../graphql/queries';
-import { AddStepMutationResponse, ADD_STEP } from '../graphql/mutations';
-import { Workflow } from '../models/workflow.model';
-import { SafeSnackBarService } from './snackbar.service';
-import { ContentType } from '../models/page.model';
-import { Step } from '../models/step.model';
-import { SafeApplicationService } from './application.service';
+} from '../../graphql/queries';
+import { AddStepMutationResponse, ADD_STEP } from '../../graphql/mutations';
+import { Workflow } from '../../models/workflow.model';
+import { SafeSnackBarService } from '../snackbar/snackbar.service';
+import { ContentType } from '../../models/page.model';
+import { Step } from '../../models/step.model';
+import { SafeApplicationService } from '../application/application.service';
 import { TranslateService } from '@ngx-translate/core';
 
 /**

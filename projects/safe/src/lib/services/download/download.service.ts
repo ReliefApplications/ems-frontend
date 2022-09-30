@@ -3,8 +3,8 @@ import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { SafeSnackbarSpinnerComponent } from '../components/snackbar-spinner/snackbar-spinner.component';
-import { SafeSnackBarService } from './snackbar.service';
+import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
+import { SafeSnackBarService } from '../snackbar/snackbar.service';
 
 /**
  * Shared download service. Handles export and upload events.

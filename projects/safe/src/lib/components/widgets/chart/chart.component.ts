@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { saveAs } from '@progress/kendo-file-saver';
 import { Subscription } from 'rxjs';
-import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
+import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
 import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
 import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
