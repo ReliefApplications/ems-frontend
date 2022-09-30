@@ -1,11 +1,7 @@
-import { Component, Inject, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
-import { Editor } from 'tinymce';
-import {
-  EDITOR_LANGUAGE_PAIRS,
-  WIDGET_EDITOR_CONFIG,
-} from '../../../../../const/tinymce.const';
+import { SafeEditorService } from '../../../../../services/editor/editor.service';
+import { WIDGET_EDITOR_CONFIG } from '../../../../../const/tinymce.const';
 import { getCalcKeys, getDataKeys } from '../../../summary-card/parser/utils';
 
 /**
@@ -26,74 +22,20 @@ export class SafeTextEditorTabComponent implements OnChanges {
   /**
    * SafeTextEditorTabComponent constructor.
    *
-   * @param environment Gets the environment to set the correct editor base_url.
-   * @param translate Service used for translation.
+   * @param editorService Editor service used to get main URL and current language
    */
-  constructor(
-    @Inject('environment') environment: any,
-    private translate: TranslateService
-  ) {
+  constructor(private editorService: SafeEditorService) {
     // Set the editor base url based on the environment file
-    let url: string;
-    if (environment.module === 'backoffice') {
-      url = new URL(environment.backOfficeUri).pathname;
-    } else {
-      url = new URL(environment.frontOfficeUri).pathname;
-    }
-    if (url !== '/') {
-      this.editor.base_url = url.slice(0, -1) + '/tinymce';
-    } else {
-      this.editor.base_url = '/tinymce';
-    }
+    this.editor.base_url = editorService.url;
     // Set the editor language
-    const lang = this.translate.currentLang;
-    const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
-    if (editorLang) {
-      this.editor.language = editorLang.tinymceKey;
-    } else {
-      this.editor.language = 'en';
-    }
+    this.editor.language = editorService.language;
   }
 
   ngOnChanges(): void {
     const dataKeys = getDataKeys(this.fields);
     const calcKeys = getCalcKeys();
     const keys = dataKeys.concat(calcKeys);
-
-    /**
-     * Setup tinymce editor
-     *
-     * @param editor tinymce editor
-     */
-    this.editor.setup = (editor: Editor) => {
-      // autocompleter with @ for data and calc keys
-      editor.ui.registry.addAutocompleter('keys_data_and_calc', {
-        ch: '{',
-        minChars: 0,
-        onAction: (autocompleteApi, rng, value) => {
-          editor.selection.setRng(rng);
-          editor.insertContent(value);
-          autocompleteApi.hide();
-        },
-        fetch: async (pattern: string) =>
-          keys
-            .filter((key) => key.includes(pattern))
-            .map((key) => ({ value: key, text: key })),
-      });
-
-      // autocompleter with = for calc keys
-      // editor.ui.registry.addAutocompleter('keys_calc', {
-      //   ch: '=',
-      //   onAction: (autocompleteApi, rng, value) => {
-      //     editor.selection.setRng(rng);
-      //     editor.insertContent(value);
-      //     autocompleteApi.hide();
-      //   },
-      //   fetch: async (pattern: string) =>
-      //     calcKeys
-      //       .filter((key) => key.includes(pattern))
-      //       .map((key) => ({ value: key, text: key })),
-      // });
-    };
+    // Setup editor auto completor
+    this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
   }
 }
