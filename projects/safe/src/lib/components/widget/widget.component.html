@@ -21,6 +21,9 @@
     [header]="header"
     [settings]="widget.settings"
     (goToNextStep)="goToNextStep.emit($event)"
+    (edit)="edit.emit($event)"
+    [widget]="widget"
+    [canUpdate]="canUpdate"
   ></safe-grid-widget>
 </ng-container>
 <!-- MAP -->

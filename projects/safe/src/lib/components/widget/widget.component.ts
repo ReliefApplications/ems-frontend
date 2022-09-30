@@ -9,6 +9,10 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class SafeWidgetComponent implements OnInit {
   @Input() widget: any;
   @Input() header = true;
+  @Input() canUpdate = false;
+
+  // === EMIT EVENT ===
+  @Output() edit: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();

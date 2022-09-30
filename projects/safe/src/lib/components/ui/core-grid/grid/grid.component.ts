@@ -50,6 +50,8 @@ import { GridLayout } from '../models/grid-layout.model';
 import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component';
 import { get, intersection } from 'lodash';
 import { applyLayoutFormat } from '../../../widgets/summary-card/parser/utils';
+import { SafeTileDataComponent } from '../../../widget-grid/floating-options/menu/tile-data/tile-data.component';
+import { SafeDashboardService } from '../../../../services/dashboard.service';
 
 /**
  * Factory for creating scroll strategy
@@ -110,6 +112,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   @Input() loading = false;
   @Input() error = false;
   @Input() blank = false;
+  @Input() widget: any;
+  @Input() canUpdate = false;
 
   // === EXPORT ===
   public exportSettings = EXPORT_SETTINGS;
@@ -118,6 +122,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === EDITION ===
   @Input() editable = false;
   @Input() hasChanges = false;
+  @Output() edit: EventEmitter<any> = new EventEmitter();
   public formGroup: FormGroup = new FormGroup({});
   private currentEditedRow = 0;
   private currentEditedItem: any;
@@ -208,12 +213,14 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param gridService The grid service
    * @param renderer The renderer library
    * @param downloadService The download service
+   * @param dashboardService Dashboard service
    */
   constructor(
     private dialog: MatDialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private dashboardService: SafeDashboardService
   ) {}
 
   ngOnInit(): void {
@@ -668,6 +675,24 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe((res) => {
       if (res) {
         this.action.emit({ action: 'update', item });
+      }
+    });
+  }
+
+  /**
+   * Emit an event to open settings window
+   */
+  public openSettings(): void {
+    const dialogRef = this.dialog.open(SafeTileDataComponent, {
+      disableClose: true,
+      data: {
+        tile: this.widget,
+        template: this.dashboardService.findSettingsTemplate(this.widget),
+      },
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        this.edit.emit({ type: 'data', id: this.widget.id, options: res });
       }
     });
   }

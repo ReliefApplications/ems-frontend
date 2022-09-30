@@ -107,6 +107,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
   @Output() defaultLayoutChanged: EventEmitter<any> = new EventEmitter();
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
+  @Output() edit: EventEmitter<any> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -116,6 +117,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private grid?: SafeGridComponent;
 
   // === DATA ===
+  @Input() widget: any;
+  @Input() canUpdate = false;
   public gridData: GridDataResult = { data: [], total: 0 };
   private totalCount = 0;
   private items: any[] = [];
@@ -319,6 +322,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     }
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
+    if (!builtQuery) {
+      this.error = true;
+    }
     this.dataQuery = this.apollo.watchQuery<any>({
       query: builtQuery,
       variables: {

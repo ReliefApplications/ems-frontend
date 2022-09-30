@@ -982,5 +982,14 @@
         : 'components.widget.grid.empty'
       ) | translate
     }}
+    <div class="settings-button">
+      <safe-button
+        *ngIf="canUpdate && (error || blank)"
+        variant="primary"
+        category="secondary"
+        (click)="openSettings()"
+        >{{ 'components.widget.grid.openSettings' | translate }}
+      </safe-button>
+    </div>
   </ng-template>
 </kendo-grid>

@@ -886,6 +886,7 @@
 				"layout": {
 					"reset": "Reset default Layout"
 				},
+				"openSettings": "Open settings",
 				"tooltip": {
 					"saved": "Changes saved",
 					"unsaved": "Click on save button to upload changes",
