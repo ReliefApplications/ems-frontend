@@ -20,6 +20,7 @@ export * from './lib/services/kendo-translation.service';
 export * from './lib/services/date-translate.service';
 export * from './lib/services/breadcrumb.service';
 export * from './lib/services/aggregation/aggregation.service';
+export * from './lib/services/auth-interceptor/auth-interceptor.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -90,6 +91,7 @@ export * from './lib/components/role-summary/public-api';
 export * from './lib/components/graphql-select/public-api';
 export * from './lib/components/ui/modal/public-api';
 export * from './lib/components/ui/empty/public-api';
+export * from './lib/components/ui/divider/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';

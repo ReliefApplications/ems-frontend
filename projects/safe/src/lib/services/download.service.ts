@@ -58,12 +58,9 @@ export class SafeDownloadService {
       }
     );
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
-    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Authorization: `Bearer ${token}`,
     });
     this.http.get(url, { ...options, responseType: 'blob', headers }).subscribe(
       (res) => {
@@ -118,12 +115,9 @@ export class SafeDownloadService {
       }
     );
     const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
-    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Authorization: `Bearer ${token}`,
     });
     this.http.post(url, body, { responseType: 'blob', headers }).subscribe(
       (res) => {
@@ -186,12 +180,9 @@ export class SafeDownloadService {
       }
     );
     const url = this.buildURL(path);
-    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Authorization: `Bearer ${token}`,
     });
     const formData = new FormData();
     formData.append('excelFile', file, file.name);

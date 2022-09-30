@@ -42,7 +42,7 @@
         {{ 'common.duplicate' | translate }}
       </button>
       <ng-container *ngIf="application.canDelete">
-        <mat-divider></mat-divider>
+        <safe-divider style="margin: unset"></safe-divider>
         <button mat-menu-item (click)="delete.emit()">
           <mat-icon>delete</mat-icon>
           {{ 'common.delete' | translate }}

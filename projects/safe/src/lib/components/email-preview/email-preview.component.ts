@@ -1,11 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { TranslateService } from '@ngx-translate/core';
-import {
-  EMAIL_EDITOR_CONFIG,
-  EDITOR_LANGUAGE_PAIRS,
-} from '../../const/tinymce.const';
+import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
+import { SafeEditorService } from '../../services/editor/editor.service';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -35,39 +32,21 @@ export class SafeEmailPreviewComponent implements OnInit {
    * Preview Email component.
    * Modal in read-only mode.
    *
-   * @param environment environment file used to get main url of the page
    * @param data injected dialog data
    * @param dialogRef Dialog reference
    * @param formBuilder Angular Form Builder
-   * @param translate Angular translate service
+   * @param editorService Editor service used to get main URL and current language
    */
   constructor(
-    @Inject('environment') environment: any,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<SafeEmailPreviewComponent>,
     private formBuilder: FormBuilder,
-    private translate: TranslateService
+    private editorService: SafeEditorService
   ) {
     // Set the editor base url based on the environment file
-    let url: string;
-    if (environment.module === 'backoffice') {
-      url = new URL(environment.backOfficeUri).pathname;
-    } else {
-      url = new URL(environment.frontOfficeUri).pathname;
-    }
-    if (url !== '/') {
-      this.editor.base_url = url.slice(0, -1) + '/tinymce';
-    } else {
-      this.editor.base_url = '/tinymce';
-    }
+    this.editor.base_url = editorService.url;
     // Set the editor language
-    const lang = this.translate.currentLang;
-    const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
-    if (editorLang) {
-      this.editor.language = editorLang.tinymceKey;
-    } else {
-      this.editor.language = 'en';
-    }
+    this.editor.language = editorService.language;
   }
 
   /** Create the form from the dialog data, putting all fields as read-only */

@@ -1,9 +1,11 @@
 .expanded-form {
   overflow: hidden;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  table {
-    margin: 16px 0;
+
+  & > * {
+    margin-block: 16px;
   }
 
   safe-skeleton-table {

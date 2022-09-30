@@ -66,7 +66,7 @@ export class AggregationBuilderService {
           metaFields,
           {}
         );
-        const query = this.buildAggregation(aggregationForm.value, false);
+        const query = this.buildAggregation(aggregationForm.value, '');
         if (query) {
           query.subscribe((res: any) => {
             if (res.data.recordsAggregation) {
@@ -109,7 +109,11 @@ export class AggregationBuilderService {
       const formattedForm = addNewField(field, true);
       formattedForm.enable();
       const formattedField = formattedForm.value;
-      if (formattedField.kind !== 'SCALAR' && field.fields.length) {
+      if (
+        formattedField.kind !== 'SCALAR' &&
+        field.fields &&
+        field.fields.length
+      ) {
         formattedField.fields = this.formatFields(field.fields);
       }
       return formattedField;
@@ -126,14 +130,14 @@ export class AggregationBuilderService {
    */
   public buildAggregation(
     resource: string,
-    aggregation: any,
+    aggregation: string,
     mapping?: any
   ): Observable<ApolloQueryResult<any>> | null {
     if (aggregation) {
       const query = gql`
         query GetCustomAggregation(
           $resource: ID!
-          $aggregation: JSON!
+          $aggregation: ID!
           $mapping: JSON
         ) {
           recordsAggregation(

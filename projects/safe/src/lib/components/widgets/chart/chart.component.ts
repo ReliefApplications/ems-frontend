@@ -95,7 +95,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
           if (aggregation) {
             this.dataQuery = this.aggregationBuilder.buildAggregation(
               this.settings.resource,
-              aggregation,
+              aggregation.id || '',
               get(this.settings, 'chart.mapping', null)
             );
             if (this.dataQuery) {

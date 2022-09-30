@@ -539,6 +539,24 @@ body {
   }
 }
 
+.resource-access-dialog {
+  max-width: unset !important;
+  width: 90%;
+  height: calc(100% - 72px);
+
+  mat-dialog-container {
+    position: relative;
+    border-radius: 4px 4px 0 0;
+    width: 100%;
+    background-color: #fafafa;
+  }
+
+  .mat-dialog-content {
+    max-height: calc(100% - 68px - 32px);
+    height: 100%;
+  }
+}
+
 // === UTILS ===
 // Correct a bug of angular, see https://github.com/angular/components/issues/14311
 .mat-form-field-suffix,

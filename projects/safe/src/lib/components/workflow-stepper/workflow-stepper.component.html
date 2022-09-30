@@ -1,4 +1,4 @@
-<mat-divider></mat-divider>
+<safe-divider style="margin: unset"></safe-divider>
 <div class="safe-steps" *ngIf="loading">
   <kendo-skeleton
     shape="rectangle"
@@ -32,4 +32,4 @@
   ></safe-step>
   <safe-add-step *ngIf="canUpdate" (click)="add.emit()"></safe-add-step>
 </div>
-<mat-divider></mat-divider>
+<safe-divider style="margin: unset"></safe-divider>

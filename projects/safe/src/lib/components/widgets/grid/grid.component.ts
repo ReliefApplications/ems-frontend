@@ -59,6 +59,7 @@ export class SafeGridWidgetComponent implements OnInit {
   private grid!: SafeCoreGridComponent;
 
   // === DATA ===
+  @Input() widget: any;
   public loading = true;
 
   // === CACHED CONFIGURATION ===
@@ -72,10 +73,14 @@ export class SafeGridWidgetComponent implements OnInit {
   @Input() header = true;
   @Input() settings: any = null;
   @Input() id = '';
+  @Input() canUpdate = false;
   public gridSettings: any = null;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+
+  // === EMIT EVENT ===
+  @Output() edit: EventEmitter<any> = new EventEmitter();
 
   /**
    * Heavy constructor for the grid widget component
@@ -109,6 +114,7 @@ export class SafeGridWidgetComponent implements OnInit {
 
   ngOnInit(): void {
     this.gridSettings = { ...this.settings };
+    delete this.gridSettings.query;
     if (
       this.settings.resource &&
       get(this.settings, 'layouts', []).length > 0

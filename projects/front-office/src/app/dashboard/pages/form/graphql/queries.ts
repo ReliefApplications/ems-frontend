@@ -19,6 +19,7 @@ export const GET_FORM_BY_ID = gql`
         modifiedAt
         data
       }
+      metadata
     }
   }
 `;

@@ -7,6 +7,7 @@ import {
   GET_PERMISSIONS,
 } from '../graphql/queries';
 import { get } from 'lodash';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * General tab of Role Summary.
@@ -23,6 +24,22 @@ export class RoleDetailsComponent implements OnInit {
   public form!: FormGroup;
   @Output() edit = new EventEmitter();
 
+  public roleStats = {
+    resources: {
+      total: 0,
+      limited: 0,
+      full: 0,
+    },
+    channels: {
+      total: 0,
+      full: 0,
+    },
+    pages: {
+      total: 0,
+      full: 0,
+    },
+  };
+
   /** Setter for the loading state */
   @Input() set loading(loading: boolean) {
     if (loading) {
@@ -38,8 +55,13 @@ export class RoleDetailsComponent implements OnInit {
    *
    * @param fb Angular form builder
    * @param apollo Apollo Client
+   * @param http http client
    */
-  constructor(private fb: FormBuilder, private apollo: Apollo) {}
+  constructor(
+    private fb: FormBuilder,
+    private apollo: Apollo,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -57,6 +79,10 @@ export class RoleDetailsComponent implements OnInit {
       .subscribe((res) => {
         this.permissions = res.data.permissions;
       });
+    const url = `http://localhost:3000/roles/${this.role.id}/summary`;
+    this.http.get(url).subscribe((res: any) => {
+      this.roleStats = res;
+    });
   }
 
   /**
