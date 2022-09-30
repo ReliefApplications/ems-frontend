@@ -37,6 +37,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   public fields: any[] = [];
   public fieldsValue: any = null;
   public loading = true;
+  public styles: any[] = [];
 
   @Input() headerTemplate?: TemplateRef<any>;
 
@@ -112,12 +113,17 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
                 })
                 .subscribe((res2) => {
                   if (res2) {
+                    this.styles = get(
+                      res2.data.resource.layouts?.edges[0],
+                      'node.query.style',
+                      []
+                    );
                     this.fields = [];
                     get(res.data.record, 'form.resource.metadata', []).map(
                       (metafield: any) => {
                         get(
-                          res2.data.resource.layouts?.edges[0].node,
-                          'query.fields',
+                          res2.data.resource.layouts?.edges[0],
+                          'node.query.fields',
                           []
                         ).map((field: any) => {
                           if (field.name === metafield.name) {
@@ -137,6 +143,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
                   this.loading = false;
                 });
             } else if (typeof this.card.layout === 'object') {
+              this.styles = get(this.card.layout, 'style', []);
               this.fields = [];
               get(res.data.record, 'form.resource.metadata', []).map(
                 (metafield: any) => {
@@ -160,19 +167,6 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
             this.loading = false;
           }
         });
-    } else if (this.card.record && typeof this.card.record === 'object') {
-      this.fields = this.card.layout.fields;
-      // this.fields = [];
-      // get(this.layout, 'form.resource.metadata', []).map((metafield: any) => {
-      //   get(this.card, 'layout.fields', []).map((field: any) => {
-      //     if (field.name === metafield.name) {
-      //       const editor = metafield.editor
-      //       this.fields.push({...field, editor});
-      //     }
-      //   })
-      // });
-      this.fieldsValue = this.card.record;
-      this.loading = false;
     } else {
       this.loading = false;
     }
@@ -182,6 +176,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    * Set content of the card item from aggregation data.
    */
   private setContentFromAggregation(): void {
+    this.styles = [];
     this.loading = false;
     if (!this.fieldsValue) return;
     // @TODO: get the fields' types from the aggregation data

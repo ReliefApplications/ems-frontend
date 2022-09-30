@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -34,6 +35,7 @@ import { SafeDataSourceTabComponent } from './data-source-tab.component';
     SafeGraphQLSelectModule,
     SafeButtonModule,
     AddLayoutModalModule,
+    MatCheckboxModule,
   ],
   exports: [SafeDataSourceTabComponent],
 })

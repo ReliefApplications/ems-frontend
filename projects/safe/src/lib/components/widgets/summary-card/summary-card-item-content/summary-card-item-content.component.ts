@@ -23,6 +23,8 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   @Input() html = '';
   @Input() fields: any[] = [];
   @Input() fieldsValue: any;
+  @Input() styles: any[] = [];
+  @Input() wholeCardStyles = false;
 
   public formattedHtml?: SafeHtml;
 
@@ -35,7 +37,13 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.html, this.fieldsValue, this.fields)
+      parseHtml(
+        this.html,
+        this.fieldsValue,
+        this.fields,
+        this.styles,
+        this.wholeCardStyles
+      )
     );
   }
 
@@ -44,7 +52,13 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    */
   ngOnChanges(): void {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.html, this.fieldsValue, this.fields)
+      parseHtml(
+        this.html,
+        this.fieldsValue,
+        this.fields,
+        this.styles,
+        this.wholeCardStyles
+      )
     );
   }
 }

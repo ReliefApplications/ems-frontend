@@ -82,6 +82,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    */
   ngOnInit(): void {
     this.form = this.fb.group({ ...this.data });
+    console.log(this.form);
 
     /** === INITIALIZING FROM SAVED SETTINGS === */
     // Fetches the specified resource
@@ -176,7 +177,6 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
         },
       })
       .subscribe((res) => {
-        console.log(res);
         if (res.errors) {
           this.form.patchValue({
             resource: null,

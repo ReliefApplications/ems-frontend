@@ -46,14 +46,28 @@ const ICON_EXTENSIONS: any = {
  * Parse the html body of a summary card with the content of a record,
  * and calculate the calc functions.
  *
- * @param html The html text
- * @param fieldsValue Field value
- * @param fields Available fields
- * @returns The parsed html
+ * @param html The html text.
+ * @param fieldsValue Field value.
+ * @param fields Available fields.
+ * @param styles Array of layout styles.
+ * @param wholeCardStyles Boolean indicating if styles should be applied to the wholecard.
+ * @returns The parsed html.
  */
-export const parseHtml = (html: string, fieldsValue: any, fields: any) => {
+export const parseHtml = (
+  html: string,
+  fieldsValue: any,
+  fields: any,
+  styles?: any[],
+  wholeCardStyles?: boolean
+) => {
   if (fieldsValue) {
-    const htmlWithRecord = replaceRecordFields(html, fieldsValue, fields);
+    const htmlWithRecord = replaceRecordFields(
+      html,
+      fieldsValue,
+      fields,
+      styles,
+      wholeCardStyles
+    );
     return applyOperations(htmlWithRecord);
   } else {
     return applyOperations(html);
@@ -66,31 +80,49 @@ export const parseHtml = (html: string, fieldsValue: any, fields: any) => {
  * @param html String with the content html.
  * @param fieldsValue Content of the fields.
  * @param fields Available fields.
+ * @param styles Array of layout styles.
+ * @param wholeCardStyles Boolean indicating if styles should be applied to the wholecard.
  * @returns formatted html.
  */
 const replaceRecordFields = (
   html: string,
   fieldsValue: any[],
-  fields: any
+  fields: any,
+  styles: any[] = [],
+  wholeCardStyles: boolean = false
 ): string => {
   let formattedHtml = html;
+  if (wholeCardStyles) {
+    let lastRowStyle: any = null;
+    styles.map((style: any) => {
+      if (style.fields.length === 0) {
+        lastRowStyle = style;
+      }
+    });
+    if (lastRowStyle) {
+      formattedHtml =
+        `<div style='${getLayoutStyle(lastRowStyle)}'>` +
+        formattedHtml +
+        '</div>';
+    }
+  }
   if (fields) {
     for (const field of fields) {
       const value = fieldsValue[field.name];
+      const style = getLayoutsStyle(styles, field.name, fields);
       let convertedValue: any;
       switch (field.type) {
         case 'url':
-          convertedValue =
-            '<a href="' + value + '" target="_blank">' + value + '</a>';
+          convertedValue = `<a href="${value}" style="${style}" target="_blank">${value}</a>`;
           break;
         case 'email':
-          convertedValue =
-            '<a href="mailto: ' + value + '" target="_blank">' + value + '</a>';
+          convertedValue = `<a href="mailto: ${value}" style="${style}" target="_blank">${value}</a>`;
           break;
         case 'date':
-          convertedValue = new Date(parseInt(value, 10))
-            .toLocaleString()
-            .split(',')[0];
+          convertedValue =
+            `<span style='${style}'>` +
+            new Date(parseInt(value, 10)).toLocaleString().split(',')[0] +
+            +'</span>';
           break;
         case 'datetime':
           const date = new Date(parseInt(value, 10));
@@ -102,13 +134,15 @@ const replaceRecordFields = (
               : date.getMinutes();
           const time = date.getHours() >= 12 ? 'PM' : 'AM';
           convertedValue =
+            `<span style='${style}'>` +
             date.toLocaleString().split(',')[0] +
             ', ' +
             hour +
             ':' +
             minutes +
             ' ' +
-            time;
+            time +
+            '</span>';
           break;
         case 'boolean':
           const checked = value ? 'checked' : '';
@@ -130,7 +164,7 @@ const replaceRecordFields = (
                 ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
                 : file.name;
             convertedValue +=
-              '<button style="border: none; padding: 4px 6px;" title="' +
+              `<button style="border: none; padding: 4px 6px; ${style}" title="` +
               file.name +
               '">' +
               ' <span class="k-icon ' +
@@ -143,10 +177,10 @@ const replaceRecordFields = (
         case 'owner':
         case 'users':
         case 'resources':
-          convertedValue = value.length + ' items';
+          convertedValue = `<span style='${style}'>${value.lenght} items</span>`;
           break;
         default:
-          convertedValue = value;
+          convertedValue = `<span style='${style}'>${value}</span>`;
           break;
       }
       //   if ( field.type === 'url' && value ) { // Formats urls
@@ -227,7 +261,7 @@ const replaceRecordFields = (
       //   }
 
       const regex = new RegExp(`${DATA_PREFIX}${field.name}\\b`, 'gi');
-      formattedHtml = formattedHtml.replace(regex, convertedValue as string);
+      formattedHtml = formattedHtml.replace(regex, convertedValue);
     }
   }
   return formattedHtml;
@@ -306,4 +340,155 @@ export const getDataKeys = (fields: any): string[] =>
 export const getCalcKeys = (): string[] => {
   const calcObjects = Object.values(calcFunctions);
   return calcObjects.map((obj) => CALC_PREFIX + obj.signature);
+};
+
+/**
+ * Loops throught the layout styles and returns the last style that pass the filters
+ *
+ * @param layouts Array of layout styles
+ * @param key The key of the actual property in the html
+ * @param fields Array of available fields
+ * @returns A string with the correct style to apply
+ */
+const getLayoutsStyle = (layouts: any, key: string, fields: any): string => {
+  let style = '';
+  layouts.map((layout: any) => {
+    if (layout.fields.length === 0 || layout.fields.includes(key)) {
+      if (applyFilters(layout.filter, fields)) {
+        style = getLayoutStyle(layout);
+      }
+    }
+  });
+  return style;
+};
+
+/**
+ * Get the css style of a layout style as a string
+ *
+ * @param layout Layout style
+ * @returns Returns a string with all the styling
+ */
+const getLayoutStyle = (layout: any): string => {
+  let style = '';
+  if (layout.background.color) {
+    style += `background-color: ${layout.background.color}; `;
+  }
+  if (layout.text.color) {
+    style += `color: ${layout.text.color}; `;
+  }
+  if (layout.text.bold) {
+    style += 'font-weight: bold; ';
+  }
+  if (layout.text.italic) {
+    style += 'font-style: italic; ';
+  }
+  if (layout.text.underline) {
+    style += 'text-decoration: underline; ';
+  }
+  return style;
+};
+
+/**
+ * Apply the filter provided to the specified field
+ *
+ * @param filter Filter object
+ * @param fields Array of fields
+ * @returns Returns a boolean with the result of the filter
+ */
+const applyFilters = (filter: any, fields: any): boolean => {
+  if (filter.logic) {
+    for (let i = 0; filter.filters[i]; i++) {
+      if (applyFilters(filter.filters[i], fields)) {
+        if (filter.logic === 'or') {
+          return true;
+        }
+      } else if (filter.logic === 'and') {
+        return false;
+      }
+    }
+    return filter.logic === 'or' ? false : true;
+  } else {
+    const value = fields[filter.field];
+    switch (filter.operator) {
+      case 'eq': {
+        // equal
+        return value === filter.value;
+      }
+      case 'neq': {
+        // not equal
+        return value !== filter.value;
+      }
+      case 'isnull': {
+        return value === null;
+      }
+      case 'isnotnull': {
+        return value !== null;
+      }
+      case 'lt': {
+        // lesser
+        return value < filter.value;
+      }
+      case 'lte': {
+        // lesser or equal
+        return value <= filter.value;
+      }
+      case 'gt': {
+        // greater
+        return value > filter.value;
+      }
+      case 'gte': {
+        // greater or equal
+        return value >= filter.value;
+      }
+      case 'startswith': {
+        if (!value) {
+          return false;
+        }
+        return value[0] === filter.value;
+      }
+      case 'endswith': {
+        if (!value) {
+          return false;
+        }
+        return value[value.length] === filter.value;
+      }
+      case 'contains': {
+        if (!value) {
+          return false;
+        }
+        for (let i = 0; value[i]; i++) {
+          if (value[i] === filter.value) {
+            return true;
+          }
+        }
+        return false;
+      }
+      case 'doesnotcontain': {
+        if (!value) {
+          return true;
+        }
+        for (let i = 0; value[i]; i++) {
+          if (value[i] === filter.value) {
+            return false;
+          }
+        }
+        return true;
+      }
+      case 'isempty': {
+        if (!value) {
+          return true;
+        }
+        return value.length <= 0;
+      }
+      case 'isnotempty': {
+        if (!value) {
+          return false;
+        }
+        return value.length > 0;
+      }
+      default: {
+        return false;
+      }
+    }
+  }
 };

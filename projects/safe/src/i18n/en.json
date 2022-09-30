@@ -988,14 +988,21 @@
 					"add": "Add new card",
 					"card": {
 						"dataSource": {
-							"title": "Data source"
+							"title": "Data source",
+              "layoutStyles": {
+                "title": "Layout styles",
+                "use": "Use layout styles",
+                "wholeRow": {
+                  "title": "Whole row styles:",
+                  "option1": "Apply to all fields",
+                  "option2": "Apply to the whole card"}
+              }
 						},
 						"display": {
 							"dataSource": "Show link to data source",
 							"header": "Header",
 							"title": "Display"
 						},
-						"preview": {},
 						"textEditor": {
 							"title": "Text editor"
 						},

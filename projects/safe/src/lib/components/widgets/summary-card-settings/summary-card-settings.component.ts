@@ -193,6 +193,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       html: get(value, 'html', null),
       showDataSourceLink: get(value, 'showDataSourceLink', false),
       availableFields: [get(value, 'availableFields', [])],
+      useStyles: get(value, 'useStyles', true),
+      wholeCardStyles: get(value, 'wholeCardStyles', false),
     });
   }
 
