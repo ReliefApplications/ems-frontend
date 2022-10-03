@@ -44,7 +44,7 @@
 		"delete": "Delete",
 		"deleteObject": "Delete {{name}}",
 		"deleted": "Deleted",
-		"deriviedField": {
+		"derivedField": {
 			"few": "Derived Fields",
 			"none": "No derived field",
 			"one": "Derived Field"
@@ -410,9 +410,12 @@
 			"delete": "Delete",
 			"title": "Confirm"
 		},
-		"deriviedFields": {
+		"derivedFields": {
 			"add": "Create a new derived field",
 			"definition": "Definition",
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the derived field {{name}}?"
+			},
 			"edit": "Edit derived field"
 		},
 		"emailBuilder": {

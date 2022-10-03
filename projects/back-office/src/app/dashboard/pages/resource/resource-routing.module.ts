@@ -80,7 +80,7 @@ const routes: Routes = [
           ),
         data: {
           breadcrumb: {
-            key: 'common.deriviedField.few',
+            key: 'common.derivedField.few',
           },
         },
       },

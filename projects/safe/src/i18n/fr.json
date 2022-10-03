@@ -44,7 +44,7 @@
 		"delete": "Supprimer",
 		"deleteObject": "Supprimer {{name}}",
 		"deleted": "Supprimé",
-		"deriviedField": {
+		"derivedField": {
 			"few": "Champs dérivés",
 			"none": "Aucun champ dérivé",
 			"one": "Champ dérivé"
@@ -410,9 +410,12 @@
 			"delete": "Supprimer",
 			"title": "Confirmer"
 		},
-		"deriviedFields": {
+		"derivedFields": {
 			"add": "Créer un nouveau champ dérivé",
 			"definition": "Définition",
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du champ dérivé {{name}} ?"
+			},
 			"edit": "Modifier le champ dérivé"
 		},
 		"emailBuilder": {

@@ -9,7 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
-  // SafeEditDerivedFieldModalModule,
+  SafeEditDerivedFieldModalModule,
 } from '@safe/builder';
 import { DerivedFieldsTabComponent } from './derived-fields-tab.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -28,7 +28,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     SafeButtonModule,
     MatTooltipModule,
     TranslateModule,
-    // SafeEditDerivedFieldModalModule,
+    SafeEditDerivedFieldModalModule,
     OverlayModule,
   ],
 })

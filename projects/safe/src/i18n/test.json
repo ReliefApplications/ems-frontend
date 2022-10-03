@@ -44,7 +44,7 @@
 		"delete": "******",
 		"deleteObject": "****** {{name}}",
 		"deleted": "******",
-		"deriviedField": {
+		"derivedField": {
 			"few": "******",
 			"none": "******",
 			"one": "******"
@@ -410,9 +410,12 @@
 			"delete": "******",
 			"title": "******"
 		},
-		"deriviedFields": {
+		"derivedFields": {
 			"add": "******",
 			"definition": "******",
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******"
+			},
 			"edit": "******"
 		},
 		"emailBuilder": {

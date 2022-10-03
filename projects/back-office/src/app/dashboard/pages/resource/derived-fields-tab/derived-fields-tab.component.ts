@@ -2,13 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  SafeEditLayoutModalComponent,
+  SafeEditDerivedFieldModalComponent,
   SafeGridLayoutService,
   SafeConfirmModalComponent,
   Resource,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
+import {
+  DERIVED_FIELD_UPDATE,
+  DerivedFieldUpdateMutationResponse,
+} from './graphql/mutations';
 
 /**
  * Derived fields tab of resource page
@@ -48,23 +52,43 @@ export class DerivedFieldsTabComponent implements OnInit {
    * Adds a new derived field for the resource.
    */
   onAddDerivedField(): void {
-    // const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
-    //   disableClose: true,
-    //   data: {
-    //     queryName: this.resource.queryName,
-    //   },
-    // });
-    // dialogRef.afterClosed().subscribe((value) => {
-    //   if (value) {
-    //     this.gridLayoutService
-    //       .addLayout(value, this.resource.id)
-    //       .subscribe((res: any) => {
-    //         if (res.data.addLayout) {
-    //           this.layouts = [...this.layouts, res.data?.addLayout];
-    //         }
-    //       });
-    //   }
-    // });
+    const dialogRef = this.dialog.open(SafeEditDerivedFieldModalComponent, {
+      disableClose: true,
+      data: {
+        field: null,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        console.log(value);
+        this.apollo
+          .mutate<DerivedFieldUpdateMutationResponse>({
+            mutation: DERIVED_FIELD_UPDATE,
+            variables: {
+              resourceId: this.resource.id,
+              derivedField: {
+                add: {
+                  name: value.name,
+                  definition: value.definition.substring(
+                    3,
+                    value.definition.length - 4
+                  ),
+                },
+              },
+            },
+          })
+          .subscribe((res) => {
+            if (res.data?.editResource) {
+              // Needed to update the field as table data source
+              this.fields = this.fields.concat(
+                res.data.editResource.fields.find(
+                  (f: any) => f.name === value.name
+                )
+              );
+            }
+          });
+      }
+    });
   }
 
   /**
@@ -73,29 +97,42 @@ export class DerivedFieldsTabComponent implements OnInit {
    * @param field Derived field to edit
    */
   onEditDerivedField(field: any): void {
-    // const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
-    //   disableClose: true,
-    //   data: {
-    //     layout,
-    //   },
-    // });
-    // dialogRef.afterClosed().subscribe((value) => {
-    //   if (value) {
-    //     this.gridLayoutService
-    //       .editLayout(layout, value, this.resource.id)
-    //       .subscribe((res: any) => {
-    //         if (res.data.editLayout) {
-    //           this.layouts = this.layouts.map((x: any) => {
-    //             if (x.id === layout.id) {
-    //               return res.data.editLayout;
-    //             } else {
-    //               return x;
-    //             }
-    //           });
-    //         }
-    //       });
-    //   }
-    // });
+    const dialogRef = this.dialog.open(SafeEditDerivedFieldModalComponent, {
+      disableClose: true,
+      data: {
+        derivedField: field,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (!value) {
+        return;
+      }
+      this.apollo
+        .mutate<DerivedFieldUpdateMutationResponse>({
+          mutation: DERIVED_FIELD_UPDATE,
+          variables: {
+            resourceId: this.resource.id,
+            derivedField: {
+              update: {
+                oldName: field.name,
+                name: value.name,
+                definition: value.definition.substring(
+                  3,
+                  value.definition.length - 4
+                ),
+              },
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data?.editResource) {
+            // Needed to update the field as table data source
+            this.fields = res.data.editResource.fields.filter(
+              (f: any) => f.type === 'derived'
+            );
+          }
+        });
+    });
   }
 
   /**
@@ -104,33 +141,44 @@ export class DerivedFieldsTabComponent implements OnInit {
    * @param field Derived field to delete
    */
   onDeleteDerivedField(field: any): void {
-    // const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-    //   data: {
-    //     title: this.translate.instant('common.deleteObject', {
-    //       name: this.translate.instant('common.layout.one'),
-    //     }),
-    //     content: this.translate.instant(
-    //       'components.form.layout.delete.confirmationMessage',
-    //       {
-    //         name: layout.name,
-    //       }
-    //     ),
-    //     confirmText: this.translate.instant('components.confirmModal.delete'),
-    //     cancelText: this.translate.instant('components.confirmModal.cancel'),
-    //   },
-    // });
-    // dialogRef.afterClosed().subscribe((value) => {
-    //   if (value) {
-    //     this.gridLayoutService
-    //       .deleteLayout(layout, this.resource.id)
-    //       .subscribe((res: any) => {
-    //         if (res.data.deleteLayout) {
-    //           this.layouts = this.layouts.filter(
-    //             (x: any) => x.id !== layout.id
-    //           );
-    //         }
-    //       });
-    //   }
-    // });
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+      data: {
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.derivedField.one'),
+        }),
+        content: this.translate.instant(
+          'components.derivedFields.delete.confirmationMessage',
+          {
+            name: field.name,
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.apollo
+          .mutate<DerivedFieldUpdateMutationResponse>({
+            mutation: DERIVED_FIELD_UPDATE,
+            variables: {
+              resourceId: this.resource.id,
+              derivedField: {
+                remove: {
+                  name: field.name,
+                },
+              },
+            },
+          })
+          .subscribe((res) => {
+            if (res.data?.editResource) {
+              this.fields = this.fields.filter(
+                (f: any) => f.name !== field.name
+              );
+            }
+          });
+      }
+    });
   }
 }
