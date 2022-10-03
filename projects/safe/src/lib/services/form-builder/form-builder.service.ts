@@ -48,8 +48,11 @@ export class SafeFormBuilderService {
         const hidden: boolean = (f.canSee !== undefined && !f.canSee) || false;
         const disabled: boolean =
           (f.canUpdate !== undefined && !f.canUpdate) || false;
-        survey.getQuestionByName(f.name).visible = !hidden && accessible;
-        survey.getQuestionByName(f.name).readOnly = disabled || !editable;
+        const question = survey.getQuestionByName(f.name);
+        if (question) {
+          question.visible = !hidden && accessible;
+          question.readOnly = disabled || !editable;
+        }
       }
     }
     // set the lang of the survey
