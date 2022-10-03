@@ -10,7 +10,7 @@ import {
 import {
   GetReferenceDataByIdQueryResponse,
   GET_REFERENCE_DATA_BY_ID,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
 
 /** Local storage key for last modified */

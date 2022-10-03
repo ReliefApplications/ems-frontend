@@ -5,7 +5,7 @@ import { Apollo } from 'apollo-angular';
 import {
   EDIT_DASHBOARD,
   EditDashboardMutationResponse,
-} from '../../graphql/mutations';
+} from './graphql/mutations';
 
 /**
  * Shared dashboard service. Handles dashboard events.
