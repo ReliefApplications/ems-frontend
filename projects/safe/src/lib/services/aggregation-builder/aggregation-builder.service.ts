@@ -1,11 +1,11 @@
 import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { PipelineStage } from '../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
-import { Accumulators } from '../components/ui/aggregation-builder/pipeline/expressions/operators';
+import { PipelineStage } from '../../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
+import { Accumulators } from '../../components/ui/aggregation-builder/pipeline/expressions/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { addNewField } from '../components/query-builder/query-builder-forms';
+import { addNewField } from '../../components/query-builder/query-builder-forms';
 import { ApolloQueryResult } from '@apollo/client';
-import { SafeGridService } from './grid.service';
+import { SafeGridService } from '../grid/grid.service';
 
 /**
  * Shared aggregation service.

@@ -9,8 +9,8 @@ import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SafeAddUserComponent } from '../add-user/add-user.component';
-import { SafeSnackBarService } from '../../../../services/snackbar.service';
-import { SafeDownloadService } from '../../../../services/download.service';
+import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { SafeDownloadService } from '../../../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
 

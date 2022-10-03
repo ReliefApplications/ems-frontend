@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@angular/core';
-import { SafeSnackBarService } from './snackbar.service';
-import { SafeSnackbarSpinnerComponent } from '../components/snackbar-spinner/snackbar-spinner.component';
+import { SafeSnackBarService } from '../snackbar/snackbar.service';
+import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 // import { TranslateService } from '@ngx-translate/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { SafeEmailPreviewComponent } from '../components/email-preview/email-preview.component';
+import { SafeEmailPreviewComponent } from '../../components/email-preview/email-preview.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { prettifyLabel } from '../utils/prettify';
+import { prettifyLabel } from '../../utils/prettify';
 import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 

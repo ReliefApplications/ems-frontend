@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Dashboard, WIDGET_TYPES } from '../models/dashboard.model';
+import { Dashboard, WIDGET_TYPES } from '../../models/dashboard.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import {
   EDIT_DASHBOARD,
   EditDashboardMutationResponse,
-} from '../graphql/mutations';
+} from '../../graphql/mutations';
 
 /**
  * Shared dashboard service. Handles dashboard events.

@@ -8,8 +8,8 @@ import {
   EDIT_USER_PROFILE,
 } from '../../graphql/mutations';
 import { User } from '../../models/user.model';
-import { SafeAuthService } from '../../services/auth.service';
-import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeAuthService } from '../../services/auth/auth.service';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
 
 /**

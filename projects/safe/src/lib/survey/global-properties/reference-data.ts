@@ -1,7 +1,7 @@
 import SurveyCreator from 'survey-creator';
 import { JsonMetadata, SurveyModel, Serializer } from 'survey-angular';
-import { DomService } from '../../services/dom.service';
-import { SafeReferenceDataService } from '../../services/reference-data.service';
+import { DomService } from '../../services/dom/dom.service';
+import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { SafeReferenceDataDropdownComponent } from '../../components/reference-data-dropdown/reference-data-dropdown.component';
 import { Question, QuestionSelectBase } from '../types';
 

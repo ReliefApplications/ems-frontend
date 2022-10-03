@@ -7,14 +7,14 @@ import {
   DELETE_LAYOUT,
   EditLayoutMutationResponse,
   EDIT_LAYOUT,
-} from '../graphql/mutations';
+} from '../../graphql/mutations';
 import {
   GetResourceByIdQueryResponse,
   GET_GRID_RESOURCE_META,
   GetFormByIdQueryResponse,
   GET_GRID_FORM_META,
-} from '../graphql/queries';
-import { Layout, LayoutConnection } from '../models/layout.model';
+} from '../../graphql/queries';
+import { Layout, LayoutConnection } from '../../models/layout.model';
 
 /** Default page size for layouts */
 const DEFAULT_PAGE_SIZE = 10;
