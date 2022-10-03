@@ -59,7 +59,10 @@ export class SafeEditDerivedFieldModalComponent implements OnInit {
     this.field = this.data.derivedField;
     this.resourceFields = this.data.resourceFields;
     this.form = this.formBuilder.group({
-      name: [this.data.derivedField?.name, Validators.required],
+      name: [
+        this.data.derivedField?.name,
+        [Validators.required, Validators.pattern(/^[a-z]+[a-z0-9_]+$/)],
+      ],
       definition: [this.data.derivedField?.definition, Validators.required],
       // TODO: Add display options
     });
