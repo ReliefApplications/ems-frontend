@@ -5,8 +5,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import {
   GetWorkflowByIdQueryResponse,
   GET_WORKFLOW_BY_ID,
-} from '../../graphql/queries';
-import { AddStepMutationResponse, ADD_STEP } from '../../graphql/mutations';
+} from './graphql/queries';
+import { AddStepMutationResponse, ADD_STEP } from './graphql/mutations';
 import { Workflow } from '../../models/workflow.model';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { ContentType } from '../../models/page.model';

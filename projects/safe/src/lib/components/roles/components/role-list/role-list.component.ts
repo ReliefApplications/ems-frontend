@@ -21,7 +21,7 @@ import {
   ADD_ROLE,
   DeleteRoleMutationResponse,
   DELETE_ROLE,
-} from '../../../../graphql/mutations';
+} from '../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';

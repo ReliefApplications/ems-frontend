@@ -6,7 +6,7 @@ import {
   GetQueryTypes,
   GET_QUERY_META_DATA,
   GET_QUERY_TYPES,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
 import get from 'lodash/get';

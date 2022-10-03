@@ -6,15 +6,15 @@ import {
   SEE_NOTIFICATION,
   SeeNotificationsMutationResponse,
   SEE_NOTIFICATIONS,
-} from '../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetNotificationsQueryResponse,
   GET_NOTIFICATIONS,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import {
   NotificationSubscriptionResponse,
   NOTIFICATION_SUBSCRIPTION,
-} from '../../graphql/subscriptions';
+} from './graphql/subscriptions';
 import { Notification } from '../../models/notification.model';
 
 /** Pagination: number of items per query */

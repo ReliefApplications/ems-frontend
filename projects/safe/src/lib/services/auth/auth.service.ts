@@ -1,7 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import { Injectable, Inject } from '@angular/core';
 import { User } from '../../models/user.model';
-import { GetProfileQueryResponse, GET_PROFILE } from '../../graphql/queries';
+import { GetProfileQueryResponse, GET_PROFILE } from './graphql/queries';
 import {
   BehaviorSubject,
   combineLatest,

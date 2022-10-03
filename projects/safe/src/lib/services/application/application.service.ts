@@ -48,18 +48,18 @@ import {
   TOGGLE_APPLICATION_LOCK,
   duplicatePageMutationResponse,
   DUPLICATE_PAGE,
-} from '../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
   GET_APPLICATION_BY_ID,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import {
   ApplicationEditedSubscriptionResponse,
   ApplicationUnlockedSubscriptionResponse,
   APPLICATION_EDITED_SUBSCRIPTION,
   APPLICATION_UNLOCKED_SUBSCRIPTION,
-} from '../../graphql/subscriptions';
+} from './graphql/subscriptions';
 import { SafeAuthService } from '../auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 
