@@ -3,12 +3,14 @@ import { Record } from '../../../../models/record.model';
 import calcFunctions from './calcFunctions';
 
 /** Prefix for data keys */
-const DATA_PREFIX = '@data.';
+const DATA_PREFIX = '{{data.';
 /** Prefix for calc keys */
-const CALC_PREFIX = '@calc.';
+const CALC_PREFIX = '{{calc.';
+/** Suffix for all keys */
+const PLACEHOLDER_SUFFIX = '}}';
 
 /**
- *
+ * Mapping of file types / kendo icons.
  */
 const ICON_EXTENSIONS: any = {
   bmp: 'k-i-file-programming',
@@ -96,14 +98,25 @@ const replaceRecordFields = (
       switch (field.type) {
         case 'url':
           convertedValue =
-            '<a href="' + value + '" target="_blank">' + value + '</a>';
+            '<a href="' +
+            value +
+            '" target="_blank">' +
+            applyLayoutFormat(value, field) +
+            '</a>';
           break;
         case 'email':
           convertedValue =
-            '<a href="mailto: ' + value + '" target="_blank">' + value + '</a>';
+            '<a href="mailto: ' +
+            value +
+            '" target="_blank">' +
+            applyLayoutFormat(value, field) +
+            '</a>';
           break;
         case 'date':
-          convertedValue = new Date(value).toLocaleString().split(',')[0];
+          convertedValue = applyLayoutFormat(
+            new Date(value).toLocaleString().split(',')[0],
+            field
+          );
           break;
         case 'datetime':
           const date = new Date(value);
@@ -114,14 +127,16 @@ const replaceRecordFields = (
               ? '0' + date.getMinutes()
               : date.getMinutes();
           const time = date.getHours() >= 12 ? 'PM' : 'AM';
-          convertedValue =
+          convertedValue = applyLayoutFormat(
             date.toLocaleString().split(',')[0] +
-            ', ' +
-            hour +
-            ':' +
-            minutes +
-            ' ' +
-            time;
+              ', ' +
+              hour +
+              ':' +
+              minutes +
+              ' ' +
+              time,
+            field
+          );
           break;
         case 'boolean':
           const checked = value ? 'checked' : '';
@@ -138,10 +153,12 @@ const replaceRecordFields = (
               fileExt && ICON_EXTENSIONS[fileExt]
                 ? ICON_EXTENSIONS[fileExt]
                 : 'k-i-file';
-            const fileName =
+            const fileName = applyLayoutFormat(
               fileExt && ICON_EXTENSIONS[fileExt]
                 ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
-                : file.name;
+                : file.name,
+              field
+            );
             convertedValue +=
               '<button style="border: none; padding: 4px 6px;" title="' +
               file.name +
@@ -159,88 +176,15 @@ const replaceRecordFields = (
           convertedValue = value.length + ' items';
           break;
         default:
-          convertedValue = value;
+          convertedValue = applyLayoutFormat(value, field);
           break;
       }
-      //   if ( field.type === 'url' && value ) { // Formats urls
-      //     convertedValue =
-      //       '<a href="' + value + '" target="_blank">' + value + '</a>';
-      //   } else if ( field.type === 'email' && value ) { // Formats emails
-      //     convertedValue =
-      //       '<a href="mailto: ' + value + '" target="_blank">' + value + '</a>';
-      //   } else if ( field.type === 'date' && value ) { // Formats dates
-      //     const date = new Date(value);
-      //     convertedValue = date.toLocaleString().split(',')[0];
-      //   } else if (
-      //     // Formats date and time
-      //     field.type === 'DateTime' &&
-      //     value
-      //   ) {
-      //     const date = new Date(value);
-      //     const hour =
-      //       date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
-      //     const minutes =
-      //       date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
-      //     const time = date.getHours() >= 12 ? 'PM' : 'AM';
-      //     convertedValue =
-      //       date.toLocaleString().split(',')[0] +
-      //       ', ' +
-      //       hour +
-      //       ':' +
-      //       minutes +
-      //       ' ' +
-      //       time;
-      //   } else if (
-      //     // Formats booleans
-      //     field.type === 'Boolean'
-      //   ) {
-      //     const checked = value ? 'checked' : '';
-      //     convertedValue =
-      //       '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
-      //       checked +
-      //       ' disabled></input>';
-      //   } else if (
-      //     // Formats file inputs
-      //     field.type === 'JSON' &&
-      //     value &&
-      //     value.length > 0 &&
-      //     typeof value[0] !== 'string'
-      //   ) {
-      //     convertedValue = '';
-      //     for (const file of value) {
-      //       const fileExt = file.name.split('.').pop();
-      //       const fileIcon =
-      //         fileExt && ICON_EXTENSIONS[fileExt]
-      //           ? ICON_EXTENSIONS[fileExt]
-      //           : 'k-i-file';
-      //       const fileName =
-      //         fileExt && ICON_EXTENSIONS[fileExt]
-      //           ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
-      //           : file.name;
-      //       convertedValue +=
-      //         '<button style="border: none; padding: 4px 6px;" title="' +
-      //         file.name +
-      //         '">' +
-      //         fileName +
-      //         ' <span class="k-icon ' +
-      //         fileIcon +
-      //         '"></span>' +
-      //         '</button>';
-      //     }
-      //   } else if (
-      //     // Formats custom questions
-      //     field.kind === 'LIST' &&
-      //     value &&
-      //     value.length > 0
-      //   ) {
-      //     convertedValue = value.length + ' items';
-      //   } else {
-      //     // Anything else
-      //     convertedValue = value;
-      //   }
 
-      const regex = new RegExp(`${DATA_PREFIX}${field.name}\\b`, 'gi');
-      formattedHtml = formattedHtml.replace(regex, convertedValue as string);
+      const regex = new RegExp(
+        `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
+        'gi'
+      );
+      formattedHtml = formattedHtml.replace(regex, convertedValue);
     }
   }
   return formattedHtml;
@@ -277,7 +221,10 @@ const getFieldsValue = (record: any) => {
  * @returns The html body with the calculated result of the functions
  */
 const applyOperations = (html: string): string => {
-  const regex = new RegExp(`${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)`, 'gm');
+  const regex = new RegExp(
+    `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
+    'gm'
+  );
   let parsedHtml = html;
   let result = regex.exec(html);
   while (result !== null) {
@@ -309,7 +256,7 @@ const applyOperations = (html: string): string => {
  * @returns list of data keys
  */
 export const getDataKeys = (fields: any): string[] =>
-  fields.map((field: any) => DATA_PREFIX + field.name);
+  fields.map((field: any) => DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX);
 
 /**
  * Returns an array with the calc operations keys.
@@ -318,5 +265,32 @@ export const getDataKeys = (fields: any): string[] =>
  */
 export const getCalcKeys = (): string[] => {
   const calcObjects = Object.values(calcFunctions);
-  return calcObjects.map((obj) => CALC_PREFIX + obj.signature);
+  return calcObjects.map(
+    (obj) => CALC_PREFIX + obj.signature + PLACEHOLDER_SUFFIX
+  );
+};
+
+/**
+ * Applies layout field format ignoring html tags
+ *
+ * @param name Original value of the field
+ * @param field Field information, used to get field name and format
+ * @returns Formatted field value
+ */
+export const applyLayoutFormat = (
+  name: string | null,
+  field: any
+): string | null => {
+  if (name && field.layoutFormat && field.layoutFormat.length > 1) {
+    const regex = new RegExp(
+      `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
+      'gi'
+    );
+    const value = field.layoutFormat
+      .replace(/<(.|\n)*?>/g, '')
+      .replace(regex, name);
+    return applyOperations(value);
+  } else {
+    return name;
+  }
 };

@@ -87,6 +87,7 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
           field.label ? field.label : prettifyLabel(field.name),
           Validators.required,
         ],
+        format: [get(field, 'format', null)],
       });
     }
   }

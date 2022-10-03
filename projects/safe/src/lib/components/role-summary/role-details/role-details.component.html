@@ -31,12 +31,94 @@
       </mat-select>
     </mat-form-field>
   </div>
+  <safe-button
+    variant="primary"
+    category="secondary"
+    type="submit"
+    [disabled]="!form.valid"
+    (click)="onUpdate()"
+    >{{ 'common.saveChanges' | translate }}</safe-button
+  >
 </form>
-<safe-button
-  variant="primary"
-  category="secondary"
-  type="submit"
-  [disabled]="!form.valid"
-  (click)="onUpdate()"
-  >{{ 'common.saveChanges' | translate }}</safe-button
->
+
+<div class="role-description">
+  <h2>{{ 'components.role.summary.details.access.title' | translate }}</h2>
+  <div class="role-description-content">
+    <div class="role-description-block">
+      <b>{{
+        'components.role.summary.details.access.resources' | translate
+      }}</b>
+      <div class="role-description-item">
+        {{
+          'components.role.summary.details.access.fullAccess'
+            | translate
+              : {
+                  accessible: roleStats.resources.full,
+                  total: roleStats.resources.total
+                }
+        }}
+      </div>
+      <div class="role-description-item">
+        {{
+          'components.role.summary.details.access.limitedAccess'
+            | translate
+              : {
+                  accessible: roleStats.resources.limited,
+                  total: roleStats.resources.total
+                }
+        }}
+      </div>
+      <div class="role-description-item">
+        {{
+          'components.role.summary.details.access.noAccess'
+            | translate
+              : {
+                  accessible:
+                    roleStats.resources.total -
+                    roleStats.resources.full -
+                    roleStats.resources.limited,
+                  total: roleStats.resources.total
+                }
+        }}
+      </div>
+    </div>
+    <div class="role-description-block" *ngIf="role.application">
+      <b>{{ 'components.role.summary.details.access.pages' | translate }}</b>
+      <div class="role-description-item">
+        {{
+          'components.role.summary.details.access.fullAccess'
+            | translate
+              : {
+                  accessible: roleStats.pages.full,
+                  total: roleStats.pages.total
+                }
+        }}
+      </div>
+      <div class="role-description-item">
+        {{
+          'components.role.summary.details.access.noAccess'
+            | translate
+              : {
+                  accessible: roleStats.pages.total - roleStats.pages.full,
+                  total: roleStats.pages.total
+                }
+        }}
+      </div>
+    </div>
+    <div class="role-description-block">
+      <b>{{ 'components.role.summary.details.access.channels' | translate }}</b>
+      <div class="role-description-item">
+        {{
+          'components.role.summary.details.access.fullAccess'
+            | translate
+              : {
+                  accessible: roleStats.channels.full,
+                  total: roleStats.channels.total
+                }
+        }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<safe-role-users [role]="role" *ngIf="role"></safe-role-users>

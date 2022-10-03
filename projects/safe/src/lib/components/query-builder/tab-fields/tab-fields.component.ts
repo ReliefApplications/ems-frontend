@@ -12,7 +12,12 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { QueryBuilderService } from '../../../services/query-builder.service';
+import { FIELD_EDITOR_CONFIG } from '../../../const/tinymce.const';
+import { SafeEditorService } from '../../../services/editor/editor.service';
+import {
+  getCalcKeys,
+  getDataKeys,
+} from '../../widgets/summary-card/parser/utils';
 import { addNewField } from '../query-builder-forms';
 import { SafeQueryBuilderComponent } from '../query-builder.component';
 
@@ -37,14 +42,22 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public searchAvailable = '';
   public searchSelected = '';
 
+  /** tinymce editor */
+  public editor: any = FIELD_EDITOR_CONFIG;
+
   @Input() showPagination = false;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is created.
    *
-   * @param queryBuilder The service used to build queries
+   * @param editorService Editor service used to get main URL and current language
    */
-  constructor(private queryBuilder: QueryBuilderService) {}
+  constructor(private editorService: SafeEditorService) {
+    // Set the editor base url based on the environment file
+    this.editor.base_url = editorService.url;
+    // Set the editor language
+    this.editor.language = editorService.language;
+  }
 
   ngOnInit(): void {
     const selectedFields: string[] = this.form.getRawValue().map((x) => x.name);
@@ -171,7 +184,16 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
    */
   public onEdit(index: number): void {
     this.fieldForm = this.form.at(index) as FormGroup;
-    if (this.fieldForm.value.kind !== 'SCALAR') {
+    if (this.fieldForm.value.kind === 'SCALAR') {
+      // Setup field format editor auto completer
+      const dataKeys = getDataKeys([
+        { name: this.fieldForm.controls.name.value },
+      ]);
+      const calcKeys = getCalcKeys();
+      const keys = dataKeys.concat(calcKeys);
+
+      this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+    } else {
       if (this.childTemplate) {
         const componentRef = this.childTemplate.createComponent(
           SafeQueryBuilderComponent

@@ -147,6 +147,13 @@
             <input matInput formControlName="label" type="text" />
           </mat-form-field>
         </div>
+        <h3 style="margin: 0">
+          {{ 'components.queryBuilder.fields.format.title' | translate }}
+        </h3>
+        <div class="info-text" style="margin-bottom: 10px">
+          {{ 'components.queryBuilder.fields.format.info' | translate }}
+        </div>
+        <editor [init]="editor" formControlName="format"></editor>
       </form>
     </ng-container>
     <ng-container

@@ -64,10 +64,8 @@ export class SafeEmailService {
    * @returns Observable of the POST request
    */
   public sendFiles(files: any[]): Observable<any> {
-    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
     });
     const formData = new FormData();
     for (const file of files) {
@@ -95,7 +93,7 @@ export class SafeEmailService {
   public async sendMail(
     recipient: string[],
     subject: string,
-    body: string = '{dataset}',
+    body: string,
     filter: CompositeFilterDescriptor,
     query: {
       name: string;
@@ -125,10 +123,8 @@ export class SafeEmailService {
         fileFolderId = response.id;
       }
     }
-    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
     });
 
     this.http
@@ -185,7 +181,7 @@ export class SafeEmailService {
   public async previewMail(
     recipient: string[],
     subject: string,
-    body: string = '{dataset}',
+    body: string,
     filter: CompositeFilterDescriptor,
     query: {
       name: string;
@@ -207,10 +203,8 @@ export class SafeEmailService {
         },
       }
     );
-    const token = localStorage.getItem('idtoken');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
     });
     this.http
       .post(

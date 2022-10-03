@@ -24,6 +24,8 @@ export const GET_RECORD_BY_ID = gql`
         permissions {
           recordsUnicity
         }
+        fields
+        metadata
       }
     }
   }
@@ -43,6 +45,7 @@ export const GET_FORM_STRUCTURE = gql`
     form(id: $id) {
       id
       structure
+      metadata
     }
   }
 `;
