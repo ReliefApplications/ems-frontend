@@ -1,29 +1,16 @@
 import { gql } from 'apollo-angular';
 import { Application } from '../../../models/application.model';
 import { Group, Role, User } from '../../../models/user.model';
+import { USER_FIELDS } from './fragments';
 
 /** Graphql query to get user by id */
 export const GET_USER = gql`
   query GetUser($id: ID!) {
     user(id: $id) {
-      id
-      name
-      firstName
-      lastName
-      username
-      groups {
-        id
-        title
-      }
-      roles {
-        id
-        title
-        application {
-          id
-        }
-      }
+      ...UserFields
     }
   }
+  ${USER_FIELDS}
 `;
 
 /** GraphQL interface of get user by id query */
