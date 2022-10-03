@@ -20,44 +20,17 @@
       </mat-label>
       <input matInput formControlName="email" type="text" />
     </mat-form-field>
+    <ng-container *ngIf="attributes.length > 0" formGroupName="attributes">
+      <h2 style="margin-top: 32px">{{ 'common.attribute.few' | translate }}</h2>
+      <ng-container *ngFor="let attribute of attributes">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ attribute.text }}</mat-label>
+          <input matInput [formControlName]="attribute.value" type="text" />
+        </mat-form-field>
+      </ng-container>
+    </ng-container>
   </div>
 </form>
-<!-- <div class="form-group">
-  <mat-form-field appearance="outline">
-    <mat-label>
-      {{ 'components.user.summary.region' | translate }}
-    </mat-label>
-    <mat-select formControlName="region">
-      <mat-option *ngFor="let region of regions" [value]="region">
-        {{ region }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>
-      {{ 'components.user.summary.country' | translate }}
-    </mat-label>
-    <mat-select formControlName="country">
-      <mat-option *ngFor="let country of countries" [value]="country">
-        {{ country }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>
-      {{ 'components.user.summary.locationType' | translate }}
-    </mat-label>
-    <mat-select formControlName="locationType">
-      <mat-option>{{ 'common.input.none' | translate }}</mat-option>
-      <mat-option
-        *ngFor="let location of locationTypes"
-        [value]="location"
-      >
-        {{ location }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</div> -->
 <safe-button
   *ngIf="editable"
   variant="primary"
