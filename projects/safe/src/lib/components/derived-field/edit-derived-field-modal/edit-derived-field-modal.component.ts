@@ -3,10 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Editor } from 'tinymce';
-import {
-  EDITOR_LANGUAGE_PAIRS,
-  FIELD_EDITOR_CONFIG,
-} from '../../../const/tinymce.const';
+import { FIELD_EDITOR_CONFIG } from '../../../const/tinymce.const';
+import { SafeEditorService } from '../../../services/editor/editor.service';
+import { getCalcKeys, getDataKeys } from './utils/keys';
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
@@ -37,6 +36,7 @@ export class SafeEditDerivedFieldModalComponent implements OnInit {
    *
    * @param dialogRef This is the reference of the dialog that will be opened.
    * @param formBuilder This is the service used to build forms.
+   * @param editorService Editor service used to get main URL and current language
    * @param data This is the data that is passed to the modal when it is opened.
    * @param environment Environment specific data
    * @param translate Translate service
@@ -44,30 +44,15 @@ export class SafeEditDerivedFieldModalComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<SafeEditDerivedFieldModalComponent>,
     public formBuilder: FormBuilder,
+    private editorService: SafeEditorService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     @Inject('environment') environment: any,
     private translate: TranslateService
   ) {
     // Set the editor base url based on the environment file
-    let url: string;
-    if (environment.module === 'backoffice') {
-      url = new URL(environment.backOfficeUri).pathname;
-    } else {
-      url = new URL(environment.frontOfficeUri).pathname;
-    }
-    if (url !== '/') {
-      this.editor.base_url = url.slice(0, -1) + '/tinymce';
-    } else {
-      this.editor.base_url = '/tinymce';
-    }
+    this.editor.base_url = editorService.url;
     // Set the editor language
-    const lang = this.translate.currentLang;
-    const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
-    if (editorLang) {
-      this.editor.language = editorLang.tinymceKey;
-    } else {
-      this.editor.language = 'en';
-    }
+    this.editor.language = editorService.language;
   }
 
   ngOnInit(): void {
@@ -78,14 +63,8 @@ export class SafeEditDerivedFieldModalComponent implements OnInit {
       definition: [this.data.derivedField?.definition, Validators.required],
       // TODO: Add display options
     });
-
-    this.form.get('definition')?.valueChanges.subscribe((value: string) => {
-      console.log(value);
-    });
-
-    this.form.get('name')?.valueChanges.subscribe((value: string) => {
-      console.log(value);
-    });
+    const keys = [...getCalcKeys(), ...getDataKeys(this.resourceFields)];
+    this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
   }
 
   /**

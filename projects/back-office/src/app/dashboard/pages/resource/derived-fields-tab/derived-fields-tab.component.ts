@@ -56,6 +56,9 @@ export class DerivedFieldsTabComponent implements OnInit {
       disableClose: true,
       data: {
         field: null,
+        resourceFields: this.resource.fields.filter(
+          (f: any) => f.type !== 'derived'
+        ),
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
@@ -69,10 +72,9 @@ export class DerivedFieldsTabComponent implements OnInit {
               derivedField: {
                 add: {
                   name: value.name,
-                  definition: value.definition.substring(
-                    3,
-                    value.definition.length - 4
-                  ),
+                  definition: value.definition
+                    .substring(3, value.definition.length - 4)
+                    .replaceAll('&nbsp;', ' '),
                 },
               },
             },
@@ -101,6 +103,9 @@ export class DerivedFieldsTabComponent implements OnInit {
       disableClose: true,
       data: {
         derivedField: field,
+        resourceFields: this.resource.fields.filter(
+          (f: any) => f.type !== 'derived'
+        ),
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
@@ -116,10 +121,9 @@ export class DerivedFieldsTabComponent implements OnInit {
               update: {
                 oldName: field.name,
                 name: value.name,
-                definition: value.definition.substring(
-                  3,
-                  value.definition.length - 4
-                ),
+                definition: value.definition
+                  .substring(3, value.definition.length - 4)
+                  .replaceAll('&nbsp;', ' '),
               },
             },
           },
