@@ -8,8 +8,8 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import { SafeSnackBarService } from '../../../../services/snackbar.service';
-import { AggregationBuilderService } from '../../../../services/aggregation-builder.service';
+import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { SafeResourceGridModalComponent } from '../../../search-resource-grid-modal/search-resource-grid-modal.component';
 import {
   GetRecordByIdQueryResponse,

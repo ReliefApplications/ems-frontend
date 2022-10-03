@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { QueryBuilderService } from '../../services/query-builder.service';
+import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 
 /**

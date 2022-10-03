@@ -8,7 +8,7 @@ import {
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { PermissionsManagement, PermissionType } from '../models/user.model';
-import { SafeAuthService } from '../services/auth.service';
+import { SafeAuthService } from '../services/auth/auth.service';
 
 /**
  * Check if the logged user has an access to the route.

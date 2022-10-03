@@ -12,7 +12,7 @@ import {
   FETCH_GROUPS,
 } from '../../graphql/mutations';
 import { GetGroupsQueryResponse, GET_GROUPS } from '../../graphql/queries';
-import { SafeSnackBarService } from '../../../../services/snackbar.service';
+import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeConfirmModalComponent } from '../../../confirm-modal/confirm-modal.component';
 import { SafeAddRoleComponent } from '../add-role/add-role.component';
 import { SafeSnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';

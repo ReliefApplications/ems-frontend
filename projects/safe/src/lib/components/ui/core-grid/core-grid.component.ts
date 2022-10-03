@@ -23,11 +23,11 @@ import {
 } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs';
-import { SafeAuthService } from '../../../services/auth.service';
-import { SafeDownloadService } from '../../../services/download.service';
-import { SafeLayoutService } from '../../../services/layout.service';
-import { SafeSnackBarService } from '../../../services/snackbar.service';
-import { QueryBuilderService } from '../../../services/query-builder.service';
+import { SafeAuthService } from '../../../services/auth/auth.service';
+import { SafeDownloadService } from '../../../services/download/download.service';
+import { SafeLayoutService } from '../../../services/layout/layout.service';
+import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   ConvertRecordMutationResponse,
@@ -47,12 +47,12 @@ import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
-import { SafeGridService } from '../../../services/grid.service';
+import { SafeGridService } from '../../../services/grid/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
-import { SafeDateTranslateService } from '../../../services/date-translate.service';
+import { SafeDateTranslateService } from '../../../services/date-translate/date-translate.service';
 
 /**
  * Default file name when exporting grid data.
@@ -439,7 +439,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     let updatedItem = this.updatedItems.find((x) => x.id === item.id);
     if (updatedItem) {
       updatedItem = { ...updatedItem, ...value };
-      const index = this.updatedItems.findIndex((x) => x.id);
+      const index = this.updatedItems.findIndex((x) => x.id === item.id);
       this.updatedItems.splice(index, 1, updatedItem);
     } else {
       this.updatedItems.push({ id: item.id, ...value });
@@ -459,6 +459,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.hasChanges) {
       for (const item of this.items) {
         delete item.saved;
+        delete item.validationErrors;
       }
       Promise.all(this.promisedChanges()).then((allRes) => {
         for (const res of allRes) {
