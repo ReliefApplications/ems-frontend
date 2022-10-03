@@ -6,8 +6,8 @@ import { Resource } from '../../../models/resource.model';
 import { AddLayoutModalComponent } from '../add-layout-modal/add-layout-modal.component';
 import { FormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import get from 'lodash/get';
+import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { SafeEditLayoutModalComponent } from '../edit-layout-modal/edit-layout-modal.component';
 
 /**

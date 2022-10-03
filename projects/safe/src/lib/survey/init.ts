@@ -7,9 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder } from '@angular/forms';
 import * as SurveyJSWidgets from 'surveyjs-widgets';
 
-import { DomService } from '../services/dom.service';
-import { SafeAuthService } from '../services/auth.service';
-import { SafeReferenceDataService } from '../services/reference-data.service';
+import { DomService } from '../services/dom/dom.service';
+import { SafeAuthService } from '../services/auth/auth.service';
+import { SafeReferenceDataService } from '../services/reference-data/reference-data.service';
 import addCustomFunctions from '../utils/custom-functions';
 
 import * as ResourceComponent from './components/resource';

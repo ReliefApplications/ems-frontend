@@ -4,7 +4,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { SafeGridLayoutService } from '../../../services/grid-layout.service';
+import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
 import { SafeEditLayoutModalComponent } from '../edit-layout-modal/edit-layout-modal.component';

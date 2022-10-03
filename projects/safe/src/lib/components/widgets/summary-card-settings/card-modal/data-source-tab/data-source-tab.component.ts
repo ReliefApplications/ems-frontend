@@ -9,7 +9,7 @@ import { Aggregation } from '../../../../../models/aggregation.model';
 import { MatDialog } from '@angular/material/dialog';
 import { AddLayoutModalComponent } from '../../../../grid-layout/add-layout-modal/add-layout-modal.component';
 import { SafeEditLayoutModalComponent } from '../../../../grid-layout/edit-layout-modal/edit-layout-modal.component';
-import { SafeGridLayoutService } from '../../../../../services/grid-layout.service';
+import { SafeGridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
 import { SafeAggregationService } from '../../../../../services/aggregation/aggregation.service';
 import { get } from 'lodash';
 import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';

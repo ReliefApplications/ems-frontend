@@ -33,10 +33,10 @@ import {
 } from './graphql/mutations';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeSnackBarService } from '../../services/snackbar.service';
-import { SafeDownloadService } from '../../services/download.service';
-import { SafeAuthService } from '../../services/auth.service';
-import { SafeFormBuilderService } from '../../services/form-builder.service';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
+import { SafeDownloadService } from '../../services/download/download.service';
+import { SafeAuthService } from '../../services/auth/auth.service';
+import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';

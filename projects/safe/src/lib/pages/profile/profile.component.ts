@@ -6,10 +6,10 @@ import { Subscription } from 'rxjs';
 import {
   EditUserProfileMutationResponse,
   EDIT_USER_PROFILE,
-} from '../../graphql/mutations';
+} from './graphql/mutations';
 import { User } from '../../models/user.model';
-import { SafeAuthService } from '../../services/auth.service';
-import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeAuthService } from '../../services/auth/auth.service';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
 
 /**

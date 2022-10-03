@@ -1,4 +1,4 @@
-import { DomService } from '../../services/dom.service';
+import { DomService } from '../../services/dom/dom.service';
 import {
   DatePickerComponent,
   DateTimePickerComponent,

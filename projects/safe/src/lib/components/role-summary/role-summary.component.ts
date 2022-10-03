@@ -3,7 +3,7 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Application } from '../../models/application.model';
 import { Role } from '../../models/user.model';
 import { Resource } from '../../models/resource.model';
-import { SafeBreadcrumbService } from '../../services/breadcrumb.service';
+import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { EditRoleMutationResponse, EDIT_ROLE } from './graphql/mutations';
 import { GetRoleQueryResponse, GET_ROLE } from './graphql/queries';
 

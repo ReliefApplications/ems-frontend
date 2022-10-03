@@ -8,7 +8,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
-import { QueryBuilderService } from '../../../services/query-builder.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
   GET_CHANNELS,
@@ -19,7 +19,7 @@ import {
 } from './graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
-import { SafeApplicationService } from '../../../services/application.service';
+import { SafeApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
 import { Observable } from 'rxjs';
 import { Overlay } from '@angular/cdk/overlay';

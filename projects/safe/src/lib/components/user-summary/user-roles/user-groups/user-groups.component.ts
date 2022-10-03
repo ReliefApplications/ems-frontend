@@ -3,7 +3,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Group, User } from '../../../../models/user.model';
-import { SafeSnackBarService } from '../../../../services/snackbar.service';
+import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { GET_GROUPS, GetGroupsQueryResponse } from '../../graphql/queries';
 
 /** Back-office groups section the user summary */
