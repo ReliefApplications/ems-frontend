@@ -76,8 +76,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (applications.length > 0) {
             this.applications = applications;
             this.applications.map((element) => {
-              if (element.id === this.router.url.slice(1, 25)) {
-                this.appID = this.router.url.slice(1, 25);
+              console.log("ORIGINAL ROUTER:", this.router.url);
+              console.log("ELEMENT:", element.id, "ROUTER:", this.router.url.slice(11, 35));
+              if (element.id === this.router.url.slice(11, 35)) {
+                this.appID = this.router.url.slice(11, 35);
                 const temp = this.router.url.split('/');
                 if (temp[2]) {
                   this.appPage = temp[2];

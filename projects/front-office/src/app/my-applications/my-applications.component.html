@@ -1,0 +1,20 @@
+<ng-container>
+  <h2>My Applications</h2>
+    <ng-container
+      *safeSkeleton="
+        loading;
+        repeat: 5;
+        height: '192px';
+        width: 192;
+        shape: 'rectangle'
+      "
+    >
+      <app-card
+        *ngFor="let application of applications; let index = index"
+        [application]="application"
+        [favorite]="favorite"
+        (click)="onOpenApplication(application.id)"
+        >
+      </app-card>
+    </ng-container>
+</ng-container>
