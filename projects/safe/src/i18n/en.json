@@ -25,6 +25,11 @@
 		},
 		"auto": "Auto",
 		"back": "Back",
+		"calculatedField": {
+			"few": "Calculated Fields",
+			"none": "No Calculated field",
+			"one": "calculated Field"
+		},
 		"cancel": "Cancel",
 		"channel": {
 			"few": "Channels",
@@ -398,6 +403,14 @@
 			"dropdown": {
 				"select": "From applications"
 			}
+		},
+		"calculatedFields": {
+			"add": "Create a new Calculated field",
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the Calculated field {{name}}?"
+			},
+			"edit": "Edit Calculated field",
+			"expression": "Expression"
 		},
 		"channel": {
 			"delete": {

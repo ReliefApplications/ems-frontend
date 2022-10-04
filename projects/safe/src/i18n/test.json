@@ -25,6 +25,11 @@
 		},
 		"auto": "******",
 		"back": "******",
+		"calculatedField": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"cancel": "******",
 		"channel": {
 			"few": "******",
@@ -398,6 +403,14 @@
 			"dropdown": {
 				"select": "******"
 			}
+		},
+		"calculatedFields": {
+			"add": "******",
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******"
+			},
+			"edit": "******",
+			"expression": "******"
 		},
 		"channel": {
 			"delete": {

@@ -25,6 +25,11 @@
 		},
 		"auto": "Automatique",
 		"back": "Retour",
+		"calculatedField": {
+			"few": "Champs dérivés",
+			"none": "Aucun champ dérivé",
+			"one": "Champ dérivé"
+		},
 		"cancel": "Annuler",
 		"channel": {
 			"few": "Canaux de diffusion",
@@ -398,6 +403,14 @@
 			"dropdown": {
 				"select": "Depuis les applications"
 			}
+		},
+		"calculatedFields": {
+			"add": "Créer un nouveau champ dérivé",
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du champ dérivé {{name}} ?"
+			},
+			"edit": "Modifier le champ dérivé",
+			"expression": "Expression"
 		},
 		"channel": {
 			"delete": {
