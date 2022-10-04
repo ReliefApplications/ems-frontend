@@ -48,10 +48,9 @@
   </mat-radio-group>
   <!-- EMAIL -->
   <p class="info-row">
-    <mat-slide-toggle [(ngModel)]="export.email"
-    >{{ 'components.widget.grid.export.email.title' | translate
-    }}</mat-slide-toggle
-  >
+    <mat-slide-toggle [(ngModel)]="export.email">{{
+      'components.widget.grid.export.email.title' | translate
+    }}</mat-slide-toggle>
     <mat-icon
       class="info-icon"
       [matTooltip]="'components.widget.grid.export.email.tooltip' | translate"
