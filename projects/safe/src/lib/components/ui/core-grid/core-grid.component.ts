@@ -247,6 +247,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param authService Shared authentication service
    * @param gridService Shared grid service
    * @param translate Angular translate service
+   * @param applicationService Shared application service
    */
   constructor(
     @Inject('environment') environment: any,

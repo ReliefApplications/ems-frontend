@@ -599,12 +599,12 @@
 						},
 						"title": "******"
 					},
-					"format": {
-						"title": "******"
-					},
 					"email": {
 						"title": "******",
 						"tooltip": "******"
+					},
+					"format": {
+						"title": "******"
 					}
 				},
 				"filter": {
