@@ -73,14 +73,14 @@ const routes: Routes = [
         },
       },
       {
-        path: 'derived-fields',
+        path: 'calculated-fields',
         loadChildren: () =>
-          import('./derived-fields-tab/derived-fields-tab.module').then(
-            (m) => m.DerivedFieldsTabModule
+          import('./calculated-fields-tab/calculated-fields-tab.module').then(
+            (m) => m.CalculatedFieldsTabModule
           ),
         data: {
           breadcrumb: {
-            key: 'common.derivedField.few',
+            key: 'common.calculatedField.few',
           },
         },
       },

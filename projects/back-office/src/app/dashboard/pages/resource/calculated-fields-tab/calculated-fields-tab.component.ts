@@ -2,27 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  SafeEditDerivedFieldModalComponent,
+  SafeEditCalculatedFieldModalComponent,
   SafeGridLayoutService,
   SafeConfirmModalComponent,
   Resource,
+  SafeSnackBarService,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
-  DERIVED_FIELD_UPDATE,
-  DerivedFieldUpdateMutationResponse,
+  Calculated_FIELD_UPDATE,
+  CalculatedFieldUpdateMutationResponse,
 } from './graphql/mutations';
 
 /**
- * Derived fields tab of resource page
+ * Calculated fields tab of resource page
  */
 @Component({
-  selector: 'app-derived-fields-tab',
-  templateUrl: './derived-fields-tab.component.html',
-  styleUrls: ['./derived-fields-tab.component.scss'],
+  selector: 'app-calculated-fields-tab',
+  templateUrl: './calculated-fields-tab.component.html',
+  styleUrls: ['./calculated-fields-tab.component.scss'],
 })
-export class DerivedFieldsTabComponent implements OnInit {
+export class CalculatedFieldsTabComponent implements OnInit {
   public resource!: Resource;
   public fields: any[] = [];
 
@@ -34,46 +35,49 @@ export class DerivedFieldsTabComponent implements OnInit {
    * @param apollo Apollo service
    * @param dialog Material dialog service
    * @param translate Angular translate service
+   * @param snackBar Shared snackbar service
    */
   constructor(
     private apollo: Apollo,
     private dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private snackBar: SafeSnackBarService
   ) {}
 
   ngOnInit(): void {
     const state = history.state;
     this.resource = get(state, 'resource', null);
 
-    this.fields = this.resource.fields.filter((f: any) => f.type === 'derived');
+    this.fields = this.resource.fields.filter(
+      (f: any) => f.type === 'calculated'
+    );
   }
 
   /**
-   * Adds a new derived field for the resource.
+   * Adds a new Calculated field for the resource.
    */
-  onAddDerivedField(): void {
-    const dialogRef = this.dialog.open(SafeEditDerivedFieldModalComponent, {
+  onAddCalculatedField(): void {
+    const dialogRef = this.dialog.open(SafeEditCalculatedFieldModalComponent, {
       disableClose: true,
       data: {
         field: null,
         resourceFields: this.resource.fields.filter(
-          (f: any) => f.type !== 'derived'
+          (f: any) => f.type !== 'calculated'
         ),
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        console.log(value);
         this.apollo
-          .mutate<DerivedFieldUpdateMutationResponse>({
-            mutation: DERIVED_FIELD_UPDATE,
+          .mutate<CalculatedFieldUpdateMutationResponse>({
+            mutation: Calculated_FIELD_UPDATE,
             variables: {
               resourceId: this.resource.id,
-              derivedField: {
+              calculatedField: {
                 add: {
                   name: value.name,
-                  definition: value.definition
-                    .substring(3, value.definition.length - 4)
+                  expression: value.expression
+                    .substring(3, value.expression.length - 4)
                     .replaceAll('&nbsp;', ' '),
                 },
               },
@@ -88,6 +92,11 @@ export class DerivedFieldsTabComponent implements OnInit {
                 )
               );
             }
+            if (res.errors) {
+              this.snackBar.openSnackBar(res.errors[0].message, {
+                error: true,
+              });
+            }
           });
       }
     });
@@ -96,15 +105,15 @@ export class DerivedFieldsTabComponent implements OnInit {
   /**
    * Edits a layout. Opens a popup for edition.
    *
-   * @param field Derived field to edit
+   * @param field Calculated field to edit
    */
-  onEditDerivedField(field: any): void {
-    const dialogRef = this.dialog.open(SafeEditDerivedFieldModalComponent, {
+  onEditCalculatedField(field: any): void {
+    const dialogRef = this.dialog.open(SafeEditCalculatedFieldModalComponent, {
       disableClose: true,
       data: {
-        derivedField: field,
+        calculatedField: field,
         resourceFields: this.resource.fields.filter(
-          (f: any) => f.type !== 'derived'
+          (f: any) => f.type !== 'calculated'
         ),
       },
     });
@@ -113,16 +122,16 @@ export class DerivedFieldsTabComponent implements OnInit {
         return;
       }
       this.apollo
-        .mutate<DerivedFieldUpdateMutationResponse>({
-          mutation: DERIVED_FIELD_UPDATE,
+        .mutate<CalculatedFieldUpdateMutationResponse>({
+          mutation: Calculated_FIELD_UPDATE,
           variables: {
             resourceId: this.resource.id,
-            derivedField: {
+            calculatedField: {
               update: {
                 oldName: field.name,
                 name: value.name,
-                definition: value.definition
-                  .substring(3, value.definition.length - 4)
+                expression: value.expression
+                  .substring(3, value.expression.length - 4)
                   .replaceAll('&nbsp;', ' '),
               },
             },
@@ -132,26 +141,31 @@ export class DerivedFieldsTabComponent implements OnInit {
           if (res.data?.editResource) {
             // Needed to update the field as table data source
             this.fields = res.data.editResource.fields.filter(
-              (f: any) => f.type === 'derived'
+              (f: any) => f.type === 'calculated'
             );
+          }
+          if (res.errors) {
+            this.snackBar.openSnackBar(res.errors[0].message, {
+              error: true,
+            });
           }
         });
     });
   }
 
   /**
-   * Deletes a derived field.
+   * Deletes a Calculated field.
    *
-   * @param field Derived field to delete
+   * @param field Calculated field to delete
    */
-  onDeleteDerivedField(field: any): void {
+  onDeleteCalculatedField(field: any): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('common.derivedField.one'),
+          name: this.translate.instant('common.calculatedField.one'),
         }),
         content: this.translate.instant(
-          'components.derivedFields.delete.confirmationMessage',
+          'components.calculatedFields.delete.confirmationMessage',
           {
             name: field.name,
           }
@@ -164,11 +178,11 @@ export class DerivedFieldsTabComponent implements OnInit {
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.apollo
-          .mutate<DerivedFieldUpdateMutationResponse>({
-            mutation: DERIVED_FIELD_UPDATE,
+          .mutate<CalculatedFieldUpdateMutationResponse>({
+            mutation: Calculated_FIELD_UPDATE,
             variables: {
               resourceId: this.resource.id,
-              derivedField: {
+              calculatedField: {
                 remove: {
                   name: field.name,
                 },
@@ -180,6 +194,11 @@ export class DerivedFieldsTabComponent implements OnInit {
               this.fields = this.fields.filter(
                 (f: any) => f.name !== field.name
               );
+            }
+            if (res.errors) {
+              this.snackBar.openSnackBar(res.errors[0].message, {
+                error: true,
+              });
             }
           });
       }

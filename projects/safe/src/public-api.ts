@@ -86,7 +86,7 @@ export * from './lib/components/graphql-select/public-api';
 export * from './lib/components/ui/modal/public-api';
 export * from './lib/components/ui/empty/public-api';
 export * from './lib/components/ui/divider/public-api';
-export * from './lib/components/derived-field/public-api';
+export * from './lib/components/edit-calculated-field-modal/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';

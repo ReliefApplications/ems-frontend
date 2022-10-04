@@ -1,9 +1,9 @@
 <safe-modal [closable]="true" size="medium">
   <h1 mat-dialog-title>
     {{
-      (this.data.derivedField
-        ? 'components.derivedFields.edit'
-        : 'components.derivedFields.add'
+      (this.data.calculatedField
+        ? 'components.calculatedFields.edit'
+        : 'components.calculatedFields.add'
       ) | translate
     }}
   </h1>
@@ -17,9 +17,9 @@
           <input matInput formControlName="name" type="string" />
         </mat-form-field>
         <div class="form-group-title">
-          {{ 'components.derivedFields.definition' | translate }}
+          {{ 'components.calculatedFields.expression' | translate }}
         </div>
-        <editor [init]="editor" formControlName="definition"></editor>
+        <editor [init]="editor" formControlName="expression"></editor>
       </div>
     </form>
   </mat-dialog-content>

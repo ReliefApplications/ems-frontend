@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DerivedFieldsTabRoutingModule } from './derived-fields-tab-routing.module';
+import { CalculatedFieldsTabRoutingModule } from './calculated-fields-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -9,27 +9,27 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
-  SafeEditDerivedFieldModalModule,
+  SafeEditCalculatedFieldModalModule,
 } from '@safe/builder';
-import { DerivedFieldsTabComponent } from './derived-fields-tab.component';
+import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 
 /**
- * Derived fields tab of resource page
+ * Calculated fields tab of resource page
  */
 @NgModule({
-  declarations: [DerivedFieldsTabComponent],
+  declarations: [CalculatedFieldsTabComponent],
   imports: [
     CommonModule,
-    DerivedFieldsTabRoutingModule,
+    CalculatedFieldsTabRoutingModule,
     MatTableModule,
     MatIconModule,
     MatMenuModule,
     SafeButtonModule,
     MatTooltipModule,
     TranslateModule,
-    SafeEditDerivedFieldModalModule,
+    SafeEditCalculatedFieldModalModule,
     OverlayModule,
   ],
 })
-export class DerivedFieldsTabModule {}
+export class CalculatedFieldsTabModule {}

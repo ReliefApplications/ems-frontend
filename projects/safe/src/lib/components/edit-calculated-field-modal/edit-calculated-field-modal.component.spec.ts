@@ -5,7 +5,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { SafeEditDerivedFieldModalComponent } from './edit-derived-field-modal.component';
+import { SafeEditCalculatedFieldModalComponent } from './edit-calculated-field-modal.component';
 import {
   TranslateModule,
   TranslateService,
@@ -13,9 +13,9 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 
-describe('SafeEditDerivedFieldModalComponent', () => {
-  let component: SafeEditDerivedFieldModalComponent;
-  let fixture: ComponentFixture<SafeEditDerivedFieldModalComponent>;
+describe('SafeEditCalculatedFieldModalComponent', () => {
+  let component: SafeEditCalculatedFieldModalComponent;
+  let fixture: ComponentFixture<SafeEditCalculatedFieldModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -30,7 +30,7 @@ describe('SafeEditDerivedFieldModalComponent', () => {
           },
         },
       ],
-      declarations: [SafeEditDerivedFieldModalComponent],
+      declarations: [SafeEditCalculatedFieldModalComponent],
       imports: [
         MatDialogModule,
         TranslateModule.forRoot({
@@ -44,7 +44,7 @@ describe('SafeEditDerivedFieldModalComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeEditDerivedFieldModalComponent);
+    fixture = TestBed.createComponent(SafeEditCalculatedFieldModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

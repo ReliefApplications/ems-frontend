@@ -25,6 +25,11 @@
 		},
 		"auto": "Automatique",
 		"back": "Retour",
+		"calculatedField": {
+			"few": "Champs dérivés",
+			"none": "Aucun champ dérivé",
+			"one": "Champ dérivé"
+		},
 		"cancel": "Annuler",
 		"channel": {
 			"few": "Canaux de diffusion",
@@ -49,11 +54,6 @@
 		"delete": "Supprimer",
 		"deleteObject": "Supprimer {{name}}",
 		"deleted": "Supprimé",
-		"derivedField": {
-			"few": "Champs dérivés",
-			"none": "Aucun champ dérivé",
-			"one": "Champ dérivé"
-		},
 		"dismiss": "Fermer",
 		"display": "Afficher",
 		"downloadObject": "Télécharger {{name}}",
@@ -404,6 +404,14 @@
 				"select": "Depuis les applications"
 			}
 		},
+		"calculatedFields": {
+			"add": "Créer un nouveau champ dérivé",
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du champ dérivé {{name}} ?"
+			},
+			"edit": "Modifier le champ dérivé",
+			"expression": "Expression"
+		},
 		"channel": {
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer le canal {{name}} ?"
@@ -417,14 +425,6 @@
 			"confirm": "Confirmer",
 			"delete": "Supprimer",
 			"title": "Confirmer"
-		},
-		"derivedFields": {
-			"add": "Créer un nouveau champ dérivé",
-			"definition": "Définition",
-			"delete": {
-				"confirmationMessage": "Confirmez-vous la suppression du champ dérivé {{name}} ?"
-			},
-			"edit": "Modifier le champ dérivé"
 		},
 		"emailBuilder": {
 			"body": "Corps du texte",

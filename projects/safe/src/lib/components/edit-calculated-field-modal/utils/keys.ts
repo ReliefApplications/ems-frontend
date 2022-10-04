@@ -5,7 +5,7 @@ const CALC_PREFIX = '{{calc.';
 /** Suffix for all keys */
 const PLACEHOLDER_SUFFIX = '}}';
 
-/** Definition of all supported functions for calculation of derived fields */
+/** Definition of all supported functions for calculation of Calculated fields */
 const calcFunctions: Record<string, { signature: string }> = {
   // MULTIPLE ARGUMENTS
   add: {

@@ -25,6 +25,11 @@
 		},
 		"auto": "Auto",
 		"back": "Back",
+		"calculatedField": {
+			"few": "Calculated Fields",
+			"none": "No Calculated field",
+			"one": "calculated Field"
+		},
 		"cancel": "Cancel",
 		"channel": {
 			"few": "Channels",
@@ -49,11 +54,6 @@
 		"delete": "Delete",
 		"deleteObject": "Delete {{name}}",
 		"deleted": "Deleted",
-		"derivedField": {
-			"few": "Derived Fields",
-			"none": "No derived field",
-			"one": "Derived Field"
-		},
 		"dismiss": "Dismiss",
 		"display": "Display",
 		"downloadObject": "Download {{name}}",
@@ -404,6 +404,14 @@
 				"select": "From applications"
 			}
 		},
+		"calculatedFields": {
+			"add": "Create a new Calculated field",
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the Calculated field {{name}}?"
+			},
+			"edit": "Edit Calculated field",
+			"expression": "Expression"
+		},
 		"channel": {
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the channel {{name}}?"
@@ -417,14 +425,6 @@
 			"confirm": "Confirm",
 			"delete": "Delete",
 			"title": "Confirm"
-		},
-		"derivedFields": {
-			"add": "Create a new derived field",
-			"definition": "Definition",
-			"delete": {
-				"confirmationMessage": "Do you confirm the deletion of the derived field {{name}}?"
-			},
-			"edit": "Edit derived field"
 		},
 		"emailBuilder": {
 			"body": "Body",

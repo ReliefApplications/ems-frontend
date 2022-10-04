@@ -25,6 +25,11 @@
 		},
 		"auto": "******",
 		"back": "******",
+		"calculatedField": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"cancel": "******",
 		"channel": {
 			"few": "******",
@@ -49,11 +54,6 @@
 		"delete": "******",
 		"deleteObject": "****** {{name}}",
 		"deleted": "******",
-		"derivedField": {
-			"few": "******",
-			"none": "******",
-			"one": "******"
-		},
 		"dismiss": "******",
 		"display": "******",
 		"downloadObject": "****** {{name}}",
@@ -404,6 +404,14 @@
 				"select": "******"
 			}
 		},
+		"calculatedFields": {
+			"add": "******",
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******"
+			},
+			"edit": "******",
+			"expression": "******"
+		},
 		"channel": {
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
@@ -417,14 +425,6 @@
 			"confirm": "******",
 			"delete": "******",
 			"title": "******"
-		},
-		"derivedFields": {
-			"add": "******",
-			"definition": "******",
-			"delete": {
-				"confirmationMessage": "****** {{name}} ******"
-			},
-			"edit": "******"
 		},
 		"emailBuilder": {
 			"body": "******",
