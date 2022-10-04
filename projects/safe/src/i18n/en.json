@@ -599,6 +599,10 @@
 						},
 						"title": "Select records to export"
 					},
+					"email": {
+						"title": "Send me the file by email",
+						"tooltip": "If checked, instead of waiting for the export to be fully built before downloading it, you will receive an email with the export attached once it's ready."
+					},
 					"format": {
 						"title": "Select export format"
 					}

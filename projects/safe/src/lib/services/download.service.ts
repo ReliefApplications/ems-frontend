@@ -1,6 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { NOTIFICATIONS } from '../const/notifications';
+import { SafeSnackBarService } from './snackbar.service';
 
 /**
  * Shared download service. Handles export and upload events.
@@ -19,10 +21,12 @@ export class SafeDownloadService {
    *
    * @param environment Current environment
    * @param http Http client
+   * @param snackBar Safe snackbar service
    */
   constructor(
     @Inject('environment') environment: any,
-    private http: HttpClient
+    private http: HttpClient,
+    private snackBar: SafeSnackBarService
   ) {
     this.baseUrl = environment.apiUrl;
   }
@@ -77,8 +81,12 @@ export class SafeDownloadService {
     this.http
       .post(url, body, { responseType: 'blob', headers })
       .subscribe((res) => {
-        const blob = new Blob([res], { type });
-        this.saveFile(fileName, blob);
+        if (body?.email) {
+          this.snackBar.openSnackBar(NOTIFICATIONS.fileExportOngoing);
+        } else {
+          const blob = new Blob([res], { type });
+          this.saveFile(fileName, blob);
+        }
       });
   }
 
