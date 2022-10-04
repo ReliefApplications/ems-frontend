@@ -601,6 +601,10 @@
 					},
 					"format": {
 						"title": "******"
+					},
+					"email": {
+						"title": "******",
+						"tooltip": "******"
 					}
 				},
 				"filter": {

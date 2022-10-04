@@ -27,6 +27,7 @@ import { SafeDownloadService } from '../../../services/download.service';
 import { SafeLayoutService } from '../../../services/layout.service';
 import { SafeSnackBarService } from '../../../services/snackbar.service';
 import { QueryBuilderService } from '../../../services/query-builder.service';
+import { SafeApplicationService } from '../../../services/application.service';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   ConvertRecordMutationResponse,
@@ -257,7 +258,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private gridService: SafeGridService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private applicationService: SafeApplicationService
   ) {
     this.apiUrl = environment.apiUrl;
     this.isAdmin =
@@ -957,6 +959,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       sortField: this.sortField,
       sortOrder: this.sortOrder,
       format: e.format,
+      application: this.applicationService.name,
+      fileName: this.fileName,
+      email: e.email,
       // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields)

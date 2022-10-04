@@ -39,4 +39,5 @@ export const EXPORT_SETTINGS = {
   records: 'all',
   fields: 'all',
   format: 'xlsx',
+  email: false,
 };

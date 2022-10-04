@@ -1,8 +1,8 @@
 .safe-grid-export {
   display: flex;
   flex-direction: column;
-  max-height: 300px;
-  height: 300px;
+  max-height: 500px;
+  height: auto;
 
   & > label {
     margin: 24px 0 12px 0;
@@ -10,6 +10,10 @@
     &:first-child {
       margin-top: 0;
     }
+  }
+
+  .info-row {
+    margin: 24px 0 12px 0;
   }
 
   mat-radio-group {

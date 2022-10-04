@@ -109,6 +109,11 @@ export class SafeApplicationService {
     return true;
   }
 
+  /** @returns Name of the current application */
+  get name(): string {
+    return this.application.value?.name || '';
+  }
+
   /**
    * Shared application service. Handles events of opened application.
    *
