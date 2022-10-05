@@ -99,11 +99,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (this.appID.length <= 0) {
               if (user.favoriteApp) {
                 console.log('load fav app');
-                // this.appID = user.favoriteApp; // TODO: uncomment and check that the fav app is part of list of application IDS
+                // this.appID = user.favoriteApp; // TODO: check that the fav app is part of list of application IDS
               } else {
                 console.log('open applications');
-                // this.router.navigate(['applications']);
+                // this.router.navigate(['applications']); // todo: uncomment
               }
+              this.router.navigate(['applications']); // todo: remove
             }
             this.applicationService.loadApplication(this.appID);
             this.roles = user.roles || [];

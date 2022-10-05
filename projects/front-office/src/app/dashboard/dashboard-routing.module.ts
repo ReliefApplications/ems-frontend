@@ -13,7 +13,7 @@ export const routes = [
     component: DashboardComponent,
     children: [
       {
-        path: '',
+        path: 'applications',
         loadChildren: () =>
           import('./pages/applications/applications.module').then(
             (m) => m.ApplicationsModule
