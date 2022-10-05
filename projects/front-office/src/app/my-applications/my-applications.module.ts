@@ -6,17 +6,18 @@ import {
   SafeLayoutModule,
   SafeApplicationsSummaryModule,
   SafeSkeletonModule,
-  SafeIconModule
+  SafeIconModule,
+  SafeToolbarModule,
 } from '@safe/builder';
 import { MatRippleModule } from '@angular/material/core';
 import { CardComponent } from './card/card.component';
-import { MatTabsModule } from '@angular/material/tabs';
-
+import { CardsComponent } from './cards/cards.component';
 
 @NgModule({
   declarations: [
     MyApplicationsComponent,
-    CardComponent
+    CardComponent,
+    CardsComponent,
   ],
   imports: [
     CommonModule,
@@ -25,8 +26,8 @@ import { MatTabsModule } from '@angular/material/tabs';
     SafeApplicationsSummaryModule,
     SafeSkeletonModule,
     SafeIconModule,
+    SafeToolbarModule,
     MatRippleModule,
-    MatTabsModule
   ]
 })
 export class MyApplicationsModule { }

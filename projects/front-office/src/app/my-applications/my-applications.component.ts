@@ -22,13 +22,15 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class MyApplicationsComponent implements OnInit {
     /** Application title */
-    public title = '';
+    public title = 'Front-Office';
     /** Stores current app ID */
     public appID = '';
     /** Stores current app page */
     public appPage = '';
     /** List of accessible applications */
     public applications: Application[] = [];
+    /** List of list of accessible applications */
+    public applicationsList: Application[][] = [];
     /** List of application pages */
     public navGroups: any[] = [];
     /** Current application */
@@ -60,17 +62,24 @@ export class MyApplicationsComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log("init My application");
     this.authSubscription = this.authService.user$.subscribe(
       (user: User | null) => {
         if (user) {
           // this.favorite = '63204a5987cde9001e1176b2';
           this.favorite = user.favoriteApp || '';
-          console.log("USER FAVORITE APP", user);
           const applications = user.applications || [];
           if (applications.length > 0) {
             this.applications = applications;
-            console.log(this.applications[0].pages);
+            let appList: Application[] = [];
+            this.applications.map((app: Application) => {
+              if (appList.length === 4){
+                this.applicationsList.push(appList);
+                appList = [];
+              }
+              appList.push(app);
+            });
+            this.applicationsList.push(appList);
+            console.log(this.applicationsList);
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant(
@@ -94,15 +103,5 @@ export class MyApplicationsComponent implements OnInit {
     console.log(appID);
     console.log('/' + (appID || ''));
     this.router.navigate(['/dashboard/' + (appID || '')]);
-  }
-
-  /**
-   * Search all informations needed.
-   * 
-   * 
-   */
-  getApplicationsInfo(): any[] {
-    let applicationsInfo: any[] = [];
-    return applicationsInfo;
   }
 }

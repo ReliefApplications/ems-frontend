@@ -1,0 +1,17 @@
+<div class="cards">
+  <ng-container
+    *safeSkeleton="
+      loading;
+      repeat: 5;
+      height: '229px';
+      width: 261;
+      shape: 'rectangle'
+    "
+  >
+    <app-card
+      *ngFor="let application of applications; let index = index"
+      [application]="application"
+      (click)="openEvent.emit(application.id)"
+    ></app-card>
+  </ng-container>
+</div>

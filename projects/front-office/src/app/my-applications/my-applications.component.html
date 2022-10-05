@@ -1,20 +1,16 @@
-<ng-container>
-  <h2>My Applications</h2>
-    <ng-container
-      *safeSkeleton="
-        loading;
-        repeat: 5;
-        height: '192px';
-        width: 192;
-        shape: 'rectangle'
-      "
-    >
-      <app-card
-        *ngFor="let application of applications; let index = index"
-        [application]="application"
-        [favorite]="favorite"
-        (click)="onOpenApplication(application.id)"
-        >
-      </app-card>
-    </ng-container>
-</ng-container>
+<safe-toolbar
+  [title]="title"
+></safe-toolbar>
+<div>
+  <h2 class="page-title">My Applications</h2>
+  <ng-container
+    *ngFor="let appList of applicationsList; let index = index"
+  >
+    <div class="cards-display">
+      <app-cards
+        [applications]="appList"
+        (openEvent)="onOpenApplication($event)"
+      ></app-cards>
+    </div>
+  </ng-container>
+</div>

@@ -3,26 +3,34 @@ import { Application } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import {
   GET_APP_INFORMATIONS,
-  GetAppInformationsByIdQueryResponse
+  GetAppInformationsByIdQueryResponse,
 } from './graphql/queries';
 
 @Component({
   selector: 'app-card',
   templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss']
+  styleUrls: ['./card.component.scss'],
 })
+/**
+ * Component used to display application information
+ */
 export class CardComponent implements OnInit {
-
   @Input() application: Application | null = null;
-  @Input() favorite: string = '';
-  private numberOfPages = 0;
+  @Input() favorite = '';
   public numberOfPagesDisplay = '';
   public star = '';
   public description = '';
+  private numberOfPages = 0;
 
-
+  /**
+   * Component used to display application information
+   */
   constructor(private apollo: Apollo) { }
 
+  /**
+   * Request database for application informations
+   * and process informations
+   */
   ngOnInit(): void {
     if (this.favorite === this.application?.id){
       this.star = 'star';
