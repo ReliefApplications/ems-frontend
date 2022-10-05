@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { FIELD_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
-import { getCalcKeys, getDataKeys } from './utils/keys';
+import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
@@ -65,7 +65,11 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
       expression: [this.data.calculatedField?.expression, Validators.required],
       // TODO: Add display options
     });
-    const keys = [...getCalcKeys(), ...getDataKeys(this.resourceFields)];
+    const keys = [
+      ...getCalcKeys(),
+      ...getInfoKeys(),
+      ...getDataKeys(this.resourceFields),
+    ];
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
   }
 
