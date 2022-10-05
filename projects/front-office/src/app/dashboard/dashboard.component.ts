@@ -76,15 +76,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (applications.length > 0) {
             this.applications = applications;
             this.applications.map((element) => {
+            
               console.log('ORIGINAL ROUTER:', this.router.url);
               console.log(
                 'ELEMENT:',
                 element.id,
                 'ROUTER:',
-                this.router.url.slice(11, 35)
+                this.router.url.slice(1, 25)
               );
-              if (element.id === this.router.url.slice(11, 35)) {
-                this.appID = this.router.url.slice(11, 35);
+               
+              if (element.id === this.router.url.slice(1, 25)) {
+                this.appID = this.router.url.slice(1, 25);
                 const temp = this.router.url.split('/');
                 if (temp[2]) {
                   this.appPage = temp[2];
@@ -98,7 +100,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
               if (user.favoriteApp) {
                 this.appID = user.favoriteApp;
               } else {
-                this.appID = applications[0].id || '';
+                console.log("APPLICATIONS");
+                this.router.navigate(['applications']);
               }
             }
             this.applicationService.loadApplication(this.appID);

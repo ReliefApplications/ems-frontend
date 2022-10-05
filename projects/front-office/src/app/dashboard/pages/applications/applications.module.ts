@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MyApplicationsComponent } from './my-applications.component';
-import { MyApplicationsRoutingModule } from './my-applications-routing.module';
+import { ApplicationsComponent } from './applications.component';
+import { ApplicationsRoutingModule } from './applications-routing.module';
 import {
   SafeLayoutModule,
   SafeApplicationsSummaryModule,
@@ -15,13 +15,13 @@ import { CardsComponent } from './cards/cards.component';
 
 @NgModule({
   declarations: [
-    MyApplicationsComponent,
+    ApplicationsComponent,
     CardComponent,
     CardsComponent,
   ],
   imports: [
     CommonModule,
-    MyApplicationsRoutingModule,
+    ApplicationsRoutingModule,
     SafeLayoutModule,
     SafeApplicationsSummaryModule,
     SafeSkeletonModule,
@@ -30,4 +30,4 @@ import { CardsComponent } from './cards/cards.component';
     MatRippleModule,
   ]
 })
-export class MyApplicationsModule { }
+export class ApplicationsModule { }

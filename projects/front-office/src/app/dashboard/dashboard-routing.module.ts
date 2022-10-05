@@ -13,6 +13,11 @@ export const routes = [
     component: DashboardComponent,
     children: [
       {
+        path: 'applications',
+        loadChildren: () =>
+          import('./pages/applications/applications.module').then((m) => {console.log('CALL'); return m.ApplicationsModule}),
+      },
+      {
         path: 'share',
         children: [
           // Redirect to main page

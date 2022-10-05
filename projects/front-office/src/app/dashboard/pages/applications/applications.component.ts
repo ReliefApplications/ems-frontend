@@ -16,11 +16,11 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-my-applications',
-  templateUrl: './my-applications.component.html',
-  styleUrls: ['./my-applications.component.scss']
+  selector: 'app-applications',
+  templateUrl: './applications.component.html',
+  styleUrls: ['./applications.component.scss']
 })
-export class MyApplicationsComponent implements OnInit {
+export class ApplicationsComponent implements OnInit {
     /** Application title */
     public title = 'Front-Office';
     /** Stores current app ID */
@@ -62,6 +62,7 @@ export class MyApplicationsComponent implements OnInit {
 
 
   ngOnInit(): void {
+    console.log("TEST");
     this.authSubscription = this.authService.user$.subscribe(
       (user: User | null) => {
         if (user) {
@@ -99,9 +100,7 @@ export class MyApplicationsComponent implements OnInit {
    * @param application Application to open
    */
   onOpenApplication(appID: any): void {
-    console.log("TEST");
-    console.log(appID);
-    console.log('/' + (appID || ''));
-    this.router.navigate(['/dashboard/' + (appID || '')]);
+    console.log((appID || ''));
+    this.router.navigate([`${appID}`]);
   }
 }
