@@ -988,6 +988,15 @@
 					"add": "Ajouter un carte",
 					"card": {
 						"dataSource": {
+							"layoutStyles": {
+								"title": "Styles de mise en page",
+								"use": "Utiliser les styles de mise en page",
+								"wholeRow": {
+									"option1": "Appliquer à tous les champs",
+									"option2": "Appliquer sur toute la carte",
+									"title": "Styles de lignes entières :"
+								}
+							},
 							"title": "Source de données"
 						},
 						"display": {

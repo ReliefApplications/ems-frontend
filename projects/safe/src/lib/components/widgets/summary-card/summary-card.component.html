@@ -26,6 +26,7 @@
         }}"
         style.grid-row-end="{{ 'span ' + card.height }}"
         [card]="card"
+        [fields]="getFilteredFields(card)"
       >
       </safe-summary-card-item>
     </div>

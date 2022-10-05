@@ -34,7 +34,7 @@ import { getFieldsValue } from '../parser/utils';
 })
 export class SummaryCardItemComponent implements OnInit, OnChanges {
   @Input() card!: any;
-  public fields: any[] = [];
+  @Input() fields: any[] = [];
   public fieldsValue: any = null;
   public loading = true;
   public styles: any[] = [];
@@ -91,83 +91,37 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    */
   private setContentFromLayout(): void {
     if (this.card.record) {
-      this.apollo
-        .query<GetRecordByIdQueryResponse>({
-          query: GET_RECORD_BY_ID,
-          variables: {
-            id: this.card.record,
-            display: true,
-          },
-        })
-        .subscribe((res) => {
-          if (res.data.record) {
-            this.fieldsValue = getFieldsValue(res.data.record);
-            if (typeof this.card.layout === 'string') {
-              this.apollo
-                .query<GetLayoutQueryResponse>({
-                  query: GET_LAYOUT,
-                  variables: {
-                    id: this.card.layout,
-                    resource: this.card.resource,
-                  },
-                })
-                .subscribe((res2) => {
-                  if (res2) {
-                    this.styles = get(
-                      res2.data.resource.layouts?.edges[0],
-                      'node.query.style',
-                      []
-                    );
-                    this.fields = [];
-                    get(res.data.record, 'form.resource.metadata', []).map(
-                      (metafield: any) => {
-                        get(
-                          res2.data.resource.layouts?.edges[0],
-                          'node.query.fields',
-                          []
-                        ).map((field: any) => {
-                          if (field.name === metafield.name) {
-                            const type = metafield.type;
-                            this.fields.push({ ...field, type });
-                          }
-                        });
-                      }
-                    );
-                  } else {
-                    this.fields = get(
-                      res.data.record,
-                      'form.resource.metadata',
-                      []
-                    );
-                  }
-                  this.loading = false;
-                });
-            } else if (typeof this.card.layout === 'object') {
-              this.styles = get(this.card.layout, 'style', []);
-              this.fields = [];
-              get(res.data.record, 'form.resource.metadata', []).map(
-                (metafield: any) => {
-                  get(this.card.layout, 'fields', []).map((field: any) => {
-                    if (field.name === metafield.name) {
-                      const type = metafield.type;
-                      this.fields.push({ ...field, type });
-                    }
-                  });
-                }
+      this.fieldsValue = getFieldsValue(this.card.record);
+      if (typeof this.card.layout === 'string') {
+        this.apollo
+          .query<GetLayoutQueryResponse>({
+            query: GET_LAYOUT,
+            variables: {
+              id: this.card.layout,
+              resource: this.card.resource,
+            },
+          })
+          .subscribe((res2) => {
+            if (res2) {
+              this.styles = get(
+                res2.data.resource.layouts?.edges[0],
+                'node.query.style',
+                []
               );
-              this.loading = false;
             }
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant(
-                'components.widget.summaryCard.errors.invalidSource'
-              ),
-              { error: true }
-            );
             this.loading = false;
-          }
-        });
+          });
+      } else if (typeof this.card.layout === 'object') {
+        this.styles = get(this.card.layout, 'style', []);
+        this.loading = false;
+      }
     } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.widget.summaryCard.errors.invalidSource'
+        ),
+        { error: true }
+      );
       this.loading = false;
     }
   }

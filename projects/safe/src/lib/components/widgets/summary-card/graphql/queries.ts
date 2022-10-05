@@ -1,6 +1,7 @@
 import { gql } from 'apollo-angular';
 import { Record } from '../../../../models/record.model';
 import { Layout } from '../../../../models/layout.model';
+import { Resource } from '../../../../models/resource.model';
 
 // === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
@@ -54,4 +55,19 @@ export interface GetResourceLayoutsByIdQueryResponse {
       query: Layout['query'];
     }[];
   };
+}
+
+/** Graphql request for getting resource metadata */
+export const GET_RESOURCE_METADATA = gql`
+  query GetResourceMeta($id: ID!) {
+    resource(id: $id) {
+      metadata
+    }
+  }
+`;
+
+/** Model for GetResourceByIdQueryResponse object */
+export interface GetResourceMetadataQueryResponse {
+  loading: boolean;
+  resource: Resource;
 }

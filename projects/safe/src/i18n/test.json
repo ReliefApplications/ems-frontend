@@ -988,6 +988,15 @@
 					"add": "******",
 					"card": {
 						"dataSource": {
+							"layoutStyles": {
+								"title": "******",
+								"use": "******",
+								"wholeRow": {
+									"option1": "******",
+									"option2": "******",
+									"title": "******"
+								}
+							},
 							"title": "******"
 						},
 						"display": {
@@ -995,7 +1004,6 @@
 							"header": "******",
 							"title": "******"
 						},
-						"preview": {},
 						"textEditor": {
 							"title": "******"
 						},

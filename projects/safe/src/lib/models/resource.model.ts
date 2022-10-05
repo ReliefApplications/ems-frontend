@@ -19,6 +19,7 @@ export interface Resource {
   coreForm?: Form;
   layouts?: LayoutConnection;
   aggregations?: AggregationConnection;
+  metadata?: any;
   rolePermissions?: {
     canCreateRecords: any;
     canSeeRecords: any;
