@@ -135,6 +135,7 @@ export class SafeGridService {
                 filter: f.filter,
               },
               subFields,
+              canSee: true,
             };
           }
           default: {
@@ -156,12 +157,13 @@ export class SafeGridService {
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
+              canSee: get(metaData, 'permissions.canSee', false),
             };
           }
         }
       })
     )
-      .filter((f) => f.meta.permissions?.canSee)
+      .filter((f) => f.canSee)
       .sort((a, b) => a.order - b.order);
   }
 
