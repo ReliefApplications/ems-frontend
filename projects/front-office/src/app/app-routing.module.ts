@@ -16,12 +16,12 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./dashboard/dashboard.module').then((m) => { console.log("ALERTE"); return m.DashboardModule }),
+          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
       },
       {
         path: ':id',
         loadChildren: () =>
-          import('./dashboard/dashboard.module').then((m) => {console.log("ID AVADACABRA"); return m.DashboardModule}),
+          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
       },
     ],
     canActivate: [AuthGuard],

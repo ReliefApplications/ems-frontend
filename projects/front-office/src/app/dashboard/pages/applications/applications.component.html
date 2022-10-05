@@ -1,13 +1,7 @@
 <div>
   <h2 class="page-title">My Applications</h2>
-  <ng-container
-    *ngFor="let appList of applicationsList; let index = index"
-  >
-    <div class="cards-display">
-      <app-cards
-        [applications]="appList"
-        (openEvent)="onOpenApplication($event)"
-      ></app-cards>
-    </div>
-  </ng-container>
+  <app-cards
+    [applications]="applications"
+    (openEvent)="onOpenApplication($event)"
+  ></app-cards>
 </div>

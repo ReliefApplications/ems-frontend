@@ -68,20 +68,8 @@ export class ApplicationsComponent implements OnInit {
         if (user) {
           // this.favorite = '63204a5987cde9001e1176b2';
           this.favorite = user.favoriteApp || '';
-          const applications = user.applications || [];
-          if (applications.length > 0) {
-            this.applications = applications;
-            let appList: Application[] = [];
-            this.applications.map((app: Application) => {
-              if (appList.length === 4){
-                this.applicationsList.push(appList);
-                appList = [];
-              }
-              appList.push(app);
-            });
-            this.applicationsList.push(appList);
-            console.log(this.applicationsList);
-          } else {
+          this.applications = user.applications || [];
+          if (this.applications.length === 0) {
             this.snackBar.openSnackBar(
               this.translate.instant(
                 'common.notifications.platformAccessNotGranted'

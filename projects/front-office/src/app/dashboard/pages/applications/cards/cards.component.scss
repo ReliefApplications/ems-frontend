@@ -1,6 +1,8 @@
 .cards {
   display: flex;
   flex-direction: row;
-  gap: 50px;
+  gap: 48px;
   overflow-x: auto;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
