@@ -2,6 +2,8 @@
 const DATA_PREFIX = '{{data.';
 /** Prefix for calc keys */
 const CALC_PREFIX = '{{calc.';
+/** Prefix for info keys */
+const INFO_PREFIX = '{{info.';
 /** Suffix for all keys */
 const PLACEHOLDER_SUFFIX = '}}';
 
@@ -102,6 +104,14 @@ export const getCalcKeys = (): string[] => {
     (obj) => CALC_PREFIX + obj.signature + PLACEHOLDER_SUFFIX
   );
 };
+
+/**
+ * Returns an array with the info data keys.
+ *
+ * @returns List of info keys
+ */
+export const getInfoKeys = (): string[] =>
+  ['createdAt', 'updatedAt'].map((k) => INFO_PREFIX + k + PLACEHOLDER_SUFFIX);
 
 /**
  * Returns an array with the keys for data autocompletion.
