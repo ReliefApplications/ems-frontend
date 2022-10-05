@@ -1,8 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector, NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import * as Survey from 'survey-angular';
 import { SafeReferenceDataService } from './reference-data.service';
 import { renderGlobalProperties } from '../survey/render-global-properties';
+import { EditRecordMutationResponse, EDIT_RECORD } from '../graphql/mutations';
+import { Apollo } from 'apollo-angular';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 /**
  * Shared form builder service.
@@ -17,10 +20,12 @@ export class SafeFormBuilderService {
    *
    * @param referenceDataService Reference data service
    * @param translate Translation service
+   * @param apollo Apollo service
    */
   constructor(
     private referenceDataService: SafeReferenceDataService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private apollo: Apollo
   ) {}
 
   /**
@@ -31,10 +36,35 @@ export class SafeFormBuilderService {
    * @returns New survey
    */
   createSurvey(structure: string, fields: any[] = []): Survey.Survey {
+    console.log('A Survey has been created');
     const survey = new Survey.Model(structure);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
+
+    // Logic management for resource and resources logic
+    survey.onCompleting.add((completedSurvey: any) => {
+      for (const page of completedSurvey.toJSON().pages) {
+        for (const element of page.elements) {
+          if (element.type === 'resources' || element.type === 'resource') {
+            const regex = /{\s*(\b.*\b)\s*}\s*=\s*"(.*)"/g;
+            for (const record of completedSurvey.getValue(element.name)) {
+              let operation: any;
+              if (
+                element.newRecords &&
+                element.newRecords.includes(record) &&
+                element.afterAddingANewRecord
+              ) {
+                operation = regex.exec(element.afterAddingANewRecord);
+              } else if (element.afterLinkingExistingRecord) {
+                operation = regex.exec(element.afterLinkingExistingRecord);
+              }
+              this.updateRecord(record, operation);
+            }
+          }
+        }
+      }
+    });
     const onCompleteExpression = survey.toJSON().onCompleteExpression;
     if (onCompleteExpression) {
       survey.onCompleting.add(() => {
@@ -63,5 +93,25 @@ export class SafeFormBuilderService {
       }
     }
     return survey;
+  }
+
+  /**
+   * Updates the field with the specified information.
+   *
+   * @param id Id of the record to update
+   * @param operation Operation to execute
+   */
+  private updateRecord(id: string, operation: any): void {
+    if (id && operation) {
+      this.apollo
+        .mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id,
+            data: { [operation[1]]: operation[2] },
+          },
+        })
+        .subscribe(() => {});
+    }
   }
 }

@@ -421,6 +421,24 @@ export const init = (
           obj && obj.resource && !obj.selectQuestion,
         visibleIndex: 4,
       });
+
+      Survey.Serializer.addProperty('resource', {
+        name: 'newRecords',
+        category: 'Custom Questions',
+        visible: false,
+      });
+
+      Survey.Serializer.addProperty('resources', {
+        name: 'afterAddingANewRecord',
+        // type: 'expression',
+        category: 'logic',
+      });
+
+      Survey.Serializer.addProperty('resources', {
+        name: 'afterLinkingExistingRecord',
+        // type: 'expression',
+        category: 'logic',
+      });
     },
     /**
      * Get the resource after the question is loaded
