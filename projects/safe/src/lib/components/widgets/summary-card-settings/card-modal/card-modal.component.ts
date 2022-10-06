@@ -24,7 +24,7 @@ import { Layout } from '../../../../models/layout.model';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { Resource } from '../../../../models/resource.model';
 import get from 'lodash/get';
-import { AggregationBuilderService } from '../../../../services/aggregation-builder.service';
+import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 
 /**
  * Card modal component.

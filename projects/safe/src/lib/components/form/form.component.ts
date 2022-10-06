@@ -23,13 +23,13 @@ import {
 } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SafeDownloadService } from '../../services/download.service';
+import { SafeDownloadService } from '../../services/download/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeAuthService } from '../../services/auth.service';
-import { SafeLayoutService } from '../../services/layout.service';
-import { SafeFormBuilderService } from '../../services/form-builder.service';
+import { SafeAuthService } from '../../services/auth/auth.service';
+import { SafeLayoutService } from '../../services/layout/layout.service';
+import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -124,7 +124,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       )}</h3>`;
 
     this.survey = this.formBuilderService.createSurvey(
-      JSON.stringify(structure)
+      JSON.stringify(structure),
+      this.form.metadata
     );
     this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
       this.onClearFiles(survey, options)

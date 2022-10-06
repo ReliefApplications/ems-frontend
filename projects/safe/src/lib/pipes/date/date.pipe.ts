@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { SafeDateTranslateService } from '../../services/date-translate.service';
+import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 
 /** Available date formats. */
 export type DateFormat =

@@ -10,11 +10,11 @@ import { Record } from '../../models/record.model';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeRecordModalComponent } from '../record-modal/record-modal.component';
-import { SafeDownloadService } from '../../services/download.service';
+import { SafeDownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeDateTranslateService } from '../../services/date-translate.service';
+import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { Apollo } from 'apollo-angular';
-import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import {
   GetRecordByIdQueryResponse,
   GetRecordHistoryByIdResponse,

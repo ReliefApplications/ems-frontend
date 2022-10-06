@@ -12,7 +12,7 @@ import {
   FETCH_GROUPS,
 } from '../../graphql/mutations';
 import { GetGroupsQueryResponse, GET_GROUPS } from '../../graphql/queries';
-import { SafeSnackBarService } from '../../../../services/snackbar.service';
+import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeConfirmModalComponent } from '../../../confirm-modal/confirm-modal.component';
 import { SafeAddRoleComponent } from '../add-role/add-role.component';
 import { SafeSnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
@@ -105,15 +105,8 @@ export class SafeGroupListComponent implements OnInit {
    * Call permissions configuration endpoint to check how groups are created
    */
   private getPermissionsConfiguration(): void {
-    const token = localStorage.getItem('idtoken');
-    const headers = new HttpHeaders({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'Content-Type': 'application/json',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Authorization: `Bearer ${token}`,
-    });
     const url = `${this.baseUrl}/configuration`;
-    this.http.get(url, { headers }).subscribe((res) => {
+    this.http.get(url).subscribe((res) => {
       this.manualCreation = get(res, 'manualCreation', true);
     });
   }

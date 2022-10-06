@@ -9,7 +9,7 @@ import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-d
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
-import { DomService } from '../../services/dom.service';
+import { DomService } from '../../services/dom/dom.service';
 import { buildSearchButton, buildAddButton } from './utils';
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';

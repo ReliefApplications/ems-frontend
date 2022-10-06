@@ -1,0 +1,35 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  height: 100%;
+}
+
+// .content {
+//   flex-grow: 1;
+//   max-height: 100%;
+//   overflow-y: auto;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   gap: 1em;
+// }
+
+.mat-row {
+  cursor: pointer;
+}
+
+.expanded-filter {
+  padding-block: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  cursor: auto;
+}
+
+.empty-indicator {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  align-items: center;
+}

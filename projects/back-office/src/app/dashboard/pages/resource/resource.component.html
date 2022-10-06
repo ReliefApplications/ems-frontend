@@ -45,6 +45,14 @@
       [state]="{ resource }"
       >{{ 'common.aggregation.few' | translate }}
     </a>
+    <a
+      mat-tab-link
+      (click)="selectedTab = 4"
+      [active]="selectedTab === 4"
+      routerLink="./calculated-fields"
+      [state]="{ resource }"
+      >{{ 'common.calculatedField.few' | translate }}
+    </a>
   </nav>
   <mat-tab-nav-panel #tabPanel>
     <router-outlet></router-outlet>

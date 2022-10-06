@@ -3,23 +3,24 @@
  */
 
 // === SERVICES ===
-export * from './lib/services/auth.service';
-export * from './lib/services/snackbar.service';
-export * from './lib/services/grid.service';
-export * from './lib/services/application.service';
-export * from './lib/services/download.service';
-export * from './lib/services/workflow.service';
-export * from './lib/services/form-builder.service';
-export * from './lib/services/form.service';
-export * from './lib/services/layout.service';
-export * from './lib/services/api-proxy.service';
-export * from './lib/services/dashboard.service';
-export * from './lib/services/grid-layout.service';
-export * from './lib/services/reference-data.service';
-export * from './lib/services/kendo-translation.service';
-export * from './lib/services/date-translate.service';
-export * from './lib/services/breadcrumb.service';
+export * from './lib/services/auth/auth.service';
+export * from './lib/services/snackbar/snackbar.service';
+export * from './lib/services/grid/grid.service';
+export * from './lib/services/application/application.service';
+export * from './lib/services/download/download.service';
+export * from './lib/services/workflow/workflow.service';
+export * from './lib/services/form-builder/form-builder.service';
+export * from './lib/services/form/form.service';
+export * from './lib/services/layout/layout.service';
+export * from './lib/services/api-proxy/api-proxy.service';
+export * from './lib/services/dashboard/dashboard.service';
+export * from './lib/services/grid-layout/grid-layout.service';
+export * from './lib/services/reference-data/reference-data.service';
+export * from './lib/services/kendo-translation/kendo-translation.service';
+export * from './lib/services/date-translate/date-translate.service';
+export * from './lib/services/breadcrumb/breadcrumb.service';
 export * from './lib/services/aggregation/aggregation.service';
+export * from './lib/services/auth-interceptor/auth-interceptor.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -85,6 +86,7 @@ export * from './lib/components/graphql-select/public-api';
 export * from './lib/components/ui/modal/public-api';
 export * from './lib/components/ui/empty/public-api';
 export * from './lib/components/ui/divider/public-api';
+export * from './lib/components/edit-calculated-field-modal/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';

@@ -59,3 +59,20 @@ export const EMAIL_EDITOR_CONFIG: RawEditorSettings = {
     'keyboardnav', // the default keyboard navigation tab
   ],
 };
+
+/** Field Editor tinymce configuration. */
+export const FIELD_EDITOR_CONFIG: RawEditorSettings = {
+  suffix: '.min',
+  plugins: '',
+  imagetools_cors_hosts: ['picsum.photos'],
+  menubar: false,
+  toolbar: false,
+  importcss_append: true,
+  height: 90,
+  quickbars_selection_toolbar: '',
+  content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
+  help_tabs: [
+    'shortcuts', // the default shortcuts tab
+    'keyboardnav', // the default keyboard navigation tab
+  ],
+};

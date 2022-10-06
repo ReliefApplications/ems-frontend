@@ -249,6 +249,10 @@ export class FormComponent implements OnInit, OnDestroy {
             ...this.form,
             permissions: res.data?.editStep.permissions,
           };
+          this.step = {
+            ...this.step,
+            permissions: res.data?.editStep.permissions,
+          };
         });
     } else {
       this.apollo
@@ -262,6 +266,10 @@ export class FormComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           this.form = {
             ...this.form,
+            permissions: res.data?.editPage.permissions,
+          };
+          this.page = {
+            ...this.page,
             permissions: res.data?.editPage.permissions,
           };
         });

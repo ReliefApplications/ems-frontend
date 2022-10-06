@@ -18,8 +18,18 @@
 			"none": "******",
 			"one": "******"
 		},
+		"attribute": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"auto": "******",
 		"back": "******",
+		"calculatedField": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"cancel": "******",
 		"channel": {
 			"few": "******",
@@ -71,7 +81,10 @@
 			"apply": "******",
 			"clear": "******",
 			"empty": "******",
+			"few": "******",
 			"hide": "******",
+			"none": "******",
+			"one": "******",
 			"show": "******"
 		},
 		"form": {
@@ -391,6 +404,14 @@
 				"select": "******"
 			}
 		},
+		"calculatedFields": {
+			"add": "******",
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******"
+			},
+			"edit": "******",
+			"expression": "******"
+		},
 		"channel": {
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
@@ -569,6 +590,10 @@
 			},
 			"fields": {
 				"available": "******",
+				"format": {
+					"info": "******",
+					"title": "******"
+				},
 				"search": "******",
 				"selected": "******",
 				"title": "******"
@@ -710,6 +735,7 @@
 				"title": "******"
 			},
 			"summary": {
+				"addFilter": "******",
 				"autoAssignment": {
 					"rule": {
 						"add": "******",
@@ -719,21 +745,46 @@
 					},
 					"title": "******"
 				},
+				"details": {
+					"access": {
+						"channels": "******",
+						"fullAccess": "****** {{accessible}} ****** {{total}}",
+						"limitedAccess": "****** {{accessible}} ****** {{total}}",
+						"noAccess": "****** {{accessible}} ****** {{total}}",
+						"pages": "******",
+						"resources": "******",
+						"title": "******"
+					}
+				},
+				"editFilters": "******",
 				"features": "******",
+				"newFilter": "******",
 				"noFeatures": "******",
+				"noFilters": "******",
 				"noForms": "******",
 				"noSteps": "******",
+				"removeFilter": "******",
 				"title": "******"
 			},
 			"tooltip": {
-				"allowRecordAccessibility": "****** {{form}}",
-				"allowRecordCreation": "****** {{form}}",
-				"allowRecordDeletion": "****** {{form}}",
-				"allowRecordUpdate": "****** {{form}}",
-				"disallowRecordAccessibility": "****** {{form}}",
-				"disallowRecordCreation": "****** {{form}}",
-				"disallowRecordDeletion": "****** {{form}}",
-				"disallowRecordUpdate": "****** {{form}}",
+				"allowFieldAccessibility": "****** {{field}}",
+				"allowFieldUpdate": "****** {{field}}",
+				"allowFilterAccessibility": "******",
+				"allowFilterDeletion": "******",
+				"allowFilterUpdate": "******",
+				"allowRecordAccessibility": "****** {{resource}}",
+				"allowRecordCreation": "****** {{resource}}",
+				"allowRecordDeletion": "****** {{resource}}",
+				"allowRecordUpdate": "****** {{resource}}",
+				"disallowFieldAccessibility": "****** {{field}}",
+				"disallowFieldUpdate": "****** {{field}}",
+				"disallowFilterAccessibility": "******",
+				"disallowFilterDeletion": "******",
+				"disallowFilterUpdate": "******",
+				"disallowRecordAccessibility": "****** {{resource}}",
+				"disallowRecordCreation": "****** {{resource}}",
+				"disallowRecordDeletion": "****** {{resource}}",
+				"disallowRecordUpdate": "****** {{resource}}",
 				"hideFeature": "****** {{page}} ******",
 				"showFeature": "****** {{page}} ******"
 			},
@@ -853,6 +904,7 @@
 				"layout": {
 					"reset": "******"
 				},
+				"openSettings": "******",
 				"tooltip": {
 					"saved": "******",
 					"unsaved": "******",
@@ -1433,7 +1485,7 @@
 			},
 			"queryName": "******",
 			"tooltip": {
-				"graphQLFilter": "******"
+				"graphQLFilter": "****** {{lastUpdate}} ******"
 			},
 			"type": "******",
 			"validateCsv": "******",

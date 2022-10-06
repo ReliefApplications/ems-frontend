@@ -18,8 +18,18 @@
 			"none": "No application",
 			"one": "Application"
 		},
+		"attribute": {
+			"few": "Attributes",
+			"none": "No attribute",
+			"one": "Attribute"
+		},
 		"auto": "Auto",
 		"back": "Back",
+		"calculatedField": {
+			"few": "Calculated Fields",
+			"none": "No Calculated field",
+			"one": "calculated Field"
+		},
 		"cancel": "Cancel",
 		"channel": {
 			"few": "Channels",
@@ -71,7 +81,10 @@
 			"apply": "Apply",
 			"clear": "Clear Filter",
 			"empty": "No result",
+			"few": "Filters",
 			"hide": "Hide Filter",
+			"none": "No filter",
+			"one": "Filter",
 			"show": "Show Filter"
 		},
 		"form": {
@@ -391,6 +404,14 @@
 				"select": "From applications"
 			}
 		},
+		"calculatedFields": {
+			"add": "Create a new Calculated field",
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the Calculated field {{name}}?"
+			},
+			"edit": "Edit Calculated field",
+			"expression": "Expression"
+		},
 		"channel": {
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the channel {{name}}?"
@@ -569,6 +590,10 @@
 			},
 			"fields": {
 				"available": "Available fields",
+				"format": {
+					"info": "Left empty to ignore formatting",
+					"title": "Display format"
+				},
 				"search": "Search fields...",
 				"selected": "Selected fields",
 				"title": "Fields"
@@ -576,7 +601,7 @@
 			"filter": {
 				"and": "And",
 				"logic": "Filter logic",
-				"new": "Add new fiter",
+				"new": "Add new filter",
 				"newGroup": "Add new filter group",
 				"operator": "Operator",
 				"or": "Or",
@@ -710,6 +735,7 @@
 				"title": "Choose role to simulate"
 			},
 			"summary": {
+				"addFilter": "Add filter",
 				"autoAssignment": {
 					"rule": {
 						"add": "Create assignment rule",
@@ -719,21 +745,46 @@
 					},
 					"title": "Automatic assignment"
 				},
+				"details": {
+					"access": {
+						"channels": "Channels access",
+						"fullAccess": "Full access to {{accessible}} / {{total}}",
+						"limitedAccess": "Limited access to {{accessible}} / {{total}}",
+						"noAccess": "No access to {{accessible}} / {{total}}",
+						"pages": "Pages access",
+						"resources": "Resources access",
+						"title": "Access summary"
+					}
+				},
+				"editFilters": "Edit filters",
 				"features": "Features",
+				"newFilter": "New filter",
 				"noFeatures": "No feature detected",
+				"noFilters": "No access filters detected",
 				"noForms": "No forms detected",
 				"noSteps": "No steps detected",
+				"removeFilter": "Remove filter",
 				"title": "Summary"
 			},
 			"tooltip": {
-				"allowRecordAccessibility": "Allow this role to see records of {{form}}",
-				"allowRecordCreation": "Allow this role to create records with {{form}}",
-				"allowRecordDeletion": "Allow this role to remove records from {{form}}",
-				"allowRecordUpdate": "Allow this role to update records from {{form}}",
-				"disallowRecordAccessibility": "Disallow this role to see records of {{form}}",
-				"disallowRecordCreation": "Disallow this role to create records with {{form}}",
-				"disallowRecordDeletion": "Disallow this role to remove records from {{form}}",
-				"disallowRecordUpdate": "Disallow this role to update records from {{form}}",
+				"allowFieldAccessibility": "Allow this role to see the field {{field}}",
+				"allowFieldUpdate": "Allow this role to update the field {{field}}",
+				"allowFilterAccessibility": "Allow this role to see records that satisfies this filter",
+				"allowFilterDeletion": "Allow this role to remove records that satisfies this filter",
+				"allowFilterUpdate": "Allow this role to update records that satisfies this filter",
+				"allowRecordAccessibility": "Allow this role to see records of {{resource}}",
+				"allowRecordCreation": "Allow this role to create records with {{resource}}",
+				"allowRecordDeletion": "Allow this role to remove records from {{resource}}",
+				"allowRecordUpdate": "Allow this role to update records from {{resource}}",
+				"disallowFieldAccessibility": "Disallow this role to see the field {{field}}",
+				"disallowFieldUpdate": "Disallow this role to update the field {{field}}",
+				"disallowFilterAccessibility": "Disallow this role to see records that satisfies this filter",
+				"disallowFilterDeletion": "Disallow this role to remove records that satisfies this filter",
+				"disallowFilterUpdate": "Disallow this role to update records that satisfies this filter",
+				"disallowRecordAccessibility": "Disallow this role to see records of {{resource}}",
+				"disallowRecordCreation": "Disallow this role to create records with {{resource}}",
+				"disallowRecordDeletion": "Disallow this role to remove records from {{resource}}",
+				"disallowRecordUpdate": "Disallow this role to update records from {{resource}}",
 				"hideFeature": "Hide {{page}} from this role",
 				"showFeature": "Show {{page}} to this role"
 			},
@@ -853,6 +904,7 @@
 				"layout": {
 					"reset": "Reset default Layout"
 				},
+				"openSettings": "Open settings",
 				"tooltip": {
 					"saved": "Changes saved",
 					"unsaved": "Click on save button to upload changes",
@@ -1433,7 +1485,7 @@
 			},
 			"queryName": "Query Name",
 			"tooltip": {
-				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use $$LAST_UPDATE to insert dynamically the last fetch date in SQL format."
+				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use {{lastUpdate}} to insert dynamically the last fetch date in SQL format."
 			},
 			"type": "Type",
 			"validateCsv": "Validate CSV",

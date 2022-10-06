@@ -218,7 +218,9 @@ export class RecordsTabComponent implements OnInit {
         columns.push(field.name);
       }
     }
-    columns = columns.concat(RECORDS_DEFAULT_COLUMNS);
+    columns = columns
+      .filter((x) => get(this.resource, `metadata.${x}.canSee`, false))
+      .concat(RECORDS_DEFAULT_COLUMNS);
     this.displayedColumnsRecords = columns;
   }
   /**

@@ -8,9 +8,9 @@ import {
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import { AggregationBuilderService } from '../../../services/aggregation-builder.service';
-import { SafeGridLayoutService } from '../../../services/grid-layout.service';
-import { QueryBuilderService } from '../../../services/query-builder.service';
+import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
+import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,

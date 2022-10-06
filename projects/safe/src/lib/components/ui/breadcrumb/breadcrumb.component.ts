@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   Breadcrumb,
   SafeBreadcrumbService,
-} from '../../../services/breadcrumb.service';
+} from '../../../services/breadcrumb/breadcrumb.service';
 
 /**
  * Breadcrumb component

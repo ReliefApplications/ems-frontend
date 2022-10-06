@@ -7,27 +7,23 @@ import {
   EventEmitter,
   ViewChild,
   ElementRef,
-  Inject,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
 import { Form } from '../../../../models/form.model';
 import { ContentType } from '../../../../models/page.model';
-import { SafeWorkflowService } from '../../../../services/workflow.service';
+import { SafeWorkflowService } from '../../../../services/workflow/workflow.service';
 import { Subscription } from 'rxjs';
 import {
   MatChipInputEvent,
   MAT_CHIPS_DEFAULT_OPTIONS,
 } from '@angular/material/chips';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { QueryBuilderService } from '../../../../services/query-builder.service';
+import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
-import {
-  EMAIL_EDITOR_CONFIG,
-  EDITOR_LANGUAGE_PAIRS,
-} from '../../../../const/tinymce.const';
-import { TranslateService } from '@ngx-translate/core';
+import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
+import { SafeEditorService } from '../../../../services/editor/editor.service';
 
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
@@ -87,43 +83,25 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
   /**
    * Configuration component for grid widget button.
    *
-   * @param environment Environment file used to get main url of the page
    * @param formBuilder Form builder
    * @param router Angular Router service
    * @param workflowService Shared workflow service
    * @param queryBuilder Shared Query Builder service
    * @param dialog Material dialog service
-   * @param translate Angular Translate Service
+   * @param editorService Editor service used to get main URL and current language
    */
   constructor(
-    @Inject('environment') environment: any,
     private formBuilder: FormBuilder,
     private router: Router,
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
     public dialog: MatDialog,
-    private translate: TranslateService
+    private editorService: SafeEditorService
   ) {
     // Set the editor base url based on the environment file
-    let url: string;
-    if (environment.module === 'backoffice') {
-      url = new URL(environment.backOfficeUri).pathname;
-    } else {
-      url = new URL(environment.frontOfficeUri).pathname;
-    }
-    if (url !== '/') {
-      this.editor.base_url = url.slice(0, -1) + '/tinymce';
-    } else {
-      this.editor.base_url = '/tinymce';
-    }
+    this.editor.base_url = editorService.url;
     // Set the editor language
-    const lang = this.translate.currentLang;
-    const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
-    if (editorLang) {
-      this.editor.language = editorLang.tinymceKey;
-    } else {
-      this.editor.language = 'en';
-    }
+    this.editor.language = editorService.language;
   }
 
   ngOnInit(): void {
