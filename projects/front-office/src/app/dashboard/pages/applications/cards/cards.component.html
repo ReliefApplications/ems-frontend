@@ -11,6 +11,7 @@
     <app-card
       *ngFor="let application of applications; let index = index"
       [application]="application"
+      [favorite]="favorite"
       (click)="openEvent.emit(application.id)"
     ></app-card>
   </ng-container>

@@ -8,6 +8,7 @@ import { Application } from '@safe/builder';
 })
 export class CardsComponent implements OnInit {
   @Input() applications: Application[] = [];
+  @Input() favorite = '';
   @Output() openEvent = new EventEmitter();
   public loading = false;
 

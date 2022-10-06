@@ -76,15 +76,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (applications.length > 0) {
             this.applications = applications;
             this.applications.map((element) => {
-            
-              console.log('ORIGINAL ROUTER:', this.router.url);
-              console.log(
-                'ELEMENT:',
-                element.id,
-                'ROUTER:',
-                this.router.url.slice(1, 25)
-              );
-               
               if (element.id === this.router.url.slice(1, 25)) {
                 this.appID = this.router.url.slice(1, 25);
                 const temp = this.router.url.split('/');
@@ -102,9 +93,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 // this.appID = user.favoriteApp; // TODO: check that the fav app is part of list of application IDS
               } else {
                 console.log('open applications');
-                // this.router.navigate(['applications']); // todo: uncomment
+                this.appID = 'applications'; // TODO: temporary solution to have access to profile option. new variable profileID?
+                this.router.navigate(['applications']);
               }
-              this.router.navigate(['applications']); // todo: remove
             }
             this.applicationService.loadApplication(this.appID);
             this.roles = user.roles || [];
