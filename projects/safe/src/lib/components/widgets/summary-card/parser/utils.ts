@@ -91,6 +91,7 @@ const replaceRecordFields = (
 ): string => {
   const fieldsValue = getFieldsValue(record);
   let formattedHtml = html;
+  let numberOfFiles = 0;
   if (fields) {
     for (const field of fields) {
       const value = fieldsValue[field.name];
@@ -108,7 +109,7 @@ const replaceRecordFields = (
           convertedValue =
             '<a href="mailto: ' +
             value +
-            '" target="_blank">' +
+            '">' +
             applyLayoutFormat(value, field) +
             '</a>';
           break;
@@ -147,7 +148,8 @@ const replaceRecordFields = (
           break;
         case 'file':
           convertedValue = '';
-          for (const file of value) {
+          for (let i = 0; value[i]; ) {
+            const file = value[i];
             const fileExt = file.name.split('.').pop();
             const fileIcon =
               fileExt && ICON_EXTENSIONS[fileExt]
@@ -160,7 +162,10 @@ const replaceRecordFields = (
               field
             );
             convertedValue +=
-              '<button style="border: none; padding: 4px 6px;" title="' +
+              '<button type="file" ' +
+              `number="${numberOfFiles++}" ` +
+              `occurence="${i++}" ` +
+              'style="border: none; padding: 4px 6px; cursor: pointer" title="' +
               file.name +
               '">' +
               ' <span class="k-icon ' +
@@ -173,7 +178,7 @@ const replaceRecordFields = (
         case 'owner':
         case 'users':
         case 'resources':
-          convertedValue = value.length + ' items';
+          convertedValue = (value ? value.length : 0) + ' items';
           break;
         default:
           convertedValue = applyLayoutFormat(value, field);
