@@ -75,7 +75,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
           const applications = user.applications || [];
           if (applications.length > 0) {
             this.applications = applications;
+            let includeFavoriteApp = false;
             this.applications.map((element) => {
+              if (element.id === user.favoriteApp) {
+                includeFavoriteApp = true;
+              }
               if (element.id === this.router.url.slice(1, 25)) {
                 this.appID = this.router.url.slice(1, 25);
                 const temp = this.router.url.split('/');
@@ -88,9 +92,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
               }
             });
             if (this.appID.length <= 0) {
-              if (user.favoriteApp) {
+              if (
+                user.favoriteApp &&
+                includeFavoriteApp &&
+                this.router.url.slice(1, 25) !== 'applications'
+              ) {
                 console.log('load fav app');
-                // this.appID = user.favoriteApp; // TODO: check that the fav app is part of list of application IDS
+                this.appID = user.favoriteApp;
               } else {
                 console.log('open applications');
                 this.appID = 'applications'; // TODO: temporary solution to have access to profile option. new variable profileID?

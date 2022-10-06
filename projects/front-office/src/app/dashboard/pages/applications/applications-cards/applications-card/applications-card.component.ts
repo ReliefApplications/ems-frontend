@@ -8,13 +8,13 @@ import {
 
 @Component({
   selector: 'app-card',
-  templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss'],
+  templateUrl: './applications-card.component.html',
+  styleUrls: ['./applications-card.component.scss'],
 })
 /**
  * Component used to display application information
  */
-export class CardComponent implements OnInit {
+export class ApplicationsCardComponent implements OnInit {
   @Input() application: Application | null = null;
   @Input() favorite = '';
   public numberOfPagesDisplay = '';
@@ -24,21 +24,24 @@ export class CardComponent implements OnInit {
 
   /**
    * Component used to display application information
+   * 
+   * @param apollo Apollo client
    */
-  constructor(private apollo: Apollo) { }
+  constructor(private apollo: Apollo) {}
 
   /**
    * Request database for application informations
    * and process informations
    */
   ngOnInit(): void {
-    if (this.favorite === this.application?.id){
+    if (this.favorite === this.application?.id) {
       this.star = 'star';
     } else {
       this.star = 'star_border';
     }
 
-    this.apollo.query<GetAppInformationsByIdQueryResponse>({
+    this.apollo
+    .query<GetAppInformationsByIdQueryResponse>({
       query: GET_APP_INFORMATIONS,
       variables: {
         id: this.application?.id,

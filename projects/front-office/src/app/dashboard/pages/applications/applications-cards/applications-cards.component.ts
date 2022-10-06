@@ -3,10 +3,10 @@ import { Application } from '@safe/builder';
 
 @Component({
   selector: 'app-cards',
-  templateUrl: './cards.component.html',
-  styleUrls: ['./cards.component.scss']
+  templateUrl: './applications-cards.component.html',
+  styleUrls: ['./applications-cards.component.scss']
 })
-export class CardsComponent implements OnInit {
+export class ApplicationsCardsComponent implements OnInit {
   @Input() applications: Application[] = [];
   @Input() favorite = '';
   @Output() openEvent = new EventEmitter();

@@ -44,7 +44,6 @@ import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-sel
 import { SafeModalModule } from './components/ui/modal/modal.module';
 import { SafeEmptyModule } from './components/ui/empty/empty.module';
 import { SafeDividerModule } from './components/ui/divider/divider.module';
-import { SafeToolbarModule } from './components/toolbar/toolbar.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -94,7 +93,6 @@ import { SafeToolbarModule } from './components/toolbar/toolbar.module';
     SafeModalModule,
     SafeEmptyModule,
     SafeDividerModule,
-    SafeToolbarModule,
   ],
   declarations: [],
 })
