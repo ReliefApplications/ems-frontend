@@ -180,6 +180,17 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
           const builtQuery = this.queryBuilder.buildQuery({
             query: layoutQuery,
           });
+          const layoutFields = layoutQuery.fields;
+          this.fields = this.fields.map((f: any) => {
+            const layoutField = layoutFields.find(
+              (lf: any) => lf.name === f.name
+            );
+            if (layoutField) {
+              return { ...layoutField, ...f };
+            }
+            return f;
+          });
+
           this.dataQuery = this.apollo.watchQuery<any>({
             query: builtQuery,
             variables: {
