@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   Application,
   User,
@@ -12,45 +12,52 @@ import {
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { ActivatedRoute, Router, NavigationEnd, RouterEvent } from '@angular/router';
+import {
+  ActivatedRoute,
+  Router,
+  NavigationEnd,
+  RouterEvent,
+} from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Front-Office home page.
+ */
 @Component({
   selector: 'app-applications',
   templateUrl: './applications.component.html',
-  styleUrls: ['./applications.component.scss']
+  styleUrls: ['./applications.component.scss'],
 })
-export class ApplicationsComponent implements OnInit {
-    /** Application title */
-    public title = 'Front-Office';
-    /** Stores current app ID */
-    public appID = '';
-    /** Stores current app page */
-    public appPage = '';
-    /** List of accessible applications */
-    public applications: Application[] = [];
-    /** List of list of accessible applications */
-    public applicationsList: Application[][] = [];
-    /** List of application pages */
-    public navGroups: any[] = [];
-    /** Current application */
-    public application: Application | null = null;
-    /** User subscription */
-    private authSubscription?: Subscription;
-    /** Application service subscription */
-    private applicationSubscription?: Subscription;
-    /** Permissions of the user */
-    private permissions: Permission[] = [];
-    /** Roles of the user */
-    private roles: Role[] = [];
-    private user: User | null = null;
+export class ApplicationsComponent implements OnInit, OnDestroy {
+  /** Application title */
+  public title = 'Front-Office';
+  /** Stores current app ID */
+  public appID = '';
+  /** Stores current app page */
+  public appPage = '';
+  /** List of accessible applications */
+  public applications: Application[] = [];
+  /** List of list of accessible applications */
+  public applicationsList: Application[][] = [];
+  /** List of application pages */
+  public navGroups: any[] = [];
+  /** Current application */
+  public application: Application | null = null;
+  /** User favorite page */
+  public favorite = '';
+  /** User subscription */
+  private authSubscription?: Subscription;
+  /** Application service subscription */
+  private applicationSubscription?: Subscription;
+  /** Permissions of the user */
+  private permissions: Permission[] = [];
+  /** Roles of the user */
+  private roles: Role[] = [];
+  /** Current user */
+  private user: User | null = null;
 
-    public favorite = '';
-
-    public loading = false;
-
-/**
-   * Main component of Front-Office navigation.
+  /**
+   * Front-Office home page.
    *
    * @param authService Shared authentication service
    * @param applicationService Shared application service
@@ -67,7 +74,6 @@ export class ApplicationsComponent implements OnInit {
     private router: Router,
     private translate: TranslateService
   ) {}
-
 
   ngOnInit(): void {
     this.authSubscription = this.authService.user$.subscribe(
@@ -102,7 +108,7 @@ export class ApplicationsComponent implements OnInit {
   /**
    * Opens an application, contacting the application service.
    *
-   * @param application Application to open
+   * @param appID The id of the application to open
    */
   onOpenApplication(appID: any): void {
     this.applicationService.loadApplication(appID);
@@ -209,43 +215,43 @@ export class ApplicationsComponent implements OnInit {
       );
   }
 
-    /**
+  /**
    * Gets nav icon from page content type.
    *
    * @param type content type of the page
    * @returns icon
    */
-     private getNavIcon(type: string): string {
-      switch (type) {
-        case 'workflow':
-          return 'linear_scale';
-        case 'form':
-          return 'description';
-        default:
-          return 'dashboard';
-      }
+  private getNavIcon(type: string): string {
+    switch (type) {
+      case 'workflow':
+        return 'linear_scale';
+      case 'form':
+        return 'description';
+      default:
+        return 'dashboard';
     }
-  
-    /**
-     * Checks if route page is valid.
-     *
-     * @param app application to check pages of
-     * @returns Is page valid or not
-     */
-    private validPage(app: any): boolean {
-      if (
-        this.appPage &&
-        (this.appPage === 'profile' ||
-          this.appPage === 'settings/users' ||
-          this.appPage === 'settings/roles' ||
-          app.pages?.find(
-            (val: any) =>
-              val.type + '/' + val.content === this.appPage ||
-              val.type + '/' + val.id === this.appPage
-          ))
-      ) {
-        return true;
-      }
-      return false;
+  }
+
+  /**
+   * Checks if route page is valid.
+   *
+   * @param app application to check pages of
+   * @returns Is page valid or not
+   */
+  private validPage(app: any): boolean {
+    if (
+      this.appPage &&
+      (this.appPage === 'profile' ||
+        this.appPage === 'settings/users' ||
+        this.appPage === 'settings/roles' ||
+        app.pages?.find(
+          (val: any) =>
+            val.type + '/' + val.content === this.appPage ||
+            val.type + '/' + val.id === this.appPage
+        ))
+    ) {
+      return true;
     }
+    return false;
+  }
 }

@@ -4,13 +4,13 @@ import { ApplicationsCardComponent } from './applications-card.component';
 import { SafeIconModule } from '@safe/builder';
 import { MatRippleModule } from '@angular/material/core';
 
+/**
+ * Card module used to create
+ * a card with some informations
+ */
 @NgModule({
   declarations: [ApplicationsCardComponent],
-  imports: [
-    CommonModule,
-    SafeIconModule,
-    MatRippleModule,
-  ],
-  exports: [ApplicationsCardComponent]
+  imports: [CommonModule, SafeIconModule, MatRippleModule],
+  exports: [ApplicationsCardComponent],
 })
-export class ApplicationsCardModule { }
+export class ApplicationsCardModule {}

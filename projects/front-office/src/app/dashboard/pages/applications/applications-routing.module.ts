@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ApplicationsComponent } from './applications.component';
 
+/** List of routes of Applications page */
 export const routes = [
   {
     path: '',
@@ -9,6 +10,9 @@ export const routes = [
   },
 ];
 
+/**
+ * Routing module of applications page.
+ */
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
