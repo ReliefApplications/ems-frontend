@@ -1,10 +1,11 @@
 <mat-toolbar [color]="theme.headerColor">
   <safe-button
+    *ngIf="showLeftSidenav"
     [isIcon]="true"
     icon="menu"
-    (click)="nav.toggle()"
+    (click)="leftSidenav?.toggle()"
     [matTooltip]="
-      (nav.opened
+      (leftSidenav?.opened
         ? 'components.header.sidenav.collapse'
         : 'components.header.sidenav.show'
       ) | translate
@@ -19,13 +20,13 @@
     [matTooltip]="'pages.applications.goTo' | translate"
   >
   </safe-button>
-  <ng-container *ngIf="!applications || applications.length === 0">
+  <ng-container *ngIf="!applications || applications.length === 0 || !showLeftSidenav">
     <h1 class="application-title">
       {{ theme.prefix }}
       {{ route ? title : ('common.platform.backOffice' | translate) }}
     </h1>
   </ng-container>
-  <ng-container *ngIf="applications && applications.length > 0">
+  <ng-container *ngIf="applications && applications.length > 0 && showLeftSidenav">
     <button
       mat-button
       (click)="showAppMenu = !showAppMenu"
@@ -126,9 +127,10 @@
 
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav
+    *ngIf="showLeftSidenav"
     class="sidenav"
-    #nav
-    [mode]="largeDevice && nav.opened ? 'side' : 'over'"
+    #leftSidenav
+    [mode]="largeDevice && leftSidenav?.opened ? 'side' : 'over'"
     [opened]="largeDevice"
   >
     <mat-nav-list>
@@ -145,7 +147,7 @@
                 <a
                   [routerLink]="item.path"
                   routerLinkActive="active-link"
-                  (click)="largeDevice ? null : nav.toggle()"
+                  (click)="largeDevice ? null : leftSidenav?.toggle()"
                   [class]="item.class ? item.class : ''"
                 >
                   <ng-container *ngIf="item.isAddPage">

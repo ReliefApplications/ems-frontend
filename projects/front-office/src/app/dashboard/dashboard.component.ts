@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
@@ -36,6 +36,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public navGroups: any[] = [];
   /** Current application */
   public application: Application | null = null;
+  /** Show the left side nav */
+  public showLeftSidenav = true;
   /** User subscription */
   private authSubscription?: Subscription;
   /** Application service subscription */
@@ -44,6 +46,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private permissions: Permission[] = [];
   /** Roles of the user */
   private roles: Role[] = [];
+  private routerSubscription?: Subscription;
 
   /**
    * Main component of Front-Office navigation.
@@ -69,6 +72,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * On load, try to open the first application accessible to the user.
    */
   ngOnInit(): void {
+    this.routerSubscription = this.router.events.subscribe(
+      (routerEvent: any) => {
+        if (routerEvent instanceof NavigationStart) {
+          const url = routerEvent.url.split('/');
+          this.showLeftSidenav = url.length < 2 || url[1] !== 'applications';
+        }
+      }
+    );
     this.authSubscription = this.authService.user$.subscribe(
       (user: User | null) => {
         if (user) {
@@ -103,6 +114,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 console.log('open applications');
                 this.appID = 'applications'; // TODO: temporary solution to have access to profile option. new variable profileID?
                 this.router.navigate(['applications']);
+                this.showLeftSidenav = false;
+                this.title = 'Front-Office';
               }
             }
             this.applicationService.loadApplication(this.appID);
@@ -228,6 +241,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();
+    }
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
     }
   }
 

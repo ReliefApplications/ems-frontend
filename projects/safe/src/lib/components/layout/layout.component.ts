@@ -27,6 +27,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSidenav } from '@angular/material/sidenav';
 import { SafeNotificationService } from '../../services/notification/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -56,11 +57,16 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
 
+  @ViewChild('leftSidenav', { read: ViewContainerRef })
+  leftSidenav?: MatSidenav;
+
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 
   @Output() reorder: EventEmitter<any> = new EventEmitter();
 
   @Input() profileRoute = '/profile';
+
+  @Input() showLeftSidenav = true;
 
   filteredNavGroups: any[] = [];
 
@@ -154,7 +160,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       if (view && this.rightSidenav) {
         // this is necessary to prevent have more than one history component at the same time.
         this.layoutService.setRightSidenav(null);
-        this.showSidenav = true;
+        //this.showSidenav = true;
         const componentRef: ComponentRef<any> =
           this.rightSidenav.createComponent(view.component);
         for (const [key, value] of Object.entries(view.inputs)) {
@@ -165,7 +171,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
           this.layoutService.setRightSidenav(null);
         });
       } else {
-        this.showSidenav = false;
+        //this.showSidenav = false;
         if (this.rightSidenav) {
           this.rightSidenav.clear();
         }
