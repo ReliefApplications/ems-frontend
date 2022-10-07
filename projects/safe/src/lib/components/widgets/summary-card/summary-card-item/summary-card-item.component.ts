@@ -14,8 +14,10 @@ import { SafeResourceGridModalComponent } from '../../../search-resource-grid-mo
 import {
   GetRecordByIdQueryResponse,
   GetResourceLayoutsByIdQueryResponse,
+  GetResourceMetadataQueryResponse,
   GET_RECORD_BY_ID,
   GET_RESOURCE_LAYOUTS,
+  GET_RESOURCE_METADATA,
 } from '../graphql/queries';
 import { clone, get } from 'lodash';
 import {
@@ -23,6 +25,7 @@ import {
   GET_LAYOUT,
 } from '../../summary-card-settings/card-modal/graphql/queries';
 import { getFieldsValue } from '../parser/utils';
+import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 
 /**
  * Single Item component of Summary card widget.
@@ -34,10 +37,12 @@ import { getFieldsValue } from '../parser/utils';
 })
 export class SummaryCardItemComponent implements OnInit, OnChanges {
   @Input() card!: any;
-  @Input() fields: any[] = [];
+  public fields: any[] = [];
   public fieldsValue: any = null;
   public loading = true;
   public styles: any[] = [];
+
+  private layout: any;
 
   @Input() headerTemplate?: TemplateRef<any>;
 
@@ -49,13 +54,15 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    * @param snackBar Shared snackBar service
    * @param translate Angular translate service
    * @param aggregationBuilder Aggregation builder service
+   * @param queryBuilder Query builder service
    */
   constructor(
     private apollo: Apollo,
     private dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService,
-    private aggregationBuilder: AggregationBuilderService
+    private aggregationBuilder: AggregationBuilderService,
+    private queryBuilder: QueryBuilderService
   ) {}
 
   ngOnInit(): void {
@@ -68,6 +75,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
 
   /** Sets the content of the card */
   private async setContent() {
+    this.fields = this.card.metadata;
     if (this.card.isAggregation) {
       this.fieldsValue = this.card.cardAggregationData;
       if (!this.card.isDynamic) await this.getAggregationData();
@@ -90,31 +98,14 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    * Set content of the card item, querying associated record.
    */
   private setContentFromLayout(): void {
-    if (this.card.record) {
+    console.log(this.card);
+    this.getStyles();
+    if (typeof this.card.record === 'string') {
+      this.getCardData();
+    } else if (typeof this.card.record === 'object') {
       this.fieldsValue = getFieldsValue(this.card.record);
-      if (typeof this.card.layout === 'string') {
-        this.apollo
-          .query<GetLayoutQueryResponse>({
-            query: GET_LAYOUT,
-            variables: {
-              id: this.card.layout,
-              resource: this.card.resource,
-            },
-          })
-          .subscribe((res2) => {
-            if (res2) {
-              this.styles = get(
-                res2.data.resource.layouts?.edges[0],
-                'node.query.style',
-                []
-              );
-            }
-            this.loading = false;
-          });
-      } else if (typeof this.card.layout === 'object') {
-        this.styles = get(this.card.layout, 'style', []);
-        this.loading = false;
-      }
+      this.fields = this.card.metadata;
+      this.loading = false;
     } else {
       this.snackBar.openSnackBar(
         this.translate.instant(
@@ -124,6 +115,62 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
       );
       this.loading = false;
     }
+  }
+
+  /** Sets layout style */
+  private getStyles() {
+    if (typeof this.card.layout === 'string') {
+      this.apollo
+        .query<GetLayoutQueryResponse>({
+          query: GET_LAYOUT,
+          variables: {
+            id: this.card.layout,
+            resource: this.card.resource,
+          },
+        })
+        .subscribe((res2) => {
+          if (res2.data) {
+            this.layout = res2.data.resource.layouts?.edges[0]?.node;
+            this.styles = get(
+              res2.data.resource.layouts?.edges[0],
+              'node.query.style',
+              []
+            );
+          }
+          this.loading = false;
+        });
+    } else if (typeof this.card.layout === 'object') {
+      this.layout = this.card.layout;
+      this.styles = get(this.card.layout, 'style', []);
+      this.loading = false;
+    }
+  }
+
+  /**
+   * Queries the data for each of the static cards.
+   */
+  private async getCardData() {
+    const metaRes = await this.apollo
+      .query<GetResourceMetadataQueryResponse>({
+        query: GET_RESOURCE_METADATA,
+        variables: {
+          id: this.card.resource,
+        },
+      })
+      .toPromise();
+    this.fields = get(metaRes, 'data.resource.metadata', []);
+    const queryName = get(metaRes, 'data.resource.singleQueryName');
+
+    const query = this.queryBuilder.graphqlSingleQuery(
+      queryName,
+      this.layout.query.fields
+    );
+
+    this.apollo
+      .query<any>({ query, variables: { id: this.card.record } })
+      .subscribe((res) => {
+        this.fieldsValue = getFieldsValue(res.data?.[queryName]);
+      });
   }
 
   /**

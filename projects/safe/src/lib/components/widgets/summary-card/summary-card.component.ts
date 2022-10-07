@@ -47,8 +47,6 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   public loading = true;
 
   public cards: any[] = [];
-  public fields: any = null;
-
   private dataQuery?: QueryRef<any>;
 
   /**
@@ -169,7 +167,6 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
         },
       })
       .toPromise();
-    this.fields = get(metaRes, 'data.resource.metadata');
 
     this.gridLayoutService
       .getLayouts(card.resource, { ids: [card.layout], first: 1 })
@@ -181,15 +178,17 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             query: layoutQuery,
           });
           const layoutFields = layoutQuery.fields;
-          this.fields = this.fields.map((f: any) => {
-            const layoutField = layoutFields.find(
-              (lf: any) => lf.name === f.name
-            );
-            if (layoutField) {
-              return { ...layoutField, ...f };
+          const fields = get(metaRes, 'data.resource.metadata').map(
+            (f: any) => {
+              const layoutField = layoutFields.find(
+                (lf: any) => lf.name === f.name
+              );
+              if (layoutField) {
+                return { ...layoutField, ...f };
+              }
+              return f;
             }
-            return f;
-          });
+          );
 
           this.dataQuery = this.apollo.watchQuery<any>({
             query: builtQuery,
@@ -203,18 +202,22 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             nextFetchPolicy: 'cache-first',
           });
           this.dataQuery.valueChanges.subscribe((res2) => {
-            for (const field in res2.data) {
-              if (Object.prototype.hasOwnProperty.call(res2.data, field)) {
-                const newCards = res2.data[field].edges.map((e: any) => ({
-                  ...this.settings.cards[0],
-                  record: e.node,
-                  layout: layoutQuery,
-                }));
-                this.cards = [...this.cards, ...newCards];
-                this.pageInfo.hasNextPage =
-                  get(res2.data[field], 'totalCount', 0) > this.cards.length;
-              }
-            }
+            const edges = res2.data?.[layoutQuery.name].edges;
+            if (!edges) return;
+
+            const newCards = edges.map((e: any) => ({
+              ...this.settings.cards[0],
+              record: e.node,
+              layout: layoutQuery,
+              metadata: fields,
+            }));
+
+            // console.log('newCards', newCards);
+            this.cards = [...this.cards, ...newCards];
+            this.pageInfo.hasNextPage =
+              get(res2.data[layoutQuery.name], 'totalCount', 0) >
+              this.cards.length;
+
             this.loading = res2.loading;
           });
         }
@@ -231,7 +234,6 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       .buildAggregation(card.resource, card.aggregation)
       ?.subscribe((res) => {
         if (!res.data) return;
-        console.log(res);
         this.cards = res.data.recordsAggregation.map((x: any) => ({
           ...this.settings.cards[0],
           cardAggregationData: x,
@@ -278,16 +280,5 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
         });
       }
     }
-  }
-
-  /**
-   * Gets a filtered array of fields for the card.
-   *
-   * @param card Card with values for fields from layout
-   * @returns Array of fields that appear in the card
-   */
-  public getFilteredFields(card: any) {
-    const cardProps = Object.keys(card.record);
-    return this.fields.filter((f: any) => cardProps.includes(f.name));
   }
 }

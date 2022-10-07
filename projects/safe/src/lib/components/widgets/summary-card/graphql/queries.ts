@@ -61,6 +61,7 @@ export interface GetResourceLayoutsByIdQueryResponse {
 export const GET_RESOURCE_METADATA = gql`
   query GetResourceMeta($id: ID!) {
     resource(id: $id) {
+      singleQueryName
       metadata
     }
   }

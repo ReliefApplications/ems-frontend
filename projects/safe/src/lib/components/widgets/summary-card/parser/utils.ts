@@ -304,6 +304,10 @@ export const applyLayoutFormat = (
   name: string | null,
   field: any
 ): string | null => {
+  // replaces value for label, if it exists
+  if (field.options)
+    name = field.options.find((o: any) => o.value === name)?.text || name;
+
   if (name && field.layoutFormat && field.layoutFormat.length > 1) {
     const regex = new RegExp(
       `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
