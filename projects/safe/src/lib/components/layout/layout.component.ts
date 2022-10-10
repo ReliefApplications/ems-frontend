@@ -131,6 +131,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log(this.title);
     if (this.environment.module === 'backoffice') {
       this.inApplication = this.router.url.includes('/applications/');
       this.otherOffice = 'front office';

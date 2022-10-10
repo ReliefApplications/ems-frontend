@@ -112,10 +112,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.appID = user.favoriteApp;
               } else {
                 console.log('open applications');
-                this.appID = 'applications'; // TODO: temporary solution to have access to profile option. new variable profileID?
+                this.title = 'Front-Office';
+                this.appID = 'applications';
                 this.router.navigate(['applications']);
                 this.showLeftSidenav = false;
-                this.title = 'Front-Office';
               }
             }
             this.applicationService.loadApplication(this.appID);

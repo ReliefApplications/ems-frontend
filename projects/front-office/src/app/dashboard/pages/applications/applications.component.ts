@@ -23,7 +23,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class ApplicationsComponent implements OnInit, OnDestroy {
   /** Application title */
-  public title = 'Front-Office';
+  public title = '';
   /** Stores current app ID */
   public appID = '';
   /** Stores current app page */
@@ -60,7 +60,9 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private router: Router,
     private translate: TranslateService
-  ) {}
+  ) {
+    this.title = translate.instant('common.myApplications');
+  }
 
   ngOnInit(): void {
     this.authSubscription = this.authService.user$.subscribe(
