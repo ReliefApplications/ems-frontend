@@ -1,11 +1,15 @@
 <div matRipple class="card">
   <img src="no-image.png" alt="image" height="89">
-  <div class="header">
-    <div class="title">{{ application?.name }}</div>
-      <safe-icon
-        [icon]="star"
-      ></safe-icon>
+  <div class="container">
+    <div class="data-container">
+      <div class="header">
+        <div class="title">{{ application?.name }}</div>
+          <safe-icon
+            [icon]="star"
+          ></safe-icon>
+      </div>
+      <div class="pageSize">{{ numberOfPagesDisplay }}</div>
+      <div class="description">{{ description }}</div>
+    </div>
   </div>
-  <div class="pageSize">{{ numberOfPagesDisplay }}</div>
-  <div class="description">{{ description }}</div>
 </div>
