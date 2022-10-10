@@ -1,0 +1,51 @@
+<div class="toolbar">
+  <div class="app-title-container">
+    <h2 [matMenuTriggerFor]="settingsMenu" *ngIf="settings.length > 0" style="cursor: pointer;">
+      {{title}}
+    </h2>
+    <h2 *ngIf="settings.length === 0">
+      {{title}}
+    </h2>
+    <safe-access
+      *ngIf="title && canUpdate"
+      [access]="application?.permissions"
+      [objectTypeName]="'common.application.one' | translate"
+      (save)="saveAccess($event)"
+    ></safe-access>
+  </div>
+  <div class="toolbar-buttons">
+    <safe-button
+      *ngIf="application?.canUpdate && locked"
+      [isIcon]="true"
+      icon="lock"
+      [variant]="lockedByUser ? 'primary' : 'danger'"
+      (click)="onUnlock()"
+    >
+    </safe-button>
+    <safe-button variant="danger" (click)="onClose()">{{
+      'common.close' | translate
+    }}</safe-button>
+    <safe-button
+      *ngIf="showPublish"
+      category="secondary"
+      variant="success"
+      (click)="onPublish()"
+      [disabled]="!canPublish || this.application?.status === 'active'"
+      >{{ 'common.publish' | translate }}</safe-button
+    >
+  </div>
+</div>
+
+<mat-menu #settingsMenu="matMenu">
+  <button mat-menu-item
+    *ngFor="let setting of settings"
+    class="menu-item"
+    [routerLink]="setting.path"
+    routerLinkActive="active-link"
+  >
+    <mat-icon class="nav-icon">
+      {{ setting.icon }}
+    </mat-icon>
+    {{ setting.name }}
+  </button>
+</mat-menu>

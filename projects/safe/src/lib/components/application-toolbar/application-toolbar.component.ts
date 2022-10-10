@@ -1,25 +1,28 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  Application,
-  SafeApplicationService,
-  SafeConfirmModalComponent,
-  SafeSnackBarService,
-} from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { Application } from '../../models/application.model';
+import { SafeApplicationService } from '../../services/application.service';
+import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
 /**
  * Toolbar component visible when editing application.
  * Appear on top of the view.
  */
 @Component({
-  selector: 'app-application-toolbar',
+  selector: 'safe-app-application-toolbar',
   templateUrl: './application-toolbar.component.html',
   styleUrls: ['./application-toolbar.component.scss'],
 })
-export class ApplicationToolbarComponent implements OnInit, OnDestroy {
+export class SafeApplicationToolbarComponent implements OnInit, OnDestroy {
+  @Input() title = '';
+  @Input() settings: any[] = [];
+  @Input() canUpdate = false;
+  @Input() showPublish = false;
+
   // === APPLICATION ===
   public application: Application | null = null;
   private applicationSubscription?: Subscription;
@@ -117,6 +120,15 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  /**
+   * Edits the permissions layer.
+   *
+   * @param e permissions.
+   */
+  saveAccess(e: any): void {
+    this.applicationService.editPermissions(e);
   }
 
   /**

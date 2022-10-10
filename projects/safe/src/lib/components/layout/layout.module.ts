@@ -21,6 +21,7 @@ import { SafePreferencesModalModule } from '../preferences-modal/preferences-mod
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
+import { SafeIconModule } from '../ui/icon/icon.module';
 
 /**
  * SafeLayoutModule is a class used to manage all the modules and components
@@ -50,6 +51,7 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     SafePreferencesModalModule,
     SafeDateModule,
     SafeBreadcrumbModule,
+    SafeIconModule,
   ],
   exports: [SafeLayoutComponent],
 })

@@ -53,6 +53,7 @@ export * from './lib/models/setting.model';
 // === COMPONENTS ===
 export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 export * from './lib/components/layout/public-api';
+export * from './lib/components/application-toolbar/public-api';
 export * from './lib/components/access/public-api';
 export * from './lib/components/form/public-api';
 export * from './lib/components/form-builder/public-api';

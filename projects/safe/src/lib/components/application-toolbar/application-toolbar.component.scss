@@ -1,0 +1,37 @@
+.toolbar {
+  display: flex;
+  flex-direction: row;
+  padding: 0 16px;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+
+  .toolbar-buttons {
+    display: flex;
+    align-items: center;
+
+    safe-button:first-child {
+      margin: 0 8px;
+    }
+  }
+
+  .app-title-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    h2 {
+      margin: 0;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 25vw;
+    }
+  }
+}
+
+.menu-item {
+  mat-icon {
+    margin-right: 10px;
+  }
+}

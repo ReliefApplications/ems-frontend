@@ -163,13 +163,4 @@ export class SettingsComponent implements OnInit, OnDestroy {
       this.applicationSubscription.unsubscribe();
     }
   }
-
-  /**
-   * Edits the permissions layer.
-   *
-   * @param e permissions.
-   */
-  saveAccess(e: any): void {
-    this.applicationService.editPermissions(e);
-  }
 }
