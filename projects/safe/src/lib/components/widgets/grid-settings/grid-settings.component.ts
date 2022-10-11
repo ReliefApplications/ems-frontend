@@ -7,7 +7,7 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -16,12 +16,14 @@ import {
   GetFormByIdQueryResponse,
   GET_GRID_RESOURCE_META,
   GetResourceByIdQueryResponse,
+  GET_FORMS,
+  GetFormsQueryResponse,
 } from './graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Overlay } from '@angular/cdk/overlay';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { scrollFactory } from '../../../utils/scroll-factory';
@@ -65,11 +67,16 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
 
   // === DATASET AND TEMPLATES ===
   public templates: Form[] = [];
-  private availableQueries?: Observable<any[]>;
+  public availableQueries?: Observable<any[]>;
   private allQueries: any[] = [];
   public filteredQueries: any[] = [];
   public form: Form | null = null;
   public resource: Resource | null = null;
+
+  private availableForms = new BehaviorSubject<Form[]>([]);
+  public availableForms$!: Observable<Form[]>;
+  private content: Form[] = [];
+  public sourceControl!: AbstractControl;
 
   /** Stores the selected tab */
   public selectedTab = 0;
@@ -107,11 +114,19 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     this.queryName = this.formGroup.get('query')?.value.name;
     this.getQueryMetaData();
 
+    // NEW
+    this.LoadForms();
+    this.sourceControl = this.formGroup.get('query.name') || this.formGroup.controls.query; //Should be 'query.name' every time.
+
     this.formGroup.get('query.name')?.valueChanges.subscribe((name) => {
       if (name) {
         // Check if the query changed to clean modifications and fields for email in floating button
         if (name !== this.queryName) {
           this.queryName = name;
+          const matchForm = this.content.find((val: Form) => val.id === name);
+          if (matchForm && matchForm.resource?.name) {
+            this.queryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.resource.name);
+          }
           this.formGroup?.get('layouts')?.setValue([]);
           this.formGroup?.get('query.template')?.setValue(null);
           this.formGroup?.get('query.template')?.enable();
@@ -255,5 +270,16 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
    */
   handleTabChange(event: MatTabChangeEvent): void {
     this.selectedTab = event.index;
+  }
+
+  private LoadForms(): void {
+    this.availableForms$ = this.availableForms.asObservable();
+    this.apollo.query<GetFormsQueryResponse>({
+      query: GET_FORMS,
+    })
+    .subscribe((res) => {
+        this.availableForms.next(res.data.forms.edges.map((x) => x.node));
+        this.content = res.data.forms.edges.map((x) => x.node);
+    });      
   }
 }

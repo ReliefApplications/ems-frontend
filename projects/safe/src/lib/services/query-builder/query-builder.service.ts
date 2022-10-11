@@ -375,7 +375,7 @@ export class QueryBuilderService {
    */
   public getQueryNameFromResourceName(resourceName: string): any {
     const nameTrimmed = resourceName
-      .replace(/_|-/g, '')
+      .replace(/[_\\\/!@#$%^&*()-]/g, '') // remove all non letter/number ?
       .replace(/\s+(?=\d)/g, '_')
       .replace(/\s/g, '')
       .toLowerCase();

@@ -6,6 +6,7 @@
   </mat-form-field>
   <ng-container formGroupName="query">
     <div class="form-group-row">
+      <!--
       <mat-form-field appearance="outline">
         <mat-label>{{
           'components.queryBuilder.dataset.select' | translate
@@ -23,6 +24,13 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
+      -->
+      <safe-forms-dropdown
+        [forms$]="forms$"
+        [loadingMore]="false"
+        [sourceControl]="sourceControl"
+        [label]="'components.queryBuilder.dataset.select' | translate"
+      ></safe-forms-dropdown>
       <mat-form-field appearance="outline">
         <mat-label>{{ 'models.form.template' | translate }}</mat-label>
         <mat-select formControlName="template">

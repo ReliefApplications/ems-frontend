@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
 import { LayoutTableModule } from '../../../grid-layout/layout-table/layout-table.module';
+import { SafeFormsDropdownModule } from '../../../ui/aggregation-builder/forms-dropdown/forms-dropdown.module';
 
 /**
  * Main Tab of grid widget configuration modal.
@@ -24,6 +25,7 @@ import { LayoutTableModule } from '../../../grid-layout/layout-table/layout-tabl
     MatAutocompleteModule,
     MatSelectModule,
     LayoutTableModule,
+    SafeFormsDropdownModule,
   ],
   exports: [TabMainComponent],
 })
