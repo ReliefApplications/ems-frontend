@@ -157,15 +157,27 @@ safe-breadcrumb {
   margin-bottom: 14px;
 }
 
-.app-sidenav {
+.app-sidenav-add-page {
   // Substracts topbar, sub-topbar, header and add-page height
   max-height: calc(100vh - 64px - 60px - 48px - 84px);
   overflow: auto;
 }
 
-.app-sidenav-phone {
+.app-sidenav-phone-add-page {
   // Substracts header and add-page height
   max-height: calc(100vh - 48px - 84px);
+  overflow: auto;
+}
+
+.app-sidenav {
+  // Substracts topbar, sub-topbar, header height
+  max-height: calc(100vh - 64px - 60px - 48px);
+  overflow: auto;
+}
+
+.app-sidenav-phone {
+  // Substracts header height
+  max-height: calc(100vh - 48px);
   overflow: auto;
 }
 
