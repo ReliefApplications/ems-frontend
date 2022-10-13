@@ -12,6 +12,7 @@ export const GET_FORMS = gql`
           id
           name
           core
+          status
           resource {
             id
             name

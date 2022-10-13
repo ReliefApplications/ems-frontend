@@ -22,7 +22,7 @@ import {
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application/application.service';
-import { Form } from '../../../models/form.model';
+import { Form, status } from '../../../models/form.model';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Overlay } from '@angular/cdk/overlay';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
@@ -112,22 +112,12 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       this.filteredQueries = this.filterQueries(res);
     });
 
-    this.queryName = this.formGroup.get('query')?.value.name;
-    this.getQueryMetaData();
-
-    // NEW
-    this.LoadForms();
-    const validSourceControl = this.formGroup.get('query.name');
-    if (validSourceControl) {
-      this.sourceControl = validSourceControl;
-    }
-
     this.formGroup.get('query.name')?.valueChanges.subscribe((name) => {
       if (name) {
         // Check if the query changed to clean modifications and fields for email in floating button
         if (name !== this.queryName) {
           this.queryName = name;
-          const matchForm = this.content.find((val: Form) => val.id === name);
+          const matchForm = this.content.find((val: Form) => val.id === name || val.name === name);
           if (matchForm && matchForm?.name) {
             this.queryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.name);
           }
@@ -154,6 +144,13 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         this.fields = [];
       }
     });
+
+    // NEW
+    this.LoadForms();
+    const validSourceControl = this.formGroup.get('query.name');
+    if (validSourceControl) {
+      this.sourceControl = validSourceControl;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -282,8 +279,15 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       query: GET_FORMS,
     })
     .subscribe((res) => {
-        this.availableForms.next(res.data.forms.edges.map((x) => x.node));
+        this.availableForms.next(res.data.forms.edges.map((x) => x.node).filter((x) => x.core || x.status === status.active));
         this.content = res.data.forms.edges.map((x) => x.node);
+
+        // to display the resource name at the beginning and not the form's id
+        this.queryName = this.formGroup.get('query')?.value.name;
+        const matchForm = this.content.find((val: Form) => val.id === this.queryName || val.name === this.queryName);
+        if (matchForm && matchForm?.name) {
+          this.formGroup.get('query.name')?.setValue(matchForm.name);
+        }
     });      
   }
 }

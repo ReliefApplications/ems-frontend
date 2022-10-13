@@ -375,12 +375,10 @@ export class QueryBuilderService {
    */
   public getQueryNameFromResourceName(resourceName: string): any {
     const nameTrimmed = resourceName
-      .replace(/[_\\\/!@#$%^&*()-]/g, '') // remove all non letter/number ?
-      .replace(/\s+(?=\d)/g, '_')
+      .replace(/[_\\\/!@#$%^&*()-]/g, '') // remove all non letter/number ? use the same as for 'allNames'.
+      //.replace(/\s+(?=\d)/g, '_')
       .replace(/\s/g, '')
       .toLowerCase();
-      console.log('resource name', nameTrimmed);
-      console.log('available queries', this.availableQueries);
     return (
       this.availableQueries
         .getValue()

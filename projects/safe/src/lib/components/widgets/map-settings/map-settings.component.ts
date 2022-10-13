@@ -4,7 +4,7 @@ import { QueryBuilderService } from '../../../services/query-builder/query-build
 import { createQueryForm } from '../../query-builder/query-builder-forms';
 import { Apollo } from 'apollo-angular';
 import { GetFormsQueryResponse, GET_FORMS } from './graphql/queries';
-import { Form } from '../../../models/form.model';
+import { Form, status } from '../../../models/form.model';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { scrollFactory } from '../../../utils/scroll-factory';
@@ -178,12 +178,11 @@ export class SafeMapSettingsComponent implements OnInit {
       query: GET_FORMS,
     })
     .subscribe((res) => {
-        this.availableForms.next(res.data.forms.edges.map((x) => x.node));
+        this.availableForms.next(res.data.forms.edges.map((x) => x.node).filter((x) => x.core || x.status === status.active));
         this.content = res.data.forms.edges.map((x) => x.node);
         this.buildSettings(queryForm);
         const matchForm = this.content.find((val: Form) => val.id === queryForm.value.name);
         if (matchForm && matchForm.name) {
-          console.log('alerte init');
           queryForm.controls.name.setValue(matchForm.name);
         }
     });      
@@ -207,9 +206,9 @@ export class SafeMapSettingsComponent implements OnInit {
       if (queryForm.value.name) {
         if (this.content && this.content.length > 0){
           const matchForm = this.content.find((val: Form) => val.id === queryForm.value.name || val.name === queryForm.value.name);
-          if (matchForm && matchForm.resource?.name) {
+          if (matchForm && matchForm.name) {
             console.log('match form');
-            this.queryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.resource.name);
+            this.queryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.name);
           }
           this.availableFields = this.queryBuilder.getFields(
             this.queryName
