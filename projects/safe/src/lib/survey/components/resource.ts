@@ -718,11 +718,19 @@ export const init = (
         el.parentElement
       );
       instance = grid.instance;
-      grid.location.nativeElement.setAttribute('style', 'height: 143px; display: ' + (question.value ? 'block' : 'none') + ';');
+      grid.location.nativeElement.setAttribute(
+        'style',
+        'height: 143px; display: ' + (question.value ? 'block' : 'none') + ';'
+      );
       setGridInputs(instance, question);
       question.survey.onValueChanged.add((_: any, options: any) => {
         if (options.name === question.name) {
-          grid.location.nativeElement.setAttribute('style', 'height: 143px; display: ' + (question.value ? 'block' : 'none') + ';');
+          grid.location.nativeElement.setAttribute(
+            'style',
+            'height: 143px; display: ' +
+              (question.value ? 'block' : 'none') +
+              ';'
+          );
           setGridInputs(instance, question);
         }
       });
