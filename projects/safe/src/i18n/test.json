@@ -2,7 +2,6 @@
 	"common": {
 		"access": "******",
 		"add": "******",
-		"advancedSettings": "******",
 		"aggregation": {
 			"few": "******",
 			"none": "******",
@@ -808,24 +807,6 @@
 			}
 		},
 		"users": {
-			"advancedSettings": {
-				"title": "******",
-				"userManagement": {
-					"api": {
-						"placeholder": "******",
-						"title": "******"
-					},
-					"external": {
-						"title": "******",
-						"tooltip": "******"
-					},
-					"local": {
-						"title": "******",
-						"tooltip": "******"
-					},
-					"title": "******"
-				}
-			},
 			"invite": {
 				"add": "******",
 				"confirm": "******",
