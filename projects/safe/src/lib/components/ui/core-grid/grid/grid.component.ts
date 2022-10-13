@@ -179,6 +179,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === PAGINATION ===
   @Input() pageSize = 10;
   @Input() skip = 0;
+  @Input() pagination = true;
   public pagerSettings = PAGER_SETTINGS;
   @Output() pageChange = new EventEmitter();
 

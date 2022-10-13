@@ -133,6 +133,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === PAGINATION ===
   public pageSize = 10;
   public skip = 0;
+  @Input() pagination = true;
   @Output() pageSizeChanged: EventEmitter<any> = new EventEmitter<any>();
 
   // === INLINE EDITION ===
@@ -145,6 +146,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
+  @Input() searchable = true;
 
   /** @returns current field used for sorting */
   get sortField(): string | null {

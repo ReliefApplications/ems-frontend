@@ -14,6 +14,13 @@ import { buildSearchButton, buildAddButton } from './utils';
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { BehaviorSubject } from 'rxjs';
+import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
+
+/** Create the list of filter values for resources */
+export const resourcesFilterValues = new BehaviorSubject<
+  { field: string; operator: string; value: string }[]
+>([{ field: '', operator: '', value: '' }]);
 
 /**
  * Inits the resource question component of for survey.
@@ -212,6 +219,19 @@ export const init = (
             });
           }
         },
+      });
+      Survey.Serializer.addProperty('resource', {
+        name: 'displayAsGrid:boolean',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
       });
       serializer.addProperty('resource', {
         name: 'addRecord:boolean',
@@ -427,7 +447,7 @@ export const init = (
      *
      * @param question The current resource question
      */
-    onLoaded(question: QuestionResource): void {
+    onLoaded(question: any): void {
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }
@@ -435,6 +455,9 @@ export const init = (
         if (question.selectQuestion) {
           filters[0].operator = question.filterCondition;
           filters[0].field = question.filterBy;
+          if (question.displayAsGrid) {
+            resourcesFilterValues.next(filters);
+          }
           if (question.selectQuestion) {
             question.registerFunctionOnPropertyValueChanged(
               'filterCondition',
@@ -474,13 +497,13 @@ export const init = (
             (question.survey as SurveyModel).onValueChanged.add(
               (_: any, options: any) => {
                 if (options.name === question.selectQuestion) {
-                  if (
-                    !!options.value ||
-                    (options.question.customQuestion &&
-                      options.question.customQuestion.name)
-                  ) {
+                  if (!!options.value || options.question.customQuestion) {
                     setAdvanceFilter(options.value, question);
-                    this.populateChoices(question);
+                    if (question.displayAsGrid) {
+                      resourcesFilterValues.next(filters);
+                    } else {
+                      this.populateChoices(question);
+                    }
                   }
                 }
               }
@@ -506,7 +529,11 @@ export const init = (
                     if (options.question.name === quest) {
                       if (!!options.value) {
                         setAdvanceFilter(options.value, objElement.field);
-                        this.populateChoices(question);
+                        if (question.displayAsGrid) {
+                          resourcesFilterValues.next(filters);
+                        } else {
+                          this.populateChoices(question, objElement.field);
+                        }
                       }
                     }
                   }
@@ -540,8 +567,18 @@ export const init = (
         question.prefillWithCurrentRecord = false;
       }
     },
-    populateChoices: (question: QuestionResource): void => {
-      if (question.resource) {
+    populateChoices: (question: any, field?: string): void => {
+      if (question.displayAsGrid) {
+        if (question.selectQuestion) {
+          const f = field ? field : question.filteryBy;
+          const obj = filters.filter((i: any) => i.field === f);
+          if (obj.length > 0) {
+            resourcesFilterValues.next(obj);
+          }
+        } else if (question.customFilter) {
+          resourcesFilterValues.next(filters);
+        }
+      } else {
         getResourceById({ id: question.resource, filters }).subscribe(
           (response) => {
             const serverRes =
@@ -556,12 +593,15 @@ export const init = (
             question.contentQuestion.choices = res;
           }
         );
-      } else {
-        question.contentQuestion.choices = [];
       }
     },
     // Display of add button for resource question
-    onAfterRender: (question: QuestionResource, el: HTMLElement): void => {
+    onAfterRender: (question: any, el: any): void => {
+      // hide tagbox if grid view is enable
+      if (question.displayAsGrid) {
+        const element = el.getElementsByTagName('div')[4].parentElement;
+        element.style.display = 'none';
+      }
       // support the placeholder field
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = get(
@@ -570,51 +610,68 @@ export const init = (
           ''
         );
       }
-      if (
-        (question.survey as SurveyModel).mode !== 'display' &&
-        question.resource
-      ) {
-        el.parentElement?.querySelector('#actionsButtons')?.remove();
-        const actionsButtons = document.createElement('div');
-        actionsButtons.id = 'actionsButtons';
-        actionsButtons.style.display = 'flex';
-        actionsButtons.style.marginBottom = '0.5em';
-
-        const searchBtn = buildSearchButton(
-          question,
-          question.gridFieldsSettings,
-          false,
-          dialog
-        );
-        actionsButtons.appendChild(searchBtn);
-
-        const addBtn = buildAddButton(question, false, dialog);
-        actionsButtons.appendChild(addBtn);
-
+      if (question.resource) {
         const parentElement = el.querySelector('.safe-qst-content');
         if (parentElement) {
-          parentElement.insertBefore(actionsButtons, parentElement.firstChild);
-        }
+          const gridComponent = buildRecordsGrid(
+            question,
+            parentElement.firstChild
+          );
 
-        // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+          if (question.survey.mode !== 'display') {
+            el.parentElement?.querySelector('#actionsButtons')?.remove();
+            const actionsButtons = document.createElement('div');
+            actionsButtons.id = 'actionsButtons';
+            actionsButtons.style.display = 'flex';
+            actionsButtons.style.marginBottom = '0.5em';
 
-        question.registerFunctionOnPropertyValueChanged(
-          'gridFieldsSettings',
-          () => {
-            searchBtn.style.display = question.gridFieldsSettings ? '' : 'none';
+            const searchBtn = buildSearchButton(
+              question,
+              question.gridFieldsSettings,
+              false,
+              dialog
+            );
+            actionsButtons.appendChild(searchBtn);
+
+            const addBtn = buildAddButton(
+              question,
+              false,
+              dialog,
+              gridComponent
+            );
+            actionsButtons.appendChild(addBtn);
+
+            parentElement.insertBefore(
+              actionsButtons,
+              parentElement.firstChild
+            );
+
+            // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
+
+            question.registerFunctionOnPropertyValueChanged(
+              'gridFieldsSettings',
+              () => {
+                searchBtn.style.display = question.gridFieldsSettings
+                  ? ''
+                  : 'none';
+              }
+            );
+            question.registerFunctionOnPropertyValueChanged('canSearch', () => {
+              searchBtn.style.display = question.canSearch ? '' : 'none';
+            });
+            question.registerFunctionOnPropertyValueChanged(
+              'addTemplate',
+              () => {
+                addBtn.style.display =
+                  question.addRecord && question.addTemplate ? '' : 'none';
+              }
+            );
+            question.registerFunctionOnPropertyValueChanged('addRecord', () => {
+              addBtn.style.display =
+                question.addRecord && question.addTemplate ? '' : 'none';
+            });
           }
-        );
-        question.registerFunctionOnPropertyValueChanged('canSearch', () => {
-          searchBtn.style.display = question.canSearch ? '' : 'none';
-        });
-        question.registerFunctionOnPropertyValueChanged('addTemplate', () => {
-          addBtn.style.display =
-            question.addRecord && question.addTemplate ? '' : 'none';
-        });
-        question.registerFunctionOnPropertyValueChanged('addRecord', () => {
-          addBtn.style.display =
-            question.addRecord && question.addTemplate ? '' : 'none';
-        });
+        }
       }
     },
     convertFromRawToFormGroup: (gridSettingsRaw: any): FormGroup | null => {
@@ -643,5 +700,77 @@ export const init = (
         }
       });
     }
+  };
+
+  /**
+   * Build the grid with the records
+   *
+   * @param question The resources question
+   * @param el The html element in which we want to build the grid
+   * @returns The SafeCoreGridComponent, or null if the displayAsGrid property
+   * of the question object is false
+   */
+  const buildRecordsGrid = (question: any, el: any): any => {
+    let instance: SafeCoreGridComponent;
+    if (question.displayAsGrid) {
+      const grid = domService.appendComponentToBody(
+        SafeCoreGridComponent,
+        el.parentElement
+      );
+      instance = grid.instance;
+      grid.location.nativeElement.setAttribute('style', 'height: 143px; display: ' + (question.value ? 'block' : 'none') + ';');
+      setGridInputs(instance, question);
+      question.survey.onValueChanged.add((_: any, options: any) => {
+        if (options.name === question.name) {
+          grid.location.nativeElement.setAttribute('style', 'height: 143px; display: ' + (question.value ? 'block' : 'none') + ';');
+          setGridInputs(instance, question);
+        }
+      });
+      return instance;
+    }
+    return null;
+  };
+
+  /**
+   * Sets the inputs of the grid.
+   *
+   * @param instance grid instance.
+   * @param question survey question.
+   */
+  const setGridInputs = (
+    instance: SafeCoreGridComponent,
+    question: any
+  ): void => {
+    const query = question.gridFieldsSettings || {};
+    instance.pagination = false;
+    instance.searchable = false;
+    const settings = {
+      query: {
+        ...query,
+        filter: {
+          logic: 'and',
+          filters: [
+            {
+              field: 'ids',
+              operator: 'eq',
+              value: [question.value] || [],
+            },
+          ],
+        },
+      },
+    };
+    if (!question.readOnlyGrid) {
+      Object.assign(settings, {
+        actions: {
+          delete: question.canDelete,
+          history: question.history,
+          convert: question.convert,
+          update: question.update,
+          inlineEdition: question.inlineEdition,
+        },
+      });
+    }
+    instance.settings = settings;
+    instance.configureGrid();
   };
 };
