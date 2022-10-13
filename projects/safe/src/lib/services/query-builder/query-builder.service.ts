@@ -379,6 +379,8 @@ export class QueryBuilderService {
       .replace(/\s+(?=\d)/g, '_')
       .replace(/\s/g, '')
       .toLowerCase();
+      console.log('resource name', nameTrimmed);
+      console.log('available queries', this.availableQueries);
     return (
       this.availableQueries
         .getValue()

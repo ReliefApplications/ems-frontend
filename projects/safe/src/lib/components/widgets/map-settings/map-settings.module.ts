@@ -13,6 +13,8 @@ import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../ui/icon/icon.module';
+import { SafeFormsDropdownModule } from '../../ui/aggregation-builder/forms-dropdown/forms-dropdown.module';
+import { MatTabsModule } from '@angular/material/tabs';
 
 /** Module for map settings component */
 @NgModule({
@@ -32,6 +34,8 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
     SafeQueryBuilderModule,
     TranslateModule,
     MatTooltipModule,
+    SafeFormsDropdownModule,
+    MatTabsModule,
   ],
   exports: [SafeMapSettingsComponent],
 })

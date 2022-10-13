@@ -88,6 +88,7 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
     SafeTabFilterComponent,
     SafeTabSortComponent,
     SafeTabPaginationComponent,
+    SafeTabStyleComponent,
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },

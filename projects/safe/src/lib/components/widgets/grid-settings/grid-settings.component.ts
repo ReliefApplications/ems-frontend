@@ -73,6 +73,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public form: Form | null = null;
   public resource: Resource | null = null;
 
+  // === FORMS ===
   private availableForms = new BehaviorSubject<Form[]>([]);
   public availableForms$!: Observable<Form[]>;
   private content: Form[] = [];
@@ -116,7 +117,10 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
 
     // NEW
     this.LoadForms();
-    this.sourceControl = this.formGroup.get('query.name') || this.formGroup.controls.query; //Should be 'query.name' every time.
+    const validSourceControl = this.formGroup.get('query.name');
+    if (validSourceControl) {
+      this.sourceControl = validSourceControl;
+    }
 
     this.formGroup.get('query.name')?.valueChanges.subscribe((name) => {
       if (name) {
@@ -124,8 +128,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         if (name !== this.queryName) {
           this.queryName = name;
           const matchForm = this.content.find((val: Form) => val.id === name);
-          if (matchForm && matchForm.resource?.name) {
-            this.queryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.resource.name);
+          if (matchForm && matchForm?.name) {
+            this.queryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.name);
           }
           this.formGroup?.get('layouts')?.setValue([]);
           this.formGroup?.get('query.template')?.setValue(null);
