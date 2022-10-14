@@ -111,6 +111,7 @@ export class SafeQueryBuilderComponent implements OnInit {
               .map((x) => x.name);
             if (this.allQueries.length === 1) {
               this.form?.get('name')?.setValue(this.queryName);
+              validName = validQueryName;
             }
           } else {
             this.allQueries = res.filter((x) => x.name).map((x) => x.name);
@@ -126,7 +127,8 @@ export class SafeQueryBuilderComponent implements OnInit {
         }
       });
       this.form?.controls.name.valueChanges.subscribe((res) => {
-        res = this.queryBuilder.getQueryNameFromResourceName(res);
+        const validRes = this.queryBuilder.getQueryNameFromResourceName(res);
+        res = validRes ? validRes : res;
         if (this.allQueries.find((x) => x === res)) {
           this.availableFields = this.queryBuilder.getFields(res);
           this.form?.setControl('filter', createFilterGroup(null));
