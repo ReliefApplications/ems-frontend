@@ -20,8 +20,6 @@
       <safe-query-builder
       [form]="$any(tileForm.controls.query)"
       [canExpand]="false"
-      [queryName$]="queryName$"
-      [queryName]="queryName.getValue()"
       ></safe-query-builder>
       <ng-container *ngIf="selectedFields.length > 0">
         <mat-form-field appearance="outline">

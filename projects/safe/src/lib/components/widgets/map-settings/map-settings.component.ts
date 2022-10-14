@@ -40,8 +40,6 @@ export class SafeMapSettingsComponent implements OnInit {
   public availableForms$!: Observable<Form[]>;
   private content: Form[] = [];
   public sourceControl!: AbstractControl;
-  public queryName = new BehaviorSubject<string>('');
-  public queryName$!: Observable<string>; 
   public availableFields: any[] = [];
 
   public selectedFields: any[] = [];
@@ -116,8 +114,8 @@ export class SafeMapSettingsComponent implements OnInit {
     queryForm.controls.name.valueChanges.subscribe((name: any) => {
       this.tileForm?.controls.latitude.setValue('');
       this.tileForm?.controls.longitude.setValue('');
-      this.updateName(name);
     });
+
     queryForm.valueChanges.subscribe((res) => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
     });
@@ -184,122 +182,10 @@ export class SafeMapSettingsComponent implements OnInit {
         const matchForm = this.content.find((val: Form) => val.id === queryForm.value.name || val.name === queryForm.value.name);
         if (matchForm && matchForm.name) {
           console.log('match init');
-          this.queryName.next(this.queryBuilder.getQueryNameFromResourceName(matchForm.name));
           queryForm.controls.name.setValue(matchForm.name);
         }
-        this.queryName$ = this.queryName.asObservable();
-        console.log('query name observer:', this.queryName.getValue());
         this.loading = false;
     });
     console.log('end load forms');
-  }
-
-  /**
-   * Builds the form from the type of field / query we inject.
-   */
-   buildSettings(queryForm: FormGroup): void {
-    console.log('build settings');
-    if (queryForm.value.type) {
-      console.log('tile form type');
-      if (queryForm.get('filter')) {
-        console.log('tile form filter');
-        queryForm.setControl(
-          'filter',
-          this.createFilterGroup(queryForm.value.filter)
-        );
-      }
-    } else {
-      if (queryForm.value.name) {
-        if (this.content && this.content.length > 0){
-          const matchForm = this.content.find((val: Form) => val.id === queryForm.value.name || val.name === queryForm.value.name);
-          if (matchForm && matchForm.name) {
-            console.log('match form');
-            this.queryName.next(this.queryBuilder.getQueryNameFromResourceName(matchForm.name));
-          }
-          this.availableFields = this.queryBuilder.getFields(
-            this.queryName.getValue()
-          );
-          queryForm.setControl(
-            'filter',
-            this.createFilterGroup(queryForm.value.filter)
-          );
-        }
-      }
-    }
-  }
-
-  private createFilterGroup(filter: any): FormGroup {
-    if (filter?.filters) {
-      const filters = filter.filters.map((x: any) => this.createFilterGroup(x));
-      return this.formBuilder.group({
-        logic: filter.logic || 'and',
-        filters: this.formBuilder.array(filters),
-      });
-    }
-    if (filter?.field) {
-      return this.formBuilder.group({
-        field: filter.field,
-        operator: filter.operator || 'eq',
-        value: Array.isArray(filter.value) ? [filter.value] : filter.value,
-      });
-    }
-    return this.formBuilder.group({
-      logic: 'and',
-      filters: this.formBuilder.array([]),
-    });
-  }
-
-  private updateFields(name: any, queryForm: FormGroup): void {
-    const matchForm = this.content.find((val: Form) => val.id === name || val.name === name);
-    if (matchForm && matchForm.name) {
-      console.log('match form');
-      const newQueryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.name);
-      if (this.queryName.getValue() !== newQueryName){
-        console.log('query name different');
-        this.queryName.next(newQueryName);
-        this.availableFields = this.queryBuilder.getFields(this.queryName.getValue());
-        queryForm.setControl('filter', this.createFilterGroup(null));
-        queryForm.setControl(
-          'fields',
-          this.formBuilder.array([], Validators.required)
-        );
-        queryForm.setControl(
-          'sort',
-          this.formBuilder.group({
-            field: [''],
-            order: ['asc'],
-          })
-        );
-      }
-    } else {
-      console.log('match failed');
-      this.queryName.next('');
-      this.availableFields = [];
-      queryForm.setControl('filter', this.createFilterGroup(null));
-      queryForm.setControl('fields', this.formBuilder.array([]));
-      queryForm.setControl(
-        'sort',
-        this.formBuilder.group({
-          field: [''],
-          order: ['asc'],
-        })
-      );
-    }
-  }
-
-
-  private updateName(name: any): void {
-    const matchForm = this.content.find((val: Form) => val.id === name || val.name === name);
-    if (matchForm && matchForm.name) {
-      console.log('match form');
-      const newQueryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.name);
-      if (this.queryName.getValue() !== newQueryName){
-        console.log('query name different:', this.queryName.getValue(), newQueryName);
-        this.queryName.next(newQueryName);
-      }
-    } else {
-      console.log('update name match failed:', name);
-      this.queryName.next('');
-    }
   }
 }

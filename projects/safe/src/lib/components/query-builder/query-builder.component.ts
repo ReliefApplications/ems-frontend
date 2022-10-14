@@ -49,7 +49,6 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() canSelectDataSet = true;
   @Input() templates: Form[] = [];
   @Input() queryName? = '';
-  @Input() queryName$?: Observable<string>;
   @Input() layoutPreviewData: LayoutPreviewData | null = null;
 
   // Tab options
@@ -82,7 +81,6 @@ export class SafeQueryBuilderComponent implements OnInit {
    * Builds the form from the type of field / query we inject.
    */
   buildSettings(): void {
-    console.log('query name', this.queryName);
     if (this.form?.value.type) {
       this.isField = true;
       this.availableFields = this.queryBuilder
@@ -98,9 +96,19 @@ export class SafeQueryBuilderComponent implements OnInit {
       this.availableQueries = this.queryBuilder.availableQueries$;
       this.availableQueries.subscribe((res) => {
         if (res && res.length > 0) {
-          this.allQueries = res.filter((x) => x.name).map((x) => x.name);
-          //this.filteredQueries = this.filterQueries(this.form?.value.name);
-          const validName = this.queryName ? this.queryName : ''
+          const validName = this.queryBuilder.getQueryNameFromResourceName(this.form?.value.name);
+          if (this.queryName) {
+            const validQueryName = this.queryBuilder.getQueryNameFromResourceName(this.queryName);
+            this.allQueries = res
+              .filter((x) => x.name === validQueryName)
+              .map((x) => x.name);
+            if (this.allQueries.length === 1) {
+              this.form?.get('name')?.setValue(this.queryName);
+            }
+          } else {
+            this.allQueries = res.filter((x) => x.name).map((x) => x.name);
+          }
+          this.filteredQueries = this.filterQueries(validName);
           this.availableFields = this.queryBuilder.getFields(
             validName
           );
@@ -110,38 +118,8 @@ export class SafeQueryBuilderComponent implements OnInit {
           );
         }
       });
-      this.queryName$?.subscribe((name) => {
-        if (this.allQueries.find((x) => x === name)){
-          console.log('query builder subscribe valid name');
-          this.availableFields = this.queryBuilder.getFields(name);
-          this.form?.setControl('filter', createFilterGroup(null));
-          this.form?.setControl(
-            'fields',
-            this.formBuilder.array([], Validators.required)
-          );
-          this.form?.setControl(
-            'sort',
-            this.formBuilder.group({
-              field: [''],
-              order: ['asc'],
-            })
-          );
-        } else {
-          console.log('query builder subscribe no names');
-          this.availableFields = [];
-          this.form?.setControl('filter', createFilterGroup(null));
-          this.form?.setControl('fields', this.formBuilder.array([]));
-          this.form?.setControl(
-            'sort',
-            this.formBuilder.group({
-              field: [''],
-              order: ['asc'],
-            })
-          );
-        }
-      })
-      /*
       this.form?.controls.name.valueChanges.subscribe((res) => {
+        res = this.queryBuilder.getQueryNameFromResourceName(res);
         if (this.allQueries.find((x) => x === res)) {
           this.availableFields = this.queryBuilder.getFields(res);
           this.form?.setControl('filter', createFilterGroup(null));
@@ -169,9 +147,7 @@ export class SafeQueryBuilderComponent implements OnInit {
           );
         }
         this.filteredQueries = this.filterQueries(res);
-        
       });
-      */
     }
   }
 
