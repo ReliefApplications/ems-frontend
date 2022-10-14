@@ -40,10 +40,12 @@ export class SafeMapSettingsComponent implements OnInit {
   public availableForms$!: Observable<Form[]>;
   private content: Form[] = [];
   public sourceControl!: AbstractControl;
-  public queryName = '';
+  public queryName = new BehaviorSubject<string>('');
+  public queryName$!: Observable<string>; 
   public availableFields: any[] = [];
 
   public selectedFields: any[] = [];
+  public loading = true;
 
   /**
    * Getter for the available scalar fields
@@ -112,10 +114,9 @@ export class SafeMapSettingsComponent implements OnInit {
     const queryForm = this.tileForm.get('query') as FormGroup;
 
     queryForm.controls.name.valueChanges.subscribe((name: any) => {
-      console.log('value change', queryForm);
       this.tileForm?.controls.latitude.setValue('');
       this.tileForm?.controls.longitude.setValue('');
-      this.updateFields(name, queryForm);
+      this.updateName(name);
     });
     queryForm.valueChanges.subscribe((res) => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
@@ -125,7 +126,6 @@ export class SafeMapSettingsComponent implements OnInit {
 
     const validSourceControl = this.tileForm.get('query.name');
     if (validSourceControl) {
-      console.log('valid source control');
       this.sourceControl = validSourceControl;
     }
   }
@@ -171,21 +171,27 @@ export class SafeMapSettingsComponent implements OnInit {
     );
   }
 
-  private LoadForms(queryForm: FormGroup): void {
+  private LoadForms(queryForm: FormGroup) : void {
     console.log('load forms');
     this.availableForms$ = this.availableForms.asObservable();
     this.apollo.query<GetFormsQueryResponse>({
       query: GET_FORMS,
     })
     .subscribe((res) => {
-        this.availableForms.next(res.data.forms.edges.map((x) => x.node).filter((x) => x.core || x.status === status.active));
-        this.content = res.data.forms.edges.map((x) => x.node);
-        this.buildSettings(queryForm);
-        const matchForm = this.content.find((val: Form) => val.id === queryForm.value.name);
+        this.content = res.data.forms.edges.map((x) => x.node).filter((x) => x.core || x.status === status.active);
+        this.availableForms.next(this.content);
+        //this.buildSettings(queryForm);
+        const matchForm = this.content.find((val: Form) => val.id === queryForm.value.name || val.name === queryForm.value.name);
         if (matchForm && matchForm.name) {
+          console.log('match init');
+          this.queryName.next(this.queryBuilder.getQueryNameFromResourceName(matchForm.name));
           queryForm.controls.name.setValue(matchForm.name);
         }
-    });      
+        this.queryName$ = this.queryName.asObservable();
+        console.log('query name observer:', this.queryName.getValue());
+        this.loading = false;
+    });
+    console.log('end load forms');
   }
 
   /**
@@ -208,10 +214,10 @@ export class SafeMapSettingsComponent implements OnInit {
           const matchForm = this.content.find((val: Form) => val.id === queryForm.value.name || val.name === queryForm.value.name);
           if (matchForm && matchForm.name) {
             console.log('match form');
-            this.queryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.name);
+            this.queryName.next(this.queryBuilder.getQueryNameFromResourceName(matchForm.name));
           }
           this.availableFields = this.queryBuilder.getFields(
-            this.queryName
+            this.queryName.getValue()
           );
           queryForm.setControl(
             'filter',
@@ -245,12 +251,13 @@ export class SafeMapSettingsComponent implements OnInit {
 
   private updateFields(name: any, queryForm: FormGroup): void {
     const matchForm = this.content.find((val: Form) => val.id === name || val.name === name);
-    if (matchForm && matchForm.resource?.name) {
+    if (matchForm && matchForm.name) {
       console.log('match form');
-      const newQueryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.resource.name);
-      if (this.queryName !== newQueryName){
-        this.availableFields = this.queryBuilder.getFields(this.queryName);
-        console.log('available fields', this.availableFields);
+      const newQueryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.name);
+      if (this.queryName.getValue() !== newQueryName){
+        console.log('query name different');
+        this.queryName.next(newQueryName);
+        this.availableFields = this.queryBuilder.getFields(this.queryName.getValue());
         queryForm.setControl('filter', this.createFilterGroup(null));
         queryForm.setControl(
           'fields',
@@ -266,7 +273,7 @@ export class SafeMapSettingsComponent implements OnInit {
       }
     } else {
       console.log('match failed');
-      this.queryName = '';
+      this.queryName.next('');
       this.availableFields = [];
       queryForm.setControl('filter', this.createFilterGroup(null));
       queryForm.setControl('fields', this.formBuilder.array([]));
@@ -277,6 +284,22 @@ export class SafeMapSettingsComponent implements OnInit {
           order: ['asc'],
         })
       );
+    }
+  }
+
+
+  private updateName(name: any): void {
+    const matchForm = this.content.find((val: Form) => val.id === name || val.name === name);
+    if (matchForm && matchForm.name) {
+      console.log('match form');
+      const newQueryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.name);
+      if (this.queryName.getValue() !== newQueryName){
+        console.log('query name different:', this.queryName.getValue(), newQueryName);
+        this.queryName.next(newQueryName);
+      }
+    } else {
+      console.log('update name match failed:', name);
+      this.queryName.next('');
     }
   }
 }

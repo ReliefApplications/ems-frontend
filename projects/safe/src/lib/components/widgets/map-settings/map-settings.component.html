@@ -7,85 +7,22 @@
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
     </div>
-    <div class="form-group">
+    <div class="form-group" *ngIf="!loading">
       <div class="form-group-title">
         {{ 'components.widget.settings.map.dataset' | translate }}
       </div>
-      
-      <!--
-      <safe-query-builder
-      [form]="$any(tileForm.controls.query)"
-      [canExpand]="false"
-      ></safe-query-builder>
-      -->
-      
       <safe-forms-dropdown
       [forms$]="availableForms$"
       [loadingMore]="false"
       [sourceControl]="sourceControl"
       [label]="'components.queryBuilder.dataset.select' | translate"
       ></safe-forms-dropdown>
-
-      <mat-tab-group
-      mat-align-tabs="start"
-      animationDuration="0ms"
-      *ngIf="queryName"
-      >
-      <mat-tab [label]="'components.queryBuilder.fields.title' | translate">
-        <ng-template matTabContent>
-          <safe-tab-fields
-            *ngIf="availableFields.length > 0"
-            [form]="$any(tileForm.get('query.fields'))"
-            [fields]="availableFields"
-          ></safe-tab-fields>
-        </ng-template>
-      </mat-tab>
-      <mat-tab
-        [label]="'components.queryBuilder.sort.title' | translate"
-        *ngIf="tileForm.get('query.sort')"
-      >
-        <ng-template matTabContent>
-          <safe-tab-sort
-            [form]="$any(tileForm.get('query.sort'))"
-            [fields]="availableScalarFields"
-          ></safe-tab-sort>
-        </ng-template>
-      </mat-tab>
-      <mat-tab
-        [label]="'components.queryBuilder.pagination.title' | translate"
-        *ngIf="tileForm.get('query.first')"
-      >
-        <ng-template matTabContent>
-          <safe-tab-pagination [form]="tileForm.value.query"></safe-tab-pagination>
-        </ng-template>
-      </mat-tab>
-      <mat-tab
-        [label]="'components.queryBuilder.filter.title' | translate"
-        *ngIf="tileForm.get('query.filter')"
-      >
-        <ng-template matTabContent>
-          <safe-tab-filter
-            [form]="$any(tileForm.get('query.filter'))"
-            [query]="tileForm.get('query.getRawValue')"
-          >
-          </safe-tab-filter>
-        </ng-template>
-      </mat-tab>
-      <mat-tab
-        [label]="'components.queryBuilder.style.title' | translate"
-        *ngIf="tileForm.get('query.style')"
-      >
-        <ng-template matTabContent>
-          <safe-tab-style
-            [form]="$any(tileForm.get('query.style'))"
-            [scalarFields]="availableScalarFields"
-            [query]="tileForm.get('query.getRawValue')"
-          >
-          </safe-tab-style>
-        </ng-template>
-      </mat-tab>
-    </mat-tab-group>
-        
+      <safe-query-builder
+      [form]="$any(tileForm.controls.query)"
+      [canExpand]="false"
+      [queryName$]="queryName$"
+      [queryName]="queryName.getValue()"
+      ></safe-query-builder>
       <ng-container *ngIf="selectedFields.length > 0">
         <mat-form-field appearance="outline">
           <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>

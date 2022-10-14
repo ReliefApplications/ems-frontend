@@ -115,10 +115,13 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     this.formGroup.get('query.name')?.valueChanges.subscribe((name) => {
       if (name) {
         // Check if the query changed to clean modifications and fields for email in floating button
+        console.log('name update:', name);
         if (name !== this.queryName) {
           this.queryName = name;
+          console.log('name !== query name');
           const matchForm = this.content.find((val: Form) => val.id === name || val.name === name);
           if (matchForm && matchForm?.name) {
+            console.log('matched form');
             this.queryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.name);
           }
           this.formGroup?.get('layouts')?.setValue([]);
@@ -283,8 +286,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         this.content = res.data.forms.edges.map((x) => x.node);
 
         // to display the resource name at the beginning and not the form's id
-        this.queryName = this.formGroup.get('query')?.value.name;
-        const matchForm = this.content.find((val: Form) => val.id === this.queryName || val.name === this.queryName);
+        const queryValue = this.formGroup.get('query')?.value.name;
+        const matchForm = this.content.find((val: Form) => val.id === queryValue || val.name === queryValue);
         if (matchForm && matchForm?.name) {
           this.formGroup.get('query.name')?.setValue(matchForm.name);
         }
