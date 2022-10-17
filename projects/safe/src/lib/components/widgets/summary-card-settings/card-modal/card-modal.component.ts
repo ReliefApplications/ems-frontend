@@ -82,7 +82,6 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    */
   ngOnInit(): void {
     this.form = this.fb.group({ ...this.data });
-    console.log(this.form);
 
     /** === INITIALIZING FROM SAVED SETTINGS === */
     // Fetches the specified resource

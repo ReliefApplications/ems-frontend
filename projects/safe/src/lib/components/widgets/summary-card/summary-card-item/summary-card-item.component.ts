@@ -12,11 +12,7 @@ import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.serv
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { SafeResourceGridModalComponent } from '../../../search-resource-grid-modal/search-resource-grid-modal.component';
 import {
-  GetRecordByIdQueryResponse,
-  GetResourceLayoutsByIdQueryResponse,
   GetResourceMetadataQueryResponse,
-  GET_RECORD_BY_ID,
-  GET_RESOURCE_LAYOUTS,
   GET_RESOURCE_METADATA,
 } from '../graphql/queries';
 import { clone, get } from 'lodash';
@@ -24,7 +20,6 @@ import {
   GetLayoutQueryResponse,
   GET_LAYOUT,
 } from '../../summary-card-settings/card-modal/graphql/queries';
-import { getFieldsValue } from '../parser/utils';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 
 /**
@@ -98,12 +93,11 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    * Set content of the card item, querying associated record.
    */
   private setContentFromLayout(): void {
-    console.log(this.card);
     this.getStyles();
     if (typeof this.card.record === 'string') {
       this.getCardData();
     } else if (typeof this.card.record === 'object') {
-      this.fieldsValue = getFieldsValue(this.card.record);
+      this.fieldsValue = { ...this.card.record };
       this.fields = this.card.metadata;
       this.loading = false;
     } else {
@@ -150,6 +144,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    * Queries the data for each of the static cards.
    */
   private async getCardData() {
+    // gets metadata
     const metaRes = await this.apollo
       .query<GetResourceMetadataQueryResponse>({
         query: GET_RESOURCE_METADATA,
@@ -158,18 +153,40 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
         },
       })
       .toPromise();
-    this.fields = get(metaRes, 'data.resource.metadata', []);
-    const queryName = get(metaRes, 'data.resource.singleQueryName');
+    const queryName = get(metaRes, 'data.resource.queryName');
 
-    const query = this.queryBuilder.graphqlSingleQuery(
-      queryName,
-      this.layout.query.fields
-    );
-
+    const builtQuery = this.queryBuilder.buildQuery({
+      query: this.layout.query,
+    });
+    const layoutFields = this.layout.query.fields;
+    this.fields = get(metaRes, 'data.resource.metadata').map((f: any) => {
+      const layoutField = layoutFields.find((lf: any) => lf.name === f.name);
+      if (layoutField) {
+        return { ...layoutField, ...f };
+      }
+      return f;
+    });
     this.apollo
-      .query<any>({ query, variables: { id: this.card.record } })
+      .query<any>({
+        query: builtQuery,
+        variables: {
+          first: 1,
+          filter: {
+            // get only the record we need
+            logic: 'and',
+            filters: [
+              {
+                field: 'id',
+                operator: 'eq',
+                value: this.card.record,
+              },
+            ],
+          },
+        },
+      })
       .subscribe((res) => {
-        this.fieldsValue = getFieldsValue(res.data?.[queryName]);
+        const record: any = get(res.data, `${queryName}.edges[0].node`, null);
+        this.fieldsValue = { ...record };
       });
   }
 
@@ -191,30 +208,19 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    * Open the dataSource modal.
    */
   public openDataSource(): void {
-    this.apollo
-      .query<GetResourceLayoutsByIdQueryResponse>({
-        query: GET_RESOURCE_LAYOUTS,
-        variables: {
-          id: this.card.resource,
+    if (this.layout?.query) {
+      this.dialog.open(SafeResourceGridModalComponent, {
+        data: {
+          gridSettings: clone(this.layout.query),
         },
-      })
-      .subscribe((res) => {
-        const layouts = res.data?.resource?.layouts || [];
-        const query = layouts.find((l) => l.id === this.card.layout)?.query;
-        if (query) {
-          this.dialog.open(SafeResourceGridModalComponent, {
-            data: {
-              gridSettings: clone(query),
-            },
-          });
-        } else {
-          this.snackBar.openSnackBar(
-            this.translate.instant(
-              'components.widget.summaryCard.errors.invalidSource'
-            ),
-            { error: true }
-          );
-        }
       });
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.widget.summaryCard.errors.invalidSource'
+        ),
+        { error: true }
+      );
+    }
   }
 }

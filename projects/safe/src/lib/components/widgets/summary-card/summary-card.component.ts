@@ -208,11 +208,10 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             const newCards = edges.map((e: any) => ({
               ...this.settings.cards[0],
               record: e.node,
-              layout: layoutQuery,
+              layout: layouts[0],
               metadata: fields,
             }));
 
-            // console.log('newCards', newCards);
             this.cards = [...this.cards, ...newCards];
             this.pageInfo.hasNextPage =
               get(res2.data[layoutQuery.name], 'totalCount', 0) >

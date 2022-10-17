@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, isArray, isNil } from 'lodash';
 import calcFunctions from './calcFunctions';
 
 /** Prefix for data keys */
@@ -83,7 +83,7 @@ export const parseHtml = (
  * @param fieldsValue Content of the fields.
  * @param fields Available fields.
  * @param styles Array of layout styles.
- * @param wholeCardStyles Boolean indicating if styles should be applied to the wholecard.
+ * @param wholeCardStyles Boolean indicating if styles should be applied to the whole card.
  * @returns formatted html.
  */
 const replaceRecordFields = (
@@ -112,95 +112,104 @@ const replaceRecordFields = (
     for (const field of fields) {
       const value = fieldsValue[field.name];
       const style = getLayoutsStyle(styles, field.name, fields);
-      let convertedValue: any;
-      switch (field.type) {
-        case 'url':
-          convertedValue = `<a href="${value}" style="${style}" target="_blank">${applyLayoutFormat(
-            value,
-            field
-          )}</a>`;
-          break;
-        case 'email':
-          convertedValue = `<a href="mailto: ${value}" style="${style}" target="_blank">${applyLayoutFormat(
-            value,
-            field
-          )}</a>`;
-          break;
-        case 'date':
-          convertedValue =
-            `<span style='${style}'>` +
-            applyLayoutFormat(
-              new Date(value).toLocaleString().split(',')[0],
+      let convertedValue = '';
+      if (!isNil(value)) {
+        switch (field.type) {
+          case 'url':
+            convertedValue = `<a href="${value}" style="${style}" target="_blank">${applyLayoutFormat(
+              value,
               field
-            ) +
-            +'</span>';
-          break;
-        case 'datetime':
-          const date = new Date(parseInt(value, 10));
-          const hour =
-            date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
-          const minutes =
-            date.getMinutes() < 10
-              ? '0' + date.getMinutes()
-              : date.getMinutes();
-          const time = date.getHours() >= 12 ? 'PM' : 'AM';
-          convertedValue =
-            `<span style='${style}'>` +
-            applyLayoutFormat(
-              date.toLocaleString().split(',')[0] +
-                ', ' +
-                hour +
-                ':' +
-                minutes +
-                ' ' +
-                time,
+            )}</a>`;
+            break;
+          case 'email':
+            convertedValue = `<a href="mailto:${value}"
+              style="${style}"
+              >
+              ${applyLayoutFormat(value, field)}
+              </a>`;
+            break;
+          case 'date':
+            convertedValue =
+              `<span style='${style}'>` +
+              applyLayoutFormat(
+                new Date(value).toLocaleString().split(',')[0],
+                field
+              ) +
+              +'</span>';
+            break;
+          case 'datetime':
+            const date = new Date(parseInt(value, 10));
+            const hour =
+              date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
+            const minutes =
+              date.getMinutes() < 10
+                ? '0' + date.getMinutes()
+                : date.getMinutes();
+            const time = date.getHours() >= 12 ? 'PM' : 'AM';
+            convertedValue =
+              `<span style='${style}'>` +
+              applyLayoutFormat(
+                date.toLocaleString().split(',')[0] +
+                  ', ' +
+                  hour +
+                  ':' +
+                  minutes +
+                  ' ' +
+                  time,
+                field
+              ) +
+              '</span>';
+            break;
+          case 'boolean':
+            const checked = value ? 'checked' : '';
+            convertedValue =
+              '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
+              checked +
+              ' disabled></input>';
+            break;
+          case 'file':
+            convertedValue = '';
+            if (isArray(value)) {
+              for (let i = 0; value[i]; ) {
+                const file = value[i];
+                const fileExt = file.name.split('.').pop();
+                const fileIcon =
+                  fileExt && ICON_EXTENSIONS[fileExt]
+                    ? ICON_EXTENSIONS[fileExt]
+                    : 'k-i-file';
+                const fileName = applyLayoutFormat(
+                  fileExt && ICON_EXTENSIONS[fileExt]
+                    ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
+                    : file.name,
+                  field
+                );
+                convertedValue += `<button type="file"
+                  field="${field.name}"
+                  index="${i++}"
+                  style="border: none; padding: 4px 6px; cursor: pointer; ${style}" title=
+                  ${file.name}
+                  >
+                  <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
+                  ${fileName}
+                  </button>`; // add elements to be able to identify file when clicking on button
+              }
+            }
+
+            break;
+          case 'owner':
+          case 'users':
+          case 'resources':
+            convertedValue = `<span style='${style}'>${
+              value ? value.length : 0
+            } items</span>`;
+            break;
+          default:
+            convertedValue = `<span style='${style}'>${applyLayoutFormat(
+              value,
               field
-            ) +
-            '</span>';
-          break;
-        case 'boolean':
-          const checked = value ? 'checked' : '';
-          convertedValue =
-            '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
-            checked +
-            ' disabled></input>';
-          break;
-        case 'file':
-          convertedValue = '';
-          for (const file of value) {
-            const fileExt = file.name.split('.').pop();
-            const fileIcon =
-              fileExt && ICON_EXTENSIONS[fileExt]
-                ? ICON_EXTENSIONS[fileExt]
-                : 'k-i-file';
-            const fileName = applyLayoutFormat(
-              fileExt && ICON_EXTENSIONS[fileExt]
-                ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
-                : file.name,
-              field
-            );
-            convertedValue +=
-              `<button style="border: none; padding: 4px 6px; ${style}" title="` +
-              file.name +
-              '">' +
-              ' <span class="k-icon ' +
-              fileIcon +
-              '" style="margin-right: 4px"></span>' +
-              fileName +
-              '</button>';
-          }
-          break;
-        case 'owner':
-        case 'users':
-        case 'resources':
-          convertedValue = `<span style='${style}'>${value.lenght} items</span>`;
-          break;
-        default:
-          convertedValue = `<span style='${style}'>${applyLayoutFormat(
-            value,
-            field
-          )}</span>`;
-          break;
+            )}</span>`;
+            break;
+        }
       }
 
       const regex = new RegExp(

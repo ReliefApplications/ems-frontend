@@ -301,27 +301,6 @@ export class QueryBuilderService {
   }
 
   /**
-   * Builds a graphQL single query from name and fields strings.
-   *
-   * @param name name of the query.
-   * @param fields fields to fetch.
-   * @returns GraphQL query.
-   */
-  public graphqlSingleQuery(name: string, fields: any) {
-    fields = fields.map((x: any) => x.name).join('\n');
-    return gql`
-    query GetCustomSingleQuery($id: ID!) {
-      ${name}(
-        id: $id
-      ) {
-        ${fields}
-        incrementalId
-      }
-    }
-  `;
-  }
-
-  /**
    * Builds a GraphQL meta query of a form / resource from widget settings.
    *
    * @param query Widget query.
