@@ -7,7 +7,12 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  FormArray,
+  AbstractControl,
+} from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -118,6 +123,40 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     if (validSourceControl) {
       this.sourceControl = validSourceControl;
     }
+
+    this.formGroup.get('query.name')?.valueChanges.subscribe((name) => {
+      if (name) {
+        // Check if the query changed to clean modifications and fields for email in floating button
+        if (name !== this.queryName) {
+          this.queryName = name;
+          const matchForm = this.content.find((val: Form) => val.name === name);
+          if (matchForm) {
+            this.queryName =
+              this.queryBuilder.getQueryNameFromResourceName(name);
+          }
+          this.formGroup?.get('layouts')?.setValue([]);
+          this.formGroup?.get('query.template')?.setValue(null);
+          this.formGroup?.get('query.template')?.enable();
+          const floatingButtons = this.formGroup?.get(
+            'floatingButtons'
+          ) as FormArray;
+          for (const floatingButton of floatingButtons.controls) {
+            const modifications = floatingButton.get(
+              'modifications'
+            ) as FormArray;
+            modifications.clear();
+            this.formGroup
+              ?.get('floatingButton.modifySelectedRows')
+              ?.setValue(false);
+            const bodyFields = floatingButton.get('bodyFields') as FormArray;
+            bodyFields.clear();
+          }
+        }
+        this.getQueryMetaData();
+      } else {
+        this.fields = [];
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -240,58 +279,27 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     this.selectedTab = event.index;
   }
 
+  /**
+   * Load all valid Forms.
+   * If the query name match a form name, laod the query meta data.
+   */
   private LoadForms(): void {
     this.availableForms$ = this.availableForms.asObservable();
-    this.apollo.query<GetFormsQueryResponse>({
-      query: GET_FORMS,
-    })
-    .subscribe((res) => {
-        this.availableForms.next(res.data.forms.edges.map((x) => x.node).filter((x) => x.core || x.status === status.active));
-        this.content = res.data.forms.edges.map((x) => x.node);
-
-        // to display the resource name at the beginning and not the form's id
-        const queryValue = this.formGroup.get('query')?.value.name;
-        const matchForm = this.content.find((val: Form) => val.id === queryValue || val.name === queryValue);
-        if (matchForm && matchForm?.name) {
-          this.formGroup.get('query.name')?.setValue(matchForm.name);
-          this.queryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.name);
+    this.apollo
+      .query<GetFormsQueryResponse>({
+        query: GET_FORMS,
+      })
+      .subscribe((res) => {
+        this.content = res.data.forms.edges
+          .map((x) => x.node)
+          .filter((x) => x.core || x.status === status.active);
+        this.availableForms.next(this.content);
+        const name = this.formGroup.get('query.name')?.value;
+        const matchForm = this.content.find((val: Form) => val.name === name);
+        if (matchForm) {
+          this.queryName = this.queryBuilder.getQueryNameFromResourceName(name);
           this.getQueryMetaData();
         }
-        this.formGroup.get('query.name')?.valueChanges.subscribe((name) => {
-          if (name) {
-            // Check if the query changed to clean modifications and fields for email in floating button
-            console.log('name update:', name);
-            if (name !== this.queryName) {
-              this.queryName = name;
-              console.log('name !== query name');
-              const matchForm = this.content.find((val: Form) => val.id === name || val.name === name);
-              if (matchForm && matchForm?.name) {
-                console.log('matched form');
-                this.queryName = this.queryBuilder.getQueryNameFromResourceName(matchForm.name);
-              }
-              this.formGroup?.get('layouts')?.setValue([]);
-              this.formGroup?.get('query.template')?.setValue(null);
-              this.formGroup?.get('query.template')?.enable();
-              const floatingButtons = this.formGroup?.get(
-                'floatingButtons'
-              ) as FormArray;
-              for (const floatingButton of floatingButtons.controls) {
-                const modifications = floatingButton.get(
-                  'modifications'
-                ) as FormArray;
-                modifications.clear();
-                this.formGroup
-                  ?.get('floatingButton.modifySelectedRows')
-                  ?.setValue(false);
-                const bodyFields = floatingButton.get('bodyFields') as FormArray;
-                bodyFields.clear();
-              }
-            }
-            this.getQueryMetaData();
-          } else {
-            this.fields = [];
-          }
-        });
-    });      
+      });
   }
 }

@@ -19,7 +19,7 @@
   >
     <mat-option
       *ngFor="let form of filteredForms"
-      [value]="form.id"
+      [value]="valueById ? form.id : form.name"
       class="form-option"
     >
       {{ form.name }}

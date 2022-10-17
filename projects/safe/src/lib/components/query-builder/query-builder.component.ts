@@ -81,9 +81,7 @@ export class SafeQueryBuilderComponent implements OnInit {
    * Builds the form from the type of field / query we inject.
    */
   buildSettings(): void {
-    console.log('query buider init', this.form);
     if (this.form?.value.type) {
-      console.log('query builder valid type');
       this.isField = true;
       this.availableFields = this.queryBuilder
         .getFieldsFromType(this.form?.value.type)
@@ -98,14 +96,15 @@ export class SafeQueryBuilderComponent implements OnInit {
       this.availableQueries = this.queryBuilder.availableQueries$;
       this.availableQueries.subscribe((res) => {
         if (res && res.length > 0) {
-          let validName = this.queryBuilder.getQueryNameFromResourceName(this.form?.value.name);
+          let validName = this.queryBuilder.getQueryNameFromResourceName(
+            this.form?.value.name
+          );
           validName = validName ? validName : this.form?.value.name;
-          console.log('form name:', this.form?.value.name);
-          console.log('valid form name:', validName);
           if (this.queryName) {
-            let validQueryName = this.queryBuilder.getQueryNameFromResourceName(this.queryName);
+            let validQueryName = this.queryBuilder.getQueryNameFromResourceName(
+              this.queryName
+            );
             validQueryName = validQueryName ? validQueryName : this.queryName;
-            console.log('valid query name:', validQueryName);
             this.allQueries = res
               .filter((x) => x.name === validQueryName)
               .map((x) => x.name);
@@ -117,9 +116,7 @@ export class SafeQueryBuilderComponent implements OnInit {
             this.allQueries = res.filter((x) => x.name).map((x) => x.name);
           }
           this.filteredQueries = this.filterQueries(validName);
-          this.availableFields = this.queryBuilder.getFields(
-            validName
-          );
+          this.availableFields = this.queryBuilder.getFields(validName);
           this.form?.setControl(
             'filter',
             createFilterGroup(this.form?.value.filter)

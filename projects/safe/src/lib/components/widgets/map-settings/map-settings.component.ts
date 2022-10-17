@@ -1,5 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  AbstractControl,
+} from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { createQueryForm } from '../../query-builder/query-builder-forms';
 import { Apollo } from 'apollo-angular';
@@ -41,16 +46,16 @@ export class SafeMapSettingsComponent implements OnInit {
   private content: Form[] = [];
   public sourceControl!: AbstractControl;
   public availableFields: any[] = [];
+  private queryName = '';
 
   public selectedFields: any[] = [];
-  public loading = true;
 
   /**
    * Getter for the available scalar fields
    *
    * @returns the available scalar fields
    */
-   get availableScalarFields(): any[] {
+  get availableScalarFields(): any[] {
     return this.availableFields.filter(
       (x) => x.type.kind === 'SCALAR' || x.type.kind === 'OBJECT'
     );
@@ -61,6 +66,7 @@ export class SafeMapSettingsComponent implements OnInit {
    *
    * @param formBuilder Create the formbuilder
    * @param queryBuilder The queryBuilder service
+   * @param apollo The apollo service
    */
   constructor(
     private formBuilder: FormBuilder,
@@ -70,7 +76,6 @@ export class SafeMapSettingsComponent implements OnInit {
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    console.log('init map settings');
     const tileSettings = this.tile.settings;
     this.tileForm = this.formBuilder.group({
       id: this.tile.id,
@@ -104,12 +109,13 @@ export class SafeMapSettingsComponent implements OnInit {
       this.change.emit(this.tileForm);
     });
 
-
     if (this.tileForm?.value.query.name) {
       this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
     }
 
     const queryForm = this.tileForm.get('query') as FormGroup;
+
+    this.queryName = queryForm.value.name;
 
     queryForm.controls.name.valueChanges.subscribe((name: any) => {
       this.tileForm?.controls.latitude.setValue('');
@@ -120,7 +126,7 @@ export class SafeMapSettingsComponent implements OnInit {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
     });
 
-    this.LoadForms(queryForm);
+    this.LoadForms();
 
     const validSourceControl = this.tileForm.get('query.name');
     if (validSourceControl) {
@@ -169,23 +175,20 @@ export class SafeMapSettingsComponent implements OnInit {
     );
   }
 
-  private LoadForms(queryForm: FormGroup) : void {
-    console.log('load forms');
+  /**
+   * Load all available Forms
+   */
+  private LoadForms(): void {
     this.availableForms$ = this.availableForms.asObservable();
-    this.apollo.query<GetFormsQueryResponse>({
-      query: GET_FORMS,
-    })
-    .subscribe((res) => {
-        this.content = res.data.forms.edges.map((x) => x.node).filter((x) => x.core || x.status === status.active);
+    this.apollo
+      .query<GetFormsQueryResponse>({
+        query: GET_FORMS,
+      })
+      .subscribe((res) => {
+        this.content = res.data.forms.edges
+          .map((x) => x.node)
+          .filter((x) => x.core || x.status === status.active);
         this.availableForms.next(this.content);
-        //this.buildSettings(queryForm);
-        const matchForm = this.content.find((val: Form) => val.id === queryForm.value.name || val.name === queryForm.value.name);
-        if (matchForm && matchForm.name) {
-          console.log('match init');
-          queryForm.controls.name.setValue(matchForm.name);
-        }
-        this.loading = false;
-    });
-    console.log('end load forms');
+      });
   }
 }

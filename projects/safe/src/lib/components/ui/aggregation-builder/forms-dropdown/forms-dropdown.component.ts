@@ -27,6 +27,7 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   // === DATA ===
   @Input() public forms$!: Observable<Form[]>;
   @Input() public loadingMore = true;
+  @Input() public valueById = true;
   private currentForms: Form[] = [];
   public filteredForms: Form[] = [];
   private loading = true;
