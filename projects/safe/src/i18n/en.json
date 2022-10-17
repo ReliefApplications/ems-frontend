@@ -439,6 +439,7 @@
 				"ascending": "Ascending",
 				"descending": "Descending",
 				"field": "Sort field",
+				"limit": "limit",
 				"order": "Sort order",
 				"title": "Sort"
 			},

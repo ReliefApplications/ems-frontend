@@ -23,4 +23,10 @@
       }}</mat-option>
     </mat-select>
   </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{
+      'components.queryBuilder.sort.limit' | translate
+    }}</mat-label>
+    <input matInput formControlName="first" type="number">
+  </mat-form-field>
 </form>
