@@ -6,8 +6,10 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SafeDownloadService } from '../../../../services/download/download.service';
 import { Record } from '../../../../models/record.model';
 import { parseHtml } from '../parser/utils';
+import get from 'lodash/get';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -31,8 +33,12 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    * Content component of Single Item of Summary Card.
    *
    * @param sanitizer Sanitizes the cards content so angular can show it up.
+   * @param downloadService Used to download file type fields
    */
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(
+    private sanitizer: DomSanitizer,
+    private downloadService: SafeDownloadService
+  ) {}
 
   ngOnInit(): void {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
@@ -47,5 +53,23 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
       parseHtml(this.html, this.record, this.aggregationData, this.fields)
     );
+  }
+
+  /**
+   * Manages all data types that require some extra functions
+   *
+   * @param event Click event
+   */
+  public onClick(event: any) {
+    const type = event.target.getAttribute('type');
+    if (type === 'file') {
+      const fieldName = event.target.getAttribute('field');
+      const index = event.target.getAttribute('index');
+      const file = get(this.record, `data.${fieldName}[${index}]`, null);
+      if (file) {
+        const path = `download/file/${file.content}`;
+        this.downloadService.getFile(path, file.type, file.name);
+      }
+    }
   }
 }

@@ -108,7 +108,7 @@ const replaceRecordFields = (
           convertedValue =
             '<a href="mailto: ' +
             value +
-            '" target="_blank">' +
+            '">' +
             applyLayoutFormat(value, field) +
             '</a>';
           break;
@@ -147,7 +147,8 @@ const replaceRecordFields = (
           break;
         case 'file':
           convertedValue = '';
-          for (const file of value) {
+          for (let i = 0; value[i]; ) {
+            const file = value[i];
             const fileExt = file.name.split('.').pop();
             const fileIcon =
               fileExt && ICON_EXTENSIONS[fileExt]
@@ -160,20 +161,23 @@ const replaceRecordFields = (
               field
             );
             convertedValue +=
-              '<button style="border: none; padding: 4px 6px;" title="' +
+              '<button type="file" ' +
+              `field="${field.name}" ` +
+              `index="${i++}" ` +
+              'style="border: none; padding: 4px 6px; cursor: pointer" title="' +
               file.name +
               '">' +
               ' <span class="k-icon ' +
               fileIcon +
               '"></span>' +
               fileName +
-              '</button>';
+              '</button>'; // add elements to be able to identify file when clicking on button
           }
           break;
         case 'owner':
         case 'users':
         case 'resources':
-          convertedValue = value.length + ' items';
+          convertedValue = (value ? value.length : 0) + ' items';
           break;
         default:
           convertedValue = applyLayoutFormat(value, field);
