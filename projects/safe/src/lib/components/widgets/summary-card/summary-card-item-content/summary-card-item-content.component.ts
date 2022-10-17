@@ -9,6 +9,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { Record } from '../../../../models/record.model';
 import { parseHtml } from '../parser/utils';
+import get from 'lodash/get';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -59,18 +60,16 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    *
    * @param event Click event
    */
-  public click(event: any) {
+  public onClick(event: any) {
     const type = event.target.getAttribute('type');
     if (type === 'file') {
-      const position = event.target.getAttribute('number');
-      const occurence = event.target.getAttribute('occurence');
-      const name = this.fields.filter((field) => field.type === 'file')[
-        position
-      ].name;
-      const data = this.record?.data;
-      const file = data[name] ? data[name][occurence] : null;
-      const path = `download/file/${file.content}`;
-      this.downloadService.getFile(path, file.type, file.name);
+      const fieldName = event.target.getAttribute('field');
+      const index = event.target.getAttribute('index');
+      const file = get(this.record, `data.${fieldName}[${index}]`, null);
+      if (file) {
+        const path = `download/file/${file.content}`;
+        this.downloadService.getFile(path, file.type, file.name);
+      }
     }
   }
 }

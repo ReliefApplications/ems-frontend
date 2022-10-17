@@ -91,7 +91,6 @@ const replaceRecordFields = (
 ): string => {
   const fieldsValue = getFieldsValue(record);
   let formattedHtml = html;
-  let numberOfFiles = 0;
   if (fields) {
     for (const field of fields) {
       const value = fieldsValue[field.name];
@@ -163,8 +162,8 @@ const replaceRecordFields = (
             );
             convertedValue +=
               '<button type="file" ' +
-              `number="${numberOfFiles++}" ` +
-              `occurence="${i++}" ` +
+              `field="${field.name}" ` +
+              `index="${i++}" ` +
               'style="border: none; padding: 4px 6px; cursor: pointer" title="' +
               file.name +
               '">' +
@@ -172,7 +171,7 @@ const replaceRecordFields = (
               fileIcon +
               '"></span>' +
               fileName +
-              '</button>';
+              '</button>'; // add elements to be able to identify file when clicking on button
           }
           break;
         case 'owner':
