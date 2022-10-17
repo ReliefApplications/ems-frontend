@@ -1040,6 +1040,15 @@
 					"add": "Add new card",
 					"card": {
 						"dataSource": {
+							"layoutStyles": {
+								"title": "Layout styles",
+								"use": "Use layout styles",
+								"wholeRow": {
+									"option1": "Apply to all fields",
+									"option2": "Apply to the whole card",
+									"title": "Whole row styles:"
+								}
+							},
 							"title": "Data source"
 						},
 						"display": {
@@ -1047,7 +1056,6 @@
 							"header": "Header",
 							"title": "Display"
 						},
-						"preview": {},
 						"textEditor": {
 							"title": "Text editor"
 						},

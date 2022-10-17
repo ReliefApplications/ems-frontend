@@ -1,5 +1,4 @@
-import { get } from 'lodash';
-import { Record } from '../../../../models/record.model';
+import { get, isArray, isNil } from 'lodash';
 import calcFunctions from './calcFunctions';
 
 /** Prefix for data keys */
@@ -49,28 +48,29 @@ const ICON_EXTENSIONS: any = {
  * Parse the html body of a summary card with the content of a record,
  * and calculate the calc functions.
  *
- * @param html The html text
- * @param record The record to fill the text with
- * @param aggregationData The aggregation data to fill the text with
- * @param fields Available fields
- * @returns The parsed html
+ * @param html The html text.
+ * @param fieldsValue Field value.
+ * @param fields Available fields.
+ * @param styles Array of layout styles.
+ * @param wholeCardStyles Boolean indicating if styles should be applied to the wholecard.
+ * @returns The parsed html.
  */
 export const parseHtml = (
   html: string,
-  record: Record | null,
-  aggregationData: any,
-  fields: any
+  fieldsValue: any,
+  fields: any,
+  styles?: any[],
+  wholeCardStyles?: boolean
 ) => {
-  if (record) {
-    const htmlWithRecord = replaceRecordFields(html, record, fields);
-    return applyOperations(htmlWithRecord);
-  } else if (aggregationData) {
-    const htmlWithAggregation = replaceRecordFields(
+  if (fieldsValue) {
+    const htmlWithRecord = replaceRecordFields(
       html,
-      { data: aggregationData } as Record,
-      fields
+      fieldsValue,
+      fields,
+      styles,
+      wholeCardStyles
     );
-    return applyOperations(htmlWithAggregation);
+    return applyOperations(htmlWithRecord);
   } else {
     return applyOperations(html);
   }
@@ -80,108 +80,136 @@ export const parseHtml = (
  * Replaces the html resource fields with the resource data.
  *
  * @param html String with the content html.
- * @param record Record object.
- * @param fields Available fields
- * @returns formatted html
+ * @param fieldsValue Content of the fields.
+ * @param fields Available fields.
+ * @param styles Array of layout styles.
+ * @param wholeCardStyles Boolean indicating if styles should be applied to the whole card.
+ * @returns formatted html.
  */
 const replaceRecordFields = (
   html: string,
-  record: any,
-  fields: any
+  fieldsValue: any[],
+  fields: any,
+  styles: any[] = [],
+  wholeCardStyles: boolean = false
 ): string => {
-  const fieldsValue = getFieldsValue(record);
   let formattedHtml = html;
+  if (wholeCardStyles) {
+    let lastRowStyle: any = null;
+    styles.map((style: any) => {
+      if (style.fields.length === 0) {
+        lastRowStyle = style;
+      }
+    });
+    if (lastRowStyle) {
+      formattedHtml =
+        `<div style='${getLayoutStyle(lastRowStyle)}'>` +
+        formattedHtml +
+        '</div>';
+    }
+  }
   if (fields) {
     for (const field of fields) {
       const value = fieldsValue[field.name];
-      let convertedValue: any;
-      switch (field.type) {
-        case 'url':
-          convertedValue =
-            '<a href="' +
-            value +
-            '" target="_blank">' +
-            applyLayoutFormat(value, field) +
-            '</a>';
-          break;
-        case 'email':
-          convertedValue =
-            '<a href="mailto: ' +
-            value +
-            '">' +
-            applyLayoutFormat(value, field) +
-            '</a>';
-          break;
-        case 'date':
-          convertedValue = applyLayoutFormat(
-            new Date(value).toLocaleString().split(',')[0],
-            field
-          );
-          break;
-        case 'datetime':
-          const date = new Date(value);
-          const hour =
-            date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
-          const minutes =
-            date.getMinutes() < 10
-              ? '0' + date.getMinutes()
-              : date.getMinutes();
-          const time = date.getHours() >= 12 ? 'PM' : 'AM';
-          convertedValue = applyLayoutFormat(
-            date.toLocaleString().split(',')[0] +
-              ', ' +
-              hour +
-              ':' +
-              minutes +
-              ' ' +
-              time,
-            field
-          );
-          break;
-        case 'boolean':
-          const checked = value ? 'checked' : '';
-          convertedValue =
-            '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
-            checked +
-            ' disabled></input>';
-          break;
-        case 'file':
-          convertedValue = '';
-          for (let i = 0; value[i]; ) {
-            const file = value[i];
-            const fileExt = file.name.split('.').pop();
-            const fileIcon =
-              fileExt && ICON_EXTENSIONS[fileExt]
-                ? ICON_EXTENSIONS[fileExt]
-                : 'k-i-file';
-            const fileName = applyLayoutFormat(
-              fileExt && ICON_EXTENSIONS[fileExt]
-                ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
-                : file.name,
+      const style = getLayoutsStyle(styles, field.name, fields);
+      let convertedValue = '';
+      if (!isNil(value)) {
+        switch (field.type) {
+          case 'url':
+            convertedValue = `<a href="${value}" style="${style}" target="_blank">${applyLayoutFormat(
+              value,
               field
-            );
-            convertedValue +=
-              '<button type="file" ' +
-              `field="${field.name}" ` +
-              `index="${i++}" ` +
-              'style="border: none; padding: 4px 6px; cursor: pointer" title="' +
-              file.name +
-              '">' +
-              ' <span class="k-icon ' +
-              fileIcon +
-              '"></span>' +
-              fileName +
-              '</button>'; // add elements to be able to identify file when clicking on button
-          }
-          break;
-        case 'owner':
-        case 'users':
-        case 'resources':
-          convertedValue = (value ? value.length : 0) + ' items';
-          break;
-        default:
-          convertedValue = applyLayoutFormat(value, field);
-          break;
+            )}</a>`;
+            break;
+          case 'email':
+            convertedValue = `<a href="mailto:${value}"
+              style="${style}"
+              >
+              ${applyLayoutFormat(value, field)}
+              </a>`;
+            break;
+          case 'date':
+            convertedValue =
+              `<span style='${style}'>` +
+              applyLayoutFormat(
+                new Date(value).toLocaleString().split(',')[0],
+                field
+              ) +
+              +'</span>';
+            break;
+          case 'datetime':
+            const date = new Date(parseInt(value, 10));
+            const hour =
+              date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
+            const minutes =
+              date.getMinutes() < 10
+                ? '0' + date.getMinutes()
+                : date.getMinutes();
+            const time = date.getHours() >= 12 ? 'PM' : 'AM';
+            convertedValue =
+              `<span style='${style}'>` +
+              applyLayoutFormat(
+                date.toLocaleString().split(',')[0] +
+                  ', ' +
+                  hour +
+                  ':' +
+                  minutes +
+                  ' ' +
+                  time,
+                field
+              ) +
+              '</span>';
+            break;
+          case 'boolean':
+            const checked = value ? 'checked' : '';
+            convertedValue =
+              '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
+              checked +
+              ' disabled></input>';
+            break;
+          case 'file':
+            convertedValue = '';
+            if (isArray(value)) {
+              for (let i = 0; value[i]; ) {
+                const file = value[i];
+                const fileExt = file.name.split('.').pop();
+                const fileIcon =
+                  fileExt && ICON_EXTENSIONS[fileExt]
+                    ? ICON_EXTENSIONS[fileExt]
+                    : 'k-i-file';
+                const fileName = applyLayoutFormat(
+                  fileExt && ICON_EXTENSIONS[fileExt]
+                    ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
+                    : file.name,
+                  field
+                );
+                convertedValue += `<button type="file"
+                  field="${field.name}"
+                  index="${i++}"
+                  style="border: none; padding: 4px 6px; cursor: pointer; ${style}" title=
+                  ${file.name}
+                  >
+                  <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
+                  ${fileName}
+                  </button>`; // add elements to be able to identify file when clicking on button
+              }
+            }
+
+            break;
+          case 'owner':
+          case 'users':
+          case 'resources':
+            convertedValue = `<span style='${style}'>${
+              value ? value.length : 0
+            } items</span>`;
+            break;
+          default:
+            convertedValue = `<span style='${style}'>${applyLayoutFormat(
+              value,
+              field
+            )}</span>`;
+            break;
+        }
       }
 
       const regex = new RegExp(
@@ -200,7 +228,7 @@ const replaceRecordFields = (
  * @param record Record object.
  * @returns fields
  */
-const getFieldsValue = (record: any) => {
+export const getFieldsValue = (record: any) => {
   const fields: any = {};
   for (const [key, value] of Object.entries(record)) {
     if (!key.startsWith('__') && key !== 'form') {
@@ -285,6 +313,10 @@ export const applyLayoutFormat = (
   name: string | null,
   field: any
 ): string | null => {
+  // replaces value for label, if it exists
+  if (field.options)
+    name = field.options.find((o: any) => o.value === name)?.text || name;
+
   if (name && field.layoutFormat && field.layoutFormat.length > 1) {
     const regex = new RegExp(
       `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
@@ -296,5 +328,156 @@ export const applyLayoutFormat = (
     return applyOperations(value);
   } else {
     return name;
+  }
+};
+
+/**
+ * Loops throught the layout styles and returns the last style that pass the filters
+ *
+ * @param layouts Array of layout styles
+ * @param key The key of the actual property in the html
+ * @param fields Array of available fields
+ * @returns A string with the correct style to apply
+ */
+const getLayoutsStyle = (layouts: any, key: string, fields: any): string => {
+  let style = '';
+  layouts.map((layout: any) => {
+    if (layout.fields.length === 0 || layout.fields.includes(key)) {
+      if (applyFilters(layout.filter, fields)) {
+        style = getLayoutStyle(layout);
+      }
+    }
+  });
+  return style;
+};
+
+/**
+ * Get the css style of a layout style as a string
+ *
+ * @param layout Layout style
+ * @returns Returns a string with all the styling
+ */
+const getLayoutStyle = (layout: any): string => {
+  let style = '';
+  if (layout.background.color) {
+    style += `background-color: ${layout.background.color}; `;
+  }
+  if (layout.text.color) {
+    style += `color: ${layout.text.color}; `;
+  }
+  if (layout.text.bold) {
+    style += 'font-weight: bold; ';
+  }
+  if (layout.text.italic) {
+    style += 'font-style: italic; ';
+  }
+  if (layout.text.underline) {
+    style += 'text-decoration: underline; ';
+  }
+  return style;
+};
+
+/**
+ * Apply the filter provided to the specified field
+ *
+ * @param filter Filter object
+ * @param fields Array of fields
+ * @returns Returns a boolean with the result of the filter
+ */
+const applyFilters = (filter: any, fields: any): boolean => {
+  if (filter.logic) {
+    for (let i = 0; filter.filters[i]; i++) {
+      if (applyFilters(filter.filters[i], fields)) {
+        if (filter.logic === 'or') {
+          return true;
+        }
+      } else if (filter.logic === 'and') {
+        return false;
+      }
+    }
+    return filter.logic === 'or' ? false : true;
+  } else {
+    const value = fields[filter.field];
+    switch (filter.operator) {
+      case 'eq': {
+        // equal
+        return value === filter.value;
+      }
+      case 'neq': {
+        // not equal
+        return value !== filter.value;
+      }
+      case 'isnull': {
+        return value === null;
+      }
+      case 'isnotnull': {
+        return value !== null;
+      }
+      case 'lt': {
+        // lesser
+        return value < filter.value;
+      }
+      case 'lte': {
+        // lesser or equal
+        return value <= filter.value;
+      }
+      case 'gt': {
+        // greater
+        return value > filter.value;
+      }
+      case 'gte': {
+        // greater or equal
+        return value >= filter.value;
+      }
+      case 'startswith': {
+        if (!value) {
+          return false;
+        }
+        return value[0] === filter.value;
+      }
+      case 'endswith': {
+        if (!value) {
+          return false;
+        }
+        return value[value.length] === filter.value;
+      }
+      case 'contains': {
+        if (!value) {
+          return false;
+        }
+        for (let i = 0; value[i]; i++) {
+          if (value[i] === filter.value) {
+            return true;
+          }
+        }
+        return false;
+      }
+      case 'doesnotcontain': {
+        if (!value) {
+          return true;
+        }
+        for (let i = 0; value[i]; i++) {
+          if (value[i] === filter.value) {
+            return false;
+          }
+        }
+        return true;
+      }
+      case 'isempty': {
+        if (!value) {
+          return true;
+        }
+        return value.length <= 0;
+      }
+      case 'isnotempty': {
+        if (!value) {
+          return false;
+        }
+        return value.length > 0;
+      }
+      default: {
+        return false;
+      }
+    }
   }
 };

@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SafeDownloadService } from '../../../../services/download/download.service';
-import { Record } from '../../../../models/record.model';
 import { parseHtml } from '../parser/utils';
 import get from 'lodash/get';
 
@@ -24,8 +23,9 @@ import get from 'lodash/get';
 export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   @Input() html = '';
   @Input() fields: any[] = [];
-  @Input() record: Record | null = null;
-  @Input() aggregationData: any;
+  @Input() fieldsValue: any;
+  @Input() styles: any[] = [];
+  @Input() wholeCardStyles = false;
 
   public formattedHtml?: SafeHtml;
 
@@ -42,7 +42,13 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.html, this.record, this.aggregationData, this.fields)
+      parseHtml(
+        this.html,
+        this.fieldsValue,
+        this.fields,
+        this.styles,
+        this.wholeCardStyles
+      )
     );
   }
 
@@ -51,7 +57,13 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    */
   ngOnChanges(): void {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.html, this.record, this.aggregationData, this.fields)
+      parseHtml(
+        this.html,
+        this.fieldsValue,
+        this.fields,
+        this.styles,
+        this.wholeCardStyles
+      )
     );
   }
 
@@ -65,7 +77,7 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
     if (type === 'file') {
       const fieldName = event.target.getAttribute('field');
       const index = event.target.getAttribute('index');
-      const file = get(this.record, `data.${fieldName}[${index}]`, null);
+      const file = get(this.fieldsValue, `${fieldName}[${index}]`, null);
       if (file) {
         const path = `download/file/${file.content}`;
         this.downloadService.getFile(path, file.type, file.name);

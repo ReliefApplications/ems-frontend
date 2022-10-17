@@ -11,6 +11,10 @@ import get from 'lodash/get';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import {
+  GetResourceMetadataQueryResponse,
+  GET_RESOURCE_METADATA,
+} from './graphql/queries';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -43,7 +47,6 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   public loading = true;
 
   public cards: any[] = [];
-
   private dataQuery?: QueryRef<any>;
 
   /**
@@ -155,6 +158,16 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * @param card Card settings
    */
   private async createDynamicQueryFromLayout(card: any) {
+    // gets metadata
+    const metaRes = await this.apollo
+      .query<GetResourceMetadataQueryResponse>({
+        query: GET_RESOURCE_METADATA,
+        variables: {
+          id: card.resource,
+        },
+      })
+      .toPromise();
+
     this.gridLayoutService
       .getLayouts(card.resource, { ids: [card.layout], first: 1 })
       .then((res) => {
@@ -164,6 +177,19 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
           const builtQuery = this.queryBuilder.buildQuery({
             query: layoutQuery,
           });
+          const layoutFields = layoutQuery.fields;
+          const fields = get(metaRes, 'data.resource.metadata').map(
+            (f: any) => {
+              const layoutField = layoutFields.find(
+                (lf: any) => lf.name === f.name
+              );
+              if (layoutField) {
+                return { ...layoutField, ...f };
+              }
+              return f;
+            }
+          );
+
           this.dataQuery = this.apollo.watchQuery<any>({
             query: builtQuery,
             variables: {
@@ -176,17 +202,21 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             nextFetchPolicy: 'cache-first',
           });
           this.dataQuery.valueChanges.subscribe((res2) => {
-            for (const field in res2.data) {
-              if (Object.prototype.hasOwnProperty.call(res2.data, field)) {
-                const newCards = res2.data[field].edges.map((e: any) => ({
-                  ...this.settings.cards[0],
-                  record: e.node.id,
-                }));
-                this.cards = [...this.cards, ...newCards];
-                this.pageInfo.hasNextPage =
-                  get(res2.data[field], 'totalCount', 0) > this.cards.length;
-              }
-            }
+            const edges = res2.data?.[layoutQuery.name].edges;
+            if (!edges) return;
+
+            const newCards = edges.map((e: any) => ({
+              ...this.settings.cards[0],
+              record: e.node,
+              layout: layouts[0],
+              metadata: fields,
+            }));
+
+            this.cards = [...this.cards, ...newCards];
+            this.pageInfo.hasNextPage =
+              get(res2.data[layoutQuery.name], 'totalCount', 0) >
+              this.cards.length;
+
             this.loading = res2.loading;
           });
         }

@@ -25,8 +25,9 @@
   <safe-summary-card-item-content
     [html]="card.html"
     [fields]="fields"
-    [record]="record"
-    [aggregationData]="cardAggregationData"
+    [fieldsValue]="fieldsValue"
+    [styles]="card.useStyles ? styles : []"
+    [wholeCardStyles]="card.wholeCardStyles"
     style="flex: 1"
   >
   </safe-summary-card-item-content>

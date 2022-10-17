@@ -86,9 +86,10 @@
           </ng-template>
           <ng-template matTabContent>
             <safe-preview-tab
-              [html]="form.value.html"
+              [form]="form"
               [record]="selectedRecord"
               [fields]="fields"
+              [layout]="form.value.isAggregation ? null : selectedLayout"
             ></safe-preview-tab>
           </ng-template>
         </mat-tab>

@@ -1,5 +1,7 @@
 <safe-summary-card-item-content
-  [html]="html"
-  [record]="record"
+  [html]="form.value.html"
+  [fieldsValue]="fieldsValue"
   [fields]="fields"
+  [styles]="form.value.useStyles ? styles : []"
+  [wholeCardStyles]="form.value.wholeCardStyles"
 ></safe-summary-card-item-content>
