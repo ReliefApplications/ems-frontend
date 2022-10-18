@@ -67,6 +67,7 @@
             *ngIf="availableFields.length > 0"
             [form]="$any(form.controls.fields)"
             [fields]="availableFields"
+            [showLimit]="true"
           ></safe-tab-fields>
         </ng-template>
       </mat-tab>
@@ -78,7 +79,7 @@
           <safe-tab-sort
             [form]="$any(form.controls.sort)"
             [fields]="availableScalarFields"
-            [showLimit]="showLimit && form.get('first') != null"
+            [showLimit]="showLimit && form.get('sort.first') !== null"
           ></safe-tab-sort>
         </ng-template>
       </mat-tab>

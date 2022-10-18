@@ -23,7 +23,7 @@
       }}</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field appearance="outline">
+  <mat-form-field appearance="outline" *ngIf="showLimit">
     <mat-label>{{
       'components.queryBuilder.sort.limit' | translate
     }}</mat-label>

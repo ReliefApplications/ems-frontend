@@ -46,6 +46,7 @@ export const createFilterGroup = (filter: any): FormGroup => {
 export const addNewField = (field: any, newField?: boolean): FormGroup => {
   switch (newField ? field.type.kind : field.kind) {
     case 'LIST': {
+      console.log('Add new field: LIST case', field.sort?.first);
       return formBuilder.group({
         name: [{ value: field.name, disabled: true }],
         label: [field.label],
@@ -60,6 +61,7 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
         sort: formBuilder.group({
           field: [field.sort ? field.sort.field : ''],
           order: [field.sort && field.sort.order ? field.sort.order : 'asc'],
+          first: [field.sort ? field.sort.first : null, Validators.min(0)],
         }),
         filter: newField
           ? formBuilder.group({})

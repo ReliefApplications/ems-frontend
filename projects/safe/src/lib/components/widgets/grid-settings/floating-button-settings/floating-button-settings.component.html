@@ -202,7 +202,6 @@
             <safe-query-builder
               [form]="$any(buttonForm.controls.targetFormQuery)"
               [canSelectDataSet]="false"
-              [showLimit]="true"
             >
             </safe-query-builder>
           </ng-container>
@@ -323,6 +322,7 @@
                   *ngIf="fields.length > 0"
                   [form]="$any(buttonForm.controls.bodyFields)"
                   [fields]="fields"
+                  [showLimit]="true"
                 ></safe-tab-fields>
               </ng-template>
             </mat-tab>
