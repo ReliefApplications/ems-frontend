@@ -42,15 +42,15 @@ import {
 } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SafeGridService } from '../../../../services/grid.service';
-import { SafeDownloadService } from '../../../../services/download.service';
+import { SafeGridService } from '../../../../services/grid/grid.service';
+import { SafeDownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
 import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component';
 import { get } from 'lodash';
 import { SafeTileDataComponent } from '../../../widget-grid/floating-options/menu/tile-data/tile-data.component';
-import { SafeDashboardService } from '../../../../services/dashboard.service';
+import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 
 /**
  * Factory for creating scroll strategy
@@ -633,7 +633,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       data: {
         title: field.title,
         comment: get(item, field),
-        readonly: !this.actions.update,
+        readonly:
+          !this.actions.update ||
+          !item.canUpdate ||
+          this.fields.find((val) => val.name === field).meta.readOnly,
       },
       autoFocus: false,
     });

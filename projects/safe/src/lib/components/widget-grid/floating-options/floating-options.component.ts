@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeTileDataComponent } from './menu/tile-data/tile-data.component';
-import { SafeDashboardService } from '../../../services/dashboard.service';
+import { SafeDashboardService } from '../../../services/dashboard/dashboard.service';
 import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 

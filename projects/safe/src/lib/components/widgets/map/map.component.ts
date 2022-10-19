@@ -7,11 +7,11 @@ import {
   Inject,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { QueryBuilderService } from '../../../services/query-builder.service';
 import { applyFilters } from './filter';
-import { DomService } from '../../../services/dom.service';
+import { DomService } from '../../../services/dom/dom.service';
 import get from 'lodash/get';
 import { SafeMapPopupComponent } from './map-popup/map-popup.component';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet

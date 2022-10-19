@@ -18,6 +18,11 @@
 			"none": "Aucune application",
 			"one": "Application"
 		},
+		"attribute": {
+			"few": "Attributs",
+			"none": "Aucun attribut",
+			"one": "Attribut"
+		},
 		"auto": "Automatique",
 		"back": "Retour",
 		"cancel": "Annuler",

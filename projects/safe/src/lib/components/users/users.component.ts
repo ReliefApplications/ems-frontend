@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { User, Role, Permissions } from '../../models/user.model';
 import {
   DELETE_USERS,
@@ -21,11 +21,11 @@ import { PositionAttributeCategory } from '../../models/position-attribute-categ
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
-import { SafeAuthService } from '../../services/auth.service';
-import { SafeDownloadService } from '../../services/download.service';
+import { SafeAuthService } from '../../services/auth/auth.service';
+import { SafeDownloadService } from '../../services/download/download.service';
 import { Application } from '../../models/application.model';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeApplicationService } from '../../services/application.service';
+import { SafeApplicationService } from '../../services/application/application.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
 /** User columns to display for the main user administration page */
