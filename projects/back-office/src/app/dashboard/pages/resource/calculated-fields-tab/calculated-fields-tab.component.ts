@@ -112,7 +112,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
       data: {
         calculatedField: field,
         resourceFields: this.resource.fields.filter(
-          (f: any) => field.name !== f.name
+          (f: any) => !field.isCalculated
         ),
       },
     });
