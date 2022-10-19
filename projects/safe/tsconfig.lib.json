@@ -11,7 +11,11 @@
     "lib": [
       "dom",
       "es2018"
-    ]
+    ],
+    "baseUrl": "./src/lib/",
+    "paths": {
+      "@services/*": [ "services/*" ]
+    }
   },
   "angularCompilerOptions": {
     "skipTemplateCodegen": true,
