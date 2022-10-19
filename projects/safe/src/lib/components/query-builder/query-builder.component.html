@@ -72,14 +72,19 @@
         </ng-template>
       </mat-tab>
       <mat-tab
-        [label]="(showLimit && form.get('sort.first') !== null ? 'components.queryBuilder.sort.limitTitle' : 'components.queryBuilder.sort.title') | translate"
+        [label]="
+          (showLimit && form.get('first') !== null
+            ? 'components.queryBuilder.sort.limitTitle'
+            : 'components.queryBuilder.sort.title'
+          ) | translate
+        "
         *ngIf="form.get('sort')"
       >
         <ng-template matTabContent>
           <safe-tab-sort
-            [form]="$any(form.controls.sort)"
+            [form]="form"
             [fields]="availableScalarFields"
-            [showLimit]="showLimit && form.get('sort.first') !== null"
+            [showLimit]="showLimit && form.get('first') !== null"
           ></safe-tab-sort>
         </ng-template>
       </mat-tab>

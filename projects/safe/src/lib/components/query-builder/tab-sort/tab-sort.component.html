@@ -1,6 +1,6 @@
 <ng-container>
   <form [formGroup]="form">
-    <div>
+    <div formGroupName="sort">
       <mat-form-field appearance="outline">
         <mat-label>{{
           'components.queryBuilder.sort.field' | translate
@@ -12,7 +12,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="outline" *ngIf="form.value.field">
+      <mat-form-field appearance="outline" *ngIf="form.get('sort.field')?.value">
         <mat-label>{{
           'components.queryBuilder.sort.order' | translate
         }}</mat-label>

@@ -60,8 +60,8 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
         sort: formBuilder.group({
           field: [field.sort ? field.sort.field : ''],
           order: [field.sort && field.sort.order ? field.sort.order : 'asc'],
-          first: [field.sort ? field.sort.first : null, Validators.min(0)],
         }),
+        first: [get(field, 'first', null), Validators.min(0)],
         filter: newField
           ? formBuilder.group({})
           : createFilterGroup(field.filter),
