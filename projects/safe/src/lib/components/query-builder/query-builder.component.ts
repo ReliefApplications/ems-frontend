@@ -69,8 +69,6 @@ export class SafeQueryBuilderComponent implements OnInit {
    * Allows to inject the component without creating circular dependency.
    */
   ngOnInit(): void {
-    console.log('query builder form:', this.form);
-    console.log('query builder sort first form condition:', this.showLimit && this.form?.get('sort.first') !== null);
     this.buildSettings();
   }
 

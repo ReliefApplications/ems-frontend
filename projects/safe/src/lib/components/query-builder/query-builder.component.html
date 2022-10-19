@@ -72,7 +72,7 @@
         </ng-template>
       </mat-tab>
       <mat-tab
-        [label]="'components.queryBuilder.sort.title' | translate"
+        [label]="(showLimit && form.get('sort.first') !== null ? 'components.queryBuilder.sort.limitTitle' : 'components.queryBuilder.sort.title') | translate"
         *ngIf="form.get('sort')"
       >
         <ng-template matTabContent>

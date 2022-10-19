@@ -111,7 +111,6 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
           event.previousIndex,
           event.currentIndex
         );
-        console.log('tab fields');
         this.form.insert(
           event.currentIndex,
           addNewField(this.selectedFields[event.currentIndex], true)
@@ -141,7 +140,6 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
         );
         componentRef.instance.setForm(this.fieldForm);
         componentRef.instance.canExpand = this.fieldForm.value.kind === 'LIST';
-        console.log('show Limit:', this.showLimit);
         componentRef.instance.showLimit = this.showLimit;
         componentRef.instance.closeField.subscribe(() => {
           this.onCloseField();
