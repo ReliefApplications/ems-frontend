@@ -59,7 +59,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
       disableClose: true,
       data: {
         field: null,
-        resourceFields: this.resource.fields.filter((f: any) => f.isCalculated),
+        resourceFields: this.resource.fields,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
@@ -111,7 +111,9 @@ export class CalculatedFieldsTabComponent implements OnInit {
       disableClose: true,
       data: {
         calculatedField: field,
-        resourceFields: this.resource.fields.filter((f: any) => f.isCalculated),
+        resourceFields: this.resource.fields.filter(
+          (f: any) => field.name !== f.name
+        ),
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
