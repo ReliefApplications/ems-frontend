@@ -439,6 +439,8 @@
 				"ascending": "******",
 				"descending": "******",
 				"field": "******",
+				"limit": "******",
+				"limitTitle": "******",
 				"order": "******",
 				"title": "******"
 			},

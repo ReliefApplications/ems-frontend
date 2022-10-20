@@ -1,26 +1,36 @@
-<form [formGroup]="form">
-  <mat-form-field appearance="outline">
-    <mat-label>{{
-      'components.queryBuilder.sort.field' | translate
-    }}</mat-label>
-    <mat-select formControlName="field">
-      <mat-option>{{ 'common.input.none' | translate }}</mat-option>
-      <mat-option *ngFor="let field of fields" [value]="field.name">
-        {{ field.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field appearance="outline" *ngIf="form.value.field">
-    <mat-label>{{
-      'components.queryBuilder.sort.order' | translate
-    }}</mat-label>
-    <mat-select formControlName="order">
-      <mat-option value="asc">{{
-        'components.queryBuilder.sort.ascending' | translate
-      }}</mat-option>
-      <mat-option value="desc">{{
-        'components.queryBuilder.sort.descending' | translate
-      }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-</form>
+<ng-container>
+  <form [formGroup]="form">
+    <div formGroupName="sort">
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.queryBuilder.sort.field' | translate
+        }}</mat-label>
+        <mat-select formControlName="field">
+          <mat-option>{{ 'common.input.none' | translate }}</mat-option>
+          <mat-option *ngFor="let field of fields" [value]="field.name">
+            {{ field.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" *ngIf="form.get('sort.field')?.value">
+        <mat-label>{{
+          'components.queryBuilder.sort.order' | translate
+        }}</mat-label>
+        <mat-select formControlName="order">
+          <mat-option value="asc">{{
+            'components.queryBuilder.sort.ascending' | translate
+          }}</mat-option>
+          <mat-option value="desc">{{
+            'components.queryBuilder.sort.descending' | translate
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <mat-form-field appearance="outline" *ngIf="showLimit">
+      <mat-label>{{
+        'components.queryBuilder.sort.limit' | translate
+      }}</mat-label>
+      <input matInput formControlName="first" type="number" min="1">
+    </mat-form-field>
+  </form>
+</ng-container>

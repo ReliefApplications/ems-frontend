@@ -439,6 +439,8 @@
 				"ascending": "Ascending",
 				"descending": "Descending",
 				"field": "Sort field",
+				"limit": "limit",
+				"limitTitle": "Sort & Limit",
 				"order": "Sort order",
 				"title": "Sort"
 			},
