@@ -1,103 +1,40 @@
 <ng-container *ngIf="tileForm">
-  <form [formGroup]="tileForm">
-    <div class="form-group">
-      <div class="form-group-title">{{ 'common.general' | translate }}</div>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.name' | translate }}</mat-label>
-        <input matInput formControlName="title" type="string" />
-      </mat-form-field>
-    </div>
-    <div class="form-group">
-      <div class="form-group-title">
-        {{ 'components.widget.settings.map.dataset' | translate }}
-      </div>
-      <safe-query-builder
-        [form]="$any(tileForm.controls.query)"
-        [canExpand]="false"
-      ></safe-query-builder>
-      <ng-container *ngIf="selectedFields.length > 0">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
-          <mat-select formControlName="latitude">
-            <mat-option *ngFor="let field of selectedFields" [value]="field">
-              {{ field }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'models.widget.map.longitude' | translate }}</mat-label>
-          <mat-select formControlName="longitude">
-            <mat-option *ngFor="let field of selectedFields" [value]="field">
-              {{ field }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </ng-container>
-    </div>
-    <div class="form-group">
-      <div class="form-group-title">
-        {{ 'components.widget.settings.map.display.title' | translate }}
-      </div>
-      <mat-label>
-        {{ 'models.widget.map.zoom' | translate }}
-        <safe-icon
-          icon="info_outline"
-          class="cursor-pointer"
-          variant="grey"
-          [inline]="true"
-          [size]="18"
-          [matTooltip]="
-            'components.widget.settings.map.display.latitude' | translate
-          "
-        ></safe-icon>
-      </mat-label>
-      <mat-slider
-        thumbLabel
-        tickInterval="1"
-        formControlName="zoom"
-        [min]="0"
-        [max]="10"
-      ></mat-slider>
-      <div class="map-default-settings">
-        <mat-form-field appearance="outline">
-          <mat-label>
-            {{ 'components.widget.settings.map.display.latitude' | translate }}
-          </mat-label>
-          <input type="number" matInput formControlName="centerLat" />
-          <safe-icon
-            icon="info"
-            class="cursor-pointer"
-            variant="grey"
-            matSuffix
-            [matTooltip]="
-              'components.widget.settings.map.tooltip.default.latitude'
-                | translate
-            "
-          ></safe-icon>
-          <mat-error *ngIf="tileForm.controls.centerLat.errors">
-            {{ 'components.widget.settings.map.errors.latitude' | translate }}
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>
-            {{ 'components.widget.settings.map.display.longitude' | translate }}
-          </mat-label>
-          <input type="number" matInput formControlName="centerLong" />
-          <safe-icon
-            icon="info"
-            class="cursor-pointer"
-            variant="grey"
-            matSuffix
-            [matTooltip]="
-              'components.widget.settings.map.tooltip.default.longitude'
-                | translate
-            "
-          ></safe-icon>
-          <mat-error *ngIf="tileForm.controls.centerLat.errors">
-            {{ 'components.widget.settings.map.errors.longitude' | translate }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-    </div>
-  </form>
+  <mat-tab-group mat-align-tabs="start" animationDuration="0ms" vertical>
+    <!-- GENERAL SETTINGS -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon icon="preview" [size]="24"></safe-icon>
+        <span>{{ 'common.general' | translate }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <safe-map-general [form]="tileForm"></safe-map-general>
+      </ng-template>
+    </mat-tab>
+    <!-- LAYERS CONFIGURATION -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon icon="layers" [size]="24"></safe-icon>
+        <span>{{ 'common.layers' | translate }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <safe-map-layers
+          [form]="tileForm"
+          [selectedFields]="selectedFields"
+          [formatedSelectedFields]="formatedSelectedFields"
+        ></safe-map-layers>
+      </ng-template>
+    </mat-tab>
+    <!-- MAP PARAMETERS -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon icon="map" [size]="24"></safe-icon>
+        <span>{{
+          'components.widget.settings.map.properties.title' | translate
+        }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <safe-map-properties [form]="tileForm"></safe-map-properties>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
 </ng-container>

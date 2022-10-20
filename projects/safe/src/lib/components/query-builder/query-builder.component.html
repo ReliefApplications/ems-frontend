@@ -72,7 +72,7 @@
       </mat-tab>
       <mat-tab
         [label]="'components.queryBuilder.sort.title' | translate"
-        *ngIf="form.get('sort')"
+        *ngIf="showSort && form.get('sort')"
       >
         <ng-template matTabContent>
           <safe-tab-sort
@@ -91,7 +91,7 @@
       </mat-tab>
       <mat-tab
         [label]="'components.queryBuilder.filter.title' | translate"
-        *ngIf="form.get('filter')"
+        *ngIf="showFilter && form.get('filter')"
       >
         <ng-template matTabContent>
           <safe-tab-filter
@@ -103,7 +103,7 @@
       </mat-tab>
       <mat-tab
         [label]="'components.queryBuilder.style.title' | translate"
-        *ngIf="form.get('style')"
+        *ngIf="showStyle && form.get('style')"
       >
         <ng-template matTabContent>
           <safe-tab-style

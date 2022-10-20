@@ -96,6 +96,7 @@
 			"rawJson": "******"
 		},
 		"label": "******",
+		"layers": "******",
 		"layout": {
 			"few": "******",
 			"none": "******",
@@ -997,20 +998,60 @@
 					}
 				},
 				"map": {
+					"basemap": "******",
+					"category": "******",
 					"dataset": "******",
-					"display": {
-						"latitude": "******",
-						"longitude": "******",
-						"title": "******"
-					},
 					"errors": {
 						"latitude": "******",
 						"longitude": "******"
 					},
+					"layers": {
+						"clorophlet": {
+							"add": "******",
+							"division": {
+								"add": "******",
+								"title": "******"
+							},
+							"geoJSON": "******",
+							"geoJSONidentifier": "******",
+							"identifier": "******",
+							"info": "******",
+							"title": "******"
+						},
+						"online": {
+							"info": "******",
+							"select": "******",
+							"selected": "******",
+							"title": "******"
+						},
+						"point": {
+							"addNew": "******",
+							"category": "******",
+							"color": "******",
+							"info": "******",
+							"rules": "******",
+							"rulesInfo": "******",
+							"size": "******",
+							"title": "******"
+						}
+					},
+					"popup": {
+						"label": "******"
+					},
+					"properties": {
+						"basemap": "******",
+						"latitude": "******",
+						"longitude": "******",
+						"title": "******",
+						"zoom": "******"
+					},
 					"tooltip": {
+						"category": "******",
+						"dataset": "******",
 						"default": {
 							"latitude": "******",
-							"longitude": "******"
+							"longitude": "******",
+							"zoom": "******"
 						}
 					}
 				}
