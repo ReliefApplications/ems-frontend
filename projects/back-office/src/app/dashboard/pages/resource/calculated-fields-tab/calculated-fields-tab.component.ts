@@ -59,7 +59,9 @@ export class CalculatedFieldsTabComponent implements OnInit {
       disableClose: true,
       data: {
         field: null,
-        resourceFields: this.resource.fields,
+        resourceFields: this.resource.fields.filter(
+          (f: any) => !f.isCalculated
+        ),
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
