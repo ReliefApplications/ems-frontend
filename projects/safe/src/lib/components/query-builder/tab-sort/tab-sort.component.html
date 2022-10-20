@@ -12,7 +12,10 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="outline" *ngIf="form.get('sort.field')?.value">
+      <mat-form-field
+        appearance="outline"
+        *ngIf="form.get('sort.field')?.value"
+      >
         <mat-label>{{
           'components.queryBuilder.sort.order' | translate
         }}</mat-label>
@@ -30,7 +33,7 @@
       <mat-label>{{
         'components.queryBuilder.sort.limit' | translate
       }}</mat-label>
-      <input matInput formControlName="first" type="number" min="1">
+      <input matInput formControlName="first" type="number" min="1" />
     </mat-form-field>
   </form>
 </ng-container>
