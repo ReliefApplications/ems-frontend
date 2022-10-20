@@ -28,14 +28,14 @@ import {
   EventEmitter,
   Inject,
 } from '@angular/core';
-import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
-import { SafeWorkflowService } from '../../../services/workflow/workflow.service';
+import { SafeSnackBarService } from '@services/snackbar/snackbar.service';
+import { SafeWorkflowService } from '@services/workflow/workflow.service';
 import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
-import { SafeAuthService } from '../../../services/auth/auth.service';
+import { SafeAuthService } from '@services/auth/auth.service';
 import { SafeEmailService } from '../../../services/email/email.service';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '@services/query-builder/query-builder.service';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
-import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
+import { SafeGridLayoutService } from '@services/grid-layout/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';

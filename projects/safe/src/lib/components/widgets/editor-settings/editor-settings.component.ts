@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
-import { SafeEditorService } from '../../../services/editor/editor.service';
+import { SafeEditorService } from '@services/editor/editor.service';
 
 /**
  * Modal content for the settings of the editor widgets.

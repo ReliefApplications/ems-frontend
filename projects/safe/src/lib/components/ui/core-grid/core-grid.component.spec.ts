@@ -21,7 +21,7 @@ import {
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_QUERY_TYPES } from './graphql/queries';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '@services/query-builder/query-builder.service';
 import {
   TranslateModule,
   TranslateService,

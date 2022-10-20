@@ -23,10 +23,10 @@ import {
 } from './graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeDownloadService } from '../../services/download/download.service';
-import { SafeAuthService } from '../../services/auth/auth.service';
+import { SafeAuthService } from '@services/auth/auth.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { EDIT_RECORD, EditRecordMutationResponse } from './graphql/mutations';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
+import { SafeSnackBarService } from '@services/snackbar/snackbar.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import { BehaviorSubject, Observable } from 'rxjs';

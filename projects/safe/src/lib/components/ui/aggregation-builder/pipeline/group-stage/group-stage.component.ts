@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { isEmpty } from 'lodash';
-import { AggregationBuilderService } from '../../../../../services/aggregation-builder/aggregation-builder.service';
+import { AggregationBuilderService } from '@services/aggregation-builder/aggregation-builder.service';
 import { groupByRuleForm } from '../../aggregation-builder-forms';
 import { Accumulators, DateOperators } from '../expressions/operators';
 

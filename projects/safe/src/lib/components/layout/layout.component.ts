@@ -14,8 +14,8 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { Account, SafeAuthService } from '../../services/auth/auth.service';
-import { SafeLayoutService } from '../../services/layout/layout.service';
+import { Account, SafeAuthService } from '@services/auth/auth.service';
+import { SafeLayoutService } from '@services/layout/layout.service';
 import {
   PermissionsManagement,
   PermissionType,
@@ -27,11 +27,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { SafeNotificationService } from '../../services/notification/notification.service';
+import { SafeNotificationService } from '@services/notification/notification.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafePreferencesModalComponent } from '../preferences-modal/preferences-modal.component';
-import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
+import { SafeDateTranslateService } from '@services/date-translate/date-translate.service';
 
 /**
  * Component for the main layout of the platform

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '@services/query-builder/query-builder.service';
 import { createQueryForm } from '../../query-builder/query-builder-forms';
 
 /** Component for the map widget settings */

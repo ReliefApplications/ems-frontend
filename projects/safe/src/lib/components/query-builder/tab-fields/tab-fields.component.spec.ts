@@ -6,7 +6,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '@services/query-builder/query-builder.service';
 import { SafeTabFieldsComponent } from './tab-fields.component';
 import {
   ApolloTestingModule,

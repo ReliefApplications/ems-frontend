@@ -26,7 +26,7 @@ import {
   EditStepAccessMutationResponse,
   EDIT_STEP_ACCESS,
 } from '../../graphql/mutations';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { SafeSnackBarService } from '@services/snackbar/snackbar.service';
 
 /** Component for the workflows section of the roles features */
 @Component({

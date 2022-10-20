@@ -12,7 +12,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '@services/query-builder/query-builder.service';
 import { addNewField } from '../query-builder-forms';
 import { SafeQueryBuilderComponent } from '../query-builder.component';
 

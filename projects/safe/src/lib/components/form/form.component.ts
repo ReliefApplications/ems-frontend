@@ -23,12 +23,12 @@ import {
 } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
+import { SafeSnackBarService } from '@services/snackbar/snackbar.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SafeDownloadService } from '../../services/download/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeAuthService } from '../../services/auth/auth.service';
-import { SafeLayoutService } from '../../services/layout/layout.service';
+import { SafeAuthService } from '@services/auth/auth.service';
+import { SafeLayoutService } from '@services/layout/layout.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';

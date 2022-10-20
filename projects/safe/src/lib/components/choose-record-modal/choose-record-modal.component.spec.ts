@@ -5,7 +5,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '@services/query-builder/query-builder.service';
 import { SafeChooseRecordModalComponent } from './choose-record-modal.component';
 import {
   ApolloTestingModule,

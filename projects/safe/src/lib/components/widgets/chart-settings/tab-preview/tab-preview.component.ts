@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
+import { AggregationBuilderService } from '@services/aggregation-builder/aggregation-builder.service';
 
 /**
  * Preview tab of chart settings modal.

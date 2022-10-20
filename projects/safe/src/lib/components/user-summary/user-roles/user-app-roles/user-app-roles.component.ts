@@ -18,7 +18,7 @@ import {
   GET_ROLES,
 } from '../../graphql/queries';
 import { MatSelect } from '@angular/material/select';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { SafeSnackBarService } from '@services/snackbar/snackbar.service';
 
 /** Roles tab for the user summary */
 @Component({

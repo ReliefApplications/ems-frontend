@@ -9,8 +9,8 @@ import {
   EDIT_USER_ROLES,
 } from './graphql/mutations';
 import { GetUserQueryResponse, GET_USER } from './graphql/queries';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
-import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
+import { SafeSnackBarService } from '@services/snackbar/snackbar.service';
+import { SafeBreadcrumbService } from '@services/breadcrumb/breadcrumb.service';
 
 /**
  * User Summary shared component.

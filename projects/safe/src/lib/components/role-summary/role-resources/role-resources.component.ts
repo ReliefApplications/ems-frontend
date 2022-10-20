@@ -11,7 +11,7 @@ import {
 } from '@angular/animations';
 import { Resource } from '../../../models/resource.model';
 import { Role } from '../../../models/user.model';
-import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
+import { SafeSnackBarService } from '@services/snackbar/snackbar.service';
 import {
   GetResourceQueryResponse,
   GetResourcesQueryResponse,

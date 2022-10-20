@@ -42,7 +42,7 @@ import {
 } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SafeGridService } from '../../../../services/grid/grid.service';
+import { SafeGridService } from '@services/grid/grid.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';

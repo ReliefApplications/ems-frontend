@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
-import { SafeEditorService } from '../../services/editor/editor.service';
+import { SafeEditorService } from '@services/editor/editor.service';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {

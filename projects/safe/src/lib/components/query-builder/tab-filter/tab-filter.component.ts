@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { get } from 'lodash';
-import { SafeGridService } from '../../../services/grid/grid.service';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { SafeGridService } from '@services/grid/grid.service';
+import { QueryBuilderService } from '@services/query-builder/query-builder.service';
 
 /**
  * Component for displaying the filtering options

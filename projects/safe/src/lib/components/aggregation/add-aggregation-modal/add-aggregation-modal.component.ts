@@ -8,7 +8,7 @@ import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
 import { SafeEditAggregationModalComponent } from '../edit-aggregation-modal/edit-aggregation-modal.component';
 import { Aggregation } from '../../../models/aggregation.model';
-import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
+import { SafeAggregationService } from '@services/aggregation/aggregation.service';
 import {
   GetResourceAggregationsResponse,
   GET_RESOURCE_AGGREGATIONS,

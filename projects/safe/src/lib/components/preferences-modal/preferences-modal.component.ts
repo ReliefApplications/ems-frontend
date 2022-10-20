@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
-import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
+import { SafeDateTranslateService } from '@services/date-translate/date-translate.service';
 import { getLanguageNativeName } from '../../utils/languages';
 
 /** Preferences Dialog Data */

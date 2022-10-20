@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import get from 'lodash/get';
-import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '@services/query-builder/query-builder.service';
 import {
   ChecklistDatabase,
   TreeItemFlatNode,

@@ -13,17 +13,17 @@ import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
 import { Form } from '../../../../models/form.model';
 import { ContentType } from '../../../../models/page.model';
-import { SafeWorkflowService } from '../../../../services/workflow/workflow.service';
+import { SafeWorkflowService } from '@services/workflow/workflow.service';
 import { Subscription } from 'rxjs';
 import {
   MatChipInputEvent,
   MAT_CHIPS_DEFAULT_OPTIONS,
 } from '@angular/material/chips';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '@services/query-builder/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
-import { SafeEditorService } from '../../../../services/editor/editor.service';
+import { SafeEditorService } from '@services/editor/editor.service';
 
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];

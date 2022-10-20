@@ -8,7 +8,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '@services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
   GET_CHANNELS,

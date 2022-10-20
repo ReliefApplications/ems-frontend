@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 import { Application } from '../../../../models/application.model';
 import { Role } from '../../../../models/user.model';
 import { SafeConfirmModalComponent } from '../../../confirm-modal/confirm-modal.component';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { SafeSnackBarService } from '@services/snackbar/snackbar.service';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import { SafeAddRoleComponent } from '../add-role/add-role.component';
 import {

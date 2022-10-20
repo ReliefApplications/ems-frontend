@@ -8,7 +8,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddAggregationModalComponent } from '../add-aggregation-modal/add-aggregation-modal.component';
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeEditAggregationModalComponent } from '../edit-aggregation-modal/edit-aggregation-modal.component';
-import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
+import { SafeAggregationService } from '@services/aggregation/aggregation.service';
 
 /**
  * Aggregation table component.

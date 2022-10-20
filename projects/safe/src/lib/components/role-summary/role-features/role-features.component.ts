@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import { Application } from '../../../models/application.model';
 import { ContentType, Page } from '../../../models/page.model';
 import { Role } from '../../../models/user.model';
-import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
+import { SafeSnackBarService } from '@services/snackbar/snackbar.service';
 import {
   EditPageAccessMutationResponse,
   EDIT_PAGE_ACCESS,
