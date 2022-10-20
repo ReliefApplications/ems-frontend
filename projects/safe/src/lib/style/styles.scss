@@ -2,6 +2,10 @@
 @import 'variables.scss';
 @include mat.core();
 
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 .sv_main {
   --primary-color: #{$primary_500};
   --secondary-color: #{$primary_500};
