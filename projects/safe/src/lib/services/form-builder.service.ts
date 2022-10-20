@@ -17,6 +17,7 @@ export class SafeFormBuilderService {
    * Constructor of the service
    *
    * @param domService The dom service
+   * @param apollo Apollo service
    */
   constructor(private domService: DomService, private apollo: Apollo) {}
 
@@ -38,13 +39,15 @@ export class SafeFormBuilderService {
             for (const record of survey.getValue(element.name)) {
               let operation: any;
               if (
-                element.newRecords &&
-                element.newRecords.includes(record) &&
-                element.afterAddingANewRecord
+                element.newCreatedRecords &&
+                element.newCreatedRecords.includes(record) &&
+                element.afterRecordCreation
               ) {
-                operation = regex.exec(element.afterAddingANewRecord);
-              } else if (element.afterLinkingExistingRecord) {
-                operation = regex.exec(element.afterLinkingExistingRecord);
+                regex.lastIndex = 0; // ensure that regex restarts
+                operation = regex.exec(element.afterRecordCreation); // divide string into groups for key : value mapping
+              } else if (element.afterRecordSelection) {
+                regex.lastIndex = 0; // ensure that regex restarts
+                operation = regex.exec(element.afterRecordSelection); // divide string into groups for key : value mapping
               }
               this.updateRecord(record, operation);
             }
@@ -52,12 +55,6 @@ export class SafeFormBuilderService {
         }
       }
     });
-    // const onCompleteExpression = survey.toJSON().onCompleteExpression;
-    // if (onCompleteExpression) {
-    //   survey.onCompleting.add(() => {
-    //     survey.runExpression(onCompleteExpression);
-    //   });
-    // }
     return survey;
   }
 

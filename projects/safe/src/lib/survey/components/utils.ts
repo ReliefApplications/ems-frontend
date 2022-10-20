@@ -105,8 +105,8 @@ export const buildAddButton = (
               newItem,
               ...question.contentQuestion.choices,
             ];
-            question.newRecords = question.newRecords
-              ? question.newRecords.concat(res.data.id)
+            question.newCreatedRecords = question.newCreatedRecords
+              ? question.newCreatedRecords.concat(res.data.id)
               : [res.data.id];
             question.value = question.value.concat(res.data.id);
           } else {
@@ -118,7 +118,7 @@ export const buildAddButton = (
               newItem,
               ...question.contentQuestion.choices,
             ];
-            question.newRecords = res.data.id;
+            question.newCreatedRecords = res.data.id;
             question.value = res.data.id;
           }
         }

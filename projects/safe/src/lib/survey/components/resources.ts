@@ -544,19 +544,19 @@ export const init = (
       });
 
       Survey.Serializer.addProperty('resources', {
-        name: 'newRecords',
+        name: 'newCreatedRecords',
         category: 'Custom Questions',
         visible: false,
       });
 
       Survey.Serializer.addProperty('resources', {
-        name: 'afterAddingANewRecord',
+        name: 'afterRecordCreation',
         // type: 'expression',
         category: 'logic',
       });
 
       Survey.Serializer.addProperty('resources', {
-        name: 'afterLinkingExistingRecord',
+        name: 'afterRecordSelection',
         // type: 'expression',
         category: 'logic',
       });
