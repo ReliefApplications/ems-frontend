@@ -12,7 +12,7 @@ jobs:
       matrix:
         include:
           - environment: OORT_PROD
-           ref: release-1.3.0-next
+           ref: release-1.3.0
     environment:
       name: ${{ matrix.environment }}
     steps:
