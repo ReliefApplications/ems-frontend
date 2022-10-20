@@ -5,8 +5,8 @@ $spacing-right: 0.8em;
   flex-grow: 1;
   padding: $spacing-left $spacing-right;
   display: flex;
-  align-items: flex-start;
-  gap: 4px;
+  align-items: center;
+  gap: 8px;
 }
 
 .safe-alert {

@@ -13,6 +13,7 @@ import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
+import { SafeDashboardService } from '../../services/dashboard/dashboard.service';
 
 /** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
@@ -29,7 +30,7 @@ const MAX_COL_SPAN = 8;
   styleUrls: ['./widget-grid.component.scss'],
 })
 export class SafeWidgetGridComponent implements OnInit {
-  public widgetTypes: any[] = WIDGET_TYPES;
+  public availableWidgets: any[] = WIDGET_TYPES;
 
   @Input() loading = false;
   /** Skeletons for loading */
@@ -65,12 +66,17 @@ export class SafeWidgetGridComponent implements OnInit {
    * Constructor of the grid widget component
    *
    * @param dialog The material dialog service
+   * @param dashboardService Shared dashboard service
    */
-  constructor(public dialog: MatDialog) {}
+  constructor(
+    public dialog: MatDialog,
+    private dashboardService: SafeDashboardService
+  ) {}
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.skeletons = this.getSkeletons();
+    this.availableWidgets = this.dashboardService.availableWidgets;
   }
 
   /**
@@ -156,7 +162,7 @@ export class SafeWidgetGridComponent implements OnInit {
    * @param e resize event.
    */
   public onResize(e: TileLayoutResizeEvent) {
-    const widgetDefinition = this.widgetTypes.find(
+    const widgetDefinition = this.availableWidgets.find(
       (x) => x.component === this.widgets[e.item.order].component
     );
     if (e.newRowSpan < widgetDefinition.minRow) {

@@ -30,6 +30,7 @@ import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/
 import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.component';
 import { SafeFilterModule } from '../filter/filter.module';
@@ -77,6 +78,7 @@ import { DateFilterEditorComponent } from './date-filter-editor/date-filter-edit
     LabelModule,
     SafeCheckboxTreeModule,
     SafeCoreGridModule,
+    MatSliderModule,
     MatDatepickerModule,
     SafeFilterModule,
   ],
