@@ -15,7 +15,6 @@ import { ApplicationToolbarModule } from './components/application-toolbar/appli
     ApplicationRoutingModule,
     ApplicationToolbarModule,
     SafeLayoutModule,
-    SafeConfirmModalModule,
   ],
   exports: [ApplicationComponent],
 })

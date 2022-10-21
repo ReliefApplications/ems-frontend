@@ -21,6 +21,7 @@ export * from './lib/services/date-translate/date-translate.service';
 export * from './lib/services/breadcrumb/breadcrumb.service';
 export * from './lib/services/aggregation/aggregation.service';
 export * from './lib/services/auth-interceptor/auth-interceptor.service';
+export * from './lib/services/confirm/confirm.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
