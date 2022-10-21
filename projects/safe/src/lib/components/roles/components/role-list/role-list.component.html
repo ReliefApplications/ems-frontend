@@ -1,14 +1,13 @@
 <div class="header">
   <div class="filters">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
       <mat-icon matPrefix>search</mat-icon>
+      <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
       <input
-        id="custom-search"
         matInput
         [ngModel]="searchText"
         (keyup)="applyFilter('', $event)"
         type="search"
-        [placeholder]="'common.placeholder.search' | translate"
       />
     </mat-form-field>
   </div>
