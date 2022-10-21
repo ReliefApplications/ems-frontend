@@ -2,11 +2,7 @@
   <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
     <mat-icon matPrefix>search</mat-icon>
     <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
-    <input
-      matInput
-      [(ngModel)]="search"
-      type="search"
-    />
+    <input matInput [(ngModel)]="search" type="search" />
     <safe-button
       matSuffix
       [isIcon]="true"
