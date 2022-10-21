@@ -1,13 +1,12 @@
 <div [formGroup]="form" class="applications-filter">
   <div class="top">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
       <mat-icon matPrefix>search</mat-icon>
+      <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
       <input
-        id="custom-search"
         matInput
         [formControl]="search"
         type="search"
-        [placeholder]="'common.placeholder.search' | translate"
       />
       <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>
     </mat-form-field>
@@ -24,7 +23,7 @@
     </safe-button>
   </div>
   <div class="advanced" *ngIf="show">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
       <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
       <mat-date-range-input [rangePicker]="rangePicker">
         <input formControlName="startDate" matStartDate />
@@ -49,7 +48,7 @@
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
       <mat-label>{{ 'common.status' | translate }}</mat-label>
       <mat-select formControlName="status">
         <mat-option>-</mat-option>
