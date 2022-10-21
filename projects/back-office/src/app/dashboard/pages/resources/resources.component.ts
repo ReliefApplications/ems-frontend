@@ -12,7 +12,7 @@ import {
 } from './graphql/queries';
 import {
   Resource,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
@@ -65,6 +65,7 @@ export class ResourcesComponent implements OnInit {
    * @param dialog Used for opening a dialog.
    * @param apollo Used for loading the resources.
    * @param snackBar Service used to show the snackbar,
+   * @param confirmService Service used to show the confirmation window
    * @param translate Service used to get translations
    * @param router Used to change the app route.
    */
@@ -72,6 +73,7 @@ export class ResourcesComponent implements OnInit {
     private dialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private router: Router
   ) {}
@@ -250,21 +252,18 @@ export class ResourcesComponent implements OnInit {
    * @param resource Resource to delete.
    */
   onDelete(resource: Resource): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('common.resource.one'),
-        }),
-        content: this.translate.instant(
-          'components.resource.delete.confirmationMessage',
-          {
-            name: resource.name,
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.resource.one'),
+      }),
+      content: this.translate.instant(
+        'components.resource.delete.confirmationMessage',
+        {
+          name: resource.name,
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
 
     dialogRef.afterClosed().subscribe((value) => {

@@ -9,7 +9,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import {
-  SafeConfirmModalModule,
   SafeButtonModule,
   SafeSkeletonTableModule,
   SafeDateModule,
@@ -45,7 +44,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatMenuModule,
     MatIconModule,
     MatChipsModule,
-    SafeConfirmModalModule,
     AddFormModule,
     MatFormFieldModule,
     MatDatepickerModule,

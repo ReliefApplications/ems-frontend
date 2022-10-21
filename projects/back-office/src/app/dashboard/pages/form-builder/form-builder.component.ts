@@ -18,7 +18,7 @@ import {
   SafeAuthService,
   SafeSnackBarService,
   Form,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeBreadcrumbService,
 } from '@safe/builder';
 import { Observable } from 'rxjs';
@@ -85,6 +85,7 @@ export class FormBuilderComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     public dialog: MatDialog,
     private authService: SafeAuthService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private breadcrumbService: SafeBreadcrumbService
   ) {}
@@ -96,16 +97,13 @@ export class FormBuilderComponent implements OnInit {
    */
   canDeactivate(): Observable<boolean> | boolean {
     if (this.hasChanges) {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('components.form.update.exit'),
-          content: this.translate.instant('components.form.update.exitMessage'),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          cancelText: this.translate.instant('components.confirmModal.cancel'),
-          confirmColor: 'primary',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('components.form.update.exit'),
+        content: this.translate.instant('components.form.update.exitMessage'),
+        confirmText: this.translate.instant(
+          'components.confirmModal.confirm'
+        ),
+        confirmColor: 'primary',
       });
       return dialogRef.afterClosed().pipe(
         map((value) => {
