@@ -1,8 +1,8 @@
-<div class="forms-header">
+<div class="flex gap-8 justify-between mb-8">
   <!-- FILTERING -->
   <app-filter (filter)="onFilter($event)" [loading]="updating"></app-filter>
   <!-- ACTIONS -->
-  <div class="actions">
+  <div class="flex items-center">
     <safe-button
       icon="add"
       category="secondary"

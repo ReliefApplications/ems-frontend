@@ -80,11 +80,13 @@
     *matRowDef="let row; columns: displayedColumns; let i = dataIndex"
     mat-row
     (click)="toggleFilterEdition(i)"
+    class="cursor-pointer"
   ></tr>
   <tr
     mat-row
     *matRowDef="let row; columns: ['expandedDetail']"
     style="height: 0"
+    class="cursor-pointer"
   ></tr>
 </table>
 <safe-button

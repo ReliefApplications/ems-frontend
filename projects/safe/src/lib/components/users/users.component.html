@@ -1,6 +1,7 @@
-<div class="header">
-  <div class="filters">
-    <div class="top">
+<div class="flex gap-8 justify-between mb-8">
+  <!-- Filters -->
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-wrap gap-2 items-center">
       <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
         <mat-icon matPrefix>search</mat-icon>
         <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
@@ -25,7 +26,10 @@
         }}
       </safe-button>
     </div>
-    <div class="advanced" [style.display]="!showFilters ? 'none' : ''">
+    <div
+      class="flex flex-wrap gap-2 items-center"
+      [style.display]="!showFilters ? 'none' : ''"
+    >
       <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
         <mat-label>{{ 'common.title' | translate }}</mat-label>
         <mat-select
@@ -43,7 +47,8 @@
       }}</safe-button>
     </div>
   </div>
-  <div class="actions">
+  <!-- Actions -->
+  <div class="flex gap-2 items-center">
     <safe-button
       class="export-users"
       icon="file_download"
@@ -80,23 +85,22 @@
     </safe-button> -->
   </div>
 </div>
-<div>
-  <div class="actions" *ngIf="selection.selected.length > 0">
-    <safe-button
-      icon="delete"
-      category="secondary"
-      variant="danger"
-      (click)="onDelete(selection.selected)"
-    >
-      {{
-        'common.deleteObject'
-          | translate: { name: 'common.user.few' | translate }
-      }}
-    </safe-button>
-  </div>
+<!-- Actions when selected items -->
+<div
+  class="flex gap-2 items-center mb-2 justify-end"
+  *ngIf="selection.selected.length > 0"
+>
+  <safe-button
+    icon="delete"
+    category="secondary"
+    variant="danger"
+    (click)="onDelete(selection.selected)"
+  >
+    {{
+      'common.deleteObject' | translate: { name: 'common.user.few' | translate }
+    }}
+  </safe-button>
 </div>
-
-<!-- <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner> -->
 
 <table *ngIf="!loading" mat-table [dataSource]="users" matSort>
   <!-- Checkbox Column -->
@@ -195,6 +199,7 @@
     mat-row
     *matRowDef="let row; columns: displayedColumns"
     (click)="onClick(row)"
+    class="cursor-pointer"
   ></tr>
 </table>
 

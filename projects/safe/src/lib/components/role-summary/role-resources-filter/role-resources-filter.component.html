@@ -1,5 +1,5 @@
-<div [formGroup]="form" class="resources-filter">
-  <div class="top">
+<div [formGroup]="form" class="flex flex-col gap-4">
+  <div class="flex flex-wrap gap-2 items-center">
     <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
       <mat-icon matPrefix>search</mat-icon>
       <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
@@ -19,7 +19,7 @@
       }}
     </safe-button>
   </div>
-  <div class="advanced" *ngIf="show">
+  <div class="flex flex-wrap gap-2 items-center" *ngIf="show">
     <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
       <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
       <mat-date-range-input [rangePicker]="rangePicker">

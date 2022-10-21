@@ -1,17 +1,21 @@
-<div class="header">
-  <div class="filters">
-    <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-      <mat-icon matPrefix>search</mat-icon>
-      <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
-      <input
-        matInput
-        [ngModel]="searchText"
-        (keyup)="applyFilter('', $event)"
-        type="search"
-      />
-    </mat-form-field>
+<div class="flex gap-8 justify-between mb-8">
+  <!-- Filters -->
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-wrap gap-2 items-center">
+      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
+        <mat-icon matPrefix>search</mat-icon>
+        <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
+        <input
+          matInput
+          [ngModel]="searchText"
+          (keyup)="applyFilter('', $event)"
+          type="search"
+        />
+      </mat-form-field>
+    </div>
   </div>
-  <div class="actions">
+  <!-- Actions -->
+  <div class="flex items-center">
     <safe-button
       icon="add"
       category="secondary"
@@ -71,6 +75,7 @@
     mat-row
     *matRowDef="let row; columns: displayedColumns"
     (click)="onOpen(row)"
+    class="cursor-pointer"
   ></tr>
 </table>
 

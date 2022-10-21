@@ -1,6 +1,7 @@
-<div class="header">
-  <div class="filters">
-    <div class="top">
+<div class="flex gap-8 justify-between mb-8">
+  <!-- Filters -->
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-wrap gap-2 items-center">
       <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
         <mat-icon matPrefix>search</mat-icon>
         <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
@@ -25,7 +26,10 @@
         }}
       </safe-button>
     </div>
-    <div class="advanced" [style.display]="!showFilters ? 'none' : ''">
+    <div
+      *ngIf="showFilters"
+      class="flex flex-wrap gap-2 items-center"
+    >
       <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
         <mat-label>{{ 'common.status' | translate }}</mat-label>
         <mat-select
@@ -49,8 +53,8 @@
       }}</safe-button>
     </div>
   </div>
-
-  <div class="actions">
+  <!-- Actions -->
+  <div class="flex items-center">
     <safe-button
       icon="add"
       category="secondary"
