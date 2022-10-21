@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
-  SafeConfirmModalComponent,
   ContentType,
   SafeApplicationService,
   SafeConfirmService,
