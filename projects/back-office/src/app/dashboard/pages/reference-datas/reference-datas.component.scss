@@ -14,36 +14,6 @@
       gap: 16px;
       flex-wrap: wrap;
     }
-    mat-form-field {
-      margin-top: -0.25em;
-
-      .p-0 {
-        // no padding fields
-        &.mat-form-field {
-          .mat-form-field-wrapper {
-            padding: 0 !important;
-          }
-        }
-      }
-    
-      .mat-form-field-sm {
-        // small form-field
-        &.mat-form-field {
-          .mat-form-field-label-wrapper {
-            top: -1.4em;
-          }
-        }
-    
-        .mat-form-field-flex > .mat-form-field-infix {
-          padding: 0.42em 0px !important;
-        }
-    
-        &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
-          transform: translateY(-1.1em) scale(0.75);
-          width: 133.33333%;
-        }
-      }
-    }
   }
 
   .actions {
