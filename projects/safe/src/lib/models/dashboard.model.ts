@@ -153,8 +153,8 @@ export const WIDGET_TYPES = [
   {
     id: 'summaryCard',
     name: 'Summary card',
-    icon: '/assets/placeholder.svg',
-    color: 'red',
+    icon: '/assets/summary-card.svg',
+    color: '#99CBEF"',
     settings: { title: 'Summary Card' },
     defaultCols: 3,
     defaultRows: 3,
