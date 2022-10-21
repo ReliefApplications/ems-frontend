@@ -1,26 +1,3 @@
-.header {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: top;
-
-  .filters {
-    .top,
-    .advanced {
-      display: flex;
-      flex-direction: row;
-      align-items: top;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-  }
-
-  .actions {
-    margin-left: auto;
-  }
-}
-
 .table-column {
   padding: 0px 4px;
 }

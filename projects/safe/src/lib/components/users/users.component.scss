@@ -1,38 +1,3 @@
-.header {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: top;
-
-  .filters {
-    .top,
-    .advanced {
-      display: flex;
-      flex-direction: row;
-      align-items: top;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-  }
-
-  .actions {
-    margin-left: auto;
-  }
-}
-
 .mat-checkbox {
   margin-right: 12px;
-}
-
-.move-right {
-  float: right;
-}
-
-.export-users {
-  margin-right: 10px;
-}
-
-.mat-row {
-  cursor: pointer;
 }
