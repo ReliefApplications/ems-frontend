@@ -154,7 +154,8 @@ export class SafeGridService {
               disabled:
                 disabled ||
                 DISABLED_FIELDS.includes(f.name) ||
-                metaData?.readOnly,
+                metaData?.readOnly ||
+                metaData?.isCalculated,
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
