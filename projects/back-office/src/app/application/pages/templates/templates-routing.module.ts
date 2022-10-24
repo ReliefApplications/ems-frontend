@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { TemplatesComponent } from './templates.component';
 
-/** List of routes of application users module */
+/** List of routes of application templates module */
 const routes: Routes = [
   {
     path: '',
@@ -11,7 +11,7 @@ const routes: Routes = [
 ];
 
 /**
- * Application users routing module.
+ * Application templates routing module.
  */
 @NgModule({
   imports: [RouterModule.forChild(routes)],

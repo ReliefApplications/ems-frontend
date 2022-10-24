@@ -15,7 +15,6 @@ import { SafeTemplatesModule } from '@safe/builder';
     TemplatesRoutingModule,
     MatProgressSpinnerModule,
     SafeTemplatesModule,
-    // SafeTemplatesModule,
   ],
   exports: [TemplatesComponent],
 })

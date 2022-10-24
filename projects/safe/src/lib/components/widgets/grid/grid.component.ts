@@ -245,7 +245,6 @@ export class SafeGridWidgetComponent implements OnInit {
     // Send email using backend mail service.
     if (options.sendMail) {
       // select template
-      const selectedRows = [...this.grid.selectedRows];
       const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
         data: {
           templates: this.applicationService.templates.filter((x) =>
@@ -264,7 +263,9 @@ export class SafeGridWidgetComponent implements OnInit {
           template.content.body,
           {
             logic: 'and',
-            filters: [{ operator: 'eq', field: 'ids', value: selectedRows }],
+            filters: [
+              { operator: 'eq', field: 'ids', value: this.grid.selectedRows },
+            ],
           },
           {
             name: this.settings.query.name,

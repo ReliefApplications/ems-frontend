@@ -1132,7 +1132,6 @@ export class SafeApplicationService {
               ...application,
               templates: res.data.editApplication.templates,
             };
-            console.log('removed', newApplication);
             this.application.next(newApplication);
           }
         });

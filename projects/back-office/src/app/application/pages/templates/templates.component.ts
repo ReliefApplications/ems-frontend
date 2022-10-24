@@ -1,12 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import {
-  Application,
-  User,
-  Role,
-  SafeApplicationService,
-  PositionAttributeCategory,
-} from '@safe/builder';
+import { Application, SafeApplicationService } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
 /**
@@ -20,9 +14,7 @@ import { Subscription } from 'rxjs';
 export class TemplatesComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
-  public templates = new MatTableDataSource<User>([]);
-  public roles: Role[] = [];
-  public positionAttributeCategories: PositionAttributeCategory[] = [];
+  public templates = new MatTableDataSource<any>([]);
   private applicationSubscription?: Subscription;
 
   /**
@@ -38,13 +30,9 @@ export class TemplatesComponent implements OnInit, OnDestroy {
         (application: Application | null) => {
           if (application) {
             this.templates.data = application.templates || [];
-            this.roles = application.roles || [];
-            this.positionAttributeCategories =
-              application.positionAttributeCategories || [];
             this.loading = false;
           } else {
             this.templates.data = [];
-            this.roles = [];
           }
         }
       );
