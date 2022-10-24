@@ -411,7 +411,10 @@
 				"confirmationMessage": "Confirmez-vous la suppression du champ dérivé {{name}} ?"
 			},
 			"edit": "Modifier le champ dérivé",
-			"expression": "Expression"
+			"expression": "Expression",
+			"hint": {
+				"name": "Entrez un nom composé uniquement delettres, dechiffres et de tirets bas. Ce nom ne doit pas dupliquer le nom d'un autre champ de la resource éditée."
+			}
 		},
 		"channel": {
 			"delete": {

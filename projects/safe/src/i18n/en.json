@@ -411,7 +411,10 @@
 				"confirmationMessage": "Do you confirm the deletion of the Calculated field {{name}}?"
 			},
 			"edit": "Edit Calculated field",
-			"expression": "Expression"
+			"expression": "Expression",
+			"hint": {
+				"name": "Enter an unique name only composed of letters, digits and underscores. This name should not override any field name of current resource."
+			}
 		},
 		"channel": {
 			"delete": {

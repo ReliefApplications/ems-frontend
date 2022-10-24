@@ -15,6 +15,15 @@
             'components.aggregationBuilder.fieldName' | translate
           }}</mat-label>
           <input matInput formControlName="name" type="string" />
+          <safe-icon
+              icon="info"
+              class="cursor-pointer"
+              variant="grey"
+              matSuffix
+              [matTooltip]="
+                'components.calculatedFields.hint.name' | translate
+              "
+            ></safe-icon>
         </mat-form-field>
         <div class="form-group-title">
           {{ 'components.calculatedFields.expression' | translate }}

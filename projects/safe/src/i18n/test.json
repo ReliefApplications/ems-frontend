@@ -411,7 +411,10 @@
 				"confirmationMessage": "****** {{name}} ******"
 			},
 			"edit": "******",
-			"expression": "******"
+			"expression": "******",
+			"hint": {
+				"name": "******"
+			}
 		},
 		"channel": {
 			"delete": {
