@@ -12,7 +12,7 @@
   </div>
   <!-- FILTER -->
   <div style="clear: both; display: flex; flex-direction: column">
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-date-range-input
         (click)="rangePicker.open()"
         [rangePicker]="rangePicker"
@@ -51,7 +51,7 @@
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>{{ 'components.history.field.select' | translate }}</mat-label>
       <mat-select
         (selectionChange)="applyFilter($event.value)"
