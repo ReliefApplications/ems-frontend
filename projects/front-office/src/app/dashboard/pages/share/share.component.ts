@@ -19,6 +19,7 @@ import {
 })
 export class ShareComponent implements OnInit, OnDestroy {
   private routeSubscription?: Subscription;
+  private apolloSubscription?: Subscription;
 
   /**
    * Share URL access component.
@@ -42,7 +43,7 @@ export class ShareComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.route.params.subscribe((params: any) => {
-      this.apollo
+      this.apolloSubscription = this.apollo
         .query<GetShareDashboardByIdQueryResponse>({
           query: GET_SHARE_DASHBOARD_BY_ID,
           variables: {
@@ -87,5 +88,8 @@ export class ShareComponent implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     this.routeSubscription?.unsubscribe();
+    if (this.apolloSubscription) {
+      this.apolloSubscription.unsubscribe();
+    }
   }
 }

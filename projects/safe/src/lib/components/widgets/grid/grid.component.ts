@@ -26,6 +26,7 @@ import {
   Output,
   EventEmitter,
   Inject,
+  OnDestroy,
 } from '@angular/core';
 import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
 import { SafeWorkflowService } from '../../../services/workflow/workflow.service';
@@ -40,6 +41,7 @@ import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
+import { Subscription } from 'rxjs';
 
 /** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
@@ -53,7 +55,7 @@ const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
   styleUrls: ['./grid.component.scss'],
 })
 /** Grid widget using KendoUI. */
-export class SafeGridWidgetComponent implements OnInit {
+export class SafeGridWidgetComponent implements OnInit, OnDestroy {
   // === TEMPLATE REFERENCE ===
   @ViewChild(SafeCoreGridComponent)
   private grid!: SafeCoreGridComponent;
@@ -75,6 +77,9 @@ export class SafeGridWidgetComponent implements OnInit {
   @Input() id = '';
   @Input() canUpdate = false;
   public gridSettings: any = null;
+
+  // === QUERY SUBSCRIPTION ===
+  private querySubscription?: Subscription;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -135,6 +140,12 @@ export class SafeGridWidgetComponent implements OnInit {
             ...{ template: this.settings.query?.template },
           };
         });
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
     }
   }
 
@@ -450,7 +461,7 @@ export class SafeGridWidgetComponent implements OnInit {
     });
     const value = await Promise.resolve(dialogRef.afterClosed().toPromise());
     if (value && value.record) {
-      this.apollo
+      this.querySubscription = this.apollo
         .query<GetRecordByIdQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {

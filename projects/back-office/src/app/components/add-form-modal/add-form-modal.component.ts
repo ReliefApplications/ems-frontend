@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import {
@@ -9,6 +9,7 @@ import {
   GET_RESOURCE_BY_ID,
 } from './graphql/queries';
 import { MatSelect } from '@angular/material/select';
+import { Subscription } from 'rxjs';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -21,7 +22,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './add-form-modal.component.html',
   styleUrls: ['./add-form-modal.component.scss'],
 })
-export class AddFormModalComponent implements OnInit {
+export class AddFormModalComponent implements OnInit, OnDestroy {
   // === REACTIVE FORM ===
   public form!: FormGroup;
 
@@ -29,6 +30,8 @@ export class AddFormModalComponent implements OnInit {
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
   public templates: any[] = [];
+
+  private apolloSubscription?: Subscription;
 
   @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 
@@ -103,13 +106,22 @@ export class AddFormModalComponent implements OnInit {
   }
 
   /**
+   * Unsubscribe to subscriptions before destroying component.
+   */
+  ngOnDestroy(): void {
+    if (this.apolloSubscription) {
+      this.apolloSubscription.unsubscribe();
+    }
+  }
+
+  /**
    * Called on resource input change.
    * Load the templates linked to that resource.
    *
    * @param id resource id
    */
   getResource(id: string): void {
-    this.apollo
+    this.apolloSubscription = this.apollo
       .query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_BY_ID,
         variables: {

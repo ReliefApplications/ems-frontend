@@ -57,11 +57,13 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   private historyId = '';
   private formSubscription?: Subscription;
   private recordsSubscription?: Subscription;
+  private apolloSubscription?: Subscription;
   public cachedRecords: Record[] = [];
   public defaultColumns = DEFAULT_COLUMNS;
 
   // === DELETED RECORDS VIEW ===
   public showDeletedRecords = false;
+
 
   public pageInfo = {
     pageIndex: 0,
@@ -319,7 +321,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    * @param id id of version
    */
   public onViewHistory(id: string): void {
-    this.apollo
+    this.apolloSubscription = this.apollo
       .query<GetRecordDetailsQueryResponse>({
         query: GET_RECORD_DETAILS,
         variables: {
@@ -447,6 +449,9 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.formSubscription) {
       this.formSubscription.unsubscribe();
+    }
+    if (this.apolloSubscription) {
+      this.apolloSubscription.unsubscribe();
     }
   }
 }

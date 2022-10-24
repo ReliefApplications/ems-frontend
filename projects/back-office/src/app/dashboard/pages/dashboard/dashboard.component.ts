@@ -51,6 +51,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public loading = true;
   public tiles: any[] = [];
   public dashboard?: Dashboard;
+  private querySubscription: Subscription | null = null;
 
   // === GRID ===
   private generatedTiles = 0;
@@ -101,7 +102,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.formActive = false;
       this.loading = true;
       this.id = params.id;
-      this.apollo
+      this.querySubscription = this.apollo
         .query<GetDashboardByIdQueryResponse>({
           query: GET_DASHBOARD_BY_ID,
           variables: {
@@ -159,6 +160,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
+    }
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
     }
     this.dashboardService.closeDashboard();
   }

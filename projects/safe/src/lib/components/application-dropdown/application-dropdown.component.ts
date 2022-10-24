@@ -2,13 +2,14 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Application } from '../../models/application.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import {
   MAT_SELECT_SCROLL_STRATEGY,
   MatSelect,
@@ -51,7 +52,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     },
   ],
 })
-export class SafeApplicationDropdownComponent implements OnInit {
+export class SafeApplicationDropdownComponent implements OnInit, OnDestroy {
   @Input() value = [];
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
@@ -64,6 +65,7 @@ export class SafeApplicationDropdownComponent implements OnInit {
     hasNextPage: true,
   };
   private loading = true;
+  private querySubscription?: Subscription;
 
   @ViewChild('applicationSelect') applicationSelect?: MatSelect;
 
@@ -78,7 +80,7 @@ export class SafeApplicationDropdownComponent implements OnInit {
 
   ngOnInit(): void {
     if (Array.isArray(this.value) && this.value.length > 0) {
-      this.apollo
+      this.querySubscription = this.apollo
         .query<GetApplicationsQueryResponse>({
           query: GET_APPLICATIONS,
           variables: {
@@ -116,6 +118,12 @@ export class SafeApplicationDropdownComponent implements OnInit {
       this.pageInfo = res.data.applications.pageInfo;
       this.loading = res.loading;
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 
   /**

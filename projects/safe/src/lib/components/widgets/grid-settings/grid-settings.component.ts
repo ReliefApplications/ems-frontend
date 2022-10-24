@@ -6,6 +6,7 @@ import {
   Output,
   EventEmitter,
   AfterViewInit,
+  OnDestroy,
 } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -21,7 +22,7 @@ import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Overlay } from '@angular/cdk/overlay';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { scrollFactory } from '../../../utils/scroll-factory';
@@ -44,7 +45,7 @@ import { createGridWidgetFormGroup } from './grid-settings.forms';
     },
   ],
 })
-export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
+export class SafeGridSettingsComponent implements OnInit, AfterViewInit, OnDestroy {
   // === REACTIVE FORM ===
   public formGroup!: FormGroup;
 
@@ -73,6 +74,10 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
 
   /** Stores the selected tab */
   public selectedTab = 0;
+
+  // === QUERY SUBSCRIPTION ===
+  private querySubscription?: Subscription;
+  private querySubscription2?: Subscription;
 
   /**
    * Constructor of the grid settings component
@@ -170,6 +175,15 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     }
   }
 
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
+    if (this.querySubscription2) {
+      this.querySubscription2.unsubscribe();
+    }
+  }
+
   /**
    * Gets query metadata for grid settings, from the query name
    */
@@ -184,7 +198,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         const source = res1.data[`_${this.queryName}Meta`]._source;
         this.formGroup?.get('resource')?.setValue(source);
         if (source) {
-          this.apollo
+          this.querySubscription = this.apollo
             .query<GetResourceByIdQueryResponse>({
               query: GET_GRID_RESOURCE_META,
               variables: {
@@ -195,7 +209,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
             })
             .subscribe((res2) => {
               if (res2.errors) {
-                this.apollo
+                this.querySubscription2 = this.apollo
                   .query<GetFormByIdQueryResponse>({
                     query: GET_GRID_FORM_META,
                     variables: {

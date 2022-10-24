@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Resource } from '../../../../models/resource.model';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { CHART_TYPES } from '../constants';
 import {
   GetResourceByIdQueryResponse,
@@ -29,7 +29,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './tab-main.component.html',
   styleUrls: ['./tab-main.component.scss'],
 })
-export class TabMainComponent implements OnInit {
+export class TabMainComponent implements OnInit, OnDestroy {
   @Input() formGroup!: FormGroup;
   @Input() type: any;
   public types = CHART_TYPES;
@@ -37,6 +37,7 @@ export class TabMainComponent implements OnInit {
   public resource?: Resource;
   public aggregation?: Aggregation;
   public availableSeriesFields: any[] = [];
+  private querySubscription?: Subscription;
 
   private reload = new Subject<boolean>();
   public reload$ = this.reload.asObservable();
@@ -78,6 +79,12 @@ export class TabMainComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
+  }
+
   /**
    * Get a resource by id and associated aggregations
    *
@@ -85,7 +92,7 @@ export class TabMainComponent implements OnInit {
    */
   private getResource(id: string): void {
     const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
-    this.apollo
+    this.querySubscription = this.apollo
       .query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE,
         variables: {

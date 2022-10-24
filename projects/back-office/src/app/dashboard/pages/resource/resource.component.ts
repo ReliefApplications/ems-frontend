@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeSnackBarService, SafeBreadcrumbService } from '@safe/builder';
 import {
@@ -11,6 +11,7 @@ import {
   GET_RESOURCE_BY_ID,
 } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 /**
  * Array of tab names sorted by position index.
@@ -25,11 +26,14 @@ const ROUTE_TABS: string[] = ['records', 'forms', 'layouts', 'aggregations'];
   templateUrl: './resource.component.html',
   styleUrls: ['./resource.component.scss'],
 })
-export class ResourceComponent implements OnInit {
+export class ResourceComponent implements OnInit, OnDestroy {
   public loading = true;
   public id = '';
   public resource: any;
   public selectedTab = 0;
+
+  // === APOLLO SUBSCRIPTION ===
+  private apolloSubscription: Subscription | null = null;
 
   /**
    * ResourceComponent constructor.
@@ -62,6 +66,13 @@ export class ResourceComponent implements OnInit {
     }
   }
 
+  /** Unsubscribe to the apollo query */
+  ngOnDestroy(): void {
+    if (this.apolloSubscription) {
+      this.apolloSubscription.unsubscribe();
+    }
+  }
+
   /**
    * Loads resource data.
    */
@@ -69,7 +80,7 @@ export class ResourceComponent implements OnInit {
     this.loading = true;
 
     // get the resource and the form linked
-    this.apollo
+    this.apolloSubscription = this.apollo
       .query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_BY_ID,
         variables: {

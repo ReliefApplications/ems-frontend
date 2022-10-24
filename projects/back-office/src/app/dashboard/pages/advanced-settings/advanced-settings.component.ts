@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -16,7 +16,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { EditSettingMutationResponse, EDIT_SETTING } from './graphql/mutations';
 import { MatSelect } from '@angular/material/select';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 /**
  * Advanced user settings component.
@@ -26,7 +26,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   templateUrl: './advanced-settings.component.html',
   styleUrls: ['./advanced-settings.component.scss'],
 })
-export class AdvancedSettingsComponent implements OnInit {
+export class AdvancedSettingsComponent implements OnInit, OnDestroy {
   // === REACTIVE FORM ===
   settingForm: FormGroup = new FormGroup({});
   loading = true;
@@ -44,6 +44,9 @@ export class AdvancedSettingsComponent implements OnInit {
     endCursor: '',
     hasNextPage: true,
   };
+
+  // === QUERY SUBSCRIPTION ===
+  private querySubscription: Subscription | null = null;
 
   /**
    * Getter to have the user management mappingForm in the correct type.
@@ -73,7 +76,7 @@ export class AdvancedSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     // Fetch settings
-    this.apollo
+    this.querySubscription = this.apollo
       .query<GetSettingQueryResponse>({ query: GET_SETTING })
       .subscribe((res) => {
         if (res.errors) {
@@ -182,6 +185,12 @@ export class AdvancedSettingsComponent implements OnInit {
           this.loading = res.loading;
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 
   /**

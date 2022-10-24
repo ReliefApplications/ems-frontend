@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import {
   Form,
@@ -12,6 +12,7 @@ import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
 import { GetResourceByIdQueryResponse } from '../graphql/queries';
 import { GET_RESOURCE_FORMS } from './graphql/queries';
+import { Subscription } from 'rxjs';
 
 /**
  *Forms tab of resource page
@@ -21,10 +22,13 @@ import { GET_RESOURCE_FORMS } from './graphql/queries';
   templateUrl: './forms-tab.component.html',
   styleUrls: ['./forms-tab.component.scss'],
 })
-export class FormsTabComponent implements OnInit {
+export class FormsTabComponent implements OnInit, OnDestroy {
   private resource!: Resource;
   public forms: Form[] = [];
   public loading = true;
+
+  // === APOLLO SUBSCRIPTION ===
+  private apolloSubscription: Subscription | null = null;
 
   public displayedColumnsForms: string[] = [
     'name',
@@ -56,7 +60,7 @@ export class FormsTabComponent implements OnInit {
     const state = history.state;
     this.resource = get(state, 'resource', null);
 
-    this.apollo
+    this.apolloSubscription = this.apollo
       .query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_FORMS,
         variables: {
@@ -69,6 +73,15 @@ export class FormsTabComponent implements OnInit {
         }
         this.loading = false;
       });
+  }
+
+  /**
+   * Unsubscribe to subscriptions before destroying component.
+   */
+  ngOnDestroy(): void {
+    if (this.apolloSubscription) {
+      this.apolloSubscription.unsubscribe();
+    }
   }
 
   /**

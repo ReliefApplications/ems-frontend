@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import {
@@ -8,6 +8,7 @@ import {
   GetFormByIdQueryResponse,
   GET_FORM_BY_ID,
 } from './graphql/queries';
+import { Subscription } from 'rxjs';
 
 /** A component for the scheduler settings */
 @Component({
@@ -16,7 +17,7 @@ import {
   styleUrls: ['./scheduler-settings.component.scss'],
 })
 /** Modal content for the settings of the scheduler widgets. */
-export class SafeSchedulerSettingsComponent implements OnInit {
+export class SafeSchedulerSettingsComponent implements OnInit, OnDestroy {
   // === REACTIVE FORM ===
   tileForm: FormGroup = new FormGroup({});
 
@@ -31,6 +32,9 @@ export class SafeSchedulerSettingsComponent implements OnInit {
   public sources: any[] = [];
   public fields: any[] = [];
   public forms: any[] = [];
+
+  // === QUERY SUBSCRIPTION ===
+  private querySubscription?: Subscription;
 
   /**
    * Constructor of the scheduler settings component
@@ -94,6 +98,12 @@ export class SafeSchedulerSettingsComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    if( this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
+  }
+
   /**
    * Load the list of resources or forms.
    *
@@ -139,7 +149,7 @@ export class SafeSchedulerSettingsComponent implements OnInit {
    */
   getSource(e: any): void {
     if (this.tileForm.controls.from.value === 'resource') {
-      this.apollo
+      this.querySubscription = this.apollo
         .query<GetResourceByIdQueryResponse>({
           query: GET_RESOURCE_BY_ID,
           variables: {
@@ -151,7 +161,7 @@ export class SafeSchedulerSettingsComponent implements OnInit {
           this.forms = res.data.resource.forms || [];
         });
     } else {
-      this.apollo
+      this.querySubscription = this.apollo
         .query<GetFormByIdQueryResponse>({
           query: GET_FORM_BY_ID,
           variables: {
