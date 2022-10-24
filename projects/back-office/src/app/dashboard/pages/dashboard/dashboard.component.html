@@ -77,26 +77,28 @@
         (ngSubmit)="saveName()"
         class="name-edit-container"
       >
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>{{ 'common.name' | translate }}</mat-label>
           <input matInput formControlName="dashboardName" type="string" />
+          <safe-button
+            matSuffix
+            type="submit"
+            [isIcon]="true"
+            icon="save"
+            variant="primary"
+            [disabled]="!dashboardNameForm.valid"
+          >
+          </safe-button>
+          <safe-button
+            matSuffix
+            mat-icon-button
+            [isIcon]="true"
+            icon="close"
+            variant="danger"
+            (click)="toggleFormActive()"
+          >
+          </safe-button>
         </mat-form-field>
-        <safe-button
-          type="submit"
-          [isIcon]="true"
-          icon="save"
-          variant="primary"
-          [disabled]="!dashboardNameForm.valid"
-        >
-        </safe-button>
-        <safe-button
-          mat-icon-button
-          [isIcon]="true"
-          icon="close"
-          variant="danger"
-          (click)="toggleFormActive()"
-        >
-        </safe-button>
       </form>
     </ng-container>
   </ng-container>
