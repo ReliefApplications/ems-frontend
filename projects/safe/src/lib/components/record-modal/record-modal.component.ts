@@ -22,15 +22,12 @@ import {
   GET_FORM_STRUCTURE,
 } from './graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeDownloadService } from '../../services/download.service';
-import { SafeAuthService } from '../../services/auth.service';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
-import {
-  EDIT_RECORD,
-  EditRecordMutationResponse,
-} from '../../graphql/mutations';
-import { SafeSnackBarService } from '../../services/snackbar.service';
-import { SafeFormBuilderService } from '../../services/form-builder.service';
+import { SafeDownloadService } from '../../services/download/download.service';
+import { SafeAuthService } from '../../services/auth/auth.service';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
+import { EDIT_RECORD, EditRecordMutationResponse } from './graphql/mutations';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
+import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -95,6 +92,7 @@ export class SafeRecordModalComponent implements AfterViewInit {
    * @param authService This is the service that handles the authentication of the user
    * @param snackBar This is the service that allows you to display a snackbar message to the user.
    * @param formBuilderService This is the service that will be used to build forms.
+   * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in the modal.
    */
   constructor(
@@ -107,6 +105,7 @@ export class SafeRecordModalComponent implements AfterViewInit {
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
     private formBuilderService: SafeFormBuilderService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {
     this.environment = environment;
@@ -319,16 +318,14 @@ export class SafeRecordModalComponent implements AfterViewInit {
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.record.recovery.title'),
-        content: this.translate.instant(
-          'components.record.recovery.confirmationMessage',
-          { date: formatDate }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.record.recovery.title'),
+      content: this.translate.instant(
+        'components.record.recovery.confirmationMessage',
+        { date: formatDate }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

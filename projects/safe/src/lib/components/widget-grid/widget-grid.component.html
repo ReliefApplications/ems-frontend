@@ -8,7 +8,7 @@
     <h2 *ngIf="widgets.length === 0">{{ 'models.widget.add' | translate }}</h2>
     <safe-widget-choice
       [floating]="widgets.length > 0"
-      [widgetTypes]="widgetTypes"
+      [widgetTypes]="availableWidgets"
       (add)="onAdd($event)"
     >
     </safe-widget-choice>

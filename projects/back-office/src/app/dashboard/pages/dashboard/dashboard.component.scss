@@ -61,36 +61,6 @@
   display: none;
 }
 
-.dashboard-name-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-
-  .dashboard-name {
-    display: inline-block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    border-radius: 6px;
-    margin: unset;
-  }
-  .dashboard-name:hover {
-    background-color: #dddddd54;
-  }
-  .dashboard-icons-container {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
-}
-
-.name-edit-container {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-
 .share-button {
   color: #a9a9a9 !important;
   margin-left: -6px;

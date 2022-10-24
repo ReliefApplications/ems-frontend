@@ -18,7 +18,6 @@ import {
     ApplicationRoutingModule,
     SafeApplicationToolbarModule,
     SafeLayoutModule,
-    SafeConfirmModalModule,
   ],
   exports: [ApplicationComponent],
 })

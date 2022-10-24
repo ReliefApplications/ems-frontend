@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { QueryBuilderService } from '../../../services/query-builder.service';
-import { createQueryForm } from '../../query-builder/query-builder-forms';
+import { mapform } from './map-forms';
+import { FormGroup, FormArray } from '@angular/forms';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 
 /** Component for the map widget settings */
 @Component({
@@ -9,7 +9,6 @@ import { createQueryForm } from '../../query-builder/query-builder-forms';
   templateUrl: './map-settings.component.html',
   styleUrls: ['./map-settings.component.scss'],
 })
-/** Modal content for the settings of the map widgets. */
 export class SafeMapSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
   tileForm: FormGroup | undefined;
@@ -21,49 +20,29 @@ export class SafeMapSettingsComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
-  public selectedFields: any[] = [];
+  public selectedFields: (string | undefined)[] = [];
+  public formatedSelectedFields: any[] = [];
 
   /**
-   * Constructor of the component
+   * Get marker rules as form array
    *
-   * @param formBuilder Create the formbuilder
-   * @param queryBuilder The queryBuilder service
+   * @returns Markers rules as form array
    */
-  constructor(
-    private formBuilder: FormBuilder,
-    private queryBuilder: QueryBuilderService
-  ) {}
+  get markerRules(): FormArray {
+    return this.tileForm?.get('markerRules') as FormArray;
+  }
+
+  /**
+   * Component for the map widget settings
+   *
+   * @param queryBuilder Shared query builder service
+   */
+  constructor(private queryBuilder: QueryBuilderService) {}
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    const tileSettings = this.tile.settings;
-    this.tileForm = this.formBuilder.group({
-      id: this.tile.id,
-      title: [tileSettings && tileSettings.title ? tileSettings.title : null],
-      query: createQueryForm(tileSettings.query),
-      latitude: [
-        tileSettings && tileSettings.latitude ? tileSettings.latitude : 0,
-        [Validators.min(-90), Validators.max(90)],
-      ],
-      longitude: [
-        tileSettings && tileSettings.longitude ? tileSettings.longitude : 0,
-        [Validators.min(-180), Validators.max(180)],
-      ],
-      zoom: [
-        tileSettings && tileSettings.zoom ? tileSettings.zoom : 0,
-        [Validators.min(0), Validators.max(10)],
-      ],
-      centerLong: [
-        tileSettings && tileSettings.centerLong
-          ? tileSettings.centerLong
-          : null,
-        [Validators.min(-180), Validators.max(180)],
-      ],
-      centerLat: [
-        tileSettings && tileSettings.centerLat ? tileSettings.centerLat : null,
-        [Validators.min(-90), Validators.max(90)],
-      ],
-    });
+    this.tileForm = mapform(this.tile.id, this.tile.settings);
+
     this.change.emit(this.tileForm);
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
@@ -71,6 +50,10 @@ export class SafeMapSettingsComponent implements OnInit {
 
     if (this.tileForm?.value.query.name) {
       this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
+      this.formatedSelectedFields = this.getFormatedSelectedFields(
+        this.queryBuilder.getFields(this.tileForm?.value.query.name),
+        this.selectedFields
+      );
     }
 
     const queryForm = this.tileForm.get('query') as FormGroup;
@@ -78,9 +61,14 @@ export class SafeMapSettingsComponent implements OnInit {
     queryForm.controls.name.valueChanges.subscribe(() => {
       this.tileForm?.controls.latitude.setValue('');
       this.tileForm?.controls.longitude.setValue('');
+      this.tileForm?.controls.category.setValue('');
     });
-    queryForm.valueChanges.subscribe((res) => {
+    queryForm.valueChanges.subscribe(() => {
       this.selectedFields = this.getFields(queryForm.getRawValue().fields);
+      this.formatedSelectedFields = this.getFormatedSelectedFields(
+        this.queryBuilder.getFields(this.tileForm?.value.query.name),
+        this.selectedFields
+      );
     });
   }
 
@@ -98,7 +86,7 @@ export class SafeMapSettingsComponent implements OnInit {
   }
 
   /**
-   * It takes an array of fields, and returns an array of strings that represent
+   * Take an array of fields, and return an array of strings that represent
    * the fields
    *
    * @param {any[]} fields - any[] - this is the array of fields that we want to
@@ -108,7 +96,7 @@ export class SafeMapSettingsComponent implements OnInit {
    * be "user".
    * @returns An array of strings.
    */
-  private getFields(fields: any[], prefix?: string): any[] {
+  private getFields(fields: any[], prefix?: string): (string | undefined)[] {
     return this.flatDeep(
       fields
         .filter((x) => x.kind !== 'LIST')
@@ -123,5 +111,35 @@ export class SafeMapSettingsComponent implements OnInit {
           }
         })
     );
+  }
+
+  /**
+   * Filter the query fields to only get those in the selectedFields
+   *
+   * @param queryFields All the fields obtained by query
+   * @param selectedFields The concatenated names of the selected fields
+   * @returns A list of formated seected fields
+   */
+  private getFormatedSelectedFields(
+    queryFields: any[],
+    selectedFields: (string | undefined)[]
+  ): any[] {
+    const rootFields = selectedFields.map((field) => field?.split('.')[0]);
+    return queryFields
+      .filter((queryField) => rootFields.includes(queryField.name))
+      .map((queryField) => {
+        const formatedFields = queryField.fields
+          ? this.getFormatedSelectedFields(
+              queryField.fields,
+              selectedFields
+                .filter((field) => field?.split('.')[0] === queryField.name)
+                .map((field) => field?.split('.').slice(1).join('.'))
+            )
+          : null;
+        return {
+          ...queryField,
+          ...(formatedFields ? { fields: formatedFields } : {}),
+        };
+      });
   }
 }

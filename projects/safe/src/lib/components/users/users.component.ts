@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { User, Role, Permissions } from '../../models/user.model';
 import {
   DELETE_USERS,
@@ -18,14 +18,14 @@ import {
 } from './graphql/mutations';
 import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
-import { SafeAuthService } from '../../services/auth.service';
-import { SafeDownloadService } from '../../services/download.service';
+import { SafeAuthService } from '../../services/auth/auth.service';
+import { SafeDownloadService } from '../../services/download/download.service';
 import { Application } from '../../models/application.model';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeApplicationService } from '../../services/application.service';
+import { SafeApplicationService } from '../../services/application/application.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
 /** User columns to display for the main user administration page */
@@ -82,6 +82,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
    * @param authService The authentification service
    * @param dialog The material dialog service
    * @param downloadService The download service
+   * @param confirmService The confirm service
    * @param translate The translation service
    * @param router Angular router
    * @param activatedRoute Angular active route
@@ -92,6 +93,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     private authService: SafeAuthService,
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private router: Router,
     private activatedRoute: ActivatedRoute
@@ -224,14 +226,11 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
         }
       );
     }
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title,
-        content,
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title,
+      content,
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

@@ -9,7 +9,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import {
-  SafeConfirmModalModule,
   SafeButtonModule,
   SafeModalModule,
   SafeDividerModule,
@@ -42,7 +41,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatProgressSpinnerModule,
     MatTableModule,
     MatSelectModule,
-    SafeConfirmModalModule,
     SafeDividerModule,
     SafeButtonModule,
     MatButtonModule,

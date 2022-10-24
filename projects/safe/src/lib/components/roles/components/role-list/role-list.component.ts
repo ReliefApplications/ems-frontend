@@ -12,16 +12,16 @@ import { Subscription } from 'rxjs';
 
 import { Application } from '../../../../models/application.model';
 import { Role } from '../../../../models/user.model';
-import { SafeConfirmModalComponent } from '../../../confirm-modal/confirm-modal.component';
-import { SafeSnackBarService } from '../../../../services/snackbar.service';
-import { SafeApplicationService } from '../../../../services/application.service';
+import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
+import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { SafeApplicationService } from '../../../../services/application/application.service';
 import { SafeAddRoleComponent } from '../add-role/add-role.component';
 import {
   AddRoleMutationResponse,
   ADD_ROLE,
   DeleteRoleMutationResponse,
   DELETE_ROLE,
-} from '../../../../graphql/mutations';
+} from '../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -69,6 +69,8 @@ export class SafeRoleListComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param apollo This is the Apollo client that will be used to make GraphQL
    * requests.
    * @param snackBar This is the service that will be used to display the snackbar.
+   * @param confirmService This is the service that will be used to display the
+   * confirm window.
    * @param translate This is the service that is used to
    * translate the text in the application.
    * @param router Angular router
@@ -79,6 +81,7 @@ export class SafeRoleListComponent implements OnInit, OnDestroy, AfterViewInit {
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private router: Router,
     private activatedRoute: ActivatedRoute
@@ -184,19 +187,16 @@ export class SafeRoleListComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param item Role to delete
    */
   onDelete(item: any): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.role.delete.title'),
-        content: this.translate.instant(
-          'components.role.delete.confirmationMessage',
-          {
-            name: item.title,
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.role.delete.title'),
+      content: this.translate.instant(
+        'components.role.delete.confirmationMessage',
+        {
+          name: item.title,
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

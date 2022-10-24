@@ -4,7 +4,7 @@ import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
-import { SafeSnackBarService } from '../../../../services/snackbar.service';
+import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 
 /** Back-office roles section the user summary */
 @Component({

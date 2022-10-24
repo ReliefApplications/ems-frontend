@@ -23,14 +23,14 @@ import {
 } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import { SafeSnackBarService } from '../../services/snackbar.service';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SafeDownloadService } from '../../services/download.service';
+import { SafeDownloadService } from '../../services/download/download.service';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeAuthService } from '../../services/auth.service';
-import { SafeLayoutService } from '../../services/layout.service';
-import { SafeFormBuilderService } from '../../services/form-builder.service';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SafeAuthService } from '../../services/auth/auth.service';
+import { SafeLayoutService } from '../../services/layout/layout.service';
+import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -90,6 +90,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param authService This is the service that handles authentication.
    * @param layoutService This is the service that will be used to create the layout of the form.
    * @param formBuilderService This is the service that will be used to build forms.
+   * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service used to translate text
    */
   constructor(
@@ -101,6 +102,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private formBuilderService: SafeFormBuilderService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {
     this.environment = environment;
@@ -538,16 +540,14 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.record.recovery.title'),
-        content: this.translate.instant(
-          'components.record.recovery.confirmationMessage',
-          { date: formatDate }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.record.recovery.title'),
+      content: this.translate.instant(
+        'components.record.recovery.confirmationMessage',
+        { date: formatDate }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

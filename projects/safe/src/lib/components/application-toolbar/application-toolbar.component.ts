@@ -4,9 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Application } from '../../models/application.model';
-import { SafeApplicationService } from '../../services/application.service';
-import { SafeSnackBarService } from '../../services/snackbar.service';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SafeApplicationService } from '../../services/application/application.service';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
 
 /**
  * Toolbar component visible when editing application.
@@ -38,6 +38,7 @@ export class SafeApplicationToolbarComponent implements OnInit, OnDestroy {
    * @param router Angular router
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate service
    */
   constructor(
@@ -45,6 +46,7 @@ export class SafeApplicationToolbarComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}
 
@@ -74,17 +76,15 @@ export class SafeApplicationToolbarComponent implements OnInit, OnDestroy {
    * Unlocks the application, and controls edition.
    */
   onUnlock(): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.application.unlock.title'),
-        content: this.translate.instant(
-          'components.application.unlock.confirmationMessage',
-          {
-            name: this.application?.name,
-          }
-        ),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.application.unlock.title'),
+      content: this.translate.instant(
+        'components.application.unlock.confirmationMessage',
+        {
+          name: this.application?.name,
+        }
+      ),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       this.applicationService.lockApplication();
@@ -102,17 +102,15 @@ export class SafeApplicationToolbarComponent implements OnInit, OnDestroy {
         })
       );
     } else {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('components.application.publish.title'),
-          content: this.translate.instant(
-            'components.application.publish.confirmationMessage',
-            {
-              name: this.application?.name,
-            }
-          ),
-          confirmColor: 'primary',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('components.application.publish.title'),
+        content: this.translate.instant(
+          'components.application.publish.confirmationMessage',
+          {
+            name: this.application?.name,
+          }
+        ),
+        confirmColor: 'primary',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {

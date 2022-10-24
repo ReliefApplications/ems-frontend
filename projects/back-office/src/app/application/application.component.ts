@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
-  SafeConfirmModalComponent,
   ContentType,
   SafeApplicationService,
+  SafeConfirmService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
@@ -40,15 +40,15 @@ export class ApplicationComponent implements OnInit, OnDestroy {
    * @param applicationService Shared application service
    * @param route Angular activated route
    * @param router Angular router
-   * @param dialog Material dialog service
    * @param translate Angular translate service
+   * @param confirmService Shared confirmation service
    */
   constructor(
     private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private confirmService: SafeConfirmService
   ) {}
 
   ngOnInit(): void {
@@ -180,18 +180,16 @@ export class ApplicationComponent implements OnInit, OnDestroy {
    * @param item item to delete
    */
   onDelete(item: any): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('common.page.one'),
-        }),
-        content: this.translate.instant(
-          'components.application.pages.delete.confirmationMessage',
-          { name: item.name }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.page.one'),
+      }),
+      content: this.translate.instant(
+        'components.application.pages.delete.confirmationMessage',
+        { name: item.name }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

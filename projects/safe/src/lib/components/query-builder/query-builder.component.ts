@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { QueryBuilderService } from '../../services/query-builder.service';
+import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { Overlay } from '@angular/cdk/overlay';
 import { Form } from '../../models/form.model';
@@ -50,6 +50,9 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() templates: Form[] = [];
   @Input() queryName? = '';
   @Input() layoutPreviewData: LayoutPreviewData | null = null;
+  @Input() showStyle = true;
+  @Input() showFilter = true;
+  @Input() showSort = true;
 
   // Tab options
   @Input() showPagination = false;
@@ -131,6 +134,9 @@ export class SafeQueryBuilderComponent implements OnInit {
               order: ['asc'],
             })
           );
+          if (this.form?.get('clorophlets')) {
+            this.form?.setControl('clorophlets', this.formBuilder.array([]));
+          }
         } else {
           this.availableFields = [];
           this.form?.setControl('filter', createFilterGroup(null));
@@ -142,6 +148,9 @@ export class SafeQueryBuilderComponent implements OnInit {
               order: ['asc'],
             })
           );
+          if (this.form?.get('clorophlets')) {
+            this.form?.setControl('clorophlets', this.formBuilder.array([]));
+          }
         }
         this.filteredQueries = this.filterQueries(res);
       });

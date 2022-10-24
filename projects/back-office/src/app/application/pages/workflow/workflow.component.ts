@@ -7,7 +7,7 @@ import {
   Workflow,
   Step,
   SafeSnackBarService,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   ContentType,
   SafeApplicationService,
   SafeWorkflowService,
@@ -70,6 +70,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate module.
    */
   constructor(
@@ -81,6 +82,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}
 
@@ -228,18 +230,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       const step = this.steps[index];
       const currentStep =
         this.activeStep >= 0 ? this.steps[this.activeStep] : null;
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('common.deleteObject', {
-            name: this.translate.instant('common.step.one'),
-          }),
-          content: this.translate.instant(
-            'pages.workflow.deleteStep.confirmationMessage',
-            { step: step.name }
-          ),
-          confirmText: this.translate.instant('components.confirmModal.delete'),
-          confirmColor: 'warn',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.step.one'),
+        }),
+        content: this.translate.instant(
+          'pages.workflow.deleteStep.confirmationMessage',
+          { step: step.name }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        confirmColor: 'warn',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {

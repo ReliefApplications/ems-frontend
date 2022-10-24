@@ -23,11 +23,11 @@ import {
 } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs';
-import { SafeAuthService } from '../../../services/auth.service';
-import { SafeDownloadService } from '../../../services/download.service';
-import { SafeLayoutService } from '../../../services/layout.service';
-import { SafeSnackBarService } from '../../../services/snackbar.service';
-import { QueryBuilderService } from '../../../services/query-builder.service';
+import { SafeAuthService } from '../../../services/auth/auth.service';
+import { SafeDownloadService } from '../../../services/download/download.service';
+import { SafeLayoutService } from '../../../services/layout/layout.service';
+import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   ConvertRecordMutationResponse,
@@ -39,7 +39,7 @@ import {
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from './graphql/queries';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
-import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
+import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
 import { Record } from '../../../models/record.model';
@@ -47,12 +47,12 @@ import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
-import { SafeGridService } from '../../../services/grid.service';
+import { SafeGridService } from '../../../services/grid/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { SafeGridComponent } from './grid/grid.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
-import { SafeDateTranslateService } from '../../../services/date-translate.service';
+import { SafeDateTranslateService } from '../../../services/date-translate/date-translate.service';
 
 /**
  * Default file name when exporting grid data.
@@ -254,6 +254,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param downloadService Shared download service
    * @param authService Shared authentication service
    * @param gridService Shared grid service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate service
    * @param dateTranslate Shared date translate service
    */
@@ -267,6 +268,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private gridService: SafeGridService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService
   ) {
@@ -439,7 +441,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     let updatedItem = this.updatedItems.find((x) => x.id === item.id);
     if (updatedItem) {
       updatedItem = { ...updatedItem, ...value };
-      const index = this.updatedItems.findIndex((x) => x.id);
+      const index = this.updatedItems.findIndex((x) => x.id === item.id);
       this.updatedItems.splice(index, 1, updatedItem);
     } else {
       this.updatedItems.push({ id: item.id, ...value });
@@ -459,6 +461,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.hasChanges) {
       for (const item of this.items) {
         delete item.saved;
+        delete item.validationErrors;
       }
       Promise.all(this.promisedChanges()).then((allRes) => {
         for (const res of allRes) {
@@ -856,27 +859,25 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public onDelete(items: any[]): void {
     const ids: string[] = items.map((x) => (x.id ? x.id : x));
     const rowsSelected = items.length;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name:
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name:
+          rowsSelected > 1
+            ? this.translate.instant('common.row.few')
+            : this.translate.instant('common.row.one'),
+      }),
+      content: this.translate.instant(
+        'components.form.deleteRow.confirmationMessage',
+        {
+          quantity: rowsSelected,
+          rowText:
             rowsSelected > 1
               ? this.translate.instant('common.row.few')
               : this.translate.instant('common.row.one'),
-        }),
-        content: this.translate.instant(
-          'components.form.deleteRow.confirmationMessage',
-          {
-            quantity: rowsSelected,
-            rowText:
-              rowsSelected > 1
-                ? this.translate.instant('common.row.few')
-                : this.translate.instant('common.row.one'),
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
-      },
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -965,16 +966,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       date,
       'shortDate'
     );
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.record.recovery.title'),
-        content: this.translate.instant(
-          'components.record.recovery.confirmationMessage',
-          { date: formatDate }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.record.recovery.title'),
+      content: this.translate.instant(
+        'components.record.recovery.confirmationMessage',
+        { date: formatDate }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

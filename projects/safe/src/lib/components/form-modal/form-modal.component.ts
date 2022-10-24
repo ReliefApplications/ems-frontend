@@ -31,12 +31,12 @@ import {
   EDIT_RECORDS,
   EditRecordsMutationResponse,
 } from './graphql/mutations';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeSnackBarService } from '../../services/snackbar.service';
-import { SafeDownloadService } from '../../services/download.service';
-import { SafeAuthService } from '../../services/auth.service';
-import { SafeFormBuilderService } from '../../services/form-builder.service';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
+import { SafeDownloadService } from '../../services/download/download.service';
+import { SafeAuthService } from '../../services/auth/auth.service';
+import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
@@ -109,6 +109,7 @@ export class SafeFormModalComponent implements OnInit {
    * @param downloadService This is the service that is used to download files.
    * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
+   * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular ng zone
    */
@@ -122,6 +123,7 @@ export class SafeFormModalComponent implements OnInit {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private ngZone: NgZone
   ) {
@@ -310,29 +312,25 @@ export class SafeFormModalComponent implements OnInit {
     survey.data = data;
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('common.updateObject', {
-            name:
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.updateObject', {
+          name:
+            rowsSelected > 1
+              ? this.translate.instant('common.row.few')
+              : this.translate.instant('common.row.one'),
+        }),
+        content: this.translate.instant(
+          'components.form.updateRow.confirmationMessage',
+          {
+            quantity: rowsSelected,
+            rowText:
               rowsSelected > 1
                 ? this.translate.instant('common.row.few')
                 : this.translate.instant('common.row.one'),
-          }),
-          content: this.translate.instant(
-            'components.form.updateRow.confirmationMessage',
-            {
-              quantity: rowsSelected,
-              rowText:
-                rowsSelected > 1
-                  ? this.translate.instant('common.row.few')
-                  : this.translate.instant('common.row.one'),
-            }
-          ),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          confirmColor: 'primary',
-        },
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
       });
       dialogRef.afterClosed().subscribe(async (value) => {
         if (value) {
@@ -727,16 +725,14 @@ export class SafeFormModalComponent implements OnInit {
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.record.recovery.title'),
-        content: this.translate.instant(
-          'components.record.recovery.confirmationMessage',
-          { date: formatDate }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.record.recovery.title'),
+      content: this.translate.instant(
+        'components.record.recovery.confirmationMessage',
+        { date: formatDate }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

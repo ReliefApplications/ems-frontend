@@ -1,7 +1,7 @@
 import { Apollo } from 'apollo-angular';
-import { EDIT_RECORDS } from '../graphql/mutations';
+import { EDIT_RECORDS } from './graphql/mutations';
 import { Record } from '../models/record.model';
-import { SafeAuthService } from '../services/auth.service';
+import { SafeAuthService } from '../services/auth/auth.service';
 
 /**
  * Registration of new custom functions for the survey.
