@@ -62,6 +62,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() profileRoute = '/profile';
 
+  @Input() appLayout = false;
+  @Input() canAddPage = false;
+
   filteredNavGroups: any[] = [];
 
   languages: string[] = [];
@@ -201,7 +204,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
             this.environment.module === 'backoffice'
           );
         });
-        if (navItems.length > 0) {
+        if (navItems.length > 0 || (this.appLayout && this.canAddPage)) {
           const filteredGroup = {
             name: group.name,
             callback: group.callback,

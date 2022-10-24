@@ -1,7 +1,11 @@
 <safe-layout
-  [title]="title"
+  [appLayout]="true"
   [applications]="applications"
   [navGroups]="navGroups"
+  [toolbar]="toolbar"
   [profileRoute]="'/' + appID + '/profile'"
   (openApplication)="onOpenApplication($event)"
 ></safe-layout>
+<ng-template #toolbar>
+    <safe-app-application-toolbar [title]="title" [settings]="adminNavItems"></safe-app-application-toolbar>
+</ng-template>

@@ -25,6 +25,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
   public navGroups: any[] = [];
+  public adminNavItems: any[] = [];
 
   // === APPLICATION ===
   public application?: Application;
@@ -59,7 +60,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
         (application: Application | null) => {
           if (application) {
             this.title = application.name || '';
-            let displayNavItems: any[] =
+            const displayNavItems: any[] =
               application.pages
                 ?.filter((x: any) => x.content && x.canSee)
                 .map((x: any) => ({
@@ -82,16 +83,8 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                     callback: () => this.onDelete(x),
                   },
                 })) || [];
-            let adminNavItems: any[] = [];
             if (application.canUpdate) {
-              displayNavItems = displayNavItems.concat({
-                name: 'Add a page',
-                path: './add-page',
-                icon: 'add_circle',
-                class: 'nav-item-add',
-                isAddPage: true,
-              });
-              adminNavItems = adminNavItems.concat([
+              this.adminNavItems = [
                 {
                   name: this.translate.instant('common.settings'),
                   path: './settings/edit',
@@ -105,35 +98,31 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 {
                   name: this.translate.instant('common.role.few'),
                   path: './settings/roles',
-                  icon: 'admin_panel_settings',
+                  icon: 'verified_user',
                 },
                 {
                   name: this.translate.instant(
                     'pages.application.positionAttributes.title'
                   ),
                   path: './settings/position',
-                  icon: 'manage_accounts',
+                  icon: 'edit_attributes',
                 },
                 {
                   name: this.translate.instant('common.channel.few'),
                   path: './settings/channels',
-                  icon: 'edit_notifications',
+                  icon: 'dns',
                 },
                 {
                   name: this.translate.instant('common.subscription.few'),
                   path: './settings/subscriptions',
-                  icon: 'move_to_inbox',
+                  icon: 'add_to_queue',
                 },
-              ]);
+              ];
             }
             this.navGroups = [
               {
-                name: this.translate.instant('common.display'),
+                name: this.translate.instant('common.page.few'),
                 navItems: displayNavItems,
-              },
-              {
-                name: this.translate.instant('pages.administration.title'),
-                navItems: adminNavItems,
               },
             ];
             if (!this.application || application.id !== this.application.id) {
