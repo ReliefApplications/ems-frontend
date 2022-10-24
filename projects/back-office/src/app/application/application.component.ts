@@ -125,7 +125,6 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 navItems: displayNavItems,
               },
             ];
-            console.log(this.navGroups);
             if (!this.application || application.id !== this.application.id) {
               const [firstPage, ..._] = application.pages || [];
               if (

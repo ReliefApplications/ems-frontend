@@ -1,11 +1,18 @@
 <div class="toolbar">
-  <div class="app-title-container">
-    <h2 [matMenuTriggerFor]="settingsMenu" *ngIf="settings.length > 0" style="cursor: pointer;">
-      {{title}}
+  <div class="flex items-center gap-2 overflow-hidden">
+    <!-- Title -->
+    <h2 class="!m-0 overflow-hidden text-ellipsis whitespace-nowrap">
+      {{ title }}
     </h2>
-    <h2 *ngIf="settings.length === 0">
-      {{title}}
-    </h2>
+    <!-- Settings -->
+    <safe-button
+      *ngIf="settings.length > 0"
+      [isIcon]="true"
+      icon="tune"
+      variant="grey"
+      [matMenuTriggerFor]="settingsMenu"
+    ></safe-button>
+    <!-- Access -->
     <safe-access
       *ngIf="title && canUpdate"
       [access]="application?.permissions"
@@ -36,8 +43,10 @@
   </div>
 </div>
 
+<!-- Admin pages -->
 <mat-menu #settingsMenu="matMenu">
-  <button mat-menu-item
+  <button
+    mat-menu-item
     *ngFor="let setting of settings"
     class="menu-item"
     [routerLink]="setting.path"

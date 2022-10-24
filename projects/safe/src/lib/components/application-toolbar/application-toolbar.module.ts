@@ -8,7 +8,7 @@ import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { SafeAccessModule } from '../access/access.module';
 import { SafeButtonModule } from '../ui/button/button.module';
-import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
+import { SafeIconModule } from '../ui/icon/icon.module';
 
 /**
  * Application toolbar module.
@@ -17,7 +17,6 @@ import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
   declarations: [SafeApplicationToolbarComponent],
   imports: [
     CommonModule,
-    SafeConfirmModalModule,
     SafeButtonModule,
     TranslateModule,
     SafeAccessModule,
@@ -25,6 +24,7 @@ import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
     MatIconModule,
     MatListModule,
     RouterModule,
+    SafeIconModule,
   ],
   exports: [SafeApplicationToolbarComponent],
 })

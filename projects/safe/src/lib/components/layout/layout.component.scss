@@ -6,7 +6,6 @@
 
 .sidenav {
   width: 240px;
-  border: none !important;
 }
 
 .sidenav-container {
@@ -119,7 +118,6 @@
 }
 
 .add-page-container {
-  height: 83px;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: space-around;
@@ -128,10 +126,6 @@
   width: 100%;
   position: absolute;
   bottom: 0;
-
-  safe-button {
-    margin-top: 16px;
-  }
 }
 
 .notification-menu {

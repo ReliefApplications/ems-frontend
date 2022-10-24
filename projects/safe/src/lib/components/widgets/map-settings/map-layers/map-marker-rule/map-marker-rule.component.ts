@@ -34,7 +34,6 @@ export class MapMarkerRuleComponent implements OnInit {
     this.form = markerRuleForm(data.value);
     this.fields = data.fields;
     this.query = data.query;
-    console.log(this.fields);
   }
 
   ngOnInit(): void {}

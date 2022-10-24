@@ -5,6 +5,7 @@
   align-items: center;
   justify-content: space-between;
   height: 60px;
+  border-bottom: 1px solid rgba(0,0,0,.12);
 
   .toolbar-buttons {
     display: flex;
@@ -12,20 +13,6 @@
 
     safe-button:first-child {
       margin: 0 8px;
-    }
-  }
-
-  .app-title-container {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-
-    h2 {
-      margin: 0;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-      max-width: 25vw;
     }
   }
 }
