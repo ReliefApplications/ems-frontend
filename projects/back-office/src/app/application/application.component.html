@@ -7,5 +7,10 @@
   (reorder)="onReorder($event)"
 ></safe-layout>
 <ng-template #toolbar>
-  <safe-app-application-toolbar [title]="title" [settings]="adminNavItems" [canUpdate]="application?.canUpdate!" [showPublish]="true"></safe-app-application-toolbar>
+  <safe-app-application-toolbar
+    [title]="title"
+    [settings]="adminNavItems"
+    [canUpdate]="application?.canUpdate!"
+    [showPublish]="true"
+  ></safe-app-application-toolbar>
 </ng-template>
