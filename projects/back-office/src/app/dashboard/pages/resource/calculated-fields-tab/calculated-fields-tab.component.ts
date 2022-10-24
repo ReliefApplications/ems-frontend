@@ -58,7 +58,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
     const dialogRef = this.dialog.open(SafeEditCalculatedFieldModalComponent, {
       disableClose: true,
       data: {
-        field: null,
+        calculatedField: null,
         resourceFields: this.resource.fields.filter(
           (f: any) => !f.isCalculated
         ),
@@ -114,7 +114,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
       data: {
         calculatedField: field,
         resourceFields: this.resource.fields.filter(
-          (f: any) => !field.isCalculated
+          (f: any) => !f.isCalculated
         ),
       },
     });
