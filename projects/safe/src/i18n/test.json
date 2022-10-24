@@ -556,6 +556,7 @@
 			}
 		},
 		"templates": {
+			"available": "******",
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"titleMessage": "******"
@@ -567,14 +568,13 @@
 				"subject": "******",
 				"update": "******"
 			},
-			"type": {
-				"email": "******",
-				"title": "******"
-			},
 			"select": {
 				"email": "******"
 			},
-			"available": "******"
+			"type": {
+				"email": "******",
+				"title": "******"
+			}
 		},
 		"user": {
 			"delete": {

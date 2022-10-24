@@ -83,12 +83,6 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                   },
                 })) || [];
             let adminNavItems: any[] = [];
-            // TODO: Add permissions for templates
-            adminNavItems.push({
-              name: this.translate.instant('common.template.few'),
-              path: './settings/templates',
-              icon: 'description',
-            });
             if (application.canUpdate) {
               displayNavItems = displayNavItems.concat({
                 name: 'Add a page',
@@ -102,6 +96,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                   name: this.translate.instant('common.settings'),
                   path: './settings/edit',
                   icon: 'settings',
+                },
+                {
+                  name: this.translate.instant('common.template.few'),
+                  path: './settings/templates',
+                  icon: 'description',
                 },
                 {
                   name: this.translate.instant('common.user.few'),
