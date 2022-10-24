@@ -221,16 +221,16 @@ export class AggregationsTabComponent implements OnInit {
    */
   onDeleteAggregation(aggregation: Aggregation): void {
     const dialogRef = this.confirmService.openConfirmModal({
-        title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('common.aggregation.one'),
-        }),
-        content: this.translate.instant(
-          'components.form.aggregation.delete.confirmationMessage',
-          {
-            name: aggregation.name,
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.aggregation.one'),
+      }),
+      content: this.translate.instant(
+        'components.form.aggregation.delete.confirmationMessage',
+        {
+          name: aggregation.name,
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

@@ -9,11 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
  */
 @NgModule({
   declarations: [ApplicationToolbarComponent],
-  imports: [
-    CommonModule,
-    SafeButtonModule,
-    TranslateModule,
-  ],
+  imports: [CommonModule, SafeButtonModule, TranslateModule],
   exports: [ApplicationToolbarComponent],
 })
 export class ApplicationToolbarModule {}

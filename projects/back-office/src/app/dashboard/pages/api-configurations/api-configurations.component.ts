@@ -275,9 +275,7 @@ export class ApiConfigurationsComponent
   onDelete(element: any, e: any): void {
     e.stopPropagation();
     const dialogRef = this.confirmService.openConfirmModal({
-      title: this.translate.instant(
-        'components.apiConfiguration.delete.title'
-      ),
+      title: this.translate.instant('components.apiConfiguration.delete.title'),
       content: this.translate.instant(
         'components.apiConfiguration.delete.confirmationMessage',
         {

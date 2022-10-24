@@ -75,6 +75,7 @@ export class FormBuilderComponent implements OnInit {
    * @param snackBar Shared snackbar service
    * @param dialog Material dialog service
    * @param authService Shared authentication service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service
    */
@@ -100,9 +101,7 @@ export class FormBuilderComponent implements OnInit {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('components.form.update.exit'),
         content: this.translate.instant('components.form.update.exitMessage'),
-        confirmText: this.translate.instant(
-          'components.confirmModal.confirm'
-        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       });
       return dialogRef.afterClosed().pipe(
