@@ -8,25 +8,27 @@
 
     <ng-container *ngIf="formActive">
       <form [formGroup]="nameForm" (ngSubmit)="saveName()">
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>{{ 'common.name' | translate }}</mat-label>
           <input matInput formControlName="formName" type="string" />
+          <safe-button
+          matSuffix
+            type="submit"
+            [isIcon]="true"
+            icon="done"
+            variant="primary"
+            [disabled]="!nameForm.valid"
+          >
+          </safe-button>
+          <safe-button
+            matSuffix
+            [isIcon]="true"
+            icon="close"
+            variant="danger"
+            (click)="toggleFormActive()"
+          >
+          </safe-button>
         </mat-form-field>
-        <safe-button
-          type="submit"
-          [isIcon]="true"
-          icon="save"
-          variant="primary"
-          [disabled]="!nameForm.valid"
-        >
-        </safe-button>
-        <safe-button
-          [isIcon]="true"
-          icon="close"
-          variant="danger"
-          (click)="toggleFormActive()"
-        >
-        </safe-button>
       </form>
     </ng-container>
     <span class="flex-spacer"></span>
