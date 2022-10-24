@@ -2,6 +2,10 @@
 @import 'variables.scss';
 @include mat.core();
 
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 .sv_main {
   --primary-color: #{$primary_500};
   --secondary-color: #{$primary_500};
@@ -269,6 +273,42 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
+@mixin form-field($theme) {
+  mat-label {
+    safe-icon {
+      vertical-align: text-bottom;
+    }
+  }
+
+  .p-0 {
+    // no padding fields
+    &.mat-form-field {
+      .mat-form-field-wrapper {
+        padding: 0 !important;
+      }
+    }
+  }
+
+  .mat-form-field-sm {
+    // small form-field
+    &.mat-form-field {
+      .mat-form-field-label-wrapper {
+        top: -1.4em;
+      }
+    }
+
+    .mat-form-field-flex > .mat-form-field-infix {
+      padding: 0.42em 0px !important;
+    }
+
+    &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
+      .mat-form-field-label {
+      transform: translateY(-1.1em) scale(0.75);
+      width: 133.33333%;
+    }
+  }
+}
+
 @mixin modal($theme) {
   .mat-dialog-actions {
     gap: 8px;
@@ -442,6 +482,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 @include slide-toggle($safe-theme);
 @include expansion-panel($safe-theme);
 @include checkbox($safe-theme);
+@include form-field($safe-theme);
 @include modal($safe-theme);
 @include custom-theme($safe-theme);
 
@@ -568,8 +609,6 @@ body {
 
 // === KENDO THEME ===
 @import 'theme.scss';
-// === UTILITY ===
-@import 'utils.scss';
 
 // === VERTICAL TABS ===
 mat-tab-group[vertical] {
@@ -578,6 +617,9 @@ mat-tab-group[vertical] {
 
   & > .mat-tab-header {
     border-bottom: none;
+    width: 240px;
+    position: fixed;
+    z-index: 1;
 
     .mat-tab-labels {
       display: flex;
@@ -602,16 +644,6 @@ mat-tab-group[vertical] {
           }
         }
       }
-
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: calc(100% - 2px);
-        height: 100%;
-        width: 2px;
-        background-color: none !important;
-      }
     }
 
     .mat-ink-bar {
@@ -621,6 +653,7 @@ mat-tab-group[vertical] {
 
   & > .mat-tab-body-wrapper {
     width: 100%;
+    padding-left: 240px;
 
     & > .mat-tab-body {
       & > .mat-tab-body-content {
@@ -643,4 +676,52 @@ mat-tab-group[vertical] {
 .tox-editor-header *,
 .tox-tinymce-aux * {
   font-family: Roboto, 'Helvetica Neue', sans-serif !important;
+}
+
+// === LEAFLET ===
+.map-legend-container {
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  outline: solid rgba(0, 0, 0, 0.2) 2px;
+  border-radius: 4px;
+  line-height: 18px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .map-legend {
+    position: relative;
+
+    h4 {
+      margin: 0;
+      opacity: 0.8;
+      cursor: pointer;
+    }
+
+    i {
+      width: 18px;
+      height: 18px;
+      float: left;
+      margin-right: 8px;
+      opacity: 0.7;
+    }
+
+    .map-legend-division {
+      cursor: pointer;
+    }
+  }
+
+  .map-legend-hide {
+    opacity: 0.4;
+
+    .map-legend-division {
+      display: none;
+    }
+  }
+
+  .legend-division-hide {
+    opacity: 0.4;
+  }
 }

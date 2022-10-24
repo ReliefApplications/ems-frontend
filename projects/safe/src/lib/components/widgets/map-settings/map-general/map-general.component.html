@@ -1,0 +1,22 @@
+<form [formGroup]="form">
+  <div class="form-group">
+    <h2>{{ 'common.general' | translate }}</h2>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.name' | translate }}</mat-label>
+      <input matInput formControlName="title" type="string" />
+    </mat-form-field>
+  </div>
+  <div class="form-group">
+    <h2>{{ 'components.widget.settings.map.dataset' | translate }}</h2>
+    <safe-alert>
+      <safe-icon icon="info"></safe-icon>
+      {{ 'components.widget.settings.map.tooltip.dataset' | translate }}
+    </safe-alert>
+    <safe-query-builder
+      [form]="$any(form.controls.query)"
+      [canExpand]="false"
+      [showStyle]="false"
+      [showSort]="false"
+    ></safe-query-builder>
+  </div>
+</form>
