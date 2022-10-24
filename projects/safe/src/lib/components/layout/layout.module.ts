@@ -9,7 +9,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
@@ -40,7 +39,6 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     MatListModule,
     DragDropModule,
     SafeDividerModule,
-    SafeConfirmModalModule,
     MatTooltipModule,
     SafeButtonModule,
     IndicatorsModule,

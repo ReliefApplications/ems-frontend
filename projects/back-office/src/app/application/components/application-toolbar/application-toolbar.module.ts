@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApplicationToolbarComponent } from './application-toolbar.component';
-import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
+import { SafeButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -11,7 +11,6 @@ import { TranslateModule } from '@ngx-translate/core';
   declarations: [ApplicationToolbarComponent],
   imports: [
     CommonModule,
-    SafeConfirmModalModule,
     SafeButtonModule,
     TranslateModule,
   ],

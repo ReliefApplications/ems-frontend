@@ -28,7 +28,7 @@ import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeNotificationService } from '../../services/notification/notification.service';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafePreferencesModalComponent } from '../preferences-modal/preferences-modal.component';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
@@ -101,6 +101,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    * @param authService This is the service that handles authentication
    * @param notificationService This is the service that handles the notifications.
    * @param layoutService This is the service that handles the layout of the application.
+   * @param confirmService This is the service that is used to display a confirm window.
    * @param dialog This is the dialog service provided by Angular Material
    * @param translate This is the Angular service that translates text
    * @param dateTranslate Service used for date formatting
@@ -111,6 +112,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     private authService: SafeAuthService,
     private notificationService: SafeNotificationService,
     private layoutService: SafeLayoutService,
+    private confirmService: SafeConfirmService,
     public dialog: MatDialog,
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService
@@ -281,17 +283,15 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    */
   logout(): void {
     if (!this.authService.canLogout.value) {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('components.logout.title'),
-          content: this.translate.instant(
-            'components.logout.confirmationMessage'
-          ),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          confirmColor: 'primary',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('components.logout.title'),
+        content: this.translate.instant(
+          'components.logout.confirmationMessage'
+        ),
+        confirmText: this.translate.instant(
+          'components.confirmModal.confirm'
+        ),
+        confirmColor: 'primary',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {

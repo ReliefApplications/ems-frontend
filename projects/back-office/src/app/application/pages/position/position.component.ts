@@ -5,7 +5,7 @@ import {
   Application,
   SafeApplicationService,
   PositionAttributeCategory,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { PositionModalComponent } from './components/position-modal/position-modal.component';
@@ -30,11 +30,13 @@ export class PositionComponent implements OnInit, OnDestroy {
    *
    * @param dialog Material dialog service
    * @param applicationService Shared application service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate service
    */
   constructor(
     public dialog: MatDialog,
     private applicationService: SafeApplicationService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}
 
@@ -97,21 +99,18 @@ export class PositionComponent implements OnInit, OnDestroy {
    * @param positionCategory position category to delete
    */
   onDelete(positionCategory: PositionAttributeCategory): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant(
-          'components.application.positionAttribute.delete.title'
-        ),
-        content: this.translate.instant(
-          'components.application.positionAttribute.delete.confirmationMessage',
-          {
-            name: positionCategory.title,
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant(
+        'components.application.positionAttribute.delete.title'
+      ),
+      content: this.translate.instant(
+        'components.application.positionAttribute.delete.confirmationMessage',
+        {
+          name: positionCategory.title,
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

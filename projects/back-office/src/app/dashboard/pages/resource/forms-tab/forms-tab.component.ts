@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import {
   Form,
   Resource,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
 } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
@@ -40,12 +40,14 @@ export class FormsTabComponent implements OnInit {
    *
    * @param apollo Apollo service
    * @param snackBar Shared snackbar service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate service
    * @param dialog Material dialog service
    */
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private dialog: MatDialog
   ) {}
@@ -77,21 +79,18 @@ export class FormsTabComponent implements OnInit {
    */
   deleteForm(form: Form, e: any): void {
     e.stopPropagation();
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('common.form.one'),
-        }),
-        content: this.translate.instant(
-          'components.form.delete.confirmationMessage',
-          {
-            name: form.name,
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.form.one'),
+      }),
+      content: this.translate.instant(
+        'components.form.delete.confirmationMessage',
+        {
+          name: form.name,
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

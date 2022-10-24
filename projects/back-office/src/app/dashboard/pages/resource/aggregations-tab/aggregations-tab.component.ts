@@ -5,7 +5,7 @@ import {
   SafeEditAggregationModalComponent,
   Aggregation,
   SafeAggregationService,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   Resource,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -50,12 +50,14 @@ export class AggregationsTabComponent implements OnInit {
    * @param apollo Apollo service
    * @param dialog Material dialog service
    * @param aggregationService Grid aggregation service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate service
    */
   constructor(
     private apollo: Apollo,
     private dialog: MatDialog,
     private aggregationService: SafeAggregationService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}
 
@@ -218,8 +220,7 @@ export class AggregationsTabComponent implements OnInit {
    * @param aggregation Aggregation to delete
    */
   onDeleteAggregation(aggregation: Aggregation): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
+    const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('common.deleteObject', {
           name: this.translate.instant('common.aggregation.one'),
         }),
@@ -230,8 +231,6 @@ export class AggregationsTabComponent implements OnInit {
           }
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-      },
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

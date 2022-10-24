@@ -15,7 +15,6 @@ import { SafeSchedulerModule } from './components/widgets/scheduler/scheduler.mo
 import { SafeSchedulerSettingsModule } from './components/widgets/scheduler-settings/scheduler-settings.module';
 import { SafeWidgetModule } from './components/widget/widget.module';
 import { SafeWidgetGridModule } from './components/widget-grid/widget-grid.module';
-import { SafeConfirmModalModule } from './components/confirm-modal/confirm-modal.module';
 import { SafeUsersModule } from './components/users/users.module';
 import { SafeRolesModule } from './components/roles/roles.module';
 import { SafePreviousButtonModule } from './components/previous-button/previous-button.module';
@@ -64,7 +63,6 @@ import { SafeDividerModule } from './components/ui/divider/divider.module';
     SafeSchedulerSettingsModule,
     SafeWidgetModule,
     SafeWidgetGridModule,
-    SafeConfirmModalModule,
     SafeStatusModalModule,
     SafeUsersModule,
     SafeRolesModule,

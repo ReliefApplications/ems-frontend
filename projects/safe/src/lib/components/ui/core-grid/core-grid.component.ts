@@ -39,7 +39,7 @@ import {
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from './graphql/queries';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
-import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
+import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
 import { Record } from '../../../models/record.model';
@@ -254,6 +254,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param downloadService Shared download service
    * @param authService Shared authentication service
    * @param gridService Shared grid service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate service
    * @param dateTranslate Shared date translate service
    */
@@ -267,6 +268,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private gridService: SafeGridService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService
   ) {
@@ -857,27 +859,25 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public onDelete(items: any[]): void {
     const ids: string[] = items.map((x) => (x.id ? x.id : x));
     const rowsSelected = items.length;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name:
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name:
+          rowsSelected > 1
+            ? this.translate.instant('common.row.few')
+            : this.translate.instant('common.row.one'),
+      }),
+      content: this.translate.instant(
+        'components.form.deleteRow.confirmationMessage',
+        {
+          quantity: rowsSelected,
+          rowText:
             rowsSelected > 1
               ? this.translate.instant('common.row.few')
               : this.translate.instant('common.row.one'),
-        }),
-        content: this.translate.instant(
-          'components.form.deleteRow.confirmationMessage',
-          {
-            quantity: rowsSelected,
-            rowText:
-              rowsSelected > 1
-                ? this.translate.instant('common.row.few')
-                : this.translate.instant('common.row.one'),
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
-      },
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -966,16 +966,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       date,
       'shortDate'
     );
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.record.recovery.title'),
-        content: this.translate.instant(
-          'components.record.recovery.confirmationMessage',
-          { date: formatDate }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.record.recovery.title'),
+      content: this.translate.instant(
+        'components.record.recovery.confirmationMessage',
+        { date: formatDate }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

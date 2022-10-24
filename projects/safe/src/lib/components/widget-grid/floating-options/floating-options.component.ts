@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeTileDataComponent } from './menu/tile-data/tile-data.component';
 import { SafeDashboardService } from '../../../services/dashboard/dashboard.service';
-import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
+import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
@@ -31,11 +31,13 @@ export class SafeFloatingOptionsComponent implements OnInit {
    *
    * @param dialog Material dialog service
    * @param dashboardService Dashboard service
+   * @param confirmService Confirm service
    * @param translate Translation service
    */
   constructor(
     public dialog: MatDialog,
     private dashboardService: SafeDashboardService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}
 
@@ -87,15 +89,13 @@ export class SafeFloatingOptionsComponent implements OnInit {
       this.expand.emit({ id: this.widget.id });
     }
     if (item.name === 'Delete') {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('models.widget.delete.title'),
-          content: this.translate.instant(
-            'models.widget.delete.confirmationMessage'
-          ),
-          confirmText: this.translate.instant('components.confirmModal.delete'),
-          confirmColor: 'warn',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('models.widget.delete.title'),
+        content: this.translate.instant(
+          'models.widget.delete.confirmationMessage'
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        confirmColor: 'warn',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {
