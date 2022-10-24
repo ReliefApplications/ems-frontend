@@ -4,7 +4,7 @@ import {
   Channel,
   PullJob,
   status,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -65,12 +65,14 @@ export class PullJobsComponent implements OnInit, OnDestroy {
    * @param dialog Used to show popup dialog.
    * @param apollo Loads the pull jobs.
    * @param snackBar Service usde to show a snackbar.
+   * @param confirmService Shared confirm service
    * @param translate Service used to get the translations.
    */
   constructor(
     public dialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}
 
@@ -222,19 +224,16 @@ export class PullJobsComponent implements OnInit, OnDestroy {
    */
   onDelete(element: any): void {
     if (element) {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('components.pullJob.delete.title'),
-          content: this.translate.instant(
-            'components.pullJob.delete.confirmationMessage',
-            {
-              name: element.name,
-            }
-          ),
-          confirmText: this.translate.instant('components.confirmModal.delete'),
-          cancelText: this.translate.instant('components.confirmModal.cancel'),
-          confirmColor: 'warn',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('components.pullJob.delete.title'),
+        content: this.translate.instant(
+          'components.pullJob.delete.confirmationMessage',
+          {
+            name: element.name,
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        confirmColor: 'warn',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {

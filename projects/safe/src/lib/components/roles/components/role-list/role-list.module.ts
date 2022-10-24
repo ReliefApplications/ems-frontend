@@ -10,7 +10,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeConfirmModalModule } from '../../../confirm-modal/confirm-modal.module';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 import { SafeRoleListComponent } from './role-list.component';
@@ -32,7 +31,6 @@ import { SafeDividerModule } from '../../../ui/divider/divider.module';
     MatTableModule,
     MatMenuModule,
     MatIconModule,
-    SafeConfirmModalModule,
     MatSortModule,
     MatAutocompleteModule,
     SafeDividerModule,

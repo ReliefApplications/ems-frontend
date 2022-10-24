@@ -11,7 +11,6 @@ import {
   PublishNotificationMutationResponse,
 } from './graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
-import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { Form } from '../../../models/form.model';
 import {
   GetRecordDetailsQueryResponse,
@@ -36,6 +35,7 @@ import { SafeEmailService } from '../../../services/email/email.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
+import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
@@ -94,6 +94,7 @@ export class SafeGridWidgetComponent implements OnInit {
    * @param emailService The safe email service
    * @param queryBuilder The query builder service
    * @param gridLayoutService The safe grid layout service
+   * @param confirmService The safe confirm service
    * @param translate The translate service
    */
   constructor(
@@ -106,6 +107,7 @@ export class SafeGridWidgetComponent implements OnInit {
     private emailService: SafeEmailService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {
     this.isAdmin =
@@ -312,17 +314,15 @@ export class SafeGridWidgetComponent implements OnInit {
       if (options.goToNextStep) {
         this.goToNextStep.emit(true);
       } else {
-        const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-          data: {
-            title: this.translate.instant(
-              'components.widget.settings.grid.buttons.callback.workflow.close'
-            ),
-            content: options.confirmationText,
-            confirmText: this.translate.instant(
-              'components.confirmModal.confirm'
-            ),
-            confirmColor: 'primary',
-          },
+        const dialogRef = this.confirmService.openConfirmModal({
+          title: this.translate.instant(
+            'components.widget.settings.grid.buttons.callback.workflow.close'
+          ),
+          content: options.confirmationText,
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
+          confirmColor: 'primary',
         });
         dialogRef.afterClosed().subscribe((confirm: boolean) => {
           if (confirm) {

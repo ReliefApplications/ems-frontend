@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApplicationRoutingModule } from './application-routing.module';
 import { ApplicationComponent } from './application.component';
-import { SafeLayoutModule, SafeConfirmModalModule } from '@safe/builder';
+import { SafeLayoutModule } from '@safe/builder';
 import { ApplicationToolbarModule } from './components/application-toolbar/application-toolbar.module';
 
 /**
@@ -15,7 +15,6 @@ import { ApplicationToolbarModule } from './components/application-toolbar/appli
     ApplicationRoutingModule,
     ApplicationToolbarModule,
     SafeLayoutModule,
-    SafeConfirmModalModule,
   ],
   exports: [ApplicationComponent],
 })

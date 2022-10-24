@@ -21,7 +21,7 @@ import { extractColumns } from '../../../utils/extractColumns';
 import {
   SafeRecordHistoryComponent,
   SafeLayoutService,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
   SafeBreadcrumbService,
 } from '@safe/builder';
@@ -84,6 +84,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service
+   * @param confirmService Shared confirm service
    */
   constructor(
     private apollo: Apollo,
@@ -93,7 +94,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: SafeBreadcrumbService,
+    private confirmService: SafeConfirmService
   ) {}
 
   /** Load the records, using the form id passed as a parameter. */
@@ -225,21 +227,18 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   public onDeleteRecord(element: any, e: any): void {
     e.stopPropagation(); // avoid unwanted actions to occur
     if (this.showDeletedRecords) {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('common.deleteObject', {
-            name: this.translate.instant('common.record.one'),
-          }),
-          content: this.translate.instant(
-            'components.record.delete.confirmationMessage',
-            {
-              name: element.name,
-            }
-          ),
-          confirmText: this.translate.instant('components.confirmModal.delete'),
-          cancelText: this.translate.instant('components.confirmModal.cancel'),
-          confirmColor: 'warn',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.record.one'),
+        }),
+        content: this.translate.instant(
+          'components.record.delete.confirmationMessage',
+          {
+            name: element.name,
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        confirmColor: 'warn',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {
@@ -285,16 +284,14 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.record.recovery.title'),
-        content: this.translate.instant(
-          'components.record.recovery.confirmationMessage',
-          { date: formatDate }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.record.recovery.title'),
+      content: this.translate.instant(
+        'components.record.recovery.confirmationMessage',
+        { date: formatDate }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

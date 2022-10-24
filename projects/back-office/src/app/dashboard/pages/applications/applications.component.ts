@@ -8,7 +8,7 @@ import {
   PermissionsManagement,
   PermissionType,
   SafeAuthService,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
 } from '@safe/builder';
 import {
@@ -83,6 +83,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
    * @param previewService Shared preview service
+   * @param confirmService Share confirm service
    * @param translate Angular translate service
    */
   constructor(
@@ -92,6 +93,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     private previewService: PreviewService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}
 
@@ -270,19 +272,16 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     if (e) {
       e.stopPropagation();
     }
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('common.application.one'),
-        }),
-        content: this.translate.instant(
-          'components.application.delete.confirmationMessage',
-          { name: element.name }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.application.one'),
+      }),
+      content: this.translate.instant(
+        'components.application.delete.confirmationMessage',
+        { name: element.name }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

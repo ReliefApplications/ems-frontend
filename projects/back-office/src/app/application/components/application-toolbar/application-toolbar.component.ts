@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import {
   Application,
   SafeApplicationService,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
@@ -35,6 +35,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
    * @param router Angular router
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate service
    */
   constructor(
@@ -42,6 +43,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}
 
@@ -71,17 +73,15 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
    * Unlocks the application, and controls edition.
    */
   onUnlock(): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.application.unlock.title'),
-        content: this.translate.instant(
-          'components.application.unlock.confirmationMessage',
-          {
-            name: this.application?.name,
-          }
-        ),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.application.unlock.title'),
+      content: this.translate.instant(
+        'components.application.unlock.confirmationMessage',
+        {
+          name: this.application?.name,
+        }
+      ),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       this.applicationService.lockApplication();
@@ -99,17 +99,15 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
         })
       );
     } else {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('components.application.publish.title'),
-          content: this.translate.instant(
-            'components.application.publish.confirmationMessage',
-            {
-              name: this.application?.name,
-            }
-          ),
-          confirmColor: 'primary',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('components.application.publish.title'),
+        content: this.translate.instant(
+          'components.application.publish.confirmationMessage',
+          {
+            name: this.application?.name,
+          }
+        ),
+        confirmColor: 'primary',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {
