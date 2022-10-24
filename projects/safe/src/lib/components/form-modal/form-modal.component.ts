@@ -109,6 +109,7 @@ export class SafeFormModalComponent implements OnInit {
    * @param downloadService This is the service that is used to download files.
    * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
+   * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular ng zone
    */
@@ -328,9 +329,7 @@ export class SafeFormModalComponent implements OnInit {
                 : this.translate.instant('common.row.one'),
           }
         ),
-        confirmText: this.translate.instant(
-          'components.confirmModal.confirm'
-        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       });
       dialogRef.afterClosed().subscribe(async (value) => {

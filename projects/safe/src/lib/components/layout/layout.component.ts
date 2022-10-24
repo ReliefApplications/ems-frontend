@@ -288,9 +288,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         content: this.translate.instant(
           'components.logout.confirmationMessage'
         ),
-        confirmText: this.translate.instant(
-          'components.confirmModal.confirm'
-        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       });
       dialogRef.afterClosed().subscribe((value) => {
