@@ -60,7 +60,6 @@ export class ResourceComponent implements OnInit {
   ngOnInit(): void {
     const routeTab: string = this.router.url.split('/').pop() || '';
     this.selectedTab = ROUTE_TABS.findIndex((tab) => tab === routeTab);
-    console.log(this.selectedTab);
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.getResourceData();
