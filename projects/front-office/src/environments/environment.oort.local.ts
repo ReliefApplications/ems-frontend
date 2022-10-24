@@ -13,9 +13,7 @@ import { theme } from '../themes/default/default.local';
 //   strictDiscoveryDocumentValidation: false,
 // };
 
-/**
- * Authentication configuration
- */
+/** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
   issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
   redirectUri: 'http://localhost:4200/',
@@ -26,20 +24,17 @@ const authConfig: AuthConfig = {
   showDebugInformation: true,
 };
 
-/**
- * Environment file for local development.
- */
+/** Environment configuration */
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000',
-  subscriptionApiUrl: 'ws://localhost:3000',
+  apiUrl: 'https://oort-dev.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://oort-dev.oortcloud.tech/api',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
-  module: 'backoffice',
+  module: 'frontoffice',
   availableLanguages: ['en', 'fr', 'test'],
   authConfig,
   esriApiKey:
     'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
   theme,
-  availableWidgets: ['chart', 'grid', 'editor', 'map'],
 };
