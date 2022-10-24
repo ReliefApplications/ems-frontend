@@ -6,11 +6,6 @@
 			"none": "******",
 			"one": "******"
 		},
-		"template": {
-			"few": "******",
-			"none": "******",
-			"one": "******"
-		},
 		"apiConfiguration": {
 			"few": "******",
 			"none": "******",
@@ -40,11 +35,6 @@
 		"downloadTemplate": "******",
 		"duplicate": "******",
 		"edit": "******",
-		"type": {
-			"few": "******",
-			"none": "******",
-			"one": "******"
-		},
 		"editObject": "****** {{name}}",
 		"email": {
 			"few": "******",
@@ -169,8 +159,18 @@
 			"none": "******",
 			"one": "******"
 		},
+		"template": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"title": "******",
 		"true": "******",
+		"type": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"update": "******",
 		"updateObject": "****** {{name}}",
 		"uploadObject": "****** {{name}}",
@@ -187,23 +187,6 @@
 		"viewObject": "****** {{name}}"
 	},
 	"components": {
-		"templates": {
-			"edit": {
-				"update": "******",
-				"new": "******",
-				"name": "******",
-				"subject": "******",
-				"body": "******"
-			},
-			"type": {
-				"title": "******",
-				"email": "******"
-			},
-			"delete": {
-				"confirmationMessage": "****** {{name}} ******",
-				"titleMessage": "******"
-			}
-		},
 		"access": {
 			"canDelete": "******",
 			"canSee": "******",
@@ -571,6 +554,27 @@
 				"permissions": "******",
 				"title": "******"
 			}
+		},
+		"templates": {
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"titleMessage": "******"
+			},
+			"edit": {
+				"body": "******",
+				"name": "******",
+				"new": "******",
+				"subject": "******",
+				"update": "******"
+			},
+			"type": {
+				"email": "******",
+				"title": "******"
+			},
+			"select": {
+				"email": "******"
+			},
+			"available": "******"
 		},
 		"user": {
 			"delete": {

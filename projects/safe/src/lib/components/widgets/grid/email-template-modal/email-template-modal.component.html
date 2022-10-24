@@ -1,0 +1,27 @@
+<h1 mat-dialog-title>{{ 'components.templates.select.email' | translate }}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field type="outline">
+      <mat-label>{{ 'components.templates.edit.name' | translate }} </mat-label>
+      <mat-select formControlName="template">
+        <mat-option *ngFor="let template of templates" [value]="template">
+          {{ template.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!form.valid"
+    (click)="onSubmit()"
+  >
+    {{ 'components.confirmModal.confirm' | translate }}
+  </button>
+</div>

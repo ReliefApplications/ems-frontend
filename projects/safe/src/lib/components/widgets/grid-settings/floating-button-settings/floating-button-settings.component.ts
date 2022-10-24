@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
 import { Form } from '../../../../models/form.model';
 import { ContentType } from '../../../../models/page.model';
+import { TemplateTypeEnum } from '../../../../models/application.model';
 import { SafeWorkflowService } from '../../../../services/workflow.service';
 import { Subscription } from 'rxjs';
 import {
@@ -20,7 +21,6 @@ import {
   MAT_CHIPS_DEFAULT_OPTIONS,
 } from '@angular/material/chips';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { SafeQueryBuilderComponent } from '../../../query-builder/query-builder.component';
 import { QueryBuilderService } from '../../../../services/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
@@ -54,7 +54,7 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
   @Input() relatedForms: Form[] = [];
-
+  @Input() templates: any[] = [];
   // Indicate is the page is a single dashboard.
   public isDashboard = false;
 
@@ -76,6 +76,11 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
     return this.fields.filter(
       (x) => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name)
     );
+  }
+
+  /** @returns The list of email templates */
+  get mailTemplates(): any[] {
+    return this.templates.filter((x) => x.type === TemplateTypeEnum.EMAIL);
   }
 
   /**
@@ -207,13 +212,15 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
         this.buttonForm
           ?.get('distributionList')
           ?.setValidators(Validators.required);
-        this.buttonForm?.get('subject')?.setValidators(Validators.required);
+        this.buttonForm
+          ?.get('mailTemplate')
+          ?.setValidators(Validators.required);
       } else {
         this.buttonForm?.get('distributionList')?.clearValidators();
-        this.buttonForm?.get('subject')?.clearValidators();
+        this.buttonForm?.get('mailTemplate')?.clearValidators();
       }
       this.buttonForm?.get('distributionList')?.updateValueAndValidity();
-      this.buttonForm?.get('subject')?.updateValueAndValidity();
+      this.buttonForm?.get('mailTemplate')?.updateValueAndValidity();
     });
 
     this.emails = [...this.buttonForm?.get('distributionList')?.value];

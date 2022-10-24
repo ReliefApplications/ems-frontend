@@ -75,6 +75,15 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public form: Form | null = null;
   public resource: Resource | null = null;
 
+  /**
+   * Getter for the app templates
+   *
+   * @returns list of templates
+   */
+  get appTemplates(): any[] {
+    return this.applicationService.templates || [];
+  }
+
   /** @returns List of the floating buttons */
   get floatingButtons(): FormArray {
     return (this.tileForm?.controls.floatingButtons as FormArray) || null;
@@ -284,8 +293,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         value && value.distributionList ? value.distributionList : [],
         value && value.sendMail ? Validators.required : null,
       ],
-      subject: [
-        value && value.subject ? value.subject : '',
+      mailTemplate: [
+        value && value.mailTemplate ? value.mailTemplate : [],
         value && value.sendMail ? Validators.required : null,
       ],
       export: [value && value.export ? value.export : false],
@@ -295,10 +304,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
           : [],
         value && value.sendMail ? Validators.required : null
       ),
-      bodyText: [value && value.bodyText ? value.bodyText : ''],
-      bodyTextAlternate: [
-        value && value.bodyTextAlternate ? value.bodyTextAlternate : '',
-      ],
     });
     return buttonForm;
   }

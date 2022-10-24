@@ -40,6 +40,8 @@ import { SafeGridLayoutService } from '../../../services/grid-layout.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
+import { EmailTemplateModalComponent } from './email-template-modal/email-template-modal.component';
+import { SafeApplicationService } from '../../../services/application.service';
 
 /** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
@@ -89,6 +91,7 @@ export class SafeGridWidgetComponent implements OnInit {
    * @param emailService The safe email service
    * @param queryBuilder The query builder service
    * @param gridLayoutService The safe grid layout service
+   * @param applicationService The safe application service
    * @param translate The translate service
    */
   constructor(
@@ -101,6 +104,7 @@ export class SafeGridWidgetComponent implements OnInit {
     private emailService: SafeEmailService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
+    private applicationService: SafeApplicationService,
     private translate: TranslateService
   ) {
     this.isAdmin =
@@ -240,28 +244,37 @@ export class SafeGridWidgetComponent implements OnInit {
     }
     // Send email using backend mail service.
     if (options.sendMail) {
-      const body =
-        this.grid.selectedRows.length > 0
-          ? options.bodyText
-          : options.bodyTextAlternate;
-      this.emailService.previewMail(
-        options.distributionList,
-        options.subject,
-        body,
-        {
-          logic: 'and',
-          filters: [
-            { operator: 'eq', field: 'ids', value: this.grid.selectedRows },
-          ],
+      // select template
+      const selectedRows = [...this.grid.selectedRows];
+      const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
+        data: {
+          templates: this.applicationService.templates.filter((x) =>
+            options.mailTemplate?.includes(x.id)
+          ),
         },
-        {
-          name: this.settings.query.name,
-          fields: options.bodyFields,
-        },
-        this.grid.sortField || undefined,
-        this.grid.sortOrder || undefined,
-        options.export
-      );
+      });
+
+      const value = await dialogRef.afterClosed().toPromise();
+      const template = value?.template;
+
+      if (template) {
+        this.emailService.previewMail(
+          options.distributionList,
+          template.content.subject,
+          template.content.body,
+          {
+            logic: 'and',
+            filters: [{ operator: 'eq', field: 'ids', value: selectedRows }],
+          },
+          {
+            name: this.settings.query.name,
+            fields: options.bodyFields,
+          },
+          this.grid.sortField || undefined,
+          this.grid.sortOrder || undefined,
+          options.export
+        );
+      }
     }
 
     // Opens a form with selected records.

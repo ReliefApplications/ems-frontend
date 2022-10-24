@@ -556,6 +556,7 @@
 			}
 		},
 		"templates": {
+			"available": "Available templates",
 			"delete": {
 				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?",
 				"titleMessage": "Delete template"
@@ -566,6 +567,9 @@
 				"new": "New template",
 				"subject": "Subject",
 				"update": "Edit template"
+			},
+			"select": {
+				"email": "Select an e-mail template"
 			},
 			"type": {
 				"email": "E-mail",
