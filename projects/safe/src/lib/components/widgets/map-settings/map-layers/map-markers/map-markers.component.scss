@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px;
+}
+
+td.mat-column-actions {
+  div {
+    display: flex;
+  }
+}
+
+.form-group {
+  margin-top: 0 !important;
+  margin-bottom: 48px;
+}
+
+.color-indicator {
+  display: flex;
+  height: 28px;
+  width: 28px;
+  align-items: center;
+  border-radius: 12rem;
+}

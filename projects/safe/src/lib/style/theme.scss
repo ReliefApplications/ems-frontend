@@ -1,5 +1,6 @@
 @import 'variables.scss';
 
+// Declaration of Kendo variables
 $border-radius: 2px;
 $primary: $primary_500;
 $secondary: #f6f6f6;
@@ -31,4 +32,11 @@ $series-d: #28b4c8;
 $series-e: #2d73f5;
 $series-f: #aa46be;
 
+// Import of Kendo themes
 @import '~@progress/kendo-theme-default/dist/all.scss';
+
+// === WIDGETS ===
+.k-resize-handle,
+.k-resize-hint {
+  z-index: 1100;
+}
