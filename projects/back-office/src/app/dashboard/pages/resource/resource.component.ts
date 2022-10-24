@@ -15,7 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 /**
  * Array of tab names sorted by position index.
  */
-const ROUTE_TABS: string[] = ['records', 'forms', 'layouts', 'aggregations'];
+const ROUTE_TABS: string[] = ['records', 'forms', 'layouts', 'aggregations', 'calculated-fields'];
 
 /**
  * Component used to display resource in a table.
@@ -54,6 +54,7 @@ export class ResourceComponent implements OnInit {
   ngOnInit(): void {
     const routeTab: string = this.router.url.split('/').pop() || '';
     this.selectedTab = ROUTE_TABS.findIndex((tab) => tab === routeTab);
+    console.log(this.selectedTab);
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.getResourceData();
