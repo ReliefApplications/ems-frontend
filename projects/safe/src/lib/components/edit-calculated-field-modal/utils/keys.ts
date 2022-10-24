@@ -25,6 +25,9 @@ const calcFunctions: Record<string, { signature: string }> = {
   concat: {
     signature: 'concat( value1 ; value2 ; ... )',
   },
+  if: {
+    signature: 'if( condition ; then ; else )',
+  },
 
   // DOUBLE ARGUMENTS
   sub: {
@@ -74,8 +77,8 @@ const calcFunctions: Record<string, { signature: string }> = {
   second: {
     signature: 'second( date )',
   },
-  milisecond: {
-    signature: 'milisecond( date )',
+  millisecond: {
+    signature: 'millisecond( date )',
   },
   date: {
     signature: 'date( value )',
