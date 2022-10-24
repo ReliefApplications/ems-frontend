@@ -8,12 +8,44 @@
   "
 >
   <ng-container *ngIf="dashboard">
-    <!-- HEADER -->
-    <div *ngIf="!formActive" class="dashboard-name-container">
-      <h1 class="dashboard-name" (click)="toggleFormActive()">
-        {{ dashboard.name }}
-      </h1>
-      <div class="dashboard-icons-container">
+    <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+      <div class="flex items-center overflow-hidden">
+        <ng-container *ngIf="!formActive">
+          <h1
+            class="!m-0 overflow-hidden text-ellipsis hover:bg-neutral-200 rounded-lg"
+            (click)="toggleFormActive()"
+          >
+            {{ dashboard.name }}
+          </h1>
+        </ng-container>
+        <ng-container *ngIf="formActive">
+          <form [formGroup]="dashboardNameForm" (ngSubmit)="saveName()">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'common.name' | translate }}</mat-label>
+              <input matInput formControlName="dashboardName" type="string" />
+              <safe-button
+                matSuffix
+                type="submit"
+                [isIcon]="true"
+                icon="done"
+                variant="primary"
+                [disabled]="!dashboardNameForm.valid"
+              >
+              </safe-button>
+              <safe-button
+                matSuffix
+                mat-icon-button
+                [isIcon]="true"
+                icon="close"
+                variant="danger"
+                (click)="toggleFormActive()"
+              >
+              </safe-button>
+            </mat-form-field>
+          </form>
+        </ng-container>
+      </div>
+      <div class="flex items-center gap-2" *ngIf="!formActive">
         <safe-access
           [access]="dashboard.permissions"
           [application]="applicationId"
@@ -70,37 +102,6 @@
         </ng-template>
       </div>
     </div>
-    <!-- NAME EDITION -->
-    <ng-container *ngIf="formActive">
-      <form
-        [formGroup]="dashboardNameForm"
-        (ngSubmit)="saveName()"
-        class="name-edit-container"
-      >
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.name' | translate }}</mat-label>
-          <input matInput formControlName="dashboardName" type="string" />
-          <safe-button
-            matSuffix
-            type="submit"
-            [isIcon]="true"
-            icon="done"
-            variant="primary"
-            [disabled]="!dashboardNameForm.valid"
-          >
-          </safe-button>
-          <safe-button
-            matSuffix
-            mat-icon-button
-            [isIcon]="true"
-            icon="close"
-            variant="danger"
-            (click)="toggleFormActive()"
-          >
-          </safe-button>
-        </mat-form-field>
-      </form>
-    </ng-container>
   </ng-container>
 </ng-container>
 <safe-widget-grid
