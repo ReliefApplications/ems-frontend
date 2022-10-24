@@ -13,7 +13,6 @@ import {
   ContentType,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 
 /**
  * Main component of Front-Office navigation.
@@ -46,7 +45,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private permissions: Permission[] = [];
   /** Roles of the user */
   private roles: Role[] = [];
-
 
   /**
    * Main component of Front-Office navigation.
