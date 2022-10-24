@@ -106,6 +106,7 @@
 			"rawJson": "Raw JSON"
 		},
 		"label": "Label",
+		"layers": "Layers",
 		"layout": {
 			"few": "Layouts",
 			"none": "No layout",
@@ -1019,20 +1020,60 @@
 					}
 				},
 				"map": {
+					"basemap": "Base map",
+					"category": "Map quick layers",
 					"dataset": "Data set selection",
-					"display": {
-						"latitude": "Map center latitude",
-						"longitude": "Map center longitude",
-						"title": "Default display"
-					},
 					"errors": {
 						"latitude": "Invalid latitude, please select a number between -90 and 90",
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
 					},
+					"layers": {
+						"clorophlet": {
+							"add": "Add new clorophlet",
+							"division": {
+								"add": "Add new division",
+								"title": "Divisions"
+							},
+							"geoJSON": "geoJSON",
+							"geoJSONidentifier": "geoJSON Identifier",
+							"identifier": "Identifier",
+							"info": "Set up different clorophlets which will be displayed as layers in the map",
+							"title": "Clorophlets"
+						},
+						"online": {
+							"info": "Search for online layers in arcGIS online",
+							"select": "Search layers",
+							"selected": "Selected layers",
+							"title": "Online layers"
+						},
+						"point": {
+							"addNew": "Add new marker rule",
+							"category": "Map quick layers",
+							"color": "Color",
+							"info": "Display markers in the map for each entry of your data, binding dataset number fields to geolocation",
+							"rules": "Marker rules",
+							"rulesInfo": "Customize the size and colors of your markers",
+							"size": "Size",
+							"title": "Marker layers"
+						}
+					},
+					"popup": {
+						"label": "Fields displayed in the popup"
+					},
+					"properties": {
+						"basemap": "Base map",
+						"latitude": "Map center latitude",
+						"longitude": "Map center longitude",
+						"title": "Map Parameters",
+						"zoom": "Default zoom"
+					},
 					"tooltip": {
+						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
+						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
 						"default": {
 							"latitude": "Select a default latitude to center the map around",
-							"longitude": "Select a default longitude to center the map around"
+							"longitude": "Select a default longitude to center the map around",
+							"zoom": "Select a default zoom for the map display"
 						}
 					}
 				},

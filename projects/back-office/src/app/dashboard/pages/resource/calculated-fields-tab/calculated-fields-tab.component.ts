@@ -48,9 +48,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
     const state = history.state;
     this.resource = get(state, 'resource', null);
 
-    this.fields = this.resource.fields.filter(
-      (f: any) => f.type === 'calculated'
-    );
+    this.fields = this.resource.fields.filter((f: any) => f.isCalculated);
   }
 
   /**
@@ -62,7 +60,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
       data: {
         field: null,
         resourceFields: this.resource.fields.filter(
-          (f: any) => f.type !== 'calculated'
+          (f: any) => !f.isCalculated
         ),
       },
     });
@@ -77,8 +75,11 @@ export class CalculatedFieldsTabComponent implements OnInit {
                 add: {
                   name: value.name,
                   expression: value.expression
-                    .substring(3, value.expression.length - 4)
-                    .replaceAll('&nbsp;', ' '),
+                    .replace(/<[^>]*>/gi, ' ')
+                    .replace(/<\/[^>]*>/gi, ' ')
+                    .replace(/&nbsp;|&#160;/gi, ' ')
+                    .replace(/\s+/gi, ' ')
+                    .trim(),
                 },
               },
             },
@@ -113,7 +114,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
       data: {
         calculatedField: field,
         resourceFields: this.resource.fields.filter(
-          (f: any) => f.type !== 'calculated'
+          (f: any) => !field.isCalculated
         ),
       },
     });
@@ -131,8 +132,11 @@ export class CalculatedFieldsTabComponent implements OnInit {
                 oldName: field.name,
                 name: value.name,
                 expression: value.expression
-                  .substring(3, value.expression.length - 4)
-                  .replaceAll('&nbsp;', ' '),
+                  .replace(/<[^>]*>/gi, ' ')
+                  .replace(/<\/[^>]*>/gi, ' ')
+                  .replace(/&nbsp;|&#160;/gi, ' ')
+                  .replace(/\s+/gi, ' ')
+                  .trim(),
               },
             },
           },
@@ -141,7 +145,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
           if (res.data?.editResource) {
             // Needed to update the field as table data source
             this.fields = res.data.editResource.fields.filter(
-              (f: any) => f.type === 'calculated'
+              (f: any) => f.isCalculated
             );
           }
           if (res.errors) {

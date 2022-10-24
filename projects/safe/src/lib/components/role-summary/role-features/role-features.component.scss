@@ -3,30 +3,3 @@
   flex-direction: column;
   gap: 32px;
 }
-
-.search-bar {
-  display: flex;
-  justify-content: flex-end;
-
-  mat-form-field {
-    #feature-search {
-      position: relative;
-      top: -0.15em;
-    }
-  }
-  ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
-    padding: 0.42em 0px !important;
-  }
-  ::ng-deep .mat-form-field-label-wrapper {
-    top: -1.4em;
-  }
-  ::ng-deep
-    .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
-    .mat-form-field-label {
-    transform: translateY(-1.1em) scale(0.75);
-    width: 133.33333%;
-  }
-  ::ng-deep .mat-form-field-wrapper {
-    padding-bottom: 0;
-  }
-}

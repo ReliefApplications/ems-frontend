@@ -106,6 +106,7 @@
 			"rawJson": "JSON brut"
 		},
 		"label": "Etiquette",
+		"layers": "Couches",
 		"layout": {
 			"few": "Mises en page",
 			"none": "Aucune mise en page",
@@ -608,7 +609,7 @@
 				"title": "Filtre"
 			},
 			"hint": {
-				"fields": "Sélectionnez des points de donnée ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
+				"fields": "Sélectionnez des champs ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
 				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
 				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
 			},
@@ -1019,20 +1020,60 @@
 					}
 				},
 				"map": {
+					"basemap": "Fond de carte",
+					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
-					"display": {
-						"latitude": "Latitude du centre de la carte",
-						"longitude": "Longitude du centre de la carte",
-						"title": "Affichage par défaut"
-					},
 					"errors": {
 						"latitude": "Latitude incorrecte, merci de sélectionner un nombre entre -90 et 90",
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
 					},
+					"layers": {
+						"clorophlet": {
+							"add": "Ajouter un clorophlet",
+							"division": {
+								"add": "Ajouter une division",
+								"title": "Divisions"
+							},
+							"geoJSON": "geoJSON",
+							"geoJSONidentifier": "geoJSON Identifiant",
+							"identifier": "Identifiant",
+							"info": "Configurer des clorophlets en tant que couches pour la carte",
+							"title": "Clorophlets"
+						},
+						"online": {
+							"info": "Charger des couches depuis arcGIS online",
+							"select": "Chercher des couches",
+							"selected": "Couches sélectionnées",
+							"title": "Couches en ligne"
+						},
+						"point": {
+							"addNew": "Ajouter une nouvelle règle",
+							"category": "Couches rapides",
+							"color": "Couleur",
+							"info": "Afficher des marqueurs sur la carte pour chaque enregistrement, en indiquant les champs de géolocation de la source de données",
+							"rules": "Règles de marquarge",
+							"rulesInfo": "Configurer la taille et la couleur des marqueurs",
+							"size": "Taille",
+							"title": "Marqueurs"
+						}
+					},
+					"popup": {
+						"label": "Champs affichés dans le popup"
+					},
+					"properties": {
+						"basemap": "Fond de carte",
+						"latitude": "Latitude du centre de la carte",
+						"longitude": "Longitude du centre de la carte",
+						"title": "Affichage par défaut",
+						"zoom": "Zoom par défaut"
+					},
 					"tooltip": {
+						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
+						"dataset": "Sélectionnez des champs ci-dessous et déplacez-les vers 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché en cliquant sur les marqueurs",
 						"default": {
 							"latitude": "Sélectionnez une latitude par défaut autour de laquelle vous souhaitez centrer la carte",
-							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte"
+							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte",
+							"zoom": "Sélectionnez un zoom par défaut"
 						}
 					}
 				},

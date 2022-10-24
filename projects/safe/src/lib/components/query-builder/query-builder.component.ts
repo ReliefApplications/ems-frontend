@@ -50,6 +50,9 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() templates: Form[] = [];
   @Input() queryName? = '';
   @Input() layoutPreviewData: LayoutPreviewData | null = null;
+  @Input() showStyle = true;
+  @Input() showFilter = true;
+  @Input() showSort = true;
 
   // Tab options
   @Input() showPagination = false;
@@ -131,6 +134,9 @@ export class SafeQueryBuilderComponent implements OnInit {
               order: ['asc'],
             })
           );
+          if (this.form?.get('clorophlets')) {
+            this.form?.setControl('clorophlets', this.formBuilder.array([]));
+          }
         } else {
           this.availableFields = [];
           this.form?.setControl('filter', createFilterGroup(null));
@@ -142,6 +148,9 @@ export class SafeQueryBuilderComponent implements OnInit {
               order: ['asc'],
             })
           );
+          if (this.form?.get('clorophlets')) {
+            this.form?.setControl('clorophlets', this.formBuilder.array([]));
+          }
         }
         this.filteredQueries = this.filterQueries(res);
       });
