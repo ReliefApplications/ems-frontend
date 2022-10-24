@@ -485,6 +485,12 @@ export const GET_APPLICATION_BY_ID = gql`
   query GetApplicationById($id: ID!, $asRole: ID) {
     application(id: $id, asRole: $asRole) {
       id
+      templates {
+        id
+        name
+        type
+        content
+      }
       name
       description
       createdAt

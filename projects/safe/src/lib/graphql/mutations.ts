@@ -972,3 +972,25 @@ export interface deleteLayoutMutationResponse {
   loading: boolean;
   deleteLayout: Layout;
 }
+
+// TEMPLATE OPERATIONS
+
+/** Graphql request for managing templates of an application */
+export const MANAGE_TEMPLATE = gql`
+  mutation manageTemplates($application: ID!, $templateChanges: JSON!) {
+    editApplication(id: $application, templates: $templateChanges) {
+      templates {
+        id
+        name
+        type
+        content
+      }
+    }
+  }
+`;
+
+/** Model for ManageTemplateMutationResponse object */
+export interface ManageTemplateMutationResponse {
+  loading: boolean;
+  editApplication: Application;
+}

@@ -81,6 +81,14 @@ const routes: Routes = [
               ),
             // canActivate: [SafePermissionGuard]
           },
+          {
+            path: 'templates',
+            loadChildren: () =>
+              import('./pages/templates/templates.module').then(
+                (m) => m.TemplatesModule
+              ),
+            // canActivate: [SafePermissionGuard]
+          },
         ],
       },
       {

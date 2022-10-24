@@ -46,6 +46,8 @@ import {
   EDIT_CHANNEL,
   ToggleApplicationLockMutationResponse,
   TOGGLE_APPLICATION_LOCK,
+  MANAGE_TEMPLATE,
+  ManageTemplateMutationResponse,
 } from '../graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
@@ -112,6 +114,11 @@ export class SafeApplicationService {
   /** @returns Name of the current application */
   get name(): string {
     return this.application.value?.name || '';
+  }
+
+  /** @returns Current application's templates */
+  get templates(): any[] {
+    return this.application.value?.templates || [];
   }
 
   /**
@@ -1051,6 +1058,132 @@ export class SafeApplicationService {
             : `/${page.type}/${page.content}`,
         ]);
       }
+    }
+  }
+
+  /**
+   * Adds a new email template to the application.
+   *
+   * @param template new email template
+   * @param template.name name for the template
+   * @param template.subject email template subject
+   * @param template.body email template body
+   */
+  addEmailTemplate(template: {
+    name: string;
+    subject: string;
+    body: string;
+  }): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<ManageTemplateMutationResponse>({
+          mutation: MANAGE_TEMPLATE,
+          variables: {
+            application: application.id,
+            templateChanges: {
+              add: {
+                name: template.name,
+                type: 'email',
+                content: {
+                  subject: template.subject,
+                  body: template.body,
+                },
+              },
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            const newApplication: Application = {
+              ...application,
+              templates: res.data.editApplication.templates,
+            };
+
+            this.application.next(newApplication);
+          }
+        });
+    }
+  }
+
+  /**
+   * Removes a template by its id.
+   *
+   * @param template template's id to be deleted
+   */
+  deleteTemplate(template: string): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<ManageTemplateMutationResponse>({
+          mutation: MANAGE_TEMPLATE,
+          variables: {
+            application: application.id,
+            templateChanges: {
+              remove: {
+                id: template,
+              },
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            const newApplication: Application = {
+              ...application,
+              templates: res.data.editApplication.templates,
+            };
+            console.log('removed', newApplication);
+            this.application.next(newApplication);
+          }
+        });
+    }
+  }
+
+  /**
+   * Edits existing template.
+   *
+   * @param id id of template to be edited
+   * @param updatedData new data for the template
+   * @param updatedData.name new name for the template
+   * @param updatedData.subject new subject for the template
+   * @param updatedData.body new body for the template
+   */
+  editEmailTemplate(
+    id: string,
+    updatedData: {
+      name: string;
+      subject: string;
+      body: string;
+    }
+  ): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<ManageTemplateMutationResponse>({
+          mutation: MANAGE_TEMPLATE,
+          variables: {
+            application: application.id,
+            templateChanges: {
+              update: {
+                id,
+                name: updatedData.name,
+                content: {
+                  subject: updatedData.subject,
+                  body: updatedData.body,
+                },
+              },
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            const newApplication: Application = {
+              ...application,
+              templates: res.data.editApplication.templates,
+            };
+            this.application.next(newApplication);
+          }
+        });
     }
   }
 }

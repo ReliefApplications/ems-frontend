@@ -28,4 +28,5 @@ export interface Application {
   locked?: boolean;
   lockedBy?: User;
   lockedByUser?: boolean;
+  templates?: any;
 }
