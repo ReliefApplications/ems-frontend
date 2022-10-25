@@ -12,8 +12,9 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
 import { TranslateModule } from '@ngx-translate/core';
 
-
-
+/**
+ * Left Sidenav Module
+ */
 @NgModule({
   declarations: [SafeLeftSidenavComponent],
   imports: [
@@ -31,4 +32,4 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
   exports: [SafeLeftSidenavComponent],
 })
-export class SafeLeftSidenavModule { }
+export class SafeLeftSidenavModule {}

@@ -8,9 +8,8 @@ describe('LeftSidenavComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LeftSidenavComponent ]
-    })
-    .compileComponents();
+      declarations: [LeftSidenavComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

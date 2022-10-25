@@ -12,20 +12,19 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SafeAuthService } from '../../services/auth/auth.service';
-import {
-  PermissionsManagement,
-  PermissionType,
-} from '../../models/user.model';
+import { PermissionsManagement, PermissionType } from '../../models/user.model';
 import { Router } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 
+/**
+ * The left side navigator used in the main layout
+ */
 @Component({
   selector: 'safe-left-sidenav',
   templateUrl: './left-sidenav.component.html',
-  styleUrls: ['./left-sidenav.component.scss']
+  styleUrls: ['./left-sidenav.component.scss'],
 })
 export class SafeLeftSidenavComponent implements OnInit, OnChanges, OnDestroy {
-
   @Input() appLayout = false;
   @Input() canAddPage = false;
   @Output() reorder: EventEmitter<any> = new EventEmitter();
@@ -46,7 +45,7 @@ export class SafeLeftSidenavComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Left sidenav visible in application edition and preview.
-   * 
+   *
    * @param environment This is the environment in which we are running the application
    * @param router The Angular Router service
    * @param authService This is the service that handles authentication
@@ -54,7 +53,7 @@ export class SafeLeftSidenavComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     @Inject('environment') environment: any,
     private router: Router,
-    private authService: SafeAuthService,
+    private authService: SafeAuthService
   ) {
     this.environment = environment;
     this.largeDevice = window.innerWidth > 1024;
