@@ -64,7 +64,6 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   // === DELETED RECORDS VIEW ===
   public showDeletedRecords = false;
 
-
   public pageInfo = {
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,

@@ -1,5 +1,12 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy,
+} from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import {
@@ -99,7 +106,7 @@ export class SafeSchedulerSettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if( this.querySubscription) {
+    if (this.querySubscription) {
       this.querySubscription.unsubscribe();
     }
   }

@@ -45,7 +45,9 @@ import { createGridWidgetFormGroup } from './grid-settings.forms';
     },
   ],
 })
-export class SafeGridSettingsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SafeGridSettingsComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   // === REACTIVE FORM ===
   public formGroup!: FormGroup;
 
