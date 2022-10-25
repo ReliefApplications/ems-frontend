@@ -231,7 +231,7 @@ export class SafeRecordHistoryComponent implements OnInit {
   }
 
   /**
-   * Handles the revertion of the record to a previous version
+   * Display a modal to show previous version, and revert to it if user accepts.
    *
    * @param version The version to revert
    */
