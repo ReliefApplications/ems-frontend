@@ -2,7 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApplicationRoutingModule } from './application-routing.module';
 import { ApplicationComponent } from './application.component';
-import { SafeLayoutModule, SafeApplicationToolbarModule } from '@safe/builder';
+import {
+  SafeLayoutModule,
+  SafeApplicationToolbarModule,
+  SafeLeftSidenavModule,
+} from '@safe/builder';
 
 /**
  * Application module.
@@ -14,6 +18,7 @@ import { SafeLayoutModule, SafeApplicationToolbarModule } from '@safe/builder';
     ApplicationRoutingModule,
     SafeApplicationToolbarModule,
     SafeLayoutModule,
+    SafeLeftSidenavModule,
   ],
   exports: [ApplicationComponent],
 })
