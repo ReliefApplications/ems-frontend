@@ -302,7 +302,7 @@
               'components.templates.available' | translate
             }}</mat-label>
 
-            <mat-select class="select" formControlName="mailTemplate" multiple>
+            <mat-select class="select" formControlName="templates" multiple>
               <mat-option
                 *ngFor="let template of mailTemplates"
                 [value]="template.id"

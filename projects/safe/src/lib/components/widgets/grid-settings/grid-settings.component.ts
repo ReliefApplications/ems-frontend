@@ -293,8 +293,8 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         value && value.distributionList ? value.distributionList : [],
         value && value.sendMail ? Validators.required : null,
       ],
-      mailTemplate: [
-        value && value.mailTemplate ? value.mailTemplate : [],
+      templates: [
+        value && value.templates ? value.templates : [],
         value && value.sendMail ? Validators.required : null,
       ],
       export: [value && value.export ? value.export : false],

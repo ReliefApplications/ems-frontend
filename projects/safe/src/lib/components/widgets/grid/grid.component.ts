@@ -248,7 +248,7 @@ export class SafeGridWidgetComponent implements OnInit {
       const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
         data: {
           templates: this.applicationService.templates.filter((x) =>
-            options.mailTemplate?.includes(x.id)
+            options.templates?.includes(x.id)
           ),
         },
       });

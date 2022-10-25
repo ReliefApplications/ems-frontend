@@ -213,14 +213,14 @@ export class SafeFloatingButtonSettingsComponent implements OnInit, OnDestroy {
           ?.get('distributionList')
           ?.setValidators(Validators.required);
         this.buttonForm
-          ?.get('mailTemplate')
+          ?.get('templates')
           ?.setValidators(Validators.required);
       } else {
         this.buttonForm?.get('distributionList')?.clearValidators();
-        this.buttonForm?.get('mailTemplate')?.clearValidators();
+        this.buttonForm?.get('templates')?.clearValidators();
       }
       this.buttonForm?.get('distributionList')?.updateValueAndValidity();
-      this.buttonForm?.get('mailTemplate')?.updateValueAndValidity();
+      this.buttonForm?.get('templates')?.updateValueAndValidity();
     });
 
     this.emails = [...this.buttonForm?.get('distributionList')?.value];
