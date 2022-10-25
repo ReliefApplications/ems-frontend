@@ -35,13 +35,6 @@ export const initCustomProperties = (Survey: any, environment: any): void => {
       options.request.setRequestHeader('Authorization', `Bearer ${token}`);
     }
   };
-  // add the onCompleteExpression property to the survey
-  Survey.Serializer.addProperty('survey', {
-    name: 'onCompleteExpression:expression',
-    type: 'expression',
-    visibleIndex: 350,
-    category: 'logic',
-  });
 };
 
 /**
