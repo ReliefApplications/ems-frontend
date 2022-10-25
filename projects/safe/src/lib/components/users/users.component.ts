@@ -9,7 +9,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
-import { User, Role, Permissions } from '../../models/user.model';
+import { User, Role } from '../../models/user.model';
 import {
   DELETE_USERS,
   DeleteUsersMutationResponse,
@@ -61,9 +61,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   // === DISPLAYED COLUMNS ===
   public displayedColumns: string[] = [];
 
-  // === DISPLAY ADVANCED SETTINGS ===
-  public advancedSettings = false;
-
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
 
@@ -104,10 +101,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       this.displayedColumns = APPLICATION_COLUMNS;
     } else {
       this.displayedColumns = ADMIN_COLUMNS;
-      this.advancedSettings =
-        this.authService.userHasClaim(Permissions.canSeeUsers) &&
-        this.authService.userHasClaim(Permissions.canSeeRoles) &&
-        this.authService.userHasClaim(Permissions.canManageApiConfigurations);
     }
     this.users.filterPredicate = (data: any) =>
       (this.searchText.trim().length === 0 ||
@@ -383,12 +376,5 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
         fileName
       );
     }
-  }
-
-  /**
-   * Route to the advanced settings component
-   */
-  onAdvancedSettings(): void {
-    this.router.navigate(['/settings/users/advanced-settings']);
   }
 }
