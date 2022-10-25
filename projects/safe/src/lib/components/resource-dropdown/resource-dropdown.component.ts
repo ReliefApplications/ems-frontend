@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
+import { Subscription } from 'rxjs';
 import { Resource } from '../../models/resource.model';
 import {
   GetResourceByIdQueryResponse,
@@ -19,12 +20,14 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './resource-dropdown.component.html',
   styleUrls: ['./resource-dropdown.component.scss'],
 })
-export class SafeResourceDropdownComponent implements OnInit {
+export class SafeResourceDropdownComponent implements OnInit, OnDestroy {
   @Input() resource = '';
   public selectedResource?: Resource;
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+
+  private querySubscription?: Subscription;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -36,7 +39,7 @@ export class SafeResourceDropdownComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.resource) {
-      this.apollo
+      this.querySubscription = this.apollo
         .query<GetResourceByIdQueryResponse>({
           query: GET_SHORT_RESOURCE_BY_ID,
           variables: {
@@ -56,6 +59,12 @@ export class SafeResourceDropdownComponent implements OnInit {
         sortField: 'name',
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 
   /**

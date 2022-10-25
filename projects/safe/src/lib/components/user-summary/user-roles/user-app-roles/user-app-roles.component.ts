@@ -2,6 +2,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
@@ -19,6 +20,7 @@ import {
 } from '../../graphql/queries';
 import { MatSelect } from '@angular/material/select';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { Subscription } from 'rxjs';
 
 /** Roles tab for the user summary */
 @Component({
@@ -26,12 +28,13 @@ import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.serv
   templateUrl: './user-app-roles.component.html',
   styleUrls: ['./user-app-roles.component.scss'],
 })
-export class UserAppRolesComponent implements OnInit {
+export class UserAppRolesComponent implements OnInit, OnDestroy {
   public roles: Role[] = [];
   @Input() user!: User;
   @Input() application?: Application;
   selectedRoles!: FormControl;
   @Output() edit = new EventEmitter();
+  private querySubscription?: Subscription;
 
   /** loading setter */
   @Input() set loading(loading: boolean) {
@@ -103,6 +106,12 @@ export class UserAppRolesComponent implements OnInit {
     );
   }
 
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
+  }
+
   /**
    * Fetches the roles for a given application
    *
@@ -110,7 +119,7 @@ export class UserAppRolesComponent implements OnInit {
    */
   private getApplicationRoles(application: string): void {
     this.loading = true;
-    this.apollo
+    this.querySubscription = this.apollo
       .query<GetRolesQueryResponse>({
         query: GET_ROLES,
         variables: {

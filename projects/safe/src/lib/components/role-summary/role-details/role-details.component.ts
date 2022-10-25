@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Permission, Role } from '../../../models/user.model';
@@ -8,6 +8,7 @@ import {
 } from '../graphql/queries';
 import { get } from 'lodash';
 import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 /**
  * General tab of Role Summary.
@@ -18,11 +19,13 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './role-details.component.html',
   styleUrls: ['./role-details.component.scss'],
 })
-export class RoleDetailsComponent implements OnInit {
+export class RoleDetailsComponent implements OnInit, OnDestroy {
   @Input() role!: Role;
   public permissions: Permission[] = [];
   public form!: FormGroup;
   @Output() edit = new EventEmitter();
+
+  private querySubscription?: Subscription;
 
   public roleStats = {
     resources: {
@@ -69,7 +72,7 @@ export class RoleDetailsComponent implements OnInit {
       description: [this.role.description],
       permissions: [get(this.role, 'permissions', []).map((x) => x.id)],
     });
-    this.apollo
+    this.querySubscription = this.apollo
       .query<GetPermissionsQueryResponse>({
         query: GET_PERMISSIONS,
         variables: {
@@ -83,6 +86,12 @@ export class RoleDetailsComponent implements OnInit {
     this.http.get(url).subscribe((res: any) => {
       this.roleStats = res;
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 
   /**

@@ -10,6 +10,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
@@ -27,6 +28,7 @@ import {
   EDIT_STEP_ACCESS,
 } from '../../graphql/mutations';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { Subscription } from 'rxjs';
 
 /** Component for the workflows section of the roles features */
 @Component({
@@ -44,7 +46,7 @@ import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.serv
     ]),
   ],
 })
-export class RoleWorkflowsComponent implements OnInit, OnChanges {
+export class RoleWorkflowsComponent implements OnInit, OnChanges, OnDestroy {
   @Input() role!: Role;
   @Input() pages: Page[] = [];
   @Input() loading = false;
@@ -59,6 +61,8 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
   public openedWorkflowId = '';
   public accessiblePages: string[] = [];
   public filteredPages = this.pages;
+
+  private querySubscription?: Subscription;
 
   /**
    * Component for the workflows section of the roles features
@@ -97,6 +101,12 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
       .map((x) => x.id as string);
   }
 
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
+  }
+
   /**
    * Toggles the accordion for the clicled workflow and fetches its steps
    *
@@ -109,7 +119,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
       this.openedWorkflowId = '';
     } else {
       this.openedWorkflowId = page.id as string;
-      this.apollo
+      this.querySubscription = this.apollo
         .query<GetWorkflowStepsQueryResponse>({
           query: GET_WORKFLOW_STEPS,
           variables: {

@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { Subscription } from 'rxjs';
 
 /** Back-office roles section the user summary */
 @Component({
@@ -12,11 +13,12 @@ import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.serv
   templateUrl: './user-back-roles.component.html',
   styleUrls: ['./user-back-roles.component.scss'],
 })
-export class UserBackRolesComponent implements OnInit {
+export class UserBackRolesComponent implements OnInit, OnDestroy {
   public roles: Role[] = [];
   @Input() user!: User;
   selectedRoles!: FormControl;
   @Output() edit = new EventEmitter();
+  private querySubscription?: Subscription;
 
   /** Setter for the loading state */
   @Input() set loading(loading: boolean) {
@@ -51,7 +53,7 @@ export class UserBackRolesComponent implements OnInit {
     });
 
     this.loading = true;
-    this.apollo
+    this.querySubscription = this.apollo
       .query<GetRolesQueryResponse>({
         query: GET_ROLES,
       })
@@ -66,5 +68,11 @@ export class UserBackRolesComponent implements OnInit {
           this.snackBar.openSnackBar(err.message, { error: true });
         }
       );
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 }

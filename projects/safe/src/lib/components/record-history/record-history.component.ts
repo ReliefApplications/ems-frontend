@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Output,
   ViewChild,
+  OnDestroy,
 } from '@angular/core';
 import { Record } from '../../models/record.model';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
@@ -23,6 +24,7 @@ import {
 } from './graphql/queries';
 import { Change, RecordHistory } from '../../models/recordsHistory';
 import { Version } from '../../models/form.model';
+import { Subscription } from 'rxjs';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -53,7 +55,7 @@ const getValueType = (
   templateUrl: './record-history.component.html',
   styleUrls: ['./record-history.component.scss'],
 })
-export class SafeRecordHistoryComponent implements OnInit {
+export class SafeRecordHistoryComponent implements OnInit, OnDestroy {
   @Input() id!: string;
   @Input() revert!: (version: Version) => void;
   @Input() template?: string;
@@ -68,6 +70,8 @@ export class SafeRecordHistoryComponent implements OnInit {
   public filtersDate = { startDate: '', endDate: '' };
   public sortedFields: any[] = [];
   public filterField: string | null = null;
+  private recordSubscription?: Subscription;
+  private historySubscription?: Subscription;
 
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
@@ -95,7 +99,7 @@ export class SafeRecordHistoryComponent implements OnInit {
   ngOnInit(): void {
     // this.sortFields();
 
-    this.apollo
+    this.recordSubscription = this.apollo
       .query<GetRecordByIdQueryResponse>({
         query: GET_RECORD_BY_ID_FOR_HISTORY,
         variables: {
@@ -107,7 +111,7 @@ export class SafeRecordHistoryComponent implements OnInit {
         this.sortedFields = this.sortFields(this.getFields());
       });
 
-    this.apollo
+    this.historySubscription = this.apollo
       .query<GetRecordHistoryByIdResponse>({
         query: GET_RECORD_HISTORY_BY_ID,
         variables: {
@@ -132,6 +136,15 @@ export class SafeRecordHistoryComponent implements OnInit {
           this.loading = false;
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    if (this.recordSubscription) {
+      this.recordSubscription.unsubscribe();
+    }
+    if (this.historySubscription) {
+      this.historySubscription.unsubscribe();
+    }
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get, has, isEqual } from 'lodash';
@@ -28,6 +28,7 @@ import {
 import { SafeRoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Permission, ResourceRolePermissions } from './permissions.types';
+import { Subscription } from 'rxjs';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -61,7 +62,7 @@ interface TableResourceElement {
     ]),
   ],
 })
-export class RoleResourcesComponent implements OnInit {
+export class RoleResourcesComponent implements OnInit, OnDestroy {
   @Input() role!: Role; // Opened role
 
   // === TABLE ELEMENTS ===
@@ -86,6 +87,9 @@ export class RoleResourcesComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
+
+  // === QUERY SUBSCRIPTION ===
+  private querySubscription?: Subscription;
 
   /**
    * Resource tab of Role Summary component.
@@ -121,6 +125,12 @@ export class RoleResourcesComponent implements OnInit {
       this.updating = res.loading;
       this.filterLoading = false;
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 
   /**
@@ -244,7 +254,7 @@ export class RoleResourcesComponent implements OnInit {
       this.openedResource = undefined;
     } else {
       this.updating = true;
-      this.apollo
+      this.querySubscription = this.apollo
         .query<GetResourceQueryResponse>({
           query: GET_RESOURCE,
           variables: {

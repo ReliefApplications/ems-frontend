@@ -2,13 +2,14 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ReferenceData } from '../../models/reference-data.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import {
   MAT_SELECT_SCROLL_STRATEGY,
   MatSelect,
@@ -40,7 +41,7 @@ const ITEMS_PER_PAGE = 10;
     },
   ],
 })
-export class SafeReferenceDataDropdownComponent implements OnInit {
+export class SafeReferenceDataDropdownComponent implements OnInit, OnDestroy {
   @Input() referenceData = '';
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
@@ -53,6 +54,7 @@ export class SafeReferenceDataDropdownComponent implements OnInit {
     hasNextPage: true,
   };
   private loading = true;
+  private querySubscription?: Subscription;
 
   @ViewChild('referenceDataSelect') referenceDataSelect?: MatSelect;
 
@@ -65,7 +67,7 @@ export class SafeReferenceDataDropdownComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.referenceData) {
-      this.apollo
+      this.querySubscription = this.apollo
         .query<GetReferenceDataByIdQueryResponse>({
           query: GET_SHORT_REFERENCE_DATA_BY_ID,
           variables: {
@@ -100,6 +102,12 @@ export class SafeReferenceDataDropdownComponent implements OnInit {
       this.pageInfo = res.data.referenceDatas.pageInfo;
       this.loading = res.loading;
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 
   /**

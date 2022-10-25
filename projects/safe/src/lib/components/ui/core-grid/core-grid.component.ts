@@ -142,6 +142,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public loading = false;
   public error = false;
   private templateStructure = '';
+  private templateSubscription?: Subscription;
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -380,6 +381,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
+    if (this.templateSubscription) {
+      this.templateSubscription.unsubscribe();
+    }
   }
 
   /**
@@ -387,7 +391,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    */
   private async loadTemplate(): Promise<void> {
     if (this.settings.template)
-      this.apollo
+      this.templateSubscription = this.apollo
         .query<GetFormByIdQueryResponse>({
           query: GET_FORM_BY_ID,
           variables: {

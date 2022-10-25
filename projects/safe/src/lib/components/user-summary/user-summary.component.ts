@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Application } from '../../models/application.model';
 import { User } from '../../models/user.model';
@@ -11,6 +11,7 @@ import {
 import { GetUserQueryResponse, GET_USER } from './graphql/queries';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
+import { Subscription } from 'rxjs';
 
 /**
  * User Summary shared component.
@@ -20,11 +21,12 @@ import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.serv
   templateUrl: './user-summary.component.html',
   styleUrls: ['./user-summary.component.scss'],
 })
-export class SafeUserSummaryComponent implements OnInit {
+export class SafeUserSummaryComponent implements OnInit, OnDestroy {
   @Input() id = '';
   @Input() application?: Application;
   public user?: User;
   public loading = true;
+  private querySubscription?: Subscription;
 
   /** @returns title of the page */
   get title(): string {
@@ -53,7 +55,7 @@ export class SafeUserSummaryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.apollo
+    this.querySubscription = this.apollo
       .query<GetUserQueryResponse>({
         query: GET_USER,
         variables: {
@@ -75,6 +77,12 @@ export class SafeUserSummaryComponent implements OnInit {
           this.snackBar.openSnackBar(err.message, { error: true });
         }
       );
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 
   /**

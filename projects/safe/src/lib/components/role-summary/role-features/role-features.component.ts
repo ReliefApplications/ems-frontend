@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
+import { Subscription } from 'rxjs';
 import { Application } from '../../../models/application.model';
 import { ContentType, Page } from '../../../models/page.model';
 import { Role } from '../../../models/user.model';
@@ -23,7 +24,7 @@ import {
   templateUrl: './role-features.component.html',
   styleUrls: ['./role-features.component.scss'],
 })
-export class RoleFeaturesComponent implements OnInit {
+export class RoleFeaturesComponent implements OnInit, OnDestroy {
   @Input() role!: Role;
   @Input() application?: Application;
   @Input() loading = false;
@@ -31,6 +32,8 @@ export class RoleFeaturesComponent implements OnInit {
   public dashboards: Page[] = [];
   public forms: Page[] = [];
   public workflows: Page[] = [];
+
+  private querySubscription?: Subscription;
 
   // search query
   public search = '';
@@ -45,7 +48,7 @@ export class RoleFeaturesComponent implements OnInit {
   constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
 
   ngOnInit(): void {
-    this.apollo
+    this.querySubscription = this.apollo
       .query<GetApplicationFeaturesQueryResponse>({
         query: GET_APPLICATION_FEATURES,
         variables: {
@@ -70,6 +73,12 @@ export class RoleFeaturesComponent implements OnInit {
           this.snackBar.openSnackBar(err.message, { error: true });
         }
       );
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 
   /**

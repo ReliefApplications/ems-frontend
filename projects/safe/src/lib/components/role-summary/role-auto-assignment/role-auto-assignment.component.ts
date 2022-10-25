@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
+import { Subscription } from 'rxjs';
 import { Group, Role } from '../../../models/user.model';
 import { getFilterGroupDisplay } from '../../../utils/filter/filter-display.helper';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
@@ -20,7 +21,7 @@ import { EditRoleAutoAssignmentModalComponent } from './edit-role-auto-assignmen
   templateUrl: './role-auto-assignment.component.html',
   styleUrls: ['./role-auto-assignment.component.scss'],
 })
-export class RoleAutoAssignmentComponent implements OnInit {
+export class RoleAutoAssignmentComponent implements OnInit, OnDestroy {
   @Input() role!: Role;
   public formArray!: FormArray;
   @Output() edit = new EventEmitter();
@@ -38,6 +39,8 @@ export class RoleAutoAssignmentComponent implements OnInit {
 
   private fields: any[] = [];
   private groups: Group[] = [];
+
+  private querySubscription?: Subscription;
 
   /**
    * Component for Auto assignment of role
@@ -64,7 +67,7 @@ export class RoleAutoAssignmentComponent implements OnInit {
     this.formArray.valueChanges.subscribe((value) => {
       this.rules.data = value;
     });
-    this.apollo
+    this.querySubscription = this.apollo
       .query<GetGroupsQueryResponse>({
         query: GET_GROUPS,
       })
@@ -86,6 +89,12 @@ export class RoleAutoAssignmentComponent implements OnInit {
           });
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Application } from '../../models/application.model';
 import { Role } from '../../models/user.model';
@@ -6,6 +6,7 @@ import { Resource } from '../../models/resource.model';
 import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { EditRoleMutationResponse, EDIT_ROLE } from './graphql/mutations';
 import { GetRoleQueryResponse, GET_ROLE } from './graphql/queries';
+import { Subscription } from 'rxjs';
 
 /** Default items per query for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -20,11 +21,12 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './role-summary.component.html',
   styleUrls: ['./role-summary.component.scss'],
 })
-export class SafeRoleSummaryComponent implements OnInit {
+export class SafeRoleSummaryComponent implements OnInit, OnDestroy {
   @Input() id = '';
   @Input() application?: Application;
   public role?: Role;
   public loading = true;
+  private querySubscritpion?: Subscription;
 
   /**
    * Shared role summary component.
@@ -40,7 +42,7 @@ export class SafeRoleSummaryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.apollo
+    this.querySubscritpion = this.apollo
       .query<GetRoleQueryResponse>({
         query: GET_ROLE,
         variables: {
@@ -57,6 +59,12 @@ export class SafeRoleSummaryComponent implements OnInit {
         }
         this.loading = res.data.loading;
       });
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscritpion) {
+      this.querySubscritpion.unsubscribe();
+    }
   }
 
   /**

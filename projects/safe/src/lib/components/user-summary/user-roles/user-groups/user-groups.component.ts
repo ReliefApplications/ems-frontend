@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
+import { Subscription } from 'rxjs';
 import { Group, User } from '../../../../models/user.model';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { GET_GROUPS, GetGroupsQueryResponse } from '../../graphql/queries';
@@ -12,11 +13,12 @@ import { GET_GROUPS, GetGroupsQueryResponse } from '../../graphql/queries';
   templateUrl: './user-groups.component.html',
   styleUrls: ['./user-groups.component.scss'],
 })
-export class UserGroupsComponent implements OnInit {
+export class UserGroupsComponent implements OnInit, OnDestroy {
   public groups: Group[] = [];
   @Input() user!: User;
   selectedGroups!: FormControl;
   @Output() edit = new EventEmitter();
+  private querySubscription?: Subscription;
 
   /** Setter for the loading state */
   @Input() set loading(loading: boolean) {
@@ -64,5 +66,11 @@ export class UserGroupsComponent implements OnInit {
           this.snackBar.openSnackBar(err.message, { error: true });
         }
       );
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 }
