@@ -462,6 +462,24 @@ export const init = (
         visibleIf: (obj: any) => obj.resource && !obj.selectQuestion,
         visibleIndex: 4,
       });
+
+      Survey.Serializer.addProperty('resource', {
+        name: 'newCreatedRecords',
+        category: 'Custom Questions',
+        visible: false,
+      });
+
+      Survey.Serializer.addProperty('resource', {
+        name: 'afterRecordCreation',
+        // type: 'expression',
+        category: 'logic',
+      });
+
+      Survey.Serializer.addProperty('resource', {
+        name: 'afterRecordSelection',
+        // type: 'expression',
+        category: 'logic',
+      });
     },
     /**
      * Get the resource after the question is loaded

@@ -1,5 +1,4 @@
 import { Apollo } from 'apollo-angular';
-import { EDIT_RECORDS } from '../graphql/mutations';
 import { Record } from '../models/record.model';
 import { SafeAuthService } from '../services/auth.service';
 
@@ -41,20 +40,6 @@ const addCustomFunctions = (
     const result = new Date(params[0]);
     result.setDate(result.getDate() + Number(params[1]));
     return result;
-  });
-  survey.FunctionFactory.Instance.register('editSelected', (params: any[]) => {
-    const records = params[0];
-    const fieldName = params[1];
-    const value = params[2];
-    apollo
-      .mutate({
-        mutation: EDIT_RECORDS,
-        variables: {
-          ids: records,
-          data: { [fieldName]: value },
-        },
-      })
-      .subscribe();
   });
 };
 
