@@ -13,7 +13,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import {
   SafeAccessModule,
-  SafeConfirmModalModule,
   SafeButtonModule,
   SafeApplicationsSummaryModule,
   SafeSkeletonTableModule,
@@ -52,7 +51,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatMenuModule,
     MatIconModule,
     MatChipsModule,
-    SafeConfirmModalModule,
     SafeAccessModule,
     DuplicateApplicationModalModule,
     MatDatepickerModule,

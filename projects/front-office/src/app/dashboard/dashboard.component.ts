@@ -13,7 +13,6 @@ import {
   ContentType,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 
 /**
  * Main component of Front-Office navigation.
@@ -34,6 +33,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public applications: Application[] = [];
   /** List of application pages */
   public navGroups: any[] = [];
+  /** List of settings pages */
+  public adminNavItems: any[] = [];
   /** Current application */
   public application: Application | null = null;
   /** User subscription */
@@ -114,7 +115,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (application) {
             this.title = application.name || '';
             this.appID = application.id || '';
-            const adminNavItems: any[] = [];
+            this.adminNavItems = [];
             if (
               this.permissions.some(
                 (x) =>
@@ -127,7 +128,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                   (x.type === Permissions.canManageApplications && x.global)
               )
             ) {
-              adminNavItems.push({
+              this.adminNavItems.push({
                 name: 'Users',
                 path: `./${this.appID}/settings/users`,
                 icon: 'supervisor_account',
@@ -145,7 +146,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                   (x.type === Permissions.canManageApplications && x.global)
               )
             ) {
-              adminNavItems.push({
+              this.adminNavItems.push({
                 name: 'Roles',
                 path: `./${this.appID}/settings/roles`,
                 icon: 'admin_panel_settings',
@@ -164,10 +165,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         : `./${this.appID}/${x.type}/${x.content}`,
                     icon: this.getNavIcon(x.type || ''),
                   })),
-              },
-              {
-                name: 'Administration',
-                navItems: adminNavItems,
               },
             ];
             if (!this.application || application.id !== this.application.id) {

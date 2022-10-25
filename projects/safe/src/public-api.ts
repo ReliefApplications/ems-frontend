@@ -21,6 +21,7 @@ export * from './lib/services/date-translate/date-translate.service';
 export * from './lib/services/breadcrumb/breadcrumb.service';
 export * from './lib/services/aggregation/aggregation.service';
 export * from './lib/services/auth-interceptor/auth-interceptor.service';
+export * from './lib/services/confirm/confirm.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -52,6 +53,7 @@ export * from './lib/models/reference-data.model';
 // === COMPONENTS ===
 export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 export * from './lib/components/layout/public-api';
+export * from './lib/components/application-toolbar/public-api';
 export * from './lib/components/access/public-api';
 export * from './lib/components/form/public-api';
 export * from './lib/components/form-builder/public-api';

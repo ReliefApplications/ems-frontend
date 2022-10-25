@@ -11,7 +11,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
   SafeDateModule,
-  SafeConfirmModalModule,
   SafeSkeletonTableModule,
 } from '@safe/builder';
 
@@ -31,7 +30,6 @@ import {
     MatTooltipModule,
     TranslateModule,
     SafeDateModule,
-    SafeConfirmModalModule,
     SafeSkeletonTableModule,
   ],
 })

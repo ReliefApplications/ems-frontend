@@ -12,7 +12,6 @@ import {
   SafeAccessModule,
   SafeButtonModule,
   SafeDateModule,
-  SafeConfirmModalModule,
 } from '@safe/builder';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -40,7 +39,6 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     OverlayModule,
     UploadMenuModule,
     SafeDateModule,
-    SafeConfirmModalModule,
   ],
   exports: [ResourceComponent],
 })

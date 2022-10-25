@@ -1,25 +1,28 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  Application,
-  SafeApplicationService,
-  SafeConfirmModalComponent,
-  SafeSnackBarService,
-} from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { Application } from '../../models/application.model';
+import { SafeApplicationService } from '../../services/application/application.service';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
 
 /**
  * Toolbar component visible when editing application.
  * Appear on top of the view.
  */
 @Component({
-  selector: 'app-application-toolbar',
+  selector: 'safe-app-application-toolbar',
   templateUrl: './application-toolbar.component.html',
   styleUrls: ['./application-toolbar.component.scss'],
 })
-export class ApplicationToolbarComponent implements OnInit, OnDestroy {
+export class SafeApplicationToolbarComponent implements OnInit, OnDestroy {
+  @Input() title = '';
+  @Input() settings: any[] = [];
+  @Input() canUpdate = false;
+  @Input() showPublish = false;
+
   // === APPLICATION ===
   public application: Application | null = null;
   private applicationSubscription?: Subscription;
@@ -35,6 +38,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
    * @param router Angular router
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate service
    */
   constructor(
@@ -42,6 +46,7 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}
 
@@ -71,17 +76,15 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
    * Unlocks the application, and controls edition.
    */
   onUnlock(): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.application.unlock.title'),
-        content: this.translate.instant(
-          'components.application.unlock.confirmationMessage',
-          {
-            name: this.application?.name,
-          }
-        ),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.application.unlock.title'),
+      content: this.translate.instant(
+        'components.application.unlock.confirmationMessage',
+        {
+          name: this.application?.name,
+        }
+      ),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       this.applicationService.lockApplication();
@@ -99,17 +102,15 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
         })
       );
     } else {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('components.application.publish.title'),
-          content: this.translate.instant(
-            'components.application.publish.confirmationMessage',
-            {
-              name: this.application?.name,
-            }
-          ),
-          confirmColor: 'primary',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('components.application.publish.title'),
+        content: this.translate.instant(
+          'components.application.publish.confirmationMessage',
+          {
+            name: this.application?.name,
+          }
+        ),
+        confirmColor: 'primary',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {
@@ -117,6 +118,15 @@ export class ApplicationToolbarComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  /**
+   * Edits the permissions layer.
+   *
+   * @param e permissions.
+   */
+  saveAccess(e: any): void {
+    this.applicationService.editPermissions(e);
   }
 
   /**

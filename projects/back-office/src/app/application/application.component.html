@@ -1,10 +1,16 @@
 <safe-layout
-  [title]="title"
+  [appLayout]="true"
+  [canAddPage]="application?.canUpdate!"
   [navGroups]="navGroups"
   [toolbar]="toolbar"
   [route]="route"
   (reorder)="onReorder($event)"
 ></safe-layout>
 <ng-template #toolbar>
-  <app-application-toolbar></app-application-toolbar>
+  <safe-app-application-toolbar
+    [title]="title"
+    [settings]="adminNavItems"
+    [canUpdate]="application?.canUpdate!"
+    [showPublish]="true"
+  ></safe-app-application-toolbar>
 </ng-template>

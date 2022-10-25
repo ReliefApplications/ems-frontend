@@ -1,55 +1,61 @@
 <ng-container *ngIf="form">
-  <div class="page-header">
-    <ng-container *ngIf="!formActive">
-      <h1 class="page-title" (click)="toggleFormActive()">
-        {{ form.name }} {{ activeVersion ? activeVersion.id : '' }}
-      </h1>
-    </ng-container>
-
-    <ng-container *ngIf="formActive">
-      <form [formGroup]="nameForm" (ngSubmit)="saveName()">
-        <mat-form-field>
-          <mat-label>{{ 'common.name' | translate }}</mat-label>
-          <input matInput formControlName="formName" type="string" />
-        </mat-form-field>
-        <safe-button
-          type="submit"
-          [isIcon]="true"
-          icon="save"
-          variant="primary"
-          [disabled]="!nameForm.valid"
-        >
-        </safe-button>
-        <safe-button
-          [isIcon]="true"
-          icon="close"
-          variant="danger"
+  <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+    <div class="flex items-center overflow-hidden">
+      <ng-container *ngIf="!formActive">
+        <h1
+          class="!m-0 overflow-hidden text-ellipsis hover:bg-neutral-200 rounded-lg"
           (click)="toggleFormActive()"
         >
-        </safe-button>
-      </form>
-    </ng-container>
-    <span class="flex-spacer"></span>
-    <safe-access
-      [access]="form.permissions"
-      [objectTypeName]="'common.form.one' | translate"
-      (save)="saveAccess($event)"
-      *ngIf="form.canUpdate"
-    ></safe-access>
-  </div>
-  <div class="form-actions">
-    <mat-button-toggle-group
-      appearance="legacy"
-      [value]="form.status"
-      (change)="updateStatus($event)"
-    >
-      <mat-button-toggle
-        *ngFor="let status of statuses"
-        [value]="status.value"
-        [className]="'toggle-' + status.value"
-        >{{ status.key | translate }}</mat-button-toggle
+          {{ form.name }} {{ activeVersion ? activeVersion.id : '' }}
+        </h1>
+      </ng-container>
+
+      <ng-container *ngIf="formActive">
+        <form [formGroup]="nameForm" (ngSubmit)="saveName()">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'common.name' | translate }}</mat-label>
+            <input matInput formControlName="formName" type="string" />
+            <safe-button
+              matSuffix
+              type="submit"
+              [isIcon]="true"
+              icon="done"
+              variant="primary"
+              [disabled]="!nameForm.valid"
+            >
+            </safe-button>
+            <safe-button
+              matSuffix
+              [isIcon]="true"
+              icon="close"
+              variant="danger"
+              (click)="toggleFormActive()"
+            >
+            </safe-button>
+          </mat-form-field>
+        </form>
+      </ng-container>
+      <safe-access
+        [access]="form.permissions"
+        [objectTypeName]="'common.form.one' | translate"
+        (save)="saveAccess($event)"
+        *ngIf="form.canUpdate && !formActive"
+      ></safe-access>
+    </div>
+    <div class="flex items-center" *ngIf="!formActive">
+      <mat-button-toggle-group
+        appearance="legacy"
+        [value]="form.status"
+        (change)="updateStatus($event)"
       >
-    </mat-button-toggle-group>
+        <mat-button-toggle
+          *ngFor="let status of statuses"
+          [value]="status.value"
+          [className]="'toggle-' + status.value"
+          >{{ status.key | translate }}</mat-button-toggle
+        >
+      </mat-button-toggle-group>
+    </div>
   </div>
   <app-history
     *ngIf="activeVersions"

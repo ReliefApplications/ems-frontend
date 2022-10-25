@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Dashboard, WIDGET_TYPES } from '../../models/dashboard.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
@@ -6,6 +6,7 @@ import {
   EDIT_DASHBOARD,
   EditDashboardMutationResponse,
 } from './graphql/mutations';
+import get from 'lodash/get';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -28,9 +29,14 @@ export class SafeDashboardService {
    * Shared dashboard service. Handles dashboard events.
    * TODO: rename all tiles into widgets
    *
+   * @param environment environment in which we run the application
    * @param apollo Apollo client
    */
-  constructor(private apollo: Apollo) {}
+  constructor(@Inject('environment') environment: any, private apollo: Apollo) {
+    this.availableWidgets = WIDGET_TYPES.filter((widget) =>
+      get(environment, 'availableWidgets', []).includes(widget.component)
+    );
+  }
 
   /**
    * Opens a new dashboard.

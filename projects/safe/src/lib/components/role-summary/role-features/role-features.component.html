@@ -1,13 +1,8 @@
-<div class="search-bar">
-  <mat-form-field appearance="outline">
+<div class="flex justify-end">
+  <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
     <mat-icon matPrefix>search</mat-icon>
-    <input
-      id="feature-search"
-      matInput
-      [(ngModel)]="search"
-      type="search"
-      [placeholder]="'common.placeholder.search' | translate"
-    />
+    <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
+    <input matInput [(ngModel)]="search" type="search" />
     <safe-button
       matSuffix
       [isIcon]="true"

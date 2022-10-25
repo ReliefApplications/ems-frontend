@@ -93,8 +93,9 @@
               },
               "projects/back-office/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
-              "./node_modules/leaflet/dist/leaflet.css",
+              "node_modules/survey-angular/survey.min.css",
               "node_modules/survey-creator/survey-creator.min.css",
+              "./node_modules/leaflet/dist/leaflet.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/select2/dist/css/select2.min.css"
@@ -339,6 +340,23 @@
                 "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
+            "oort-local": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.oort.local.ts"
+                }
+              ],
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -359,6 +377,9 @@
             "browserTarget": "back-office:build:development"
           },
           "configurations": {
+            "oort-local": {
+              "browserTarget": "back-office:build:oort-local"
+            },
             "production": {
               "browserTarget": "back-office:build:production"
             }
@@ -473,8 +494,7 @@
               },
               "projects/front-office/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
-              "./node_modules/leaflet/dist/leaflet.css",
-              "node_modules/survey-angular/survey.css",
+              "node_modules/survey-angular/survey.min.css",
               "node_modules/survey-creator/survey-creator.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
@@ -708,6 +728,23 @@
                 "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
+            "oort-local": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.oort.local.ts"
+                }
+              ],
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -728,6 +765,9 @@
             "browserTarget": "front-office:build:development"
           },
           "configurations": {
+            "oort-local": {
+              "browserTarget": "front-office:build:oort-local"
+            },
             "production": {
               "browserTarget": "front-office:build:production"
             }
@@ -835,7 +875,6 @@
             "styles": [
               "projects/web-widgets/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
-              "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-angular/survey.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",

@@ -117,8 +117,15 @@
   cursor: move;
 }
 
-.add-page-button {
-  margin: 0 auto;
+.add-page-container {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-around;
+
+  // Fixes the add-page at the sidenav bottom
+  width: 100%;
+  position: absolute;
+  bottom: 0;
 }
 
 .notification-menu {
@@ -135,11 +142,39 @@
   }
 }
 
-.application-title {
-  text-overflow: ellipsis;
-  overflow: hidden;
+.back-text {
+  font-size: 16px;
+  margin-top: 2px;
 }
 
 safe-breadcrumb {
   margin-bottom: 14px;
+}
+
+.app-sidenav-add-page {
+  // Substracts topbar, sub-topbar, header and add-page height
+  max-height: calc(100vh - 64px - 60px - 48px - 84px);
+  overflow: auto;
+}
+
+.app-sidenav-phone-add-page {
+  // Substracts header and add-page height
+  max-height: calc(100vh - 48px - 84px);
+  overflow: auto;
+}
+
+.app-sidenav {
+  // Substracts topbar, sub-topbar, header height
+  max-height: calc(100vh - 64px - 60px - 48px);
+  overflow: auto;
+}
+
+.app-sidenav-phone {
+  // Substracts header height
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+}
+
+.sidenav-header {
+  justify-content: space-between;
 }

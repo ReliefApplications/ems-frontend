@@ -13,7 +13,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import {
-  SafeConfirmModalModule,
   SafeButtonModule,
   SafeSkeletonTableModule,
   SafeIconModule,
@@ -46,7 +45,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatMenuModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    SafeConfirmModalModule,
     MatExpansionModule,
     SafeDividerModule,
     SafeButtonModule,

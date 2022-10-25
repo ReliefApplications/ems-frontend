@@ -14,7 +14,7 @@ import {
   PermissionsManagement,
   PermissionType,
   SafeAuthService,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
@@ -79,6 +79,7 @@ export class ApiConfigurationsComponent
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
+   * @param confirmService Shared confirm service
    * @param router Angular router
    * @param translate Angular translate service
    */
@@ -87,6 +88,7 @@ export class ApiConfigurationsComponent
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
+    private confirmService: SafeConfirmService,
     private router: Router,
     private translate: TranslateService
   ) {}
@@ -272,21 +274,16 @@ export class ApiConfigurationsComponent
    */
   onDelete(element: any, e: any): void {
     e.stopPropagation();
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant(
-          'components.apiConfiguration.delete.title'
-        ),
-        content: this.translate.instant(
-          'components.apiConfiguration.delete.confirmationMessage',
-          {
-            name: element.name,
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.apiConfiguration.delete.title'),
+      content: this.translate.instant(
+        'components.apiConfiguration.delete.confirmationMessage',
+        {
+          name: element.name,
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

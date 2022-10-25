@@ -7,7 +7,7 @@ import {
   ChannelDisplay,
   Role,
   SafeApplicationService,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { AddChannelModalComponent } from './components/add-channel-modal/add-channel-modal.component';
@@ -35,11 +35,13 @@ export class ChannelsComponent implements OnInit, OnDestroy {
    * Channels page component
    *
    * @param applicationService Shared application service
+   * @param confirmService Shared confirm service
    * @param dialog Material dialog service
    * @param translate Angular translate service
    */
   constructor(
     private applicationService: SafeApplicationService,
+    private confirmService: SafeConfirmService,
     public dialog: MatDialog,
     private translate: TranslateService
   ) {}
@@ -113,21 +115,18 @@ export class ChannelsComponent implements OnInit, OnDestroy {
    * @param channel channel to delete
    */
   onDelete(channel: Channel): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('common.channel.one'),
-        }),
-        content: this.translate.instant(
-          'components.channel.delete.confirmationMessage',
-          {
-            name: channel.title,
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.channel.one'),
+      }),
+      content: this.translate.instant(
+        'components.channel.delete.confirmationMessage',
+        {
+          name: channel.title,
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

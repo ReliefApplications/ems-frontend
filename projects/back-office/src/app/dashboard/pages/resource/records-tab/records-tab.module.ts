@@ -9,11 +9,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  SafeButtonModule,
-  SafeConfirmModalModule,
-  SafeSkeletonTableModule,
-} from '@safe/builder';
+import { SafeButtonModule, SafeSkeletonTableModule } from '@safe/builder';
 import { UploadMenuModule } from 'projects/back-office/src/app/components/upload-menu/upload-menu.module';
 
 /**
@@ -33,7 +29,6 @@ import { UploadMenuModule } from 'projects/back-office/src/app/components/upload
     TranslateModule,
     OverlayModule,
     UploadMenuModule,
-    SafeConfirmModalModule,
     SafeSkeletonTableModule,
   ],
 })

@@ -9,11 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import {
-  SafeConfirmModalModule,
-  SafeButtonModule,
-  SafeModalModule,
-} from '@safe/builder';
+import { SafeButtonModule, SafeModalModule } from '@safe/builder';
 import { PositionModalComponent } from './components/position-modal/position-modal.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,7 +32,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTableModule,
     MatIconModule,
     MatMenuModule,
-    SafeConfirmModalModule,
     SafeButtonModule,
     MatButtonModule,
     TranslateModule,

@@ -12,7 +12,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import {
-  SafeConfirmModalModule,
   SafeButtonModule,
   SafeIconModule,
   SafeGraphQLSelectModule,
@@ -42,7 +41,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatMenuModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    SafeConfirmModalModule,
     MatAutocompleteModule,
     SafeDividerModule,
     SafeButtonModule,
