@@ -6,6 +6,7 @@ import { SafeEditTemplateComponent } from './components/edit-template/edit-templ
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application.service';
+import { TemplateTypeEnum } from '../../models/template.model';
 
 /**
  * A component to display the list of templates
@@ -50,10 +51,14 @@ export class SafeTemplatesComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value)
-        this.applicationService.editEmailTemplate(template.id, {
+        this.applicationService.editTemplate({
+          id: template.id,
           name: value.name,
-          subject: value.subject,
-          body: value.body,
+          type: TemplateTypeEnum.EMAIL,
+          content: {
+            subject: value.subject,
+            body: value.body,
+          },
         });
     });
   }
@@ -94,10 +99,13 @@ export class SafeTemplatesComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value)
-        this.applicationService.addEmailTemplate({
+        this.applicationService.addTemplate({
           name: value.name,
-          subject: value.subject,
-          body: value.body,
+          type: TemplateTypeEnum.EMAIL,
+          content: {
+            subject: value.subject,
+            body: value.body,
+          },
         });
     });
   }

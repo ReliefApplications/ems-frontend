@@ -4,11 +4,7 @@ import { Role, User } from './user.model';
 import { Subscription } from './subscription.model';
 import { PositionAttributeCategory } from './position-attribute-category.model';
 import { status } from './form.model';
-
-/** Enum for types of template */
-export enum TemplateTypeEnum {
-  EMAIL = 'email',
-}
+import { Template } from './template.model';
 
 /** Model for Application object. */
 export interface Application {
@@ -33,5 +29,5 @@ export interface Application {
   locked?: boolean;
   lockedBy?: User;
   lockedByUser?: boolean;
-  templates?: any;
+  templates?: Template[];
 }

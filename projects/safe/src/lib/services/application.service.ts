@@ -46,8 +46,12 @@ import {
   EDIT_CHANNEL,
   ToggleApplicationLockMutationResponse,
   TOGGLE_APPLICATION_LOCK,
-  MANAGE_TEMPLATE,
-  ManageTemplateMutationResponse,
+  AddTemplateMutationResponse,
+  ADD_TEMPLATE,
+  UpdateTemplateMutationResponse,
+  UPDATE_TEMPLATE,
+  DeleteTemplateMutationResponse,
+  DELETE_TEMPLATE,
 } from '../graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
@@ -62,6 +66,7 @@ import {
   APPLICATION_UNLOCKED_SUBSCRIPTION,
 } from '../graphql/subscriptions';
 import { SafeAuthService } from './auth.service';
+import { Template } from '../models/template.model';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -1062,34 +1067,22 @@ export class SafeApplicationService {
   }
 
   /**
-   * Adds a new email template to the application.
+   * Adds a new template to the application.
    *
-   * @param template new email template
-   * @param template.name name for the template
-   * @param template.subject email template subject
-   * @param template.body email template body
+   * @param template new template to be added
    */
-  addEmailTemplate(template: {
-    name: string;
-    subject: string;
-    body: string;
-  }): void {
+  addTemplate(template: Template): void {
     const application = this.application.getValue();
-    if (application && this.isUnlocked) {
+    if (application?.id && this.isUnlocked) {
       this.apollo
-        .mutate<ManageTemplateMutationResponse>({
-          mutation: MANAGE_TEMPLATE,
+        .mutate<AddTemplateMutationResponse>({
+          mutation: ADD_TEMPLATE,
           variables: {
             application: application.id,
-            templateChanges: {
-              add: {
-                name: template.name,
-                type: 'email',
-                content: {
-                  subject: template.subject,
-                  body: template.body,
-                },
-              },
+            template: {
+              name: template.name,
+              type: 'email',
+              content: template.content,
             },
           },
         })
@@ -1097,7 +1090,10 @@ export class SafeApplicationService {
           if (res.data) {
             const newApplication: Application = {
               ...application,
-              templates: res.data.editApplication.templates,
+              templates: [
+                ...(application.templates || []),
+                res.data.addTemplate,
+              ],
             };
 
             this.application.next(newApplication);
@@ -1109,28 +1105,24 @@ export class SafeApplicationService {
   /**
    * Removes a template by its id.
    *
-   * @param template template's id to be deleted
+   * @param id template's id to be deleted
    */
-  deleteTemplate(template: string): void {
+  deleteTemplate(id: string): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
-        .mutate<ManageTemplateMutationResponse>({
-          mutation: MANAGE_TEMPLATE,
+        .mutate<DeleteTemplateMutationResponse>({
+          mutation: DELETE_TEMPLATE,
           variables: {
             application: application.id,
-            templateChanges: {
-              remove: {
-                id: template,
-              },
-            },
+            template: id,
           },
         })
         .subscribe((res) => {
           if (res.data) {
             const newApplication: Application = {
               ...application,
-              templates: res.data.editApplication.templates,
+              templates: this.templates.filter((t) => t.id !== id),
             };
             this.application.next(newApplication);
           }
@@ -1141,44 +1133,35 @@ export class SafeApplicationService {
   /**
    * Edits existing template.
    *
-   * @param id id of template to be edited
-   * @param updatedData new data for the template
-   * @param updatedData.name new name for the template
-   * @param updatedData.subject new subject for the template
-   * @param updatedData.body new body for the template
+   * @param template new template to be added
    */
-  editEmailTemplate(
-    id: string,
-    updatedData: {
-      name: string;
-      subject: string;
-      body: string;
-    }
-  ): void {
+  editTemplate(template: Template): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
-        .mutate<ManageTemplateMutationResponse>({
-          mutation: MANAGE_TEMPLATE,
+        .mutate<UpdateTemplateMutationResponse>({
+          mutation: UPDATE_TEMPLATE,
           variables: {
             application: application.id,
-            templateChanges: {
-              update: {
-                id,
-                name: updatedData.name,
-                content: {
-                  subject: updatedData.subject,
-                  body: updatedData.body,
-                },
-              },
+            template: {
+              id: template.id,
+              name: template.name,
+              type: template.type,
+              content: template.content,
             },
           },
         })
         .subscribe((res) => {
-          if (res.data) {
+          if (res.data?.editTemplate) {
+            const updatedTemplate = res.data.editTemplate;
             const newApplication: Application = {
               ...application,
-              templates: res.data.editApplication.templates,
+              templates: application.templates?.map((t) => {
+                if (t.id === template.id) {
+                  t = updatedTemplate;
+                }
+                return t;
+              }),
             };
             this.application.next(newApplication);
           }

@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
 import { Form } from '../../../../models/form.model';
 import { ContentType } from '../../../../models/page.model';
-import { TemplateTypeEnum } from '../../../../models/application.model';
+import { TemplateTypeEnum } from '../../../../models/template.model';
 import { SafeWorkflowService } from '../../../../services/workflow.service';
 import { Subscription } from 'rxjs';
 import {
