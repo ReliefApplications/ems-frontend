@@ -41,9 +41,9 @@ export class SafeFormBuilderService {
             // if its a single record, the value will be string
             // so we account for that by putting it in an array
             const valueIterator =
-              element.type === 'resources'
+              (element.type === 'resources'
                 ? survey.getValue(element.name)
-                : [survey.getValue(element.name)];
+                : [survey.getValue(element.name)]) || [];
 
             const regex = /{\s*(\b.*\b)\s*}\s*=\s*"(.*)"/g;
             for (const item of valueIterator) {
