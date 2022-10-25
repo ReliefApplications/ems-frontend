@@ -55,7 +55,12 @@
   >
     {{ 'common.next' | translate }}
   </button>
-  <button mat-flat-button color="primary" (click)="submit()">
+  <button
+    mat-flat-button
+    color="primary"
+    [disabled]="saving"
+    (click)="submit()"
+  >
     {{ 'components.record.modal.update' | translate }}
   </button>
 </mat-dialog-actions>
