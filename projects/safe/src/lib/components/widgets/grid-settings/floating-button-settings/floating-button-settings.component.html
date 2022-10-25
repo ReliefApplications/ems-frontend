@@ -297,11 +297,22 @@
               />
             </mat-chip-list>
           </mat-form-field>
+          <span
+            *ngIf="
+              buttonForm.get('sendMail')?.value &&
+              !buttonForm.get('templates')?.valid
+            "
+            class="error"
+          >
+            <mat-icon matTooltipPosition="right"> error </mat-icon>
+            <p class="info-text">
+              {{ 'components.templates.errors.noneSelected' | translate }}
+            </p>
+          </span>
           <mat-form-field appearance="outline">
             <mat-label>{{
               'components.templates.available' | translate
             }}</mat-label>
-
             <mat-select class="select" formControlName="templates" multiple>
               <mat-option
                 *ngFor="let template of mailTemplates"

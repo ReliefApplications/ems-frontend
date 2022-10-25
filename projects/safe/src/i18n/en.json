@@ -568,6 +568,9 @@
 				"subject": "Subject",
 				"update": "Edit template"
 			},
+			"errors": {
+				"noneSelected": "Please select one or more templates"
+			},
 			"select": {
 				"email": "Select an e-mail template"
 			},

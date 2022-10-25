@@ -574,6 +574,9 @@
 			"type": {
 				"email": "******",
 				"title": "******"
+			},
+			"errors": {
+				"noneSelected": "******"
 			}
 		},
 		"user": {

@@ -58,3 +58,18 @@
 editor {
   margin-bottom: 16px;
 }
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+
+  mat-icon {
+    color: #d34444;
+    cursor: default;
+  }
+
+  p {
+    margin: 0;
+  }
+}
