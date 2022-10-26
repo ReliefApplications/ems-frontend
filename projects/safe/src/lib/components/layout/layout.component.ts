@@ -16,13 +16,8 @@ import {
 } from '@angular/core';
 import { Account, SafeAuthService } from '../../services/auth/auth.service';
 import { SafeLayoutService } from '../../services/layout/layout.service';
-import {
-  PermissionsManagement,
-  PermissionType,
-  User,
-} from '../../models/user.model';
+import { User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
-import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Notification } from '../../models/notification.model';
 import { Subscription } from 'rxjs';
@@ -45,13 +40,13 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   // === HEADER TITLE ===
   @Input() title = '';
 
-  @Input() navGroups: any[] = [];
-
   @Input() applications: Application[] = [];
 
   @Input() route?: ActivatedRoute;
 
   @Input() toolbar?: TemplateRef<any>;
+
+  @Input() leftSidenav?: TemplateRef<any>;
 
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
@@ -61,11 +56,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @Output() reorder: EventEmitter<any> = new EventEmitter();
 
   @Input() profileRoute = '/profile';
-
-  @Input() appLayout = false;
-  @Input() canAddPage = false;
-
-  filteredNavGroups: any[] = [];
 
   languages: string[] = [];
 
@@ -136,7 +126,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       this.otherOffice = 'back office';
     }
-    this.loadUserAndUpdateLayout();
+    this.loadUser();
     this.notificationService.init();
     this.notificationsSubscription =
       this.notificationService.notifications$.subscribe(
@@ -179,9 +169,9 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Load the user and update availables navGroups accordingly
+   * Load the user
    */
-  private loadUserAndUpdateLayout(): void {
+  private loadUser(): void {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
@@ -189,35 +179,11 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       if (user) {
         this.user = { ...user };
       }
-      this.filteredNavGroups = [];
-      for (const group of this.navGroups) {
-        const navItems = group.navItems.filter((item: any) => {
-          if (this.inApplication) {
-            return true;
-          }
-          const permission = PermissionsManagement.getRightFromPath(
-            item.path,
-            PermissionType.access
-          );
-          return this.authService.userHasClaim(
-            permission,
-            this.environment.module === 'backoffice'
-          );
-        });
-        if (navItems.length > 0 || (this.appLayout && this.canAddPage)) {
-          const filteredGroup = {
-            name: group.name,
-            callback: group.callback,
-            navItems,
-          };
-          this.filteredNavGroups.push(filteredGroup);
-        }
-      }
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.loadUserAndUpdateLayout();
+    this.loadUser();
   }
 
   ngOnDestroy(): void {
@@ -256,29 +222,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    */
   onOpenApplication(application: Application): void {
     this.openApplication.emit(application);
-  }
-
-  /**
-   * Handles the click event
-   *
-   * @param callback Callback that defines the action to perform on click
-   * @param event Event that happends with the click
-   */
-  onClick(callback: () => any, event: any): void {
-    callback();
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  /**
-   * Drop event handler. Move item in layout navigation item list.
-   *
-   * @param event drop event
-   * @param group group where the event occurs
-   */
-  drop(event: any, group: any): void {
-    moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
-    this.reorder.emit(group.navItems);
   }
 
   /**

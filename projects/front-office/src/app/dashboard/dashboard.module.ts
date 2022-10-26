@@ -2,7 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
-import { SafeApplicationToolbarModule, SafeLayoutModule } from '@safe/builder';
+import {
+  SafeApplicationToolbarModule,
+  SafeLayoutModule,
+  SafeLeftSidenavModule,
+} from '@safe/builder';
 
 /**
  * Front-Office Dashboard module.
@@ -14,6 +18,7 @@ import { SafeApplicationToolbarModule, SafeLayoutModule } from '@safe/builder';
   imports: [
     CommonModule,
     SafeLayoutModule,
+    SafeLeftSidenavModule,
     DashboardRoutingModule,
     SafeApplicationToolbarModule,
   ],
