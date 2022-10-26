@@ -1115,7 +1115,7 @@ export class SafeApplicationService {
           mutation: DELETE_TEMPLATE,
           variables: {
             application: application.id,
-            template: id,
+            id,
           },
         })
         .subscribe((res) => {
@@ -1143,8 +1143,8 @@ export class SafeApplicationService {
           mutation: UPDATE_TEMPLATE,
           variables: {
             application: application.id,
+            id: template.id,
             template: {
-              id: template.id,
               name: template.name,
               type: template.type,
               content: template.content,

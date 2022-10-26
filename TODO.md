@@ -8,3 +8,4 @@ List there all actions to do ( eg: update to perform on some components when rel
 [ ] - check email template not displaying help
 [ ] - email-template-modal to use safe-modal
 [ ] - Translation of email-template
+[ ] - Move graphQL mutations are correct places

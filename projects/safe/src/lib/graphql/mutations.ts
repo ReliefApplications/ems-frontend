@@ -996,8 +996,12 @@ export interface AddTemplateMutationResponse {
 
 /** Graphql request for editing a template of an application */
 export const UPDATE_TEMPLATE = gql`
-  mutation editTemplate($application: ID!, $template: TemplateInputType!) {
-    editTemplate(application: $application, template: $template) {
+  mutation editTemplate(
+    $application: ID!
+    $id: ID!
+    $template: TemplateInputType!
+  ) {
+    editTemplate(application: $application, id: $id, template: $template) {
       id
       name
       type
@@ -1014,8 +1018,8 @@ export interface UpdateTemplateMutationResponse {
 
 /** Graphql request for deleting a template of an application */
 export const DELETE_TEMPLATE = gql`
-  mutation deleteTemplate($application: ID!, $template: ID!) {
-    deleteTemplate(application: $application, template: $template) {
+  mutation deleteTemplate($application: ID!, $id: ID!) {
+    deleteTemplate(application: $application, id: $id) {
       id
       name
       type

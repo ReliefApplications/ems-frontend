@@ -84,7 +84,9 @@ const routes: Routes = [
           {
             path: 'templates',
             loadChildren: () =>
-              import('@safe/builder').then((m) => m.SafeApplicationTemplatesModule),
+              import('@safe/builder').then(
+                (m) => m.SafeApplicationTemplatesModule
+              ),
             // canActivate: [SafePermissionGuard]
           },
         ],
