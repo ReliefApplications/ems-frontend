@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Permission, Role } from '../../../models/user.model';
@@ -49,19 +56,25 @@ export class RoleDetailsComponent implements OnInit {
     }
   }
 
+  private apiUrl = '';
+
   /**
    * General tab of Role Summary.
    * Contain title / description of role + list of users and permissions.
    *
+   * @param environment Injection of the environment file.
    * @param fb Angular form builder
    * @param apollo Apollo Client
    * @param http http client
    */
   constructor(
+    @Inject('environment') environment: any,
     private fb: FormBuilder,
     private apollo: Apollo,
     private http: HttpClient
-  ) {}
+  ) {
+    this.apiUrl = environment.apiUrl;
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -79,7 +92,7 @@ export class RoleDetailsComponent implements OnInit {
       .subscribe((res) => {
         this.permissions = res.data.permissions;
       });
-    const url = `http://localhost:3000/roles/${this.role.id}/summary`;
+    const url = `${this.apiUrl}/roles/${this.role.id}/summary`;
     this.http.get(url).subscribe((res: any) => {
       this.roleStats = res;
     });
