@@ -1,6 +1,8 @@
-.table-column {
-  padding: 0px 4px;
+// .table-column {
+//   padding: 0px 4px;
+// }
 
+table {
   div {
     max-height: 48px;
     white-space: nowrap;
@@ -10,21 +12,3 @@
   }
 }
 
-:host {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-top: 16px;
-}
-
-.actions {
-  align-self: flex-end;
-  gap: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.table-container {
-  overflow-x: auto;
-}

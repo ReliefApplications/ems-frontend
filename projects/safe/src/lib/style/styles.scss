@@ -451,10 +451,8 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-.mat-tab-group {
-  .mat-tab-header {
-    margin-bottom: 12px;
-  }
+.mat-tab-group .mat-tab-header, .mat-tab-nav-bar {
+  margin-bottom: 12px;
 }
 
 .collapsible-form-group {

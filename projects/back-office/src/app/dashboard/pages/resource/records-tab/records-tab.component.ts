@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
@@ -62,7 +62,6 @@ export class RecordsTabComponent implements OnInit {
    *
    * @param apollo Apollo service
    * @param translate Angular translate service
-   * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param downloadService Service used to download.
@@ -70,7 +69,6 @@ export class RecordsTabComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
-    private dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private confirmService: SafeConfirmService,
     private downloadService: SafeDownloadService
@@ -97,6 +95,7 @@ export class RecordsTabComponent implements OnInit {
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
       );
+      console.log(this.dataSource);
       this.pageInfo.length = res.data.resource.records.totalCount;
       this.pageInfo.endCursor = res.data.resource.records.pageInfo.endCursor;
       this.loading = res.loading;
@@ -217,9 +216,14 @@ export class RecordsTabComponent implements OnInit {
         columns.push(field.name);
       }
     }
+    const metadata = get(this.resource, 'metadata', []);
     columns = columns
-      .filter((x) => get(this.resource, `metadata.${x}.canSee`, false))
+      .filter((x) => {
+        const fieldMeta = metadata.find((y) => y.name === x);
+        return get(fieldMeta, 'canSee', false);
+      })
       .concat(RECORDS_DEFAULT_COLUMNS);
+    console.log(columns);
     this.displayedColumnsRecords = columns;
   }
   /**
