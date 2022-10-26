@@ -91,12 +91,12 @@ export class AddLayoutModalComponent implements OnInit {
 
     this.selectedLayoutControl.valueChanges.subscribe((value) => {
       if (value) {
-        this.dialogRef.close(
-          {
-            value: this.layoutSelect?.elements.getValue().find((x) => x.id === value),
-            created: false,
-          }
-        );
+        this.dialogRef.close({
+          value: this.layoutSelect?.elements
+            .getValue()
+            .find((x) => x.id === value),
+          created: false,
+        });
       }
     });
   }
@@ -117,12 +117,10 @@ export class AddLayoutModalComponent implements OnInit {
           .addLayout(layout, this.resource?.id, this.form?.id)
           .subscribe((res) => {
             if (res.data?.addLayout) {
-              this.dialogRef.close(
-                {
-                  value: res.data.addLayout,
-                  created: true,
-                }
-              );
+              this.dialogRef.close({
+                value: res.data.addLayout,
+                created: true,
+              });
             } else {
               this.dialogRef.close();
             }
