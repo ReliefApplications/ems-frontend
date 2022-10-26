@@ -159,8 +159,18 @@
 			"none": "******",
 			"one": "******"
 		},
+		"template": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"title": "******",
 		"true": "******",
+		"type": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"update": "******",
 		"updateObject": "****** {{name}}",
 		"uploadObject": "****** {{name}}",
@@ -542,6 +552,30 @@
 			},
 			"update": {
 				"permissions": "******",
+				"title": "******"
+			}
+		},
+		"templates": {
+			"available": "******",
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"titleMessage": "******"
+			},
+			"edit": {
+				"body": "******",
+				"name": "******",
+				"new": "******",
+				"subject": "******",
+				"update": "******"
+			},
+			"errors": {
+				"empty": "******"
+			},
+			"select": {
+				"email": "******"
+			},
+			"type": {
+				"email": "******",
 				"title": "******"
 			}
 		},

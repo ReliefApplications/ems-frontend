@@ -159,8 +159,18 @@
 			"none": "No subscription",
 			"one": "Subscription"
 		},
+		"template": {
+			"few": "Templates",
+			"none": "No template",
+			"one": "Template"
+		},
 		"title": "Title",
 		"true": "True",
+		"type": {
+			"few": "Types",
+			"none": "No type",
+			"one": "Type"
+		},
 		"update": "Update",
 		"updateObject": "Update {{name}}",
 		"uploadObject": "Upload {{name}}",
@@ -543,6 +553,30 @@
 			"update": {
 				"permissions": "Permissions",
 				"title": "Update role permissions and channels"
+			}
+		},
+		"templates": {
+			"available": "Available templates",
+			"delete": {
+				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?",
+				"titleMessage": "Delete template"
+			},
+			"edit": {
+				"body": "Body",
+				"name": "Template name",
+				"new": "New template",
+				"subject": "Subject",
+				"update": "Edit template"
+			},
+			"errors": {
+				"empty": "Please select one or more templates"
+			},
+			"select": {
+				"email": "Select an e-mail template"
+			},
+			"type": {
+				"email": "E-mail",
+				"title": "Template type"
 			}
 		},
 		"user": {
