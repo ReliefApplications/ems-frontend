@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { TemplatesComponent } from './templates.component';
+import { SafeApplicationTemplatesComponent } from './application-templates.component';
 
 /** List of routes of application templates module */
 const routes: Routes = [
   {
     path: '',
-    component: TemplatesComponent,
+    component: SafeApplicationTemplatesComponent,
   },
 ];
 
@@ -17,4 +17,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class TemplatesRoutingModule {}
+export class SafeApplicationTemplatesRoutingModule {}

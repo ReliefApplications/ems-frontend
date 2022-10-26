@@ -34,6 +34,7 @@ import { SafeAggregationBuilderModule } from './components/ui/aggregation-builde
 import { SafeTagboxModule } from './components/ui/tagbox/tagbox.module';
 import { SafeLayoutModalModule } from './components/layout-modal/layout-modal.module';
 import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackbar-spinner.module';
+import { SafeApplicationTemplatesModule } from './pages/application-templates/application-templates.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -73,6 +74,7 @@ import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackba
     SafeTagboxModule,
     SafeLayoutModalModule,
     SafeSnackbarSpinnerModule,
+    SafeApplicationTemplatesModule,
   ],
   declarations: [],
 })

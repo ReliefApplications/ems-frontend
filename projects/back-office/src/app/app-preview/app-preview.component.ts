@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
   ContentType,
@@ -46,12 +47,14 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
    * @param applicationService Shared application service
    * @param previewService Custom preview service
    * @param router Angular Router
+   * @param translate Angular Translate service
    */
   constructor(
     private route: ActivatedRoute,
     private applicationService: SafeApplicationService,
     private previewService: PreviewService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -80,7 +83,7 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
                 )
               ) {
                 adminNavItems.push({
-                  name: 'Users',
+                  name: this.translate.instant('common.user.few'),
                   path: './settings/users',
                   icon: 'supervisor_account',
                 });
@@ -91,9 +94,20 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
                 )
               ) {
                 adminNavItems.push({
-                  name: 'Roles',
+                  name: this.translate.instant('common.role.few'),
                   path: './settings/roles',
                   icon: 'admin_panel_settings',
+                });
+              }
+              if (
+                role.permissions?.some(
+                  (x) => x.type === Permissions.canManageTemplates && !x.global
+                )
+              ) {
+                adminNavItems.push({
+                  name: this.translate.instant('common.template.few'),
+                  path: './settings/templates',
+                  icon: 'description',
                 });
               }
             }

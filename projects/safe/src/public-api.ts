@@ -84,6 +84,7 @@ export * from './lib/components/ui/tagbox/public-api';
 
 // === PAGES ===
 export * from './lib/pages/profile/public-api';
+export * from './lib/pages/application-templates/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';

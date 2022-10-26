@@ -297,18 +297,6 @@
               />
             </mat-chip-list>
           </mat-form-field>
-          <span
-            *ngIf="
-              buttonForm.get('sendMail')?.value &&
-              !buttonForm.get('templates')?.valid
-            "
-            class="error"
-          >
-            <mat-icon matTooltipPosition="right"> error </mat-icon>
-            <p class="info-text">
-              {{ 'components.templates.errors.noneSelected' | translate }}
-            </p>
-          </span>
           <mat-form-field appearance="outline">
             <mat-label>{{
               'components.templates.available' | translate
@@ -321,6 +309,13 @@
                 {{ template.name }}
               </mat-option>
             </mat-select>
+            <mat-error
+              *ngIf="
+                buttonForm.get('sendMail')?.value &&
+                !buttonForm.get('templates')?.valid
+              "
+              >{{ 'components.templates.errors.empty' | translate }}</mat-error
+            >
           </mat-form-field>
           <mat-checkbox formControlName="export">{{
             'components.widget.settings.grid.buttons.callback.export'

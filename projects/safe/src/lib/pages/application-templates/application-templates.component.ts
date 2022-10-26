@@ -1,17 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { Application, SafeApplicationService } from '@safe/builder';
 import { Subscription } from 'rxjs';
+import { Application } from '../../models/application.model';
+import { SafeApplicationService } from '../../services/application.service';
 
 /**
  * Application templates page component.
  */
 @Component({
-  selector: 'app-templates',
-  templateUrl: './templates.component.html',
-  styleUrls: ['./templates.component.scss'],
+  selector: 'safe-application-templates',
+  templateUrl: './application-templates.component.html',
+  styleUrls: ['./application-templates.component.scss'],
 })
-export class TemplatesComponent implements OnInit, OnDestroy {
+export class SafeApplicationTemplatesComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
   public templates = new MatTableDataSource<any>([]);
