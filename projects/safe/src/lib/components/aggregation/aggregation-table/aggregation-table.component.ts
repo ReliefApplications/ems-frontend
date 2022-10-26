@@ -101,7 +101,9 @@ export class AggregationTableComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.allAggregations.push(value);
+        if (!this.allAggregations.find((x) => x.id === value.id)) {
+          this.allAggregations.push(value);
+        }
         this.selectedAggregations?.setValue(
           this.selectedAggregations?.value.concat(value.id)
         );
