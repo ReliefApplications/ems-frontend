@@ -136,7 +136,10 @@
     [opened]="largeDevice"
   >
     <ng-container *ngIf="leftSidenav">
-      <ng-container [ngTemplateOutlet]="leftSidenav" [ngTemplateOutletContext]="nav"></ng-container>
+      <ng-container
+        [ngTemplateOutlet]="leftSidenav"
+        [ngTemplateOutletContext]="nav"
+      ></ng-container>
     </ng-container>
   </mat-sidenav>
 
