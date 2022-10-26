@@ -628,11 +628,11 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param item Item to display data of.
    * @param field field name.
    */
-  public onExpandText(item: any, field: any): void {
+  public onExpandText(item: any, field: string): void {
     const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
       data: {
-        title: field.title,
-        comment: get(item, field),
+        title: field,
+        value: get(item, field),
         readonly:
           !this.actions.update ||
           !item.canUpdate ||
