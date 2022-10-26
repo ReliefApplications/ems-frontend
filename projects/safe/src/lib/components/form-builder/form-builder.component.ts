@@ -478,6 +478,21 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         );
       }
     }
+    // Check that at least an application is selected in the properties of users and owner question
+    if (['users', 'owner'].includes(element.getType())) {
+      if (!element.applications) {
+        console.log('USER and OWNER error');
+        throw new Error(
+          this.translate.instant(
+            'pages.formBuilder.errors.selectApplication',
+            {
+              question: element.name,
+              page: page.name,
+            }
+          )
+        );
+      }
+    }
     // if the element contains other elements, apply the same rule on them
     if (element.elements) {
       element.elements.forEach((elt: AnyQuestion) =>
