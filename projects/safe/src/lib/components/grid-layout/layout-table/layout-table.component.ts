@@ -100,11 +100,13 @@ export class LayoutTableComponent implements OnInit, OnChanges {
         resource: this.resource,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-        this.allLayouts.push(value);
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        if (res.created) {
+          this.allLayouts.push(res.value);
+        }
         this.selectedLayouts?.setValue(
-          this.selectedLayouts?.value.concat(value.id)
+          this.selectedLayouts?.value.concat(res.value.id)
         );
       }
     });
