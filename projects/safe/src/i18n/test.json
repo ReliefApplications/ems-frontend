@@ -568,15 +568,15 @@
 				"subject": "******",
 				"update": "******"
 			},
+			"errors": {
+				"noneSelected": "******"
+			},
 			"select": {
 				"email": "******"
 			},
 			"type": {
 				"email": "******",
 				"title": "******"
-			},
-			"errors": {
-				"noneSelected": "******"
 			}
 		},
 		"user": {
