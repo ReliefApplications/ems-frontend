@@ -73,6 +73,16 @@ export class SafeRecordHistoryComponent implements OnInit {
   startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
+  /** @returns filename from current date and record inc. id */
+  get fileName(): string {
+    const today = new Date();
+    const formatDate = `${today.toLocaleString('en-us', {
+      month: 'short',
+      day: 'numeric',
+    })} ${today.getFullYear()}`;
+    return `${this.record.incrementalId} ${formatDate}`;
+  }
+
   /**
    * Constructor of the record history component
    *
@@ -318,7 +328,6 @@ export class SafeRecordHistoryComponent implements OnInit {
    */
   onDownload(type: string): void {
     const path = `download/form/records/${this.id}/history`;
-    const fileName = `${this.record.incrementalId}.${type}`;
     const queryString = new URLSearchParams({
       type,
       from: `${new Date(this.filtersDate.startDate).getTime()}`,
@@ -330,7 +339,7 @@ export class SafeRecordHistoryComponent implements OnInit {
     this.downloadService.getFile(
       `${path}?${queryString}`,
       `text/${type};charset=utf-8;`,
-      fileName
+      `${this.fileName}.${type}`
     );
   }
 
