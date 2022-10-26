@@ -76,16 +76,18 @@
         [stickyEnd]="column === '_actions'"
       >
         <ng-container *ngIf="!defaultColumns.includes(column)">
-          <th mat-header-cell *matHeaderCellDef class="table-column">
-            {{ column }}
+          <th mat-header-cell *matHeaderCellDef>
+            <div>{{ column }}</div>
           </th>
-          <td mat-cell *matCellDef="let element" class="table-column">
+          <td mat-cell *matCellDef="let element">
             <div>{{ element.data[column] }}</div>
           </td>
         </ng-container>
         <ng-container *ngIf="column === '_incrementalId'">
-          <th mat-header-cell *matHeaderCellDef class="table-column">ID</th>
-          <td mat-cell *matCellDef="let element" class="table-column">
+          <th mat-header-cell *matHeaderCellDef>
+            <div>ID</div>
+          </th>
+          <td mat-cell *matCellDef="let element">
             <div>{{ element.incrementalId }}</div>
           </td>
         </ng-container>
