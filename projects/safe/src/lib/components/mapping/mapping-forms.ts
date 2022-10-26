@@ -1,6 +1,16 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
-import { Mapping } from '../../models/setting.model';
+
+/** Interface for Mapping element. */
+export interface Mapping {
+  field: string;
+  path: string;
+  value: any;
+  text: string;
+}
+
+/** Interface for Mapping array. */
+export type Mappings = Array<Mapping>;
 
 /** Creating a new instance of the FormBuilder class. */
 const formBuilder = new FormBuilder();

@@ -2,7 +2,6 @@
 	"common": {
 		"access": "Access",
 		"add": "Add",
-		"advancedSettings": "Advanced settings",
 		"aggregation": {
 			"few": "Aggregations",
 			"none": "No aggregation",
@@ -809,24 +808,6 @@
 			}
 		},
 		"users": {
-			"advancedSettings": {
-				"title": "Users advanced settings",
-				"userManagement": {
-					"api": {
-						"placeholder": "Enter a URL...",
-						"title": "Service API"
-					},
-					"external": {
-						"title": "External user management",
-						"tooltip": "When this option is selected, you need to specify from which API the external attributes will come from and define a mapping. This API should be accessible with the same Azure token used by this platform."
-					},
-					"local": {
-						"title": "Local user management",
-						"tooltip": "When this option is selected, user attributes will come from the authentication server."
-					},
-					"title": "User management"
-				}
-			},
 			"invite": {
 				"add": "Add new user",
 				"confirm": "Invite users",

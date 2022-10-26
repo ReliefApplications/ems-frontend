@@ -56,7 +56,7 @@ export class UserDetailsComponent implements OnInit {
     private authService: SafeAuthService,
     private http: HttpClient
   ) {
-    this.baseUrl = environment.apiUrl + '/permissions/';
+    this.baseUrl = environment.apiUrl + '/permissions';
   }
 
   ngOnInit(): void {

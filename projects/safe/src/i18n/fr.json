@@ -2,7 +2,6 @@
 	"common": {
 		"access": "Accès",
 		"add": "Ajouter",
-		"advancedSettings": "Paramètres avancés",
 		"aggregation": {
 			"few": "Agrégations",
 			"none": "Aucune agrégation",
@@ -809,24 +808,6 @@
 			}
 		},
 		"users": {
-			"advancedSettings": {
-				"title": "Paramètres d'utilisateur avancés",
-				"userManagement": {
-					"api": {
-						"placeholder": "Entrez une URL...",
-						"title": "API du service externe"
-					},
-					"external": {
-						"title": "Gestion externe des utilisateurs",
-						"tooltip": "Lorsque cette option est sélectionnée, vous devez préciser de quelle API proviendront les attributs externes et définir une table de correspondances. Cette API doit être accessible avec le même jeton Azure que celui utilisé par cette plateforme."
-					},
-					"local": {
-						"title": "Gestion locale des utilisateurs",
-						"tooltip": "Lorsque cette option est sélectionnée, les attributs des utilisateurs proviennent du serveur d'authentification."
-					},
-					"title": "Gestion des utilisateurs"
-				}
-			},
 			"invite": {
 				"add": "Ajouter un nouvel utilisateur",
 				"confirm": "Inviter des utilisateurs",
