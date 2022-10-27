@@ -98,6 +98,7 @@ export class AddFormModalComponent implements OnInit {
       query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,
+        sortField: 'name',
       },
     });
   }

@@ -122,6 +122,7 @@ export class LayoutTableComponent implements OnInit, OnChanges {
       disableClose: true,
       data: {
         layout,
+        queryName: this.resource?.queryName,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

@@ -23,9 +23,9 @@
   ></safe-core-grid>
 </div>
 
-<!-- TEMPLATE OF FLOATING BUTTONS -->
+<!-- Quick action buttons -->
 <ng-template #floatingButtons>
-  <div class="floating-button">
+  <div>
     <ng-container *ngFor="let floatingButton of settings.floatingButtons">
       <button
         mat-button
@@ -39,6 +39,7 @@
   </div>
 </ng-template>
 
+<!-- Selection of layouts -->
 <ng-template #layoutsTemplate>
   <ng-container *ngIf="layouts.length > 1">
     <kendo-dropdownlist
