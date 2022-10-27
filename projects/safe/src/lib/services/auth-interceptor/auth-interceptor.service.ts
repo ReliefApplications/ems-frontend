@@ -21,14 +21,13 @@ export class SafeAuthInterceptorService implements HttpInterceptor {
   /**
    * Shared Authentication interceptor service
    *
-   * @param environment Current environment
    * @param authService Shared authentication service
+   * @param restService Shared rest service
    */
   constructor(
-    @Inject('environment') environment: any,
     private authService: SafeAuthService,
     private restService: SafeRestService
-  ) { }
+  ) {}
 
   /**
    * Intercept request to add token to headers

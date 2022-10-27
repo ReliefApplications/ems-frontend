@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { Permissions, User } from '../../../models/user.model';
@@ -43,7 +37,7 @@ export class UserDetailsComponent implements OnInit {
    *
    * @param fb Angular form builder
    * @param authService Shared authentication service
-   * @param rest Shared rest service
+   * @param restService Shared rest service
    */
   constructor(
     private fb: FormBuilder,

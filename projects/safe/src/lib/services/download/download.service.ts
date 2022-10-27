@@ -27,8 +27,7 @@ export class SafeDownloadService {
     private snackBar: SafeSnackBarService,
     private translate: TranslateService,
     private restService: SafeRestService
-  ) {
-  }
+  ) {}
 
   /**
    * Downloads file from the server
@@ -56,29 +55,31 @@ export class SafeDownloadService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
-    this.restService.get(path, { ...options, responseType: 'blob', headers }).subscribe(
-      (res) => {
-        const blob = new Blob([res], { type });
-        this.saveFile(fileName, blob);
-        snackBarRef.instance.data = {
-          message: this.translate.instant(
-            'common.notifications.file.download.ready'
-          ),
-          loading: false,
-        };
-        setTimeout(() => snackBarRef.dismiss(), 1000);
-      },
-      () => {
-        snackBarRef.instance.data = {
-          message: this.translate.instant(
-            'common.notifications.file.download.error'
-          ),
-          loading: false,
-          error: true,
-        };
-        setTimeout(() => snackBarRef.dismiss(), 1000);
-      }
-    );
+    this.restService
+      .get(path, { ...options, responseType: 'blob', headers })
+      .subscribe(
+        (res) => {
+          const blob = new Blob([res], { type });
+          this.saveFile(fileName, blob);
+          snackBarRef.instance.data = {
+            message: this.translate.instant(
+              'common.notifications.file.download.ready'
+            ),
+            loading: false,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
+        },
+        () => {
+          snackBarRef.instance.data = {
+            message: this.translate.instant(
+              'common.notifications.file.download.error'
+            ),
+            loading: false,
+            error: true,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
+        }
+      );
   }
 
   /**
@@ -112,29 +113,31 @@ export class SafeDownloadService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
-    this.restService.post(path, body, { responseType: 'blob', headers }).subscribe(
-      (res) => {
-        const blob = new Blob([res], { type });
-        this.saveFile(fileName, blob);
-        snackBarRef.instance.data = {
-          message: this.translate.instant(
-            'common.notifications.file.download.ready'
-          ),
-          loading: false,
-        };
-        setTimeout(() => snackBarRef.dismiss(), 1000);
-      },
-      () => {
-        snackBarRef.instance.data = {
-          message: this.translate.instant(
-            'common.notifications.file.download.error'
-          ),
-          loading: false,
-          error: true,
-        };
-        setTimeout(() => snackBarRef.dismiss(), 1000);
-      }
-    );
+    this.restService
+      .post(path, body, { responseType: 'blob', headers })
+      .subscribe(
+        (res) => {
+          const blob = new Blob([res], { type });
+          this.saveFile(fileName, blob);
+          snackBarRef.instance.data = {
+            message: this.translate.instant(
+              'common.notifications.file.download.ready'
+            ),
+            loading: false,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
+        },
+        () => {
+          snackBarRef.instance.data = {
+            message: this.translate.instant(
+              'common.notifications.file.download.error'
+            ),
+            loading: false,
+            error: true,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
+        }
+      );
   }
 
   /**

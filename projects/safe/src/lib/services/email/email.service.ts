@@ -31,7 +31,6 @@ const flatDeep = (arr: any[]): any[] =>
   providedIn: 'root',
 })
 export class SafeEmailService {
-
   /**
    * Shared email service.
    * Used by widgets to send request to the back to send emails.

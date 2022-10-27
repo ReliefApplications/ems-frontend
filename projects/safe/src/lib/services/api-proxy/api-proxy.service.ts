@@ -18,9 +18,7 @@ export class SafeApiProxyService {
    *
    * @param restService Shared rest service
    */
-  constructor(
-    private restService: SafeRestService
-  ) {
+  constructor(private restService: SafeRestService) {
     this.baseUrl = restService.apiUrl + '/proxy/';
   }
 
@@ -78,6 +76,8 @@ export class SafeApiProxyService {
     options: any = {}
   ): Promise<ArrayBuffer> {
     const headers = this.buildHeaders();
-    return this.restService.post(url, body, { ...options, headers }).toPromise();
+    return this.restService
+      .post(url, body, { ...options, headers })
+      .toPromise();
   }
 }
