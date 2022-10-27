@@ -17,7 +17,6 @@ import {
   RestoreRecordMutationResponse,
   RESTORE_RECORD,
 } from './graphql/mutations';
-import { extractColumns } from '../../../utils/extractColumns';
 import {
   SafeRecordHistoryComponent,
   SafeLayoutService,

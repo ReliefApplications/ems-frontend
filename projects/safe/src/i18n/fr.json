@@ -675,6 +675,8 @@
 			}
 		},
 		"records": {
+			"active": "Enregistrements actifs",
+			"archived": "Enregistrements archivés",
 			"showActive": "Voir les enregistrements actifs",
 			"showArchived": "Voir les enregistrements archivés",
 			"upload": {
