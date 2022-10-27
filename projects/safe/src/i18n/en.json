@@ -675,6 +675,8 @@
 			}
 		},
 		"records": {
+			"active": "Active records",
+			"archived": "Archived records",
 			"showActive": "Show active records",
 			"showArchived": "Show archived records",
 			"upload": {

@@ -9,9 +9,9 @@ import {
   SafeRecordHistoryModule,
   SafeButtonModule,
   SafeDividerModule,
+  SafeSkeletonTableModule,
 } from '@safe/builder';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -30,11 +30,11 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     SafeDividerModule,
     MatTooltipModule,
     SafeButtonModule,
-    MatProgressSpinnerModule,
     MatPaginatorModule,
     TranslateModule,
     OverlayModule,
     UploadMenuModule,
+    SafeSkeletonTableModule,
   ],
   exports: [FormRecordsComponent],
 })

@@ -675,6 +675,8 @@
 			}
 		},
 		"records": {
+			"active": "******",
+			"archived": "******",
 			"showActive": "******",
 			"showArchived": "******",
 			"upload": {

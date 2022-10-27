@@ -1,5 +1,7 @@
+<!-- Header -->
 <div *ngIf="!loading" class="flex justify-end mb-6">
-  <div class="flex gap-2 items-center flex-wrap">
+  <!-- Actions -->
+  <div class="flex gap-2 items-center flex-wrap justify-end">
     <safe-button
       *ngIf="resource.canUpdate && !showDeletedRecords"
       icon="search_off"
@@ -60,8 +62,11 @@
     </ng-template>
   </div>
 </div>
+<!-- Table container -->
 <div class="overflow-x-hidden">
+  <!-- Table scroll container -->
   <div class="overflow-auto">
+    <!-- Records table -->
     <table *ngIf="!loading" mat-table [dataSource]="dataSource">
       <ng-container
         *ngFor="let column of displayedColumnsRecords"
