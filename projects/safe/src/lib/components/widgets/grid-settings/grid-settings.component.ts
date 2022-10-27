@@ -7,13 +7,11 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
   GET_CHANNELS,
-  GET_GRID_FORM_META,
-  GetFormByIdQueryResponse,
   GET_GRID_RESOURCE_META,
   GetResourceByIdQueryResponse,
 } from './graphql/queries';
@@ -60,7 +58,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
 
   // === FLOATING BUTTON ===
   public fields: any[] = [];
-  public queryName = '';
   public relatedForms: Form[] = [];
 
   // === DATASET AND TEMPLATES ===
@@ -68,7 +65,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   private availableQueries?: Observable<any[]>;
   private allQueries: any[] = [];
   public filteredQueries: any[] = [];
-  public form: Form | null = null;
   public resource: Resource | null = null;
 
   /** Stores the selected tab */
@@ -100,21 +96,21 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         );
       }
     });
-    this.formGroup?.get('query.name')?.valueChanges.subscribe((res) => {
-      this.filteredQueries = this.filterQueries(res);
-    });
+    // this.formGroup?.get('query.name')?.valueChanges.subscribe((res) => {
+    //   this.filteredQueries = this.filterQueries(res);
+    // });
 
-    this.queryName = this.formGroup.get('query')?.value.name;
+    // this.queryName = this.formGroup.get('query')?.value.name;
     this.getQueryMetaData();
 
-    this.formGroup.get('query.name')?.valueChanges.subscribe((name) => {
-      if (name) {
+    this.formGroup.get('resource')?.valueChanges.subscribe((value) => {
+      if (value) {
         // Check if the query changed to clean modifications and fields for email in floating button
-        if (name !== this.queryName) {
-          this.queryName = name;
+        if (value !== this.resource?.id) {
+          // this.queryName = name;
           this.formGroup?.get('layouts')?.setValue([]);
-          this.formGroup?.get('query.template')?.setValue(null);
-          this.formGroup?.get('query.template')?.enable();
+          this.formGroup?.get('template')?.setValue(null);
+          this.formGroup?.get('template')?.enable();
           const floatingButtons = this.formGroup?.get(
             'floatingButtons'
           ) as FormArray;
@@ -174,66 +170,38 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
    * Gets query metadata for grid settings, from the query name
    */
   private getQueryMetaData(): void {
-    this.fields = this.queryBuilder.getFields(this.queryName);
-    const query = this.queryBuilder.sourceQuery(this.queryName);
-    if (query) {
+    if (this.formGroup.get('resource')?.value) {
       const layoutIDs: string[] | undefined =
         this.formGroup?.get('layouts')?.value;
-      query.subscribe((res1: { data: any }) => {
-        // eslint-disable-next-line no-underscore-dangle
-        const source = res1.data[`_${this.queryName}Meta`]._source;
-        this.formGroup?.get('resource')?.setValue(source);
-        if (source) {
-          this.apollo
-            .query<GetResourceByIdQueryResponse>({
-              query: GET_GRID_RESOURCE_META,
-              variables: {
-                resource: source,
-                layoutIds: layoutIDs,
-                first: layoutIDs?.length || 10,
-              },
-            })
-            .subscribe((res2) => {
-              if (res2.errors) {
-                this.apollo
-                  .query<GetFormByIdQueryResponse>({
-                    query: GET_GRID_FORM_META,
-                    variables: {
-                      id: source,
-                      layoutIds: layoutIDs,
-                      first: layoutIDs?.length || 10,
-                    },
-                  })
-                  .subscribe((res3) => {
-                    if (res3.errors) {
-                      this.relatedForms = [];
-                      this.templates = [];
-                      this.form = null;
-                      this.resource = null;
-                    } else {
-                      this.form = res3.data.form;
-                      this.resource = null;
-                      this.templates = [res3.data.form] || [];
-                      this.formGroup
-                        ?.get('query.template')
-                        ?.setValue(res3.data.form.id);
-                      this.formGroup?.get('query.template')?.disable();
-                    }
-                  });
-              } else {
-                this.resource = res2.data.resource;
-                this.form = null;
-                this.relatedForms = res2.data.resource.relatedForms || [];
-                this.templates = res2.data.resource.forms || [];
-              }
-            });
-        }
-      });
+      this.apollo
+        .query<GetResourceByIdQueryResponse>({
+          query: GET_GRID_RESOURCE_META,
+          variables: {
+            resource: this.formGroup.get('resource')?.value,
+            layoutIds: layoutIDs,
+            first: layoutIDs?.length || 10,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            this.resource = res.data.resource;
+            this.relatedForms = res.data.resource.relatedForms || [];
+            this.templates = res.data.resource.forms || [];
+            this.fields = this.queryBuilder.getFields(
+              this.resource.queryName as string
+            );
+          } else {
+            this.relatedForms = [];
+            this.templates = [];
+            this.resource = null;
+            this.fields = [];
+          }
+        });
     } else {
       this.relatedForms = [];
       this.templates = [];
-      this.form = null;
       this.resource = null;
+      this.fields = [];
     }
   }
 

@@ -988,6 +988,9 @@
 							"title": "Configuration de la mise en page"
 						},
 						"title": "Mise en page de la grille"
+					},
+					"tooltip": {
+						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements"
 					}
 				},
 				"map": {

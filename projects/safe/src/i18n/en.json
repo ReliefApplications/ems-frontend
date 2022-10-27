@@ -988,6 +988,9 @@
 							"title": "Layout configuration"
 						},
 						"title": "Grid layouts"
+					},
+					"tooltip": {
+						"template": "Select a template for addition and edition of records"
 					}
 				},
 				"map": {

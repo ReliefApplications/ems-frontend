@@ -113,12 +113,9 @@ export const createGridWidgetFormGroup = (
   const formGroup = fb.group({
     id,
     title: [get(configuration, 'title', ''), Validators.required],
-    query: fb.group({
-      name: [get(configuration, 'query.name', ''), Validators.required],
-      template: [get(configuration, 'query.template', null)],
-    }),
-    layouts: [configuration?.layouts || [], Validators.required],
     resource: [get(configuration, 'resource', null), Validators.required],
+    template: [get(configuration, 'template', null)],
+    layouts: [configuration?.layouts || [], Validators.required],
     actions: fb.group({
       delete: [get(configuration, 'actions.delete', true)],
       history: [get(configuration, 'actions.history', true)],

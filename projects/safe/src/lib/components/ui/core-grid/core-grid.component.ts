@@ -323,6 +323,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.pageSize = this.settings.query.pageSize;
     }
     // Builds custom query.
+    console.log(this.settings);
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     if (!builtQuery) {
       this.error = true;

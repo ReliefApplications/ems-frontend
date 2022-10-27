@@ -1,22 +1,23 @@
-<div [formGroup]="formGroup" class="form-group">
+<div [formGroup]="formGroup" class="flex flex-col">
   <h2>{{ 'common.general' | translate }}</h2>
   <!-- Widget title -->
   <mat-form-field appearance="outline">
     <mat-label>{{ 'common.title' | translate }}</mat-label>
     <input matInput formControlName="title" type="string" />
   </mat-form-field>
-  <!-- Resource selection -->
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-    <safe-graphql-select
-      valueField="id"
-      textField="name"
-      [query]="resourcesQuery"
-      formControlName="resource"
-      [selectedElements]="[resource]"
-    >
-    </safe-graphql-select>
-    <!-- <mat-label>{{
+  <div class="flex gap-2 flex-wrap">
+    <!-- Resource selection -->
+    <mat-form-field appearance="outline" class="flex-1">
+      <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
+      <safe-graphql-select
+        valueField="id"
+        textField="name"
+        [query]="resourcesQuery"
+        formControlName="resource"
+        [selectedElements]="[resource]"
+      >
+      </safe-graphql-select>
+      <!-- <mat-label>{{
       'components.queryBuilder.dataset.select' | translate
     }}</mat-label>
     <input
@@ -31,10 +32,9 @@
         {{ option }}
       </mat-option>
     </mat-autocomplete> -->
-  </mat-form-field>
-  <ng-container formGroupName="query">
+    </mat-form-field>
     <!-- Template selection -->
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="flex-1">
       <mat-label>{{ 'models.form.template' | translate }}</mat-label>
       <mat-select formControlName="template">
         <mat-option>-</mat-option>
@@ -42,8 +42,16 @@
           template.name
         }}</mat-option>
       </mat-select>
+      <safe-icon
+        matSuffix
+        icon="info_outline"
+        variant="grey"
+        [matTooltip]="
+          'components.widget.settings.grid.tooltip.template' | translate
+        "
+      ></safe-icon>
     </mat-form-field>
-  </ng-container>
+  </div>
 </div>
 <div class="form-group" *ngIf="form || resource">
   <h2>
