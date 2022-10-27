@@ -1,5 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { SafeRestService } from '../rest/rest.service';
 
 /**
  * Shared API Proxy service.
@@ -10,20 +11,17 @@ import { Inject, Injectable } from '@angular/core';
 })
 export class SafeApiProxyService {
   /** API url */
-  public baseUrl: string;
-
+  public baseUrl = '';
   /**
    * Shared API Proxy service.
    * The API proxy service contacts the back-end generated proxy, based on the API definitions.
    *
-   * @param environment Current environment
-   * @param http Http client
+   * @param restService Shared rest service
    */
   constructor(
-    @Inject('environment') environment: any,
-    private http: HttpClient
+    private restService: SafeRestService
   ) {
-    this.baseUrl = environment.apiUrl + '/proxy/';
+    this.baseUrl = restService.apiUrl + '/proxy/';
   }
 
   /**
@@ -50,7 +48,7 @@ export class SafeApiProxyService {
     if (name) {
       const url = `${this.baseUrl}${name}${pingUrl}`;
       const headers = this.buildHeaders();
-      return this.http.get(url, { headers });
+      return this.restService.get(url, { headers });
     }
     return null;
   }
@@ -63,7 +61,7 @@ export class SafeApiProxyService {
    */
   public promisedRequestWithHeaders(url: string): Promise<any> {
     const headers = this.buildHeaders();
-    return this.http.get(url, { headers }).toPromise();
+    return this.restService.get(url, { headers }).toPromise();
   }
 
   /**
@@ -80,6 +78,6 @@ export class SafeApiProxyService {
     options: any = {}
   ): Promise<ArrayBuffer> {
     const headers = this.buildHeaders();
-    return this.http.post(url, body, { ...options, headers }).toPromise();
+    return this.restService.post(url, body, { ...options, headers }).toPromise();
   }
 }

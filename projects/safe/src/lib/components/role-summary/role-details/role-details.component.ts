@@ -14,7 +14,7 @@ import {
   GET_PERMISSIONS,
 } from '../graphql/queries';
 import { get } from 'lodash';
-import { HttpClient } from '@angular/common/http';
+import { SafeRestService } from '../../../services/rest/rest.service';
 
 /**
  * General tab of Role Summary.
@@ -56,25 +56,19 @@ export class RoleDetailsComponent implements OnInit {
     }
   }
 
-  private apiUrl = '';
-
   /**
    * General tab of Role Summary.
    * Contain title / description of role + list of users and permissions.
    *
-   * @param environment Injection of the environment file.
    * @param fb Angular form builder
    * @param apollo Apollo Client
-   * @param http http client
+   * @param restService Shared rest service
    */
   constructor(
-    @Inject('environment') environment: any,
     private fb: FormBuilder,
     private apollo: Apollo,
-    private http: HttpClient
-  ) {
-    this.apiUrl = environment.apiUrl;
-  }
+    private restService: SafeRestService
+  ) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -92,8 +86,8 @@ export class RoleDetailsComponent implements OnInit {
       .subscribe((res) => {
         this.permissions = res.data.permissions;
       });
-    const url = `${this.apiUrl}/roles/${this.role.id}/summary`;
-    this.http.get(url).subscribe((res: any) => {
+    const url = `/roles/${this.role.id}/summary`;
+    this.restService.get(url).subscribe((res: any) => {
       this.roleStats = res;
     });
   }

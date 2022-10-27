@@ -210,7 +210,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public editionActive = false;
 
   // === DOWNLOAD ===
-  private apiUrl = '';
   /** @returns filename, from grid title, or default filename, and current date */
   get fileName(): string {
     const today = new Date();
@@ -272,7 +271,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService
   ) {
-    this.apiUrl = environment.apiUrl;
     this.isAdmin =
       this.authService.userIsAdmin && environment.module === 'backoffice';
   }
@@ -1070,7 +1068,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
     // Builds and make the request
     this.downloadService.getRecordsExport(
-      `${this.apiUrl}/download/records`,
+      '/download/records',
       `text/${e.format};charset=utf-8;`,
       `${this.fileName}.${e.format}`,
       body

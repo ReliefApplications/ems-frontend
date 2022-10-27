@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
+import { SafeRestService } from '../rest/rest.service';
 
 /**
  * Shared download service. Handles export and upload events.
@@ -14,25 +15,19 @@ import { SafeSnackBarService } from '../snackbar/snackbar.service';
   providedIn: 'root',
 })
 export class SafeDownloadService {
-  /** API base url */
-  public baseUrl: string;
-
   /**
    * Shared download service. Handles export and upload events.
    * TODO: rename in file service
    *
-   * @param environment Current environment
-   * @param http Http client
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param restService Shared rest service
    */
   constructor(
-    @Inject('environment') environment: any,
-    private http: HttpClient,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private restService: SafeRestService
   ) {
-    this.baseUrl = environment.apiUrl;
   }
 
   /**
@@ -57,12 +52,11 @@ export class SafeDownloadService {
         },
       }
     );
-    const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
-    this.http.get(url, { ...options, responseType: 'blob', headers }).subscribe(
+    this.restService.get(path, { ...options, responseType: 'blob', headers }).subscribe(
       (res) => {
         const blob = new Blob([res], { type });
         this.saveFile(fileName, blob);
@@ -114,12 +108,11 @@ export class SafeDownloadService {
         },
       }
     );
-    const url = path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
-    this.http.post(url, body, { responseType: 'blob', headers }).subscribe(
+    this.restService.post(path, body, { responseType: 'blob', headers }).subscribe(
       (res) => {
         const blob = new Blob([res], { type });
         this.saveFile(fileName, blob);
@@ -179,14 +172,13 @@ export class SafeDownloadService {
         },
       }
     );
-    const url = this.buildURL(path);
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
     });
     const formData = new FormData();
     formData.append('excelFile', file, file.name);
-    return this.http.post(url, formData, { headers }).pipe(
+    return this.restService.post(path, formData, { headers }).pipe(
       tap(
         () => {
           snackBarRef.instance.data = {
@@ -209,15 +201,5 @@ export class SafeDownloadService {
         }
       )
     );
-  }
-
-  /**
-   * Builds url from path.
-   *
-   * @param path Request path
-   * @returns full url
-   */
-  private buildURL(path: string): string {
-    return path.startsWith('http') ? path : `${this.baseUrl}/${path}`;
   }
 }
