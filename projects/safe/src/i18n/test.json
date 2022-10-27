@@ -963,6 +963,16 @@
 						}
 					},
 					"hint": {
+						"actions": {
+							"add": "******",
+							"convert": "******",
+							"delete": "******",
+							"export": "******",
+							"inline": "******",
+							"show": "******",
+							"showDetails": "******",
+							"update": "******"
+						},
 						"buttons": "******"
 					},
 					"layouts": {

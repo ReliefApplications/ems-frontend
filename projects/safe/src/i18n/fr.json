@@ -963,6 +963,16 @@
 						}
 					},
 					"hint": {
+						"actions": {
+							"add": "L'utilisateur peut ajouter de nouveaux enregistrements avec le modèle choisi, s'il en a la permission",
+							"convert": "L'utilisateur peut convertir les enregistrements avec les autres modèles de la ressource sélectionnée, s'il en a la permission",
+							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
+							"export": "L'utilisateur peut exporter les enregistrements affichés",
+							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
+							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
+							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
+							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
+						},
 						"buttons": "Les boutons d'action rapides apparaîtront dans le widget et vous permettront de réaliser chacune des actions ci-dessous"
 					},
 					"layouts": {
