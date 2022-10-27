@@ -17,7 +17,6 @@ import {
   RestoreRecordMutationResponse,
   RESTORE_RECORD,
 } from './graphql/mutations';
-import { extractColumns } from '../../../utils/extractColumns';
 import {
   SafeRecordHistoryComponent,
   SafeLayoutService,
@@ -29,6 +28,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeDownloadService, Record } from '@safe/builder';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import get from 'lodash/get';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -208,13 +208,16 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    */
   private setDisplayedColumns(): void {
     let columns: any[] = [];
-    const structure = JSON.parse(this.form.structure);
-    if (structure && structure.pages) {
-      for (const page of JSON.parse(this.form.structure).pages) {
-        extractColumns(page, columns, this.form.metaData);
-      }
+    for (const field of this.form.fields) {
+      columns.push(field.name);
     }
-    columns = columns.concat(DEFAULT_COLUMNS);
+    const metadata = get(this.form, 'metadata', []);
+    columns = columns
+      .filter((x) => {
+        const fieldMeta = metadata.find((y: any) => y.name === x);
+        return get(fieldMeta, 'canSee', false);
+      })
+      .concat(DEFAULT_COLUMNS);
     this.displayedColumns = columns;
   }
 

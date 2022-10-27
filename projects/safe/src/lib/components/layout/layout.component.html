@@ -132,13 +132,13 @@
   <mat-sidenav
     class="sidenav"
     #nav
-    [mode]="largeDevice && nav.opened ? 'side' : 'over'"
+    [mode]="largeDevice ? 'side' : 'over'"
     [opened]="largeDevice"
   >
     <ng-container *ngIf="leftSidenav">
       <ng-container
         [ngTemplateOutlet]="leftSidenav"
-        [ngTemplateOutletContext]="nav"
+        [ngTemplateOutletContext]="{ $implicit: nav }"
       ></ng-container>
     </ng-container>
   </mat-sidenav>

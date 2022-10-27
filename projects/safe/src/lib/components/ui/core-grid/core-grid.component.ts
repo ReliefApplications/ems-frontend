@@ -317,7 +317,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.defaultLayout.sort;
     }
     this.showFilter = !!this.defaultLayout?.showFilter;
-    if (this.settings.query.pageSize) {
+    if (this.settings.query?.pageSize) {
       this.pageSize = this.settings.query.pageSize;
     }
     // Builds custom query.

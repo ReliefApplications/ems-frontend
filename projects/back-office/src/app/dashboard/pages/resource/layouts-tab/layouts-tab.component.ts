@@ -181,6 +181,7 @@ export class LayoutsTabComponent implements OnInit {
       disableClose: true,
       data: {
         layout,
+        queryName: this.resource.queryName,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

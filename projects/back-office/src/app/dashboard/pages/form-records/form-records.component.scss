@@ -1,14 +1,4 @@
-.actions {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end !important;
-  text-align: end;
-  margin-left: auto;
-}
-
-.table-column {
-  padding: 0px 4px;
-
+table {
   div {
     max-height: 48px;
     white-space: nowrap;
@@ -16,12 +6,4 @@
     text-overflow: ellipsis;
     max-width: 240px;
   }
-}
-
-.table-container {
-  overflow-x: auto;
-}
-
-input {
-  margin-left: 1rem;
 }

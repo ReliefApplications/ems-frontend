@@ -675,6 +675,8 @@
 			}
 		},
 		"records": {
+			"active": "******",
+			"archived": "******",
 			"showActive": "******",
 			"showArchived": "******",
 			"upload": {
@@ -961,6 +963,16 @@
 						}
 					},
 					"hint": {
+						"actions": {
+							"add": "******",
+							"convert": "******",
+							"delete": "******",
+							"export": "******",
+							"inline": "******",
+							"show": "******",
+							"showDetails": "******",
+							"update": "******"
+						},
 						"buttons": "******"
 					},
 					"layouts": {
@@ -976,6 +988,9 @@
 							"title": "******"
 						},
 						"title": "******"
+					},
+					"tooltip": {
+						"template": "******"
 					}
 				},
 				"map": {

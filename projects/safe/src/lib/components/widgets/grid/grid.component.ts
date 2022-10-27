@@ -88,14 +88,14 @@ export class SafeGridWidgetComponent implements OnInit {
    * @param environment Environment variables
    * @param apollo The apollo client
    * @param dialog Material dialogs service
-   * @param snackBar The safe snack bar service
-   * @param workflowService The safe wofkflow service
-   * @param safeAuthService The safe authentification service
-   * @param emailService The safe email service
-   * @param queryBuilder The query builder service
-   * @param gridLayoutService The safe grid layout service
-   * @param confirmService The safe confirm service
-   * @param translate The translate service
+   * @param snackBar Shared snack bar service
+   * @param workflowService Shared workflow service
+   * @param safeAuthService Shared authentication service
+   * @param emailService Shared email service
+   * @param queryBuilder Shared query builder service
+   * @param gridLayoutService Shared grid layout service
+   * @param confirmService Shared confirm service
+   * @param translate Angular translate service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -132,7 +132,7 @@ export class SafeGridWidgetComponent implements OnInit {
           this.gridSettings = {
             ...this.settings,
             ...this.layout,
-            ...{ template: this.settings.query?.template },
+            ...{ template: get(this.settings, 'template', null) },
           };
         });
     }
@@ -156,7 +156,7 @@ export class SafeGridWidgetComponent implements OnInit {
             variables: {
               id: item.id,
               data,
-              template: this.settings.query?.template,
+              template: get(this.settings, 'template', null),
             },
           })
           .toPromise()
@@ -368,7 +368,7 @@ export class SafeGridWidgetComponent implements OnInit {
         variables: {
           ids,
           data,
-          template: this.settings.query?.template,
+          template: get(this.settings, 'template', null),
         },
       })
       .toPromise();
@@ -519,7 +519,7 @@ export class SafeGridWidgetComponent implements OnInit {
     this.gridSettings = {
       ...this.settings,
       ...this.layout,
-      ...{ template: this.settings.query?.template },
+      ...{ template: get(this.settings, 'template', null) },
     };
   }
 
