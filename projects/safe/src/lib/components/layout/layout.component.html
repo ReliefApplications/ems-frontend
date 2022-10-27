@@ -138,7 +138,7 @@
     <ng-container *ngIf="leftSidenav">
       <ng-container
         [ngTemplateOutlet]="leftSidenav"
-        [ngTemplateOutletContext]="nav"
+        [ngTemplateOutletContext]="{ $implicit: nav }"
       ></ng-container>
     </ng-container>
   </mat-sidenav>
