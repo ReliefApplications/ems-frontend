@@ -62,7 +62,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
 
   // === DATASET AND TEMPLATES ===
   public templates: Form[] = [];
-  private availableQueries?: Observable<any[]>;
   private allQueries: any[] = [];
   public filteredQueries: any[] = [];
   public resource: Resource | null = null;
@@ -87,15 +86,6 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     this.formGroup = createGridWidgetFormGroup(this.tile.id, tileSettings);
-    this.availableQueries = this.queryBuilder.availableQueries$;
-    this.availableQueries.subscribe((res) => {
-      if (res && res.length > 0) {
-        this.allQueries = res.map((x) => x.name);
-        this.filteredQueries = this.filterQueries(
-          this.formGroup?.value.query.name
-        );
-      }
-    });
     // this.formGroup?.get('query.name')?.valueChanges.subscribe((res) => {
     //   this.filteredQueries = this.filterQueries(res);
     // });

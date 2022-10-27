@@ -25,6 +25,11 @@ export class TabMainComponent implements OnInit {
 
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
+  /**
+   * Main tab of widget grid configuration modal
+   *
+   * @param apollo Apollo service
+   */
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
