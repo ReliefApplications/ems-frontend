@@ -132,7 +132,7 @@
   <mat-sidenav
     class="sidenav"
     #nav
-    [mode]="largeDevice && nav.opened ? 'side' : 'over'"
+    [mode]="largeDevice ? 'side' : 'over'"
     [opened]="largeDevice"
   >
     <ng-container *ngIf="leftSidenav">
