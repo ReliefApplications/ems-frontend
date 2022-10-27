@@ -177,8 +177,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     this.fields = this.queryBuilder.getFields(this.queryName);
     const query = this.queryBuilder.sourceQuery(this.queryName);
     if (query) {
-      const layoutIDs: string[] | undefined =
-        this.formGroup?.get('layouts')?.value;
+      const layoutIDs: string[] = [];
       query.subscribe((res1: { data: any }) => {
         // eslint-disable-next-line no-underscore-dangle
         const source = res1.data[`_${this.queryName}Meta`]._source;
