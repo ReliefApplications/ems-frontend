@@ -86,6 +86,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
     this.formGroup = createGridWidgetFormGroup(this.tile.id, tileSettings);
+    this.change.emit(this.formGroup);
     // this.formGroup?.get('query.name')?.valueChanges.subscribe((res) => {
     //   this.filteredQueries = this.filterQueries(res);
     // });
