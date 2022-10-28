@@ -1,5 +1,5 @@
 <form [formGroup]="formGroup">
-  <div class="form-group" formGroupName="chart">
+  <div class="flex flex-col last:mb-0" formGroupName="chart">
     <h2>{{ 'common.display' | translate }}</h2>
     <mat-accordion class="collapsible-form-group">
       <!-- === LEGEND === -->
@@ -68,7 +68,7 @@
             {{ 'common.title' | translate }}
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div class="form-group">
+        <div class="flex flex-col last:mb-0">
           <mat-slide-toggle formControlName="visible">{{
             'common.display' | translate
           }}</mat-slide-toggle>
@@ -168,7 +168,7 @@
             {{ 'components.widget.settings.chart.palette.title' | translate }}
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div class="form-group">
+        <div class="flex flex-col last:mb-0">
           <mat-slide-toggle formControlName="enabled">{{
             'components.widget.settings.chart.palette.enable' | translate
           }}</mat-slide-toggle>
@@ -182,7 +182,7 @@
             'components.widget.settings.chart.labels.title' | translate
           }}</mat-panel-title>
         </mat-expansion-panel-header>
-        <div class="form-group">
+        <div class="flex flex-col last:mb-0">
           <mat-slide-toggle
             formControlName="showCategory"
             *ngIf="type.name === 'donut' || type.name === 'pie'"
@@ -308,7 +308,7 @@
             {{ 'components.widget.settings.chart.series.title' | translate }}
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div class="form-group">
+        <div class="flex flex-col last:mb-0">
           <mat-slide-toggle formControlName="enable">{{
             'components.widget.settings.chart.series.stack.enable' | translate
           }}</mat-slide-toggle>
