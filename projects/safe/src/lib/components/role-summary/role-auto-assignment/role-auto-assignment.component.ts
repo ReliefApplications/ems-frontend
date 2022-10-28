@@ -5,8 +5,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
+import { isArray } from 'lodash';
 import get from 'lodash/get';
 import { Group, Role } from '../../../models/user.model';
+import { SafeRestService } from '../../../services/rest/rest.service';
 import { getFilterGroupDisplay } from '../../../utils/filter/filter-display.helper';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { GetGroupsQueryResponse, GET_GROUPS } from '../graphql/queries';
@@ -46,12 +48,14 @@ export class RoleAutoAssignmentComponent implements OnInit {
    * @param apollo Apollo service
    * @param dialog Material dialog
    * @param translate Angular translate service
+   * @param restService Safe REST service
    */
   constructor(
     private fb: FormBuilder,
     private apollo: Apollo,
     private dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private restService: SafeRestService
   ) {}
 
   ngOnInit(): void {
@@ -86,6 +90,22 @@ export class RoleAutoAssignmentComponent implements OnInit {
           });
         }
       });
+
+    const url = '/permissions/attributes';
+    this.restService.get(url).subscribe((res: any) => {
+      if (isArray(res)) {
+        res.forEach((attr: { value: string; text: string }) => {
+          this.fields.push({
+            text: attr.text,
+            name: `{{attributes.${attr.value}}}`,
+            filter: {
+              operators: ['eq'],
+            },
+            editor: 'text',
+          });
+        });
+      }
+    });
   }
 
   /**
