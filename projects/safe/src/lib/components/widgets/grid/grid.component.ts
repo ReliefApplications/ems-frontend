@@ -127,7 +127,11 @@ export class SafeGridWidgetComponent implements OnInit {
           first: this.settings.layouts?.length,
         })
         .then((res) => {
-          this.layouts = res.edges.map((edge) => edge.node);
+          this.layouts = res.edges
+            .map((edge) => edge.node)
+            .sort(
+              (a, b) => this.settings.layouts.indexOf(a.id) - this.settings.layouts.indexOf(b.id)
+            );
           this.layout = this.layouts[0] || null;
           this.gridSettings = {
             ...this.settings,
