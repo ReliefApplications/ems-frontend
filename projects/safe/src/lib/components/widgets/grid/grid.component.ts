@@ -269,7 +269,7 @@ export class SafeGridWidgetComponent implements OnInit {
           ],
         },
         {
-          name: this.settings.query.name,
+          name: this.grid.settings.query.name,
           fields: options.bodyFields,
         },
         this.grid.sortField || undefined,

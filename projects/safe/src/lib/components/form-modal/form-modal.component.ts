@@ -34,7 +34,7 @@ import {
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
-import { SafeDownloadService } from '../../services/download/download.service';
+import { SafeRestService } from '../../services/rest/rest.service';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -106,7 +106,7 @@ export class SafeFormModalComponent implements OnInit {
    * @param dialogRef This is the reference to the dialog.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param snackBar This is the service that allows you to display a snackbar.
-   * @param downloadService This is the service that is used to download files.
+   * @param restService This is the service that is used to make http requests.
    * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param confirmService This is the service that will be used to display confirm window.
@@ -120,7 +120,7 @@ export class SafeFormModalComponent implements OnInit {
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private downloadService: SafeDownloadService,
+    private restService: SafeRestService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
     private confirmService: SafeConfirmService,
@@ -565,7 +565,7 @@ export class SafeFormModalComponent implements OnInit {
       const xhr = new XMLHttpRequest();
       xhr.open(
         'GET',
-        `${this.downloadService.baseUrl}/download/file/${options.content}`
+        `${this.restService.apiUrl}/download/file/${options.content}`
       );
       xhr.setRequestHeader(
         'Authorization',

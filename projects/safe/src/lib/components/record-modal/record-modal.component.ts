@@ -22,7 +22,7 @@ import {
   GET_FORM_STRUCTURE,
 } from './graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeDownloadService } from '../../services/download/download.service';
+import { SafeRestService } from '../../services/rest/rest.service';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { EDIT_RECORD, EditRecordMutationResponse } from './graphql/mutations';
@@ -88,7 +88,7 @@ export class SafeRecordModalComponent implements AfterViewInit {
    * @param environment This is the environment in which we run the application.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param dialog This is the Material dialog service
-   * @param downloadService This is the service that is used to download files
+   * @param restService This is the service that is used to make http requests.
    * @param authService This is the service that handles the authentication of the user
    * @param snackBar This is the service that allows you to display a snackbar message to the user.
    * @param formBuilderService This is the service that will be used to build forms.
@@ -101,7 +101,7 @@ export class SafeRecordModalComponent implements AfterViewInit {
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private downloadService: SafeDownloadService,
+    private restService: SafeRestService,
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
     private formBuilderService: SafeFormBuilderService,
@@ -255,7 +255,7 @@ export class SafeRecordModalComponent implements AfterViewInit {
     const xhr = new XMLHttpRequest();
     xhr.open(
       'GET',
-      `${this.downloadService.baseUrl}/download/file/${options.content}`
+      `${this.restService.apiUrl}/download/file/${options.content}`
     );
     xhr.setRequestHeader(
       'Authorization',

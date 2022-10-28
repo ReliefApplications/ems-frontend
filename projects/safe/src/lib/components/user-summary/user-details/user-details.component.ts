@@ -1,16 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { Permissions, User } from '../../../models/user.model';
 import { SafeAuthService } from '../../../services/auth/auth.service';
+import { SafeRestService } from '../../../services/rest/rest.service';
 
 /**
  * User summary details component.
@@ -37,27 +30,20 @@ export class UserDetailsComponent implements OnInit {
     }
   }
 
-  /** API url */
-  public baseUrl: string;
-
   public attributes: { text: string; value: string }[] = [];
 
   /**
    * User summary details component
    *
-   * @param environment current environment
    * @param fb Angular form builder
    * @param authService Shared authentication service
-   * @param http http client
+   * @param restService Shared rest service
    */
   constructor(
-    @Inject('environment') environment: any,
     private fb: FormBuilder,
     private authService: SafeAuthService,
-    private http: HttpClient
-  ) {
-    this.baseUrl = environment.apiUrl + '/permissions';
-  }
+    private restService: SafeRestService
+  ) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -86,8 +72,8 @@ export class UserDetailsComponent implements OnInit {
    * Get attributes from back-end, and set controls if any
    */
   private getAttributes(): void {
-    const url = `${this.baseUrl}/attributes`;
-    this.http.get(url).subscribe((res: any) => {
+    const url = '/permissions/attributes';
+    this.restService.get(url).subscribe((res: any) => {
       this.form.addControl(
         'attributes',
         this.fb.group(

@@ -9,6 +9,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { SafeAuthService } from '../auth/auth.service';
+import { SafeRestService } from '../rest/rest.service';
 
 /**
  * Shared Authentication interceptor service
@@ -17,20 +18,16 @@ import { SafeAuthService } from '../auth/auth.service';
   providedIn: 'root',
 })
 export class SafeAuthInterceptorService implements HttpInterceptor {
-  private apiUrl = '';
-
   /**
    * Shared Authentication interceptor service
    *
-   * @param environment Current environment
    * @param authService Shared authentication service
+   * @param restService Shared rest service
    */
   constructor(
-    @Inject('environment') environment: any,
-    private authService: SafeAuthService
-  ) {
-    this.apiUrl = environment.apiUrl;
-  }
+    private authService: SafeAuthService,
+    private restService: SafeRestService
+  ) {}
 
   /**
    * Intercept request to add token to headers
@@ -45,7 +42,7 @@ export class SafeAuthInterceptorService implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     const token = this.authService.getAuthToken();
 
-    if (request.url.startsWith(this.apiUrl) && token) {
+    if (request.url.startsWith(this.restService.apiUrl) && token) {
       // If we have a token, we set it to the header
       request = request.clone({
         setHeaders: { Authorization: `Bearer ${token}` },
