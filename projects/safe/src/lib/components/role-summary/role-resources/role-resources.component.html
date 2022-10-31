@@ -5,98 +5,108 @@
   [loading]="filterLoading"
 ></safe-role-resources-filter>
 <!-- Resource Table -->
-<table
-  *ngIf="!loading"
-  mat-table
-  [dataSource]="resources"
-  multiTemplateDataRows
->
-  <!-- Resource Name -->
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>
-      {{ 'common.name' | translate }}
-    </th>
-    <td mat-cell *matCellDef="let element">{{ element.resource.name }}</td>
-  </ng-container>
-  <!-- Resource Actions & Permissions -->
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element">
-      <div style="display: flex">
-        <!-- Permissions -->
-        <ng-container *ngFor="let permission of element.permissions">
-          <safe-button
-            [isIcon]="true"
-            [icon]="permission.icon"
-            [variant]="permission.variant"
-            (click)="editResourceAccess(element.resource, permission.name)"
-            [disabled]="loading || updating"
-            [matTooltip]="
-              permission.tooltip
-                | translate: { resource: element.resource.name }
-            "
-          >
-          </safe-button>
-        </ng-container>
-        <!-- Open Resource -->
-        <safe-button
-          [isIcon]="true"
-          [icon]="
-            element.resource.id === openedResource?.id
-              ? 'keyboard_arrow_up'
-              : 'keyboard_arrow_down'
-          "
-          (click)="toggleResource(element.resource)"
-          [disabled]="loading || updating"
-        >
-        </safe-button>
-      </div>
-    </td>
-  </ng-container>
-  <ng-container matColumnDef="expandedDetail">
-    <td
-      mat-cell
-      *matCellDef="let element"
-      [attr.colspan]="displayedColumns.length"
+  <!-- Table container -->
+  <div class="overflow-x-hidden -my-0.5 -mx-1.5">
+    <!-- Table scroll container -->
+    <div class="overflow-auto py-0.5 px-1.5">
+    <table
+      *ngIf="!loading"
+      mat-table
+      [dataSource]="resources"
+      multiTemplateDataRows
     >
-      <div
-        class="expanded-form"
-        [@detailExpand]="
-          element.resource.id === openedResource?.id ? 'expanded' : 'collapsed'
-        "
-      >
-        <ng-container
-          *ngIf="openedResource && element.resource.id === openedResource?.id"
+      <!-- Resource Name -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'common.name' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.resource.name }}</td>
+      </ng-container>
+      <!-- Resource Actions & Permissions -->
+      <ng-container matColumnDef="actions" [stickyEnd]="true">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <div style="display: flex">
+            <!-- Permissions -->
+            <ng-container *ngFor="let permission of element.permissions">
+              <safe-button
+                [isIcon]="true"
+                [icon]="permission.icon"
+                [variant]="permission.variant"
+                (click)="editResourceAccess(element.resource, permission.name)"
+                [disabled]="loading || updating"
+                [matTooltip]="
+                  permission.tooltip
+                    | translate: { resource: element.resource.name }
+                "
+              >
+              </safe-button>
+            </ng-container>
+            <!-- Open Resource -->
+            <safe-button
+              [isIcon]="true"
+              [icon]="
+                element.resource.id === openedResource?.id
+                  ? 'keyboard_arrow_up'
+                  : 'keyboard_arrow_down'
+              "
+              (click)="toggleResource(element.resource)"
+              [disabled]="loading || updating"
+            >
+            </safe-button>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="expandedDetail">
+        <td
+          mat-cell
+          *matCellDef="let element"
+          [attr.colspan]="displayedColumns.length"
         >
-          <safe-resource-access-filters
-            [role]="role.id!"
-            [resource]="openedResource"
-            (update)="editResourceAccessFilter(element.resource, $event)"
-          >
-          </safe-resource-access-filters>
-          <safe-resource-fields
-            [role]="role"
-            [resource]="openedResource"
-            (onToggle)="
-              onEditFieldAccess(
-                $event.resource,
-                $event.field,
-                $event.permission
-              )
+          <div
+            class="expanded-form"
+            [@detailExpand]="
+              element.resource.id === openedResource?.id
+                ? 'expanded'
+                : 'collapsed'
             "
-          ></safe-resource-fields>
-        </ng-container>
-      </div>
-    </td>
-  </ng-container>
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: ['expandedDetail']"
-    style="height: 0"
-  ></tr>
-</table>
+          >
+            <ng-container
+              *ngIf="
+                openedResource && element.resource.id === openedResource?.id
+              "
+            >
+              <safe-resource-access-filters
+                [role]="role.id!"
+                [resource]="openedResource"
+                (update)="editResourceAccessFilter(element.resource, $event)"
+              >
+              </safe-resource-access-filters>
+              <safe-resource-fields
+                [role]="role"
+                [resource]="openedResource"
+                (onToggle)="
+                  onEditFieldAccess(
+                    $event.resource,
+                    $event.field,
+                    $event.permission
+                  )
+                "
+              ></safe-resource-fields>
+            </ng-container>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: ['expandedDetail']"
+        style="height: 0"
+      ></tr>
+    </table>
+  </div>
+</div>
 <safe-skeleton-table *ngIf="loading" [columns]="['common.name']">
 </safe-skeleton-table>
 <mat-paginator
