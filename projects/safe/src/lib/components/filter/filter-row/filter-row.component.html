@@ -41,7 +41,11 @@
               *ngFor="let subField of field.fields"
               [value]="field.name + '.' + subField.name"
             >
-              {{ field.name }} - {{ subField.text || subField.name }}
+              {{
+                field.name === '!attribute'
+                  ? subField.text || subField.name
+                  : field.name + ' - ' + (subField.text || subField.name)
+              }}
             </mat-option>
           </mat-optgroup>
         </ng-container>

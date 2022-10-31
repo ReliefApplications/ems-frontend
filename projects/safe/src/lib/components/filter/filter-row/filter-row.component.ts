@@ -130,6 +130,7 @@ export class FilterRowComponent implements OnInit, OnChanges, AfterViewInit {
           this.editor = this.booleanEditor;
           break;
         }
+        case 'attribute':
         case 'select': {
           this.editor = this.selectEditor;
           break;
