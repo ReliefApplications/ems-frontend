@@ -49,13 +49,10 @@ export const createButtonFormGroup = (value: any): FormGroup => {
           )
         : []
     ),
-    attachToRecord: [
-      value && value.attachToRecord ? value.attachToRecord : false,
-    ],
-    targetForm: [value && value.targetForm ? value.targetForm : null],
-    targetFormField: [
-      value && value.targetFormField ? value.targetFormField : null,
-    ],
+    attachToRecord: [get(value, 'attachToRecord', false)],
+    targetResource: [get(value, 'targetResource', null)],
+    targetForm: [get(value, 'targetForm', null)],
+    targetFormField: [get(value, 'targetFormField', null)],
     targetFormQuery: createQueryForm(
       value && value.targetFormQuery ? value.targetFormQuery : null,
       Boolean(value && value.targetForm)

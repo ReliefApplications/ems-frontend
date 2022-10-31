@@ -1,8 +1,8 @@
 import { gql } from 'apollo-angular';
 import { Record } from '../../../../models/record.model';
+import { Form } from '../../../../models/form.model';
 
 // === GET RECORD BY ID ===
-
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
   query GetRecordById($id: ID!) {
@@ -35,7 +35,6 @@ export interface GetRecordByIdQueryResponse {
 }
 
 // === GET RECORD DETAILS ===
-
 /** Graphql request for getting record details by its id */
 export const GET_RECORD_DETAILS = gql`
   query GetRecordDetails($id: ID!) {
@@ -202,3 +201,20 @@ export const GET_QUERY_TYPES = gql`
     }
   }
 `;
+
+// === GET FORM ===
+/** Graphql query for getting a form by its id */
+export const GET_FORM_BY_ID = gql`
+  query GetFormById($id: ID!) {
+    form(id: $id) {
+      id
+      name
+      fields
+    }
+  }
+`;
+
+/** Interface for getFormByIdQueryResponse object */
+export interface GetFormByIdQueryResponse {
+  form: Form;
+}
