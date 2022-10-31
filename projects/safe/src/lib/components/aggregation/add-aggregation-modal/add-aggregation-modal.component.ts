@@ -7,10 +7,7 @@ import {
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
 import { SafeEditAggregationModalComponent } from '../edit-aggregation-modal/edit-aggregation-modal.component';
-import {
-  Aggregation,
-  AggregationConnection,
-} from '../../../models/aggregation.model';
+import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import {
   GetResourceAggregationsResponse,
@@ -24,7 +21,7 @@ import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
  */
 interface DialogData {
-  aggregations: AggregationConnection;
+  aggregations: Aggregation[];
   form?: Form;
   resource?: Resource;
 }
@@ -69,7 +66,7 @@ export class AddAggregationModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private aggregationService: SafeAggregationService
   ) {
-    this.aggregations = data.aggregations.edges.map((x) => x.node);
+    this.aggregations = data.aggregations;
     this.form = data.form;
     this.resource = data.resource;
   }

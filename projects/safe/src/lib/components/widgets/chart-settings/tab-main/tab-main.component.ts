@@ -132,7 +132,8 @@ export class TabMainComponent implements OnInit {
   public addAggregation(): void {
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        aggregations: this.resource?.aggregations,
+        aggregations:
+          this.resource?.aggregations?.edges.map((x) => x.node) || [],
         resource: this.resource,
       },
     });
