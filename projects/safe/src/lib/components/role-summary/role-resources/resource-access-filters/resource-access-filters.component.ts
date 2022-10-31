@@ -62,6 +62,8 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
     isnotnull: this.translate.instant('kendo.grid.filterIsNotNullOperator'),
     isempty: this.translate.instant('kendo.grid.filterIsEmptyOperator'),
     isnotempty: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
+    in: this.translate.instant('kendo.grid.filterIsInOperator'),
+    notin: this.translate.instant('kendo.grid.filterIsNotInOperator'),
   };
   public permissionTypes = Object.values(Permission);
 
@@ -147,8 +149,8 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
 
     this.filterFields.unshift({
       text: this.translate.instant('common.attribute.few'),
-      // regular questions can't have exclamations marks in their name
-      name: `!attribute`,
+      // regular questions can't have dollar signs in their name
+      name: `$attribute`,
       filter: {
         operators: ['eq', 'in', 'neq', 'notin'],
       },
