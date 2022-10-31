@@ -90,7 +90,7 @@ export class TabMainComponent implements OnInit {
         query: GET_RESOURCE,
         variables: {
           id,
-          aggregationId,
+          aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
       .subscribe((res) => {
@@ -132,7 +132,8 @@ export class TabMainComponent implements OnInit {
   public addAggregation(): void {
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        aggregations: this.resource?.aggregations,
+        aggregations:
+          this.resource?.aggregations?.edges.map((x) => x.node) || [],
         resource: this.resource,
       },
     });
