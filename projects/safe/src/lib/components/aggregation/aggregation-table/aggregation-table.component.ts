@@ -92,9 +92,7 @@ export class AggregationTableComponent implements OnInit, OnChanges {
   public onAdd(): void {
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        aggregations: this.form
-          ? this.form.aggregations
-          : this.resource?.aggregations,
+        aggregations: this.allAggregations,
         form: this.form,
         resource: this.resource,
       },
