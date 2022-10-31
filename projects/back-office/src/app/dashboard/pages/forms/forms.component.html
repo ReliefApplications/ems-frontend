@@ -14,174 +14,184 @@
     </safe-button>
   </div>
 </div>
+<!-- Table container -->
+<div class="overflow-x-hidden">
+  <!-- Table scroll container -->
+  <div class="overflow-auto">
+    <table
+      *ngIf="!loading"
+      mat-table
+      [dataSource]="forms"
+      matSort
+      (matSortChange)="onSort($event)"
+    >
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header="name">
+            {{ 'common.name' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
 
-<table
-  *ngIf="!loading"
-  mat-table
-  [dataSource]="forms"
-  matSort
-  (matSortChange)="onSort($event)"
->
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header="name">
-        {{ 'common.name' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-  </ng-container>
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header="createdAt">
+            {{ 'common.createdOn' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.createdAt | safeDate }}
+        </td>
+      </ng-container>
 
-  <ng-container matColumnDef="createdAt">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header="createdAt">
-        {{ 'common.createdOn' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">
-      {{ element.createdAt | safeDate }}
-    </td>
-  </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle">
+            {{ 'common.status' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-chip-list>
+            <mat-chip
+              class="success-chip"
+              disabled
+              *ngIf="element.status === 'active'"
+            >
+              {{ 'common.status_active' | translate | titlecase }}
+            </mat-chip>
+            <mat-chip
+              class="accent-chip"
+              disabled
+              color="accent"
+              *ngIf="element.status === 'pending'"
+            >
+              {{ 'common.status_pending' | translate | titlecase }}
+            </mat-chip>
+            <mat-chip
+              class="warn-chip"
+              disabled
+              color="warn"
+              *ngIf="element.status === 'archived'"
+            >
+              {{ 'common.status_archived' | translate | titlecase }}
+            </mat-chip>
+          </mat-chip-list>
+        </td>
+      </ng-container>
 
-  <ng-container matColumnDef="status">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle">
-        {{ 'common.status' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">
-      <mat-chip-list>
-        <mat-chip
-          class="success-chip"
-          disabled
-          *ngIf="element.status === 'active'"
-        >
-          {{ 'common.status_active' | translate | titlecase }}
-        </mat-chip>
-        <mat-chip
-          class="accent-chip"
-          disabled
-          color="accent"
-          *ngIf="element.status === 'pending'"
-        >
-          {{ 'common.status_pending' | translate | titlecase }}
-        </mat-chip>
-        <mat-chip
-          class="warn-chip"
-          disabled
-          color="warn"
-          *ngIf="element.status === 'archived'"
-        >
-          {{ 'common.status_archived' | translate | titlecase }}
-        </mat-chip>
-      </mat-chip-list>
-    </td>
-  </ng-container>
+      <ng-container matColumnDef="versionsCount">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle">
+            {{ 'common.history' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.versionsCount }}</td>
+      </ng-container>
 
-  <ng-container matColumnDef="versionsCount">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle">
-        {{ 'common.history' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">{{ element.versionsCount }}</td>
-  </ng-container>
+      <ng-container matColumnDef="recordsCount">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle">
+            {{ 'common.record.few' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.recordsCount }}</td>
+      </ng-container>
 
-  <ng-container matColumnDef="recordsCount">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle">
-        {{ 'common.record.few' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">{{ element.recordsCount }}</td>
-  </ng-container>
+      <ng-container matColumnDef="core">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle">
+            {{ 'components.forms.isCore' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-chip-list *ngIf="element.core">
+            <mat-chip class="primary-chip" disabled>{{
+              'models.form.core' | translate
+            }}</mat-chip>
+          </mat-chip-list>
+        </td>
+      </ng-container>
 
-  <ng-container matColumnDef="core">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle">
-        {{ 'components.forms.isCore' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">
-      <mat-chip-list *ngIf="element.core">
-        <mat-chip class="primary-chip" disabled>{{
-          'models.form.core' | translate
-        }}</mat-chip>
-      </mat-chip-list>
-    </td>
-  </ng-container>
+      <ng-container matColumnDef="parentForm">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle">
+            {{ 'components.forms.parent' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <safe-button
+            *ngIf="!element.core && element.resource?.coreForm?.name"
+            [routerLink]="[element.resource.coreForm.id + '/builder']"
+          >
+            {{ element.resource.coreForm.name }}
+          </safe-button>
+        </td>
+      </ng-container>
 
-  <ng-container matColumnDef="parentForm">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle">
-        {{ 'components.forms.parent' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">
-      <safe-button
-        *ngIf="!element.core && element.resource?.coreForm?.name"
-        [routerLink]="[element.resource.coreForm.id + '/builder']"
-      >
-        {{ element.resource.coreForm.name }}
-      </safe-button>
-    </td>
-  </ng-container>
+      <ng-container matColumnDef="actions" [stickyEnd]="true">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <safe-button
+            [isIcon]="true"
+            icon="more_vert"
+            [matMenuTriggerFor]="menu"
+            (click)="$event.stopPropagation()"
+            [disabled]="
+              !(
+                element.canUpdate ||
+                element.canDelete ||
+                element.recordsCount > 0
+              )
+            "
+          >
+          </safe-button>
+          <mat-menu #menu="matMenu">
+            <button
+              mat-menu-item
+              [routerLink]="[element.id + '/builder']"
+              *ngIf="element.canUpdate"
+            >
+              <mat-icon>edit</mat-icon>
+              {{ 'common.edit' | translate }}
+            </button>
+            <ng-container *ngIf="element.canSee">
+              <button mat-menu-item [routerLink]="[element.id + '/records']">
+                <mat-icon>plagiarism</mat-icon>
+                {{
+                  'common.viewObject'
+                    | translate: { name: 'common.record.few' | translate }
+                }}
+              </button>
+            </ng-container>
+            <ng-container *ngIf="element.canDelete">
+              <safe-divider style="margin: unset"></safe-divider>
+              <button mat-menu-item (click)="onDelete(element, $event)">
+                <mat-icon>delete</mat-icon>
+                {{ 'common.delete' | translate }}
+              </button>
+            </ng-container>
+          </mat-menu>
+        </td>
+      </ng-container>
 
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element">
-      <safe-button
-        [isIcon]="true"
-        icon="more_vert"
-        [matMenuTriggerFor]="menu"
-        (click)="$event.stopPropagation()"
-        [disabled]="
-          !(element.canUpdate || element.canDelete || element.recordsCount > 0)
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        [ngClass]="{
+          'cursor-pointer': row.canCreateRecords && row.status === 'active'
+        }"
+        [routerLink]="
+          row.canCreateRecords && row.status === 'active'
+            ? [row.id + '/answer']
+            : []
         "
-      >
-      </safe-button>
-      <mat-menu #menu="matMenu">
-        <button
-          mat-menu-item
-          [routerLink]="[element.id + '/builder']"
-          *ngIf="element.canUpdate"
-        >
-          <mat-icon>edit</mat-icon>
-          {{ 'common.edit' | translate }}
-        </button>
-        <ng-container *ngIf="element.canSee">
-          <button mat-menu-item [routerLink]="[element.id + '/records']">
-            <mat-icon>plagiarism</mat-icon>
-            {{
-              'common.viewObject'
-                | translate: { name: 'common.record.few' | translate }
-            }}
-          </button>
-        </ng-container>
-        <ng-container *ngIf="element.canDelete">
-          <safe-divider style="margin: unset"></safe-divider>
-          <button mat-menu-item (click)="onDelete(element, $event)">
-            <mat-icon>delete</mat-icon>
-            {{ 'common.delete' | translate }}
-          </button>
-        </ng-container>
-      </mat-menu>
-    </td>
-  </ng-container>
+      ></tr>
+    </table>
+  </div>
+</div>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: displayedColumns"
-    [ngClass]="{
-      'cursor-pointer': row.canCreateRecords && row.status === 'active'
-    }"
-    [routerLink]="
-      row.canCreateRecords && row.status === 'active'
-        ? [row.id + '/answer']
-        : []
-    "
-  ></tr>
-</table>
 <safe-skeleton-table
   *ngIf="loading"
   [columns]="[
