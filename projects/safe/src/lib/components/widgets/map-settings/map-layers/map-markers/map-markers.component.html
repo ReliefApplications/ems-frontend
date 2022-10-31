@@ -63,10 +63,10 @@
   <safe-icon icon="info"></safe-icon>
   {{ 'components.widget.settings.map.layers.point.rulesInfo' | translate }}
 </safe-alert>
-<!-- Table container -->
-<div class="overflow-x-hidden">
-  <!-- Table scroll container -->
-  <div class="overflow-auto">
+  <!-- Table container -->
+  <div class="overflow-x-hidden -my-0.5 -mx-1.5">
+    <!-- Table scroll container -->
+    <div class="overflow-auto py-0.5 px-1.5">
     <table mat-table [dataSource]="rules.value">
       <ng-container matColumnDef="color">
         <th mat-header-cell *matHeaderCellDef>
