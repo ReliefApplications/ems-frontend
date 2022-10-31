@@ -1,5 +1,5 @@
 <div [formGroup]="form" class="flex flex-col gap-4">
-  <div class="flex flex-wrap gap-2 items-center">
+  <div class="flex flex-wrap gap-2 items-strech flex-col sm:flex-row">
     <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
       <mat-icon matPrefix>search</mat-icon>
       <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
@@ -11,6 +11,7 @@
       category="tertiary"
       variant="primary"
       (click)="show = !show"
+      [block]="innerWidth <= 640"
     >
       {{
         show
@@ -19,7 +20,10 @@
       }}
     </safe-button>
   </div>
-  <div *ngIf="show" class="flex flex-wrap gap-2 items-center">
+  <div
+    *ngIf="show"
+    class="flex flex-wrap gap-2 items-strech flex-col sm:flex-row"
+  >
     <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
       <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
       <mat-date-range-input [rangePicker]="rangePicker">
@@ -72,8 +76,12 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <safe-button variant="danger" (click)="clear()">{{
-      'common.filter.clear' | translate
-    }}</safe-button>
+    <safe-button
+      variant="danger"
+      [category]="innerWidth <= 640 ? 'secondary' : 'primary'"
+      (click)="clear()"
+      [block]="innerWidth <= 640"
+      >{{ 'common.filter.clear' | translate }}</safe-button
+    >
   </div>
 </div>
