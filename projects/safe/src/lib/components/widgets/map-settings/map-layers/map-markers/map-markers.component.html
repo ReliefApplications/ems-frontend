@@ -2,9 +2,9 @@
   <safe-icon icon="info"></safe-icon>
   {{ 'components.widget.settings.map.layers.point.info' | translate }}
 </safe-alert>
-<div class="form-group" [formGroup]="form">
+<div class="flex flex-col mt-0 mb-12" [formGroup]="form">
   <!-- Latitude and longitude -->
-  <div class="form-group-row">
+  <div class="flex gap-2">
     <mat-form-field appearance="outline" style="width: 100%">
       <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
       <mat-select formControlName="latitude">
