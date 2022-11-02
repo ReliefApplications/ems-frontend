@@ -57,6 +57,7 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
           field: [get(field, 'sort.field', '')],
           order: [get(field, 'sort.order', 'asc')],
         }),
+        first: [get(field, 'first', null), Validators.min(0)],
         filter: newField
           ? formBuilder.group({})
           : createFilterGroup(field.filter),
@@ -116,7 +117,7 @@ export const createQueryForm = (value: any, validators = true): FormGroup =>
     style: formBuilder.array(
       value && value.style && value.style.length
         ? value.style.map((x: any) => createStyleForm(x))
-        : [createStyleForm(null)]
+        : []
     ),
   });
 

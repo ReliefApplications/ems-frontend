@@ -120,6 +120,7 @@
 			"file": {
 				"download": {
 					"error": "Something went wrong during the download",
+					"ongoing": "Your file export is ongoing. You will receive an email once ready.",
 					"processing": "Downloading file...",
 					"ready": "Your file is ready"
 				},
@@ -240,8 +241,18 @@
 			"none": "No subscription",
 			"one": "Subscription"
 		},
+		"template": {
+			"few": "Templates",
+			"none": "No template",
+			"one": "Template"
+		},
 		"title": "Title",
 		"true": "True",
+		"type": {
+			"few": "Types",
+			"none": "No type",
+			"one": "Type"
+		},
 		"update": "Update",
 		"updateObject": "Update {{name}}",
 		"uploadObject": "Upload {{name}}",
@@ -598,6 +609,8 @@
 				"ascending": "Ascending",
 				"descending": "Descending",
 				"field": "Sort field",
+				"limit": "limit",
+				"limitTitle": "Sort & Limit",
 				"order": "Sort order",
 				"title": "Sort"
 			},
@@ -779,6 +792,30 @@
 				"title": "Share dashboard url"
 			}
 		},
+		"templates": {
+			"available": "Available templates",
+			"delete": {
+				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?",
+				"titleMessage": "Delete template"
+			},
+			"edit": {
+				"body": "Body",
+				"name": "Template name",
+				"new": "New template",
+				"subject": "Subject",
+				"update": "Edit template"
+			},
+			"errors": {
+				"empty": "Please select one or more templates"
+			},
+			"select": {
+				"email": "Select an e-mail template"
+			},
+			"type": {
+				"email": "E-mail",
+				"title": "Template type"
+			}
+		},
 		"user": {
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the user {{name}}?",
@@ -850,6 +887,10 @@
 							"selected": "Only selected records"
 						},
 						"title": "Select records to export"
+					},
+					"email": {
+						"title": "Send me the file by email",
+						"tooltip": "If checked, instead of waiting for the export to be fully built before downloading it, you will receive an email with the export attached once it's ready."
 					},
 					"format": {
 						"title": "Select export format"

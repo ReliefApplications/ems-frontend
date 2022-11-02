@@ -68,6 +68,14 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
 
   /** Stores the selected tab */
   public selectedTab = 0;
+  /**
+   * Getter for the app templates
+   *
+   * @returns list of templates
+   */
+  get appTemplates(): any[] {
+    return this.applicationService.templates || [];
+  }
 
   /**
    * Constructor of the grid settings component

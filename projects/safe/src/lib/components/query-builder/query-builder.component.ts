@@ -55,7 +55,7 @@ export class SafeQueryBuilderComponent implements OnInit {
   @Input() showSort = true;
 
   // Tab options
-  @Input() showPagination = false;
+  @Input() showLimit = false;
 
   // === FIELD EDITION ===
   public isField = false;

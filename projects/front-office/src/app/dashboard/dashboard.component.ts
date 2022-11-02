@@ -129,7 +129,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
               )
             ) {
               this.adminNavItems.push({
-                name: 'Users',
+                name: this.translate.instant('common.user.few'),
                 path: `./${this.appID}/settings/users`,
                 icon: 'supervisor_account',
               });
@@ -147,9 +147,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
               )
             ) {
               this.adminNavItems.push({
-                name: 'Roles',
+                name: this.translate.instant('common.role.few'),
                 path: `./${this.appID}/settings/roles`,
                 icon: 'admin_panel_settings',
+              });
+            }
+            if (
+              this.permissions.some(
+                (x) =>
+                  (x.type === Permissions.canManageTemplates &&
+                    this.roles.some(
+                      (y) =>
+                        y.application?.id === application.id &&
+                        y.permissions?.some((perm) => perm.id === x.id)
+                    )) ||
+                  (x.type === Permissions.canManageApplications && x.global)
+              )
+            ) {
+              this.adminNavItems.push({
+                name: this.translate.instant('common.template.few'),
+                path: `./${this.appID}/settings/templates`,
+                icon: 'description',
               });
             }
             this.navGroups = [

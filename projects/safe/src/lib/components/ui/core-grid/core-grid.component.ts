@@ -53,6 +53,7 @@ import { SafeGridComponent } from './grid/grid.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
 import { SafeDateTranslateService } from '../../../services/date-translate/date-translate.service';
+import { SafeApplicationService } from '../../../services/application/application.service';
 
 /**
  * Default file name when exporting grid data.
@@ -256,6 +257,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
    * @param dateTranslate Shared date translate service
+   * @param applicationService Shared application service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -269,7 +271,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private gridService: SafeGridService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private dateTranslate: SafeDateTranslateService
+    private dateTranslate: SafeDateTranslateService,
+    private applicationService: SafeApplicationService
   ) {
     this.isAdmin =
       this.authService.userIsAdmin && environment.module === 'backoffice';
@@ -1037,6 +1040,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       sortField: this.sortField,
       sortOrder: this.sortOrder,
       format: e.format,
+      application: this.applicationService.name,
+      fileName: this.fileName,
+      email: e.email,
       // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields)

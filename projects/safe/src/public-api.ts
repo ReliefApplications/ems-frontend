@@ -73,6 +73,7 @@ export * from './lib/components/widget-grid/public-api';
 export * from './lib/components/confirm-modal/public-api';
 export * from './lib/components/user-summary/public-api';
 export * from './lib/components/users/public-api';
+export * from './lib/components/templates/public-api';
 export * from './lib/components/roles/public-api';
 export * from './lib/components/previous-button/public-api';
 export * from './lib/components/convert-modal/public-api';
@@ -108,6 +109,7 @@ export * from './lib/components/ui/icon/public-api';
 
 // === PAGES ===
 export * from './lib/pages/profile/public-api';
+export * from './lib/pages/application-templates/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';

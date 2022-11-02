@@ -127,7 +127,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
-      this.form.metadata
+      this.form.metadata,
+      this.record
     );
     this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
       this.onClearFiles(survey, options)

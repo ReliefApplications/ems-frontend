@@ -92,6 +92,13 @@ const routes: Routes = [
               },
             },
           },
+          {
+            path: 'templates',
+            loadChildren: () =>
+              import('@safe/builder').then(
+                (m) => m.SafeApplicationTemplatesModule
+              ),
+          },
         ],
       },
     ],

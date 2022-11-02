@@ -120,6 +120,7 @@
 			"file": {
 				"download": {
 					"error": "******",
+					"ongoing": "******",
 					"processing": "******",
 					"ready": "******"
 				},
@@ -240,8 +241,18 @@
 			"none": "******",
 			"one": "******"
 		},
+		"template": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"title": "******",
 		"true": "******",
+		"type": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"update": "******",
 		"updateObject": "****** {{name}}",
 		"uploadObject": "****** {{name}}",
@@ -598,6 +609,8 @@
 				"ascending": "******",
 				"descending": "******",
 				"field": "******",
+				"limit": "******",
+				"limitTitle": "******",
 				"order": "******",
 				"title": "******"
 			},
@@ -779,6 +792,30 @@
 				"title": "******"
 			}
 		},
+		"templates": {
+			"available": "******",
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******",
+				"titleMessage": "******"
+			},
+			"edit": {
+				"body": "******",
+				"name": "******",
+				"new": "******",
+				"subject": "******",
+				"update": "******"
+			},
+			"errors": {
+				"empty": "******"
+			},
+			"select": {
+				"email": "******"
+			},
+			"type": {
+				"email": "******",
+				"title": "******"
+			}
+		},
 		"user": {
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
@@ -850,6 +887,10 @@
 							"selected": "******"
 						},
 						"title": "******"
+					},
+					"email": {
+						"title": "******",
+						"tooltip": "******"
 					},
 					"format": {
 						"title": "******"

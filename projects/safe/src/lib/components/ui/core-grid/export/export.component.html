@@ -47,6 +47,17 @@
       <mat-radio-button value="csv">.csv</mat-radio-button>
       <mat-radio-button value="xlsx">.xlsx</mat-radio-button>
     </mat-radio-group>
+    <!-- EMAIL -->
+    <p class="info-row">
+      <mat-slide-toggle [(ngModel)]="export.email">{{
+        'components.widget.grid.export.email.title' | translate
+      }}</mat-slide-toggle>
+      <mat-icon
+        class="info-icon"
+        [matTooltip]="'components.widget.grid.export.email.tooltip' | translate"
+        >info</mat-icon
+      >
+    </p>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <safe-button mat-dialog-close>

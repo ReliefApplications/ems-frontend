@@ -15,6 +15,7 @@ import { Form } from '../../../../models/form.model';
 import { Resource } from '../../../../models/resource.model';
 import { ContentType } from '../../../../models/page.model';
 import { SafeWorkflowService } from '../../../../services/workflow/workflow.service';
+import { TemplateTypeEnum } from '../../../../models/template.model';
 import { Subscription } from 'rxjs';
 import {
   MatChipInputEvent,
@@ -62,6 +63,7 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
   public targetResource?: Resource;
   public relatedResources: Resource[] = [];
 
+  @Input() templates: any[] = [];
   // Indicate is the page is a single dashboard.
   public isDashboard = false;
 
@@ -83,6 +85,11 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
     return this.fields.filter(
       (x) => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name)
     );
+  }
+
+  /** @returns The list of email templates */
+  get mailTemplates(): any[] {
+    return this.templates.filter((x) => x.type === TemplateTypeEnum.EMAIL);
   }
 
   /**
@@ -209,13 +216,13 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
         this.formGroup
           ?.get('distributionList')
           ?.setValidators(Validators.required);
-        this.formGroup?.get('subject')?.setValidators(Validators.required);
+        this.formGroup?.get('templates')?.setValidators(Validators.required);
       } else {
         this.formGroup?.get('distributionList')?.clearValidators();
-        this.formGroup?.get('subject')?.clearValidators();
+        this.formGroup?.get('templates')?.clearValidators();
       }
       this.formGroup?.get('distributionList')?.updateValueAndValidity();
-      this.formGroup?.get('subject')?.updateValueAndValidity();
+      this.formGroup?.get('templates')?.updateValueAndValidity();
     });
 
     this.emails = [...this.formGroup?.get('distributionList')?.value];
