@@ -2,9 +2,9 @@
 <h2>{{ 'common.field.few' | translate }}</h2>
 <!-- Content -->
 <!-- Table container -->
-<div class="overflow-x-hidden -my-0.5 -mx-1.5">
+<div class="overflow-x-hidden">
   <!-- Table scroll container -->
-  <div class="overflow-auto py-0.5 px-1.5">
+  <div class="overflow-auto">
     <table mat-table [dataSource]="fields" *ngIf="fields.data.length > 0">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
