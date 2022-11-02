@@ -9,8 +9,8 @@
   </h1>
   <div mat-dialog-content>
     <form [formGroup]="pullJobForm">
-      <div class="form-group">
-        <div class="form-group-row">
+      <div class="flex flex-col">
+        <div class="flex gap-2">
           <mat-form-field appearance="outline" style="flex: 1">
             <mat-label>{{ 'common.name' | translate }}</mat-label>
             <input
@@ -38,7 +38,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="form-group-row">
+        <div class="flex gap-2">
           <mat-form-field appearance="outline" style="flex: 1">
             <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
             <input
@@ -74,7 +74,7 @@
             </safe-graphql-select>
           </mat-form-field>
         </div>
-        <div class="form-group-row" *ngIf="!isHardcoded">
+        <div class="flex gap-2" *ngIf="!isHardcoded">
           <mat-form-field appearance="outline" style="flex: 1">
             <mat-label>{{ 'models.pullJob.url' | translate }}</mat-label>
             <input
@@ -112,7 +112,7 @@
             ></safe-icon>
           </mat-form-field>
         </div>
-        <div class="form-group-row">
+        <div class="flex gap-2">
           <mat-form-field appearance="outline" style="flex: 1">
             <mat-label>{{
               'components.record.convert.select' | translate

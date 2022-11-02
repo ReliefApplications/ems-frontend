@@ -1,6 +1,6 @@
 <form [formGroup]="stepForm">
   <div
-    class="form-group"
+    class="flex flex-col [&:not(.content-choice-step)]:max-w-[400px]"
     [ngSwitch]="stage"
     [ngClass]="{ 'content-choice-step': stage === 1 }"
   >
