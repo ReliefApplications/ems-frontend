@@ -95,7 +95,6 @@ export class RecordsTabComponent implements OnInit {
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
       );
-      console.log(this.dataSource);
       this.pageInfo.length = res.data.resource.records.totalCount;
       this.pageInfo.endCursor = res.data.resource.records.pageInfo.endCursor;
       this.loading = res.loading;
@@ -223,7 +222,6 @@ export class RecordsTabComponent implements OnInit {
         return get(fieldMeta, 'canSee', false);
       })
       .concat(RECORDS_DEFAULT_COLUMNS);
-    console.log(columns);
     this.displayedColumnsRecords = columns;
   }
   /**

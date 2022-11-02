@@ -62,6 +62,14 @@ export const FILTER_OPERATORS = [
     value: 'endswith',
     label: 'kendo.grid.filterEndsWithOperator',
   },
+  {
+    value: 'in',
+    label: 'kendo.grid.filterIsInOperator',
+  },
+  {
+    value: 'notin',
+    label: 'kendo.grid.filterIsNotInOperator',
+  },
 ];
 
 /**
@@ -131,5 +139,10 @@ export const FIELD_TYPES = [
     editor: 'datetime',
     defaultOperator: 'eq',
     operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull'],
+  },
+  {
+    editor: 'attribute',
+    defaultOperator: 'eq',
+    operators: ['eq', 'neq', 'in', 'notin'],
   },
 ];
