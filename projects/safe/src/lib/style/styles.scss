@@ -322,6 +322,18 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   opacity: 0.87;
   border-radius: 4px;
   width: 100%;
+  th,
+  td {
+    padding: 0 4px !important;
+    &:first-of-type {
+      padding-left: 24px !important;
+      padding-right: 4px !important;
+    }
+    &:last-of-type {
+      padding-left: 4px !important;
+      padding-right: 24px !important;
+    }
+  }
 }
 
 .success-button {

@@ -1,4 +1,11 @@
-import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  Input,
+  HostListener,
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -17,6 +24,8 @@ export class FilterComponent implements OnInit {
   @Output() filter = new EventEmitter<any>();
   @Input() loading = false;
 
+  public innerWidth!: number;
+
   /**
    * Filter component of forms page
    *
@@ -25,6 +34,7 @@ export class FilterComponent implements OnInit {
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
     this.form = this.formBuilder.group({
       name: [''],
       startDate: [null],
@@ -43,6 +53,16 @@ export class FilterComponent implements OnInit {
       .subscribe((value) => {
         this.form.controls.name.setValue(value);
       });
+  }
+
+  /**
+   * Updates the innerWidth variable.
+   *
+   * @param event Window resize event
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.innerWidth = window.innerWidth;
   }
 
   /**

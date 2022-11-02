@@ -44,7 +44,7 @@ export interface GetResourcesQueryResponse {
 
 /** Graphql request to get resource */
 export const GET_RESOURCE = gql`
-  query GetResource($id: ID!, $aggregationId: ID) {
+  query GetResource($id: ID!, $aggregationIds: [ID]) {
     resource(id: $id) {
       id
       name
@@ -53,7 +53,7 @@ export const GET_RESOURCE = gql`
         id
         name
       }
-      aggregations(ids: [$aggregationId]) {
+      aggregations(ids: $aggregationIds) {
         edges {
           node {
             id

@@ -71,6 +71,12 @@ export const GET_GRID_RESOURCE_META = gql`
         id
         name
         fields
+        resource {
+          id
+          queryName
+          name
+          fields
+        }
       }
       layouts(ids: $layoutIds, first: $first) {
         edges {

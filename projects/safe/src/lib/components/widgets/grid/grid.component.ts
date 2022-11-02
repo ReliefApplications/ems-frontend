@@ -17,6 +17,8 @@ import {
   GET_RECORD_DETAILS,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
+  GetFormByIdQueryResponse,
+  GET_FORM_BY_ID,
 } from './graphql/queries';
 import {
   Component,
@@ -127,7 +129,13 @@ export class SafeGridWidgetComponent implements OnInit {
           first: this.settings.layouts?.length,
         })
         .then((res) => {
-          this.layouts = res.edges.map((edge) => edge.node);
+          this.layouts = res.edges
+            .map((edge) => edge.node)
+            .sort(
+              (a, b) =>
+                this.settings.layouts.indexOf(a.id) -
+                this.settings.layouts.indexOf(b.id)
+            );
           this.layout = this.layouts[0] || null;
           this.gridSettings = {
             ...this.settings,
@@ -269,7 +277,7 @@ export class SafeGridWidgetComponent implements OnInit {
           ],
         },
         {
-          name: this.settings.query.name,
+          name: this.grid.settings.query.name,
           fields: options.bodyFields,
         },
         this.grid.sortField || undefined,
@@ -431,82 +439,101 @@ export class SafeGridWidgetComponent implements OnInit {
    * The inputs comes from 'attach to record' button from grid component
    *
    * @param selectedRecords The list of selected records
-   * @param targetForm The targetted form
+   * @param targetForm Target template id
    * @param targetFormField The form field
    * @param targetFormQuery The form query
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],
-    targetForm: Form,
+    targetForm: string,
     targetFormField: string,
     targetFormQuery: any
   ): Promise<void> {
-    const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
-      data: {
-        targetForm,
-        targetFormField,
-        targetFormQuery,
-      },
-    });
-    const value = await Promise.resolve(dialogRef.afterClosed().toPromise());
-    if (value && value.record) {
-      this.apollo
-        .query<GetRecordByIdQueryResponse>({
-          query: GET_RECORD_BY_ID,
-          variables: {
-            id: value.record,
-          },
-        })
-        .subscribe((res) => {
-          const resourceField = targetForm.fields?.find(
-            (field) =>
-              field.resource && field.resource === this.settings.resource
+    this.apollo
+      .query<GetFormByIdQueryResponse>({
+        query: GET_FORM_BY_ID,
+        variables: {
+          id: targetForm,
+        },
+      })
+      .subscribe(async (getForm) => {
+        if (getForm.data.form) {
+          const form = getForm.data.form;
+          const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
+            data: {
+              targetForm: form,
+              targetFormField,
+              targetFormQuery,
+            },
+          });
+          const value = await Promise.resolve(
+            dialogRef.afterClosed().toPromise()
           );
-          let data = res.data.record.data;
-          const key = resourceField.name;
-          if (resourceField.type === 'resource') {
-            data = { ...data, [key]: selectedRecords[0] };
-          } else {
-            if (data[key]) {
-              data = { ...data, [key]: data[key].concat(selectedRecords) };
-            } else {
-              data = { ...data, [key]: selectedRecords };
-            }
-          }
-          this.apollo
-            .mutate<EditRecordMutationResponse>({
-              mutation: EDIT_RECORD,
-              variables: {
-                id: value.record,
-                data,
-              },
-            })
-            .subscribe((res2) => {
-              if (res2.data) {
-                const record = res2.data.editRecord;
-                if (record) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'models.record.notifications.rowsAdded',
-                      {
-                        field: record.data[targetFormField],
-                        length: selectedRecords.length,
-                        value: key,
-                      }
-                    )
-                  );
-                  this.dialog.open(SafeFormModalComponent, {
-                    disableClose: true,
-                    data: {
-                      recordId: record.id,
-                    },
-                    autoFocus: false,
-                  });
+          if (value && value.record) {
+            this.apollo
+              .query<GetRecordByIdQueryResponse>({
+                query: GET_RECORD_BY_ID,
+                variables: {
+                  id: value.record,
+                },
+              })
+              .subscribe((getRecord) => {
+                const resourceField = form.fields?.find(
+                  (field) =>
+                    field.resource && field.resource === this.settings.resource
+                );
+                let data = getRecord.data.record.data;
+                const key = resourceField.name;
+                if (resourceField.type === 'resource') {
+                  data = { ...data, [key]: selectedRecords[0] };
+                } else {
+                  if (data[key]) {
+                    data = {
+                      ...data,
+                      [key]: data[key].concat(selectedRecords),
+                    };
+                  } else {
+                    data = { ...data, [key]: selectedRecords };
+                  }
                 }
-              }
-            });
-        });
-    }
+                this.apollo
+                  .mutate<EditRecordMutationResponse>({
+                    mutation: EDIT_RECORD,
+                    variables: {
+                      id: value.record,
+                      template: targetForm,
+                      data,
+                    },
+                  })
+                  .subscribe((editRecord) => {
+                    if (editRecord.data) {
+                      const record = editRecord.data.editRecord;
+                      if (record) {
+                        this.snackBar.openSnackBar(
+                          this.translate.instant(
+                            'models.record.notifications.rowsAdded',
+                            {
+                              field: record.data[targetFormField],
+                              length: selectedRecords.length,
+                              value: key,
+                            }
+                          )
+                        );
+                        this.dialog.open(SafeFormModalComponent, {
+                          disableClose: true,
+                          data: {
+                            recordId: record.id,
+                            template: targetForm,
+                          },
+                          autoFocus: false,
+                        });
+                      }
+                    }
+                  });
+              });
+          }
+        }
+      });
   }
 
   /**
