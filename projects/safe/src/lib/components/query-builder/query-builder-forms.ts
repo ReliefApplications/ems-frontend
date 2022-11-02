@@ -61,7 +61,6 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
         filter: newField
           ? formBuilder.group({})
           : createFilterGroup(field.filter),
-        first: [field.first, Validators.min(0)],
       });
     }
     case 'OBJECT': {

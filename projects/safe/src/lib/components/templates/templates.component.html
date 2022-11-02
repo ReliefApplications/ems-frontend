@@ -1,5 +1,7 @@
-<div class="header">
-  <div class="actions">
+<!-- Header -->
+<div class="flex mb-6 justify-end gap-4">
+  <!-- Actions -->
+  <div class="flex gap-2 items-center flex-wrap justify-end justify-self-end">
     <safe-button
       icon="add"
       category="secondary"
@@ -10,53 +12,64 @@
     </safe-button>
   </div>
 </div>
+<!-- Table container -->
+<div class="overflow-x-hidden">
+  <!-- Table scroll container -->
+  <div class="overflow-auto">
+    <table *ngIf="!loading" mat-table [dataSource]="templates" matSort>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header>
+            {{ 'common.name' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
 
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<table *ngIf="!loading" mat-table [dataSource]="templates" matSort>
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
-        {{ 'common.name' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-  </ng-container>
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header>
+            {{ 'common.type.one' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ 'components.templates.type.' + element.type | translate }}
+        </td>
+      </ng-container>
 
-  <ng-container matColumnDef="type">
-    <th mat-header-cell *matHeaderCellDef>
-      <span class="headerTitle" mat-sort-header>
-        {{ 'common.type.one' | translate }}
-      </span>
-    </th>
-    <td mat-cell *matCellDef="let element">
-      {{ 'components.templates.type.' + element.type | translate }}
-    </td>
-  </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+        <td mat-cell *matCellDef="let element">
+          <safe-button
+            [isIcon]="true"
+            icon="more_vert"
+            [matMenuTriggerFor]="menu"
+            (click)="$event.stopPropagation()"
+          >
+          </safe-button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="editEmailTemplate(element)">
+              <mat-icon>edit</mat-icon>
+              {{ 'common.edit' | translate }}
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="deleteTemplate(element)">
+              <mat-icon>delete</mat-icon>
+              {{ 'common.delete' | translate }}
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
 
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
-    <td mat-cell *matCellDef="let element">
-      <safe-button
-        [isIcon]="true"
-        icon="more_vert"
-        [matMenuTriggerFor]="menu"
-        (click)="$event.stopPropagation()"
-      >
-      </safe-button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="editEmailTemplate(element)">
-          <mat-icon>edit</mat-icon>
-          {{ 'common.edit' | translate }}
-        </button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item (click)="deleteTemplate(element)">
-          <mat-icon>delete</mat-icon>
-          {{ 'common.delete' | translate }}
-        </button>
-      </mat-menu>
-    </td>
-  </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</div>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-</table>
+<safe-skeleton-table
+  *ngIf="loading"
+  [columns]="displayedColumns"
+  [actions]="true"
+>
+</safe-skeleton-table>

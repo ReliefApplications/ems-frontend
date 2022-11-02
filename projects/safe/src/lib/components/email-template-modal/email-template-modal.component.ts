@@ -42,14 +42,4 @@ export class EmailTemplateModalComponent implements OnInit {
       template: [null, Validators.required],
     });
   }
-
-  /** Closes the dialog */
-  onClose() {
-    this.dialogRef.close();
-  }
-
-  /** Closes the dialog and returns the selected template */
-  onSubmit() {
-    this.dialogRef.close(this.form.value);
-  }
 }

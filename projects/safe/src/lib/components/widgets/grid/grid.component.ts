@@ -41,7 +41,7 @@ import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
-import { EmailTemplateModalComponent } from './email-template-modal/email-template-modal.component';
+import { EmailTemplateModalComponent } from '../../email-template-modal/email-template-modal.component';
 import { SafeApplicationService } from '../../../services/application/application.service';
 
 /** Regex for the pattern "today()+[number of days to add]" */

@@ -348,8 +348,8 @@
           </mat-select>
           <mat-error
             *ngIf="
-              buttonForm.get('sendMail')?.value &&
-              !buttonForm.get('templates')?.valid
+              formGroup.get('sendMail')?.value &&
+              !formGroup.get('templates')?.valid
             "
             >{{ 'components.templates.errors.empty' | translate }}</mat-error
           >

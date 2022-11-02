@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 import { Application } from '../../models/application.model';
-import { SafeApplicationService } from '../../services/application.service';
+import { SafeApplicationService } from '../../services/application/application.service';
 
 /**
  * Application templates page component.

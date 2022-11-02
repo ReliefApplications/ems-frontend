@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-
-import { SafeEditTemplateComponent } from './components/edit-template/edit-template.component';
+import { EditTemplateModalComponent } from './components/edit-template-modal/edit-template-modal.component';
 import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeApplicationService } from '../../services/application.service';
+import { SafeApplicationService } from '../../services/application/application.service';
 import { TemplateTypeEnum } from '../../models/template.model';
 
 /**
@@ -46,8 +45,9 @@ export class SafeTemplatesComponent implements OnInit {
    * @param template The template to edit
    */
   editEmailTemplate(template: any): void {
-    const dialogRef = this.dialog.open(SafeEditTemplateComponent, {
+    const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       data: template,
+      disableClose: true,
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value)
@@ -94,8 +94,8 @@ export class SafeTemplatesComponent implements OnInit {
 
   /** Opens modal for adding a new email template */
   addEmailTemplate(): void {
-    const dialogRef = this.dialog.open(SafeEditTemplateComponent, {
-      data: {},
+    const dialogRef = this.dialog.open(EditTemplateModalComponent, {
+      disableClose: true,
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value)

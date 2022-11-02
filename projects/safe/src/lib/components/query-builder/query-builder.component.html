@@ -89,14 +89,6 @@
         </ng-template>
       </mat-tab>
       <mat-tab
-        [label]="'components.queryBuilder.pagination.title' | translate"
-        *ngIf="showPagination && form.get('first')"
-      >
-        <ng-template matTabContent>
-          <safe-tab-pagination [form]="form"></safe-tab-pagination>
-        </ng-template>
-      </mat-tab>
-      <mat-tab
         [label]="'components.queryBuilder.filter.title' | translate"
         *ngIf="showFilter && form.get('filter')"
       >

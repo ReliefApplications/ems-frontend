@@ -8,14 +8,11 @@ import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { SafeEmailPreviewModule } from '../../email-preview/email-preview.module';
-import { EmailTemplateModalComponent } from './email-template-modal/email-template-modal.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatSelectModule } from '@angular/material/select';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EmailTemplateModalModule } from '../../email-template-modal/email-template-modal.module';
 
 /** Module for grid widget component */
 @NgModule({
-  declarations: [SafeGridWidgetComponent, EmailTemplateModalComponent],
+  declarations: [SafeGridWidgetComponent],
   imports: [
     CommonModule,
     SafeFormModalModule,
@@ -25,10 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     LayoutModule,
     DropDownListModule,
     SafeEmailPreviewModule,
-    TranslateModule,
-    MatSelectModule,
-    FormsModule,
-    ReactiveFormsModule,
+    EmailTemplateModalModule,
   ],
   exports: [SafeGridWidgetComponent],
 })

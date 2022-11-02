@@ -68,7 +68,7 @@ import {
 } from './graphql/subscriptions';
 import { SafeAuthService } from '../auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Template } from '../models/template.model';
+import { Template } from '../../models/template.model';
 
 /**
  * Shared application service. Handles events of opened application.
