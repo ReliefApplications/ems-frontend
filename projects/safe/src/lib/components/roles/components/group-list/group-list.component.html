@@ -1,8 +1,13 @@
-<div class="flex gap-8 justify-between mb-8">
+<div
+  class="flex gap-2 sm:items-center flex-col sm:flex-row mb-8 sm:justify-between"
+>
   <!-- Filters -->
   <div class="flex flex-col gap-4">
     <div class="flex flex-wrap gap-2 items-center">
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
+      <mat-form-field
+        appearance="outline"
+        class="mat-form-field-sm p-0 w-full sm:w-auto"
+      >
         <mat-icon matPrefix>search</mat-icon>
         <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
         <input matInput (keyup)="applyFilter($event)" type="search" />
@@ -10,7 +15,7 @@
     </div>
   </div>
   <!-- Actions -->
-  <div class="flex items-center">
+  <div class="flex items-center self-end sm:self-start">
     <safe-button
       [disabled]="loading || loadingFetch"
       [icon]="manualCreation ? 'add' : 'cloud_download'"

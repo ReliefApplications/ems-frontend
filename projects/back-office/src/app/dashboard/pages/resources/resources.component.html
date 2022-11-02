@@ -1,11 +1,11 @@
-<div class="flex gap-8 justify-between mb-8">
+<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
   <!-- FILTERING -->
   <app-filter
     (filter)="onFilter($event)"
     [loading]="filterLoading"
   ></app-filter>
   <!-- ACTIONS -->
-  <div class="flex items-center">
+  <div class="flex items-center self-end sm:self-start">
     <safe-button
       icon="add"
       category="secondary"

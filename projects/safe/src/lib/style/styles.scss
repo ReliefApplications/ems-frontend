@@ -683,6 +683,10 @@ mat-tab-group[vertical] {
   }
 }
 
+.mat-tab-body-content {
+  overflow: hidden !important;
+}
+
 // === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {

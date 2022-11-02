@@ -1,31 +1,28 @@
-<div class="flex gap-8 justify-between mb-8">
+<div
+  class="flex gap-2 sm:items-center flex-col sm:flex-row mb-8 sm:justify-between"
+>
   <!-- Filters -->
-  <div class="flex flex-col gap-4">
-    <div class="flex flex-wrap gap-2 items-center">
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <mat-icon matPrefix>search</mat-icon>
-        <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
-        <input
-          matInput
-          [ngModel]="searchText"
-          (keyup)="applyFilter('', $event)"
-          type="search"
-        />
-      </mat-form-field>
-    </div>
-  </div>
+  <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
+    <mat-icon matPrefix>search</mat-icon>
+    <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
+    <input
+      matInput
+      [ngModel]="searchText"
+      (keyup)="applyFilter('', $event)"
+      type="search"
+    />
+  </mat-form-field>
   <!-- Actions -->
-  <div class="flex items-center">
-    <safe-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-      *ngIf="canAdd"
-    >
-      {{ 'models.referenceData.add' | translate }}
-    </safe-button>
-  </div>
+  <safe-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    class="self-end sm:self-start"
+    (click)="onAdd()"
+    *ngIf="canAdd"
+  >
+    {{ 'models.referenceData.add' | translate }}
+  </safe-button>
 </div>
 
 <!-- Table container -->

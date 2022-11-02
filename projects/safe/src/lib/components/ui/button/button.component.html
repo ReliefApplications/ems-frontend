@@ -1,8 +1,9 @@
 <button
   mat-button
+  [class]="blockBreakpoint ? 'w-full ' + blockBreakpoint + ':w-fit' : ''"
   [class.mat-flat-button]="category === 'secondary'"
   [class.mat-stroked-button]="category === 'tertiary'"
-  [class.safe-btn-block]="block"
+  [class.safe-btn-block]="block && !blockBreakpoint"
   [class.safe-btn-small]="size === 'small'"
   [class.safe-btn-success]="variant === 'success'"
   [class.safe-btn-grey]="variant === 'grey'"

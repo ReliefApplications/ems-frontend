@@ -1,5 +1,5 @@
 <div [formGroup]="form" class="flex flex-col gap-4">
-  <div class="flex flex-wrap gap-2 items-center">
+  <div class="flex flex-wrap gap-2 flex-col sm:flex-row sm:items-center">
     <mat-form-field appearance="outline" class="p-0 mat-form-field-sm">
       <mat-icon matPrefix>search</mat-icon>
       <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
@@ -10,6 +10,7 @@
       icon="filter_list"
       category="tertiary"
       variant="primary"
+      blockBreakpoint="sm"
       (click)="show = !show"
       >{{
         show
@@ -18,7 +19,10 @@
       }}
     </safe-button>
   </div>
-  <div *ngIf="show" class="flex flex-wrap gap-2 items-center">
+  <div
+    *ngIf="show"
+    class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
+  >
     <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
       <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
       <mat-date-range-input [rangePicker]="rangePicker">
@@ -59,7 +63,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <safe-button variant="danger" (click)="clear()">{{
+    <safe-button variant="danger" (click)="clear()" blockBreakpoint="sm">{{
       'common.filter.clear' | translate
     }}</safe-button>
   </div>

@@ -1,7 +1,7 @@
-<div class="flex gap-8 justify-between mb-8">
+<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
   <!-- Filters -->
   <div class="flex flex-col gap-4">
-    <div class="flex flex-wrap gap-2 items-center">
+    <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
       <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
         <mat-icon matPrefix>search</mat-icon>
         <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
@@ -16,6 +16,7 @@
         icon="filter_list"
         category="tertiary"
         variant="primary"
+        blockBreakpoint="sm"
         (click)="showFilters = !showFilters"
         class="filters-toggle"
       >
@@ -27,7 +28,10 @@
       </safe-button>
     </div>
     <div *ngIf="showFilters" class="flex flex-wrap gap-2 items-center">
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
+      <mat-form-field
+        appearance="outline"
+        class="mat-form-field-sm p-0 grow sm:grow-0"
+      >
         <mat-label>{{ 'common.status' | translate }}</mat-label>
         <mat-select
           [ngModel]="statusFilter"
@@ -51,7 +55,7 @@
     </div>
   </div>
   <!-- Actions -->
-  <div class="flex items-center">
+  <div class="flex items-center self-end sm:self-start">
     <safe-button
       icon="add"
       category="secondary"

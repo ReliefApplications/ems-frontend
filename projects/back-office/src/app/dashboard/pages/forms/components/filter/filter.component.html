@@ -10,8 +10,8 @@
       icon="filter_list"
       category="tertiary"
       variant="primary"
+      blockBreakpoint="sm"
       (click)="show = !show"
-      [block]="innerWidth <= 640"
     >
       {{
         show
@@ -78,9 +78,9 @@
     </mat-form-field>
     <safe-button
       variant="danger"
-      [category]="innerWidth <= 640 ? 'secondary' : 'primary'"
+      category="primary"
       (click)="clear()"
-      [block]="innerWidth <= 640"
+      blockBreakpoint="sm"
       >{{ 'common.filter.clear' | translate }}</safe-button
     >
   </div>

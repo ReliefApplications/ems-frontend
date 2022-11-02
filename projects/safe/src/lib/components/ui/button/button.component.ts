@@ -22,7 +22,14 @@ export class SafeButtonComponent implements OnInit {
 
   @Input() isIcon = false;
 
+  /**
+   *  Whether the button will take all available width
+   *  Ignored if blockBreakpoint is provided
+   */
   @Input() block = false;
+
+  /** Specifies at which breakpoint the button will take full available width */
+  @Input() blockBreakpoint?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' = undefined;
 
   @HostBinding('class.disabled')
   @Input()
