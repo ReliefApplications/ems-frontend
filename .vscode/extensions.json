@@ -1,5 +1,11 @@
 {
   "recommendations": [
-    "lokalise.i18n-ally"
+    "jannisx11.batch-rename-extension",
+    "streetsidesoftware.code-spell-checker",
+    "dbaeumer.vscode-eslint",
+    "streetsidesoftware.code-spell-checker-french",
+    "waderyan.gitblame",
+    "lokalise.i18n-ally",
+    "esbenp.prettier-vscode"
   ]
 }
