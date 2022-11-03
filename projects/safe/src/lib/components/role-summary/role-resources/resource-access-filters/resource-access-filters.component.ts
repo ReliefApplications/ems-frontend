@@ -128,7 +128,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
       filters.map((x) => this.createAccessFilterFormGroup(x))
     );
     this.initialValue = this.filtersFormArray.value;
-    this.filterFields = this.resource.metadata
+    this.filterFields = get(this.resource, 'metadata', [])
       .filter((x: any) => x.filterable !== false)
       .map((x: any) => ({ ...x }));
 
