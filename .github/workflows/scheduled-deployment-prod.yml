@@ -1,8 +1,8 @@
-name: Trigger CD
+name: Trigger CD - PROD
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 1 * *'
 
 jobs:
   deploy:
@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - environment: OORT_DEV
+          - environment: OORT_PROD
             ref: release-1.3.0
     environment:
       name: ${{ matrix.environment }}
