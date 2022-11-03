@@ -3,7 +3,6 @@ name: Storybook
 on:
   push:
     branches:
-      - 'main'
       - 'release-*'
 
 concurrency: 
@@ -48,7 +47,7 @@ jobs:
           path: storybook
   
   deploy_storybook:
-    name : Deploy @SAFE documentation 🚀
+    name : Deploy OORT storybook 🚀
     runs-on: ubuntu-latest
     needs: build
     
