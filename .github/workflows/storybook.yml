@@ -55,7 +55,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      # SAFE
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
       - name: Download doc Storybook
         uses: actions/download-artifact@v1
         with:
@@ -68,5 +70,5 @@ jobs:
           repository-name: ReliefApplications/ReliefApplications.github.io
           branch: master
           folder: storybook
-          target-folder: oort/frontend/${{github.ref}}/storybook
+          target-folder: oort/frontend/${{ steps.branch-name.outputs.current_branch }}/storybook
           clean: true
