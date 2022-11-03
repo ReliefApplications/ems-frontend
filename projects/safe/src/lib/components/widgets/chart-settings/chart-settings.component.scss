@@ -1,8 +1,21 @@
 :host {
   flex: 1;
   display: flex;
+  --tab-width: 240px;
 }
 
 mat-tab-group {
   flex: 1;
+
+  ::ng-deep .mat-tab-header {
+    width: fit-content !important;
+  }
+
+  ::ng-deep .mat-tab-label {
+    min-width: var(--tab-width) !important;
+  }
+
+  ::ng-deep .mat-tab-body-wrapper {
+    padding-left: var(--tab-width) !important;
+  }
 }

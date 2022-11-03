@@ -1,5 +1,13 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  HostListener,
+  ElementRef,
+} from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
@@ -47,6 +55,9 @@ export class SafeChartSettingsComponent implements OnInit {
   public settings: any;
   public grid: any;
 
+  // === DISPLAY ===
+  public largeDevice = true;
+
   /** @returns the form for the chart */
   public get chartForm(): FormGroup {
     return (this.formGroup?.controls.chart as FormGroup) || null;
@@ -59,11 +70,13 @@ export class SafeChartSettingsComponent implements OnInit {
    * Constructor for the chart settings component
    *
    * @param formBuilder The formBuilder service
+   * @param elRef The element reference.
    */
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formBuilder: FormBuilder, private elRef: ElementRef) {}
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
+    this.resizeTab(window.innerWidth);
     const tileSettings = this.tile.settings;
     const chartSettings = tileSettings.chart;
     if (chartSettings.type) {
@@ -102,5 +115,32 @@ export class SafeChartSettingsComponent implements OnInit {
    */
   handleTabChange(event: MatTabChangeEvent): void {
     this.selectedTab = event.index;
+  }
+
+  /**
+   * Listen the window size and call the resizeTab function.
+   *
+   * @param event Event that implies a change in window size
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.resizeTab(event.target.innerWidth);
+  }
+
+  /**
+   * Change the tab display depending on windows size.
+   *
+   * @param width The width of the window.
+   */
+  private resizeTab(width: any): void {
+    const oldValue = this.largeDevice;
+    this.largeDevice = width > 1024;
+    if (this.largeDevice !== oldValue) {
+      if (this.largeDevice) {
+        this.elRef.nativeElement.style.setProperty('--tab-width', '240px');
+      } else {
+        this.elRef.nativeElement.style.setProperty('--tab-width', '80px');
+      }
+    }
   }
 }

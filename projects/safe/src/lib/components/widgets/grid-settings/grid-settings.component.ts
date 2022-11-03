@@ -6,6 +6,8 @@ import {
   Output,
   EventEmitter,
   AfterViewInit,
+  HostListener,
+  ElementRef,
 } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -66,6 +68,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
   public filteredQueries: any[] = [];
   public resource: Resource | null = null;
 
+  // === DISPLAY ===
+  public largeDevice = true;
+
   /** Stores the selected tab */
   public selectedTab = 0;
 
@@ -75,15 +80,18 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
    * @param apollo The apollo client
    * @param applicationService The application service
    * @param queryBuilder The query builder service
+   * @param elRef The element reference
    */
   constructor(
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private elRef: ElementRef
   ) {}
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
+    this.resizeTab(window.innerWidth);
     const tileSettings = this.tile.settings;
     this.formGroup = createGridWidgetFormGroup(this.tile.id, tileSettings);
     this.change.emit(this.formGroup);
@@ -214,5 +222,32 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
    */
   handleTabChange(event: MatTabChangeEvent): void {
     this.selectedTab = event.index;
+  }
+
+  /**
+   * Listen the window size and call the resizeTab function.
+   *
+   * @param event Event that implies a change in window size
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.resizeTab(event.target.innerWidth);
+  }
+
+  /**
+   * Change the tab display depending on windows size.
+   *
+   * @param width The width of the window.
+   */
+  private resizeTab(width: any): void {
+    const oldValue = this.largeDevice;
+    this.largeDevice = width > 1024;
+    if (this.largeDevice !== oldValue) {
+      if (this.largeDevice) {
+        this.elRef.nativeElement.style.setProperty('--tab-width', '240px');
+      } else {
+        this.elRef.nativeElement.style.setProperty('--tab-width', '80px');
+      }
+    }
   }
 }

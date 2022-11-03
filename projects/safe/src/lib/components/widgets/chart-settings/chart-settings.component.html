@@ -6,8 +6,12 @@
   <!-- Main Parameters -->
   <mat-tab>
     <ng-template mat-tab-label>
-      <safe-icon icon="settings" [size]="24"></safe-icon>
-      <span>{{ 'common.general' | translate }}</span>
+      <safe-icon
+        icon="settings"
+        [size]="24"
+        [matTooltip]="!largeDevice ? ('common.general' | translate) : ''"
+      ></safe-icon>
+      <span *ngIf="largeDevice">{{ 'common.general' | translate }}</span>
     </ng-template>
     <ng-template matTabContent>
       <safe-tab-main [formGroup]="formGroup" [type]="type"></safe-tab-main>
@@ -16,8 +20,12 @@
   <!-- Display options -->
   <mat-tab>
     <ng-template mat-tab-label>
-      <safe-icon icon="tune" [size]="24"></safe-icon>
-      <span>{{ 'common.display' | translate }}</span>
+      <safe-icon
+        icon="tune"
+        [size]="24"
+        [matTooltip]="!largeDevice ? ('common.display' | translate) : ''"
+      ></safe-icon>
+      <span *ngIf="largeDevice">{{ 'common.display' | translate }}</span>
     </ng-template>
     <ng-template matTabContent>
       <safe-tab-display
@@ -29,8 +37,12 @@
   <!-- Preview -->
   <mat-tab>
     <ng-template mat-tab-label>
-      <safe-icon icon="preview" [size]="24"></safe-icon>
-      <span>{{ 'common.preview' | translate }}</span>
+      <safe-icon
+        icon="preview"
+        [size]="24"
+        [matTooltip]="!largeDevice ? ('common.preview' | translate) : ''"
+      ></safe-icon>
+      <span *ngIf="largeDevice">{{ 'common.preview' | translate }}</span>
     </ng-template>
     <ng-template matTabContent>
       <safe-tab-preview [formGroup]="formGroup"></safe-tab-preview>

@@ -6,8 +6,12 @@
   <!-- MAIN PARAMETERS / SELECTION OF LAYOUTS -->
   <mat-tab>
     <ng-template mat-tab-label>
-      <safe-icon icon="preview" [size]="24"></safe-icon>
-      <span>{{ 'common.general' | translate }}</span>
+      <safe-icon
+        icon="preview"
+        [size]="24"
+        [matTooltip]="!largeDevice ? ('common.general' | translate) : ''"
+      ></safe-icon>
+      <span *ngIf="largeDevice">{{ 'common.general' | translate }}</span>
     </ng-template>
     <ng-template matTabContent>
       <safe-tab-main
@@ -21,8 +25,12 @@
   <!-- AVAILABLE ACTIONS -->
   <mat-tab>
     <ng-template mat-tab-label>
-      <safe-icon icon="toggle_on" [size]="24"></safe-icon>
-      <span>{{
+      <safe-icon
+        icon="toggle_on"
+        [size]="24"
+        [matTooltip]="!largeDevice ? ('components.widget.settings.grid.actions.title' | translate) : ''"
+      ></safe-icon>
+      <span *ngIf="largeDevice">{{
         'components.widget.settings.grid.actions.title' | translate
       }}</span>
     </ng-template>
@@ -33,8 +41,12 @@
   <!-- BUTTONS -->
   <mat-tab>
     <ng-template mat-tab-label>
-      <safe-icon icon="bolt" [size]="24"></safe-icon>
-      <span>{{
+      <safe-icon
+        icon="bolt"
+        [size]="24"
+        [matTooltip]="!largeDevice ? ('components.widget.settings.grid.buttons.title' | translate) : ''"
+      ></safe-icon>
+      <span *ngIf="largeDevice">{{
         'components.widget.settings.grid.buttons.title' | translate
       }}</span>
     </ng-template>

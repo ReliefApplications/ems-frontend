@@ -3,8 +3,12 @@
     <!-- GENERAL SETTINGS -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <safe-icon icon="preview" [size]="24"></safe-icon>
-        <span>{{ 'common.general' | translate }}</span>
+        <safe-icon
+          icon="preview"
+          [size]="24"
+          [matTooltip]="!largeDevice ? ('common.general' | translate) : ''"
+        ></safe-icon>
+        <span *ngIf="largeDevice">{{ 'common.general' | translate }}</span>
       </ng-template>
       <ng-template matTabContent>
         <safe-map-general [form]="tileForm"></safe-map-general>
@@ -13,8 +17,12 @@
     <!-- LAYERS CONFIGURATION -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <safe-icon icon="layers" [size]="24"></safe-icon>
-        <span>{{ 'common.layers' | translate }}</span>
+        <safe-icon
+          icon="layers"
+          [size]="24"
+          [matTooltip]="!largeDevice ? ('common.layers' | translate) : ''"
+        ></safe-icon>
+        <span *ngIf="largeDevice">{{ 'common.layers' | translate }}</span>
       </ng-template>
       <ng-template matTabContent>
         <safe-map-layers
@@ -27,8 +35,12 @@
     <!-- MAP PARAMETERS -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <safe-icon icon="map" [size]="24"></safe-icon>
-        <span>{{
+        <safe-icon
+          icon="map"
+          [size]="24"
+          [matTooltip]="!largeDevice ? ('components.widget.settings.map.properties.title' | translate) : ''"
+        ></safe-icon>
+        <span *ngIf="largeDevice">{{
           'components.widget.settings.map.properties.title' | translate
         }}</span>
       </ng-template>
