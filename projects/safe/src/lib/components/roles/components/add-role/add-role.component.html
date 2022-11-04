@@ -1,7 +1,7 @@
 <safe-modal size="small">
   <h1 mat-dialog-title>{{ title | translate }}</h1>
   <div mat-dialog-content>
-    <form [formGroup]="roleForm" class="form-group">
+    <form [formGroup]="roleForm" class="flex flex-col">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'common.title' | translate }}</mat-label>
         <input

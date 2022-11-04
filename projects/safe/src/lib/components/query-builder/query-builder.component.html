@@ -1,6 +1,6 @@
 <ng-container *ngIf="form">
   <form [formGroup]="form" [ngClass]="{ 'field-form': isField }">
-    <div class="form-group-row">
+    <div>
       <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
         <mat-label>{{
           'components.queryBuilder.dataset.select' | translate
@@ -43,7 +43,7 @@
     </div>
 
     <ng-container *ngIf="isField">
-      <div class="form-group-row">
+      <div class="flex gap-2">
         <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
         </safe-button>
         <mat-form-field appearance="outline">

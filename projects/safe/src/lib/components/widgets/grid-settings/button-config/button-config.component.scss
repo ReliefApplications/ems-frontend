@@ -24,16 +24,6 @@
   display: flex;
 }
 
-.form-group {
-  flex: 50%;
-  max-width: 100%;
-
-  &:not(:first-child) {
-    margin-top: 0px;
-    margin-left: 64px;
-  }
-}
-
 .mat-chip {
   max-width: none;
   border-radius: 1rem !important;

@@ -11,8 +11,8 @@
       *ngIf="referenceData?.canUpdate"
     ></safe-access>
   </div>
-  <form [formGroup]="referenceForm" class="form-group">
-    <div class="form-group-row">
+  <form [formGroup]="referenceForm" class="flex flex-col">
+    <div class="flex gap-2">
       <!-- Name -->
       <mat-form-field appearance="outline" style="flex: 2">
         <mat-label>{{ 'common.name' | translate }}</mat-label>
@@ -37,7 +37,7 @@
     </div>
     <!-- Specific to GraphQL and Rest type -->
     <div *ngIf="['rest', 'graphql'].includes(type)">
-      <div class="form-group-row">
+      <div class="flex gap-2">
         <!-- API Configuration -->
         <mat-form-field appearance="outline" style="flex: 2">
           <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
@@ -64,7 +64,7 @@
         </mat-form-field>
       </div>
       <!-- Fields -->
-      <div class="form-group-row">
+      <div class="flex gap-2">
         <mat-form-field class="chip-list" appearance="outline" style="flex: 2">
           <mat-label>{{ 'pages.referenceData.fields' | translate }}</mat-label>
           <mat-chip-list #chipList aria-label="Fields chip list">
@@ -89,7 +89,7 @@
       </div>
     </div>
     <!-- CSV Input for static type -->
-    <div *ngIf="type === 'static'" class="form-group-row">
+    <div *ngIf="type === 'static'" class="flex gap-2">
       <mat-form-field appearance="outline" style="flex: 2">
         <mat-label>{{ 'pages.referenceData.csv' | translate }}</mat-label>
         <textarea
@@ -112,7 +112,7 @@
       class="page-loader"
       *ngIf="csvLoading"
     ></mat-spinner>
-    <div class="form-group-row">
+    <div class="flex gap-2">
       <!-- Path -->
       <mat-form-field
         style="flex: 3"

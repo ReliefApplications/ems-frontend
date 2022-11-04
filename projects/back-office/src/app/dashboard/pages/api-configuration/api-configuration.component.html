@@ -13,8 +13,8 @@
   </div>
   <form [formGroup]="apiForm" *ngIf="apiForm">
     <h1>{{ 'common.general' | translate }}</h1>
-    <div class="form-group">
-      <div class="form-group-row">
+    <div class="flex flex-col last:mb-0">
+      <div class="flex gap-2">
         <mat-form-field appearance="outline" style="flex: 2">
           <mat-label>
             {{ 'common.name' | translate }}
@@ -65,7 +65,7 @@
       </div>
 
       <h1>{{ 'pages.apiConfiguration.host' | translate }}</h1>
-      <div class="form-group-row">
+      <div class="flex gap-2">
         <mat-form-field appearance="outline" style="flex: 2">
           <mat-label>
             {{ 'pages.apiConfiguration.baseUrl' | translate }}
@@ -111,7 +111,7 @@
         <ng-container
           *ngIf="apiForm.value.authType === authType.serviceToService"
         >
-          <div formGroupName="settings" class="form-group">
+          <div formGroupName="settings" class="flex flex-col mt-8">
             <mat-form-field appearance="outline">
               <mat-label>
                 {{ 'pages.apiConfiguration.tokenUrl' | translate }}
@@ -171,7 +171,7 @@
           </div>
         </ng-container>
         <ng-container *ngIf="apiForm.value.authType === authType.userToService">
-          <div formGroupName="settings" class="form-group">
+          <div formGroupName="settings" class="flex flex-col mt-8">
             <mat-form-field appearance="outline">
               <mat-label>
                 {{ 'pages.apiConfiguration.token' | translate }}
@@ -192,7 +192,7 @@
     </div>
 
     <h1>{{ 'pages.apiConfiguration.graphQL.title' | translate }}</h1>
-    <div class="form-group">
+    <div class="flex flex-col mt-8">
       <mat-form-field appearance="outline" style="flex: 2">
         <mat-label>
           {{ 'pages.apiConfiguration.graphQL.endpoint' | translate }}
