@@ -11,6 +11,8 @@ import { LayoutTableModule } from '../../../grid-layout/layout-table/layout-tabl
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
+import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
 
 /**
  * Main Tab of grid widget configuration modal.
@@ -30,6 +32,8 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
     SafeGraphQLSelectModule,
     MatTooltipModule,
     SafeIconModule,
+    SafeDividerModule,
+    AggregationTableModule,
   ],
   exports: [TabMainComponent],
 })

@@ -1,5 +1,6 @@
 {
 	"common": {
+		"or": "Or",
 		"access": "Access",
 		"add": "Add",
 		"aggregation": {
@@ -964,6 +965,7 @@
 						"update": "Update records"
 					},
 					"aggregations": {
+						"title": "Grid aggregations",
 						"add": {
 							"choice": {
 								"create": "Create a new aggregation"
