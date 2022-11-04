@@ -7,7 +7,7 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { FormGroup, FormArray } from '@angular/forms';
+import { FormGroup, FormArray, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -108,6 +108,7 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         if (value !== this.resource?.id) {
           // this.queryName = name;
           this.formGroup?.get('layouts')?.setValue([]);
+          this.formGroup?.get('aggregations')?.setValue([]);
           this.formGroup?.get('template')?.setValue(null);
           this.formGroup?.get('template')?.enable();
           const floatingButtons = this.formGroup?.get(
@@ -129,6 +130,56 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
       } else {
         this.fields = [];
       }
+    });
+
+    this.formGroup.get('aggregations')?.valueChanges.subscribe((value) => {
+      if (value) {
+        if (value.length > 0) {
+          this.formGroup.controls.layouts.clearValidators();
+        } else {
+          if (this.formGroup.controls.layouts.value.length > 0) {
+            this.formGroup.controls.aggregations.clearValidators();
+          } else {
+            this.formGroup.controls.aggregations.setValidators([
+              Validators.required,
+            ]);
+            this.formGroup.controls.layouts.setValidators([
+              Validators.required,
+            ]);
+          }
+        }
+      }
+      this.formGroup.controls.aggregations.updateValueAndValidity({
+        emitEvent: false,
+      });
+      this.formGroup.controls.layouts.updateValueAndValidity({
+        emitEvent: false,
+      });
+    });
+
+    this.formGroup.get('layouts')?.valueChanges.subscribe((value) => {
+      if (value) {
+        if (value.length > 0) {
+          this.formGroup.controls.aggregations.clearValidators();
+        } else {
+          if (this.formGroup.controls.aggregations.value.length > 0) {
+            this.formGroup.controls.layouts.clearValidators();
+          } else {
+            this.formGroup.controls.layouts.setValidators([
+              Validators.required,
+            ]);
+            this.formGroup.controls.aggregations.setValidators([
+              Validators.required,
+            ]);
+          }
+        }
+      }
+      this.formGroup.controls.aggregations.updateValueAndValidity({
+        emitEvent: false,
+      });
+      this.formGroup.controls.layouts.updateValueAndValidity({
+        emitEvent: false,
+      });
     });
   }
 

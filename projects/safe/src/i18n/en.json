@@ -1,6 +1,5 @@
 {
 	"common": {
-		"or": "Or",
 		"access": "Access",
 		"add": "Add",
 		"aggregation": {
@@ -161,6 +160,7 @@
 			"unlocked": "{{name}} edition has been unlocked by another user."
 		},
 		"openFullScreen": "Open in Full Screen",
+		"or": "Or",
 		"page": {
 			"few": "Pages",
 			"none": "No page",
@@ -965,12 +965,12 @@
 						"update": "Update records"
 					},
 					"aggregations": {
-						"title": "Grid aggregations",
 						"add": {
 							"choice": {
 								"create": "Create a new aggregation"
 							}
-						}
+						},
+						"title": "Grid aggregations"
 					},
 					"buttons": {
 						"callback": {
