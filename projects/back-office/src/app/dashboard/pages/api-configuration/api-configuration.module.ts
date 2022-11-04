@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiConfigurationRoutingModule } from './api-configuration-routing.module';
 import { ApiConfigurationComponent } from './api-configuration.component';
-import { SafeAccessModule, SafePreviousButtonModule } from '@safe/builder';
+import { SafeAccessModule } from '@safe/builder';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -20,7 +20,6 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     ApiConfigurationRoutingModule,
-    SafePreviousButtonModule,
     SafeAccessModule,
     MatProgressSpinnerModule,
     MatFormFieldModule,

@@ -17,7 +17,6 @@ import { SafeWidgetModule } from './components/widget/widget.module';
 import { SafeWidgetGridModule } from './components/widget-grid/widget-grid.module';
 import { SafeUsersModule } from './components/users/users.module';
 import { SafeRolesModule } from './components/roles/roles.module';
-import { SafePreviousButtonModule } from './components/previous-button/previous-button.module';
 import { SafeConvertModalModule } from './components/convert-modal/convert-modal.module';
 import { SafeRecordHistoryModule } from './components/record-history/record-history.module';
 import { SafeRecordModalModule } from './components/record-modal/record-modal.module';
@@ -68,7 +67,6 @@ import { SafeApplicationTemplatesModule } from './pages/application-templates/ap
     SafeStatusModalModule,
     SafeUsersModule,
     SafeRolesModule,
-    SafePreviousButtonModule,
     SafeConvertModalModule,
     SafeRecordHistoryModule,
     SafeRecordModalModule,

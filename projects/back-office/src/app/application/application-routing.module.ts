@@ -111,9 +111,19 @@ const routes: Routes = [
                   import(
                     './pages/position-attributes/position-attributes.module'
                   ).then((m) => m.PositionAttributesModule),
+                data: {
+                  breadcrumb: {
+                    alias: '@attribute',
+                  },
+                },
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                key: 'common.attribute.few',
+              },
+            },
           },
           {
             path: 'channels',
