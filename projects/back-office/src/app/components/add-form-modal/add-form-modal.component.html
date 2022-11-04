@@ -12,7 +12,10 @@
             placeholder="Enter a name"
           />
         </mat-form-field>
-        <mat-radio-group formControlName="newResource" class="flex flex-col mb-5 gap-1">
+        <mat-radio-group
+          formControlName="newResource"
+          class="flex flex-col mb-5 gap-1"
+        >
           <mat-radio-button [value]="true">
             {{ 'components.form.create.choice.resource' | translate }}
             <safe-icon
@@ -52,10 +55,7 @@
             </safe-graphql-select>
           </mat-form-field>
           <ng-container *ngIf="form.controls.resource.value !== null">
-            <mat-slide-toggle
-              formControlName="inheritsTemplate"
-              class="mb-5"
-            >
+            <mat-slide-toggle formControlName="inheritsTemplate" class="mb-5">
               {{ 'components.form.create.choice.template' | translate }}
               <safe-icon
                 icon="info_outline"

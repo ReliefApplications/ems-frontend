@@ -1,5 +1,9 @@
 <safe-modal [closable]="true" size="fullscreen">
-  <form mat-dialog-content [formGroup]="form" class="[&:not(td)]:flex [&:not(td)]:flex-col">
+  <form
+    mat-dialog-content
+    [formGroup]="form"
+    class="[&:not(td)]:flex [&:not(td)]:flex-col"
+  >
     <mat-form-field appearance="outline">
       <mat-label>{{ 'common.name' | translate }}</mat-label>
       <input
