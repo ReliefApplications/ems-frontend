@@ -106,8 +106,13 @@ export class SafeReferenceDataService {
       operator: string;
     }
   ): Promise<{ value: string | number; text: string }[]> {
+    const sortByDisplayField = (a: any, b: any) =>
+      a[displayField] > b[displayField] ? 1 : -1;
+
     // get items
-    const { items, valueField } = await this.getItems(referenceDataID);
+    const { items: items_, valueField } = await this.getItems(referenceDataID);
+    // sort items by displayField
+    const items = items_.sort(sortByDisplayField);
     // if we ask to filter
     if (filter) {
       const { items: foreignItems, valueField: foreignValueField } =
@@ -123,6 +128,7 @@ export class SafeReferenceDataService {
             item[filter.localField]
           )
         )
+        .sort(sortByDisplayField)
         .map((item) => ({
           value: item[valueField],
           text: item[displayField],
