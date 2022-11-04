@@ -12,24 +12,26 @@
       ></safe-content-choice>
     </ng-container>
     <ng-container *ngSwitchCase="2">
-      <h2>{{ 'pages.application.addPage.form.title' | translate }}</h2>
-      <safe-forms-dropdown
-        [forms$]="forms$"
-        [label]="'models.form.select' | translate"
-        [sourceControl]="pageForm.controls.content"
-        [loadingMore]="loadingMore"
-        (filter)="onFilterDataSource($event)"
-        (scrolled)="onScrollDataSource($event)"
-      ></safe-forms-dropdown>
-      <safe-button
-        icon="add"
-        category="secondary"
-        variant="primary"
-        (click)="onAdd()"
-        [disabled]="!canCreateForm"
-      >
-        {{ 'models.form.create' | translate }}
-      </safe-button>
+      <div class="flex flex-col w-80 items-center">
+        <safe-forms-dropdown
+          [forms$]="forms$"
+          [label]="'models.form.select' | translate"
+          [sourceControl]="pageForm.controls.content"
+          [loadingMore]="loadingMore"
+          (filter)="onFilterDataSource($event)"
+          (scrolled)="onScrollDataSource($event)"
+        ></safe-forms-dropdown>
+        <safe-divider [text]="'or'"></safe-divider>
+        <safe-button
+          icon="add"
+          category="secondary"
+          variant="primary"
+          (click)="onAdd()"
+          [disabled]="!canCreateForm"
+        >
+          {{ 'models.form.create' | translate }}
+        </safe-button>
+      </div>
     </ng-container>
   </div>
 </form>
