@@ -1,9 +1,18 @@
 <ol *ngIf="breadcrumbs.length > 1">
   <li *ngFor="let breadcrumb of breadcrumbs; let i = index">
-    <a [routerLink]="[breadcrumb.uri]">
+    <!-- Breadcrumb link -->
+    <a
+      *ngIf="breadcrumb.key || breadcrumb.text"
+      [routerLink]="[breadcrumb.uri]"
+    >
       <span>{{
         breadcrumb.key ? (breadcrumb.key | translate) : breadcrumb.text
       }}</span>
     </a>
+    <!-- Loading indicator if text not set -->
+    <kendo-skeleton
+      *ngIf="!breadcrumb.key && !breadcrumb.text"
+      width="3em"
+    ></kendo-skeleton>
   </li>
 </ol>
