@@ -19,7 +19,7 @@
     </ng-template>
   </mat-tab>
   <!-- AVAILABLE ACTIONS -->
-  <mat-tab>
+  <mat-tab [disabled]="formGroup.value.aggregations.length > 0">
     <ng-template mat-tab-label>
       <safe-icon icon="toggle_on" [size]="24"></safe-icon>
       <span>{{
@@ -31,7 +31,7 @@
     </ng-template>
   </mat-tab>
   <!-- BUTTONS -->
-  <mat-tab>
+  <mat-tab [disabled]="formGroup.value.aggregations.length > 0">
     <ng-template mat-tab-label>
       <safe-icon icon="bolt" [size]="24"></safe-icon>
       <span>{{
