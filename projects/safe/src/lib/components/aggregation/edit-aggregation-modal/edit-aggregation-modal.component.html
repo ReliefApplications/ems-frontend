@@ -3,11 +3,8 @@
     {{ 'components.aggregation.edit.title' | translate }}
   </h1>
   <mat-dialog-content>
-    <form [formGroup]="formGroup">
+    <form [formGroup]="formGroup" class="flex flex-col gap-8">
       <div class="flex flex-col">
-        <div class="font-medium text-base mb-3 border-solid border-b border-darkgray pb-1">
-          {{ 'common.general' | translate }}
-        </div>
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.name' | translate }}</mat-label>
           <input matInput formControlName="name" type="string" />
@@ -19,7 +16,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="flex flex-col mt-8">
+      <div class="flex flex-col">
         <safe-aggregation-builder
           [resource]="resource"
           [aggregationForm]="formGroup"

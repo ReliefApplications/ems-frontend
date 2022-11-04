@@ -10,8 +10,8 @@
   <div mat-dialog-content>
     <form [formGroup]="pullJobForm">
       <div class="flex flex-col">
-        <div class="flex gap-2">
-          <mat-form-field appearance="outline" style="flex: 1">
+        <div class="flex gap-x-2 flex-wrap">
+          <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'common.name' | translate }}</mat-label>
             <input
               type="text"
@@ -20,7 +20,7 @@
               formControlName="name"
             />
           </mat-form-field>
-          <mat-form-field appearance="outline" style="flex: 1">
+          <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'common.status' | translate }}</mat-label>
             <mat-select formControlName="status">
               <mat-option
@@ -38,8 +38,8 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="flex gap-2">
-          <mat-form-field appearance="outline" style="flex: 1">
+        <div class="flex gap-x-2 flex-wrap">
+          <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
             <input
               type="text"
@@ -59,7 +59,7 @@
               "
             ></safe-icon>
           </mat-form-field>
-          <mat-form-field appearance="outline" style="flex: 1">
+          <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{
               'common.apiConfiguration.one' | translate
             }}</mat-label>
@@ -74,8 +74,8 @@
             </safe-graphql-select>
           </mat-form-field>
         </div>
-        <div class="flex gap-2" *ngIf="!isHardcoded">
-          <mat-form-field appearance="outline" style="flex: 1">
+        <div class="flex gap-x-2 flex-wrap" *ngIf="!isHardcoded">
+          <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'models.pullJob.url' | translate }}</mat-label>
             <input
               type="text"
@@ -93,7 +93,7 @@
               [matTooltip]="'components.pullJob.modal.hint.url' | translate"
             ></safe-icon>
           </mat-form-field>
-          <mat-form-field appearance="outline" style="flex: 1">
+          <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'models.pullJob.path' | translate }}</mat-label>
             <input
               type="text"
@@ -112,8 +112,8 @@
             ></safe-icon>
           </mat-form-field>
         </div>
-        <div class="flex gap-2">
-          <mat-form-field appearance="outline" style="flex: 1">
+        <div class="flex gap-x-2 flex-wrap">
+          <mat-form-field appearance="outline" class="flex-auto">
             <mat-label>{{
               'components.record.convert.select' | translate
             }}</mat-label>
@@ -127,7 +127,7 @@
             </safe-graphql-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{
               'components.channel.dropdown.select' | translate
             }}</mat-label>
@@ -154,82 +154,84 @@
         <mat-expansion-panel
           [expanded]="false"
           [disabled]="!pullJobForm.value.convertTo"
-          class="input-list"
         >
           <mat-expansion-panel-header>
             <mat-panel-title>
               {{ 'components.pullJob.modal.mapping' | translate }}
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <div class="actions">
-            <safe-button
-              icon="edit_note"
-              category="secondary"
-              variant="primary"
-              (click)="toggleRawJSON()"
-            >
-              {{ 'components.pullJob.modal.switch' | translate }}
-            </safe-button>
-          </div>
-          <ng-container *ngIf="openRawJSON">
-            <mat-form-field appearance="outline" style="width: 100%">
-              <mat-label>{{ 'common.input.rawJson' | translate }}</mat-label>
-              <textarea
-                matInput
-                formControlName="rawMapping"
-                placeholder="Please enter a JSON for the data mapping between the API and the Form."
-                [cdkTextareaAutosize]="true"
-                [cdkAutosizeMinRows]="2"
-              ></textarea>
-            </mat-form-field>
-          </ng-container>
-          <ng-container *ngIf="!openRawJSON">
-            <form
-              [formGroup]="$any(element)"
-              *ngFor="let element of mappingArray.controls; index as i"
-            >
-              <mat-form-field
-                appearance="outline"
-                style="margin-bottom: -1.25em"
-              >
-                <mat-label>{{ 'common.field.one' | translate }}</mat-label>
-                <mat-select formControlName="name">
-                  <mat-option
-                    *ngFor="let field of filteredFields(element.value.name)"
-                    [value]="field.name"
-                    >{{ field.name }}</mat-option
-                  >
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field
-                appearance="outline"
-                *ngIf="element.value.name"
-                style="margin-bottom: -1.25em"
-              >
-                <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-                <input matInput formControlName="value" type="string" />
-              </mat-form-field>
+          <div class="flex flex-col gap-4">
+            <div class="flex justify-end">
               <safe-button
-                [isIcon]="true"
-                icon="remove_circle_outline"
-                variant="danger"
-                (click)="onDeleteElement(i)"
+                icon="edit_note"
+                category="secondary"
+                variant="primary"
+                (click)="toggleRawJSON()"
               >
+                {{ 'components.pullJob.modal.switch' | translate }}
               </safe-button>
-            </form>
-            <safe-button
-              *ngIf="filteredFields('').length > 0"
-              [isIcon]="true"
-              icon="add_circle_outline"
-              variant="primary"
-              (click)="onAddElement()"
-            >
-            </safe-button>
-          </ng-container>
+            </div>
+            <ng-container *ngIf="openRawJSON">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'common.input.rawJson' | translate }}</mat-label>
+                <textarea
+                  matInput
+                  formControlName="rawMapping"
+                  placeholder="Please enter a JSON for the data mapping between the API and the Form."
+                  [cdkTextareaAutosize]="true"
+                  [cdkAutosizeMinRows]="2"
+                ></textarea>
+              </mat-form-field>
+            </ng-container>
+            <ng-container *ngIf="!openRawJSON">
+              <div class="flex flex-col gap-2 overflow-x-auto">
+                <form
+                  [formGroup]="$any(element)"
+                  *ngFor="let element of mappingArray.controls; index as i"
+                  class="flex gap-x-2 items-center"
+                >
+                  <mat-form-field appearance="outline" class="p-0">
+                    <mat-label>{{ 'common.field.one' | translate }}</mat-label>
+                    <mat-select formControlName="name">
+                      <mat-option
+                        *ngFor="let field of filteredFields(element.value.name)"
+                        [value]="field.name"
+                        >{{ field.name }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field
+                    appearance="outline"
+                    *ngIf="element.value.name"
+                    class="p-0"
+                  >
+                    <mat-label>{{ 'common.value.one' | translate }}</mat-label>
+                    <input matInput formControlName="value" type="string" />
+                  </mat-form-field>
+                  <safe-button
+                    [isIcon]="true"
+                    icon="remove_circle_outline"
+                    variant="danger"
+                    (click)="onDeleteElement(i)"
+                  >
+                  </safe-button>
+                </form>
+                <safe-button
+                  *ngIf="filteredFields('').length > 0"
+                  [isIcon]="true"
+                  icon="add_circle_outline"
+                  variant="primary"
+                  (click)="onAddElement()"
+                >
+                </safe-button>
+              </div>
+            </ng-container>
+          </div>
         </mat-expansion-panel>
         <mat-form-field
           *ngIf="mappingArray.controls.length > 0"
           appearance="outline"
+          class="mt-4"
         >
           <mat-label>{{
             'components.pullJob.modal.identifier' | translate

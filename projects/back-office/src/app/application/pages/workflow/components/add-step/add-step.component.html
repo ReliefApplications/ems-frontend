@@ -1,9 +1,5 @@
 <form [formGroup]="stepForm">
-  <div
-    class="flex flex-col [&:not(.content-choice-step)]:max-w-[400px]"
-    [ngSwitch]="stage"
-    [ngClass]="{ 'content-choice-step': stage === 1 }"
-  >
+  <div class="flex flex-col" [ngSwitch]="stage">
     <ng-container *ngSwitchCase="1">
       <h2>{{ 'pages.workflow.addStep.selectType' | translate }}</h2>
       <safe-content-choice
