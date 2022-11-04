@@ -16,7 +16,7 @@
     "e2e": "ng e2e",
     "docs:json": "NODE_OPTIONS=--max-old-space-size=4096 npx compodoc -p ./tsconfig.json -e json -d .",
     "storybook": "npm run docs:json && start-storybook -p 6006",
-    "build-storybook": "npm run docs:json && build-storybook",
+    "build-storybook": "NODE_OPTIONS=--max-old-space-size=4096 npm run docs:json && NODE_OPTIONS=--max-old-space-size=4096 build-storybook",
     "prepare": "husky install",
     "release": "standard-version",
     "release:minor": "standard-version --release-as minor",

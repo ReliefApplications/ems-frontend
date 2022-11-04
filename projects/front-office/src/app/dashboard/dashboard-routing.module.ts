@@ -125,6 +125,14 @@ export const routes = [
               {
                 path: '**',
               },
+              {
+                path: 'templates',
+                loadChildren: () =>
+                  import('@safe/builder').then(
+                    (m) => m.SafeApplicationTemplatesModule
+                  ),
+                // canActivate: [WhoPermissionGuard]
+              },
             ],
           },
         ],

@@ -12,8 +12,10 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
 import { Form } from '../../../../models/form.model';
+import { Resource } from '../../../../models/resource.model';
 import { ContentType } from '../../../../models/page.model';
 import { SafeWorkflowService } from '../../../../services/workflow/workflow.service';
+import { TemplateTypeEnum } from '../../../../models/template.model';
 import { Subscription } from 'rxjs';
 import {
   MatChipInputEvent,
@@ -24,6 +26,7 @@ import { QueryBuilderService } from '../../../../services/query-builder/query-bu
 import { MatDialog } from '@angular/material/dialog';
 import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 import { SafeEditorService } from '../../../../services/editor/editor.service';
+import { createQueryForm } from '../../../query-builder/query-builder-forms';
 
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
@@ -57,6 +60,10 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
   @Input() channels: Channel[] = [];
   @Input() relatedForms: Form[] = [];
 
+  public targetResource?: Resource;
+  public relatedResources: Resource[] = [];
+
+  @Input() templates: any[] = [];
   // Indicate is the page is a single dashboard.
   public isDashboard = false;
 
@@ -78,6 +85,11 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
     return this.fields.filter(
       (x) => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name)
     );
+  }
+
+  /** @returns The list of email templates */
+  get mailTemplates(): any[] {
+    return this.templates.filter((x) => x.type === TemplateTypeEnum.EMAIL);
   }
 
   /**
@@ -199,48 +211,64 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
       this.formGroup?.get('targetForm')?.updateValueAndValidity();
     });
 
-    this.formGroup?.get('targetForm')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.formGroup
-          ?.get('targetFormField')
-          ?.setValidators(Validators.required);
-      } else {
-        this.formGroup?.get('targetFormField')?.clearValidators();
-        this.formGroup?.get('targetFormField')?.setValue(null);
-      }
-      this.formGroup?.get('targetFormField')?.updateValueAndValidity();
-    });
-
     this.formGroup?.get('sendMail')?.valueChanges.subscribe((value) => {
       if (value) {
         this.formGroup
           ?.get('distributionList')
           ?.setValidators(Validators.required);
-        this.formGroup?.get('subject')?.setValidators(Validators.required);
+        this.formGroup?.get('templates')?.setValidators(Validators.required);
       } else {
         this.formGroup?.get('distributionList')?.clearValidators();
-        this.formGroup?.get('subject')?.clearValidators();
+        this.formGroup?.get('templates')?.clearValidators();
       }
       this.formGroup?.get('distributionList')?.updateValueAndValidity();
-      this.formGroup?.get('subject')?.updateValueAndValidity();
+      this.formGroup?.get('templates')?.updateValueAndValidity();
     });
 
     this.emails = [...this.formGroup?.get('distributionList')?.value];
 
-    this.formGroup?.get('targetForm')?.valueChanges.subscribe((target) => {
-      if (target?.name) {
-        const queryName = this.queryBuilder.getQueryNameFromResourceName(
-          target?.name || ''
-        );
-        this.formGroup?.get('targetFormQuery.name')?.setValue(queryName);
-        this.formGroup
-          ?.get('targetFormQuery.fields')
-          ?.setValidators([Validators.required]);
+    this.formGroup?.get('targetResource')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.targetResource = this.relatedResources.find((x) => x.id === value);
+        if (this.targetResource) {
+          this.formGroup?.get('targetForm')?.setValidators(Validators.required);
+          this.formGroup
+            ?.get('targetFormField')
+            ?.setValidators(Validators.required);
+          this.formGroup
+            ?.get('targetFormQuery.name')
+            ?.setValue(this.targetResource.queryName);
+          this.formGroup
+            ?.get('targetFormQuery.fields')
+            ?.setValidators([Validators.required]);
+        } else {
+          this.formGroup?.get('targetForm')?.clearValidators();
+          this.formGroup?.get('targetForm')?.setValue(null);
+          this.formGroup?.get('targetFormField')?.clearValidators();
+          this.formGroup?.get('targetFormField')?.setValue(null);
+          this.formGroup?.get('targetFormQuery')?.clearValidators();
+        }
       } else {
-        this.formGroup?.get('targetFormQuery')?.clearValidators();
+        this.targetResource = undefined;
+        this.formGroup?.get('targetForm')?.clearValidators();
+        this.formGroup.get('targetForm')?.setValue(null);
+        this.formGroup?.get('targetFormField')?.clearValidators();
+        this.formGroup?.get('targetFormField')?.setValue(null);
+        this.formGroup
+          .get('targetFormQuery')
+          ?.patchValue(createQueryForm(null, false));
       }
+      this.formGroup?.get('targetForm')?.updateValueAndValidity();
+      this.formGroup?.get('targetFormField')?.updateValueAndValidity();
       this.formGroup?.get('targetFormQuery')?.updateValueAndValidity();
     });
+
+    this.setRelatedResources();
+    if (this.formGroup.value.targetResource) {
+      this.targetResource = this.relatedResources.find(
+        (x) => x.id === this.formGroup.value.targetResource
+      );
+    }
 
     this.formGroup
       ?.get('sendMail')
@@ -285,6 +313,20 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
         }
       });
+  }
+
+  /** Set list of resources user can attach a record to */
+  private setRelatedResources(): void {
+    const resources: Resource[] = [];
+    for (const form of this.relatedForms) {
+      const resource = resources.find((x) => x.id === form.resource?.id);
+      if (resource) {
+        resource.forms?.push(form);
+      } else {
+        resources.push({ ...form.resource, forms: [form] } as Resource);
+      }
+    }
+    this.relatedResources = resources;
   }
 
   /**

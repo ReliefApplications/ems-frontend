@@ -1,5 +1,5 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -117,15 +117,25 @@ export class SafeDownloadService {
       .post(path, body, { responseType: 'blob', headers })
       .subscribe(
         (res) => {
-          const blob = new Blob([res], { type });
-          this.saveFile(fileName, blob);
-          snackBarRef.instance.data = {
-            message: this.translate.instant(
-              'common.notifications.file.download.ready'
-            ),
-            loading: false,
-          };
-          setTimeout(() => snackBarRef.dismiss(), 1000);
+          if (body?.email) {
+            snackBarRef.instance.data = {
+              message: this.translate.instant(
+                'common.notifications.file.download.ongoing'
+              ),
+              loading: false,
+            };
+            setTimeout(() => snackBarRef.dismiss(), 1000);
+          } else {
+            const blob = new Blob([res], { type });
+            this.saveFile(fileName, blob);
+            snackBarRef.instance.data = {
+              message: this.translate.instant(
+                'common.notifications.file.download.ready'
+              ),
+              loading: false,
+            };
+            setTimeout(() => snackBarRef.dismiss(), 1000);
+          }
         },
         () => {
           snackBarRef.instance.data = {

@@ -33,13 +33,6 @@ export const init = (Survey: any, environment: any): void => {
       options.request.setRequestHeader('Authorization', `Bearer ${token}`);
     }
   };
-  // add the onCompleteExpression property to the survey
-  serializer.addProperty('survey', {
-    name: 'onCompleteExpression:expression',
-    type: 'expression',
-    visibleIndex: 350,
-    category: 'logic',
-  });
 };
 
 /**

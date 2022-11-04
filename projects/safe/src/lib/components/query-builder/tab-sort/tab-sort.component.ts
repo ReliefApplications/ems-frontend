@@ -12,6 +12,7 @@ import { FormGroup } from '@angular/forms';
 export class SafeTabSortComponent implements OnInit {
   @Input() form: FormGroup = new FormGroup({});
   @Input() fields: any[] = [];
+  @Input() showLimit = false;
 
   /**
    * Constructor for the sorting component

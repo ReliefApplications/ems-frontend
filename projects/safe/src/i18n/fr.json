@@ -120,6 +120,7 @@
 			"file": {
 				"download": {
 					"error": "Un problème est survenu lors du téléchargement",
+					"ongoing": "Votre téléchargement est en cours. Vous recevrez bientôt un e-mail contenant votre fichier.",
 					"processing": "Téléchargement du fichier en cours...",
 					"ready": "Votre fichier est prêt"
 				},
@@ -240,8 +241,18 @@
 			"none": "Aucun abonnement",
 			"one": "Abonnement"
 		},
+		"template": {
+			"few": "Modèles",
+			"none": "Aucun modèle",
+			"one": "Modèle"
+		},
 		"title": "Titre",
 		"true": "Vrai",
+		"type": {
+			"few": "Types",
+			"none": "Aucun type",
+			"one": "Type"
+		},
 		"update": "Mettre à jour",
 		"updateObject": "Mettre à jour {{name}}",
 		"uploadObject": "Importer {{name}}",
@@ -598,6 +609,8 @@
 				"ascending": "Croissant",
 				"descending": "Décroissant",
 				"field": "Filtrer le champ",
+				"limit": "limite",
+				"limitTitle": "Tri et limite",
 				"order": "Ordre de tri",
 				"title": "Tri"
 			},
@@ -779,6 +792,30 @@
 				"title": "Partager l'url du dashboard"
 			}
 		},
+		"templates": {
+			"available": "Modèles disponibles",
+			"delete": {
+				"confirmationMessage": "Voulez-vous supprimer le modèle '{{name}}'?",
+				"titleMessage": "Supprimer le modèle"
+			},
+			"edit": {
+				"body": "Corps du texte",
+				"name": "Nom du modèle",
+				"new": "Nouveau modèle",
+				"subject": "Sujet",
+				"update": "Éditer le modèle"
+			},
+			"errors": {
+				"empty": "Veuillez sélectionner au moins un modèle"
+			},
+			"select": {
+				"email": "Sélectionnez un modèle d'e-mail"
+			},
+			"type": {
+				"email": "E-mail",
+				"title": "Type de modèle"
+			}
+		},
 		"user": {
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer l'utilisateur {{name}} ?",
@@ -850,6 +887,10 @@
 							"selected": "Seulement les enregistrements visibles"
 						},
 						"title": "Sélectionner les enregistrements à exporter"
+					},
+					"email": {
+						"title": "M'envoyer le fichier par e-mail",
+						"tooltip": "Si sélectionné, vous recevrez le fichier par e-mail, au lieu d'attendre son téléchargement ici."
 					},
 					"format": {
 						"title": "Sélectionner le format d'export"
@@ -1156,7 +1197,9 @@
 			"filterInputLabel": "'Filtrer {columnName}'",
 			"filterIsEmptyOperator": "Est vide",
 			"filterIsFalse": "est faux",
+			"filterIsInOperator": "Est dans",
 			"filterIsNotEmptyOperator": "Est non-vide",
+			"filterIsNotInOperator": "N'est pas dans",
 			"filterIsNotNullOperator": "Est non-nul",
 			"filterIsNullOperator": "Est nul",
 			"filterIsTrue": "est vrai",

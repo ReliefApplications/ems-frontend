@@ -6,9 +6,9 @@ import { Channel } from '../../../models/channel.model';
 import { Subscription } from '../../../models/subscription.model';
 import { PositionAttributeCategory } from '../../../models/position-attribute-category.model';
 import { Application } from '../../../models/application.model';
+import { Template } from '../../../models/template.model';
 
 // === ADD PAGE ===
-
 /** Graphql request for adding a new page of a given type to an application */
 export const ADD_PAGE = gql`
   mutation addPage($type: ContentEnumType!, $content: ID, $application: ID!) {
@@ -553,4 +553,64 @@ export const TOGGLE_APPLICATION_LOCK = gql`
 export interface ToggleApplicationLockMutationResponse {
   loading: boolean;
   toggleApplicationLock: Application;
+}
+
+// TEMPLATE OPERATIONS
+
+/** Graphql request for adding a template to an application */
+export const ADD_TEMPLATE = gql`
+  mutation addTemplate($application: ID!, $template: TemplateInputType!) {
+    addTemplate(application: $application, template: $template) {
+      id
+      name
+      type
+      content
+    }
+  }
+`;
+
+/** Model for AddTemplateMutationResponse object */
+export interface AddTemplateMutationResponse {
+  loading: boolean;
+  addTemplate: Template;
+}
+
+/** Graphql request for editing a template of an application */
+export const UPDATE_TEMPLATE = gql`
+  mutation editTemplate(
+    $application: ID!
+    $id: ID!
+    $template: TemplateInputType!
+  ) {
+    editTemplate(application: $application, id: $id, template: $template) {
+      id
+      name
+      type
+      content
+    }
+  }
+`;
+
+/** Model for UpdateTemplateMutationResponse object */
+export interface UpdateTemplateMutationResponse {
+  loading: boolean;
+  editTemplate: Template;
+}
+
+/** Graphql request for deleting a template of an application */
+export const DELETE_TEMPLATE = gql`
+  mutation deleteTemplate($application: ID!, $id: ID!) {
+    deleteTemplate(application: $application, id: $id) {
+      id
+      name
+      type
+      content
+    }
+  }
+`;
+
+/** Model for DeleteTemplateMutationResponse object */
+export interface DeleteTemplateMutationResponse {
+  loading: boolean;
+  deleteTemplate: Template;
 }

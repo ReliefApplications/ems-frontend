@@ -49,13 +49,10 @@ export const createButtonFormGroup = (value: any): FormGroup => {
           )
         : []
     ),
-    attachToRecord: [
-      value && value.attachToRecord ? value.attachToRecord : false,
-    ],
-    targetForm: [value && value.targetForm ? value.targetForm : null],
-    targetFormField: [
-      value && value.targetFormField ? value.targetFormField : null,
-    ],
+    attachToRecord: [get(value, 'attachToRecord', false)],
+    targetResource: [get(value, 'targetResource', null)],
+    targetForm: [get(value, 'targetForm', null)],
+    targetFormField: [get(value, 'targetFormField', null)],
     targetFormQuery: createQueryForm(
       value && value.targetFormQuery ? value.targetFormQuery : null,
       Boolean(value && value.targetForm)
@@ -80,8 +77,8 @@ export const createButtonFormGroup = (value: any): FormGroup => {
       value && value.distributionList ? value.distributionList : [],
       value && value.sendMail ? Validators.required : null,
     ],
-    subject: [
-      value && value.subject ? value.subject : '',
+    templates: [
+      get(value, 'templates', []),
       value && value.sendMail ? Validators.required : null,
     ],
     export: [value && value.export ? value.export : false],
@@ -91,10 +88,6 @@ export const createButtonFormGroup = (value: any): FormGroup => {
         : [],
       value && value.sendMail ? Validators.required : null
     ),
-    bodyText: [value && value.bodyText ? value.bodyText : ''],
-    bodyTextAlternate: [
-      value && value.bodyTextAlternate ? value.bodyTextAlternate : '',
-    ],
   });
   return formGroup;
 };

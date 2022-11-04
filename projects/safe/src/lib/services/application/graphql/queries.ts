@@ -11,6 +11,12 @@ export const GET_APPLICATION_BY_ID = gql`
       description
       createdAt
       status
+      templates {
+        id
+        name
+        type
+        content
+      }
       pages {
         id
         name

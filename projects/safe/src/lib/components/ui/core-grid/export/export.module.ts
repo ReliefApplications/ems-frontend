@@ -5,6 +5,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../modal/modal.module';
 
@@ -17,6 +20,9 @@ import { SafeModalModule } from '../../modal/modal.module';
     MatDialogModule,
     MatRadioModule,
     MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatSlideToggleModule,
     TranslateModule,
     SafeModalModule,
   ],
