@@ -2,14 +2,28 @@
   class="w-full"
   [loading]="loading"
   [kendoGridBinding]="gridData"
-  [filterable]="true"
+  [filterable]="showFilter ? true : 'menu'"
   [sortable]="true"
   [resizable]="true"
   [reorderable]="true"
-  [columnMenu]="true"
+  [columnMenu]="columnMenu"
   [pageable]="pagerSettings"
   [pageSize]="pageSize"
 >
+  <!-- Actions -->
+  <ng-template kendoGridToolbarTemplate position="top">
+    <kendo-grid-column-chooser></kendo-grid-column-chooser>
+    <button
+      [matTooltip]="'components.widget.grid.filter.toggle' | translate"
+      kendoButton
+      icon="eye"
+      (click)="onToggleFilter()"
+    >
+      {{
+        (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
+      }}
+    </button>
+  </ng-template>
   <ng-container *ngFor="let field of fields">
     <kendo-grid-column
       [field]="field.name"

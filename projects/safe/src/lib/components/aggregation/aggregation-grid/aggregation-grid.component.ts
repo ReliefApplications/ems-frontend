@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Aggregation } from '../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
@@ -21,21 +22,30 @@ export class SafeAggregationGridComponent implements OnInit {
   public loading = false;
   public pageSize = 10;
   public pagerSettings = PAGER_SETTINGS;
+  public showFilter = false;
 
   @Input() resourceId!: string;
   @Input() aggregation!: Aggregation;
+
+  /** @returns The column menu */
+  get columnMenu(): { columnChooser: boolean; filter: boolean } {
+    return {
+      columnChooser: false,
+      filter: !this.showFilter,
+    };
+  }
 
   /**
    * Shared aggregation grid component
    *
    * @param aggregationService Shared aggregation service
    * @param aggregationBuilderService Shared aggregation builder service
+   * @param apollo Apollo service
    */
   constructor(
     private aggregationService: SafeAggregationService,
     private aggregationBuilderService: AggregationBuilderService,
-    private apollo: Apollo,
-    private queryBuilder: QueryBuilderService
+    private apollo: Apollo
   ) {}
 
   ngOnInit(): void {
@@ -70,7 +80,6 @@ export class SafeAggregationGridComponent implements OnInit {
       })
       .subscribe((res) => {
         const resource = res.data.resource;
-        console.log(resource.metadata);
         this.fields = this.aggregationBuilderService.fieldsAfter(
           resource.metadata?.filter((x) =>
             this.aggregation.sourceFields.includes(x.name)
@@ -78,5 +87,18 @@ export class SafeAggregationGridComponent implements OnInit {
           this.aggregation.pipeline
         );
       });
+  }
+
+  /**
+   * Toggles quick filter visibility
+   */
+  public onToggleFilter(): void {
+    if (!this.loading) {
+      this.showFilter = !this.showFilter;
+      // this.onFilterChange({
+      //   logic: 'and',
+      //   filters: this.showFilter ? [] : this.filter.filters,
+      // });
+    }
   }
 }

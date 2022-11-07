@@ -55,8 +55,6 @@ export class AggregationBuilderService {
    * @returns Fields remaining at the end of the pipeline.
    */
   public fieldsAfter(initialFields: any[], pipeline: any[]): any[] {
-    console.log(initialFields);
-    console.log(pipeline);
     let fields = [...initialFields];
     for (const stage of pipeline) {
       switch (stage.type) {
@@ -181,7 +179,6 @@ export class AggregationBuilderService {
    * @returns field
    */
   public findField(fieldName: string, fields: any[]): any {
-    console.log(fieldName);
     let outField = fields.find((x) => x.name === fieldName);
     if (!outField && fieldName.includes('.')) {
       const fieldArray = fieldName.split('.');
