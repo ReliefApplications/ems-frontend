@@ -2,9 +2,10 @@
   <h2>
     {{ 'components.widget.settings.grid.buttons.title' | translate }}
   </h2>
-  <div class="info-text">
+  <safe-alert>
+    <safe-icon icon="info"></safe-icon>
     {{ 'components.widget.settings.grid.hint.buttons' | translate }}
-  </div>
+  </safe-alert>
   <safe-button
     style.align-self="flex-end"
     icon="add"

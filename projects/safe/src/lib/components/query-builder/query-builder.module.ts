@@ -35,6 +35,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.component';
 import { SafeFilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
+import { SafeAlertModule } from '../ui/alert/alert.module';
 
 /**
  * SafeQueryBuilderModule is a class used to manage all the modules and components
@@ -81,6 +82,7 @@ import { DateFilterEditorComponent } from './date-filter-editor/date-filter-edit
     MatSliderModule,
     MatDatepickerModule,
     SafeFilterModule,
+    SafeAlertModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

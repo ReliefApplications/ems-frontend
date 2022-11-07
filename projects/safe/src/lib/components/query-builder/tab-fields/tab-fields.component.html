@@ -1,6 +1,7 @@
-<div class="info-text">
+<safe-alert>
+  <safe-icon icon="info"></safe-icon>
   {{ 'components.queryBuilder.hint.fields' | translate }}
-</div>
+</safe-alert>
 <div cdkDropListGroup class="field-wrapper" [ngClass]="{ hidden: fieldForm }">
   <div class="field-container" *ngIf="!fieldForm">
     <h2>{{ 'components.queryBuilder.fields.available' | translate }}</h2>
