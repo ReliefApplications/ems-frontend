@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Aggregation } from '../../../models/aggregation.model';
@@ -16,7 +16,7 @@ import { GetResourceByIdQueryResponse, GET_RESOURCE } from './graphql/queries';
   templateUrl: './aggregation-grid.component.html',
   styleUrls: ['./aggregation-grid.component.scss'],
 })
-export class SafeAggregationGridComponent implements OnInit {
+export class SafeAggregationGridComponent implements OnInit, OnChanges {
   public gridData: any[] = [];
   public fields: any[] = [];
   public loading = false;
@@ -49,6 +49,11 @@ export class SafeAggregationGridComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.getAggregationData();
+    this.getAggregationFields();
+  }
+
+  ngOnChanges(): void {
     this.getAggregationData();
     this.getAggregationFields();
   }

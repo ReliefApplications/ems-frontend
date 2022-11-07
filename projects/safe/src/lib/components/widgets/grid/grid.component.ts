@@ -72,6 +72,7 @@ export class SafeGridWidgetComponent implements OnInit {
   public layouts: Layout[] = [];
 
   // === AGGREGATION ===
+  public aggregation: Aggregation | null = null;
   public aggregations: Aggregation[] = [];
 
   // === VERIFICATION IF USER IS ADMIN ===
@@ -166,8 +167,9 @@ export class SafeGridWidgetComponent implements OnInit {
                 (a, b) =>
                   aggregations.indexOf(a.id) - aggregations.indexOf(b.id)
               );
-            return;
+            this.aggregation = this.aggregations[0] || null;
           });
+        return;
       }
     }
   }
@@ -591,5 +593,14 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   onResetLayout(): void {
     this.onLayoutChange(this.layout || {});
+  }
+
+  /**
+   * Updates current aggregation.
+   *
+   * @param aggregation new aggregation.
+   */
+  onAggregationChange(aggregation: Aggregation): void {
+    this.aggregation = aggregation;
   }
 }
