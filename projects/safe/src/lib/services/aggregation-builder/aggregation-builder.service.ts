@@ -55,7 +55,6 @@ export class AggregationBuilderService {
    * @returns Fields remaining at the end of the pipeline.
    */
   public fieldsAfter(initialFields: any[], pipeline: any[]): any[] {
-    console.log(initialFields);
     let fields = [...initialFields];
     for (const stage of pipeline) {
       switch (stage.type) {
@@ -64,7 +63,6 @@ export class AggregationBuilderService {
           for (const rule of stage.form.groupBy) {
             if (rule.field) {
               let groupByField = this.findField(rule.field, fields);
-              console.log(groupByField);
               if (groupByField) {
                 // Change field type because of automatic unwind
                 const newField = Object.assign({}, groupByField);

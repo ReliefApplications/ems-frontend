@@ -156,6 +156,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         emitEvent: false,
       });
     });
+    if (this.formGroup.get('aggregations')?.value.length > 0) {
+      this.formGroup.controls.layouts.clearValidators();
+    }
 
     this.formGroup.get('layouts')?.valueChanges.subscribe((value) => {
       if (value) {
@@ -181,6 +184,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
         emitEvent: false,
       });
     });
+    if (this.formGroup.get('layouts')?.value.length > 0) {
+      this.formGroup.controls.aggregations.clearValidators();
+    }
   }
 
   ngAfterViewInit(): void {

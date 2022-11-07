@@ -208,7 +208,6 @@ export class ApplicationComponent implements OnInit, OnDestroy {
    * @param event Reorder event
    */
   onReorder(event: any): void {
-    console.log('there');
     this.applicationService.reorderPages(
       event.filter((x: any) => x.id).map((x: any) => x.id)
     );
