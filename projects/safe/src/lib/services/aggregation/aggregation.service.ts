@@ -8,7 +8,9 @@ import {
   EDIT_AGGREGATION,
 } from './graphql/mutations';
 import {
+  GetAggregationDataQueryResponse,
   GetResourceByIdQueryResponse,
+  GET_AGGREGATION_DATA,
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
 import {
@@ -16,6 +18,8 @@ import {
   AggregationConnection,
 } from '../../models/aggregation.model';
 import { Apollo } from 'apollo-angular';
+import { Observable } from 'rxjs';
+import { ApolloQueryResult } from '@apollo/client';
 
 /** Fallback AggregationConnection */
 const FALLBACK_AGGREGATIONS: AggregationConnection = {
@@ -70,6 +74,29 @@ export class SafeAggregationService {
           return res.data.resource.aggregations || FALLBACK_AGGREGATIONS;
         }
       });
+  }
+
+  /**
+   * Builds the aggregation query from aggregation definition
+   *
+   * @param resource Resource Id
+   * @param aggregation Aggregation definition
+   * @param mapping aggregation mapping ( category, field, series )
+   * @returns Aggregation query
+   */
+  aggregationDataQuery(
+    resource: string,
+    aggregation: string,
+    mapping?: any
+  ): Observable<ApolloQueryResult<GetAggregationDataQueryResponse>> {
+    return this.apollo.query<GetAggregationDataQueryResponse>({
+      query: GET_AGGREGATION_DATA,
+      variables: {
+        resource,
+        aggregation,
+        mapping,
+      },
+    });
   }
 
   /**

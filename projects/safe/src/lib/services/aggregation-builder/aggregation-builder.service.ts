@@ -38,67 +38,6 @@ export class AggregationBuilderService {
   }
 
   /**
-   * Initializes preview grid using pipeline parameters.
-   *
-   * @param aggregationForm The form for the aggregation
-   * @param pipeline Array of stages.
-   * @param selectedFields Fields before aggregation.
-   * @param metaFields List of meta fields
-   */
-  public initGrid(
-    aggregationForm: any,
-    pipeline: any[],
-    selectedFields: any,
-    metaFields: any[]
-  ): void {
-    let loadingGrid = true;
-    let gridData: any = {
-      data: [],
-      total: 0,
-    };
-    let gridFields: any[] = [];
-
-    if (aggregationForm.get('pipeline')?.valid) {
-      if (pipeline.length) {
-        loadingGrid = true;
-        gridFields = this.gridService.getFields(
-          this.formatFields(this.fieldsAfter(selectedFields, pipeline)),
-          metaFields,
-          {}
-        );
-        const query = this.buildAggregation(aggregationForm.value, '');
-        if (query) {
-          query.subscribe((res: any) => {
-            if (res.data.recordsAggregation) {
-              gridData = {
-                data: res.data.recordsAggregation,
-                total: res.data.recordsAggregation.length,
-              };
-            }
-            loadingGrid = res.loading;
-            this.gridSubject.next({
-              fields: gridFields,
-              data: gridData,
-              loading: loadingGrid,
-            });
-          });
-        }
-      } else {
-        gridFields = [];
-        gridData = {
-          data: [],
-          total: 0,
-        };
-      }
-    }
-    this.gridSubject.next({
-      fields: gridFields,
-      data: gridData,
-      loading: loadingGrid,
-    });
-  }
-
-  /**
    * Formats fields so they are aligned with the queryBuilder format.
    *
    * @param fields Raw fields to format.
@@ -118,46 +57,6 @@ export class AggregationBuilderService {
       }
       return formattedField;
     });
-  }
-
-  /**
-   * Builds the aggregation query from aggregation definition
-   *
-   * @param resource Resource Id
-   * @param aggregation Aggregation definition
-   * @param mapping aggregation mapping ( category, field, series )
-   * @returns Aggregation query
-   */
-  public buildAggregation(
-    resource: string,
-    aggregation: string,
-    mapping?: any
-  ): Observable<ApolloQueryResult<any>> | null {
-    if (aggregation) {
-      const query = gql`
-        query GetCustomAggregation(
-          $resource: ID!
-          $aggregation: ID!
-          $mapping: JSON
-        ) {
-          recordsAggregation(
-            resource: $resource
-            aggregation: $aggregation
-            mapping: $mapping
-          )
-        }
-      `;
-      return this.apollo.query<any>({
-        query,
-        variables: {
-          resource,
-          aggregation,
-          mapping,
-        },
-      });
-    } else {
-      return null;
-    }
   }
 
   /**

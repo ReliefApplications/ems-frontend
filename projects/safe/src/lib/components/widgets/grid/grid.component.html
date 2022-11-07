@@ -4,14 +4,30 @@
     <span class="widget-title" [title]="settings.title">{{
       settings.title
     }}</span>
-    <ng-container *ngTemplateOutlet="layoutsTemplate"></ng-container>
-    <ng-container *ngTemplateOutlet="floatingButtons"></ng-container>
+    <ng-container *ngIf="aggregations.length === 0">
+      <ng-container *ngTemplateOutlet="layoutsTemplate"></ng-container>
+      <ng-container *ngTemplateOutlet="floatingButtonsTemplate"></ng-container>
+    </ng-container>
   </kendo-tilelayout-item-header>
-  <!-- FULL WINDOW VIEW -->
-  <ng-container *ngIf="!header">
-    <ng-container *ngTemplateOutlet="floatingButtons"></ng-container>
+  <!-- Core grid display -->
+  <ng-container *ngIf="aggregations.length === 0">
+    <!-- FULL WINDOW VIEW -->
+    <ng-container *ngIf="!header">
+      <ng-container *ngTemplateOutlet="floatingButtonsTemplate"></ng-container>
+    </ng-container>
+    <!-- GRID CONTENT -->
+    <ng-container *ngTemplateOutlet="coreGridTemplate"></ng-container>
   </ng-container>
-  <!-- GRID CONTENT -->
+
+  <!-- Aggregation grid display -->
+  <ng-container *ngIf="aggregations.length > 0">
+    <!-- GRID CONTENT -->
+    <ng-container *ngTemplateOutlet="aggregationGridTemplate"></ng-container>
+  </ng-container> 
+</div>
+
+<!-- Core Grid ( data query / layout )-->
+<ng-template #coreGridTemplate>
   <safe-core-grid
     [defaultLayout]="layout?.display || {}"
     [settings]="gridSettings"
@@ -21,10 +37,15 @@
     [widget]="widget"
     [canUpdate]="canUpdate"
   ></safe-core-grid>
-</div>
+</ng-template>
+
+<!-- Aggregation Grid -->
+<ng-template #aggregationGridTemplate>
+  <div>Aggregation test</div>
+</ng-template>
 
 <!-- Quick action buttons -->
-<ng-template #floatingButtons>
+<ng-template #floatingButtonsTemplate>
   <div>
     <ng-container *ngFor="let floatingButton of settings.floatingButtons">
       <button
@@ -53,3 +74,6 @@
     </kendo-dropdownlist>
   </ng-container>
 </ng-template>
+
+<!-- Selection of aggregations -->
+<ng-template #aggregationsTemplate></ng-template>

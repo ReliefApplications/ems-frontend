@@ -29,9 +29,24 @@ export const GET_RESOURCE_AGGREGATIONS = gql`
   }
 `;
 
-// === GET RESOURCE BY ID ===
-/** Model for GetResourceByIdQueryResponse object */
+/** Interface for GET_RESOURCE_AGGREGATIONS query */
 export interface GetResourceByIdQueryResponse {
   loading: boolean;
   resource: Resource;
+}
+
+/** Query definition to get aggregation data */
+export const GET_AGGREGATION_DATA = gql`
+  query GetAggregationData($resource: ID!, $aggregation: ID!, $mapping: JSON) {
+    recordsAggregation(
+      resource: $resource
+      aggregation: $aggregation
+      mapping: $mapping
+    )
+  }
+`;
+
+/** Interface for get aggregation data query */
+export interface GetAggregationDataQueryResponse {
+  recordsAggregation: any[];
 }

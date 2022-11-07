@@ -43,6 +43,8 @@ import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
 import { EmailTemplateModalComponent } from '../../email-template-modal/email-template-modal.component';
 import { SafeApplicationService } from '../../../services/application/application.service';
+import { Aggregation } from '../../../models/aggregation.model';
+import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 
 /** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
@@ -68,6 +70,9 @@ export class SafeGridWidgetComponent implements OnInit {
   // === CACHED CONFIGURATION ===
   public layout: Layout | null = null;
   public layouts: Layout[] = [];
+
+  // === AGGREGATION ===
+  public aggregations: Aggregation[] = [];
 
   // === VERIFICATION IF USER IS ADMIN ===
   public isAdmin: boolean;
@@ -100,6 +105,7 @@ export class SafeGridWidgetComponent implements OnInit {
    * @param confirmService Shared confirm service
    * @param applicationService The safe application service
    * @param translate Angular translate service
+   * @param aggregationService Shared aggregation service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -113,7 +119,8 @@ export class SafeGridWidgetComponent implements OnInit {
     private gridLayoutService: SafeGridLayoutService,
     private confirmService: SafeConfirmService,
     private applicationService: SafeApplicationService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private aggregationService: SafeAggregationService
   ) {
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -122,30 +129,60 @@ export class SafeGridWidgetComponent implements OnInit {
   ngOnInit(): void {
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
-    if (
-      this.settings.resource &&
-      get(this.settings, 'layouts', []).length > 0
-    ) {
-      this.gridLayoutService
-        .getLayouts(this.settings.resource, {
-          ids: this.settings.layouts,
-          first: this.settings.layouts?.length,
-        })
-        .then((res) => {
-          this.layouts = res.edges
-            .map((edge) => edge.node)
-            .sort(
-              (a, b) =>
-                this.settings.layouts.indexOf(a.id) -
-                this.settings.layouts.indexOf(b.id)
-            );
-          this.layout = this.layouts[0] || null;
-          this.gridSettings = {
-            ...this.settings,
-            ...this.layout,
-            ...{ template: get(this.settings, 'template', null) },
-          };
-        });
+    if (this.settings.resource) {
+      const layouts = get(this.settings, 'layouts', []);
+      const aggregations = get(this.settings, 'aggregations', []);
+
+      if (layouts.length > 0) {
+        this.gridLayoutService
+          .getLayouts(this.settings.resource, {
+            ids: layouts,
+            first: layouts?.length,
+          })
+          .then((res) => {
+            this.layouts = res.edges
+              .map((edge) => edge.node)
+              .sort((a, b) => layouts.indexOf(a.id) - layouts.indexOf(b.id));
+            this.layout = this.layouts[0] || null;
+            this.gridSettings = {
+              ...this.settings,
+              ...this.layout,
+              ...{ template: get(this.settings, 'template', null) },
+            };
+          });
+        return;
+      }
+
+      if (aggregations.length > 0) {
+        this.aggregationService
+          .getAggregations(this.settings.resource, {
+            ids: aggregations,
+            first: aggregations.length,
+          })
+          .then((res) => {
+            this.aggregations = res.edges
+              .map((edge) => edge.node)
+              .sort(
+                (a, b) =>
+                  aggregations.indexOf(a.id) - aggregations.indexOf(b.id)
+              );
+            return;
+            // console.log(
+            //   this.aggregationBuilderService.fieldsAfter(
+            //     aggregation.sourceFields,
+            //     aggregation.pipeline
+            //   )
+            // );
+
+            // const query = this.aggregationService.aggregationDataQuery(
+            //   this.settings.resource,
+            //   aggregation.id as string
+            // );
+            // query?.subscribe((res2: any) => {
+            //   console.log(res2.data.recordsAggregation);
+            // });
+          });
+      }
     }
   }
 

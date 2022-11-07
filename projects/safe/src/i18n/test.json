@@ -160,6 +160,7 @@
 			"unlocked": "{{name}} ******"
 		},
 		"openFullScreen": "******",
+		"or": "******",
 		"page": {
 			"few": "******",
 			"none": "******",
@@ -968,7 +969,8 @@
 							"choice": {
 								"create": "******"
 							}
-						}
+						},
+						"title": "******"
 					},
 					"buttons": {
 						"callback": {
