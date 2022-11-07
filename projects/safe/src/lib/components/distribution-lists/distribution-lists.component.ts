@@ -24,6 +24,8 @@ export class DistributionListsComponent implements OnInit, OnDestroy {
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['name', 'actions'];
 
+  public loading = false;
+
   /**
    * Constructor of the distribution lists component
    *
@@ -85,7 +87,10 @@ export class DistributionListsComponent implements OnInit, OnDestroy {
     });
   }
 
-  // TODO delete function
+  /**
+   * TODO delete function
+   */
+  deleteDistributionList(): void {}
 
   // TODO add distributionList{id, name, emails} in applicationService graphql query.
 }
