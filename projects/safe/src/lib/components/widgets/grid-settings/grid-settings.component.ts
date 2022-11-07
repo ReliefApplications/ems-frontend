@@ -221,15 +221,19 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
    */
   private getQueryMetaData(): void {
     if (this.formGroup.get('resource')?.value) {
-      const layoutIDs: string[] | undefined =
+      const layoutIds: string[] | undefined =
         this.formGroup?.get('layouts')?.value;
+      const aggregationIds: string[] | undefined =
+        this.formGroup?.get('aggregations')?.value;
       this.apollo
         .query<GetResourceByIdQueryResponse>({
           query: GET_GRID_RESOURCE_META,
           variables: {
             resource: this.formGroup.get('resource')?.value,
-            layoutIds: layoutIDs,
-            first: layoutIDs?.length || 10,
+            layoutIds,
+            firstLayouts: layoutIds?.length || 10,
+            aggregationIds,
+            firstAggregations: aggregationIds?.length || 10,
           },
         })
         .subscribe((res) => {

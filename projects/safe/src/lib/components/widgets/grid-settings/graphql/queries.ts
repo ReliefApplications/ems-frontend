@@ -58,7 +58,13 @@ export const GET_GRID_FORM_META = gql`
 
 /** Graphql request for getting resource meta date for a grid */
 export const GET_GRID_RESOURCE_META = gql`
-  query GetGridResourceMeta($resource: ID!, $layoutIds: [ID], $first: Int) {
+  query GetGridResourceMeta(
+    $resource: ID!
+    $layoutIds: [ID]
+    $firstLayouts: Int
+    $aggregationIds: [ID]
+    $firstAggregations: Int
+  ) {
     resource(id: $resource) {
       id
       name
@@ -78,7 +84,7 @@ export const GET_GRID_RESOURCE_META = gql`
           fields
         }
       }
-      layouts(ids: $layoutIds, first: $first) {
+      layouts(ids: $layoutIds, first: $firstLayouts) {
         edges {
           node {
             id
@@ -86,6 +92,22 @@ export const GET_GRID_RESOURCE_META = gql`
             query
             createdAt
             display
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+      aggregations(ids: $aggregationIds, first: $firstAggregations) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
           }
         }
         pageInfo {
