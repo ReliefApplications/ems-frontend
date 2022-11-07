@@ -1,6 +1,7 @@
-<div class="info-text">
+<safe-alert>
+  <safe-icon icon="info"></safe-icon>
   {{ 'components.queryBuilder.hint.style' | translate }}
-</div>
+</safe-alert>
 <ng-container *ngIf="!editedStyleForm">
   <!-- LIST OF STYLES -->
   <safe-query-style-list
