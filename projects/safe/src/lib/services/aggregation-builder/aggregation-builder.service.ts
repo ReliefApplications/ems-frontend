@@ -4,8 +4,6 @@ import { PipelineStage } from '../../components/ui/aggregation-builder/pipeline/
 import { Accumulators } from '../../components/ui/aggregation-builder/pipeline/expressions/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { addNewField } from '../../components/query-builder/query-builder-forms';
-import { ApolloQueryResult } from '@apollo/client';
-import { SafeGridService } from '../grid/grid.service';
 
 /**
  * Shared aggregation service.
@@ -17,16 +15,6 @@ import { SafeGridService } from '../grid/grid.service';
 })
 export class AggregationBuilderService {
   private gridSubject = new BehaviorSubject<any>(null);
-
-  /**
-   * Shared aggregation service.
-   * Aggregation are used by chart widgets, to get the data.
-   * The aggregation is flexible.
-   *
-   * @param apollo Apollo client
-   * @param gridService The grid service
-   */
-  constructor(private apollo: Apollo, private gridService: SafeGridService) {}
 
   /**
    * Get the data for grid preview as an observable.
@@ -67,6 +55,7 @@ export class AggregationBuilderService {
    * @returns Fields remaining at the end of the pipeline.
    */
   public fieldsAfter(initialFields: any[], pipeline: any[]): any[] {
+    console.log(initialFields);
     let fields = [...initialFields];
     for (const stage of pipeline) {
       switch (stage.type) {
@@ -75,6 +64,7 @@ export class AggregationBuilderService {
           for (const rule of stage.form.groupBy) {
             if (rule.field) {
               let groupByField = this.findField(rule.field, fields);
+              console.log(groupByField);
               if (groupByField) {
                 // Change field type because of automatic unwind
                 const newField = Object.assign({}, groupByField);
@@ -152,7 +142,9 @@ export class AggregationBuilderService {
         }
       }
     }
-    return fields.sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
+    return fields
+      .filter((x) => x) // remove null elements
+      .sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
   }
 
   /**

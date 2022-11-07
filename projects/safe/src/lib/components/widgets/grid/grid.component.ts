@@ -167,20 +167,6 @@ export class SafeGridWidgetComponent implements OnInit {
                   aggregations.indexOf(a.id) - aggregations.indexOf(b.id)
               );
             return;
-            // console.log(
-            //   this.aggregationBuilderService.fieldsAfter(
-            //     aggregation.sourceFields,
-            //     aggregation.pipeline
-            //   )
-            // );
-
-            // const query = this.aggregationService.aggregationDataQuery(
-            //   this.settings.resource,
-            //   aggregation.id as string
-            // );
-            // query?.subscribe((res2: any) => {
-            //   console.log(res2.data.recordsAggregation);
-            // });
           });
       }
     }
