@@ -1387,8 +1387,9 @@ export class SafeApplicationService {
             id: distributionList.id,
             name: distributionList.name,
             emails: distributionList.emails,
-          }
-        }).subscribe((res) => {
+          },
+        })
+        .subscribe((res) => {
           if (res.data?.editDistributionList) {
             const updatedDistributionList = res.data.editDistributionList;
             const newApplication: Application = {
@@ -1402,7 +1403,7 @@ export class SafeApplicationService {
             };
             this.application.next(newApplication);
           }
-        })
+        });
     }
   }
 
@@ -1411,7 +1412,7 @@ export class SafeApplicationService {
    *
    * @param distributionList new distribution list to be added
    */
-  addDistributionList(distributionList: DistributionList): void{
+  addDistributionList(distributionList: DistributionList): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
@@ -1421,8 +1422,9 @@ export class SafeApplicationService {
             application: application.id,
             name: distributionList.name,
             email: distributionList.emails,
-          }
-        }).subscribe((res) => {
+          },
+        })
+        .subscribe((res) => {
           if (res.data?.addDistributionList) {
             const newApplication: Application = {
               ...application,
@@ -1433,7 +1435,7 @@ export class SafeApplicationService {
             };
             this.application.next(newApplication);
           }
-        })
+        });
     }
   }
 
@@ -1447,12 +1449,13 @@ export class SafeApplicationService {
     if (application && this.isUnlocked) {
       this.apollo
         .mutate<DeleteDistributionListMutationResponse>({
-          mutation:DELETE_DISTRIBUTION_LIST,
+          mutation: DELETE_DISTRIBUTION_LIST,
           variables: {
             application: application.id,
-            id: id,
-          }
-        }).subscribe((res) => {
+            id,
+          },
+        })
+        .subscribe((res) => {
           if (res.data) {
             const newApplication: Application = {
               ...application,
@@ -1462,7 +1465,7 @@ export class SafeApplicationService {
             };
             this.application.next(newApplication);
           }
-        })
+        });
     }
   }
 }

@@ -13,12 +13,10 @@ interface DialogData {
   styleUrls: ['./edit-distribution-lists-modal.component.scss'],
 })
 export class EditDistributionListsModalComponent implements OnInit {
-
   /**
    * Component for editing a distribution list
    */
   constructor() {}
 
   ngOnInit(): void {}
-
 }

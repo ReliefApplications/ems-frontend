@@ -36,7 +36,7 @@ export class DistributionListsComponent implements OnInit, OnDestroy {
     this.applicationSubscritpion =
       this.applicationService.application$.subscribe((value) => {
         this.distributionLists.data = value?.distributionLists || [];
-      })
+      });
   }
 
   ngOnDestroy(): void {
@@ -57,7 +57,7 @@ export class DistributionListsComponent implements OnInit, OnDestroy {
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe((value: any) => {
-      if (value){
+      if (value) {
         this.applicationService.editDistributionList({
           id: distributionList.id,
           name: value.name,

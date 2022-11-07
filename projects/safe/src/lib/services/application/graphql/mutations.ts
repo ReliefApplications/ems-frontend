@@ -618,8 +618,7 @@ export interface DeleteTemplateMutationResponse {
 
 /** Graphql request for editing a distribution list of an application */
 export const UPDATE_DISTRIBUTION_LIST = gql`
-  mutation editDistributionList($application: ID!, $id: ID!
-  ) {
+  mutation editDistributionList($application: ID!, $id: ID!) {
     editDistributionList(application: $application, id: $id) {
       id
       name

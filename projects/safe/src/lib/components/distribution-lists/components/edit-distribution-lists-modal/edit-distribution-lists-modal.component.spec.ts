@@ -8,7 +8,7 @@ describe('EditDistributionListsModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditDistributionListsModalComponent]
+      declarations: [EditDistributionListsModalComponent],
     }).compileComponents();
   });
 
