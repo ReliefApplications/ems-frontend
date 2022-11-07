@@ -53,13 +53,33 @@
     </mat-form-field>
   </div>
 </div>
-<div class="flex flex-col mt-8" *ngIf="form || resource">
-  <h2>
-    {{ 'components.widget.settings.grid.layouts.title' | translate }}
-  </h2>
-  <safe-layout-table
-    [form]="form"
-    [resource]="resource"
-    [selectedLayouts]="$any(formGroup).get('layouts')"
-  ></safe-layout-table>
+<div class="flex flex-col mt-8 gap-8" *ngIf="form || resource">
+  <!-- Aggregations -->
+  <div *ngIf="!(formGroup.get('layouts')?.value.length > 0)">
+    <h2>
+      {{ 'components.widget.settings.grid.aggregations.title' | translate }}
+    </h2>
+    <safe-aggregation-table
+      [resource]="resource"
+      [selectedAggregations]="$any(formGroup).get('aggregations')"
+    ></safe-aggregation-table>
+  </div>
+  <safe-divider
+    *ngIf="
+      !(formGroup.get('layouts')?.value.length > 0) &&
+      !(formGroup.get('aggregations')?.value.length > 0)
+    "
+    [text]="'common.or' | translate"
+  ></safe-divider>
+  <!-- Layouts -->
+  <div *ngIf="!(formGroup.get('aggregations')?.value.length > 0)">
+    <h2>
+      {{ 'components.widget.settings.grid.layouts.title' | translate }}
+    </h2>
+    <safe-layout-table
+      [form]="form"
+      [resource]="resource"
+      [selectedLayouts]="$any(formGroup).get('layouts')"
+    ></safe-layout-table>
+  </div>
 </div>

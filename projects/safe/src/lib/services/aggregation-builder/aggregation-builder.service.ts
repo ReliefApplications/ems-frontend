@@ -4,8 +4,6 @@ import { PipelineStage } from '../../components/ui/aggregation-builder/pipeline/
 import { Accumulators } from '../../components/ui/aggregation-builder/pipeline/expressions/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { addNewField } from '../../components/query-builder/query-builder-forms';
-import { ApolloQueryResult } from '@apollo/client';
-import { SafeGridService } from '../grid/grid.service';
 
 /**
  * Shared aggregation service.
@@ -19,83 +17,12 @@ export class AggregationBuilderService {
   private gridSubject = new BehaviorSubject<any>(null);
 
   /**
-   * Shared aggregation service.
-   * Aggregation are used by chart widgets, to get the data.
-   * The aggregation is flexible.
-   *
-   * @param apollo Apollo client
-   * @param gridService The grid service
-   */
-  constructor(private apollo: Apollo, private gridService: SafeGridService) {}
-
-  /**
    * Get the data for grid preview as an observable.
    *
    * @returns An observable with all the data needed for the preview grid.
    */
   public getPreviewGrid(): Observable<any> {
     return this.gridSubject.asObservable();
-  }
-
-  /**
-   * Initializes preview grid using pipeline parameters.
-   *
-   * @param aggregationForm The form for the aggregation
-   * @param pipeline Array of stages.
-   * @param selectedFields Fields before aggregation.
-   * @param metaFields List of meta fields
-   */
-  public initGrid(
-    aggregationForm: any,
-    pipeline: any[],
-    selectedFields: any,
-    metaFields: any[]
-  ): void {
-    let loadingGrid = true;
-    let gridData: any = {
-      data: [],
-      total: 0,
-    };
-    let gridFields: any[] = [];
-
-    if (aggregationForm.get('pipeline')?.valid) {
-      if (pipeline.length) {
-        loadingGrid = true;
-        gridFields = this.gridService.getFields(
-          this.formatFields(this.fieldsAfter(selectedFields, pipeline)),
-          metaFields,
-          {}
-        );
-        const query = this.buildAggregation(aggregationForm.value, '');
-        if (query) {
-          query.subscribe((res: any) => {
-            if (res.data.recordsAggregation) {
-              gridData = {
-                data: res.data.recordsAggregation,
-                total: res.data.recordsAggregation.length,
-              };
-            }
-            loadingGrid = res.loading;
-            this.gridSubject.next({
-              fields: gridFields,
-              data: gridData,
-              loading: loadingGrid,
-            });
-          });
-        }
-      } else {
-        gridFields = [];
-        gridData = {
-          data: [],
-          total: 0,
-        };
-      }
-    }
-    this.gridSubject.next({
-      fields: gridFields,
-      data: gridData,
-      loading: loadingGrid,
-    });
   }
 
   /**
@@ -118,46 +45,6 @@ export class AggregationBuilderService {
       }
       return formattedField;
     });
-  }
-
-  /**
-   * Builds the aggregation query from aggregation definition
-   *
-   * @param resource Resource Id
-   * @param aggregation Aggregation definition
-   * @param mapping aggregation mapping ( category, field, series )
-   * @returns Aggregation query
-   */
-  public buildAggregation(
-    resource: string,
-    aggregation: string,
-    mapping?: any
-  ): Observable<ApolloQueryResult<any>> | null {
-    if (aggregation) {
-      const query = gql`
-        query GetCustomAggregation(
-          $resource: ID!
-          $aggregation: ID!
-          $mapping: JSON
-        ) {
-          recordsAggregation(
-            resource: $resource
-            aggregation: $aggregation
-            mapping: $mapping
-          )
-        }
-      `;
-      return this.apollo.query<any>({
-        query,
-        variables: {
-          resource,
-          aggregation,
-          mapping,
-        },
-      });
-    } else {
-      return null;
-    }
   }
 
   /**
@@ -253,7 +140,9 @@ export class AggregationBuilderService {
         }
       }
     }
-    return fields.sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
+    return fields
+      .filter((x) => x) // remove null elements
+      .sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
   }
 
   /**

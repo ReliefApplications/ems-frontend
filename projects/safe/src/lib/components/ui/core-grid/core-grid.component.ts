@@ -327,19 +327,22 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     if (!builtQuery) {
       this.error = true;
+    } else {
+      this.dataQuery = this.apollo.watchQuery<any>({
+        query: builtQuery,
+        variables: {
+          first: this.pageSize,
+          filter: this.queryFilter,
+          sortField: this.sortField,
+          sortOrder: this.sortOrder,
+          styles: this.style,
+        },
+        fetchPolicy: 'network-only',
+        nextFetchPolicy: 'cache-first',
+      });
     }
-    this.dataQuery = this.apollo.watchQuery<any>({
-      query: builtQuery,
-      variables: {
-        first: this.pageSize,
-        filter: this.queryFilter,
-        sortField: this.sortField,
-        sortOrder: this.sortOrder,
-        styles: this.style,
-      },
-      fetchPolicy: 'network-only',
-      nextFetchPolicy: 'cache-first',
-    });
+
+    // Build meta query
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
     if (this.metaQuery) {
       this.loading = true;

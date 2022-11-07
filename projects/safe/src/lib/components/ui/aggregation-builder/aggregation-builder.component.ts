@@ -130,12 +130,6 @@ export class SafeAggregationBuilderComponent implements OnInit {
       ?.valueChanges.pipe(debounceTime(1000))
       .subscribe((fieldsNames: string[]) => {
         this.updateSelectedAndMetaFields(fieldsNames);
-        this.aggregationBuilder.initGrid(
-          this.aggregationForm,
-          this.aggregationForm.value.pipeline,
-          this.selectedFields.value,
-          this.metaFields.value
-        );
       });
 
     // Preview grid and mapping fields
@@ -144,12 +138,6 @@ export class SafeAggregationBuilderComponent implements OnInit {
       .get('pipeline')
       ?.valueChanges.pipe(debounceTime(1000))
       .subscribe((pipeline) => {
-        this.aggregationBuilder.initGrid(
-          this.aggregationForm,
-          pipeline,
-          this.selectedFields.value,
-          this.metaFields.value
-        );
         this.mappingFields.next(
           this.aggregationBuilder.fieldsAfter(
             this.selectedFields.value,
@@ -173,12 +161,6 @@ export class SafeAggregationBuilderComponent implements OnInit {
   private initFields(): void {
     this.updateFields();
     this.updateSelectedAndMetaFields(this.aggregationForm.value.sourceFields);
-    this.aggregationBuilder.initGrid(
-      this.aggregationForm,
-      this.aggregationForm.value.pipeline,
-      this.selectedFields.value,
-      this.metaFields.value
-    );
   }
 
   /**
@@ -222,15 +204,15 @@ export class SafeAggregationBuilderComponent implements OnInit {
       const formattedFields =
         this.aggregationBuilder.formatFields(selectedFields);
       this.selectedFields.next(selectedFields);
-      this.queryBuilder
-        .buildMetaQuery({ name: this.queryName, fields: formattedFields })
-        ?.subscribe((res) => {
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              this.metaFields.next(res.data[field]);
-            }
-          }
-        });
+      // this.queryBuilder
+      //   .buildMetaQuery({ name: this.queryName, fields: formattedFields })
+      //   ?.subscribe((res) => {
+      //     for (const field in res.data) {
+      //       if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+      //         this.metaFields.next(res.data[field]);
+      //       }
+      //     }
+      //   });
       this.mappingFields.next(
         this.aggregationBuilder.fieldsAfter(
           selectedFields,

@@ -160,6 +160,7 @@
 			"unlocked": "L'édition de l'objet {{name}} a été débloquée par un autre utilisateur."
 		},
 		"openFullScreen": "Ouvrir en plein écran",
+		"or": "Ou",
 		"page": {
 			"few": "Pages",
 			"none": "Aucune page",
@@ -968,7 +969,8 @@
 							"choice": {
 								"create": "Créer une nouvelle agrégation"
 							}
-						}
+						},
+						"title": "Aggrégations"
 					},
 					"buttons": {
 						"callback": {
