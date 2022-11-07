@@ -1,17 +1,20 @@
 <kendo-grid
+  class="w-full"
   [loading]="loading"
-  [data]="gridData"
+  [kendoGridBinding]="gridData"
   [filterable]="true"
   [sortable]="true"
   [resizable]="true"
   [reorderable]="true"
   [columnMenu]="true"
+  [pageable]="pagerSettings"
+  [pageSize]="pageSize"
 >
-  <!-- <ng-container *ngFor="let field of fields">
+  <ng-container *ngFor="let field of fields">
     <kendo-grid-column
       [field]="field.name"
       [title]="field.name"
       [minResizableWidth]="50"
     ></kendo-grid-column>
-  </ng-container> -->
+  </ng-container>
 </kendo-grid>

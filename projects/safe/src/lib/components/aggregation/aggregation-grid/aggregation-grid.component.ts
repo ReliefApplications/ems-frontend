@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { GridDataResult } from '@progress/kendo-angular-grid';
 import { Apollo } from 'apollo-angular';
 import { Aggregation } from '../../../models/aggregation.model';
-import { Resource } from '../../../models/resource.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { PAGER_SETTINGS } from './aggregation-grid.constants';
 import { GetResourceByIdQueryResponse, GET_RESOURCE } from './graphql/queries';
 
 /**
@@ -17,9 +16,11 @@ import { GetResourceByIdQueryResponse, GET_RESOURCE } from './graphql/queries';
   styleUrls: ['./aggregation-grid.component.scss'],
 })
 export class SafeAggregationGridComponent implements OnInit {
-  public gridData: GridDataResult = { data: [], total: 0 };
+  public gridData: any[] = [];
   public fields: any[] = [];
   public loading = false;
+  public pageSize = 10;
+  public pagerSettings = PAGER_SETTINGS;
 
   @Input() resourceId!: string;
   @Input() aggregation!: Aggregation;
@@ -29,34 +30,36 @@ export class SafeAggregationGridComponent implements OnInit {
    *
    * @param aggregationService Shared aggregation service
    * @param aggregationBuilderService Shared aggregation builder service
-   * @param queryBuilder Shared query builder service
    */
   constructor(
     private aggregationService: SafeAggregationService,
     private aggregationBuilderService: AggregationBuilderService,
-    private queryBuilder: QueryBuilderService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private queryBuilder: QueryBuilderService
   ) {}
 
   ngOnInit(): void {
     this.getAggregationData();
-    // this.getAggregationFields();
+    this.getAggregationFields();
   }
 
+  /**
+   * Get aggregation data from aggregation id and resource id
+   */
   private getAggregationData(): void {
     this.loading = true;
-    this.gridData = { data: [], total: 0 };
+    this.gridData = [];
     this.aggregationService
       .aggregationDataQuery(this.resourceId, this.aggregation.id as string)
       .subscribe((res) => {
-        this.gridData = {
-          data: res.data.recordsAggregation,
-          total: res.data.recordsAggregation.length,
-        };
+        this.gridData = res.data.recordsAggregation;
         this.loading = false;
       });
   }
 
+  /**
+   * Get list of aggregation fields
+   */
   private getAggregationFields(): void {
     this.apollo
       .query<GetResourceByIdQueryResponse>({
@@ -67,8 +70,11 @@ export class SafeAggregationGridComponent implements OnInit {
       })
       .subscribe((res) => {
         const resource = res.data.resource;
+        console.log(resource.metadata);
         this.fields = this.aggregationBuilderService.fieldsAfter(
-          this.aggregation.sourceFields,
+          resource.metadata?.filter((x) =>
+            this.aggregation.sourceFields.includes(x.name)
+          ) || [],
           this.aggregation.pipeline
         );
       });
