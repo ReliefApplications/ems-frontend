@@ -13,6 +13,7 @@ import {
   SafeButtonModule,
   SafeContentChoiceModule,
   SafeFormsDropdownModule,
+  SafeDividerModule,
 } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -36,6 +37,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeContentChoiceModule,
     TranslateModule,
     SafeFormsDropdownModule,
+    SafeDividerModule,
   ],
 })
 export class AddPageModule {}
