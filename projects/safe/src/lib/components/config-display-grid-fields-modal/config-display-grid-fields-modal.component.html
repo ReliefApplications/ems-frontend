@@ -6,7 +6,7 @@
     }}
   </h2>
   <mat-dialog-content>
-    <div class="form-group">
+    <div class="flex flex-col">
       <safe-query-builder
         *ngIf="!loading && form.value.name"
         [form]="$any(form)"

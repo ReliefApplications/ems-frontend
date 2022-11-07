@@ -4,7 +4,7 @@
     <h1 mat-dialog-title>{{ data.title }}</h1>
     <div mat-dialog-content>
       <form [formGroup]="convertForm">
-        <div class="form-group">
+        <div class="flex flex-col">
           <mat-form-field appearance="outline">
             <mat-label>{{
               'components.record.convert.select' | translate
@@ -17,7 +17,7 @@
           </mat-form-field>
           <mat-radio-group
             formControlName="copyRecord"
-            class="form-radio-group"
+            class="flex flex-col mb-5 gap-1"
           >
             <mat-radio-button [value]="true">{{
               'components.record.convert.choice.copy' | translate

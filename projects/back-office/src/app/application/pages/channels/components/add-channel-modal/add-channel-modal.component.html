@@ -1,7 +1,7 @@
 <safe-modal size="small">
   <h1 mat-dialog-title>{{ 'models.channel.new' | translate }}</h1>
   <div mat-dialog-content>
-    <form [formGroup]="channelForm" class="form-group">
+    <form [formGroup]="channelForm" class="flex flex-col">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'common.title' | translate }}</mat-label>
         <input

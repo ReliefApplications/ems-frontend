@@ -1,9 +1,5 @@
 <form [formGroup]="pageForm">
-  <div
-    class="form-group"
-    [ngSwitch]="step"
-    [ngClass]="{ 'content-choice-step': step === 1 }"
-  >
+  <div class="flex flex-col" [ngSwitch]="step">
     <ng-container *ngSwitchCase="1">
       <h2>{{ 'pages.application.addPage.selectType' | translate }}</h2>
       <safe-content-choice

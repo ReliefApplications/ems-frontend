@@ -75,7 +75,6 @@ export * from './lib/components/user-summary/public-api';
 export * from './lib/components/users/public-api';
 export * from './lib/components/templates/public-api';
 export * from './lib/components/roles/public-api';
-export * from './lib/components/previous-button/public-api';
 export * from './lib/components/convert-modal/public-api';
 export * from './lib/components/record-history/public-api';
 export * from './lib/components/record-modal/public-api';

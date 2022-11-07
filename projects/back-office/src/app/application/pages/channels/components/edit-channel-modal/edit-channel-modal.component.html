@@ -6,18 +6,16 @@
     }}
   </h1>
   <div mat-dialog-content>
-    <form [formGroup]="roleForm" class="form-group">
-      <div class="form-group">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.title' | translate }}</mat-label>
-          <input
-            matInput
-            formControlName="title"
-            type="text"
-            [placeholder]="'common.placeholder.title' | translate"
-          />
-        </mat-form-field>
-      </div>
+    <form [formGroup]="roleForm" class="flex flex-col">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'common.title' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="title"
+          type="text"
+          [placeholder]="'common.placeholder.title' | translate"
+        />
+      </mat-form-field>
     </form>
   </div>
   <div mat-dialog-actions align="end">

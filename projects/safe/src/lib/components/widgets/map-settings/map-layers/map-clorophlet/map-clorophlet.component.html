@@ -1,5 +1,9 @@
 <safe-modal [closable]="true" size="fullscreen">
-  <form mat-dialog-content [formGroup]="form" class="form-group">
+  <form
+    mat-dialog-content
+    [formGroup]="form"
+    class="[&:not(td)]:flex [&:not(td)]:flex-col"
+  >
     <mat-form-field appearance="outline">
       <mat-label>{{ 'common.name' | translate }}</mat-label>
       <input
@@ -28,7 +32,7 @@
       accept=".json, .geojson"
       (change)="uploadGeoJSON()"
     />
-    <div class="form-group-row">
+    <div class="flex gap-2">
       <mat-form-field appearance="outline">
         <mat-label>{{
           'components.widget.settings.map.layers.clorophlet.identifier'
