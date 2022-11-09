@@ -64,6 +64,10 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
     isnotempty: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
     in: this.translate.instant('kendo.grid.filterIsInOperator'),
     notin: this.translate.instant('kendo.grid.filterIsNotInOperator'),
+    gt: this.translate.instant('kendo.grid.filterGtOperator'),
+    gte: this.translate.instant('kendo.grid.filterGteOperator'),
+    lt: this.translate.instant('kendo.grid.filterLtOperator'),
+    lte: this.translate.instant('kendo.grid.filterLteOperator'),
   };
   public permissionTypes = Object.values(Permission);
 
@@ -197,6 +201,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
    * @returns the string representation of an access object
    */
   getAccessString(access: Access) {
+    console.log(JSON.stringify(access));
     const rulesStr: string[] = [];
     access.filters.forEach((rule) => {
       // nested access
@@ -209,6 +214,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
           operator: string;
           value: string;
         };
+        console.log(r);
         rulesStr.push(
           `${r.field} ${this.opMap[
             r.operator
@@ -304,16 +310,16 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
     switch (permission) {
       case Permission.SEE:
         return hasPermission
-          ? 'components.role.tooltip.disallowFilterAccessibility'
-          : 'components.role.tooltip.allowFilterAccessibility';
+          ? 'components.role.tooltip.grantFilterReadRecordsPermission'
+          : 'components.role.tooltip.notGrantFilterReadRecordsPermission';
       case Permission.UPDATE:
         return hasPermission
-          ? 'components.role.tooltip.disallowFilterUpdate'
-          : 'components.role.tooltip.allowFilterUpdate';
+          ? 'components.role.tooltip.grantFilterUpdateRecordsPermission'
+          : 'components.role.tooltip.notGrantFilterUpdateRecordsPermission';
       default:
         return hasPermission
-          ? 'components.role.tooltip.disallowFilterDeletion'
-          : 'components.role.tooltip.allowFilterDeletion';
+          ? 'components.role.tooltip.grantFilterDeleteRecordsPermission'
+          : 'components.role.tooltip.notGrantFilterDeleteRecordsPermission';
     }
   }
 
@@ -389,6 +395,9 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
     this.openedFilterFormGroup = undefined;
     this.filtersFormArray.removeAt(index);
     this.filters.data = this.setTableElements(this.filtersFormArray.value);
+    if (this.filters.data.length === 0) {
+      this.save();
+    }
   }
 
   /**
