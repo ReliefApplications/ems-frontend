@@ -23,11 +23,11 @@ export const getFilterGroupDisplay = (
   if (isCompositeFilterDescriptor(filter)) {
     switch (filter.logic) {
       case 'and': {
-        displayOperator = translate.instant('kendo.grid.filterOrLogic');
+        displayOperator = translate.instant('kendo.grid.filterAndLogic');
         break;
       }
       case 'or': {
-        displayOperator = translate.instant('kendo.grid.filterAndLogic');
+        displayOperator = translate.instant('kendo.grid.filterOrLogic');
         break;
       }
     }
