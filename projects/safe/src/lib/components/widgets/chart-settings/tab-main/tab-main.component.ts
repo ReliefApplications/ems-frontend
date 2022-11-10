@@ -107,18 +107,31 @@ export class TabMainComponent implements OnInit {
    */
   private setAvailableSeriesFields(): void {
     if (this.aggregation) {
+      const fields = this.queryBuilder
+        .getFields(this.resource?.queryName as string)
+        .filter(
+          (field: any) =>
+            !(
+              field.name.includes('_id') &&
+              (field.type.name === 'ID' ||
+                (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+            )
+        );
+      const selectedFields = this.aggregation.sourceFields.map((x: string) => {
+        const field = { ...fields.find((y) => x === y.name) };
+        if (field.type.kind !== 'SCALAR') {
+          field.fields = this.queryBuilder
+            .getFieldsFromType(
+              field.type.kind === 'OBJECT'
+                ? field.type.name
+                : field.type.ofType.name
+            )
+            .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR');
+        }
+        return field;
+      });
       this.availableSeriesFields = this.aggregationBuilder.fieldsAfter(
-        this.queryBuilder
-          .getFields(this.resource?.queryName as string)
-          .filter(
-            (field: any) =>
-              !(
-                field.name.includes('_id') &&
-                (field.type.name === 'ID' ||
-                  (field.type.kind === 'LIST' &&
-                    field.type.ofType.name === 'ID'))
-              )
-          ),
+        selectedFields,
         this.aggregation?.pipeline
       );
     } else {
