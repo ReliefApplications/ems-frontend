@@ -201,7 +201,6 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
    * @returns the string representation of an access object
    */
   getAccessString(access: Access) {
-    console.log(JSON.stringify(access));
     const rulesStr: string[] = [];
     access.filters.forEach((rule) => {
       // nested access
@@ -214,7 +213,6 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
           operator: string;
           value: string;
         };
-        console.log(r);
         rulesStr.push(
           `${r.field} ${this.opMap[
             r.operator

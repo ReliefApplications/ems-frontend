@@ -566,7 +566,6 @@ export class SafeFormModalComponent implements OnInit {
       options.content.indexOf('http') !== -1
     ) {
       options.callback('success', options.content);
-      return;
     } else {
       const xhr = new XMLHttpRequest();
       xhr.open(

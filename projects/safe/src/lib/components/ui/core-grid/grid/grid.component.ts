@@ -589,8 +589,15 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param file File to download.
    */
   public onDownload(file: any): void {
-    const path = `download/file/${file.content}`;
-    this.downloadService.getFile(path, file.type, file.name);
+    if (file.content.startsWith('data')) {
+      const downloadLink = document.createElement('a');
+      downloadLink.href = file.content;
+      downloadLink.download = file.name;
+      downloadLink.click();
+    } else {
+      const path = `download/file/${file.content}`;
+      this.downloadService.getFile(path, file.type, file.name);
+    }
   }
 
   /**

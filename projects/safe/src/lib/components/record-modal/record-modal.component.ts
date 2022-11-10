@@ -254,29 +254,36 @@ export class SafeRecordModalComponent implements AfterViewInit {
    * @param options Options regarding the download
    */
   private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
-    const xhr = new XMLHttpRequest();
-    xhr.open(
-      'GET',
-      `${this.restService.apiUrl}/download/file/${options.content}`
-    );
-    xhr.setRequestHeader(
-      'Authorization',
-      `Bearer ${localStorage.getItem('idtoken')}`
-    );
-    xhr.onloadstart = () => {
-      xhr.responseType = 'blob';
-    };
-    xhr.onload = () => {
-      const file = new File([xhr.response], options.fileValue.name, {
-        type: options.fileValue.type,
-      });
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        options.callback('success', e.target?.result);
+    if (
+      options.content.indexOf('base64') !== -1 ||
+      options.content.indexOf('http') !== -1
+    ) {
+      options.callback('success', options.content);
+    } else {
+      const xhr = new XMLHttpRequest();
+      xhr.open(
+        'GET',
+        `${this.restService.apiUrl}/download/file/${options.content}`
+      );
+      xhr.setRequestHeader(
+        'Authorization',
+        `Bearer ${localStorage.getItem('idtoken')}`
+      );
+      xhr.onloadstart = () => {
+        xhr.responseType = 'blob';
       };
-      reader.readAsDataURL(file);
-    };
-    xhr.send();
+      xhr.onload = () => {
+        const file = new File([xhr.response], options.fileValue.name, {
+          type: options.fileValue.type,
+        });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          options.callback('success', e.target?.result);
+        };
+        reader.readAsDataURL(file);
+      };
+      xhr.send();
+    }
   }
 
   /**
