@@ -6,6 +6,7 @@ import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
 import { MULTISELECT_TYPES } from '../../components/ui/core-grid/grid/grid.constants';
 import { TranslateService } from '@ngx-translate/core';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
+import { isNil } from 'lodash';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -76,12 +77,13 @@ export class SafeGridService {
     return flatDeep(
       fields.map((f) => {
         const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
+        let metaData = get(metaFields, fullName);
+        const canSee = get(metaData, 'permissions.canSee');
+        const canUpdate = get(metaData, 'permissions.canUpdate', false);
         const hidden: boolean =
-          (f.canSee !== undefined && !f.canSee) || options.hidden || false;
-        const disabled: boolean =
-          (f.canUpdate !== undefined && !f.canUpdate) ||
-          options.disabled ||
-          false;
+          (!isNil(canSee) && !canSee) || options.hidden || false;
+        const disabled: boolean = options.disabled || !canUpdate;
+
         switch (f.kind) {
           case 'OBJECT': {
             return this.getFields(
@@ -97,7 +99,6 @@ export class SafeGridService {
             );
           }
           case 'LIST': {
-            let metaData = get(metaFields, fullName);
             metaData = Object.assign([], metaData);
             if (f.type.endsWith(REFERENCE_DATA_END)) {
               metaData.type = 'referenceData';
@@ -139,7 +140,6 @@ export class SafeGridService {
             };
           }
           default: {
-            const metaData = get(metaFields, fullName);
             const cachedField = get(layoutFields, fullName);
             const title = f.label ? f.label : prettifyLabel(f.name);
             return {
@@ -157,7 +157,7 @@ export class SafeGridService {
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
-              canSee: get(metaData, 'permissions.canSee', false),
+              canSee,
             };
           }
         }
