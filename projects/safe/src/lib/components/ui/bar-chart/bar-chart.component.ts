@@ -111,6 +111,7 @@ export class SafeBarChartComponent implements OnInit, OnChanges {
     this.min = get(this.options, 'axes.x.min');
     this.max = get(this.options, 'axes.x.max');
     this.stack = this.series.length > 1 ? get(this.options, 'stack') : false;
+    this.setLabelContent();
   }
 
   /**

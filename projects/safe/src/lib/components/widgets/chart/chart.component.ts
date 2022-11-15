@@ -161,6 +161,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
           : { type: 'normal' }
         : false,
     };
+    console.log(this.options);
   }
 
   /** Load the data, using widget parameters. */

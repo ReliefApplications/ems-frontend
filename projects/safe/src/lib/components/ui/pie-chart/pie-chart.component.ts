@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { ChartComponent } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
@@ -57,7 +57,7 @@ interface ChartOptions {
 /**
  * Pie chart component, based on kendo chart component.
  */
-export class SafePieChartComponent implements OnInit {
+export class SafePieChartComponent implements OnInit, OnChanges {
   @Input() title: ChartTitle | undefined;
 
   @Input() legend: ChartLegend | undefined;
@@ -86,6 +86,10 @@ export class SafePieChartComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.setLabelContent();
+  }
+
+  ngOnChanges(): void {
     this.setLabelContent();
   }
 
