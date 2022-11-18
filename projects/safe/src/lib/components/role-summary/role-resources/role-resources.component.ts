@@ -303,14 +303,30 @@ export class RoleResourcesComponent implements OnInit {
       add?: string[] | { role: string }[];
       remove?: string[] | { role: string }[];
     } = {};
-    const hasCurrPermission = get(
-      resource,
-      `rolePermissions.${permission}`,
-      false
-    );
-    Object.assign(updatedPermissions, {
-      [hasCurrPermission ? 'remove' : 'add']: [{ role: this.role.id }],
-    });
+    const permissionLevel = this.permissionLevel(resource, permission);
+    switch (permissionLevel) {
+      case 'full': {
+        Object.assign(updatedPermissions, {
+          remove: [{ role: this.role.id }],
+        });
+        break;
+      }
+      case 'limited': {
+        Object.assign(updatedPermissions, {
+          add: [{ role: this.role.id }],
+        });
+        break;
+      }
+      case false: {
+        Object.assign(updatedPermissions, {
+          add: [{ role: this.role.id }],
+        });
+        break;
+      }
+      default: {
+        return;
+      }
+    }
 
     this.apollo
       .mutate<EditResourceAccessMutationResponse>({
@@ -595,11 +611,11 @@ export class RoleResourcesComponent implements OnInit {
   private permissionLevel(resource: Resource, permission: Permission) {
     const rolePermission = get(resource, `rolePermissions.${permission}`, null);
     if (rolePermission) {
-      const filters = get(rolePermission, 'access.filters', []);
-      if (filters.length > 0) {
-        return 'limited';
-      } else {
+      const full = get(rolePermission, 'full', false);
+      if (full) {
         return 'full';
+      } else {
+        return 'limited';
       }
     } else {
       return false;
