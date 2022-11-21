@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { sortBy } from 'lodash';
 import { Resource } from '../../../../models/resource.model';
 import { Role } from '../../../../models/user.model';
 
@@ -32,11 +33,14 @@ export class ResourceFieldsComponent implements OnInit {
   public displayedColumns: string[] = ['name', 'actions'];
 
   ngOnInit() {
-    this.fields.data = this.resource.fields.map((field: any) => ({
-      name: field.name,
-      canSee: !!field.permissions?.canSee?.includes(this.role.id),
-      canUpdate: !!field.permissions?.canUpdate?.includes(this.role.id),
-    }));
+    this.fields.data = sortBy(
+      this.resource.fields.map((field: any) => ({
+        name: field.name,
+        canSee: !!field.permissions?.canSee?.includes(this.role.id),
+        canUpdate: !!field.permissions?.canUpdate?.includes(this.role.id),
+      })),
+      'name'
+    );
   }
 
   /**
