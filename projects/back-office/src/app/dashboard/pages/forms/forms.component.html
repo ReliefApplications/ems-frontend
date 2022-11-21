@@ -54,14 +54,14 @@
         <td mat-cell *matCellDef="let element">
           <mat-chip-list>
             <mat-chip
-              class="success-chip"
+              class="success-chip !rounded-lg"
               disabled
               *ngIf="element.status === 'active'"
             >
               {{ 'common.status_active' | translate | titlecase }}
             </mat-chip>
             <mat-chip
-              class="accent-chip"
+              class="accent-chip !rounded-lg"
               disabled
               color="accent"
               *ngIf="element.status === 'pending'"
@@ -69,7 +69,7 @@
               {{ 'common.status_pending' | translate | titlecase }}
             </mat-chip>
             <mat-chip
-              class="warn-chip"
+              class="warn-chip !rounded-lg"
               disabled
               color="warn"
               *ngIf="element.status === 'archived'"

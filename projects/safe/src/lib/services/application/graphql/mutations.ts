@@ -7,6 +7,7 @@ import { Subscription } from '../../../models/subscription.model';
 import { PositionAttributeCategory } from '../../../models/position-attribute-category.model';
 import { Application } from '../../../models/application.model';
 import { Template } from '../../../models/template.model';
+import { DistributionList } from '../../../models/distribution-list.model';
 
 // === ADD PAGE ===
 /** Graphql request for adding a new page of a given type to an application */
@@ -613,4 +614,65 @@ export const DELETE_TEMPLATE = gql`
 export interface DeleteTemplateMutationResponse {
   loading: boolean;
   deleteTemplate: Template;
+}
+
+/** Graphql request for editing a distribution list of an application */
+export const UPDATE_DISTRIBUTION_LIST = gql`
+  mutation editDistributionList(
+    $application: ID!
+    $id: ID!
+    $distributionList: DistributionListInputType!
+  ) {
+    editDistributionList(
+      application: $application
+      id: $id
+      distributionList: $distributionList
+    ) {
+      id
+      name
+      emails
+    }
+  }
+`;
+
+/** Model for UpdateDistributionListMutationResponse object */
+export interface UpdateDistributionListMutationResponse {
+  editDistributionList: DistributionList;
+}
+
+/** Graphql request for adding a template of an application */
+export const ADD_DISTRIBUTION_LIST = gql`
+  mutation addDistributionList(
+    $application: ID!
+    $distributionList: DistributionListInputType!
+  ) {
+    addDistributionList(
+      application: $application
+      distributionList: $distributionList
+    ) {
+      id
+      name
+      emails
+    }
+  }
+`;
+
+/** Model for AddDistributionListMutationResponse object */
+export interface AddDistributionListMutationResponse {
+  addDistributionList: DistributionList;
+}
+/** Graphql request for adding a template of an application */
+export const DELETE_DISTRIBUTION_LIST = gql`
+  mutation deleteDistributionList($application: ID!, $id: ID!) {
+    deleteDistributionList(application: $application, id: $id) {
+      id
+      name
+      emails
+    }
+  }
+`;
+
+/** Model for AddDistributionListMutationResponse object */
+export interface DeleteDistributionListMutationResponse {
+  deleteDistributionList: DistributionList;
 }

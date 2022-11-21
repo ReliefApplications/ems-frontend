@@ -45,6 +45,11 @@
 		"deleted": "Deleted",
 		"dismiss": "Dismiss",
 		"display": "Display",
+		"distributionList": {
+			"few": "Distribution lists",
+			"none": "No distribution list",
+			"one": "Distribution list"
+		},
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
 		"duplicate": "Duplicate",
@@ -419,6 +424,16 @@
 			"confirm": "Confirm",
 			"delete": "Delete",
 			"title": "Confirm"
+		},
+		"distributionLists": {
+			"delete": {
+				"confirmationMessage": "Are you sure you want to delete the distribution list '{{name}}'?"
+			},
+			"edit": {
+				"name": "Distribution list name",
+				"new": "New distribution list",
+				"update": "Edit distribution list"
+			}
 		},
 		"emailBuilder": {
 			"body": "Body",
@@ -799,8 +814,7 @@
 		"templates": {
 			"available": "Available templates",
 			"delete": {
-				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?",
-				"titleMessage": "Delete template"
+				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?"
 			},
 			"edit": {
 				"body": "Body",

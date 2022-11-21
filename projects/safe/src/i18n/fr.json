@@ -45,6 +45,11 @@
 		"deleted": "Supprimé",
 		"dismiss": "Fermer",
 		"display": "Afficher",
+		"distributionList": {
+			"few": "Listes de distribution",
+			"none": "Aucune liste de distribution",
+			"one": "Liste de distribution"
+		},
 		"downloadObject": "Télécharger {{name}}",
 		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",

@@ -405,9 +405,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 }
 
 .mat-chip {
-  border-radius: 0px !important;
   min-width: 75px;
-  max-width: 1px; //This works??
   justify-content: center;
   font-weight: 500 !important;
 
