@@ -437,6 +437,15 @@
 				"name": "******",
 				"new": "******",
 				"update": "******"
+			},
+			"errors": {
+				"emails": {
+					"pattern": "******",
+					"required": "******"
+				},
+				"name": {
+					"required": "******"
+				}
 			}
 		},
 		"emailBuilder": {

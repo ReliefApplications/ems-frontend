@@ -437,6 +437,15 @@
 				"name": "Nom de la liste de distribution",
 				"new": "Nouvelle liste de distribution",
 				"update": "Éditer la liste de distribution"
+			},
+			"errors": {
+				"emails": {
+					"pattern": "Veuillez uniquement fournir des emails valides",
+					"required": "Veuillez fournir un ou plusieurs emails"
+				},
+				"name": {
+					"required": "Veuillez fournir un nom"
+				}
 			}
 		},
 		"emailBuilder": {

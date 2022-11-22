@@ -15,10 +15,11 @@
             'components.distributionLists.edit.name' | translate
           }}</mat-label>
           <input matInput formControlName="name" type="text" />
+          <mat-error>{{ errorMessage('name') | translate }}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.email.few' | translate }}</mat-label>
-          <mat-chip-list #chipList>
+          <mat-chip-list #chipList formControlName="emails">
             <mat-chip
               *ngFor="let email of emails"
               [selectable]="true"
@@ -36,6 +37,7 @@
               (matChipInputTokenEnd)="addEmail($event)"
             />
           </mat-chip-list>
+          <mat-error>{{ errorMessage('emails') | translate }}</mat-error>
         </mat-form-field>
       </div>
     </form>

@@ -20,6 +20,9 @@ interface DialogData {
   emails?: string[];
 }
 
+/** Regex pattern for email */
+const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
 /** Key codes of separators */
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
@@ -97,13 +100,17 @@ export class EditDistributionListModalComponent implements OnInit {
         // Add the mail
         const emails = [...this.emails];
         if ((value || '').trim()) {
-          emails.push(value.trim());
-        }
-        this.form.get('emails')?.setValue(emails);
-        this.form.get('emails')?.updateValueAndValidity();
-        // Reset the input value
-        if (input) {
-          input.value = '';
+          if (EMAIL_REGEX.test(value.trim())) {
+            emails.push(value.trim());
+            this.form.get('emails')?.setValue(emails);
+            this.form.get('emails')?.updateValueAndValidity();
+            // Reset the input value
+            if (input) {
+              input.value = '';
+            }
+          } else {
+            this.form.get('emails')?.setErrors({ pattern: true });
+          }
         }
       },
       event.type === 'focusout' ? 500 : 0
@@ -122,6 +129,37 @@ export class EditDistributionListModalComponent implements OnInit {
       emails.splice(index, 1);
       this.form.get('emails')?.setValue(emails);
       this.form.get('emails')?.updateValueAndValidity();
+    }
+  }
+
+  /**
+   * Get error message of field
+   *
+   * @param formControlName field name
+   * @returns error message
+   */
+  public errorMessage(formControlName: string): string {
+    switch (formControlName) {
+      case 'name': {
+        const control = this.form.get('name');
+        if (control?.hasError('required')) {
+          return 'components.distributionLists.errors.name.required';
+        }
+        return '';
+      }
+      case 'emails': {
+        const control = this.form.get('emails');
+        if (control?.hasError('required')) {
+          return 'components.distributionLists.errors.emails.required';
+        }
+        if (control?.hasError('pattern')) {
+          return 'components.distributionLists.errors.emails.pattern';
+        }
+        return '';
+      }
+      default: {
+        return '';
+      }
     }
   }
 }
