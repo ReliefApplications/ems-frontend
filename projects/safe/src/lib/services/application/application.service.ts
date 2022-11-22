@@ -54,6 +54,12 @@ import {
   UPDATE_TEMPLATE,
   DeleteTemplateMutationResponse,
   DELETE_TEMPLATE,
+  UpdateDistributionListMutationResponse,
+  UPDATE_DISTRIBUTION_LIST,
+  AddDistributionListMutationResponse,
+  ADD_DISTRIBUTION_LIST,
+  DeleteDistributionListMutationResponse,
+  DELETE_DISTRIBUTION_LIST,
 } from './graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
@@ -69,6 +75,7 @@ import {
 import { SafeAuthService } from '../auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Template } from '../../models/template.model';
+import { DistributionList } from '../../models/distribution-list.model';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -126,8 +133,13 @@ export class SafeApplicationService {
   }
 
   /** @returns Current application's templates */
-  get templates(): any[] {
+  get templates(): Template[] {
     return this.application.value?.templates || [];
+  }
+
+  /** @returns Current application's distributionList */
+  get distributionLists(): DistributionList[] {
+    return this.application.value?.distributionLists || [];
   }
 
   /**
@@ -1352,6 +1364,108 @@ export class SafeApplicationService {
                 }
                 return t;
               }),
+            };
+            this.application.next(newApplication);
+          }
+        });
+    }
+  }
+
+  /**
+   * Edits existing distribution list.
+   *
+   * @param distributionList distribution list to modify
+   */
+  editDistributionList(distributionList: DistributionList): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<UpdateDistributionListMutationResponse>({
+          mutation: UPDATE_DISTRIBUTION_LIST,
+          variables: {
+            application: application.id,
+            id: distributionList.id,
+            distributionList: {
+              name: distributionList.name,
+              emails: distributionList.emails,
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data?.editDistributionList) {
+            const updatedDistributionList = res.data.editDistributionList;
+            const newApplication: Application = {
+              ...application,
+              distributionLists: application.distributionLists?.map((dist) => {
+                if (dist.id === distributionList.id) {
+                  dist = updatedDistributionList;
+                }
+                return dist;
+              }),
+            };
+            this.application.next(newApplication);
+          }
+        });
+    }
+  }
+
+  /**
+   * Add new distribution list
+   *
+   * @param distributionList new distribution list to be added
+   */
+  addDistributionList(distributionList: DistributionList): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<AddDistributionListMutationResponse>({
+          mutation: ADD_DISTRIBUTION_LIST,
+          variables: {
+            application: application.id,
+            distributionList: {
+              name: distributionList.name,
+              emails: distributionList.emails,
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data?.addDistributionList) {
+            const newApplication: Application = {
+              ...application,
+              distributionLists: [
+                ...(application.distributionLists || []),
+                res.data.addDistributionList,
+              ],
+            };
+            this.application.next(newApplication);
+          }
+        });
+    }
+  }
+
+  /**
+   * Removes a distribution list by its id.
+   *
+   * @param id template's id to be deleted
+   */
+  deleteDistributionList(id: string): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<DeleteDistributionListMutationResponse>({
+          mutation: DELETE_DISTRIBUTION_LIST,
+          variables: {
+            application: application.id,
+            id,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            const newApplication: Application = {
+              ...application,
+              distributionLists: application.distributionLists?.filter(
+                (dist) => dist.id !== id
+              ),
             };
             this.application.next(newApplication);
           }

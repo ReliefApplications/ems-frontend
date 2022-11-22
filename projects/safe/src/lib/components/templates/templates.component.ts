@@ -8,7 +8,7 @@ import { SafeApplicationService } from '../../services/application/application.s
 import { TemplateTypeEnum } from '../../models/template.model';
 
 /**
- * A component to display the list of templates
+ * A component to display the list of templates of an application
  */
 @Component({
   selector: 'safe-templates',
@@ -23,7 +23,7 @@ export class SafeTemplatesComponent implements OnInit {
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['name', 'type', 'actions'];
 
-  loading = false;
+  public loading = false;
 
   /**
    * Constructor of the templates component
@@ -66,7 +66,7 @@ export class SafeTemplatesComponent implements OnInit {
   /**
    * Show a dialog to confirm the deletion of a template
    *
-   * @param template The template id to be deleted
+   * @param template template to be deleted
    */
   deleteTemplate(template: any): void {
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {

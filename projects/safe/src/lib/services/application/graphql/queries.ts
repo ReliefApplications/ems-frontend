@@ -17,6 +17,11 @@ export const GET_APPLICATION_BY_ID = gql`
         type
         content
       }
+      distributionLists {
+        id
+        name
+        emails
+      }
       pages {
         id
         name

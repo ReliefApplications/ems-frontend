@@ -45,6 +45,11 @@
 		"deleted": "Deleted",
 		"dismiss": "Dismiss",
 		"display": "Display",
+		"distributionList": {
+			"few": "Distribution lists",
+			"none": "No distribution list",
+			"one": "Distribution list"
+		},
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
 		"duplicate": "Duplicate",
@@ -112,6 +117,10 @@
 			"dataRecovered": "The data has been recovered",
 			"email": {
 				"error": "Something went wrong during the email sending",
+				"errors": {
+					"noDistributionList": "Something went wrong during the email sending: no distribution list found",
+					"noTemplate": "Something went wrong during the email sending: no template found"
+				},
 				"processing": "Sending email...",
 				"ready": "Email ready",
 				"sent": "Email sent"
@@ -419,6 +428,25 @@
 			"confirm": "Confirm",
 			"delete": "Delete",
 			"title": "Confirm"
+		},
+		"distributionLists": {
+			"delete": {
+				"confirmationMessage": "Are you sure you want to delete the distribution list '{{name}}'?"
+			},
+			"edit": {
+				"name": "Distribution list name",
+				"new": "New distribution list",
+				"update": "Edit distribution list"
+			},
+			"errors": {
+				"emails": {
+					"pattern": "Please only provide valid emails",
+					"required": "Please provide one or more emails"
+				},
+				"name": {
+					"required": "Please provide a name"
+				}
+			}
 		},
 		"emailBuilder": {
 			"body": "Body",
@@ -799,8 +827,7 @@
 		"templates": {
 			"available": "Available templates",
 			"delete": {
-				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?",
-				"titleMessage": "Delete template"
+				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?"
 			},
 			"edit": {
 				"body": "Body",

@@ -149,6 +149,14 @@ const routes: Routes = [
               ),
             // canActivate: [SafePermissionGuard]
           },
+          {
+            path: 'distribution-lists',
+            loadChildren: () =>
+              import('@safe/builder').then(
+                (m) => m.SafeApplicationDistributionListsModule
+              ),
+            // canActivate: [SafePermissionGuard]
+          },
         ],
       },
       {

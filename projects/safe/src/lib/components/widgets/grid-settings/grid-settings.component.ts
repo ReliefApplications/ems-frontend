@@ -26,6 +26,7 @@ import { scrollFactory } from '../../../utils/scroll-factory';
 import { Resource } from '../../../models/resource.model';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
+import { DistributionList } from '../../../models/distribution-list.model';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -68,13 +69,13 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
 
   /** Stores the selected tab */
   public selectedTab = 0;
-  /**
-   * Getter for the app templates
-   *
-   * @returns list of templates
-   */
+  /** @returns application templates */
   get appTemplates(): any[] {
     return this.applicationService.templates || [];
+  }
+  /** @returns application distribution lists */
+  get distributionLists(): DistributionList[] {
+    return this.applicationService.distributionLists || [];
   }
 
   /**

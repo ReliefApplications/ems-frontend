@@ -45,6 +45,11 @@
 		"deleted": "Supprimé",
 		"dismiss": "Fermer",
 		"display": "Afficher",
+		"distributionList": {
+			"few": "Listes de distribution",
+			"none": "Aucune liste de distribution",
+			"one": "Liste de distribution"
+		},
 		"downloadObject": "Télécharger {{name}}",
 		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",
@@ -112,6 +117,10 @@
 			"dataRecovered": "Les données ont été récupérées !",
 			"email": {
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
+				"errors": {
+					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
+					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté"
+				},
 				"processing": "Envoi en cours...",
 				"ready": "E-mail prêt",
 				"sent": "E-mail envoyé"
@@ -419,6 +428,25 @@
 			"confirm": "Confirmer",
 			"delete": "Supprimer",
 			"title": "Confirmer"
+		},
+		"distributionLists": {
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer la liste de distribution: '{{name}}'?"
+			},
+			"edit": {
+				"name": "Nom de la liste de distribution",
+				"new": "Nouvelle liste de distribution",
+				"update": "Éditer la liste de distribution"
+			},
+			"errors": {
+				"emails": {
+					"pattern": "Veuillez uniquement fournir des emails valides",
+					"required": "Veuillez fournir un ou plusieurs emails"
+				},
+				"name": {
+					"required": "Veuillez fournir un nom"
+				}
+			}
 		},
 		"emailBuilder": {
 			"body": "Corps du texte",

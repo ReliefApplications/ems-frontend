@@ -6,7 +6,7 @@ import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import get from 'lodash/get';
 import { scrollFactory } from '../../../utils/scroll-factory';
-import { codesFactory } from '../grid-settings/button-config/button-config.component';
+import { codesFactory } from '../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component';
 import { Chart } from './charts/chart';
 import { CHART_TYPES } from './constants';
 

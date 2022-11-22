@@ -10,10 +10,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 /**
@@ -32,16 +30,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatCheckboxModule,
     MatSelectModule,
     MatTabsModule,
-    MatChipsModule,
     MatTooltipModule,
     SafeButtonModule,
     SafeIconModule,
-    EditorModule,
     SafeQueryBuilderModule,
   ],
   exports: [ButtonConfigComponent],
-  providers: [
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
-  ],
 })
 export class ButtonConfigModule {}

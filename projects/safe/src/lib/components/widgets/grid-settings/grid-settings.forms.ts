@@ -74,7 +74,7 @@ export const createButtonFormGroup = (value: any): FormGroup => {
     ],
     sendMail: [value && value.sendMail ? value.sendMail : false],
     distributionList: [
-      value && value.distributionList ? value.distributionList : [],
+      get(value, 'distributionList', null),
       value && value.sendMail ? Validators.required : null,
     ],
     templates: [
