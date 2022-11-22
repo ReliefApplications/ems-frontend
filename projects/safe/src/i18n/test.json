@@ -45,6 +45,11 @@
 		"deleted": "******",
 		"dismiss": "******",
 		"display": "******",
+		"distributionList": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
@@ -112,6 +117,10 @@
 			"dataRecovered": "******",
 			"email": {
 				"error": "******",
+				"errors": {
+					"noDistributionList": "******",
+					"noTemplate": "******"
+				},
 				"processing": "******",
 				"ready": "******",
 				"sent": "******"
@@ -419,6 +428,16 @@
 			"confirm": "******",
 			"delete": "******",
 			"title": "******"
+		},
+		"distributionLists": {
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******"
+			},
+			"edit": {
+				"name": "******",
+				"new": "******",
+				"update": "******"
+			}
 		},
 		"emailBuilder": {
 			"body": "******",
@@ -799,8 +818,7 @@
 		"templates": {
 			"available": "******",
 			"delete": {
-				"confirmationMessage": "****** {{name}} ******",
-				"titleMessage": "******"
+				"confirmationMessage": "****** {{name}} ******"
 			},
 			"edit": {
 				"body": "******",

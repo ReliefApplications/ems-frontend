@@ -310,29 +310,16 @@
         'components.widget.settings.grid.buttons.callback.sendMail' | translate
       }}</mat-checkbox>
       <div *ngIf="formGroup.value.sendMail" class="sub-parameters">
-        <!-- <mat-form-field class="chip-list" appearance="outline">
+        <mat-form-field class="chip-list" appearance="outline">
           <mat-label>{{
             'components.emailBuilder.distribution' | translate
           }}</mat-label>
-          <mat-chip-list #chipList aria-label="Emails chip list">
-            <mat-chip
-              *ngFor="let email of emails"
-              [selectable]="true"
-              [removable]="true"
-              (removed)="remove(email)"
-            >
-              {{ email }}
-              <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
-            </mat-chip>
-            <input
-              #emailInput
-              [matChipInputFor]="chipList"
-              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-              (focusout)="add($event)"
-              (matChipInputTokenEnd)="add($event)"
-            />
-          </mat-chip-list>
-        </mat-form-field> -->
+          <mat-select formControlName="distributionList">
+            <mat-option *ngFor="let list of distributionLists" [value]="list.id">
+              {{ list.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>{{
             'components.templates.available' | translate

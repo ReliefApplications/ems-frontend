@@ -13,11 +13,12 @@ import { Form } from '../../../../models/form.model';
 import { Resource } from '../../../../models/resource.model';
 import { ContentType } from '../../../../models/page.model';
 import { SafeWorkflowService } from '../../../../services/workflow/workflow.service';
-import { TemplateTypeEnum } from '../../../../models/template.model';
+import { Template, TemplateTypeEnum } from '../../../../models/template.model';
 import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
+import { DistributionList } from '../../../../models/distribution-list.model';
 
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
@@ -40,7 +41,8 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
   public targetResource?: Resource;
   public relatedResources: Resource[] = [];
 
-  @Input() templates: any[] = [];
+  @Input() distributionLists: DistributionList[] = [];
+  @Input() templates: Template[] = [];
   // Indicate is the page is a single dashboard.
   public isDashboard = false;
 

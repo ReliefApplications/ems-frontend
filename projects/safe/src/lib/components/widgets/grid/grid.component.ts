@@ -107,6 +107,7 @@ export class SafeGridWidgetComponent implements OnInit {
    * @param applicationService The safe application service
    * @param translate Angular translate service
    * @param aggregationService Shared aggregation service
+   * @param snackbarService Shared snackbar service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -121,7 +122,8 @@ export class SafeGridWidgetComponent implements OnInit {
     private confirmService: SafeConfirmService,
     private applicationService: SafeApplicationService,
     private translate: TranslateService,
-    private aggregationService: SafeAggregationService
+    private aggregationService: SafeAggregationService,
+    private snackbarService: SafeSnackBarService
   ) {
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -290,37 +292,68 @@ export class SafeGridWidgetComponent implements OnInit {
     }
     // Send email using backend mail service.
     if (options.sendMail) {
-      // select template
-      const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
-        data: {
-          templates: this.applicationService.templates.filter((x) =>
-            options.templates?.includes(x.id)
+      const templates =
+        this.applicationService.templates.filter((x) =>
+          options.templates?.includes(x.id)
+        ) || [];
+      if (templates.length === 0) {
+        // no template found, skip
+        this.snackbarService.openSnackBar(
+          this.translate.instant(
+            'common.notifications.email.errors.noTemplate'
           ),
-        },
-      });
-
-      const value = await dialogRef.afterClosed().toPromise();
-      const template = value?.template;
-
-      if (template) {
-        this.emailService.previewMail(
-          options.distributionList,
-          template.content.subject,
-          template.content.body,
-          {
-            logic: 'and',
-            filters: [
-              { operator: 'eq', field: 'ids', value: this.grid.selectedRows },
-            ],
-          },
-          {
-            name: this.grid.settings.query.name,
-            fields: options.bodyFields,
-          },
-          this.grid.sortField || undefined,
-          this.grid.sortOrder || undefined,
-          options.export
+          { error: true }
         );
+      } else {
+        // find recipients
+        const recipients =
+          this.applicationService.distributionLists.find(
+            (x) => x.id === options.distributionList
+          )?.emails || [];
+        if (recipients.length === 0) {
+          // no recipient found, skip
+          this.snackbarService.openSnackBar(
+            this.translate.instant(
+              'common.notifications.email.errors.noDistributionList'
+            ),
+            { error: true }
+          );
+        } else {
+          // select template
+          const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
+            data: {
+              templates,
+            },
+          });
+
+          const value = await dialogRef.afterClosed().toPromise();
+          const template = value?.template;
+
+          if (template) {
+            this.emailService.previewMail(
+              recipients,
+              template.content.subject,
+              template.content.body,
+              {
+                logic: 'and',
+                filters: [
+                  {
+                    operator: 'eq',
+                    field: 'ids',
+                    value: this.grid.selectedRows,
+                  },
+                ],
+              },
+              {
+                name: this.grid.settings.query.name,
+                fields: options.bodyFields,
+              },
+              this.grid.sortField || undefined,
+              this.grid.sortOrder || undefined,
+              options.export
+            );
+          }
+        }
       }
     }
 

@@ -117,6 +117,10 @@
 			"dataRecovered": "The data has been recovered",
 			"email": {
 				"error": "Something went wrong during the email sending",
+				"errors": {
+					"noDistributionList": "Something went wrong during the email sending: no distribution list found",
+					"noTemplate": "Something went wrong during the email sending: no template found"
+				},
 				"processing": "Sending email...",
 				"ready": "Email ready",
 				"sent": "Email sent"
