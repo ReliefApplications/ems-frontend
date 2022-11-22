@@ -315,7 +315,10 @@
             'components.emailBuilder.distribution' | translate
           }}</mat-label>
           <mat-select formControlName="distributionList">
-            <mat-option *ngFor="let list of distributionLists" [value]="list.id">
+            <mat-option
+              *ngFor="let list of distributionLists"
+              [value]="list.id"
+            >
               {{ list.name }}
             </mat-option>
           </mat-select>
