@@ -24,7 +24,7 @@ import { Layout } from '../../../../models/layout.model';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { Resource } from '../../../../models/resource.model';
 import get from 'lodash/get';
-import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
+import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
 
 /**
  * Card modal component.
@@ -66,7 +66,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    * @param fb Angular form builder
    * @param cdRef Change detector
    * @param apollo Apollo service
-   * @param aggregationBuilder Aggregation builder service
+   * @param aggregationService Aggregation  service
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -74,7 +74,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
     public fb: FormBuilder,
     private cdRef: ChangeDetectorRef,
     private apollo: Apollo,
-    private aggregationBuilder: AggregationBuilderService
+    private aggregationService: SafeAggregationService
   ) {}
 
   /**
@@ -254,8 +254,8 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    */
   private getCustomAggregation(): void {
     if (!this.selectedAggregation || !this.selectedResource?.id) return;
-    this.aggregationBuilder
-      .buildAggregation(
+    this.aggregationService
+      .aggregationDataQuery(
         this.selectedResource.id,
         this.selectedAggregation.id || ''
       )

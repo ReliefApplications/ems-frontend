@@ -9,7 +9,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
-import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { SafeResourceGridModalComponent } from '../../../search-resource-grid-modal/search-resource-grid-modal.component';
 import {
   GetResourceMetadataQueryResponse,
@@ -21,6 +20,7 @@ import {
   GET_LAYOUT,
 } from '../../summary-card-settings/card-modal/graphql/queries';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
+import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
 
 /**
  * Single Item component of Summary card widget.
@@ -48,7 +48,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    * @param dialog Material dialog service
    * @param snackBar Shared snackBar service
    * @param translate Angular translate service
-   * @param aggregationBuilder Aggregation builder service
+   * @param aggregationService Aggregation service
    * @param queryBuilder Query builder service
    */
   constructor(
@@ -56,7 +56,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
     private dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService,
-    private aggregationBuilder: AggregationBuilderService,
+    private aggregationService: SafeAggregationService,
     private queryBuilder: QueryBuilderService
   ) {}
 
@@ -80,8 +80,8 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
 
   /** Get the aggregation data for the current card, if not dynamic. */
   private async getAggregationData() {
-    const res = await this.aggregationBuilder
-      .buildAggregation(this.card.resource, this.card.aggregation)
+    const res = await this.aggregationService
+      .aggregationDataQuery(this.card.resource, this.card.aggregation)
       ?.toPromise();
 
     // for static cards with aggregation, assume the response is an array with one element

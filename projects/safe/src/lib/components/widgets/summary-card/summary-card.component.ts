@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
+import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
@@ -93,13 +93,13 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * @param apollo Apollo service
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
-   * @param aggregationBuilder Aggregation builder service
+   * @param aggregationService Aggregation service
    */
   constructor(
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
-    private aggregationBuilder: AggregationBuilderService
+    private aggregationService: SafeAggregationService
   ) {}
 
   ngOnInit(): void {
@@ -229,8 +229,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * @param card Card settings
    */
   private async getCardsFromAggregation(card: any) {
-    this.aggregationBuilder
-      .buildAggregation(card.resource, card.aggregation)
+    this.aggregationService
+      .aggregationDataQuery(card.resource, card.aggregation)
       ?.subscribe((res) => {
         if (!res.data) return;
         this.cards = res.data.recordsAggregation.map((x: any) => ({
