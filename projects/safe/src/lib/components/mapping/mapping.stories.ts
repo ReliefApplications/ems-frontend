@@ -38,7 +38,6 @@ const fb = new FormBuilder();
 /**
  * Template for stories
  *
- * @param args stories args
  * @returns story
  */
 const TEMPLATE: Story<SafeMappingComponent> = () => ({
@@ -72,7 +71,6 @@ DEFAULT.args = {};
 /**
  * Story template with no mapping
  *
- * @param args story args
  * @returns story
  */
 const TEMPLATE_EMPTY: Story<SafeMappingComponent> = () => ({

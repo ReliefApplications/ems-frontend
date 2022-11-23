@@ -111,7 +111,6 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   /**
    * Trigger add scroll listener to autocomplete.
    *
-   * @param e open autocomplete event.
    */
   public onOpen() {
     this.initializeScrollListener = true;
@@ -120,7 +119,6 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   /**
    * Remove scroll listener to autocomplete.
    *
-   * @param e close autocomplete event.
    */
   public onClose() {
     if (this.panel) {

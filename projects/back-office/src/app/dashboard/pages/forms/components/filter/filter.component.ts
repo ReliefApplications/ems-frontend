@@ -57,8 +57,6 @@ export class FilterComponent implements OnInit {
 
   /**
    * Updates the innerWidth variable.
-   *
-   * @param event Window resize event
    */
   @HostListener('window:resize', ['$event'])
   onResize(): void {

@@ -53,7 +53,6 @@ export default {
 /**
  * Template for stories
  *
- * @param args story args
  * @returns story
  */
 const TEMPLATE: Story<SafeMappingModalComponent> = () => ({

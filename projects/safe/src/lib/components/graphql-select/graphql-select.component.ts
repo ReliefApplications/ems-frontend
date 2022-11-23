@@ -298,8 +298,6 @@ export class SafeGraphQLSelectComponent
 
   /**
    * Handles focus on input
-   *
-   * @param event The focus event
    */
   onFocusIn() {
     if (!this.focused) {
