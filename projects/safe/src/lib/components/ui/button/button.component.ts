@@ -24,11 +24,6 @@ export class SafeButtonComponent implements OnInit {
 
   @Input() block = false;
 
-  /** @returns should width be fit-content or not */
-  @HostBinding('style.width') get width() {
-    return this.block ? '' : 'fit-content';
-  }
-
   @HostBinding('class.disabled')
   @Input()
   disabled = false;
