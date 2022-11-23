@@ -170,6 +170,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 icon: 'description',
               });
             }
+            if (
+              this.permissions.some(
+                (x) =>
+                  (x.type === Permissions.canManageDistributionLists &&
+                    this.roles.some(
+                      (y) =>
+                        y.application?.id === application.id &&
+                        y.permissions?.some((perm) => perm.id === x.id)
+                    )) ||
+                  (x.type === Permissions.canManageApplications && x.global)
+              )
+            ) {
+              this.adminNavItems.push({
+                name: this.translate.instant('common.distributionList.few'),
+                path: `./${this.appID}/settings/distribution-lists`,
+                icon: 'mail',
+              });
+            }
             this.navGroups = [
               {
                 name: 'Pages',

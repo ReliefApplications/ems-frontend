@@ -61,6 +61,22 @@ export const routes = [
             path: 'settings',
             children: [
               {
+                path: 'templates',
+                loadChildren: () =>
+                  import('@safe/builder').then(
+                    (m) => m.SafeApplicationTemplatesModule
+                  ),
+                // canActivate: [WhoPermissionGuard]
+              },
+              {
+                path: 'distribution-lists',
+                loadChildren: () =>
+                  import('@safe/builder').then(
+                    (m) => m.SafeApplicationDistributionListsModule
+                  ),
+                // canActivate: [SafePermissionGuard]
+              },
+              {
                 path: 'roles',
                 children: [
                   {
@@ -124,22 +140,6 @@ export const routes = [
               },
               {
                 path: '**',
-              },
-              {
-                path: 'templates',
-                loadChildren: () =>
-                  import('@safe/builder').then(
-                    (m) => m.SafeApplicationTemplatesModule
-                  ),
-                // canActivate: [WhoPermissionGuard]
-              },
-              {
-                path: 'distribution-lists',
-                loadChildren: () =>
-                  import('@safe/builder').then(
-                    (m) => m.SafeApplicationDistributionListsModule
-                  ),
-                // canActivate: [SafePermissionGuard]
               },
             ],
           },

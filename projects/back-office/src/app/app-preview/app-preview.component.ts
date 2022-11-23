@@ -110,6 +110,19 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
                   icon: 'description',
                 });
               }
+              if (
+                role.permissions?.some(
+                  (x) =>
+                    x.type === Permissions.canManageDistributionLists &&
+                    !x.global
+                )
+              ) {
+                adminNavItems.push({
+                  name: this.translate.instant('common.distributionList.few'),
+                  path: './settings/distribution-lists',
+                  icon: 'mail',
+                });
+              }
             }
             this.navGroups = [
               {
