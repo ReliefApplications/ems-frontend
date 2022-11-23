@@ -22,8 +22,6 @@ export class SafeButtonComponent implements OnInit {
 
   @Input() isIcon = false;
 
-  @Input() block = false;
-
   @HostBinding('class.disabled')
   @Input()
   disabled = false;

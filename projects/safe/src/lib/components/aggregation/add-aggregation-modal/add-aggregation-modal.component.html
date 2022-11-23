@@ -6,18 +6,18 @@
     <div class="add-aggregation-choice" *ngIf="!nextStep">
       <!-- Load from existing Aggregation -->
       <safe-button
+        class="!w-auto"
         variant="primary"
         category="secondary"
-        [block]="true"
         (click)="nextStep = true"
         [disabled]="aggregations.length < 1"
         >{{ 'components.aggregation.add.choice.load' | translate }}</safe-button
       >
       <!-- Add a new aggregation -->
       <safe-button
+        class="!w-auto"
         variant="primary"
         category="tertiary"
-        [block]="true"
         (click)="onCreate()"
         >{{
           'components.aggregation.add.choice.create' | translate
