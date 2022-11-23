@@ -5,6 +5,7 @@ import {
   HostBinding,
   Inject,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Optional,
@@ -53,6 +54,7 @@ const ITEMS_PER_RELOAD = 10;
 export class SafeGraphQLSelectComponent
   implements
     OnInit,
+    OnChanges,
     OnDestroy,
     ControlValueAccessor,
     MatFormFieldControl<string | string[]>
@@ -274,23 +276,35 @@ export class SafeGraphQLSelectComponent
       const path = this.path
         ? `${this.queryName}.${this.path}`
         : this.queryName;
-      const nodes: any[] = get(res.data, path).edges
+      const elements: any[] = get(res.data, path).edges
         ? get(res.data, path).edges.map((x: any) => x.node)
         : get(res.data, path);
       this.selectedElements = this.selectedElements.filter(
-        (element) =>
-          element &&
-          !nodes.find(
-            (node) => node[this.valueField] === element[this.valueField]
+        (selectedElement) =>
+          selectedElement &&
+          !elements.find(
+            (node) => node[this.valueField] === selectedElement[this.valueField]
           )
       );
-      this.elements.next([...this.selectedElements, ...nodes]);
+      this.elements.next([...this.selectedElements, ...elements]);
       this.pageInfo = get(res.data, path).pageInfo;
       this.loading = res.loading;
     });
     this.ngControl.valueChanges?.subscribe((value) => {
       this.selectionChange.emit(value);
     });
+  }
+
+  ngOnChanges(): void {
+    const elements = this.elements.getValue();
+    this.selectedElements = this.selectedElements.filter(
+      (selectedElement) =>
+        selectedElement &&
+        !elements.find(
+          (node) => node[this.valueField] === selectedElement[this.valueField]
+        )
+    );
+    this.elements.next([...this.selectedElements, ...elements]);
   }
 
   ngOnDestroy(): void {
@@ -390,6 +404,7 @@ export class SafeGraphQLSelectComponent
    * @param event the selection change event
    */
   public onSelectionChange(event: MatSelectChange) {
+    console.log('selection change :', event.value);
     this.value = event.value;
   }
 }
