@@ -75,7 +75,7 @@ export class SafeGraphQLSelectComponent
 
   /** Sets the value */
   set value(val: string | string[] | null) {
-    this.onChange();
+    this.onChange(val);
     this.stateChanges.next();
     this.selectionChange.emit(val);
   }
@@ -105,7 +105,8 @@ export class SafeGraphQLSelectComponent
   public focused = false;
   public touched = false;
   onTouched = () => {};
-  onChange = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onChange = (_: any) => {};
 
   /**
    * Gets the empty status
