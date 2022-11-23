@@ -149,10 +149,9 @@ const DEFAULT_FIELDS = [
 /**
  * Template used by storybook to display the component in stories.
  *
- * @param args story arguments
  * @returns story template
  */
-const TEMPLATE: Story<SafeSeriesMappingComponent> = (args) => ({
+const TEMPLATE: Story<SafeSeriesMappingComponent> = () => ({
   template:
     '<safe-series-mapping [fields$]=fields$ [mappingForm]=mappingForm></safe-series-mapping>',
   props: {

@@ -67,10 +67,9 @@ const fb = new FormBuilder();
 /**
  * Defines a template for the component SafeAddFieldStageComponent to use as/in a playground
  *
- * @param args the properties of the instance of SafeAddFieldStageComponent
  * @returns the template
  */
-const TEMPLATE: Story<SafeAddFieldStageComponent> = (args) => ({
+const TEMPLATE: Story<SafeAddFieldStageComponent> = () => ({
   template:
     '<safe-add-field-stage [form]=form [fields]=fields [operators]=operators></safe-add-field-stage>',
   props: {

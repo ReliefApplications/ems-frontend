@@ -234,22 +234,16 @@ export class SafeFormModalComponent implements OnInit {
     this.survey.onUpdateQuestionCssClasses.add(
       (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
-    this.survey.onCurrentPageChanged.add(
-      (survey: Survey.SurveyModel, options: any) => {
-        survey.checkErrorsMode = survey.isLastPage
-          ? 'onComplete'
-          : 'onNextPage';
-        this.selectedTabIndex = survey.currentPageNo;
-      }
-    );
+    this.survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
+      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
+      this.selectedTabIndex = survey.currentPageNo;
+    });
     this.survey.onPageVisibleChanged.add(() => {
       this.setPages();
     });
-    this.survey.onSettingQuestionErrors.add(
-      (survey: Survey.SurveyModel, options: any) => {
-        this.setPages();
-      }
-    );
+    this.survey.onSettingQuestionErrors.add(() => {
+      this.setPages();
+    });
     if (this.data.recordId && this.record) {
       addCustomFunctions(Survey, this.authService, this.apollo, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
@@ -504,7 +498,7 @@ export class SafeFormModalComponent implements OnInit {
     let content: any[] = [];
     options.files.forEach((file: any) => {
       const fileReader = new FileReader();
-      fileReader.onload = (e) => {
+      fileReader.onload = () => {
         content = content.concat([
           {
             name: file.name,
@@ -749,7 +743,7 @@ export class SafeFormModalComponent implements OnInit {
               version: version.id,
             },
           })
-          .subscribe((res) => {
+          .subscribe(() => {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.dataRecovered')
             );

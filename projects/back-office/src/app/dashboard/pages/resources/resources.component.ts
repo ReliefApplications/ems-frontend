@@ -123,6 +123,7 @@ export class ResourcesComponent implements OnInit {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.pageInfo.pageSize = first;
       this.loading = true;
       this.resourcesQuery.fetchMore({
         variables: {

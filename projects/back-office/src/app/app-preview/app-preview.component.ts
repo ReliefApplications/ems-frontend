@@ -7,6 +7,7 @@ import {
   Permissions,
   SafeApplicationService,
 } from '@safe/builder';
+import get from 'lodash/get';
 import { Subscription } from 'rxjs';
 import { PreviewService } from '../services/preview.service';
 
@@ -144,7 +145,7 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
               },
             ];
             if (!this.application || application.id !== this.application.id) {
-              const [firstPage, ..._] = application.pages || [];
+              const firstPage = get(application, 'pages', [])[0];
               if (
                 this.router.url.endsWith('/') ||
                 (this.application && application.id !== this.application?.id) ||

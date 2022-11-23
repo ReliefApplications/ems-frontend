@@ -71,10 +71,9 @@ const fb = new FormBuilder();
 /**
  * Template used by storybook to display the component in stories.
  *
- * @param args story arguments
  * @returns story template
  */
-const TEMPLATE: Story<SafeExpressionsComponent> = (args) => ({
+const TEMPLATE: Story<SafeExpressionsComponent> = () => ({
   template:
     '<safe-expressions [form]=form [fields]=fields [operators]=operators></safe-expressions>',
   props: {

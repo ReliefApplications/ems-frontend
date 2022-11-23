@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { get, has, isEqual } from 'lodash';
+import { get, isEqual } from 'lodash';
 import {
   animate,
   state,
@@ -25,9 +25,7 @@ import {
   EditResourceFieldPermissionMutationResponse,
   EDIT_FULL_RESOURCE_ACCESS,
 } from '../graphql/mutations';
-import { SafeRoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
-import { MatDialog } from '@angular/material/dialog';
-import { Permission, ResourceRolePermissions } from './permissions.types';
+import { Permission } from './permissions.types';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;

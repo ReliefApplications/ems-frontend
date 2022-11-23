@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  CanActivate,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-  UrlTree,
-  Router,
-} from '@angular/router';
+import { CanActivate, UrlTree, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeAuthService, SafeSnackBarService } from '@safe/builder';
 import { Observable } from 'rxjs';
@@ -36,14 +30,9 @@ export class AccessGuard implements CanActivate {
   /**
    * Check if user can activate the route
    *
-   * @param route The route to test
-   * @param state The current state
    * @returns A boolean indicating if he can activate
    */
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ):
+  canActivate():
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree>
     | boolean

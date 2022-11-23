@@ -75,7 +75,7 @@ export const init = (
           }
         });
     },
-    onAfterRender: (question: any, el: any): void => {},
+    onAfterRender: (): void => {},
   };
   Survey.ComponentCollection.Instance.add(component);
 };

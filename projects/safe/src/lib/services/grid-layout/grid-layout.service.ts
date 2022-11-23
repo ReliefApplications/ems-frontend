@@ -16,15 +16,6 @@ import {
 } from './graphql/queries';
 import { Layout, LayoutConnection } from '../../models/layout.model';
 
-/** Default page size for layouts */
-const DEFAULT_PAGE_SIZE = 10;
-
-type LayoutFilters = {
-  first?: number;
-  endCursor?: string;
-  ids?: string[];
-};
-
 /** Fallback LayoutConnection */
 const FALLBACK_LAYOUTS: LayoutConnection = {
   edges: [],

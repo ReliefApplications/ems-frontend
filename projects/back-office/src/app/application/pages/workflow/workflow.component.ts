@@ -24,6 +24,7 @@ import {
   EDIT_WORKFLOW,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
+import get from 'lodash/get';
 
 /**
  * Application workflow page component.
@@ -103,7 +104,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           });
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {
-            const [firstStep, ..._] = workflow.steps || [];
+            const firstStep = get(workflow, 'steps', [])[0];
             if (firstStep) {
               if (firstStep.type === ContentType.form) {
                 this.router.navigate(

@@ -104,6 +104,7 @@ export class LayoutsTabComponent implements OnInit {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.pageInfo.pageSize = first;
       this.fetchLayouts();
     } else {
       this.layouts = this.cachedLayouts.slice(

@@ -3,7 +3,6 @@ import {
   Input,
   OnChanges,
   Output,
-  SimpleChanges,
   EventEmitter,
 } from '@angular/core';
 import { AlertVariant } from './alert-variant.enum';
@@ -27,7 +26,7 @@ export class SafeAlertComponent implements OnChanges {
   // alert is in closing animation
   closing = false;
 
-  ngOnChanges(_: SimpleChanges): void {
+  ngOnChanges(): void {
     this.closing = false;
   }
 

@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Record, Resource, Form } from '@safe/builder';
+import { Record, Resource } from '@safe/builder';
 
 // === RESTORE RECORD ===
 /** Restore record gql mutation definition */

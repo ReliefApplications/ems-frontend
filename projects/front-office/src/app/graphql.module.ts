@@ -20,7 +20,7 @@ import { extractFiles } from 'extract-files';
  * @returns void
  */
 export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
-  const basic = setContext((operation, context) => ({
+  const basic = setContext(() => ({
     headers: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'charset=utf-8',
@@ -39,7 +39,7 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
       connectionParams: {
         authToken: localStorage.getItem('idtoken'),
       },
-      connectionCallback: (error) => {
+      connectionCallback: () => {
         // if (localStorage.getItem('loaded') === 'true') {
         //   // location.reload();
         //   localStorage.setItem('loaded', 'false');

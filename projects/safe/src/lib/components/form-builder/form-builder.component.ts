@@ -193,7 +193,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     );
 
     // Notify parent that form structure has changed
-    this.surveyCreator.onModified.add((survey, option) => {
+    this.surveyCreator.onModified.add((survey) => {
       this.formChange.emit(survey.text);
     });
     this.surveyCreator.survey.onUpdateQuestionCssClasses.add(

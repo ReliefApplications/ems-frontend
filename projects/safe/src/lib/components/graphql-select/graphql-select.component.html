@@ -2,7 +2,7 @@
   [formControl]="ngControl && $any(ngControl.control)"
   (openedChange)="onOpenSelect($event)"
   [required]="required"
-  (focusin)="onFocusIn($event)"
+  (focusin)="onFocusIn()"
   (focusout)="onFocusOut($event)"
 >
   <mat-option

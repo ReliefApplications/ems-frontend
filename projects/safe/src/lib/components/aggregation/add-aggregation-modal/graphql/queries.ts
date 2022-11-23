@@ -1,6 +1,5 @@
 import { gql } from 'apollo-angular';
 import { Resource } from '../../../../models/resource.model';
-import { Form } from '../../../../models/form.model';
 
 // === FETCH AGGREGATIONS ===
 

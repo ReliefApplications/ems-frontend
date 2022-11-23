@@ -1,4 +1,3 @@
-import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { PipelineStage } from '../../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
 import { Accumulators } from '../../components/ui/aggregation-builder/pipeline/expressions/operators';

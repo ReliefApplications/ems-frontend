@@ -12,9 +12,8 @@ export const initCreatorSettings = (Survey: any): void => {
   serializer.findProperty('question', 'name').onGetValue = (obj: Question) =>
     obj.valueName ? obj.valueName : obj.name;
   serializer.findProperty('question', 'valueName').isRequired = true;
-  serializer.findProperty('file', 'storeDataAsText').onGetValue = (obj: any) =>
-    false;
+  serializer.findProperty('file', 'storeDataAsText').onGetValue = () => false;
   serializer.findProperty('file', 'storeDataAsText').readOnly = true;
   serializer.findProperty('file', 'storeDataAsText').visible = false;
-  serializer.findProperty('file', 'maxSize').onGetValue = (obj: any) => 7340032;
+  serializer.findProperty('file', 'maxSize').onGetValue = () => 7340032;
 };

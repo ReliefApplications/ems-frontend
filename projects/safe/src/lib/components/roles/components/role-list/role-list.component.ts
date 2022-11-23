@@ -160,7 +160,7 @@ export class SafeRoleListComponent implements OnInit, OnDestroy, AfterViewInit {
               },
             })
             .subscribe(
-              (res) => {
+              () => {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectCreated', {
                     type: this.translate
@@ -210,7 +210,7 @@ export class SafeRoleListComponent implements OnInit, OnDestroy, AfterViewInit {
                 id: item.id,
               },
             })
-            .subscribe((res) => {
+            .subscribe(() => {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {
                   value: item.title,

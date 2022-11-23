@@ -7,9 +7,6 @@ import {
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-/** An unused configuration constant set to undefined*/
-const CONFIG = undefined;
-
 /**
  * Sets up translator.
  *

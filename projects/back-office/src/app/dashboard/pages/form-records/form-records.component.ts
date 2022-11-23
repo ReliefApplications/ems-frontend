@@ -267,7 +267,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
           hardDelete: this.showDeletedRecords,
         },
       })
-      .subscribe((res) => {
+      .subscribe(() => {
         this.dataSource = this.dataSource.filter((x) => x.id !== id);
         if (id === this.historyId) {
           this.layoutService.setRightSidenav(null);
@@ -306,7 +306,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
               version: version.id,
             },
           })
-          .subscribe((res) => {
+          .subscribe(() => {
             this.layoutService.setRightSidenav(null);
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.dataRecovered')
@@ -436,7 +436,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
           id,
         },
       })
-      .subscribe((res) => {
+      .subscribe(() => {
         this.dataSource = this.dataSource.filter((x) => x.id !== id);
         if (id === this.historyId) {
           this.layoutService.setRightSidenav(null);

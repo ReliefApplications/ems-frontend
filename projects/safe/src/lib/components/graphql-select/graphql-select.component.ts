@@ -105,6 +105,7 @@ export class SafeGraphQLSelectComponent
   public focused = false;
   public touched = false;
   onTouched = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onChange = (_: any) => {};
 
   /**
@@ -298,10 +299,8 @@ export class SafeGraphQLSelectComponent
 
   /**
    * Handles focus on input
-   *
-   * @param event The focus event
    */
-  onFocusIn(event: FocusEvent) {
+  onFocusIn() {
     if (!this.focused) {
       this.focused = true;
       this.stateChanges.next();

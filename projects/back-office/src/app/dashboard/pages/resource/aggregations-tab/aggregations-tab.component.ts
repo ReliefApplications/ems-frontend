@@ -109,6 +109,7 @@ export class AggregationsTabComponent implements OnInit {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.pageInfo.pageSize = first;
       this.fetchAggregations();
     } else {
       this.aggregations = this.cachedAggregations.slice(
