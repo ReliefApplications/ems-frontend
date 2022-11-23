@@ -303,14 +303,30 @@ export class RoleResourcesComponent implements OnInit {
       add?: string[] | { role: string }[];
       remove?: string[] | { role: string }[];
     } = {};
-    const hasCurrPermission = get(
-      resource,
-      `rolePermissions.${permission}`,
-      false
-    );
-    Object.assign(updatedPermissions, {
-      [hasCurrPermission ? 'remove' : 'add']: [{ role: this.role.id }],
-    });
+    const permissionLevel = this.permissionLevel(resource, permission);
+    switch (permissionLevel) {
+      case 'full': {
+        Object.assign(updatedPermissions, {
+          remove: [{ role: this.role.id }],
+        });
+        break;
+      }
+      case 'limited': {
+        Object.assign(updatedPermissions, {
+          add: [{ role: this.role.id }],
+        });
+        break;
+      }
+      case false: {
+        Object.assign(updatedPermissions, {
+          add: [{ role: this.role.id }],
+        });
+        break;
+      }
+      default: {
+        return;
+      }
+    }
 
     this.apollo
       .mutate<EditResourceAccessMutationResponse>({
@@ -456,16 +472,53 @@ export class RoleResourcesComponent implements OnInit {
    * @returns the name of the icon to be displayed
    */
   private getIcon(resource: Resource, permission: Permission) {
-    const hasPermission = get(resource, `rolePermissions.${permission}`, false);
+    const permissionLevel = this.permissionLevel(resource, permission);
     switch (permission) {
-      case Permission.SEE:
-        return hasPermission ? 'visibility' : 'visibility_off';
+      case Permission.SEE: {
+        switch (permissionLevel) {
+          case 'limited': {
+            return 'visibility_outline';
+          }
+          case 'full': {
+            return 'visibility';
+          }
+          default: {
+            return 'visibility_off';
+          }
+        }
+      }
       case Permission.CREATE:
-        return 'add';
+        switch (permissionLevel) {
+          case 'limited': {
+            return 'add_circle_outline';
+          }
+          default:
+          case 'full': {
+            return 'add_circle';
+          }
+        }
       case Permission.UPDATE:
-        return hasPermission ? 'edit' : 'edit_off';
+        switch (permissionLevel) {
+          case 'limited': {
+            return 'edit_outline';
+          }
+          case 'full': {
+            return 'edit';
+          }
+          default: {
+            return 'edit_off';
+          }
+        }
       case Permission.DELETE:
-        return 'delete';
+        switch (permissionLevel) {
+          case 'limited': {
+            return 'delete_outline';
+          }
+          default:
+          case 'full': {
+            return 'delete';
+          }
+        }
     }
   }
 
@@ -477,8 +530,16 @@ export class RoleResourcesComponent implements OnInit {
    * @returns the name of the icon to be displayed
    */
   private getVariant(resource: Resource, permission: Permission) {
-    const hasPermission = get(resource, `rolePermissions.${permission}`, false);
-    return hasPermission ? 'primary' : 'grey';
+    const permissionLevel = this.permissionLevel(resource, permission);
+    switch (permissionLevel) {
+      case 'limited':
+      case 'full': {
+        return 'primary';
+      }
+      default: {
+        return 'grey';
+      }
+    }
   }
 
   /**
@@ -489,24 +550,75 @@ export class RoleResourcesComponent implements OnInit {
    * @returns the name of the icon to be displayed
    */
   private getTooltip(resource: Resource, permission: Permission) {
-    const hasPermission = get(resource, `rolePermissions.${permission}`, false);
+    const permissionLevel = this.permissionLevel(resource, permission);
     switch (permission) {
-      case Permission.SEE:
-        return hasPermission
-          ? 'components.role.tooltip.disallowRecordAccessibility'
-          : 'components.role.tooltip.allowRecordAccessibility';
+      case Permission.SEE: {
+        switch (permissionLevel) {
+          case 'limited': {
+            return 'components.role.tooltip.limitedReadRecordsPermission';
+          }
+          case 'full': {
+            return 'components.role.tooltip.grantReadRecordsPermission';
+          }
+          default: {
+            return 'components.role.tooltip.notGrantReadRecordsPermission';
+          }
+        }
+      }
       case Permission.CREATE:
-        return hasPermission
-          ? 'components.role.tooltip.disallowRecordCreation'
-          : 'components.role.tooltip.allowRecordCreation';
+        switch (permissionLevel) {
+          case 'full': {
+            return 'components.role.tooltip.grantAddRecordsPermission';
+          }
+          default: {
+            return 'components.role.tooltip.notGrantAddRecordsPermission';
+          }
+        }
       case Permission.UPDATE:
-        return hasPermission
-          ? 'components.role.tooltip.disallowRecordUpdate'
-          : 'components.role.tooltip.allowRecordUpdate';
+        switch (permissionLevel) {
+          case 'limited': {
+            return 'components.role.tooltip.limitedUpdateRecordsPermission';
+          }
+          case 'full': {
+            return 'components.role.tooltip.grantUpdateRecordsPermission';
+          }
+          default: {
+            return 'components.role.tooltip.notGrantUpdateRecordsPermission';
+          }
+        }
       case Permission.DELETE:
-        return hasPermission
-          ? 'components.role.tooltip.disallowRecordDeletion'
-          : 'components.role.tooltip.allowRecordDeletion';
+        switch (permissionLevel) {
+          case 'limited': {
+            return 'components.role.tooltip.limitedDeleteRecordsPermission';
+          }
+          case 'full': {
+            return 'components.role.tooltip.grantDeleteRecordsPermission';
+          }
+          default: {
+            return 'components.role.tooltip.notGrantDeleteRecordsPermission';
+          }
+        }
+    }
+  }
+
+  /**
+   * Get the level of permission of the role on a resource.
+   *
+   * @param resource resource to get permission of
+   * @param permission permission to check
+   * @returns level of permission ( false, 'limited', 'full' )
+   */
+  private permissionLevel(resource: Resource, permission: Permission) {
+    const rolePermission = get(resource, `rolePermissions.${permission}`, null);
+    if (rolePermission) {
+      const full = get(rolePermission, 'full', false);
+      if (full) {
+        return 'full';
+      } else {
+        return 'limited';
+      }
+    } else {
+      return false;
     }
   }
 }

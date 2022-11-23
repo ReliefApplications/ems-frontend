@@ -102,7 +102,9 @@ export class LayoutTableComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.allLayouts.push(value);
+        if (!this.allLayouts.find((x) => x.id === value.id)) {
+          this.allLayouts.push(value);
+        }
         this.selectedLayouts?.setValue(
           this.selectedLayouts?.value.concat(value.id)
         );
@@ -120,6 +122,7 @@ export class LayoutTableComponent implements OnInit, OnChanges {
       disableClose: true,
       data: {
         layout,
+        queryName: this.resource?.queryName,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {

@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import {
   Application,
   SafeApplicationService,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
   SafeAuthService,
 } from '@safe/builder';
@@ -45,6 +45,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
    * @param snackBar Shared snackbar service
    * @param applicationService Shared application service
    * @param authService Shared authentication service
+   * @param confirmService Shared confirm service
    * @param dialog Material dialog service
    * @param translate Angular translate service
    */
@@ -55,6 +56,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private applicationService: SafeApplicationService,
     private authService: SafeAuthService,
+    private confirmService: SafeConfirmService,
     public dialog: MatDialog,
     private translate: TranslateService
   ) {}
@@ -118,19 +120,16 @@ export class SettingsComponent implements OnInit, OnDestroy {
         })
       );
     } else {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('common.deleteObject', {
-            name: this.translate.instant('common.application.one'),
-          }),
-          content: this.translate.instant(
-            'components.application.delete.confirmationMessage',
-            { name: this.application?.name }
-          ),
-          confirmText: this.translate.instant('components.confirmModal.delete'),
-          cancelText: this.translate.instant('components.confirmModal.cancel'),
-          confirmColor: 'warn',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.application.one'),
+        }),
+        content: this.translate.instant(
+          'components.application.delete.confirmationMessage',
+          { name: this.application?.name }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        confirmColor: 'warn',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {
@@ -162,14 +161,5 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();
     }
-  }
-
-  /**
-   * Edits the permissions layer.
-   *
-   * @param e permissions.
-   */
-  saveAccess(e: any): void {
-    this.applicationService.editPermissions(e);
   }
 }

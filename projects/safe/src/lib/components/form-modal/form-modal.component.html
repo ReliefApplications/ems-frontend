@@ -46,7 +46,7 @@
         cdkFocusInitial
         [disabled]="!survey || survey.isFirstPage"
       >
-        {{ 'components.previous' | translate }}
+        {{ 'common.previous' | translate }}
       </safe-button>
       <safe-button
         category="secondary"
@@ -56,12 +56,13 @@
         cdkFocusInitial
         [disabled]="!survey || survey.isLastPage"
       >
-        {{ 'components.next' | translate }}
+        {{ 'common.next' | translate }}
       </safe-button>
     </ng-container>
     <safe-button
       category="secondary"
       variant="primary"
+      [disabled]="saving"
       (click)="submit()"
       cdkFocusInitial
     >

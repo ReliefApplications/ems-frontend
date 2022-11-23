@@ -21,6 +21,7 @@ export * from './lib/services/date-translate/date-translate.service';
 export * from './lib/services/breadcrumb/breadcrumb.service';
 export * from './lib/services/aggregation/aggregation.service';
 export * from './lib/services/auth-interceptor/auth-interceptor.service';
+export * from './lib/services/confirm/confirm.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -48,11 +49,12 @@ export * from './lib/models/pullJob.model';
 export * from './lib/models/layout.model';
 export * from './lib/models/aggregation.model';
 export * from './lib/models/reference-data.model';
-export * from './lib/models/setting.model';
 
 // === COMPONENTS ===
 export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 export * from './lib/components/layout/public-api';
+export * from './lib/components/left-sidenav/public-api';
+export * from './lib/components/application-toolbar/public-api';
 export * from './lib/components/access/public-api';
 export * from './lib/components/form/public-api';
 export * from './lib/components/form-builder/public-api';
@@ -65,8 +67,8 @@ export * from './lib/components/widget-grid/public-api';
 export * from './lib/components/confirm-modal/public-api';
 export * from './lib/components/user-summary/public-api';
 export * from './lib/components/users/public-api';
+export * from './lib/components/templates/public-api';
 export * from './lib/components/roles/public-api';
-export * from './lib/components/previous-button/public-api';
 export * from './lib/components/convert-modal/public-api';
 export * from './lib/components/record-history/public-api';
 export * from './lib/components/record-modal/public-api';
@@ -101,6 +103,8 @@ export * from './lib/components/ui/icon/public-api';
 
 // === PAGES ===
 export * from './lib/pages/profile/public-api';
+export * from './lib/pages/application-templates/public-api';
+export * from './lib/pages/application-distribution-lists/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';

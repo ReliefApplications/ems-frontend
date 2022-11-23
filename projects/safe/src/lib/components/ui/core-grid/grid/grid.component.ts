@@ -603,8 +603,15 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param file File to download.
    */
   public onDownload(file: any): void {
-    const path = `download/file/${file.content}`;
-    this.downloadService.getFile(path, file.type, file.name);
+    if (file.content.startsWith('data')) {
+      const downloadLink = document.createElement('a');
+      downloadLink.href = file.content;
+      downloadLink.download = file.name;
+      downloadLink.click();
+    } else {
+      const path = `download/file/${file.content}`;
+      this.downloadService.getFile(path, file.type, file.name);
+    }
   }
 
   /**
@@ -642,11 +649,11 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param item Item to display data of.
    * @param field field name.
    */
-  public onExpandText(item: any, field: any): void {
+  public onExpandText(item: any, field: string): void {
     const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
       data: {
-        title: field.title,
-        comment: get(item, field),
+        title: field,
+        value: get(item, field),
         readonly:
           !this.actions.update ||
           !item.canUpdate ||

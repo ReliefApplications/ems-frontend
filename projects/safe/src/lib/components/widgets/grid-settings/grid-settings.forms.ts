@@ -49,13 +49,10 @@ export const createButtonFormGroup = (value: any): FormGroup => {
           )
         : []
     ),
-    attachToRecord: [
-      value && value.attachToRecord ? value.attachToRecord : false,
-    ],
-    targetForm: [value && value.targetForm ? value.targetForm : null],
-    targetFormField: [
-      value && value.targetFormField ? value.targetFormField : null,
-    ],
+    attachToRecord: [get(value, 'attachToRecord', false)],
+    targetResource: [get(value, 'targetResource', null)],
+    targetForm: [get(value, 'targetForm', null)],
+    targetFormField: [get(value, 'targetFormField', null)],
     targetFormQuery: createQueryForm(
       value && value.targetFormQuery ? value.targetFormQuery : null,
       Boolean(value && value.targetForm)
@@ -77,11 +74,11 @@ export const createButtonFormGroup = (value: any): FormGroup => {
     ],
     sendMail: [value && value.sendMail ? value.sendMail : false],
     distributionList: [
-      value && value.distributionList ? value.distributionList : [],
+      get(value, 'distributionList', null),
       value && value.sendMail ? Validators.required : null,
     ],
-    subject: [
-      value && value.subject ? value.subject : '',
+    templates: [
+      get(value, 'templates', []),
       value && value.sendMail ? Validators.required : null,
     ],
     export: [value && value.export ? value.export : false],
@@ -91,10 +88,6 @@ export const createButtonFormGroup = (value: any): FormGroup => {
         : [],
       value && value.sendMail ? Validators.required : null
     ),
-    bodyText: [value && value.bodyText ? value.bodyText : ''],
-    bodyTextAlternate: [
-      value && value.bodyTextAlternate ? value.bodyTextAlternate : '',
-    ],
   });
   return formGroup;
 };
@@ -112,21 +105,11 @@ export const createGridWidgetFormGroup = (
 ): FormGroup => {
   const formGroup = fb.group({
     id,
-    title: [
-      configuration && configuration.title ? configuration.title : '',
-      Validators.required,
-    ],
-    query: fb.group({
-      name: [
-        configuration.query ? configuration.query.name : '',
-        Validators.required,
-      ],
-      template: [configuration.query ? configuration.query.template : '', null],
-    }),
-    layouts: [configuration?.layouts || [], Validators.required],
-    resource: [
-      configuration && configuration.resource ? configuration.resource : null,
-    ],
+    title: [get(configuration, 'title', ''), Validators.required],
+    resource: [get(configuration, 'resource', null), Validators.required],
+    template: [get(configuration, 'template', null)],
+    layouts: [get(configuration, 'layouts', []), Validators.required],
+    aggregations: [get(configuration, 'aggregations', []), Validators.required],
     actions: fb.group({
       delete: [get(configuration, 'actions.delete', true)],
       history: [get(configuration, 'actions.history', true)],

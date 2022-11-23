@@ -4,6 +4,8 @@ import { Role, User } from './user.model';
 import { Subscription } from './subscription.model';
 import { PositionAttributeCategory } from './position-attribute-category.model';
 import { status } from './form.model';
+import { Template } from './template.model';
+import { DistributionList } from './distribution-list.model';
 
 /** Model for Application object. */
 export interface Application {
@@ -28,4 +30,6 @@ export interface Application {
   locked?: boolean;
   lockedBy?: User;
   lockedByUser?: boolean;
+  templates?: Template[];
+  distributionLists?: DistributionList[];
 }

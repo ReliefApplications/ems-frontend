@@ -9,7 +9,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
-import { User, Role, Permissions } from '../../models/user.model';
+import { User, Role } from '../../models/user.model';
 import {
   DELETE_USERS,
   DeleteUsersMutationResponse,
@@ -18,7 +18,7 @@ import {
 } from './graphql/mutations';
 import { MatSort } from '@angular/material/sort';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
 import { SafeAuthService } from '../../services/auth/auth.service';
@@ -61,9 +61,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   // === DISPLAYED COLUMNS ===
   public displayedColumns: string[] = [];
 
-  // === DISPLAY ADVANCED SETTINGS ===
-  public advancedSettings = false;
-
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
 
@@ -82,6 +79,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
    * @param authService The authentification service
    * @param dialog The material dialog service
    * @param downloadService The download service
+   * @param confirmService The confirm service
    * @param translate The translation service
    * @param router Angular router
    * @param activatedRoute Angular active route
@@ -92,6 +90,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
     private authService: SafeAuthService,
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private router: Router,
     private activatedRoute: ActivatedRoute
@@ -102,10 +101,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       this.displayedColumns = APPLICATION_COLUMNS;
     } else {
       this.displayedColumns = ADMIN_COLUMNS;
-      this.advancedSettings =
-        this.authService.userHasClaim(Permissions.canSeeUsers) &&
-        this.authService.userHasClaim(Permissions.canSeeRoles) &&
-        this.authService.userHasClaim(Permissions.canManageApiConfigurations);
     }
     this.users.filterPredicate = (data: any) =>
       (this.searchText.trim().length === 0 ||
@@ -224,14 +219,11 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
         }
       );
     }
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title,
-        content,
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title,
+      content,
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -384,12 +376,5 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
         fileName
       );
     }
-  }
-
-  /**
-   * Route to the advanced settings component
-   */
-  onAdvancedSettings(): void {
-    this.router.navigate(['/settings/users/advanced-settings']);
   }
 }

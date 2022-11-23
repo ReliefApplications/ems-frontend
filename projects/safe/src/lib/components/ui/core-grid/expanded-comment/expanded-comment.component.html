@@ -1,13 +1,9 @@
 <safe-modal size="medium" [closable]="true">
-  <div mat-dialog-content class="mat-dialog-content">
+  <div mat-dialog-content class="!flex flex-col">
     <h1>{{ data.title }}</h1>
-    <textarea
-      id="comment"
-      [(ngModel)]="comment"
-      rows="15"
-      class="modal-textinput"
-      [readonly]="data.readonly"
-    ></textarea>
+    <mat-form-field appearance="outline" class="flex-1">
+      <textarea matInput [formControl]="formControl" rows="15"></textarea>
+    </mat-form-field>
   </div>
   <div mat-dialog-actions align="end">
     <safe-button mat-dialog-close>
@@ -16,7 +12,7 @@
     <safe-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="comment"
+      [mat-dialog-close]="formControl.value"
       cdkFocusInitial
       *ngIf="!data.readonly"
     >

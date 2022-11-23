@@ -2,7 +2,7 @@
   <h1 mat-dialog-title>{{ 'models.form.new' | translate }}</h1>
   <div mat-dialog-content>
     <form [formGroup]="form">
-      <div class="form-group">
+      <div class="flex flex-col">
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.name' | translate }}</mat-label>
           <input
@@ -12,7 +12,10 @@
             placeholder="Enter a name"
           />
         </mat-form-field>
-        <mat-radio-group formControlName="newResource" class="form-radio-group">
+        <mat-radio-group
+          formControlName="newResource"
+          class="flex flex-col mb-5 gap-1"
+        >
           <mat-radio-button [value]="true">
             {{ 'components.form.create.choice.resource' | translate }}
             <safe-icon
@@ -52,10 +55,7 @@
             </safe-graphql-select>
           </mat-form-field>
           <ng-container *ngIf="form.controls.resource.value !== null">
-            <mat-slide-toggle
-              formControlName="inheritsTemplate"
-              class="form-slide-toggle"
-            >
+            <mat-slide-toggle formControlName="inheritsTemplate" class="mb-5">
               {{ 'components.form.create.choice.template' | translate }}
               <safe-icon
                 icon="info_outline"
@@ -83,8 +83,11 @@
                     [value]="template.id"
                   >
                     {{ template.name }}
-                    <mat-chip-list *ngIf="template.core" class="core-form">
-                      <mat-chip class="primary-chip" disabled>{{
+                    <mat-chip-list
+                      *ngIf="template.core"
+                      class="core-form rounded-lg"
+                    >
+                      <mat-chip class="primary-chip !rounded-lg" disabled>{{
                         'models.form.core' | translate
                       }}</mat-chip>
                     </mat-chip-list>

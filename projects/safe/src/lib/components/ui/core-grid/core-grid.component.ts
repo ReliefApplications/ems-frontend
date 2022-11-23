@@ -39,7 +39,7 @@ import {
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from './graphql/queries';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
-import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
+import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
 import { Record } from '../../../models/record.model';
@@ -53,6 +53,7 @@ import { SafeGridComponent } from './grid/grid.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
 import { SafeDateTranslateService } from '../../../services/date-translate/date-translate.service';
+import { SafeApplicationService } from '../../../services/application/application.service';
 
 /**
  * Default file name when exporting grid data.
@@ -210,7 +211,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public editionActive = false;
 
   // === DOWNLOAD ===
-  private apiUrl = '';
   /** @returns filename, from grid title, or default filename, and current date */
   get fileName(): string {
     const today = new Date();
@@ -254,8 +254,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param downloadService Shared download service
    * @param authService Shared authentication service
    * @param gridService Shared grid service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate service
    * @param dateTranslate Shared date translate service
+   * @param applicationService Shared application service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -267,10 +269,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private gridService: SafeGridService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private dateTranslate: SafeDateTranslateService
+    private dateTranslate: SafeDateTranslateService,
+    private applicationService: SafeApplicationService
   ) {
-    this.apiUrl = environment.apiUrl;
     this.isAdmin =
       this.authService.userIsAdmin && environment.module === 'backoffice';
   }
@@ -317,26 +320,29 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.sort = this.defaultLayout.sort;
     }
     this.showFilter = !!this.defaultLayout?.showFilter;
-    if (this.settings.query.pageSize) {
+    if (this.settings.query?.pageSize) {
       this.pageSize = this.settings.query.pageSize;
     }
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     if (!builtQuery) {
       this.error = true;
+    } else {
+      this.dataQuery = this.apollo.watchQuery<any>({
+        query: builtQuery,
+        variables: {
+          first: this.pageSize,
+          filter: this.queryFilter,
+          sortField: this.sortField,
+          sortOrder: this.sortOrder,
+          styles: this.style,
+        },
+        fetchPolicy: 'network-only',
+        nextFetchPolicy: 'cache-first',
+      });
     }
-    this.dataQuery = this.apollo.watchQuery<any>({
-      query: builtQuery,
-      variables: {
-        first: this.pageSize,
-        filter: this.queryFilter,
-        sortField: this.sortField,
-        sortOrder: this.sortOrder,
-        styles: this.style,
-      },
-      fetchPolicy: 'network-only',
-      nextFetchPolicy: 'cache-first',
-    });
+
+    // Build meta query
     this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
     if (this.metaQuery) {
       this.loading = true;
@@ -857,27 +863,25 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public onDelete(items: any[]): void {
     const ids: string[] = items.map((x) => (x.id ? x.id : x));
     const rowsSelected = items.length;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name:
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name:
+          rowsSelected > 1
+            ? this.translate.instant('common.row.few')
+            : this.translate.instant('common.row.one'),
+      }),
+      content: this.translate.instant(
+        'components.form.deleteRow.confirmationMessage',
+        {
+          quantity: rowsSelected,
+          rowText:
             rowsSelected > 1
               ? this.translate.instant('common.row.few')
               : this.translate.instant('common.row.one'),
-        }),
-        content: this.translate.instant(
-          'components.form.deleteRow.confirmationMessage',
-          {
-            quantity: rowsSelected,
-            rowText:
-              rowsSelected > 1
-                ? this.translate.instant('common.row.few')
-                : this.translate.instant('common.row.one'),
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
-      },
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -966,16 +970,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       date,
       'shortDate'
     );
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.record.recovery.title'),
-        content: this.translate.instant(
-          'components.record.recovery.confirmationMessage',
-          { date: formatDate }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.record.recovery.title'),
+      content: this.translate.instant(
+        'components.record.recovery.confirmationMessage',
+        { date: formatDate }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -1041,6 +1043,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       sortField: this.sortField,
       sortOrder: this.sortOrder,
       format: e.format,
+      application: this.applicationService.name,
+      fileName: this.fileName,
+      email: e.email,
       // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields)
@@ -1072,7 +1077,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
     // Builds and make the request
     this.downloadService.getRecordsExport(
-      `${this.apiUrl}/download/records`,
+      '/download/records',
       `text/${e.format};charset=utf-8;`,
       `${this.fileName}.${e.format}`,
       body

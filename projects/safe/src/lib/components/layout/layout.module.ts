@@ -9,7 +9,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { SafeConfirmModalModule } from '../confirm-modal/confirm-modal.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
@@ -21,6 +20,7 @@ import { SafePreferencesModalModule } from '../preferences-modal/preferences-mod
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
+import { SafeIconModule } from '../ui/icon/icon.module';
 
 /**
  * SafeLayoutModule is a class used to manage all the modules and components
@@ -40,7 +40,6 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     MatListModule,
     DragDropModule,
     SafeDividerModule,
-    SafeConfirmModalModule,
     MatTooltipModule,
     SafeButtonModule,
     IndicatorsModule,
@@ -50,6 +49,7 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     SafePreferencesModalModule,
     SafeDateModule,
     SafeBreadcrumbModule,
+    SafeIconModule,
   ],
   exports: [SafeLayoutComponent],
 })

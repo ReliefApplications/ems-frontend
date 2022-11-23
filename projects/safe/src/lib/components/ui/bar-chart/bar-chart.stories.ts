@@ -46,7 +46,13 @@ export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   legend: { visible: true, orientation: 'horizontal', position: 'bottom' },
-  title: { visible: true, text: 'title', position: 'bottom' },
+  title: {
+    visible: true,
+    text: 'title',
+    position: 'bottom',
+    font: '',
+    color: '',
+  },
   series: [
     {
       name: 'Serie 1',

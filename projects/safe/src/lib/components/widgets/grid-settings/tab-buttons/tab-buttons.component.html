@@ -1,10 +1,11 @@
-<div [formGroup]="formGroup" class="form-group">
+<div [formGroup]="formGroup" class="flex flex-col">
   <h2>
     {{ 'components.widget.settings.grid.buttons.title' | translate }}
   </h2>
-  <div class="info-text">
+  <safe-alert class="mb-4">
+    <safe-icon icon="info"></safe-icon>
     {{ 'components.widget.settings.grid.hint.buttons' | translate }}
-  </div>
+  </safe-alert>
   <safe-button
     style.align-self="flex-end"
     icon="add"
@@ -41,6 +42,8 @@
             [formGroup]="$any(button)"
             [fields]="fields"
             [channels]="channels"
+            [templates]="templates"
+            [distributionLists]="distributionLists"
             [relatedForms]="relatedForms"
             (deleteButton)="deleteButton(i)"
           >

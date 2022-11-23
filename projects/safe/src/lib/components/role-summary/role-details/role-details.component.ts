@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Permission, Role } from '../../../models/user.model';
@@ -7,7 +14,7 @@ import {
   GET_PERMISSIONS,
 } from '../graphql/queries';
 import { get } from 'lodash';
-import { HttpClient } from '@angular/common/http';
+import { SafeRestService } from '../../../services/rest/rest.service';
 
 /**
  * General tab of Role Summary.
@@ -55,12 +62,12 @@ export class RoleDetailsComponent implements OnInit {
    *
    * @param fb Angular form builder
    * @param apollo Apollo Client
-   * @param http http client
+   * @param restService Shared rest service
    */
   constructor(
     private fb: FormBuilder,
     private apollo: Apollo,
-    private http: HttpClient
+    private restService: SafeRestService
   ) {}
 
   ngOnInit(): void {
@@ -79,8 +86,8 @@ export class RoleDetailsComponent implements OnInit {
       .subscribe((res) => {
         this.permissions = res.data.permissions;
       });
-    const url = `http://localhost:3000/roles/${this.role.id}/summary`;
-    this.http.get(url).subscribe((res: any) => {
+    const url = `/roles/${this.role.id}/summary`;
+    this.restService.get(url).subscribe((res: any) => {
       this.roleStats = res;
     });
   }

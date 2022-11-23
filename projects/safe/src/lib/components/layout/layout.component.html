@@ -1,5 +1,6 @@
 <mat-toolbar [color]="theme.headerColor">
   <safe-button
+    *ngIf="!largeDevice"
     [isIcon]="true"
     icon="menu"
     (click)="nav.toggle()"
@@ -20,9 +21,12 @@
   >
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1 class="application-title">
+    <h1 *ngIf="!route">
       {{ theme.prefix }}
-      {{ route ? title : ('common.platform.backOffice' | translate) }}
+      {{ 'common.platform.backOffice' | translate }}
+    </h1>
+    <h1 class="back-text" *ngIf="route">
+      {{ 'common.back' | translate }}
     </h1>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
@@ -128,96 +132,15 @@
   <mat-sidenav
     class="sidenav"
     #nav
-    [mode]="largeDevice && nav.opened ? 'side' : 'over'"
+    [mode]="largeDevice ? 'side' : 'over'"
     [opened]="largeDevice"
   >
-    <mat-nav-list>
-      <ng-container *ngFor="let group of filteredNavGroups; let i = index">
-        <div mat-subheader>{{ group.name }}</div>
-        <div
-          cdkDropList
-          (cdkDropListDropped)="drop($event, group)"
-          class="nav-items-list"
-        >
-          <ng-container *ngFor="let item of group.navItems">
-            <div cdkDrag [cdkDragDisabled]="!item.orderable">
-              <mat-list-item class="nav-item">
-                <a
-                  [routerLink]="item.path"
-                  routerLinkActive="active-link"
-                  (click)="largeDevice ? null : nav.toggle()"
-                  [class]="item.class ? item.class : ''"
-                >
-                  <ng-container *ngIf="item.isAddPage">
-                    <safe-button
-                      icon="add"
-                      category="tertiary"
-                      variant="primary"
-                      class="add-page-button"
-                      [class]="item.class ? item.class : ''"
-                    >
-                      {{ 'models.page.add' | translate }}
-                    </safe-button>
-                  </ng-container>
-                  <ng-container *ngIf="!item.isAddPage">
-                    <mat-icon mat-list-icon class="nav-icon">
-                      {{ item.icon }}
-                    </mat-icon>
-                    <div
-                      mat-line
-                      class="nav-text"
-                      [matTooltip]="item.name"
-                      matTooltipShowDelay="1000"
-                      matTooltipPosition="right"
-                    >
-                      {{ item.name }}
-                    </div>
-                  </ng-container>
-                </a>
-                <div class="nav-actions" *ngIf="item.action || item.orderable">
-                  <button
-                    mat-icon-button
-                    class="nav-action"
-                    *ngIf="item.action"
-                    (click)="onClick(item.action.callback, $event)"
-                  >
-                    <mat-icon
-                      matTooltip="{{ item.action.toolTip }}"
-                      matTooltipPosition="left"
-                      >{{ item.action.icon }}</mat-icon
-                    >
-                  </button>
-                  <button
-                    mat-icon-button
-                    cdkDragHandle
-                    class="nav-item-handle"
-                    *ngIf="item.orderable"
-                  >
-                    <mat-icon>drag_indicator</mat-icon>
-                  </button>
-                </div>
-              </mat-list-item>
-              <mat-list *cdkDragPreview>
-                <a
-                  mat-list-item
-                  class="nav-item"
-                  [class]="item.class ? item.class : ''"
-                >
-                  <mat-icon mat-list-icon class="nav-icon">
-                    {{ item.icon }}
-                  </mat-icon>
-                  <div mat-line>{{ item.name }}</div>
-                </a>
-              </mat-list>
-            </div>
-          </ng-container>
-        </div>
-        <safe-divider
-          style="margin: unset"
-          *ngIf="i < filteredNavGroups.length - 1"
-        ></safe-divider>
-      </ng-container>
-    </mat-nav-list>
+    <ng-container *ngIf="leftSidenav">
+      <ng-container
+        [ngTemplateOutlet]="leftSidenav"
+        [ngTemplateOutletContext]="{ $implicit: nav }"
+      ></ng-container>
+    </ng-container>
   </mat-sidenav>
 
   <mat-sidenav-content class="sidenav-content">

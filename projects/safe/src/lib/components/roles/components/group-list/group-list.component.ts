@@ -13,11 +13,12 @@ import {
 } from '../../graphql/mutations';
 import { GetGroupsQueryResponse, GET_GROUPS } from '../../graphql/queries';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
-import { SafeConfirmModalComponent } from '../../../confirm-modal/confirm-modal.component';
+import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { SafeAddRoleComponent } from '../add-role/add-role.component';
 import { SafeSnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import get from 'lodash/get';
+import { SafeRestService } from '../../../../services/rest/rest.service';
 
 /**
  * This component is used to display the groups tab in the platform
@@ -37,29 +38,24 @@ export class SafeGroupListComponent implements OnInit {
 
   public searchText = '';
 
-  /** API url */
-  public baseUrl: string;
-
   /**
    * This component is used to display the groups tab in the platform
    *
-   * @param environment Current environment
    * @param apollo This is the Apollo client that will be used to make GraphQL
    * @param dialog This is the Angular Material Dialog service.
    * @param snackBar This is the service that will be used to display the snackbar.
+   * @param confirmService This is the service that will be used to display the confirm window.
    * @param translate This is the service that is used to
-   * @param http Http client
+   * @param restService This is the service that will be used to make http requests.
    */
   constructor(
-    @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private http: HttpClient
-  ) {
-    this.baseUrl = environment.apiUrl + '/permissions/';
-  }
+    private restService: SafeRestService
+  ) {}
 
   ngOnInit(): void {
     this.getGroups();
@@ -105,8 +101,8 @@ export class SafeGroupListComponent implements OnInit {
    * Call permissions configuration endpoint to check how groups are created
    */
   private getPermissionsConfiguration(): void {
-    const url = `${this.baseUrl}/configuration`;
-    this.http.get(url).subscribe((res) => {
+    const url = '/permissions/configuration';
+    this.restService.get(url).subscribe((res) => {
       this.manualCreation = get(res, 'manualCreation', true);
     });
   }
@@ -194,19 +190,16 @@ export class SafeGroupListComponent implements OnInit {
    * @param item Group to delete
    */
   onDelete(item: any): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.group.delete.title'),
-        content: this.translate.instant(
-          'components.group.delete.confirmationMessage',
-          {
-            name: item.title,
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.group.delete.title'),
+      content: this.translate.instant(
+        'components.group.delete.confirmationMessage',
+        {
+          name: item.title,
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

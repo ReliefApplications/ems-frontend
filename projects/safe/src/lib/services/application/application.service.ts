@@ -48,6 +48,18 @@ import {
   TOGGLE_APPLICATION_LOCK,
   duplicatePageMutationResponse,
   DUPLICATE_PAGE,
+  AddTemplateMutationResponse,
+  ADD_TEMPLATE,
+  UpdateTemplateMutationResponse,
+  UPDATE_TEMPLATE,
+  DeleteTemplateMutationResponse,
+  DELETE_TEMPLATE,
+  UpdateDistributionListMutationResponse,
+  UPDATE_DISTRIBUTION_LIST,
+  AddDistributionListMutationResponse,
+  ADD_DISTRIBUTION_LIST,
+  DeleteDistributionListMutationResponse,
+  DELETE_DISTRIBUTION_LIST,
 } from './graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
@@ -62,6 +74,8 @@ import {
 } from './graphql/subscriptions';
 import { SafeAuthService } from '../auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Template } from '../../models/template.model';
+import { DistributionList } from '../../models/distribution-list.model';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -111,6 +125,21 @@ export class SafeApplicationService {
       }
     }
     return true;
+  }
+
+  /** @returns Name of the current application */
+  get name(): string {
+    return this.application.value?.name || '';
+  }
+
+  /** @returns Current application's templates */
+  get templates(): Template[] {
+    return this.application.value?.templates || [];
+  }
+
+  /** @returns Current application's distributionList */
+  get distributionLists(): DistributionList[] {
+    return this.application.value?.distributionLists || [];
   }
 
   /**
@@ -1236,6 +1265,211 @@ export class SafeApplicationService {
             : `/${page.type}/${page.content}`,
         ]);
       }
+    }
+  }
+
+  /**
+   * Adds a new template to the application.
+   *
+   * @param template new template to be added
+   */
+  addTemplate(template: Template): void {
+    const application = this.application.getValue();
+    if (application?.id && this.isUnlocked) {
+      this.apollo
+        .mutate<AddTemplateMutationResponse>({
+          mutation: ADD_TEMPLATE,
+          variables: {
+            application: application.id,
+            template: {
+              name: template.name,
+              type: 'email',
+              content: template.content,
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            const newApplication: Application = {
+              ...application,
+              templates: [
+                ...(application.templates || []),
+                res.data.addTemplate,
+              ],
+            };
+
+            this.application.next(newApplication);
+          }
+        });
+    }
+  }
+
+  /**
+   * Removes a template by its id.
+   *
+   * @param id template's id to be deleted
+   */
+  deleteTemplate(id: string): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<DeleteTemplateMutationResponse>({
+          mutation: DELETE_TEMPLATE,
+          variables: {
+            application: application.id,
+            id,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            const newApplication: Application = {
+              ...application,
+              templates: this.templates.filter((t) => t.id !== id),
+            };
+            this.application.next(newApplication);
+          }
+        });
+    }
+  }
+
+  /**
+   * Edits existing template.
+   *
+   * @param template new template to be added
+   */
+  editTemplate(template: Template): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<UpdateTemplateMutationResponse>({
+          mutation: UPDATE_TEMPLATE,
+          variables: {
+            application: application.id,
+            id: template.id,
+            template: {
+              name: template.name,
+              type: template.type,
+              content: template.content,
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data?.editTemplate) {
+            const updatedTemplate = res.data.editTemplate;
+            const newApplication: Application = {
+              ...application,
+              templates: application.templates?.map((t) => {
+                if (t.id === template.id) {
+                  t = updatedTemplate;
+                }
+                return t;
+              }),
+            };
+            this.application.next(newApplication);
+          }
+        });
+    }
+  }
+
+  /**
+   * Edits existing distribution list.
+   *
+   * @param distributionList distribution list to modify
+   */
+  editDistributionList(distributionList: DistributionList): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<UpdateDistributionListMutationResponse>({
+          mutation: UPDATE_DISTRIBUTION_LIST,
+          variables: {
+            application: application.id,
+            id: distributionList.id,
+            distributionList: {
+              name: distributionList.name,
+              emails: distributionList.emails,
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data?.editDistributionList) {
+            const updatedDistributionList = res.data.editDistributionList;
+            const newApplication: Application = {
+              ...application,
+              distributionLists: application.distributionLists?.map((dist) => {
+                if (dist.id === distributionList.id) {
+                  dist = updatedDistributionList;
+                }
+                return dist;
+              }),
+            };
+            this.application.next(newApplication);
+          }
+        });
+    }
+  }
+
+  /**
+   * Add new distribution list
+   *
+   * @param distributionList new distribution list to be added
+   */
+  addDistributionList(distributionList: DistributionList): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<AddDistributionListMutationResponse>({
+          mutation: ADD_DISTRIBUTION_LIST,
+          variables: {
+            application: application.id,
+            distributionList: {
+              name: distributionList.name,
+              emails: distributionList.emails,
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data?.addDistributionList) {
+            const newApplication: Application = {
+              ...application,
+              distributionLists: [
+                ...(application.distributionLists || []),
+                res.data.addDistributionList,
+              ],
+            };
+            this.application.next(newApplication);
+          }
+        });
+    }
+  }
+
+  /**
+   * Removes a distribution list by its id.
+   *
+   * @param id template's id to be deleted
+   */
+  deleteDistributionList(id: string): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<DeleteDistributionListMutationResponse>({
+          mutation: DELETE_DISTRIBUTION_LIST,
+          variables: {
+            application: application.id,
+            id,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            const newApplication: Application = {
+              ...application,
+              distributionLists: application.distributionLists?.filter(
+                (dist) => dist.id !== id
+              ),
+            };
+            this.application.next(newApplication);
+          }
+        });
     }
   }
 }

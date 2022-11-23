@@ -13,7 +13,6 @@ import {
   ContentType,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 
 /**
  * Main component of Front-Office navigation.
@@ -34,6 +33,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public applications: Application[] = [];
   /** List of application pages */
   public navGroups: any[] = [];
+  /** List of settings pages */
+  public adminNavItems: any[] = [];
   /** Current application */
   public application: Application | null = null;
   /** User subscription */
@@ -114,7 +115,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (application) {
             this.title = application.name || '';
             this.appID = application.id || '';
-            const adminNavItems: any[] = [];
+            this.adminNavItems = [];
             if (
               this.permissions.some(
                 (x) =>
@@ -127,8 +128,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                   (x.type === Permissions.canManageApplications && x.global)
               )
             ) {
-              adminNavItems.push({
-                name: 'Users',
+              this.adminNavItems.push({
+                name: this.translate.instant('common.user.few'),
                 path: `./${this.appID}/settings/users`,
                 icon: 'supervisor_account',
               });
@@ -145,10 +146,46 @@ export class DashboardComponent implements OnInit, OnDestroy {
                   (x.type === Permissions.canManageApplications && x.global)
               )
             ) {
-              adminNavItems.push({
-                name: 'Roles',
+              this.adminNavItems.push({
+                name: this.translate.instant('common.role.few'),
                 path: `./${this.appID}/settings/roles`,
                 icon: 'admin_panel_settings',
+              });
+            }
+            if (
+              this.permissions.some(
+                (x) =>
+                  (x.type === Permissions.canManageTemplates &&
+                    this.roles.some(
+                      (y) =>
+                        y.application?.id === application.id &&
+                        y.permissions?.some((perm) => perm.id === x.id)
+                    )) ||
+                  (x.type === Permissions.canManageApplications && x.global)
+              )
+            ) {
+              this.adminNavItems.push({
+                name: this.translate.instant('common.template.few'),
+                path: `./${this.appID}/settings/templates`,
+                icon: 'description',
+              });
+            }
+            if (
+              this.permissions.some(
+                (x) =>
+                  (x.type === Permissions.canManageDistributionLists &&
+                    this.roles.some(
+                      (y) =>
+                        y.application?.id === application.id &&
+                        y.permissions?.some((perm) => perm.id === x.id)
+                    )) ||
+                  (x.type === Permissions.canManageApplications && x.global)
+              )
+            ) {
+              this.adminNavItems.push({
+                name: this.translate.instant('common.distributionList.few'),
+                path: `./${this.appID}/settings/distribution-lists`,
+                icon: 'mail',
               });
             }
             this.navGroups = [
@@ -164,10 +201,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         : `./${this.appID}/${x.type}/${x.content}`,
                     icon: this.getNavIcon(x.type || ''),
                   })),
-              },
-              {
-                name: 'Administration',
-                navItems: adminNavItems,
               },
             ];
             if (!this.application || application.id !== this.application.id) {

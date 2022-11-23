@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
-  SafeConfirmModalComponent,
   ContentType,
   SafeApplicationService,
+  SafeConfirmService,
 } from '@safe/builder';
 import { Subscription } from 'rxjs';
 
@@ -25,6 +25,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
 
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
   public navGroups: any[] = [];
+  public adminNavItems: any[] = [];
 
   // === APPLICATION ===
   public application?: Application;
@@ -39,15 +40,15 @@ export class ApplicationComponent implements OnInit, OnDestroy {
    * @param applicationService Shared application service
    * @param route Angular activated route
    * @param router Angular router
-   * @param dialog Material dialog service
    * @param translate Angular translate service
+   * @param confirmService Shared confirmation service
    */
   constructor(
     private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private confirmService: SafeConfirmService
   ) {}
 
   ngOnInit(): void {
@@ -59,7 +60,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
         (application: Application | null) => {
           if (application) {
             this.title = application.name || '';
-            let displayNavItems: any[] =
+            const displayNavItems: any[] =
               application.pages
                 ?.filter((x: any) => x.content && x.canSee)
                 .map((x: any) => ({
@@ -82,20 +83,22 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                     callback: () => this.onDelete(x),
                   },
                 })) || [];
-            let adminNavItems: any[] = [];
             if (application.canUpdate) {
-              displayNavItems = displayNavItems.concat({
-                name: 'Add a page',
-                path: './add-page',
-                icon: 'add_circle',
-                class: 'nav-item-add',
-                isAddPage: true,
-              });
-              adminNavItems = adminNavItems.concat([
+              this.adminNavItems = [
                 {
                   name: this.translate.instant('common.settings'),
                   path: './settings/edit',
                   icon: 'settings',
+                },
+                {
+                  name: this.translate.instant('common.template.few'),
+                  path: './settings/templates',
+                  icon: 'description',
+                },
+                {
+                  name: this.translate.instant('common.distributionList.few'),
+                  path: './settings/distribution-lists',
+                  icon: 'mail',
                 },
                 {
                   name: this.translate.instant('common.user.few'),
@@ -105,35 +108,31 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                 {
                   name: this.translate.instant('common.role.few'),
                   path: './settings/roles',
-                  icon: 'admin_panel_settings',
+                  icon: 'verified_user',
                 },
                 {
                   name: this.translate.instant(
                     'pages.application.positionAttributes.title'
                   ),
                   path: './settings/position',
-                  icon: 'manage_accounts',
+                  icon: 'edit_attributes',
                 },
                 {
                   name: this.translate.instant('common.channel.few'),
                   path: './settings/channels',
-                  icon: 'edit_notifications',
+                  icon: 'dns',
                 },
                 {
                   name: this.translate.instant('common.subscription.few'),
                   path: './settings/subscriptions',
-                  icon: 'move_to_inbox',
+                  icon: 'add_to_queue',
                 },
-              ]);
+              ];
             }
             this.navGroups = [
               {
-                name: this.translate.instant('common.display'),
+                name: this.translate.instant('common.page.few'),
                 navItems: displayNavItems,
-              },
-              {
-                name: this.translate.instant('pages.administration.title'),
-                navItems: adminNavItems,
               },
             ];
             if (!this.application || application.id !== this.application.id) {
@@ -190,18 +189,16 @@ export class ApplicationComponent implements OnInit, OnDestroy {
    * @param item item to delete
    */
   onDelete(item: any): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('common.page.one'),
-        }),
-        content: this.translate.instant(
-          'components.application.pages.delete.confirmationMessage',
-          { name: item.name }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.page.one'),
+      }),
+      content: this.translate.instant(
+        'components.application.pages.delete.confirmationMessage',
+        { name: item.name }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

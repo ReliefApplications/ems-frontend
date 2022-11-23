@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Record,
   Form,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
   Resource,
   SafeDownloadService,
@@ -62,15 +62,15 @@ export class RecordsTabComponent implements OnInit {
    *
    * @param apollo Apollo service
    * @param translate Angular translate service
-   * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
+   * @param confirmService Shared confirm service
    * @param downloadService Service used to download.
    */
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
-    private dialog: MatDialog,
     private snackBar: SafeSnackBarService,
+    private confirmService: SafeConfirmService,
     private downloadService: SafeDownloadService
   ) {}
 
@@ -110,20 +110,17 @@ export class RecordsTabComponent implements OnInit {
   public onDeleteRecord(element: any, e: any): void {
     e.stopPropagation();
     if (this.showDeletedRecords) {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('common.deleteObject', {
-            name: this.translate.instant('common.record.one'),
-          }),
-          content: this.translate.instant(
-            'components.record.delete.confirmationMessage',
-            {
-              name: element.name,
-            }
-          ),
-          confirmText: this.translate.instant('components.confirmModal.delete'),
-          cancelText: this.translate.instant('components.confirmModal.cancel'),
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.record.one'),
+        }),
+        content: this.translate.instant(
+          'components.record.delete.confirmationMessage',
+          {
+            name: element.name,
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {
@@ -218,8 +215,12 @@ export class RecordsTabComponent implements OnInit {
         columns.push(field.name);
       }
     }
+    const metadata = get(this.resource, 'metadata', []);
     columns = columns
-      .filter((x) => get(this.resource, `metadata.${x}.canSee`, false))
+      .filter((x) => {
+        const fieldMeta = metadata.find((y) => y.name === x);
+        return get(fieldMeta, 'canSee', false);
+      })
       .concat(RECORDS_DEFAULT_COLUMNS);
     this.displayedColumnsRecords = columns;
   }

@@ -106,8 +106,13 @@ export class SafeReferenceDataService {
       operator: string;
     }
   ): Promise<{ value: string | number; text: string }[]> {
+    const sortByDisplayField = (a: any, b: any) =>
+      a[displayField] > b[displayField] ? 1 : -1;
+
     // get items
-    const { items, valueField } = await this.getItems(referenceDataID);
+    const { items: items_, valueField } = await this.getItems(referenceDataID);
+    // sort items by displayField
+    const items = items_.sort(sortByDisplayField);
     // if we ask to filter
     if (filter) {
       const { items: foreignItems, valueField: foreignValueField } =
@@ -123,6 +128,7 @@ export class SafeReferenceDataService {
             item[filter.localField]
           )
         )
+        .sort(sortByDisplayField)
         .map((item) => ({
           value: item[valueField],
           text: item[displayField],
@@ -155,43 +161,7 @@ export class SafeReferenceDataService {
 
     // Check if referenceData has changed. In this case, refresh choices instead of using cached ones.
     if (!cacheTimestamp || cacheTimestamp < modifiedAt) {
-      switch (referenceData.type) {
-        case referenceDataType.graphql: {
-          const url =
-            this.apiProxy.baseUrl +
-            referenceData.apiConfiguration?.name +
-            referenceData.apiConfiguration?.graphQLEndpoint;
-          const body = { query: this.buildGraphQLQuery(referenceData, false) };
-          const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
-          items = referenceData.path ? get(data, referenceData.path) : data;
-          items = referenceData.query ? items[referenceData.query] : items;
-          localStorage.setItem(
-            cacheKey + LAST_REQUEST_KEY,
-            this.formatDateSQL(new Date())
-          );
-          break;
-        }
-        case referenceDataType.rest: {
-          const url =
-            this.apiProxy.baseUrl +
-            referenceData.apiConfiguration?.name +
-            referenceData.query;
-          const data = await this.apiProxy.promisedRequestWithHeaders(url);
-          items = referenceData.path ? get(data, referenceData.path) : data;
-          break;
-        }
-        case referenceDataType.static: {
-          items = referenceData.data;
-          break;
-        }
-        default: {
-          items = referenceData.data;
-          break;
-        }
-      }
-      // Cache items and timestamp
-      localForage.setItem(cacheKey, items);
-      localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
+      items = await this.fetchItems(referenceData);
     } else {
       // If referenceData has not changed, use cached value and check for updates for graphQL.
       if (referenceData.type === referenceDataType.graphql) {
@@ -230,9 +200,63 @@ export class SafeReferenceDataService {
       } else {
         // If referenceData has not changed, use cached value for non graphQL.
         items = await localForage.getItem(cacheKey);
+        if (!items) {
+          items = await this.fetchItems(referenceData);
+        }
       }
     }
     return { items, valueField };
+  }
+
+  /**
+   * Fetch items from reference data parameters and set cache
+   *
+   * @param referenceData reference data to query items of
+   * @returns list of items
+   */
+  private async fetchItems(referenceData: ReferenceData): Promise<any> {
+    const cacheKey = referenceData.id || '';
+    const modifiedAt = referenceData.modifiedAt || '';
+    // Initialisation
+    let items: any;
+    switch (referenceData.type) {
+      case referenceDataType.graphql: {
+        const url =
+          this.apiProxy.baseUrl +
+          referenceData.apiConfiguration?.name +
+          referenceData.apiConfiguration?.graphQLEndpoint;
+        const body = { query: this.buildGraphQLQuery(referenceData, false) };
+        const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
+        items = referenceData.path ? get(data, referenceData.path) : data;
+        items = referenceData.query ? items[referenceData.query] : items;
+        localStorage.setItem(
+          cacheKey + LAST_REQUEST_KEY,
+          this.formatDateSQL(new Date())
+        );
+        break;
+      }
+      case referenceDataType.rest: {
+        const url =
+          this.apiProxy.baseUrl +
+          referenceData.apiConfiguration?.name +
+          referenceData.query;
+        const data = await this.apiProxy.promisedRequestWithHeaders(url);
+        items = referenceData.path ? get(data, referenceData.path) : data;
+        break;
+      }
+      case referenceDataType.static: {
+        items = referenceData.data;
+        break;
+      }
+      default: {
+        items = referenceData.data;
+        break;
+      }
+    }
+    // Cache items and timestamp
+    localForage.setItem(cacheKey, items);
+    localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
+    return items;
   }
 
   /**

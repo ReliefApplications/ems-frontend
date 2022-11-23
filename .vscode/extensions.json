@@ -1,6 +1,12 @@
 {
   "recommendations": [
+    "jannisx11.batch-rename-extension",
+    "streetsidesoftware.code-spell-checker",
+    "dbaeumer.vscode-eslint",
+    "streetsidesoftware.code-spell-checker-french",
+    "waderyan.gitblame",
     "lokalise.i18n-ally",
-    "streetsidesoftware.code-spell-checker"
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss"
   ]
 }

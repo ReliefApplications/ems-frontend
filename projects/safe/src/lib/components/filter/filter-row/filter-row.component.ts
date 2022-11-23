@@ -82,7 +82,10 @@ export class FilterRowComponent implements OnInit, OnChanges, AfterViewInit {
    */
   private setField(name: string, init?: true) {
     // get field, and operators
-    const nameFragments = name.split('.');
+    const nameFragments =
+      name.startsWith('{{attributes.') && name.endsWith('}}')
+        ? [name]
+        : name.split('.');
     let fields = clone(this.fields);
     let field = null;
     // Loop over name fragments to find correct field
@@ -127,6 +130,7 @@ export class FilterRowComponent implements OnInit, OnChanges, AfterViewInit {
           this.editor = this.booleanEditor;
           break;
         }
+        case 'attribute':
         case 'select': {
           this.editor = this.selectEditor;
           break;

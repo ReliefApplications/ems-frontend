@@ -74,12 +74,8 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
    * Chart widget using KendoUI.
    *
    * @param aggregationService Shared aggregation service
-   * @param aggregationBuilder Shared aggregation builder service
    */
-  constructor(
-    private aggregationService: SafeAggregationService,
-    private aggregationBuilder: AggregationBuilderService
-  ) {}
+  constructor(private aggregationService: SafeAggregationService) {}
 
   /** Detect changes of the settings to reload the data. */
   ngOnChanges(): void {
@@ -93,7 +89,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
         .then((res) => {
           const aggregation = res.edges[0]?.node || null;
           if (aggregation) {
-            this.dataQuery = this.aggregationBuilder.buildAggregation(
+            this.dataQuery = this.aggregationService.aggregationDataQuery(
               this.settings.resource,
               aggregation.id || '',
               get(this.settings, 'chart.mapping', null)

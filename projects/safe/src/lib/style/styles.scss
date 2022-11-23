@@ -322,6 +322,22 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   opacity: 0.87;
   border-radius: 4px;
   width: 100%;
+  th,
+  td {
+    padding: 0 4px !important;
+    &:first-of-type {
+      padding-left: 24px !important;
+      &:not(:last-of-type) {
+        padding-right: 4px !important;
+      }
+    }
+    &:last-of-type {
+      padding-right: 24px !important;
+      &:not(:first-of-type) {
+        padding-left: 4px !important;
+      }
+    }
+  }
 }
 
 .success-button {
@@ -389,9 +405,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 }
 
 .mat-chip {
-  border-radius: 0px !important;
   min-width: 75px;
-  max-width: 1px; //This works??
   justify-content: center;
   font-weight: 500 !important;
 
@@ -409,62 +423,15 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   margin: 32px;
 }
 
-.form-group {
-  &:not(td) {
-    display: flex;
-    flex-direction: column;
-
-    &:not(:first-child) {
-      margin-top: 32px;
-    }
-
-    .form-group-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    .form-group-title {
-      font-weight: 500;
-      font-size: 16px;
-      margin-bottom: 12px;
-      border-bottom: 1px solid darkgray;
-      padding-bottom: 4px;
-    }
-    .nested-form-group {
-      padding: 16px;
-      border: 1px solid darkgray;
-      border-radius: 4px;
-
-      .form-group:last-child {
-        margin-bottom: 0;
-      }
-    }
-    .form-radio-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 1.25em;
-      gap: 4px;
-    }
-    .form-slide-toggle {
-      margin-bottom: 1.25em;
-    }
-  }
-}
-
-.mat-tab-group {
-  .mat-tab-header {
-    margin-bottom: 12px;
-  }
+.mat-tab-group .mat-tab-header,
+.mat-tab-nav-bar {
+  margin-bottom: 12px;
 }
 
 .collapsible-form-group {
   mat-expansion-panel {
     border: solid 1px rgba(0, 0, 0, 0.1);
     box-shadow: none !important;
-
-    .form-group {
-      gap: 8px;
-    }
   }
 
   mat-expansion-panel:not(.mat-expanded)
@@ -597,11 +564,6 @@ body {
   align-items: center;
 }
 
-.info-text {
-  color: #939393;
-  margin-bottom: 32px;
-}
-
 // === SURVEY BUILDER ===
 .core-question {
   color: mat.get-color-from-palette($safe-warn) !important;
@@ -676,6 +638,25 @@ mat-tab-group[vertical] {
 .tox-editor-header *,
 .tox-tinymce-aux * {
   font-family: Roboto, 'Helvetica Neue', sans-serif !important;
+}
+
+// === SCROLLBARS ===
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #d4d4d9;
+  border: solid 2px white;
 }
 
 // === LEAFLET ===

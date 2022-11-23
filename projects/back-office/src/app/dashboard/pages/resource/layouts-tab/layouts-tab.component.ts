@@ -5,7 +5,7 @@ import {
   SafeEditLayoutModalComponent,
   Layout,
   SafeGridLayoutService,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   Resource,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -46,12 +46,14 @@ export class LayoutsTabComponent implements OnInit {
    * @param apollo Apollo service
    * @param dialog Material dialog service
    * @param gridLayoutService Grid layout service
+   * @param confirmService Confirm service
    * @param translate Angular translate service
    */
   constructor(
     private apollo: Apollo,
     private dialog: MatDialog,
     private gridLayoutService: SafeGridLayoutService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}
 
@@ -179,6 +181,7 @@ export class LayoutsTabComponent implements OnInit {
       disableClose: true,
       data: {
         layout,
+        queryName: this.resource.queryName,
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
@@ -206,20 +209,17 @@ export class LayoutsTabComponent implements OnInit {
    * @param layout Layout to delete
    */
   onDeleteLayout(layout: Layout): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('common.layout.one'),
-        }),
-        content: this.translate.instant(
-          'components.form.layout.delete.confirmationMessage',
-          {
-            name: layout.name,
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.layout.one'),
+      }),
+      content: this.translate.instant(
+        'components.form.layout.delete.confirmationMessage',
+        {
+          name: layout.name,
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

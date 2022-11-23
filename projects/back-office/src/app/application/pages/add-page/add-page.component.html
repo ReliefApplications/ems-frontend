@@ -1,9 +1,6 @@
 <form [formGroup]="pageForm">
-  <div
-    class="form-group"
-    [ngSwitch]="step"
-    [ngClass]="{ 'content-choice-step': step === 1 }"
-  >
+  <div class="flex flex-col items-center" [ngSwitch]="step">
+    <!-- Selection of type of content -->
     <ng-container *ngSwitchCase="1">
       <h2>{{ 'pages.application.addPage.selectType' | translate }}</h2>
       <safe-content-choice
@@ -11,28 +8,35 @@
         [contentTypes]="contentTypes"
       ></safe-content-choice>
     </ng-container>
+    <!-- Form selection -->
     <ng-container *ngSwitchCase="2">
-      <h2>{{ 'pages.application.addPage.form.title' | translate }}</h2>
-      <safe-forms-dropdown
-        [forms$]="forms$"
-        [label]="'models.form.select' | translate"
-        [sourceControl]="pageForm.controls.content"
-        [loadingMore]="loadingMore"
-        (filter)="onFilterDataSource($event)"
-        (scrolled)="onScrollDataSource($event)"
-      ></safe-forms-dropdown>
-      <safe-button
-        icon="add"
-        category="secondary"
-        variant="primary"
-        (click)="onAdd()"
-        [disabled]="!canCreateForm"
-      >
-        {{ 'models.form.create' | translate }}
-      </safe-button>
+      <div class="flex flex-col w-80 items-center">
+        <!-- Existing form -->
+        <safe-forms-dropdown
+          [forms$]="forms$"
+          [label]="'models.form.select' | translate"
+          [sourceControl]="pageForm.controls.content"
+          [loadingMore]="loadingMore"
+          (filter)="onFilterDataSource($event)"
+          (scrolled)="onScrollDataSource($event)"
+        ></safe-forms-dropdown>
+        <safe-divider [text]="'or'"></safe-divider>
+        <!-- New form -->
+        <safe-button
+          class="mt-4"
+          icon="add"
+          category="secondary"
+          variant="primary"
+          (click)="onAdd()"
+          [disabled]="!canCreateForm"
+        >
+          {{ 'models.form.create' | translate }}
+        </safe-button>
+      </div>
     </ng-container>
   </div>
 </form>
+<!-- Actions -->
 <div class="add-page-stepper" *ngIf="step !== 1">
   <safe-button [disabled]="step <= 1" (click)="onBack()">{{
     'common.back' | translate

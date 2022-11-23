@@ -164,6 +164,7 @@ export class QueryBuilderService {
               `${x.name} (
             sortField: ${x.sort.field ? `"${x.sort.field}"` : null},
             sortOrder: "${x.sort.order}",
+            first: ${get(x, 'first', null)},
             filter: ${this.filterToString(x.filter)}
           ) {
             ${['canUpdate\ncanDelete\n'].concat(this.buildFields(x.fields))}

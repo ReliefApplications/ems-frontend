@@ -31,10 +31,10 @@ import {
   EDIT_RECORDS,
   EditRecordsMutationResponse,
 } from './graphql/mutations';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
-import { SafeDownloadService } from '../../services/download/download.service';
+import { SafeRestService } from '../../services/rest/rest.service';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -70,6 +70,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
 export class SafeFormModalComponent implements OnInit {
   // === DATA ===
   public loading = true;
+  public saving = false;
   public form?: Form;
   public record?: Record;
 
@@ -106,9 +107,10 @@ export class SafeFormModalComponent implements OnInit {
    * @param dialogRef This is the reference to the dialog.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param snackBar This is the service that allows you to display a snackbar.
-   * @param downloadService This is the service that is used to download files.
+   * @param restService This is the service that is used to make http requests.
    * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
+   * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
    */
@@ -119,9 +121,10 @@ export class SafeFormModalComponent implements OnInit {
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private downloadService: SafeDownloadService,
+    private restService: SafeRestService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private ngZone: NgZone
   ) {
@@ -216,7 +219,8 @@ export class SafeFormModalComponent implements OnInit {
   private initSurvey(): void {
     this.survey = this.formBuilderService.createSurvey(
       this.form?.structure || '',
-      this.form?.metadata
+      this.form?.metadata,
+      this.record
     );
     this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
       this.onClearFiles(survey, options)
@@ -270,6 +274,7 @@ export class SafeFormModalComponent implements OnInit {
    * Calls the complete method of the survey if no error.
    */
   public submit(): void {
+    this.saving = true;
     if (!this.survey?.hasErrors()) {
       this.survey?.completeLastPage();
     } else {
@@ -277,6 +282,7 @@ export class SafeFormModalComponent implements OnInit {
         this.translate.instant('models.form.notifications.savingFailed'),
         { error: true }
       );
+      this.saving = false;
     }
   }
 
@@ -310,33 +316,31 @@ export class SafeFormModalComponent implements OnInit {
     survey.data = data;
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('common.updateObject', {
-            name:
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.updateObject', {
+          name:
+            rowsSelected > 1
+              ? this.translate.instant('common.row.few')
+              : this.translate.instant('common.row.one'),
+        }),
+        content: this.translate.instant(
+          'components.form.updateRow.confirmationMessage',
+          {
+            quantity: rowsSelected,
+            rowText:
               rowsSelected > 1
                 ? this.translate.instant('common.row.few')
                 : this.translate.instant('common.row.one'),
-          }),
-          content: this.translate.instant(
-            'components.form.updateRow.confirmationMessage',
-            {
-              quantity: rowsSelected,
-              rowText:
-                rowsSelected > 1
-                  ? this.translate.instant('common.row.few')
-                  : this.translate.instant('common.row.one'),
-            }
-          ),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          confirmColor: 'primary',
-        },
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
       });
       dialogRef.afterClosed().subscribe(async (value) => {
         if (value) {
           await this.onUpdate(survey);
+        } else {
+          this.saving = false;
         }
       });
       // Updates the data directly.
@@ -562,12 +566,11 @@ export class SafeFormModalComponent implements OnInit {
       options.content.indexOf('http') !== -1
     ) {
       options.callback('success', options.content);
-      return;
     } else {
       const xhr = new XMLHttpRequest();
       xhr.open(
         'GET',
-        `${this.downloadService.baseUrl}/download/file/${options.content}`
+        `${this.restService.apiUrl}/download/file/${options.content}`
       );
       xhr.setRequestHeader(
         'Authorization',
@@ -727,16 +730,14 @@ export class SafeFormModalComponent implements OnInit {
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.record.recovery.title'),
-        content: this.translate.instant(
-          'components.record.recovery.confirmationMessage',
-          { date: formatDate }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.record.recovery.title'),
+      content: this.translate.instant(
+        'components.record.recovery.confirmationMessage',
+        { date: formatDate }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

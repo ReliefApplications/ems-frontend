@@ -113,6 +113,9 @@ export const buildAddButton = (
               newItem,
               ...question.contentQuestion.choices,
             ];
+            question.newCreatedRecords = question.newCreatedRecords
+              ? question.newCreatedRecords.concat(res.data.id)
+              : [res.data.id];
             question.value = question.value.concat(res.data.id);
           } else {
             const newItem = {
@@ -123,6 +126,7 @@ export const buildAddButton = (
               newItem,
               ...question.contentQuestion.choices,
             ];
+            question.newCreatedRecords = res.data.id;
             question.value = res.data.id;
           }
         }

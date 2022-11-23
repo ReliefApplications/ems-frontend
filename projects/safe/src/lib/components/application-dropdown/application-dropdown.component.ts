@@ -101,6 +101,8 @@ export class SafeApplicationDropdownComponent implements OnInit {
         query: GET_APPLICATIONS,
         variables: {
           first: ITEMS_PER_PAGE,
+          sortField: 'name',
+          sortOrder: 'asc',
         },
       });
 

@@ -5,41 +5,23 @@ import {
   OnInit,
   Output,
   EventEmitter,
-  ViewChild,
-  ElementRef,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
 import { Form } from '../../../../models/form.model';
+import { Resource } from '../../../../models/resource.model';
 import { ContentType } from '../../../../models/page.model';
 import { SafeWorkflowService } from '../../../../services/workflow/workflow.service';
+import { Template, TemplateTypeEnum } from '../../../../models/template.model';
 import { Subscription } from 'rxjs';
-import {
-  MatChipInputEvent,
-  MAT_CHIPS_DEFAULT_OPTIONS,
-} from '@angular/material/chips';
-import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
-import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
-import { SafeEditorService } from '../../../../services/editor/editor.service';
+import { createQueryForm } from '../../../query-builder/query-builder-forms';
+import { DistributionList } from '../../../../models/distribution-list.model';
 
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
-/** Key codes of separators */
-const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
-
-/**
- * Function that create a function which returns an object with the separator keys
- *
- * @returns A function which returns an object with the separator keys
- */
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-export function codesFactory(): () => any {
-  const codes = () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE });
-  return codes;
-}
 
 /**
  * Configuration component for grid widget button.
@@ -48,7 +30,6 @@ export function codesFactory(): () => any {
   selector: 'safe-button-config',
   templateUrl: './button-config.component.html',
   styleUrls: ['./button-config.component.scss'],
-  providers: [{ provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory }],
 })
 export class ButtonConfigComponent implements OnInit, OnDestroy {
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
@@ -57,6 +38,11 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
   @Input() channels: Channel[] = [];
   @Input() relatedForms: Form[] = [];
 
+  public targetResource?: Resource;
+  public relatedResources: Resource[] = [];
+
+  @Input() distributionLists: DistributionList[] = [];
+  @Input() templates: Template[] = [];
   // Indicate is the page is a single dashboard.
   public isDashboard = false;
 
@@ -64,20 +50,16 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
   public canPassData = false;
   private workflowSubscription?: Subscription;
 
-  // Emails
-  readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
-  public emails: string[] = [];
-
-  /** tinymce editor */
-  public editor: any = EMAIL_EDITOR_CONFIG;
-
-  @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
-
   /** @returns The list of fields which are of type scalar and not disabled */
   get scalarFields(): any[] {
     return this.fields.filter(
       (x) => x.type.kind === 'SCALAR' && !DISABLED_FIELDS.includes(x.name)
     );
+  }
+
+  /** @returns The list of email templates */
+  get mailTemplates(): any[] {
+    return this.templates.filter((x) => x.type === TemplateTypeEnum.EMAIL);
   }
 
   /**
@@ -88,21 +70,14 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
    * @param workflowService Shared workflow service
    * @param queryBuilder Shared Query Builder service
    * @param dialog Material dialog service
-   * @param editorService Editor service used to get main URL and current language
    */
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
-    public dialog: MatDialog,
-    private editorService: SafeEditorService
-  ) {
-    // Set the editor base url based on the environment file
-    this.editor.base_url = editorService.url;
-    // Set the editor language
-    this.editor.language = editorService.language;
-  }
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     if (
@@ -199,48 +174,62 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
       this.formGroup?.get('targetForm')?.updateValueAndValidity();
     });
 
-    this.formGroup?.get('targetForm')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.formGroup
-          ?.get('targetFormField')
-          ?.setValidators(Validators.required);
-      } else {
-        this.formGroup?.get('targetFormField')?.clearValidators();
-        this.formGroup?.get('targetFormField')?.setValue(null);
-      }
-      this.formGroup?.get('targetFormField')?.updateValueAndValidity();
-    });
-
     this.formGroup?.get('sendMail')?.valueChanges.subscribe((value) => {
       if (value) {
         this.formGroup
           ?.get('distributionList')
           ?.setValidators(Validators.required);
-        this.formGroup?.get('subject')?.setValidators(Validators.required);
+        this.formGroup?.get('templates')?.setValidators(Validators.required);
       } else {
         this.formGroup?.get('distributionList')?.clearValidators();
-        this.formGroup?.get('subject')?.clearValidators();
+        this.formGroup?.get('templates')?.clearValidators();
       }
       this.formGroup?.get('distributionList')?.updateValueAndValidity();
-      this.formGroup?.get('subject')?.updateValueAndValidity();
+      this.formGroup?.get('templates')?.updateValueAndValidity();
     });
 
-    this.emails = [...this.formGroup?.get('distributionList')?.value];
-
-    this.formGroup?.get('targetForm')?.valueChanges.subscribe((target) => {
-      if (target?.name) {
-        const queryName = this.queryBuilder.getQueryNameFromResourceName(
-          target?.name || ''
-        );
-        this.formGroup?.get('targetFormQuery.name')?.setValue(queryName);
-        this.formGroup
-          ?.get('targetFormQuery.fields')
-          ?.setValidators([Validators.required]);
+    this.formGroup?.get('targetResource')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.targetResource = this.relatedResources.find((x) => x.id === value);
+        if (this.targetResource) {
+          this.formGroup?.get('targetForm')?.setValidators(Validators.required);
+          this.formGroup
+            ?.get('targetFormField')
+            ?.setValidators(Validators.required);
+          this.formGroup
+            ?.get('targetFormQuery.name')
+            ?.setValue(this.targetResource.queryName);
+          this.formGroup
+            ?.get('targetFormQuery.fields')
+            ?.setValidators([Validators.required]);
+        } else {
+          this.formGroup?.get('targetForm')?.clearValidators();
+          this.formGroup?.get('targetForm')?.setValue(null);
+          this.formGroup?.get('targetFormField')?.clearValidators();
+          this.formGroup?.get('targetFormField')?.setValue(null);
+          this.formGroup?.get('targetFormQuery')?.clearValidators();
+        }
       } else {
-        this.formGroup?.get('targetFormQuery')?.clearValidators();
+        this.targetResource = undefined;
+        this.formGroup?.get('targetForm')?.clearValidators();
+        this.formGroup.get('targetForm')?.setValue(null);
+        this.formGroup?.get('targetFormField')?.clearValidators();
+        this.formGroup?.get('targetFormField')?.setValue(null);
+        this.formGroup
+          .get('targetFormQuery')
+          ?.patchValue(createQueryForm(null, false));
       }
+      this.formGroup?.get('targetForm')?.updateValueAndValidity();
+      this.formGroup?.get('targetFormField')?.updateValueAndValidity();
       this.formGroup?.get('targetFormQuery')?.updateValueAndValidity();
     });
+
+    this.setRelatedResources();
+    if (this.formGroup.value.targetResource) {
+      this.targetResource = this.relatedResources.find(
+        (x) => x.id === this.formGroup.value.targetResource
+      );
+    }
 
     this.formGroup
       ?.get('sendMail')
@@ -285,6 +274,20 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
         }
       });
+  }
+
+  /** Set list of resources user can attach a record to */
+  private setRelatedResources(): void {
+    const resources: Resource[] = [];
+    for (const form of this.relatedForms) {
+      const resource = resources.find((x) => x.id === form.resource?.id);
+      if (resource) {
+        resource.forms?.push(form);
+      } else {
+        resources.push({ ...form.resource, forms: [form] } as Resource);
+      }
+    }
+    this.relatedResources = resources;
   }
 
   /**
@@ -347,53 +350,6 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
    */
   public emitDeleteButton(): void {
     this.deleteButton.emit(true);
-  }
-
-  /**
-   * Add the inputs emails to the distribution list
-   *
-   * @param event The event triggered when we exit the input
-   */
-  add(event: MatChipInputEvent | any): void {
-    // use setTimeout to prevent add input value on focusout
-    setTimeout(
-      () => {
-        const input =
-          event.type === 'focusout'
-            ? this.emailInput?.nativeElement
-            : event.input;
-        const value =
-          event.type === 'focusout'
-            ? this.emailInput?.nativeElement.value
-            : event.value;
-
-        // Add the mail
-        if ((value || '').trim()) {
-          this.emails.push(value.trim());
-        }
-        this.formGroup?.get('distributionList')?.setValue(this.emails);
-        this.formGroup?.get('distributionList')?.updateValueAndValidity();
-        // Reset the input value
-        if (input) {
-          input.value = '';
-        }
-      },
-      event.type === 'focusout' ? 500 : 0
-    );
-  }
-
-  /**
-   * Remove an email from the distribution list
-   *
-   * @param email The email to remove
-   */
-  remove(email: string): void {
-    const index = this.emails.indexOf(email);
-    if (index >= 0) {
-      this.emails.splice(index, 1);
-    }
-    this.formGroup?.get('distributionList')?.setValue(this.emails);
-    this.formGroup?.get('distributionList')?.updateValueAndValidity();
   }
 
   ngOnDestroy(): void {

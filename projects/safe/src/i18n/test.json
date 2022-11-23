@@ -2,7 +2,6 @@
 	"common": {
 		"access": "******",
 		"add": "******",
-		"advancedSettings": "******",
 		"aggregation": {
 			"few": "******",
 			"none": "******",
@@ -56,6 +55,11 @@
 		"deleted": "******",
 		"dismiss": "******",
 		"display": "******",
+		"distributionList": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
@@ -123,6 +127,10 @@
 			"dataRecovered": "******",
 			"email": {
 				"error": "******",
+				"errors": {
+					"noDistributionList": "******",
+					"noTemplate": "******"
+				},
 				"processing": "******",
 				"ready": "******",
 				"sent": "******"
@@ -131,6 +139,7 @@
 			"file": {
 				"download": {
 					"error": "******",
+					"ongoing": "******",
 					"processing": "******",
 					"ready": "******"
 				},
@@ -170,6 +179,7 @@
 			"unlocked": "{{name}} ******"
 		},
 		"openFullScreen": "******",
+		"or": "******",
 		"page": {
 			"few": "******",
 			"none": "******",
@@ -251,8 +261,18 @@
 			"none": "******",
 			"one": "******"
 		},
+		"template": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"title": "******",
 		"true": "******",
+		"type": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"update": "******",
 		"updateObject": "****** {{name}}",
 		"uploadObject": "****** {{name}}",
@@ -429,6 +449,25 @@
 			"confirm": "******",
 			"delete": "******",
 			"title": "******"
+		},
+		"distributionLists": {
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******"
+			},
+			"edit": {
+				"name": "******",
+				"new": "******",
+				"update": "******"
+			},
+			"errors": {
+				"emails": {
+					"pattern": "******",
+					"required": "******"
+				},
+				"name": {
+					"required": "******"
+				}
+			}
 		},
 		"emailBuilder": {
 			"body": "******",
@@ -624,6 +663,8 @@
 				"ascending": "******",
 				"descending": "******",
 				"field": "******",
+				"limit": "******",
+				"limitTitle": "******",
 				"order": "******",
 				"title": "******"
 			},
@@ -701,6 +742,8 @@
 			}
 		},
 		"records": {
+			"active": "******",
+			"archived": "******",
 			"showActive": "******",
 			"showArchived": "******",
 			"upload": {
@@ -773,23 +816,26 @@
 			"tooltip": {
 				"allowFieldAccessibility": "****** {{field}}",
 				"allowFieldUpdate": "****** {{field}}",
-				"allowFilterAccessibility": "******",
-				"allowFilterDeletion": "******",
-				"allowFilterUpdate": "******",
-				"allowRecordAccessibility": "****** {{resource}}",
-				"allowRecordCreation": "****** {{resource}}",
-				"allowRecordDeletion": "****** {{resource}}",
-				"allowRecordUpdate": "****** {{resource}}",
 				"disallowFieldAccessibility": "****** {{field}}",
 				"disallowFieldUpdate": "****** {{field}}",
-				"disallowFilterAccessibility": "******",
-				"disallowFilterDeletion": "******",
-				"disallowFilterUpdate": "******",
-				"disallowRecordAccessibility": "****** {{resource}}",
-				"disallowRecordCreation": "****** {{resource}}",
-				"disallowRecordDeletion": "****** {{resource}}",
-				"disallowRecordUpdate": "****** {{resource}}",
+				"grantAddRecordsPermission": "******",
+				"grantDeleteRecordsPermission": "******",
+				"grantFilterDeleteRecordsPermission": "******",
+				"grantFilterReadRecordsPermission": "******",
+				"grantFilterUpdateRecordsPermission": "******",
+				"grantReadRecordsPermission": "******",
+				"grantUpdateRecordsPermission": "******",
 				"hideFeature": "****** {{page}} ******",
+				"limitedDeleteRecordsPermission": "******",
+				"limitedReadRecordsPermission": "******",
+				"limitedUpdateRecordsPermission": "******",
+				"notGrantAddRecordsPermission": "******",
+				"notGrantDeleteRecordsPermission": "******",
+				"notGrantFilterDeleteRecordsPermission": "******",
+				"notGrantFilterReadRecordsPermission": "******",
+				"notGrantFilterUpdateRecordsPermission": "******",
+				"notGrantReadRecordsPermission": "******",
+				"notGrantUpdateRecordsPermission": "******",
 				"showFeature": "****** {{page}} ******"
 			},
 			"update": {
@@ -800,6 +846,29 @@
 		"share": {
 			"modal": {
 				"copy": "******",
+				"title": "******"
+			}
+		},
+		"templates": {
+			"available": "******",
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******"
+			},
+			"edit": {
+				"body": "******",
+				"name": "******",
+				"new": "******",
+				"subject": "******",
+				"update": "******"
+			},
+			"errors": {
+				"empty": "******"
+			},
+			"select": {
+				"email": "******"
+			},
+			"type": {
+				"email": "******",
 				"title": "******"
 			}
 		},
@@ -834,24 +903,6 @@
 			}
 		},
 		"users": {
-			"advancedSettings": {
-				"title": "******",
-				"userManagement": {
-					"api": {
-						"placeholder": "******",
-						"title": "******"
-					},
-					"external": {
-						"title": "******",
-						"tooltip": "******"
-					},
-					"local": {
-						"title": "******",
-						"tooltip": "******"
-					},
-					"title": "******"
-				}
-			},
 			"invite": {
 				"add": "******",
 				"confirm": "******",
@@ -892,6 +943,10 @@
 							"selected": "******"
 						},
 						"title": "******"
+					},
+					"email": {
+						"title": "******",
+						"tooltip": "******"
 					},
 					"format": {
 						"title": "******"
@@ -969,7 +1024,8 @@
 							"choice": {
 								"create": "******"
 							}
-						}
+						},
+						"title": "******"
 					},
 					"buttons": {
 						"callback": {
@@ -1005,6 +1061,16 @@
 						}
 					},
 					"hint": {
+						"actions": {
+							"add": "******",
+							"convert": "******",
+							"delete": "******",
+							"export": "******",
+							"inline": "******",
+							"show": "******",
+							"showDetails": "******",
+							"update": "******"
+						},
 						"buttons": "******"
 					},
 					"layouts": {
@@ -1020,6 +1086,9 @@
 							"title": "******"
 						},
 						"title": "******"
+					},
+					"tooltip": {
+						"template": "******"
 					}
 				},
 				"map": {
@@ -1231,7 +1300,9 @@
 			"filterInputLabel": "******",
 			"filterIsEmptyOperator": "******",
 			"filterIsFalse": "******",
+			"filterIsInOperator": "******",
 			"filterIsNotEmptyOperator": "******",
+			"filterIsNotInOperator": "******",
 			"filterIsNotNullOperator": "******",
 			"filterIsNullOperator": "******",
 			"filterIsTrue": "******",
@@ -1499,6 +1570,7 @@
 				"multipletext": {
 					"missingName": "****** {{question}}"
 				},
+				"selectApplication": "****** {{page}} ****** {{question}} ******",
 				"snakecase": "****** {{name}} ****** {{page}} ******"
 			},
 			"questionsCategories": {

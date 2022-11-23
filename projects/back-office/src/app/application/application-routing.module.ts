@@ -111,9 +111,19 @@ const routes: Routes = [
                   import(
                     './pages/position-attributes/position-attributes.module'
                   ).then((m) => m.PositionAttributesModule),
+                data: {
+                  breadcrumb: {
+                    alias: '@attribute',
+                  },
+                },
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                key: 'common.attribute.few',
+              },
+            },
           },
           {
             path: 'channels',
@@ -128,6 +138,22 @@ const routes: Routes = [
             loadChildren: () =>
               import('./pages/subscriptions/subscriptions.module').then(
                 (m) => m.SubscriptionsModule
+              ),
+            // canActivate: [SafePermissionGuard]
+          },
+          {
+            path: 'templates',
+            loadChildren: () =>
+              import('@safe/builder').then(
+                (m) => m.SafeApplicationTemplatesModule
+              ),
+            // canActivate: [SafePermissionGuard]
+          },
+          {
+            path: 'distribution-lists',
+            loadChildren: () =>
+              import('@safe/builder').then(
+                (m) => m.SafeApplicationDistributionListsModule
               ),
             // canActivate: [SafePermissionGuard]
           },

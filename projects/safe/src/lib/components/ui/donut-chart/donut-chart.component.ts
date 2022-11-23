@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { ChartComponent } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
@@ -49,7 +49,7 @@ interface ChartOptions {
   templateUrl: './donut-chart.component.html',
   styleUrls: ['./donut-chart.component.scss'],
 })
-export class SafeDonutChartComponent implements OnInit {
+export class SafeDonutChartComponent implements OnInit, OnChanges {
   @Input() title: ChartTitle | undefined;
 
   @Input() legend: ChartLegend | undefined;
@@ -78,6 +78,10 @@ export class SafeDonutChartComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.setLabelContent();
+  }
+
+  ngOnChanges(): void {
     this.setLabelContent();
   }
 

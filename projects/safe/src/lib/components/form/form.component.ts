@@ -25,12 +25,12 @@ import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SafeDownloadService } from '../../services/download/download.service';
+import { SafeRestService } from '../../services/rest/rest.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeLayoutService } from '../../services/layout/layout.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -86,10 +86,11 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param dialog This is the Angular Material Dialog service.
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
-   * @param downloadService This is a service that allows you to download files
+   * @param restService This is a service that allows you to make http requests.
    * @param authService This is the service that handles authentication.
    * @param layoutService This is the service that will be used to create the layout of the form.
    * @param formBuilderService This is the service that will be used to build forms.
+   * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service used to translate text
    */
   constructor(
@@ -97,10 +98,11 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private downloadService: SafeDownloadService,
+    private restService: SafeRestService,
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private formBuilderService: SafeFormBuilderService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {
     this.environment = environment;
@@ -125,7 +127,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
-      this.form.metadata
+      this.form.metadata,
+      this.record
     );
     this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
       this.onClearFiles(survey, options)
@@ -440,7 +443,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       const xhr = new XMLHttpRequest();
       xhr.open(
         'GET',
-        `${this.downloadService.baseUrl}/download/file/${options.content}`
+        `${this.restService.apiUrl}/download/file/${options.content}`
       );
       xhr.setRequestHeader(
         'Authorization',
@@ -538,16 +541,14 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.record.recovery.title'),
-        content: this.translate.instant(
-          'components.record.recovery.confirmationMessage',
-          { date: formatDate }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.record.recovery.title'),
+      content: this.translate.instant(
+        'components.record.recovery.confirmationMessage',
+        { date: formatDate }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

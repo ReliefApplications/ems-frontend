@@ -1,52 +1,62 @@
-<table
-  mat-table
-  [dataSource]="styles"
-  cdkDropList
-  (cdkDropListDropped)="drop($event)"
-  [cdkDropListData]="styles"
->
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>{{ 'common.name' | translate }}</th>
-    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-  </ng-container>
+<!-- Table container -->
+<div class="overflow-x-hidden">
+  <!-- Table scroll container -->
+  <div class="overflow-auto">
+    <table
+      mat-table
+      [dataSource]="styles"
+      cdkDropList
+      (cdkDropListDropped)="drop($event)"
+      [cdkDropListData]="styles"
+    >
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'common.name' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
 
-  <ng-container matColumnDef="preview">
-    <th mat-header-cell *matHeaderCellDef>
-      {{ 'common.preview' | translate }}
-    </th>
-    <td mat-cell *matCellDef="let element">
-      <safe-query-style-preview [style]="element"></safe-query-style-preview>
-    </td>
-  </ng-container>
+      <ng-container matColumnDef="preview">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'common.preview' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <safe-query-style-preview
+            [style]="element"
+          ></safe-query-style-preview>
+        </td>
+      </ng-container>
 
-  <ng-container matColumnDef="_actions">
-    <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element; let i = index">
-      <safe-button
-        [isIcon]="true"
-        icon="more_vert"
-        [matMenuTriggerFor]="resMenu"
-        (click)="$event.stopPropagation()"
-      >
-      </safe-button>
-      <mat-menu #resMenu="matMenu">
-        <button mat-menu-item (click)="edit.emit(i)">
-          <mat-icon>edit</mat-icon>
-          {{ 'common.edit' | translate }}
-        </button>
-        <button mat-menu-item (click)="delete.emit(i)">
-          <mat-icon>delete</mat-icon>
-          {{ 'common.delete' | translate }}
-        </button>
-      </mat-menu>
-    </td>
-  </ng-container>
+      <ng-container matColumnDef="_actions" [stickyEnd]="true">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <safe-button
+            [isIcon]="true"
+            icon="more_vert"
+            [matMenuTriggerFor]="resMenu"
+            (click)="$event.stopPropagation()"
+          >
+          </safe-button>
+          <mat-menu #resMenu="matMenu">
+            <button mat-menu-item (click)="edit.emit(i)">
+              <mat-icon>edit</mat-icon>
+              {{ 'common.edit' | translate }}
+            </button>
+            <button mat-menu-item (click)="delete.emit(i)">
+              <mat-icon>delete</mat-icon>
+              {{ 'common.delete' | translate }}
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="columns"></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: columns"
-    cdkDrag
-    [cdkDragData]="row"
-  ></tr>
-</table>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: columns"
+        cdkDrag
+        [cdkDragData]="row"
+      ></tr>
+    </table>
+  </div>
+</div>

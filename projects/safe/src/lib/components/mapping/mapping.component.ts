@@ -3,8 +3,7 @@ import { FormArray, FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
-import { Mapping, Mappings } from '../../models/setting.model';
-import { createFormGroup } from './mapping-forms';
+import { createFormGroup, Mapping, Mappings } from './mapping-forms';
 import { SafeMappingModalComponent } from './mapping-modal/mapping-modal.component';
 
 /**

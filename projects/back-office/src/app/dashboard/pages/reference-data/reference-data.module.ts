@@ -2,11 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
-import {
-  SafeAccessModule,
-  SafeGraphQLSelectModule,
-  SafePreviousButtonModule,
-} from '@safe/builder';
+import { SafeAccessModule, SafeGraphQLSelectModule } from '@safe/builder';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -28,7 +24,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   imports: [
     CommonModule,
     ReferenceDataRoutingModule,
-    SafePreviousButtonModule,
     SafeAccessModule,
     MatProgressSpinnerModule,
     MatFormFieldModule,

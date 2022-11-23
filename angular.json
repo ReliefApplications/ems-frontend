@@ -340,6 +340,55 @@
                 "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
+            "oort-demo": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.oort.demo.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/admin/",
+              "baseHref": "/admin/",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
+            },
+            "oort-local": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.oort.local.ts"
+                }
+              ],
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -360,6 +409,9 @@
             "browserTarget": "back-office:build:development"
           },
           "configurations": {
+            "oort-local": {
+              "browserTarget": "back-office:build:oort-local"
+            },
             "production": {
               "browserTarget": "back-office:build:production"
             }
@@ -708,6 +760,53 @@
                 "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
+            "oort-demo": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.oort.demo.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
+            },
+            "oort-local": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.oort.local.ts"
+                }
+              ],
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -728,6 +827,9 @@
             "browserTarget": "front-office:build:development"
           },
           "configurations": {
+            "oort-local": {
+              "browserTarget": "front-office:build:oort-local"
+            },
             "production": {
               "browserTarget": "front-office:build:production"
             }

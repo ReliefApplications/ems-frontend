@@ -17,6 +17,8 @@ export class TabButtonsComponent {
   @Input() fields: any[] = [];
   @Input() relatedForms: Form[] = [];
   @Input() channels: Channel[] = [];
+  @Input() templates: any[] = [];
+  @Input() distributionLists: any[] = [];
 
   /** @returns List of the floating buttons */
   get buttons(): FormArray {

@@ -2,7 +2,6 @@
 	"common": {
 		"access": "Accès",
 		"add": "Ajouter",
-		"advancedSettings": "Paramètres avancés",
 		"aggregation": {
 			"few": "Agrégations",
 			"none": "Aucune agrégation",
@@ -56,6 +55,11 @@
 		"deleted": "Supprimé",
 		"dismiss": "Fermer",
 		"display": "Afficher",
+		"distributionList": {
+			"few": "Listes de distribution",
+			"none": "Aucune liste de distribution",
+			"one": "Liste de distribution"
+		},
 		"downloadObject": "Télécharger {{name}}",
 		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",
@@ -123,6 +127,10 @@
 			"dataRecovered": "Les données ont été récupérées !",
 			"email": {
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
+				"errors": {
+					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
+					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté"
+				},
 				"processing": "Envoi en cours...",
 				"ready": "E-mail prêt",
 				"sent": "E-mail envoyé"
@@ -131,6 +139,7 @@
 			"file": {
 				"download": {
 					"error": "Un problème est survenu lors du téléchargement",
+					"ongoing": "Votre téléchargement est en cours. Vous recevrez bientôt un e-mail contenant votre fichier.",
 					"processing": "Téléchargement du fichier en cours...",
 					"ready": "Votre fichier est prêt"
 				},
@@ -170,6 +179,7 @@
 			"unlocked": "L'édition de l'objet {{name}} a été débloquée par un autre utilisateur."
 		},
 		"openFullScreen": "Ouvrir en plein écran",
+		"or": "Ou",
 		"page": {
 			"few": "Pages",
 			"none": "Aucune page",
@@ -251,8 +261,18 @@
 			"none": "Aucun abonnement",
 			"one": "Abonnement"
 		},
+		"template": {
+			"few": "Modèles",
+			"none": "Aucun modèle",
+			"one": "Modèle"
+		},
 		"title": "Titre",
 		"true": "Vrai",
+		"type": {
+			"few": "Types",
+			"none": "Aucun type",
+			"one": "Type"
+		},
 		"update": "Mettre à jour",
 		"updateObject": "Mettre à jour {{name}}",
 		"uploadObject": "Importer {{name}}",
@@ -429,6 +449,25 @@
 			"confirm": "Confirmer",
 			"delete": "Supprimer",
 			"title": "Confirmer"
+		},
+		"distributionLists": {
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer la liste de distribution: '{{name}}'?"
+			},
+			"edit": {
+				"name": "Nom de la liste de distribution",
+				"new": "Nouvelle liste de distribution",
+				"update": "Éditer la liste de distribution"
+			},
+			"errors": {
+				"emails": {
+					"pattern": "Veuillez uniquement fournir des emails valides",
+					"required": "Veuillez fournir un ou plusieurs emails"
+				},
+				"name": {
+					"required": "Veuillez fournir un nom"
+				}
+			}
 		},
 		"emailBuilder": {
 			"body": "Corps du texte",
@@ -624,6 +663,8 @@
 				"ascending": "Croissant",
 				"descending": "Décroissant",
 				"field": "Filtrer le champ",
+				"limit": "limite",
+				"limitTitle": "Tri et limite",
 				"order": "Ordre de tri",
 				"title": "Tri"
 			},
@@ -701,6 +742,8 @@
 			}
 		},
 		"records": {
+			"active": "Enregistrements actifs",
+			"archived": "Enregistrements archivés",
 			"showActive": "Voir les enregistrements actifs",
 			"showArchived": "Voir les enregistrements archivés",
 			"upload": {
@@ -773,23 +816,26 @@
 			"tooltip": {
 				"allowFieldAccessibility": "Autoriser ce rôle à voir le champ {{field}}",
 				"allowFieldUpdate": "Autoriser ce rôle à mettre à jour le champ {{field}}",
-				"allowFilterAccessibility": "Autoriser ce rôle à voir les enregistrements qui satisfont ce filtre",
-				"allowFilterDeletion": "Autoriser ce rôle à supprimer les enregistrements qui satisfont à ce filtre",
-				"allowFilterUpdate": "Autoriser ce rôle à mettre à jour les enregistrements qui satisfont ce filtre",
-				"allowRecordAccessibility": "Autoriser ce rôle à voir les enregistrements de {{resource}}",
-				"allowRecordCreation": "Autoriser ce rôle à créer des enregistrements dans {{resource}}",
-				"allowRecordDeletion": "Autoriser ce rôle à supprimer des enregistrements de {{resource}}",
-				"allowRecordUpdate": "Autoriser ce rôle à mettre à jour les enregistrements de {{resource}}",
 				"disallowFieldAccessibility": "Interdire ce rôle pour voir le champ {{field}}",
 				"disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
-				"disallowFilterAccessibility": "Interdire ce rôle pour voir les enregistrements qui satisfont ce filtre",
-				"disallowFilterDeletion": "Interdire ce rôle pour supprimer les enregistrements qui satisfont ce filtre",
-				"disallowFilterUpdate": "Interdire ce rôle pour mettre à jour les enregistrements qui satisfont ce filtre",
-				"disallowRecordAccessibility": "Interdire ce rôle pour voir les enregistrements de {{resource}}",
-				"disallowRecordCreation": "Interdire à ce rôle de créer des enregistrements dans {{resource}}",
-				"disallowRecordDeletion": "Interdire ce rôle pour supprimer des enregistrements de {{resource}}",
-				"disallowRecordUpdate": "Interdire ce rôle pour mettre à jour les enregistrements de {{resource}}",
+				"grantAddRecordsPermission": "Permet de créer de nouveaux enregistrements",
+				"grantDeleteRecordsPermission": "Permet de supprimer tous les enregistrements",
+				"grantFilterDeleteRecordsPermission": "Permet de supprimer les enregistremetns satisfaisant le filtre",
+				"grantFilterReadRecordsPermission": "Permet de voir les enregistrements satisfaisant le filtre",
+				"grantFilterUpdateRecordsPermission": "Permet de mettre à jour les enregistrements satisfaisant le filtre",
+				"grantReadRecordsPermission": "Permet de voir tous les enregistrements",
+				"grantUpdateRecordsPermission": "Permet de mettre à jour tous les enregistrements",
 				"hideFeature": "Masquer {{page}} pour ce rôle",
+				"limitedDeleteRecordsPermission": "Permet de supprimer les enregistrements satisfaisant les filtres",
+				"limitedReadRecordsPermission": "Permet de voir les enregistrements satisfaisant les filtres",
+				"limitedUpdateRecordsPermission": "Permet de mettre à jour les enregistrements satisfaisant les filtres",
+				"notGrantAddRecordsPermission": "Ne donne pas la permission d'ajouter de nouveaux enregistrements",
+				"notGrantDeleteRecordsPermission": "Ne donne pas la permission de supprimer les enregistrements",
+				"notGrantFilterDeleteRecordsPermission": "Ne donne pas la permission de supprimer les enregistrements satisfaisant le filtre",
+				"notGrantFilterReadRecordsPermission": "Ne donne pas la permission de voir les enregistrements satisfaisant le filtre",
+				"notGrantFilterUpdateRecordsPermission": "Ne donne pas la permission de mettre à jour les enregistrements satisfaisant le filtre",
+				"notGrantReadRecordsPermission": "Ne donne pas la permission de voir les enregistrements",
+				"notGrantUpdateRecordsPermission": "Ne donne pas la permission de mettre à jour les enregistrements",
 				"showFeature": "Afficher {{page}} pour ce rôle"
 			},
 			"update": {
@@ -801,6 +847,30 @@
 			"modal": {
 				"copy": "Copier dans le presse-papiers",
 				"title": "Partager l'url du dashboard"
+			}
+		},
+		"templates": {
+			"available": "Modèles disponibles",
+			"delete": {
+				"confirmationMessage": "Voulez-vous supprimer le modèle '{{name}}'?",
+				"titleMessage": "Supprimer le modèle"
+			},
+			"edit": {
+				"body": "Corps du texte",
+				"name": "Nom du modèle",
+				"new": "Nouveau modèle",
+				"subject": "Sujet",
+				"update": "Éditer le modèle"
+			},
+			"errors": {
+				"empty": "Veuillez sélectionner au moins un modèle"
+			},
+			"select": {
+				"email": "Sélectionnez un modèle d'e-mail"
+			},
+			"type": {
+				"email": "E-mail",
+				"title": "Type de modèle"
 			}
 		},
 		"user": {
@@ -834,24 +904,6 @@
 			}
 		},
 		"users": {
-			"advancedSettings": {
-				"title": "Paramètres d'utilisateur avancés",
-				"userManagement": {
-					"api": {
-						"placeholder": "Entrez une URL...",
-						"title": "API du service externe"
-					},
-					"external": {
-						"title": "Gestion externe des utilisateurs",
-						"tooltip": "Lorsque cette option est sélectionnée, vous devez préciser de quelle API proviendront les attributs externes et définir une table de correspondances. Cette API doit être accessible avec le même jeton Azure que celui utilisé par cette plateforme."
-					},
-					"local": {
-						"title": "Gestion locale des utilisateurs",
-						"tooltip": "Lorsque cette option est sélectionnée, les attributs des utilisateurs proviennent du serveur d'authentification."
-					},
-					"title": "Gestion des utilisateurs"
-				}
-			},
 			"invite": {
 				"add": "Ajouter un nouvel utilisateur",
 				"confirm": "Inviter des utilisateurs",
@@ -892,6 +944,10 @@
 							"selected": "Seulement les enregistrements visibles"
 						},
 						"title": "Sélectionner les enregistrements à exporter"
+					},
+					"email": {
+						"title": "M'envoyer le fichier par e-mail",
+						"tooltip": "Si sélectionné, vous recevrez le fichier par e-mail, au lieu d'attendre son téléchargement ici."
 					},
 					"format": {
 						"title": "Sélectionner le format d'export"
@@ -969,7 +1025,8 @@
 							"choice": {
 								"create": "Créer une nouvelle agrégation"
 							}
-						}
+						},
+						"title": "Aggrégations"
 					},
 					"buttons": {
 						"callback": {
@@ -1005,6 +1062,16 @@
 						}
 					},
 					"hint": {
+						"actions": {
+							"add": "L'utilisateur peut ajouter de nouveaux enregistrements avec le modèle choisi, s'il en a la permission",
+							"convert": "L'utilisateur peut convertir les enregistrements avec les autres modèles de la ressource sélectionnée, s'il en a la permission",
+							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
+							"export": "L'utilisateur peut exporter les enregistrements affichés",
+							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
+							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
+							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
+							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
+						},
 						"buttons": "Les boutons d'action rapides apparaîtront dans le widget et vous permettront de réaliser chacune des actions ci-dessous"
 					},
 					"layouts": {
@@ -1020,6 +1087,9 @@
 							"title": "Configuration de la mise en page"
 						},
 						"title": "Mise en page de la grille"
+					},
+					"tooltip": {
+						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements"
 					}
 				},
 				"map": {
@@ -1232,7 +1302,9 @@
 			"filterInputLabel": "'Filtrer {columnName}'",
 			"filterIsEmptyOperator": "Est vide",
 			"filterIsFalse": "est faux",
+			"filterIsInOperator": "Est dans",
 			"filterIsNotEmptyOperator": "Est non-vide",
+			"filterIsNotInOperator": "N'est pas dans",
 			"filterIsNotNullOperator": "Est non-nul",
 			"filterIsNullOperator": "Est nul",
 			"filterIsTrue": "est vrai",
@@ -1500,6 +1572,7 @@
 				"multipletext": {
 					"missingName": "Veuillez configurer un nom ou titre pour chaque champ de text de la question : {{question}}"
 				},
+				"selectApplication": "Application manquante pour un élément de la page : {{page}}. Veuillez sélectionner au moins une application dans les propriétés de {{question}} pour sauvegarder le formulaire.",
 				"snakecase": "Le nom de valeur {{name}} de la page {{page}} est invalide. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
 			},
 			"questionsCategories": {

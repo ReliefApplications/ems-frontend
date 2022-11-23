@@ -13,6 +13,7 @@ import { Access, Permission } from '../permissions.types';
 import { createFilterGroup } from '../../../query-builder/query-builder-forms';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { SafeRestService } from '../../../../services/rest/rest.service';
 
 type AccessPermissions = {
   access: Access;
@@ -61,6 +62,12 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
     isnotnull: this.translate.instant('kendo.grid.filterIsNotNullOperator'),
     isempty: this.translate.instant('kendo.grid.filterIsEmptyOperator'),
     isnotempty: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
+    in: this.translate.instant('kendo.grid.filterIsInOperator'),
+    notin: this.translate.instant('kendo.grid.filterIsNotInOperator'),
+    gt: this.translate.instant('kendo.grid.filterGtOperator'),
+    gte: this.translate.instant('kendo.grid.filterGteOperator'),
+    lt: this.translate.instant('kendo.grid.filterLtOperator'),
+    lte: this.translate.instant('kendo.grid.filterLteOperator'),
   };
   public permissionTypes = Object.values(Permission);
 
@@ -86,10 +93,15 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
    *
    * @param translate Angular translate service
    * @param fb Angular form builder
+   * @param restService Safe REST service
    */
-  constructor(public translate: TranslateService, private fb: FormBuilder) {}
+  constructor(
+    public translate: TranslateService,
+    private fb: FormBuilder,
+    private restService: SafeRestService
+  ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const filters: AccessPermissions[] = [];
     Object.keys(get(this.resource, 'rolePermissions', {})).forEach(
       (permission) => {
@@ -120,9 +132,35 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
       filters.map((x) => this.createAccessFilterFormGroup(x))
     );
     this.initialValue = this.filtersFormArray.value;
-    this.filterFields = this.resource.metadata
+    this.filterFields = get(this.resource, 'metadata', [])
       .filter((x: any) => x.filterable !== false)
       .map((x: any) => ({ ...x }));
+
+    const userAttributes: { value: string; text: string }[] =
+      await this.restService.get('/permissions/attributes').toPromise();
+
+    const options = this.filterFields.map((x) => ({
+      value: x.name,
+      text: x.label || x.name,
+    }));
+
+    const attrFields = userAttributes.map((x) => ({
+      text: x.text,
+      name: x.value,
+      editor: 'attribute',
+      options,
+    }));
+
+    this.filterFields.unshift({
+      text: this.translate.instant('common.attribute.few'),
+      // regular questions can't have dollar signs in their name
+      name: `$attribute`,
+      filter: {
+        operators: ['eq', 'in', 'neq', 'notin'],
+      },
+      fields: attrFields,
+      editor: null,
+    });
   }
 
   /**
@@ -270,16 +308,16 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
     switch (permission) {
       case Permission.SEE:
         return hasPermission
-          ? 'components.role.tooltip.disallowFilterAccessibility'
-          : 'components.role.tooltip.allowFilterAccessibility';
+          ? 'components.role.tooltip.grantFilterReadRecordsPermission'
+          : 'components.role.tooltip.notGrantFilterReadRecordsPermission';
       case Permission.UPDATE:
         return hasPermission
-          ? 'components.role.tooltip.disallowFilterUpdate'
-          : 'components.role.tooltip.allowFilterUpdate';
+          ? 'components.role.tooltip.grantFilterUpdateRecordsPermission'
+          : 'components.role.tooltip.notGrantFilterUpdateRecordsPermission';
       default:
         return hasPermission
-          ? 'components.role.tooltip.disallowFilterDeletion'
-          : 'components.role.tooltip.allowFilterDeletion';
+          ? 'components.role.tooltip.grantFilterDeleteRecordsPermission'
+          : 'components.role.tooltip.notGrantFilterDeleteRecordsPermission';
     }
   }
 
@@ -355,6 +393,9 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
     this.openedFilterFormGroup = undefined;
     this.filtersFormArray.removeAt(index);
     this.filters.data = this.setTableElements(this.filtersFormArray.value);
+    if (this.filters.data.length === 0) {
+      this.save();
+    }
   }
 
   /**

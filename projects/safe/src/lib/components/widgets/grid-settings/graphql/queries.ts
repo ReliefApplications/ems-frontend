@@ -58,7 +58,13 @@ export const GET_GRID_FORM_META = gql`
 
 /** Graphql request for getting resource meta date for a grid */
 export const GET_GRID_RESOURCE_META = gql`
-  query GetGridResourceMeta($resource: ID!, $layoutIds: [ID], $first: Int) {
+  query GetGridResourceMeta(
+    $resource: ID!
+    $layoutIds: [ID]
+    $firstLayouts: Int
+    $aggregationIds: [ID]
+    $firstAggregations: Int
+  ) {
     resource(id: $resource) {
       id
       name
@@ -71,8 +77,14 @@ export const GET_GRID_RESOURCE_META = gql`
         id
         name
         fields
+        resource {
+          id
+          queryName
+          name
+          fields
+        }
       }
-      layouts(ids: $layoutIds, first: $first) {
+      layouts(ids: $layoutIds, first: $firstLayouts) {
         edges {
           node {
             id
@@ -80,6 +92,22 @@ export const GET_GRID_RESOURCE_META = gql`
             query
             createdAt
             display
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+      aggregations(ids: $aggregationIds, first: $firstAggregations) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
           }
         }
         pageInfo {
@@ -223,3 +251,44 @@ export const GET_QUERY_TYPES = gql`
     }
   }
 `;
+
+// === GET RESOURCES ===
+/** Graphql query for getting multiple resources with a cursor */
+export const GET_RESOURCES = gql`
+  query GetResources($first: Int, $afterCursor: ID, $sortField: String) {
+    resources(first: $first, afterCursor: $afterCursor, sortField: $sortField) {
+      edges {
+        node {
+          id
+          name
+          forms {
+            id
+            name
+          }
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+/** Model for GetResourcesQueryResponse object */
+export interface GetResourcesQueryResponse {
+  loading: boolean;
+  resources: {
+    edges: {
+      node: Resource;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
+}

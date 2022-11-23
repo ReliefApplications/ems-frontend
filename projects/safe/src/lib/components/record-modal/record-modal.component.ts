@@ -22,9 +22,9 @@ import {
   GET_FORM_STRUCTURE,
 } from './graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeDownloadService } from '../../services/download/download.service';
+import { SafeRestService } from '../../services/rest/rest.service';
 import { SafeAuthService } from '../../services/auth/auth.service';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { EDIT_RECORD, EditRecordMutationResponse } from './graphql/mutations';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
@@ -88,10 +88,11 @@ export class SafeRecordModalComponent implements AfterViewInit {
    * @param environment This is the environment in which we run the application.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param dialog This is the Material dialog service
-   * @param downloadService This is the service that is used to download files
+   * @param restService This is the service that is used to make http requests.
    * @param authService This is the service that handles the authentication of the user
    * @param snackBar This is the service that allows you to display a snackbar message to the user.
    * @param formBuilderService This is the service that will be used to build forms.
+   * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in the modal.
    */
   constructor(
@@ -100,10 +101,11 @@ export class SafeRecordModalComponent implements AfterViewInit {
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
-    private downloadService: SafeDownloadService,
+    private restService: SafeRestService,
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
     private formBuilderService: SafeFormBuilderService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {
     this.environment = environment;
@@ -159,7 +161,8 @@ export class SafeRecordModalComponent implements AfterViewInit {
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
     this.survey = this.formBuilderService.createSurvey(
       this.form?.structure || '',
-      this.form?.metadata
+      this.form?.metadata,
+      this.record
     );
     this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
       this.onDownloadFile(survey, options)
@@ -183,7 +186,8 @@ export class SafeRecordModalComponent implements AfterViewInit {
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
         this.form?.structure || '',
-        this.form?.metadata
+        this.form?.metadata,
+        this.record
       );
       this.survey.onDownloadFile.add(
         (survey: Survey.SurveyModel, options: any) =>
@@ -250,29 +254,36 @@ export class SafeRecordModalComponent implements AfterViewInit {
    * @param options Options regarding the download
    */
   private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
-    const xhr = new XMLHttpRequest();
-    xhr.open(
-      'GET',
-      `${this.downloadService.baseUrl}/download/file/${options.content}`
-    );
-    xhr.setRequestHeader(
-      'Authorization',
-      `Bearer ${localStorage.getItem('idtoken')}`
-    );
-    xhr.onloadstart = () => {
-      xhr.responseType = 'blob';
-    };
-    xhr.onload = () => {
-      const file = new File([xhr.response], options.fileValue.name, {
-        type: options.fileValue.type,
-      });
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        options.callback('success', e.target?.result);
+    if (
+      options.content.indexOf('base64') !== -1 ||
+      options.content.indexOf('http') !== -1
+    ) {
+      options.callback('success', options.content);
+    } else {
+      const xhr = new XMLHttpRequest();
+      xhr.open(
+        'GET',
+        `${this.restService.apiUrl}/download/file/${options.content}`
+      );
+      xhr.setRequestHeader(
+        'Authorization',
+        `Bearer ${localStorage.getItem('idtoken')}`
+      );
+      xhr.onloadstart = () => {
+        xhr.responseType = 'blob';
       };
-      reader.readAsDataURL(file);
-    };
-    xhr.send();
+      xhr.onload = () => {
+        const file = new File([xhr.response], options.fileValue.name, {
+          type: options.fileValue.type,
+        });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          options.callback('success', e.target?.result);
+        };
+        reader.readAsDataURL(file);
+      };
+      xhr.send();
+    }
   }
 
   /**
@@ -316,16 +327,14 @@ export class SafeRecordModalComponent implements AfterViewInit {
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('components.record.recovery.title'),
-        content: this.translate.instant(
-          'components.record.recovery.confirmationMessage',
-          { date: formatDate }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.record.recovery.title'),
+      content: this.translate.instant(
+        'components.record.recovery.confirmationMessage',
+        { date: formatDate }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

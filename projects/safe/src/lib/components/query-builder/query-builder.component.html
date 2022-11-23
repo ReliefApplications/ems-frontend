@@ -1,6 +1,6 @@
 <ng-container *ngIf="form">
   <form [formGroup]="form" [ngClass]="{ 'field-form': isField }">
-    <div class="form-group-row">
+    <div>
       <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
         <mat-label>{{
           'components.queryBuilder.dataset.select' | translate
@@ -43,7 +43,7 @@
     </div>
 
     <ng-container *ngIf="isField">
-      <div class="form-group-row">
+      <div class="flex gap-2">
         <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
         </safe-button>
         <mat-form-field appearance="outline">
@@ -67,26 +67,25 @@
             *ngIf="availableFields.length > 0"
             [form]="$any(form.controls.fields)"
             [fields]="availableFields"
+            [showLimit]="true"
           ></safe-tab-fields>
         </ng-template>
       </mat-tab>
       <mat-tab
-        [label]="'components.queryBuilder.sort.title' | translate"
-        *ngIf="showSort && form.get('sort')"
+        [label]="
+          (showLimit && form.get('first') !== null
+            ? 'components.queryBuilder.sort.limitTitle'
+            : 'components.queryBuilder.sort.title'
+          ) | translate
+        "
+        *ngIf="form.get('sort')"
       >
         <ng-template matTabContent>
           <safe-tab-sort
-            [form]="$any(form.controls.sort)"
+            [form]="form"
             [fields]="availableScalarFields"
+            [showLimit]="showLimit && form.get('first') !== null"
           ></safe-tab-sort>
-        </ng-template>
-      </mat-tab>
-      <mat-tab
-        [label]="'components.queryBuilder.pagination.title' | translate"
-        *ngIf="showPagination && form.get('first')"
-      >
-        <ng-template matTabContent>
-          <safe-tab-pagination [form]="form"></safe-tab-pagination>
         </ng-template>
       </mat-tab>
       <mat-tab

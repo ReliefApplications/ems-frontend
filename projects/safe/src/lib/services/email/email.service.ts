@@ -1,14 +1,15 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 // import { TranslateService } from '@ngx-translate/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeEmailPreviewComponent } from '../../components/email-preview/email-preview.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../../utils/prettify';
 import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { SafeRestService } from '../rest/rest.service';
 
 /**
  * Takes an array, and returns a new array with all the nested arrays flattened
@@ -30,31 +31,21 @@ const flatDeep = (arr: any[]): any[] =>
   providedIn: 'root',
 })
 export class SafeEmailService {
-  private sendUrl = '';
-  private previewUrl = '';
-  private filesUrl = '';
-
   /**
    * Shared email service.
    * Used by widgets to send request to the back to send emails.
    *
-   * @param environment Injection of the environment file.
-   * @param http Angular http client.
    * @param snackBar Shared snackbar service.
    * @param dialog The Material Dialog service.
    * @param translate Angular translate service.
+   * @param restService Shared rest service.
    */
   constructor(
-    @Inject('environment') environment: any,
-    private http: HttpClient,
     private snackBar: SafeSnackBarService,
     private dialog: MatDialog,
-    private translate: TranslateService
-  ) {
-    this.sendUrl = environment.apiUrl + '/email/';
-    this.previewUrl = environment.apiUrl + '/email/preview/';
-    this.filesUrl = environment.apiUrl + '/email/files';
-  }
+    private translate: TranslateService,
+    private restService: SafeRestService
+  ) {}
 
   /**
    * Send a POST request to the server with the files attached to the
@@ -71,7 +62,7 @@ export class SafeEmailService {
     for (const file of files) {
       formData.append('attachments', file, file.name);
     }
-    return this.http.post(this.filesUrl, formData, { headers });
+    return this.restService.post('/email/files', formData, { headers });
   }
 
   /**
@@ -127,9 +118,9 @@ export class SafeEmailService {
       'Content-Type': 'application/json',
     });
 
-    this.http
+    this.restService
       .post(
-        this.sendUrl,
+        '/email/',
         {
           recipient,
           subject,
@@ -206,9 +197,9 @@ export class SafeEmailService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
-    this.http
+    this.restService
       .post(
-        this.previewUrl,
+        '/email/preview/',
         {
           recipient,
           subject,

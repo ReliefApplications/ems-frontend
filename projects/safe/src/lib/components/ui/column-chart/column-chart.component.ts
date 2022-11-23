@@ -106,6 +106,7 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
     this.min = get(this.options, 'axes.y.min');
     this.max = get(this.options, 'axes.y.max');
     this.stack = this.series.length > 1 ? get(this.options, 'stack') : false;
+    this.setLabelContent();
   }
 
   /**
@@ -115,7 +116,6 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
     const showCategory = get(this.options, 'labels.showCategory', false);
     const showValue = get(this.options, 'labels.showValue', false);
     const valueType = get(this.options, 'labels.valueType', 'value');
-
     if (showCategory) {
       if (showValue) {
         switch (valueType) {

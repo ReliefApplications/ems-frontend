@@ -15,10 +15,8 @@ import { SafeSchedulerModule } from './components/widgets/scheduler/scheduler.mo
 import { SafeSchedulerSettingsModule } from './components/widgets/scheduler-settings/scheduler-settings.module';
 import { SafeWidgetModule } from './components/widget/widget.module';
 import { SafeWidgetGridModule } from './components/widget-grid/widget-grid.module';
-import { SafeConfirmModalModule } from './components/confirm-modal/confirm-modal.module';
 import { SafeUsersModule } from './components/users/users.module';
 import { SafeRolesModule } from './components/roles/roles.module';
-import { SafePreviousButtonModule } from './components/previous-button/previous-button.module';
 import { SafeConvertModalModule } from './components/convert-modal/convert-modal.module';
 import { SafeRecordHistoryModule } from './components/record-history/record-history.module';
 import { SafeRecordModalModule } from './components/record-modal/record-modal.module';
@@ -45,6 +43,9 @@ import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-sel
 import { SafeModalModule } from './components/ui/modal/modal.module';
 import { SafeEmptyModule } from './components/ui/empty/empty.module';
 import { SafeDividerModule } from './components/ui/divider/divider.module';
+import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.module';
+import { SafeApplicationTemplatesModule } from './pages/application-templates/application-templates.module';
+import { SafeApplicationDistributionListsModule } from './pages/application-distribution-lists/application-distribution-lists.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -65,11 +66,9 @@ import { SafeDividerModule } from './components/ui/divider/divider.module';
     // SafeSchedulerSettingsModule,
     // SafeWidgetModule,
     SafeWidgetGridModule,
-    SafeConfirmModalModule,
     SafeStatusModalModule,
     SafeUsersModule,
     SafeRolesModule,
-    SafePreviousButtonModule,
     SafeConvertModalModule,
     SafeRecordHistoryModule,
     SafeRecordModalModule,
@@ -95,6 +94,9 @@ import { SafeDividerModule } from './components/ui/divider/divider.module';
     SafeModalModule,
     SafeEmptyModule,
     SafeDividerModule,
+    SafeLeftSidenavModule,
+    SafeApplicationTemplatesModule,
+    SafeApplicationDistributionListsModule,
   ],
   declarations: [],
 })
