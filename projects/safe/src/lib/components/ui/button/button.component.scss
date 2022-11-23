@@ -1,21 +1,21 @@
 :host {
-  // width: fit-content;
+  width: fit-content;
   &.disabled {
     pointer-events: none;
   }
 }
 
 :host ::ng-deep .mat-button {
+  &:not(.mat-icon-button) {
+    width: 100%;
+  }
+
   .mat-button-wrapper {
     display: block;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: pre;
   }
-}
-
-.safe-btn-block {
-  width: 100%;
 }
 
 .safe-btn-small {

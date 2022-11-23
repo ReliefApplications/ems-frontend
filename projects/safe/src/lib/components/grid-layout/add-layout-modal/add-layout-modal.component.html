@@ -8,7 +8,7 @@
       <safe-button
         variant="primary"
         category="secondary"
-        [block]="true"
+        class="!w-auto"
         (click)="nextStep = true"
         [disabled]="layouts.length < 1"
         >{{
@@ -19,7 +19,7 @@
       <safe-button
         variant="primary"
         category="tertiary"
-        [block]="true"
+        class="!w-auto"
         (click)="onCreate()"
         >{{
           'components.widget.settings.grid.layouts.add.choice.create'

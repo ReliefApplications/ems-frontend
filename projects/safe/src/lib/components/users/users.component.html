@@ -1,7 +1,9 @@
-<div class="flex gap-8 justify-between mb-8">
+<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
   <!-- Filters -->
   <div class="flex flex-col gap-4">
-    <div class="flex flex-wrap gap-2 items-center">
+    <!-- Default filter -->
+    <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
+      <!-- Search text filter -->
       <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
         <mat-icon matPrefix>search</mat-icon>
         <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
@@ -12,12 +14,13 @@
           type="search"
         />
       </mat-form-field>
+      <!-- Toggle advanced filters -->
       <safe-button
+        class="max-sm:!w-auto"
         icon="filter_list"
         category="tertiary"
         variant="primary"
         (click)="showFilters = !showFilters"
-        class="filters-toggle"
       >
         {{
           showFilters
@@ -26,10 +29,12 @@
         }}
       </safe-button>
     </div>
+    <!-- Advanced filters -->
     <div
-      class="flex flex-wrap gap-2 items-center"
+      class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
       [style.display]="!showFilters ? 'none' : ''"
     >
+      <!-- Title filter -->
       <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
         <mat-label>{{ 'common.title' | translate }}</mat-label>
         <mat-select
@@ -42,9 +47,13 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <safe-button variant="danger" (click)="clearAllFilters()">{{
-        'common.filter.clear' | translate
-      }}</safe-button>
+      <!-- Clear filters -->
+      <safe-button
+        class="max-sm:!w-auto"
+        variant="danger"
+        (click)="clearAllFilters()"
+        >{{ 'common.filter.clear' | translate }}</safe-button
+      >
     </div>
   </div>
   <!-- Actions -->
