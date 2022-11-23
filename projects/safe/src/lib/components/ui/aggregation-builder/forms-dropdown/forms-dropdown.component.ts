@@ -113,7 +113,7 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
    *
    * @param e open autocomplete event.
    */
-  public onOpen(e: void) {
+  public onOpen() {
     this.initializeScrollListener = true;
   }
 
@@ -122,7 +122,7 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
    *
    * @param e close autocomplete event.
    */
-  public onClose(e: void) {
+  public onClose() {
     if (this.panel) {
       this.panel.nativeElement.removeEventListener('scroll', (event: any) =>
         this.scrollListener(event)

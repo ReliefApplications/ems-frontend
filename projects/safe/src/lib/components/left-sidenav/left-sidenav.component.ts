@@ -4,7 +4,6 @@ import {
   Input,
   Inject,
   OnChanges,
-  SimpleChanges,
   OnDestroy,
   Output,
   EventEmitter,
@@ -66,7 +65,7 @@ export class SafeLeftSidenavComponent implements OnInit, OnChanges, OnDestroy {
     this.loadUserAndUpdateLayout();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.loadUserAndUpdateLayout();
   }
 

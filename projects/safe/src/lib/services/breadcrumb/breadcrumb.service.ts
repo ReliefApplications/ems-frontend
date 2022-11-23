@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 

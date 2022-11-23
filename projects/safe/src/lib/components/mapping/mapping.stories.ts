@@ -41,7 +41,7 @@ const fb = new FormBuilder();
  * @param args stories args
  * @returns story
  */
-const TEMPLATE: Story<SafeMappingComponent> = (args) => ({
+const TEMPLATE: Story<SafeMappingComponent> = () => ({
   template: '<safe-mapping [mappingForm]="mappingForm"></safe-mapping>',
   props: {
     // Need to pass formArray there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602
@@ -75,7 +75,7 @@ DEFAULT.args = {};
  * @param args story args
  * @returns story
  */
-const TEMPLATE_EMPTY: Story<SafeMappingComponent> = (args) => ({
+const TEMPLATE_EMPTY: Story<SafeMappingComponent> = () => ({
   template: '<safe-mapping [mappingForm]="mappingForm"></safe-mapping>',
   props: {
     // Need to pass formArray there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602

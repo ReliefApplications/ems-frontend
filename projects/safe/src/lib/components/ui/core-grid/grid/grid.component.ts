@@ -9,7 +9,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import {
-  ColumnReorderEvent,
   GridComponent,
   GridDataResult,
   PageChangeEvent,
@@ -227,7 +226,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
-    this.grid?.columnReorder.subscribe((res) =>
+    this.grid?.columnReorder.subscribe(() =>
       setTimeout(() => this.columnChange.emit(), 500)
     );
   }
@@ -417,10 +416,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === LAYOUT ===
   /**
    * Set and emit new grid configuration after column reorder event.
-   *
-   * @param e ColumnReorderEvent
    */
-  onColumnReorder(e: ColumnReorderEvent): void {
+  onColumnReorder(): void {
     this.columnChange.emit();
   }
 

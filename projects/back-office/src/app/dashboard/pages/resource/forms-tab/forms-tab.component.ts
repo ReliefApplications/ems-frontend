@@ -101,7 +101,7 @@ export class FormsTabComponent implements OnInit {
               id: form.id,
             },
           })
-          .subscribe((res) => {
+          .subscribe(() => {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectDeleted', {
                 value: this.translate.instant('common.form.one'),

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Form, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {
   TranslateModule,
@@ -7,7 +7,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { Observable, observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { SafeFormsDropdownComponent } from './forms-dropdown.component';
 
 describe('SafeFormsDropdownComponent', () => {

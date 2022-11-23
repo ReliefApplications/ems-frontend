@@ -73,7 +73,7 @@ const fb = new FormBuilder();
  * @param args story arguments
  * @returns story template
  */
-const TEMPLATE: Story<SafeGroupStageComponent> = (args) => ({
+const TEMPLATE: Story<SafeGroupStageComponent> = () => ({
   template: '<safe-group-stage [form]=form [fields]=fields></safe-group-stage>',
   props: {
     // Need to pass formGroup there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602

@@ -83,7 +83,7 @@ export class MapPropertiesComponent implements OnInit, AfterViewInit {
    */
   ngAfterViewInit(): void {
     const map = this.previewMap.map;
-    map.on('zoomend', (e: any) => {
+    map.on('zoomend', () => {
       this.form.get('zoom')?.setValue(map.getZoom(), { emitEvent: false });
     });
     map.on('moveend', () => {

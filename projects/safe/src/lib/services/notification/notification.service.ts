@@ -143,7 +143,7 @@ export class SafeNotificationService {
           ids: notificationsIds,
         },
       })
-      .subscribe((res) => {
+      .subscribe(() => {
         this.fetchMore();
       });
   }

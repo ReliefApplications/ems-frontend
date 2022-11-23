@@ -201,8 +201,8 @@ export class SafeAggregationBuilderComponent implements OnInit {
         }
         return field;
       });
-      const formattedFields =
-        this.aggregationBuilder.formatFields(selectedFields);
+      // const formattedFields =
+      //   this.aggregationBuilder.formatFields(selectedFields);
       this.selectedFields.next(selectedFields);
       // this.queryBuilder
       //   .buildMetaQuery({ name: this.queryName, fields: formattedFields })

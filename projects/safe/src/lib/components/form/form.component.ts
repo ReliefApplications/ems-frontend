@@ -193,22 +193,16 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
-    this.survey.onCurrentPageChanged.add(
-      (survey: Survey.SurveyModel, options: any) => {
-        survey.checkErrorsMode = survey.isLastPage
-          ? 'onComplete'
-          : 'onNextPage';
-        this.selectedTabIndex = survey.currentPageNo;
-      }
-    );
+    this.survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
+      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
+      this.selectedTabIndex = survey.currentPageNo;
+    });
     this.survey.onPageVisibleChanged.add(() => {
       this.setPages();
     });
-    this.survey.onSettingQuestionErrors.add(
-      (survey: Survey.SurveyModel, options: any) => {
-        this.setPages();
-      }
-    );
+    this.survey.onSettingQuestionErrors.add(() => {
+      this.setPages();
+    });
     this.survey.onValueChanged.add(this.valueChange.bind(this));
 
     // Sets default language as form language if it is in survey locales
@@ -403,7 +397,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     let content: any[] = [];
     options.files.forEach((file: any) => {
       const fileReader = new FileReader();
-      fileReader.onload = (e) => {
+      fileReader.onload = () => {
         content = content.concat([
           {
             name: file.name,
@@ -560,7 +554,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
               version: version.id,
             },
           })
-          .subscribe((res) => {
+          .subscribe(() => {
             this.layoutService.setRightSidenav(null);
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.dataRecovered')

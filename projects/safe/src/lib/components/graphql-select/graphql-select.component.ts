@@ -75,7 +75,7 @@ export class SafeGraphQLSelectComponent
 
   /** Sets the value */
   set value(val: string | string[] | null) {
-    this.onChange(val);
+    this.onChange();
     this.stateChanges.next();
     this.selectionChange.emit(val);
   }
@@ -105,7 +105,7 @@ export class SafeGraphQLSelectComponent
   public focused = false;
   public touched = false;
   onTouched = () => {};
-  onChange = (_: any) => {};
+  onChange = () => {};
 
   /**
    * Gets the empty status
@@ -301,7 +301,7 @@ export class SafeGraphQLSelectComponent
    *
    * @param event The focus event
    */
-  onFocusIn(event: FocusEvent) {
+  onFocusIn() {
     if (!this.focused) {
       this.focused = true;
       this.stateChanges.next();

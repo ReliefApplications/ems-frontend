@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
-// import { TranslateService } from '@ngx-translate/core';
 import { HttpHeaders } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeEmailPreviewComponent } from '../../components/email-preview/email-preview.component';
@@ -136,7 +135,7 @@ export class SafeEmailService {
         { headers }
       )
       .subscribe(
-        (res) => {
+        () => {
           snackBarRef.instance.data = {
             message: this.translate.instant('common.notifications.email.sent'),
             loading: false,

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { merge, Observable } from 'rxjs';
+import { merge } from 'rxjs';
 import { startWith, delay } from 'rxjs/operators';
 
 /**

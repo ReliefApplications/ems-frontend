@@ -77,7 +77,7 @@ export const init = (
           }
         });
     },
-    onAfterRender: (question: QuestionOwner, el: HTMLElement): void => {},
+    onAfterRender: (): void => {},
   };
   Survey.ComponentCollection.Instance.add(component);
 };

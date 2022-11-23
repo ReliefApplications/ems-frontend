@@ -74,7 +74,7 @@ const fb = new FormBuilder();
  * @param args story arguments
  * @returns story template
  */
-const TEMPLATE: Story<SafeExpressionsComponent> = (args) => ({
+const TEMPLATE: Story<SafeExpressionsComponent> = () => ({
   template:
     '<safe-expressions [form]=form [fields]=fields [operators]=operators></safe-expressions>',
   props: {

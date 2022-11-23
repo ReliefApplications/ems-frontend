@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Record, Resource } from '@safe/builder';
+import { Record } from '@safe/builder';
 
 /** Graphql query for getting records of a resource */
 export const GET_RESOURCE_RECORDS = gql`

@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { CategoryAxis, ChartComponent } from '@progress/kendo-angular-charts';
+import { ChartComponent } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
 
 /**

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -146,7 +145,7 @@ export class RecordsTabComponent implements OnInit {
           hardDelete: this.showDeletedRecords,
         },
       })
-      .subscribe((res) => {
+      .subscribe(() => {
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.objectDeleted', {
             value: this.translate.instant('common.record.one'),
@@ -171,7 +170,7 @@ export class RecordsTabComponent implements OnInit {
           id,
         },
       })
-      .subscribe((res) => {
+      .subscribe(() => {
         this.fetchRecords(true);
       });
   }
@@ -186,15 +185,6 @@ export class RecordsTabComponent implements OnInit {
     return get(this.resource, 'forms', []).filter(
       (x: Form) => x.id !== record.form?.id
     );
-  }
-
-  /**
-   * Filters the shown columns.
-   *
-   * @param event Event trigger on filtering.
-   */
-  public filterCore(event: any): void {
-    // this.setDisplayedColumns(event.value);
   }
 
   /**

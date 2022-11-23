@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
@@ -12,6 +12,7 @@ import {
   Permissions,
   ContentType,
 } from '@safe/builder';
+import get from 'lodash/get';
 import { Subscription } from 'rxjs';
 
 /**
@@ -204,7 +205,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
               },
             ];
             if (!this.application || application.id !== this.application.id) {
-              const [firstPage, ..._] = application.pages || [];
+              const firstPage = get(application, 'pages', [])[0];
               const find = !this.application
                 ? this.validPage(application)
                 : false;

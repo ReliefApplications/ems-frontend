@@ -129,7 +129,7 @@ const fb = new FormBuilder();
  * @param args story arguments
  * @returns storybook template
  */
-const TEMPLATE: Story<SafePipelineComponent> = (args) => ({
+const TEMPLATE: Story<SafePipelineComponent> = () => ({
   template:
     '<safe-pipeline [fields$]=fields$ [metaFields$]=metaFields$ [pipelineForm]="pipelineForm"></safe-pipeline>',
   props: {

@@ -56,7 +56,7 @@ export default {
  * @param args story args
  * @returns story
  */
-const TEMPLATE: Story<SafeMappingModalComponent> = (args) => ({
+const TEMPLATE: Story<SafeMappingModalComponent> = () => ({
   template: '<safe-mapping-modal></safe-mapping-modal>',
 });
 

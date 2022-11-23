@@ -191,7 +191,7 @@
     </table>
   </div>
 </div>
-
+<!-- Loading indicator -->
 <safe-skeleton-table
   *ngIf="loading"
   [columns]="[
@@ -206,6 +206,7 @@
   [actions]="true"
 >
 </safe-skeleton-table>
+<!-- Pagination -->
 <mat-paginator
   [disabled]="loading || updating"
   [pageIndex]="pageInfo.pageIndex"
