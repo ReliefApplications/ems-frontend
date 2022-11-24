@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ModalSize } from './modal-size.enum';
 
@@ -10,7 +10,7 @@ import { ModalSize } from './modal-size.enum';
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss'],
 })
-export class SafeModalComponent implements OnInit {
+export class SafeModalComponent implements OnInit, OnChanges {
   @Input() closable = false;
   @Input() padding = true;
   @Input() size: ModalSize | string = '';
@@ -23,6 +23,35 @@ export class SafeModalComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<SafeModalComponent>) {}
 
   ngOnInit(): void {
+    switch (this.size) {
+      case ModalSize.FULLSCREEN: {
+        this.dialogRef.addPanelClass('fullscreen-dialog');
+        break;
+      }
+      case ModalSize.SMALL: {
+        this.dialogRef.updateSize('300px');
+        break;
+      }
+      case ModalSize.MEDIUM: {
+        this.dialogRef.updateSize('700px');
+        break;
+      }
+      case ModalSize.BIG: {
+        this.dialogRef.updateSize('100vw', '98%');
+        break;
+      }
+      default: {
+        this.dialogRef.removePanelClass('fullscreen-dialog');
+        break;
+      }
+    }
+
+    if (!this.padding) {
+      this.dialogRef.addPanelClass('no-padding-dialog');
+    }
+  }
+
+  ngOnChanges(): void {
     switch (this.size) {
       case ModalSize.FULLSCREEN: {
         this.dialogRef.addPanelClass('fullscreen-dialog');
