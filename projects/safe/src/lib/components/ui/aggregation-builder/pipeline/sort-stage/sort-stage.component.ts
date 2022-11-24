@@ -5,11 +5,11 @@ import { FormGroup } from '@angular/forms';
  * Component that handles sorting
  */
 @Component({
-  selector: 'safe-tab-sort',
-  templateUrl: './tab-sort.component.html',
-  styleUrls: ['./tab-sort.component.scss'],
+  selector: 'safe-sort-stage',
+  templateUrl: './sort-stage.component.html',
+  styleUrls: ['./sort-stage.component.scss'],
 })
-export class SafeTabSortComponent {
+export class SafeSortStageComponent {
   @Input() form: FormGroup = new FormGroup({});
   @Input() fields: any[] = [];
   @Input() showLimit = false;

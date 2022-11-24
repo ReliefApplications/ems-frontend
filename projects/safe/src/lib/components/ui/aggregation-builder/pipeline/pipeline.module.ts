@@ -18,6 +18,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../icon/icon.module';
 import { SafeFilterModule } from '../../../filter/filter.module';
+import { SafeSortStageComponent } from './sort-stage/sort-stage.component';
 
 /**
  * Aggregation builder pipeline module.
@@ -29,6 +30,7 @@ import { SafeFilterModule } from '../../../filter/filter.module';
     SafeAddFieldStageComponent,
     SafeExpressionsComponent,
     SafeFieldDropdownComponent,
+    SafeSortStageComponent,
   ],
   imports: [
     CommonModule,
@@ -53,6 +55,7 @@ import { SafeFilterModule } from '../../../filter/filter.module';
     SafeAddFieldStageComponent,
     SafeExpressionsComponent,
     SafeFieldDropdownComponent,
+    SafeSortStageComponent,
   ],
 })
 export class SafePipelineModule {}
