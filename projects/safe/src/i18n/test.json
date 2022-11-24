@@ -1031,6 +1031,10 @@
 						"title": "******",
 						"tooltip": {
 							"attach": "******",
+							"mail": {
+								"selectDistributionList": "******",
+								"selectTemplates": "******"
+							},
 							"notify": "******",
 							"publish": "******"
 						}

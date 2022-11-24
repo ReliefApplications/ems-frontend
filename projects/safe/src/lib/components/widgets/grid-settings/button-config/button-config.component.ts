@@ -189,7 +189,6 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
     });
 
     this.formGroup?.get('targetResource')?.valueChanges.subscribe((value) => {
-      console.log('there');
       if (value) {
         this.targetResource = this.relatedResources.find((x) => x.id === value);
         if (this.targetResource) {

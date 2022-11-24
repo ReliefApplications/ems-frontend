@@ -404,7 +404,6 @@ export class SafeGraphQLSelectComponent
    * @param event the selection change event
    */
   public onSelectionChange(event: MatSelectChange) {
-    console.log('selection change :', event.value);
     this.value = event.value;
   }
 }

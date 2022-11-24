@@ -252,9 +252,9 @@
 			"one": "Abonnement"
 		},
 		"template": {
-			"few": "Modèles",
+			"few": "Modèles de notification",
 			"none": "Aucun modèle",
-			"one": "Modèle"
+			"one": "Modèle de notification"
 		},
 		"title": "Titre",
 		"true": "Vrai",
@@ -825,17 +825,17 @@
 			}
 		},
 		"templates": {
-			"available": "Modèles disponibles",
+			"available": "Modèles d'email disponibles",
 			"delete": {
 				"confirmationMessage": "Voulez-vous supprimer le modèle '{{name}}'?",
 				"titleMessage": "Supprimer le modèle"
 			},
 			"edit": {
 				"body": "Corps du texte",
-				"name": "Nom du modèle",
-				"new": "Nouveau modèle",
+				"name": "Nom du modèle de notification",
+				"new": "Nouveau modèle de notification",
 				"subject": "Sujet",
-				"update": "Éditer le modèle"
+				"update": "Éditer le modèle de notification"
 			},
 			"errors": {
 				"empty": "Veuillez sélectionner au moins un modèle"
@@ -1032,6 +1032,10 @@
 						"title": "Bouton d'action rapide",
 						"tooltip": {
 							"attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",
+							"mail": {
+								"selectDistributionList": "Sélectionnez la liste de distribution qui fournira les destinataires de l'email",
+								"selectTemplates": "Sélectionnez les modèles d'email que les utilisateurs pourront choisir en utilisant l'action"
+							},
 							"notify": "Si activé, vous devez fournir un canal de diffusion et un message.Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Le message fourni est utilisé pour définir l'action de la notification.",
 							"publish": "Si activé, vous devez fournir un canal de diffusion. Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Quiconque écoutant sur ce canal pourra recevoir ces enregistrements."
 						}

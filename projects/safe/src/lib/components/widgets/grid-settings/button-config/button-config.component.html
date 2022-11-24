@@ -316,6 +316,17 @@
               {{ list.name }}
             </mat-option>
           </mat-select>
+          <safe-icon
+            matSuffix
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            matSuffix
+            [matTooltip]="
+              'components.widget.settings.grid.buttons.tooltip.mail.selectDistributionList'
+                | translate
+            "
+          ></safe-icon>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>{{
@@ -329,6 +340,17 @@
               {{ template.name }}
             </mat-option>
           </mat-select>
+          <safe-icon
+            matSuffix
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            matSuffix
+            [matTooltip]="
+              'components.widget.settings.grid.buttons.tooltip.mail.selectTemplates'
+                | translate
+            "
+          ></safe-icon>
           <mat-error
             *ngIf="
               formGroup.get('sendMail')?.value &&

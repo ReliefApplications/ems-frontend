@@ -252,9 +252,9 @@
 			"one": "Subscription"
 		},
 		"template": {
-			"few": "Templates",
+			"few": "Notification templates",
 			"none": "No template",
-			"one": "Template"
+			"one": "Notification template"
 		},
 		"title": "Title",
 		"true": "True",
@@ -825,25 +825,25 @@
 			}
 		},
 		"templates": {
-			"available": "Available templates",
+			"available": "Available email templates",
 			"delete": {
 				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?"
 			},
 			"edit": {
 				"body": "Body",
 				"name": "Template name",
-				"new": "New template",
+				"new": "New notification template",
 				"subject": "Subject",
-				"update": "Edit template"
+				"update": "Edit notification template"
 			},
 			"errors": {
 				"empty": "Please select one or more templates"
 			},
 			"select": {
-				"email": "Select an e-mail template"
+				"email": "Select an email template"
 			},
 			"type": {
-				"email": "E-mail",
+				"email": "Email",
 				"title": "Template type"
 			}
 		},
@@ -1031,6 +1031,10 @@
 						"title": "Quick action buttons",
 						"tooltip": {
 							"attach": "When enabled, you must provide a form and a field of this form. All selected rows will be attached to a record from this form. The user will be able to choose which record using a the given field",
+							"mail": {
+								"selectDistributionList": "Select the distribution list that will set recipients of the email",
+								"selectTemplates": "Select the email templates users will be allowed to choose from when using the action"
+							},
 							"notify": "When enabled, you must provide a channel and a message. All selected rows will be sent as a single notification on the specified channel. The provided message is used to define the notification’s action",
 							"publish": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
 						}
