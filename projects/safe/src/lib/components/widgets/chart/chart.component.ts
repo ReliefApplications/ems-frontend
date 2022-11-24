@@ -113,14 +113,14 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
    * Exports the chart as a png ticket
    */
   public onExport(): void {
-    this.chartWrapper?.chart
-      ?.exportImage({
-        width: 1200,
-        height: 800,
-      })
-      .then((dataURI: string) => {
-        saveAs(dataURI, this.fileName);
-      });
+    // this.chartWrapper
+    //   ?.exportImage({
+    //     width: 1200,
+    //     height: 800,
+    //   })
+    //   .then((dataURI: string) => {
+    //     saveAs(dataURI, this.fileName);
+    //   });
   }
 
   /**
@@ -200,6 +200,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
                   }
               );
               return {
+                label: key,
                 name: key,
                 data,
               };
