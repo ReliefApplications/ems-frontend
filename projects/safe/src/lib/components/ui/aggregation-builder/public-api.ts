@@ -8,3 +8,4 @@ export * from './pipeline/group-stage/group-stage.component';
 export * from './pipeline/add-field-stage/add-field-stage.component';
 export * from './pipeline/expressions/expressions.component';
 export * from './pipeline/field-dropdown/field-dropdown.component';
+export * from './pipeline/sort-stage/sort-stage.component';

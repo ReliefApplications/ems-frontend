@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-  <div class="flex gap-2" formGroupName="sort">
+  <div class="flex gap-2">
     <mat-form-field appearance="outline">
       <mat-label>{{
         'components.queryBuilder.sort.field' | translate
@@ -24,7 +24,7 @@
         </ng-container>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" *ngIf="form.value.sort.field">
+    <mat-form-field appearance="outline" *ngIf="form.value.field">
       <mat-label>{{
         'components.queryBuilder.sort.order' | translate
       }}</mat-label>
@@ -38,10 +38,4 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <mat-form-field appearance="outline" *ngIf="showLimit">
-    <mat-label>{{
-      'components.queryBuilder.sort.limit' | translate
-    }}</mat-label>
-    <input matInput formControlName="first" type="number" min="1" />
-  </mat-form-field>
 </form>

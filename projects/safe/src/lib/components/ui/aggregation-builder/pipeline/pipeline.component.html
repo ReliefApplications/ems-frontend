@@ -34,10 +34,10 @@
         ></safe-filter>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.SORT">
-        <safe-tab-sort
+        <safe-sort-stage
           [form]="$any(stageForm).controls.form"
           [fields]="fieldsPerStage[index]"
-        ></safe-tab-sort>
+        ></safe-sort-stage>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.GROUP">
         <safe-group-stage
