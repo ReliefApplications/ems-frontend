@@ -1,4 +1,4 @@
-<kendo-chart #chart [seriesColors]="options && options.palette">
+<!-- <kendo-chart #chart [seriesColors]="options && options.palette">
   <kendo-chart-value-axis>
     <kendo-chart-value-axis-item [min]="min" [max]="max">
     </kendo-chart-value-axis-item>
@@ -32,4 +32,14 @@
       [labels]="labels"
     ></kendo-chart-series-item>
   </kendo-chart-series>
-</kendo-chart>
+</kendo-chart> -->
+<div class="h-full p-2">
+  <canvas
+    baseChart
+    [data]="chartData"
+    [options]="chartOptions"
+    [type]="chartType"
+    (chartHover)="chartHovered($event)"
+    (chartClick)="chartClicked($event)"
+  ></canvas>
+</div>

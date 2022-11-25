@@ -157,7 +157,7 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
   // }
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
-  public columnChartOptions: ChartConfiguration['options'] = {
+  public chartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
     // We use these empty structures as placeholders for dynamic theming.
@@ -183,10 +183,10 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
       // },
     },
   };
-  public columnChartType: ChartType = 'bar';
+  public chartType: ChartType = 'bar';
   // public barChartPlugins = [DataLabelsPlugin];
 
-  public columnChartData: ChartData<'bar'> = {
+  public chartData: ChartData<'bar'> = {
     // labels: ['2006', '2007', '2008', '2009', '2010', '2011', '2012'],
     datasets: [
       // {
@@ -203,7 +203,7 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
   };
 
   ngOnInit(): void {
-    this.columnChartData.datasets = this.series.map((x) => ({
+    this.chartData.datasets = this.series.map((x) => ({
       ...x,
       borderRadius: 8,
     }));
@@ -212,7 +212,7 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    this.columnChartData.datasets = this.series.map((x) => ({
+    this.chartData.datasets = this.series.map((x) => ({
       ...x,
       borderRadius: 8,
     }));
@@ -221,7 +221,7 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
   }
 
   setOptions(): void {
-    this.columnChartOptions = {
+    this.chartOptions = {
       responsive: true,
       maintainAspectRatio: false,
       // We use these empty structures as placeholders for dynamic theming.

@@ -45,9 +45,9 @@
 <div class="h-full p-2">
   <canvas
     baseChart
-    [data]="columnChartData"
-    [options]="columnChartOptions"
-    [type]="columnChartType"
+    [data]="chartData"
+    [options]="chartOptions"
+    [type]="chartType"
     (chartHover)="chartHovered($event)"
     (chartClick)="chartClicked($event)"
   ></canvas>
