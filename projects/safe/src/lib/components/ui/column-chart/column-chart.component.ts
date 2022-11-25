@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { ChartComponent, SeriesStack } from '@progress/kendo-angular-charts';
 import get from 'lodash/get';
+import { ChartConfiguration, ChartData, ChartEvent, ChartType } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 
 /**
  * Interface of chart title
@@ -24,34 +25,34 @@ interface ChartLegend {
 
 /**
  * Interface of chart series
- */
-interface ChartSeries {
-  name?: string;
-  color?: string;
-  data: {
-    field: number | null;
-    category: any;
-  }[];
-}
+//  */
+// interface ChartSeries {
+//   name?: string;
+//   color?: string;
+//   data: {
+//     field: number | null;
+//     category: any;
+//   }[];
+// }
 
-/** Interface of chart labels */
-interface ChartLabels {
-  showValue: boolean;
-  valueType: string;
-}
+// /** Interface of chart labels */
+// interface ChartLabels {
+//   showValue: boolean;
+//   valueType: string;
+// }
 
 /** Interface of chart options */
-interface ChartOptions {
-  palette: string[];
-  axes?: {
-    y?: {
-      min?: number;
-      max?: number;
-    };
-  };
-  labels?: ChartLabels;
-  stack: boolean | SeriesStack;
-}
+// interface ChartOptions {
+//   palette: string[];
+//   axes?: {
+//     y?: {
+//       min?: number;
+//       max?: number;
+//     };
+//   };
+//   labels?: ChartLabels;
+//   stack: boolean | SeriesStack;
+// }
 
 /**
  * Column chart component, based on kendo chart component.
@@ -66,9 +67,9 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
 
   @Input() legend: ChartLegend | undefined;
 
-  @Input() series: ChartSeries[] = [];
+  @Input() series: any[] = [];
 
-  @Input() options: ChartOptions = {
+  @Input() options: any = {
     palette: [],
     stack: false,
   };
@@ -77,14 +78,14 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
 
   @Input() spacing = 0.25;
 
-  public min: number | undefined;
+  // public min: number | undefined;
 
-  public max: number | undefined;
+  // public max: number | undefined;
 
-  public stack: boolean | SeriesStack = false;
+  // public stack: boolean | SeriesStack = false;
 
-  @ViewChild('chart')
-  public chart?: ChartComponent;
+  // @ViewChild('chart')
+  // public chart?: ChartComponent;
 
   /**
    * The function which returns the Chart series label content.
@@ -93,65 +94,190 @@ export class SafeColumnChartComponent implements OnInit, OnChanges {
    * @param e - Event which with the specific label data
    * @returns Returns a string which will be used as the label content
    */
-  public labelContent: ((e: any) => string) | null = null;
+  // public labelContent: ((e: any) => string) | null = null;
 
-  ngOnInit(): void {
-    this.min = get(this.options, 'axes.y.min');
-    this.max = get(this.options, 'axes.y.max');
-    this.stack = this.series.length > 1 ? get(this.options, 'stack') : false;
-    this.setLabelContent();
-  }
+  // ngOnInit(): void {
+  //   this.min = get(this.options, 'axes.y.min');
+  //   this.max = get(this.options, 'axes.y.max');
+  //   this.stack = this.series.length > 1 ? get(this.options, 'stack') : false;
+  //   this.setLabelContent();
+  // }
 
-  ngOnChanges(): void {
-    this.min = get(this.options, 'axes.y.min');
-    this.max = get(this.options, 'axes.y.max');
-    this.stack = this.series.length > 1 ? get(this.options, 'stack') : false;
-    this.setLabelContent();
-  }
+  // ngOnChanges(): void {
+  //   this.min = get(this.options, 'axes.y.min');
+  //   this.max = get(this.options, 'axes.y.max');
+  //   this.stack = this.series.length > 1 ? get(this.options, 'stack') : false;
+  //   this.setLabelContent();
+  // }
 
   /**
    * Set label content method.
    */
-  private setLabelContent(): void {
-    const showCategory = get(this.options, 'labels.showCategory', false);
-    const showValue = get(this.options, 'labels.showValue', false);
-    const valueType = get(this.options, 'labels.valueType', 'value');
-    if (showCategory) {
-      if (showValue) {
-        switch (valueType) {
-          case 'percentage': {
-            this.labelContent = (e: any): string =>
-              e.category && e.percentage
-                ? `${e.category}
-                ${(parseFloat(e.percentage) * 100).toFixed(2)}%`
-                : '';
-            break;
-          }
-          default: {
-            this.labelContent = (e: any): string =>
-              e.category && e.value ? e.category + '\n' + e.value : '';
-            break;
-          }
-        }
-      } else {
-        this.labelContent = (e: any): string => e.category || '';
-      }
-    } else {
-      if (showValue) {
-        switch (valueType) {
-          case 'percentage': {
-            this.labelContent = (e: any): string =>
-              e.percentage
-                ? (parseFloat(e.percentage) * 100).toFixed(2) + '%'
-                : '';
-            break;
-          }
-          default: {
-            this.labelContent = (e: any): string => e.value || '';
-            break;
-          }
-        }
-      }
-    }
+  // private setLabelContent(): void {
+  //   const showCategory = get(this.options, 'labels.showCategory', false);
+  //   const showValue = get(this.options, 'labels.showValue', false);
+  //   const valueType = get(this.options, 'labels.valueType', 'value');
+  //   if (showCategory) {
+  //     if (showValue) {
+  //       switch (valueType) {
+  //         case 'percentage': {
+  //           this.labelContent = (e: any): string =>
+  //             e.category && e.percentage
+  //               ? `${e.category}
+  //               ${(parseFloat(e.percentage) * 100).toFixed(2)}%`
+  //               : '';
+  //           break;
+  //         }
+  //         default: {
+  //           this.labelContent = (e: any): string =>
+  //             e.category && e.value ? e.category + '\n' + e.value : '';
+  //           break;
+  //         }
+  //       }
+  //     } else {
+  //       this.labelContent = (e: any): string => e.category || '';
+  //     }
+  //   } else {
+  //     if (showValue) {
+  //       switch (valueType) {
+  //         case 'percentage': {
+  //           this.labelContent = (e: any): string =>
+  //             e.percentage
+  //               ? (parseFloat(e.percentage) * 100).toFixed(2) + '%'
+  //               : '';
+  //           break;
+  //         }
+  //         default: {
+  //           this.labelContent = (e: any): string => e.value || '';
+  //           break;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+
+  public columnChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    // We use these empty structures as placeholders for dynamic theming.
+    scales: {
+      x: {},
+      y: {},
+    },
+    parsing: {
+      xAxisKey: 'category',
+      yAxisKey: 'field',
+    },
+    plugins: {
+      legend: {
+        display: true,
+        labels: {
+          borderRadius: 4,
+          useBorderRadius: true,
+        },
+      },
+      // datalabels: {
+      //   anchor: 'end',
+      //   align: 'end',
+      // },
+    },
+  };
+  public columnChartType: ChartType = 'bar';
+  // public barChartPlugins = [DataLabelsPlugin];
+
+  public columnChartData: ChartData<'bar'> = {
+    // labels: ['2006', '2007', '2008', '2009', '2010', '2011', '2012'],
+    datasets: [
+      // {
+      //   data: [65, 59, 80, 81, 56, 55, 40],
+      //   label: 'Series A',
+      //   borderRadius: 4,
+      // },
+      // {
+      //   data: [28, 48, 40, 19, 86, 27, 90],
+      //   label: 'Series B',
+      //   borderRadius: 4,
+      // },
+    ],
+  };
+
+  ngOnInit(): void {
+    this.columnChartData.datasets = this.series.map((x) => ({
+      ...x,
+      borderRadius: 8,
+    }));
+    this.setOptions();
+    this.chart?.update();
+  }
+
+  ngOnChanges(): void {
+    this.columnChartData.datasets = this.series.map((x) => ({
+      ...x,
+      borderRadius: 8,
+    }));
+    this.setOptions();
+    this.chart?.update();
+  }
+
+  setOptions(): void {
+    this.columnChartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      // We use these empty structures as placeholders for dynamic theming.
+      scales: {
+        x: {},
+        y: {},
+      },
+      parsing: {
+        xAxisKey: 'category',
+        yAxisKey: 'field',
+      },
+      plugins: {
+        legend: {
+          display: get(this.legend, 'visible', false),
+          labels: {
+            borderRadius: 4,
+            useBorderRadius: true,
+          },
+          position: get(this.legend, 'position', 'bottom'),
+        },
+        title: {
+          display: get(this.title, 'visible', false),
+          text: get(this.title, 'text', ''),
+          position: get(this.title, 'position', 'top'),
+          color: get(this.title, 'color', undefined),
+        },
+        // datalabels: {
+        //   anchor: 'end',
+        //   align: 'end',
+        // },
+      },
+    };
+  }
+
+  // events
+  public chartClicked({
+    event,
+    active,
+  }: {
+    event?: ChartEvent;
+    active?: any[];
+  }): void {
+    // console.log(event, active);
+  }
+
+  public chartHovered({
+    event,
+    active,
+  }: {
+    event?: ChartEvent;
+    active?: any[];
+  }): void {
+    // console.log(event, active);
+  }
+
+  exportImage(): void {
+    this.chart?.toBase64Image();
   }
 }

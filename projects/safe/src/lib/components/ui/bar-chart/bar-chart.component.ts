@@ -1,9 +1,7 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
-// import get from 'lodash/get';
+import get from 'lodash/get';
 import { ChartConfiguration, ChartData, ChartEvent, ChartType } from 'chart.js';
-import { get, set } from 'lodash';
 import { BaseChartDirective } from 'ng2-charts';
-
 // import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 
 /**
@@ -174,8 +172,8 @@ export class SafeBarChartComponent implements OnInit, OnChanges {
       y: {},
     },
     parsing: {
-      xAxisKey: 'category',
-      yAxisKey: 'field',
+      yAxisKey: 'category',
+      xAxisKey: 'field',
     },
     plugins: {
       legend: {
@@ -229,8 +227,8 @@ export class SafeBarChartComponent implements OnInit, OnChanges {
   }
 
   setOptions(): void {
-    console.log(this.title);
     this.barChartOptions = {
+      indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
       // We use these empty structures as placeholders for dynamic theming.
@@ -239,8 +237,8 @@ export class SafeBarChartComponent implements OnInit, OnChanges {
         y: {},
       },
       parsing: {
-        xAxisKey: 'category',
-        yAxisKey: 'field',
+        yAxisKey: 'category',
+        xAxisKey: 'field',
       },
       plugins: {
         legend: {
