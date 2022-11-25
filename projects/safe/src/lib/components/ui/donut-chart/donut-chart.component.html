@@ -1,4 +1,4 @@
-<kendo-chart #chart [seriesColors]="options && options.palette">
+<!-- <kendo-chart #chart [seriesColors]="options && options.palette">
   <kendo-chart-title
     *ngIf="title"
     [visible]="title.visible"
@@ -33,4 +33,14 @@
       ></kendo-chart-series-item-labels>
     </kendo-chart-series-item>
   </kendo-chart-series>
-</kendo-chart>
+</kendo-chart> -->
+<div class="h-full p-2">
+  <canvas
+    baseChart
+    [data]="chartData"
+    [options]="chartOptions"
+    [type]="chartType"
+    (chartHover)="chartHovered($event)"
+    (chartClick)="chartClicked($event)"
+  ></canvas>
+</div>

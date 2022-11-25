@@ -5,7 +5,6 @@ import {
   OnDestroy,
   ViewChild,
 } from '@angular/core';
-import { saveAs } from '@progress/kendo-file-saver';
 import { Subscription } from 'rxjs';
 import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
 import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
@@ -113,14 +112,18 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
    * Exports the chart as a png ticket
    */
   public onExport(): void {
-    // this.chartWrapper
-    //   ?.exportImage({
-    //     width: 1200,
-    //     height: 800,
-    //   })
-    //   .then((dataURI: string) => {
-    //     saveAs(dataURI, this.fileName);
-    //   });
+    // {
+    //   width: 1200,
+    //   height: 800,
+    // }
+    // this.chartWrapper?.exportImage();
+    // .then((dataURI: string) => {
+    //   saveAs(dataURI, this.fileName);
+    // });
+    const downloadLink = document.createElement('a');
+    downloadLink.href = this.chartWrapper?.chart?.toBase64Image() as string;
+    downloadLink.download = this.fileName;
+    downloadLink.click();
   }
 
   /**

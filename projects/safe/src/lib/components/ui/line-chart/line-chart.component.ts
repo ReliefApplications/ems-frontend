@@ -221,6 +221,9 @@ export class SafeLineChartComponent implements OnInit, OnChanges {
   }
 
   exportImage(): void {
-    this.chart?.toBase64Image();
+    const downloadLink = document.createElement('a');
+    downloadLink.href = this.chart?.toBase64Image() as string;
+    downloadLink.download = 'test';
+    downloadLink.click();
   }
 }
