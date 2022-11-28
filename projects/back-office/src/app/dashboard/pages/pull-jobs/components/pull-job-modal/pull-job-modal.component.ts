@@ -23,6 +23,8 @@ import {
   GET_ROUTING_KEYS,
 } from '../../graphql/queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import get from 'lodash/get';
+import { cronValidator } from 'projects/safe/src/lib/utils/validators/cron.validator';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -126,7 +128,10 @@ export class PullJobModalComponent implements OnInit {
       ],
       url: [this.data.pullJob ? this.data.pullJob.url : ''],
       path: [this.data.pullJob ? this.data.pullJob.path : ''],
-      schedule: [this.data.pullJob ? this.data.pullJob.schedule : ''],
+      schedule: [
+        get(this.data, 'pullJob.schedule', ''),
+        [Validators.required, cronValidator()],
+      ],
       convertTo: [
         this.data.pullJob && this.data.pullJob.convertTo
           ? this.data.pullJob.convertTo.id

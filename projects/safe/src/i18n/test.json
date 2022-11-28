@@ -586,6 +586,9 @@
 				"title": "******"
 			},
 			"modal": {
+				"errors": {
+					"schedule": "******"
+				},
 				"hint": {
 					"path": "******",
 					"schedule": "******",
