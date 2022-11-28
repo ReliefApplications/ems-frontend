@@ -105,6 +105,7 @@ export * from './lib/components/ui/icon/public-api';
 export * from './lib/pages/profile/public-api';
 export * from './lib/pages/application-templates/public-api';
 export * from './lib/pages/application-distribution-lists/public-api';
+export * from './lib/pages/application-notifications/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';

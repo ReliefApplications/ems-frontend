@@ -118,9 +118,22 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
                 )
               ) {
                 adminNavItems.push({
-                  name: this.translate.instant('common.distributionList.few'),
+                  name: this.translate.instant('common.customNotification.few'),
                   path: './settings/distribution-lists',
                   icon: 'mail',
+                });
+              }
+              if (
+                role.permissions?.some(
+                  (x) =>
+                    x.type === Permissions.canManageCustomNotifications &&
+                    !x.global
+                )
+              ) {
+                adminNavItems.push({
+                  name: this.translate.instant('common.distributionList.few'),
+                  path: './settings/notifications',
+                  icon: 'schedule_send',
                 });
               }
             }

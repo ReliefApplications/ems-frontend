@@ -45,6 +45,11 @@
 		},
 		"create": "Create",
 		"createdOn": "Created on",
+		"customNotification": {
+			"few": "Custom notifications",
+			"none": "No Custom notification",
+			"one": "Custom notification"
+		},
 		"dashboard": {
 			"few": "Dashboards",
 			"none": "No dashboard",
@@ -449,6 +454,11 @@
 			"confirm": "Confirm",
 			"delete": "Delete",
 			"title": "Confirm"
+		},
+		"customNotifications": {
+			"edit": {
+				"new": "New Custom Notification"
+			}
 		},
 		"distributionLists": {
 			"delete": {
@@ -1381,6 +1391,9 @@
 		"channel": {
 			"create": "Create a channel",
 			"new": "New channel"
+		},
+		"customNotification": {
+			"lastExecution": "Last execution"
 		},
 		"dashboard": {
 			"share": "Share Dashboard"

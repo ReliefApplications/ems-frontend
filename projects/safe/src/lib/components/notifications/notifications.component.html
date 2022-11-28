@@ -6,9 +6,9 @@
       icon="add"
       category="secondary"
       variant="primary"
-      (click)="addEmailTemplate()"
+      (click)="addNotification()"
     >
-      {{ 'components.templates.edit.new' | translate }}
+      {{ 'components.customNotifications.edit.new' | translate }}
     </safe-button>
   </div>
 </div>
@@ -16,7 +16,7 @@
 <div class="overflow-x-hidden">
   <!-- Table scroll container -->
   <div class="overflow-auto">
-    <table *ngIf="!loading" mat-table [dataSource]="templates" matSort>
+    <table *ngIf="!loading" mat-table [dataSource]="notifications" matSort>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>
@@ -26,15 +26,24 @@
         <td mat-cell *matCellDef="let element">{{ element.name }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="type">
+      <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>
           <span class="headerTitle" mat-sort-header>
-            {{ 'common.type.one' | translate }}
+            {{ 'common.status' | translate }}
           </span>
         </th>
         <td mat-cell *matCellDef="let element">
-          {{ 'components.templates.type.' + element.type | translate }}
+          {{ 'components.notifications.type.' + element.type | translate }}
         </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lastExecution">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header>
+            {{ 'models.customNotification.lastExecution' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.lastExecution }}</td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
@@ -48,12 +57,12 @@
           >
           </safe-button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="editEmailTemplate(element)">
+            <button mat-menu-item (click)="editNotification(element)">
               <mat-icon>edit</mat-icon>
               {{ 'common.edit' | translate }}
             </button>
             <safe-divider class="!m-0"></safe-divider>
-            <button mat-menu-item (click)="deleteTemplate(element)">
+            <button mat-menu-item (click)="deleteNotification(element)">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>
@@ -69,7 +78,22 @@
 <!-- Loading indicator -->
 <safe-skeleton-table
   *ngIf="loading"
-  [columns]="displayedColumns"
+  [columns]="[
+    'common.name',
+    'common.status',
+    'models.customNotification.lastExecution'
+  ]"
   [actions]="true"
 >
 </safe-skeleton-table>
+<!-- Pagination -->
+<mat-paginator
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [length]="pageInfo.length"
+  aria-label="Select page of notifications"
+  (page)="onPage($event)"
+>
+</mat-paginator>

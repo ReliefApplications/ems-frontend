@@ -63,6 +63,7 @@ export enum Permissions {
   canCreateApplications = 'can_create_applications',
   canManageTemplates = 'can_manage_templates',
   canManageDistributionLists = 'can_manage_distribution_lists',
+  canManageCustomNotifications = 'can_manage_custom_notifications',
 }
 
 /** Enum of permissions types. */

@@ -77,6 +77,14 @@ export const routes = [
                 // canActivate: [SafePermissionGuard]
               },
               {
+                path: 'notifications',
+                loadChildren: () =>
+                  import('@safe/builder').then(
+                    (m) => m.SafeApplicationNotificationsModule
+                  ),
+                // canActivate: [SafePermissionGuard]
+              },
+              {
                 path: 'roles',
                 children: [
                   {

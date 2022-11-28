@@ -45,6 +45,11 @@
 		},
 		"create": "******",
 		"createdOn": "******",
+		"customNotification": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"dashboard": {
 			"few": "******",
 			"none": "******",
@@ -449,6 +454,11 @@
 			"confirm": "******",
 			"delete": "******",
 			"title": "******"
+		},
+		"customNotifications": {
+			"edit": {
+				"new": "******"
+			}
 		},
 		"distributionLists": {
 			"delete": {
@@ -1381,6 +1391,9 @@
 		"channel": {
 			"create": "******",
 			"new": "******"
+		},
+		"customNotification": {
+			"lastExecution": "******"
 		},
 		"dashboard": {
 			"share": "******"

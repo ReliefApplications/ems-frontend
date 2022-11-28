@@ -157,6 +157,14 @@ const routes: Routes = [
               ),
             // canActivate: [SafePermissionGuard]
           },
+          {
+            path: 'notifications',
+            loadChildren: () =>
+              import('@safe/builder').then(
+                (m) => m.SafeApplicationNotificationsModule
+              ),
+            // canActivate: [SafePermissionGuard]
+          },
         ],
       },
       {

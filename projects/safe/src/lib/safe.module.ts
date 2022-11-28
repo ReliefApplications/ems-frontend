@@ -46,6 +46,7 @@ import { SafeDividerModule } from './components/ui/divider/divider.module';
 import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.module';
 import { SafeApplicationTemplatesModule } from './pages/application-templates/application-templates.module';
 import { SafeApplicationDistributionListsModule } from './pages/application-distribution-lists/application-distribution-lists.module';
+import { SafeApplicationNotificationsModule } from './pages/application-notifications/application-notifications.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -72,7 +73,6 @@ import { SafeApplicationDistributionListsModule } from './pages/application-dist
     SafeConvertModalModule,
     SafeRecordHistoryModule,
     SafeRecordModalModule,
-    SafeProfileModule,
     SafeSearchResourceGridModalModule,
     SafeButtonModule,
     SafeContentChoiceModule,
@@ -95,8 +95,11 @@ import { SafeApplicationDistributionListsModule } from './pages/application-dist
     SafeEmptyModule,
     SafeDividerModule,
     SafeLeftSidenavModule,
+    // === Pages ===
+    SafeProfileModule,
     SafeApplicationTemplatesModule,
     SafeApplicationDistributionListsModule,
+    SafeApplicationNotificationsModule,
   ],
   declarations: [],
 })
