@@ -45,6 +45,11 @@
 		},
 		"create": "Créer",
 		"createdOn": "Date de création",
+		"customNotification": {
+			"few": "Notifications",
+			"none": "Aucune notification",
+			"one": "Notification"
+		},
 		"dashboard": {
 			"few": "Tableaux de bord",
 			"none": "Aucun tableau de bord",
@@ -449,6 +454,11 @@
 			"confirm": "Confirmer",
 			"delete": "Supprimer",
 			"title": "Confirmer"
+		},
+		"customNotifications": {
+			"edit": {
+				"new": "Nouvelle notification"
+			}
 		},
 		"distributionLists": {
 			"delete": {
@@ -1383,6 +1393,9 @@
 		"channel": {
 			"create": "Créer un canal de diffusion",
 			"new": "Nouveau canal de diffusion"
+		},
+		"customNotification": {
+			"lastExecution": "Dernière exécution"
 		},
 		"dashboard": {
 			"share": "Partager le tableau de bord"

@@ -1,9 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { Subscription } from 'rxjs';
+import { Application } from '../../models/application.model';
+import { CustomNotification } from '../../models/custom-notification.model';
+import { SafeApplicationService } from '../../services/application/application.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { EditNotificationModalComponent } from './components/edit-notification-modal/edit-notification-modal.component';
+import {
+  GetCustomNotificationsQueryResponse,
+  GET_CUSTOM_NOTIFICATIONS,
+} from './graphql/queries';
+
+/** Default number of items per request for pagination */
+const DEFAULT_PAGE_SIZE = 10;
 
 /**
  * Custom notifications table component.
@@ -13,17 +25,25 @@ import { EditNotificationModalComponent } from './components/edit-notification-m
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],
 })
-export class NotificationsComponent implements OnInit {
+export class NotificationsComponent implements OnInit, OnDestroy {
   // === INPUT DATA ===
-  public notifications: MatTableDataSource<any> = new MatTableDataSource<any>(
-    []
-  );
-  // @Input() applicationService!: SafeApplicationService;
+  public notifications: MatTableDataSource<CustomNotification> =
+    new MatTableDataSource<CustomNotification>([]);
+  private cachedNotifications: CustomNotification[] = [];
+  private notificationsQuery!: QueryRef<GetCustomNotificationsQueryResponse>;
+  private applicationSubscription?: Subscription;
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['name', 'status', 'lastExecution'];
 
-  public loading = false;
+  public loading = true;
+  public updating = false;
+  public pageInfo = {
+    pageIndex: 0,
+    pageSize: DEFAULT_PAGE_SIZE,
+    length: 0,
+    endCursor: '',
+  };
 
   /**
    * Custom notifications table component.
@@ -34,13 +54,52 @@ export class NotificationsComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService
+    private confirmService: SafeConfirmService,
+    private apollo: Apollo,
+    private applicationService: SafeApplicationService
   ) {}
 
   ngOnInit(): void {
-    // this.applicationService.application$.subscribe((value) => {
-    //   this.templates.data = value?.templates || [];
-    // });
+    this.applicationSubscription =
+      this.applicationService.application$.subscribe(
+        (application: Application | null) => {
+          if (application) {
+            this.notificationsQuery =
+              this.apollo.watchQuery<GetCustomNotificationsQueryResponse>({
+                query: GET_CUSTOM_NOTIFICATIONS,
+                variables: {
+                  first: DEFAULT_PAGE_SIZE,
+                  application: application.id,
+                },
+              });
+            this.notificationsQuery.valueChanges.subscribe((res) => {
+              this.cachedNotifications =
+                res.data.application.customNotifications.edges.map(
+                  (x) => x.node
+                );
+              this.notifications.data = this.cachedNotifications.slice(
+                this.pageInfo.pageSize * this.pageInfo.pageIndex,
+                this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+              );
+              this.pageInfo.length =
+                res.data.application.customNotifications.totalCount;
+              this.pageInfo.endCursor =
+                res.data.application.customNotifications.pageInfo.endCursor;
+              this.loading = res.loading;
+              this.updating = false;
+            });
+          }
+        }
+      );
+  }
+
+  /**
+   * Handles page event.
+   *
+   * @param e page event.
+   */
+  onPage(e: any): void {
+    console.log(e);
   }
 
   /**
@@ -109,5 +168,11 @@ export class NotificationsComponent implements OnInit {
       //   },
       // });
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.applicationSubscription) {
+      this.applicationSubscription.unsubscribe();
+    }
   }
 }
