@@ -116,6 +116,11 @@
 			"none": "No layout",
 			"one": "Layout"
 		},
+		"customNotification": {
+			"few": "Custom notifications",
+			"none": "No Custom notification",
+			"one": "Custom notification"
+		},
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
