@@ -39,11 +39,16 @@
           </mat-form-field>
         </div>
         <!-- Show readable value of the schedule -->
-        <safe-alert variant="primary" class="mb-6">
+        <safe-alert
+          *ngIf="pullJobForm.get('schedule')?.valid"
+          variant="primary"
+          class="mb-6"
+        >
           <safe-icon icon="schedule"></safe-icon>
           {{ pullJobForm.value.schedule | safeReadableCron }}
         </safe-alert>
         <div class="flex gap-x-2 flex-wrap">
+          <!-- Schedule -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
             <input
@@ -63,7 +68,11 @@
                 'components.pullJob.modal.hint.schedule' | translate
               "
             ></safe-icon>
+            <mat-error *ngIf="pullJobForm.get('schedule')?.errors">
+              {{ 'components.pullJob.modal.errors.schedule' | translate }}
+            </mat-error>
           </mat-form-field>
+          <!-- API to use -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{
               'common.apiConfiguration.one' | translate
