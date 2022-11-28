@@ -50,6 +50,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
    *
    * @param dialog The material dialog service
    * @param translate The translation service
+   * @param confirmService Shared confirmation service
+   * @param apollo Apollo service
+   * @param applicationService Shared application service
    */
   constructor(
     public dialog: MatDialog,

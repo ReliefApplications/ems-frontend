@@ -9,6 +9,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./application-notifications.component.scss'],
 })
 export class SafeApplicationNotificationsComponent implements OnInit {
+  /**
+   * Application custom notifications page.
+   */
   constructor() {}
 
   ngOnInit(): void {}
