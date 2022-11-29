@@ -3,7 +3,7 @@ import { theme } from '../themes/oort/oort.prod';
 
 /** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
-  issuer: 'https://id.oortcloud.tech/auth/realms/oort-demo',
+  issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
   redirectUri: 'https://d3rv4m9pcr8lg2.cloudfront.net/',
   postLogoutRedirectUri: 'https://d3rv4m9pcr8lg2.cloudfront.net/auth/',
   clientId: 'oort-client',
@@ -15,8 +15,8 @@ const authConfig: AuthConfig = {
 /** Environment configuration */
 export const environment = {
   production: true,
-  apiUrl: 'https://demo.oortcloud.tech/api',
-  subscriptionApiUrl: 'wss://demo.oortcloud.tech/api',
+  apiUrl: 'https://oort-dev.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://oort-dev.oortcloud.tech/api',
   frontOfficeUri: 'https://d3rv4m9pcr8lg2.cloudfront.net',
   backOfficeUri: 'https://d3rv4m9pcr8lg2.cloudfront.net/admin/',
   module: 'frontoffice',
