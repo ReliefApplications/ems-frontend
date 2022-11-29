@@ -16,8 +16,8 @@ describe('StatusModalComponent', () => {
         {
           provide: MatDialogRef,
           useValue: {
-            updateSize: (width: any, height: any) => {},
-            addPanelClass: (str: any) => {},
+            updateSize: () => {},
+            addPanelClass: () => {},
           },
         },
         { provide: MAT_DIALOG_DATA, useValue: { title: '', content: '' } },

@@ -88,7 +88,7 @@ export class SafeSchedulerSettingsComponent implements OnInit {
       this.change.emit(this.tileForm);
     });
 
-    this.getSources({ value: this.tileForm.get('from')?.value }, true);
+    // this.getSources({ value: this.tileForm.get('from')?.value }, true);
     if (tileSettings.source) {
       this.getSource({ value: tileSettings.source });
     }
@@ -96,11 +96,8 @@ export class SafeSchedulerSettingsComponent implements OnInit {
 
   /**
    * Load the list of resources or forms.
-   *
-   * @param {any} e An event or any object with a value attribute
-   * @param {boolean} init Indicating if we must init the sources (optional)
    */
-  getSources(e: any, init?: boolean): void {
+  getSources(): void {
     // if (e.value === 'resource') {
     //   this.apollo.query<GetResourcesQueryResponse>({
     //     query: GET_RESOURCES

@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  Router,
-  RouterStateSnapshot,
-  UrlTree,
-} from '@angular/router';
+import { CanActivate, Router, UrlTree } from '@angular/router';
 import { SafeAuthService } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -28,14 +22,9 @@ export class AuthGuard implements CanActivate {
   /**
    * Check that user can see the page.
    *
-   * @param route route to navigate to
-   * @param state current router's state
    * @returns can user access the page or not
    */
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ):
+  canActivate():
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree>
     | boolean

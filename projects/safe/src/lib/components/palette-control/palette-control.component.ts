@@ -92,10 +92,8 @@ export class SafePaletteControlComponent
 
   /**
    * Close the control
-   *
-   * @param e close event
    */
-  onClose(e: any): void {
+  onClose(): void {
     this.onChanged(this.value);
   }
 

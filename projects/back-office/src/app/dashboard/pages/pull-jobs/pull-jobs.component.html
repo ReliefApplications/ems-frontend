@@ -52,22 +52,30 @@
           </mat-chip-list>
         </td>
       </ng-container>
-      <ng-container matColumnDef="apiConfiguration">
+      <!-- <ng-container matColumnDef="apiConfiguration">
         <th mat-header-cell *matHeaderCellDef>
           {{ 'common.apiConfiguration.one' | translate }}
         </th>
         <td mat-cell *matCellDef="let element">
           {{ element.apiConfiguration ? element.apiConfiguration.name : '-' }}
         </td>
+      </ng-container> -->
+      <ng-container matColumnDef="schedule">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'models.pullJob.nextIteration' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.schedule | safeCronParser | safeDate: 'short' }}
+        </td>
       </ng-container>
-      <ng-container matColumnDef="convertTo">
+      <!-- <ng-container matColumnDef="convertTo">
         <th mat-header-cell *matHeaderCellDef>
           {{ 'components.record.convert.select' | translate }}
         </th>
         <td mat-cell *matCellDef="let element">
           {{ element.convertTo ? element.convertTo.name : '-' }}
         </td>
-      </ng-container>
+      </ng-container> -->
       <ng-container matColumnDef="actions" [stickyEnd]="true">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">

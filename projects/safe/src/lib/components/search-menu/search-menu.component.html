@@ -14,7 +14,7 @@
 <div class="application-list">
   <div *ngIf="currentApplication">
     <safe-button
-      [block]="true"
+      class="!w-auto"
       variant="primary"
       (click)="onClick(currentApplication)"
       >{{ currentApplication.name }}</safe-button
@@ -24,7 +24,7 @@
   <div class="search-application-list">
     <safe-button
       *ngFor="let item of searchResults"
-      [block]="true"
+      class="!w-auto"
       (click)="onClick(item)"
       [matTooltip]="item.name"
       matTooltipShowDelay="1000"

@@ -2,7 +2,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeFormModalComponent } from '../../components/form-modal/form-modal.component';
 import { SafeResourceGridModalComponent } from '../../components/search-resource-grid-modal/search-resource-grid-modal.component';
 import { FormGroup } from '@angular/forms';
-import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { surveyLocalization } from 'survey-angular';
 
 /**
@@ -64,14 +63,12 @@ export const buildSearchButton = (
  * @param question The question object
  * @param multiselect Indicate if we need multiselect
  * @param dialog The material dialog service
- * @param gridComponent The grid component
  * @returns The button DOM element
  */
 export const buildAddButton = (
   question: any,
   multiselect: boolean,
-  dialog: MatDialog,
-  gridComponent?: SafeCoreGridComponent
+  dialog: MatDialog
 ): any => {
   const addButton = document.createElement('button');
   addButton.innerText = surveyLocalization.getString(

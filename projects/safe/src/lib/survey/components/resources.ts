@@ -173,7 +173,7 @@ export const init = (
           btn.style.border = 'none';
           btn.style.padding = '10px';
           htmlElement.appendChild(btn);
-          btn.onclick = (ev: any) => {
+          btn.onclick = () => {
             const currentQuestion = editor.object;
             getResourceById({ id: currentQuestion.resource }).subscribe(
               (response) => {
@@ -717,13 +717,8 @@ export const init = (
      *
      * @param question The current question
      * @param propertyName The name of the property
-     * @param newValue The new value assigned to the property by user
      */
-    onPropertyChanged(
-      question: any,
-      propertyName: string,
-      newValue: any
-    ): void {
+    onPropertyChanged(question: any, propertyName: string): void {
       if (propertyName === 'resource') {
         question.displayField = null;
         filters = [];
@@ -743,10 +738,7 @@ export const init = (
       if (question.resource) {
         const parentElement = el.querySelector('.safe-qst-content');
         if (parentElement) {
-          const gridComponent = buildRecordsGrid(
-            question,
-            parentElement.firstChild
-          );
+          buildRecordsGrid(question, parentElement.firstChild);
 
           if (question.survey.mode !== 'display') {
             el.parentElement.querySelector('#actionsButtons')?.remove();
@@ -763,12 +755,7 @@ export const init = (
             );
             actionsButtons.appendChild(searchBtn);
 
-            const addBtn = buildAddButton(
-              question,
-              true,
-              dialog,
-              gridComponent
-            );
+            const addBtn = buildAddButton(question, true, dialog);
             actionsButtons.appendChild(addBtn);
 
             parentElement.insertBefore(

@@ -352,7 +352,11 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.metaFields = Object.assign({}, res.data[field]);
-              await this.gridService.populateMetaFields(this.metaFields);
+              try {
+                await this.gridService.populateMetaFields(this.metaFields);
+              } catch (err) {
+                console.error(err);
+              }
               const fields = this.settings?.query?.fields || [];
               const defaultLayoutFields = this.defaultLayout.fields || {};
               this.fields = this.gridService.getFields(
@@ -420,7 +424,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       .filter((x) => ['Time'].includes(x.type))
       .map((x) => x.name);
     items.map((x) => {
-      for (const [key, value] of Object.entries(x)) {
+      for (const [key] of Object.entries(x)) {
         if (dateFields.includes(key) || timeFields.includes(key)) {
           x[key] = x[key] && new Date(x[key]);
           if (timeFields.includes(key)) {
@@ -989,7 +993,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               version: version.id,
             },
           })
-          .subscribe((res) => {
+          .subscribe(() => {
             this.reloadData();
             this.layoutService.setRightSidenav(null);
             this.snackBar.openSnackBar(

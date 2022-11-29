@@ -149,6 +149,7 @@ export class FormsComponent implements OnInit, OnDestroy {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.pageInfo.pageSize = first;
       this.fetchForms();
     } else {
       this.forms.data = this.cachedForms.slice(

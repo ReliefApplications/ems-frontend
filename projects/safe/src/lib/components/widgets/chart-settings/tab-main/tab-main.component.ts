@@ -60,7 +60,7 @@ export class TabMainComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.formGroup.get('chart.type')?.valueChanges.subscribe((value) => {
+    this.formGroup.get('chart.type')?.valueChanges.subscribe(() => {
       this.reload.next(true);
     });
     this.formGroup.get('resource')?.valueChanges.subscribe((value) => {

@@ -189,11 +189,10 @@ export class SafeInviteUsersComponent implements OnInit {
    * Handles cell click events. Creates form group for edition.
    *
    * @param param0 cell click event.
-   * @param param0.isEdited Weather the cell is edited
    * @param param0.dataItem The data of the item
    * @param param0.rowIndex The index of the current row
    */
-  public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
+  public cellClickHandler({ dataItem, rowIndex }: any): void {
     if (!this.editionActive) {
       this.formGroup = this.createFormGroup(dataItem);
       this.editionActive = true;

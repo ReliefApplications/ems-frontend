@@ -1,19 +1,19 @@
-<mat-form-field appearance="outline">
+<mat-form-field appearance="outline" class="flex-1">
   <mat-label>{{ label }}</mat-label>
+  <!-- Chip list -->
   <mat-chip-list #chipList>
-    <mat-basic-chip
+    <!-- Individual chip choice -->
+    <mat-chip
       *ngFor="let choice of selectedChoices"
-      (removed)="remove(choice)"
+      [selectable]="true"
+      [removable]="true"
       [value]="choice"
+      (removed)="remove(choice)"
     >
-      <div class="chip-text">{{ choice[displayKey] }}</div>
-      <safe-icon
-        matChipRemove
-        icon="close"
-        [size]="16"
-        [inline]="true"
-      ></safe-icon>
-    </mat-basic-chip>
+      {{ choice[displayKey] }}
+      <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
+    </mat-chip>
+    <!-- Search text control -->
     <input
       type="text"
       [placeholder]="label"
@@ -28,7 +28,7 @@
       *ngIf="showInput"
     />
   </mat-chip-list>
-
+  <!-- Filter choices -->
   <mat-autocomplete
     #auto="matAutocomplete"
     (optionSelected)="selected($event)"

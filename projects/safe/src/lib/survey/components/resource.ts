@@ -149,7 +149,7 @@ export const init = (
           btn.style.border = 'none';
           btn.style.padding = '10px';
           htmlElement.appendChild(btn);
-          btn.onclick = (ev: any) => {
+          btn.onclick = () => {
             const currentQuestion = editor.object;
             getResourceById({ id: currentQuestion.resource }).subscribe(
               (response) => {
@@ -542,13 +542,8 @@ export const init = (
      *
      * @param question The current question
      * @param propertyName The name of the property
-     * @param newValue The new value assigned to the property by the user
      */
-    onPropertyChanged(
-      question: QuestionResource,
-      propertyName: string,
-      newValue: any
-    ): void {
+    onPropertyChanged(question: QuestionResource, propertyName: string): void {
       if (propertyName === 'resource') {
         question.displayField = null;
         this.filters = [];

@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get } from 'lodash';
@@ -17,7 +10,6 @@ import {
   GET_APPLICATIONS,
   GET_ROLES,
 } from '../../graphql/queries';
-import { MatSelect } from '@angular/material/select';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 
 /** Roles tab for the user summary */
@@ -96,7 +88,7 @@ export class UserAppRolesComponent implements OnInit {
         },
       });
     this.applicationsQuery.valueChanges.subscribe(
-      (res) => {},
+      () => {},
       (err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
       }

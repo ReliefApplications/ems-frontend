@@ -47,6 +47,8 @@ import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.mo
 import { SafeApplicationTemplatesModule } from './pages/application-templates/application-templates.module';
 import { SafeApplicationDistributionListsModule } from './pages/application-distribution-lists/application-distribution-lists.module';
 import { SafeApplicationNotificationsModule } from './pages/application-notifications/application-notifications.module';
+import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
+import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -86,7 +88,10 @@ import { SafeApplicationNotificationsModule } from './pages/application-notifica
     SafeSkeletonTableModule,
     SafeSkeletonModule,
     SafeUserSummaryModule,
+    // === Pipes ===
     SafeDateModule,
+    SafeReadableCronModule,
+    SafeCronParserModule,
     SafeIconModule,
     SafeSummaryCardSettingsModule,
     SafeRoleSummaryModule,
@@ -101,6 +106,5 @@ import { SafeApplicationNotificationsModule } from './pages/application-notifica
     SafeApplicationDistributionListsModule,
     SafeApplicationNotificationsModule,
   ],
-  declarations: [],
 })
 export class SafeModule {}

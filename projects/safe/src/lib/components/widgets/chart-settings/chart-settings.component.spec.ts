@@ -10,8 +10,6 @@ import {
 } from '@ngx-translate/core';
 
 import { SafeChartSettingsComponent } from './chart-settings.component';
-import { Pie } from './charts/pie';
-import { CHART_TYPES } from './constants';
 
 describe('SafeChartSettingsComponent', () => {
   let component: SafeChartSettingsComponent;

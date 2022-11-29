@@ -19,7 +19,6 @@ import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
-import { Observable } from 'rxjs';
 import { Overlay } from '@angular/cdk/overlay';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { scrollFactory } from '../../../utils/scroll-factory';

@@ -9,7 +9,6 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  SimpleChanges,
   TemplateRef,
   ViewChild,
   ViewContainerRef,
@@ -182,7 +181,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.loadUser();
   }
 

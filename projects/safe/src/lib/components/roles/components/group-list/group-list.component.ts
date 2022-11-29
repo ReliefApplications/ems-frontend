@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
@@ -16,7 +16,6 @@ import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.serv
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { SafeAddRoleComponent } from '../add-role/add-role.component';
 import { SafeSnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import get from 'lodash/get';
 import { SafeRestService } from '../../../../services/rest/rest.service';
 

@@ -617,6 +617,9 @@
 				"title": "******"
 			},
 			"modal": {
+				"errors": {
+					"schedule": "******"
+				},
 				"hint": {
 					"path": "******",
 					"schedule": "******",
@@ -1066,6 +1069,10 @@
 						"title": "******",
 						"tooltip": {
 							"attach": "******",
+							"mail": {
+								"selectDistributionList": "******",
+								"selectTemplates": "******"
+							},
 							"notify": "******",
 							"publish": "******"
 						}
@@ -1433,6 +1440,7 @@
 		},
 		"pullJob": {
 			"new": "******",
+			"nextIteration": "******",
 			"path": "******",
 			"schedule": "******",
 			"url": "******"

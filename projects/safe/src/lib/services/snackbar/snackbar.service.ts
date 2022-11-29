@@ -2,7 +2,6 @@ import { ComponentType } from '@angular/cdk/portal';
 import { EmbeddedViewRef, Injectable, TemplateRef } from '@angular/core';
 import {
   MatSnackBar,
-  MatSnackBarConfig,
   MatSnackBarRef,
   TextOnlySnackBar,
 } from '@angular/material/snack-bar';

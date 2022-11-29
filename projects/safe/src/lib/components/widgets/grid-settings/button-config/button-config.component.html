@@ -188,10 +188,7 @@
         <!-- Selection of target resource -->
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-          <mat-select
-            formControlName="targetResource"
-            [compareWith]="compareFields"
-          >
+          <mat-select formControlName="targetResource">
             <mat-option>--</mat-option>
             <mat-option
               *ngFor="let resource of relatedResources"
@@ -204,10 +201,7 @@
         <!-- Selection of target template -->
         <mat-form-field appearance="outline" *ngIf="targetResource">
           <mat-label>{{ 'models.form.select' | translate }}</mat-label>
-          <mat-select
-            formControlName="targetForm"
-            [compareWith]="compareFields"
-          >
+          <mat-select formControlName="targetForm">
             <mat-option>--</mat-option>
             <mat-option
               *ngFor="let form of targetResource.forms"
@@ -322,6 +316,17 @@
               {{ list.name }}
             </mat-option>
           </mat-select>
+          <safe-icon
+            matSuffix
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            matSuffix
+            [matTooltip]="
+              'components.widget.settings.grid.buttons.tooltip.mail.selectDistributionList'
+                | translate
+            "
+          ></safe-icon>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>{{
@@ -335,6 +340,17 @@
               {{ template.name }}
             </mat-option>
           </mat-select>
+          <safe-icon
+            matSuffix
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            matSuffix
+            [matTooltip]="
+              'components.widget.settings.grid.buttons.tooltip.mail.selectTemplates'
+                | translate
+            "
+          ></safe-icon>
           <mat-error
             *ngIf="
               formGroup.get('sendMail')?.value &&

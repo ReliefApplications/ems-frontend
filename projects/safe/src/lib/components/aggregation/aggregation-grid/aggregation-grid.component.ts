@@ -1,10 +1,8 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Aggregation } from '../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { PAGER_SETTINGS } from './aggregation-grid.constants';
 import { GetResourceByIdQueryResponse, GET_RESOURCE } from './graphql/queries';
 

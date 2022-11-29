@@ -147,7 +147,7 @@ export class SafeDashboardService {
         },
       })
       .subscribe(
-        (res) => {},
+        () => {},
         (error) => console.log(error)
       );
   }

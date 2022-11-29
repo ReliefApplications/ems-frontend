@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { mapform } from './map-forms';
 import { FormGroup, FormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { debounceTime } from 'rxjs/operators';
 
 /** Component for the map widget settings */
 @Component({
@@ -50,10 +51,9 @@ export class SafeMapSettingsComponent implements OnInit {
 
     if (this.tileForm?.value.query.name) {
       this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
-      this.formatedSelectedFields = this.getFormatedSelectedFields(
-        this.queryBuilder.getFields(this.tileForm?.value.query.name),
-        this.selectedFields
-      );
+      this.queryBuilder
+        .getFilterFields(this.tileForm?.value.query)
+        .then((fields) => (this.formatedSelectedFields = fields));
     }
 
     const queryForm = this.tileForm.get('query') as FormGroup;
@@ -63,12 +63,14 @@ export class SafeMapSettingsComponent implements OnInit {
       this.tileForm?.controls.longitude.setValue('');
       this.tileForm?.controls.category.setValue('');
     });
-    queryForm.valueChanges.subscribe(() => {
-      this.selectedFields = this.getFields(queryForm.getRawValue().fields);
-      this.formatedSelectedFields = this.getFormatedSelectedFields(
-        this.queryBuilder.getFields(this.tileForm?.value.query.name),
-        this.selectedFields
-      );
+    queryForm.valueChanges.pipe(debounceTime(1000)).subscribe(() => {
+      const query = queryForm.getRawValue();
+      if (query.name.startsWith('all')) {
+        this.selectedFields = this.getFields(query.fields);
+        this.queryBuilder
+          .getFilterFields(query)
+          .then((fields) => (this.formatedSelectedFields = fields));
+      }
     });
   }
 
@@ -120,26 +122,26 @@ export class SafeMapSettingsComponent implements OnInit {
    * @param selectedFields The concatenated names of the selected fields
    * @returns A list of formated seected fields
    */
-  private getFormatedSelectedFields(
-    queryFields: any[],
-    selectedFields: (string | undefined)[]
-  ): any[] {
-    const rootFields = selectedFields.map((field) => field?.split('.')[0]);
-    return queryFields
-      .filter((queryField) => rootFields.includes(queryField.name))
-      .map((queryField) => {
-        const formatedFields = queryField.fields
-          ? this.getFormatedSelectedFields(
-              queryField.fields,
-              selectedFields
-                .filter((field) => field?.split('.')[0] === queryField.name)
-                .map((field) => field?.split('.').slice(1).join('.'))
-            )
-          : null;
-        return {
-          ...queryField,
-          ...(formatedFields ? { fields: formatedFields } : {}),
-        };
-      });
-  }
+  // private getFormatedSelectedFields(
+  //   queryFields: any[],
+  //   selectedFields: (string | undefined)[]
+  // ): any[] {
+  //   const rootFields = selectedFields.map((field) => field?.split('.')[0]);
+  //   return queryFields
+  //     .filter((queryField) => rootFields.includes(queryField.name))
+  //     .map((queryField) => {
+  //       const formatedFields = queryField.fields
+  //         ? this.getFormatedSelectedFields(
+  //             queryField.fields,
+  //             selectedFields
+  //               .filter((field) => field?.split('.')[0] === queryField.name)
+  //               .map((field) => field?.split('.').slice(1).join('.'))
+  //           )
+  //         : null;
+  //       return {
+  //         ...queryField,
+  //         ...(formatedFields ? { fields: formatedFields } : {}),
+  //       };
+  //     });
+  // }
 }

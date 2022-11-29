@@ -17,7 +17,6 @@ import {
   SafeWorkflowService,
   SafeDashboardService,
   SafeAuthService,
-  SafeTileDataComponent,
   Application,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
@@ -264,13 +263,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         },
       })
       .subscribe(
-        (res) => {
+        () => {
           this.dashboardService.openDashboard({
             ...this.dashboard,
             structure: this.tiles,
           });
         },
-        (error) => (this.loading = false)
+        () => (this.loading = false)
       );
   }
 

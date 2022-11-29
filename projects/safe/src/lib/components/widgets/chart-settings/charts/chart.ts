@@ -1,9 +1,6 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
-import {
-  createAggregationForm,
-  createMappingForm,
-} from '../../../ui/aggregation-builder/aggregation-builder-forms';
+import { createMappingForm } from '../../../ui/aggregation-builder/aggregation-builder-forms';
 
 /** Default list of colors for series */
 const DEFAULT_PALETTE = [
@@ -160,7 +157,7 @@ export class Chart {
       this.form.setControl('mapping', createMappingForm(mapping?.value, value));
     });
 
-    this.form.get('aggregationId')?.valueChanges.subscribe((value) => {
+    this.form.get('aggregationId')?.valueChanges.subscribe(() => {
       this.form.setControl(
         'mapping',
         createMappingForm(null, this.form.get('type')?.value)

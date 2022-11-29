@@ -1,17 +1,20 @@
 <div [formGroup]="form" class="flex flex-col gap-4">
+  <!-- Default filter -->
   <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
+    <!-- Search text filter -->
     <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
       <mat-icon matPrefix>search</mat-icon>
       <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
       <input matInput [formControl]="search" type="search" />
       <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>
     </mat-form-field>
+    <!-- Toggle advanced filters -->
     <safe-button
+      class="max-sm:!w-auto"
       icon="filter_list"
       category="tertiary"
       variant="primary"
       (click)="show = !show"
-      [block]="innerWidth <= 640"
     >
       {{
         show
@@ -20,10 +23,12 @@
       }}
     </safe-button>
   </div>
+  <!-- Advanced filters -->
   <div
     *ngIf="show"
     class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
   >
+    <!-- Date range filter -->
     <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
       <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
       <mat-date-range-input [rangePicker]="rangePicker">
@@ -49,6 +54,7 @@
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
+    <!-- Status filter -->
     <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
       <mat-label>{{ 'common.status' | translate }}</mat-label>
       <mat-select formControlName="status">
@@ -64,6 +70,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+    <!-- Core filter -->
     <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
       <mat-label>{{ 'components.forms.isCore' | translate }}</mat-label>
       <mat-select formControlName="core">
@@ -76,12 +83,9 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <safe-button
-      variant="danger"
-      [category]="innerWidth <= 640 ? 'secondary' : 'primary'"
-      (click)="clear()"
-      [block]="innerWidth <= 640"
-      >{{ 'common.filter.clear' | translate }}</safe-button
-    >
+    <!-- Clear filters -->
+    <safe-button class="max-sm:!w-auto" variant="danger" (click)="clear()">{{
+      'common.filter.clear' | translate
+    }}</safe-button>
   </div>
 </div>

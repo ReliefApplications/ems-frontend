@@ -61,10 +61,8 @@ export class UploadMenuComponent implements OnInit {
   /**
    * Handles download template event.
    * Event is transmitted by the component to other components.
-   *
-   * @param e click event.
    */
-  onDownloadTemplate(e: any): void {
+  onDownloadTemplate(): void {
     this.download.emit();
   }
 }

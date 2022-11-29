@@ -114,7 +114,7 @@
       *ngIf="hasMoreNotifications"
       category="primary"
       variant="primary"
-      [block]="true"
+      class="!w-auto"
       [disabled]="loadingNotifications"
       [loading]="loadingNotifications"
       (click)="onLoadMoreNotifications($event)"

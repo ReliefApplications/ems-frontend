@@ -2,7 +2,7 @@
   [formControl]="ngControl && $any(ngControl.control)"
   (openedChange)="onOpenSelect($event)"
   [required]="required"
-  (focusin)="onFocusIn($event)"
+  (focusin)="onFocusIn()"
   (focusout)="onFocusOut($event)"
 >
   <mat-option
@@ -11,9 +11,5 @@
   >
     {{ element[textField] }}
   </mat-option>
-  <mat-spinner
-    *ngIf="loading"
-    diameter="24"
-    style="padding-top: 1em"
-  ></mat-spinner>
+  <mat-spinner *ngIf="loading" class="my-2" diameter="24"></mat-spinner>
 </mat-select>

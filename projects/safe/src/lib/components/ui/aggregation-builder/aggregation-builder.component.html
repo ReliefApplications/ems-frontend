@@ -1,24 +1,18 @@
 <safe-spinner *ngIf="loading"></safe-spinner>
 <ng-container *ngIf="!loading">
-  <div class="aggregation-data-source">
-    <!-- <safe-forms-dropdown
-      [forms$]="forms$"
-      [loadingMore]="loadingMore"
-      [sourceControl]="aggregationForm.controls.dataSource"
-      (filter)="onFilterDataSource($event)"
-      (scrolled)="onScrollDataSource($event)"
-    ></safe-forms-dropdown> -->
+  <div class="flex">
+    <!-- Selection of fields -->
     <safe-tagbox
+      class="flex flex-1"
       [choices$]="fields$"
       [parentControl]="aggregationForm.controls.sourceFields"
       [label]="'components.aggregationBuilder.sourceFields' | translate"
     ></safe-tagbox>
   </div>
-  <div class="aggregation-builder-form">
-    <safe-pipeline
-      [fields$]="selectedFields$"
-      [metaFields$]="metaFields$"
-      [pipelineForm]="pipelineForm"
-    ></safe-pipeline>
-  </div>
+  <!-- Pipeline builder -->
+  <safe-pipeline
+    [fields$]="selectedFields$"
+    [metaFields$]="metaFields$"
+    [pipelineForm]="pipelineForm"
+  ></safe-pipeline>
 </ng-container>

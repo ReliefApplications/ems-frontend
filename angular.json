@@ -95,7 +95,6 @@
               "projects/safe/src/lib/style/styles.scss",
               "node_modules/survey-angular/survey.min.css",
               "node_modules/survey-creator/survey-creator.min.css",
-              "./node_modules/leaflet/dist/leaflet.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/select2/dist/css/select2.min.css"
@@ -114,7 +113,8 @@
               "surveyjs-widgets",
               "subscriptions-transport-ws",
               "zen-observable",
-              "lodash"
+              "lodash",
+              "construe"
             ]
           },
           "configurations": {
@@ -389,6 +389,38 @@
                 "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
+            "oort-aws": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.oort.aws.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/back-office/",
+              "baseHref": "/back-office/",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -546,7 +578,8 @@
               "surveyjs-widgets",
               "subscriptions-transport-ws",
               "zen-observable",
-              "lodash"
+              "lodash",
+              "construe"
             ]
           },
           "configurations": {
@@ -807,6 +840,38 @@
                 "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
+            "oort-aws": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.oort.aws.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/front-office/",
+              "baseHref": "/front-office/",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -955,7 +1020,9 @@
               "survey-knockout",
               "surveyjs-widgets",
               "subscriptions-transport-ws",
-              "zen-observable"
+              "zen-observable",
+              "lodash",
+              "construe"
             ]
           },
           "configurations": {
@@ -1108,7 +1175,6 @@
                 "inject": true
               },
               "projects/safe/src/lib/style/styles.scss",
-              "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-creator/survey-creator.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",

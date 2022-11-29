@@ -1,12 +1,16 @@
 <div [formGroup]="form" class="flex flex-col gap-4">
-  <div class="flex flex-wrap gap-2 items-center">
+  <!-- Default filter -->
+  <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
+    <!-- Search text filter -->
     <mat-form-field appearance="outline" class="p-0 mat-form-field-sm">
       <mat-icon matPrefix>search</mat-icon>
       <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
       <input matInput [formControl]="search" type="search" />
       <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>
     </mat-form-field>
+    <!-- Toggle advanced filters -->
     <safe-button
+      class="max-sm:!w-auto"
       icon="filter_list"
       category="tertiary"
       variant="primary"
@@ -18,7 +22,12 @@
       }}
     </safe-button>
   </div>
-  <div *ngIf="show" class="flex flex-wrap gap-2 items-center">
+  <!-- Advanced filters -->
+  <div
+    *ngIf="show"
+    class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
+  >
+    <!-- Date range filter -->
     <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
       <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
       <mat-date-range-input [rangePicker]="rangePicker">
@@ -44,6 +53,7 @@
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
+    <!-- Status filter -->
     <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
       <mat-label>{{ 'common.status' | translate }}</mat-label>
       <mat-select formControlName="status">
@@ -59,7 +69,8 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <safe-button variant="danger" (click)="clear()">{{
+    <!-- Clear filters -->
+    <safe-button variant="danger" (click)="clear()" class="max-sm:!w-auto">{{
       'common.filter.clear' | translate
     }}</safe-button>
   </div>
