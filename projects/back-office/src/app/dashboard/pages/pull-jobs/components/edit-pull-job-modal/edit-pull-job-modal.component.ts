@@ -34,11 +34,11 @@ const DEFAULT_FIELDS = ['createdBy'];
 
 /** Pull job modal component */
 @Component({
-  selector: 'app-pull-job-modal',
-  templateUrl: './pull-job-modal.component.html',
-  styleUrls: ['./pull-job-modal.component.scss'],
+  selector: 'app-edit-pull-job-modal',
+  templateUrl: './edit-pull-job-modal.component.html',
+  styleUrls: ['./edit-pull-job-modal.component.scss'],
 })
-export class PullJobModalComponent implements OnInit {
+export class EditPullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
   pullJobForm: FormGroup = new FormGroup({});
   isHardcoded = true;
@@ -101,7 +101,7 @@ export class PullJobModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<PullJobModalComponent>,
+    public dialogRef: MatDialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)
     public data: {

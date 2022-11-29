@@ -114,7 +114,8 @@
               "surveyjs-widgets",
               "subscriptions-transport-ws",
               "zen-observable",
-              "lodash"
+              "lodash",
+              "construe"
             ]
           },
           "configurations": {
@@ -578,7 +579,8 @@
               "surveyjs-widgets",
               "subscriptions-transport-ws",
               "zen-observable",
-              "lodash"
+              "lodash",
+              "construe"
             ]
           },
           "configurations": {
@@ -1019,7 +1021,9 @@
               "survey-knockout",
               "surveyjs-widgets",
               "subscriptions-transport-ws",
-              "zen-observable"
+              "zen-observable",
+              "lodash",
+              "construe"
             ]
           },
           "configurations": {

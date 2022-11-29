@@ -17,9 +17,9 @@ import {
   EditPullJobMutationResponse,
   EDIT_PULL_JOB,
 } from './graphql/mutations';
-import { PullJobModalComponent } from './components/pull-job-modal/pull-job-modal.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
+import { EditPullJobModalComponent } from './components/edit-pull-job-modal/edit-pull-job-modal.component';
 
 /**
  * Limit of pull jobs shown at once.
@@ -142,7 +142,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
    * Creates the pull job on close.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(PullJobModalComponent, {
+    const dialogRef = this.dialog.open(EditPullJobModalComponent, {
       autoFocus: false,
       data: {
         channels: this.channels,
@@ -272,7 +272,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
    * @param element pull job to edit.
    */
   onEdit(element: any): void {
-    const dialogRef = this.dialog.open(PullJobModalComponent, {
+    const dialogRef = this.dialog.open(EditPullJobModalComponent, {
       data: {
         channels: this.channels,
         pullJob: element,

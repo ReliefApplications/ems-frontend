@@ -1,4 +1,5 @@
 <safe-modal size="medium">
+  <!-- Modal header -->
   <h1 mat-dialog-title>
     {{
       data.pullJob
@@ -7,10 +8,12 @@
         : ('models.pullJob.new' | translate)
     }}
   </h1>
+  <!-- Modal content -->
   <div mat-dialog-content>
     <form [formGroup]="pullJobForm">
       <div class="flex flex-col">
         <div class="flex gap-x-2 flex-wrap">
+          <!-- Title -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'common.name' | translate }}</mat-label>
             <input
@@ -20,6 +23,7 @@
               formControlName="name"
             />
           </mat-form-field>
+          <!-- Status -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'common.status' | translate }}</mat-label>
             <mat-select formControlName="status">
@@ -89,6 +93,7 @@
           </mat-form-field>
         </div>
         <div class="flex gap-x-2 flex-wrap" *ngIf="!isHardcoded">
+          <!-- Url to pull -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'models.pullJob.url' | translate }}</mat-label>
             <input
@@ -107,6 +112,7 @@
               [matTooltip]="'components.pullJob.modal.hint.url' | translate"
             ></safe-icon>
           </mat-form-field>
+          <!-- Path to pull -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'models.pullJob.path' | translate }}</mat-label>
             <input
@@ -127,6 +133,7 @@
           </mat-form-field>
         </div>
         <div class="flex gap-x-2 flex-wrap">
+          <!-- Resource to use for conversion -->
           <mat-form-field appearance="outline" class="flex-auto">
             <mat-label>{{
               'components.record.convert.select' | translate
@@ -140,7 +147,7 @@
             >
             </safe-graphql-select>
           </mat-form-field>
-
+          <!-- Channel to notify on -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{
               'components.channel.dropdown.select' | translate
@@ -165,6 +172,7 @@
             </mat-select>
           </mat-form-field>
         </div>
+        <!-- Mapping -->
         <mat-expansion-panel
           [expanded]="false"
           [disabled]="!pullJobForm.value.convertTo"
@@ -242,6 +250,7 @@
             </ng-container>
           </div>
         </mat-expansion-panel>
+        <!-- Unique identifiers -->
         <mat-form-field
           *ngIf="mappingArray.controls.length > 0"
           appearance="outline"
@@ -262,6 +271,7 @@
       </div>
     </form>
   </div>
+  <!-- Modal actions -->
   <div mat-dialog-actions align="end">
     <safe-button (click)="onClose()">{{
       'common.close' | translate
