@@ -1,4 +1,5 @@
 <safe-modal size="medium">
+  <!-- Modal header -->
   <h1 mat-dialog-title>
     {{
       data.pullJob
@@ -7,11 +8,13 @@
         : ('models.pullJob.new' | translate)
     }}
   </h1>
+  <!-- Modal content -->
   <div mat-dialog-content>
-    <form [formGroup]="pullJobForm">
-      <div class="flex flex-col">
+    <form [formGroup]="formGroup">
+      <div class="flex flex-col pb-1">
         <div class="flex gap-x-2 flex-wrap">
-          <mat-form-field appearance="outline" class="flex-1">
+          <!-- Title -->
+          <mat-form-field appearance="outline" class="flex-auto">
             <mat-label>{{ 'common.name' | translate }}</mat-label>
             <input
               type="text"
@@ -20,25 +23,40 @@
               formControlName="name"
             />
           </mat-form-field>
+          <!-- Status -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'common.status' | translate }}</mat-label>
             <mat-select formControlName="status">
-              <mat-option
-                *ngFor="let statusChoice of statusChoices"
-                [value]="statusChoice"
-                >{{
-                  (statusChoice === 'active'
-                    ? 'common.status_active'
-                    : statusChoice === 'pending'
-                    ? 'common.status_pending'
-                    : 'common.status_archived'
-                  ) | translate
-                }}
+              <mat-select-trigger>
+                <ng-container
+                  *ngTemplateOutlet="
+                    statusTemplate;
+                    context: { $implicit: formGroup.value.status }
+                  "
+                ></ng-container>
+              </mat-select-trigger>
+              <mat-option *ngFor="let status of statusChoices" [value]="status">
+                <ng-container
+                  *ngTemplateOutlet="
+                    statusTemplate;
+                    context: { $implicit: status }
+                  "
+                ></ng-container>
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
+        <!-- Show readable value of the schedule -->
+        <safe-alert
+          *ngIf="formGroup.get('schedule')?.valid"
+          variant="primary"
+          class="mb-6"
+        >
+          <safe-icon icon="schedule"></safe-icon>
+          {{ formGroup.value.schedule | safeReadableCron }}
+        </safe-alert>
         <div class="flex gap-x-2 flex-wrap">
+          <!-- Schedule -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
             <input
@@ -58,7 +76,11 @@
                 'components.pullJob.modal.hint.schedule' | translate
               "
             ></safe-icon>
+            <mat-error *ngIf="formGroup.get('schedule')?.errors">
+              {{ 'components.pullJob.modal.errors.schedule' | translate }}
+            </mat-error>
           </mat-form-field>
+          <!-- API to use -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{
               'common.apiConfiguration.one' | translate
@@ -75,6 +97,7 @@
           </mat-form-field>
         </div>
         <div class="flex gap-x-2 flex-wrap" *ngIf="!isHardcoded">
+          <!-- Url to pull -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'models.pullJob.url' | translate }}</mat-label>
             <input
@@ -93,6 +116,7 @@
               [matTooltip]="'components.pullJob.modal.hint.url' | translate"
             ></safe-icon>
           </mat-form-field>
+          <!-- Path to pull -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'models.pullJob.path' | translate }}</mat-label>
             <input
@@ -113,6 +137,7 @@
           </mat-form-field>
         </div>
         <div class="flex gap-x-2 flex-wrap">
+          <!-- Resource to use for conversion -->
           <mat-form-field appearance="outline" class="flex-auto">
             <mat-label>{{
               'components.record.convert.select' | translate
@@ -126,7 +151,7 @@
             >
             </safe-graphql-select>
           </mat-form-field>
-
+          <!-- Channel to notify on -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{
               'components.channel.dropdown.select' | translate
@@ -151,9 +176,10 @@
             </mat-select>
           </mat-form-field>
         </div>
+        <!-- Mapping -->
         <mat-expansion-panel
           [expanded]="false"
-          [disabled]="!pullJobForm.value.convertTo"
+          [disabled]="!formGroup.value.convertTo"
         >
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -228,6 +254,7 @@
             </ng-container>
           </div>
         </mat-expansion-panel>
+        <!-- Unique identifiers -->
         <mat-form-field
           *ngIf="mappingArray.controls.length > 0"
           appearance="outline"
@@ -248,19 +275,47 @@
       </div>
     </form>
   </div>
+  <!-- Modal actions -->
   <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
+    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
     <safe-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="returnFormValue()"
       cdkFocusInitial
-      [disabled]="!pullJobForm.valid"
+      [disabled]="!formGroup.valid"
       (click)="toggleRawJSON()"
     >
       {{ (data.pullJob ? 'common.update' : 'common.create') | translate }}
     </safe-button>
   </div>
 </safe-modal>
+
+<!-- Template to display status -->
+<ng-template #statusTemplate let-status>
+  <mat-chip-list>
+    <mat-chip
+      class="success-chip !rounded-lg"
+      disabled
+      *ngIf="status === 'active'"
+    >
+      {{ 'common.status_active' | translate | titlecase }}
+    </mat-chip>
+    <mat-chip
+      class="accent-chip !rounded-lg"
+      disabled
+      color="accent"
+      *ngIf="status === 'pending'"
+    >
+      {{ 'common.status_pending' | translate | titlecase }}
+    </mat-chip>
+    <mat-chip
+      class="warn-chip !rounded-lg"
+      disabled
+      color="warn"
+      *ngIf="status === 'archived'"
+    >
+      {{ 'common.status_archived' | translate | titlecase }}
+    </mat-chip>
+  </mat-chip-list>
+</ng-template>

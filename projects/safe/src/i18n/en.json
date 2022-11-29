@@ -586,6 +586,9 @@
 				"title": "Delete pull job"
 			},
 			"modal": {
+				"errors": {
+					"schedule": "Enter a valid cron expression"
+				},
 				"hint": {
 					"path": "Enter the path to extract data from response",
 					"schedule": "Enter the schedule time for this Pull job",
@@ -1353,6 +1356,7 @@
 		},
 		"pullJob": {
 			"new": "New pull job",
+			"nextIteration": "Next iteration",
 			"path": "Path",
 			"schedule": "Schedule",
 			"url": "Url"

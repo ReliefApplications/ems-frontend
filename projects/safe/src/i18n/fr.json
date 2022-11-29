@@ -586,6 +586,9 @@
 				"title": "Supprimer la tâche"
 			},
 			"modal": {
+				"errors": {
+					"schedule": "Entrez une expression cron valide"
+				},
 				"hint": {
 					"path": "Entrer le chemin pour extraire la donnée de la réponse",
 					"schedule": "Entrez une expression CRON pour planifier la tâche",
@@ -1354,6 +1357,7 @@
 		},
 		"pullJob": {
 			"new": "Nouvelle tâche planifiée",
+			"nextIteration": "Prochaine exécution",
 			"path": "Chemin",
 			"schedule": "Horaire planifié",
 			"url": "Url"

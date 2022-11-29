@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PullJobModalComponent } from './pull-job-modal.component';
+import { EditPullJobModalComponent } from './edit-pull-job-modal.component';
 
-describe('PullJobModalComponent', () => {
-  let component: PullJobModalComponent;
-  let fixture: ComponentFixture<PullJobModalComponent>;
+describe('EditPullJobModalComponent', () => {
+  let component: EditPullJobModalComponent;
+  let fixture: ComponentFixture<EditPullJobModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PullJobModalComponent],
+      declarations: [EditPullJobModalComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PullJobModalComponent);
+    fixture = TestBed.createComponent(EditPullJobModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

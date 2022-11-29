@@ -45,6 +45,8 @@ import { SafeDividerModule } from './components/ui/divider/divider.module';
 import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.module';
 import { SafeApplicationTemplatesModule } from './pages/application-templates/application-templates.module';
 import { SafeApplicationDistributionListsModule } from './pages/application-distribution-lists/application-distribution-lists.module';
+import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
+import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -85,7 +87,10 @@ import { SafeApplicationDistributionListsModule } from './pages/application-dist
     SafeSkeletonTableModule,
     SafeSkeletonModule,
     SafeUserSummaryModule,
+    // === Pipes ===
     SafeDateModule,
+    SafeReadableCronModule,
+    SafeCronParserModule,
     SafeIconModule,
     SafeRoleSummaryModule,
     SafeGraphQLSelectModule,
@@ -96,6 +101,5 @@ import { SafeApplicationDistributionListsModule } from './pages/application-dist
     SafeApplicationTemplatesModule,
     SafeApplicationDistributionListsModule,
   ],
-  declarations: [],
 })
 export class SafeModule {}
