@@ -44,8 +44,9 @@ export class PullJobsComponent implements OnInit, OnDestroy {
   public displayedColumns: string[] = [
     'name',
     'status',
-    'apiConfiguration',
-    'convertTo',
+    // 'apiConfiguration',
+    // 'convertTo',
+    'schedule',
     'actions',
   ];
 

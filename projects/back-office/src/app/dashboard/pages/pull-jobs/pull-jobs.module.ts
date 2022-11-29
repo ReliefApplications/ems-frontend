@@ -11,6 +11,8 @@ import {
   SafeSkeletonTableModule,
   SafeIconModule,
   SafeDividerModule,
+  SafeCronParserModule,
+  SafeDateModule,
 } from '@safe/builder';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
@@ -35,6 +37,8 @@ import { EditPullJobModalModule } from './components/edit-pull-job-modal/edit-pu
     SafeSkeletonTableModule,
     SafeIconModule,
     EditPullJobModalModule,
+    SafeCronParserModule,
+    SafeDateModule,
   ],
 })
 export class PullJobsModule {}

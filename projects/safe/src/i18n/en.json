@@ -1356,6 +1356,7 @@
 		},
 		"pullJob": {
 			"new": "New pull job",
+			"nextIteration": "Next iteration",
 			"path": "Path",
 			"schedule": "Schedule",
 			"url": "Url"

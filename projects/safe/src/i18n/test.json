@@ -1356,6 +1356,7 @@
 		},
 		"pullJob": {
 			"new": "******",
+			"nextIteration": "******",
 			"path": "******",
 			"schedule": "******",
 			"url": "******"

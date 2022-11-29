@@ -1357,6 +1357,7 @@
 		},
 		"pullJob": {
 			"new": "Nouvelle tâche planifiée",
+			"nextIteration": "Prochaine exécution",
 			"path": "Chemin",
 			"schedule": "Horaire planifié",
 			"url": "Url"

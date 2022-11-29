@@ -46,6 +46,7 @@ import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.mo
 import { SafeApplicationTemplatesModule } from './pages/application-templates/application-templates.module';
 import { SafeApplicationDistributionListsModule } from './pages/application-distribution-lists/application-distribution-lists.module';
 import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
+import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -89,6 +90,7 @@ import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.modu
     // === Pipes ===
     SafeDateModule,
     SafeReadableCronModule,
+    SafeCronParserModule,
     SafeIconModule,
     SafeRoleSummaryModule,
     SafeGraphQLSelectModule,

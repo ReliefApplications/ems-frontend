@@ -117,6 +117,7 @@ export * from './lib/safe.module';
 // === PIPES ===
 export * from './lib/pipes/date/public-api';
 export * from './lib/pipes/readable-cron/public-api';
+export * from './lib/pipes/cron-parser/public-api';
 
 // === UTILS ===
 export * from './lib/utils/public-api';
