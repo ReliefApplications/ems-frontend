@@ -10,6 +10,7 @@ import {
   PullJob,
   status,
   authType,
+  cronValidator,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -24,7 +25,6 @@ import {
 } from '../../graphql/queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import get from 'lodash/get';
-import { cronValidator } from 'projects/safe/src/lib/utils/validators/cron.validator';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
