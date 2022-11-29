@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { createAggregationForm } from '../../../../ui/aggregation-builder/aggregation-builder-forms';
 import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
 import { Resource } from '../../../../../models/resource.model';
 import { Layout } from '../../../../../models/layout.model';

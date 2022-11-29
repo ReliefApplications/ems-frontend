@@ -12,7 +12,6 @@ import {
   SafeEditCalculatedFieldModalModule,
 } from '@safe/builder';
 import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component';
-import { MatPaginatorModule } from '@angular/material/paginator';
 
 /**
  * Calculated fields tab of resource page

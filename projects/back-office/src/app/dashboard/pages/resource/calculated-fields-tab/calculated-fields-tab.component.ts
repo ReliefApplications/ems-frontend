@@ -3,12 +3,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
   SafeEditCalculatedFieldModalComponent,
-  SafeGridLayoutService,
   SafeConfirmModalComponent,
   Resource,
   SafeSnackBarService,
 } from '@safe/builder';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
 import {
   Calculated_FIELD_UPDATE,

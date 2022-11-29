@@ -135,6 +135,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
    *
    * @param notification notification to be deleted
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   deleteNotification(notification: any): void {
     const dialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant('common.deleteObject', {
