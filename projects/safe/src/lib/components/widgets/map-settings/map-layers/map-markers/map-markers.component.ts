@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import get from 'lodash/get';
 import { markerRuleForm } from '../../map-forms';
 import { MapMarkerRuleComponent } from '../map-marker-rule/map-marker-rule.component';
 
@@ -88,9 +87,7 @@ export class MapMarkersComponent implements OnInit {
    */
   private getNumberFields(formatedFields: any[]): any[] {
     return formatedFields
-      .filter((field: any) =>
-        ['Int', 'Float'].includes(get(field, 'type.name', ''))
-      )
+      .filter((field: any) => field.type === 'numeric')
       .map((field) => field.name)
       .concat(
         formatedFields

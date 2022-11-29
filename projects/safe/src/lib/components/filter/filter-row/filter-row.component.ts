@@ -100,7 +100,7 @@ export class FilterRowComponent implements OnInit, OnChanges, AfterViewInit {
         ...this.field.filter,
       };
       this.operators = FILTER_OPERATORS.filter((x) =>
-        type?.operators.includes(x.value)
+        type?.operators?.includes(x.value)
       );
       if (init) {
         this.form.get('operator')?.setValue(type?.defaultOperator);
