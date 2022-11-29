@@ -54,7 +54,7 @@
     </ng-container>
     <ng-container *ngIf="!form.value.layout">
       <safe-button
-        [block]="true"
+      class="!w-auto"
         category="tertiary"
         variant="primary"
         (click)="addLayout()"
@@ -127,7 +127,7 @@
     </ng-container>
     <ng-container *ngIf="!form.value.aggregation">
       <safe-button
-        [block]="true"
+      class="!w-auto"
         category="tertiary"
         variant="primary"
         (click)="addAggregation()"

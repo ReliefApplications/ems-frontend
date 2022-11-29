@@ -1,6 +1,93 @@
 <safe-modal size="medium">
-  <h1 mat-dialog-title>TEST</h1>
-  <div mat-dialog-content></div>
+  <!-- Modal header -->
+  <h1 mat-dialog-title>EDIT CUSTOM NOTIFICATION</h1>
+  <!-- Modal content -->
+  <div mat-dialog-content>
+    <form [formGroup]="formGroup" class="flex flex-col pb-1">
+      <div class="flex gap-x-2 flex-wrap">
+        <!-- Title -->
+        <mat-form-field appearance="outline" class="flex-auto">
+          <mat-label>{{ 'common.name' | translate }}</mat-label>
+          <input
+            type="text"
+            [placeholder]="'common.placeholder.name' | translate"
+            matInput
+            formControlName="name"
+          />
+        </mat-form-field>
+        <!-- Type -->
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>TYPE</mat-label>
+          <mat-select formControlName="notificationType">
+            <mat-option value="email">
+              {{ 'common.email.one' | translate }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <safe-divider></safe-divider>
+      <!-- Schedule builder -->
+      <h3>SCHEDULE</h3>
+      <div class="flex flex-col">
+        <!-- Show readable value of the schedule -->
+        <safe-alert
+          *ngIf="formGroup.get('schedule')?.valid"
+          variant="primary"
+          class="mb-6"
+        >
+          <safe-icon icon="schedule"></safe-icon>
+          {{ formGroup.value.schedule | safeReadableCron }}
+        </safe-alert>
+        <!-- Schedule -->
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
+          <input
+            type="text"
+            [placeholder]="
+              'components.pullJob.modal.placeholder.schedule' | translate
+            "
+            matInput
+            formControlName="schedule"
+          />
+          <safe-icon
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            matSuffix
+            matTooltip="HINT"
+          ></safe-icon>
+          <mat-error *ngIf="formGroup.get('schedule')?.errors">
+            {{ 'components.pullJob.modal.errors.schedule' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <safe-divider></safe-divider>
+      <!-- Dataset selection -->
+      <h3>DATASET</h3>
+      <div class="flex flex-col">
+        <!-- Resource -->
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
+          <input type="text" matInput formControlName="resource" />
+        </mat-form-field>
+        <!-- Layout -->
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{ 'common.layout.one' | translate }}</mat-label>
+          <input type="text" matInput formControlName="layout" />
+        </mat-form-field>
+      </div>
+      <safe-divider></safe-divider>
+      <h3>EMAIL NOTIFICATION</h3>
+      <div class="flex flex-col">
+        <!-- Template -->
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{ 'common.template.one' | translate }}</mat-label>
+          <input type="text" matInput formControlName="template" />
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+  <!-- Modal actions -->
   <div mat-dialog-actions align="end">
     <safe-button mat-dialog-close>
       {{ 'common.close' | translate }}
