@@ -33,8 +33,33 @@ export class SafeTabFilterComponent implements OnInit {
   constructor(private queryBuilder: QueryBuilderService) {}
 
   ngOnInit(): void {
-    this.queryBuilder
-      .getFilterFields(this.query, this.dateEditor)
-      .then((fields) => (this.filterFields = fields));
+    this.queryBuilder.getFilterFields(this.query).then((fields) => {
+      this.setCustomEditors(fields);
+      this.filterFields = fields;
+    });
+  }
+
+  /**
+   * Set custom editors for some fields.
+   *
+   * @param fields list of fields.
+   */
+  private setCustomEditors(fields: any[]): void {
+    for (const field of fields) {
+      if (field.fields) {
+        this.setCustomEditors(field.fields);
+      } else {
+        switch (field.editor) {
+          case 'date':
+          case 'datetime': {
+            Object.assign(field, { filter: { template: this.dateEditor } });
+            break;
+          }
+          default: {
+            break;
+          }
+        }
+      }
+    }
   }
 }

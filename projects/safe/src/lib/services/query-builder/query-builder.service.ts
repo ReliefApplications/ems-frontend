@@ -1,5 +1,5 @@
 import { Apollo, gql } from 'apollo-angular';
-import { Injectable, TemplateRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   GetQueryMetaDataQueryResponse,
@@ -419,13 +419,9 @@ export class QueryBuilderService {
    * Format fields for filters.
    *
    * @param query custom query.
-   * @param dateEditor Template ref for the date editor.
    */
   // TO DO: Create an interface for this type of field (+ for the one retrieved from graphQL if possible)
-  public async getFilterFields(
-    query: any,
-    dateEditor?: TemplateRef<any>
-  ): Promise<any[]> {
+  public async getFilterFields(query: any): Promise<any[]> {
     if (query) {
       const sourceQuery = this.getQuerySource(query)?.toPromise();
       if (sourceQuery) {
@@ -442,12 +438,9 @@ export class QueryBuilderService {
                 ? res2.data.resource
                 : null;
               if (!dataset) return [];
-              console.log('Fields from request', get(dataset, 'metadata', []));
-              const fields = get(dataset, 'metadata', [])
+              return get(dataset, 'metadata', [])
                 .filter((x: any) => x.filterable !== false)
                 .map((x: any) => ({ ...x }));
-              if (dateEditor) this.setCustomEditors(fields, dateEditor);
-              return fields;
             }
           }
         }
@@ -456,30 +449,5 @@ export class QueryBuilderService {
       }
     }
     return [];
-  }
-
-  /**
-   * Set custom editors for some fields.
-   *
-   * @param fields list of fields.
-   * @param dateEditor Template ref for the date editor.
-   */
-  private setCustomEditors(fields: any[], dateEditor?: TemplateRef<any>): void {
-    for (const field of fields) {
-      if (field.fields) {
-        this.setCustomEditors(field.fields);
-      } else {
-        switch (field.editor) {
-          case 'date':
-          case 'datetime': {
-            Object.assign(field, { filter: { template: dateEditor } });
-            break;
-          }
-          default: {
-            break;
-          }
-        }
-      }
-    }
   }
 }
