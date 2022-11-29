@@ -40,7 +40,7 @@ const DEFAULT_FIELDS = ['createdBy'];
 })
 export class EditPullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  pullJobForm: FormGroup = new FormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
   isHardcoded = true;
 
   // === FORMS ===
@@ -71,7 +71,7 @@ export class EditPullJobModalComponent implements OnInit {
 
   /** @returns pull job mapping as form array */
   get mappingArray(): FormArray {
-    return this.pullJobForm.get('mapping') as FormArray;
+    return this.formGroup.get('mapping') as FormArray;
   }
 
   /** @returns default API configuration */
@@ -111,37 +111,21 @@ export class EditPullJobModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.pullJobForm = this.formBuilder.group({
-      name: [
-        this.data.pullJob ? this.data.pullJob.name : '',
-        Validators.required,
-      ],
-      status: [
-        this.data.pullJob ? this.data.pullJob.status : '',
-        Validators.required,
-      ],
+    this.formGroup = this.formBuilder.group({
+      name: [get(this.data, 'pullJob.name', ''), Validators.required],
+      status: [get(this.data, 'pullJob.status', ''), Validators.required],
       apiConfiguration: [
-        this.data.pullJob && this.data.pullJob.apiConfiguration
-          ? this.data.pullJob.apiConfiguration.id
-          : '',
+        get(this.data, 'pullJob.apiConfiguration.id', ''),
         Validators.required,
       ],
-      url: [this.data.pullJob ? this.data.pullJob.url : ''],
-      path: [this.data.pullJob ? this.data.pullJob.path : ''],
+      url: [get(this.data, 'pullJob.url', '')],
+      path: [get(this.data, 'pullJob.path', '')],
       schedule: [
         get(this.data, 'pullJob.schedule', ''),
         [Validators.required, cronValidator()],
       ],
-      convertTo: [
-        this.data.pullJob && this.data.pullJob.convertTo
-          ? this.data.pullJob.convertTo.id
-          : '',
-      ],
-      channel: [
-        this.data.pullJob && this.data.pullJob.channel
-          ? this.data.pullJob.channel.id
-          : '',
-      ],
+      convertTo: [get(this.data, 'pullJob.convertTo.id', '')],
+      channel: [get(this.data, 'pullJob.channel.id', '')],
       mapping: this.formBuilder.array(
         this.data.pullJob && this.data.pullJob.mapping
           ? Object.keys(this.data.pullJob.mapping).map((x: any) =>
@@ -157,11 +141,7 @@ export class EditPullJobModalComponent implements OnInit {
           ? JSON.stringify(this.data.pullJob?.mapping, null, 2)
           : '',
       ],
-      uniqueIdentifiers: [
-        this.data.pullJob && this.data.pullJob.uniqueIdentifiers
-          ? this.data.pullJob.uniqueIdentifiers
-          : [],
-      ],
+      uniqueIdentifiers: [get(this.data, 'pullJob.uniqueIdentifiers', [])],
     });
     this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORM_NAMES,
@@ -189,7 +169,7 @@ export class EditPullJobModalComponent implements OnInit {
     if (this.data.pullJob?.convertTo?.id) {
       this.getFields(this.data.pullJob?.convertTo.id);
     }
-    this.pullJobForm.get('convertTo')?.valueChanges.subscribe((res) => {
+    this.formGroup.get('convertTo')?.valueChanges.subscribe((res) => {
       if (res) {
         this.getFields(res);
       }
@@ -225,7 +205,7 @@ export class EditPullJobModalComponent implements OnInit {
       this.data.pullJob.apiConfiguration.authType &&
       this.data.pullJob.apiConfiguration.authType === authType.public
     );
-    this.pullJobForm
+    this.formGroup
       .get('apiConfiguration')
       ?.valueChanges.subscribe((apiConfiguration: string) => {
         if (apiConfiguration) {
@@ -277,7 +257,7 @@ export class EditPullJobModalComponent implements OnInit {
     return this.fields.filter(
       (field) =>
         field.name === name ||
-        !this.pullJobForm.value.mapping.some((x: any) => x.name === field.name)
+        !this.formGroup.value.mapping.some((x: any) => x.name === field.name)
     );
   }
 
@@ -307,10 +287,8 @@ export class EditPullJobModalComponent implements OnInit {
    */
   toggleRawJSON(): void {
     if (this.openRawJSON) {
-      const mapping = JSON.parse(
-        this.pullJobForm.get('rawMapping')?.value || ''
-      );
-      this.pullJobForm.setControl(
+      const mapping = JSON.parse(this.formGroup.get('rawMapping')?.value || '');
+      this.formGroup.setControl(
         'mapping',
         this.formBuilder.array(
           Object.keys(mapping).map((x: any) =>
@@ -322,24 +300,17 @@ export class EditPullJobModalComponent implements OnInit {
         )
       );
     } else {
-      const mapping = this.pullJobForm
+      const mapping = this.formGroup
         .get('mapping')
         ?.value.reduce(
           (o: any, field: any) => ({ ...o, [field.name]: field.value }),
           {}
         );
-      this.pullJobForm
+      this.formGroup
         .get('rawMapping')
         ?.setValue(JSON.stringify(mapping, null, 2));
     }
     this.openRawJSON = !this.openRawJSON;
-  }
-
-  /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
   }
 
   /**
@@ -349,17 +320,17 @@ export class EditPullJobModalComponent implements OnInit {
    */
   returnFormValue(): any {
     if (!this.openRawJSON) {
-      const mapping = this.pullJobForm
+      const mapping = this.formGroup
         .get('mapping')
         ?.value.reduce(
           (o: any, field: any) => ({ ...o, [field.name]: field.value }),
           {}
         );
-      this.pullJobForm
+      this.formGroup
         .get('rawMapping')
         ?.setValue(JSON.stringify(mapping, null, 2));
     }
-    return this.pullJobForm.value;
+    return this.formGroup.value;
   }
 
   /**

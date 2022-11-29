@@ -10,7 +10,7 @@
   </h1>
   <!-- Modal content -->
   <div mat-dialog-content>
-    <form [formGroup]="pullJobForm">
+    <form [formGroup]="formGroup">
       <div class="flex flex-col">
         <div class="flex gap-x-2 flex-wrap">
           <!-- Title -->
@@ -44,12 +44,12 @@
         </div>
         <!-- Show readable value of the schedule -->
         <safe-alert
-          *ngIf="pullJobForm.get('schedule')?.valid"
+          *ngIf="formGroup.get('schedule')?.valid"
           variant="primary"
           class="mb-6"
         >
           <safe-icon icon="schedule"></safe-icon>
-          {{ pullJobForm.value.schedule | safeReadableCron }}
+          {{ formGroup.value.schedule | safeReadableCron }}
         </safe-alert>
         <div class="flex gap-x-2 flex-wrap">
           <!-- Schedule -->
@@ -72,7 +72,7 @@
                 'components.pullJob.modal.hint.schedule' | translate
               "
             ></safe-icon>
-            <mat-error *ngIf="pullJobForm.get('schedule')?.errors">
+            <mat-error *ngIf="formGroup.get('schedule')?.errors">
               {{ 'components.pullJob.modal.errors.schedule' | translate }}
             </mat-error>
           </mat-form-field>
@@ -175,7 +175,7 @@
         <!-- Mapping -->
         <mat-expansion-panel
           [expanded]="false"
-          [disabled]="!pullJobForm.value.convertTo"
+          [disabled]="!formGroup.value.convertTo"
         >
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -273,15 +273,13 @@
   </div>
   <!-- Modal actions -->
   <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
+    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
     <safe-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="returnFormValue()"
       cdkFocusInitial
-      [disabled]="!pullJobForm.valid"
+      [disabled]="!formGroup.valid"
       (click)="toggleRawJSON()"
     >
       {{ (data.pullJob ? 'common.update' : 'common.create') | translate }}
