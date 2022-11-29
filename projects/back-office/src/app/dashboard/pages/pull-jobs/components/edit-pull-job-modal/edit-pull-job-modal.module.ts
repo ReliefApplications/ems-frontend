@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatChipsModule } from '@angular/material/chips';
 
 /**
  * Edit pull job module.
@@ -34,6 +35,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatSelectModule,
     MatFormFieldModule,
     MatExpansionModule,
+    MatChipsModule,
   ],
   exports: [EditPullJobModalComponent],
 })

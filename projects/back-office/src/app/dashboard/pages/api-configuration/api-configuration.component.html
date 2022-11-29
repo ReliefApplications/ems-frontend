@@ -30,22 +30,24 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" style="flex: 1">
-          <mat-label>
-            {{ 'common.status' | translate }}
-          </mat-label>
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{ 'common.status' | translate }}</mat-label>
           <mat-select formControlName="status">
-            <mat-option
-              *ngFor="let statusChoice of statusChoices"
-              [value]="statusChoice"
-              >{{
-                (statusChoice === status.active
-                  ? 'common.status_active'
-                  : statusChoice === status.pending
-                  ? 'common.status_pending'
-                  : 'common.status_archived'
-                ) | translate
-              }}
+            <mat-select-trigger>
+              <ng-container
+                *ngTemplateOutlet="
+                  statusTemplate;
+                  context: { $implicit: apiForm.value.status }
+                "
+              ></ng-container>
+            </mat-select-trigger>
+            <mat-option *ngFor="let status of statusChoices" [value]="status">
+              <ng-container
+                *ngTemplateOutlet="
+                  statusTemplate;
+                  context: { $implicit: status }
+                "
+              ></ng-container>
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -218,3 +220,32 @@
     </safe-button>
   </form>
 </ng-container>
+
+<!-- Template to display status -->
+<ng-template #statusTemplate let-status>
+  <mat-chip-list>
+    <mat-chip
+      class="success-chip !rounded-lg"
+      disabled
+      *ngIf="status === 'active'"
+    >
+      {{ 'common.status_active' | translate | titlecase }}
+    </mat-chip>
+    <mat-chip
+      class="accent-chip !rounded-lg"
+      disabled
+      color="accent"
+      *ngIf="status === 'pending'"
+    >
+      {{ 'common.status_pending' | translate | titlecase }}
+    </mat-chip>
+    <mat-chip
+      class="warn-chip !rounded-lg"
+      disabled
+      color="warn"
+      *ngIf="status === 'archived'"
+    >
+      {{ 'common.status_archived' | translate | titlecase }}
+    </mat-chip>
+  </mat-chip-list>
+</ng-template>

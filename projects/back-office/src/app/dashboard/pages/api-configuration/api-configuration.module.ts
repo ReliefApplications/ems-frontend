@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { SafeButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatChipsModule } from '@angular/material/chips';
 
 /**
  * API configuration page module.
@@ -29,6 +30,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatOptionModule,
     SafeButtonModule,
     TranslateModule,
+    MatChipsModule,
   ],
 })
 export class ApiConfigurationModule {}
