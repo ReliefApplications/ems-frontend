@@ -114,6 +114,7 @@ export * from './lib/safe.module';
 export * from './lib/pipes/date/public-api';
 export * from './lib/pipes/readable-cron/public-api';
 export * from './lib/pipes/cron-parser/public-api';
+export * from './lib/pipes/readable-calculated-field/public-api';
 
 // === UTILS ===
 export * from './lib/utils/public-api';

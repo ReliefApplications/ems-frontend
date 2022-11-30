@@ -22,7 +22,7 @@
         {{ 'components.calculatedFields.expression' | translate }}
       </th>
       <td mat-cell *matCellDef="let element">
-        {{ element.expression }}
+        <span [innerHTML]="element.expression | safeReadableCalculatedField"></span>
       </td>
     </ng-container>
 

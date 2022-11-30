@@ -42,6 +42,7 @@ import { SafeApplicationDistributionListsModule } from './pages/application-dist
 import { SafeApplicationNotificationsModule } from './pages/application-notifications/application-notifications.module';
 import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
 import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
+import { SafeReadableCalculatedFieldModule } from './pipes/readable-calculated-field/readable-calculated-field.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -78,6 +79,7 @@ import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
     SafeDateModule,
     SafeReadableCronModule,
     SafeCronParserModule,
+    SafeReadableCalculatedFieldModule,
     SafeIconModule,
     SafeSummaryCardSettingsModule,
     SafeRoleSummaryModule,
