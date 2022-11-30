@@ -59,7 +59,6 @@ export class Chart {
       legend: this.fb.group({
         visible: [legend ? legend.visible : true],
         position: [legend ? legend.position : 'bottom'],
-        orientation: [legend ? legend.orientation : 'horizontal'],
       }),
       title: this.fb.group({
         visible: [get(title, 'visible', true)],

@@ -79,6 +79,7 @@
     "angular-oauth2-oidc": "~13.0.1",
     "apollo-angular": "^3.0.1",
     "chart.js": "^4.0.1",
+    "chartjs-plugin-datalabels": "^2.1.0",
     "document-register-element": "^1.14.10",
     "extract-files": "^11.0.0",
     "graphql": "^16",

@@ -36,29 +36,7 @@
               </safe-button>
             </div>
           </div>
-          <div>
-            <h3>
-              {{ 'components.widget.settings.chart.orientation' | translate }}
-            </h3>
-            <div class="flex gap-0.5">
-              <safe-button
-                icon="{{ orientation.icon }}"
-                category="secondary"
-                [variant]="
-                  orientation.value === chartForm.value.legend.orientation
-                    ? 'primary'
-                    : ''
-                "
-                (click)="
-                  chartForm.patchValue({
-                    legend: { orientation: orientation.value }
-                  })
-                "
-                *ngFor="let orientation of legendOrientations"
-              >
-              </safe-button>
-            </div>
-          </div>
+          <div></div>
         </ng-container>
       </mat-expansion-panel>
       <!-- === TITLE === -->
