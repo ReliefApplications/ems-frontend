@@ -119,6 +119,11 @@ export class SafeBarChartComponent implements OnChanges {
           stacked: get(this.options, 'stack', false),
           min: isBar ? get(this.options, 'axes.x.min', undefined) : undefined,
           max: isBar ? get(this.options, 'axes.x.max', undefined) : undefined,
+          ticks: {
+            autoSkip: false,
+            maxRotation: !isBar && this.shouldRotateLabels() ? 90 : 0,
+            minRotation: !isBar && this.shouldRotateLabels() ? 90 : 0,
+          },
         },
         y: {
           stacked: get(this.options, 'stack', false),
@@ -223,6 +228,30 @@ export class SafeBarChartComponent implements OnChanges {
         actualField: d.field,
       })),
     }));
+  }
+
+  /**
+   * Gets whether or not the labels should be rotated
+   *
+   * @returns true if the labels should be rotated, false otherwise
+   */
+  private shouldRotateLabels() {
+    if (this.orientation === 'horizontal') return false;
+
+    const ctx = this.chart?.chart?.ctx;
+    if (!ctx) return false;
+
+    const labels = new Set<string>();
+    this.series.forEach((s) =>
+      s.data.forEach((d: any) => labels.add(d.category))
+    );
+
+    const totalLabelWidth = Array.from(labels).reduce(
+      (acc, label) => acc + ctx.measureText(label).width + 10,
+      0
+    );
+
+    return ctx.canvas.width < totalLabelWidth;
   }
 
   /** Exports chart as an image */
