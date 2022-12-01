@@ -4,12 +4,6 @@ OORT Front-end
 [![Github Pages](https://github.com/ReliefApplications/oort-frontend/actions/workflows/github-pages.yml/badge.svg)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/github-pages.yml)
 [![Storybook](https://github.com/ReliefApplications/oort-frontend/actions/workflows/storybook.yml/badge.svg)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/storybook.yml)
 
-# Versions
-
-* 1.2 : [![Build](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml/badge.svg?branch=release-1.2.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml) [![CI](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=release-1.2.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml) [![CodeQL](https://github.com/ReliefApplications/oort-frontend/actions/workflows/codeql-analysis.yml/badge.svg?branch=release-1.2.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/codeql-analysis.yml)
-* 1.3 : [![Build](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml/badge.svg?branch=release-1.3.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml) [![CI](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=release-1.3.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml) [![CodeQL](https://github.com/ReliefApplications/oort-frontend/actions/workflows/codeql-analysis.yml/badge.svg?branch=release-1.3.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/codeql-analysis.yml)
-* 1.4 : [![Build](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml/badge.svg?branch=release-1.4.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml) [![CI](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=release-1.4.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml) [![CodeQL](https://github.com/ReliefApplications/oort-frontend/actions/workflows/codeql-analysis.yml/badge.svg?branch=release-1.4.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/codeql-analysis.yml)
-
 # Introduction
 
 This front-end was made using [Angular](https://angular.io/). It uses multiple external packages, but the relevant ones are:
@@ -168,32 +162,6 @@ Then, a bundle can be generated from the files using this command:
 ```
 npm run bundle:elem
 ```
-
-## Deploy a release
-
-[Standard Version library](https://github.com/conventional-changelog/standard-version) is used by the project.
-
-In order to increase the versions of the code, you can use the related commands:
-
-- For a minor version:
-
-```
-npm run release:minor
-```
-
-- For a patch:
-
-```
-npm run release:patch
-```
-
-- For a major version:
-
-```
-npm run release:major
-```
-
-The cli should indicate the next command to run, in order to deploy the version.
 
 ## Running unit tests
 
