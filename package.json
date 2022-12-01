@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "0.0.0-development",
+  "version": "1.2.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -173,6 +173,12 @@
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
       "@semantic-release/changelog",
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false
+        }
+      ],
       "@semantic-release/github",
       "@semantic-release/git"
     ]
