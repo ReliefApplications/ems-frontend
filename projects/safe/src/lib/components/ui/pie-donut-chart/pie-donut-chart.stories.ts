@@ -1,13 +1,13 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
-import { SafePieChartComponent } from './pie-chart.component';
-import { SafePieChartModule } from './pie-chart.module';
+import { SafePieDonutChartComponent } from './pie-donut-chart.component';
+import { SafePieDonutChartModule } from './pie-donut-chart.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
-  component: SafePieChartComponent,
+  component: SafePieDonutChartComponent,
   decorators: [
     moduleMetadata({
-      imports: [SafePieChartModule, BrowserAnimationsModule],
+      imports: [SafePieDonutChartModule, BrowserAnimationsModule],
       providers: [],
     }),
   ],
@@ -31,9 +31,9 @@ export default {
  * @param args Arguments used by the component
  * @returns Returns an object used as the stories template
  */
-const TEMPLATE: Story<SafePieChartComponent> = (args) => ({
+const TEMPLATE: Story<SafePieDonutChartComponent> = (args) => ({
   template:
-    '<div style="height:400px"><safe-pie-chart [legend]="legend" [title]="title" [series]="series"></safe-pie-chart></div>',
+    '<div style="height:400px"><safe-pie-donut-chart [legend]="legend" [title]="title" [series]="series"></safe-pie-donut-chart></div>',
   props: {
     ...args,
   },

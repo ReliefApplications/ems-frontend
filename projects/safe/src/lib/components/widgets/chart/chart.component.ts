@@ -7,8 +7,7 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
-import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
-import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
+import { SafePieDonutChartComponent } from '../../ui/pie-donut-chart/pie-donut-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import { uniq, get, groupBy } from 'lodash';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
@@ -62,8 +61,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
   @ViewChild('chartWrapper')
   private chartWrapper?:
     | SafeLineChartComponent
-    | SafePieChartComponent
-    | SafeDonutChartComponent
+    | SafePieDonutChartComponent
     | SafeBarChartComponent;
 
   /**

@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeChartComponent } from './chart.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SafeButtonModule } from '../../ui/button/button.module';
-import { SafeDonutChartModule } from '../../ui/donut-chart/donut-chart.module';
-import { SafePieChartModule } from '../../ui/pie-chart/pie-chart.module';
+import { SafePieDonutChartModule } from '../../ui/pie-donut-chart/pie-donut-chart.module';
 import { SafeLineChartModule } from '../../ui/line-chart/line-chart.module';
 import { SafeBarChartModule } from '../../ui/bar-chart/bar-chart.module';
 import { LayoutModule } from '@progress/kendo-angular-layout';
@@ -21,8 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatProgressSpinnerModule,
     LayoutModule,
     SafeButtonModule,
-    SafeDonutChartModule,
-    SafePieChartModule,
+    SafePieDonutChartModule,
     SafeLineChartModule,
     SafeBarChartModule,
     SafeIconModule,
