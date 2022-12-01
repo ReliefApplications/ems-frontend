@@ -1,7 +1,16 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import get from 'lodash/get';
-import { ChartConfiguration, ChartData, ChartEvent, ChartType } from 'chart.js';
+import {
+  ChartComponentLike,
+  ChartConfiguration,
+  ChartData,
+  ChartType,
+} from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
+import DataLabelsPlugin from 'chartjs-plugin-datalabels';
+import drawUnderlinePlugin from '../../../utils/graphs/plugins/underline';
+import { parseFontOptions } from '../../../utils/graphs/parseFontString';
+import { addTransparency } from '../../../utils/graphs/addTransparency';
 
 /**
  * Interface containing the settings of the chart title
@@ -19,44 +28,26 @@ interface ChartTitle {
  */
 interface ChartLegend {
   visible: boolean;
-  orientation: 'horizontal' | 'vertical';
   position: 'top' | 'bottom' | 'left' | 'right';
 }
 
 /**
- * Interface containing the settings of the chart series
- */
-// interface ChartSeries {
-//   name?: string;
-//   color?: string;
-//   data: {
-//     category: any;
-//     field: any;
-//     color?: string;
-//   }[];
-// }
-
-// /** Interface of chart labels */
-// interface ChartLabels {
-//   showValue: boolean;
-// }
-
-// /** Interface of chart options */
-// interface ChartOptions {
-//   palette: string[];
-//   axes: any;
-//   labels?: ChartLabels;
-// }
-
-/**
- * Uses kendo chart to render the data as a line chart
+ * Uses chart.js to render the data as a line chart
  */
 @Component({
   selector: 'safe-line-chart',
   templateUrl: './line-chart.component.html',
   styleUrls: ['./line-chart.component.scss'],
 })
-export class SafeLineChartComponent implements OnInit, OnChanges {
+export class SafeLineChartComponent implements OnChanges {
+  public plugins: ChartComponentLike[] = [
+    drawUnderlinePlugin,
+    DataLabelsPlugin,
+  ];
+  private showValueLabels = false;
+  private min = Infinity;
+  private max = -Infinity;
+
   @Input() title: ChartTitle | undefined;
 
   @Input() legend: ChartLegend | undefined;
@@ -68,162 +59,123 @@ export class SafeLineChartComponent implements OnInit, OnChanges {
     axes: null,
   };
 
-  // public min: number | undefined;
-
-  // public max: number | undefined;
-
-  // @ViewChild('chart')
-  // public chart?: ChartComponent;
-
-  // public labels: any;
-
-  /**
-   * Constructor for safe-line-chart component
-   */
-  // constructor() {}
-
-  // ngOnInit(): void {
-  //   this.min = get(this.options, 'axes.x.min');
-  //   this.max = get(this.options, 'axes.x.max');
-  //   this.labels = {
-  //     visible: get(this.options, 'labels.showValue'),
-  //   };
-  // }
-
-  // ngOnChanges(): void {
-  //   this.min = get(this.options, 'axes.x.min');
-  //   this.max = get(this.options, 'axes.x.max');
-  //   this.labels = {
-  //     visible: get(this.options, 'labels.showValue'),
-  //   };
-  // }
-
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
   public chartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    // We use these empty structures as placeholders for dynamic theming.
-    scales: {
-      x: {},
-      y: {},
-    },
     parsing: {
       xAxisKey: 'category',
       yAxisKey: 'field',
     },
-    plugins: {
-      legend: {
-        display: true,
-        labels: {
-          borderRadius: 4,
-          useBorderRadius: true,
-        },
-      },
-      // datalabels: {
-      //   anchor: 'end',
-      //   align: 'end',
-      // },
-    },
   };
+
   public chartType: ChartType = 'line';
-  // public barChartPlugins = [DataLabelsPlugin];
-
   public chartData: ChartData<'line'> = {
-    // labels: ['2006', '2007', '2008', '2009', '2010', '2011', '2012'],
-    datasets: [
-      // {
-      //   data: [65, 59, 80, 81, 56, 55, 40],
-      //   label: 'Series A',
-      //   borderRadius: 4,
-      // },
-      // {
-      //   data: [28, 48, 40, 19, 86, 27, 90],
-      //   label: 'Series B',
-      //   borderRadius: 4,
-      // },
-    ],
+    datasets: [],
   };
-
-  ngOnInit(): void {
-    this.chartData.datasets = this.series.map((x) => ({
-      ...x,
-      borderRadius: 8,
-    }));
-    this.setOptions();
-    this.chart?.update();
-  }
 
   ngOnChanges(): void {
-    this.chartData.datasets = this.series.map((x) => ({
-      ...x,
-      borderRadius: 8,
-    }));
+    this.showValueLabels = get(this.options, 'labels.valueType', false);
+    this.chartData.datasets = this.series.map((x, i) => {
+      const color = this.options.palette?.[i];
+
+      // finds min and max values from x.data
+      const min = Math.min(...x.data.map((y: any) => y.field ?? Infinity));
+      const max = Math.max(...x.data.map((y: any) => y.field ?? -Infinity));
+      if (min < this.min) this.min = min;
+      if (max > this.max) this.max = max;
+      return {
+        ...x,
+        color: color || undefined,
+        backgroundColor: color || undefined,
+        borderColor: color || undefined,
+        pointRadius: 5,
+        pointHoverRadius: 8,
+        pointBackgroundColor: color || undefined,
+        pointHoverBackgroundColor: addTransparency(color) || undefined,
+        pointBorderColor: color || undefined,
+        pointBorderWidth: 2,
+        pointHoverBorderColor: color || undefined,
+        pointHoverBorderWidth: 2,
+        tension: 0.4,
+      };
+    });
     this.setOptions();
     this.chart?.update();
   }
 
+  /** Initializes chart options */
   setOptions(): void {
+    const [fontOptions, underlineTitle] = parseFontOptions(
+      get(this.title, 'font', '')
+    );
+
+    const titleText = get(this.title, 'text', '');
+    const titleColor = get(this.title, 'color', undefined);
+    const titleVisible = get(this.title, 'visible', false);
+    // log min an max
     this.chartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      // We use these empty structures as placeholders for dynamic theming.
+      ...this.chartOptions,
       scales: {
-        x: {},
-        y: {},
-      },
-      parsing: {
-        xAxisKey: 'category',
-        yAxisKey: 'field',
+        y: {
+          min: this.min - 0.1 * this.min,
+          max: this.max + 0.1 * this.max,
+        },
       },
       plugins: {
         legend: {
-          display: get(this.legend, 'visible', false),
+          display:
+            get(this.legend, 'visible', false) && !!this.series[0]?.label,
           labels: {
             borderRadius: 4,
             useBorderRadius: true,
+            color: '#000',
           },
           position: get(this.legend, 'position', 'bottom'),
         },
         title: {
-          display: get(this.title, 'visible', false),
-          text: get(this.title, 'text', ''),
+          display: titleVisible && !!titleText,
+          text: titleText,
           position: get(this.title, 'position', 'top'),
-          color: get(this.title, 'color', undefined),
+          color: titleColor,
+          font: fontOptions,
         },
-        // datalabels: {
-        //   anchor: 'end',
-        //   align: 'end',
-        // },
       },
     };
+
+    // adds underline plugin if needed
+    if (titleVisible && underlineTitle && this.chartOptions?.plugins)
+      Object.assign(this.chartOptions.plugins, {
+        underline: {
+          display: true,
+          fontSize: fontOptions.size,
+          fontWeight: fontOptions.weight,
+          fontStyle: fontOptions.style,
+          color: titleColor,
+        },
+      });
+
+    // adds datalabels plugin options
+    if (this.chartOptions?.plugins) {
+      Object.assign(this.chartOptions.plugins, {
+        datalabels: {
+          display: this.showValueLabels,
+          color: 'black',
+          font: {
+            weight: 'bold',
+          },
+          anchor: 'end',
+          align: 'end',
+          offset: 4,
+          formatter: (val: any) => val?.field ?? '',
+        },
+      });
+    }
   }
 
-  // events
-  public chartClicked({
-    event,
-    active,
-  }: {
-    event?: ChartEvent;
-    active?: any[];
-  }): void {
-    // console.log(event, active);
-  }
-
-  public chartHovered({
-    event,
-    active,
-  }: {
-    event?: ChartEvent;
-    active?: any[];
-  }): void {
-    // console.log(event, active);
-  }
-
-  exportImage(): void {
-    const downloadLink = document.createElement('a');
-    downloadLink.href = this.chart?.toBase64Image() as string;
-    downloadLink.download = 'test';
-    downloadLink.click();
+  /** Exports chart as an image */
+  public exportImage(): void {
+    this.chart?.toBase64Image();
   }
 }
