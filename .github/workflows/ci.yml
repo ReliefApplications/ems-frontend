@@ -79,10 +79,10 @@ jobs:
   #     - name: Commit changes
   #       uses: stefanzweifel/git-auto-commit-action@v4
   #       with:
-          commit_message: Prettify
-          commit_options: '--no-verify'
-          push_options: '--no-verify'
-          file_pattern: projects/*.scss projects/*.html
+          # commit_message: Prettify
+          # commit_options: '--no-verify'
+          # push_options: '--no-verify'
+          # file_pattern: projects/*.scss projects/*.html
 
   release:
     name: Release
