@@ -136,8 +136,10 @@ export class SafeBarChartComponent implements OnChanges {
           display:
             get(this.legend, 'visible', false) && !!this.series[0]?.label,
           labels: {
-            borderRadius: 4,
-            useBorderRadius: true,
+            // borderRadius: 4,
+            // useBorderRadius: true,
+            usePointStyle: true,
+            pointStyle: 'rectRounded',
           },
           position: get(this.legend, 'position', 'bottom'),
         },
