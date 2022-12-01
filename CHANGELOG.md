@@ -1,3 +1,31 @@
+# [1.4.0-beta.1](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.0...v1.4.0-beta.1) (2022-12-01)
+
+
+### Bug Fixes
+
+* added validator to derived field name ([34fc348](https://github.com/ReliefApplications/oort-frontend/commit/34fc348452037af781da87a1fe5d48e9e5b49f23))
+* filter for autocomplete on edit field ([166904b](https://github.com/ReliefApplications/oort-frontend/commit/166904b24a97adce93d4ebe87a992a9a72795aee))
+* filtering properly for autocompletion ([13edd53](https://github.com/ReliefApplications/oort-frontend/commit/13edd532ce0b3c59399c002f3e237dd87f2be721))
+* removed calc fields from autocomplete ([f618f39](https://github.com/ReliefApplications/oort-frontend/commit/f618f399ef20a7b4252d60a02f5bae898616446d))
+* resource query on chart settings ([e07353e](https://github.com/ReliefApplications/oort-frontend/commit/e07353e96c145eed2a9f855318f9693bfdd4ed89))
+* setting queryname from resource ([9d11809](https://github.com/ReliefApplications/oort-frontend/commit/9d11809f51a709bb6a0eb43d43b0ffa3da03b9ce))
+* When reloading any tab of resource page, the tab appear as selected ([4fa88e9](https://github.com/ReliefApplications/oort-frontend/commit/4fa88e96c5f7ea667a1bc13a39b4dd3b308dfe96))
+
+
+### Features
+
+* added derived fields tab on resources ([32920b4](https://github.com/ReliefApplications/oort-frontend/commit/32920b42aaa16a95e6bba5650237d609a3326798))
+* added info keys ([aaaaa60](https://github.com/ReliefApplications/oort-frontend/commit/aaaaa60bef5719e2ae87dcf5d803e5a02e5106eb))
+* autocomplete for definition editor ([c8534df](https://github.com/ReliefApplications/oort-frontend/commit/c8534dfc2d23668400c0f4f6db3450967b116eb7))
+* derived fields tab ([77972bc](https://github.com/ReliefApplications/oort-frontend/commit/77972bcd84eac98d8b54fcc6c717aaab1228d6e8))
+* layout selection on summary cards settings ([95c580d](https://github.com/ReliefApplications/oort-frontend/commit/95c580d75de3d2cdc0bf3a3fc6fcae814cda44ed))
+* now supporting dynamic cards w/ aggregation ([fd27429](https://github.com/ReliefApplications/oort-frontend/commit/fd2742985008641521f67e7a63578971ffd6464c))
+* now supporting static cards w/ aggregation ([119b842](https://github.com/ReliefApplications/oort-frontend/commit/119b842b6323b3445f586d7ad0ee3aa498c5bcec))
+* removed field validator for grouping ([a963f46](https://github.com/ReliefApplications/oort-frontend/commit/a963f46a35d96e86a098a366f20162092b98f8ba))
+* replace summary card icon by the new one and change its color value in widget_types ([b0fa058](https://github.com/ReliefApplications/oort-frontend/commit/b0fa058c447a149f2b4b0f722a5bbc11ddec23c1))
+* selection of aggregation for summary cards ([fb6c59c](https://github.com/ReliefApplications/oort-frontend/commit/fb6c59c8fb7871a6147597183e02168330cc14ec))
+* start summary card component [#34839](https://github.com/ReliefApplications/oort-frontend/issues/34839) ([0c4e8fd](https://github.com/ReliefApplications/oort-frontend/commit/0c4e8fd6ff18feba261759e6ac4d60f2f73da9f9))
+
 # [1.3.0](https://github.com/ReliefApplications/oort-frontend/compare/v1.2.0...v1.3.0) (2022-12-01)
 
 
