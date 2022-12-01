@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "1.2.0",
+  "version": "0.0.0-development",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -18,12 +18,8 @@
     "storybook": "npm run docs:json && start-storybook -p 6006",
     "build-storybook": "npm run docs:json && build-storybook",
     "prepare": "husky install",
-    "release": "standard-version",
-    "release:minor": "standard-version --release-as minor",
-    "release:patch": "standard-version --release-as patch",
-    "release:major": "standard-version --release-as major",
-    "release:alpha": "standard-version --release-as patch --prerelease alpha",
-    "check-i18n": "node .scripts/check-i18n"
+    "check-i18n": "node .scripts/check-i18n",
+    "semantic-release": "semantic-release"
   },
   "private": true,
   "dependencies": {
@@ -104,6 +100,9 @@
     "@angular/compiler-cli": "~13.3.9",
     "@babel/core": "^7.14.6",
     "@compodoc/compodoc": "^1.1.11",
+    "@semantic-release/changelog": "^6.0.2",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/release-notes-generator": "^10.0.3",
     "@storybook/addon-actions": "^6.5.6",
     "@storybook/addon-essentials": "^6.5.6",
     "@storybook/addon-links": "^6.5.6",
@@ -147,46 +146,35 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "resolve-url-loader": "^5.0.0",
-    "standard-version": "^9.3.1",
+    "semantic-release": "^19.0.5",
     "ts-node": "~8.3.0",
     "typescript": "~4.6.4"
   },
-  "standard-version": {
-    "types": [
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ReliefApplications/oort-frontend.git"
+  },
+  "release": {
+    "branches": [
+      "+([0-9])?(.{+([0-9]),x}).x",
+      "main",
+      "next",
+      "next-major",
       {
-        "type": "feat",
-        "section": "Features"
+        "name": "beta",
+        "prerelease": true
       },
       {
-        "type": "fix",
-        "section": "Bug Fixes"
-      },
-      {
-        "type": "chore",
-        "hidden": true
-      },
-      {
-        "type": "docs",
-        "hidden": true
-      },
-      {
-        "type": "style",
-        "hidden": true
-      },
-      {
-        "type": "refactor",
-        "hidden": true
-      },
-      {
-        "type": "perf",
-        "hidden": true
-      },
-      {
-        "type": "test",
-        "hidden": true
+        "name": "alpha",
+        "prerelease": true
       }
     ],
-    "commitUrlFormat": "https://github.com/ReliefApplications/oort-frontend/commits/{{hash}}",
-    "compareUrlFormat": "https://github.com/ReliefApplications/oort-frontend/compare/{{previousTag}}...{{currentTag}}"
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/github",
+      "@semantic-release/git"
+    ]
   }
 }
