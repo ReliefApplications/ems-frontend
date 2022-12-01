@@ -121,8 +121,8 @@ export class SafeLineChartComponent implements OnChanges {
         x: {
           ticks: {
             autoSkip: false,
-            maxRotation: this.shouldRotateLabels() ? 90 : 0,
-            minRotation: this.shouldRotateLabels() ? 90 : 0,
+            maxRotation: 90,
+            minRotation: 0,
           },
         },
         y: {
@@ -181,28 +181,6 @@ export class SafeLineChartComponent implements OnChanges {
         },
       });
     }
-  }
-
-  /**
-   * Gets whether or not the labels should be rotated
-   *
-   * @returns true if the labels should be rotated, false otherwise
-   */
-  private shouldRotateLabels() {
-    const ctx = this.chart?.chart?.ctx;
-    if (!ctx) return false;
-
-    const labels = new Set<string>();
-    this.series.forEach((s) =>
-      s.data.forEach((d: any) => labels.add(d.category))
-    );
-
-    const totalLabelWidth = Array.from(labels).reduce(
-      (acc, label) => acc + ctx.measureText(label).width + 10,
-      0
-    );
-
-    return ctx.canvas.width < totalLabelWidth;
   }
 
   /** Exports chart as an image */
