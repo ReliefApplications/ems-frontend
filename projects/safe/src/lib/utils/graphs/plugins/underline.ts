@@ -11,7 +11,7 @@ type DrawUnderlinePluginType = {
 /** Plugin for underling chart title */
 const drawUnderlinePlugin: ChartComponentLike = {
   id: 'underline',
-  afterDraw: (chart: any, _: any, opt: DrawUnderlinePluginType) => {
+  afterDatasetsDraw: (chart: any, _: any, opt: DrawUnderlinePluginType) => {
     if (!opt.display || !chart?.titleBlock) return;
     const { ctx } = chart;
     const text: string | undefined = chart.titleBlock.options?.text;

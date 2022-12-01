@@ -9,7 +9,6 @@ import { Subscription } from 'rxjs';
 import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
 import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
 import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
-import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import { uniq, get, groupBy } from 'lodash';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
@@ -65,8 +64,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
     | SafeLineChartComponent
     | SafePieChartComponent
     | SafeDonutChartComponent
-    | SafeBarChartComponent
-    | SafeColumnChartComponent;
+    | SafeBarChartComponent;
 
   /**
    * Chart widget using KendoUI.
