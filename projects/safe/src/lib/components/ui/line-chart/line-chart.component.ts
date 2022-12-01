@@ -93,7 +93,7 @@ export class SafeLineChartComponent implements OnChanges {
         pointRadius: 5,
         pointHoverRadius: 8,
         pointBackgroundColor: color || undefined,
-        pointHoverBackgroundColor: addTransparency(color) || undefined,
+        pointHoverBackgroundColor: color ? addTransparency(color) : undefined,
         pointBorderColor: color || undefined,
         pointBorderWidth: 2,
         pointHoverBorderColor: color || undefined,
