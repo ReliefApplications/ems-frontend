@@ -118,6 +118,13 @@ export class SafeLineChartComponent implements OnChanges {
     this.chartOptions = {
       ...this.chartOptions,
       scales: {
+        x: {
+          ticks: {
+            autoSkip: false,
+            maxRotation: 90,
+            minRotation: 0,
+          },
+        },
         y: {
           min: this.min - 0.1 * this.min,
           max: this.max + 0.1 * this.max,

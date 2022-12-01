@@ -119,6 +119,11 @@ export class SafeBarChartComponent implements OnChanges {
           stacked: get(this.options, 'stack', false),
           min: isBar ? get(this.options, 'axes.x.min', undefined) : undefined,
           max: isBar ? get(this.options, 'axes.x.max', undefined) : undefined,
+          ticks: {
+            autoSkip: isBar,
+            maxRotation: 90,
+            minRotation: 0,
+          },
         },
         y: {
           stacked: get(this.options, 'stack', false),
