@@ -112,8 +112,10 @@ export class SafePieDonutChartComponent implements OnChanges {
         legend: {
           display: get(this.legend, 'visible', false),
           labels: {
-            borderRadius: 4,
-            useBorderRadius: true,
+            // borderRadius: 4,
+            // useBorderRadius: true,
+            usePointStyle: true,
+            pointStyle: 'rectRounded',
           },
           position: get(this.legend, 'position', 'bottom'),
         },

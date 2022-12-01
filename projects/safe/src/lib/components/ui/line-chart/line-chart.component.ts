@@ -128,9 +128,11 @@ export class SafeLineChartComponent implements OnChanges {
           display:
             get(this.legend, 'visible', false) && !!this.series[0]?.label,
           labels: {
-            borderRadius: 4,
-            useBorderRadius: true,
+            // borderRadius: 4,
+            // useBorderRadius: true,
             color: '#000',
+            usePointStyle: true,
+            pointStyle: 'rectRounded',
           },
           position: get(this.legend, 'position', 'bottom'),
         },
