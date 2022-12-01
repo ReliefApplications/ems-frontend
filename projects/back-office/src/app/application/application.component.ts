@@ -98,6 +98,11 @@ export class ApplicationComponent implements OnInit, OnDestroy {
                   icon: 'settings',
                 },
                 {
+                  name: this.translate.instant('common.template.few'),
+                  path: './settings/templates',
+                  icon: 'description',
+                },
+                {
                   name: this.translate.instant('common.user.few'),
                   path: './settings/users',
                   icon: 'supervisor_account',

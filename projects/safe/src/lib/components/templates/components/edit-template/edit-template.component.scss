@@ -1,0 +1,13 @@
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+#input-group {
+  display: flex;
+  gap: 1em;
+
+  & :nth-child(2) {
+    flex-grow: 1;
+  }
+}

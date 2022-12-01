@@ -46,6 +46,12 @@ import {
   EDIT_CHANNEL,
   ToggleApplicationLockMutationResponse,
   TOGGLE_APPLICATION_LOCK,
+  AddTemplateMutationResponse,
+  ADD_TEMPLATE,
+  UpdateTemplateMutationResponse,
+  UPDATE_TEMPLATE,
+  DeleteTemplateMutationResponse,
+  DELETE_TEMPLATE,
 } from '../graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
@@ -60,6 +66,7 @@ import {
   APPLICATION_UNLOCKED_SUBSCRIPTION,
 } from '../graphql/subscriptions';
 import { SafeAuthService } from './auth.service';
+import { Template } from '../models/template.model';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -107,6 +114,16 @@ export class SafeApplicationService {
       }
     }
     return true;
+  }
+
+  /** @returns Name of the current application */
+  get name(): string {
+    return this.application.value?.name || '';
+  }
+
+  /** @returns Current application's templates */
+  get templates(): any[] {
+    return this.application.value?.templates || [];
   }
 
   /**
@@ -1046,6 +1063,109 @@ export class SafeApplicationService {
             : `/${page.type}/${page.content}`,
         ]);
       }
+    }
+  }
+
+  /**
+   * Adds a new template to the application.
+   *
+   * @param template new template to be added
+   */
+  addTemplate(template: Template): void {
+    const application = this.application.getValue();
+    if (application?.id && this.isUnlocked) {
+      this.apollo
+        .mutate<AddTemplateMutationResponse>({
+          mutation: ADD_TEMPLATE,
+          variables: {
+            application: application.id,
+            template: {
+              name: template.name,
+              type: 'email',
+              content: template.content,
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            const newApplication: Application = {
+              ...application,
+              templates: [
+                ...(application.templates || []),
+                res.data.addTemplate,
+              ],
+            };
+
+            this.application.next(newApplication);
+          }
+        });
+    }
+  }
+
+  /**
+   * Removes a template by its id.
+   *
+   * @param id template's id to be deleted
+   */
+  deleteTemplate(id: string): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<DeleteTemplateMutationResponse>({
+          mutation: DELETE_TEMPLATE,
+          variables: {
+            application: application.id,
+            id,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            const newApplication: Application = {
+              ...application,
+              templates: this.templates.filter((t) => t.id !== id),
+            };
+            this.application.next(newApplication);
+          }
+        });
+    }
+  }
+
+  /**
+   * Edits existing template.
+   *
+   * @param template new template to be added
+   */
+  editTemplate(template: Template): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<UpdateTemplateMutationResponse>({
+          mutation: UPDATE_TEMPLATE,
+          variables: {
+            application: application.id,
+            id: template.id,
+            template: {
+              name: template.name,
+              type: template.type,
+              content: template.content,
+            },
+          },
+        })
+        .subscribe((res) => {
+          if (res.data?.editTemplate) {
+            const updatedTemplate = res.data.editTemplate;
+            const newApplication: Application = {
+              ...application,
+              templates: application.templates?.map((t) => {
+                if (t.id === template.id) {
+                  t = updatedTemplate;
+                }
+                return t;
+              }),
+            };
+            this.application.next(newApplication);
+          }
+        });
     }
   }
 }

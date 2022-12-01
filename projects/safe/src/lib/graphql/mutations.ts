@@ -10,6 +10,7 @@ import { PositionAttributeCategory } from '../models/position-attribute-category
 import { Step } from '../models/step.model';
 import { Dashboard } from '../models/dashboard.model';
 import { Layout } from '../models/layout.model';
+import { Template } from '../models/template.model';
 
 // === EDIT RECORD ===
 
@@ -971,4 +972,64 @@ export const DELETE_LAYOUT = gql`
 export interface deleteLayoutMutationResponse {
   loading: boolean;
   deleteLayout: Layout;
+}
+
+// TEMPLATE OPERATIONS
+
+/** Graphql request for adding a template to an application */
+export const ADD_TEMPLATE = gql`
+  mutation addTemplate($application: ID!, $template: TemplateInputType!) {
+    addTemplate(application: $application, template: $template) {
+      id
+      name
+      type
+      content
+    }
+  }
+`;
+
+/** Model for AddTemplateMutationResponse object */
+export interface AddTemplateMutationResponse {
+  loading: boolean;
+  addTemplate: Template;
+}
+
+/** Graphql request for editing a template of an application */
+export const UPDATE_TEMPLATE = gql`
+  mutation editTemplate(
+    $application: ID!
+    $id: ID!
+    $template: TemplateInputType!
+  ) {
+    editTemplate(application: $application, id: $id, template: $template) {
+      id
+      name
+      type
+      content
+    }
+  }
+`;
+
+/** Model for UpdateTemplateMutationResponse object */
+export interface UpdateTemplateMutationResponse {
+  loading: boolean;
+  editTemplate: Template;
+}
+
+/** Graphql request for deleting a template of an application */
+export const DELETE_TEMPLATE = gql`
+  mutation deleteTemplate($application: ID!, $id: ID!) {
+    deleteTemplate(application: $application, id: $id) {
+      id
+      name
+      type
+      content
+    }
+  }
+`;
+
+/** Model for DeleteTemplateMutationResponse object */
+export interface DeleteTemplateMutationResponse {
+  loading: boolean;
+  deleteTemplate: Template;
 }

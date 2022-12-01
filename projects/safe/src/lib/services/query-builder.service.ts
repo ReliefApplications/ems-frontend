@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { GetQueryTypes, GET_QUERY_TYPES } from '../graphql/queries';
 import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
+import get from 'lodash/get';
 
 /** List of fields part of the schema but not selectable */
 const NON_SELECTABLE_FIELDS = ['canUpdate', 'canDelete'];
@@ -142,6 +143,7 @@ export class QueryBuilderService {
               `${x.name} (
             sortField: ${x.sort.field ? `"${x.sort.field}"` : null},
             sortOrder: "${x.sort.order}",
+            first: ${get(x, 'first', null)},
             filter: ${this.filterToString(x.filter)}
           ) {
             ${['canUpdate\ncanDelete\n'].concat(this.buildFields(x.fields))}

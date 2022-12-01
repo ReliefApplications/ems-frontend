@@ -1,0 +1,55 @@
+<h1 mat-dialog-title>
+  {{
+    (isNew
+      ? 'components.templates.edit.new'
+      : 'components.templates.edit.update'
+    ) | translate
+  }}
+</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <div id="input-group">
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.templates.type.title' | translate
+        }}</mat-label>
+        <mat-select formControlName="type" [disabled]="true">
+          <mat-option value="email">{{
+            'components.templates.type.email' | translate
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.templates.edit.name' | translate
+        }}</mat-label>
+        <input matInput formControlName="name" type="text" />
+      </mat-form-field>
+    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        'components.templates.edit.subject' | translate
+      }}</mat-label>
+      <input matInput formControlName="subject" type="text" />
+    </mat-form-field>
+    <editor [init]="editor" formControlName="body"></editor>
+    <!-- <mat-form-field appearance="outline">
+      <mat-label>{{ 'components.templates.edit.body' | translate }}</mat-label>
+      <input matInput formControlName="body" type="text" />
+    </mat-form-field> -->
+  </form>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()">
+    {{ 'common.close' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="form.value"
+    cdkFocusInitial
+    color="primary"
+    [disabled]="!form.valid"
+  >
+    {{ (isNew ? 'common.create' : 'common.update') | translate }}
+  </button>
+</div>

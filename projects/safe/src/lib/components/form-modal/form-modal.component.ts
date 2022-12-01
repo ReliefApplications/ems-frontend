@@ -68,6 +68,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
 export class SafeFormModalComponent implements OnInit {
   // === DATA ===
   public loading = true;
+  public saving = false;
   public form?: Form;
   public record?: Record;
 
@@ -208,7 +209,8 @@ export class SafeFormModalComponent implements OnInit {
    */
   private initSurvey(): void {
     this.survey = this.formBuilderService.createSurvey(
-      this.form?.structure || ''
+      this.form?.structure || '',
+      this.record
     );
     this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
       this.onClearFiles(survey, options)
@@ -261,6 +263,7 @@ export class SafeFormModalComponent implements OnInit {
    * Calls the complete method of the survey if no error.
    */
   public submit(): void {
+    this.saving = true;
     if (!this.survey?.hasErrors()) {
       this.survey?.completeLastPage();
     } else {
@@ -268,6 +271,7 @@ export class SafeFormModalComponent implements OnInit {
         'Saving failed, some fields require your attention.',
         { error: true }
       );
+      this.saving = false;
     }
   }
 
@@ -328,6 +332,8 @@ export class SafeFormModalComponent implements OnInit {
       dialogRef.afterClosed().subscribe(async (value) => {
         if (value) {
           await this.onUpdate(survey);
+        } else {
+          this.saving = false;
         }
       });
       // Updates the data directly.

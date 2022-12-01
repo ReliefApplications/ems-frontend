@@ -67,4 +67,6 @@ export const NOTIFICATIONS = {
   pingResponseError: 'ERROR during the PING request.',
   aggregationError: 'Aggregation failed to execute.',
   userImportFail: 'The user import has failed',
+  fileExportOngoing:
+    'Your file export is ongoing. You will receive an email once ready.',
 };

@@ -299,42 +299,35 @@
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>{{
-              'components.emailBuilder.subject' | translate
+              'components.templates.available' | translate
             }}</mat-label>
-            <input matInput formControlName="subject" type="string" />
+            <mat-select class="select" formControlName="templates" multiple>
+              <mat-option
+                *ngFor="let template of mailTemplates"
+                [value]="template.id"
+              >
+                {{ template.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="
+                buttonForm.get('sendMail')?.value &&
+                !buttonForm.get('templates')?.valid
+              "
+              >{{ 'components.templates.errors.empty' | translate }}</mat-error
+            >
           </mat-form-field>
-          <mat-tab-group
-            mat-align-tabs="start"
-            animationDuration="0ms"
-            dynamicHeight
-            style="min-height: 100px"
-          >
-            <mat-tab>
-              <ng-template mat-tab-label> Default </ng-template>
-              <ng-template matTabContent>
-                <editor [init]="editor" formControlName="bodyText"></editor>
-                <mat-checkbox formControlName="export">{{
-                  'components.widget.settings.grid.buttons.callback.export'
-                    | translate
-                }}</mat-checkbox>
-                <h2>{{ 'components.emailBuilder.fields' | translate }}</h2>
-                <safe-tab-fields
-                  *ngIf="fields.length > 0"
-                  [form]="$any(buttonForm.controls.bodyFields)"
-                  [fields]="fields"
-                ></safe-tab-fields>
-              </ng-template>
-            </mat-tab>
-            <mat-tab>
-              <ng-template mat-tab-label> Without record </ng-template>
-              <ng-template matTabContent>
-                <editor
-                  [init]="editor"
-                  formControlName="bodyTextAlternate"
-                ></editor>
-              </ng-template>
-            </mat-tab>
-          </mat-tab-group>
+          <mat-checkbox formControlName="export">{{
+            'components.widget.settings.grid.buttons.callback.export'
+              | translate
+          }}</mat-checkbox>
+          <h2>{{ 'components.emailBuilder.fields' | translate }}</h2>
+          <safe-tab-fields
+            *ngIf="fields.length > 0"
+            [form]="$any(buttonForm.controls.bodyFields)"
+            [fields]="fields"
+            [showLimit]="true"
+          ></safe-tab-fields>
         </div>
       </ng-container>
     </div>

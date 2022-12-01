@@ -47,6 +47,7 @@ export enum Permissions {
   canManageApplications = 'can_manage_applications',
   canManageApiConfigurations = 'can_manage_api_configurations',
   canCreateApplications = 'can_create_applications',
+  canManageTemplates = 'can_manage_templates',
 }
 
 /** Enum of permissions types. */
