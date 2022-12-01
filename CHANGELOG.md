@@ -1,3 +1,20 @@
+# [1.1.0](https://github.com/ReliefApplications/oort-frontend/compare/v1.0.0...v1.1.0) (2022-12-01)
+
+
+### Bug Fixes
+
+* changed placement of tab ([b7ba86b](https://github.com/ReliefApplications/oort-frontend/commit/b7ba86b6a61d7a06a638215309cf7958e7ade250))
+* minor fixes ([22c4ca9](https://github.com/ReliefApplications/oort-frontend/commit/22c4ca932fee6f871e2f4cdf62faa7c4b1ea392a))
+* only updating newly added records ([662e383](https://github.com/ReliefApplications/oort-frontend/commit/662e383548aadbe8321777a76383e0be6f011e6c))
+
+
+### Features
+
+* add limit to records of type List thanks to sortFirst ([d635912](https://github.com/ReliefApplications/oort-frontend/commit/d635912c7d8b2ccf7fbab9b4592cc0d5836fd995))
+* added error text for template selection ([490d85e](https://github.com/ReliefApplications/oort-frontend/commit/490d85e7ecf2e453a77eda2b40c7a2aea46075ca))
+* added templates tab ([80b9040](https://github.com/ReliefApplications/oort-frontend/commit/80b90408ae1b01f042ea81bffd5cd76b8553cc86))
+* select from mail templates on grid settings ([2561993](https://github.com/ReliefApplications/oort-frontend/commit/2561993b5558b05df9f5c55b3944b9c857f39e1d))
+
 # 1.0.0 (2022-12-01)
 
 
