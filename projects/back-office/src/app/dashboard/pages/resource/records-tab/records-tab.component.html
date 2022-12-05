@@ -63,9 +63,9 @@
   </div>
 </div>
 <!-- Table container -->
-<div class="overflow-x-hidden">
+<div class="overflow-x-hidden shadow-light">
   <!-- Table scroll container -->
-  <div class="overflow-auto">
+  <div class="overflow-x-auto">
     <!-- Records table -->
     <table *ngIf="!loading" mat-table [dataSource]="dataSource">
       <ng-container
@@ -159,19 +159,19 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumnsRecords"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsRecords"></tr>
     </table>
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="displayedColumnsRecords"
+      [actions]="true"
+    >
+    </safe-skeleton-table>
   </div>
+  <mat-paginator
+    [disabled]="loading"
+    [pageIndex]="pageInfo.pageIndex"
+    [pageSize]="pageInfo.pageSize"
+    [length]="pageInfo.length"
+    aria-label="Select page of records"
+    (page)="onPage($event)"
+  ></mat-paginator>
 </div>
-<safe-skeleton-table
-  *ngIf="loading"
-  [columns]="displayedColumnsRecords"
-  [actions]="true"
->
-</safe-skeleton-table>
-<mat-paginator
-  [disabled]="loading"
-  [pageIndex]="pageInfo.pageIndex"
-  [pageSize]="pageInfo.pageSize"
-  [length]="pageInfo.length"
-  aria-label="Select page of records"
-  (page)="onPage($event)"
-></mat-paginator>

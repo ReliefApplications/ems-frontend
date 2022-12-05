@@ -77,9 +77,9 @@
 </div>
 
 <!-- Table container -->
-<div class="overflow-x-hidden">
+<div class="overflow-x-hidden shadow-light">
   <!-- Table scroll container -->
-  <div class="overflow-auto">
+  <div class="overflow-x-auto">
     <table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
@@ -166,24 +166,24 @@
         [routerLink]="['/settings/apiconfigurations', row.id]"
       ></tr>
     </table>
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="[
+        'common.name',
+        'common.status',
+        'models.apiConfiguration.authType'
+      ]"
+      [actions]="true"
+    >
+    </safe-skeleton-table>
   </div>
+  <mat-paginator
+    [disabled]="loading"
+    [pageSize]="pageInfo.pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
+    [length]="pageInfo.length"
+    aria-label="Select page of forms"
+    (page)="onPage($event)"
+  >
+  </mat-paginator>
 </div>
-<safe-skeleton-table
-  *ngIf="loading"
-  [columns]="[
-    'common.name',
-    'common.status',
-    'models.apiConfiguration.authType'
-  ]"
-  [actions]="true"
->
-</safe-skeleton-table>
-<mat-paginator
-  [disabled]="loading"
-  [pageSize]="pageInfo.pageSize"
-  [pageSizeOptions]="[10, 25, 50]"
-  [length]="pageInfo.length"
-  aria-label="Select page of forms"
-  (page)="onPage($event)"
->
-</mat-paginator>
