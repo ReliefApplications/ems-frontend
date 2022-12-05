@@ -50,6 +50,7 @@ import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component
 import { get } from 'lodash';
 import { SafeTileDataComponent } from '../../../widget-grid/floating-options/menu/tile-data/tile-data.component';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Factory for creating scroll strategy
@@ -107,7 +108,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === DATA ===
   @Input() fields: any[] = [];
   @Input() data: GridDataResult = { data: [], total: 0 };
-  @Input() loading = false;
+  @Input() loadingRecords = false;
+  @Input() loadingSettings = true;
   @Input() error = false;
   @Input() blank = false;
   @Input() widget: any;
@@ -203,13 +205,15 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param renderer The renderer library
    * @param downloadService The download service
    * @param dashboardService Dashboard service
+   * @param translate The translate service
    */
   constructor(
     private dialog: MatDialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
-    private dashboardService: SafeDashboardService
+    private dashboardService: SafeDashboardService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -314,7 +318,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param filter Filter event.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
-    if (!this.loading) {
+    if (!this.loadingRecords) {
       this.filter = filter;
       this.filterChange.emit(filter);
     }
@@ -324,7 +328,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * Toggles quick filter visibility
    */
   public onToggleFilter(): void {
-    if (!this.loading) {
+    if (!this.loadingRecords) {
       this.showFilter = !this.showFilter;
       this.showFilterChange.emit(this.showFilter);
       this.onFilterChange({
@@ -350,7 +354,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param sort Sort event.
    */
   public onSortChange(sort: SortDescriptor[]): void {
-    if (!this.loading) {
+    if (!this.loadingRecords) {
       this.sort = sort;
       this.sortChange.emit(sort);
     }
@@ -363,7 +367,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param page Page event.
    */
   public onPageChange(page: PageChangeEvent): void {
-    if (!this.loading) {
+    if (!this.loadingRecords) {
       this.skip = page.skip;
       this.pageSize = page.take;
       this.pageChange.emit(page);
@@ -704,7 +708,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Removes file estension from the file name
+   * Removes file extension from the file name
    *
    * @param name Name of the file with the extension
    * @returns String with the name of the file without the extension
@@ -714,5 +718,49 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     return fileExt && ICON_EXTENSIONS[fileExt]
       ? name.slice(0, name.lastIndexOf(fileExt) - 1)
       : name;
+  }
+
+  /**
+   * Gets the corresponding status message for the status of the grid
+   *
+   * @returns string with the status message
+   */
+  public getStatusMessage(): string {
+    // if (this.loadingSettings)
+    //   console.log(
+    //     this.error,
+    //     this.translate.instant('components.widget.grid.loading.settings')
+    //   );
+    // else if (this.blank)
+    //   console.log(
+    //     this.error,
+    //     this.translate.instant('components.widget.grid.errors.missingDataset')
+    //   );
+    // else if (this.error)
+    //   console.log(
+    //     this.error,
+    //     this.translate.instant('components.widget.grid.errors.invalid')
+    //   );
+    // else if (this.loadingRecords)
+    //   console.log(
+    //     this.error,
+    //     this.translate.instant('components.widget.grid.loading.records')
+    //   );
+    // else
+    //   console.log(
+    //     this.error,
+    //     this.translate.instant('components.widget.grid.empty')
+    //   );
+    if (this.loadingSettings)
+      return this.translate.instant('components.widget.grid.loading.settings');
+    if (this.blank)
+      return this.translate.instant(
+        'components.widget.grid.errors.missingDataset'
+      );
+    if (this.error)
+      return this.translate.instant('components.widget.grid.errors.invalid');
+    if (this.loadingRecords)
+      return this.translate.instant('components.widget.grid.loading.records');
+    return this.translate.instant('components.widget.grid.empty');
   }
 }

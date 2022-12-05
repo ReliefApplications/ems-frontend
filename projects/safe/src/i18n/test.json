@@ -941,6 +941,10 @@
 				"layout": {
 					"reset": "******"
 				},
+				"loading": {
+					"records": "******",
+					"settings": "******"
+				},
 				"openSettings": "******",
 				"tooltip": {
 					"saved": "******",

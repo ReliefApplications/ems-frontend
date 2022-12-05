@@ -88,6 +88,15 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     return this.grid?.layout;
   }
 
+  /**
+   * Gets whether the grid settings are loading.
+   *
+   * @returns true if the grid settings are loading, false otherwise
+   */
+  get loadingSettings(): boolean {
+    return this.settings.resource && !this.settings.query;
+  }
+
   // === SELECTION INPUTS ===
   @Input() multiSelect = true;
   @Input() selectedRows: string[] = [];
@@ -326,7 +335,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     if (!builtQuery) {
-      this.error = true;
+      this.error = !this.loadingSettings;
     } else {
       this.dataQuery = this.apollo.watchQuery<any>({
         query: builtQuery,
@@ -376,7 +385,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       );
     } else {
       this.loading = false;
-      this.error = true;
+      this.error = !this.loadingSettings;
     }
     this.loadTemplate();
   }

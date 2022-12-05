@@ -901,7 +901,7 @@
 					"detail": "Open detail",
 					"history": "Show history"
 				},
-				"empty": "No record detected",
+				"empty": "No record detected for this grid configuration",
 				"errors": {
 					"invalid": "Invalid grid configuration",
 					"missingDataset": "Select a dataset in settings",
@@ -940,6 +940,10 @@
 				},
 				"layout": {
 					"reset": "Reset default Layout"
+				},
+				"loading": {
+					"records": "Loading records...",
+					"settings": "Loading settings..."
 				},
 				"openSettings": "Open settings",
 				"tooltip": {

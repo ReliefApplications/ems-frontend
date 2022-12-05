@@ -1,7 +1,8 @@
 <safe-grid
   [fields]="fields"
   [data]="gridData"
-  [loading]="settings.query && loading"
+  [loadingRecords]="settings.query && loading"
+  [loadingSettings]="loadingSettings"
   [error]="error"
   [pageSize]="pageSize"
   [skip]="skip"
