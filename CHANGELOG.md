@@ -1,3 +1,10 @@
+# [1.4.0-beta.2](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.1...v1.4.0-beta.2) (2022-12-05)
+
+
+### Bug Fixes
+
+* remove block input from unedited buttons ([2b340f1](https://github.com/ReliefApplications/oort-frontend/commit/2b340f1a099db70f232c14fc62a00fb54d062323))
+
 # [1.4.0-beta.1](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.0...v1.4.0-beta.1) (2022-12-01)
 
 
