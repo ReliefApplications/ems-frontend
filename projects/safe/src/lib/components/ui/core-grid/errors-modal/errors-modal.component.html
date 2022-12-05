@@ -11,9 +11,9 @@
   <div mat-dialog-content>
     <p>{{ 'components.widget.grid.validation.subtitle' | translate }}</p>
     <!-- Table container -->
-    <div class="overflow-x-hidden">
-      <!-- Table scroll container -->
-      <div class="overflow-auto">
+  <div class="overflow-x-hidden shadow-light">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
         <table mat-table [dataSource]="data.errors">
           <ng-container matColumnDef="question">
             <th mat-header-cell *matHeaderCellDef>Field</th>
