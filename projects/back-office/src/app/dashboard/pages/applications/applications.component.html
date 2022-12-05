@@ -22,9 +22,9 @@
   <!-- APPLICATIONS TABLE -->
   <h2>{{ 'pages.applications.all' | translate }}</h2>
   <!-- Table container -->
-  <div class="overflow-x-hidden">
-    <!-- Table scroll container -->
-    <div class="overflow-auto">
+  <div class="overflow-x-hidden shadow-light">
+    <div class="overflow-x-auto">
+      <!-- Table scroll container -->
       <table
         *ngIf="!loading"
         mat-table
@@ -145,28 +145,29 @@
           [routerLink]="['/applications', row.id]"
         ></tr>
       </table>
+      <!-- Loading indicator -->
+      <safe-skeleton-table
+        *ngIf="loading"
+        [columns]="[
+          'common.name',
+          'common.createdOn',
+          'common.status',
+          'common.user.few'
+        ]"
+        [actions]="true"
+      >
+      </safe-skeleton-table>
     </div>
+    <!-- Pagination -->
+    <mat-paginator
+      [disabled]="loading || updating"
+      [pageIndex]="pageInfo.pageIndex"
+      [pageSize]="pageInfo.pageSize"
+      [pageSizeOptions]="[10, 25, 50]"
+      [length]="pageInfo.length"
+      aria-label="Select page of applications"
+      (page)="onPage($event)"
+    >
+    </mat-paginator>
   </div>
-  <safe-skeleton-table
-    *ngIf="loading"
-    [columns]="[
-      'common.name',
-      'common.createdOn',
-      'common.status',
-      'common.user.few'
-    ]"
-    [actions]="true"
-  >
-  </safe-skeleton-table>
-  <!-- Pagination -->
-  <mat-paginator
-    [disabled]="loading || updating"
-    [pageIndex]="pageInfo.pageIndex"
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [length]="pageInfo.length"
-    aria-label="Select page of applications"
-    (page)="onPage($event)"
-  >
-  </mat-paginator>
 </ng-container>
