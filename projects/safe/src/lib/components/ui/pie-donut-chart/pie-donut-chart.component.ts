@@ -6,6 +6,7 @@ import { parseFontOptions } from '../../../utils/graphs/parseFontString';
 import drawUnderlinePlugin from '../../../utils/graphs/plugins/underline';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import { addTransparency } from '../../../utils/graphs/addTransparency';
+import getGeneratorFunction from '../../../utils/graphs/getLegendLabel';
 
 /**
  * Interface containing the settings of the chart title
@@ -112,10 +113,8 @@ export class SafePieDonutChartComponent implements OnChanges {
         legend: {
           display: get(this.legend, 'visible', false),
           labels: {
-            // borderRadius: 4,
-            // useBorderRadius: true,
             usePointStyle: true,
-            pointStyle: 'rectRounded',
+            generateLabels: getGeneratorFunction(false),
           },
           position: get(this.legend, 'position', 'bottom'),
         },

@@ -11,6 +11,7 @@ import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import drawUnderlinePlugin from '../../../utils/graphs/plugins/underline';
 import { parseFontOptions } from '../../../utils/graphs/parseFontString';
 import { addTransparency } from '../../../utils/graphs/addTransparency';
+import getGeneratorFunction from '../../../utils/graphs/getLegendLabel';
 
 /**
  * Interface containing the settings of the chart title
@@ -135,11 +136,8 @@ export class SafeLineChartComponent implements OnChanges {
           display:
             get(this.legend, 'visible', false) && !!this.series[0]?.label,
           labels: {
-            // borderRadius: 4,
-            // useBorderRadius: true,
-            color: '#000',
             usePointStyle: true,
-            pointStyle: 'rectRounded',
+            generateLabels: getGeneratorFunction(true),
           },
           position: get(this.legend, 'position', 'bottom'),
         },
