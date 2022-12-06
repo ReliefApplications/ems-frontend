@@ -937,10 +937,17 @@
 					"detail": "Ouvrir le détail",
 					"history": "Voir l'historique"
 				},
-				"empty": "Aucun enregistrement détecté",
+				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
 				"errors": {
-					"invalid": "Configuration de grille invalide",
+					"invalid": {
+						"backoffice": "Configuration de grille invalide",
+						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur"
+					},
+					"metaQueryBuildFailed": "Erreur lors de la création des métadonnées",
+					"metaQueryFetchFailed": "Erreur lors de la récupération des métadonnées: {{error}}",
 					"missingDataset": "Sélectionner un jeu de données dans les jeux de données",
+					"queryBuildFailed": "Erreur lors de la création de la requête",
+					"queryFetchFailed": "Erreur lors de la récupération des données : {{error}}",
 					"validationFailed": "Les enregistrements suivants n'ont pas pu être sauvegardés car invalides :\n{{errors}}\nMerci de les modifier en utilisant le bouton \"Mettre à jour \" pour plus de détails."
 				},
 				"export": {
@@ -976,6 +983,10 @@
 				},
 				"layout": {
 					"reset": "Réinitialiser la mise en page par défaut"
+				},
+				"loading": {
+					"records": "Chargement des enregistrements...",
+					"settings": "Chargement des paramètres..."
 				},
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {

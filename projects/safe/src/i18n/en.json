@@ -936,10 +936,16 @@
 					"detail": "Open detail",
 					"history": "Show history"
 				},
-				"empty": "No record detected",
 				"errors": {
-					"invalid": "Invalid grid configuration",
+					"invalid": {
+						"backoffice": "Invalid grid configuration",
+						"frontoffice": "Invalid grid configuration, please contact your admin"
+					},
+					"metaQueryBuildFailed": "Error building metadata",
+					"metaQueryFetchFailed": "Error fetching metadata: {{error}}",
 					"missingDataset": "Select a dataset in settings",
+					"queryBuildFailed": "Error building query",
+					"queryFetchFailed": "Error fetching data: {{error}}",
 					"validationFailed": "The following records could not be saved due to validation rules:\n{{errors}}\nPlease edit the record using the 'update' button for more details."
 				},
 				"export": {
@@ -975,6 +981,10 @@
 				},
 				"layout": {
 					"reset": "Reset default Layout"
+				},
+				"loading": {
+					"records": "Loading records...",
+					"settings": "Loading settings..."
 				},
 				"openSettings": "Open settings",
 				"tooltip": {
@@ -1542,7 +1552,7 @@
 				"scope": "Enter scope",
 				"secret": "Enter client secret",
 				"token": "Enter token for authentication",
-				"tokenUrl": "Enter acces token URL"
+				"tokenUrl": "Enter access token URL"
 			},
 			"scope": "Scope",
 			"secret": "Client Secret",

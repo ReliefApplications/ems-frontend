@@ -1,5 +1,10 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
 trigger:
-- main
+- stage
 
 pool:
   vmImage: ubuntu-latest
@@ -7,15 +12,15 @@ pool:
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '16.x'
+    versionSpec: '18.x'
   displayName: 'Install Node.js'
 
 - script: |
     npm install -g @angular/cli
     npm install
     ng build --configuration=production safe
-    ng build --configuration=azure-prod front-office
-    ng build --configuration=azure-prod back-office
+    ng build --configuration=azure-uat front-office
+    ng build --configuration=azure-uat back-office
   displayName: 'npm install and build the apps'
 
 - task: ArchiveFiles@2
@@ -23,7 +28,7 @@ steps:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/front-office'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/prod/front-office/$(Build.BuildId).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/uat/front-office/$(Build.BuildId).zip'
     replaceExistingArchive: true
 
 - task: ArchiveFiles@2
@@ -31,17 +36,17 @@ steps:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/back-office'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/prod/back-office/$(Build.BuildId).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/uat/back-office/$(Build.BuildId).zip'
     replaceExistingArchive: true
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/prod/front-office/$(Build.BuildId).zip'
-    ArtifactName: 'prod-front-office'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/uat/front-office/$(Build.BuildId).zip'
+    ArtifactName: 'uat-front-office'
     publishLocation: 'Container'
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/prod/back-office/$(Build.BuildId).zip'
-    ArtifactName: 'prod-back-office'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/uat/back-office/$(Build.BuildId).zip'
+    ArtifactName: 'uat-back-office'
     publishLocation: 'Container'
