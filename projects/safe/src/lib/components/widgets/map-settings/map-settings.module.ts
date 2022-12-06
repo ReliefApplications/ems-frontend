@@ -8,6 +8,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MapGeneralModule } from './map-general/map-general.module';
 import { MapLayersModule } from './map-layers/map-layers.module';
 import { MapPropertiesModule } from './map-properties/map-properties.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 /** Module for map settings component */
 @NgModule({
@@ -22,6 +23,7 @@ import { MapPropertiesModule } from './map-properties/map-properties.module';
     MapGeneralModule,
     MapLayersModule,
     MapPropertiesModule,
+    MatTooltipModule,
   ],
   exports: [SafeMapSettingsComponent],
 })

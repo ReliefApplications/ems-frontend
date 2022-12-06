@@ -580,7 +580,6 @@ mat-tab-group[vertical] {
   & > .mat-tab-header {
     border-bottom: none;
     width: 240px;
-    position: fixed;
     z-index: 1;
 
     .mat-tab-labels {
@@ -603,6 +602,7 @@ mat-tab-group[vertical] {
 
           safe-icon {
             display: flex;
+            pointer-events: none;
           }
         }
       }
@@ -615,7 +615,6 @@ mat-tab-group[vertical] {
 
   & > .mat-tab-body-wrapper {
     width: 100%;
-    padding-left: 240px;
 
     & > .mat-tab-body {
       & > .mat-tab-body-content {
@@ -629,6 +628,26 @@ mat-tab-group[vertical] {
       &
         > .mat-tab-body-content[style*='transform: translate3d(-100%, 0px, 0px)'] {
         transform: translate3d(0px, -100%, 0px) !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 598px) {
+  mat-tab-group[vertical] {
+    & > .mat-tab-header {
+      width: unset;
+
+      .mat-tab-label {
+        .mat-tab-label-content {
+          span {
+            display: none;
+          }
+
+          safe-icon {
+            pointer-events: all !important;
+          }
+        }
       }
     }
   }

@@ -25,6 +25,7 @@ import { SafePaletteControlModule } from '../../palette-control/palette-control.
 import { TabMainModule } from './tab-main/tab-main.module';
 import { TabDisplayModule } from './tab-display/tab-display.module';
 import { TabPreviewModule } from './tab-preview/tab-preview.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 /** Module for the chart settings component */
 @NgModule({
@@ -56,6 +57,7 @@ import { TabPreviewModule } from './tab-preview/tab-preview.module';
     TabMainModule,
     TabDisplayModule,
     TabPreviewModule,
+    MatTooltipModule,
   ],
   exports: [SafeChartSettingsComponent],
 })
