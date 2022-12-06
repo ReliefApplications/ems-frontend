@@ -138,7 +138,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private dataQuery!: QueryRef<any>;
   private metaQuery: any;
   private dataSubscription?: Subscription;
-  private columnsOrder: any[] = [];
 
   // === PAGINATION ===
   public pageSize = 10;
@@ -150,7 +149,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public updatedItems: any[] = [];
   public formGroup: FormGroup = new FormGroup({});
   public loading = false;
-  public error = false;
+  public error: {
+    message?: string;
+    error: boolean;
+  } = {
+    error: false,
+  };
   private templateStructure = '';
 
   // === SORTING ===
@@ -335,7 +339,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     if (!builtQuery) {
-      this.error = !this.loadingSettings;
+      this.error = {
+        error: !this.loadingSettings,
+        message: this.translate.instant(
+          'components.widget.grid.errors.queryBuildFailed'
+        ),
+      };
     } else {
       this.dataQuery = this.apollo.watchQuery<any>({
         query: builtQuery,
@@ -357,7 +366,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.loading = true;
       this.metaQuery.subscribe(
         async (res: any) => {
-          this.error = false;
+          this.error = {
+            error: false,
+          };
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               this.metaFields = Object.assign({}, res.data[field]);
@@ -378,14 +389,30 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           }
           this.getRecords();
         },
-        () => {
+        (err: any) => {
           this.loading = false;
-          this.error = true;
+          this.error = {
+            error: true,
+            message: this.translate.instant(
+              'components.widget.grid.errors.metaQueryFetchFailed',
+              {
+                error:
+                  err.networkError?.error?.errors
+                    ?.map((x: any) => x.message)
+                    .join(', ') || err,
+              }
+            ),
+          };
         }
       );
     } else {
       this.loading = false;
-      this.error = !this.loadingSettings;
+      this.error = {
+        error: !this.loadingSettings,
+        message: this.translate.instant(
+          'components.widget.grid.errors.metaQueryBuildFailed'
+        ),
+      };
     }
     this.loadTemplate();
   }
@@ -593,7 +620,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.dataSubscription = this.dataQuery.valueChanges.subscribe(
         (res: any) => {
           this.loading = false;
-          this.error = false;
+          this.error = {
+            error: false,
+          };
           for (const field in res.data) {
             if (Object.prototype.hasOwnProperty.call(res.data, field)) {
               const nodes =
@@ -623,8 +652,19 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             }
           }
         },
-        () => {
-          this.error = true;
+        (err: any) => {
+          this.error = {
+            error: true,
+            message: this.translate.instant(
+              'components.widget.grid.errors.queryFetchFailed',
+              {
+                error:
+                  err.networkError?.error?.errors
+                    ?.map((x: any) => x.message)
+                    .join(', ') || err,
+              }
+            ),
+          };
           this.loading = false;
         }
       );

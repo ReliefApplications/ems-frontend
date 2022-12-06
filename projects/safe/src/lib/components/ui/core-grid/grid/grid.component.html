@@ -2,7 +2,7 @@
 <kendo-grid
   id="recordsGrid"
   [loading]="loadingRecords || loadingSettings"
-  [data]="error ? [] : data"
+  [data]="error.error ? [] : data"
   [autoSize]="false"
   [resizable]="resizable"
   [reorderable]="reorderable"
@@ -927,11 +927,14 @@
   </ng-container>
   <!-- EMPTY TABLE / INVALID QUERY -->
   <ng-template kendoGridNoRecordsTemplate>
-    {{ getStatusMessage() }}
+    {{ statusMessage }}
     <div class="mt-8 flex justify-center">
       <safe-button
         *ngIf="
-          !loadingSettings && !loadingRecords && canUpdate && (error || blank)
+          !loadingSettings &&
+          !loadingRecords &&
+          canUpdate &&
+          (error.error || blank)
         "
         variant="primary"
         category="secondary"
