@@ -540,7 +540,7 @@ export class SafeApplicationService {
    * Duplicates page in the indicated application.
    *
    * @param pageId page id which will be duplicated
-   * @param applicationId id of the application where it shoul be duplicated
+   * @param applicationId id of the application where it should be duplicated
    */
   duplicatePage(pageId: string, applicationId: string): void {
     this.apollo
