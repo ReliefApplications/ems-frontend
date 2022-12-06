@@ -117,7 +117,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() data: GridDataResult = { data: [], total: 0 };
   @Input() loadingRecords = false;
   @Input() loadingSettings = true;
-  @Input() error: {
+  @Input() status: {
     error: boolean;
     message?: string;
   } = {
@@ -751,6 +751,17 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    * @returns string with the status message
    */
   public getStatusMessage(): string {
+    if (this.status.error) {
+      if (this.status.message && this.environment === 'backoffice') {
+        if (this.snackBarRef) this.snackBarRef.dismiss();
+        this.snackBarRef = this.snackBar.openSnackBar(this.status.message, {
+          error: true,
+        });
+      }
+      return this.translate.instant(
+        `components.widget.grid.errors.invalid.${this.environment}`
+      );
+    }
     if (this.loadingSettings)
       return this.translate.instant('components.widget.grid.loading.settings');
     if (this.blank && this.environment === 'backoffice')
@@ -761,17 +772,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       return this.translate.instant(
         'components.widget.grid.errors.invalid.frontoffice'
       );
-    if (this.error.error) {
-      if (this.error.message && this.environment === 'backoffice') {
-        if (this.snackBarRef) this.snackBarRef.dismiss();
-        this.snackBarRef = this.snackBar.openSnackBar(this.error.message, {
-          error: true,
-        });
-      }
-      return this.translate.instant(
-        `components.widget.grid.errors.invalid.${this.environment}`
-      );
-    }
     if (this.loadingRecords)
       return this.translate.instant('components.widget.grid.loading.records');
     return this.translate.instant('kendo.grid.noRecords');

@@ -2,7 +2,7 @@
 <kendo-grid
   id="recordsGrid"
   [loading]="loadingRecords || loadingSettings"
-  [data]="error.error ? [] : data"
+  [data]="status.error ? [] : data"
   [autoSize]="false"
   [resizable]="resizable"
   [reorderable]="reorderable"
@@ -934,7 +934,7 @@
           !loadingSettings &&
           !loadingRecords &&
           canUpdate &&
-          (error.error || blank)
+          (status.error || blank)
         "
         variant="primary"
         category="secondary"

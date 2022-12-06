@@ -149,7 +149,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public updatedItems: any[] = [];
   public formGroup: FormGroup = new FormGroup({});
   public loading = false;
-  public error: {
+  @Input() status: {
     message?: string;
     error: boolean;
   } = {
@@ -300,8 +300,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
    * @param changes The changes on the component
    */
   ngOnChanges(changes?: SimpleChanges): void {
-    if (changes?.settings) {
-      this.configureGrid();
+    if (!this.status.error) {
+      if (changes?.settings) {
+        this.configureGrid();
+      }
     }
   }
 
@@ -339,7 +341,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     // Builds custom query.
     const builtQuery = this.queryBuilder.buildQuery(this.settings);
     if (!builtQuery) {
-      this.error = {
+      this.status = {
         error: !this.loadingSettings,
         message: this.translate.instant(
           'components.widget.grid.errors.queryBuildFailed'
@@ -366,7 +368,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.loading = true;
       this.metaQuery.subscribe(
         async (res: any) => {
-          this.error = {
+          this.status = {
             error: false,
           };
           for (const field in res.data) {
@@ -391,7 +393,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         },
         (err: any) => {
           this.loading = false;
-          this.error = {
+          this.status = {
             error: true,
             message: this.translate.instant(
               'components.widget.grid.errors.metaQueryFetchFailed',
@@ -407,7 +409,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       );
     } else {
       this.loading = false;
-      this.error = {
+      this.status = {
         error: !this.loadingSettings,
         message: this.translate.instant(
           'components.widget.grid.errors.metaQueryBuildFailed'
@@ -620,7 +622,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       this.dataSubscription = this.dataQuery.valueChanges.subscribe(
         (res: any) => {
           this.loading = false;
-          this.error = {
+          this.status = {
             error: false,
           };
           for (const field in res.data) {
@@ -653,7 +655,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           }
         },
         (err: any) => {
-          this.error = {
+          this.status = {
             error: true,
             message: this.translate.instant(
               'components.widget.grid.errors.queryFetchFailed',
