@@ -114,7 +114,8 @@
               "subscriptions-transport-ws",
               "zen-observable",
               "lodash",
-              "construe"
+              "cronstrue",
+              "cron-parser"
             ]
           },
           "configurations": {
@@ -579,7 +580,8 @@
               "subscriptions-transport-ws",
               "zen-observable",
               "lodash",
-              "construe"
+              "cronstrue",
+              "cron-parser"
             ]
           },
           "configurations": {
@@ -1022,7 +1024,8 @@
               "subscriptions-transport-ws",
               "zen-observable",
               "lodash",
-              "construe"
+              "cronstrue",
+              "cron-parser"
             ]
           },
           "configurations": {

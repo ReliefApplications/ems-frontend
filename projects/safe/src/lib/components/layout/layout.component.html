@@ -78,18 +78,18 @@
     </mat-icon>
   </button>
   <mat-menu #accountMenu="matMenu">
-    <button mat-menu-item (click)="onOpenProfile()">
+    <a mat-menu-item [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}
-    </button>
+    </a>
     <safe-divider style="margin: unset"></safe-divider>
     <button mat-menu-item (click)="onOpenPreferences()" *ngIf="showPreferences">
       {{ 'components.preferences.title' | translate }}
     </button>
     <ng-container *ngIf="user && user.isAdmin">
       <safe-divider style="margin: unset"></safe-divider>
-      <button mat-menu-item (click)="onSwitchOffice()">
+      <a mat-menu-item [href]="otherOfficeUri">
         {{ 'components.header.goToPlatform' | translate }} {{ otherOffice }}
-      </button>
+      </a>
     </ng-container>
     <safe-divider style="margin: unset"></safe-divider>
     <button mat-menu-item (click)="logout()" class="warn">

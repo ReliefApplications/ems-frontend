@@ -18,9 +18,9 @@
 </div>
 
 <!-- Table container -->
-<div class="overflow-x-hidden">
+<div class="overflow-x-hidden shadow-light">
   <!-- Table scroll container -->
-  <div class="overflow-auto">
+  <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
       mat-table
@@ -85,23 +85,23 @@
         [routerLink]="['/resources', row.id]"
       ></tr>
     </table>
+    <!-- Loading indicator -->
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="['common.name', 'common.createdOn', 'common.record.few']"
+      [actions]="true"
+    >
+    </safe-skeleton-table>
   </div>
+  <!-- Pagination -->
+  <mat-paginator
+    [disabled]="loading || updating"
+    [pageIndex]="pageInfo.pageIndex"
+    [pageSize]="pageInfo.pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
+    [length]="pageInfo.length"
+    aria-label="Select page of resources"
+    (page)="onPage($event)"
+  >
+  </mat-paginator>
 </div>
-<!-- Loading indicator -->
-<safe-skeleton-table
-  *ngIf="loading"
-  [columns]="['common.name', 'common.createdOn', 'common.record.few']"
-  [actions]="true"
->
-</safe-skeleton-table>
-<!-- Pagination -->
-<mat-paginator
-  [disabled]="loading || updating"
-  [pageIndex]="pageInfo.pageIndex"
-  [pageSize]="pageInfo.pageSize"
-  [pageSizeOptions]="[10, 25, 50]"
-  [length]="pageInfo.length"
-  aria-label="Select page of resources"
-  (page)="onPage($event)"
->
-</mat-paginator>

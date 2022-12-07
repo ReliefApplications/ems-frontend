@@ -10,6 +10,7 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
 import { TabActionsModule } from './tab-actions/tab-actions.module';
 import { TabButtonsModule } from './tab-buttons/tab-buttons.module';
 import { TabMainModule } from './tab-main/tab-main.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 /** Module for the grid widget settings component */
 @NgModule({
@@ -26,6 +27,7 @@ import { TabMainModule } from './tab-main/tab-main.module';
     TabActionsModule,
     TabButtonsModule,
     TabMainModule,
+    MatTooltipModule,
   ],
   exports: [SafeGridSettingsComponent],
 })

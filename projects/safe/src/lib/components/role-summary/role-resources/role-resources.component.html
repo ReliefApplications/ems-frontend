@@ -5,10 +5,10 @@
   [loading]="filterLoading"
 ></safe-role-resources-filter>
 <!-- Resource Table -->
-<!-- Table container -->
-<div class="overflow-x-hidden">
-  <!-- Table scroll container -->
-  <div class="overflow-auto">
+  <!-- Table container -->
+  <div class="overflow-x-hidden shadow-light">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
       mat-table
@@ -105,11 +105,10 @@
         style="height: 0"
       ></tr>
     </table>
+    <safe-skeleton-table *ngIf="loading" [columns]="['common.name']">
+    </safe-skeleton-table>
   </div>
-</div>
-<safe-skeleton-table *ngIf="loading" [columns]="['common.name']">
-</safe-skeleton-table>
-<mat-paginator
+  <mat-paginator
   [disabled]="loading || updating"
   [pageIndex]="pageInfo.pageIndex"
   [pageSize]="pageInfo.pageSize"
@@ -119,3 +118,6 @@
   (page)="onPage($event)"
 >
 </mat-paginator>
+</div>
+
+
