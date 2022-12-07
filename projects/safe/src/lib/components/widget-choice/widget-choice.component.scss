@@ -1,3 +1,4 @@
+
 .safe-widget-choice {
   display: flex;
   flex-wrap: wrap;
@@ -35,7 +36,7 @@
 .safe-floating-widget-collapsed {
   display: flex;
   background: white;
-  box-shadow: 0px 4px 4px rgba(47, 56, 62, 0.15);
+  // box-shadow: 0px 4px 4px rgba(47, 56, 62, 0.15);
   pointer-events: auto;
   cursor: move;
   position: relative;
