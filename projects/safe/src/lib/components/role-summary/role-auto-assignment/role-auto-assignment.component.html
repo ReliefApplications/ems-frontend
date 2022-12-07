@@ -16,10 +16,10 @@
   [rows]="5"
 >
 </safe-skeleton-table>
-<!-- Table container -->
-<div class="overflow-x-hidden">
-  <!-- Table scroll container -->
-  <div class="overflow-auto">
+  <!-- Table container -->
+  <div class="overflow-x-hidden shadow-light">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
     <table mat-table [dataSource]="rules" *ngIf="!loading">
       <ng-container matColumnDef="filter">
         <th mat-header-cell *matHeaderCellDef>

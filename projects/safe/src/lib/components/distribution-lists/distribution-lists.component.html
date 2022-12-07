@@ -13,9 +13,9 @@
   </div>
 </div>
 <!-- Table container -->
-<div class="overflow-x-hidden">
+<div class="overflow-x-hidden shadow-light">
   <!-- Table scroll container -->
-  <div class="overflow-auto">
+  <div class="overflow-x-auto">
     <table *ngIf="!loading" mat-table [dataSource]="distributionLists" matSort>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
@@ -53,12 +53,11 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="displayedColumns"
+      [actions]="true"
+    >
+    </safe-skeleton-table>
   </div>
 </div>
-
-<safe-skeleton-table
-  *ngIf="loading"
-  [columns]="displayedColumns"
-  [actions]="true"
->
-</safe-skeleton-table>

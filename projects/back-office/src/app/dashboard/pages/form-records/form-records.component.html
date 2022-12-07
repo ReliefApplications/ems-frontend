@@ -72,9 +72,9 @@
   </div>
 </div>
 <!-- Table container -->
-<div class="overflow-x-hidden">
+<div class="overflow-x-hidden shadow-light">
   <!-- Table scroll container -->
-  <div class="overflow-auto">
+  <div class="overflow-x-auto">
     <!-- Records table -->
     <table *ngIf="!loading" mat-table [dataSource]="dataSource">
       <ng-container
@@ -153,19 +153,19 @@
         [routerLink]="['./update', row.id]"
       ></tr>
     </table>
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="displayedColumns"
+      [actions]="true"
+    >
+    </safe-skeleton-table>
   </div>
+  <mat-paginator
+    [disabled]="loadingMore"
+    [pageSize]="pageInfo.pageSize"
+    [length]="pageInfo.length"
+    aria-label="Select page of records"
+    (page)="onPage($event)"
+  >
+  </mat-paginator>
 </div>
-<safe-skeleton-table
-  *ngIf="loading"
-  [columns]="displayedColumns"
-  [actions]="true"
->
-</safe-skeleton-table>
-<mat-paginator
-  [disabled]="loadingMore"
-  [pageSize]="pageInfo.pageSize"
-  [length]="pageInfo.length"
-  aria-label="Select page of records"
-  (page)="onPage($event)"
->
-</mat-paginator>
