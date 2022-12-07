@@ -357,10 +357,15 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value: any) => {
       if (value) {
-        this.applicationService.addDistributionList({
-          name: value.name,
-          emails: value.emails,
-        });
+        this.applicationService.addDistributionList(
+          {
+            name: value.name,
+            emails: value.emails,
+          },
+          (list: DistributionList) => {
+            this.formGroup.get('distributionList')?.setValue(list.id);
+          }
+        );
       }
     });
   }
@@ -372,14 +377,23 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value)
-        this.applicationService.addTemplate({
-          name: value.name,
-          type: TemplateTypeEnum.EMAIL,
-          content: {
-            subject: value.subject,
-            body: value.body,
+        this.applicationService.addTemplate(
+          {
+            name: value.name,
+            type: TemplateTypeEnum.EMAIL,
+            content: {
+              subject: value.subject,
+              body: value.body,
+            },
           },
-        });
+          (template: Template) => {
+            const templates = [
+              ...(this.formGroup.get('templates')?.value || []),
+            ];
+            templates.push(template.id);
+            this.formGroup.get('templates')?.setValue(templates);
+          }
+        );
     });
   }
 

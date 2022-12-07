@@ -304,7 +304,8 @@
         'components.widget.settings.grid.buttons.callback.sendMail' | translate
       }}</mat-checkbox>
       <div *ngIf="formGroup.value.sendMail" class="sub-parameters">
-        <mat-form-field class="chip-list" appearance="outline">
+        <!-- Distribution list -->
+        <mat-form-field appearance="outline">
           <mat-label>{{
             'components.emailBuilder.distribution' | translate
           }}</mat-label>
@@ -333,10 +334,11 @@
             icon="add_circle_outline"
             variant="primary"
             (click)="$event.stopPropagation(); addDistributionList()"
+            [matTooltip]="'components.distributionLists.edit.new' | translate"
           >
           </safe-button>
         </mat-form-field>
-
+        <!-- Templates -->
         <mat-form-field appearance="outline">
           <mat-label>{{
             'components.templates.available' | translate
@@ -366,6 +368,7 @@
             icon="add_circle_outline"
             variant="primary"
             (click)="$event.stopPropagation(); addEmailTemplate()"
+            [matTooltip]="'components.templates.edit.new' | translate"
           >
           </safe-button>
           <mat-error
@@ -376,9 +379,11 @@
             >{{ 'components.templates.errors.empty' | translate }}</mat-error
           >
         </mat-form-field>
+        <!-- Export dataset -->
         <mat-checkbox formControlName="export">{{
           'components.widget.settings.grid.buttons.callback.export' | translate
         }}</mat-checkbox>
+        <!-- Select fields to see in dataset -->
         <h2>{{ 'components.emailBuilder.fields' | translate }}</h2>
         <safe-tab-fields
           *ngIf="fields.length > 0"
