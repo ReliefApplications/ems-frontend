@@ -58,6 +58,22 @@
   </div>
   <!-- Actions -->
   <div class="flex gap-2 items-center">
+    <!-- Actions when selected items -->
+    <ng-container *ngIf="selection.selected.length > 0">
+      <safe-button
+        icon="delete"
+        category="secondary"
+        variant="danger"
+        (click)="onDelete(selection.selected)"
+      >
+        {{
+          'common.deleteObject'
+            | translate: { name: 'common.user.few' | translate }
+        }}
+      </safe-button>
+    </ng-container>
+
+    <!-- Default actions -->
     <safe-button
       class="export-users"
       icon="file_download"
@@ -84,22 +100,6 @@
       {{ 'components.users.invite.confirm' | translate }}
     </safe-button>
   </div>
-</div>
-<!-- Actions when selected items -->
-<div
-  class="flex gap-2 items-center mb-2 justify-end"
-  *ngIf="selection.selected.length > 0"
->
-  <safe-button
-    icon="delete"
-    category="secondary"
-    variant="danger"
-    (click)="onDelete(selection.selected)"
-  >
-    {{
-      'common.deleteObject' | translate: { name: 'common.user.few' | translate }
-    }}
-  </safe-button>
 </div>
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-light">
@@ -206,18 +206,16 @@
       ></tr>
     </table>
     <safe-skeleton-table
-  *ngIf="loading"
-  [columns]="[
-    'common.name',
-    'models.user.username',
-    'common.id',
-    'common.role.one'
-  ]"
-  [actions]="true"
-  [checkbox]="true"
->
-</safe-skeleton-table>
+      *ngIf="loading"
+      [columns]="[
+        'common.name',
+        'models.user.username',
+        'common.id',
+        'common.role.one'
+      ]"
+      [actions]="true"
+      [checkbox]="true"
+    >
+    </safe-skeleton-table>
   </div>
 </div>
-
-

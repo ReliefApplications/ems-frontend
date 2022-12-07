@@ -23,7 +23,6 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeDownloadService } from '../../services/download/download.service';
-import { Application } from '../../models/application.model';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -76,7 +75,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
    *
    * @param apollo The apollo client
    * @param snackBar The snack bar service
-   * @param authService The authentification service
+   * @param authService The authentication service
    * @param dialog The material dialog service
    * @param downloadService The download service
    * @param confirmService The confirm service
@@ -349,32 +348,26 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   /**
    * Export the list of users
    *
-   * @param type The type of file we want ('csv' or 'xslx')
+   * @param type The type of file we want ('csv' or 'xlsx')
    */
-  onExport(type: string): void {
-    // if we are in the Users page of an application
-    if (this.applicationService) {
-      this.applicationService.application$.subscribe(
-        (value: Application | null) => {
-          const fileName = `users_${value?.name}.${type}`;
-          const path = `download/application/${value?.id}/users`;
-          const queryString = new URLSearchParams({ type }).toString();
-          this.downloadService.getFile(
-            `${path}?${queryString}`,
-            `text/${type};charset=utf-8;`,
-            fileName
-          );
-        }
+  async onExport(type: string) {
+    // if is inside of an application
+    if (this.applicationService)
+      this.applicationService.application$.subscribe((app) => {
+        if (!app) return;
+        this.downloadService.getUsersExport(
+          type,
+          this.selection.selected
+            .map((x) => x.id || '')
+            .filter((x) => x !== ''),
+          app
+        );
+      });
+    // if exporting backoffice users
+    else
+      this.downloadService.getUsersExport(
+        type,
+        this.selection.selected.map((x) => x.id || '').filter((x) => x !== '')
       );
-    } else {
-      const fileName = `users.${type}`;
-      const path = `download/users`;
-      const queryString = new URLSearchParams({ type }).toString();
-      this.downloadService.getFile(
-        `${path}?${queryString}`,
-        `text/${type};charset=utf-8;`,
-        fileName
-      );
-    }
   }
 }
