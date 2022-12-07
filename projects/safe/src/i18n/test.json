@@ -901,10 +901,16 @@
 					"detail": "******",
 					"history": "******"
 				},
-				"empty": "******",
 				"errors": {
-					"invalid": "******",
+					"invalid": {
+						"backoffice": "******",
+						"frontoffice": "******"
+					},
+					"metaQueryBuildFailed": "******",
+					"metaQueryFetchFailed": "****** {{error}}",
 					"missingDataset": "******",
+					"queryBuildFailed": "******",
+					"queryFetchFailed": "****** {{error}}",
 					"validationFailed": "****** {{errors}} ******"
 				},
 				"export": {
@@ -940,6 +946,10 @@
 				},
 				"layout": {
 					"reset": "******"
+				},
+				"loading": {
+					"records": "******",
+					"settings": "******"
 				},
 				"openSettings": "******",
 				"tooltip": {

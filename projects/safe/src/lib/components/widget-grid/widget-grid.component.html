@@ -1,4 +1,4 @@
-<div class="grid-container" *ngIf="!loading">
+<div *ngIf="!loading">
   <!-- NEW WIDGETS -->
   <div
     class="widget-choice-wrapper"
@@ -21,6 +21,7 @@
     [reorderable]="canUpdate"
     (reorder)="onReorder($event)"
     (resize)="onResize($event)"
+    class="-m-4"
   >
     <kendo-tilelayout-item
       *ngFor="let widget of widgets; let i = index"
@@ -62,8 +63,8 @@
   </kendo-tilelayout>
 </div>
 <!-- LOADING INDICATOR -->
-<div *ngIf="loading" class="grid-container">
-  <kendo-tilelayout [rowHeight]="200" [columns]="colsNumber">
+<div *ngIf="loading" class="mt-6">
+  <kendo-tilelayout [rowHeight]="200" [columns]="colsNumber" class="-m-4">
     <kendo-tilelayout-item
       *ngFor="let skeleton of skeletons"
       [colSpan]="skeleton.colSpan"

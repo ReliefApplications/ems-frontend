@@ -84,6 +84,10 @@ export class SafeGridWidgetComponent implements OnInit {
   @Input() id = '';
   @Input() canUpdate = false;
   public gridSettings: any = null;
+  public status: {
+    message?: string;
+    error: boolean;
+  } = { error: false };
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -147,6 +151,12 @@ export class SafeGridWidgetComponent implements OnInit {
               .map((edge) => edge.node)
               .sort((a, b) => layouts.indexOf(a.id) - layouts.indexOf(b.id));
             this.layout = this.layouts[0] || null;
+            if (!this.layout) {
+              console.log('làa');
+              this.status = {
+                error: true,
+              };
+            }
             this.gridSettings = {
               ...this.settings,
               ...this.layout,
@@ -169,6 +179,11 @@ export class SafeGridWidgetComponent implements OnInit {
                 (a, b) =>
                   aggregations.indexOf(a.id) - aggregations.indexOf(b.id)
               );
+            if (!this.aggregation) {
+              this.status = {
+                error: true,
+              };
+            }
             this.aggregation = this.aggregations[0] || null;
           });
         return;
