@@ -12,10 +12,10 @@
     </safe-button>
   </div>
 </div>
-  <!-- Table container -->
-  <div class="overflow-x-hidden shadow-light">
-    <!-- Table scroll container -->
-    <div class="overflow-x-auto">
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-light">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
     <table *ngIf="!loading" mat-table [dataSource]="templates" matSort>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
@@ -65,12 +65,10 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
     <safe-skeleton-table
-  *ngIf="loading"
-  [columns]="displayedColumns"
-  [actions]="true"
->
-</safe-skeleton-table>
+      *ngIf="loading"
+      [columns]="displayedColumns"
+      [actions]="true"
+    >
+    </safe-skeleton-table>
   </div>
 </div>
-
-

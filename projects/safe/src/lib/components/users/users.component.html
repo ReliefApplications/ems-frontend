@@ -206,18 +206,16 @@
       ></tr>
     </table>
     <safe-skeleton-table
-  *ngIf="loading"
-  [columns]="[
-    'common.name',
-    'models.user.username',
-    'common.id',
-    'common.role.one'
-  ]"
-  [actions]="true"
-  [checkbox]="true"
->
-</safe-skeleton-table>
+      *ngIf="loading"
+      [columns]="[
+        'common.name',
+        'models.user.username',
+        'common.id',
+        'common.role.one'
+      ]"
+      [actions]="true"
+      [checkbox]="true"
+    >
+    </safe-skeleton-table>
   </div>
 </div>
-
-
