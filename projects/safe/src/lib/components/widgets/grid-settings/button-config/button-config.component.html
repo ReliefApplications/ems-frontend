@@ -318,7 +318,7 @@
           </mat-select>
           <safe-icon
             matSuffix
-            icon="info"
+            icon="info_outline"
             class="cursor-pointer"
             variant="grey"
             matSuffix
@@ -327,7 +327,16 @@
                 | translate
             "
           ></safe-icon>
+          <safe-button
+            matSuffix
+            [isIcon]="true"
+            icon="add_circle_outline"
+            variant="primary"
+            (click)="$event.stopPropagation(); addDistributionList()"
+          >
+          </safe-button>
         </mat-form-field>
+
         <mat-form-field appearance="outline">
           <mat-label>{{
             'components.templates.available' | translate
@@ -342,7 +351,7 @@
           </mat-select>
           <safe-icon
             matSuffix
-            icon="info"
+            icon="info_outline"
             class="cursor-pointer"
             variant="grey"
             matSuffix
@@ -351,6 +360,14 @@
                 | translate
             "
           ></safe-icon>
+          <safe-button
+            matSuffix
+            [isIcon]="true"
+            icon="add_circle_outline"
+            variant="primary"
+            (click)="$event.stopPropagation(); addEmailTemplate()"
+          >
+          </safe-button>
           <mat-error
             *ngIf="
               formGroup.get('sendMail')?.value &&

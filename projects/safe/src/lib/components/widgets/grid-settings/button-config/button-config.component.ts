@@ -19,7 +19,9 @@ import { QueryBuilderService } from '../../../../services/query-builder/query-bu
 import { MatDialog } from '@angular/material/dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
 import { DistributionList } from '../../../../models/distribution-list.model';
-
+import { EditDistributionListModalComponent } from '../../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component';
+import { SafeApplicationService } from '../../../../services/application/application.service';
+import { EditTemplateModalComponent } from '../../../templates/components/edit-template-modal/edit-template-modal.component';
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -70,13 +72,15 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
    * @param workflowService Shared workflow service
    * @param queryBuilder Shared Query Builder service
    * @param dialog Material dialog service
+   * @param applicationService Shared application service
    */
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private applicationService: SafeApplicationService
   ) {}
 
   ngOnInit(): void {
@@ -343,6 +347,40 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
         i--;
       }
     }
+  }
+
+  /** Open edit modal components and create new distribution list */
+  public addDistributionList() {
+    const dialogRef = this.dialog.open(EditDistributionListModalComponent, {
+      data: null,
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((value: any) => {
+      if (value) {
+        this.applicationService.addDistributionList({
+          name: value.name,
+          emails: value.emails,
+        });
+      }
+    });
+  }
+
+  /** Opens modal for adding a new email template */
+  public addEmailTemplate() {
+    const dialogRef = this.dialog.open(EditTemplateModalComponent, {
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value)
+        this.applicationService.addTemplate({
+          name: value.name,
+          type: TemplateTypeEnum.EMAIL,
+          content: {
+            subject: value.subject,
+            body: value.body,
+          },
+        });
+    });
   }
 
   /**
