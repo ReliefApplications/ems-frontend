@@ -85,6 +85,50 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   public showAppMenu = false;
 
   /**
+   * Gets URI of the other office
+   *
+   * @returns URI of the other office
+   */
+  get otherOfficeUri(): string {
+    const frontOfficeUri =
+      this.environment.frontOfficeUri.slice(-1) === '/'
+        ? this.environment.frontOfficeUri
+        : this.environment.frontOfficeUri + '/';
+    const backOfficeUri =
+      this.environment.backOfficeUri.slice(-1) === '/'
+        ? this.environment.backOfficeUri
+        : this.environment.backOfficeUri + '/';
+
+    if (this.environment.module === 'backoffice') {
+      const location = backOfficeUri + 'applications/';
+      if (window.location.href.indexOf(location) === 0) {
+        return (
+          frontOfficeUri +
+          window.location.href.slice(
+            location.length,
+            window.location.href.length
+          )
+        );
+      } else {
+        return frontOfficeUri;
+      }
+    } else {
+      if (window.location.href.indexOf('profile') > 0) {
+        return backOfficeUri + 'profile/';
+      } else {
+        return (
+          backOfficeUri +
+          'applications/' +
+          window.location.href.slice(
+            frontOfficeUri.length,
+            window.location.href.length
+          )
+        );
+      }
+    }
+  }
+
+  /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
@@ -249,13 +293,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Shows options when opening user profile
-   */
-  onOpenProfile(): void {
-    this.router.navigate([this.profileRoute]);
-  }
-
-  /**
    * Opens the preferences modal and deals with the resulting form
    */
   onOpenPreferences(): void {
@@ -272,46 +309,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
         this.setLanguage(this.getLanguage());
       }
     });
-  }
-
-  /**
-   * Switches to back or front-office
-   */
-  onSwitchOffice(): void {
-    const frontOfficeUri =
-      this.environment.frontOfficeUri.slice(-1) === '/'
-        ? this.environment.frontOfficeUri
-        : this.environment.frontOfficeUri + '/';
-    const backOfficeUri =
-      this.environment.backOfficeUri.slice(-1) === '/'
-        ? this.environment.backOfficeUri
-        : this.environment.backOfficeUri + '/';
-
-    if (this.environment.module === 'backoffice') {
-      const location = backOfficeUri + 'applications/';
-      if (window.location.href.indexOf(location) === 0) {
-        window.location.href =
-          frontOfficeUri +
-          window.location.href.slice(
-            location.length,
-            window.location.href.length
-          );
-      } else {
-        window.location.href = frontOfficeUri;
-      }
-    } else {
-      if (window.location.href.indexOf('profile') > 0) {
-        window.location.href = backOfficeUri + 'profile/';
-      } else {
-        window.location.href =
-          backOfficeUri +
-          'applications/' +
-          window.location.href.slice(
-            frontOfficeUri.length,
-            window.location.href.length
-          );
-      }
-    }
   }
 
   /**
