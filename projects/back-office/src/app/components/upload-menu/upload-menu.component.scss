@@ -2,7 +2,7 @@
   background-color: white;
   padding: 8px;
   border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  @apply shadow-lg;
   display: flex;
   justify-content: space-between;
   gap: 8px;

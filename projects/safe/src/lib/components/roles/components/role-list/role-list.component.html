@@ -28,10 +28,10 @@
     </safe-button>
   </div>
 </div>
-<!-- Table container -->
-<div class="overflow-x-hidden">
-  <!-- Table scroll container -->
-  <div class="overflow-auto">
+  <!-- Table container -->
+  <div class="overflow-x-hidden shadow-light">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
     <table *ngIf="!loading" mat-table [dataSource]="roles" matSort>
       <ng-container matColumnDef="title">
         <th mat-header-cell *matHeaderCellDef>
@@ -83,12 +83,13 @@
         class="cursor-pointer"
       ></tr>
     </table>
-  </div>
-</div>
-
-<safe-skeleton-table
+    <safe-skeleton-table
   *ngIf="loading"
   [columns]="['common.title', 'common.user.few']"
   [actions]="true"
 >
 </safe-skeleton-table>
+  </div>
+</div>
+
+
