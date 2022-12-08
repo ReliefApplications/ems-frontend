@@ -1,8 +1,8 @@
 <h2>{{ 'common.user.few' | translate }}</h2>
 <!-- Table container -->
-<div class="overflow-x-hidden">
+<div class="overflow-x-hidden shadow-light">
   <!-- Table scroll container -->
-  <div class="overflow-auto">
+  <div class="overflow-x-auto">
     <table *ngIf="!loading" mat-table [dataSource]="users">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
@@ -25,20 +25,20 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="['common.name', 'models.user.username']"
+    >
+    </safe-skeleton-table>
   </div>
+  <mat-paginator
+    [disabled]="loading || updating"
+    [pageIndex]="pageInfo.pageIndex"
+    [pageSize]="pageInfo.pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
+    [length]="pageInfo.length"
+    aria-label="Select page of users"
+    (page)="onPage($event)"
+  >
+  </mat-paginator>
 </div>
-<safe-skeleton-table
-  *ngIf="loading"
-  [columns]="['common.name', 'models.user.username']"
->
-</safe-skeleton-table>
-<mat-paginator
-  [disabled]="loading || updating"
-  [pageIndex]="pageInfo.pageIndex"
-  [pageSize]="pageInfo.pageSize"
-  [pageSizeOptions]="[10, 25, 50]"
-  [length]="pageInfo.length"
-  aria-label="Select page of users"
-  (page)="onPage($event)"
->
-</mat-paginator>

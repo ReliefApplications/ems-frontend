@@ -33,6 +33,17 @@
 * selection of aggregation for summary cards ([fb6c59c](https://github.com/ReliefApplications/oort-frontend/commit/fb6c59c8fb7871a6147597183e02168330cc14ec))
 * start summary card component [#34839](https://github.com/ReliefApplications/oort-frontend/issues/34839) ([0c4e8fd](https://github.com/ReliefApplications/oort-frontend/commit/0c4e8fd6ff18feba261759e6ac4d60f2f73da9f9))
 
+## [1.3.1](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.0...v1.3.1) (2022-12-07)
+
+
+### Bug Fixes
+
+* adding list and template from settings ([991765c](https://github.com/ReliefApplications/oort-frontend/commit/991765cf87c6b6727c9fe7ba4707609afd18be34))
+* **build:** commonjs creating warning when building ([dda7ad3](https://github.com/ReliefApplications/oort-frontend/commit/dda7ad354f93ab66fd8a8313e24d5e7e48e87399))
+* hide labels on small devices ([39d6b54](https://github.com/ReliefApplications/oort-frontend/commit/39d6b546c029bc1bad3bd1a8120e5be379382249))
+* using links in profile menu ([564e40a](https://github.com/ReliefApplications/oort-frontend/commit/564e40a76e017cc23154162d914d6ad959dbd7bb))
+* using links instead of buttons on admin nav ([a47b97e](https://github.com/ReliefApplications/oort-frontend/commit/a47b97e3823064af938492c29553db3135d828db))
+
 # [1.3.0](https://github.com/ReliefApplications/oort-frontend/compare/v1.2.0...v1.3.0) (2022-12-01)
 
 
