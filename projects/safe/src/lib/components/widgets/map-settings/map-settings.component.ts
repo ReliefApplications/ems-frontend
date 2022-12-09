@@ -22,7 +22,7 @@ export class SafeMapSettingsComponent implements OnInit {
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   public selectedFields: (string | undefined)[] = [];
-  public formatedSelectedFields: any[] = [];
+  public formattedSelectedFields: any[] = [];
 
   /**
    * Get marker rules as form array
@@ -53,7 +53,7 @@ export class SafeMapSettingsComponent implements OnInit {
       this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
       this.queryBuilder
         .getFilterFields(this.tileForm?.value.query)
-        .then((fields) => (this.formatedSelectedFields = fields));
+        .then((fields) => (this.formattedSelectedFields = fields));
     }
 
     const queryForm = this.tileForm.get('query') as FormGroup;
@@ -69,7 +69,7 @@ export class SafeMapSettingsComponent implements OnInit {
         this.selectedFields = this.getFields(query.fields);
         this.queryBuilder
           .getFilterFields(query)
-          .then((fields) => (this.formatedSelectedFields = fields));
+          .then((fields) => (this.formattedSelectedFields = fields));
       }
     });
   }
@@ -122,7 +122,7 @@ export class SafeMapSettingsComponent implements OnInit {
    * @param selectedFields The concatenated names of the selected fields
    * @returns A list of formated seected fields
    */
-  // private getFormatedSelectedFields(
+  // private getFormattedSelectedFields(
   //   queryFields: any[],
   //   selectedFields: (string | undefined)[]
   // ): any[] {
@@ -131,7 +131,7 @@ export class SafeMapSettingsComponent implements OnInit {
   //     .filter((queryField) => rootFields.includes(queryField.name))
   //     .map((queryField) => {
   //       const formatedFields = queryField.fields
-  //         ? this.getFormatedSelectedFields(
+  //         ? this.getFormattedSelectedFields(
   //             queryField.fields,
   //             selectedFields
   //               .filter((field) => field?.split('.')[0] === queryField.name)
