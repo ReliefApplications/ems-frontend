@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { mapform } from './map-forms';
+import { createMapWidgetFormGroup } from './map-forms';
 import { FormGroup, FormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { debounceTime } from 'rxjs/operators';
@@ -42,7 +42,7 @@ export class SafeMapSettingsComponent implements OnInit {
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    this.tileForm = mapform(this.tile.id, this.tile.settings);
+    this.tileForm = createMapWidgetFormGroup(this.tile.id, this.tile.settings);
 
     this.change.emit(this.tileForm);
     this.tileForm?.valueChanges.subscribe(() => {
