@@ -3,6 +3,74 @@ import { createMapWidgetFormGroup } from './map-forms';
 import { FormGroup, FormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { debounceTime } from 'rxjs/operators';
+import { cloneDeep } from 'lodash';
+
+/**
+ * Filters an array of fields to only include fields that match the given paths.
+ *
+ * @param allFields the array of fields to filter
+ * @param paths the paths to match
+ * @returns the filtered array of fields
+ */
+const filterFields = (
+  allFields: any[],
+  paths: (string | undefined)[]
+): any[] => {
+  const filteredPaths = paths.filter((path) => path !== undefined) as string[];
+
+  // Helper function to recursively search for a field
+  // with the given name in the given array of fields.
+  const findField = (name: string, fields: any[]): any | undefined => {
+    const path = name.split('.');
+    const rootField = path.shift();
+    let field = fields.find((f: any) => f.name === rootField);
+    if (!field) {
+      return undefined;
+    }
+
+    for (const part of path) {
+      if (!field?.fields) {
+        return undefined;
+      }
+      field = field.fields.find((f: any) => f.name === part);
+      if (!field) {
+        return undefined;
+      }
+    }
+
+    return field;
+  };
+
+  const includedFields: any[] = filteredPaths.reduce((acc, path) => {
+    if (!path) return acc;
+    const pathParts = path.split('.');
+    const currentPath: string[] = [];
+    for (const part of pathParts) {
+      currentPath.push(part);
+      const existingField = findField(currentPath.join('.'), acc);
+      if (!existingField) {
+        const newField = cloneDeep(findField(currentPath.join('.'), allFields));
+
+        // if has fields, remove them
+        if (newField.fields) newField.fields = [];
+
+        // if has a parent, add to parent
+        const parentField = findField(
+          currentPath.splice(0, currentPath.length - 1).join('.'),
+          acc
+        );
+        if (parentField) parentField.fields?.push(newField);
+
+        // if no parent, add to root
+        if (!parentField) acc.push(newField);
+      }
+    }
+
+    return acc;
+  }, [] as any[]);
+
+  return includedFields;
+};
 
 /** Component for the map widget settings */
 @Component({
@@ -53,7 +121,12 @@ export class SafeMapSettingsComponent implements OnInit {
       this.selectedFields = this.getFields(this.tileForm?.value.query.fields);
       this.queryBuilder
         .getFilterFields(this.tileForm?.value.query)
-        .then((fields) => (this.formattedSelectedFields = fields));
+        .then((fields) => {
+          this.formattedSelectedFields = filterFields(
+            fields,
+            this.selectedFields
+          );
+        });
     }
 
     const queryForm = this.tileForm.get('query') as FormGroup;
@@ -67,9 +140,12 @@ export class SafeMapSettingsComponent implements OnInit {
       const query = queryForm.getRawValue();
       if (query.name.startsWith('all')) {
         this.selectedFields = this.getFields(query.fields);
-        this.queryBuilder
-          .getFilterFields(query)
-          .then((fields) => (this.formattedSelectedFields = fields));
+        this.queryBuilder.getFilterFields(query).then((fields) => {
+          this.formattedSelectedFields = filterFields(
+            fields,
+            this.selectedFields
+          );
+        });
       }
     });
   }
