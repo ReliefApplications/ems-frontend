@@ -724,3 +724,9 @@ mat-tab-group[vertical] {
     opacity: 0.4;
   }
 }
+
+@layer components {
+  .cdk-drag-preview {
+    @apply box-border rounded shadow-dark;
+  }
+}
