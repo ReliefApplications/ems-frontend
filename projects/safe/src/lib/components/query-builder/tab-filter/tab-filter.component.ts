@@ -6,6 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { cloneDeep } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 
 /**
@@ -34,8 +35,9 @@ export class SafeTabFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.queryBuilder.getFilterFields(this.query).then((fields) => {
-      this.setCustomEditors(fields);
-      this.filterFields = fields;
+      const fieldsCpy = cloneDeep(fields);
+      this.setCustomEditors(fieldsCpy);
+      this.filterFields = fieldsCpy;
     });
   }
 
