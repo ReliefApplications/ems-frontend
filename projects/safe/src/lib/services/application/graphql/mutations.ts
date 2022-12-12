@@ -8,6 +8,7 @@ import { PositionAttributeCategory } from '../../../models/position-attribute-ca
 import { Application } from '../../../models/application.model';
 import { Template } from '../../../models/template.model';
 import { DistributionList } from '../../../models/distribution-list.model';
+import { CustomNotification } from '../../../models/custom-notification.model';
 
 // === ADD PAGE ===
 /** Graphql request for adding a new page of a given type to an application */
@@ -675,4 +676,29 @@ export const DELETE_DISTRIBUTION_LIST = gql`
 /** Model for AddDistributionListMutationResponse object */
 export interface DeleteDistributionListMutationResponse {
   deleteDistributionList: DistributionList;
+}
+
+/**
+ * Add custom notification mutation definition.
+ */
+export const ADD_CUSTOM_NOTIFICATION = gql`
+  mutation AddCustomNotification(
+    $application: ID!
+    $notification: CustomNotificationInputType!
+  ) {
+    addCustomNotification(
+      application: $application
+      notification: $notification
+    ) {
+      id
+      name
+      status
+      lastExecution
+    }
+  }
+`;
+
+/** Interface of ADD_CUSTOM_NOTIFICATION mutation response */
+export interface AddCustomNotificationMutationResponse {
+  addCustomNotification: CustomNotification;
 }

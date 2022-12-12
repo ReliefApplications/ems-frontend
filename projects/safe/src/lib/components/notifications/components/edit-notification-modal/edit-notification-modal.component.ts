@@ -19,6 +19,7 @@ import { SafeGridLayoutService } from '../../../../services/grid-layout/grid-lay
 import { EditTemplateModalComponent } from '../../../templates/components/edit-template-modal/edit-template-modal.component';
 import { Template, TemplateTypeEnum } from '../../../../models/template.model';
 import { SafeApplicationService } from '../../../../services/application/application.service';
+import { DistributionList } from '../../../../models/distribution-list.model';
 
 /**
  * Dialog data interface
@@ -51,6 +52,16 @@ export class EditNotificationModalComponent implements OnInit {
     );
   }
 
+  /** @returns application distribution lists */
+  get distributionLists(): DistributionList[] {
+    return this.applicationService.distributionLists || [];
+  }
+
+  /** @returns available users fields */
+  get userFields(): any[] {
+    return get(this.resource, 'metadata', []).filter((x) => x.type === 'users');
+  }
+
   /**
    * Add / Edit custom notification modal component.
    *
@@ -81,13 +92,27 @@ export class EditNotificationModalComponent implements OnInit {
         [Validators.required, cronValidator()],
       ],
       notificationType: [{ value: 'email', disabled: true }],
-      resource: [get(this.data, 'notification.resource', '')],
-      layout: [get(this.data, 'notification.layout', '')],
-      template: [get(this.data, 'notification.template', '')],
+      resource: [
+        get(this.data, 'notification.resource', ''),
+        Validators.required,
+      ],
+      layout: [get(this.data, 'notification.layout', ''), Validators.required],
+      template: [
+        get(this.data, 'notification.template', ''),
+        Validators.required,
+      ],
+      recipientsType: [get(this.data, 'notification.recipientsType', 'email')],
+      recipients: [
+        get(this.data, 'notification.recipients', null),
+        Validators.required,
+      ],
     });
     // Initial setup
-    if (this.formGroup.get('resource')?.value) {
-      this.getResource(this.formGroup.get('resource')?.value);
+    if (this.formGroup.value.resource) {
+      this.getResource(this.formGroup.value.resource);
+    }
+    if (this.formGroup.value.recipientsType === 'email') {
+      this.formGroup.get('recipients')?.addValidators(Validators.email);
     }
     // Subscribe to form changes
     this.formGroup.get('resource')?.valueChanges.subscribe((value) => {
@@ -99,6 +124,14 @@ export class EditNotificationModalComponent implements OnInit {
         this.resource = undefined;
         this.layout = undefined;
         this.formGroup.get('layout')?.setValue(null);
+      }
+    });
+    this.formGroup.get('recipientsType')?.valueChanges.subscribe((value) => {
+      this.formGroup.get('recipients')?.setValue(null);
+      if (value === 'email') {
+        this.formGroup.get('recipients.')?.addValidators(Validators.email);
+      } else {
+        this.formGroup.get('recipients.')?.removeValidators(Validators.email);
       }
     });
     // Build resource query
@@ -131,6 +164,7 @@ export class EditNotificationModalComponent implements OnInit {
         if (layoutId && this.resource.layouts?.edges[0]) {
           this.layout = this.resource.layouts.edges[0].node;
         }
+        console.log(this.resource.metadata);
       });
   }
 

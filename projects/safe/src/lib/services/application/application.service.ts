@@ -60,6 +60,8 @@ import {
   ADD_DISTRIBUTION_LIST,
   DeleteDistributionListMutationResponse,
   DELETE_DISTRIBUTION_LIST,
+  AddCustomNotificationMutationResponse,
+  ADD_CUSTOM_NOTIFICATION,
 } from './graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
@@ -1476,6 +1478,29 @@ export class SafeApplicationService {
             };
             this.application.next(newApplication);
           }
+        });
+    }
+  }
+
+  /**
+   * Add custom notification
+   *
+   * @param notification notification input
+   * @param callback callback method
+   */
+  addCustomNotification(notification: any, callback?: any): void {
+    const application = this.application.getValue();
+    if (application) {
+      this.apollo
+        .mutate<AddCustomNotificationMutationResponse>({
+          mutation: ADD_CUSTOM_NOTIFICATION,
+          variables: {
+            application: application.id,
+            notification,
+          },
+        })
+        .subscribe((res) => {
+          if (callback) callback(res);
         });
     }
   }

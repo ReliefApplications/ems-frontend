@@ -11,6 +11,7 @@ import { SafeAlertModule } from '../../../ui/alert/alert.module';
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
+import { MatRadioModule } from '@angular/material/radio';
 
 /**
  * Add / Edit notification modal module.
@@ -30,6 +31,7 @@ import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.
     SafeReadableCronModule,
     SafeDividerModule,
     SafeGraphQLSelectModule,
+    MatRadioModule,
   ],
   exports: [EditNotificationModalComponent],
 })

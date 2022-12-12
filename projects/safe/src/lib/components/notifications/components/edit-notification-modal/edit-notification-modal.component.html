@@ -148,6 +148,74 @@
           >
           </safe-button>
         </mat-form-field>
+        <!-- Recipients -->
+        <h4>RECIPIENTS</h4>
+        <!-- Recipients type -->
+        <mat-radio-group
+          formControlName="recipientsType"
+          class="flex flex-col gap-2"
+        >
+          <!-- Using user field -->
+          <mat-radio-button value="field">DATASET USER FIELD </mat-radio-button>
+          <!-- Using distribution list -->
+          <mat-radio-button value="distributionList"
+            >DISTRIBUTION LIST</mat-radio-button
+          >
+          <!-- Using email -->
+          <mat-radio-button value="email"
+            >SINGLE EMAIL ADDRESS
+          </mat-radio-button>
+        </mat-radio-group>
+        <!-- Recipients value -->
+        <div class="mt-6 flex">
+          <!-- Using user field -->
+          <mat-form-field
+            appearance="outline"
+            *ngIf="formGroup.value.recipientsType === 'field'"
+            class="flex-1"
+          >
+            <mat-label>USER FIELD</mat-label>
+            <mat-select formControlName="recipients">
+              <mat-option
+                *ngFor="let field of userFields"
+                [value]="field.name"
+                >{{ field.name }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+          <!-- Using distribution list -->
+          <mat-form-field
+            appearance="outline"
+            *ngIf="formGroup.value.recipientsType === 'distributionList'"
+            class="flex-1"
+          >
+            <mat-label>DISTRIBUTION LIST</mat-label>
+            <mat-select formControlName="recipients">
+              <mat-option
+                *ngFor="let list of distributionLists"
+                [value]="list.id"
+                >{{ list.name }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+          <!-- Using email -->
+          <mat-form-field
+            appearance="outline"
+            *ngIf="formGroup.value.recipientsType === 'email'"
+            class="flex-1"
+          >
+            <mat-label>EMAIL</mat-label>
+            <input
+              type="text"
+              [placeholder]="'common.placeholder.email' | translate"
+              matInput
+              formControlName="recipients"
+            />
+            <mat-error *ngIf="formGroup.get('recipients')?.errors">
+              PATTERN ERROR
+            </mat-error>
+          </mat-form-field>
+        </div>
       </div>
     </form>
   </div>
@@ -155,6 +223,14 @@
   <div mat-dialog-actions align="end">
     <safe-button mat-dialog-close>
       {{ 'common.close' | translate }}
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [mat-dialog-close]="formGroup.value"
+      [disabled]="!formGroup.valid"
+    >
+      {{ (data?.notification ? 'common.update' : 'common.create') | translate }}
     </safe-button>
   </div>
 </safe-modal>
