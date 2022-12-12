@@ -664,12 +664,12 @@ mat-tab-group[vertical] {
   height: 10px;
 }
 
-/* Track */
+/* === Track === */
 ::-webkit-scrollbar-track {
   background: none;
 }
 
-/* Handle */
+/* === Handle === */
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 10px;
   border-radius: 10px;
@@ -725,8 +725,10 @@ mat-tab-group[vertical] {
   }
 }
 
+/* === Tailwindcss === */
 @layer components {
   .cdk-drag-preview {
-    @apply box-border rounded shadow-dark;
+    @apply box-border rounded shadow-xl;
+    // previous shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12),
   }
 }
