@@ -1,6 +1,9 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
+import {
+  Field,
+  QueryBuilderService,
+} from '../../../../services/query-builder/query-builder.service';
 import {
   ChecklistDatabase,
   TreeItemFlatNode,
@@ -21,7 +24,7 @@ export class SafeQueryStyleComponent implements OnInit {
   @Input() form!: FormGroup;
   public wholeRow!: FormControl;
 
-  public filterFields: any[] = [];
+  public filterFields: Field[] = [];
 
   @Output() closeEdition = new EventEmitter<any>();
 
