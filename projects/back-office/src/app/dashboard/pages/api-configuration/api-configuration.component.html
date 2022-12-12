@@ -15,7 +15,7 @@
     <h1>{{ 'common.general' | translate }}</h1>
     <div class="flex flex-col last:mb-0">
       <div class="flex gap-2">
-        <mat-form-field appearance="outline" style="flex: 2">
+        <mat-form-field appearance="outline" class="grow-2">
           <mat-label>
             {{ 'common.name' | translate }}
           </mat-label>
@@ -30,7 +30,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="flex-1">
+        <mat-form-field appearance="outline" class="grow">
           <mat-label>{{ 'common.status' | translate }}</mat-label>
           <mat-select formControlName="status">
             <mat-select-trigger>
@@ -52,7 +52,7 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" style="flex: 1">
+        <mat-form-field appearance="outline" class="grow">
           <mat-label>
             {{ 'models.apiConfiguration.authType' | translate }}
           </mat-label>
@@ -68,7 +68,7 @@
 
       <h1>{{ 'pages.apiConfiguration.host' | translate }}</h1>
       <div class="flex gap-2">
-        <mat-form-field appearance="outline" style="flex: 2">
+        <mat-form-field appearance="outline" class="grow-2">
           <mat-label>
             {{ 'pages.apiConfiguration.baseUrl' | translate }}
           </mat-label>
@@ -82,7 +82,7 @@
           />
         </mat-form-field>
 
-        <mat-form-field appearance="outline" style="flex: 1">
+        <mat-form-field appearance="outline" class="grow">
           <mat-label>
             {{ 'pages.apiConfiguration.pingUrl' | translate }}
           </mat-label>
@@ -195,7 +195,7 @@
 
     <h1>{{ 'pages.apiConfiguration.graphQL.title' | translate }}</h1>
     <div class="flex flex-col mt-8">
-      <mat-form-field appearance="outline" style="flex: 2">
+      <mat-form-field appearance="outline" class="grow-2">
         <mat-label>
           {{ 'pages.apiConfiguration.graphQL.endpoint' | translate }}
         </mat-label>

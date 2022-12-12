@@ -14,7 +14,7 @@
 </mat-sidenav-container>
 
 <div id="angular-app-root" cdkOverlayOrigin></div>
-<div id="survey-content-angular" style="display: none">
+<div id="survey-content-angular" class="hidden">
   <div>ok</div>
   <script type="text/html" id="survey-comment">
     <!--ko if: !question.isReadOnlyRenderDiv() -->
@@ -453,7 +453,7 @@
       tabindex="0"
       data-bind="event: { keydown: question.koHandleKeydown, pointerdown: question.koHandlePointerDown}, css: question.getItemClass($data), attr: {'data-sv-drop-target-ranking-item': $index() }"
     >
-      <div tabindex="-1" style="outline: none;">
+      <div tabindex="-1" class="outline-none">
         <div data-bind="css: question.cssClasses.itemGhostNode"></div>
         <div data-bind="css: question.cssClasses.itemContent">
           <div data-bind="css: question.cssClasses.itemIconContainer">
@@ -573,7 +573,7 @@
         type="file"
         disabled
         data-bind="css: question.getReadOnlyFileCss(), attr: { placeholder: question.title, multiple: question.allowMultiple ? 'multiple' : undefined }"
-        style="color: transparent;"
+        class="text-transparent"
       />
       <!-- /ko -->
       <div
@@ -826,7 +826,7 @@
                   <span class="circle"></span>
                   <span class="check"></span>
                   <span
-                    style="display: none"
+                    class="hidden"
                     data-bind="text: $data.locText.text"
                   ></span>
                 </label>
@@ -1147,7 +1147,7 @@
     </button>
   </script>
   <script type="text/html" id="survey-question-paneldynamic-navigator">
-    <div style="clear: both;">
+    <div class="clear-both">
       <div data-bind="css: question.koCss().progressContainer">
         <!-- ko component: { name: 'sv-paneldynamic-prev-btn', params: { question: question }} --><!-- /ko -->
         <!-- ko if: question.koIsRange -->

@@ -14,7 +14,7 @@
   <form [formGroup]="referenceForm" class="flex flex-col">
     <div class="flex gap-2">
       <!-- Name -->
-      <mat-form-field appearance="outline" style="flex: 2">
+      <mat-form-field appearance="outline" class="grow-2">
         <mat-label>{{ 'common.name' | translate }}</mat-label>
         <input
           matInput
@@ -39,7 +39,7 @@
     <div *ngIf="['rest', 'graphql'].includes(type)">
       <div class="flex gap-2">
         <!-- API Configuration -->
-        <mat-form-field appearance="outline" style="flex: 2">
+        <mat-form-field appearance="outline" class="grow-2">
           <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
           <safe-graphql-select
             valueField="id"
@@ -51,7 +51,7 @@
           </safe-graphql-select>
         </mat-form-field>
         <!-- QueryName -->
-        <mat-form-field appearance="outline" style="flex: 3">
+        <mat-form-field appearance="outline" class="grow-3">
           <mat-label>{{
             'pages.referenceData.queryName' | translate
           }}</mat-label>
@@ -65,7 +65,7 @@
       </div>
       <!-- Fields -->
       <div class="flex gap-2">
-        <mat-form-field class="chip-list" appearance="outline" style="flex: 2">
+        <mat-form-field class="chip-list" appearance="outline" class="grow-2">
           <mat-label>{{ 'pages.referenceData.fields' | translate }}</mat-label>
           <mat-chip-list #chipList aria-label="Fields chip list">
             <mat-chip
@@ -90,7 +90,7 @@
     </div>
     <!-- CSV Input for static type -->
     <div *ngIf="type === 'static'" class="flex gap-2">
-      <mat-form-field appearance="outline" style="flex: 2">
+      <mat-form-field appearance="outline" class="grow-2">
         <mat-label>{{ 'pages.referenceData.csv' | translate }}</mat-label>
         <textarea
           #csvData
@@ -115,7 +115,7 @@
     <div class="flex gap-2">
       <!-- Path -->
       <mat-form-field
-        style="flex: 3"
+        class="grow-3"
         appearance="outline"
         *ngIf="['rest', 'graphql'].includes(type)"
       >
@@ -129,7 +129,7 @@
       </mat-form-field>
       <!-- Value field to be displayed -->
       <mat-form-field
-        style="flex: 2"
+        class="grow-2"
         appearance="outline"
         *ngIf="!csvLoading && type && valueFields.length > 0"
       >
