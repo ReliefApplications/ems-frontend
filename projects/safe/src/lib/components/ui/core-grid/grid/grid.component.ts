@@ -2,7 +2,9 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
+  Inject,
   Input,
+  OnChanges,
   OnInit,
   Output,
   Renderer2,
@@ -51,6 +53,9 @@ import { get, intersection } from 'lodash';
 import { applyLayoutFormat } from '../../../widgets/summary-card/parser/utils';
 import { SafeTileDataComponent } from '../../../widget-grid/floating-options/menu/tile-data/tile-data.component';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
+import { TranslateService } from '@ngx-translate/core';
+import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
 
 /**
  * Factory for creating scroll strategy
@@ -102,14 +107,23 @@ const matches = (el: any, selector: any) =>
     },
   ],
 })
-export class SafeGridComponent implements OnInit, AfterViewInit {
+export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
+
+  public environment: 'frontoffice' | 'backoffice';
+  public statusMessage = '';
 
   // === DATA ===
   @Input() fields: any[] = [];
   @Input() data: GridDataResult = { data: [], total: 0 };
-  @Input() loading = false;
-  @Input() error = false;
+  @Input() loadingRecords = false;
+  @Input() loadingSettings = true;
+  @Input() status: {
+    error: boolean;
+    message?: string;
+  } = {
+    error: false,
+  };
   @Input() blank = false;
   @Input() widget: any;
   @Input() canUpdate = false;
@@ -205,22 +219,33 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   private columnsOrder: any[] = [];
   @Output() columnChange = new EventEmitter();
 
+  // === SNACKBAR ===
+  private snackBarRef: MatSnackBarRef<TextOnlySnackBar> | undefined;
+
   /**
    * Constructor of the grid component
    *
+   * @param environment Current environment
    * @param dialog The material dialog service
    * @param gridService The grid service
    * @param renderer The renderer library
    * @param downloadService The download service
    * @param dashboardService Dashboard service
+   * @param translate The translate service
+   * @param snackBar The snackbar service
    */
   constructor(
+    @Inject('environment') environment: any,
     private dialog: MatDialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
-    private dashboardService: SafeDashboardService
-  ) {}
+    private dashboardService: SafeDashboardService,
+    private translate: TranslateService,
+    private snackBar: SafeSnackBarService
+  ) {
+    this.environment = environment.module || 'frontoffice';
+  }
 
   ngOnInit(): void {
     this.setSelectedItems();
@@ -235,6 +260,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       ...this.selectableSettings,
       mode: this.multiSelect ? 'multiple' : 'single',
     };
+  }
+
+  ngOnChanges(): void {
+    this.statusMessage = this.getStatusMessage();
   }
 
   ngAfterViewInit(): void {
@@ -328,7 +357,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param filter Filter event.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
-    if (!this.loading) {
+    if (!this.loadingRecords) {
       this.filter = filter;
       this.filterChange.emit(filter);
     }
@@ -338,7 +367,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * Toggles quick filter visibility
    */
   public onToggleFilter(): void {
-    if (!this.loading) {
+    if (!this.loadingRecords) {
       this.showFilter = !this.showFilter;
       this.showFilterChange.emit(this.showFilter);
       this.onFilterChange({
@@ -349,7 +378,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Searchs through all text columns.
+   * Searches through all text columns.
    *
    * @param search text input value.
    */
@@ -364,7 +393,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param sort Sort event.
    */
   public onSortChange(sort: SortDescriptor[]): void {
-    if (!this.loading) {
+    if (!this.loadingRecords) {
       this.sort = sort;
       this.sortChange.emit(sort);
     }
@@ -377,7 +406,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param page Page event.
    */
   public onPageChange(page: PageChangeEvent): void {
-    if (!this.loading) {
+    if (!this.loadingRecords) {
       this.skip = page.skip;
       this.pageSize = page.take;
       this.pageChange.emit(page);
@@ -718,7 +747,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Removes file estension from the file name
+   * Removes file extension from the file name
    *
    * @param name Name of the file with the extension
    * @returns String with the name of the file without the extension
@@ -739,5 +768,37 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    */
   public applyFieldFormat(name: string | null, field: any): string | null {
     return applyLayoutFormat(name, field);
+  }
+
+  /**
+   * Gets the corresponding status message for the status of the grid
+   *
+   * @returns string with the status message
+   */
+  public getStatusMessage(): string {
+    if (this.status.error) {
+      if (this.status.message && this.environment === 'backoffice') {
+        if (this.snackBarRef) this.snackBarRef.dismiss();
+        this.snackBarRef = this.snackBar.openSnackBar(this.status.message, {
+          error: true,
+        });
+      }
+      return this.translate.instant(
+        `components.widget.grid.errors.invalid.${this.environment}`
+      );
+    }
+    if (this.loadingSettings)
+      return this.translate.instant('components.widget.grid.loading.settings');
+    if (this.blank && this.environment === 'backoffice')
+      return this.translate.instant(
+        'components.widget.grid.errors.missingDataset'
+      );
+    if (this.blank && this.environment === 'frontoffice')
+      return this.translate.instant(
+        'components.widget.grid.errors.invalid.frontoffice'
+      );
+    if (this.loadingRecords)
+      return this.translate.instant('components.widget.grid.loading.records');
+    return this.translate.instant('kendo.grid.noRecords');
   }
 }

@@ -6,7 +6,12 @@
   <!-- Main Parameters -->
   <mat-tab>
     <ng-template mat-tab-label>
-      <safe-icon icon="settings" [size]="24"></safe-icon>
+      <safe-icon
+        icon="settings"
+        [size]="24"
+        matTooltip="{{ 'common.general' | translate }}"
+        matTooltipPosition="right"
+      ></safe-icon>
       <span>{{ 'common.general' | translate }}</span>
     </ng-template>
     <ng-template matTabContent>
@@ -16,7 +21,12 @@
   <!-- Display options -->
   <mat-tab>
     <ng-template mat-tab-label>
-      <safe-icon icon="tune" [size]="24"></safe-icon>
+      <safe-icon
+        icon="tune"
+        [size]="24"
+        matTooltip="{{ 'common.display' | translate }}"
+        matTooltipPosition="right"
+      ></safe-icon>
       <span>{{ 'common.display' | translate }}</span>
     </ng-template>
     <ng-template matTabContent>
@@ -29,7 +39,12 @@
   <!-- Preview -->
   <mat-tab>
     <ng-template mat-tab-label>
-      <safe-icon icon="preview" [size]="24"></safe-icon>
+      <safe-icon
+        icon="preview"
+        [size]="24"
+        matTooltip="{{ 'common.preview' | translate }}"
+        matTooltipPosition="right"
+      ></safe-icon>
       <span>{{ 'common.preview' | translate }}</span>
     </ng-template>
     <ng-template matTabContent>

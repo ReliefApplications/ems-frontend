@@ -317,7 +317,6 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 
 // === GLOBAL STYLES ==
 .mat-table {
-  box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
   font-size: 14px;
   opacity: 0.87;
   border-radius: 4px;
@@ -580,7 +579,6 @@ mat-tab-group[vertical] {
   & > .mat-tab-header {
     border-bottom: none;
     width: 240px;
-    position: fixed;
     z-index: 1;
 
     .mat-tab-labels {
@@ -603,6 +601,7 @@ mat-tab-group[vertical] {
 
           safe-icon {
             display: flex;
+            pointer-events: none;
           }
         }
       }
@@ -615,7 +614,6 @@ mat-tab-group[vertical] {
 
   & > .mat-tab-body-wrapper {
     width: 100%;
-    padding-left: 240px;
 
     & > .mat-tab-body {
       & > .mat-tab-body-content {
@@ -634,6 +632,26 @@ mat-tab-group[vertical] {
   }
 }
 
+@media (max-width: 598px) {
+  mat-tab-group[vertical] {
+    & > .mat-tab-header {
+      width: unset;
+
+      .mat-tab-label {
+        .mat-tab-label-content {
+          span {
+            display: none;
+          }
+
+          safe-icon {
+            pointer-events: all !important;
+          }
+        }
+      }
+    }
+  }
+}
+
 // === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {
@@ -646,12 +664,12 @@ mat-tab-group[vertical] {
   height: 10px;
 }
 
-/* Track */
+/* === Track === */
 ::-webkit-scrollbar-track {
   background: none;
 }
 
-/* Handle */
+/* === Handle === */
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 10px;
   border-radius: 10px;
@@ -704,5 +722,13 @@ mat-tab-group[vertical] {
 
   .legend-division-hide {
     opacity: 0.4;
+  }
+}
+
+/* === Tailwindcss === */
+@layer components {
+  .cdk-drag-preview {
+    @apply box-border rounded shadow-xl;
+    // previous shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12),
   }
 }

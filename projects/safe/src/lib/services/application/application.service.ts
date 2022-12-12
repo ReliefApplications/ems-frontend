@@ -540,7 +540,7 @@ export class SafeApplicationService {
    * Duplicates page in the indicated application.
    *
    * @param pageId page id which will be duplicated
-   * @param applicationId id of the application where it shoul be duplicated
+   * @param applicationId id of the application where it should be duplicated
    */
   duplicatePage(pageId: string, applicationId: string): void {
     this.apollo
@@ -1272,10 +1272,11 @@ export class SafeApplicationService {
    * Adds a new template to the application.
    *
    * @param template new template to be added
+   * @param callback additional callback
    */
-  addTemplate(template: Template): void {
+  addTemplate(template: Template, callback?: any): void {
     const application = this.application.getValue();
-    if (application?.id && this.isUnlocked) {
+    if (application?.id) {
       this.apollo
         .mutate<AddTemplateMutationResponse>({
           mutation: ADD_TEMPLATE,
@@ -1299,6 +1300,7 @@ export class SafeApplicationService {
             };
 
             this.application.next(newApplication);
+            if (callback) callback(res.data.addTemplate);
           }
         });
     }
@@ -1413,8 +1415,12 @@ export class SafeApplicationService {
    * Add new distribution list
    *
    * @param distributionList new distribution list to be added
+   * @param callback additional callback
    */
-  addDistributionList(distributionList: DistributionList): void {
+  addDistributionList(
+    distributionList: DistributionList,
+    callback?: any
+  ): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
@@ -1438,6 +1444,7 @@ export class SafeApplicationService {
               ],
             };
             this.application.next(newApplication);
+            if (callback) callback(res.data.addDistributionList);
           }
         });
     }

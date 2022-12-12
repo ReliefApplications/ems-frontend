@@ -102,9 +102,9 @@
   </safe-button>
 </div>
 <!-- Table container -->
-<div class="overflow-x-hidden">
+<div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
-  <div class="overflow-auto">
+  <div class="overflow-x-auto">
     <table *ngIf="!loading" mat-table [dataSource]="users" matSort>
       <!-- Checkbox Column -->
       <ng-container matColumnDef="select">
@@ -205,18 +205,17 @@
         class="cursor-pointer"
       ></tr>
     </table>
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="[
+        'common.name',
+        'models.user.username',
+        'common.id',
+        'common.role.one'
+      ]"
+      [actions]="true"
+      [checkbox]="true"
+    >
+    </safe-skeleton-table>
   </div>
 </div>
-
-<safe-skeleton-table
-  *ngIf="loading"
-  [columns]="[
-    'common.name',
-    'models.user.username',
-    'common.id',
-    'common.role.one'
-  ]"
-  [actions]="true"
-  [checkbox]="true"
->
-</safe-skeleton-table>

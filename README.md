@@ -1,14 +1,15 @@
 OORT Front-end
 =======
-[![GitHub version](https://img.shields.io/github/v/release/ReliefApplications/oort-frontend)](https://img.shields.io/github/v/release/ReliefApplications/oort-frontend)
 [![Github Pages](https://github.com/ReliefApplications/oort-frontend/actions/workflows/github-pages.yml/badge.svg)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/github-pages.yml)
 [![Storybook](https://github.com/ReliefApplications/oort-frontend/actions/workflows/storybook.yml/badge.svg)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/storybook.yml)
 
 # Versions
 
-* 1.2 : [![Build](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml/badge.svg?branch=release-1.2.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml) [![CI](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=release-1.2.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml) [![CodeQL](https://github.com/ReliefApplications/oort-frontend/actions/workflows/codeql-analysis.yml/badge.svg?branch=release-1.2.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/codeql-analysis.yml)
-* 1.3 : [![Build](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml/badge.svg?branch=release-1.3.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml) [![CI](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=release-1.3.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml) [![CodeQL](https://github.com/ReliefApplications/oort-frontend/actions/workflows/codeql-analysis.yml/badge.svg?branch=release-1.3.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/codeql-analysis.yml)
-* 1.4 : [![Build](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml/badge.svg?branch=release-1.4.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/build.yml) [![CI](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=release-1.4.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml) [![CodeQL](https://github.com/ReliefApplications/oort-frontend/actions/workflows/codeql-analysis.yml/badge.svg?branch=release-1.4.0)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/codeql-analysis.yml)
+Branch | Version | CI
+--- | --- | ---
+main | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/oort-frontend/main) | [![Version](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml)
+next | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/oort-frontend/next?color=6ded5a) | [![Version](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=next)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml)
+beta | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/oort-frontend/beta?color=ecf495) | [![Version](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=beta)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml)
 
 # Introduction
 
@@ -168,32 +169,6 @@ Then, a bundle can be generated from the files using this command:
 ```
 npm run bundle:elem
 ```
-
-## Deploy a release
-
-[Standard Version library](https://github.com/conventional-changelog/standard-version) is used by the project.
-
-In order to increase the versions of the code, you can use the related commands:
-
-- For a minor version:
-
-```
-npm run release:minor
-```
-
-- For a patch:
-
-```
-npm run release:patch
-```
-
-- For a major version:
-
-```
-npm run release:major
-```
-
-The cli should indicate the next command to run, in order to deploy the version.
 
 ## Running unit tests
 

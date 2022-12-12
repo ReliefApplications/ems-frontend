@@ -102,7 +102,7 @@ export class SafeGroupListComponent implements OnInit {
   private getPermissionsConfiguration(): void {
     const url = '/permissions/configuration';
     this.restService.get(url).subscribe((res) => {
-      this.manualCreation = get(res, 'manualCreation', true);
+      this.manualCreation = get(res, 'groups.local', true);
     });
   }
 

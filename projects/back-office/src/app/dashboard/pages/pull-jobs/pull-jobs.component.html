@@ -10,9 +10,9 @@
 </div>
 
 <!-- Table container -->
-<div class="overflow-x-hidden">
+<div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
-  <div class="overflow-auto">
+  <div class="overflow-x-auto">
     <table *ngIf="!loading" mat-table [dataSource]="pullJobs">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
@@ -102,25 +102,25 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
     </table>
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="[
+        'common.name',
+        'common.status',
+        'common.apiConfiguration.one',
+        'components.record.convert.select'
+      ]"
+      [actions]="true"
+    >
+    </safe-skeleton-table>
   </div>
+  <mat-paginator
+    [disabled]="loading"
+    [pageSize]="pageInfo.pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
+    [length]="pageInfo.length"
+    aria-label="Select page of pull jobs"
+    (page)="onPage($event)"
+  >
+  </mat-paginator>
 </div>
-<safe-skeleton-table
-  *ngIf="loading"
-  [columns]="[
-    'common.name',
-    'common.status',
-    'common.apiConfiguration.one',
-    'components.record.convert.select'
-  ]"
-  [actions]="true"
->
-</safe-skeleton-table>
-<mat-paginator
-  [disabled]="loading"
-  [pageSize]="pageInfo.pageSize"
-  [pageSizeOptions]="[10, 25, 50]"
-  [length]="pageInfo.length"
-  aria-label="Select page of pull jobs"
-  (page)="onPage($event)"
->
-</mat-paginator>

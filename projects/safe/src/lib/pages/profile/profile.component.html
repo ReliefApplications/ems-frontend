@@ -1,14 +1,15 @@
 <form [formGroup]="userForm" *ngIf="userForm">
   <h1>{{ 'pages.profile.title' | translate }}</h1>
+  <!-- User details -->
   <div class="flex flex-col">
-    <div class="flex gap-2">
-      <mat-form-field appearance="outline">
+    <div class="flex gap-2 flex-wrap">
+      <mat-form-field appearance="outline" class="flex-1">
         <mat-label>
           {{ 'models.user.firstName' | translate }}
         </mat-label>
         <input matInput formControlName="firstName" type="text" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="flex-1">
         <mat-label>
           {{ 'models.user.lastName' | translate }}
         </mat-label>
@@ -31,14 +32,10 @@
     {{ 'common.saveChanges' | translate }}
   </safe-button>
   <!-- Table container -->
-  <div class="overflow-x-hidden">
+  <div class="overflow-x-hidden shadow-2lg mt-6">
     <!-- Table scroll container -->
-    <div class="overflow-auto">
-      <table
-        mat-table
-        [dataSource]="user.applications"
-        style="margin-top: 48px"
-      >
+    <div class="overflow-x-auto">
+      <table mat-table [dataSource]="user.applications">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>
             <span class="headerTitle" mat-sort-header>

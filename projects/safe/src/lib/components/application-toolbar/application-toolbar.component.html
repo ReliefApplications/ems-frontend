@@ -45,7 +45,7 @@
 
 <!-- Admin pages -->
 <mat-menu #settingsMenu="matMenu">
-  <button
+  <a
     mat-menu-item
     *ngFor="let setting of settings"
     class="menu-item"
@@ -56,5 +56,5 @@
       {{ setting.icon }}
     </mat-icon>
     {{ setting.name }}
-  </button>
+  </a>
 </mat-menu>
