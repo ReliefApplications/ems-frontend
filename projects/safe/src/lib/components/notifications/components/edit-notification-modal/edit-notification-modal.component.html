@@ -1,6 +1,13 @@
 <safe-modal size="medium">
   <!-- Modal header -->
-  <h1 mat-dialog-title>EDIT CUSTOM NOTIFICATION</h1>
+  <h1 mat-dialog-title>
+    {{
+      (data?.notification
+        ? 'components.customNotifications.edit.update'
+        : 'components.customNotifications.edit.new'
+      ) | translate
+    }}
+  </h1>
   <!-- Modal content -->
   <div mat-dialog-content>
     <form [formGroup]="formGroup" class="flex flex-col pb-1">
@@ -17,7 +24,9 @@
         </mat-form-field>
         <!-- Type -->
         <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>TYPE</mat-label>
+          <mat-label>{{
+            'models.customNotification.type' | translate
+          }}</mat-label>
           <mat-select formControlName="notificationType">
             <mat-option value="email">
               {{ 'common.email.one' | translate }}
@@ -27,7 +36,7 @@
       </div>
       <safe-divider></safe-divider>
       <!-- Schedule builder -->
-      <h3>SCHEDULE</h3>
+      <h3>{{ 'models.customNotification.schedule' | translate }}</h3>
       <div class="flex flex-col">
         <!-- Show readable value of the schedule -->
         <safe-alert
@@ -40,11 +49,13 @@
         </safe-alert>
         <!-- Schedule -->
         <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
+          <mat-label>{{
+            'models.customNotification.schedule' | translate
+          }}</mat-label>
           <input
             type="text"
             [placeholder]="
-              'components.pullJob.modal.placeholder.schedule' | translate
+              'components.customNotifications.hint.schedule' | translate
             "
             matInput
             formControlName="schedule"
@@ -54,16 +65,18 @@
             class="cursor-pointer"
             variant="grey"
             matSuffix
-            matTooltip="HINT"
+            [matTooltip]="
+              'components.customNotifications.hint.schedule' | translate
+            "
           ></safe-icon>
           <mat-error *ngIf="formGroup.get('schedule')?.errors">
-            {{ 'components.pullJob.modal.errors.schedule' | translate }}
+            {{ 'components.customNotifications.errors.schedule' | translate }}
           </mat-error>
         </mat-form-field>
       </div>
       <safe-divider></safe-divider>
       <!-- Dataset selection -->
-      <h3>DATASET</h3>
+      <h3>{{ 'components.customNotifications.edit.dataset' | translate }}</h3>
       <div class="flex flex-col">
         <!-- Resource -->
         <mat-form-field appearance="outline">
@@ -117,7 +130,7 @@
         </ng-container>
       </div>
       <safe-divider></safe-divider>
-      <h3>EMAIL NOTIFICATION</h3>
+      <h3>{{ 'components.customNotifications.edit.email' | translate }}</h3>
       <div class="flex flex-col">
         <!-- Template -->
         <mat-form-field appearance="outline" class="flex-1">
@@ -149,21 +162,31 @@
           </safe-button>
         </mat-form-field>
         <!-- Recipients -->
-        <h4>RECIPIENTS</h4>
+        <h4>
+          {{
+            'components.customNotifications.edit.recipients.title' | translate
+          }}
+        </h4>
         <!-- Recipients type -->
         <mat-radio-group
           formControlName="recipientsType"
           class="flex flex-col gap-2"
         >
           <!-- Using user field -->
-          <mat-radio-button value="field">DATASET USER FIELD </mat-radio-button>
+          <mat-radio-button value="field">{{
+            'components.customNotifications.edit.recipients.userField'
+              | translate
+          }}</mat-radio-button>
           <!-- Using distribution list -->
-          <mat-radio-button value="distributionList"
-            >DISTRIBUTION LIST</mat-radio-button
-          >
+          <mat-radio-button value="distributionList">{{
+            'components.customNotifications.edit.recipients.distributionList'
+              | translate
+          }}</mat-radio-button>
           <!-- Using email -->
           <mat-radio-button value="email"
-            >SINGLE EMAIL ADDRESS
+            >{{
+              'components.customNotifications.edit.recipients.email' | translate
+            }}
           </mat-radio-button>
         </mat-radio-group>
         <!-- Recipients value -->
@@ -174,7 +197,7 @@
             *ngIf="formGroup.value.recipientsType === 'field'"
             class="flex-1"
           >
-            <mat-label>USER FIELD</mat-label>
+            <mat-label>{{ 'components.customNotifications.edit.recipients.userField' | translate }}</mat-label>
             <mat-select formControlName="recipients">
               <mat-option
                 *ngFor="let field of userFields"
@@ -189,7 +212,7 @@
             *ngIf="formGroup.value.recipientsType === 'distributionList'"
             class="flex-1"
           >
-            <mat-label>DISTRIBUTION LIST</mat-label>
+            <mat-label>{{ 'common.distributionList.one' | translate }}</mat-label>
             <mat-select formControlName="recipients">
               <mat-option
                 *ngFor="let list of distributionLists"
@@ -204,7 +227,7 @@
             *ngIf="formGroup.value.recipientsType === 'email'"
             class="flex-1"
           >
-            <mat-label>EMAIL</mat-label>
+            <mat-label>{{ 'common.email.one' | translate }}</mat-label>
             <input
               type="text"
               [placeholder]="'common.placeholder.email' | translate"
@@ -212,7 +235,7 @@
               formControlName="recipients"
             />
             <mat-error *ngIf="formGroup.get('recipients')?.errors">
-              PATTERN ERROR
+              {{ 'components.customNotifications.errors.email' | translate }}
             </mat-error>
           </mat-form-field>
         </div>
@@ -227,7 +250,7 @@
     <safe-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="formGroup.value"
+      [mat-dialog-close]="formGroup.getRawValue()"
       [disabled]="!formGroup.valid"
     >
       {{ (data?.notification ? 'common.update' : 'common.create') | translate }}

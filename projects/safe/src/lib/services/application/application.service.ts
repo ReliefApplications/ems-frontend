@@ -62,6 +62,8 @@ import {
   DELETE_DISTRIBUTION_LIST,
   AddCustomNotificationMutationResponse,
   ADD_CUSTOM_NOTIFICATION,
+  DeleteCustomNotificationMutationResponse,
+  DELETE_CUSTOM_NOTIFICATION,
 } from './graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
@@ -1497,6 +1499,29 @@ export class SafeApplicationService {
           variables: {
             application: application.id,
             notification,
+          },
+        })
+        .subscribe((res) => {
+          if (callback) callback(res);
+        });
+    }
+  }
+
+  /**
+   * Delete custom notification
+   *
+   * @param id id of custom notification
+   * @param callback callback method
+   */
+  deleteCustomNotification(id: string, callback?: any): void {
+    const application = this.application.getValue();
+    if (application) {
+      this.apollo
+        .mutate<DeleteCustomNotificationMutationResponse>({
+          mutation: DELETE_CUSTOM_NOTIFICATION,
+          variables: {
+            id,
+            application: application.id,
           },
         })
         .subscribe((res) => {

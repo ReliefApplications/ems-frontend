@@ -34,7 +34,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private applicationSubscription?: Subscription;
 
   // === DISPLAYED COLUMNS ===
-  public displayedColumns = ['name', 'status', 'lastExecution'];
+  public displayedColumns = ['name', 'status', 'lastExecution', 'actions'];
 
   public loading = true;
   public updating = false;
@@ -140,7 +140,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   deleteNotification(notification: any): void {
     const dialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant('common.deleteObject', {
-        name: this.translate.instant('common.step.one'),
+        name: this.translate.instant('common.customNotification.one'),
       }),
       // content: this.translate.instant(
       //   'pages.workflow.deleteStep.confirmationMessage',
@@ -151,7 +151,12 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        // this.applicationService.deleteTemplate(template.id);
+        this.applicationService.deleteCustomNotification(
+          notification.id,
+          () => {
+            this.notificationsQuery.refetch();
+          }
+        );
       }
     });
   }

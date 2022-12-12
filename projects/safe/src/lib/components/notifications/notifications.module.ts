@@ -10,6 +10,7 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
 import { SafeDividerModule } from '../ui/divider/divider.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatChipsModule } from '@angular/material/chips';
 
 /**
  * Module for custom notifications table.
@@ -27,6 +28,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     SafeDividerModule,
     MatIconModule,
     MatPaginatorModule,
+    MatChipsModule,
   ],
   exports: [NotificationsComponent],
 })

@@ -457,7 +457,23 @@
 		},
 		"customNotifications": {
 			"edit": {
-				"new": "******"
+				"dataset": "******",
+				"email": "******",
+				"new": "******",
+				"recipients": {
+					"distributionList": "******",
+					"email": "******",
+					"title": "******",
+					"userField": "******"
+				},
+				"update": "******"
+			},
+			"errors": {
+				"email": "******",
+				"schedule": "******"
+			},
+			"hint": {
+				"schedule": "******"
 			}
 		},
 		"distributionLists": {
@@ -1410,7 +1426,9 @@
 			"new": "******"
 		},
 		"customNotification": {
-			"lastExecution": "******"
+			"lastExecution": "******",
+			"schedule": "******",
+			"type": "******"
 		},
 		"dashboard": {
 			"share": "******"

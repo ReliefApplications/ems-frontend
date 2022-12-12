@@ -702,3 +702,19 @@ export const ADD_CUSTOM_NOTIFICATION = gql`
 export interface AddCustomNotificationMutationResponse {
   addCustomNotification: CustomNotification;
 }
+
+/**
+ * Delete custom notification mutation definition.
+ */
+export const DELETE_CUSTOM_NOTIFICATION = gql`
+  mutation DeleteCustomNotification($id: ID!, $application: ID!) {
+    deleteCustomNotification(id: $id, application: $application) {
+      id
+    }
+  }
+`;
+
+/** Interface of DELETE_CUSTOM_NOTIFICATION mutation response */
+export interface DeleteCustomNotificationMutationResponse {
+  deleteCustomNotification: CustomNotification;
+}
