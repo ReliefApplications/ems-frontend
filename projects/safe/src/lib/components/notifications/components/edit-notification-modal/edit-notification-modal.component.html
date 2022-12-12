@@ -50,7 +50,7 @@
             formControlName="schedule"
           />
           <safe-icon
-            icon="info"
+            icon="info_outline"
             class="cursor-pointer"
             variant="grey"
             matSuffix
@@ -66,15 +66,55 @@
       <h3>DATASET</h3>
       <div class="flex flex-col">
         <!-- Resource -->
-        <mat-form-field appearance="outline" class="flex-1">
+        <mat-form-field appearance="outline">
           <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-          <input type="text" matInput formControlName="resource" />
+          <safe-graphql-select
+            valueField="id"
+            textField="name"
+            [query]="resourcesQuery"
+            formControlName="resource"
+            [selectedElements]="[resource]"
+          >
+          </safe-graphql-select>
         </mat-form-field>
         <!-- Layout -->
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{ 'common.layout.one' | translate }}</mat-label>
-          <input type="text" matInput formControlName="layout" />
-        </mat-form-field>
+        <ng-container *ngIf="resource">
+          <ng-container *ngIf="layout">
+            <!-- Layout is selected -->
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'common.layout.one' | translate }}</mat-label>
+              <mat-select [disabled]="true" [value]="layout.id">
+                <mat-option [value]="layout.id">{{ layout.name }}</mat-option>
+              </mat-select>
+              <safe-button
+                matSuffix
+                variant="primary"
+                [isIcon]="true"
+                icon="edit"
+                (click)="editLayout()"
+              ></safe-button>
+              <safe-button
+                matSuffix
+                variant="danger"
+                [isIcon]="true"
+                icon="close"
+                (click)="removeLayout()"
+              ></safe-button>
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="!formGroup.value.layout">
+            <!-- Layout is not selected yet -->
+            <safe-button
+              class="!w-auto"
+              category="tertiary"
+              variant="primary"
+              (click)="addLayout()"
+              >{{
+                'components.widget.settings.grid.layouts.add.title' | translate
+              }}</safe-button
+            >
+          </ng-container>
+        </ng-container>
       </div>
       <safe-divider></safe-divider>
       <h3>EMAIL NOTIFICATION</h3>
@@ -82,7 +122,31 @@
         <!-- Template -->
         <mat-form-field appearance="outline" class="flex-1">
           <mat-label>{{ 'common.template.one' | translate }}</mat-label>
-          <input type="text" matInput formControlName="template" />
+          <mat-select formControlName="template">
+            <mat-option
+              *ngFor="let template of templates"
+              [value]="template.id"
+            >
+              {{ template.name }}
+            </mat-option>
+          </mat-select>
+          <safe-icon
+            matSuffix
+            icon="info_outline"
+            class="cursor-pointer"
+            variant="grey"
+            matSuffix
+            matTooltip="HINT"
+          ></safe-icon>
+          <safe-button
+            matSuffix
+            [isIcon]="true"
+            icon="add_circle_outline"
+            variant="primary"
+            (click)="$event.stopPropagation(); addEmailTemplate()"
+            [matTooltip]="'components.templates.edit.new' | translate"
+          >
+          </safe-button>
         </mat-form-field>
       </div>
     </form>

@@ -10,6 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeAlertModule } from '../../../ui/alert/alert.module';
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 
 /**
  * Add / Edit notification modal module.
@@ -28,6 +29,7 @@ import { SafeDividerModule } from '../../../ui/divider/divider.module';
     SafeAlertModule,
     SafeReadableCronModule,
     SafeDividerModule,
+    SafeGraphQLSelectModule,
   ],
   exports: [EditNotificationModalComponent],
 })

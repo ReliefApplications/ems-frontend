@@ -114,6 +114,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(EditNotificationModalComponent, {
       data: notification,
       disableClose: true,
+      autoFocus: false,
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -159,6 +160,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   addNotification(): void {
     const dialogRef = this.dialog.open(EditNotificationModalComponent, {
       disableClose: true,
+      autoFocus: false,
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
