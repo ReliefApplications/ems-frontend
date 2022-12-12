@@ -35,17 +35,32 @@ export interface QueryResponse {
 }
 
 /** Field interface definition */
-interface Field {
+export interface Field {
   name: string;
-  kind: 'OBJECT' | 'SCALAR' | 'LIST';
+  editor:
+    | 'text'
+    | 'boolean'
+    | 'attribute'
+    | 'select'
+    | 'numeric'
+    | 'datetime'
+    | 'date';
   label?: string;
-  type?: string;
+  automated: boolean;
+  filter: any;
+  fields?: Field[];
 }
 
 /** Query interface definition */
 interface Query {
   name: string;
-  fields: Field[];
+  fields: {
+    name: string;
+    kind: 'OBJECT' | 'SCALAR' | 'LIST';
+    label?: string;
+    ofType?: any;
+    type?: string;
+  }[];
   filter?: CompositeFilterDescriptor;
   sort?: {
     field?: string;
@@ -360,7 +375,9 @@ export class QueryBuilderService {
    * @param query Widget query.
    * @returns GraphQL meta query.
    */
-  public buildMetaQuery(query: any): Observable<ApolloQueryResult<any>> | null {
+  public buildMetaQuery(
+    query: Query
+  ): Observable<ApolloQueryResult<any>> | null {
     if (query && query.fields.length > 0) {
       const metaFields = this.buildMetaFields(query.fields);
       const metaQuery = gql`
@@ -386,8 +403,9 @@ export class QueryBuilderService {
    * @param query custom query
    * @returns apollo query to get source
    */
-  // TO DO - Create interface for query object
-  public getQuerySource(query: any): Observable<ApolloQueryResult<any>> | null {
+  public getQuerySource(
+    query: Query
+  ): Observable<ApolloQueryResult<any>> | null {
     if (query) {
       const sourceQuery = gql`
       query GetSourceQuery {
@@ -474,7 +492,7 @@ export class QueryBuilderService {
    * @param query custom query.
    */
   // TO DO: Create an interface for this type of field (+ for the one retrieved from graphQL if possible)
-  public async getFilterFields(query: any): Promise<any[]> {
+  public async getFilterFields(query: any): Promise<Field[]> {
     if (query) {
       const sourceQuery = this.getQuerySource(query)?.toPromise();
       if (sourceQuery) {
