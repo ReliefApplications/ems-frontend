@@ -865,7 +865,7 @@
     >
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
         <button
-          style="text-align: center"
+          class="text-center"
           kendoButton
           [icon]="'detail-section'"
           [look]="'flat'"
@@ -909,18 +909,16 @@
           kendoButton
           icon="exclamation-circle"
           look="flat"
-          class="k-color-warning"
+          class="k-color-warning cursor-default"
           [matTooltip]="'components.widget.grid.tooltip.unsaved' | translate"
-          style="cursor: unset"
         ></span>
         <span
           *ngIf="dataItem.saved"
           kendoButton
           icon="check-outline"
           look="flat"
-          class="k-color-success"
+          class="k-color-success cursor-default"
           [matTooltip]="'components.widget.grid.tooltip.saved' | translate"
-          style="cursor: unset"
         ></span>
       </ng-template>
     </kendo-grid-column>
