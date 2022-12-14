@@ -1,5 +1,5 @@
-<div>
-  <span *ngFor="let row of popupRows">
+<div class="flex flex-col gap-0.5">
+  <span class="flex gap-y-0 gap-x-2" *ngFor="let row of popupRows">
     <strong>{{ row.label }}:</strong>
     {{ row.value }}
   </span>

@@ -12,6 +12,19 @@ module.exports = {
       boxShadow: {
         '2lg': '0 2px 5px 0 rgba(134, 134, 134, 0.2)',
       },
+      maxWidth: {
+        xxs: '15rem',
+      },
+      borderOpacity: {
+        12: '0.12',
+      },
+      borderColor: {
+        'black-12': 'rgba(0, 0, 0, 0.12)',
+      },
+      flexGrow: {
+        2: 2,
+        3: 3,
+      },
     },
   },
   plugins: [],

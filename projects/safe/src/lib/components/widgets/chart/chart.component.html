@@ -1,4 +1,4 @@
-<div class="widget-container">
+<div class="relative">
   <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
     <span class="widget-title" [title]="settings.title">{{
       settings.title
@@ -9,7 +9,7 @@
       *ngIf="export"
       [isIcon]="true"
       icon="get_app"
-      class="export-button"
+      class="absolute bottom-0 right-0 z-1 text-gray-500"
       (click)="onExport()"
     >
     </safe-button>
@@ -62,7 +62,11 @@
       Last update: {{ lastUpdate }}
     </p>
   </ng-container>
-  <mat-spinner [diameter]="30" *ngIf="loading"></mat-spinner>
+  <mat-spinner
+    class="absolute top-0 bottom-0 left-0 right-0 m-auto"
+    [diameter]="30"
+    *ngIf="loading"
+  ></mat-spinner>
   <div *ngIf="hasError" class="chart-error">
     <safe-icon variant="danger" icon="error_outline"></safe-icon>
     <p color="danger">

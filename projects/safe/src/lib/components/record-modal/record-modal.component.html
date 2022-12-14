@@ -1,6 +1,6 @@
 <safe-modal size="big" [closable]="true">
   <ng-container *ngIf="!loading">
-    <div class="form-infos">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
       <safe-record-summary
         *ngIf="!data.compareTo"
         [record]="record"
@@ -37,13 +37,13 @@
       </div>
     </div>
   </ng-container>
-  <mat-dialog-content>
+  <mat-dialog-content class="grow max-h-full flex flex-row">
     <ng-container *ngIf="!data.compareTo">
-      <div #formContainer class="form-container"></div>
+      <div #formContainer class="grow"></div>
     </ng-container>
     <ng-container *ngIf="data.compareTo">
-      <div #formContainerNext class="form-container"></div>
-      <div #formContainer class="form-container"></div>
+      <div #formContainerNext class="grow"></div>
+      <div #formContainer class="grow"></div>
     </ng-container>
   </mat-dialog-content>
   <mat-dialog-actions align="end" *ngIf="!loading && data.compareTo">

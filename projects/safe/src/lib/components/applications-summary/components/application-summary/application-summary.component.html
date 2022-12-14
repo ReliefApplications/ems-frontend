@@ -1,11 +1,16 @@
-<div matRipple class="safe-application">
-  <div class="header">
-    <div class="users">
+<div
+  matRipple
+  class="w-48 h-48 bg-white flex flex-col justify-between items-center cursor-pointer rounded-lg box-border border border-black-12"
+>
+  <div
+    class="flex flex-row justify-between items-center text-sm text-gray-600 w-full box-border pt-2 pb-2 px-2"
+  >
+    <div class="flex items-center gap-1">
       <safe-icon icon="person"></safe-icon>
       <span>{{ application.usersCount }}</span>
     </div>
     <div
-      class="status"
+      class="w-8 h-8 rounded-full flex flex-col justify-center items-center text-xl"
       *ngIf="status"
       [style.color]="status.focusColor"
       [style.background]="status.color"
@@ -13,8 +18,14 @@
       {{ status.short }}
     </div>
   </div>
-  <div class="title">{{ application.name }}</div>
-  <div class="bottom">
+  <div
+    class="text-ellipsis box-border w-full py-1 px-2 overflow-hidden text-center text-xl font-medium text-gray-600"
+  >
+    {{ application.name }}
+  </div>
+  <div
+    class="flex flex-row justify-between items-center text-sm text-gray-600 w-full box-border pt-0 pr-0 pb-2 pl-2"
+  >
     <span
       >{{ 'common.modifiedOn' | translate }}:
       {{

@@ -1,24 +1,5 @@
-.toolbar {
-  display: flex;
-  flex-direction: row;
-  padding: 0 16px;
-  align-items: center;
-  justify-content: space-between;
-  height: 60px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-
-  .toolbar-buttons {
-    display: flex;
-    align-items: center;
-
-    safe-button:first-child {
-      margin: 0 8px;
-    }
-  }
-}
-
-.menu-item {
-  mat-icon {
-    margin-right: 10px;
+.toolbar-buttons {
+  safe-button:first-child {
+    margin: 0 8px;
   }
 }

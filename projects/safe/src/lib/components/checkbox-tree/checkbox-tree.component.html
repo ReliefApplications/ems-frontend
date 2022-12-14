@@ -1,4 +1,8 @@
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+<mat-tree
+  class="border border-gray-200 rounded overflow-auto max-h-80"
+  [dataSource]="dataSource"
+  [treeControl]="treeControl"
+>
   <mat-tree-node
     *matTreeNodeDef="let node"
     matTreeNodeToggle

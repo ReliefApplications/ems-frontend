@@ -1,4 +1,4 @@
-<div class="form-infos">
+<div class="flex flex-wrap justify-between items-center gap-4 mb-4">
   <safe-record-summary
     [record]="record"
     [cacheDate]="storageDate"
@@ -11,6 +11,7 @@
   ></safe-form-actions>
 </div>
 <mat-tab-group
+  class="mb-4"
   animationDuration="0ms"
   [selectedIndex]="selectedTabIndex"
   (selectedIndexChange)="onShowPage($event)"
@@ -32,7 +33,7 @@
   </mat-tab>
 </mat-tab-group>
 <div #formContainer></div>
-<div *ngIf="surveyActive" class="survey-navigation">
+<div *ngIf="surveyActive" class="flex justify-end gap-2 mt-4 flex-wrap">
   <ng-container *ngIf="pages$ | async as pages">
     <safe-button
       *ngIf="pages.length > 1"

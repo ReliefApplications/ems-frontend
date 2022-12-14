@@ -1,19 +1,5 @@
-.toolbar {
-  display: flex;
-  flex-direction: row;
-  padding: 8px 16px;
-  align-items: center;
-  justify-content: flex-end;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-
   .toolbar-buttons {
     button:first-child {
       margin: 0 8px;
     }
   }
-}
-
-.danger-button {
-  background-color: #af0120;
-  color: white;
-}

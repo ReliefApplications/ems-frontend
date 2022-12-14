@@ -55,7 +55,7 @@
         <safe-button
           [isIcon]="true"
           icon="more_vert"
-          class="share-button"
+          class="-ml-1.5 text-gray-400"
           [matMenuTriggerFor]="menu"
           cdkOverlayOrigin
           #appMenuTrigger="cdkOverlayOrigin"
@@ -94,6 +94,7 @@
 </ng-container>
 <!-- STEPS -->
 <safe-workflow-stepper
+  class="-mx-6 my-4 block"
   [loading]="loading"
   [steps]="steps"
   [canUpdate]="canUpdate"

@@ -1,26 +1,3 @@
-@import '../../style/survey.scss';
-
 :host {
   position: relative;
-}
-
-.form-infos {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-mat-tab-group {
-  margin-bottom: 16px;
-}
-
-.survey-navigation {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 16px;
-  flex-wrap: wrap;
 }
