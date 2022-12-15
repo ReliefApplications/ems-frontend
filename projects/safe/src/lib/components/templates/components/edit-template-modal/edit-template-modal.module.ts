@@ -8,6 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { EditTemplateModalComponent } from './edit-template-modal.component';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { SafePlaceholderModule } from '../../../../pipes/placeholder/placeholder.module';
 
 /**
  * Modal to select email template.
@@ -24,6 +25,7 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
     ReactiveFormsModule,
     TranslateModule,
     EditorModule,
+    SafePlaceholderModule,
   ],
   exports: [EditTemplateModalComponent],
   providers: [

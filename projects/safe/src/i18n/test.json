@@ -606,6 +606,12 @@
 		"notifications": {
 			"readAll": "******"
 		},
+		"placeholders": {
+			"dataset": "******",
+			"now": "******",
+			"today": "******",
+			"todayCalc": "******"
+		},
 		"preferences": {
 			"dateFormat": "******",
 			"language": "******",

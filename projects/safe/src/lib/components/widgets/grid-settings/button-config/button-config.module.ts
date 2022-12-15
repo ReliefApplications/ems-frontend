@@ -13,6 +13,7 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SafePlaceholderModule } from '../../../../pipes/placeholder/placeholder.module';
 
 /**
  * Button config component for grid widget.
@@ -34,6 +35,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     SafeButtonModule,
     SafeIconModule,
     SafeQueryBuilderModule,
+    SafePlaceholderModule,
   ],
   exports: [ButtonConfigComponent],
 })

@@ -606,6 +606,12 @@
 		"notifications": {
 			"readAll": "Mark all as read"
 		},
+		"placeholders": {
+			"dataset": "DATASET",
+			"now": "NOW",
+			"today": "TODAY",
+			"todayCalc": "TODAY($1$2)"
+		},
 		"preferences": {
 			"dateFormat": "Date and time format",
 			"language": "Language",

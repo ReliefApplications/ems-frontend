@@ -22,6 +22,8 @@ import { DistributionList } from '../../../../models/distribution-list.model';
 import { EditDistributionListModalComponent } from '../../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import { EditTemplateModalComponent } from '../../../templates/components/edit-template-modal/edit-template-modal.component';
+// import { SafePlaceholderPipe } from '../../../../pipes/placeholder/placeholder.pipe';
+
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -73,6 +75,7 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
    * @param queryBuilder Shared Query Builder service
    * @param dialog Material dialog service
    * @param applicationService Shared application service
+   * @param placeholder Placeholder pipe
    */
   constructor(
     private formBuilder: FormBuilder,
@@ -80,7 +83,7 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
     public dialog: MatDialog,
-    private applicationService: SafeApplicationService
+    private applicationService: SafeApplicationService // private placeholder: SafePlaceholderPipe
   ) {}
 
   ngOnInit(): void {
@@ -384,6 +387,7 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
             content: {
               subject: value.subject,
               body: value.body,
+              // body: this.placeholder.transform(value.body, true),
             },
           },
           (template: Template) => {

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SafeEditorService } from '../../../../services/editor/editor.service';
 import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
+import { SafePlaceholderPipe } from '../../../../pipes/placeholder/placeholder.pipe';
 import get from 'lodash/get';
 
 /** Model for the data input */
@@ -32,12 +33,14 @@ export class EditTemplateModalComponent implements OnInit {
    * @param dialogRef Material dialog ref of the component
    * @param data Data input of the modal
    * @param editorService Editor service used to get main URL and current language
+   * @param placeholder Placeholder pipe to format the placeholders
    */
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<EditTemplateModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private editorService: SafeEditorService
+    private editorService: SafeEditorService,
+    private placeholder: SafePlaceholderPipe
   ) {
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
@@ -52,7 +55,18 @@ export class EditTemplateModalComponent implements OnInit {
       name: [get(this.data, 'name', null), Validators.required],
       type: [get(this.data, 'type', 'email'), Validators.required],
       subject: [get(this.data, 'content.subject', null), Validators.required],
-      body: [get(this.data, 'content.body', ''), Validators.required],
+      body: [
+        this.placeholder.transform(get(this.data, 'content.body', '')),
+        Validators.required,
+      ],
+    });
+
+    // TODO: Editor loses focus when the parsed value is set
+    this.form.get('body')?.valueChanges.subscribe((value) => {
+      const parsed = this.placeholder.transform(value);
+      if (parsed !== value) {
+        this.form.get('body')?.setValue(parsed);
+      }
     });
   }
 }
