@@ -1,7 +1,6 @@
 .share-button {
   color: #a9a9a9 !important;
   margin-left: -6px;
-  @apply shadow-lg;
 }
 
 safe-workflow-stepper {
@@ -10,9 +9,8 @@ safe-workflow-stepper {
 }
 
 .cdk-drag-preview {
-  box-sizing: border-box;
   background-color: rgba(0, 0, 0, 0.2);
-  @apply shadow-lg;
+  border-radius: 0;
 }
 
 .cdk-drag-animating {

@@ -22,7 +22,7 @@
   <!-- APPLICATIONS TABLE -->
   <h2>{{ 'pages.applications.all' | translate }}</h2>
   <!-- Table container -->
-  <div class="overflow-x-hidden shadow-light">
+  <div class="overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
       <table
@@ -127,7 +127,7 @@
                 {{ 'common.duplicate' | translate }}
               </button>
               <ng-container *ngIf="element.canDelete">
-                <safe-divider style="margin: unset"></safe-divider>
+                <safe-divider class="m-0"></safe-divider>
                 <button mat-menu-item (click)="onDelete(element, $event)">
                   <mat-icon>delete</mat-icon>
                   {{ 'common.delete' | translate }}

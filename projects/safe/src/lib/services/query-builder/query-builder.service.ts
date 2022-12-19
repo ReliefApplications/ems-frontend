@@ -10,6 +10,65 @@ import {
 import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
 import get from 'lodash/get';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+
+/** Interface for the variables of a query */
+interface QueryVariables {
+  first?: number;
+  skip?: number;
+  filter?: any;
+  sortField?: string;
+  sortOrder?: string;
+  display?: boolean;
+  styles?: any;
+}
+
+/** Interface for a query response */
+export interface QueryResponse {
+  [key: string]: {
+    totalCount: number;
+    edges: {
+      node: any;
+      meta: any;
+    }[];
+  };
+}
+
+/** Field interface definition */
+export interface Field {
+  name: string;
+  editor:
+    | 'text'
+    | 'boolean'
+    | 'attribute'
+    | 'select'
+    | 'numeric'
+    | 'datetime'
+    | 'date'
+    | 'time';
+  label?: string;
+  automated: boolean;
+  filter: any;
+  fields?: Field[];
+}
+
+/** Query interface definition */
+interface Query {
+  name: string;
+  fields: {
+    name: string;
+    kind: 'OBJECT' | 'SCALAR' | 'LIST';
+    label?: string;
+    ofType?: any;
+    type?: string;
+  }[];
+  filter?: CompositeFilterDescriptor;
+  sort?: {
+    field?: string;
+    order?: 'asc' | 'desc';
+  };
+  style?: any;
+}
 
 /** List of fields part of the schema but not selectable */
 const NON_SELECTABLE_FIELDS = ['canUpdate', 'canDelete'];
@@ -30,7 +89,7 @@ export const REFERENCE_DATA_END = 'Ref';
 export class QueryBuilderService {
   /** Available forms / resources queries */
   private availableQueries = new BehaviorSubject<any[]>([]);
-  /** @returns Available forms / resources queries as observalbe */
+  /** @returns Available forms / resources queries as observable */
   get availableQueries$(): Observable<any> {
     return this.availableQueries.asObservable();
   }
@@ -75,10 +134,19 @@ export class QueryBuilderService {
   /**
    * Gets list of fields from a type.
    *
-   * @param type Corresponding type from availablTypes.
+   * @param type Corresponding type from availableTypes.
    * @returns List of fields of this type.
    */
-  private extractFieldsFromType(type: any): any[] {
+  private extractFieldsFromType(type: any): {
+    name: string;
+    type: {
+      fields: any[] | null;
+      kind: 'SCALAR' | 'LIST' | 'OBJECT';
+      name: string;
+      ofType?: any;
+    };
+    args: any;
+  }[] {
     return type.fields
       .filter(
         (x: any) =>
@@ -110,7 +178,7 @@ export class QueryBuilderService {
    * @param queryName Form / Resource query name.
    * @returns List of fields of this structure.
    */
-  public getFields(queryName: string): any[] {
+  public getFields(queryName: string) {
     const query = this.availableQueries
       .getValue()
       .find((x) => x.name === queryName);
@@ -190,7 +258,7 @@ export class QueryBuilderService {
    * Builds parsable GraphQL string from the filter definition.
    *
    * @param filter Filter definition
-   * @returns GraphQL parsable strinf for the filter.
+   * @returns GraphQL parsable string for the filter.
    */
   private filterToString(filter: any): string {
     if (filter.filters) {
@@ -256,11 +324,12 @@ export class QueryBuilderService {
    * TODO: we should pass directly the query definition, instead of the settings.
    *
    * @param settings Widget settings.
+   * @param settings.query Query definition.
    * @returns GraphQL query.
    */
-  public buildQuery(settings: any): any {
+  public buildQuery(settings: { query: Query; [key: string]: any }) {
     const builtQuery = settings.query;
-    if (builtQuery?.fields?.length > 0) {
+    if (builtQuery.name && builtQuery?.fields && builtQuery.fields.length > 0) {
       const fields = ['canUpdate\ncanDelete\n'].concat(
         this.buildFields(builtQuery.fields)
       );
@@ -277,8 +346,8 @@ export class QueryBuilderService {
    * @param fields fields to fetch.
    * @returns GraphQL query.
    */
-  public graphqlQuery(name: string, fields: any) {
-    return gql`
+  public graphqlQuery(name: string, fields: string[] | string) {
+    return gql<QueryResponse, QueryVariables>`
     query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON) {
       ${name}(
       first: $first,
@@ -307,7 +376,9 @@ export class QueryBuilderService {
    * @param query Widget query.
    * @returns GraphQL meta query.
    */
-  public buildMetaQuery(query: any): Observable<ApolloQueryResult<any>> | null {
+  public buildMetaQuery(
+    query: Query
+  ): Observable<ApolloQueryResult<any>> | null {
     if (query && query.fields.length > 0) {
       const metaFields = this.buildMetaFields(query.fields);
       const metaQuery = gql`
@@ -333,8 +404,9 @@ export class QueryBuilderService {
    * @param query custom query
    * @returns apollo query to get source
    */
-  // TO DO - Create interface for query object
-  public getQuerySource(query: any): Observable<ApolloQueryResult<any>> | null {
+  public getQuerySource(
+    query: Query
+  ): Observable<ApolloQueryResult<any>> | null {
     if (query) {
       const sourceQuery = gql`
       query GetSourceQuery {
@@ -421,7 +493,7 @@ export class QueryBuilderService {
    * @param query custom query.
    */
   // TO DO: Create an interface for this type of field (+ for the one retrieved from graphQL if possible)
-  public async getFilterFields(query: any): Promise<any[]> {
+  public async getFilterFields(query: any): Promise<Field[]> {
     if (query) {
       const sourceQuery = this.getQuerySource(query)?.toPromise();
       if (sourceQuery) {
