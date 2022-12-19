@@ -16,7 +16,7 @@ export class MapMarkersComponent implements OnInit {
   @Input() form!: FormGroup;
 
   @Input() selectedFields: any[] = [];
-  @Input() formatedSelectedFields: any[] = [];
+  @Input() formattedSelectedFields: any[] = [];
   public numberFields: any[] = [];
 
   /**
@@ -39,7 +39,7 @@ export class MapMarkersComponent implements OnInit {
 
   ngOnInit(): void {
     // Build list of number fields
-    this.numberFields = this.getNumberFields(this.formatedSelectedFields);
+    this.numberFields = this.getNumberFields(this.formattedSelectedFields);
   }
 
   /**
@@ -59,7 +59,7 @@ export class MapMarkersComponent implements OnInit {
     const dialogRef = this.dialog.open(MapMarkerRuleComponent, {
       data: {
         value: this.rules.at(index).value,
-        fields: this.formatedSelectedFields,
+        fields: this.formattedSelectedFields,
         query: this.form.get('query'),
       },
     });
@@ -82,15 +82,15 @@ export class MapMarkersComponent implements OnInit {
   /**
    * Get the names of the fields with a number format
    *
-   * @param formatedFields The list of formated fields
+   * @param formattedFields The list of formatted fields
    * @returns A list of fields names of type number
    */
-  private getNumberFields(formatedFields: any[]): any[] {
-    return formatedFields
+  private getNumberFields(formattedFields: any[]): any[] {
+    return formattedFields
       .filter((field: any) => field.type === 'numeric')
       .map((field) => field.name)
       .concat(
-        formatedFields
+        formattedFields
           .filter((field) => field.fields)
           .map((field) =>
             this.getNumberFields(field.fields).map(

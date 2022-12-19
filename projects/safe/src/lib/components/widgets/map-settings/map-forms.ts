@@ -130,10 +130,11 @@ export const markerRuleForm = (value?: any): FormGroup =>
  * @param value map settings ( optional )
  * @returns map form
  */
-export const mapform = (id: any, value?: any): FormGroup =>
+export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
   fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
+    resource: [get(value, 'resource', null), Validators.required],
     query: createQueryForm(get(value, 'query', DEFAULT_MAP.query), true),
     latitude: [
       get(value, 'latitude', DEFAULT_MAP.latitude),
