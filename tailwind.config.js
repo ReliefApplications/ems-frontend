@@ -18,9 +18,6 @@ module.exports = {
       borderOpacity: {
         12: '0.12',
       },
-      borderColor: {
-        'black-12': 'rgba(0, 0, 0, 0.12)',
-      },
       flexGrow: {
         2: 2,
         3: 3,
