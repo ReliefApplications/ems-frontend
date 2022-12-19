@@ -11,6 +11,7 @@ import {
   Optional,
   Output,
   Self,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
@@ -30,6 +31,11 @@ import {
 } from '@angular/material/form-field';
 import { NgControl, ControlValueAccessor } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import {
+  MatAutocomplete,
+  MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
@@ -42,6 +48,11 @@ const ITEMS_PER_RELOAD = 10;
   providers: [
     {
       provide: MAT_SELECT_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+    {
+      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
       useFactory: scrollFactory,
       deps: [Overlay],
     },
@@ -63,9 +74,13 @@ export class SafeGraphQLSelectComponent
 
   @Input() valueField = '';
   @Input() textField = '';
-  @Input()
-  @Output()
-  selectionChange = new EventEmitter<string | string[] | null>();
+  @Output() selectionChange = new EventEmitter<string | string[] | null>();
+
+  @Input() filterable = true;
+  @Output() searchChange = new EventEmitter<string>();
+  public searchText = '';
+  private searchTimeout: NodeJS.Timeout | null = null;
+
   /**
    * Gets the value
    *
@@ -91,8 +106,7 @@ export class SafeGraphQLSelectComponent
    *
    * @returns the placeholder
    */
-  @Input()
-  get placeholder() {
+  @Input() get placeholder() {
     return this.ePlaceholder;
   }
 
@@ -250,6 +264,7 @@ export class SafeGraphQLSelectComponent
   public loading = true;
 
   @ViewChild(MatSelect) elementSelect?: MatSelect;
+  @ViewChild(MatAutocomplete) elementAutocomplete?: MatAutocomplete;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -295,7 +310,16 @@ export class SafeGraphQLSelectComponent
     });
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    // check if the query has changed
+    if (changes.query) {
+      this.loading = true;
+      this.pageInfo = {
+        endCursor: '',
+        hasNextPage: true,
+      };
+    }
+
     const elements = this.elements.getValue();
     this.selectedElements = this.selectedElements.filter(
       (selectedElement) =>
@@ -305,10 +329,45 @@ export class SafeGraphQLSelectComponent
         )
     );
     this.elements.next([...this.selectedElements, ...elements]);
+
+    /**
+     * This is needed in order to display previously selected elements
+     * when the selectedElements input changes, due to how displayWith works
+     */
+    if (
+      changes.selectedElements &&
+      changes.selectedElements.currentValue.length > 0
+    ) {
+      this.searchText = '';
+      this.searchText =
+        this.elements
+          .getValue()
+          .find((x) => x[this.valueField] === this.value) || '';
+    }
   }
 
   ngOnDestroy(): void {
     this.stateChanges.complete();
+  }
+
+  /**
+   * Gets the display string for an autocomplete option.
+   *
+   * @param option option to get display text of.
+   * @returns a string with the display value.
+   */
+  public getDisplayText(option: any): string {
+    if (typeof option === 'string') {
+      // looks for the option id in the elements
+      const element = this.elements
+        .getValue()
+        .find((x) => x[this.valueField] === option);
+      // if found, returns the display text
+      if (element) return element[this.textField];
+      // if not found, returns the option
+      return option;
+    }
+    return option && option[this.textField] ? option[this.textField] : '';
   }
 
   /**
@@ -346,10 +405,41 @@ export class SafeGraphQLSelectComponent
   onOpenSelect(e: any): void {
     if (e && this.elementSelect) {
       const panel = this.elementSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
-      );
+      if (panel) {
+        panel.addEventListener('scroll', (event: any) =>
+          this.loadOnScroll(event)
+        );
+      }
     }
+  }
+
+  /** Adds scroll listener to autocomplete. */
+  async onOpenAutocomplete(): Promise<void> {
+    // await a bit to make sure the panel is rendered
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    if (this.elementAutocomplete) {
+      const panel = this.elementAutocomplete.panel?.nativeElement;
+      if (panel) {
+        panel.addEventListener('scroll', (event: any) =>
+          this.loadOnScroll(event)
+        );
+      }
+    }
+  }
+
+  /**
+   * Triggered when the autocomplete is closed.
+   *
+   * This is useful so there's no confusion about the value of the input.
+   * For example, if the user types the exact name of the element they want,
+   * then clicks outside the autocomplete without selecting the element,
+   * the value will not be set to the element with that name.
+   */
+  public onCloseAutocomplete() {
+    if (typeof this.value === 'string') this.searchText = this.value;
+    else if (this.value === null) this.searchText = '';
+    this.searchChange.emit('');
   }
 
   /**
@@ -399,11 +489,34 @@ export class SafeGraphQLSelectComponent
   }
 
   /**
-   * Triggers on selection change
+   * Triggers on search text change for autocomplete
+   * If the search text id not an id, emits the search text
+   */
+  public onSearchTextChange() {
+    if (this.searchText && typeof this.searchText === 'string') {
+      // debounce
+      if (this.searchTimeout) clearTimeout(this.searchTimeout);
+      this.searchTimeout = setTimeout(() => {
+        this.searchChange.emit(this.searchText);
+      }, 500);
+    }
+  }
+
+  /**
+   * Triggers on selection change for select
    *
    * @param event the selection change event
    */
   public onSelectionChange(event: MatSelectChange) {
     this.value = event.value;
+  }
+
+  /**
+   * Triggers on selection change for autocomplete
+   *
+   * @param event the selection change event
+   */
+  onOptionSelected(event: MatAutocompleteSelectedEvent) {
+    this.value = event.option.value[this.valueField];
   }
 }

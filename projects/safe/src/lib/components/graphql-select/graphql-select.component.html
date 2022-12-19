@@ -1,15 +1,46 @@
-<mat-select
-  [formControl]="ngControl && $any(ngControl.control)"
-  (openedChange)="onOpenSelect($event)"
-  [required]="required"
-  (focusin)="onFocusIn()"
-  (focusout)="onFocusOut($event)"
->
-  <mat-option
-    *ngFor="let element of elements$ | async"
-    [value]="element[valueField]"
+<!-- If not filterable, display regular select -->
+<ng-container *ngIf="!filterable">
+  <mat-select
+    [formControl]="ngControl && $any(ngControl.control)"
+    (openedChange)="onOpenSelect($event)"
+    [required]="required"
+    (focusin)="onFocusIn()"
+    (focusout)="onFocusOut($event)"
   >
-    {{ element[textField] }}
-  </mat-option>
-  <mat-spinner *ngIf="loading" class="my-2" diameter="24"></mat-spinner>
-</mat-select>
+    <mat-option
+      *ngFor="let element of elements$ | async"
+      [value]="element[valueField]"
+    >
+      {{ element[textField] }}
+    </mat-option>
+    <mat-spinner *ngIf="loading" class="my-2" diameter="24"></mat-spinner>
+  </mat-select>
+</ng-container>
+
+<!-- If filterable, display autocomplete input -->
+<ng-container *ngIf="filterable">
+  <input
+    class="w-full"
+    type="text"
+    matInput
+    [required]="required"
+    (focusin)="onFocusIn()"
+    [(ngModel)]="searchText"
+    (ngModelChange)="onSearchTextChange()"
+    (focusout)="onFocusOut($event)"
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete
+    autoActiveFirstOption
+    #auto="matAutocomplete"
+    #autoComplete
+    [displayWith]="getDisplayText.bind(this)"
+    (opened)="onOpenAutocomplete()"
+    (closed)="onCloseAutocomplete()"
+    (optionSelected)="onOptionSelected($event)"
+  >
+    <mat-option *ngFor="let element of elements$ | async" [value]="element">
+      {{ element[textField] }}
+    </mat-option>
+  </mat-autocomplete>
+</ng-container>
