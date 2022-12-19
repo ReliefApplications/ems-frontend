@@ -11,6 +11,7 @@
       [query]="applicationsQuery"
       [formControl]="selectedApplication"
       [selectedElements]="[application]"
+      (searchChange)="onApplicationSearchChange($event)"
     >
     </safe-graphql-select>
   </mat-form-field>

@@ -2,10 +2,10 @@
 <ng-container *ngIf="!loading && referenceData">
   <div class="page-header">
     <h1 class="page-title">
-      {{ referenceData?.name }}
+      {{ referenceData.name }}
     </h1>
     <safe-access
-      [access]="referenceData?.permissions"
+      [access]="referenceData.permissions"
       [objectTypeName]="'common.referenceData.one' | translate"
       (save)="saveAccess($event)"
       *ngIf="referenceData?.canUpdate"
@@ -47,6 +47,7 @@
             [query]="apiConfigurationsQuery"
             formControlName="apiConfiguration"
             [selectedElements]="[selectedApiConfiguration]"
+            [filterable]="false"
           >
           </safe-graphql-select>
         </mat-form-field>

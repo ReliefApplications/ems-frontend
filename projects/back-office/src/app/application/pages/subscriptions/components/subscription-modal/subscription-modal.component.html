@@ -80,6 +80,7 @@
             [query]="formsQuery"
             formControlName="convertTo"
             [selectedElements]="[defaultForm]"
+            (searchChange)="onSearchChange($event)"
           ></safe-graphql-select>
         </mat-form-field>
         <mat-form-field appearance="outline">

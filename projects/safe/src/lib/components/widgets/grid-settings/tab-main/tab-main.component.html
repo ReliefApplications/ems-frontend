@@ -15,6 +15,7 @@
         [query]="resourcesQuery"
         formControlName="resource"
         [selectedElements]="[resource]"
+        (searchChange)="onResourceSearchChange($event)"
       >
       </safe-graphql-select>
       <!-- <mat-label>{{

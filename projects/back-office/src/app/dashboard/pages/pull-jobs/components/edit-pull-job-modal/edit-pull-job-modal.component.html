@@ -92,6 +92,7 @@
               [query]="apiConfigurationsQuery"
               formControlName="apiConfiguration"
               [selectedElements]="[defaultApiConfiguration]"
+              [filterable]="false"
             >
             </safe-graphql-select>
           </mat-form-field>
@@ -148,6 +149,7 @@
               [query]="formsQuery"
               formControlName="convertTo"
               [selectedElements]="[defaultForm]"
+              (searchChange)="onFormSearchChange($event)"
             >
             </safe-graphql-select>
           </mat-form-field>

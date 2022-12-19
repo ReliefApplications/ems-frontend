@@ -23,6 +23,7 @@
       [query]="resourcesQuery"
       formControlName="resource"
       [selectedElements]="[selectedResource]"
+      (searchChange)="onResourceSearchChange($event)"
     ></safe-graphql-select>
   </mat-form-field>
   <!-- FROM LAYOUTS -->
