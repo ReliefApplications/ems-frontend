@@ -78,7 +78,13 @@ export class SafeGraphQLSelectComponent
 
   @Input() filterable = true;
   @Output() searchChange = new EventEmitter<string>();
-  public searchText = '';
+
+  /**
+   * searchText is either a string or and object.
+   * when it's an object, it's used to display the selected value in the input field and there is no search
+   * when it's a string, it represents the search text
+   */
+  public searchText: any = '';
   private searchTimeout: NodeJS.Timeout | null = null;
 
   /**
@@ -312,6 +318,7 @@ export class SafeGraphQLSelectComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     // check if the query has changed
+    // if so, reset the loading and pageInfo states
     if (changes.query) {
       this.loading = true;
       this.pageInfo = {
@@ -415,7 +422,7 @@ export class SafeGraphQLSelectComponent
 
   /** Adds scroll listener to autocomplete. */
   async onOpenAutocomplete(): Promise<void> {
-    // await a bit to make sure the panel is rendered
+    // wait a bit to make sure the panel is rendered
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     if (this.elementAutocomplete) {
