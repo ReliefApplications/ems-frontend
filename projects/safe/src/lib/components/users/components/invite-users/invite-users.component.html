@@ -90,9 +90,9 @@
         <ng-template kendoGridCellTemplate let-idx="rowIndex">
           <button
             kendoButton
+            class="text-center"
             [icon]="'delete'"
             [look]="'flat'"
-            style="text-align: center"
             (click)="onRemove(idx)"
           ></button>
         </ng-template>

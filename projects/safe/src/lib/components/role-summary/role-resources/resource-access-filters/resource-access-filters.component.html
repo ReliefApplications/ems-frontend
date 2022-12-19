@@ -6,7 +6,7 @@
   <h3>{{ 'components.role.summary.noFilters' | translate }}</h3>
 </div>
 <!-- Table container -->
-<div class="overflow-x-hidden shadow-light">
+<div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
@@ -24,13 +24,13 @@
         </td>
       </ng-container>
       <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef style="text-align: end">
+        <th mat-header-cell *matHeaderCellDef class="text-end">
           <safe-button variant="primary" category="tertiary" (click)="save()">{{
             'common.save' | translate
           }}</safe-button>
         </th>
         <td mat-cell *matCellDef="let element; let i = dataIndex">
-          <div style="display: flex">
+          <div class="flex">
             <ng-container *ngFor="let permission of element.permissions">
               <safe-button
                 *ngIf="permission.name !== 'canCreateRecords'"
@@ -72,7 +72,7 @@
               category="secondary"
               icon="delete"
               (click)="deleteFilter(i)"
-              style="width: fit-content"
+              class="w-fit"
             >
               {{ 'components.role.summary.removeFilter' | translate }}
             </safe-button>
@@ -90,8 +90,7 @@
       <tr
         mat-row
         *matRowDef="let row; columns: ['expandedDetail']"
-        style="height: 0"
-        class="cursor-pointer"
+        class="cursor-pointer h-0"
       ></tr>
     </table>
   </div>
@@ -100,7 +99,7 @@
   variant="primary"
   category="secondary"
   (click)="addFilter()"
-  style="align-self: center"
+  class="self-center"
 >
   {{ 'components.role.summary.addFilter' | translate }}
 </safe-button>

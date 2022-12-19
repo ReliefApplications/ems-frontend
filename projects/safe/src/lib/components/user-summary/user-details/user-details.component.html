@@ -21,7 +21,7 @@
       <input matInput formControlName="email" type="text" />
     </mat-form-field>
     <ng-container *ngIf="attributes.length > 0" formGroupName="attributes">
-      <h2 style="margin-top: 32px">{{ 'common.attribute.few' | translate }}</h2>
+      <h2 class="mt-8">{{ 'common.attribute.few' | translate }}</h2>
       <ng-container *ngFor="let attribute of attributes">
         <mat-form-field appearance="outline">
           <mat-label>{{ attribute.text }}</mat-label>

@@ -15,7 +15,7 @@
   </div>
 </div>
 <!-- Table container -->
-<div class="overflow-x-hidden shadow-light">
+<div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
@@ -165,7 +165,7 @@
               </button>
             </ng-container>
             <ng-container *ngIf="element.canDelete">
-              <safe-divider style="margin: unset"></safe-divider>
+              <safe-divider class="m-0"></safe-divider>
               <button mat-menu-item (click)="onDelete(element, $event)">
                 <mat-icon>delete</mat-icon>
                 {{ 'common.delete' | translate }}
