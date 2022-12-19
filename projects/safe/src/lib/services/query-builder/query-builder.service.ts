@@ -44,7 +44,8 @@ export interface Field {
     | 'select'
     | 'numeric'
     | 'datetime'
-    | 'date';
+    | 'date'
+    | 'time';
   label?: string;
   automated: boolean;
   filter: any;

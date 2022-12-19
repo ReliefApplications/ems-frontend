@@ -38,9 +38,9 @@ export class SafeTabFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.queryBuilder.getFilterFields(this.query).then((fields) => {
-      const fieldsCpy = cloneDeep(fields);
-      this.setCustomEditors(fieldsCpy);
-      this.filterFields = fieldsCpy;
+      const cloneFields = cloneDeep(fields);
+      this.setCustomEditors(cloneFields);
+      this.filterFields = cloneFields;
     });
   }
 
