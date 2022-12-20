@@ -236,23 +236,35 @@ export const render = (
       } else {
         question.choices = [];
       }
-      question.referenceDataChoicesLoaded = true;
     };
 
     // init the choices
     if (!question.referenceDataChoicesLoaded && question.referenceData) {
-      updateChoices();
+      referenceDataService
+        .cacheItems(question.referenceData)
+        .then(() => updateChoices());
+      question.referenceDataChoicesLoaded = true;
     }
     // look on changes
-    question.registerFunctionOnPropertyValueChanged('referenceData', () => {
-      question.referenceDataDisplayField = undefined;
-    });
+    question.registerFunctionOnPropertyValueChanged(
+      'referenceData',
+      (value: string) => {
+        question.referenceDataDisplayField = undefined;
+        if (!value) {
+          question.referenceDataDisplayField = undefined;
+          question.referenceDataFilterFilterFromQuestion = undefined;
+          question.referenceDataFilterForeignField = undefined;
+          question.referenceDataFilterFilterCondition = undefined;
+          question.referenceDataFilterLocalField = undefined;
+        }
+      }
+    );
     question.registerFunctionOnPropertyValueChanged(
       'referenceDataDisplayField',
       updateChoices
     );
 
-    // logic for filters
+    // Look for foreign question changes if needed for filter
     const foreignQuestion = (question.survey as SurveyModel)
       .getAllQuestions()
       .find(
