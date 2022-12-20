@@ -127,4 +127,26 @@ export class UserAppRolesComponent implements OnInit {
         }
       );
   }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  public onApplicationSearchChange(search: string): void {
+    const variables = this.applicationsQuery.variables;
+    this.applicationsQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
+    });
+  }
 }

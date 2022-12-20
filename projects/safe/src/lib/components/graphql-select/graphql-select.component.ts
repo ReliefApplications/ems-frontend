@@ -11,6 +11,7 @@ import {
   Optional,
   Output,
   Self,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
@@ -28,8 +29,9 @@ import {
   MatFormFieldControl,
   MAT_FORM_FIELD,
 } from '@angular/material/form-field';
-import { NgControl, ControlValueAccessor } from '@angular/forms';
+import { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
@@ -63,9 +65,12 @@ export class SafeGraphQLSelectComponent
 
   @Input() valueField = '';
   @Input() textField = '';
-  @Input()
-  @Output()
-  selectionChange = new EventEmitter<string | string[] | null>();
+  @Output() selectionChange = new EventEmitter<string | string[] | null>();
+
+  @Input() filterable = false;
+  @Output() searchChange = new EventEmitter<string>();
+  public searchControl = new FormControl('');
+
   /**
    * Gets the value
    *
@@ -91,8 +96,7 @@ export class SafeGraphQLSelectComponent
    *
    * @returns the placeholder
    */
-  @Input()
-  get placeholder() {
+  @Input() get placeholder() {
     return this.ePlaceholder;
   }
 
@@ -279,32 +283,75 @@ export class SafeGraphQLSelectComponent
       const elements: any[] = get(res.data, path).edges
         ? get(res.data, path).edges.map((x: any) => x.node)
         : get(res.data, path);
-      this.selectedElements = this.selectedElements.filter(
+      const selectedElements = this.selectedElements.filter(
         (selectedElement) =>
           selectedElement &&
           !elements.find(
             (node) => node[this.valueField] === selectedElement[this.valueField]
           )
       );
-      this.elements.next([...this.selectedElements, ...elements]);
+      this.elements.next([...selectedElements, ...elements]);
       this.pageInfo = get(res.data, path).pageInfo;
       this.loading = res.loading;
     });
     this.ngControl.valueChanges?.subscribe((value) => {
+      const elements = this.elements.getValue();
+      if (Array.isArray(value)) {
+        this.selectedElements = [
+          ...elements.filter((element) => {
+            value.find((x) => x === element[this.valueField]);
+          }),
+        ];
+      } else {
+        this.selectedElements = [
+          elements.find((element) => value === element[this.valueField]),
+        ];
+      }
       this.selectionChange.emit(value);
     });
+    // this way we can wait for 0.5s before sending an update
+    this.searchControl.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value) => {
+        this.searchChange.emit(value);
+      });
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    // check if the query has changed
+    // if so, reset the loading and pageInfo states
+    if (changes.query) {
+      this.loading = true;
+      this.pageInfo = {
+        endCursor: '',
+        hasNextPage: true,
+      };
+    }
+
     const elements = this.elements.getValue();
-    this.selectedElements = this.selectedElements.filter(
+    const selectedElements = this.selectedElements.filter(
       (selectedElement) =>
         selectedElement &&
         !elements.find(
           (node) => node[this.valueField] === selectedElement[this.valueField]
         )
     );
-    this.elements.next([...this.selectedElements, ...elements]);
+    this.elements.next([...selectedElements, ...elements]);
+
+    /**
+     * This is needed in order to display previously selected elements
+     * when the selectedElements input changes, due to how displayWith works
+     */
+    // if (
+    //   changes.selectedElements &&
+    //   changes.selectedElements.currentValue.length > 0
+    // ) {
+    //   this.searchText = '';
+    //   this.searchText =
+    //     this.elements
+    //       .getValue()
+    //       .find((x) => x[this.valueField] === this.value) || '';
+    // }
   }
 
   ngOnDestroy(): void {
@@ -399,7 +446,7 @@ export class SafeGraphQLSelectComponent
   }
 
   /**
-   * Triggers on selection change
+   * Triggers on selection change for select
    *
    * @param event the selection change event
    */

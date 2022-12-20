@@ -21,8 +21,13 @@ export interface GetUserQueryResponse {
 
 /** Get Applications query */
 export const GET_APPLICATIONS = gql`
-  query GetApplications($first: Int, $afterCursor: ID) {
-    applications(first: $first, afterCursor: $afterCursor, sortField: "name") {
+  query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
+    applications(
+      first: $first
+      afterCursor: $afterCursor
+      sortField: "name"
+      filter: $filter
+    ) {
       edges {
         node {
           id

@@ -381,4 +381,25 @@ export class EditPullJobModalComponent implements OnInit {
       }
     }
   }
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  public onFormSearchChange(search: string): void {
+    const variables = this.formsQuery.variables;
+    this.formsQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
+    });
+  }
 }

@@ -41,4 +41,26 @@ export class TabMainComponent implements OnInit {
       },
     });
   }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  onResourceSearchChange(search: string): void {
+    this.resourcesQuery.refetch({
+      first: ITEMS_PER_PAGE,
+      sortField: 'name',
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
+    });
+  }
 }
