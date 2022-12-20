@@ -94,6 +94,8 @@
               "projects/back-office/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
               "node_modules/survey-core/survey.min.css",
+              "node_modules/survey-core/defaultV2.min.css",
+              "node_modules/survey-core/modern.min.css",
               "node_modules/survey-creator-core/survey-creator-core.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
@@ -477,6 +479,8 @@
               },
               "projects/back-office/src/styles.scss",
               "node_modules/survey-core/survey.min.css",
+              "node_modules/survey-core/defaultV2.min.css",
+              "node_modules/survey-core/modern.min.css",
               "node_modules/survey-creator-core/survey-creator-core.min.css"
             ],
             "scripts": []
@@ -556,6 +560,8 @@
               "projects/front-office/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
               "node_modules/survey-core/survey.min.css",
+              "node_modules/survey-core/defaultV2.min.css",
+              "node_modules/survey-core/modern.min.css",
               "node_modules/survey-creator-core/survey-creator-core.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
@@ -921,6 +927,8 @@
             "styles": [
               "projects/front-office/src/styles.scss",
               "node_modules/survey-core/survey.min.css",
+              "node_modules/survey-core/defaultV2.min.css",
+              "node_modules/survey-core/modern.min.css",
               "node_modules/survey-creator-core/survey-creator-core.min.css"
             ],
             "scripts": []
@@ -997,6 +1005,8 @@
               "projects/web-widgets/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
               "node_modules/survey-core/survey.min.css",
+              "node_modules/survey-core/defaultV2.min.css",
+              "node_modules/survey-core/modern.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
             ],

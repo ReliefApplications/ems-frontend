@@ -165,7 +165,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       generateValidJSON: true,
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,
-      themeForPreview: 'default',
+      themeForPreview: 'modern',
     };
 
     this.setCustomTheme();
@@ -302,8 +302,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     // defaultThemeColorsEditor['$selection-border-color'] =
     //   this.environment.theme.primary; TODO
 
-    Survey.StylesManager.applyTheme('default');
-    SurveyCreator.StylesManager.applyTheme('default');
+    Survey.StylesManager.applyTheme();
+    SurveyCreator.StylesManager.applyTheme();
   }
 
   /**
