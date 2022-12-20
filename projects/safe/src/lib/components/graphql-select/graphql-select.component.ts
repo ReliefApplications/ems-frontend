@@ -29,13 +29,9 @@ import {
   MatFormFieldControl,
   MAT_FORM_FIELD,
 } from '@angular/material/form-field';
-import { NgControl, ControlValueAccessor } from '@angular/forms';
+import { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import {
-  MatAutocomplete,
-  MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
-  MatAutocompleteSelectedEvent,
-} from '@angular/material/autocomplete';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
@@ -48,11 +44,6 @@ const ITEMS_PER_RELOAD = 10;
   providers: [
     {
       provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-    {
-      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
       useFactory: scrollFactory,
       deps: [Overlay],
     },
@@ -76,16 +67,9 @@ export class SafeGraphQLSelectComponent
   @Input() textField = '';
   @Output() selectionChange = new EventEmitter<string | string[] | null>();
 
-  @Input() filterable = true;
+  @Input() filterable = false;
   @Output() searchChange = new EventEmitter<string>();
-
-  /**
-   * searchText is either a string or and object.
-   * when it's an object, it's used to display the selected value in the input field and there is no search
-   * when it's a string, it represents the search text
-   */
-  public searchText: any = '';
-  private searchTimeout: NodeJS.Timeout | null = null;
+  public searchControl = new FormControl('');
 
   /**
    * Gets the value
@@ -270,7 +254,6 @@ export class SafeGraphQLSelectComponent
   public loading = true;
 
   @ViewChild(MatSelect) elementSelect?: MatSelect;
-  @ViewChild(MatAutocomplete) elementAutocomplete?: MatAutocomplete;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -300,20 +283,38 @@ export class SafeGraphQLSelectComponent
       const elements: any[] = get(res.data, path).edges
         ? get(res.data, path).edges.map((x: any) => x.node)
         : get(res.data, path);
-      this.selectedElements = this.selectedElements.filter(
+      const selectedElements = this.selectedElements.filter(
         (selectedElement) =>
           selectedElement &&
           !elements.find(
             (node) => node[this.valueField] === selectedElement[this.valueField]
           )
       );
-      this.elements.next([...this.selectedElements, ...elements]);
+      this.elements.next([...selectedElements, ...elements]);
       this.pageInfo = get(res.data, path).pageInfo;
       this.loading = res.loading;
     });
     this.ngControl.valueChanges?.subscribe((value) => {
+      const elements = this.elements.getValue();
+      if (Array.isArray(value)) {
+        this.selectedElements = [
+          ...elements.filter((element) => {
+            value.find((x) => x === element[this.valueField]);
+          }),
+        ];
+      } else {
+        this.selectedElements = [
+          elements.find((element) => value === element[this.valueField]),
+        ];
+      }
       this.selectionChange.emit(value);
     });
+    // this way we can wait for 0.5s before sending an update
+    this.searchControl.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value) => {
+        this.searchChange.emit(value);
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -328,53 +329,33 @@ export class SafeGraphQLSelectComponent
     }
 
     const elements = this.elements.getValue();
-    this.selectedElements = this.selectedElements.filter(
+    const selectedElements = this.selectedElements.filter(
       (selectedElement) =>
         selectedElement &&
         !elements.find(
           (node) => node[this.valueField] === selectedElement[this.valueField]
         )
     );
-    this.elements.next([...this.selectedElements, ...elements]);
+    this.elements.next([...selectedElements, ...elements]);
 
     /**
      * This is needed in order to display previously selected elements
      * when the selectedElements input changes, due to how displayWith works
      */
-    if (
-      changes.selectedElements &&
-      changes.selectedElements.currentValue.length > 0
-    ) {
-      this.searchText = '';
-      this.searchText =
-        this.elements
-          .getValue()
-          .find((x) => x[this.valueField] === this.value) || '';
-    }
+    // if (
+    //   changes.selectedElements &&
+    //   changes.selectedElements.currentValue.length > 0
+    // ) {
+    //   this.searchText = '';
+    //   this.searchText =
+    //     this.elements
+    //       .getValue()
+    //       .find((x) => x[this.valueField] === this.value) || '';
+    // }
   }
 
   ngOnDestroy(): void {
     this.stateChanges.complete();
-  }
-
-  /**
-   * Gets the display string for an autocomplete option.
-   *
-   * @param option option to get display text of.
-   * @returns a string with the display value.
-   */
-  public getDisplayText(option: any): string {
-    if (typeof option === 'string') {
-      // looks for the option id in the elements
-      const element = this.elements
-        .getValue()
-        .find((x) => x[this.valueField] === option);
-      // if found, returns the display text
-      if (element) return element[this.textField];
-      // if not found, returns the option
-      return option;
-    }
-    return option && option[this.textField] ? option[this.textField] : '';
   }
 
   /**
@@ -412,41 +393,10 @@ export class SafeGraphQLSelectComponent
   onOpenSelect(e: any): void {
     if (e && this.elementSelect) {
       const panel = this.elementSelect.panel.nativeElement;
-      if (panel) {
-        panel.addEventListener('scroll', (event: any) =>
-          this.loadOnScroll(event)
-        );
-      }
+      panel.addEventListener('scroll', (event: any) =>
+        this.loadOnScroll(event)
+      );
     }
-  }
-
-  /** Adds scroll listener to autocomplete. */
-  async onOpenAutocomplete(): Promise<void> {
-    // wait a bit to make sure the panel is rendered
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    if (this.elementAutocomplete) {
-      const panel = this.elementAutocomplete.panel?.nativeElement;
-      if (panel) {
-        panel.addEventListener('scroll', (event: any) =>
-          this.loadOnScroll(event)
-        );
-      }
-    }
-  }
-
-  /**
-   * Triggered when the autocomplete is closed.
-   *
-   * This is useful so there's no confusion about the value of the input.
-   * For example, if the user types the exact name of the element they want,
-   * then clicks outside the autocomplete without selecting the element,
-   * the value will not be set to the element with that name.
-   */
-  public onCloseAutocomplete() {
-    if (typeof this.value === 'string') this.searchText = this.value;
-    else if (this.value === null) this.searchText = '';
-    this.searchChange.emit('');
   }
 
   /**
@@ -496,34 +446,11 @@ export class SafeGraphQLSelectComponent
   }
 
   /**
-   * Triggers on search text change for autocomplete
-   * If the search text id not an id, emits the search text
-   */
-  public onSearchTextChange() {
-    if (this.searchText && typeof this.searchText === 'string') {
-      // debounce
-      if (this.searchTimeout) clearTimeout(this.searchTimeout);
-      this.searchTimeout = setTimeout(() => {
-        this.searchChange.emit(this.searchText);
-      }, 500);
-    }
-  }
-
-  /**
    * Triggers on selection change for select
    *
    * @param event the selection change event
    */
   public onSelectionChange(event: MatSelectChange) {
     this.value = event.value;
-  }
-
-  /**
-   * Triggers on selection change for autocomplete
-   *
-   * @param event the selection change event
-   */
-  onOptionSelected(event: MatAutocompleteSelectedEvent) {
-    this.value = event.option.value[this.valueField];
   }
 }

@@ -81,6 +81,7 @@
             formControlName="convertTo"
             [selectedElements]="[defaultForm]"
             (searchChange)="onSearchChange($event)"
+            [filterable]="true"
           ></safe-graphql-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
