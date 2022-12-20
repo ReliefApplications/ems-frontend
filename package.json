@@ -83,7 +83,6 @@
     "hammerjs": "^2.0.8",
     "leaflet.markercluster": "^1.4.1",
     "localforage": "^1.10.0",
-    "ngx-mat-select-search": "^5.0.0",
     "rxjs": "~6.6.7",
     "subscriptions-transport-ws": "^0.9.18",
     "survey-angular": "^1.9.25",
