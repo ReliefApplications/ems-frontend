@@ -5,13 +5,13 @@
     <safe-button
       [isIcon]="true"
       icon="close"
-      style="float: right"
+      class="float-right"
       (click)="onCancel()"
     >
     </safe-button>
   </div>
   <!-- FILTER -->
-  <div style="clear: both; display: flex; flex-direction: column">
+  <div class="clear-both flex flex-col">
     <mat-form-field appearance="outline">
       <mat-date-range-input
         (click)="rangePicker.open()"

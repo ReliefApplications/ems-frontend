@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
@@ -25,7 +31,7 @@ import { LayoutPreviewData } from './tab-layout-preview/tab-layout-preview.compo
     },
   ],
 })
-export class SafeQueryBuilderComponent implements OnInit {
+export class SafeQueryBuilderComponent implements OnChanges {
   // === QUERY BUILDER ===
   public availableQueries?: Observable<any[]>;
   public availableFields: any[] = [];
@@ -76,7 +82,7 @@ export class SafeQueryBuilderComponent implements OnInit {
   /**
    * Allows to inject the component without creating circular dependency.
    */
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.buildSettings();
   }
 

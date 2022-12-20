@@ -11,7 +11,7 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 })
 export class MapLayersComponent implements OnInit {
   @Input() selectedFields: any[] = [];
-  @Input() formatedSelectedFields: any[] = [];
+  @Input() formattedSelectedFields: any[] = [];
 
   /**
    * Get Online Layers of map as Form Control.

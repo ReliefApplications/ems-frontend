@@ -8,11 +8,11 @@
   <h2 *ngIf="!selectable">{{ 'common.record.few' | translate }}</h2>
   <mat-dialog-content>
     <safe-core-grid
+      class="h-96"
       [settings]="gridSettings"
       [multiSelect]="multiSelect"
       [selectedRows]="selectedRows"
       (selectionChange)="onSelectionChange($event)"
-      style="height: 410px"
       [selectable]="selectable"
     >
     </safe-core-grid>
