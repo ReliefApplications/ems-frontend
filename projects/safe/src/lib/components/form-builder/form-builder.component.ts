@@ -26,6 +26,7 @@ const QUESTION_TYPES = [
   'text',
   'checkbox',
   'radiogroup',
+  'tagbox',
   'dropdown',
   'comment',
   // 'rating',
@@ -43,7 +44,6 @@ const QUESTION_TYPES = [
   'multipletext',
   'panel',
   'paneldynamic',
-  'tagbox',
 ];
 
 /**
@@ -247,7 +247,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       this.addCustomClassToCoreFields(coreFields);
     }
 
-    // Scroll to question when adde
+    // Scroll to question when added
     this.surveyCreator.onQuestionAdded.add((sender, opt) => {
       const name = opt.question.name;
       setTimeout(() => {

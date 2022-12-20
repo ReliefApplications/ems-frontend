@@ -1,12 +1,6 @@
-// This is needed for compilation of surveyjs-widgets with strict option enabled.
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="../../typings/surveyjs-widgets/index.d.ts" />
-
 import { Apollo } from 'apollo-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder } from '@angular/forms';
-import * as SurveyJSWidgets from 'surveyjs-widgets';
-
 import { DomService } from '../services/dom/dom.service';
 import { SafeAuthService } from '../services/auth/auth.service';
 import { SafeReferenceDataService } from '../services/reference-data/reference-data.service';
@@ -26,7 +20,7 @@ import { initLocalization } from './localization';
 /**
  * Executes all init methods of custom SurveyJS.
  *
- * @param Survey surveyjs or surveyjsCreator library
+ * @param Survey surveyJs or surveyJsCreator library
  * @param domService Shared DOM service, used to inject components on the go
  * @param dialog dialog service
  * @param apollo apollo service
@@ -46,7 +40,7 @@ export const initCustomSurvey = (
   referenceDataService: SafeReferenceDataService
 ): void => {
   // load widgets (aka custom questions)
-  SurveyJSWidgets.select2tagbox(Survey);
+
   CommentWidget.init(Survey);
   TextWidget.init(Survey, domService);
   // load components (same as widgets, but with less configuration options)
