@@ -71,11 +71,16 @@ export class SafePlaceholderPipe implements PipeTransform {
 
     let html = value;
 
+    // remove all <ins/> tags from the string
+    // the ins tag indicates where the cursor should be after
+    // the placeholder is replaced
+    html = html.replace(/<ins[^>]*>[^<]*<\/ins>/g, '');
+
     // checks if user is trying to delete placeholder
     const deleteReg =
       /<span [^>]*data-placeholder-text="([^"]+)"[^>]*>([^<]+)<\/span>/g;
     html = value.replace(deleteReg, (match, dataAttr, innerText) =>
-      dataAttr !== innerText ? '&nbsp;' : match
+      dataAttr !== innerText ? '&nbsp;<ins></ins>' : match
     );
 
     // Replace original text with spans
@@ -119,6 +124,6 @@ export class SafePlaceholderPipe implements PipeTransform {
       .replace(/&nbsp;/g, '')
       .slice(1, -1)
       .trim();
-    return `<span data-orig-value="${val}" data-placeholder-text="${text}" class="placeholder-chip" style="--bg-color: ${color};">${text}</span>&nbsp;`;
+    return `<span data-orig-value="${val}" data-placeholder-text="${text}" class="placeholder-chip" style="--bg-color: ${color};">${text}</span>&nbsp;<ins></ins>`;
   }
 }

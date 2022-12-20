@@ -27,13 +27,26 @@
           <input matInput formControlName="name" type="text" />
         </mat-form-field>
       </div>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="relative">
         <mat-label>{{
           'components.templates.edit.subject' | translate
         }}</mat-label>
-        <input matInput formControlName="subject" type="text" />
+        <input
+          matInput
+          formControlName="subject"
+          type="text"
+          [style.opacity]="editingSubject ? '1' : '0'"
+          (focus)="editingSubject = true"
+          (blur)="editingSubject = false"
+        />
+        <span
+          *ngIf="!editingSubject"
+          class="subject-span"
+          [innerHtml]="form.get('subject')?.value | placeholder | safeHtml"
+        >
+        </span>
       </mat-form-field>
-      <editor [init]="editor" formControlName="body"></editor>
+      <editor #emailBody [init]="editor" formControlName="body"></editor>
     </form>
   </div>
   <div mat-dialog-actions align="end">

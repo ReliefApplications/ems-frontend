@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SafeEditorService } from '../../../../services/editor/editor.service';
@@ -22,9 +22,12 @@ interface DialogData {
 export class EditTemplateModalComponent implements OnInit {
   // === REACTIVE FORM ===
   form: FormGroup = new FormGroup({});
+  editingSubject = false;
 
   /** tinymce editor */
   public editor: any = EMAIL_EDITOR_CONFIG;
+
+  @ViewChild('emailBody') editorComponent: any;
 
   /**
    * Component for editing a template
@@ -56,7 +59,9 @@ export class EditTemplateModalComponent implements OnInit {
       type: [get(this.data, 'type', 'email'), Validators.required],
       subject: [get(this.data, 'content.subject', null), Validators.required],
       body: [
-        this.placeholder.transform(get(this.data, 'content.body', '')),
+        this.placeholder
+          .transform(get(this.data, 'content.body', ''))
+          ?.replace('<ins></ins>', ''),
         Validators.required,
       ],
     });
@@ -64,8 +69,18 @@ export class EditTemplateModalComponent implements OnInit {
     // TODO: Editor loses focus when the parsed value is set
     this.form.get('body')?.valueChanges.subscribe((value) => {
       const parsed = this.placeholder.transform(value);
-      if (parsed !== value) {
-        this.form.get('body')?.setValue(parsed);
+      const diffIsMarker = parsed
+        ? !parsed.includes('<ins></ins>') &&
+          value.includes('<ins></ins>') &&
+          value.length - parsed.length === 11
+        : false;
+
+      if (parsed !== value && !diffIsMarker) {
+        const editor = this.editorComponent?.editor;
+        if (editor) {
+          editor.setContent(parsed);
+          editor.selection.setCursorLocation(editor.dom.select('ins')[0], 0);
+        }
       }
     });
   }
