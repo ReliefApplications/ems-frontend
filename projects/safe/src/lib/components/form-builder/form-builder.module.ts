@@ -5,6 +5,7 @@ import { SafeFormModalModule } from '../form-modal/form-modal.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
+import { SurveyCreatorModule } from 'survey-creator-angular';
 
 /**
  * SafeFormBuilderModule is a class used to manage all the modules and components
@@ -18,6 +19,7 @@ import { DateInputModule } from '@progress/kendo-angular-dateinputs';
     MatDialogModule,
     TranslateModule,
     DateInputModule,
+    SurveyCreatorModule,
   ],
   exports: [SafeFormBuilderComponent],
 })

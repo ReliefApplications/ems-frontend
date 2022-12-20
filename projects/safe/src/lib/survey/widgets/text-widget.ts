@@ -74,45 +74,46 @@ export const init = (Survey: any, domService: DomService): void => {
         },
       });
       // register the editor for type "date" with kendo date picker
-      const dateEditor = {
-        render: (editor: any, htmlElement: HTMLElement) => {
-          const question = editor.object as QuestionText;
-          const updatePickerInstance = () => {
-            htmlElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
-            const pickerInstance = createPickerInstance(
-              question.inputType as DateInputFormat,
-              htmlElement
-            );
-            if (pickerInstance) {
-              if (question[editor.property.name as keyof QuestionText]) {
-                pickerInstance.value = getDateDisplay(
-                  question[editor.property.name as keyof QuestionText],
-                  question.inputType
-                );
-              }
-              pickerInstance.registerOnChange((value: Date | null) => {
-                if (value) {
-                  editor.onChanged(setDateValue(value, question.inputType));
-                } else {
-                  editor.onChanged(null);
-                }
-              });
-            }
-          };
-          question.registerFunctionOnPropertyValueChanged(
-            'inputType',
-            updatePickerInstance,
-            // eslint-disable-next-line no-underscore-dangle
-            editor.property_.name // a unique key to distinguish multiple date properties
-          );
-          // Init
-          updatePickerInstance();
-        },
-      };
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'date',
-        dateEditor
-      );
+      // const dateEditor = {
+      //   render: (editor: any, htmlElement: HTMLElement) => {
+      //     const question = editor.object as QuestionText;
+      //     const updatePickerInstance = () => {
+      //       htmlElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
+      //       const pickerInstance = createPickerInstance(
+      //         question.inputType as DateInputFormat,
+      //         htmlElement
+      //       );
+      //       if (pickerInstance) {
+      //         if (question[editor.property.name as keyof QuestionText]) {
+      //           pickerInstance.value = getDateDisplay(
+      //             question[editor.property.name as keyof QuestionText],
+      //             question.inputType
+      //           );
+      //         }
+      //         pickerInstance.registerOnChange((value: Date | null) => {
+      //           if (value) {
+      //             editor.onChanged(setDateValue(value, question.inputType));
+      //           } else {
+      //             editor.onChanged(null);
+      //           }
+      //         });
+      //       }
+      //     };
+      //     question.registerFunctionOnPropertyValueChanged(
+      //       'inputType',
+      //       updatePickerInstance,
+      //       // eslint-disable-next-line no-underscore-dangle
+      //       editor.property_.name // a unique key to distinguish multiple date properties
+      //     );
+      //     // Init
+      //     updatePickerInstance();
+      //   },
+      // };
+      // SurveyCreator.PropertyGridEditorCollection.register(dateEditor);
+      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+      //   'date',
+      //   dateEditor
+      // ); TODO
     },
     isDefaultRender: true,
     afterRender: (question: QuestionText, el: HTMLInputElement): void => {

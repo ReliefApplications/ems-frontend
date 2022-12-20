@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import * as SurveyCreator from 'survey-creator-core';
+// import * as SurveyCreator from 'survey-creator-core';
 import * as Survey from 'survey-core';
 import { initCreatorSettings } from '../../survey/creator';
 import { initCustomSurvey } from '../../survey/init';
@@ -42,18 +42,18 @@ export class SafeFormService {
     public referenceDataService: SafeReferenceDataService
   ) {
     // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomSurvey(
-      SurveyCreator,
-      domService,
-      dialog,
-      apollo,
-      formBuilder,
-      authService,
-      environment,
-      referenceDataService
-    );
+    // initCustomSurvey(
+    //   SurveyCreator,
+    //   domService,
+    //   dialog,
+    //   apollo,
+    //   formBuilder,
+    //   authService,
+    //   environment,
+    //   referenceDataService
+    // );
     // === CREATOR SETTINGS ===
-    initCreatorSettings(SurveyCreator);
+    initCreatorSettings(Survey);
     // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomSurvey(
       Survey,

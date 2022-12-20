@@ -6,7 +6,7 @@
     (showHistory)="onShowHistory()"
   ></safe-record-summary>
   <safe-form-actions
-    [survey]="survey"
+    [survey]="surveyModel"
     [surveyActive]="surveyActive"
   ></safe-form-actions>
 </div>
@@ -31,21 +31,23 @@
     </ng-template>
   </mat-tab>
 </mat-tab-group>
-<div #formContainer></div>
+<div id="formContainer">
+  <survey [model]="surveyModel"></survey>
+</div>
 <div *ngIf="surveyActive" class="survey-navigation">
   <ng-container *ngIf="pages$ | async as pages">
     <safe-button
       *ngIf="pages.length > 1"
-      [disabled]="survey.isFirstPage"
+      [disabled]="surveyModel.isFirstPage"
       variant="primary"
-      (click)="survey.prevPage()"
+      (click)="surveyModel.prevPage()"
       >{{ 'common.previous' | translate }}</safe-button
     >
     <safe-button
       *ngIf="pages.length > 1"
-      [disabled]="survey.isLastPage"
+      [disabled]="surveyModel.isLastPage"
       variant="primary"
-      (click)="survey.nextPage()"
+      (click)="surveyModel.nextPage()"
       >{{ 'common.next' | translate }}</safe-button
     >
   </ng-container>

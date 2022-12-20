@@ -2,14 +2,12 @@ import { Apollo } from 'apollo-angular';
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   EventEmitter,
   Inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
-  ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Survey from 'survey-core';
@@ -51,13 +49,11 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }> = new EventEmitter();
 
   // === SURVEYJS ===
-  public survey!: Survey.Model;
+  public surveyModel!: Survey.Model;
   public surveyActive = true;
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
-
-  @ViewChild('formContainer') formContainer!: ElementRef;
 
   environment: any;
 
@@ -125,28 +121,31 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         'components.form.display.submissionMessage'
       )}</h3>`;
 
-    this.survey = this.formBuilderService.createSurvey(
+    this.surveyModel = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
       this.form.metadata,
       this.record
     );
-    this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
-      this.onClearFiles(survey, options)
+    this.surveyModel.onClearFiles.add(
+      (survey: Survey.SurveyModel, options: any) =>
+        this.onClearFiles(survey, options)
     );
-    this.survey.onUploadFiles.add((survey: Survey.SurveyModel, options: any) =>
-      this.onUploadFiles(survey, options)
+    this.surveyModel.onUploadFiles.add(
+      (survey: Survey.SurveyModel, options: any) =>
+        this.onUploadFiles(survey, options)
     );
-    this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
-      this.onDownloadFile(survey, options)
+    this.surveyModel.onDownloadFile.add(
+      (survey: Survey.SurveyModel, options: any) =>
+        this.onDownloadFile(survey, options)
     );
-    this.survey.onUpdateQuestionCssClasses.add(
+    this.surveyModel.onUpdateQuestionCssClasses.add(
       (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
     // Unset readOnly fields if it's the record creation
     if (!this.record) {
       this.form.fields?.forEach((field) => {
         if (field.readOnly) {
-          this.survey.getQuestionByName(field.name).readOnly = false;
+          this.surveyModel.getQuestionByName(field.name).readOnly = false;
         }
       });
     }
@@ -168,12 +167,12 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (cachedData) {
-      this.survey.data = cachedData;
+      this.surveyModel.data = cachedData;
     } else if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
-      this.survey.data = this.form.uniqueRecord.data;
+      this.surveyModel.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
     } else if (this.record && this.record.data) {
-      this.survey.data = this.record.data;
+      this.surveyModel.data = this.record.data;
       this.modifiedAt = this.record.modifiedAt || null;
     }
 
@@ -185,25 +184,25 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     //   });
     // }
 
-    this.survey.focusFirstQuestionAutomatic = false;
-    this.survey.showNavigationButtons = false;
+    this.surveyModel.focusFirstQuestionAutomatic = false;
+    this.surveyModel.showNavigationButtons = false;
     this.setPages();
-    this.survey.onComplete.add(this.onComplete);
-    this.survey.showCompletedPage = false;
+    this.surveyModel.onComplete.add(this.onComplete);
+    this.surveyModel.showCompletedPage = false;
     if (!this.record && !this.form.canCreateRecords) {
-      this.survey.mode = 'display';
+      this.surveyModel.mode = 'display';
     }
-    this.survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
+    this.surveyModel.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       this.selectedTabIndex = survey.currentPageNo;
     });
-    this.survey.onPageVisibleChanged.add(() => {
+    this.surveyModel.onPageVisibleChanged.add(() => {
       this.setPages();
     });
-    this.survey.onSettingQuestionErrors.add(() => {
+    this.surveyModel.onSettingQuestionErrors.add(() => {
       this.setPages();
     });
-    this.survey.onValueChanged.add(this.valueChange.bind(this));
+    this.surveyModel.onValueChanged.add(this.valueChange.bind(this));
 
     // Sets default language as form language if it is in survey locales
     // const currentLang = this.usedLocales.find(
@@ -234,19 +233,18 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     //     this.survey.render();
     //   }
     // });
-    this.survey.render(this.formContainer.nativeElement);
-    setTimeout(() => {}, 100);
+    // setTimeout(() => {}, 100);
   }
 
   /**
    * Reset the survey to empty
    */
   public reset(): void {
-    this.survey.clear();
+    this.surveyModel.clear();
     this.temporaryFilesStorage = {};
-    this.survey.showCompletedPage = false;
+    this.surveyModel.showCompletedPage = false;
     this.save.emit({ completed: false });
-    this.survey.render();
+    this.surveyModel.render();
     setTimeout(() => {}, 100);
     this.surveyActive = true;
   }
@@ -257,7 +255,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public valueChange(): void {
     localStorage.setItem(
       this.storageId,
-      JSON.stringify({ data: this.survey.data, date: new Date() })
+      JSON.stringify({ data: this.surveyModel.data, date: new Date() })
     );
   }
 
@@ -265,8 +263,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * Calls the complete method of the survey if no error.
    */
   public submit(): void {
-    if (!this.survey?.hasErrors()) {
-      this.survey?.completeLastPage();
+    if (!this.surveyModel?.hasErrors()) {
+      this.surveyModel?.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
         this.translate.instant('models.form.notifications.savingFailed'),
@@ -281,7 +279,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public onComplete = async () => {
     let mutation: any;
     this.surveyActive = false;
-    const data = this.survey.data;
+    const data = this.surveyModel.data;
     const questionsToUpload = Object.keys(this.temporaryFilesStorage);
     for (const name of questionsToUpload) {
       const files = this.temporaryFilesStorage[name];
@@ -306,7 +304,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
-    const questions = this.survey.getAllQuestions();
+    const questions = this.surveyModel.getAllQuestions();
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
@@ -320,7 +318,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
-    this.survey.data = data;
+    this.surveyModel.data = data;
     if (this.record || this.form.uniqueRecord) {
       const recordId = this.record
         ? this.record.id
@@ -329,7 +327,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         mutation: EDIT_RECORD,
         variables: {
           id: recordId,
-          data: this.survey.data,
+          data: this.surveyModel.data,
           template:
             this.form.id !== this.record?.form?.id ? this.form.id : null,
         },
@@ -339,20 +337,20 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         mutation: ADD_RECORD,
         variables: {
           form: this.form.id,
-          data: this.survey.data,
+          data: this.surveyModel.data,
         },
       });
     }
     mutation.subscribe((res: any) => {
       if (res.errors) {
         this.save.emit({ completed: false });
-        this.survey.clear(false, true);
+        this.surveyModel.clear(false, true);
         this.surveyActive = true;
         this.snackBar.openSnackBar(res.errors[0].message, { error: true });
       } else {
         localStorage.removeItem(this.storageId);
         if (res.data.editRecord || res.data.addRecord.form.uniqueRecord) {
-          this.survey.clear(false, false);
+          this.surveyModel.clear(false, false);
           if (res.data.addRecord) {
             this.record = res.data.addRecord;
             this.modifiedAt = this.record?.modifiedAt || null;
@@ -361,7 +359,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
           }
           this.surveyActive = true;
         } else {
-          this.survey.showCompletedPage = true;
+          this.surveyModel.showCompletedPage = true;
         }
         this.save.emit({
           completed: true,
@@ -475,8 +473,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   private setPages(): void {
     const pages = [];
-    if (this.survey) {
-      for (const page of this.survey.pages) {
+    if (this.surveyModel) {
+      for (const page of this.surveyModel.pages) {
         if (page.isVisible) {
           pages.push(page);
         }
@@ -491,8 +489,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param i Index of the page
    */
   public onShowPage(i: number): void {
-    if (this.survey) {
-      this.survey.currentPageNo = i;
+    if (this.surveyModel) {
+      this.surveyModel.currentPageNo = i;
     }
     // if (this.survey.compareTo) {
     //   this.survey.currentPageNo = i;
@@ -506,16 +504,16 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public onClear(): void {
     // If unicity of records is set up, do not clear but go back to latest saved version
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
-      this.survey.data = this.form.uniqueRecord.data;
+      this.surveyModel.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
     } else {
-      this.survey.clear();
+      this.surveyModel.clear();
     }
     this.temporaryFilesStorage = {};
     localStorage.removeItem(this.storageId);
     this.isFromCacheData = false;
     this.storageDate = undefined;
-    this.survey.render();
+    this.surveyModel.render();
     setTimeout(() => {}, 100);
   }
 

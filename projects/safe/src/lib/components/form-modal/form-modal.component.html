@@ -6,7 +6,7 @@
         [record]="record"
         (showHistory)="onShowHistory()"
       ></safe-record-summary>
-      <safe-form-actions *ngIf="survey" [survey]="survey"></safe-form-actions>
+      <safe-form-actions *ngIf="surveyModel" [survey]="surveyModel"></safe-form-actions>
     </div>
     <div mat-dialog-title>
       <mat-tab-group
@@ -32,7 +32,9 @@
       </mat-tab-group>
     </div>
   </ng-container>
-  <mat-dialog-content #formContainer></mat-dialog-content>
+  <mat-dialog-content id="formContainer">
+    <survey [model]="surveyModel"></survey>
+  </mat-dialog-content>
   <mat-dialog-actions align="end">
     <safe-button (click)="onClose()" variant="danger">{{
       'common.cancel' | translate
@@ -42,9 +44,9 @@
         category="secondary"
         variant="primary"
         *ngIf="pages.length > 1"
-        (click)="survey && survey.prevPage()"
+        (click)="surveyModel && surveyModel.prevPage()"
         cdkFocusInitial
-        [disabled]="!survey || survey.isFirstPage"
+        [disabled]="!surveyModel || surveyModel.isFirstPage"
       >
         {{ 'common.previous' | translate }}
       </safe-button>
@@ -52,9 +54,9 @@
         category="secondary"
         variant="primary"
         *ngIf="pages.length > 1"
-        (click)="survey && survey.nextPage()"
+        (click)="surveyModel && surveyModel.nextPage()"
         cdkFocusInitial
-        [disabled]="!survey || survey.isLastPage"
+        [disabled]="!surveyModel || surveyModel.isLastPage"
       >
         {{ 'common.next' | translate }}
       </safe-button>

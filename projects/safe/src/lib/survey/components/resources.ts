@@ -103,10 +103,10 @@ export const init = (
         },
       };
 
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'resourcesDropdown',
-        resourceEditor
-      );
+      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+      //   'resourcesDropdown',
+      //   resourceEditor
+      // ); TODO
 
       Survey.Serializer.addProperty('resources', {
         name: 'displayField',
@@ -217,10 +217,10 @@ export const init = (
         },
       };
 
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'resourcesFields',
-        availableFieldsEditor
-      );
+      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+      //   'resourcesFields',
+      //   availableFieldsEditor
+      // ); TODO
 
       Survey.Serializer.addProperty('resources', {
         name: 'test service',
@@ -533,10 +533,10 @@ export const init = (
           htmlElement.appendChild(text);
         },
       };
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'selectResourceText',
-        selectResourceText
-      );
+      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+      //   'selectResourceText',
+      //   selectResourceText
+      // ); TODO
 
       Survey.Serializer.addProperty('resources', {
         category: 'Filter by Questions',

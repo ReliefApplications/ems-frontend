@@ -16,7 +16,6 @@ import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
-import { AnyQuestion } from '../../survey/types';
 
 /**
  * Array containing the different types of questions.
@@ -93,7 +92,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   @Output() formChange: EventEmitter<any> = new EventEmitter();
 
   // === CREATOR ===
-  surveyCreator!: SurveyCreator.SurveyCreator;
+  public surveyCreatorModel!: SurveyCreator.SurveyCreatorModel;
   public json: any;
 
   environment: any;
@@ -120,7 +119,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
     this.translate.onLangChange.subscribe(() => {
       SurveyCreator.localization.currentLocale = this.translate.currentLang;
-      this.setFormBuilder(this.surveyCreator.text);
+      this.setFormBuilder(this.surveyCreatorModel.text);
     });
   }
 
@@ -129,10 +128,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    if (this.surveyCreator) {
-      this.surveyCreator.text = this.form.structure || '';
+    if (this.surveyCreatorModel) {
+      this.surveyCreatorModel.text = this.form.structure || '';
       if (!this.form.structure) {
-        this.surveyCreator.survey.showQuestionNumbers = 'off';
+        this.surveyCreatorModel.survey.showQuestionNumbers = 'off';
       }
       // skip if form is core
       if (!this.form.core) {
@@ -142,13 +141,13 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         this.addCustomClassToCoreFields(coreFields);
       }
 
-      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
+      this.surveyCreatorModel.survey.onUpdateQuestionCssClasses.add(
         (survey: Survey.SurveyModel, options: any) =>
           this.onSetCustomCss(options)
       );
 
       // add the rendering of custom properties
-      this.surveyCreator.survey.onAfterRenderQuestion.add(
+      this.surveyCreatorModel.survey.onAfterRenderQuestion.add(
         renderGlobalProperties(this.referenceDataService)
       );
     }
@@ -160,30 +159,30 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param structure Optional param used as the form struc
    */
   private setFormBuilder(structure: string) {
-    const creatorOptions = {
+    const creatorOptions: SurveyCreator.ICreatorOptions = {
       showEmbededSurveyTab: false,
       showJSONEditorTab: false,
       generateValidJSON: true,
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,
+      themeForPreview: 'default',
     };
 
     this.setCustomTheme();
 
-    this.surveyCreator = new SurveyCreator.SurveyCreator(
-      'surveyCreatorContainer',
+    this.surveyCreatorModel = new SurveyCreator.SurveyCreatorModel(
       creatorOptions
     );
-    this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.text = structure;
-    this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
-    this.surveyCreator.showToolbox = 'right';
-    this.surveyCreator.showPropertyGrid = 'right';
-    this.surveyCreator.rightContainerActiveItem('toolbox');
+    this.surveyCreatorModel.haveCommercialLicense = true;
+    this.surveyCreatorModel.text = structure;
+    this.surveyCreatorModel.saveSurveyFunc = this.saveMySurvey;
+    // this.surveyCreatorModel.showToolbox = 'right'; TODO
+    // this.surveyCreatorModel.showPropertyGrid = 'right'; TODO
+    this.surveyCreatorModel.rightContainerActiveItem('toolbox');
     if (!this.form.structure) {
-      this.surveyCreator.survey.showQuestionNumbers = 'off';
+      this.surveyCreatorModel.survey.showQuestionNumbers = 'off';
     }
-    this.surveyCreator.toolbox.changeCategories(
+    this.surveyCreatorModel.toolbox.changeCategories(
       QUESTION_TYPES.map((x) => ({
         name: x,
         category: this.translate.instant(
@@ -193,13 +192,13 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     );
 
     // Notify parent that form structure has changed
-    this.surveyCreator.onModified.add((survey) => {
+    this.surveyCreatorModel.onModified.add((survey) => {
       this.formChange.emit(survey.text);
     });
-    this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
+    this.surveyCreatorModel.survey.onUpdateQuestionCssClasses.add(
       (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
-    this.surveyCreator.onTestSurveyCreated.add((sender, opt) => {
+    this.surveyCreatorModel.onTestSurveyCreated.add((sender, opt) => {
       opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
         this.onSetCustomCss(opt2)
       );
@@ -211,7 +210,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       const coreFields =
         this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
       // Remove core fields adorners
-      this.surveyCreator.onElementAllowOperations.add((sender, opt) => {
+      this.surveyCreatorModel.onElementAllowOperations.add((sender, opt) => {
         const obj = opt.obj;
         if (!obj || !obj.page) {
           return;
@@ -230,7 +229,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         }
       });
       // Block core fields edition
-      this.surveyCreator.onShowingProperty.add((sender, opt) => {
+      this.surveyCreatorModel.onShowingProperty.add((sender, opt) => {
         const obj = opt.obj;
         if (!obj || !obj.page) {
           return;
@@ -248,20 +247,20 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     }
 
     // Scroll to question when added
-    this.surveyCreator.onQuestionAdded.add((sender, opt) => {
+    this.surveyCreatorModel.onQuestionAdded.add((sender, opt) => {
       const name = opt.question.name;
       setTimeout(() => {
         const el = document.querySelector('[data-name="' + name + '"]');
         el?.scrollIntoView({ behavior: 'smooth' });
-        this.surveyCreator.showQuestionEditor(opt.question);
+        // this.surveyCreatorModel.showQuestionEditor(opt.question); TODO
       });
     });
 
     // add the rendering of custom properties
-    this.surveyCreator.survey.onAfterRenderQuestion.add(
+    this.surveyCreatorModel.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
-    this.surveyCreator.onTestSurveyCreated.add((_, options) =>
+    this.surveyCreatorModel.onTestSurveyCreated.add((_, options) =>
       options.survey.onAfterRenderQuestion.add(
         renderGlobalProperties(this.referenceDataService)
       )
@@ -275,7 +274,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param coreFields list of core fields
    */
   private addCustomClassToCoreFields(coreFields: string[]): void {
-    this.surveyCreator.survey.onAfterRenderQuestion.add(
+    this.surveyCreatorModel.survey.onAfterRenderQuestion.add(
       (survey: Survey.SurveyModel, options: any) => {
         if (coreFields.includes(options.question.valueName)) {
           options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
@@ -293,18 +292,18 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     defaultThemeColorsSurvey['$main-hover-color'] =
       this.environment.theme.primary;
 
-    const defaultThemeColorsEditor =
-      SurveyCreator.StylesManager.ThemeColors.default;
-    defaultThemeColorsEditor['$primary-color'] = this.environment.theme.primary;
-    defaultThemeColorsEditor['$secondary-color'] =
-      this.environment.theme.primary;
-    defaultThemeColorsEditor['$primary-hover-color'] =
-      this.environment.theme.primary;
-    defaultThemeColorsEditor['$selection-border-color'] =
-      this.environment.theme.primary;
+    // const defaultThemeColorsEditor =
+    //   SurveyCreator.StylesManager.ThemeColors.default;
+    // defaultThemeColorsEditor['$primary-color'] = this.environment.theme.primary;
+    // defaultThemeColorsEditor['$secondary-color'] =
+    //   this.environment.theme.primary;
+    // defaultThemeColorsEditor['$primary-hover-color'] =
+    //   this.environment.theme.primary;
+    // defaultThemeColorsEditor['$selection-border-color'] =
+    //   this.environment.theme.primary; TODO
 
-    Survey.StylesManager.applyTheme();
-    SurveyCreator.StylesManager.applyTheme();
+    Survey.StylesManager.applyTheme('default');
+    SurveyCreator.StylesManager.applyTheme('default');
   }
 
   /**
@@ -313,7 +312,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   saveMySurvey = () => {
     this.validateValueNames()
       .then(() => {
-        this.save.emit(this.surveyCreator.text);
+        this.save.emit(this.surveyCreatorModel.text);
       })
       .catch((error) => {
         this.snackBar.openSnackBar(error.message, { error: true });
@@ -324,14 +323,14 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * Makes sure that value names are existent and snake case, to not cause backend problems.
    */
   private async validateValueNames(): Promise<void> {
-    const survey = new Survey.SurveyModel(this.surveyCreator.JSON);
-    await survey.pages.forEach((page: Survey.Page) => {
-      page.elements.forEach((element: AnyQuestion) =>
-        this.setQuestionNames(element, page)
+    const survey = new Survey.SurveyModel(this.surveyCreatorModel.JSON);
+    survey.pages.forEach((page: Survey.PageModel) => {
+      page.questions.forEach((question: Survey.Question) =>
+        this.setQuestionNames(question, page)
       );
       const duplicatedFields = difference(
-        page.elements as AnyQuestion[],
-        uniqBy(page.elements as AnyQuestion[], 'valueName')
+        page.questions,
+        uniqBy(page.questions, 'valueName')
       );
       if (duplicatedFields.length > 0) {
         throw new Error(
@@ -344,7 +343,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         );
       }
     });
-    this.surveyCreator.JSON = survey.toJSON();
+    this.surveyCreatorModel.JSON = survey.toJSON();
   }
 
   /**
@@ -372,18 +371,21 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Recursively set the question names of the form.
+   * Set the question names of the form.
    *
-   * @param element The element of the form whose name we need to set
+   * @param question The element of the form whose name we need to set
    * @param page The page of the form
    */
-  private setQuestionNames(element: AnyQuestion, page: Survey.Page): void {
+  private setQuestionNames(
+    question: Survey.Question,
+    page: Survey.PageModel
+  ): void {
     // create the valueName of the element in snake case
-    if (!element.valueName) {
-      if (element.title) {
-        element.valueName = this.toSnakeCase(element.title);
-      } else if (element.name) {
-        element.valueName = this.toSnakeCase(element.name);
+    if (!question.valueName) {
+      if (question.title) {
+        question.valueName = this.toSnakeCase(question.title);
+      } else if (question.name) {
+        question.valueName = this.toSnakeCase(question.name);
       } else {
         throw new Error(
           this.translate.instant('pages.formBuilder.errors.missingName', {
@@ -392,18 +394,18 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         );
       }
     } else {
-      if (!this.isSnakeCase(element.valueName)) {
+      if (!this.isSnakeCase(question.valueName)) {
         throw new Error(
           this.translate.instant('pages.formBuilder.errors.snakecase', {
-            name: element.valueName,
+            name: question.valueName,
             page: page.name,
           })
         );
       }
     }
     // if choices object exists, checks for duplicate values
-    if (element.choices) {
-      const values = element.choices.map(
+    if (question.choices) {
+      const values = question.choices.map(
         (choice: { value: string; text: string }) => choice.value || choice
       );
       const distinctValues = [...new Set(values)];
@@ -413,20 +415,20 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           this.translate.instant(
             'pages.formBuilder.errors.choices.valueDuplicated',
             {
-              question: element.valueName,
+              question: question.valueName,
             }
           )
         );
       }
     }
-    if (element.getType() === 'multipletext') {
-      element.items.forEach((item: any) => {
+    if (question.getType() === 'multipletext') {
+      question.items.forEach((item: any) => {
         if (!item.name && !item.title) {
           throw new Error(
             this.translate.instant(
               'pages.formBuilder.errors.multipletext.missingName',
               {
-                question: element.valueName,
+                question: question.valueName,
               }
             )
           );
@@ -434,44 +436,44 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         item.name = this.toSnakeCase(item.name);
       });
     }
-    if (element.getType() === 'matrix') {
-      element.columns.forEach(
+    if (question.getType() === 'matrix') {
+      question.columns.forEach(
         (x: any) => (x.value = this.toSnakeCase(x.value || x.text || x))
       );
-      element.rows.forEach(
+      question.rows.forEach(
         (x: any) => (x.value = this.toSnakeCase(x.value || x.text || x))
       );
     }
-    if (element.getType() === 'matrixdropdown') {
-      element.columns.forEach((x: any) => {
+    if (question.getType() === 'matrixdropdown') {
+      question.columns.forEach((x: any) => {
         x.name = this.toSnakeCase(x.name || x.title || x);
         x.title = x.title || x.name || x;
       });
-      element.rows.forEach((x: any) => {
+      question.rows.forEach((x: any) => {
         x.value = this.toSnakeCase(x.value || x.text || x);
       });
     }
-    if (['resource', 'resources'].includes(element.getType())) {
-      if (element.relatedName) {
-        element.relatedName = this.toSnakeCase(element.relatedName);
+    if (['resource', 'resources'].includes(question.getType())) {
+      if (question.relatedName) {
+        question.relatedName = this.toSnakeCase(question.relatedName);
       } else {
         throw new Error(
           this.translate.instant(
             'components.formBuilder.errors.missingRelatedName',
             {
-              question: element.name,
+              question: question.name,
               page: page.name,
             }
           )
         );
       }
 
-      if (element.addRecord && !element.addTemplate) {
+      if (question.addRecord && !question.addTemplate) {
         throw new Error(
           this.translate.instant(
             'components.formBuilder.errors.missingTemplate',
             {
-              question: element.name,
+              question: question.name,
               page: page.name,
             }
           )
@@ -479,27 +481,27 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       }
     }
     // Check that at least an application is selected in the properties of users and owner question
-    if (['users', 'owner'].includes(element.getType())) {
-      if (!element.applications) {
+    if (['users', 'owner'].includes(question.getType())) {
+      if (!question.applications) {
         throw new Error(
           this.translate.instant('pages.formBuilder.errors.selectApplication', {
-            question: element.name,
+            question: question.name,
             page: page.name,
           })
         );
       }
     }
-    // if the element contains other elements, apply the same rule on them
-    if (element.elements) {
-      element.elements.forEach((elt: AnyQuestion) =>
-        this.setQuestionNames(elt, page)
-      );
-    }
-    if (element.templateElements) {
-      element.templateElements.forEach((elt: AnyQuestion) =>
-        this.setQuestionNames(elt, page)
-      );
-    }
+    // // if the element contains other elements, apply the same rule on them
+    // if (question.elements) {
+    //   question.elements.forEach((elt: AnyQuestion) =>
+    //     this.setQuestionNames(elt, page)
+    //   );
+    // }
+    // if (question.templateElements) {
+    //   question.templateElements.forEach((elt: AnyQuestion) =>
+    //     this.setQuestionNames(elt, page)
+    //   );
+    // }
   }
 
   /**

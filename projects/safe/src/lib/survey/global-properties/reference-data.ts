@@ -179,10 +179,10 @@ export const init = (
       instance.choice.subscribe((res) => editor.onChanged(res));
     },
   };
-  SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-    'referenceDataDropdown',
-    referenceDataEditor
-  );
+  // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+  //   'referenceDataDropdown',
+  //   referenceDataEditor
+  // ); TODO
 };
 
 /**

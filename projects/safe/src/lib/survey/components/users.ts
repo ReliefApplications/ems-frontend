@@ -37,23 +37,23 @@ export const init = (
         required: true,
       });
 
-      const applicationEditor = {
-        render: (editor: any, htmlElement: any) => {
-          const question = editor.object;
-          const dropdown = domService.appendComponentToBody(
-            SafeApplicationDropdownComponent,
-            htmlElement
-          );
-          const instance: SafeApplicationDropdownComponent = dropdown.instance;
-          instance.value = question.applications;
-          instance.choice.subscribe((res) => editor.onChanged(res));
-        },
-      };
+      // const applicationEditor = {
+      //   render: (editor: any, htmlElement: any) => {
+      //     const question = editor.object;
+      //     const dropdown = domService.appendComponentToBody(
+      //       SafeApplicationDropdownComponent,
+      //       htmlElement
+      //     );
+      //     const instance: SafeApplicationDropdownComponent = dropdown.instance;
+      //     instance.value = question.applications;
+      //     instance.choice.subscribe((res) => editor.onChanged(res));
+      //   },
+      // };
 
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'applicationsDropdown',
-        applicationEditor
-      );
+      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+      //   'applicationsDropdown',
+      //   applicationEditor
+      // ); TODO
     },
     onLoaded: (question: any): void => {
       apollo

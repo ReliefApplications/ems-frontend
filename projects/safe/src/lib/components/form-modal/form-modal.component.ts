@@ -79,7 +79,7 @@ export class SafeFormModalComponent implements OnInit {
   private isMultiEdition = false;
   private storedMergedData: any;
 
-  public survey?: Survey.Model;
+  public surveyModel!: Survey.Model;
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
@@ -217,50 +217,53 @@ export class SafeFormModalComponent implements OnInit {
    * Initializes the form
    */
   private initSurvey(): void {
-    this.survey = this.formBuilderService.createSurvey(
+    this.surveyModel = this.formBuilderService.createSurvey(
       this.form?.structure || '',
       this.form?.metadata,
       this.record
     );
-    this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
-      this.onClearFiles(survey, options)
+    this.surveyModel.onClearFiles.add(
+      (survey: Survey.SurveyModel, options: any) =>
+        this.onClearFiles(survey, options)
     );
-    this.survey.onUploadFiles.add((survey: Survey.SurveyModel, options: any) =>
-      this.onUploadFiles(survey, options)
+    this.surveyModel.onUploadFiles.add(
+      (survey: Survey.SurveyModel, options: any) =>
+        this.onUploadFiles(survey, options)
     );
-    this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
-      this.onDownloadFile(survey, options)
+    this.surveyModel.onDownloadFile.add(
+      (survey: Survey.SurveyModel, options: any) =>
+        this.onDownloadFile(survey, options)
     );
-    this.survey.onUpdateQuestionCssClasses.add(
+    this.surveyModel.onUpdateQuestionCssClasses.add(
       (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
-    this.survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
+    this.surveyModel.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       this.selectedTabIndex = survey.currentPageNo;
     });
-    this.survey.onPageVisibleChanged.add(() => {
+    this.surveyModel.onPageVisibleChanged.add(() => {
       this.setPages();
     });
-    this.survey.onSettingQuestionErrors.add(() => {
+    this.surveyModel.onSettingQuestionErrors.add(() => {
       this.setPages();
     });
     if (this.data.recordId && this.record) {
       addCustomFunctions(Survey, this.authService, this.apollo, this.record);
-      this.survey.data = this.isMultiEdition ? null : this.record.data;
-      this.survey.showCompletedPage = false;
+      this.surveyModel.data = this.isMultiEdition ? null : this.record.data;
+      this.surveyModel.showCompletedPage = false;
     }
     if (this.storedMergedData) {
-      this.survey.data = {
-        ...this.survey.data,
+      this.surveyModel.data = {
+        ...this.surveyModel.data,
         ...omitBy(this.storedMergedData, isNil),
       };
     }
-    this.survey.showNavigationButtons = false;
-    this.survey.focusFirstQuestionAutomatic = false;
-    this.survey.render(this.formContainer.nativeElement);
+    this.surveyModel.showNavigationButtons = false;
+    this.surveyModel.focusFirstQuestionAutomatic = false;
+    this.surveyModel.render(this.formContainer.nativeElement);
     // this.survey.render(this.containerId);
     this.setPages();
-    this.survey.onComplete.add(this.onComplete);
+    this.surveyModel.onComplete.add(this.onComplete);
     setTimeout(() => {}, 100);
   }
 
@@ -269,8 +272,8 @@ export class SafeFormModalComponent implements OnInit {
    */
   public submit(): void {
     this.saving = true;
-    if (!this.survey?.hasErrors()) {
-      this.survey?.completeLastPage();
+    if (!this.surveyModel?.hasErrors()) {
+      this.surveyModel?.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
         this.translate.instant('models.form.notifications.savingFailed'),
@@ -286,7 +289,7 @@ export class SafeFormModalComponent implements OnInit {
    * @param survey Survey instance.
    */
   public onComplete = (survey: any) => {
-    this.survey?.clear(false);
+    this.surveyModel?.clear(false);
     const rowsSelected = Array.isArray(this.data.recordId)
       ? this.data.recordId.length
       : 1;
@@ -526,8 +529,8 @@ export class SafeFormModalComponent implements OnInit {
    */
   private setPages(): void {
     const pages = [];
-    if (this.survey) {
-      for (const page of this.survey.pages) {
+    if (this.surveyModel) {
+      for (const page of this.surveyModel.pages) {
         if (page.isVisible) {
           pages.push(page);
         }
@@ -542,8 +545,8 @@ export class SafeFormModalComponent implements OnInit {
    * @param i The index of the page
    */
   public onShowPage(i: number): void {
-    if (this.survey) {
-      this.survey.currentPageNo = i;
+    if (this.surveyModel) {
+      this.surveyModel.currentPageNo = i;
     }
     this.selectedTabIndex = i;
   }

@@ -41,7 +41,7 @@ export class SafeFormBuilderService {
     structure: string,
     fields: any[] = [],
     record?: Record
-  ): Survey.Survey {
+  ): Survey.SurveyModel {
     const survey = new Survey.Model(structure);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)

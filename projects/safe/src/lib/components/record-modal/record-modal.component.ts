@@ -180,53 +180,55 @@ export class SafeRecordModalComponent implements AfterViewInit {
     this.survey.render(this.formContainer.nativeElement);
     setTimeout(() => {}, 100);
     this.setPages();
+    this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
+      this.onDownloadFile(survey, options)
+    );
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
         this.form?.structure || '',
         this.form?.metadata,
         this.record
       );
-      this.survey.onDownloadFile.add(
-        (survey: Survey.SurveyModel, options: any) =>
-          this.onDownloadFile(survey, options)
-      );
-      this.surveyNext.data = this.data.compareTo.data;
-      this.surveyNext.mode = 'display';
-      this.surveyNext.showNavigationButtons = 'none';
-      this.surveyNext.focusFirstQuestionAutomatic = false;
-      this.surveyNext.showProgressBar = 'off';
-      // Set list of updated questions
-      const updatedQuestions: string[] = [];
-      const allQuestions = [this.surveyNext.data, this.survey.data].reduce(
-        (keys, object) => keys.concat(Object.keys(object)),
-        []
-      );
-      for (const question of allQuestions) {
-        const valueNext = this.surveyNext.data[question];
-        const value = this.survey.data[question];
-        if (!isEqual(value, valueNext)) {
-          updatedQuestions.push(question);
+
+      if (this.surveyNext) {
+        this.surveyNext.data = this.data.compareTo.data;
+        this.surveyNext.mode = 'display';
+        this.surveyNext.showNavigationButtons = 'none';
+        this.surveyNext.focusFirstQuestionAutomatic = false;
+        this.surveyNext.showProgressBar = 'off';
+        // Set list of updated questions
+        const updatedQuestions: string[] = [];
+        const allQuestions = [this.surveyNext.data, this.survey.data].reduce(
+          (keys, object) => keys.concat(Object.keys(object)),
+          []
+        );
+        for (const question of allQuestions) {
+          const valueNext = this.surveyNext.data[question];
+          const value = this.survey.data[question];
+          if (!isEqual(value, valueNext)) {
+            updatedQuestions.push(question);
+          }
         }
+        this.survey.onAfterRenderQuestion.add(
+          (survey: Survey.SurveyModel, options: any): void => {
+            if (updatedQuestions.includes(options.question.valueName)) {
+              options.htmlElement.style.background = '#b2ebbf';
+            }
+          }
+        );
+        this.surveyNext.onAfterRenderQuestion.add(
+          (survey: Survey.SurveyModel, options: any): void => {
+            if (updatedQuestions.includes(options.question.valueName)) {
+              options.htmlElement.style.background = '#EBB2B2';
+            }
+          }
+        );
+        this.surveyNext.onUpdateQuestionCssClasses.add(
+          (survey: Survey.SurveyModel, options: any) =>
+            this.onSetCustomCss(options)
+        );
+        this.surveyNext.render(this.formContainerNext.nativeElement);
       }
-      this.survey.onAfterRenderQuestion.add(
-        (survey: Survey.SurveyModel, options: any): void => {
-          if (updatedQuestions.includes(options.question.valueName)) {
-            options.htmlElement.style.background = '#b2ebbf';
-          }
-        }
-      );
-      this.surveyNext.onAfterRenderQuestion.add(
-        (survey: Survey.SurveyModel, options: any): void => {
-          if (updatedQuestions.includes(options.question.valueName)) {
-            options.htmlElement.style.background = '#EBB2B2';
-          }
-        }
-      );
-      this.surveyNext.onUpdateQuestionCssClasses.add(
-        (survey: Survey.SurveyModel, options: any) =>
-          this.onSetCustomCss(options)
-      );
-      this.surveyNext.render(this.formContainerNext.nativeElement);
     }
     this.loading = false;
   }

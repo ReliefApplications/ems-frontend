@@ -1,4 +1,4 @@
-import { ChoicesRestful, JsonMetadata, QuestionFile } from 'survey-core';
+import { ChoicesRestful, JsonMetadata, QuestionFileModel } from 'survey-core';
 import { Question } from '../types';
 
 /**
@@ -43,6 +43,6 @@ export const init = (Survey: any, environment: any): void => {
 export const render = (question: Question): void => {
   // define the max size for files
   if (question.getType() === 'file') {
-    (question as QuestionFile).maxSize = 7340032;
+    (question as QuestionFileModel).maxSize = 7340032;
   }
 };

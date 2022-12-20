@@ -9,6 +9,7 @@ import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
+import { SurveyModule } from 'survey-angular-ui';
 
 /**
  * SafeFormModule is a class used to manage all the modules and components
@@ -26,6 +27,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     SafeFormActionsModule,
     TranslateModule,
     DateInputModule,
+    SurveyModule,
   ],
   exports: [SafeFormComponent],
 })
