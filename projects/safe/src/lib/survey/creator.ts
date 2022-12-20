@@ -1,4 +1,4 @@
-import { JsonMetadata, Question } from 'survey-angular';
+import { JsonMetadata, Question } from 'survey-core';
 
 /**
  * Edits general settings of the survey builder.

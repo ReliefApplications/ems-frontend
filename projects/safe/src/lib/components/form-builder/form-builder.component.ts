@@ -8,8 +8,8 @@ import {
   Output,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import * as SurveyCreator from 'survey-creator';
-import * as Survey from 'survey-angular';
+import * as SurveyCreator from 'survey-creator-core';
+import * as Survey from 'survey-core';
 import { TranslateService } from '@ngx-translate/core';
 import { snakeCase, get, uniqBy, difference } from 'lodash';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';

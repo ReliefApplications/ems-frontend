@@ -1,4 +1,4 @@
-import { ChoicesRestful, JsonMetadata, QuestionFile } from 'survey-angular';
+import { ChoicesRestful, JsonMetadata, QuestionFile } from 'survey-core';
 import { Question } from '../types';
 
 /**

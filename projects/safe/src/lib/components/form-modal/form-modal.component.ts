@@ -20,7 +20,7 @@ import {
 } from './graphql/queries';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import * as Survey from 'survey-angular';
+import * as Survey from 'survey-core';
 import {
   EditRecordMutationResponse,
   EDIT_RECORD,

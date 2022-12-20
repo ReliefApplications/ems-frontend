@@ -4,7 +4,7 @@ import {
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
 import { BehaviorSubject } from 'rxjs';
-import * as SurveyCreator from 'survey-creator';
+import * as SurveyCreator from 'survey-creator-core';
 import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';

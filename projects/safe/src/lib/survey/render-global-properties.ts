@@ -1,5 +1,5 @@
 import { SafeReferenceDataService } from '../services/reference-data/reference-data.service';
-import { Question, SurveyModel } from 'survey-angular';
+import { Question, SurveyModel } from 'survey-core';
 import * as OthersProperties from './global-properties/others';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';

@@ -12,7 +12,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import * as Survey from 'survey-angular';
+import * as Survey from 'survey-core';
 import {
   AddRecordMutationResponse,
   ADD_RECORD,

@@ -3,7 +3,7 @@ import {
   GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
-import * as SurveyCreator from 'survey-creator';
+import * as SurveyCreator from 'survey-creator-core';
 import { resourceConditions } from './resources';
 import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,7 +13,7 @@ import { DomService } from '../../services/dom/dom.service';
 import { buildSearchButton, buildAddButton } from './utils';
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
-import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { JsonMetadata, SurveyModel } from 'survey-core';
 
 /**
  * Inits the resource question component of for survey.

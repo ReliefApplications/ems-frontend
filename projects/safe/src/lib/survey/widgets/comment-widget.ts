@@ -1,4 +1,4 @@
-import { surveyLocalization, SurveyModel } from 'survey-angular';
+import { surveyLocalization, SurveyModel } from 'survey-core';
 import { Question, QuestionComment } from '../types';
 
 /**

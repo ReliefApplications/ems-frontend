@@ -1,5 +1,5 @@
 import get from 'lodash/get';
-import { JsonMetadata } from 'survey-angular';
+import { JsonMetadata } from 'survey-core';
 import { Question } from '../types';
 
 /**

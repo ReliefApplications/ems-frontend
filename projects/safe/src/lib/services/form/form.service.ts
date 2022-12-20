@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import * as SurveyKo from 'survey-knockout';
-import * as Survey from 'survey-angular';
+import * as SurveyCreator from 'survey-creator-core';
+import * as Survey from 'survey-core';
 import { initCreatorSettings } from '../../survey/creator';
 import { initCustomSurvey } from '../../survey/init';
 import { DomService } from '../dom/dom.service';
@@ -43,7 +43,7 @@ export class SafeFormService {
   ) {
     // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomSurvey(
-      SurveyKo,
+      SurveyCreator,
       domService,
       dialog,
       apollo,
@@ -53,7 +53,7 @@ export class SafeFormService {
       referenceDataService
     );
     // === CREATOR SETTINGS ===
-    initCreatorSettings(SurveyKo);
+    initCreatorSettings(SurveyCreator);
     // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomSurvey(
       Survey,

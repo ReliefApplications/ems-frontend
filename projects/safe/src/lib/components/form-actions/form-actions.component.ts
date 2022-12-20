@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import * as Survey from 'survey-angular';
+import * as Survey from 'survey-core';
 import { getLanguageNativeName } from '../../utils/languages';
 
 /** Interface for a lang object */

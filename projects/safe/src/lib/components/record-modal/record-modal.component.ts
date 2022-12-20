@@ -13,7 +13,7 @@ import {
 } from '@angular/material/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import * as Survey from 'survey-angular';
+import * as Survey from 'survey-core';
 import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,

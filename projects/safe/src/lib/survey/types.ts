@@ -1,4 +1,4 @@
-import * as Survey from 'survey-angular';
+import * as Survey from 'survey-core';
 
 /** Custom global properties definition */
 export interface GlobalProperties {

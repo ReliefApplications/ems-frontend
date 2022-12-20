@@ -4,12 +4,12 @@ import {
   DateTimePickerComponent,
   TimePickerComponent,
 } from '@progress/kendo-angular-dateinputs';
-import * as SurveyCreator from 'survey-creator';
+import * as SurveyCreator from 'survey-creator-core';
 import { EmbeddedViewRef } from '@angular/core';
 import { ButtonCategory } from '../../components/ui/button/button-category.enum';
 import { SafeButtonComponent } from '../../components/ui/button/button.component';
 import { ButtonSize } from '../../components/ui/button/button-size.enum';
-import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { JsonMetadata, SurveyModel } from 'survey-core';
 import { Question, QuestionText } from '../types';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
