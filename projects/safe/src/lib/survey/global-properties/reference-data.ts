@@ -236,12 +236,14 @@ export const render = (
       } else {
         question.choices = [];
       }
-      question.referenceDataChoicesLoaded = true;
     };
 
     // init the choices
     if (!question.referenceDataChoicesLoaded && question.referenceData) {
-      updateChoices();
+      referenceDataService
+        .cacheItems(question.referenceData)
+        .then(() => updateChoices());
+      question.referenceDataChoicesLoaded = true;
     }
     // look on changes
     question.registerFunctionOnPropertyValueChanged(
