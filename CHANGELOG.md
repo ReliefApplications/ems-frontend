@@ -1,3 +1,17 @@
+# [1.4.0-beta.4](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.3...v1.4.0-beta.4) (2022-12-20)
+
+
+### Bug Fixes
+
+* 'not extensible object' error ([6989e44](https://github.com/ReliefApplications/oort-frontend/commit/6989e44d95a6f856c4dd4638c9b1a7ac8301cb9b))
+* allow only selected fields as coords ([27e1405](https://github.com/ReliefApplications/oort-frontend/commit/27e1405b5b5b42251d8f40b97e4cebe35599ea96))
+* could edit user attributes if not local config ([2399443](https://github.com/ReliefApplications/oort-frontend/commit/2399443652e36847e7c6515834599f4d3c48e259))
+* hide icon overflow ([bc0c507](https://github.com/ReliefApplications/oort-frontend/commit/bc0c50712ef8990cd994d619aaf186969e751728))
+* legend overflow ([70ea13a](https://github.com/ReliefApplications/oort-frontend/commit/70ea13ad1dcf865ec4b2988f3b137d53d771ecb4))
+* replace dataset selection on map settings ([e7c4c64](https://github.com/ReliefApplications/oort-frontend/commit/e7c4c642e177e65d2a749da335082d2650ce9a1c))
+* selected fields search would not appear with full width in query builder ([58b0150](https://github.com/ReliefApplications/oort-frontend/commit/58b0150bf190d90ac3f48735b658fc925255640a))
+* typos ([400197b](https://github.com/ReliefApplications/oort-frontend/commit/400197bf05cb0e90808840a0ff9ca772fdc2d0c5))
+
 # [1.4.0-beta.3](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.2...v1.4.0-beta.3) (2022-12-08)
 
 ### Bug Fixes
