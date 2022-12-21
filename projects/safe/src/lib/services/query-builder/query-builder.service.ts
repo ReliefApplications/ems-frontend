@@ -329,7 +329,11 @@ export class QueryBuilderService {
    */
   public buildQuery(settings: { query: Query; [key: string]: any }) {
     const builtQuery = settings.query;
-    if (builtQuery.name && builtQuery?.fields && builtQuery.fields.length > 0) {
+    if (
+      builtQuery?.name &&
+      builtQuery?.fields &&
+      builtQuery.fields.length > 0
+    ) {
       const fields = ['canUpdate\ncanDelete\n'].concat(
         this.buildFields(builtQuery.fields)
       );
