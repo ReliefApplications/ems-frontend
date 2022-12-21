@@ -1,3 +1,4 @@
+<!-- Form header -->
 <div class="form-infos">
   <safe-record-summary
     [record]="record"
@@ -10,6 +11,7 @@
     [surveyActive]="surveyActive"
   ></safe-form-actions>
 </div>
+<!-- Form pages -->
 <mat-tab-group
   animationDuration="0ms"
   [selectedIndex]="selectedTabIndex"
@@ -31,8 +33,10 @@
     </ng-template>
   </mat-tab>
 </mat-tab-group>
+<!-- Form -->
 <div #formContainer></div>
-<div *ngIf="surveyActive" class="survey-navigation">
+<!-- Form actions -->
+<div *ngIf="surveyActive" class="flex justify-end gap-2 mt-6 flex-wrap">
   <ng-container *ngIf="pages$ | async as pages">
     <safe-button
       *ngIf="pages.length > 1"
