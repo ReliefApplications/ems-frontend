@@ -1,10 +1,13 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { GetAggregationDataQueryResponse } from '../../../services/aggregation/graphql/queries';
 import { Aggregation } from '../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { PAGER_SETTINGS } from './aggregation-grid.constants';
 import { GetResourceByIdQueryResponse, GET_RESOURCE } from './graphql/queries';
+import { Subscription } from 'rxjs';
 
 /**
  * Shared aggregation grid component.
@@ -14,11 +17,16 @@ import { GetResourceByIdQueryResponse, GET_RESOURCE } from './graphql/queries';
   templateUrl: './aggregation-grid.component.html',
   styleUrls: ['./aggregation-grid.component.scss'],
 })
-export class SafeAggregationGridComponent implements OnInit, OnChanges {
-  public gridData: any[] = [];
+export class SafeAggregationGridComponent
+  implements OnInit, OnChanges, OnDestroy
+{
+  public gridData: GridDataResult = { data: [], total: 0 };
   public fields: any[] = [];
   public loading = false;
   public pageSize = 10;
+  public skip = 0;
+  private dataQuery!: QueryRef<GetAggregationDataQueryResponse>;
+  private dataSubscription?: Subscription;
   public pagerSettings = PAGER_SETTINGS;
   public showFilter = false;
 
@@ -56,18 +64,35 @@ export class SafeAggregationGridComponent implements OnInit, OnChanges {
     this.getAggregationFields();
   }
 
+  ngOnDestroy(): void {
+    if (this.dataSubscription) this.dataSubscription.unsubscribe();
+  }
+
   /**
    * Get aggregation data from aggregation id and resource id
    */
   private getAggregationData(): void {
     this.loading = true;
-    this.gridData = [];
-    this.aggregationService
-      .aggregationDataQuery(this.resourceId, this.aggregation.id as string)
-      .subscribe((res) => {
-        this.gridData = res.data.recordsAggregation;
-        this.loading = false;
-      });
+    this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
+      this.resourceId,
+      this.aggregation.id as string,
+      this.pageSize,
+      this.skip
+    );
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe((res) => {
+      this.gridData = {
+        data: res.data.recordsAggregation.items,
+        total: res.data.recordsAggregation.totalCount,
+      };
+      this.loading = false;
+    });
+    // .subscribe((res) => {
+    //   this.gridData = {
+    //     data: res.data.recordsAggregation,
+    //     total: res.data.recordsAggregation.length,
+    //   };
+    //   this.loading = false;
+    // });
   }
 
   /**
@@ -95,13 +120,46 @@ export class SafeAggregationGridComponent implements OnInit, OnChanges {
   /**
    * Toggles quick filter visibility
    */
-  public onToggleFilter(): void {
-    if (!this.loading) {
-      this.showFilter = !this.showFilter;
-      // this.onFilterChange({
-      //   logic: 'and',
-      //   filters: this.showFilter ? [] : this.filter.filters,
-      // });
-    }
+  // public onToggleFilter(): void {
+  //   if (!this.loading) {
+  //     this.showFilter = !this.showFilter;
+  //     // this.onFilterChange({
+  //     //   logic: 'and',
+  //     //   filters: this.showFilter ? [] : this.filter.filters,
+  //     // });
+  //   }
+  // }
+
+  // === PAGINATION ===
+  /**
+   * Detects pagination events and update the items loaded.
+   *
+   * @param event Page change event.
+   */
+  public onPageChange(event: PageChangeEvent): void {
+    this.loading = true;
+    this.skip = event.skip;
+    this.pageSize = event.take;
+    this.dataQuery.fetchMore({
+      variables: {
+        resource: this.resourceId,
+        aggregation: this.aggregation.id,
+        first: this.pageSize,
+        skip: this.skip,
+      },
+      updateQuery: (prev: any, { fetchMoreResult }: any) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        this.loading = false;
+        console.log('fetchMoreResult', fetchMoreResult);
+        return Object.assign({}, prev, {
+          recordsAggregation: {
+            items: fetchMoreResult.recordsAggregation.items,
+            totalCount: fetchMoreResult.recordsAggregation.totalCount,
+          },
+        });
+      },
+    });
   }
 }
