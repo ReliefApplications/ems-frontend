@@ -134,10 +134,13 @@ export class SafeMapSettingsComponent implements OnInit {
 
     const queryForm = this.tileForm.get('query') as FormGroup;
 
-    queryForm.controls.name.valueChanges.subscribe(() => {
-      this.tileForm?.controls.latitude.setValue('');
-      this.tileForm?.controls.longitude.setValue('');
-      this.tileForm?.controls.category.setValue('');
+    queryForm.controls.name.valueChanges.subscribe((value) => {
+      // Prevent to erase everything when queryName does not change
+      if (value !== queryForm.value.name) {
+        this.tileForm?.controls.latitude.setValue('');
+        this.tileForm?.controls.longitude.setValue('');
+        this.tileForm?.controls.category.setValue('');
+      }
     });
     queryForm.valueChanges.pipe(debounceTime(1000)).subscribe(() => {
       const query = queryForm.getRawValue();
