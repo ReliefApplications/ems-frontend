@@ -49,20 +49,23 @@ const filterFields = (
       currentPath.push(part);
       const existingField = findField(currentPath.join('.'), acc);
       if (!existingField) {
-        const newField = cloneDeep(findField(currentPath.join('.'), allFields));
+        const field = findField(currentPath.join('.'), allFields);
+        if (field) {
+          const newField = cloneDeep(field);
 
-        // if has fields, remove them
-        if (newField.fields) newField.fields = [];
+          // if has fields, remove them
+          if (newField.fields) newField.fields = [];
 
-        // if has a parent, add to parent
-        const parentField = findField(
-          currentPath.splice(0, currentPath.length - 1).join('.'),
-          acc
-        );
-        if (parentField) parentField.fields?.push(newField);
+          // if has a parent, add to parent
+          const parentField = findField(
+            currentPath.splice(0, currentPath.length - 1).join('.'),
+            acc
+          );
+          if (parentField) parentField.fields?.push(newField);
 
-        // if no parent, add to root
-        if (!parentField) acc.push(newField);
+          // if no parent, add to root
+          if (!parentField) acc.push(newField);
+        }
       }
     }
 
