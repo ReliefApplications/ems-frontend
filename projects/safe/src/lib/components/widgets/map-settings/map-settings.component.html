@@ -12,7 +12,7 @@
         <span>{{ 'common.general' | translate }}</span>
       </ng-template>
       <ng-template matTabContent>
-        <safe-map-general [form]="tileForm"></safe-map-general>
+        <safe-map-general *ngIf="tileForm" [form]="tileForm"></safe-map-general>
       </ng-template>
     </mat-tab>
     <!-- LAYERS CONFIGURATION -->
