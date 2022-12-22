@@ -6,7 +6,7 @@ import { filter } from 'rxjs/operators';
 /** Interface of breadcrumb */
 export interface Breadcrumb {
   alias?: string;
-  uri: string;
+  uri?: string;
   text?: string;
   key?: string;
   queryParams?: any;
@@ -50,7 +50,7 @@ export class SafeBreadcrumbService {
    * @param route current route
    * @param uri previous uri
    * @param breadcrumbs list of existing breadcrumbs
-   * @returns new bredcrumbs
+   * @returns new breadcrumbs
    */
   private createBreadcrumbs(
     route: ActivatedRoute,

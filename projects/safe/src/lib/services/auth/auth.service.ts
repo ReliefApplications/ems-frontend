@@ -12,6 +12,7 @@ import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { filter, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { UserAbility } from './utils/userAbility';
 
 /** Defining the interface for the account object. */
 export interface Account {
@@ -31,6 +32,13 @@ export class SafeAuthService {
   /** @returns Current user as observable */
   get user$(): Observable<User | null> {
     return this.user.asObservable();
+  }
+
+  /** Current user ability */
+  public ability = new BehaviorSubject<UserAbility | null>(null);
+  /** @returns Current ability as observable */
+  get ability$(): Observable<UserAbility | null> {
+    return this.ability.asObservable();
   }
 
   /** Current account info */
@@ -60,7 +68,7 @@ export class SafeAuthService {
    *
    * @param environment Environment file where front and back office urls are specified
    * @param apollo Apollo client
-   * @param oauthService OAuth authentification service
+   * @param oauthService OAuth authentication service
    * @param router Angular Router service
    */
   constructor(
@@ -211,11 +219,19 @@ export class SafeAuthService {
    * @returns Apollo query of profile
    */
   getProfile(): Observable<ApolloQueryResult<GetProfileQueryResponse>> {
-    return this.apollo.query<GetProfileQueryResponse>({
+    const query = this.apollo.query<GetProfileQueryResponse>({
       query: GET_PROFILE,
       fetchPolicy: 'network-only',
       errorPolicy: 'all',
     });
+
+    // Updates the user ability
+    query.subscribe((result) => {
+      if (result.data && result.data.me && result.data.me.permissions)
+        this.ability.next(new UserAbility(result.data.me.permissions));
+    });
+
+    return query;
   }
 
   /**

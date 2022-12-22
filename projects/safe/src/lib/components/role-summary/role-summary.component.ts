@@ -5,6 +5,7 @@ import { Role } from '../../models/user.model';
 import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { EditRoleMutationResponse, EDIT_ROLE } from './graphql/mutations';
 import { GetRoleQueryResponse, GET_ROLE } from './graphql/queries';
+import { SafeAuthService } from '../../services/auth/auth.service';
 
 /**
  * Shared role summary component.
@@ -29,10 +30,12 @@ export class SafeRoleSummaryComponent implements OnInit {
    *
    * @param apollo Apollo client
    * @param breadcrumbService Setups the breadcrumb component variables
+   * @param authService Auth service
    */
   constructor(
     private apollo: Apollo,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: SafeBreadcrumbService,
+    private authService: SafeAuthService
   ) {}
 
   ngOnInit(): void {
@@ -72,6 +75,9 @@ export class SafeRoleSummaryComponent implements OnInit {
         if (res.data) {
           this.role = res.data.editRole;
           this.loading = res.data.loading;
+
+          // Updates own permissions
+          this.authService.getProfile();
         }
       });
   }

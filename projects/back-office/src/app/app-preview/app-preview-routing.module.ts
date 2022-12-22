@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { AppPreviewComponent } from './app-preview.component';
-
+import { SafePermissionGuard, CustomRoute } from '@safe/builder';
 /** List of Application Preview routes */
-const routes: Routes = [
+const routes: CustomRoute[] = [
   {
     path: '',
     component: AppPreviewComponent,
@@ -39,7 +39,13 @@ const routes: Routes = [
                   import('./pages/roles/roles.module').then(
                     (m) => m.RolesModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                canActivate: [SafePermissionGuard],
+                data: {
+                  permissions: {
+                    logic: 'and',
+                    permissions: ['read:roles'],
+                  },
+                },
               },
               {
                 path: ':id',
@@ -51,8 +57,12 @@ const routes: Routes = [
                   breadcrumb: {
                     alias: '@role',
                   },
+                  permissions: {
+                    logic: 'and',
+                    permissions: ['read:roles'],
+                  },
                 },
-                // canActivate: [SafePermissionGuard]
+                canActivate: [SafePermissionGuard],
               },
             ],
             data: {
@@ -70,7 +80,13 @@ const routes: Routes = [
                   import('./pages/users/users.module').then(
                     (m) => m.UsersModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                canActivate: [SafePermissionGuard],
+                data: {
+                  permissions: {
+                    logic: 'and',
+                    permissions: ['read:users'],
+                  },
+                },
               },
               {
                 path: ':id',
@@ -82,8 +98,12 @@ const routes: Routes = [
                   breadcrumb: {
                     alias: '@user',
                   },
+                  permissions: {
+                    logic: 'and',
+                    permissions: ['manage:users'],
+                  },
                 },
-                // canActivate: [SafePermissionGuard]
+                canActivate: [SafePermissionGuard],
               },
             ],
             data: {
@@ -98,6 +118,13 @@ const routes: Routes = [
               import('@safe/builder').then(
                 (m) => m.SafeApplicationTemplatesModule
               ),
+            canActivate: [SafePermissionGuard],
+            data: {
+              permissions: {
+                logic: 'and',
+                permissions: ['manage:templates'],
+              },
+            },
           },
           {
             path: 'distribution-lists',
@@ -105,7 +132,13 @@ const routes: Routes = [
               import('@safe/builder').then(
                 (m) => m.SafeApplicationDistributionListsModule
               ),
-            // canActivate: [SafePermissionGuard]
+            canActivate: [SafePermissionGuard],
+            data: {
+              permissions: {
+                logic: 'and',
+                permissions: ['manage:distribution_lists'],
+              },
+            },
           },
         ],
       },

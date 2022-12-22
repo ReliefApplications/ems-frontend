@@ -644,6 +644,7 @@ export class SafeApplicationService {
                 value: role.title,
               })
             );
+            this.authService.getProfile();
             const newApplication: Application = {
               ...application,
               roles: application.roles?.map((x) => {

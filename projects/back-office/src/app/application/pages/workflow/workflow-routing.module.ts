@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { WorkflowComponent } from './workflow.component';
+import { SafePermissionGuard, CustomRoute } from '@safe/builder';
 
 /** List of routes of application workflow module */
-const routes: Routes = [
+const routes: CustomRoute[] = [
   {
     path: '',
     component: WorkflowComponent,
@@ -34,7 +35,13 @@ const routes: Routes = [
             path: '',
             loadChildren: () =>
               import('../form/form.module').then((m) => m.FormModule),
-            // canActivate: [SafePermissionGuard]
+            canActivate: [SafePermissionGuard],
+            data: {
+              permissions: {
+                logic: 'and',
+                permissions: ['read:forms'],
+              },
+            },
           },
           {
             path: 'builder/:id',
@@ -42,7 +49,13 @@ const routes: Routes = [
               import(
                 '../../../dashboard/pages/form-builder/form-builder.module'
               ).then((m) => m.FormBuilderModule),
-            // canActivate: [SafePermissionGuard]
+            canActivate: [SafePermissionGuard],
+            data: {
+              permissions: {
+                logic: 'and',
+                permissions: ['manage:forms'],
+              },
+            },
           },
         ],
       },

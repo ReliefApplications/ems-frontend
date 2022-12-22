@@ -1,15 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
+import { SafePermissionGuard, CustomRoute } from '@safe/builder';
 
 /**
  * Divide the dashboard module into three modules:
  * forms and resources
  * dashboards
  * users
-  Use lazy loading for performance.
+ * Use lazy loading for performance.
  */
-export const routes = [
+export const routes: CustomRoute[] = [
   {
     path: '',
     component: DashboardComponent,
@@ -59,7 +60,13 @@ export const routes = [
             path: '',
             loadChildren: () =>
               import('./pages/forms/forms.module').then((m) => m.FormsModule),
-            // canActivate: [SafePermissionGuard]
+            canActivate: [SafePermissionGuard],
+            data: {
+              permissions: {
+                logic: 'and',
+                permissions: ['read:forms'],
+              },
+            },
           },
           {
             path: ':id',
@@ -154,7 +161,13 @@ export const routes = [
               import('./pages/resources/resources.module').then(
                 (m) => m.ResourcesModule
               ),
-            // canActivate: [SafePermissionGuard]
+            canActivate: [SafePermissionGuard],
+            data: {
+              permissions: {
+                logic: 'and',
+                permissions: ['read:resources'],
+              },
+            },
           },
           {
             path: ':id',
@@ -256,7 +269,13 @@ export const routes = [
               import('./pages/applications/applications.module').then(
                 (m) => m.ApplicationsModule
               ),
-            // canActivate: [SafePermissionGuard]
+            canActivate: [SafePermissionGuard],
+            data: {
+              permissions: {
+                logic: 'and',
+                permissions: ['manage:applications'],
+              },
+            },
           },
           // {
           //     path: ':id',
@@ -278,7 +297,13 @@ export const routes = [
                   import('./pages/users/users.module').then(
                     (m) => m.UsersModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                canActivate: [SafePermissionGuard],
+                data: {
+                  permissions: {
+                    logic: 'and',
+                    permissions: ['read:users'],
+                  },
+                },
               },
               {
                 path: ':id',
@@ -290,8 +315,12 @@ export const routes = [
                   breadcrumb: {
                     alias: '@user',
                   },
+                  permissions: {
+                    logic: 'and',
+                    permissions: ['manage:users'],
+                  },
                 },
-                // canActivate: [SafePermissionGuard]
+                canActivate: [SafePermissionGuard],
               },
             ],
             data: {
@@ -309,7 +338,13 @@ export const routes = [
                   import('./pages/roles/roles.module').then(
                     (m) => m.RolesModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [SafePermissionGuard],
+                data: {
+                  permissions: {
+                    logic: 'and',
+                    permissions: ['read:roles'],
+                  },
+                },
               },
               {
                 path: ':id',
@@ -321,8 +356,12 @@ export const routes = [
                   breadcrumb: {
                     alias: '@role',
                   },
+                  permissions: {
+                    logic: 'and',
+                    permissions: ['read:roles'],
+                  },
                 },
-                // canActivate: [SafePermissionGuard]
+                canActivate: [SafePermissionGuard],
               },
             ],
             data: {
@@ -340,7 +379,13 @@ export const routes = [
                   import(
                     './pages/api-configurations/api-configurations.module'
                   ).then((m) => m.ApiConfigurationsModule),
-                // canActivate: [SafePermissionGuard]
+                canActivate: [SafePermissionGuard],
+                data: {
+                  permissions: {
+                    logic: 'and',
+                    permissions: ['manage:api_configurations'],
+                  },
+                },
               },
               {
                 path: ':id',
@@ -352,8 +397,12 @@ export const routes = [
                   breadcrumb: {
                     alias: '@api',
                   },
+                  permissions: {
+                    logic: 'and',
+                    permissions: ['manage:api_configurations'],
+                  },
                 },
-                // canActivate: [SafePermissionGuard]
+                canActivate: [SafePermissionGuard],
               },
             ],
             data: {
