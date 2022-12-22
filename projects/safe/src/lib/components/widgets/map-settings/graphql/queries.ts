@@ -1,8 +1,24 @@
 import { gql } from 'apollo-angular';
 import { Resource } from '../../../../models/resource.model';
 
-// === GET RESOURCES ===
+// === GET RESOURCE ===
+/** GraphQL query definition to get single resource */
+export const GET_RESOURCE = gql`
+  query GetResource($id: ID!) {
+    resource(id: $id) {
+      id
+      name
+      queryName
+    }
+  }
+`;
 
+/** Response interface of get single resource query */
+export interface GetResourceQueryResponse {
+  resource: Resource;
+}
+
+// === GET RESOURCES ===
 /** Graphql request for getting resources */
 export const GET_RESOURCES = gql`
   query GetResources($first: Int, $afterCursor: ID, $sortField: String) {
@@ -26,7 +42,6 @@ export const GET_RESOURCES = gql`
 
 /** Model for GetResourcesQueryResponse object */
 export interface GetResourcesQueryResponse {
-  loading: boolean;
   resources: {
     edges: {
       node: Resource;

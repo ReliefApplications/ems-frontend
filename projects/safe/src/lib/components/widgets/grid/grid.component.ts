@@ -152,7 +152,6 @@ export class SafeGridWidgetComponent implements OnInit {
               .sort((a, b) => layouts.indexOf(a.id) - layouts.indexOf(b.id));
             this.layout = this.layouts[0] || null;
             if (!this.layout) {
-              console.log('làa');
               this.status = {
                 error: true,
               };
