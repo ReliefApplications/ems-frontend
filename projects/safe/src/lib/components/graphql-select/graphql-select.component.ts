@@ -247,6 +247,7 @@ export class SafeGraphQLSelectComponent
   @Input() selectedElements: any[] = [];
   public elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
+  private queryElements: any[] = [];
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -291,6 +292,7 @@ export class SafeGraphQLSelectComponent
           )
       );
       this.elements.next([...selectedElements, ...elements]);
+      this.queryElements = elements;
       this.pageInfo = get(res.data, path).pageInfo;
       this.loading = res.loading;
     });
@@ -337,21 +339,6 @@ export class SafeGraphQLSelectComponent
         )
     );
     this.elements.next([...selectedElements, ...elements]);
-
-    /**
-     * This is needed in order to display previously selected elements
-     * when the selectedElements input changes, due to how displayWith works
-     */
-    // if (
-    //   changes.selectedElements &&
-    //   changes.selectedElements.currentValue.length > 0
-    // ) {
-    //   this.searchText = '';
-    //   this.searchText =
-    //     this.elements
-    //       .getValue()
-    //       .find((x) => x[this.valueField] === this.value) || '';
-    // }
   }
 
   ngOnDestroy(): void {
@@ -452,5 +439,26 @@ export class SafeGraphQLSelectComponent
    */
   public onSelectionChange(event: MatSelectChange) {
     this.value = event.value;
+  }
+
+  /** Triggers on close of select */
+  onCloseSelect() {
+    // filter out from the elements the ones that are
+    // not in the queryElements array or the selectedElements array
+    const elements = this.elements
+      .getValue()
+      .filter(
+        (element) =>
+          this.queryElements.find(
+            (queryElement) =>
+              queryElement[this.valueField] === element[this.valueField]
+          ) ||
+          this.selectedElements.find(
+            (selectedElement) =>
+              selectedElement[this.valueField] === element[this.valueField]
+          )
+      );
+
+    this.elements.next(elements);
   }
 }
