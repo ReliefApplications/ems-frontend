@@ -20,6 +20,8 @@ export const GET_PROFILE = gql`
         }
         permissions {
           id
+          type
+          global
         }
       }
       permissions {

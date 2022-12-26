@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  Router,
-  UrlTree,
-} from '@angular/router';
-import { Observable } from 'rxjs';
+import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { SafeAuthService } from '../services/auth/auth.service';
 import { Data, Route } from '@angular/router';
 import { Breadcrumb } from '../services/breadcrumb/breadcrumb.service';
@@ -14,6 +8,7 @@ import {
   Entity,
   UserAbility,
 } from '../services/auth/utils/userAbility';
+import { SafeApplicationService } from '../services/application/application.service';
 
 type RequiredPermissions = {
   logic: 'and' | 'or';
@@ -43,17 +38,19 @@ export interface CustomRoute extends Route {
  *
  * @param userAbility The user ability
  * @param rp The required permissions
+ * @param app The current application, if any
  * @returns A boolean indicating if the user has the required permissions
  */
 const hasPermissions = (
   userAbility: UserAbility,
-  rp: RequiredPermissions
+  rp: RequiredPermissions,
+  app?: string
 ): boolean => {
   const op = rp.logic === 'and' ? 'every' : 'some';
   return rp.permissions[op]((p) => {
     if (typeof p === 'string') {
       const [action, entity] = p.split(':');
-      return userAbility.can(action as Action, entity as Entity);
+      return userAbility.can(action as Action, entity as Entity, app);
     } else {
       return hasPermissions(userAbility, p);
     }
@@ -72,9 +69,14 @@ export class SafePermissionGuard implements CanActivate {
    * Constructor of the SafePermissionGuard class
    *
    * @param authService The authentication service
+   * @param applicationService The application service
    * @param router The router service
    */
-  constructor(private authService: SafeAuthService, private router: Router) {}
+  constructor(
+    private authService: SafeAuthService,
+    private applicationService: SafeApplicationService,
+    private router: Router
+  ) {}
 
   /**
    * Executed every time a route is called, in order to check user permissions.
@@ -85,24 +87,21 @@ export class SafePermissionGuard implements CanActivate {
    * @param next activated route snapshot
    * @returns A boolean indicating if the user has permission
    */
-  canActivate(
-    next: ActivatedRouteSnapshot
-  ):
-    | Observable<boolean | UrlTree>
-    | Promise<boolean | UrlTree>
-    | boolean
-    | UrlTree {
+  async canActivate(next: ActivatedRouteSnapshot): Promise<boolean> {
     const required: RequiredPermissions = next.data.permissions;
     if (!required || required.permissions.length === 0) return true;
 
     const userAbility = this.authService.ability.getValue();
     if (!userAbility) return false;
 
-    const isAuthorized = hasPermissions(userAbility, required);
-
-    if (!isAuthorized) {
-      this.router.navigate(['/applications']);
-    }
-    return isAuthorized;
+    return new Promise<boolean>((resolve) => {
+      this.applicationService.application$.subscribe((app) => {
+        const isAuthorized = hasPermissions(userAbility, required, app?.id);
+        if (!isAuthorized) {
+          this.router.navigate(['/applications']);
+        }
+        resolve(isAuthorized);
+      });
+    });
   }
 }

@@ -227,8 +227,8 @@ export class SafeAuthService {
 
     // Updates the user ability
     query.subscribe((result) => {
-      if (result.data && result.data.me && result.data.me.permissions)
-        this.ability.next(new UserAbility(result.data.me.permissions));
+      if (result.data && result.data.me && result.data.me.roles)
+        this.ability.next(new UserAbility(result.data.me.roles));
     });
 
     return query;
