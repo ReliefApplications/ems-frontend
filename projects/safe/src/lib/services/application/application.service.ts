@@ -249,16 +249,18 @@ export class SafeApplicationService {
   }
 
   /**
-   * Locks application edition.
+   * Toggles application lock.
    */
-  lockApplication(): void {
+  toggleApplicationLock(): void {
     const application = this.application.getValue();
+    const locked = application?.locked;
+    if (locked === undefined) return;
     this.apollo
       .mutate<ToggleApplicationLockMutationResponse>({
         mutation: TOGGLE_APPLICATION_LOCK,
         variables: {
           id: application?.id,
-          lock: true,
+          lock: !locked,
         },
       })
       .subscribe((res) => {
