@@ -156,16 +156,17 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   /**
    * Creates the form builder and sets up all the options.
    *
-   * @param structure Optional param used as the form struc
+   * @param structure Optional param used as the form struct
    */
   private setFormBuilder(structure: string) {
     const creatorOptions: SurveyCreator.ICreatorOptions = {
-      showEmbededSurveyTab: false,
+      showEmbeddedSurveyTab: false,
       showJSONEditorTab: false,
       generateValidJSON: true,
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,
-      themeForPreview: 'modern',
+      themeForPreview: 'default',
+      allowChangeThemeInPreview: false,
     };
 
     this.setCustomTheme();

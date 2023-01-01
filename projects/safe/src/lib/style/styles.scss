@@ -6,20 +6,39 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-.sv_main {
-  --primary-color: #{$primary_500};
-  --secondary-color: #{$primary_500};
-  // --primary-text-color: #676a6c;
-  // --secondary-text-color: #a7a7a7;
-  // --inverted-text-color: #ffffff;
-  --primary-hover-color: #{$primary_500};
-  --selection-border-color: #{$primary_500};
-  // --primary-icon-color: #3d4d5d;
-  // --primary-bg-color: #fff;
-  // --secondary-bg-color: #f4f4f4;
-  // --primary-border-color: #e7eaec;
-  // --secondary-border-color: #ddd;
-  // --error-color: #ed5565;
+// === SURVEY CREATOR ===
+survey-creator,
+.sv-popup,
+.sv-svg-icon {
+  --primary: #{$primary_500};
+  --secondary: #{$primary_500};
+  --primary-light: #{$primary_50};
+  --secondary-light: #{$primary_100};
+  --secondary-back-light: #{$primary_50};
+  // --foreground: ;
+  // --primary-foreground: ;
+  // --background: ;
+  // --background-dim: ;
+  // --background-dim-light: ;
+}
+
+// === TAGBOX ITEMS ===
+sv-ng-tagbox-item {
+  padding: 4px 0;
+  .sv-tagbox__item {
+    background-color: #{$primary_500} !important;
+    color: #{$primary_50} !important;
+    border-color: #{$primary_50} !important;
+    font-weight: 500 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8em;
+    padding: 0.8em;
+  }
+  .sv_q_tagbox-item_clean-button-svg {
+    fill: #{$primary_50} !important;
+  }
 }
 
 $safe-palette: (
@@ -658,7 +677,7 @@ mat-tab-group[vertical] {
   font-family: Roboto, 'Helvetica Neue', sans-serif !important;
 }
 
-// === SCROLLBARS ===
+// === SCROLL BARS ===
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

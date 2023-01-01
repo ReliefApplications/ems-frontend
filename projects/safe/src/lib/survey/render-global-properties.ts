@@ -18,6 +18,10 @@ export const renderGlobalProperties =
     options: { question: Question; htmlElement: HTMLElement }
   ) => {
     OthersProperties.render(options.question);
-    TooltipProperty.render(options.question, options.htmlElement);
+    TooltipProperty.render(
+      options.question,
+      options.htmlElement,
+      survey.onLocaleChangedEvent
+    );
     ReferenceDataProperties.render(options.question, referenceDataService);
   };

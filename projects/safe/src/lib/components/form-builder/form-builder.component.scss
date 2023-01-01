@@ -1,5 +1,34 @@
 @import '../../style/survey.scss';
 
-::ng-deep .svd_content {
-  padding: 8px 0 !important;
+::ng-deep {
+  .svd_content {
+    padding: 8px 0 !important;
+  }
+
+  .svc-panel__placeholder_frame {
+    display: none;
+  }
+
+  .svc-dragged-element-shortcut {
+    height: unset;
+  }
+
+  .sv_q_dropdown_clean-button-svg {
+    width: calc(3 * var(--base-unit, 8px));
+    height: calc(3 * var(--base-unit, 8px));
+  }
+
+  .sv_q_dropdown_clean-button {
+    margin: 0 !important;
+  }
+
+  .sv_q_dropdown__value {
+    position: relative;
+    width: 100%;
+  }
+
+  .spg-question__title {
+    padding: 0 !important;
+    margin-bottom: 4px;
+  }
 }

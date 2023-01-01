@@ -2,7 +2,7 @@ import SurveyCreator from 'survey-creator-core';
 import { JsonMetadata, SurveyModel, Serializer } from 'survey-core';
 import { DomService } from '../../services/dom/dom.service';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
-import { SafeReferenceDataDropdownComponent } from '../../components/reference-data-dropdown/reference-data-dropdown.component';
+// import { SafeReferenceDataDropdownComponent } from '../../components/reference-data-dropdown/reference-data-dropdown.component';
 import { Question, QuestionSelectBase } from '../types';
 
 /**
@@ -167,18 +167,18 @@ export const init = (
   });
 
   // custom editor for the reference data dropdown
-  const referenceDataEditor = {
-    render: (editor: any, htmlElement: HTMLElement) => {
-      const question = editor.object as QuestionSelectBase;
-      const dropdown = domService.appendComponentToBody(
-        SafeReferenceDataDropdownComponent,
-        htmlElement
-      );
-      const instance: SafeReferenceDataDropdownComponent = dropdown.instance;
-      instance.referenceData = question.referenceData || '';
-      instance.choice.subscribe((res) => editor.onChanged(res));
-    },
-  };
+  // const referenceDataEditor = {
+  //   render: (editor: any, htmlElement: HTMLElement) => {
+  //     const question = editor.object as QuestionSelectBase;
+  //     const dropdown = domService.appendComponentToBody(
+  //       SafeReferenceDataDropdownComponent,
+  //       htmlElement
+  //     );
+  //     const instance: SafeReferenceDataDropdownComponent = dropdown.instance;
+  //     instance.referenceData = question.referenceData || '';
+  //     instance.choice.subscribe((res) => editor.onChanged(res));
+  //   },
+  // };
   // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
   //   'referenceDataDropdown',
   //   referenceDataEditor

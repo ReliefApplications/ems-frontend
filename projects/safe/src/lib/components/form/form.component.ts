@@ -48,7 +48,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     hideNewRecord?: boolean;
   }> = new EventEmitter();
 
-  // === SURVEYJS ===
+  // === SURVEY JS ===
   public surveyModel!: Survey.Model;
   public surveyActive = true;
   public selectedTabIndex = 0;
@@ -419,7 +419,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * Handles the dowload of files event
+   * Handles the download of files event
    *
    * @param survey The survey from which the files were downloaded
    * @param options Options regarding the download
