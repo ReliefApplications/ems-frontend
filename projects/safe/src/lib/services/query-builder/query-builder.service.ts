@@ -52,16 +52,19 @@ export interface Field {
   fields?: Field[];
 }
 
+/** Stored query field interface definition */
+export interface QueryField {
+  name: string;
+  kind: 'OBJECT' | 'SCALAR' | 'LIST';
+  label?: string;
+  type?: string;
+  ofType?: any;
+}
+
 /** Query interface definition */
 interface Query {
   name: string;
-  fields: {
-    name: string;
-    kind: 'OBJECT' | 'SCALAR' | 'LIST';
-    label?: string;
-    ofType?: any;
-    type?: string;
-  }[];
+  fields: QueryField[];
   filter?: CompositeFilterDescriptor;
   sort?: {
     field?: string;
