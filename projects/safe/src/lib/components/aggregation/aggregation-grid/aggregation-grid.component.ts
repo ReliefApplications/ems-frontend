@@ -144,6 +144,7 @@ export class SafeAggregationGridComponent
           const allGqlFields = this.queryBuilder.getFields(
             resource.queryName || ''
           );
+          // Fetch fields at the end of the pipeline
           const aggFields = this.aggregationBuilderService.fieldsAfter(
             allGqlFields
               ?.filter((x) => this.aggregation.sourceFields.includes(x.name))
@@ -164,11 +165,13 @@ export class SafeAggregationGridComponent
             this.aggregation.pipeline
           );
           const fieldNames = aggFields.map((x) => x.name);
+          // Convert them to query fields
           const queryFields = this.aggregationBuilderService.formatFields(
             aggFields.filter((field) =>
               allGqlFields.some((x) => x.name === field.name)
             )
           );
+          // Create meta query from query fields
           const metaQuery = this.queryBuilder.buildMetaQuery({
             name: resource.queryName || '',
             fields: queryFields,
@@ -184,7 +187,7 @@ export class SafeAggregationGridComponent
                     const metaFields = Object.assign({}, res2.data[key]);
                     try {
                       await this.gridService.populateMetaFields(metaFields);
-                      // Remove ref data meta fields
+                      // Remove ref data meta fields because it messes up with the display
                       for (const field of queryFields) {
                         if (field.type.endsWith(REFERENCE_DATA_END)) {
                           delete metaFields[field.name];
@@ -194,6 +197,7 @@ export class SafeAggregationGridComponent
                       console.error(err);
                     }
                     this.loadingSettings = false;
+                    // Concat query fields with dummy one for newly added fields
                     const fields = queryFields.concat(
                       fieldNames.reduce((arr, fieldName) => {
                         if (
@@ -204,6 +208,7 @@ export class SafeAggregationGridComponent
                         return arr;
                       }, [])
                     );
+                    // Generate grid fields
                     this.fields = this.gridService.getFields(
                       fields,
                       metaFields,
