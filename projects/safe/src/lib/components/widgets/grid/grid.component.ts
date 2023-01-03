@@ -18,6 +18,8 @@ import {
   GET_RECORD_BY_ID,
   GetFormByIdQueryResponse,
   GET_FORM_BY_ID,
+  GetUserRolesPermissionsQueryResponse,
+  GET_USER_ROLES_PERMISSIONS,
 } from './graphql/queries';
 import {
   Component,
@@ -48,7 +50,7 @@ import { SafeAggregationService } from '../../../services/aggregation/aggregatio
 
 /** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
-/** Regex for the pattern "today()-[number of days to substract]" */
+/** Regex for the pattern "today()-[number of days to subtract]" */
 const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
 
 /** Component for the grid widget */
@@ -66,6 +68,9 @@ export class SafeGridWidgetComponent implements OnInit {
   // === DATA ===
   @Input() widget: any;
   public loading = true;
+
+  // === PERMISSIONS ===
+  public canCreateRecords = false;
 
   // === CACHED CONFIGURATION ===
   public layout: Layout | null = null;
@@ -133,12 +138,34 @@ export class SafeGridWidgetComponent implements OnInit {
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
     if (this.settings.resource) {
       const layouts = get(this.settings, 'layouts', []);
       const aggregations = get(this.settings, 'aggregations', []);
+
+      const userRoles = await new Promise<string[]>((resolve) => {
+        this.safeAuthService.getProfile().subscribe((res) => {
+          if (!res.data) resolve([]);
+          resolve(res.data.me.roles?.map((role) => role.id || '') || []);
+        });
+      });
+
+      // Get user permission on resource
+      this.apollo
+        .query<GetUserRolesPermissionsQueryResponse>({
+          query: GET_USER_ROLES_PERMISSIONS,
+          variables: {
+            resource: this.settings.resource,
+            roles: userRoles,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            this.canCreateRecords = res.data.resource.canCreateRecords || false;
+          }
+        });
 
       if (layouts.length > 0) {
         this.gridLayoutService
