@@ -462,30 +462,6 @@ body {
   overflow: hidden;
 }
 
-.widget-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-
-  .widget-last-update {
-    visibility: hidden;
-    position: absolute;
-    bottom: 0;
-    font-size: 11px;
-    padding: 0 4px;
-    z-index: 1000;
-    margin: 0;
-    color: #a9a9a9;
-  }
-
-  &:hover {
-    .widget-last-update {
-      visibility: visible;
-    }
-  }
-}
-
 .widget-header {
   box-sizing: border-box;
   height: 40px;
@@ -508,11 +484,6 @@ body {
     flex: 1;
     margin: unset;
   }
-}
-
-.widget-content {
-  flex: 1;
-  height: auto;
 }
 
 // === DIALOGS ===

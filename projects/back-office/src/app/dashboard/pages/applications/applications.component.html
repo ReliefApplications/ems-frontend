@@ -9,6 +9,7 @@
   <!-- NEW APPLICATIONS -->
   <h2>{{ 'pages.applications.recent' | translate }}</h2>
   <safe-applications-summary
+    class="block mb-14"
     [loading]="loading"
     [canCreate]="canAdd"
     (add)="onAdd()"

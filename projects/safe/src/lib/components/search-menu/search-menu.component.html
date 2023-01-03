@@ -1,4 +1,4 @@
-<div class="application-list-header" *ngIf="headerTemplate">
+<div class="mt-1" *ngIf="headerTemplate">
   <ng-container [ngTemplateOutlet]="headerTemplate"></ng-container>
 </div>
 <mat-form-field appearance="outline">
@@ -11,7 +11,7 @@
   />
   <mat-icon matSuffix>search</mat-icon>
 </mat-form-field>
-<div class="application-list">
+<div class="flex flex-col gap-2 -mt-3.5">
   <div *ngIf="currentApplication">
     <safe-button
       class="!w-auto"
@@ -24,7 +24,7 @@
   <div class="search-application-list">
     <safe-button
       *ngFor="let item of searchResults"
-      class="!w-auto"
+      class="!w-auto block"
       (click)="onClick(item)"
       [matTooltip]="item.name"
       matTooltipShowDelay="1000"
@@ -32,7 +32,7 @@
       >{{ item.name }}</safe-button
     >
   </div>
-  <p *ngIf="searchResults.length === 0">
+  <p class="text-center opacity-50" *ngIf="searchResults.length === 0">
     {{ 'common.filter.empty' | translate }}
   </p>
 </div>

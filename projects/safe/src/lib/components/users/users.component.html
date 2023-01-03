@@ -32,7 +32,7 @@
     <!-- Advanced filters -->
     <div
       class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
-      [style.display]="!showFilters ? 'none' : ''"
+      *ngIf="showFilters"
     >
       <!-- Title filter -->
       <mat-form-field appearance="outline" class="mat-form-field-sm p-0">

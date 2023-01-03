@@ -54,12 +54,13 @@
         [attr.colspan]="displayedColumns.length"
       >
         <div
-          class="expanded-workflow"
+          class="overflow-hidden flex justify-center"
           [@detailExpand]="
             element.id === openedWorkflowId ? 'expanded' : 'collapsed'
           "
         >
           <table
+            class="my-4 mx-0"
             mat-table
             [dataSource]="filteredSteps"
             *ngIf="filteredSteps.length"
@@ -100,6 +101,7 @@
             <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
           </table>
           <safe-empty
+            class="py-3 px-0"
             *ngIf="filteredSteps.length === 0"
             [title]="'components.role.summary.noSteps' | translate"
           >

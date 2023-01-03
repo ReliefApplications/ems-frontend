@@ -1,6 +1,6 @@
 <form
   [formGroup]="$any(fieldForm)"
-  class="add-field"
+  class="flex flex-row"
   *ngFor="let fieldForm of form.controls; let index = index"
 >
   <mat-form-field appearance="outline" *ngIf="displayName">
@@ -13,7 +13,7 @@
     [operators]="$any(operators)"
   ></safe-expressions>
   <safe-button
-    class="remove-button"
+    class="mt-2.5 mr-2.5 mb-0 ml-0"
     [isIcon]="true"
     icon="delete"
     variant="danger"

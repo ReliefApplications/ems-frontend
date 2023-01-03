@@ -105,7 +105,11 @@
         class="h-0"
       ></tr>
     </table>
-    <safe-skeleton-table *ngIf="loading" [columns]="['common.name']">
+    <safe-skeleton-table
+      class="my-4 mx-0 w-full"
+      *ngIf="loading"
+      [columns]="['common.name']"
+    >
     </safe-skeleton-table>
   </div>
   <mat-paginator
