@@ -231,6 +231,5 @@ export const GET_USER_ROLES_PERMISSIONS = gql`
 
 /** Model for GetUserRolePermissionsQueryResponse object */
 export interface GetUserRolesPermissionsQueryResponse {
-  loading: boolean;
   resource: Resource;
 }

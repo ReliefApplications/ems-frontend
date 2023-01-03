@@ -138,19 +138,12 @@ export class SafeGridWidgetComponent implements OnInit {
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
     if (this.settings.resource) {
       const layouts = get(this.settings, 'layouts', []);
       const aggregations = get(this.settings, 'aggregations', []);
-
-      const userRoles = await new Promise<string[]>((resolve) => {
-        this.safeAuthService.getProfile().subscribe((res) => {
-          if (!res.data) resolve([]);
-          resolve(res.data.me.roles?.map((role) => role.id || '') || []);
-        });
-      });
 
       // Get user permission on resource
       this.apollo
@@ -158,12 +151,15 @@ export class SafeGridWidgetComponent implements OnInit {
           query: GET_USER_ROLES_PERMISSIONS,
           variables: {
             resource: this.settings.resource,
-            roles: userRoles,
           },
         })
         .subscribe((res) => {
           if (res.data) {
-            this.canCreateRecords = res.data.resource.canCreateRecords || false;
+            this.canCreateRecords = get(
+              res,
+              'data.resource.canCreateRecords',
+              false
+            );
           }
         });
 
