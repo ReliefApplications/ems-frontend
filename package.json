@@ -89,6 +89,7 @@
     "survey-core": "^1.9.64",
     "survey-creator-angular": "^1.9.64",
     "survey-creator-core": "^1.9.64",
+    "surveyjs-widgets": "^1.9.66",
     "tinymce": "^5.10.4",
     "tslib": "^2.3.0",
     "uuid": "^8.3.1",

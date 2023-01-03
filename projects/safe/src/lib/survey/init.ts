@@ -15,6 +15,7 @@ import * as CommentWidget from './widgets/comment-widget';
 import * as OtherProperties from './global-properties/others';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
+import * as DateEditor from './editors/date.surveyjseditor';
 import { initLocalization } from './localization';
 
 /**
@@ -39,8 +40,9 @@ export const initCustomSurvey = (
   environment: any,
   referenceDataService: SafeReferenceDataService
 ): void => {
+  // load editors
+  DateEditor.init(domService);
   // load widgets (aka custom questions)
-
   CommentWidget.init(Survey);
   TextWidget.init(Survey, domService);
   // load components (same as widgets, but with less configuration options)
