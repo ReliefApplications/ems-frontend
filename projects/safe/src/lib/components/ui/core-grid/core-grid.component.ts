@@ -115,6 +115,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   @Input() showDetails = true;
   @Input() showExport = false;
   @Input() admin = false;
+  @Input() canCreateRecords = false;
 
   // === OUTPUTS ===
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
