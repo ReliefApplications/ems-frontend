@@ -17,7 +17,7 @@
         <span>{{ 'common.general' | translate }}</span>
       </ng-template>
       <ng-template matTabContent>
-        <safe-map-general [form]="tileForm"></safe-map-general>
+        <safe-map-general *ngIf="tileForm" [form]="tileForm"></safe-map-general>
       </ng-template>
     </mat-tab>
     <!-- LAYERS CONFIGURATION -->
@@ -35,7 +35,7 @@
         <safe-map-layers
           [form]="tileForm"
           [selectedFields]="selectedFields"
-          [formatedSelectedFields]="formatedSelectedFields"
+          [formattedSelectedFields]="formattedSelectedFields"
         ></safe-map-layers>
       </ng-template>
     </mat-tab>

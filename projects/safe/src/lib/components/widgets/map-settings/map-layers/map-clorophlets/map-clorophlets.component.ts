@@ -16,7 +16,7 @@ export class MapClorophletsComponent implements OnInit {
   @Input() clorophlets!: FormArray;
 
   @Input() selectedFields: any[] = [];
-  @Input() formatedSelectedFields: any[] = [];
+  @Input() formattedSelectedFields: any[] = [];
   @Input() query: any;
 
   public tableColumns = ['name', 'actions'];
@@ -48,7 +48,7 @@ export class MapClorophletsComponent implements OnInit {
       data: {
         value: this.clorophlets.at(index).value,
         fields: this.selectedFields,
-        formatedFields: this.formatedSelectedFields,
+        formattedFields: this.formattedSelectedFields,
         query: this.query,
       },
     });

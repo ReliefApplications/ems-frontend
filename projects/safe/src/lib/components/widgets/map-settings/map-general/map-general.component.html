@@ -5,8 +5,20 @@
       <mat-label>{{ 'common.name' | translate }}</mat-label>
       <input matInput formControlName="title" type="string" />
     </mat-form-field>
+    <!-- Resource selection -->
+    <mat-form-field appearance="outline" class="flex-1">
+      <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
+      <safe-graphql-select
+        valueField="id"
+        textField="name"
+        [query]="resourcesQuery"
+        formControlName="resource"
+        [selectedElements]="[resource]"
+      >
+      </safe-graphql-select>
+    </mat-form-field>
   </div>
-  <div class="flex flex-col mt-8">
+  <div class="flex flex-col mt-8" *ngIf="resource">
     <h2>{{ 'components.widget.settings.map.dataset' | translate }}</h2>
     <safe-alert class="mb-6">
       <safe-icon icon="info"></safe-icon>
@@ -14,6 +26,8 @@
     </safe-alert>
     <safe-query-builder
       [form]="$any(form.controls.query)"
+      [queryName]="resource.queryName"
+      [canSelectDataSet]="false"
       [canExpand]="false"
       [showStyle]="false"
       [showSort]="false"

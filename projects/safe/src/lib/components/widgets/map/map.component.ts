@@ -1,4 +1,4 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import {
   Component,
   AfterViewInit,
@@ -11,7 +11,10 @@ import { applyFilters } from './filter';
 import { DomService } from '../../../services/dom/dom.service';
 import get from 'lodash/get';
 import { SafeMapPopupComponent } from './map-popup/map-popup.component';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import {
+  QueryBuilderService,
+  QueryResponse,
+} from '../../../services/query-builder/query-builder.service';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -34,7 +37,7 @@ interface IMarkersLayerValue {
   [name: string]: any;
 }
 
-/** Available basemaps */
+/** Available baseMaps */
 const BASEMAP_LAYERS: any = {
   Streets: 'ArcGIS:Streets',
   Navigation: 'ArcGIS:Navigation',
@@ -75,7 +78,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private legendControl: any;
 
   // === RECORDS ===
-  private dataQuery: any;
+  private dataQuery!: QueryRef<QueryResponse>;
   private dataSubscription?: Subscription;
   private fields: any[] = [];
 
@@ -91,7 +94,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
    *
    * @param environment platform environment
    * @param apollo Apollo client
-   * @param queryBuilder The querybuilder service
+   * @param queryBuilder The queryBuilder service
    * @param domService Shared dom service
    */
   constructor(
@@ -107,7 +110,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   /**
    * Generation of an unique id for the map (in case multiple widgets use map).
    *
-   * @param parts Number of parts in the id (seperated by dashes "-")
+   * @param parts Number of parts in the id (separated by dashes "-")
    * @returns A random unique id
    */
   private generateUniqueId(parts: number = 4): string {
@@ -130,7 +133,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Gets the settings from the DB.
     if (this.settings.query) {
       const builtQuery = this.queryBuilder.buildQuery(this.settings);
-      this.dataQuery = this.apollo.watchQuery<any>({
+      if (!builtQuery) return;
+      this.dataQuery = this.apollo.watchQuery({
         query: builtQuery,
         variables: {
           first: 100,
@@ -233,23 +237,21 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private getData(): void {
     this.map.closePopup(this.popupMarker);
 
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-      (res: any) => {
-        const today = new Date();
-        this.lastUpdate =
-          ('0' + today.getHours()).slice(-2) +
-          ':' +
-          ('0' + today.getMinutes()).slice(-2);
-        // Empties all variables used in map
-        this.setLayers(res);
-        this.legendControl.update(
-          this.map,
-          this.settings,
-          this.overlays,
-          Object.keys(this.markersCategories)
-        );
-      }
-    );
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe((res) => {
+      const today = new Date();
+      this.lastUpdate =
+        ('0' + today.getHours()).slice(-2) +
+        ':' +
+        ('0' + today.getMinutes()).slice(-2);
+      // Empties all variables used in map
+      this.setLayers(res);
+      this.legendControl.update(
+        this.map,
+        this.settings,
+        this.overlays,
+        Object.keys(this.markersCategories)
+      );
+    });
   }
 
   /**
@@ -305,7 +307,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    // Loops throught clorophlets and adds them to the map
+    // Loops through clorophlets and adds them to the map
     if (this.settings.clorophlets) {
       this.settings.clorophlets.map((value: any) => {
         if (value.divisions.length > 0) {

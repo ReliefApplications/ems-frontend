@@ -38,7 +38,7 @@
     <div class="flex flex-col last:mb-0">
       <div class="flex gap-x-2 flex-wrap">
         <!-- Name -->
-        <mat-form-field appearance="outline" class=flex-auto>
+        <mat-form-field appearance="outline" class="flex-auto">
           <mat-label>
             {{ 'common.name' | translate }}
           </mat-label>
@@ -73,7 +73,7 @@
       <h2>
         {{ 'pages.apiConfiguration.host' | translate }}
       </h2>
-    <!-- Send ping request -->
+      <!-- Send ping request -->
       <safe-button
         icon="online_prediction"
         category="secondary"
@@ -117,7 +117,9 @@
 
     <!-- Authentication settings -->
     <ng-container *ngIf="apiForm.value.authType !== authType.public">
-      <h2 class="mt-8">{{ 'pages.apiConfiguration.authentication' | translate }}</h2>
+      <h2 class="mt-8">
+        {{ 'pages.apiConfiguration.authentication' | translate }}
+      </h2>
       <!-- Service to service connection -->
       <ng-container
         *ngIf="apiForm.value.authType === authType.serviceToService"
@@ -208,7 +210,9 @@
     </ng-container>
 
     <!-- GraphQL settings -->
-    <h2 class="mt-8">{{ 'pages.apiConfiguration.graphQL.title' | translate }}</h2>
+    <h2 class="mt-8">
+      {{ 'pages.apiConfiguration.graphQL.title' | translate }}
+    </h2>
     <div class="flex flex-col">
       <!-- GraphQL endpoint -->
       <mat-form-field appearance="outline">

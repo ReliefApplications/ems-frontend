@@ -49,7 +49,7 @@
     />
     <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
     <button
-      *ngIf="actions.add"
+      *ngIf="actions.add && canAdd"
       kendoButton
       (click)="action.emit({ action: 'add' })"
     >
