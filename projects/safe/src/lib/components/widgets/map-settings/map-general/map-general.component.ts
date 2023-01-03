@@ -1,7 +1,12 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { GetResourcesQueryResponse, GET_RESOURCES } from '../graphql/queries';
+import {
+  GetResourceQueryResponse,
+  GetResourcesQueryResponse,
+  GET_RESOURCE,
+  GET_RESOURCES,
+} from '../graphql/queries';
 import { Resource } from '../../../../models/resource.model';
 import { SafeGraphQLSelectComponent } from '../../../graphql-select/graphql-select.component';
 
@@ -47,10 +52,30 @@ export class MapGeneralComponent implements OnInit {
       },
     });
 
-    this.form.get('resource')?.valueChanges.subscribe((resource: Resource) => {
-      this.resource = this.resourceSelect?.elements
-        .getValue()
-        .find((x) => x.id === resource);
+    if (this.form.value.resource) {
+      this.getResource(this.form.value.resource);
+    }
+
+    this.form.get('resource')?.valueChanges.subscribe((value: string) => {
+      this.getResource(value);
     });
+  }
+
+  /**
+   * Get resource by id
+   *
+   * @param id resource id
+   */
+  private getResource(id: string): void {
+    this.apollo
+      .query<GetResourceQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          id,
+        },
+      })
+      .subscribe((res) => {
+        this.resource = res.data.resource;
+      });
   }
 }

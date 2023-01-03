@@ -1,4 +1,6 @@
-<div class="toolbar">
+<div
+  class="flex flex-row py-0 px-4 items-center justify-between h-14 border-b"
+>
   <div class="flex items-center gap-2 overflow-hidden">
     <!-- Title -->
     <h2 class="!m-0 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -20,7 +22,7 @@
       (save)="saveAccess($event)"
     ></safe-access>
   </div>
-  <div class="toolbar-buttons">
+  <div class="flex flex-row gap-2 items-center">
     <safe-button
       *ngIf="application?.canUpdate && locked"
       [isIcon]="true"
@@ -48,11 +50,10 @@
   <a
     mat-menu-item
     *ngFor="let setting of settings"
-    class="menu-item"
     [routerLink]="setting.path"
     routerLinkActive="active-link"
   >
-    <mat-icon class="nav-icon">
+    <mat-icon class="nav-icon mr-2.5">
       {{ setting.icon }}
     </mat-icon>
     {{ setting.name }}

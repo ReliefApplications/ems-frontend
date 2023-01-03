@@ -1,4 +1,8 @@
-<form mat-dialog-content [formGroup]="form" class="flex flex-col last:mb-0">
+<form
+  mat-dialog-content
+  [formGroup]="form"
+  class="flex flex-col gap-3 last:mb-0"
+>
   <mat-form-field appearance="outline">
     <mat-label>{{ 'common.label' | translate }}</mat-label>
     <input type="text" matInput formControlName="label" />

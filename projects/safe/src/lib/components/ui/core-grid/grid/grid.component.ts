@@ -162,6 +162,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   // === DISPLAY ===
   @Input() resizable = true;
   @Input() reorderable = true;
+  @Input() canAdd = false;
 
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {

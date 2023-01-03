@@ -26,4 +26,5 @@ export interface Resource {
     canDeleteRecords: any;
   };
   metadata?: any[];
+  canCreateRecords?: boolean;
 }
