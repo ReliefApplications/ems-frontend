@@ -1,5 +1,5 @@
 <safe-user-groups
-  *ngIf="!application"
+  *ngIf="canSeeGroups"
   [user]="user"
   (edit)="edit.emit($event)"
   [loading]="loading"
