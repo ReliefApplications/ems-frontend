@@ -190,35 +190,37 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             }
           );
 
-          this.dataQuery = this.apollo.watchQuery<any>({
-            query: builtQuery,
-            variables: {
-              first: this.pageInfo.first,
-              filter: layoutQuery.filter,
-              sortField: get(layoutQuery, 'sort.field', null),
-              sortOrder: get(layoutQuery, 'sort.order', ''),
-            },
-            fetchPolicy: 'network-only',
-            nextFetchPolicy: 'cache-first',
-          });
-          this.dataQuery.valueChanges.subscribe((res2) => {
-            const edges = res2.data?.[layoutQuery.name].edges;
-            if (!edges) return;
+          if (builtQuery) {
+            this.dataQuery = this.apollo.watchQuery<any>({
+              query: builtQuery,
+              variables: {
+                first: this.pageInfo.first,
+                filter: layoutQuery.filter,
+                sortField: get(layoutQuery, 'sort.field', null),
+                sortOrder: get(layoutQuery, 'sort.order', ''),
+              },
+              fetchPolicy: 'network-only',
+              nextFetchPolicy: 'cache-first',
+            });
+            this.dataQuery.valueChanges.subscribe((res2) => {
+              const edges = res2.data?.[layoutQuery.name].edges;
+              if (!edges) return;
 
-            const newCards = edges.map((e: any) => ({
-              ...this.settings.cards[0],
-              record: e.node,
-              layout: layouts[0],
-              metadata: fields,
-            }));
+              const newCards = edges.map((e: any) => ({
+                ...this.settings.cards[0],
+                record: e.node,
+                layout: layouts[0],
+                metadata: fields,
+              }));
 
-            this.cards = [...this.cards, ...newCards];
-            this.pageInfo.hasNextPage =
-              get(res2.data[layoutQuery.name], 'totalCount', 0) >
-              this.cards.length;
+              this.cards = [...this.cards, ...newCards];
+              this.pageInfo.hasNextPage =
+                get(res2.data[layoutQuery.name], 'totalCount', 0) >
+                this.cards.length;
 
-            this.loading = res2.loading;
-          });
+              this.loading = res2.loading;
+            });
+          }
         }
       });
   }

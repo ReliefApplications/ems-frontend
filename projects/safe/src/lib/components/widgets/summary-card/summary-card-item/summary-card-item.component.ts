@@ -166,28 +166,30 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
       }
       return f;
     });
-    this.apollo
-      .query<any>({
-        query: builtQuery,
-        variables: {
-          first: 1,
-          filter: {
-            // get only the record we need
-            logic: 'and',
-            filters: [
-              {
-                field: 'id',
-                operator: 'eq',
-                value: this.card.record,
-              },
-            ],
+    if (builtQuery) {
+      this.apollo
+        .query<any>({
+          query: builtQuery,
+          variables: {
+            first: 1,
+            filter: {
+              // get only the record we need
+              logic: 'and',
+              filters: [
+                {
+                  field: 'id',
+                  operator: 'eq',
+                  value: this.card.record,
+                },
+              ],
+            },
           },
-        },
-      })
-      .subscribe((res) => {
-        const record: any = get(res.data, `${queryName}.edges[0].node`, null);
-        this.fieldsValue = { ...record };
-      });
+        })
+        .subscribe((res) => {
+          const record: any = get(res.data, `${queryName}.edges[0].node`, null);
+          this.fieldsValue = { ...record };
+        });
+    }
   }
 
   /**
