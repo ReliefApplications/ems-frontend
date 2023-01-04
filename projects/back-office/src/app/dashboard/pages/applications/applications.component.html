@@ -9,6 +9,7 @@
   <!-- NEW APPLICATIONS -->
   <h2>{{ 'pages.applications.recent' | translate }}</h2>
   <safe-applications-summary
+    class="block mb-14"
     [loading]="loading"
     [canCreate]="canAdd"
     (add)="onAdd()"
@@ -127,7 +128,7 @@
                 {{ 'common.duplicate' | translate }}
               </button>
               <ng-container *ngIf="element.canDelete">
-                <safe-divider style="margin: unset"></safe-divider>
+                <safe-divider class="m-0"></safe-divider>
                 <button mat-menu-item (click)="onDelete(element, $event)">
                   <mat-icon>delete</mat-icon>
                   {{ 'common.delete' | translate }}

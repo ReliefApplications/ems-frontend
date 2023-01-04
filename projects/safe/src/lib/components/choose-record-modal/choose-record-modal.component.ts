@@ -87,6 +87,7 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.settings = { query: this.data.targetFormQuery };
     this.filter = this.settings.query?.filter || {};
+    if (!this.settings.query?.name) return;
     const builtQuery = this.queryBuilder.buildQuery({
       ...this.settings,
       query: {
@@ -94,17 +95,17 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
         fields: [{ kind: 'SCALAR', name: this.data.targetFormField }],
       },
     });
-    this.dataQuery = this.apollo.watchQuery<any>({
+    if (!builtQuery) return;
+    this.dataQuery = this.apollo.watchQuery({
       query: builtQuery,
       variables: {
-        ...builtQuery.variables,
         ...{
           first: ITEMS_PER_PAGE,
           filter: this.filter,
           sortField:
             this.settings.query?.sort && this.settings.query.sort.field
               ? this.settings.query.sort.field
-              : null,
+              : undefined,
           sortOrder: this.settings.query?.sort?.order || '',
         },
       },

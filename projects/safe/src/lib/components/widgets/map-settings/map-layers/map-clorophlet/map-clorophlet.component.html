@@ -2,7 +2,7 @@
   <form
     mat-dialog-content
     [formGroup]="form"
-    class="[&:not(td)]:flex [&:not(td)]:flex-col"
+    class="flex flex-col gap-3 [&:not(td)]:flex [&:not(td)]:flex-col"
   >
     <mat-form-field appearance="outline">
       <mat-label>{{ 'common.name' | translate }}</mat-label>
@@ -65,7 +65,7 @@
       [max]="100"
     ></mat-slider>
     <!-- LIST of Divisions -->
-    <h2 style="margin-top: 24px">
+    <h2 class="mt-6">
       {{
         'components.widget.settings.map.layers.clorophlet.division.title'
           | translate

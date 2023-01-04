@@ -1,6 +1,6 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
-  <div class="actions">
+  <div class="mb-4 flex flex-row justify-end">
     <safe-button
       icon="add"
       category="secondary"
@@ -52,7 +52,7 @@
                 <mat-icon>edit</mat-icon>
                 {{ 'common.edit' | translate }}
               </button>
-              <safe-divider style="margin: unset"></safe-divider>
+              <safe-divider class="m-0"></safe-divider>
               <button mat-menu-item color="warn" (click)="onDelete(element)">
                 <mat-icon>delete</mat-icon>
                 {{ 'common.delete' | translate }}

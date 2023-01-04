@@ -27,7 +27,10 @@ import { SafeAuthService } from '../../../services/auth/auth.service';
 import { SafeDownloadService } from '../../../services/download/download.service';
 import { SafeLayoutService } from '../../../services/layout/layout.service';
 import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import {
+  QueryBuilderService,
+  QueryResponse,
+} from '../../../services/query-builder/query-builder.service';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   ConvertRecordMutationResponse,
@@ -112,6 +115,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   @Input() showDetails = true;
   @Input() showExport = true;
   @Input() admin = false;
+  @Input() canCreateRecords = false;
 
   // === OUTPUTS ===
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
@@ -135,7 +139,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public fields: any[] = [];
   private metaFields: any;
   public detailsField?: any;
-  private dataQuery!: QueryRef<any>;
+  private dataQuery!: QueryRef<QueryResponse>;
   private metaQuery: any;
   private dataSubscription?: Subscription;
 
@@ -348,12 +352,12 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         ),
       };
     } else {
-      this.dataQuery = this.apollo.watchQuery<any>({
+      this.dataQuery = this.apollo.watchQuery({
         query: builtQuery,
         variables: {
           first: this.pageSize,
           filter: this.queryFilter,
-          sortField: this.sortField,
+          sortField: this.sortField || undefined,
           sortOrder: this.sortOrder,
           styles: this.style,
         },
@@ -620,7 +624,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.updatedItems = [];
     if (this.dataQuery) {
       this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-        (res: any) => {
+        (res) => {
           this.loading = false;
           this.status = {
             error: false,

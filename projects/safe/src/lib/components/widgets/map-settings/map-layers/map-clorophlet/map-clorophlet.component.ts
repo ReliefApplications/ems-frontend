@@ -8,7 +8,7 @@ import { MapClorophletDivisionComponent } from '../map-clorophlet-division/map-c
 interface DialogData {
   value: any;
   fields: any[];
-  formatedFields: any[];
+  formattedFields: any[];
   query: any;
 }
 
@@ -26,7 +26,7 @@ export class MapClorophletComponent implements OnInit {
   public tableColumns = ['label', 'color', 'actions'];
 
   public fields: any[] = [];
-  public formatedFields: any[] = [];
+  public formattedFields: any[] = [];
   public geoJSONfields: string[] = [];
   public query: any;
 
@@ -51,7 +51,7 @@ export class MapClorophletComponent implements OnInit {
   ) {
     this.form = clorophletForm(data.value);
     this.fields = data.fields;
-    this.formatedFields = data.formatedFields;
+    this.formattedFields = data.formattedFields;
     this.query = data.query;
     if (this.form.value.geoJSON) {
       this.updateGeoJSONfields(this.form.value.geoJSON);
@@ -85,7 +85,7 @@ export class MapClorophletComponent implements OnInit {
     const dialogRef = this.dialog.open(MapClorophletDivisionComponent, {
       data: {
         value: this.divisions.at(index).value,
-        fields: this.formatedFields,
+        fields: this.formattedFields,
         query: this.query,
       },
     });

@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
@@ -25,7 +31,7 @@ import { LayoutPreviewData } from './tab-layout-preview/tab-layout-preview.compo
     },
   ],
 })
-export class SafeQueryBuilderComponent implements OnInit {
+export class SafeQueryBuilderComponent implements OnChanges {
   // === QUERY BUILDER ===
   public availableQueries?: Observable<any[]>;
   public availableFields: any[] = [];
@@ -76,7 +82,7 @@ export class SafeQueryBuilderComponent implements OnInit {
   /**
    * Allows to inject the component without creating circular dependency.
    */
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.buildSettings();
   }
 
@@ -119,40 +125,42 @@ export class SafeQueryBuilderComponent implements OnInit {
           );
         }
       });
-      this.form?.controls.name.valueChanges.subscribe((res) => {
-        if (this.allQueries.find((x) => x === res)) {
-          this.availableFields = this.queryBuilder.getFields(res);
-          this.form?.setControl('filter', createFilterGroup(null));
-          this.form?.setControl(
-            'fields',
-            this.formBuilder.array([], Validators.required)
-          );
-          this.form?.setControl(
-            'sort',
-            this.formBuilder.group({
-              field: [''],
-              order: ['asc'],
-            })
-          );
-          if (this.form?.get('clorophlets')) {
-            this.form?.setControl('clorophlets', this.formBuilder.array([]));
+      this.form?.controls.name.valueChanges.subscribe((value) => {
+        if (value !== this.form?.value.name) {
+          if (this.allQueries.find((x) => x === value)) {
+            this.availableFields = this.queryBuilder.getFields(value);
+            this.form?.setControl('filter', createFilterGroup(null));
+            this.form?.setControl(
+              'fields',
+              this.formBuilder.array([], Validators.required)
+            );
+            this.form?.setControl(
+              'sort',
+              this.formBuilder.group({
+                field: [''],
+                order: ['asc'],
+              })
+            );
+            if (this.form?.get('clorophlets')) {
+              this.form?.setControl('clorophlets', this.formBuilder.array([]));
+            }
+          } else {
+            this.availableFields = [];
+            this.form?.setControl('filter', createFilterGroup(null));
+            this.form?.setControl('fields', this.formBuilder.array([]));
+            this.form?.setControl(
+              'sort',
+              this.formBuilder.group({
+                field: [''],
+                order: ['asc'],
+              })
+            );
+            if (this.form?.get('clorophlets')) {
+              this.form?.setControl('clorophlets', this.formBuilder.array([]));
+            }
           }
-        } else {
-          this.availableFields = [];
-          this.form?.setControl('filter', createFilterGroup(null));
-          this.form?.setControl('fields', this.formBuilder.array([]));
-          this.form?.setControl(
-            'sort',
-            this.formBuilder.group({
-              field: [''],
-              order: ['asc'],
-            })
-          );
-          if (this.form?.get('clorophlets')) {
-            this.form?.setControl('clorophlets', this.formBuilder.array([]));
-          }
+          this.filteredQueries = this.filterQueries(value);
         }
-        this.filteredQueries = this.filterQueries(res);
       });
     }
   }

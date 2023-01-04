@@ -18,6 +18,8 @@ import {
   GET_RECORD_BY_ID,
   GetFormByIdQueryResponse,
   GET_FORM_BY_ID,
+  GetUserRolesPermissionsQueryResponse,
+  GET_USER_ROLES_PERMISSIONS,
 } from './graphql/queries';
 import {
   Component,
@@ -61,6 +63,9 @@ export class SafeGridWidgetComponent implements OnInit {
   // === DATA ===
   @Input() widget: any;
   public loading = true;
+
+  // === PERMISSIONS ===
+  public canCreateRecords = false;
 
   // === CACHED CONFIGURATION ===
   public layout: Layout | null = null;
@@ -128,12 +133,30 @@ export class SafeGridWidgetComponent implements OnInit {
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
     if (this.settings.resource) {
       const layouts = get(this.settings, 'layouts', []);
       const aggregations = get(this.settings, 'aggregations', []);
+
+      // Get user permission on resource
+      this.apollo
+        .query<GetUserRolesPermissionsQueryResponse>({
+          query: GET_USER_ROLES_PERMISSIONS,
+          variables: {
+            resource: this.settings.resource,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            this.canCreateRecords = get(
+              res,
+              'data.resource.canCreateRecords',
+              false
+            );
+          }
+        });
 
       if (layouts.length > 0) {
         this.gridLayoutService
@@ -147,7 +170,6 @@ export class SafeGridWidgetComponent implements OnInit {
               .sort((a, b) => layouts.indexOf(a.id) - layouts.indexOf(b.id));
             this.layout = this.layouts[0] || null;
             if (!this.layout) {
-              console.log('làa');
               this.status = {
                 error: true,
               };

@@ -9,8 +9,9 @@
     (delete)="onDelete($event)"
     (edit)="onEdit($event)"
   ></safe-query-style-list>
-  <div class="actions">
+  <div class="flex justify-center mt-4">
     <safe-button
+      class="grow max-w-xs"
       icon="add"
       (click)="onAdd()"
       category="tertiary"

@@ -26,7 +26,7 @@
       <ng-container matColumnDef="actions" [stickyEnd]="true">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
-          <div style="display: flex">
+          <div class="flex">
             <!-- Permissions -->
             <ng-container *ngFor="let permission of element.permissions">
               <safe-button
@@ -102,10 +102,14 @@
       <tr
         mat-row
         *matRowDef="let row; columns: ['expandedDetail']"
-        style="height: 0"
+        class="h-0"
       ></tr>
     </table>
-    <safe-skeleton-table *ngIf="loading" [columns]="['common.name']">
+    <safe-skeleton-table
+      class="my-4 mx-0 w-full"
+      *ngIf="loading"
+      [columns]="['common.name']"
+    >
     </safe-skeleton-table>
   </div>
   <mat-paginator

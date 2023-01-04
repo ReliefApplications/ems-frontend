@@ -4,9 +4,9 @@
     {{ 'components.form.layout.update.preview.description' | translate }}
   </safe-alert>
   <safe-core-grid
+    class="h-96"
     [defaultLayout]="data?.defaultLayout || {}"
     [settings]="gridSettings"
-    style="height: 410px"
     (layoutChanged)="onGridLayoutChange($event)"
     (pageSizeChanged)="onPageSizeChange($event)"
   >

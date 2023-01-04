@@ -15,7 +15,7 @@
       <ng-container matColumnDef="actions" [stickyEnd]="true">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
-          <div style="display: flex">
+          <div class="flex">
             <safe-button
               [isIcon]="true"
               [icon]="element.canSee ? 'visibility' : 'visibility_off'"
