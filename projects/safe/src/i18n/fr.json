@@ -606,6 +606,12 @@
 		"notifications": {
 			"readAll": "Tout marquer comme lu"
 		},
+		"placeholders": {
+			"dataset": "JEU DE DONNÉES",
+			"now": "MAINTENANT",
+			"today": "AUJOURD’HUI",
+			"todayCalc": "AUJOURD’HUI($1$2)"
+		},
 		"preferences": {
 			"dateFormat": "Format de date et heure",
 			"language": "Langage",

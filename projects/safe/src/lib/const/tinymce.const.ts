@@ -52,7 +52,17 @@ export const EMAIL_EDITOR_CONFIG: RawEditorSettings = {
     'bold italic | quicklink h2 h3 blockquote quicktable',
   toolbar_mode: 'sliding',
   contextmenu: 'link image imagetools table',
-  content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
+  content_style: `.placeholder-chip {
+    padding: 4px;
+    font-weight: 600;
+    border-radius: 2px;
+    font-size: medium;
+    color: #ffffff99;
+    background-color: var(--bg-color);
+  }
+  body {
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+  }`,
   file_browser_callback: false, // removes possibility to upload files
   help_tabs: [
     'shortcuts', // the default shortcuts tab

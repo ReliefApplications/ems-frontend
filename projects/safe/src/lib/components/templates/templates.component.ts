@@ -6,6 +6,7 @@ import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.compon
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { TemplateTypeEnum } from '../../models/template.model';
+import { SafePlaceholderPipe } from '../../pipes/placeholder/placeholder.pipe';
 
 /**
  * A component to display the list of templates of an application
@@ -30,8 +31,13 @@ export class SafeTemplatesComponent implements OnInit {
    *
    * @param dialog The material dialog service
    * @param translate The translation service
+   * @param placeholder The placeholder pipe
    */
-  constructor(public dialog: MatDialog, private translate: TranslateService) {}
+  constructor(
+    public dialog: MatDialog,
+    private translate: TranslateService,
+    private placeholder: SafePlaceholderPipe
+  ) {}
 
   ngOnInit(): void {
     this.applicationService.application$.subscribe((value) => {
@@ -57,7 +63,7 @@ export class SafeTemplatesComponent implements OnInit {
           type: TemplateTypeEnum.EMAIL,
           content: {
             subject: value.subject,
-            body: value.body,
+            body: this.placeholder.transform(value.body, true),
           },
         });
     });
@@ -104,7 +110,7 @@ export class SafeTemplatesComponent implements OnInit {
           type: TemplateTypeEnum.EMAIL,
           content: {
             subject: value.subject,
-            body: value.body,
+            body: this.placeholder.transform(value.body, true),
           },
         });
     });
