@@ -1,6 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { Subscription } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 import { Application } from '../../models/application.model';
 import { SafeApplicationService } from '../../services/application/application.service';
 
@@ -12,36 +13,33 @@ import { SafeApplicationService } from '../../services/application/application.s
   templateUrl: './application-templates.component.html',
   styleUrls: ['./application-templates.component.scss'],
 })
-export class SafeApplicationTemplatesComponent implements OnInit, OnDestroy {
+export class SafeApplicationTemplatesComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public templates = new MatTableDataSource<any>([]);
-  private applicationSubscription?: Subscription;
 
   /**
    * Application templates page component
    *
    * @param applicationService Shared application service
    */
-  constructor(public applicationService: SafeApplicationService) {}
-
-  ngOnInit(): void {
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.templates.data = application.templates || [];
-            this.loading = false;
-          } else {
-            this.templates.data = [];
-          }
-        }
-      );
+  constructor(public applicationService: SafeApplicationService) {
+    super();
   }
 
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
+  ngOnInit(): void {
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.templates.data = application.templates || [];
+          this.loading = false;
+        } else {
+          this.templates.data = [];
+        }
+      });
   }
 }

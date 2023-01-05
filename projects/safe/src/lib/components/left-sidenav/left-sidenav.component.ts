@@ -4,16 +4,16 @@ import {
   Input,
   Inject,
   OnChanges,
-  OnDestroy,
   Output,
   EventEmitter,
   HostListener,
 } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { PermissionsManagement, PermissionType } from '../../models/user.model';
 import { Router } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * The left side navigator used in the main layout
@@ -23,7 +23,10 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
   templateUrl: './left-sidenav.component.html',
   styleUrls: ['./left-sidenav.component.scss'],
 })
-export class SafeLeftSidenavComponent implements OnInit, OnChanges, OnDestroy {
+export class SafeLeftSidenavComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
   @Input() appLayout = false;
   @Input() canAddPage = false;
   @Output() reorder: EventEmitter<any> = new EventEmitter();
@@ -39,9 +42,6 @@ export class SafeLeftSidenavComponent implements OnInit, OnChanges, OnDestroy {
   // === DISPLAY ===
   public largeDevice: boolean;
 
-  // === USER ===
-  private userSubscription?: Subscription;
-
   /**
    * Left sidenav visible in application edition and preview.
    *
@@ -54,6 +54,7 @@ export class SafeLeftSidenavComponent implements OnInit, OnChanges, OnDestroy {
     private router: Router,
     private authService: SafeAuthService
   ) {
+    super();
     this.environment = environment;
     this.largeDevice = window.innerWidth > 1024;
   }
@@ -69,20 +70,11 @@ export class SafeLeftSidenavComponent implements OnInit, OnChanges, OnDestroy {
     this.loadUserAndUpdateLayout();
   }
 
-  ngOnDestroy(): void {
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
-  }
-
   /**
    * Load the user and update availables navGroups accordingly
    */
   private loadUserAndUpdateLayout(): void {
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
-    this.userSubscription = this.authService.user$.subscribe(() => {
+    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.filteredNavGroups = [];
       for (const group of this.navGroups) {
         const navItems = group.navItems.filter((item: any) => {

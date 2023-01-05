@@ -4,7 +4,6 @@ import {
   Inject,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
@@ -22,7 +21,6 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Subscription } from 'rxjs';
 import { SafeAuthService } from '../../../services/auth/auth.service';
 import { SafeDownloadService } from '../../../services/download/download.service';
 import { SafeLayoutService } from '../../../services/layout/layout.service';
@@ -57,6 +55,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
 import { SafeDateTranslateService } from '../../../services/date-translate/date-translate.service';
 import { SafeApplicationService } from '../../../services/application/application.service';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Default file name when exporting grid data.
@@ -80,7 +80,10 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
   templateUrl: './core-grid.component.html',
   styleUrls: ['./core-grid.component.scss'],
 })
-export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
+export class SafeCoreGridComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
   // === INPUTS ===
   @Input() settings: GridSettings | any = {};
   /** Default grid layout */
@@ -141,7 +144,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public detailsField?: any;
   private dataQuery!: QueryRef<QueryResponse>;
   private metaQuery: any;
-  private dataSubscription?: Subscription;
 
   // === PAGINATION ===
   public pageSize = 10;
@@ -291,6 +293,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private dateTranslate: SafeDateTranslateService,
     private applicationService: SafeApplicationService
   ) {
+    super();
     this.isAdmin =
       this.authService.userIsAdmin && environment.module === 'backoffice';
   }
@@ -421,15 +424,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       };
     }
     this.loadTemplate();
-  }
-
-  /**
-   * Removes subscriptions when component is destroyed, to avoid duplication.
-   */
-  ngOnDestroy(): void {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
   }
 
   /**
@@ -623,7 +617,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.updatedItems = [];
     if (this.dataQuery) {
-      this.dataSubscription = this.dataQuery.valueChanges.subscribe(
+      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
         (res) => {
           this.loading = false;
           this.status = {
