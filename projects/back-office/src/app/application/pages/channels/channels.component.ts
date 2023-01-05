@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -10,7 +10,6 @@ import {
   SafeConfirmService,
   SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AddChannelModalComponent } from './components/add-channel-modal/add-channel-modal.component';
 import { EditChannelModalComponent } from './components/edit-channel-modal/edit-channel-modal.component';
