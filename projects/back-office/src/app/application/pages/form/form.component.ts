@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -11,6 +11,7 @@ import {
   SafeApplicationService,
   SafeSnackBarService,
   SafeWorkflowService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import {
   GetFormByIdQueryResponse,
@@ -26,7 +27,7 @@ import {
   EditPageMutationResponse,
   EDIT_PAGE,
 } from './graphql/mutations';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
@@ -37,7 +38,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent implements OnInit, OnDestroy {
+export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   @ViewChild(SafeFormComponent)
   private formComponent?: SafeFormComponent;
 
@@ -55,9 +56,6 @@ export class FormComponent implements OnInit, OnDestroy {
   public tabNameForm: FormGroup = new FormGroup({});
   public page?: Page;
   public step?: Step;
-
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
   public isStep = false;
 
   /**
@@ -79,10 +77,12 @@ export class FormComponent implements OnInit, OnDestroy {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.formActive = false;
       this.loading = true;
       this.id = params.id;
@@ -309,12 +309,6 @@ export class FormComponent implements OnInit, OnDestroy {
           relativeTo: this.route,
         });
       }
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
     }
   }
 }

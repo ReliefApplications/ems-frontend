@@ -1,10 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -19,9 +13,9 @@ import {
   referenceDataType,
   ApiConfiguration,
   SafeBreadcrumbService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Subscription } from 'rxjs';
 import {
   EditReferenceDataMutationResponse,
   EDIT_REFERENCE_DATA,
@@ -36,6 +30,7 @@ import {
 } from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
@@ -50,12 +45,14 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
   templateUrl: './reference-data.component.html',
   styleUrls: ['./reference-data.component.scss'],
 })
-export class ReferenceDataComponent implements OnInit, OnDestroy {
+export class ReferenceDataComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public id = '';
   public referenceData?: ReferenceData;
-  private apolloSubscription?: Subscription;
 
   // === FORM ===
   public referenceForm: FormGroup = new FormGroup({});
@@ -104,7 +101,9 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private translateService: TranslateService,
     private breadcrumbService: SafeBreadcrumbService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Create the Reference data query, and subscribe to the query changes.
@@ -112,14 +111,15 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
-      this.apolloSubscription = this.apollo
+      this.apollo
         .watchQuery<GetReferenceDataQueryResponse>({
           query: GET_REFERENCE_DATA,
           variables: {
             id: this.id,
           },
         })
-        .valueChanges.subscribe(
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe(
           (res) => {
             if (res.data.referenceData) {
               this.referenceData = res.data.referenceData;
@@ -183,15 +183,6 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Unsubscribe from the apollo subscription if needed.
-   */
-  ngOnDestroy(): void {
-    if (this.apolloSubscription) {
-      this.apolloSubscription.unsubscribe();
-    }
-  }
-
-  /**
    * Load all Api Configurations.
    *
    * @param type type of API configuration
@@ -244,9 +235,6 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
    * @param e permission event
    */
   saveAccess(e: any): void {
-    if (this.apolloSubscription) {
-      this.apolloSubscription.unsubscribe();
-    }
     this.loading = true;
     this.apollo
       .mutate<EditReferenceDataMutationResponse>({
@@ -268,9 +256,6 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
    * Edit the Reference data using referenceForm changes.
    */
   onSave(): void {
-    if (this.apolloSubscription) {
-      this.apolloSubscription.unsubscribe();
-    }
     this.loading = true;
     const variables = { id: this.id };
     Object.assign(
