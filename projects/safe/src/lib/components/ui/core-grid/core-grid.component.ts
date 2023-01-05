@@ -567,6 +567,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           // if no error, reload the grid
           this.reloadData();
         }
+        this.reloadHistory.next(true);
       });
     }
   }
