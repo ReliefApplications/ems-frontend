@@ -20,7 +20,7 @@
       (save)="saveAccess($event)"
     ></safe-access>
   </div>
-  <div class="flex flex-row gap-2 items-center">
+  <div class="flex flex-row gap-2 items-center" *ngIf="showActions">
     <safe-button
       *ngIf="application?.canUpdate && locked"
       [isIcon]="true"
@@ -33,7 +33,6 @@
       'common.close' | translate
     }}</safe-button>
     <safe-button
-      *ngIf="showPublish"
       category="secondary"
       variant="success"
       (click)="onPublish()"

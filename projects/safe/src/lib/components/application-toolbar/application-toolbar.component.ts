@@ -21,7 +21,7 @@ export class SafeApplicationToolbarComponent implements OnInit, OnDestroy {
   @Input() title = '';
   @Input() settings: any[] = [];
   @Input() canUpdate = false;
-  @Input() showPublish = false;
+  @Input() showActions = false;
 
   // === APPLICATION ===
   public application: Application | null = null;
