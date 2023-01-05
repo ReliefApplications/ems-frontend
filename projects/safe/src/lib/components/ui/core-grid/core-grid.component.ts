@@ -57,6 +57,7 @@ import { SafeDateTranslateService } from '../../../services/date-translate/date-
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 /**
  * Default file name when exporting grid data.
@@ -162,6 +163,8 @@ export class SafeCoreGridComponent
     error: false,
   };
   private templateStructure = '';
+  // Refresh content of the history
+  private refresh$: Subject<boolean> = new Subject<boolean>();
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -691,6 +694,7 @@ export class SafeCoreGridComponent
     this.onPageChange({ skip: 0, take: this.pageSize });
     this.selectedRows = [];
     // this.updatedItems = [];
+    this.refresh$.next(true);
   }
 
   // === SELECTION ===
@@ -1006,6 +1010,7 @@ export class SafeCoreGridComponent
         id: item.id,
         revert: (version: any) => this.confirmRevertDialog(item, version),
         template: this.settings.template || null,
+        refresh$: this.refresh$,
       },
     });
   }
