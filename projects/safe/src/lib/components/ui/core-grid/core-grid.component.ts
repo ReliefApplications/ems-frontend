@@ -22,7 +22,7 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { SafeAuthService } from '../../../services/auth/auth.service';
 import { SafeDownloadService } from '../../../services/download/download.service';
 import { SafeLayoutService } from '../../../services/layout/layout.service';
@@ -142,6 +142,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   private dataQuery!: QueryRef<QueryResponse>;
   private metaQuery: any;
   private dataSubscription?: Subscription;
+  public reloadHistory: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
 
   // === PAGINATION ===
   public pageSize = 10;
@@ -901,6 +904,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       if (value) {
         this.validateRecords(ids);
         this.reloadData();
+        this.reloadHistory.next(true);
       }
     });
   }
@@ -1012,6 +1016,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         id: item.id,
         revert: (version: any) => this.confirmRevertDialog(item, version),
         template: this.settings.template || null,
+        reload: this.reloadHistory.asObservable(),
       },
     });
   }
