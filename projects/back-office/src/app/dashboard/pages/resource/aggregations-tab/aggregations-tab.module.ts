@@ -12,6 +12,7 @@ import {
   SafeAggregationBuilderModule,
   SafeDateModule,
   SafeSkeletonTableModule,
+  SafeEmptyModule,
 } from '@safe/builder';
 import { AggregationsTabComponent } from './aggregations-tab.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -35,6 +36,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     SafeDateModule,
     SafeSkeletonTableModule,
     MatPaginatorModule,
+    SafeEmptyModule,
   ],
 })
 export class AggregationsTabModule {}

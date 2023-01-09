@@ -12,6 +12,7 @@ import {
   SafeEditLayoutModalModule,
   SafeDateModule,
   SafeSkeletonTableModule,
+  SafeEmptyModule,
 } from '@safe/builder';
 import { LayoutsTabComponent } from './layouts-tab.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -35,6 +36,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     SafeDateModule,
     SafeSkeletonTableModule,
     MatPaginatorModule,
+    SafeEmptyModule,
   ],
 })
 export class LayoutsTabModule {}

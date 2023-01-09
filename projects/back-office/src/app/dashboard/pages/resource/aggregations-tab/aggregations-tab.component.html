@@ -69,7 +69,9 @@
       >
       </safe-skeleton-table>
     </div>
+    <!-- Pagination -->
     <mat-paginator
+      *ngIf="!empty"
       [disabled]="loading"
       [pageIndex]="pageInfo.pageIndex"
       [pageSize]="pageInfo.pageSize"
@@ -78,5 +80,11 @@
       (page)="onPage($event)"
     >
     </mat-paginator>
+    <!-- Empty indicator -->
+    <safe-empty
+      class="m-auto py-6 px-0 bg-white"
+      *ngIf="empty"
+      [title]="'components.resource.empty.aggregations' | translate"
+    ></safe-empty>
   </div>
 </div>
