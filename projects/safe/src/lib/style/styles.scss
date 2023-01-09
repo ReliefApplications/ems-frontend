@@ -6,6 +6,15 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+// === REMOVE SCROLLBAR COLOR STYLE FROM SURVEYJS ===
+::-webkit-scrollbar {
+  background-color: transparent !important;
+
+  &-thumb {
+    background-color: #d5d3d9 !important;
+  }
+}
+
 // === SURVEY CREATOR ===
 survey-creator,
 .sv-popup,

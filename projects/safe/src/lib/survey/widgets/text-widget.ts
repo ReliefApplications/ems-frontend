@@ -4,7 +4,6 @@ import {
   DateTimePickerComponent,
   TimePickerComponent,
 } from '@progress/kendo-angular-dateinputs';
-import * as SurveyCreator from 'survey-creator-core';
 import { EmbeddedViewRef } from '@angular/core';
 import { ButtonCategory } from '../../components/ui/button/button-category.enum';
 import { SafeButtonComponent } from '../../components/ui/button/button.component';
@@ -34,28 +33,8 @@ export const init = (Survey: any, domService: DomService): void => {
         ['number', 'month', 'week'].includes(obj.inputType || '');
       // create new min and max properties for date, datetime and time types
       serializer.addProperty('text', {
-        name: 'dateMin',
-        type: 'date',
-        category: 'general',
-        visibleIndex: 8,
-        dependsOn: 'inputType',
-        visibleIf: (obj: QuestionText) =>
-          ['date', 'datetime', 'datetime-local', 'time'].includes(
-            obj.inputType || ''
-          ),
-        onPropertyEditorUpdate: (obj: QuestionText, propertyEditor: any) => {
-          if (!!obj && !!obj.inputType) {
-            propertyEditor.inputType = obj.inputType;
-          }
-        },
-        onSetValue: (obj: QuestionText, value: any) => {
-          obj.setPropertyValue('dateMin', value);
-          obj.setPropertyValue('min', value);
-        },
-      });
-      serializer.addProperty('text', {
         name: 'dateMax',
-        type: 'date',
+        type: 'date-editor',
         category: 'general',
         visibleIndex: 9,
         dependsOn: 'inputType',
@@ -71,6 +50,26 @@ export const init = (Survey: any, domService: DomService): void => {
         onSetValue: (obj: QuestionText, value: any) => {
           obj.setPropertyValue('dateMax', value);
           obj.setPropertyValue('max', value);
+        },
+      });
+      serializer.addProperty('text', {
+        name: 'dateMin',
+        type: 'date-editor',
+        category: 'general',
+        visibleIndex: 9,
+        dependsOn: 'inputType',
+        visibleIf: (obj: QuestionText) =>
+          ['date', 'datetime', 'datetime-local', 'time'].includes(
+            obj.inputType || ''
+          ),
+        onPropertyEditorUpdate: (obj: QuestionText, propertyEditor: any) => {
+          if (!!obj && !!obj.inputType) {
+            propertyEditor.inputType = obj.inputType;
+          }
+        },
+        onSetValue: (obj: QuestionText, value: any) => {
+          obj.setPropertyValue('dateMin', value);
+          obj.setPropertyValue('min', value);
         },
       });
       // register the editor for type "date" with kendo date picker

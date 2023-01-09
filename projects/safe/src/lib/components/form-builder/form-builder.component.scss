@@ -31,4 +31,34 @@
     padding: 0 !important;
     margin-bottom: 4px;
   }
+
+  // Copy styles from surveyjs to kendo pickers
+  .svc-creator {
+    kendo-datepicker,
+    kendo-datetimepicker,
+    kendo-timepicker {
+      width: 100%;
+      border: 1px solid #e5e7eb;
+      border-radius: 0px;
+
+      .k-dateinput-wrap {
+        padding-left: 6px;
+        padding-block: 8px;
+
+        input {
+          color: #000;
+          font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial,
+            sans-serif;
+          font-size: calc(2 * var(--base-unit, 8px));
+          border: none !important;
+        }
+      }
+
+      span.k-select {
+        width: unset;
+        background: none;
+        padding-inline: 16px;
+      }
+    }
+  }
 }

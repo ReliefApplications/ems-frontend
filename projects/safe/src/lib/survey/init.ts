@@ -42,20 +42,25 @@ export const initCustomSurvey = (
 ): void => {
   // load editors
   DateEditor.init(domService);
+
   // load widgets (aka custom questions)
   CommentWidget.init(Survey);
   TextWidget.init(Survey, domService);
+
   // load components (same as widgets, but with less configuration options)
   ResourceComponent.init(Survey, domService, apollo, dialog, formBuilder);
   ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
   OwnerComponent.init(Survey, domService, apollo);
   UsersComponent.init(Survey, domService, apollo);
+
   // load global properties
   ReferenceDataProperties.init(Survey, domService, referenceDataService);
   TooltipProperty.init(Survey);
   OtherProperties.init(Survey, environment);
+
   // set localization
   initLocalization(Survey);
+
   // load internal functions
   addCustomFunctions(Survey, authService, apollo);
 };
