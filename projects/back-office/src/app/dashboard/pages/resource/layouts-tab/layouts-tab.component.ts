@@ -40,9 +40,7 @@ export class LayoutsTabComponent implements OnInit {
     endCursor: '',
   };
 
-  /**
-   * Getter to know if the layouts tab is empty.
-   */
+  /** @returns True if the layouts tab is empty */
   get empty(): boolean {
     return this.loading || this.layouts.length === 0;
   }
