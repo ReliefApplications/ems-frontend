@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GetRolesQueryResponse, GET_ROLES } from './graphql/queries';
 import { Role } from '../../../models/user.model';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Interface defining the structure of the data
@@ -22,7 +24,10 @@ interface DialogData {
   templateUrl: './edit-access.component.html',
   styleUrls: ['./edit-access.component.scss'],
 })
-export class SafeEditAccessComponent implements OnInit {
+export class SafeEditAccessComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public roles: Role[] = [];
@@ -44,20 +49,23 @@ export class SafeEditAccessComponent implements OnInit {
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeEditAccessComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Gets list of roles, and builds the form
    */
   ngOnInit(): void {
     this.apollo
-      .watchQuery<GetRolesQueryResponse>({
+      .query<GetRolesQueryResponse>({
         query: GET_ROLES,
         variables: {
           application: this.data.application,
         },
       })
-      .valueChanges.subscribe((res) => {
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
         this.roles = res.data.roles;
         this.loading = res.loading;
       });

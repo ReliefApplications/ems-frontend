@@ -18,6 +18,8 @@ import { SafeAddRoleComponent } from '../add-role/add-role.component';
 import { SafeSnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 import get from 'lodash/get';
 import { SafeRestService } from '../../../../services/rest/rest.service';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * This component is used to display the groups tab in the platform
@@ -27,7 +29,10 @@ import { SafeRestService } from '../../../../services/rest/rest.service';
   templateUrl: './group-list.component.html',
   styleUrls: ['./group-list.component.scss'],
 })
-export class SafeGroupListComponent implements OnInit {
+export class SafeGroupListComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public loadingFetch = false;
@@ -54,7 +59,9 @@ export class SafeGroupListComponent implements OnInit {
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private restService: SafeRestService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.getGroups();
@@ -86,10 +93,11 @@ export class SafeGroupListComponent implements OnInit {
    */
   private getGroups(): void {
     this.apollo
-      .watchQuery<GetGroupsQueryResponse>({
+      .query<GetGroupsQueryResponse>({
         query: GET_GROUPS,
       })
-      .valueChanges.subscribe((res) => {
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
         this.groups.data = res.data.groups;
         // this.manualCreation = res.data.groups.manualCreation;
         this.loading = res.loading;
@@ -101,9 +109,12 @@ export class SafeGroupListComponent implements OnInit {
    */
   private getPermissionsConfiguration(): void {
     const url = '/permissions/configuration';
-    this.restService.get(url).subscribe((res) => {
-      this.manualCreation = get(res, 'groups.local', true);
-    });
+    this.restService
+      .get(url)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.manualCreation = get(res, 'groups.local', true);
+      });
   }
 
   /**
@@ -113,31 +124,37 @@ export class SafeGroupListComponent implements OnInit {
     const dialogRef = this.dialog.open(SafeAddRoleComponent, {
       data: { title: 'components.group.add.title' },
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-        this.apollo
-          .mutate<AddGroupMutationResponse>({
-            mutation: ADD_GROUP,
-            variables: {
-              title: value.title,
-            },
-          })
-          .subscribe(
-            () => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectCreated', {
-                  type: this.translate.instant('common.role.one').toLowerCase(),
-                  value: value.title,
-                })
-              );
-              this.getGroups();
-            },
-            (err) => {
-              console.log(err);
-            }
-          );
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.apollo
+            .mutate<AddGroupMutationResponse>({
+              mutation: ADD_GROUP,
+              variables: {
+                title: value.title,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+              () => {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.role.one')
+                      .toLowerCase(),
+                    value: value.title,
+                  })
+                );
+                this.getGroups();
+              },
+              (err) => {
+                console.log(err);
+              }
+            );
+        }
+      });
   }
 
   /** Fetches groups from service */
@@ -157,6 +174,7 @@ export class SafeGroupListComponent implements OnInit {
     );
     this.apollo
       .mutate<FetchGroupsMutationResponse>({ mutation: FETCH_GROUPS })
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (res) => {
           if (res.data) this.groups.data = res.data.fetchGroups || [];
@@ -200,24 +218,28 @@ export class SafeGroupListComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-        this.apollo
-          .mutate<DeleteGroupMutationResponse>({
-            mutation: DELETE_GROUP,
-            variables: {
-              id: item.id,
-            },
-          })
-          .subscribe(() => {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: item.title,
-              })
-            );
-            this.getGroups();
-          });
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.apollo
+            .mutate<DeleteGroupMutationResponse>({
+              mutation: DELETE_GROUP,
+              variables: {
+                id: item.id,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: item.title,
+                })
+              );
+              this.getGroups();
+            });
+        }
+      });
   }
 }
