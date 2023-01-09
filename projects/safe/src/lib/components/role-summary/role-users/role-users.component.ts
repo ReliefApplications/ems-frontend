@@ -8,6 +8,8 @@ import {
   GET_ROLE_AUTO_ASSIGNED_USERS,
   GET_ROLE_USERS,
 } from './graphql/queries';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -20,7 +22,10 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './role-users.component.html',
   styleUrls: ['./role-users.component.scss'],
 })
-export class RoleUsersComponent implements OnInit {
+export class RoleUsersComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() role!: Role;
   @Input() autoAssigned = false;
   public loading = true;
@@ -51,7 +56,9 @@ export class RoleUsersComponent implements OnInit {
    *
    * @param apollo apollo client
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo) {
+    super();
+  }
 
   ngOnInit(): void {
     this.usersQuery = this.apollo.watchQuery<
@@ -63,34 +70,38 @@ export class RoleUsersComponent implements OnInit {
         first: DEFAULT_PAGE_SIZE,
       },
     });
-    this.usersQuery.valueChanges.subscribe((res) => {
-      if (this.autoAssigned) {
-        if ('autoAssignedUsers' in res.data.role) {
-          this.cachedUsers = res.data.role.autoAssignedUsers.edges.map(
-            (x: any) => x.node
-          );
-          this.users.data = this.cachedUsers.slice(
-            this.pageInfo.pageSize * this.pageInfo.pageIndex,
-            this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-          );
-          this.pageInfo.length = res.data.role.autoAssignedUsers.totalCount;
-          this.pageInfo.endCursor =
-            res.data.role.autoAssignedUsers.pageInfo.endCursor;
+    this.usersQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        if (this.autoAssigned) {
+          if ('autoAssignedUsers' in res.data.role) {
+            this.cachedUsers = res.data.role.autoAssignedUsers.edges.map(
+              (x: any) => x.node
+            );
+            this.users.data = this.cachedUsers.slice(
+              this.pageInfo.pageSize * this.pageInfo.pageIndex,
+              this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+            );
+            this.pageInfo.length = res.data.role.autoAssignedUsers.totalCount;
+            this.pageInfo.endCursor =
+              res.data.role.autoAssignedUsers.pageInfo.endCursor;
+          }
+        } else {
+          if ('users' in res.data.role) {
+            this.cachedUsers = res.data.role.users.edges.map(
+              (x: any) => x.node
+            );
+            this.users.data = this.cachedUsers.slice(
+              this.pageInfo.pageSize * this.pageInfo.pageIndex,
+              this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+            );
+            this.pageInfo.length = res.data.role.users.totalCount;
+            this.pageInfo.endCursor = res.data.role.users.pageInfo.endCursor;
+          }
         }
-      } else {
-        if ('users' in res.data.role) {
-          this.cachedUsers = res.data.role.users.edges.map((x: any) => x.node);
-          this.users.data = this.cachedUsers.slice(
-            this.pageInfo.pageSize * this.pageInfo.pageIndex,
-            this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-          );
-          this.pageInfo.length = res.data.role.users.totalCount;
-          this.pageInfo.endCursor = res.data.role.users.pageInfo.endCursor;
-        }
-      }
-      this.loading = res.loading;
-      this.updating = false;
-    });
+        this.loading = res.loading;
+        this.updating = false;
+      });
   }
 
   /**

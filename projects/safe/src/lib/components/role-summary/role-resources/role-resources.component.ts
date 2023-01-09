@@ -26,6 +26,8 @@ import {
   EDIT_FULL_RESOURCE_ACCESS,
 } from '../graphql/mutations';
 import { Permission } from './permissions.types';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -59,7 +61,10 @@ interface TableResourceElement {
     ]),
   ],
 })
-export class RoleResourcesComponent implements OnInit {
+export class RoleResourcesComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() role!: Role; // Opened role
 
   // === TABLE ELEMENTS ===
@@ -91,7 +96,9 @@ export class RoleResourcesComponent implements OnInit {
    * @param apollo Apollo client service
    * @param snackBar shared snackbar service
    */
-  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
+  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {
+    super();
+  }
 
   /** Load the resources. */
   ngOnInit(): void {
@@ -105,20 +112,22 @@ export class RoleResourcesComponent implements OnInit {
       },
     });
 
-    this.resourcesQuery.valueChanges.subscribe((res) => {
-      this.cachedResources = res.data.resources.edges.map((x) => x.node);
-      this.resources.data = this.setTableElements(
-        this.cachedResources.slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        )
-      );
-      this.pageInfo.length = res.data.resources.totalCount;
-      this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
-      this.loading = res.loading;
-      this.updating = res.loading;
-      this.filterLoading = false;
-    });
+    this.resourcesQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.cachedResources = res.data.resources.edges.map((x) => x.node);
+        this.resources.data = this.setTableElements(
+          this.cachedResources.slice(
+            this.pageInfo.pageSize * this.pageInfo.pageIndex,
+            this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+          )
+        );
+        this.pageInfo.length = res.data.resources.totalCount;
+        this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
+        this.loading = res.loading;
+        this.updating = res.loading;
+        this.filterLoading = false;
+      });
   }
 
   /**
@@ -250,6 +259,7 @@ export class RoleResourcesComponent implements OnInit {
             role: this.role.id,
           },
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe((res) => {
           if (res.data.resource) {
             this.openedResource = res.data.resource;
@@ -339,6 +349,7 @@ export class RoleResourcesComponent implements OnInit {
           role: this.role.id as string,
         },
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (res) => {
           if (res.data?.editResource) {
@@ -379,6 +390,7 @@ export class RoleResourcesComponent implements OnInit {
           role: this.role.id as string,
         },
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (res) => {
           if (res.data?.editResource) {
@@ -442,6 +454,7 @@ export class RoleResourcesComponent implements OnInit {
           },
         },
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (res) => {
           if (res.data?.editResource) {

@@ -6,6 +6,8 @@ import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { Role } from '../../../models/user.model';
 import { GetChannelsQueryResponse, GET_CHANNELS } from '../graphql/queries';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Channels tab of Role Summary.
@@ -15,7 +17,10 @@ import { GetChannelsQueryResponse, GET_CHANNELS } from '../graphql/queries';
   templateUrl: './role-channels.component.html',
   styleUrls: ['./role-channels.component.scss'],
 })
-export class RoleChannelsComponent implements OnInit {
+export class RoleChannelsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() role!: Role;
   @Input() application?: Application;
 
@@ -40,20 +45,23 @@ export class RoleChannelsComponent implements OnInit {
    * @param fb Angular form builder
    * @param apollo Apollo client
    */
-  constructor(private fb: FormBuilder, private apollo: Apollo) {}
+  constructor(private fb: FormBuilder, private apollo: Apollo) {
+    super();
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({
       channels: [get(this.role, 'channels', []).map((x) => x.id)],
     });
     this.apollo
-      .watchQuery<GetChannelsQueryResponse>({
+      .query<GetChannelsQueryResponse>({
         query: GET_CHANNELS,
         variables: {
           application: this.application?.id,
         },
       })
-      .valueChanges.subscribe((res) => {
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
         this.channels = res.data.channels;
         // Move channels in an array under corresponding applications.
         this.applications = Array.from(
