@@ -4,18 +4,26 @@ import { FormBuilder } from '@angular/forms';
 import { DomService } from '../services/dom/dom.service';
 import { SafeAuthService } from '../services/auth/auth.service';
 import { SafeReferenceDataService } from '../services/reference-data/reference-data.service';
+
 import addCustomFunctions from '../utils/custom-functions';
 
 import * as ResourceComponent from './components/resource';
 import * as ResourcesComponent from './components/resources';
 import * as OwnerComponent from './components/owner';
 import * as UsersComponent from './components/users';
+
 import * as TextWidget from './widgets/text-widget';
 import * as CommentWidget from './widgets/comment-widget';
+
 import * as OtherProperties from './global-properties/others';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
+
 import * as DateEditor from './editors/date.surveyjseditor';
+import * as ResourceDropdown from './editors/resource.surveyjseditor';
+import * as ResourceFields from './editors/resourceFields.surveyjseditor';
+import * as Description from './editors/description.surveyjseditor';
+
 import { initLocalization } from './localization';
 
 /**
@@ -42,13 +50,16 @@ export const initCustomSurvey = (
 ): void => {
   // load editors
   DateEditor.init(domService);
+  ResourceDropdown.init(domService);
+  ResourceFields.init(apollo, formBuilder, dialog, environment);
+  Description.init();
 
   // load widgets (aka custom questions)
   CommentWidget.init(Survey);
   TextWidget.init(Survey, domService);
 
   // load components (same as widgets, but with less configuration options)
-  ResourceComponent.init(Survey, domService, apollo, dialog, formBuilder);
+  ResourceComponent.init(Survey, apollo, dialog);
   ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
   OwnerComponent.init(Survey, domService, apollo);
   UsersComponent.init(Survey, domService, apollo);

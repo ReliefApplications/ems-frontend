@@ -6,7 +6,10 @@
         [record]="record"
         (showHistory)="onShowHistory()"
       ></safe-record-summary>
-      <safe-form-actions *ngIf="surveyModel" [survey]="surveyModel"></safe-form-actions>
+      <safe-form-actions
+        *ngIf="surveyModel"
+        [survey]="surveyModel"
+      ></safe-form-actions>
     </div>
     <div mat-dialog-title>
       <mat-tab-group
@@ -32,7 +35,7 @@
       </mat-tab-group>
     </div>
   </ng-container>
-  <mat-dialog-content id="formContainer">
+  <mat-dialog-content #formContainer>
     <survey [model]="surveyModel"></survey>
   </mat-dialog-content>
   <mat-dialog-actions align="end">

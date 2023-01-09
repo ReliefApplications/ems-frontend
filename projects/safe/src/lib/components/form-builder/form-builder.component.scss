@@ -32,6 +32,14 @@
     margin-bottom: 4px;
   }
 
+  .spg-question__content {
+    cursor: auto !important;
+  }
+
+  .spg-panel.spg-row__panel {
+    background-color: #f3f3f3;
+  }
+
   // Copy styles from surveyjs to kendo pickers
   .svc-creator {
     kendo-datepicker,
