@@ -1,7 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { Application, User, Role, SafeApplicationService } from '@safe/builder';
-import { Subscription } from 'rxjs';
+import {
+  Application,
+  User,
+  Role,
+  SafeApplicationService,
+  SafeUnsubscribeComponent,
+} from '@safe/builder';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Users page for application preview.
@@ -11,45 +17,36 @@ import { Subscription } from 'rxjs';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class UsersComponent implements OnInit, OnDestroy {
+export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public users = new MatTableDataSource<User>([]);
   public roles: Role[] = [];
-  private applicationSubscription?: Subscription;
 
   /**
    * Users page for application preview
    *
    * @param applicationService Shared application service
    */
-  constructor(public applicationService: SafeApplicationService) {}
+  constructor(public applicationService: SafeApplicationService) {
+    super();
+  }
 
   /**
    * Gets the list of users from loaded application.
    */
   ngOnInit(): void {
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.users.data = application.users || [];
-            this.roles = application.roles || [];
-          } else {
-            this.users.data = [];
-            this.roles = [];
-          }
-          this.loading = false;
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.users.data = application.users || [];
+          this.roles = application.roles || [];
+        } else {
+          this.users.data = [];
+          this.roles = [];
         }
-      );
-  }
-
-  /**
-   * Destroys all the subscriptions of the page.
-   */
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
+        this.loading = false;
+      });
   }
 }

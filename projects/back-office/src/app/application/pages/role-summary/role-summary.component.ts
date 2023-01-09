@@ -1,7 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Application, SafeApplicationService } from '@safe/builder';
-import { Subscription } from 'rxjs';
+import {
+  Application,
+  SafeApplicationService,
+  SafeUnsubscribeComponent,
+} from '@safe/builder';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Role summary page
@@ -11,10 +15,12 @@ import { Subscription } from 'rxjs';
   templateUrl: './role-summary.component.html',
   styleUrls: ['./role-summary.component.scss'],
 })
-export class RoleSummaryComponent implements OnInit, OnDestroy {
+export class RoleSummaryComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public id = '';
   public application!: Application;
-  private applicationSubscription?: Subscription;
 
   /**
    * Role summary page
@@ -25,26 +31,20 @@ export class RoleSummaryComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     public applicationService: SafeApplicationService
-  ) {}
-
-  ngOnInit(): void {
-    const routeSubscription = this.route.params.subscribe((val: any) => {
-      this.id = val.id;
-    });
-    routeSubscription.unsubscribe();
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.application = application;
-          }
-        }
-      );
+  ) {
+    super();
   }
 
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
+  ngOnInit(): void {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
+      this.id = val.id;
+    });
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.application = application;
+        }
+      });
   }
 }

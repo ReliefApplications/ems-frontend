@@ -1,34 +1,17 @@
-<kendo-grid
-  class="w-full"
-  [loading]="loading"
-  [kendoGridBinding]="gridData"
-  [filterable]="showFilter ? true : 'menu'"
-  [sortable]="true"
-  [resizable]="true"
-  [reorderable]="true"
-  [columnMenu]="columnMenu"
-  [pageable]="pagerSettings"
+<safe-grid
+  [fields]="fields"
+  [data]="gridData"
+  [loadingRecords]="loading && loadingSettings"
+  [loadingSettings]="loadingSettings"
+  [skip]="skip"
   [pageSize]="pageSize"
+  (pageChange)="onPageChange($event)"
+  [searchable]="false"
+  [filterable]="false"
+  [sortable]="false"
+  [selectable]="false"
+  [status]="status"
+  [blank]="!resourceId || !aggregation"
+  [widget]="widget"
 >
-  <!-- Actions -->
-  <ng-template kendoGridToolbarTemplate position="top">
-    <kendo-grid-column-chooser></kendo-grid-column-chooser>
-    <button
-      [matTooltip]="'components.widget.grid.filter.toggle' | translate"
-      kendoButton
-      icon="eye"
-      (click)="onToggleFilter()"
-    >
-      {{
-        (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
-      }}
-    </button>
-  </ng-template>
-  <ng-container *ngFor="let field of fields">
-    <kendo-grid-column
-      [field]="field.name"
-      [title]="field.name"
-      [minResizableWidth]="50"
-    ></kendo-grid-column>
-  </ng-container>
-</kendo-grid>
+</safe-grid>

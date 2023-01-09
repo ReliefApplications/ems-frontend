@@ -4,7 +4,6 @@ import {
   Inject,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
@@ -22,7 +21,6 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Subscription } from 'rxjs';
 import { SafeAuthService } from '../../../services/auth/auth.service';
 import { SafeDownloadService } from '../../../services/download/download.service';
 import { SafeLayoutService } from '../../../services/layout/layout.service';
@@ -57,6 +55,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
 import { SafeDateTranslateService } from '../../../services/date-translate/date-translate.service';
 import { SafeApplicationService } from '../../../services/application/application.service';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 /**
  * Default file name when exporting grid data.
@@ -80,7 +81,10 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
   templateUrl: './core-grid.component.html',
   styleUrls: ['./core-grid.component.scss'],
 })
-export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
+export class SafeCoreGridComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
   // === INPUTS ===
   @Input() settings: GridSettings | any = {};
   /** Default grid layout */
@@ -141,7 +145,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public detailsField?: any;
   private dataQuery!: QueryRef<QueryResponse>;
   private metaQuery: any;
-  private dataSubscription?: Subscription;
 
   // === PAGINATION ===
   public pageSize = 10;
@@ -160,6 +163,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     error: false,
   };
   private templateStructure = '';
+  // Refresh content of the history
+  private refresh$: Subject<boolean> = new Subject<boolean>();
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -291,6 +296,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private dateTranslate: SafeDateTranslateService,
     private applicationService: SafeApplicationService
   ) {
+    super();
     this.isAdmin =
       this.authService.userIsAdmin && environment.module === 'backoffice';
   }
@@ -342,93 +348,86 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.settings.query?.pageSize) {
       this.pageSize = this.settings.query.pageSize;
     }
-    // Builds custom query.
-    const builtQuery = this.queryBuilder.buildQuery(this.settings);
-    if (!builtQuery) {
-      this.status = {
-        error: !this.loadingSettings,
-        message: this.translate.instant(
-          'components.widget.grid.errors.queryBuildFailed'
-        ),
-      };
-    } else {
-      this.dataQuery = this.apollo.watchQuery({
-        query: builtQuery,
-        variables: {
-          first: this.pageSize,
-          filter: this.queryFilter,
-          sortField: this.sortField || undefined,
-          sortOrder: this.sortOrder,
-          styles: this.style,
-        },
-        fetchPolicy: 'network-only',
-        nextFetchPolicy: 'cache-first',
-      });
-    }
+    if (get(this.settings, 'query')) {
+      // Builds custom query.
+      const builtQuery = this.queryBuilder.buildQuery(this.settings);
+      if (!builtQuery) {
+        this.status = {
+          error: !this.loadingSettings,
+          message: this.translate.instant(
+            'components.widget.grid.errors.queryBuildFailed'
+          ),
+        };
+      } else {
+        this.dataQuery = this.apollo.watchQuery({
+          query: builtQuery,
+          variables: {
+            first: this.pageSize,
+            filter: this.queryFilter,
+            sortField: this.sortField || undefined,
+            sortOrder: this.sortOrder,
+            styles: this.style,
+          },
+          fetchPolicy: 'network-only',
+          nextFetchPolicy: 'cache-first',
+        });
+      }
 
-    // Build meta query
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
-    if (this.metaQuery) {
-      this.loading = true;
-      this.metaQuery.subscribe(
-        async (res: any) => {
-          this.status = {
-            error: false,
-          };
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              this.metaFields = Object.assign({}, res.data[field]);
-              try {
-                await this.gridService.populateMetaFields(this.metaFields);
-              } catch (err) {
-                console.error(err);
+      // Build meta query
+      this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
+      if (this.metaQuery) {
+        this.loading = true;
+        this.metaQuery.subscribe(
+          async (res: any) => {
+            this.status = {
+              error: false,
+            };
+            for (const field in res.data) {
+              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+                this.metaFields = Object.assign({}, res.data[field]);
+                try {
+                  await this.gridService.populateMetaFields(this.metaFields);
+                } catch (err) {
+                  console.error(err);
+                }
+                const fields = this.settings?.query?.fields || [];
+                const defaultLayoutFields = this.defaultLayout.fields || {};
+                this.fields = this.gridService.getFields(
+                  fields,
+                  this.metaFields,
+                  defaultLayoutFields,
+                  ''
+                );
               }
-              const fields = this.settings?.query?.fields || [];
-              const defaultLayoutFields = this.defaultLayout.fields || {};
-              this.fields = this.gridService.getFields(
-                fields,
-                this.metaFields,
-                defaultLayoutFields,
-                ''
-              );
             }
+            this.getRecords();
+          },
+          (err: any) => {
+            this.loading = false;
+            this.status = {
+              error: true,
+              message: this.translate.instant(
+                'components.widget.grid.errors.metaQueryFetchFailed',
+                {
+                  error:
+                    err.networkError?.error?.errors
+                      ?.map((x: any) => x.message)
+                      .join(', ') || err,
+                }
+              ),
+            };
           }
-          this.getRecords();
-        },
-        (err: any) => {
-          this.loading = false;
-          this.status = {
-            error: true,
-            message: this.translate.instant(
-              'components.widget.grid.errors.metaQueryFetchFailed',
-              {
-                error:
-                  err.networkError?.error?.errors
-                    ?.map((x: any) => x.message)
-                    .join(', ') || err,
-              }
-            ),
-          };
-        }
-      );
-    } else {
-      this.loading = false;
-      this.status = {
-        error: !this.loadingSettings,
-        message: this.translate.instant(
-          'components.widget.grid.errors.metaQueryBuildFailed'
-        ),
-      };
-    }
-    this.loadTemplate();
-  }
-
-  /**
-   * Removes subscriptions when component is destroyed, to avoid duplication.
-   */
-  ngOnDestroy(): void {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
+        );
+      } else {
+        this.loading = false;
+        this.status = {
+          error: !this.loadingSettings,
+          message: this.translate.instant(
+            'components.widget.grid.errors.metaQueryBuildFailed'
+          ),
+        };
+      }
+      this.loadTemplate();
     }
   }
 
@@ -623,7 +622,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.updatedItems = [];
     if (this.dataQuery) {
-      this.dataSubscription = this.dataQuery.valueChanges.subscribe(
+      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
         (res) => {
           this.loading = false;
           this.status = {
@@ -697,6 +696,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.onPageChange({ skip: 0, take: this.pageSize });
     this.selectedRows = [];
     // this.updatedItems = [];
+    this.refresh$.next(true);
   }
 
   // === SELECTION ===
@@ -1012,6 +1012,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         id: item.id,
         revert: (version: any) => this.confirmRevertDialog(item, version),
         template: this.settings.template || null,
+        refresh$: this.refresh$,
       },
     });
   }

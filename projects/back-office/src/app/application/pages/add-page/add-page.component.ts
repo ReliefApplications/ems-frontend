@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -10,13 +10,15 @@ import {
   SafeApplicationService,
   SafeAuthService,
   SafeSnackBarService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AddFormModalComponent } from '../../../components/add-form-modal/add-form-modal.component';
 import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import { MatSelect } from '@angular/material/select';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Number of items per page.
@@ -31,7 +33,10 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './add-page.component.html',
   styleUrls: ['./add-page.component.scss'],
 })
-export class AddPageComponent implements OnInit, OnDestroy {
+export class AddPageComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public contentTypes = CONTENT_TYPES;
   private forms = new BehaviorSubject<Form[]>([]);
@@ -52,7 +57,6 @@ export class AddPageComponent implements OnInit, OnDestroy {
 
   // === PERMISSIONS ===
   canCreateForm = false;
-  private authSubscription?: Subscription;
 
   /**
    * Add page component
@@ -73,7 +77,9 @@ export class AddPageComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.pageForm = this.formBuilder.group({
@@ -106,7 +112,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
       }
       this.onNext();
     });
-    this.authSubscription = this.authService.user.subscribe(() => {
+    this.authService.user.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.canCreateForm = this.authService.userHasClaim(
         Permissions.canCreateForms
       );
@@ -224,12 +230,6 @@ export class AddPageComponent implements OnInit, OnDestroy {
           );
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
   }
 
   /**

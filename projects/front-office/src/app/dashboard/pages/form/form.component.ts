@@ -1,7 +1,13 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Form, Page, Step, SafeFormComponent } from '@safe/builder';
+import {
+  Form,
+  Page,
+  Step,
+  SafeFormComponent,
+  SafeUnsubscribeComponent,
+} from '@safe/builder';
 import {
   GetFormByIdQueryResponse,
   GetPageByIdQueryResponse,
@@ -12,7 +18,7 @@ import {
 } from './graphql/queries';
 import { Subscription } from 'rxjs';
 import { SafeSnackBarService } from '@safe/builder';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
@@ -23,7 +29,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent implements OnInit, OnDestroy {
+export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   /** View reference of Shared form component */
   @ViewChild(SafeFormComponent)
   private formComponent?: SafeFormComponent;
@@ -47,8 +53,6 @@ export class FormComponent implements OnInit, OnDestroy {
   public step?: Step;
   /** Tells if the form is within a workflow */
   public isStep = false;
-  /** Subscribes to current route to load form accordingly */
-  private routeSubscription?: Subscription;
 
   /**
    * Form page.
@@ -65,13 +69,15 @@ export class FormComponent implements OnInit, OnDestroy {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Subscribes to the route to load the form.
    */
   ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
       this.id = params.id;
       this.isStep = this.router.url.includes('/workflow/');
@@ -171,15 +177,6 @@ export class FormComponent implements OnInit, OnDestroy {
           });
       }
     });
-  }
-
-  /**
-   * Removes the subscriptions of the component.
-   */
-  ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
   }
 
   /**

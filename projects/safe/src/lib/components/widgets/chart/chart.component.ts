@@ -1,12 +1,5 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnDestroy,
-  ViewChild,
-} from '@angular/core';
+import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import { saveAs } from '@progress/kendo-file-saver';
-import { Subscription } from 'rxjs';
 import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
 import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
 import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
@@ -14,6 +7,8 @@ import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.com
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import { uniq, get, groupBy } from 'lodash';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Default file name for chart exports
@@ -28,13 +23,15 @@ const DEFAULT_FILE_NAME = 'chart';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-export class SafeChartComponent implements OnChanges, OnDestroy {
+export class SafeChartComponent
+  extends SafeUnsubscribeComponent
+  implements OnChanges
+{
   // === DATA ===
   public loading = true;
   public series: any[] = [];
   public options: any = null;
   private dataQuery: any;
-  private dataSubscription?: Subscription;
 
   public lastUpdate = '';
   public hasError = false;
@@ -74,7 +71,9 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
    *
    * @param aggregationService Shared aggregation service
    */
-  constructor(private aggregationService: SafeAggregationService) {}
+  constructor(private aggregationService: SafeAggregationService) {
+    super();
+  }
 
   /** Detect changes of the settings to reload the data. */
   ngOnChanges(): void {
@@ -164,7 +163,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
 
   /** Load the data, using widget parameters. */
   private getData(): void {
-    this.dataSubscription = this.dataQuery.subscribe((res: any) => {
+    this.dataQuery.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res.errors) {
         this.loading = false;
         this.hasError = true;
@@ -215,15 +214,7 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
           this.series = res.data.recordsAggregation;
         }
         this.loading = res.loading;
-        this.dataSubscription?.unsubscribe();
       }
     });
-  }
-
-  /** Remove subscriptions */
-  ngOnDestroy(): void {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
   }
 }
