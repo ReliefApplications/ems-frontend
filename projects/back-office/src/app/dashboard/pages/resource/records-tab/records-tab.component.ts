@@ -57,6 +57,13 @@ export class RecordsTabComponent implements OnInit {
   public showUpload = false;
 
   /**
+   * Getter to know if the records tab is empty.
+   */
+  get empty(): boolean {
+    return this.loading || this.dataSource.filteredData.length === 0;
+  }
+
+  /**
    * Records tab of resource page
    *
    * @param apollo Apollo service

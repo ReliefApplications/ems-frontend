@@ -70,7 +70,7 @@
       </safe-skeleton-table>
     </div>
     <mat-paginator
-      [disabled]="loading"
+      *ngIf="!empty"
       [pageIndex]="pageInfo.pageIndex"
       [pageSize]="pageInfo.pageSize"
       [pageSizeOptions]="[10, 25, 50]"
@@ -79,8 +79,8 @@
     >
     </mat-paginator>
     <safe-empty
-      class="m-auto py-6 px-0"
-      *ngIf="aggregations.length === 0"
+      class="m-auto py-6 px-0 bg-white"
+      *ngIf="empty"
       [title]="'components.resource.empty.aggregations' | translate"
     ></safe-empty>
   </div>

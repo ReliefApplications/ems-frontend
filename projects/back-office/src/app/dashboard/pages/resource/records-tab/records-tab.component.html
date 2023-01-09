@@ -167,7 +167,7 @@
     </safe-skeleton-table>
   </div>
   <mat-paginator
-    [disabled]="loading"
+    *ngIf="!empty"
     [pageIndex]="pageInfo.pageIndex"
     [pageSize]="pageInfo.pageSize"
     [length]="pageInfo.length"
@@ -175,8 +175,8 @@
     (page)="onPage($event)"
   ></mat-paginator>
   <safe-empty
-    class="m-auto py-6 px-0"
-    *ngIf="dataSource.filteredData.length === 0"
+    class="m-auto py-6 px-0 bg-white"
+    *ngIf="empty"
     [title]="'components.resource.empty.records' | translate"
   ></safe-empty>
 </div>

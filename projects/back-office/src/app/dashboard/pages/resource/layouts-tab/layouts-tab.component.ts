@@ -41,6 +41,13 @@ export class LayoutsTabComponent implements OnInit {
   };
 
   /**
+   * Getter to know if the layouts tab is empty.
+   */
+  get empty(): boolean {
+    return this.loading || this.layouts.length === 0;
+  }
+
+  /**
    * Layouts tab of resource page
    *
    * @param apollo Apollo service
