@@ -746,6 +746,11 @@
 			},
 			"dropdown": {
 				"select": "******"
+			},
+			"empty": {
+				"aggregations": "******",
+				"layouts": "******",
+				"records": "******"
 			}
 		},
 		"role": {
