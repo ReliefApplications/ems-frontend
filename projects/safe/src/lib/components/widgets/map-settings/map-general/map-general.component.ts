@@ -65,7 +65,7 @@ export class MapGeneralComponent
 
     this.form
       .get('resource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntil(this.destroy$)) // Ensure that the queries won't be resent when closing / reopening the tab
       .subscribe((value: string) => {
         this.getResource(value);
       });

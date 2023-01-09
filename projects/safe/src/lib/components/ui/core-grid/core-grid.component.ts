@@ -825,14 +825,11 @@ export class SafeCoreGridComponent
         },
         autoFocus: false,
       });
-      dialogRef
-        .afterClosed()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((value) => {
-          if (value) {
-            this.reloadData();
-          }
-        });
+      dialogRef.afterClosed().subscribe((value) => {
+        if (value) {
+          this.reloadData();
+        }
+      });
     }
   }
 
@@ -904,15 +901,12 @@ export class SafeCoreGridComponent
       },
       autoFocus: false,
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          this.validateRecords(ids);
-          this.reloadData();
-        }
-      });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.validateRecords(ids);
+        this.reloadData();
+      }
+    });
   }
 
   /**
@@ -952,25 +946,22 @@ export class SafeCoreGridComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          this.apollo
-            .mutate<EditRecordMutationResponse>({
-              mutation: DELETE_RECORDS,
-              variables: {
-                ids,
-              },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(() => {
-              this.reloadData();
-              this.layoutService.setRightSidenav(null);
-            });
-        }
-      });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.apollo
+          .mutate<EditRecordMutationResponse>({
+            mutation: DELETE_RECORDS,
+            variables: {
+              ids,
+            },
+          })
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+            this.reloadData();
+            this.layoutService.setRightSidenav(null);
+          });
+      }
+    });
   }
 
   /**
@@ -988,7 +979,6 @@ export class SafeCoreGridComponent
     });
     dialogRef
       .afterClosed()
-      .pipe(takeUntil(this.destroy$))
       .subscribe((value: { targetForm: Form; copyRecord: boolean }) => {
         if (value) {
           const promises: Promise<any>[] = [];
@@ -1054,29 +1044,26 @@ export class SafeCoreGridComponent
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmColor: 'primary',
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          this.apollo
-            .mutate<EditRecordMutationResponse>({
-              mutation: EDIT_RECORD,
-              variables: {
-                id: record.id,
-                version: version.id,
-              },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(() => {
-              this.reloadData();
-              this.layoutService.setRightSidenav(null);
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.dataRecovered')
-              );
-            });
-        }
-      });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.apollo
+          .mutate<EditRecordMutationResponse>({
+            mutation: EDIT_RECORD,
+            variables: {
+              id: record.id,
+              version: version.id,
+            },
+          })
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+            this.reloadData();
+            this.layoutService.setRightSidenav(null);
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.dataRecovered')
+            );
+          });
+      }
+    });
   }
 
   // === EXPORT ===

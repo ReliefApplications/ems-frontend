@@ -144,44 +144,38 @@ export class SafeRoleListComponent
     const dialogRef = this.dialog.open(SafeAddRoleComponent, {
       data: { title: 'components.role.add.title' },
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          if (this.inApplication) {
-            this.applicationService.addRole(value);
-          } else {
-            this.apollo
-              .mutate<AddRoleMutationResponse>({
-                mutation: ADD_ROLE,
-                variables: {
-                  title: value.title,
-                },
-              })
-              .pipe(takeUntil(this.destroy$))
-              .subscribe(
-                () => {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectCreated',
-                      {
-                        type: this.translate
-                          .instant('common.role.one')
-                          .toLowerCase(),
-                        value: value.title,
-                      }
-                    )
-                  );
-                  this.getRoles();
-                },
-                (err) => {
-                  console.log(err);
-                }
-              );
-          }
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        if (this.inApplication) {
+          this.applicationService.addRole(value);
+        } else {
+          this.apollo
+            .mutate<AddRoleMutationResponse>({
+              mutation: ADD_ROLE,
+              variables: {
+                title: value.title,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+              () => {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.role.one')
+                      .toLowerCase(),
+                    value: value.title,
+                  })
+                );
+                this.getRoles();
+              },
+              (err) => {
+                console.log(err);
+              }
+            );
         }
-      });
+      }
+    });
   }
 
   /**
@@ -202,33 +196,30 @@ export class SafeRoleListComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          if (this.inApplication) {
-            this.applicationService.deleteRole(item);
-          } else {
-            this.apollo
-              .mutate<DeleteRoleMutationResponse>({
-                mutation: DELETE_ROLE,
-                variables: {
-                  id: item.id,
-                },
-              })
-              .pipe(takeUntil(this.destroy$))
-              .subscribe(() => {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: item.title,
-                  })
-                );
-                this.getRoles();
-              });
-          }
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        if (this.inApplication) {
+          this.applicationService.deleteRole(item);
+        } else {
+          this.apollo
+            .mutate<DeleteRoleMutationResponse>({
+              mutation: DELETE_ROLE,
+              variables: {
+                id: item.id,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: item.title,
+                })
+              );
+              this.getRoles();
+            });
         }
-      });
+      }
+    });
   }
 
   ngAfterViewInit(): void {

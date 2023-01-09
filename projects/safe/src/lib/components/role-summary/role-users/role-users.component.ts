@@ -67,8 +67,6 @@ export class RoleUsersComponent
         this.pageInfo.endCursor = res.data.role.users.pageInfo.endCursor;
         this.loading = res.loading;
         this.updating = false;
-        this.loading = res.loading;
-        this.updating = false;
       });
   }
 

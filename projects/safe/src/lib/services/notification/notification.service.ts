@@ -16,8 +16,6 @@ import {
   NOTIFICATION_SUBSCRIPTION,
 } from './graphql/subscriptions';
 import { Notification } from '../../models/notification.model';
-import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 
 /** Pagination: number of items per query */
 const ITEMS_PER_PAGE = 10;
@@ -28,7 +26,7 @@ const ITEMS_PER_PAGE = 10;
 @Injectable({
   providedIn: 'root',
 })
-export class SafeNotificationService extends SafeUnsubscribeComponent {
+export class SafeNotificationService {
   /** Current notifications */
   private notifications = new BehaviorSubject<Notification[]>([]);
   /** @returns Current notifications as observable */
@@ -60,9 +58,7 @@ export class SafeNotificationService extends SafeUnsubscribeComponent {
    *
    * @param apollo Apollo client
    */
-  constructor(private apollo: Apollo) {
-    super();
-  }
+  constructor(private apollo: Apollo) {}
 
   /**
    * If notifications are empty, fetch all notifications and listen to new one.
@@ -78,22 +74,19 @@ export class SafeNotificationService extends SafeUnsubscribeComponent {
           },
         });
 
-      this.notificationsQuery.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((res) => {
-          this.notifications.next(
-            res.data.notifications.edges.map((x) => x.node)
-          );
-          this.pageInfo.endCursor = res.data.notifications.pageInfo.endCursor;
-          this.hasNextPage.next(res.data.notifications.pageInfo.hasNextPage);
-          this.firstLoad = false;
-        });
+      this.notificationsQuery.valueChanges.subscribe((res) => {
+        this.notifications.next(
+          res.data.notifications.edges.map((x) => x.node)
+        );
+        this.pageInfo.endCursor = res.data.notifications.pageInfo.endCursor;
+        this.hasNextPage.next(res.data.notifications.pageInfo.hasNextPage);
+        this.firstLoad = false;
+      });
 
       this.apollo
         .subscribe<NotificationSubscriptionResponse>({
           query: NOTIFICATION_SUBSCRIPTION,
         })
-        .pipe(takeUntil(this.destroy$))
         .subscribe((res) => {
           if (res.data && res.data.notification) {
             // prevent new notification duplication
@@ -128,7 +121,6 @@ export class SafeNotificationService extends SafeUnsubscribeComponent {
           id: notification.id,
         },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         if (res.data && res.data.seeNotification) {
           const seeNotification = res.data.seeNotification;
@@ -151,7 +143,6 @@ export class SafeNotificationService extends SafeUnsubscribeComponent {
           ids: notificationsIds,
         },
       })
-      .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.fetchMore();
       });

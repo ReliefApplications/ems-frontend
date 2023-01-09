@@ -218,28 +218,25 @@ export class SafeGroupListComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          this.apollo
-            .mutate<DeleteGroupMutationResponse>({
-              mutation: DELETE_GROUP,
-              variables: {
-                id: item.id,
-              },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(() => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: item.title,
-                })
-              );
-              this.getGroups();
-            });
-        }
-      });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.apollo
+          .mutate<DeleteGroupMutationResponse>({
+            mutation: DELETE_GROUP,
+            variables: {
+              id: item.id,
+            },
+          })
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: item.title,
+              })
+            );
+            this.getGroups();
+          });
+      }
+    });
   }
 }

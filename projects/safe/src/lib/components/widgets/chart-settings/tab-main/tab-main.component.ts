@@ -171,17 +171,14 @@ export class TabMainComponent
         resource: this.resource,
       },
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          this.formGroup.get('chart.aggregationId')?.setValue(value.id);
-          this.aggregation = value;
-          this.setAvailableSeriesFields();
-          // this.getResource(this.resource?.id as string);
-        }
-      });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.formGroup.get('chart.aggregationId')?.setValue(value.id);
+        this.aggregation = value;
+        this.setAvailableSeriesFields();
+        // this.getResource(this.resource?.id as string);
+      }
+    });
   }
 
   /**
@@ -195,20 +192,17 @@ export class TabMainComponent
         aggregation: this.aggregation,
       },
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value && this.aggregation) {
-          this.aggregationService
-            .editAggregation(this.aggregation, value, this.resource?.id)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((res) => {
-              if (res.data?.editAggregation) {
-                this.getResource(this.resource?.id as string);
-              }
-            });
-        }
-      });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value && this.aggregation) {
+        this.aggregationService
+          .editAggregation(this.aggregation, value, this.resource?.id)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((res) => {
+            if (res.data?.editAggregation) {
+              this.getResource(this.resource?.id as string);
+            }
+          });
+      }
+    });
   }
 }

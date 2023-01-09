@@ -109,6 +109,7 @@ export class SafeGridSettingsComponent
     // this.queryName = this.formGroup.get('query')?.value.name;
     this.getQueryMetaData();
 
+    // Subscribe to form resource changes
     this.formGroup
       .get('resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -142,17 +143,23 @@ export class SafeGridSettingsComponent
         }
       });
 
+    // Subscribe to form aggregations changes
     this.formGroup
       .get('aggregations')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
+          // Some aggregations are selected
           if (value.length > 0) {
+            // Remove validators on layouts fields
             this.formGroup.controls.layouts.clearValidators();
           } else {
+            // No aggregation selected
             if (this.formGroup.controls.layouts.value.length > 0) {
+              // Remove validators on aggregations field if layouts are selected
               this.formGroup.controls.aggregations.clearValidators();
             } else {
+              // Else, reset all validators
               this.formGroup.controls.aggregations.setValidators([
                 Validators.required,
               ]);
@@ -162,6 +169,7 @@ export class SafeGridSettingsComponent
             }
           }
         }
+        // Update fields without sending update events to prevent infinite loops
         this.formGroup.controls.aggregations.updateValueAndValidity({
           emitEvent: false,
         });
@@ -169,21 +177,28 @@ export class SafeGridSettingsComponent
           emitEvent: false,
         });
       });
+    // If some aggregations are selected, remove validators on layouts field
     if (this.formGroup.get('aggregations')?.value.length > 0) {
       this.formGroup.controls.layouts.clearValidators();
     }
 
+    // Subscribe to form layouts changes
     this.formGroup
       .get('layouts')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
+          // Some layouts are selected
           if (value.length > 0) {
+            // Remove validators on aggregations field
             this.formGroup.controls.aggregations.clearValidators();
           } else {
+            // No layout selected
             if (this.formGroup.controls.aggregations.value.length > 0) {
+              // Remove validators on layouts field if aggregations are selected
               this.formGroup.controls.layouts.clearValidators();
             } else {
+              // Else, reset all validators
               this.formGroup.controls.layouts.setValidators([
                 Validators.required,
               ]);
@@ -193,6 +208,7 @@ export class SafeGridSettingsComponent
             }
           }
         }
+        // Update fields without sending update events to prevent infinite loops
         this.formGroup.controls.aggregations.updateValueAndValidity({
           emitEvent: false,
         });
@@ -200,6 +216,7 @@ export class SafeGridSettingsComponent
           emitEvent: false,
         });
       });
+    // If some layouts are selected, remove validators on aggregations field
     if (this.formGroup.get('layouts')?.value.length > 0) {
       this.formGroup.controls.aggregations.clearValidators();
     }
