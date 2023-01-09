@@ -9,6 +9,8 @@ import {
 } from '../graphql/queries';
 import { Resource } from '../../../../models/resource.model';
 import { SafeGraphQLSelectComponent } from '../../../graphql-select/graphql-select.component';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -23,7 +25,10 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './map-general.component.html',
   styleUrls: ['./map-general.component.scss'],
 })
-export class MapGeneralComponent implements OnInit {
+export class MapGeneralComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() form!: FormGroup;
   // === RESOURCE SELECTION ===
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -41,7 +46,9 @@ export class MapGeneralComponent implements OnInit {
    *
    * @param apollo Apollo service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo) {
+    super();
+  }
 
   ngOnInit(): void {
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
@@ -56,9 +63,12 @@ export class MapGeneralComponent implements OnInit {
       this.getResource(this.form.value.resource);
     }
 
-    this.form.get('resource')?.valueChanges.subscribe((value: string) => {
-      this.getResource(value);
-    });
+    this.form
+      .get('resource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$)) // Ensure that the queries won't be resent when closing / reopening the tab
+      .subscribe((value: string) => {
+        this.getResource(value);
+      });
   }
 
   /**
@@ -74,6 +84,7 @@ export class MapGeneralComponent implements OnInit {
           id,
         },
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         this.resource = res.data.resource;
       });
