@@ -8,7 +8,6 @@ export const GET_RESOURCE = gql`
       id
       name
       queryName
-      metadata
     }
   }
 `;

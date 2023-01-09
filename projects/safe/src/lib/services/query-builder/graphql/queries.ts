@@ -9,11 +9,41 @@ export const GET_QUERY_META_DATA = gql`
   query GetQueryMetaData($id: ID!) {
     form(id: $id) {
       id
-      metadata
+      metadata {
+        name
+        automated
+        editor
+        filter
+        filterable
+        options
+        fields {
+          name
+          automated
+          editor
+          filter
+          filterable
+          options
+        }
+      }
     }
     resource(id: $id) {
       id
-      metadata
+      metadata {
+        name
+        automated
+        editor
+        filter
+        filterable
+        options
+        fields {
+          name
+          automated
+          editor
+          filter
+          filterable
+          options
+        }
+      }
     }
   }
 `;

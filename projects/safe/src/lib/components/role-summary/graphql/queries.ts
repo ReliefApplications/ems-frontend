@@ -177,7 +177,10 @@ export const GET_RESOURCE = gql`
       queryName
       name
       rolePermissions(role: $role)
-      metadata
+      metadata {
+        name
+        filterable
+      }
       fields
     }
   }

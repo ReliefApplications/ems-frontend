@@ -141,7 +141,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
 
     const options = this.filterFields.map((x) => ({
       value: x.name,
-      text: x.label || x.name,
+      text: x.name,
     }));
 
     const attrFields = userAttributes.map((x) => ({

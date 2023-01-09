@@ -17,7 +17,12 @@ export const GET_FORM_BY_ID = gql`
       resource {
         id
       }
-      metadata
+      metadata {
+        name
+        automated
+        canSee
+        canUpdate
+      }
       canUpdate
     }
   }
@@ -51,7 +56,12 @@ export const GET_RECORD_BY_ID = gql`
         permissions {
           recordsUnicity
         }
-        metadata
+        metadata {
+          name
+          automated
+          canSee
+          canUpdate
+        }
       }
     }
   }
