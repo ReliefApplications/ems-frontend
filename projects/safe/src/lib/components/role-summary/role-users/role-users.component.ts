@@ -2,7 +2,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Role, User } from '../../../models/user.model';
-import { GetRoleQueryResponse, GET_ROLE_USERS } from './graphql/queries';
+import {
+  GetRoleAutoAssignedUsersQueryResponse,
+  GetRoleQueryResponse,
+  GET_ROLE_AUTO_ASSIGNED_USERS,
+  GET_ROLE_USERS,
+} from './graphql/queries';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -17,6 +22,7 @@ const DEFAULT_PAGE_SIZE = 10;
 })
 export class RoleUsersComponent implements OnInit {
   @Input() role!: Role;
+  @Input() autoAssigned = false;
   public loading = true;
   public updating = false;
 
@@ -24,7 +30,9 @@ export class RoleUsersComponent implements OnInit {
 
   public users = new MatTableDataSource<User>([]);
   public cachedUsers: User[] = [];
-  private usersQuery!: QueryRef<GetRoleQueryResponse>;
+  private usersQuery!: QueryRef<
+    GetRoleQueryResponse | GetRoleAutoAssignedUsersQueryResponse
+  >;
 
   public pageInfo = {
     pageIndex: 0,
@@ -32,6 +40,11 @@ export class RoleUsersComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
+
+  /** @returns empty state of the table */
+  get empty(): boolean {
+    return !this.loading && this.users.data.length === 0;
+  }
 
   /**
    * Users component for role summary
@@ -41,23 +54,40 @@ export class RoleUsersComponent implements OnInit {
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
-    this.usersQuery = this.apollo.watchQuery<GetRoleQueryResponse>({
-      query: GET_ROLE_USERS,
+    this.usersQuery = this.apollo.watchQuery<
+      GetRoleQueryResponse | GetRoleAutoAssignedUsersQueryResponse
+    >({
+      query: this.autoAssigned ? GET_ROLE_AUTO_ASSIGNED_USERS : GET_ROLE_USERS,
       variables: {
         id: this.role.id,
         first: DEFAULT_PAGE_SIZE,
       },
     });
     this.usersQuery.valueChanges.subscribe((res) => {
-      this.cachedUsers = res.data.role.users.edges.map((x) => x.node);
-      this.users.data = this.cachedUsers.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = res.data.role.users.totalCount;
-      this.pageInfo.endCursor = res.data.role.users.pageInfo.endCursor;
-      this.loading = res.loading;
-      this.updating = false;
+      if (this.autoAssigned) {
+        if ('autoAssignedUsers' in res.data.role) {
+          this.cachedUsers = res.data.role.autoAssignedUsers.edges.map(
+            (x: any) => x.node
+          );
+          this.users.data = this.cachedUsers.slice(
+            this.pageInfo.pageSize * this.pageInfo.pageIndex,
+            this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+          );
+          this.pageInfo.length = res.data.role.autoAssignedUsers.totalCount;
+          this.pageInfo.endCursor =
+            res.data.role.autoAssignedUsers.pageInfo.endCursor;
+        }
+      } else {
+        if ('users' in res.data.role) {
+          this.cachedUsers = res.data.role.users.edges.map((x: any) => x.node);
+          this.users.data = this.cachedUsers.slice(
+            this.pageInfo.pageSize * this.pageInfo.pageIndex,
+            this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+          );
+          this.pageInfo.length = res.data.role.users.totalCount;
+          this.pageInfo.endCursor = res.data.role.users.pageInfo.endCursor;
+        }
+      }
       this.loading = res.loading;
       this.updating = false;
     });
@@ -108,18 +138,44 @@ export class RoleUsersComponent implements OnInit {
         if (!fetchMoreResult) {
           return prev;
         }
-        return Object.assign({}, prev, {
-          role: {
-            users: {
-              edges: [
-                ...prev.role.users.edges,
-                ...fetchMoreResult.role.users.edges,
-              ],
-              pageInfo: fetchMoreResult.role.users.pageInfo,
-              totalCount: fetchMoreResult.role.users.totalCount,
-            },
-          },
-        });
+        if (this.autoAssigned) {
+          // return prev;
+          if (
+            'autoAssignedUsers' in prev.role &&
+            'autoAssignedUsers' in fetchMoreResult.role
+          ) {
+            return Object.assign({}, prev, {
+              role: {
+                autoAssignedUsers: {
+                  edges: [
+                    ...prev.role.autoAssignedUsers.edges,
+                    ...fetchMoreResult.role.autoAssignedUsers.edges,
+                  ],
+                  pageInfo: fetchMoreResult.role.autoAssignedUsers.pageInfo,
+                  totalCount: fetchMoreResult.role.autoAssignedUsers.totalCount,
+                },
+                users: null,
+              },
+            });
+          }
+        } else {
+          if ('users' in prev.role && 'users' in fetchMoreResult.role) {
+            return Object.assign({}, prev, {
+              role: {
+                users: {
+                  edges: [
+                    ...prev.role.users.edges,
+                    ...fetchMoreResult.role.users.edges,
+                  ],
+                  pageInfo: fetchMoreResult.role.users.pageInfo,
+                  totalCount: fetchMoreResult.role.users.totalCount,
+                },
+                autoAssignedUsers: null,
+              },
+            });
+          }
+        }
+        return prev;
       },
     });
   }

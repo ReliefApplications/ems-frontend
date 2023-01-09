@@ -789,7 +789,12 @@
 				"noForms": "******",
 				"noSteps": "******",
 				"removeFilter": "******",
-				"title": "******"
+				"title": "******",
+				"users": {
+					"auto": "******",
+					"empty": "******",
+					"manual": "******"
+				}
 			},
 			"tooltip": {
 				"allowFieldAccessibility": "****** {{field}}",

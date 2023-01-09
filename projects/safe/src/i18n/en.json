@@ -789,7 +789,12 @@
 				"noForms": "No forms detected",
 				"noSteps": "No steps detected",
 				"removeFilter": "Remove filter",
-				"title": "Summary"
+				"title": "Summary",
+				"users": {
+					"auto": "Automatically assigned",
+					"empty": "No user detected",
+					"manual": "Manually assigned"
+				}
 			},
 			"tooltip": {
 				"allowFieldAccessibility": "Allow this role to see the field {{field}}",
