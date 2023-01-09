@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,8 +13,8 @@ import {
   SafeWorkflowService,
   SafeAuthService,
   Application,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
 import {
   EditPageMutationResponse,
   EDIT_PAGE,
@@ -25,6 +25,7 @@ import {
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Application workflow page component.
@@ -34,7 +35,10 @@ import get from 'lodash/get';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent implements OnInit, OnDestroy {
+export class WorkflowComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
 
@@ -42,7 +46,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   public id = '';
   public applicationId?: string;
   public workflow?: Workflow;
-  private workflowSubscription?: Subscription;
   public steps: Step[] = [];
 
   // === WORKFLOW EDITION ===
@@ -52,9 +55,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   // === ACTIVE STEP ===
   public activeStep = 0;
-
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
 
   // === DUP APP SELECTION ===
   public showAppMenu = false;
@@ -85,18 +85,21 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.formActive = false;
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
       this.id = params.id;
       this.workflowService.loadWorkflow(this.id);
     });
 
-    this.workflowSubscription = this.workflowService.workflow$.subscribe(
-      (workflow: Workflow | null) => {
+    this.workflowService.workflow$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((workflow: Workflow | null) => {
         if (workflow) {
           this.steps = workflow.steps || [];
           this.workflowNameForm = new FormGroup({
@@ -137,8 +140,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.loading = true;
           this.steps = [];
         }
-      }
-    );
+      });
   }
 
   /**
@@ -381,15 +383,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     } else {
       this.router.navigate(['./'], { relativeTo: this.route });
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-    if (this.workflowSubscription) {
-      this.workflowSubscription.unsubscribe();
     }
   }
 }

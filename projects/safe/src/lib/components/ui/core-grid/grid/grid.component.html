@@ -1,6 +1,7 @@
 <!-- GRID HEADER -->
 <kendo-grid
   id="recordsGrid"
+  class="w-full"
   [loading]="loadingRecords || loadingSettings"
   [data]="status.error ? [] : data"
   [autoSize]="false"
@@ -48,7 +49,7 @@
     />
     <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
     <button
-      *ngIf="actions.add"
+      *ngIf="actions.add && canAdd"
       kendoButton
       (click)="action.emit({ action: 'add' })"
     >
@@ -339,7 +340,7 @@
             <div *ngIf="dataItem[field.name]" class="textbox-container">
               <div
                 #refSpan
-                class="textbox external-link"
+                class="textbox text-blue-500 hover:cursor-pointer"
                 *ngIf="dataItem[field.name].length > 0"
                 [matTooltip]="
                   'components.widget.grid.actions.detail' | translate
@@ -626,7 +627,7 @@
               [look]="'flat'"
               [matTooltip]="file.name"
               (click)="onDownload(file)"
-              class="file"
+              class="w-full justify-start overflow-hidden text-overflow-ellipsis"
             >
               <span [class]="'k-icon ' + getFileIcon(file.name)"></span>
               <span class="textbox">{{ removeFileExtension(file.name) }}</span>

@@ -14,7 +14,9 @@
       (mouseout)="hovered = ''"
     >
       <img [src]="type.icon" />
-      <span>{{ type.name | titlecase }}</span>
+      <span class="text-xl text-gray-500 mb-4">{{
+        type.name | titlecase
+      }}</span>
     </div>
   </div>
 </ng-template>
@@ -58,7 +60,7 @@
 </ng-template>
 
 <ng-template #collapsedTemplate>
-  <div class="safe-floating-widget-collapsed shadow-lg" cdkDrag>
+  <div class="rounded-full ml-auto mr-6 shadow-lg" cdkDrag>
     <safe-button
       category="tertiary"
       variant="primary"

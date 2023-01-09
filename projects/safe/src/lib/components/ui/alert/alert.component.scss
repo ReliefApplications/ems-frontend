@@ -13,16 +13,6 @@ $spacing-right: 0.8em;
   gap: 8px;
 }
 
-.safe-alert {
-  display: flex;
-  border-radius: 8px;
-  opacity: 1;
-
-  safe-button {
-    align-self: center;
-  }
-}
-
 .close-alert {
   animation: close-sequence 300ms ease-in-out forwards;
 }

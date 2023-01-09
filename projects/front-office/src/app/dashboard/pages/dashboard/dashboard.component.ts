@@ -16,9 +16,10 @@ import {
   Dashboard,
   SafeSnackBarService,
   SafeDashboardService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Dashboard page.
@@ -28,7 +29,10 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
@@ -40,8 +44,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public widgets = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
-  /** Subscribes to the route to load the dashboard */
-  private routeSubscription?: Subscription;
 
   /**
    * Dashboard page.
@@ -62,13 +64,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Subscribes to the route to load the dashboard accordingly.
    */
   ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.id = params.id;
       this.loading = true;
       this.apollo
@@ -115,9 +119,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * Removes all subscriptions of the component.
    */
   ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
+    super.ngOnDestroy();
     this.dashboardService.closeDashboard();
   }
 }

@@ -1,11 +1,10 @@
-<mat-form-field appearance="outline">
+<mat-form-field appearance="outline" class="grow">
   <mat-label>{{ 'components.resource.dropdown.select' | translate }}</mat-label>
   <safe-graphql-select
     valueField="id"
     textField="name"
     [query]="resourcesQuery"
-    [(ngModel)]="resource"
-    (selectionChange)="onSelect($event)"
+    [formControl]="resourceControl"
     [selectedElements]="[selectedResource]"
   >
   </safe-graphql-select>

@@ -3,13 +3,10 @@ import {
   Component,
   OnInit,
   Input,
-  OnDestroy,
   AfterViewInit,
   ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
-
 import { Application } from '../../../../models/application.model';
 import { Role } from '../../../../models/user.model';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
@@ -27,6 +24,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * This component is used to display the back-office roles tab
@@ -37,7 +36,10 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './role-list.component.html',
   styleUrls: ['./role-list.component.scss'],
 })
-export class SafeRoleListComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SafeRoleListComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit
+{
   // === INPUT DATA ===
   @Input() inApplication = false;
 
@@ -45,7 +47,6 @@ export class SafeRoleListComponent implements OnInit, OnDestroy, AfterViewInit {
   public loading = true;
   public roles: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   public displayedColumns = ['title', 'usersCount', 'actions'];
-  private applicationSubscription?: Subscription;
 
   // === SORTING ===
   @ViewChild(MatSort) sort!: MatSort;
@@ -85,23 +86,24 @@ export class SafeRoleListComponent implements OnInit, OnDestroy, AfterViewInit {
     private translate: TranslateService,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.filterPredicate();
 
     if (this.inApplication) {
       this.loading = false;
-      this.applicationSubscription =
-        this.applicationService.application$.subscribe(
-          (application: Application | null) => {
-            if (application) {
-              this.roles.data = application.roles || [];
-            } else {
-              this.roles.data = [];
-            }
+      this.applicationService.application$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((application: Application | null) => {
+          if (application) {
+            this.roles.data = application.roles || [];
+          } else {
+            this.roles.data = [];
           }
-        );
+        });
     } else {
       this.getRoles();
     }
@@ -132,12 +134,6 @@ export class SafeRoleListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.roles.data = res.data.roles;
         this.loading = res.loading;
       });
-  }
-
-  ngOnDestroy(): void {
-    if (this.inApplication && this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
   }
 
   /**

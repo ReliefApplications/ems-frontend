@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -9,14 +9,16 @@ import {
   Permissions,
   SafeAuthService,
   SafeSnackBarService,
+  SafeUnsubscribeComponent,
   SafeWorkflowService,
 } from '@safe/builder';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from '../../graphql/queries';
 import { AddFormModalComponent } from '../../../../../components/add-form-modal/add-form-modal.component';
 import { MatSelect } from '@angular/material/select';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -29,7 +31,10 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './add-step.component.html',
   styleUrls: ['./add-step.component.scss'],
 })
-export class AddStepComponent implements OnInit, OnDestroy {
+export class AddStepComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public contentTypes = CONTENT_TYPES.filter((x) => x.value !== 'workflow');
   private forms = new BehaviorSubject<Form[]>([]);
@@ -50,7 +55,6 @@ export class AddStepComponent implements OnInit, OnDestroy {
 
   // === PERMISSIONS ===
   canCreateForm = false;
-  private authSubscription?: Subscription;
 
   /**
    * Add step page component
@@ -71,7 +75,9 @@ export class AddStepComponent implements OnInit, OnDestroy {
     private authService: SafeAuthService,
     private apollo: Apollo,
     private workflowServive: SafeWorkflowService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.stepForm = this.formBuilder.group({
@@ -103,7 +109,7 @@ export class AddStepComponent implements OnInit, OnDestroy {
       }
       this.onNext();
     });
-    this.authSubscription = this.authService.user$.subscribe(() => {
+    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.canCreateForm = this.authService.userHasClaim(
         Permissions.canManageForms
       );
@@ -267,11 +273,5 @@ export class AddStepComponent implements OnInit, OnDestroy {
         });
       },
     });
-  }
-
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
   }
 }

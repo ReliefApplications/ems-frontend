@@ -1,12 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  Component,
-  AfterViewInit,
-  Input,
-  OnDestroy,
-  Inject,
-} from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, AfterViewInit, Input, Inject } from '@angular/core';
 import { applyFilters } from './filter';
 import { DomService } from '../../../services/dom/dom.service';
 import get from 'lodash/get';
@@ -15,6 +8,8 @@ import {
   QueryBuilderService,
   QueryResponse,
 } from '../../../services/query-builder/query-builder.service';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -60,7 +55,10 @@ const BASEMAP_LAYERS: any = {
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
 })
-export class SafeMapComponent implements AfterViewInit, OnDestroy {
+export class SafeMapComponent
+  extends SafeUnsubscribeComponent
+  implements AfterViewInit
+{
   // === MAP ===
   public mapId: string;
   public map: any;
@@ -79,7 +77,6 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
 
   // === RECORDS ===
   private dataQuery!: QueryRef<QueryResponse>;
-  private dataSubscription?: Subscription;
   private fields: any[] = [];
 
   // === WIDGET CONFIGURATION ===
@@ -103,6 +100,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     private queryBuilder: QueryBuilderService,
     private domService: DomService
   ) {
+    super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
   }
@@ -237,21 +235,23 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private getData(): void {
     this.map.closePopup(this.popupMarker);
 
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe((res) => {
-      const today = new Date();
-      this.lastUpdate =
-        ('0' + today.getHours()).slice(-2) +
-        ':' +
-        ('0' + today.getMinutes()).slice(-2);
-      // Empties all variables used in map
-      this.setLayers(res);
-      this.legendControl.update(
-        this.map,
-        this.settings,
-        this.overlays,
-        Object.keys(this.markersCategories)
-      );
-    });
+    this.dataQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        const today = new Date();
+        this.lastUpdate =
+          ('0' + today.getHours()).slice(-2) +
+          ':' +
+          ('0' + today.getMinutes()).slice(-2);
+        // Empties all variables used in map
+        this.setLayers(res);
+        this.legendControl.update(
+          this.map,
+          this.settings,
+          this.overlays,
+          Object.keys(this.markersCategories)
+        );
+      });
   }
 
   /**
@@ -716,14 +716,5 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.basemap = L.esri.Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
-  }
-
-  /**
-   * Removes subscriptions of the component.
-   */
-  public ngOnDestroy(): void {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
   }
 }

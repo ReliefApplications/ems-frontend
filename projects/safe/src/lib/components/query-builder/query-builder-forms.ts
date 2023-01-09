@@ -123,9 +123,9 @@ export const createQueryForm = (value: any, validators = true): FormGroup =>
   formBuilder.group({
     name: [get(value, 'name', ''), validators ? Validators.required : null],
     template: [get(value, 'template', ''), null],
-    pageSize: [value?.pageSize || 10],
+    pageSize: [get(value, 'pageSize', 10)],
     fields: formBuilder.array(
-      value && value.fields ? value.fields.map((x: any) => addNewField(x)) : [],
+      get(value, 'fields', []).map((x: any) => addNewField(x)),
       validators ? Validators.required : null
     ),
     sort: formBuilder.group({
@@ -134,9 +134,7 @@ export const createQueryForm = (value: any, validators = true): FormGroup =>
     }),
     filter: createFilterGroup(get(value, 'filter', {})),
     style: formBuilder.array(
-      value && value.style && value.style.length
-        ? value.style.map((x: any) => createStyleForm(x))
-        : []
+      get(value, 'style', []).map((x: any) => createStyleForm(x))
     ),
   });
 

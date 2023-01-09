@@ -47,6 +47,7 @@ import { SafeApplicationTemplatesModule } from './pages/application-templates/ap
 import { SafeApplicationDistributionListsModule } from './pages/application-distribution-lists/application-distribution-lists.module';
 import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
 import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
+import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscribe.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -100,6 +101,8 @@ import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
     SafeLeftSidenavModule,
     SafeApplicationTemplatesModule,
     SafeApplicationDistributionListsModule,
+    // === UTILS COMPONENTS ===
+    SafeUnsubscribeModule,
   ],
 })
 export class SafeModule {}

@@ -1,5 +1,10 @@
 <ng-container *ngIf="tileForm">
-  <mat-tab-group mat-align-tabs="start" animationDuration="0ms" vertical>
+  <mat-tab-group
+    mat-align-tabs="start"
+    animationDuration="0ms"
+    vertical
+    class="grow"
+  >
     <!-- GENERAL SETTINGS -->
     <mat-tab>
       <ng-template mat-tab-label>
@@ -12,7 +17,7 @@
         <span>{{ 'common.general' | translate }}</span>
       </ng-template>
       <ng-template matTabContent>
-        <safe-map-general [form]="tileForm"></safe-map-general>
+        <safe-map-general *ngIf="tileForm" [form]="tileForm"></safe-map-general>
       </ng-template>
     </mat-tab>
     <!-- LAYERS CONFIGURATION -->

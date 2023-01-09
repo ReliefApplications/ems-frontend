@@ -17,9 +17,11 @@ export class UserGroupsComponent implements OnInit {
   @Input() user!: User;
   selectedGroups!: FormControl;
   @Output() edit = new EventEmitter();
+  @Input() canEdit = false;
 
   /** Setter for the loading state */
   @Input() set loading(loading: boolean) {
+    if (!this.canEdit) return;
     if (loading) {
       this.selectedGroups?.disable({ emitEvent: false });
     } else {
@@ -41,9 +43,10 @@ export class UserGroupsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.selectedGroups = this.fb.control(
-      get(this.user, 'groups', []).map((x) => x.id)
-    );
+    this.selectedGroups = this.fb.control({
+      value: get(this.user, 'groups', []).map((x) => x.id),
+      disabled: !this.canEdit,
+    });
     this.selectedGroups.valueChanges.subscribe((value) => {
       this.edit.emit({ groups: value });
     });
