@@ -174,4 +174,9 @@
     aria-label="Select page of records"
     (page)="onPage($event)"
   ></mat-paginator>
+  <safe-empty
+    class="m-auto py-6 px-0"
+    *ngIf="dataSource.filteredData.length === 0"
+    [title]="'components.resource.empty.records' | translate"
+  ></safe-empty>
 </div>

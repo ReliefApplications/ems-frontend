@@ -78,5 +78,10 @@
       (page)="onPage($event)"
     >
     </mat-paginator>
+    <safe-empty
+      class="m-auto py-6 px-0"
+      *ngIf="aggregations.length === 0"
+      [title]="'components.resource.empty.aggregations' | translate"
+    ></safe-empty>
   </div>
 </div>

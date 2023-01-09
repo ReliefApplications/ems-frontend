@@ -746,6 +746,11 @@
 			},
 			"dropdown": {
 				"select": "From resource"
+			},
+			"empty": {
+				"aggregations": "No aggregation detected",
+				"layouts": "No layout detected",
+				"records": "No record detected"
 			}
 		},
 		"role": {
