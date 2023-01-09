@@ -78,10 +78,8 @@ export class SafeGridService {
       fields.map((f) => {
         const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
         let metaData = get(metaFields, fullName);
-        const canSee = metaData ? get(metaData, 'permissions.canSee') : true;
-        const canUpdate = metaData
-          ? get(metaData, 'permissions.canUpdate', false)
-          : false;
+        const canSee = get(metaData, 'permissions.canSee', true);
+        const canUpdate = get(metaData, 'permissions.canUpdate', false);
         const hidden: boolean =
           (!isNil(canSee) && !canSee) || options.hidden || false;
         const disabled: boolean = options.disabled || !canUpdate;
