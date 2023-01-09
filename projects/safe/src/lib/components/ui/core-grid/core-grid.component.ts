@@ -377,7 +377,7 @@ export class SafeCoreGridComponent
       this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
       if (this.metaQuery) {
         this.loading = true;
-        this.metaQuery.subscribe(
+        this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe(
           async (res: any) => {
             this.status = {
               error: false,
@@ -443,6 +443,7 @@ export class SafeCoreGridComponent
             id: this.settings.template,
           },
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe((res) => {
           if (res.data.form.structure) {
             this.templateStructure = res.data.form.structure;
@@ -874,11 +875,14 @@ export class SafeCoreGridComponent
         },
         autoFocus: false,
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.onUpdate(isArray ? items : [items]);
-        }
-      });
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          if (value) {
+            this.onUpdate(isArray ? items : [items]);
+          }
+        });
     }
   }
 
@@ -951,6 +955,7 @@ export class SafeCoreGridComponent
               ids,
             },
           })
+          .pipe(takeUntil(this.destroy$))
           .subscribe(() => {
             this.reloadData();
             this.layoutService.setRightSidenav(null);
@@ -1049,6 +1054,7 @@ export class SafeCoreGridComponent
               version: version.id,
             },
           })
+          .pipe(takeUntil(this.destroy$))
           .subscribe(() => {
             this.reloadData();
             this.layoutService.setRightSidenav(null);

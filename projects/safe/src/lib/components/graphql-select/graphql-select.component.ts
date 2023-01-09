@@ -30,6 +30,8 @@ import {
 } from '@angular/material/form-field';
 import { NgControl, ControlValueAccessor } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
@@ -52,6 +54,7 @@ const ITEMS_PER_RELOAD = 10;
   ],
 })
 export class SafeGraphQLSelectComponent
+  extends SafeUnsubscribeComponent
   implements
     OnInit,
     OnChanges,
@@ -264,6 +267,7 @@ export class SafeGraphQLSelectComponent
     @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl
   ) {
+    super();
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
@@ -271,28 +275,33 @@ export class SafeGraphQLSelectComponent
 
   ngOnInit(): void {
     this.elements$ = this.elements.asObservable();
-    this.query.valueChanges.subscribe((res: any) => {
-      this.queryName = Object.keys(res.data)[0];
-      const path = this.path
-        ? `${this.queryName}.${this.path}`
-        : this.queryName;
-      const elements: any[] = get(res.data, path).edges
-        ? get(res.data, path).edges.map((x: any) => x.node)
-        : get(res.data, path);
-      this.selectedElements = this.selectedElements.filter(
-        (selectedElement) =>
-          selectedElement &&
-          !elements.find(
-            (node) => node[this.valueField] === selectedElement[this.valueField]
-          )
-      );
-      this.elements.next([...this.selectedElements, ...elements]);
-      this.pageInfo = get(res.data, path).pageInfo;
-      this.loading = res.loading;
-    });
-    this.ngControl.valueChanges?.subscribe((value) => {
-      this.selectionChange.emit(value);
-    });
+    this.query.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        this.queryName = Object.keys(res.data)[0];
+        const path = this.path
+          ? `${this.queryName}.${this.path}`
+          : this.queryName;
+        const elements: any[] = get(res.data, path).edges
+          ? get(res.data, path).edges.map((x: any) => x.node)
+          : get(res.data, path);
+        this.selectedElements = this.selectedElements.filter(
+          (selectedElement) =>
+            selectedElement &&
+            !elements.find(
+              (node) =>
+                node[this.valueField] === selectedElement[this.valueField]
+            )
+        );
+        this.elements.next([...this.selectedElements, ...elements]);
+        this.pageInfo = get(res.data, path).pageInfo;
+        this.loading = res.loading;
+      });
+    this.ngControl.valueChanges
+      ?.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.selectionChange.emit(value);
+      });
   }
 
   ngOnChanges(): void {
