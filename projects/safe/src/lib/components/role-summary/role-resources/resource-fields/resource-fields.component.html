@@ -27,7 +27,7 @@
                   : 'components.role.tooltip.disallowFieldAccessibility'
                 ) | translate: { field: element.name }
               "
-              [matTooltipPosition]="'left'"
+              matTooltipPosition="left"
               (click)="onEditFieldAccess(element, 'canSee')"
             >
             </safe-button>
@@ -42,7 +42,7 @@
                   : 'components.role.tooltip.disallowFieldUpdate'
                 ) | translate: { field: element.name }
               "
-              [matTooltipPosition]="'left'"
+              matTooltipPosition="left"
               (click)="onEditFieldAccess(element, 'canUpdate')"
             >
             </safe-button>
