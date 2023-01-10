@@ -2,11 +2,11 @@
 
 // Declaration of Kendo variables
 $border-radius: 2px;
-$primary: $primary_500;
+$primary: rgb($primary_500);
 $secondary: #f6f6f6;
-$info: $primary_300;
+$info: rgb($primary_300);
 $success: #67dd2d;
-$warning: $secondary_main;
+$warning: rgb($secondary_50);
 $error: #d34444;
 $body-text: #424242;
 $body-bg: #ffffff;
@@ -20,11 +20,11 @@ $base-bg: #fafafa;
 $hovered-text: #424242;
 $hovered-bg: #ececec;
 $selected-text: #ffffff;
-$selected-bg: $primary_500;
+$selected-bg: rgb($primary_500);
 $button-text: #424242;
 $button-bg: #f5f5f5;
-$link-text: $primary_500;
-$link-hover-text: $primary_300;
+$link-text: rgb($primary_500);
+$link-hover-text: rgb($primary_300);
 $series-a: #ff6358;
 $series-b: #ffd246;
 $series-c: #78d237;
