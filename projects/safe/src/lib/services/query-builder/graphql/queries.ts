@@ -12,15 +12,19 @@ export const GET_QUERY_META_DATA = gql`
       metadata {
         name
         automated
+        type
         editor
         filter
+        multiSelect
         filterable
         options
         fields {
           name
           automated
+          type
           editor
           filter
+          multiSelect
           filterable
           options
         }
@@ -31,15 +35,19 @@ export const GET_QUERY_META_DATA = gql`
       metadata {
         name
         automated
+        type
         editor
         filter
+        multiSelect
         filterable
         options
         fields {
           name
           automated
+          type
           editor
           filter
+          multiSelect
           filterable
           options
         }

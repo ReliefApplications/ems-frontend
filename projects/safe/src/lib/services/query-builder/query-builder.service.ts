@@ -47,7 +47,7 @@ export interface Field {
     | 'date'
     | 'time';
   label?: string;
-  automated: boolean;
+  automated?: boolean;
   filter: any;
   fields?: Field[];
   options?: { value: any; text: string }[];
