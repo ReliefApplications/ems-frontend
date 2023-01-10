@@ -363,6 +363,9 @@ export class RoleResourcesComponent
               this.openedResource = tableElements[index].resource;
             }
           }
+          if (res.errors) {
+            this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+          }
           this.updating = false;
         },
         (err) => {
@@ -401,6 +404,9 @@ export class RoleResourcesComponent
             tableElements[index] = this.setTableElement(res.data?.editResource);
             this.resources.data = tableElements;
             this.openedResource = tableElements[index].resource;
+          }
+          if (res.errors) {
+            this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           }
           this.updating = false;
         },
@@ -465,6 +471,9 @@ export class RoleResourcesComponent
             tableElements[index] = this.setTableElement(res.data?.editResource);
             this.resources.data = tableElements;
             this.openedResource = tableElements[index].resource;
+          }
+          if (res.errors) {
+            this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           }
           this.updating = false;
         },
