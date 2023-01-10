@@ -15,22 +15,6 @@
   }
 }
 
-// === SURVEY CREATOR ===
-survey-creator,
-.sv-popup,
-.sv-svg-icon {
-  --primary: #{$primary_500};
-  --secondary: #{$primary_500};
-  --primary-light: #{$primary_50};
-  --secondary-light: #{$primary_100};
-  --secondary-back-light: #{$primary_50};
-  // --foreground: ;
-  // --primary-foreground: ;
-  // --background: ;
-  // --background-dim: ;
-  // --background-dim-light: ;
-}
-
 // === TAGBOX ITEMS ===
 sv-ng-tagbox-item {
   padding: 4px 0;
