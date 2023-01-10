@@ -18,6 +18,8 @@ import { QueryBuilderService } from '../../../../services/query-builder/query-bu
 import { SafeEditAggregationModalComponent } from '../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
 import { get } from 'lodash';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -30,7 +32,10 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './tab-main.component.html',
   styleUrls: ['./tab-main.component.scss'],
 })
-export class TabMainComponent implements OnInit {
+export class TabMainComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() formGroup!: FormGroup;
   @Input() type: any;
   public types = CHART_TYPES;
@@ -57,16 +62,24 @@ export class TabMainComponent implements OnInit {
     private aggregationBuilder: AggregationBuilderService,
     private queryBuilder: QueryBuilderService,
     private aggregationService: SafeAggregationService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.formGroup.get('chart.type')?.valueChanges.subscribe(() => {
-      this.reload.next(true);
-    });
-    this.formGroup.get('resource')?.valueChanges.subscribe((value) => {
-      this.getResource(value);
-      this.formGroup.get('chart.aggregationId')?.setValue(null);
-    });
+    this.formGroup
+      .get('chart.type')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.reload.next(true);
+      });
+    this.formGroup
+      .get('resource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.getResource(value);
+        this.formGroup.get('chart.aggregationId')?.setValue(null);
+      });
     if (this.formGroup.value.resource) {
       this.getResource(this.formGroup.value.resource);
     }
@@ -94,6 +107,7 @@ export class TabMainComponent implements OnInit {
           aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         this.resource = res.data.resource;
         if (aggregationId && this.resource.aggregations?.edges[0]) {
@@ -182,6 +196,7 @@ export class TabMainComponent implements OnInit {
       if (value && this.aggregation) {
         this.aggregationService
           .editAggregation(this.aggregation, value, this.resource?.id)
+          .pipe(takeUntil(this.destroy$))
           .subscribe((res) => {
             if (res.data?.editAggregation) {
               this.getResource(this.resource?.id as string);

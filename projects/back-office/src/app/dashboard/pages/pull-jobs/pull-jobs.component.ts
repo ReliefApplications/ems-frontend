@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
   Channel,
@@ -34,7 +34,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './pull-jobs.component.html',
   styleUrls: ['./pull-jobs.component.scss'],
 })
-export class PullJobsComponent implements OnInit, OnDestroy {
+export class PullJobsComponent implements OnInit {
   // === DATA ===
   public loading = true;
   private pullJobsQuery!: QueryRef<GetPullJobsQueryResponse>;
@@ -351,6 +351,4 @@ export class PullJobsComponent implements OnInit, OnDestroy {
         }
       );
   }
-
-  ngOnDestroy(): void {}
 }

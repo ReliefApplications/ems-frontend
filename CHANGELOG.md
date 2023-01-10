@@ -1,5 +1,15 @@
-# [1.4.0-beta.5](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.4...v1.4.0-beta.5) (2023-01-04)
+## [1.3.4](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.3...v1.3.4) (2023-01-10)
 
+### Bug Fixes
+
+* aggregation pagination not working ([2911132](https://github.com/ReliefApplications/oort-frontend/commit/29111329311b05b8cec06e13d584dec75901db64))
+* errors would not appear when editing resource permissions ([b5cf05d](https://github.com/ReliefApplications/oort-frontend/commit/b5cf05db974cde49d012855f266b235a9d2f9c1b))
+* history would not reload if record was updated ([162646d](https://github.com/ReliefApplications/oort-frontend/commit/162646d45edc4dc51e21fd51dc4a19570c58745c))
+* metadata error would appear when creating a grid widget ([6dce7fe](https://github.com/ReliefApplications/oort-frontend/commit/6dce7fe71f10f414c27a471ab2f95b638eb3de85))
+* requests with metadata could cause system failure ([db38acc](https://github.com/ReliefApplications/oort-frontend/commit/db38acca903cadf4e979de6b9a53dcc08e6c7d2a)), closes [1.3.x/AB#53528](https://github.com/1.3.x/AB/issues/53528)
+* widget choice container would not be clickable when collapsed ([559866b](https://github.com/ReliefApplications/oort-frontend/commit/559866b2d6ac29eefcb977454587345b4bda5f60))
+
+## [1.4.0-beta.5](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.4...v1.4.0-beta.5) (2023-01-04)
 
 ### Bug Fixes
 

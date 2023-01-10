@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -6,8 +6,9 @@ import {
   SafeApplicationService,
   PositionAttributeCategory,
   SafeConfirmService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { PositionModalComponent } from './components/position-modal/position-modal.component';
 
 /**
@@ -18,12 +19,14 @@ import { PositionModalComponent } from './components/position-modal/position-mod
   templateUrl: './position.component.html',
   styleUrls: ['./position.component.scss'],
 })
-export class PositionComponent implements OnInit, OnDestroy {
+export class PositionComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public positionCategories: any[] = [];
   public displayedColumns = ['title', 'actions'];
-  private applicationSubscription?: Subscription;
 
   /**
    * Application position component
@@ -38,21 +41,22 @@ export class PositionComponent implements OnInit, OnDestroy {
     private applicationService: SafeApplicationService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.loading = false;
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.positionCategories =
-              application.positionAttributeCategories || [];
-          } else {
-            this.positionCategories = [];
-          }
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.positionCategories =
+            application.positionAttributeCategories || [];
+        } else {
+          this.positionCategories = [];
         }
-      );
+      });
   }
 
   /**
@@ -119,11 +123,5 @@ export class PositionComponent implements OnInit, OnDestroy {
         );
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
   }
 }

@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -16,8 +10,8 @@ import {
   SafeAuthService,
   SafeConfirmService,
   SafeSnackBarService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
 import {
   GetReferenceDatasQueryResponse,
   GET_REFERENCE_DATAS,
@@ -31,6 +25,7 @@ import {
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -44,7 +39,8 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./reference-datas.component.scss'],
 })
 export class ReferenceDatasComponent
-  implements OnInit, OnDestroy, AfterViewInit
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit
 {
   // === DATA ===
   public loading = true;
@@ -61,7 +57,6 @@ export class ReferenceDatasComponent
 
   // === PERMISSIONS ===
   canAdd = false;
-  private authSubscription?: Subscription;
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -95,7 +90,9 @@ export class ReferenceDatasComponent
     private confirmService: SafeConfirmService,
     private router: Router,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Creates the Reference data query, and subscribes to the query changes.
@@ -109,21 +106,23 @@ export class ReferenceDatasComponent
         },
       });
 
-    this.referenceDatasQuery.valueChanges.subscribe((res) => {
-      this.cachedReferenceDatas = res.data.referenceDatas.edges.map(
-        (x) => x.node
-      );
-      this.dataSource.data = this.cachedReferenceDatas.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = res.data.referenceDatas.totalCount;
-      this.pageInfo.endCursor = res.data.referenceDatas.pageInfo.endCursor;
-      this.loading = res.loading;
-      this.filterPredicate();
-    });
+    this.referenceDatasQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.cachedReferenceDatas = res.data.referenceDatas.edges.map(
+          (x) => x.node
+        );
+        this.dataSource.data = this.cachedReferenceDatas.slice(
+          this.pageInfo.pageSize * this.pageInfo.pageIndex,
+          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+        );
+        this.pageInfo.length = res.data.referenceDatas.totalCount;
+        this.pageInfo.endCursor = res.data.referenceDatas.pageInfo.endCursor;
+        this.loading = res.loading;
+        this.filterPredicate();
+      });
 
-    this.authSubscription = this.authService.user$.subscribe(() => {
+    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.canAdd = this.authService.userHasClaim(
         PermissionsManagement.getRightFromPath(
           this.router.url,
@@ -309,14 +308,5 @@ export class ReferenceDatasComponent
    */
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort || null;
-  }
-
-  /**
-   * Removes all subscriptions.
-   */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
   }
 }

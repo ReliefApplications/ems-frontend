@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -11,9 +11,10 @@ import {
   Permission,
   Permissions,
   ContentType,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import get from 'lodash/get';
-import { Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Main component of Front-Office navigation.
@@ -23,7 +24,10 @@ import { Subscription } from 'rxjs';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   /** Application title */
   public title = '';
   /** Stores current app ID */
@@ -38,10 +42,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public adminNavItems: any[] = [];
   /** Current application */
   public application: Application | null = null;
-  /** User subscription */
-  private authSubscription?: Subscription;
-  /** Application service subscription */
-  private applicationSubscription?: Subscription;
   /** Permissions of the user */
   private permissions: Permission[] = [];
   /** Roles of the user */
@@ -64,15 +64,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private router: Router,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Subscribes to current user change, and application change.
    * On load, try to open the first application accessible to the user.
    */
   ngOnInit(): void {
-    this.authSubscription = this.authService.user$.subscribe(
-      (user: User | null) => {
+    this.authService.user$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((user: User | null) => {
         if (user) {
           const applications = user.applications || [];
           if (applications.length > 0) {
@@ -108,80 +111,111 @@ export class DashboardComponent implements OnInit, OnDestroy {
             );
           }
         }
-      }
-    );
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.title = application.name || '';
-            this.appID = application.id || '';
-            this.adminNavItems = [];
+      });
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.title = application.name || '';
+          this.appID = application.id || '';
+          this.adminNavItems = [];
+          if (
+            this.permissions.some(
+              (x) =>
+                (x.type === Permissions.canSeeUsers &&
+                  this.roles.some(
+                    (y) =>
+                      y.application?.id === application.id &&
+                      y.permissions?.some((perm) => perm.id === x.id)
+                  )) ||
+                (x.type === Permissions.canManageApplications && x.global)
+            )
+          ) {
+            this.adminNavItems.push({
+              name: this.translate.instant('common.user.few'),
+              path: `./${this.appID}/settings/users`,
+              icon: 'supervisor_account',
+            });
+          }
+          if (
+            this.permissions.some(
+              (x) =>
+                (x.type === Permissions.canSeeRoles &&
+                  this.roles.some(
+                    (y) =>
+                      y.application?.id === application.id &&
+                      y.permissions?.some((perm) => perm.id === x.id)
+                  )) ||
+                (x.type === Permissions.canManageApplications && x.global)
+            )
+          ) {
+            this.adminNavItems.push({
+              name: this.translate.instant('common.role.few'),
+              path: `./${this.appID}/settings/roles`,
+              icon: 'admin_panel_settings',
+            });
+          }
+          if (
+            this.permissions.some(
+              (x) =>
+                (x.type === Permissions.canManageTemplates &&
+                  this.roles.some(
+                    (y) =>
+                      y.application?.id === application.id &&
+                      y.permissions?.some((perm) => perm.id === x.id)
+                  )) ||
+                (x.type === Permissions.canManageApplications && x.global)
+            )
+          ) {
+            this.adminNavItems.push({
+              name: this.translate.instant('common.template.few'),
+              path: `./${this.appID}/settings/templates`,
+              icon: 'description',
+            });
+          }
+          if (
+            this.permissions.some(
+              (x) =>
+                (x.type === Permissions.canManageDistributionLists &&
+                  this.roles.some(
+                    (y) =>
+                      y.application?.id === application.id &&
+                      y.permissions?.some((perm) => perm.id === x.id)
+                  )) ||
+                (x.type === Permissions.canManageApplications && x.global)
+            )
+          ) {
+            this.adminNavItems.push({
+              name: this.translate.instant('common.distributionList.few'),
+              path: `./${this.appID}/settings/distribution-lists`,
+              icon: 'mail',
+            });
+          }
+          this.navGroups = [
+            {
+              name: 'Pages',
+              navItems: application.pages
+                ?.filter((x) => x.content)
+                .map((x) => ({
+                  name: x.name,
+                  path:
+                    x.type === ContentType.form
+                      ? `./${this.appID}/${x.type}/${x.id}`
+                      : `./${this.appID}/${x.type}/${x.content}`,
+                  icon: this.getNavIcon(x.type || ''),
+                })),
+            },
+          ];
+          if (!this.application || application.id !== this.application.id) {
+            const firstPage = get(application, 'pages', [])[0];
+            const find = !this.application
+              ? this.validPage(application)
+              : false;
             if (
-              this.permissions.some(
-                (x) =>
-                  (x.type === Permissions.canSeeUsers &&
-                    this.roles.some(
-                      (y) =>
-                        y.application?.id === application.id &&
-                        y.permissions?.some((perm) => perm.id === x.id)
-                    )) ||
-                  (x.type === Permissions.canManageApplications && x.global)
-              )
-            ) {
-              this.adminNavItems.push({
-                name: this.translate.instant('common.user.few'),
-                path: `./${this.appID}/settings/users`,
-                icon: 'supervisor_account',
-              });
-            }
-            if (
-              this.permissions.some(
-                (x) =>
-                  (x.type === Permissions.canSeeRoles &&
-                    this.roles.some(
-                      (y) =>
-                        y.application?.id === application.id &&
-                        y.permissions?.some((perm) => perm.id === x.id)
-                    )) ||
-                  (x.type === Permissions.canManageApplications && x.global)
-              )
-            ) {
-              this.adminNavItems.push({
-                name: this.translate.instant('common.role.few'),
-                path: `./${this.appID}/settings/roles`,
-                icon: 'admin_panel_settings',
-              });
-            }
-            if (
-              this.permissions.some(
-                (x) =>
-                  (x.type === Permissions.canManageTemplates &&
-                    this.roles.some(
-                      (y) =>
-                        y.application?.id === application.id &&
-                        y.permissions?.some((perm) => perm.id === x.id)
-                    )) ||
-                  (x.type === Permissions.canManageApplications && x.global)
-              )
-            ) {
-              this.adminNavItems.push({
-                name: this.translate.instant('common.template.few'),
-                path: `./${this.appID}/settings/templates`,
-                icon: 'description',
-              });
-            }
-            if (
-              this.permissions.some(
-                (x) =>
-                  (x.type === Permissions.canManageDistributionLists &&
-                    this.roles.some(
-                      (y) =>
-                        y.application?.id === application.id &&
-                        y.permissions?.some((perm) => perm.id === x.id)
-                    )) ||
-                  (x.type === Permissions.canManageApplications && x.global)
-              )
+              !find &&
+              (this.router.url.endsWith('/') ||
+                application.id !== this.application?.id ||
+                !firstPage)
             ) {
               this.adminNavItems.push({
                 name: this.translate.instant('common.distributionList.few'),
@@ -222,55 +256,43 @@ export class DashboardComponent implements OnInit, OnDestroy {
                   })),
               },
             ];
-            if (!this.application || application.id !== this.application.id) {
-              const firstPage = get(application, 'pages', [])[0];
-              const find = !this.application
-                ? this.validPage(application)
-                : false;
-              if (
-                !find &&
-                (this.router.url.endsWith('/') ||
-                  application.id !== this.application?.id ||
-                  !firstPage)
-              ) {
-                if (firstPage) {
-                  this.router.navigate(
-                    [
-                      `./${this.appID}/${firstPage.type}/${
-                        firstPage.type === ContentType.form
-                          ? firstPage.id
-                          : firstPage.content
-                      }`,
-                    ],
-                    { relativeTo: this.route }
-                  );
-                } else {
-                  this.router.navigate([`./${this.appID}`], {
-                    relativeTo: this.route,
-                  });
-                }
-              }
-            }
-            this.application = application;
-            this.appID = application.id || '';
-          } else {
-            this.navGroups = [];
           }
+          this.application = application;
+          this.appID = application.id || '';
+        } else {
+          this.navGroups = [];
         }
-      );
+      });
   }
 
-  /**
-   * Destroys all subscriptions made by the component.
-   */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
-  }
+  // if (!this.application || application.id !== this.application.id) {
+  //   const firstPage = get(application, 'pages', [])[0];
+  //   const find = !this.application
+  //     ? this.validPage(application)
+  //     : false;
+  //   if (
+  //     !find &&
+  //     (this.router.url.endsWith('/') ||
+  //       application.id !== this.application?.id ||
+  //       !firstPage)
+  //   ) {
+  //     if (firstPage) {
+  //       this.router.navigate(
+  //         [
+  //           `./${this.appID}/${firstPage.type}/${
+  //             firstPage.type === ContentType.form
+  //               ? firstPage.id
+  //               : firstPage.content
+  //           }`,
+  //         ],
+  //         { relativeTo: this.route }
+  //       );
+  //     } else {
+  //       this.router.navigate([`./${this.appID}`], {
+  //         relativeTo: this.route,
+  //       });
+  //     }
+  //   }
 
   /**
    * Opens an application, contacting the application service.
