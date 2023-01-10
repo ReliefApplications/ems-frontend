@@ -1,5 +1,9 @@
-import * as SurveyCore from 'survey-core';
-import { JsonObjectProperty, Question } from 'survey-core';
+import {
+  JsonObjectProperty,
+  Question,
+  Serializer,
+  CustomWidgetCollection,
+} from 'survey-core';
 import { PropertyGridEditorCollection } from 'survey-creator-core';
 import { DomService } from '../../services/dom/dom.service';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
@@ -16,15 +20,10 @@ export const init = (domService: DomService): void => {
     isFit: (question: Question) => question.getType() === 'resource-dropdown',
     init: () => {
       // Register resource-dropdown type using the empty question as the base.
-      SurveyCore.Serializer.addClass(
-        'resource-dropdown',
-        [],
-        undefined,
-        'empty'
-      );
+      Serializer.addClass('resource-dropdown', [], undefined, 'empty');
 
       // Hide the resource-dropdown type from the toolbox.
-      SurveyCore.CustomWidgetCollection.Instance.getCustomWidgetByName(
+      CustomWidgetCollection.Instance.getCustomWidgetByName(
         'resource-dropdown'
       ).showInToolbox = false;
     },
@@ -47,7 +46,7 @@ export const init = (domService: DomService): void => {
   };
 
   // registers custom widget as type
-  SurveyCore.CustomWidgetCollection.Instance.add(widget, 'customtype');
+  CustomWidgetCollection.Instance.add(widget, 'customtype');
 
   // registers custom property editor
   PropertyGridEditorCollection.register({

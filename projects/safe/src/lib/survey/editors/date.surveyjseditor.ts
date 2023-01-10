@@ -1,6 +1,10 @@
-import * as SurveyCore from 'survey-core';
 import { ComponentRef } from '@angular/core';
-import { JsonObjectProperty, Question } from 'survey-core';
+import {
+  JsonObjectProperty,
+  Question,
+  Serializer,
+  CustomWidgetCollection,
+} from 'survey-core';
 import { PropertyGridEditorCollection } from 'survey-creator-core';
 import {
   DatePickerComponent,
@@ -23,15 +27,15 @@ export const init = (domService: DomService): void => {
     isFit: (question: Question) => question.getType() === 'date-editor',
     init: () => {
       // Register date-editor type using the empty question as the base.
-      SurveyCore.Serializer.addClass('date-editor', [], undefined, 'empty');
+      Serializer.addClass('date-editor', [], undefined, 'empty');
 
       // Hide the date-editor type from the toolbox.
-      SurveyCore.CustomWidgetCollection.Instance.getCustomWidgetByName(
+      CustomWidgetCollection.Instance.getCustomWidgetByName(
         'date-editor'
       ).showInToolbox = false;
 
       // Adds the inputType property to the date-editor type
-      SurveyCore.Serializer.addProperty('date-editor', {
+      Serializer.addProperty('date-editor', {
         name: 'inputType',
         type: 'text',
       });
@@ -79,7 +83,7 @@ export const init = (domService: DomService): void => {
   };
 
   // registers custom widget as type
-  SurveyCore.CustomWidgetCollection.Instance.add(widget, 'customtype');
+  CustomWidgetCollection.Instance.add(widget, 'customtype');
 
   // registers custom property editor
   PropertyGridEditorCollection.register({

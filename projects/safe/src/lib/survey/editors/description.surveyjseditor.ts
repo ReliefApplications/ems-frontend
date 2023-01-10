@@ -1,5 +1,9 @@
-import * as SurveyCore from 'survey-core';
-import { JsonObjectProperty, Question } from 'survey-core';
+import {
+  JsonObjectProperty,
+  Question,
+  Serializer,
+  CustomWidgetCollection,
+} from 'survey-core';
 import { PropertyGridEditorCollection } from 'survey-creator-core';
 
 /** Inits the custom html widget */
@@ -10,10 +14,10 @@ export const init = (): void => {
     isFit: (question: Question) => question.getType() === 'description',
     init: () => {
       // Register description type using the empty question as the base.
-      SurveyCore.Serializer.addClass('description', [], undefined, 'empty');
+      Serializer.addClass('description', [], undefined, 'empty');
 
       // Hide the description type from the toolbox.
-      SurveyCore.CustomWidgetCollection.Instance.getCustomWidgetByName(
+      CustomWidgetCollection.Instance.getCustomWidgetByName(
         'description'
       ).showInToolbox = false;
     },
@@ -33,7 +37,7 @@ export const init = (): void => {
   };
 
   // registers custom widget as type
-  SurveyCore.CustomWidgetCollection.Instance.add(widget, 'customtype');
+  CustomWidgetCollection.Instance.add(widget, 'customtype');
 
   // registers custom property editor
   PropertyGridEditorCollection.register({

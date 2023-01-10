@@ -1,8 +1,12 @@
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
-import * as SurveyCore from 'survey-core';
-import { JsonObjectProperty, Question } from 'survey-core';
+import {
+  JsonObjectProperty,
+  Question,
+  Serializer,
+  CustomWidgetCollection,
+} from 'survey-core';
 import { PropertyGridEditorCollection } from 'survey-creator-core';
 import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
 import {
@@ -30,10 +34,10 @@ export const init = (
     isFit: (question: Question) => question.getType() === 'resource-fields',
     init: () => {
       // Register resource-fields type using the empty question as the base.
-      SurveyCore.Serializer.addClass('resource-fields', [], undefined, 'empty');
+      Serializer.addClass('resource-fields', [], undefined, 'empty');
 
       // Hide the resource-fields type from the toolbox.
-      SurveyCore.CustomWidgetCollection.Instance.getCustomWidgetByName(
+      CustomWidgetCollection.Instance.getCustomWidgetByName(
         'resource-fields'
       ).showInToolbox = false;
     },
@@ -96,7 +100,7 @@ export const init = (
     });
 
   // registers custom widget as type
-  SurveyCore.CustomWidgetCollection.Instance.add(widget, 'customtype');
+  CustomWidgetCollection.Instance.add(widget, 'customtype');
 
   // registers custom property editor
   PropertyGridEditorCollection.register({
