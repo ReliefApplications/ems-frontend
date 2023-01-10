@@ -1,7 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import * as SurveyCreator from 'survey-creator-core';
 import { DomService } from '../../services/dom/dom.service';
-import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
 import { GetUsersQueryResponse, GET_USERS } from '../graphql/queries';
 
 /**
@@ -23,7 +21,7 @@ export const init = (
     questionJSON: {
       name: 'users',
       type: 'tagbox',
-      optionsCaption: 'Select users...',
+      placeholder: 'Select users...',
       choicesOrder: 'asc',
       choices: [] as any[],
     },
@@ -31,29 +29,11 @@ export const init = (
       Survey.Serializer.addProperty('users', {
         name: 'applications',
         category: 'Users properties',
-        type: 'applicationsDropdown',
+        type: 'application-dropdown',
         isDynamicChoices: true,
         visibleIndex: 3,
         required: true,
       });
-
-      // const applicationEditor = {
-      //   render: (editor: any, htmlElement: any) => {
-      //     const question = editor.object;
-      //     const dropdown = domService.appendComponentToBody(
-      //       SafeApplicationDropdownComponent,
-      //       htmlElement
-      //     );
-      //     const instance: SafeApplicationDropdownComponent = dropdown.instance;
-      //     instance.value = question.applications;
-      //     instance.choice.subscribe((res) => editor.onChanged(res));
-      //   },
-      // };
-
-      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-      //   'applicationsDropdown',
-      //   applicationEditor
-      // ); TODO
     },
     onLoaded: (question: any): void => {
       apollo
@@ -77,5 +57,6 @@ export const init = (
     },
     onAfterRender: (): void => {},
   };
+
   Survey.ComponentCollection.Instance.add(component);
 };

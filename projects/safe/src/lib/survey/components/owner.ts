@@ -19,7 +19,7 @@ export const init = (Survey: any, apollo: Apollo): void => {
     questionJSON: {
       name: 'owner',
       type: 'tagbox',
-      optionsCaption: 'Select roles...',
+      placeholder: 'Select roles...',
       choicesOrder: 'asc',
       choices: [] as any[],
     },

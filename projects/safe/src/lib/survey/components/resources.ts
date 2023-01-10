@@ -71,7 +71,6 @@ export const init = (
     questionJSON: {
       name: 'resources',
       type: 'tagbox',
-      optionsCaption: 'Select a record...',
       choicesOrder: 'asc',
       choices: [] as any[],
     },
@@ -548,8 +547,11 @@ export const init = (
      * @param question The current question.
      */
     onLoaded(question: any): void {
+      // support the placeholder field
       if (question.placeholder) {
-        question.contentQuestion.optionsCaption = question.placeholder;
+        const locPlaceholder = question.getLocalizableStringText('placeholder');
+        question.contentQuestion.placeholder =
+          locPlaceholder || question.placeholder;
       }
       if (question.resource) {
         if (question.selectQuestion) {
@@ -592,8 +594,8 @@ export const init = (
             });
           }
           question.contentQuestion.choices = res;
-          if (!question.placeholder) {
-            question.contentQuestion.optionsCaption =
+          if (!question.placeholder || question.placeholder === 'Select...') {
+            question.contentQuestion.placeholder =
               'Select a record from ' + response.data.resource.name + '...';
           }
           if (!question.filterBy || question.filterBy.length < 1) {

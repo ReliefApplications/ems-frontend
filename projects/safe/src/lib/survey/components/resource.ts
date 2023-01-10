@@ -7,7 +7,6 @@ import { resourceConditions } from './resources';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup } from '@angular/forms';
 import { buildSearchButton, buildAddButton } from './utils';
-import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-core';
 import { isNil } from 'lodash';
@@ -50,7 +49,6 @@ export const init = (Survey: any, apollo: Apollo, dialog: MatDialog): void => {
     questionJSON: {
       name: 'resource',
       type: 'dropdown',
-      optionsCaption: 'Select a record...',
       choicesOrder: 'asc',
       choices: [] as any[],
     },
@@ -377,9 +375,6 @@ export const init = (Survey: any, apollo: Apollo, dialog: MatDialog): void => {
      * @param question The current resource question
      */
     onLoaded(question: QuestionResource): void {
-      if (question.placeholder) {
-        question.contentQuestion.optionsCaption = question.placeholder;
-      }
       if (question.resource) {
         if (question.selectQuestion) {
           filters[0].operator = question.filterCondition;
@@ -406,8 +401,8 @@ export const init = (Survey: any, apollo: Apollo, dialog: MatDialog): void => {
             });
           }
           question.contentQuestion.choices = res;
-          if (!question.placeholder) {
-            question.contentQuestion.optionsCaption =
+          if (!question.placeholder || question.placeholder === 'Select...') {
+            question.contentQuestion.placeholder =
               'Select a record from ' + response.data.resource.name + '...';
           }
           if (!question.filterBy || question.filterBy.length < 1) {
@@ -511,17 +506,9 @@ export const init = (Survey: any, apollo: Apollo, dialog: MatDialog): void => {
     onAfterRender: (question: QuestionResource, el: HTMLElement): void => {
       // support the placeholder field
       if (question.placeholder) {
-        const locPlaceholder = get(
-          question,
-          'localizableStrings.placeholder.renderedText',
-          question.placeholder
-        );
-        const searchBox = el.querySelector(
-          '.sv_q_dropdown__filter-string-input'
-        );
-        if (searchBox) {
-          searchBox.setAttribute('placeholder', locPlaceholder);
-        }
+        const locPlaceholder = question.getLocalizableStringText('placeholder');
+        question.contentQuestion.placeholder =
+          locPlaceholder || question.placeholder;
       }
       if (
         (question.survey as SurveyModel).mode !== 'display' &&
