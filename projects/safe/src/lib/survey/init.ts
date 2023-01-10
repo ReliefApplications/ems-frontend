@@ -23,6 +23,7 @@ import * as DateEditor from './editors/date.surveyjseditor';
 import * as ResourceDropdown from './editors/resource.surveyjseditor';
 import * as ResourceFields from './editors/resourceFields.surveyjseditor';
 import * as Description from './editors/description.surveyjseditor';
+import * as ApplicationDropdown from './editors/application.surveyjseditor';
 
 import { initLocalization } from './localization';
 
@@ -53,6 +54,7 @@ export const initCustomSurvey = (
   ResourceDropdown.init(domService);
   ResourceFields.init(apollo, formBuilder, dialog, environment);
   Description.init();
+  ApplicationDropdown.init(domService);
 
   // load widgets (aka custom questions)
   CommentWidget.init(Survey);
@@ -61,7 +63,7 @@ export const initCustomSurvey = (
   // load components (same as widgets, but with less configuration options)
   ResourceComponent.init(Survey, apollo, dialog);
   ResourcesComponent.init(Survey, domService, apollo, dialog);
-  OwnerComponent.init(Survey, domService, apollo);
+  OwnerComponent.init(Survey, apollo);
   UsersComponent.init(Survey, domService, apollo);
 
   // load global properties

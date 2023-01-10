@@ -68,5 +68,11 @@
         padding-inline: 16px;
       }
     }
+
+    safe-application-dropdown {
+      mat-form-field {
+        width: 100%;
+      }
+    }
   }
 }

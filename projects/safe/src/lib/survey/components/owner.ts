@@ -1,7 +1,4 @@
 import { Apollo } from 'apollo-angular';
-import * as SurveyCreator from 'survey-creator-core';
-import { DomService } from '../../services/dom/dom.service';
-import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
 import {
   GetRolesFromApplicationsQueryResponse,
   GET_ROLES_FROM_APPLICATIONS,
@@ -12,14 +9,9 @@ import { QuestionOwner } from '../types';
  * Inits the owner component.
  *
  * @param Survey Survey library.
- * @param domService Dom service.
  * @param apollo Apollo client.
  */
-export const init = (
-  Survey: any,
-  domService: DomService,
-  apollo: Apollo
-): void => {
+export const init = (Survey: any, apollo: Apollo): void => {
   const component = {
     name: 'owner',
     title: 'Owner',
@@ -35,29 +27,11 @@ export const init = (
       Survey.Serializer.addProperty('owner', {
         name: 'applications',
         category: 'Owner properties',
-        type: 'applicationsDropdown',
+        type: 'application-dropdown',
         isDynamicChoices: true,
         visibleIndex: 3,
         required: true,
       });
-
-      // const applicationEditor = {
-      //   render: (editor: any, htmlElement: HTMLElement) => {
-      //     const question = editor.object;
-      //     const dropdown = domService.appendComponentToBody(
-      //       SafeApplicationDropdownComponent,
-      //       htmlElement
-      //     );
-      //     const instance: SafeApplicationDropdownComponent = dropdown.instance;
-      //     instance.value = question.applications;
-      //     instance.choice.subscribe((res) => editor.onChanged(res));
-      //   },
-      // };
-
-      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-      //   'applicationsDropdown',
-      //   applicationEditor
-      // ); TODO
     },
     onLoaded: (question: QuestionOwner): void => {
       apollo
