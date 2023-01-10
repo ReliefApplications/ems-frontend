@@ -278,6 +278,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       setTimeout(() => {
         const el = document.querySelector('[data-name="' + name + '"]');
         el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        this.surveyCreatorModel.setShowSidebar(true);
       });
     });
 
