@@ -60,7 +60,7 @@ export const initCustomSurvey = (
 
   // load components (same as widgets, but with less configuration options)
   ResourceComponent.init(Survey, apollo, dialog);
-  ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
+  ResourcesComponent.init(Survey, domService, apollo, dialog);
   OwnerComponent.init(Survey, domService, apollo);
   UsersComponent.init(Survey, domService, apollo);
 
