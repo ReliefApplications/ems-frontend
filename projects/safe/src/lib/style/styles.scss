@@ -19,18 +19,12 @@
 sv-ng-tagbox-item {
   padding: 4px 0;
   .sv-tagbox__item {
-    background-color: #{$primary_500} !important;
-    color: #{$primary_50} !important;
-    border-color: #{$primary_50} !important;
     font-weight: 500 !important;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 0.8em;
     padding: 0.8em;
-  }
-  .sv_q_tagbox-item_clean-button-svg {
-    fill: #{$primary_50} !important;
   }
 }
 
