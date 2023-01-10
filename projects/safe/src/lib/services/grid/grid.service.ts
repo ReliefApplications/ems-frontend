@@ -78,7 +78,7 @@ export class SafeGridService {
       fields.map((f) => {
         const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
         let metaData = get(metaFields, fullName);
-        const canSee = get(metaData, 'permissions.canSee');
+        const canSee = get(metaData, 'permissions.canSee', true);
         const canUpdate = get(metaData, 'permissions.canUpdate', false);
         const hidden: boolean =
           (!isNil(canSee) && !canSee) || options.hidden || false;
@@ -150,7 +150,7 @@ export class SafeGridService {
               format: this.getFieldFormat(f.type),
               editor: this.getFieldEditor(f.type),
               filter: !options.filter ? '' : this.getFieldFilter(f.type),
-              meta: metaData,
+              meta: metaData ? metaData : { type: 'text' },
               disabled:
                 disabled ||
                 DISABLED_FIELDS.includes(f.name) ||

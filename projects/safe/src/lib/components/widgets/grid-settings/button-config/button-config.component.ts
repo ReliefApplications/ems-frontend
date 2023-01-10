@@ -1,11 +1,4 @@
-import {
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  EventEmitter,
-} from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
@@ -14,7 +7,6 @@ import { Resource } from '../../../../models/resource.model';
 import { ContentType } from '../../../../models/page.model';
 import { SafeWorkflowService } from '../../../../services/workflow/workflow.service';
 import { Template, TemplateTypeEnum } from '../../../../models/template.model';
-import { Subscription } from 'rxjs';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
@@ -22,6 +14,8 @@ import { DistributionList } from '../../../../models/distribution-list.model';
 import { EditDistributionListModalComponent } from '../../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import { EditTemplateModalComponent } from '../../../templates/components/edit-template-modal/edit-template-modal.component';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -33,7 +27,10 @@ const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
   templateUrl: './button-config.component.html',
   styleUrls: ['./button-config.component.scss'],
 })
-export class ButtonConfigComponent implements OnInit, OnDestroy {
+export class ButtonConfigComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
   @Input() formGroup!: FormGroup;
   @Input() fields: any[] = [];
@@ -50,7 +47,6 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
 
   // Indicate if the next step is a Form and so we could potentially pass some data to it.
   public canPassData = false;
-  private workflowSubscription?: Subscription;
 
   /** @returns The list of fields which are of type scalar and not disabled */
   get scalarFields(): any[] {
@@ -81,7 +77,9 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
     private queryBuilder: QueryBuilderService,
     public dialog: MatDialog,
     private applicationService: SafeApplicationService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     if (
@@ -91,8 +89,9 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
       this.isDashboard = true;
     } else {
       const currentStepContent = this.router.url.split('/').pop();
-      this.workflowSubscription = this.workflowService.workflow$.subscribe(
-        (workflow) => {
+      this.workflowService.workflow$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((workflow) => {
           if (workflow) {
             const steps = workflow.steps || [];
             const currentStepIndex = steps.findIndex(
@@ -110,8 +109,7 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
               .shift();
             this.workflowService.loadWorkflow(workflowId);
           }
-        }
-      );
+        });
     }
 
     this.formGroup?.get('prefillForm')?.valueChanges.subscribe((value) => {
@@ -402,11 +400,5 @@ export class ButtonConfigComponent implements OnInit, OnDestroy {
    */
   public emitDeleteButton(): void {
     this.deleteButton.emit(true);
-  }
-
-  ngOnDestroy(): void {
-    if (this.workflowSubscription) {
-      this.workflowSubscription.unsubscribe();
-    }
   }
 }

@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo } from 'apollo-angular';
-import { Subscription } from 'rxjs';
 import {
   EditUserProfileMutationResponse,
   EDIT_USER_PROFILE,
@@ -11,6 +10,8 @@ import { User } from '../../models/user.model';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
+import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Shared profile page.
@@ -21,11 +22,12 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
-export class SafeProfileComponent implements OnInit, OnDestroy {
+export class SafeProfileComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   /** Table data */
   dataSource = new MatTableDataSource<User>();
-  /** Subscription to authentication service */
-  private authSubscription?: Subscription;
   /** Current user */
   public user: any;
   /** Form to edit the user */
@@ -54,14 +56,16 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
     private authService: SafeAuthService,
     private formBuilder: FormBuilder,
     public translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Subscribes to authenticated user.
    * Creates user form.
    */
   ngOnInit(): void {
-    this.authSubscription = this.authService.user$.subscribe((user) => {
+    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
       if (user) {
         this.user = { ...user };
         this.userForm = this.formBuilder.group({
@@ -129,15 +133,6 @@ export class SafeProfileComponent implements OnInit, OnDestroy {
             this.user.favoriteApp = res.data.editUserProfile.favoriteApp;
           }
         });
-    }
-  }
-
-  /**
-   * Removes all subscriptions of the component.
-   */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
     }
   }
 }

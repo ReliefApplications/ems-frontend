@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import {
   Application,
@@ -6,8 +6,9 @@ import {
   Role,
   SafeApplicationService,
   PositionAttributeCategory,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Application users page component.
@@ -17,42 +18,36 @@ import { Subscription } from 'rxjs';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class UsersComponent implements OnInit, OnDestroy {
+export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public users = new MatTableDataSource<User>([]);
   public roles: Role[] = [];
   public positionAttributeCategories: PositionAttributeCategory[] = [];
-  private applicationSubscription?: Subscription;
 
   /**
    * Application users page component
    *
    * @param applicationService Shared application service
    */
-  constructor(public applicationService: SafeApplicationService) {}
-
-  ngOnInit(): void {
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.users.data = application.users || [];
-            this.roles = application.roles || [];
-            this.positionAttributeCategories =
-              application.positionAttributeCategories || [];
-          } else {
-            this.users.data = [];
-            this.roles = [];
-          }
-          this.loading = false;
-        }
-      );
+  constructor(public applicationService: SafeApplicationService) {
+    super();
   }
 
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
+  ngOnInit(): void {
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.users.data = application.users || [];
+          this.roles = application.roles || [];
+          this.positionAttributeCategories =
+            application.positionAttributeCategories || [];
+        } else {
+          this.users.data = [];
+          this.roles = [];
+        }
+        this.loading = false;
+      });
   }
 }

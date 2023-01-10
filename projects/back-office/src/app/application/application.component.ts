@@ -6,9 +6,10 @@ import {
   ContentType,
   SafeApplicationService,
   SafeConfirmService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import get from 'lodash/get';
-import { Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Main component of Application view.
@@ -18,7 +19,10 @@ import { Subscription } from 'rxjs';
   templateUrl: './application.component.html',
   styleUrls: ['./application.component.scss'],
 })
-export class ApplicationComponent implements OnInit, OnDestroy {
+export class ApplicationComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   // === HEADER TITLE ===
 
   public title = '';
@@ -29,10 +33,6 @@ export class ApplicationComponent implements OnInit, OnDestroy {
 
   // === APPLICATION ===
   public application?: Application;
-  private applicationSubscription?: Subscription;
-
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
 
   /**
    * Main component of application view
@@ -49,126 +49,119 @@ export class ApplicationComponent implements OnInit, OnDestroy {
     private router: Router,
     private translate: TranslateService,
     private confirmService: SafeConfirmService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.applicationService.loadApplication(params.id);
     });
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.title = application.name || '';
-            const displayNavItems: any[] =
-              application.pages
-                ?.filter((x: any) => x.content && x.canSee)
-                .map((x: any) => ({
-                  id: x.id,
-                  name: x.name,
-                  path:
-                    x.type === ContentType.form
-                      ? `./${x.type}/${x.id}`
-                      : `./${x.type}/${x.content}`,
-                  icon: this.getNavIcon(x.type || ''),
-                  class: null,
-                  orderable: true,
-                  action: x.canDelete && {
-                    icon: 'delete',
-                    toolTip: this.translate.instant('common.deleteObject', {
-                      name: this.translate
-                        .instant('common.page.one')
-                        .toLowerCase(),
-                    }),
-                    callback: () => this.onDelete(x),
-                  },
-                })) || [];
-            if (application.canUpdate) {
-              this.adminNavItems = [
-                {
-                  name: this.translate.instant('common.settings'),
-                  path: './settings/edit',
-                  icon: 'settings',
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.title = application.name || '';
+          const displayNavItems: any[] =
+            application.pages
+              ?.filter((x: any) => x.content && x.canSee)
+              .map((x: any) => ({
+                id: x.id,
+                name: x.name,
+                path:
+                  x.type === ContentType.form
+                    ? `./${x.type}/${x.id}`
+                    : `./${x.type}/${x.content}`,
+                icon: this.getNavIcon(x.type || ''),
+                class: null,
+                orderable: true,
+                action: x.canDelete && {
+                  icon: 'delete',
+                  toolTip: this.translate.instant('common.deleteObject', {
+                    name: this.translate
+                      .instant('common.page.one')
+                      .toLowerCase(),
+                  }),
+                  callback: () => this.onDelete(x),
                 },
-                {
-                  name: this.translate.instant('common.template.few'),
-                  path: './settings/templates',
-                  icon: 'description',
-                },
-                {
-                  name: this.translate.instant('common.distributionList.few'),
-                  path: './settings/distribution-lists',
-                  icon: 'mail',
-                },
-                {
-                  name: this.translate.instant('common.customNotification.few'),
-                  path: './settings/notifications',
-                  icon: 'schedule_send',
-                },
-                {
-                  name: this.translate.instant('common.user.few'),
-                  path: './settings/users',
-                  icon: 'supervisor_account',
-                },
-                {
-                  name: this.translate.instant('common.role.few'),
-                  path: './settings/roles',
-                  icon: 'verified_user',
-                },
-                {
-                  name: this.translate.instant(
-                    'pages.application.positionAttributes.title'
-                  ),
-                  path: './settings/position',
-                  icon: 'edit_attributes',
-                },
-                {
-                  name: this.translate.instant('common.channel.few'),
-                  path: './settings/channels',
-                  icon: 'dns',
-                },
-                {
-                  name: this.translate.instant('common.subscription.few'),
-                  path: './settings/subscriptions',
-                  icon: 'add_to_queue',
-                },
-              ];
-            }
-            this.navGroups = [
+              })) || [];
+          if (application.canUpdate) {
+            this.adminNavItems = [
               {
-                name: this.translate.instant('common.page.few'),
-                navItems: displayNavItems,
+                name: this.translate.instant('common.settings'),
+                path: './settings/edit',
+                icon: 'settings',
+              },
+              {
+                name: this.translate.instant('common.template.few'),
+                path: './settings/templates',
+                icon: 'description',
+              },
+              {
+                name: this.translate.instant('common.distributionList.few'),
+                path: './settings/distribution-lists',
+                icon: 'mail',
+              },
+              {
+                name: this.translate.instant('common.user.few'),
+                path: './settings/users',
+                icon: 'supervisor_account',
+              },
+              {
+                name: this.translate.instant('common.role.few'),
+                path: './settings/roles',
+                icon: 'verified_user',
+              },
+              {
+                name: this.translate.instant(
+                  'pages.application.positionAttributes.title'
+                ),
+                path: './settings/position',
+                icon: 'edit_attributes',
+              },
+              {
+                name: this.translate.instant('common.channel.few'),
+                path: './settings/channels',
+                icon: 'dns',
+              },
+              {
+                name: this.translate.instant('common.subscription.few'),
+                path: './settings/subscriptions',
+                icon: 'add_to_queue',
               },
             ];
-            if (!this.application || application.id !== this.application.id) {
-              const firstPage = get(application, 'pages', [])[0];
-              if (
-                this.router.url.endsWith(application?.id || '') ||
-                !firstPage
-              ) {
-                if (firstPage) {
-                  this.router.navigate(
-                    [
-                      `./${firstPage.type}/${
-                        firstPage.type === ContentType.form
-                          ? firstPage.id
-                          : firstPage.content
-                      }`,
-                    ],
-                    { relativeTo: this.route }
-                  );
-                } else {
-                  this.router.navigate([`./`], { relativeTo: this.route });
-                }
+          }
+          this.navGroups = [
+            {
+              name: this.translate.instant('common.page.few'),
+              navItems: displayNavItems,
+            },
+          ];
+          if (!this.application || application.id !== this.application.id) {
+            const firstPage = get(application, 'pages', [])[0];
+            if (this.router.url.endsWith(application?.id || '') || !firstPage) {
+              if (firstPage) {
+                this.router.navigate(
+                  [
+                    `./${firstPage.type}/${
+                      firstPage.type === ContentType.form
+                        ? firstPage.id
+                        : firstPage.content
+                    }`,
+                  ],
+                  { relativeTo: this.route }
+                );
+              } else {
+                this.router.navigate([`./`], { relativeTo: this.route });
               }
             }
-            this.application = application;
-          } else {
-            this.title = '';
-            this.navGroups = [];
           }
+          this.application = application;
+        } else {
+          this.title = '';
+          this.navGroups = [];
         }
-      );
+      });
   }
 
   /**
@@ -224,12 +217,7 @@ export class ApplicationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-      this.applicationService.leaveApplication();
-    }
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
+    super.ngOnDestroy();
+    this.applicationService.leaveApplication();
   }
 }

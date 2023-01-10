@@ -288,13 +288,18 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     const value = get(item, path);
     if (meta.choices) {
       if (Array.isArray(value)) {
-        return meta.choices.reduce(
+        const text = meta.choices.reduce(
           (acc: string[], x: any) =>
             value.includes(x.value) ? acc.concat([x.text]) : acc,
           []
         );
+        if (text.length < value.length) {
+          return value;
+        } else {
+          return text;
+        }
       } else {
-        return meta.choices.find((x: any) => x.value === value)?.text || '';
+        return meta.choices.find((x: any) => x.value === value)?.text || value;
       }
     } else {
       return value;

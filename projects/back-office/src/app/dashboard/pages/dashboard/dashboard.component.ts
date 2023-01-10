@@ -9,7 +9,6 @@ import {
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import {
   Dashboard,
   SafeSnackBarService,
@@ -18,6 +17,7 @@ import {
   SafeDashboardService,
   SafeAuthService,
   Application,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
@@ -32,8 +32,8 @@ import {
   GetDashboardByIdQueryResponse,
   GET_DASHBOARD_BY_ID,
 } from './graphql/queries';
-import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Dashboard page.
@@ -43,7 +43,10 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   // === DATA ===
   public id = '';
   public applicationId?: string;
@@ -57,9 +60,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // === DASHBOARD NAME EDITION ===
   public formActive = false;
   public dashboardNameForm: FormGroup = new FormGroup({});
-
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -93,10 +93,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private dashboardService: SafeDashboardService,
     private translateService: TranslateService,
     private authService: SafeAuthService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.formActive = false;
       this.loading = true;
       this.id = params.id;
@@ -155,10 +157,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Leave dashboard
+   */
   ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
+    super.ngOnDestroy();
     this.dashboardService.closeDashboard();
   }
 

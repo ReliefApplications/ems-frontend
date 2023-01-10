@@ -1,8 +1,7 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import {
   Application,
   PermissionsManagement,
@@ -10,6 +9,7 @@ import {
   SafeAuthService,
   SafeConfirmService,
   SafeSnackBarService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import {
   GetApplicationsQueryResponse,
@@ -30,6 +30,7 @@ import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationModalComponent } from '../../../components/duplicate-application-modal/duplicate-application-modal.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -40,7 +41,10 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.scss'],
 })
-export class ApplicationsComponent implements OnInit, OnDestroy {
+export class ApplicationsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public updating = false;
@@ -72,7 +76,6 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
 
   // === PERMISSIONS ===
   canAdd = false;
-  private authSubscription?: Subscription;
 
   /**
    * Applications page component
@@ -95,7 +98,9 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     private previewService: PreviewService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Creates the application query and subscribes to the query changes.
@@ -119,23 +124,29 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
           sortOrder: 'desc',
         },
       });
-    this.applicationsQuery.valueChanges.subscribe((res) => {
-      this.cachedApplications = res.data.applications.edges.map((x) => x.node);
-      this.applications.data = this.cachedApplications.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = res.data.applications.totalCount;
-      this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
-      this.loading = res.loading;
-      this.updating = false;
-    });
-    this.newApplicationsQuery.valueChanges.subscribe((res) => {
-      this.newApplications = res.data.applications.edges
-        .map((x) => x.node)
-        .slice(0, 5);
-    });
-    this.authSubscription = this.authService.user$.subscribe(() => {
+    this.applicationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.cachedApplications = res.data.applications.edges.map(
+          (x) => x.node
+        );
+        this.applications.data = this.cachedApplications.slice(
+          this.pageInfo.pageSize * this.pageInfo.pageIndex,
+          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+        );
+        this.pageInfo.length = res.data.applications.totalCount;
+        this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
+        this.loading = res.loading;
+        this.updating = false;
+      });
+    this.newApplicationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.newApplications = res.data.applications.edges
+          .map((x) => x.node)
+          .slice(0, 5);
+      });
+    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.canAdd =
         this.authService.userHasClaim(
           PermissionsManagement.getRightFromPath(
@@ -150,15 +161,6 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
           )
         );
     });
-  }
-
-  /**
-   * Removes all subscriptions.
-   */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
   }
 
   /**

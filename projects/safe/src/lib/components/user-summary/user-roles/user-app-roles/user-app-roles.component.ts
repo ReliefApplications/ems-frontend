@@ -11,6 +11,8 @@ import {
   GET_ROLES,
 } from '../../graphql/queries';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** Roles tab for the user summary */
 @Component({
@@ -18,7 +20,10 @@ import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.serv
   templateUrl: './user-app-roles.component.html',
   styleUrls: ['./user-app-roles.component.scss'],
 })
-export class UserAppRolesComponent implements OnInit {
+export class UserAppRolesComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public roles: Role[] = [];
   @Input() user!: User;
   @Input() application?: Application;
@@ -49,32 +54,38 @@ export class UserAppRolesComponent implements OnInit {
     private fb: FormBuilder,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.selectedRoles = this.fb.control(
       get(this.user, 'roles', []).filter((x: Role) => !x.application)
     );
-    this.selectedRoles.valueChanges.subscribe((value) => {
-      if (this.selectedApplication.value) {
-        this.edit.emit({
-          roles: value,
-          application: this.selectedApplication.value,
-        });
-      }
-    });
+    this.selectedRoles.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (this.selectedApplication.value) {
+          this.edit.emit({
+            roles: value,
+            application: this.selectedApplication.value,
+          });
+        }
+      });
 
     this.selectedApplication = this.fb.control({
       value: get(this.application, 'id', ''),
       disabled: !!this.application,
     });
-    this.selectedApplication.valueChanges.subscribe((value) => {
-      this.selectedRoles.setValue([], { emitEvent: false });
-      this.roles = [];
-      if (value) {
-        this.getApplicationRoles(value);
-      }
-    });
+    this.selectedApplication.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.selectedRoles.setValue([], { emitEvent: false });
+        this.roles = [];
+        if (value) {
+          this.getApplicationRoles(value);
+        }
+      });
     if (this.application) {
       this.getApplicationRoles(this.application.id as string);
     }
@@ -87,12 +98,14 @@ export class UserAppRolesComponent implements OnInit {
           sortField: 'name',
         },
       });
-    this.applicationsQuery.valueChanges.subscribe(
-      () => {},
-      (err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
-      }
-    );
+    this.applicationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        () => {},
+        (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        }
+      );
   }
 
   /**
@@ -109,6 +122,7 @@ export class UserAppRolesComponent implements OnInit {
           application,
         },
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (res) => {
           if (res.data) {

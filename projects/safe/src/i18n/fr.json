@@ -781,6 +781,11 @@
 			},
 			"dropdown": {
 				"select": "Depuis la ressource"
+			},
+			"empty": {
+				"aggregations": "Aucune agrégation détectée",
+				"layouts": "Aucune mise en page détectée",
+				"records": "Aucun enregistrement détecté"
 			}
 		},
 		"role": {

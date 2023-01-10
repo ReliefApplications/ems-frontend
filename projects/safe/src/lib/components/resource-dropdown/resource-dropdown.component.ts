@@ -8,6 +8,8 @@ import {
   GET_RESOURCES,
   GET_SHORT_RESOURCE_BY_ID,
 } from './graphql/queries';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** A constant that is used to determine how many items should be on one page. */
 const ITEMS_PER_PAGE = 10;
@@ -20,7 +22,10 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './resource-dropdown.component.html',
   styleUrls: ['./resource-dropdown.component.scss'],
 })
-export class SafeResourceDropdownComponent implements OnInit {
+export class SafeResourceDropdownComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() resource = '';
   public selectedResource?: Resource;
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
@@ -34,13 +39,17 @@ export class SafeResourceDropdownComponent implements OnInit {
    *
    * @param {Apollo} apollo - Apollo - This is the Apollo service that is used to create GraphQL queries.
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo) {
+    super();
+  }
 
   ngOnInit(): void {
     this.resourceControl = new FormControl(this.resource);
-    this.resourceControl.valueChanges.subscribe((value) => {
-      this.choice.emit(value);
-    });
+    this.resourceControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.choice.emit(value);
+      });
     if (this.resource) {
       this.apollo
         .query<GetResourceByIdQueryResponse>({

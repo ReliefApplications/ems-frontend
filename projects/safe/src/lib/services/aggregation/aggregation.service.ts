@@ -17,7 +17,7 @@ import {
   Aggregation,
   AggregationConnection,
 } from '../../models/aggregation.model';
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 
@@ -95,6 +95,32 @@ export class SafeAggregationService {
         resource,
         aggregation,
         mapping,
+      },
+    });
+  }
+
+  /**
+   * Builds the aggregation query from aggregation definition
+   *
+   * @param resource Resource Id
+   * @param aggregation Aggregation definition
+   * @param first size of the page
+   * @param skip index of the page
+   * @returns Aggregation query
+   */
+  aggregationDataWatchQuery(
+    resource: string,
+    aggregation: string,
+    first: number,
+    skip: number
+  ): QueryRef<GetAggregationDataQueryResponse> {
+    return this.apollo.watchQuery<GetAggregationDataQueryResponse>({
+      query: GET_AGGREGATION_DATA,
+      variables: {
+        resource,
+        aggregation,
+        first,
+        skip,
       },
     });
   }

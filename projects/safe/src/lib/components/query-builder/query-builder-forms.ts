@@ -1,5 +1,6 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
+import { QueryField } from '../../services/query-builder/query-builder.service';
 import { prettifyLabel } from '../../utils/prettify';
 
 /** Creating a new instance of the FormBuilder class. */
@@ -66,7 +67,13 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
     case 'OBJECT': {
       return formBuilder.group({
         name: [{ value: field.name, disabled: true }],
-        type: [newField ? field.type.name : field.type],
+        type: [
+          newField
+            ? field.type.name
+              ? field.type.name
+              : field.type.ofType.name
+            : field.type,
+        ],
         kind: [newField ? field.type.kind : field.kind],
         fields: formBuilder.array(
           !newField && field.fields
@@ -92,6 +99,19 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
     }
   }
 };
+
+/**
+ * Create a default QueryField from a name only.
+ *
+ * @param name Name of the field
+ * @returns Default QueryField
+ */
+export const createDefaultField = (name: string): QueryField => ({
+  name,
+  type: 'String',
+  kind: 'SCALAR',
+  label: prettifyLabel(name),
+});
 
 /**
  * Builds a query form.
