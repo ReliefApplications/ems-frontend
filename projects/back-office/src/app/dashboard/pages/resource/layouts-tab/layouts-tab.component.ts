@@ -42,7 +42,7 @@ export class LayoutsTabComponent implements OnInit {
 
   /** @returns True if the layouts tab is empty */
   get empty(): boolean {
-    return this.loading || this.layouts.length === 0;
+    return !this.loading && this.layouts.length === 0;
   }
 
   /**
