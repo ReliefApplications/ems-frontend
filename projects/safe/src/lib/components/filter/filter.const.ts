@@ -120,6 +120,12 @@ export const FIELD_TYPES = [
   },
   {
     editor: 'select',
+    defaultOperator: 'eq',
+    operators: ['eq', 'neq', 'isempty', 'isnotempty'],
+  },
+  {
+    editor: 'select',
+    multiSelect: true,
     defaultOperator: 'contains',
     operators: [
       'eq',
