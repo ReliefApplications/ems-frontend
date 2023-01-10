@@ -127,10 +127,11 @@ export class SafeRoleListComponent
    */
   private getRoles(): void {
     this.apollo
-      .watchQuery<GetRolesQueryResponse>({
+      .query<GetRolesQueryResponse>({
         query: GET_ROLES,
       })
-      .valueChanges.subscribe((res) => {
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
         this.roles.data = res.data.roles;
         this.loading = res.loading;
       });
@@ -155,6 +156,7 @@ export class SafeRoleListComponent
                 title: value.title,
               },
             })
+            .pipe(takeUntil(this.destroy$))
             .subscribe(
               () => {
                 this.snackBar.openSnackBar(
@@ -206,6 +208,7 @@ export class SafeRoleListComponent
                 id: item.id,
               },
             })
+            .pipe(takeUntil(this.destroy$))
             .subscribe(() => {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {

@@ -348,85 +348,87 @@ export class SafeCoreGridComponent
     if (this.settings.query?.pageSize) {
       this.pageSize = this.settings.query.pageSize;
     }
-    // Builds custom query.
-    const builtQuery = this.queryBuilder.buildQuery(this.settings);
-    if (!builtQuery) {
-      this.status = {
-        error: !this.loadingSettings,
-        message: this.translate.instant(
-          'components.widget.grid.errors.queryBuildFailed'
-        ),
-      };
-    } else {
-      this.dataQuery = this.apollo.watchQuery({
-        query: builtQuery,
-        variables: {
-          first: this.pageSize,
-          filter: this.queryFilter,
-          sortField: this.sortField || undefined,
-          sortOrder: this.sortOrder,
-          styles: this.style,
-        },
-        fetchPolicy: 'network-only',
-        nextFetchPolicy: 'cache-first',
-      });
-    }
+    if (get(this.settings, 'query')) {
+      // Builds custom query.
+      const builtQuery = this.queryBuilder.buildQuery(this.settings);
+      if (!builtQuery) {
+        this.status = {
+          error: !this.loadingSettings,
+          message: this.translate.instant(
+            'components.widget.grid.errors.queryBuildFailed'
+          ),
+        };
+      } else {
+        this.dataQuery = this.apollo.watchQuery({
+          query: builtQuery,
+          variables: {
+            first: this.pageSize,
+            filter: this.queryFilter,
+            sortField: this.sortField || undefined,
+            sortOrder: this.sortOrder,
+            styles: this.style,
+          },
+          fetchPolicy: 'network-only',
+          nextFetchPolicy: 'cache-first',
+        });
+      }
 
-    // Build meta query
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
-    if (this.metaQuery) {
-      this.loading = true;
-      this.metaQuery.subscribe(
-        async (res: any) => {
-          this.status = {
-            error: false,
-          };
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              this.metaFields = Object.assign({}, res.data[field]);
-              try {
-                await this.gridService.populateMetaFields(this.metaFields);
-              } catch (err) {
-                console.error(err);
+      // Build meta query
+      this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
+      if (this.metaQuery) {
+        this.loading = true;
+        this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe(
+          async (res: any) => {
+            this.status = {
+              error: false,
+            };
+            for (const field in res.data) {
+              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+                this.metaFields = Object.assign({}, res.data[field]);
+                try {
+                  await this.gridService.populateMetaFields(this.metaFields);
+                } catch (err) {
+                  console.error(err);
+                }
+                const fields = this.settings?.query?.fields || [];
+                const defaultLayoutFields = this.defaultLayout.fields || {};
+                this.fields = this.gridService.getFields(
+                  fields,
+                  this.metaFields,
+                  defaultLayoutFields,
+                  ''
+                );
               }
-              const fields = this.settings?.query?.fields || [];
-              const defaultLayoutFields = this.defaultLayout.fields || {};
-              this.fields = this.gridService.getFields(
-                fields,
-                this.metaFields,
-                defaultLayoutFields,
-                ''
-              );
             }
+            this.getRecords();
+          },
+          (err: any) => {
+            this.loading = false;
+            this.status = {
+              error: true,
+              message: this.translate.instant(
+                'components.widget.grid.errors.metaQueryFetchFailed',
+                {
+                  error:
+                    err.networkError?.error?.errors
+                      ?.map((x: any) => x.message)
+                      .join(', ') || err,
+                }
+              ),
+            };
           }
-          this.getRecords();
-        },
-        (err: any) => {
-          this.loading = false;
-          this.status = {
-            error: true,
-            message: this.translate.instant(
-              'components.widget.grid.errors.metaQueryFetchFailed',
-              {
-                error:
-                  err.networkError?.error?.errors
-                    ?.map((x: any) => x.message)
-                    .join(', ') || err,
-              }
-            ),
-          };
-        }
-      );
-    } else {
-      this.loading = false;
-      this.status = {
-        error: !this.loadingSettings,
-        message: this.translate.instant(
-          'components.widget.grid.errors.metaQueryBuildFailed'
-        ),
-      };
+        );
+      } else {
+        this.loading = false;
+        this.status = {
+          error: !this.loadingSettings,
+          message: this.translate.instant(
+            'components.widget.grid.errors.metaQueryBuildFailed'
+          ),
+        };
+      }
+      this.loadTemplate();
     }
-    this.loadTemplate();
   }
 
   /**
@@ -441,6 +443,7 @@ export class SafeCoreGridComponent
             id: this.settings.template,
           },
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe((res) => {
           if (res.data.form.structure) {
             this.templateStructure = res.data.form.structure;
@@ -872,11 +875,14 @@ export class SafeCoreGridComponent
         },
         autoFocus: false,
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.onUpdate(isArray ? items : [items]);
-        }
-      });
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          if (value) {
+            this.onUpdate(isArray ? items : [items]);
+          }
+        });
     }
   }
 
@@ -949,6 +955,7 @@ export class SafeCoreGridComponent
               ids,
             },
           })
+          .pipe(takeUntil(this.destroy$))
           .subscribe(() => {
             this.reloadData();
             this.layoutService.setRightSidenav(null);
@@ -1047,6 +1054,7 @@ export class SafeCoreGridComponent
               version: version.id,
             },
           })
+          .pipe(takeUntil(this.destroy$))
           .subscribe(() => {
             this.reloadData();
             this.layoutService.setRightSidenav(null);

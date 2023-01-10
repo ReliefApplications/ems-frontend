@@ -53,16 +53,19 @@ export interface Field {
   options?: { value: any; text: string }[];
 }
 
+/** Stored query field interface definition */
+export interface QueryField {
+  name: string;
+  kind: 'OBJECT' | 'SCALAR' | 'LIST';
+  label?: string;
+  type?: string;
+  ofType?: any;
+}
+
 /** Query interface definition */
 interface Query {
   name: string;
-  fields: {
-    name: string;
-    kind: 'OBJECT' | 'SCALAR' | 'LIST';
-    label?: string;
-    ofType?: any;
-    type?: string;
-  }[];
+  fields: QueryField[];
   filter?: CompositeFilterDescriptor;
   sort?: {
     field?: string;
@@ -330,7 +333,11 @@ export class QueryBuilderService {
    */
   public buildQuery(settings: { query: Query; [key: string]: any }) {
     const builtQuery = settings.query;
-    if (builtQuery.name && builtQuery?.fields && builtQuery.fields.length > 0) {
+    if (
+      builtQuery?.name &&
+      builtQuery?.fields &&
+      builtQuery.fields.length > 0
+    ) {
       const fields = ['canUpdate\ncanDelete\n'].concat(
         this.buildFields(builtQuery.fields)
       );

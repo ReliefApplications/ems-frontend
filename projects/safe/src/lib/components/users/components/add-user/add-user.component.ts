@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 import { GET_USERS, GetUsersQueryResponse } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** Model for the input  */
 interface DialogData {
@@ -22,7 +24,10 @@ interface DialogData {
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.scss'],
 })
-export class SafeAddUserComponent implements OnInit {
+export class SafeAddUserComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   form: FormGroup = new FormGroup({});
   public filteredUsers?: Observable<User[]>;
   private users: User[] = [];
@@ -49,7 +54,9 @@ export class SafeAddUserComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
     public translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
@@ -73,10 +80,11 @@ export class SafeAddUserComponent implements OnInit {
     );
 
     this.apollo
-      .watchQuery<GetUsersQueryResponse>({
+      .query<GetUsersQueryResponse>({
         query: GET_USERS,
       })
-      .valueChanges.subscribe((res) => {
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
         const flatInvitedUsers = this.data.users.map((x) => x.username);
         this.users = res.data.users.filter(
           (x) => !flatInvitedUsers.includes(x.username)
