@@ -11,7 +11,7 @@
   [pageable]="pagerSettings"
   [pageSize]="pageSize"
   [skip]="skip"
-  [filterable]="filterable ? showFilter ? true : 'menu' : false"
+  [filterable]="filterable ? (showFilter ? true : 'menu') : false"
   [filter]="filter"
   (filterChange)="onFilterChange($event)"
   (pageChange)="onPageChange($event)"
