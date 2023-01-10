@@ -16,7 +16,7 @@ module.exports = {
       },
       colors: {
         'test': '#ff00ff',
-        'primary': {
+        primary: {
           50: 'rgb(var(--primary-50) / <alpha-value>)',
           100: 'rgb(var(--primary-100) / <alpha-value>)',
           200: 'rgb(var(--primary-200) / <alpha-value>)',
@@ -28,7 +28,7 @@ module.exports = {
           800: 'rgb(var(--primary-800) / <alpha-value>)',
           900: 'rgb(var(--primary-900) / <alpha-value>)',
         },
-        'secondary': {
+        secondary: {
           50: 'rgb(var(--secondary-50) / <alpha-value>)', //main
           100: 'rgb(var(--secondary-100) / <alpha-value>)', //lighter
           150: 'rgb(var(--secondary-150) / <alpha-value>)', //darker

@@ -111,32 +111,12 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     }
   }
 
-  .primary {
-    color: mat.get-color-from-palette($primary);
-  }
-
   .accent {
     color: mat.get-color-from-palette($accent);
   }
 
   .warn {
     color: mat.get-color-from-palette($warn);
-  }
-
-  .safe-add-application {
-    background-color: mat.get-color-from-palette($primary, 50);
-
-    span {
-      color: mat.get-color-from-palette($primary);
-    }
-  }
-
-  .safe-add-step {
-    background-color: mat.get-color-from-palette($primary, 50);
-
-    span {
-      color: mat.get-color-from-palette($primary);
-    }
   }
 }
 
@@ -709,19 +689,19 @@ mat-tab-group[vertical] {
 
 @layer base {
   :root {
-    --primary-50: $primary_50;
-    --primary-100: $primary_100;
-    --primary-200: $primary_200;
-    --primary-300: $primary_300;
-    --primary-400: $primary_400;
-    --primary-500: $primary_500;
-    --primary-600: $primary_600;
-    --primary-700: $primary_700;
-    --primary-800: $primary_800;
-    --primary-900: $primary_900;
-    --secondary-50: $secondary_50;
-    --secondary-100: $secondary_100;
-    --secondary-150: $secondary_150;
-    --secondary-200: $secondary_200;
+    --primary-50: #{$primary_50};
+    --primary-100: #{$primary_100};
+    --primary-200: #{$primary_200};
+    --primary-300: #{$primary_300};
+    --primary-400: #{$primary_400};
+    --primary-500: #{$primary_500};
+    --primary-600: #{$primary_600};
+    --primary-700: #{$primary_700};
+    --primary-800: #{$primary_800};
+    --primary-900: #{$primary_900};
+    --secondary-50: #{$secondary_50};
+    --secondary-100: #{$secondary_100};
+    --secondary-150: #{$secondary_150};
+    --secondary-200: #{$secondary_200};
   }
 }
