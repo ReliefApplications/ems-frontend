@@ -17,7 +17,19 @@ export const RESOURCE_FIELDS = gql`
     rolePermissions(role: $role)
     metadata {
       name
-      filterable
+      type
+      editor
+      filter
+      multiSelect
+      options
+      fields {
+        name
+        type
+        editor
+        filter
+        multiSelect
+        options
+      }
     }
     fields
   }
