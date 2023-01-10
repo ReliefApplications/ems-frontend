@@ -1,7 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Application, SafeApplicationService } from '@safe/builder';
-import { Subscription } from 'rxjs';
+import {
+  Application,
+  SafeApplicationService,
+  SafeUnsubscribeComponent,
+} from '@safe/builder';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * User Summary page component.
@@ -11,10 +15,12 @@ import { Subscription } from 'rxjs';
   templateUrl: './user-summary.component.html',
   styleUrls: ['./user-summary.component.scss'],
 })
-export class UserSummaryComponent implements OnInit, OnDestroy {
+export class UserSummaryComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public id = '';
   public application!: Application;
-  private applicationSubscription?: Subscription;
 
   /**
    * User summary page component.
@@ -25,27 +31,22 @@ export class UserSummaryComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     public applicationService: SafeApplicationService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const routeSubscription = this.route.params.subscribe((val: any) => {
       this.id = val.id;
     });
     routeSubscription.unsubscribe();
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.application = application;
-          }
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.application = application;
         }
-      );
+      });
     // applicationSubscription.unsubscribe();
-  }
-
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
   }
 }

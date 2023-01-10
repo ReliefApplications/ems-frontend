@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -16,8 +10,8 @@ import {
   SafeAuthService,
   SafeConfirmService,
   SafeSnackBarService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
 import {
   GetApiConfigurationsQueryResponse,
   GET_API_CONFIGURATIONS,
@@ -31,6 +25,7 @@ import {
 } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -44,7 +39,8 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./api-configurations.component.scss'],
 })
 export class ApiConfigurationsComponent
-  implements OnInit, OnDestroy, AfterViewInit
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit
 {
   // === DATA ===
   public loading = true;
@@ -55,7 +51,6 @@ export class ApiConfigurationsComponent
 
   // === PERMISSIONS ===
   canAdd = false;
-  private authSubscription?: Subscription;
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -91,7 +86,9 @@ export class ApiConfigurationsComponent
     private confirmService: SafeConfirmService,
     private router: Router,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Creates the API configuration query, and subscribes to the query changes.
@@ -105,21 +102,23 @@ export class ApiConfigurationsComponent
         },
       });
 
-    this.apiConfigurationsQuery.valueChanges.subscribe((res) => {
-      this.cachedApiConfigurations = res.data.apiConfigurations.edges.map(
-        (x) => x.node
-      );
-      this.dataSource.data = this.cachedApiConfigurations.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = res.data.apiConfigurations.totalCount;
-      this.pageInfo.endCursor = res.data.apiConfigurations.pageInfo.endCursor;
-      this.loading = res.loading;
-      this.filterPredicate();
-    });
+    this.apiConfigurationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.cachedApiConfigurations = res.data.apiConfigurations.edges.map(
+          (x) => x.node
+        );
+        this.dataSource.data = this.cachedApiConfigurations.slice(
+          this.pageInfo.pageSize * this.pageInfo.pageIndex,
+          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+        );
+        this.pageInfo.length = res.data.apiConfigurations.totalCount;
+        this.pageInfo.endCursor = res.data.apiConfigurations.pageInfo.endCursor;
+        this.loading = res.loading;
+        this.filterPredicate();
+      });
 
-    this.authSubscription = this.authService.user$.subscribe(() => {
+    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.canAdd = this.authService.userHasClaim(
         PermissionsManagement.getRightFromPath(
           this.router.url,
@@ -315,14 +314,5 @@ export class ApiConfigurationsComponent
    */
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort || null;
-  }
-
-  /**
-   * Removes all subscriptions.
-   */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
   }
 }

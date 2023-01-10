@@ -23,6 +23,9 @@ import {
 } from './graphql/queries';
 import { Change, RecordHistory } from '../../models/recordsHistory';
 import { Version } from '../../models/form.model';
+import { Subject } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -53,7 +56,10 @@ const getValueType = (
   templateUrl: './record-history.component.html',
   styleUrls: ['./record-history.component.scss'],
 })
-export class SafeRecordHistoryComponent implements OnInit {
+export class SafeRecordHistoryComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() id!: string;
   @Input() revert!: (version: Version) => void;
   @Input() template?: string;
@@ -68,6 +74,9 @@ export class SafeRecordHistoryComponent implements OnInit {
   public filtersDate = { startDate: '', endDate: '' };
   public sortedFields: any[] = [];
   public filterField: string | null = null;
+
+  // Refresh content of the history
+  @Input() refresh$: Subject<boolean> = new Subject<boolean>();
 
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
@@ -100,48 +109,53 @@ export class SafeRecordHistoryComponent implements OnInit {
     private dateFormat: SafeDateTranslateService,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    // this.sortFields();
+    // Set subscription to load records
+    this.refresh$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.apollo
+        .query<GetRecordByIdQueryResponse>({
+          query: GET_RECORD_BY_ID_FOR_HISTORY,
+          variables: {
+            id: this.id,
+          },
+        })
+        .subscribe((res) => {
+          this.record = res.data.record;
+          this.sortedFields = this.sortFields(this.getFields());
+        });
 
-    this.apollo
-      .query<GetRecordByIdQueryResponse>({
-        query: GET_RECORD_BY_ID_FOR_HISTORY,
-        variables: {
-          id: this.id,
-        },
-      })
-      .subscribe((res) => {
-        this.record = res.data.record;
-        this.sortedFields = this.sortFields(this.getFields());
-      });
-
-    this.apollo
-      .query<GetRecordHistoryByIdResponse>({
-        query: GET_RECORD_HISTORY_BY_ID,
-        variables: {
-          id: this.id,
-          lang: this.translate.currentLang,
-        },
-      })
-      .subscribe((res) => {
-        if (res.errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.history.error', {
-              error: res.errors[0].message,
-            }),
-            { error: true }
-          );
-          this.cancel.emit(true);
-        } else {
-          this.history = res.data.recordHistory.filter(
-            (item) => item.changes.length
-          );
-          this.filterHistory = this.history;
-          this.loading = false;
-        }
-      });
+      this.apollo
+        .query<GetRecordHistoryByIdResponse>({
+          query: GET_RECORD_HISTORY_BY_ID,
+          variables: {
+            id: this.id,
+            lang: this.translate.currentLang,
+          },
+        })
+        .subscribe((res) => {
+          if (res.errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.history.error', {
+                error: res.errors[0].message,
+              }),
+              { error: true }
+            );
+            this.cancel.emit(true);
+          } else {
+            this.history = res.data.recordHistory.filter(
+              (item) => item.changes.length
+            );
+            this.filterHistory = this.history;
+            this.loading = false;
+          }
+        });
+    });
+    // Send first refresh event to load data
+    this.refresh$.next(true);
   }
 
   /**

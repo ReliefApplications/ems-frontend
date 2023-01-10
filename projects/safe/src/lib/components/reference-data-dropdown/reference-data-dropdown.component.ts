@@ -21,6 +21,8 @@ import {
 } from './graphql/queries';
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../../utils/scroll-factory';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** Pagination */
 const ITEMS_PER_PAGE = 10;
@@ -40,7 +42,10 @@ const ITEMS_PER_PAGE = 10;
     },
   ],
 })
-export class SafeReferenceDataDropdownComponent implements OnInit {
+export class SafeReferenceDataDropdownComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() referenceData = '';
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
@@ -61,7 +66,9 @@ export class SafeReferenceDataDropdownComponent implements OnInit {
    *
    * @param apollo Apollo service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo) {
+    super();
+  }
 
   ngOnInit(): void {
     if (this.referenceData) {
@@ -72,6 +79,7 @@ export class SafeReferenceDataDropdownComponent implements OnInit {
             id: this.referenceData,
           },
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe((res) => {
           if (
             res.data.referenceData &&
@@ -91,15 +99,17 @@ export class SafeReferenceDataDropdownComponent implements OnInit {
       });
 
     this.referenceDatas$ = this.referenceDatas.asObservable();
-    this.referenceDatasQuery.valueChanges.subscribe((res) => {
-      const referenceDatas = res.data.referenceDatas.edges.map((x) => x.node);
-      this.referenceDatas.next(referenceDatas);
-      if (referenceDatas.find((x) => x.id === this.referenceData)) {
-        this.selectedReferenceData = null;
-      }
-      this.pageInfo = res.data.referenceDatas.pageInfo;
-      this.loading = res.loading;
-    });
+    this.referenceDatasQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        const referenceDatas = res.data.referenceDatas.edges.map((x) => x.node);
+        this.referenceDatas.next(referenceDatas);
+        if (referenceDatas.find((x) => x.id === this.referenceData)) {
+          this.selectedReferenceData = null;
+        }
+        this.pageInfo = res.data.referenceDatas.pageInfo;
+        this.loading = res.loading;
+      });
   }
 
   /**

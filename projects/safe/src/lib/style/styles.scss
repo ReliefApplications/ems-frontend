@@ -148,7 +148,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-// === CHIP STYLING ===
+// === CHIP ===
 @mixin chip($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
@@ -175,7 +175,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-// === BUTTON STYLING ===
+// === BUTTON ===
 @mixin button($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
@@ -204,7 +204,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-// === ALERT STYLING ===
+// === ALERT ===
 @mixin alert($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
@@ -239,7 +239,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-// === RADIO STYlING ===
+// === RADIO ===
 @mixin radio($theme) {
   .mat-radio-label-content {
     safe-icon {
@@ -248,7 +248,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-// === SLIDE TOGGLE STYLING ===
+// === SLIDE TOGGLE ===
 @mixin slide-toggle($theme) {
   .mat-slide-toggle-content {
     safe-icon {
@@ -257,14 +257,14 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-// === EXPANSION PANEL STYLING ===
+// === EXPANSION PANEL ===
 @mixin expansion-panel($theme) {
   .mat-expansion-panel-header-title {
     gap: 4px;
   }
 }
 
-// === CHECKBOX STYLING ===
+// === CHECKBOX ===
 @mixin checkbox($theme) {
   .mat-checkbox-label {
     safe-icon {
@@ -273,6 +273,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
+// === FORM FIELD ===
 @mixin form-field($theme) {
   mat-label {
     safe-icon {
@@ -309,9 +310,17 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
+// === MODAL ===
 @mixin modal($theme) {
   .mat-dialog-actions {
     gap: 8px;
+  }
+}
+
+// === TOOLTIP ===
+@mixin tooltip($theme) {
+  .mat-tooltip-panel {
+    pointer-events: none !important;
   }
 }
 
@@ -450,6 +459,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
 @include checkbox($safe-theme);
 @include form-field($safe-theme);
 @include modal($safe-theme);
+@include tooltip($safe-theme);
 @include custom-theme($safe-theme);
 
 html,
@@ -487,7 +497,6 @@ body {
 }
 
 // === DIALOGS ===
-
 .fullscreen-dialog {
   margin-top: 72px;
   max-width: unset !important;

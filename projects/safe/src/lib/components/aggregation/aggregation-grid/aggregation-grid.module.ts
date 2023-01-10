@@ -1,23 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeAggregationGridComponent } from './aggregation-grid.component';
-import { GridModule } from '@progress/kendo-angular-grid';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { SafeGridModule } from '../../ui/core-grid/grid/grid.module';
 
 /**
  * Shared aggregation Grid component.
  */
 @NgModule({
   declarations: [SafeAggregationGridComponent],
-  imports: [
-    CommonModule,
-    GridModule,
-    TranslateModule,
-    MatTooltipModule,
-    ButtonModule,
-  ],
+  imports: [CommonModule, SafeGridModule],
   exports: [SafeAggregationGridComponent],
 })
 export class SafeAggregationGridModule {}

@@ -1,8 +1,7 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import {
   SafeSnackBarService,
   SafeAuthService,
@@ -10,6 +9,7 @@ import {
   PermissionType,
   SafeConfirmService,
   Form,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import { GET_SHORT_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import {
@@ -22,6 +22,7 @@ import { AddFormModalComponent } from '../../../components/add-form-modal/add-fo
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -32,7 +33,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './forms.component.html',
   styleUrls: ['./forms.component.scss'],
 })
-export class FormsComponent implements OnInit, OnDestroy {
+export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public updating = false;
@@ -52,7 +53,6 @@ export class FormsComponent implements OnInit, OnDestroy {
 
   // === PERMISSIONS ===
   canAdd = false;
-  private authSubscription?: Subscription;
 
   // === FILTERING ===
   public filter: any;
@@ -85,7 +85,9 @@ export class FormsComponent implements OnInit, OnDestroy {
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Creates the form query, and subscribes to the query changes.
@@ -110,7 +112,7 @@ export class FormsComponent implements OnInit, OnDestroy {
       this.updating = res.loading;
     });
 
-    this.authSubscription = this.authService.user$.subscribe(() => {
+    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.canAdd = this.authService.userHasClaim(
         PermissionsManagement.getRightFromPath(
           this.router.url,
@@ -118,15 +120,6 @@ export class FormsComponent implements OnInit, OnDestroy {
         )
       );
     });
-  }
-
-  /**
-   * Removes all the subscriptions.
-   */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
   }
 
   /**

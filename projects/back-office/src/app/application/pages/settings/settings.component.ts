@@ -1,13 +1,13 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import {
   Application,
   SafeApplicationService,
   SafeConfirmService,
   SafeSnackBarService,
   SafeAuthService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -18,6 +18,7 @@ import { DuplicateApplicationModalComponent } from '../../../components/duplicat
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Application settings page component.
@@ -27,10 +28,12 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
-export class SettingsComponent implements OnInit, OnDestroy {
+export class SettingsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public applications = new MatTableDataSource<Application>([]);
   public settingsForm?: FormGroup;
-  private applicationSubscription?: Subscription;
   public application?: Application;
   public user: any;
   public locked: boolean | undefined = undefined;
@@ -59,25 +62,26 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private confirmService: SafeConfirmService,
     public dialog: MatDialog,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.application = application;
-            this.settingsForm = this.formBuilder.group({
-              id: [{ value: application.id, disabled: true }],
-              name: [application.name, Validators.required],
-              description: [application.description],
-              status: [application.status],
-            });
-            this.locked = this.application?.locked;
-            this.lockedByUser = this.application?.lockedByUser;
-          }
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.application = application;
+          this.settingsForm = this.formBuilder.group({
+            id: [{ value: application.id, disabled: true }],
+            name: [application.name, Validators.required],
+            description: [application.description],
+            status: [application.status],
+          });
+          this.locked = this.application?.locked;
+          this.lockedByUser = this.application?.lockedByUser;
         }
-      );
+      });
   }
 
   /**
@@ -154,12 +158,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.router.navigate(['/applications']);
         }
       });
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
     }
   }
 }

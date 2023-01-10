@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -14,9 +14,10 @@ import {
   SafeApiProxyService,
   status,
   SafeBreadcrumbService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
-import { Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { apiValidator } from '../../../utils/nameValidation';
 import {
   EditApiConfigurationMutationResponse,
@@ -35,12 +36,14 @@ import {
   templateUrl: './api-configuration.component.html',
   styleUrls: ['./api-configuration.component.scss'],
 })
-export class ApiConfigurationComponent implements OnInit, OnDestroy {
+export class ApiConfigurationComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public id = '';
   public apiConfiguration?: ApiConfiguration;
-  private apolloSubscription?: Subscription;
 
   // === FORM ===
   public apiForm: FormGroup = new FormGroup({});
@@ -75,19 +78,22 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     private apiProxy: SafeApiProxyService,
     private translate: TranslateService,
     private breadcrumbService: SafeBreadcrumbService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
-      this.apolloSubscription = this.apollo
+      this.apollo
         .watchQuery<GetApiConfigurationQueryResponse>({
           query: GET_API_CONFIGURATION,
           variables: {
             id: this.id,
           },
         })
-        .valueChanges.subscribe(
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe(
           (res) => {
             if (res.data.apiConfiguration) {
               this.apiConfiguration = res.data.apiConfiguration;
@@ -142,13 +148,6 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
             this.router.navigate(['/settings/apiconfigurations']);
           }
         );
-    }
-  }
-
-  /** Unsubscribe from the apollo subscription if needed */
-  ngOnDestroy(): void {
-    if (this.apolloSubscription) {
-      this.apolloSubscription.unsubscribe();
     }
   }
 
@@ -210,9 +209,6 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
    * @param e permissions
    */
   saveAccess(e: any): void {
-    if (this.apolloSubscription) {
-      this.apolloSubscription.unsubscribe();
-    }
     this.loading = true;
     this.apollo
       .mutate<EditApiConfigurationMutationResponse>({
@@ -232,9 +228,6 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
 
   /** Edit the API Configuration using apiForm changes */
   onSave(): void {
-    if (this.apolloSubscription) {
-      this.apolloSubscription.unsubscribe();
-    }
     this.loading = true;
     const variables = { id: this.id };
     Object.assign(
