@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { merge } from 'rxjs';
 import { startWith, delay } from 'rxjs/operators';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Mapping of series parameters ( category / field ).
@@ -11,7 +13,10 @@ import { startWith, delay } from 'rxjs/operators';
   templateUrl: './series-mapping.component.html',
   styleUrls: ['./series-mapping.component.scss'],
 })
-export class SafeSeriesMappingComponent implements OnInit {
+export class SafeSeriesMappingComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   @Input() availableFields: any[] = [];
   public fieldsByControl: any = {};
@@ -22,7 +27,9 @@ export class SafeSeriesMappingComponent implements OnInit {
   /**
    * Mapping of series parameters ( category / field ).
    */
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   /**
    * Gets the control names from the inputs.
@@ -41,6 +48,7 @@ export class SafeSeriesMappingComponent implements OnInit {
       // this.fields$
     )
       .pipe(startWith(null), delay(100))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         for (const controlName of this.controlNames) {
           const excludedFields: string[] = [];

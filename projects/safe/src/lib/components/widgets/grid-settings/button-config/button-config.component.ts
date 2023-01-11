@@ -112,119 +112,145 @@ export class ButtonConfigComponent
         });
     }
 
-    this.formGroup?.get('prefillForm')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.formGroup
-          ?.get('prefillTargetForm')
-          ?.setValidators(Validators.required);
-      } else {
-        this.formGroup?.get('prefillTargetForm')?.clearValidators();
-      }
-      this.formGroup?.get('prefillTargetForm')?.updateValueAndValidity();
-    });
+    this.formGroup
+      ?.get('prefillForm')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.formGroup
+            ?.get('prefillTargetForm')
+            ?.setValidators(Validators.required);
+        } else {
+          this.formGroup?.get('prefillTargetForm')?.clearValidators();
+        }
+        this.formGroup?.get('prefillTargetForm')?.updateValueAndValidity();
+      });
 
-    this.formGroup?.get('notify')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.formGroup
-          ?.get('notificationChannel')
-          ?.setValidators(Validators.required);
-        this.formGroup
-          ?.get('notificationMessage')
-          ?.setValidators(Validators.required);
-      } else {
-        this.formGroup?.get('notificationChannel')?.clearValidators();
-        this.formGroup?.get('notificationMessage')?.clearValidators();
-      }
-      this.formGroup?.get('notificationChannel')?.updateValueAndValidity();
-      this.formGroup?.get('notificationMessage')?.updateValueAndValidity();
-    });
+    this.formGroup
+      ?.get('notify')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.formGroup
+            ?.get('notificationChannel')
+            ?.setValidators(Validators.required);
+          this.formGroup
+            ?.get('notificationMessage')
+            ?.setValidators(Validators.required);
+        } else {
+          this.formGroup?.get('notificationChannel')?.clearValidators();
+          this.formGroup?.get('notificationMessage')?.clearValidators();
+        }
+        this.formGroup?.get('notificationChannel')?.updateValueAndValidity();
+        this.formGroup?.get('notificationMessage')?.updateValueAndValidity();
+      });
 
-    this.formGroup?.get('publish')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.formGroup
-          ?.get('publicationChannel')
-          ?.setValidators(Validators.required);
-      } else {
-        this.formGroup?.get('publicationChannel')?.clearValidators();
-      }
-      this.formGroup?.get('publicationChannel')?.updateValueAndValidity();
-    });
+    this.formGroup
+      ?.get('publish')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.formGroup
+            ?.get('publicationChannel')
+            ?.setValidators(Validators.required);
+        } else {
+          this.formGroup?.get('publicationChannel')?.clearValidators();
+        }
+        this.formGroup?.get('publicationChannel')?.updateValueAndValidity();
+      });
 
-    this.formGroup?.get('show')?.valueChanges.subscribe((value) => {
-      if (!value) {
-        this.deleteInvalidModifications();
-        this.formGroup?.controls.notify.setValue(false);
-        this.formGroup?.controls.publish.setValue(false);
-      }
-    });
+    this.formGroup
+      ?.get('show')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (!value) {
+          this.deleteInvalidModifications();
+          this.formGroup?.controls.notify.setValue(false);
+          this.formGroup?.controls.publish.setValue(false);
+        }
+      });
 
     this.formGroup
       ?.get('modifySelectedRows')
-      ?.valueChanges.subscribe((value) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
         if (!value) {
           this.deleteInvalidModifications();
         }
       });
 
-    this.formGroup?.get('attachToRecord')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.formGroup?.get('targetForm')?.setValidators(Validators.required);
-      } else {
-        this.formGroup?.get('targetForm')?.clearValidators();
-        this.formGroup?.get('targetForm')?.setValue(null);
-      }
-      this.formGroup?.get('targetForm')?.updateValueAndValidity();
-    });
-
-    this.formGroup?.get('sendMail')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.formGroup
-          ?.get('distributionList')
-          ?.setValidators(Validators.required);
-        this.formGroup?.get('templates')?.setValidators(Validators.required);
-      } else {
-        this.formGroup?.get('distributionList')?.clearValidators();
-        this.formGroup?.get('templates')?.clearValidators();
-      }
-      this.formGroup?.get('distributionList')?.updateValueAndValidity();
-      this.formGroup?.get('templates')?.updateValueAndValidity();
-    });
-
-    this.formGroup?.get('targetResource')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.targetResource = this.relatedResources.find((x) => x.id === value);
-        if (this.targetResource) {
+    this.formGroup
+      ?.get('attachToRecord')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
           this.formGroup?.get('targetForm')?.setValidators(Validators.required);
-          this.formGroup
-            ?.get('targetFormField')
-            ?.setValidators(Validators.required);
-          this.formGroup
-            ?.get('targetFormQuery.name')
-            ?.setValue(this.targetResource.queryName);
-          this.formGroup
-            ?.get('targetFormQuery.fields')
-            ?.setValidators([Validators.required]);
         } else {
           this.formGroup?.get('targetForm')?.clearValidators();
           this.formGroup?.get('targetForm')?.setValue(null);
+        }
+        this.formGroup?.get('targetForm')?.updateValueAndValidity();
+      });
+
+    this.formGroup
+      ?.get('sendMail')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.formGroup
+            ?.get('distributionList')
+            ?.setValidators(Validators.required);
+          this.formGroup?.get('templates')?.setValidators(Validators.required);
+        } else {
+          this.formGroup?.get('distributionList')?.clearValidators();
+          this.formGroup?.get('templates')?.clearValidators();
+        }
+        this.formGroup?.get('distributionList')?.updateValueAndValidity();
+        this.formGroup?.get('templates')?.updateValueAndValidity();
+      });
+
+    this.formGroup
+      ?.get('targetResource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.targetResource = this.relatedResources.find(
+            (x) => x.id === value
+          );
+          if (this.targetResource) {
+            this.formGroup
+              ?.get('targetForm')
+              ?.setValidators(Validators.required);
+            this.formGroup
+              ?.get('targetFormField')
+              ?.setValidators(Validators.required);
+            this.formGroup
+              ?.get('targetFormQuery.name')
+              ?.setValue(this.targetResource.queryName);
+            this.formGroup
+              ?.get('targetFormQuery.fields')
+              ?.setValidators([Validators.required]);
+          } else {
+            this.formGroup?.get('targetForm')?.clearValidators();
+            this.formGroup?.get('targetForm')?.setValue(null);
+            this.formGroup?.get('targetFormField')?.clearValidators();
+            this.formGroup?.get('targetFormField')?.setValue(null);
+            this.formGroup?.get('targetFormQuery')?.clearValidators();
+          }
+        } else {
+          this.targetResource = undefined;
+          this.formGroup?.get('targetForm')?.clearValidators();
+          this.formGroup.get('targetForm')?.setValue(null);
           this.formGroup?.get('targetFormField')?.clearValidators();
           this.formGroup?.get('targetFormField')?.setValue(null);
-          this.formGroup?.get('targetFormQuery')?.clearValidators();
+          this.formGroup
+            .get('targetFormQuery')
+            ?.patchValue(createQueryForm(null, false));
         }
-      } else {
-        this.targetResource = undefined;
-        this.formGroup?.get('targetForm')?.clearValidators();
-        this.formGroup.get('targetForm')?.setValue(null);
-        this.formGroup?.get('targetFormField')?.clearValidators();
-        this.formGroup?.get('targetFormField')?.setValue(null);
-        this.formGroup
-          .get('targetFormQuery')
-          ?.patchValue(createQueryForm(null, false));
-      }
-      this.formGroup?.get('targetForm')?.updateValueAndValidity();
-      this.formGroup?.get('targetFormField')?.updateValueAndValidity();
-      this.formGroup?.get('targetFormQuery')?.updateValueAndValidity();
-    });
+        this.formGroup?.get('targetForm')?.updateValueAndValidity();
+        this.formGroup?.get('targetFormField')?.updateValueAndValidity();
+        this.formGroup?.get('targetFormQuery')?.updateValueAndValidity();
+      });
 
     this.setRelatedResources();
     if (this.formGroup.value.targetResource) {
@@ -235,7 +261,8 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('sendMail')
-      ?.valueChanges.subscribe((sendEmail: boolean) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((sendEmail: boolean) => {
         if (sendEmail) {
           this.formGroup
             ?.get('bodyFields')
@@ -248,7 +275,8 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('closeWorkflow')
-      ?.valueChanges.subscribe((closeWorkflow: boolean) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((closeWorkflow: boolean) => {
         if (closeWorkflow) {
           this.formGroup
             ?.get('confirmationText')
@@ -261,7 +289,8 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('selectAll')
-      ?.valueChanges.subscribe((selectAll: boolean) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((selectAll: boolean) => {
         if (selectAll) {
           this.formGroup?.controls.selectPage.setValue(false);
           this.formGroup?.get('selectPage')?.updateValueAndValidity();
@@ -270,7 +299,8 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('selectPage')
-      ?.valueChanges.subscribe((selectPage: boolean) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((selectPage: boolean) => {
         if (selectPage) {
           this.formGroup?.controls.selectAll.setValue(false);
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
