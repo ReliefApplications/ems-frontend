@@ -57,7 +57,7 @@ import { SafeDateTranslateService } from '../../../services/date-translate/date-
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 
 /**
  * Default file name when exporting grid data.
@@ -598,8 +598,8 @@ export class SafeCoreGridComponent
         }
       }
       promises.push(
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
+        firstValueFrom(
+          this.apollo.mutate<EditRecordMutationResponse>({
             mutation: EDIT_RECORD,
             variables: {
               id: item.id,
@@ -608,7 +608,7 @@ export class SafeCoreGridComponent
               lang: this.translate.currentLang,
             },
           })
-          .toPromise()
+        )
       );
     }
     return promises;
@@ -984,8 +984,8 @@ export class SafeCoreGridComponent
           const promises: Promise<any>[] = [];
           for (const item of items) {
             promises.push(
-              this.apollo
-                .mutate<ConvertRecordMutationResponse>({
+              firstValueFrom(
+                this.apollo.mutate<ConvertRecordMutationResponse>({
                   mutation: CONVERT_RECORD,
                   variables: {
                     id: item.id ? item.id : item,
@@ -993,7 +993,7 @@ export class SafeCoreGridComponent
                     copyRecord: value.copyRecord,
                   },
                 })
-                .toPromise()
+              )
             );
           }
           Promise.all(promises).then(() => {

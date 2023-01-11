@@ -47,6 +47,7 @@ import { EmailTemplateModalComponent } from '../../email-template-modal/email-te
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
+import { firstValueFrom } from 'rxjs';
 
 /** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
@@ -225,8 +226,8 @@ export class SafeGridWidgetComponent implements OnInit {
       const data = Object.assign({}, item);
       delete data.id;
       promises.push(
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
+        firstValueFrom(
+          this.apollo.mutate<EditRecordMutationResponse>({
             mutation: EDIT_RECORD,
             variables: {
               id: item.id,
@@ -234,7 +235,7 @@ export class SafeGridWidgetComponent implements OnInit {
               template: get(this.settings, 'template', null),
             },
           })
-          .toPromise()
+        )
       );
     }
     return promises;
@@ -253,15 +254,15 @@ export class SafeGridWidgetComponent implements OnInit {
         this.grid.settings.query.name,
         'id\n'
       );
-      const records = await this.apollo
-        .query<any>({
+      const records = await firstValueFrom(
+        this.apollo.query<any>({
           query,
           variables: {
             first: this.grid.gridData.total,
             filter: this.grid.queryFilter,
           },
         })
-        .toPromise();
+      );
       this.grid.selectedRows = records.data[
         this.grid.settings.query.name
       ].edges.map((x: any) => x.node.id);
@@ -296,8 +297,8 @@ export class SafeGridWidgetComponent implements OnInit {
     // Notifies on a channel.
     if (options.notify && this.grid.selectedRows.length > 0) {
       promises.push(
-        this.apollo
-          .mutate<PublishNotificationMutationResponse>({
+        firstValueFrom(
+          this.apollo.mutate<PublishNotificationMutationResponse>({
             mutation: PUBLISH_NOTIFICATION,
             variables: {
               action: options.notificationMessage
@@ -307,21 +308,21 @@ export class SafeGridWidgetComponent implements OnInit {
               channel: options.notificationChannel,
             },
           })
-          .toPromise()
+        )
       );
     }
     // Publishes on a channel.
     if (options.publish && this.grid.selectedRows.length > 0) {
       promises.push(
-        this.apollo
-          .mutate<PublishMutationResponse>({
+        firstValueFrom(
+          this.apollo.mutate<PublishMutationResponse>({
             mutation: PUBLISH,
             variables: {
               ids: this.grid.selectedRows,
               channel: options.publicationChannel,
             },
           })
-          .toPromise()
+        )
       );
     }
     if (promises.length > 0) {
@@ -363,7 +364,7 @@ export class SafeGridWidgetComponent implements OnInit {
             },
           });
 
-          const value = await dialogRef.afterClosed().toPromise();
+          const value = await firstValueFrom(dialogRef.afterClosed());
           const template = value?.template;
 
           if (template) {
@@ -400,14 +401,14 @@ export class SafeGridWidgetComponent implements OnInit {
       // Fetches the record object for each selected record.
       for (const record of this.grid.selectedItems) {
         promisedRecords.push(
-          this.apollo
-            .query<GetRecordDetailsQueryResponse>({
+          firstValueFrom(
+            this.apollo.query<GetRecordDetailsQueryResponse>({
               query: GET_RECORD_DETAILS,
               variables: {
                 id: record.id,
               },
             })
-            .toPromise()
+          )
         );
       }
       const records = (await Promise.all(promisedRecords)).map(
@@ -478,8 +479,8 @@ export class SafeGridWidgetComponent implements OnInit {
       }
     }
     const data = cleanRecord(update);
-    return this.apollo
-      .mutate<EditRecordsMutationResponse>({
+    return firstValueFrom(
+      this.apollo.mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
@@ -487,7 +488,7 @@ export class SafeGridWidgetComponent implements OnInit {
           template: get(this.settings, 'template', null),
         },
       })
-      .toPromise();
+    );
   }
 
   /**
@@ -575,7 +576,7 @@ export class SafeGridWidgetComponent implements OnInit {
             },
           });
           const value = await Promise.resolve(
-            dialogRef.afterClosed().toPromise()
+            firstValueFrom(dialogRef.afterClosed())
           );
           if (value && value.record) {
             this.apollo

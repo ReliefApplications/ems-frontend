@@ -15,6 +15,7 @@ import {
   GET_GRID_FORM_META,
 } from './graphql/queries';
 import { Layout, LayoutConnection } from '../../models/layout.model';
+import { firstValueFrom } from 'rxjs';
 
 /** Fallback LayoutConnection */
 const FALLBACK_LAYOUTS: LayoutConnection = {
@@ -54,8 +55,8 @@ export class SafeGridLayoutService {
     source: string,
     options: { ids?: string[]; first?: number }
   ): Promise<LayoutConnection> {
-    return await this.apollo
-      .query<GetResourceByIdQueryResponse>({
+    return await firstValueFrom(
+      this.apollo.query<GetResourceByIdQueryResponse>({
         query: GET_GRID_RESOURCE_META,
         variables: {
           resource: source,
@@ -63,30 +64,28 @@ export class SafeGridLayoutService {
           first: options.first,
         },
       })
-      .toPromise()
-      .then(async (res) => {
-        if (res.errors) {
-          return await this.apollo
-            .query<GetFormByIdQueryResponse>({
-              query: GET_GRID_FORM_META,
-              variables: {
-                id: source,
-                ids: options.ids,
-                first: options.first,
-              },
-            })
-            .toPromise()
-            .then((res2) => {
-              if (res2.errors) {
-                return FALLBACK_LAYOUTS;
-              } else {
-                return res2.data.form.layouts || FALLBACK_LAYOUTS;
-              }
-            });
-        } else {
-          return res.data.resource.layouts || FALLBACK_LAYOUTS;
-        }
-      });
+    ).then(async (res) => {
+      if (res.errors) {
+        return await firstValueFrom(
+          this.apollo.query<GetFormByIdQueryResponse>({
+            query: GET_GRID_FORM_META,
+            variables: {
+              id: source,
+              ids: options.ids,
+              first: options.first,
+            },
+          })
+        ).then((res2) => {
+          if (res2.errors) {
+            return FALLBACK_LAYOUTS;
+          } else {
+            return res2.data.form.layouts || FALLBACK_LAYOUTS;
+          }
+        });
+      } else {
+        return res.data.resource.layouts || FALLBACK_LAYOUTS;
+      }
+    });
   }
 
   /**
