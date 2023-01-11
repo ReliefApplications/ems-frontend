@@ -33,6 +33,10 @@ $safe-palette: (
   700: rgb($primary_700),
   800: rgb($primary_800),
   900: rgb($primary_900),
+  // A100: $primary_A100,
+  // A200: $primary_A200,
+  // A400: $primary_A400,
+  // A700: $primary_A700,
   contrast: (
     50: #000000,
     100: #000000,
@@ -44,6 +48,10 @@ $safe-palette: (
     700: #ffffff,
     800: #ffffff,
     900: #ffffff,
+    // A100: #000000,
+    // A200: #000000,
+    // A400: #ffffff,
+    // A700: #ffffff,
   ),
 );
 
@@ -680,6 +688,7 @@ mat-tab-group[vertical] {
 }
 
 /* === Tailwindcss === */
+// Allow to use @apply in not visible by default elements
 @layer components {
   .cdk-drag-preview {
     @apply box-border rounded shadow-xl;
@@ -687,6 +696,7 @@ mat-tab-group[vertical] {
   }
 }
 
+// Define new colors
 @layer base {
   :root {
     --primary-50: #{$primary_50};

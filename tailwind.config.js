@@ -1,7 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 
-const { reduce } = require('lodash');
-
 module.exports = {
   important: true,
   content: [
@@ -15,7 +13,6 @@ module.exports = {
         '2lg': '0 2px 5px 0 rgba(134, 134, 134, 0.2)',
       },
       colors: {
-        'test': '#ff00ff',
         primary: {
           50: 'rgb(var(--primary-50) / <alpha-value>)',
           100: 'rgb(var(--primary-100) / <alpha-value>)',
