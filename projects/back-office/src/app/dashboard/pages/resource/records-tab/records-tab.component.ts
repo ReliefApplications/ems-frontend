@@ -58,7 +58,7 @@ export class RecordsTabComponent implements OnInit {
 
   /** @returns True if the records tab is empty */
   get empty(): boolean {
-    return this.loading || this.dataSource.filteredData.length === 0;
+    return !this.loading && this.dataSource.filteredData.length === 0;
   }
 
   /**

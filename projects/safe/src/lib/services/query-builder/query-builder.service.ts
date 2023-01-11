@@ -47,9 +47,10 @@ export interface Field {
     | 'date'
     | 'time';
   label?: string;
-  automated: boolean;
+  automated?: boolean;
   filter: any;
   fields?: Field[];
+  options?: { value: any; text: string }[];
 }
 
 /** Stored query field interface definition */
@@ -499,7 +500,6 @@ export class QueryBuilderService {
    *
    * @param query custom query.
    */
-  // TO DO: Create an interface for this type of field (+ for the one retrieved from graphQL if possible)
   public async getFilterFields(query: any): Promise<Field[]> {
     if (query) {
       const sourceQuery = this.getQuerySource(query)?.toPromise();

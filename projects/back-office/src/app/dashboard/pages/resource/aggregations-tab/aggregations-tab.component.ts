@@ -46,7 +46,7 @@ export class AggregationsTabComponent implements OnInit {
 
   /** @returns True if the aggregations tab is empty */
   get empty(): boolean {
-    return this.loading || this.aggregations.length === 0;
+    return !this.loading && this.aggregations.length === 0;
   }
 
   /**

@@ -10,7 +10,10 @@ export const GET_RESOURCE_BY_ID = gql`
       queryName
       createdAt
       fields
-      metadata
+      metadata {
+        name
+        canSee
+      }
       forms {
         id
         name
