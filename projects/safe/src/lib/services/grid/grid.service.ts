@@ -7,6 +7,11 @@ import { MULTISELECT_TYPES } from '../../components/ui/core-grid/grid/grid.const
 import { TranslateService } from '@ngx-translate/core';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
 import { isNil } from 'lodash';
+import {
+  getListOfKeys,
+  getWithExpiry,
+  setWithExpiry,
+} from '../../utils/cache-with-expiry';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -263,33 +268,53 @@ export class SafeGridService {
    */
   public async populateMetaFields(metaFields: any): Promise<void> {
     const promises: Promise<any>[] = [];
+    const cachedKeys = await getListOfKeys();
+    /**
+     * Fetches choices from URL, cache them and set meta.
+     *
+     * @param url URL to target.
+     * @param fieldName Field name to update meta.
+     * @param meta Meta to expand. Coressponding to fieldName.
+     * @returns A promise to execute everyhting.
+     */
+    const fetchChoicesAndSetMeta = (
+      url: string,
+      fieldName: string,
+      meta: any
+    ): Promise<void> =>
+      this.apiProxyService
+        .promisedRequestWithHeaders(url)
+        .then((value: any) => {
+          const choices = this.extractChoices(value, meta.choicesByUrl);
+          setWithExpiry(url, choices);
+          metaFields[fieldName] = {
+            ...meta,
+            choices,
+          };
+        });
+
     for (const fieldName of Object.keys(metaFields)) {
       const meta = metaFields[fieldName];
       if (meta.choicesByUrl) {
         const url: string = meta.choicesByUrl.url;
-        const localRes = localStorage.getItem(url);
-        if (localRes) {
-          metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(
-              JSON.parse(localRes),
-              meta.choicesByUrl
-            ),
-            // choicesByUrl: null,
-          };
-        } else {
+        if (cachedKeys.includes(url)) {
           promises.push(
-            this.apiProxyService
-              .promisedRequestWithHeaders(url)
-              .then((value: any) => {
-                localStorage.setItem(url, JSON.stringify(value));
-                metaFields[fieldName] = {
-                  ...meta,
-                  choices: this.extractChoices(value, meta.choicesByUrl),
-                  // choicesByUrl: null,
-                };
-              })
+            getWithExpiry(url).then(
+              (choices: { value: string; text: string }[] | null) => {
+                if (choices === null) {
+                  return fetchChoicesAndSetMeta(url, fieldName, meta);
+                } else {
+                  metaFields[fieldName] = {
+                    ...meta,
+                    choices,
+                  };
+                  return;
+                }
+              }
+            )
           );
+        } else {
+          promises.push(fetchChoicesAndSetMeta(url, fieldName, meta));
         }
       }
       if (meta.choices) {
