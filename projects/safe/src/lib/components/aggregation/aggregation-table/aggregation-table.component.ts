@@ -9,6 +9,8 @@ import { AddAggregationModalComponent } from '../add-aggregation-modal/add-aggre
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeEditAggregationModalComponent } from '../edit-aggregation-modal/edit-aggregation-modal.component';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Aggregation table component.
@@ -18,7 +20,10 @@ import { SafeAggregationService } from '../../../services/aggregation/aggregatio
   templateUrl: './aggregation-table.component.html',
   styleUrls: ['./aggregation-table.component.scss'],
 })
-export class AggregationTableComponent implements OnInit, OnChanges {
+export class AggregationTableComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
   @Input() selectedAggregations: FormControl | null = null;
@@ -36,15 +41,19 @@ export class AggregationTableComponent implements OnInit, OnChanges {
   constructor(
     private dialog: MatDialog,
     private aggregationService: SafeAggregationService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const defaultValue = this.selectedAggregations?.value;
     this.setAllAggregations();
     this.setSelectedAggregations(defaultValue);
-    this.selectedAggregations?.valueChanges.subscribe((value) => {
-      this.setSelectedAggregations(value);
-    });
+    this.selectedAggregations?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.setSelectedAggregations(value);
+      });
   }
 
   ngOnChanges(): void {

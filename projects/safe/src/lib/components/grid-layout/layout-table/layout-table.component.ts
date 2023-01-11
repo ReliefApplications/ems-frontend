@@ -8,6 +8,8 @@ import { FormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { SafeEditLayoutModalComponent } from '../edit-layout-modal/edit-layout-modal.component';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Layouts list configuration for grid widgets
@@ -17,7 +19,10 @@ import { SafeEditLayoutModalComponent } from '../edit-layout-modal/edit-layout-m
   templateUrl: './layout-table.component.html',
   styleUrls: ['./layout-table.component.scss'],
 })
-export class LayoutTableComponent implements OnInit, OnChanges {
+export class LayoutTableComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
   @Input() selectedLayouts: FormControl | null = null;
@@ -35,15 +40,19 @@ export class LayoutTableComponent implements OnInit, OnChanges {
   constructor(
     private dialog: MatDialog,
     private gridLayoutService: SafeGridLayoutService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const defaultValue = this.selectedLayouts?.value;
     this.setAllLayouts();
     this.setSelectedLayouts(defaultValue);
-    this.selectedLayouts?.valueChanges.subscribe((value) => {
-      this.setSelectedLayouts(value);
-    });
+    this.selectedLayouts?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.setSelectedLayouts(value);
+      });
   }
 
   ngOnChanges(): void {
