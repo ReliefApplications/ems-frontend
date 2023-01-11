@@ -1,14 +1,8 @@
 import { Injectable } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  RouterStateSnapshot,
-  UrlTree,
-  Router,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, UrlTree } from '@angular/router';
+import { get } from 'lodash';
 import { Observable } from 'rxjs';
-import { PermissionsManagement, PermissionType } from '../models/user.model';
-import { SafeAuthService } from '../services/auth/auth.service';
+import { AppAbility } from '../services/auth/auth.service';
 
 /**
  * Check if the logged user has an access to the route.
@@ -19,39 +13,33 @@ import { SafeAuthService } from '../services/auth/auth.service';
 })
 export class SafePermissionGuard implements CanActivate {
   /**
-   * Constructor of the SAfePermissionGuard class
+   * Guard to prevent unauthorized users to see pages
    *
-   * @param authService The authentification service
-   * @param router The router service
+   * @param ability user ability
    */
-  constructor(private authService: SafeAuthService, private router: Router) {}
+  constructor(private ability: AppAbility) {}
 
   /**
-   * Executed everytime a route is called, in order to check user permissions.
+   * Executed anytime a route is called, in order to check user permissions.
    * Redirects to default route if not authorized.
    * When reloading the page, the router will redirect to 'applications'.
    * GraphQL should prevent that issue.
    *
    * @param next activated route snapshot
-   * @param state router state snapshot
    * @returns A boolean indicating if the user has permission
    */
   canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    next: ActivatedRouteSnapshot
   ):
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    const permission = PermissionsManagement.getRightFromPath(
-      state.url,
-      PermissionType.access
-    );
-    const isAuthorized = this.authService.userHasClaim(permission);
-    if (!isAuthorized) {
-      this.router.navigate(['/applications']);
+    const permission = get(next, 'data.permission', null);
+    if (permission && permission.action && permission.subject) {
+      return this.ability.can(permission.action, permission.subject);
+    } else {
+      return true;
     }
-    return isAuthorized;
   }
 }

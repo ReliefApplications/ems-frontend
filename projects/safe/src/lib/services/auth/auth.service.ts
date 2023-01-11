@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Injectable, Inject } from '@angular/core';
-import { User } from '../../models/user.model';
+import { Permission, User } from '../../models/user.model';
 import { GetProfileQueryResponse, GET_PROFILE } from './graphql/queries';
 import {
   BehaviorSubject,
@@ -12,12 +12,33 @@ import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { filter, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { Ability, AbilityBuilder, AbilityClass } from '@casl/ability';
+import { get } from 'lodash';
 
 /** Defining the interface for the account object. */
 export interface Account {
   name: string;
   username: string;
 }
+
+type Actions = 'create' | 'read' | 'update' | 'delete' | 'manage';
+
+type Subjects =
+  | 'Application'
+  | 'Channel'
+  | 'Dashboard'
+  | 'Page'
+  | 'Step'
+  | 'Workflow'
+  | 'Resource'
+  | 'User'
+  | 'Template'
+  | 'DistributionList'
+  | 'Record'
+  | 'Form';
+
+export type AppAbility = Ability<[Actions, Subjects]>;
+export const AppAbility = Ability as AbilityClass<AppAbility>;
 
 /**
  * Shared authentication service.
@@ -62,12 +83,14 @@ export class SafeAuthService {
    * @param apollo Apollo client
    * @param oauthService OAuth authentification service
    * @param router Angular Router service
+   * @param ability CASL ability
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     private oauthService: OAuthService,
-    private router: Router
+    private router: Router,
+    private ability: Ability
   ) {
     this.environment = environment;
     this.oauthService.events.subscribe(() => {
@@ -96,6 +119,7 @@ export class SafeAuthService {
         localStorage.removeItem('redirectPath');
       });
     this.oauthService.setupAutomaticSilentRefresh();
+    this.user$.subscribe((user) => this.updateAbility(user));
   }
 
   /**
@@ -225,5 +249,72 @@ export class SafeAuthService {
    */
   public getAuthToken(): string | null {
     return localStorage.getItem('idtoken');
+  }
+
+  /**
+   * Update user ability, based on its permissions
+   *
+   * @param user active user
+   */
+  private updateAbility(user: any) {
+    const { can, rules } = new AbilityBuilder(AppAbility);
+    const permissions: Permission[] = get(user, 'permissions', []);
+
+    console.log(permissions);
+
+    const globalPermissions = permissions
+      .filter((x) => x.global)
+      .map((x) => x.type);
+
+    // === Application ===
+    if (globalPermissions.includes('can_see_applications')) {
+      can('read', [
+        'Application',
+        'Channel',
+        'Dashboard',
+        'Page',
+        'Step',
+        'Workflow',
+      ]);
+    }
+    if (globalPermissions.includes('can_create_applications')) {
+      can('create', 'Application');
+    }
+    if (globalPermissions.includes('can_manage_applications')) {
+      can(
+        ['read', 'create', 'update', 'delete', 'manage'],
+        [
+          'Application',
+          'Dashboard',
+          'Channel',
+          'Page',
+          'Step',
+          'Workflow',
+          'Template',
+          'DistributionList',
+        ]
+      );
+    }
+
+    // === Form ===
+    if (globalPermissions.includes('can_see_forms')) {
+      can('read', ['Form', 'Record']);
+    }
+    if (globalPermissions.includes('can_create_forms')) {
+      can('create', 'Form');
+    }
+    if (globalPermissions.includes('can_manage_forms')) {
+      can(['create', 'read', 'update', 'delete'], ['Form', 'Record']);
+      can('manage', 'Record');
+    }
+
+    // === Resource ===
+    if (globalPermissions.includes('can_read_resources')) {
+      can('read', ['Resource', 'Record']);
+    }
+
+    console.log(rules);
+
+    this.ability.update(rules);
   }
 }

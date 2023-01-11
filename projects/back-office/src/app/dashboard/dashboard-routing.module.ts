@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
+import { SafePermissionGuard } from '@safe/builder';
 
 /**
  * Divide the dashboard module into three modules:
@@ -143,7 +144,12 @@ export const routes = [
           breadcrumb: {
             key: 'common.form.few',
           },
+          permission: {
+            action: 'read',
+            subject: 'Form',
+          },
         },
+        canActivate: [SafePermissionGuard],
       },
       {
         path: 'resources',
@@ -245,7 +251,12 @@ export const routes = [
           breadcrumb: {
             key: 'common.resource.few',
           },
+          permission: {
+            action: 'read',
+            subject: 'Resource',
+          },
         },
+        canActivate: [SafePermissionGuard],
       },
       {
         path: 'applications',
