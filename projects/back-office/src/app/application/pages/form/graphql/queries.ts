@@ -122,7 +122,12 @@ export const GET_SHORT_FORM_BY_ID = gql`
           title
         }
       }
-      metadata
+      metadata {
+        name
+        automated
+        canSee
+        canUpdate
+      }
       canUpdate
     }
   }
