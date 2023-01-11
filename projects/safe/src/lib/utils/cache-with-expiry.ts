@@ -7,7 +7,7 @@ interface ExpiringItem {
 }
 
 /** Default TTL for cached items  */
-const DEFAULT_TTL = 1 * 24 * 3600 * 1000;
+const DEFAULT_TTL = 1 * 24 * 3600 * 1000; // 1 day
 
 /**
  * Cache an item with an expiry time.
