@@ -1,18 +1,3 @@
-<mat-radio-group
-  aria-label="Select an option"
-  [value]="radioValue"
-  (change)="radioChange($event)"
->
-  <mat-radio-button [value]="true">{{
-    'common.aggregation.one' | translate
-  }}</mat-radio-button>
-  <mat-radio-button [value]="false"
-    >{{ 'common.form.one' | translate }}|{{
-      'common.resource.one' | translate
-    }}</mat-radio-button
-  >
-</mat-radio-group>
-
 <div class="form-group" [formGroup]="form">
   <!-- RESOURCE SELECTION  -->
   <mat-form-field fxFlex appearance="outline">
@@ -27,6 +12,22 @@
       [filterable]="true"
     ></safe-graphql-select>
   </mat-form-field>
+
+  <mat-radio-group
+    aria-label="Select an option"
+    [value]="radioValue"
+    (change)="radioChange($event)"
+  >
+    <mat-radio-button [value]="true">{{
+      'common.aggregation.one' | translate
+    }}</mat-radio-button>
+    <mat-radio-button [value]="false"
+      >{{ 'common.form.one' | translate }}|{{
+        'common.resource.one' | translate
+      }}</mat-radio-button
+    >
+  </mat-radio-group>
+
   <!-- FROM LAYOUTS -->
   <ng-container *ngIf="!radioValue && form.get('resource')?.value">
     <h2>{{ 'common.layout.one' | translate }}</h2>

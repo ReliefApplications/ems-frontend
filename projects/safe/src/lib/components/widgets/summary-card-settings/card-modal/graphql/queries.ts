@@ -37,7 +37,10 @@ export const GET_RESOURCE = gql`
         }
         totalCount
       }
-      metadata
+      metadata {
+        name
+        type
+      }
     }
   }
 `;

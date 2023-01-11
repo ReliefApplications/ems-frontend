@@ -92,8 +92,8 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /**
    * Set content of the card item, querying associated record.
    */
-  private setContentFromLayout(): void {
-    this.getStyles();
+  private async setContentFromLayout(): Promise<void> {
+    await this.getStyles();
     if (typeof this.card.record === 'string') {
       this.getCardData();
     } else if (typeof this.card.record === 'object') {
@@ -112,9 +112,9 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   }
 
   /** Sets layout style */
-  private getStyles() {
+  private async getStyles(): Promise<void> {
     if (typeof this.card.layout === 'string') {
-      this.apollo
+      const apolloRes = await this.apollo
         .query<GetLayoutQueryResponse>({
           query: GET_LAYOUT,
           variables: {
@@ -122,22 +122,16 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
             resource: this.card.resource,
           },
         })
-        .subscribe((res2) => {
-          if (res2.data) {
-            this.layout = res2.data.resource.layouts?.edges[0]?.node;
-            this.styles = get(
-              res2.data.resource.layouts?.edges[0],
-              'node.query.style',
-              []
-            );
-          }
-          this.loading = false;
-        });
+        .toPromise();
+      if (get(apolloRes, 'data')) {
+        this.layout = apolloRes.data.resource.layouts?.edges[0].node;
+        this.styles = this.layout?.query.style;
+      }
     } else if (typeof this.card.layout === 'object') {
       this.layout = this.card.layout;
       this.styles = get(this.card.layout, 'style', []);
-      this.loading = false;
     }
+    this.loading = false;
   }
 
   /**
