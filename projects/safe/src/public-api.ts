@@ -7,6 +7,7 @@ export * from './lib/services/auth/auth.service';
 export * from './lib/services/snackbar/snackbar.service';
 export * from './lib/services/grid/grid.service';
 export * from './lib/services/application/application.service';
+export * from './lib/services/application-users/application-users.service';
 export * from './lib/services/download/download.service';
 export * from './lib/services/workflow/workflow.service';
 export * from './lib/services/form-builder/form-builder.service';

@@ -1,7 +1,6 @@
 import { gql } from 'apollo-angular';
 import { Page } from '../../../models/page.model';
 import { Role } from '../../../models/user.model';
-import { User } from '../../../models/user.model';
 import { Channel } from '../../../models/channel.model';
 import { Subscription } from '../../../models/subscription.model';
 import { PositionAttributeCategory } from '../../../models/position-attribute-category.model';
@@ -154,104 +153,6 @@ export interface DeleteRoleMutationResponse {
   deleteRole: Role;
 }
 
-/** Graphql request for adding a role to a user */
-export const ADD_ROLE_TO_USERS = gql`
-  mutation addRoleToUsers(
-    $usernames: [String]!
-    $role: ID!
-    $positionAttributes: [PositionAttributeInputType]
-  ) {
-    addRoleToUsers(
-      usernames: $usernames
-      role: $role
-      positionAttributes: $positionAttributes
-    ) {
-      id
-      username
-      name
-      roles {
-        id
-        title
-      }
-      oid
-    }
-  }
-`;
-
-/** Model for AddRoleToUsersMutationResponse object */
-export interface AddRoleToUsersMutationResponse {
-  loading: boolean;
-  addRoleToUsers: User[];
-}
-
-// === EDIT USER ===
-
-/** Graphql request for editing roles of a user by its id */
-export const EDIT_USER = gql`
-  mutation editUser(
-    $id: ID!
-    $roles: [ID]!
-    $application: ID
-    $positionAttributes: [PositionAttributeInputType]
-  ) {
-    editUser(
-      id: $id
-      roles: $roles
-      application: $application
-      positionAttributes: $positionAttributes
-    ) {
-      id
-      username
-      name
-      roles {
-        id
-        title
-        application {
-          id
-        }
-      }
-      positionAttributes {
-        value
-        category {
-          id
-          title
-        }
-      }
-      oid
-    }
-  }
-`;
-
-/** Model for EditUserMutationResponse object */
-export interface EditUserMutationResponse {
-  loading: boolean;
-  editUser: User;
-}
-
-// === DELETE USER FROM APPLICATION ===
-
-/** Graphql request for removing multiple users from an application  */
-export const DELETE_USERS_FROM_APPLICATION = gql`
-  mutation deleteUsersFromApplication($ids: [ID]!, $application: ID!) {
-    deleteUsersFromApplication(ids: $ids, application: $application) {
-      id
-      username
-      name
-      roles {
-        id
-        title
-      }
-      oid
-    }
-  }
-`;
-
-/** Model for DeleteUsersFromApplicationMutationResponse object */
-export interface DeleteUsersFromApplicationMutationResponse {
-  loading: boolean;
-  deleteUsersFromApplication: User[];
-}
-
 // === ADD CHANNEL ===
 
 /** Graphql request for adding a new channel to an application */
@@ -355,7 +256,7 @@ export interface AddSubscriptionMutationResponse {
 
 // === EDIT SUBSCRIPTION ===
 
-/** Graphql resuest for editing a subscription in an application */
+/** Graphql request for editing a subscription in an application */
 export const EDIT_SUBSCRIPTION = gql`
   mutation editSubscription(
     $applicationId: ID!
@@ -395,7 +296,7 @@ export interface EditSubscriptionMutationResponse {
 
 // === DELETE SUBSCRIPTION ===
 
-/** Grahql request for deleting a subscription from an application */
+/** GraphQL request for deleting a subscription from an application */
 export const DELETE_SUBSCRIPTION = gql`
   mutation deleteSubscription($applicationId: ID!, $routingKey: String!) {
     deleteSubscription(applicationId: $applicationId, routingKey: $routingKey) {

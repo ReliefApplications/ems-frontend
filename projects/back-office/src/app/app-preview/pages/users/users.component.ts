@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import {
-  Application,
   User,
   Role,
   SafeApplicationService,
+  SafeApplicationUsersService,
   SafeUnsubscribeComponent,
 } from '@safe/builder';
 import { takeUntil } from 'rxjs/operators';
@@ -19,16 +19,25 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
   // === DATA ===
-  public loading = true;
   public users = new MatTableDataSource<User>([]);
+  public loadingUsers = true;
+
+  public autoUsers = new MatTableDataSource<User>([]);
+  public loadingAutoUsers = true;
+
   public roles: Role[] = [];
+  public loadingRoles = true;
 
   /**
    * Users page for application preview
    *
    * @param applicationService Shared application service
+   * @param appUsersService Application users service
    */
-  constructor(public applicationService: SafeApplicationService) {
+  constructor(
+    public applicationService: SafeApplicationService,
+    public appUsersService: SafeApplicationUsersService
+  ) {
     super();
   }
 
@@ -38,15 +47,27 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
   ngOnInit(): void {
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((application: Application | null) => {
+      .subscribe((application) => {
         if (application) {
-          this.users.data = application.users || [];
           this.roles = application.roles || [];
         } else {
-          this.users.data = [];
           this.roles = [];
         }
-        this.loading = false;
+        this.loadingRoles = false;
+      });
+
+    this.appUsersService.users$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((users) => {
+        this.users.data = users;
+        this.loadingUsers = false;
+      });
+
+    this.appUsersService.autoAssignedUsers$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((users) => {
+        this.autoUsers.data = users;
+        this.loadingAutoUsers = false;
       });
   }
 }

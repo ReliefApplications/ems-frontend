@@ -53,6 +53,9 @@ const APPLICATION_COLUMNS = [
 export class SafeUsersComponent implements OnInit, AfterViewInit {
   // === INPUT DATA ===
   @Input() users: MatTableDataSource<User> = new MatTableDataSource<User>([]);
+  @Input() autoUsers?: MatTableDataSource<User> = new MatTableDataSource<User>(
+    []
+  );
   @Input() roles: Role[] = [];
   @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
   @Input() applicationService?: SafeApplicationService;
@@ -76,7 +79,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
    *
    * @param apollo The apollo client
    * @param snackBar The snack bar service
-   * @param authService The authentification service
+   * @param authService The authentication service
    * @param dialog The material dialog service
    * @param downloadService The download service
    * @param confirmService The confirm service
@@ -349,7 +352,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   /**
    * Export the list of users
    *
-   * @param type The type of file we want ('csv' or 'xslx')
+   * @param type The type of file we want ('csv' or 'xlsx')
    */
   onExport(type: string): void {
     // if we are in the Users page of an application

@@ -53,23 +53,6 @@ export const GET_APPLICATION_BY_ID = gql`
           name
         }
       }
-      users {
-        id
-        username
-        name
-        roles {
-          id
-          title
-        }
-        positionAttributes {
-          value
-          category {
-            id
-            title
-          }
-        }
-        oid
-      }
       permissions {
         canSee {
           id

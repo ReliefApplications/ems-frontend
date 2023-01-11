@@ -47,6 +47,20 @@ export interface User {
   favoriteApp?: string;
 }
 
+/** Model for UserConnection object. */
+export interface UserConnection {
+  totalCount?: number;
+  edges?: {
+    node: User;
+    cursor: string;
+  }[];
+  pageInfo?: {
+    startCursor: string | null;
+    endCursor: string | null;
+    hasNextPage: boolean;
+  };
+}
+
 /** Enum of admin permissions. */
 export enum Permissions {
   canSeeResources = 'can_see_resources',

@@ -9,7 +9,10 @@
   >
     <div class="flex items-center gap-1">
       <safe-icon icon="person"></safe-icon>
-      <span>{{ application.usersCount }}</span>
+      <span>{{
+        (application.users?.totalCount || 0) +
+          (application.autoAssignedUsers?.totalCount || 0)
+      }}</span>
     </div>
     <div
       class="w-8 h-8 rounded-full flex flex-col justify-center items-center text-lg"

@@ -1,6 +1,7 @@
 <safe-users
-  [loading]="loading"
+  [loading]="loadingRoles || loadingUsers || loadingAutoUsers"
   [users]="users"
+  [autoUsers]="autoUsers"
   [roles]="roles"
   [applicationService]="applicationService"
 ></safe-users>
