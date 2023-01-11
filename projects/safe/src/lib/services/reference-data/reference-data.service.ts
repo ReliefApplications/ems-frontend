@@ -12,6 +12,7 @@ import {
   GET_REFERENCE_DATA_BY_ID,
 } from './graphql/queries';
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
+import { firstValueFrom } from 'rxjs';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
@@ -48,15 +49,16 @@ export class SafeReferenceDataService {
    * @returns Promised ReferenceData.
    */
   public loadReferenceData(id: string): Promise<ReferenceData> {
-    return this.apollo
-      .query<GetReferenceDataByIdQueryResponse>({
-        query: GET_REFERENCE_DATA_BY_ID,
-        variables: {
-          id,
-        },
-      })
-      .pipe(map((res) => res.data.referenceData))
-      .toPromise();
+    return firstValueFrom(
+      this.apollo
+        .query<GetReferenceDataByIdQueryResponse>({
+          query: GET_REFERENCE_DATA_BY_ID,
+          variables: {
+            id,
+          },
+        })
+        .pipe(map((res) => res.data.referenceData))
+    );
   }
 
   /**

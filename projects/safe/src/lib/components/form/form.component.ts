@@ -24,7 +24,7 @@ import {
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { SafeRestService } from '../../services/rest/rest.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
@@ -286,8 +286,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     for (const name of questionsToUpload) {
       const files = this.temporaryFilesStorage[name];
       for (const [index, file] of files.entries()) {
-        const res = await this.apollo
-          .mutate<UploadFileMutationResponse>({
+        const res = await firstValueFrom(
+          this.apollo.mutate<UploadFileMutationResponse>({
             mutation: UPLOAD_FILE,
             variables: {
               file,
@@ -297,7 +297,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
               useMultipart: true,
             },
           })
-          .toPromise();
+        );
         if (res.errors) {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           return;
