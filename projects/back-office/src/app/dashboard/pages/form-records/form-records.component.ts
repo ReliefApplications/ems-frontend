@@ -30,6 +30,7 @@ import { SafeDownloadService, Record } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
+import { Metadata } from 'projects/safe/src/lib/models/metadata.model';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -210,7 +211,7 @@ export class FormRecordsComponent
     for (const field of this.form.fields) {
       columns.push(field.name);
     }
-    const metadata = get(this.form, 'metadata', []);
+    const metadata: Metadata[] = get(this.form, 'metadata', []);
     columns = columns
       .filter((x) => {
         const fieldMeta = metadata.find((y: any) => y.name === x);

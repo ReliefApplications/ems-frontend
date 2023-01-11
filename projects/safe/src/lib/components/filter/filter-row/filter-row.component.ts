@@ -114,7 +114,11 @@ export class FilterRowComponent
     if (field) {
       this.field = field;
       const type = {
-        ...FIELD_TYPES.find((x) => x.editor === this.field.editor),
+        ...FIELD_TYPES.find(
+          (x) =>
+            x.editor === this.field.editor &&
+            !!this.field.multiSelect === !!x.multiSelect
+        ),
         ...this.field.filter,
       };
       this.operators = FILTER_OPERATORS.filter((x) =>
