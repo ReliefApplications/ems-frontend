@@ -11,6 +11,8 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { clone, get } from 'lodash';
+import { takeUntil } from 'rxjs/operators';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 
 /**
@@ -21,7 +23,10 @@ import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
   templateUrl: './filter-row.component.html',
   styleUrls: ['./filter-row.component.scss'],
 })
-export class FilterRowComponent implements OnInit, OnChanges, AfterViewInit {
+export class FilterRowComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges, AfterViewInit
+{
   @Input() form!: FormGroup;
   @Output() delete = new EventEmitter();
   @Input() fields: any[] = [];
@@ -44,20 +49,33 @@ export class FilterRowComponent implements OnInit, OnChanges, AfterViewInit {
 
   public operators: any[] = [];
 
+  /**
+   * Constructor of filter row
+   */
+  constructor() {
+    super();
+  }
+
   ngOnInit(): void {
-    this.form.get('field')?.valueChanges.subscribe((value) => {
-      // remove value
-      this.form.get('value')?.setValue(null);
-      this.setField(value, true);
-    });
-    this.form.get('operator')?.valueChanges.subscribe((value) => {
-      const operator = this.operators.find((x) => x.value === value);
-      if (operator?.disableValue) {
-        this.form.get('value')?.disable();
-      } else {
-        this.form.get('value')?.enable();
-      }
-    });
+    this.form
+      .get('field')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        // remove value
+        this.form.get('value')?.setValue(null);
+        this.setField(value, true);
+      });
+    this.form
+      .get('operator')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        const operator = this.operators.find((x) => x.value === value);
+        if (operator?.disableValue) {
+          this.form.get('value')?.disable();
+        } else {
+          this.form.get('value')?.enable();
+        }
+      });
   }
 
   ngAfterViewInit(): void {

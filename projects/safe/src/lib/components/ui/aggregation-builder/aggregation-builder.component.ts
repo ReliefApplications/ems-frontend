@@ -10,6 +10,8 @@ import { Resource } from '../../../models/resource.model';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { scrollFactory } from '../../config-display-grid-fields-modal/config-display-grid-fields-modal.component';
 import { Overlay } from '@angular/cdk/overlay';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Main component of Aggregation builder.
@@ -27,7 +29,10 @@ import { Overlay } from '@angular/cdk/overlay';
     },
   ],
 })
-export class SafeAggregationBuilderComponent implements OnInit {
+export class SafeAggregationBuilderComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === REACTIVE FORM ===
   @Input() aggregationForm: FormGroup = new FormGroup({});
   @Input() resource!: Resource;
@@ -84,7 +89,9 @@ export class SafeAggregationBuilderComponent implements OnInit {
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService,
     private gridService: SafeGridService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     // Data source query
@@ -128,6 +135,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
     this.aggregationForm
       .get('sourceFields')
       ?.valueChanges.pipe(debounceTime(1000))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((fieldsNames: string[]) => {
         this.updateSelectedAndMetaFields(fieldsNames);
       });
@@ -137,6 +145,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
     this.aggregationForm
       .get('pipeline')
       ?.valueChanges.pipe(debounceTime(1000))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((pipeline) => {
         this.mappingFields.next(
           this.aggregationBuilder.fieldsAfter(
