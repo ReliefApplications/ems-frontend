@@ -27,7 +27,6 @@ export const DUPLICATE_APPLICATION = gql`
       canSee
       canUpdate
       canDelete
-      usersCount
     }
   }
 `;

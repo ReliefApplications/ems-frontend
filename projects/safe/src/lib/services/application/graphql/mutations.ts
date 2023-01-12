@@ -84,7 +84,6 @@ export const ADD_ROLE = gql`
         id
         type
       }
-      usersCount
     }
   }
 `;
@@ -117,7 +116,6 @@ export const EDIT_ROLE = gql`
         id
         type
       }
-      usersCount
       channels {
         id
         title
@@ -168,7 +166,6 @@ export const ADD_CHANNEL = gql`
       subscribedRoles {
         id
         title
-        usersCount
       }
     }
   }

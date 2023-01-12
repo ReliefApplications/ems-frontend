@@ -408,6 +408,11 @@
 				"placeholder": {
 					"description": "Please enter a description for the application"
 				}
+			},
+			"users": {
+				"auto": "Automatically assigned",
+				"empty": "No user detected",
+				"manual": "Manually assigned"
 			}
 		},
 		"applications": {

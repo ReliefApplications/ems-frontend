@@ -9,18 +9,8 @@ export const GET_ROLES = gql`
     roles(application: $application) {
       id
       title
-      permissions {
-        id
-        type
-      }
-      usersCount
-      channels {
-        id
-        title
-        application {
-          id
-          name
-        }
+      users {
+        totalCount
       }
     }
   }

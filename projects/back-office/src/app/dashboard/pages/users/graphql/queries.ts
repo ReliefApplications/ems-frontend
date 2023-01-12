@@ -12,7 +12,6 @@ export const GET_ROLES = gql`
         id
         type
       }
-      usersCount
       application {
         name
       }

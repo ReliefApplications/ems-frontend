@@ -79,7 +79,7 @@ export class SafeApplicationUsersComponent implements OnInit {
    * @param downloadService The download service
    * @param confirmService The confirm service
    * @param translate The translation service
-   * @param appService Shared application service
+   * @param applicationService Shared application service
    * @param usersService Shared application users service
    */
   constructor(
@@ -87,13 +87,13 @@ export class SafeApplicationUsersComponent implements OnInit {
     private downloadService: SafeDownloadService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private appService: SafeApplicationService,
+    private applicationService: SafeApplicationService,
     public usersService: SafeApplicationUsersService
   ) {}
 
   async ngOnInit(): Promise<void> {
     // Subscribe to data
-    this.appService.application$.subscribe((app) => {
+    this.applicationService.application$.subscribe((app) => {
       if (!app) return;
       this.roles = app.roles || [];
       this.positionAttributeCategories = app.positionAttributeCategories || [];
@@ -121,11 +121,11 @@ export class SafeApplicationUsersComponent implements OnInit {
       data: {
         roles: this.roles,
         users: this.users,
-        downloadPath: this.appService
-          ? this.appService.usersDownloadPath
+        downloadPath: this.applicationService
+          ? this.applicationService.usersDownloadPath
           : 'download/invite',
-        uploadPath: this.appService
-          ? this.appService.usersUploadPath
+        uploadPath: this.applicationService
+          ? this.applicationService.usersUploadPath
           : 'upload/invite',
         ...(this.positionAttributeCategories && {
           positionAttributeCategories: this.positionAttributeCategories,
@@ -192,16 +192,18 @@ export class SafeApplicationUsersComponent implements OnInit {
    */
   onExport(type: string): void {
     // if we are in the Users page of an application
-    this.appService.application$.subscribe((value: Application | null) => {
-      const fileName = `users_${value?.name}.${type}`;
-      const path = `download/application/${value?.id}/users`;
-      const queryString = new URLSearchParams({ type }).toString();
-      this.downloadService.getFile(
-        `${path}?${queryString}`,
-        `text/${type};charset=utf-8;`,
-        fileName
-      );
-    });
+    this.applicationService.application$.subscribe(
+      (value: Application | null) => {
+        const fileName = `users_${value?.name}.${type}`;
+        const path = `download/application/${value?.id}/users`;
+        const queryString = new URLSearchParams({ type }).toString();
+        this.downloadService.getFile(
+          `${path}?${queryString}`,
+          `text/${type};charset=utf-8;`,
+          fileName
+        );
+      }
+    );
   }
 
   /**

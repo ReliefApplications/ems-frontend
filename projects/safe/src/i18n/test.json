@@ -408,6 +408,11 @@
 				"placeholder": {
 					"description": "******"
 				}
+			},
+			"users": {
+				"auto": "******",
+				"empty": "******",
+				"manual": "******"
 			}
 		},
 		"applications": {

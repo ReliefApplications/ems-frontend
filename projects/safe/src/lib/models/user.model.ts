@@ -15,11 +15,11 @@ export interface Role {
   id?: string;
   title?: string;
   description?: string;
-  usersCount?: number;
   permissions?: Permission[];
   application?: Application;
   channels?: Channel[];
   autoAssignment?: CompositeFilterDescriptor[];
+  users?: UserConnection;
 }
 
 /** Model for Group object. */

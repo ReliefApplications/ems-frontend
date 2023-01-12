@@ -30,7 +30,6 @@ export const ADD_ROLE = gql`
         id
         type
       }
-      usersCount
     }
   }
 `;

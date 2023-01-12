@@ -1,4 +1,5 @@
 <div class="flex gap-8 justify-end mb-8 flex-col sm:flex-row">
+  <!--  -->
   <!-- Actions -->
   <div class="flex gap-2 items-center">
     <!-- Actions when selected items -->
@@ -18,7 +19,6 @@
       </safe-button>
     </ng-container>
     <safe-button
-      class="export-users"
       icon="file_download"
       category="secondary"
       variant="primary"
@@ -34,7 +34,6 @@
       <button mat-menu-item (click)="onExport('xlsx')">.xlsx</button>
     </mat-menu>
     <safe-button
-      class="export-users"
       icon="send"
       category="secondary"
       variant="primary"
@@ -47,7 +46,7 @@
 
 <mat-tab-group animationDuration="0ms" (selectedTabChange)="selection.clear()">
   <!-- Tab for manually assigned users -->
-  <mat-tab [label]="'components.role.summary.users.manual' | translate">
+  <mat-tab [label]="'components.application.users.manual' | translate">
     <ng-template matTabContent>
       <safe-users-table
         [users]="users"
@@ -62,7 +61,7 @@
   </mat-tab>
 
   <!-- Tab for users assigned automatically -->
-  <mat-tab [label]="'components.role.summary.users.auto' | translate">
+  <mat-tab [label]="'components.application.users.auto' | translate">
     <ng-template matTabContent>
       <safe-users-table
         [users]="autoUsers"

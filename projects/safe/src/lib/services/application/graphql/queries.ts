@@ -39,7 +39,6 @@ export const GET_APPLICATION_BY_ID = gql`
           id
           type
         }
-        usersCount
         channels {
           id
           title
@@ -77,7 +76,6 @@ export const GET_APPLICATION_BY_ID = gql`
             id
             name
           }
-          usersCount
         }
       }
       subscriptions {
