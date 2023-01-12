@@ -71,6 +71,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Sets the content of the card */
   private async setContent() {
     this.fields = this.card.metadata;
+    if (!this.card.resource) return;
     if (this.card.isAggregation) {
       this.fieldsValue = this.card.cardAggregationData;
       if (!this.card.isDynamic) await this.getAggregationData();
@@ -80,6 +81,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
 
   /** Get the aggregation data for the current card, if not dynamic. */
   private async getAggregationData() {
+    if (!this.card.aggregation) return;
     const res = await this.aggregationService
       .aggregationDataQuery(this.card.resource, this.card.aggregation)
       ?.toPromise();
