@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { User } from '../../models/user.model';
 import { SafeApplicationService } from '../application/application.service';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
@@ -130,8 +130,8 @@ export class SafeApplicationUsersService {
         return;
       }
 
-      const res = await this.apollo
-        .query<GetApplicationUserQueryResponse>({
+      const res = await firstValueFrom(
+        this.apollo.query<GetApplicationUserQueryResponse>({
           query:
             type === 'users'
               ? GET_APPLICATION_USERS
@@ -142,7 +142,7 @@ export class SafeApplicationUsersService {
             first,
           },
         })
-        .toPromise();
+      );
 
       if (res.data) {
         const users =
@@ -176,15 +176,15 @@ export class SafeApplicationUsersService {
    */
   public async removeUsers(ids: any[]): Promise<void> {
     if (!this.application) return;
-    const res = await this.apollo
-      .mutate<DeleteUsersFromApplicationMutationResponse>({
+    const res = await firstValueFrom(
+      this.apollo.mutate<DeleteUsersFromApplicationMutationResponse>({
         mutation: DELETE_USERS_FROM_APPLICATION,
         variables: {
           ids,
           application: this.application,
         },
       })
-      .toPromise();
+    );
 
     if (res.data) {
       const deletedUsers = res.data.deleteUsersFromApplication.map((x) => x.id);
@@ -221,15 +221,15 @@ export class SafeApplicationUsersService {
    */
   async addUsers(users: any): Promise<void> {
     if (!this.application) return;
-    const res = await this.apollo
-      .mutate<AddUsersMutationResponse>({
+    const res = await firstValueFrom(
+      this.apollo.mutate<AddUsersMutationResponse>({
         mutation: ADD_USERS,
         variables: {
           users,
           application: this.application,
         },
       })
-      .toPromise();
+    );
     if (!res.errors) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectInvited', {

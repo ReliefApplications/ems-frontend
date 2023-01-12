@@ -10,6 +10,7 @@ import { Application } from '../../../models/application.model';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationUsersService } from '../../../services/application-users/application-users.service';
 import { SafeApplicationService } from '../../../services/application/application.service';
+import { firstValueFrom } from 'rxjs';
 
 /** Initial page info */
 const INIT_PAGE_INFO = {
@@ -164,15 +165,16 @@ export class SafeApplicationUsersComponent implements OnInit {
         }
       );
     }
-    const value = await this.confirmService
-      .openConfirmModal({
-        title,
-        content,
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
-      })
-      .afterClosed()
-      .toPromise();
+    const value = await firstValueFrom(
+      this.confirmService
+        .openConfirmModal({
+          title,
+          content,
+          confirmText: this.translate.instant('components.confirmModal.delete'),
+          confirmColor: 'warn',
+        })
+        .afterClosed()
+    );
 
     if (value) {
       const ids = users.map((u) => u.id);
