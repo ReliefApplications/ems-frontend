@@ -13,59 +13,70 @@
     ></safe-graphql-select>
   </mat-form-field>
 
-  <mat-radio-group
-    aria-label="Select an option"
-    [value]="radioValue"
-    (change)="radioChange($event)"
-  >
-    <mat-radio-button [value]="true">{{
-      'common.aggregation.one' | translate
-    }}</mat-radio-button>
-    <mat-radio-button [value]="false"
-      >{{ 'common.form.one' | translate }}|{{
-        'common.resource.one' | translate
-      }}</mat-radio-button
-    >
-  </mat-radio-group>
+  <!-- SELECT AGGREGATION OR LAYOUT -->
+  <div class="flex flex-col mt-8 gap-8" *ngIf="form.get('resource')?.value">
+    <div *ngIf="!selectedAggregation">
+      <h2>{{ 'common.layout.one' | translate }}</h2>
+    </div>
+    <ng-container *ngIf="!selectedLayout && !selectedAggregation">
+      <div class="flex justify-center mt-4">
+        <safe-button
+          class="max-w-xs grow"
+          category="tertiary"
+          variant="primary"
+          (click)="addLayout()"
+          >{{
+            'components.widget.settings.grid.layouts.add.title' | translate
+          }}</safe-button
+        >
+      </div>
+    </ng-container>
+    <safe-divider
+      *ngIf="!selectedAggregation && !selectedLayout"
+      [text]="'common.or' | translate"
+    ></safe-divider>
+    <div *ngIf="!selectedLayout">
+      <h2>{{ 'common.aggregation.one' | translate }}</h2>
+    </div>
+    <ng-container *ngIf="!selectedLayout && !selectedAggregation">
+      <div class="flex justify-center mt-4">
+        <safe-button
+          class="max-w-xs grow"
+          category="tertiary"
+          variant="primary"
+          (click)="addAggregation()"
+          >{{
+            'components.aggregation.add.title' | translate
+          }}</safe-button
+        >
+      </div>
+    </ng-container>
+  </div>
 
   <!-- FROM LAYOUTS -->
-  <ng-container *ngIf="!radioValue && form.get('resource')?.value">
-    <h2>{{ 'common.layout.one' | translate }}</h2>
-    <ng-container *ngIf="selectedLayout">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.layout.one' | translate }}</mat-label>
-        <mat-select [disabled]="true" [value]="selectedLayout.id">
-          <mat-option [value]="selectedLayout.id">{{
-            selectedLayout.name
-          }}</mat-option>
-        </mat-select>
-        <safe-button
-          matSuffix
-          variant="primary"
-          [isIcon]="true"
-          icon="edit"
-          (click)="editLayout()"
-        ></safe-button>
-        <safe-button
-          matSuffix
-          variant="danger"
-          [isIcon]="true"
-          icon="close"
-          (click)="form.get('layout')?.setValue(null)"
-        ></safe-button>
-      </mat-form-field>
-    </ng-container>
-    <ng-container *ngIf="!form.value.layout">
+  <ng-container *ngIf="selectedLayout && form.get('resource')?.value">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.layout.one' | translate }}</mat-label>
+      <mat-select [disabled]="true" [value]="selectedLayout.id">
+        <mat-option [value]="selectedLayout.id">{{
+          selectedLayout.name
+        }}</mat-option>
+      </mat-select>
       <safe-button
-        class="!w-auto"
-        category="tertiary"
+        matSuffix
         variant="primary"
-        (click)="addLayout()"
-        >{{
-          'components.widget.settings.grid.layouts.add.title' | translate
-        }}</safe-button
-      >
-    </ng-container>
+        [isIcon]="true"
+        icon="edit"
+        (click)="editLayout()"
+      ></safe-button>
+      <safe-button
+        matSuffix
+        variant="danger"
+        [isIcon]="true"
+        icon="close"
+        (click)="form.get('layout')?.setValue(null); form.patchValue({ isAggregation: true })"
+      ></safe-button>
+    </mat-form-field>
     <h2>
       {{
         'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
@@ -102,40 +113,28 @@
     </div>
   </ng-container>
   <!-- FROM AGGREGATIONS -->
-  <ng-container *ngIf="radioValue && form.get('resource')?.value">
-    <h2>{{ 'common.aggregation.one' | translate }}</h2>
-    <ng-container *ngIf="selectedAggregation">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.aggregation.one' | translate }}</mat-label>
-        <mat-select [disabled]="true" [value]="selectedAggregation.id">
-          <mat-option [value]="selectedAggregation.id">{{
-            selectedAggregation.name
-          }}</mat-option>
-        </mat-select>
-        <safe-button
-          matSuffix
-          variant="primary"
-          [isIcon]="true"
-          icon="edit"
-          (click)="editAggregation()"
-        ></safe-button>
-        <safe-button
-          matSuffix
-          variant="danger"
-          [isIcon]="true"
-          icon="close"
-          (click)="form.get('aggregation')?.setValue(null)"
-        ></safe-button>
-      </mat-form-field>
-    </ng-container>
-    <ng-container *ngIf="!form.value.aggregation">
+  <ng-container *ngIf="selectedAggregation && form.get('resource')?.value">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.aggregation.one' | translate }}</mat-label>
+      <mat-select [disabled]="true" [value]="selectedAggregation.id">
+        <mat-option [value]="selectedAggregation.id">{{
+          selectedAggregation.name
+        }}</mat-option>
+      </mat-select>
       <safe-button
-        class="!w-auto"
-        category="tertiary"
+        matSuffix
         variant="primary"
-        (click)="addAggregation()"
-        >{{ 'components.aggregation.add.title' | translate }}</safe-button
-      >
-    </ng-container>
+        [isIcon]="true"
+        icon="edit"
+        (click)="editAggregation()"
+      ></safe-button>
+      <safe-button
+        matSuffix
+        variant="danger"
+        [isIcon]="true"
+        icon="close"
+        (click)="form.get('aggregation')?.setValue(null)"
+      ></safe-button>
+    </mat-form-field>
   </ng-container>
 </div>

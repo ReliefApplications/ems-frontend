@@ -15,6 +15,7 @@ import { SafeFormsDropdownModule } from '../../../../ui/aggregation-builder/publ
 import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeDataSourceTabComponent } from './data-source-tab.component';
+import { SafeDividerModule } from '../../../../ui/divider/divider.module';
 
 /** Data Source tab Module for summary card edition */
 @NgModule({
@@ -36,6 +37,7 @@ import { SafeDataSourceTabComponent } from './data-source-tab.component';
     SafeButtonModule,
     AddLayoutModalModule,
     MatCheckboxModule,
+    SafeDividerModule,
   ],
   exports: [SafeDataSourceTabComponent],
 })

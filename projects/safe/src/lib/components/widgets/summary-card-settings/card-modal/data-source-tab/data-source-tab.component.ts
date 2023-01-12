@@ -37,9 +37,6 @@ export class SafeDataSourceTabComponent implements OnInit {
   @Output() layoutChange = new EventEmitter<Layout | null>();
   @Output() aggregationChange = new EventEmitter<Aggregation | null>();
 
-  // === RADIO ===
-  public radioValue = false;
-
   // === DATA ===
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
@@ -62,9 +59,6 @@ export class SafeDataSourceTabComponent implements OnInit {
    * Gets the selected resource data
    */
   ngOnInit(): void {
-    // Initialize radioValue
-    this.radioValue = this.form.value.isAggregation;
-
     // Data source query
     const variables: any = {
       first: ITEMS_PER_PAGE,
@@ -75,16 +69,6 @@ export class SafeDataSourceTabComponent implements OnInit {
       query: GET_RESOURCES,
       variables,
     });
-  }
-
-  /**
-   * Changes the form value assigned to the radio component.
-   *
-   * @param event Event with the change values.
-   */
-  radioChange(event: any) {
-    this.radioValue = event.value;
-    this.form.patchValue({ isAggregation: event.value });
   }
 
   /** Opens modal for layout selection/creation */
@@ -102,6 +86,7 @@ export class SafeDataSourceTabComponent implements OnInit {
         } else {
           this.form.get('layout')?.setValue(value.id);
         }
+        this.form.patchValue({ isAggregation: false });
       }
     });
   }
@@ -145,6 +130,7 @@ export class SafeDataSourceTabComponent implements OnInit {
         } else {
           this.form.get('aggregation')?.setValue(value.id);
         }
+        this.form.patchValue({ isAggregation: true });
       }
     });
   }

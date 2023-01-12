@@ -150,6 +150,10 @@ export const GET_LAYOUT = gql`
           }
         }
       }
+      metadata {
+        name
+        type
+      }
     }
   }
 `;
