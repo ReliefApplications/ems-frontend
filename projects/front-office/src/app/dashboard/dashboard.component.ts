@@ -9,9 +9,9 @@ import {
   SafeSnackBarService,
   SafeApplicationService,
   Permission,
-  Permissions,
   ContentType,
   SafeUnsubscribeComponent,
+  AppAbility,
 } from '@safe/builder';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
@@ -56,6 +56,7 @@ export class DashboardComponent
    * @param snackBar Shared snackbar service
    * @param router Angular router
    * @param translate Angular translate service
+   * @param ability user ability
    */
   constructor(
     private authService: SafeAuthService,
@@ -63,7 +64,8 @@ export class DashboardComponent
     public route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private ability: AppAbility
   ) {
     super();
   }
@@ -119,72 +121,33 @@ export class DashboardComponent
           this.title = application.name || '';
           this.appID = application.id || '';
           this.adminNavItems = [];
-          if (
-            this.permissions.some(
-              (x) =>
-                (x.type === Permissions.canSeeUsers &&
-                  this.roles.some(
-                    (y) =>
-                      y.application?.id === application.id &&
-                      y.permissions?.some((perm) => perm.id === x.id)
-                  )) ||
-                (x.type === Permissions.canManageApplications && x.global)
-            )
-          ) {
+          // TODO : complete with application rules
+          if (this.ability.can('read', 'User')) {
+            // if can see users globally / can manage apps / can see users in app
             this.adminNavItems.push({
               name: this.translate.instant('common.user.few'),
               path: `./${this.appID}/settings/users`,
               icon: 'supervisor_account',
             });
           }
-          if (
-            this.permissions.some(
-              (x) =>
-                (x.type === Permissions.canSeeRoles &&
-                  this.roles.some(
-                    (y) =>
-                      y.application?.id === application.id &&
-                      y.permissions?.some((perm) => perm.id === x.id)
-                  )) ||
-                (x.type === Permissions.canManageApplications && x.global)
-            )
-          ) {
+          if (this.ability.can('read', 'Role')) {
+            // if can see roles globally / can manage apps / can see roles in app
             this.adminNavItems.push({
               name: this.translate.instant('common.role.few'),
               path: `./${this.appID}/settings/roles`,
               icon: 'admin_panel_settings',
             });
           }
-          if (
-            this.permissions.some(
-              (x) =>
-                (x.type === Permissions.canManageTemplates &&
-                  this.roles.some(
-                    (y) =>
-                      y.application?.id === application.id &&
-                      y.permissions?.some((perm) => perm.id === x.id)
-                  )) ||
-                (x.type === Permissions.canManageApplications && x.global)
-            )
-          ) {
+          if (this.ability.can('manage', 'Template')) {
+            // if can manage apps / can manage templates in app
             this.adminNavItems.push({
               name: this.translate.instant('common.template.few'),
               path: `./${this.appID}/settings/templates`,
               icon: 'description',
             });
           }
-          if (
-            this.permissions.some(
-              (x) =>
-                (x.type === Permissions.canManageDistributionLists &&
-                  this.roles.some(
-                    (y) =>
-                      y.application?.id === application.id &&
-                      y.permissions?.some((perm) => perm.id === x.id)
-                  )) ||
-                (x.type === Permissions.canManageApplications && x.global)
-            )
-          ) {
+          if (this.ability.can('manage', 'DistributionList')) {
+            // if can manage apps / can manage distribution lists in app
             this.adminNavItems.push({
               name: this.translate.instant('common.distributionList.few'),
               path: `./${this.appID}/settings/distribution-lists`,
