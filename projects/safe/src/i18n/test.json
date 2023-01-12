@@ -784,6 +784,7 @@
 			},
 			"empty": {
 				"aggregations": "******",
+				"calculatedFields": "******",
 				"layouts": "******",
 				"records": "******"
 			}
