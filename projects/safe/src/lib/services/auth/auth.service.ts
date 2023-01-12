@@ -24,6 +24,8 @@ export interface Account {
 type Actions = 'create' | 'read' | 'update' | 'delete' | 'manage';
 
 type Subjects =
+  | 'ApiConfiguration'
+  | 'ReferenceData'
   | 'Application'
   | 'Channel'
   | 'Dashboard'
@@ -35,6 +37,9 @@ type Subjects =
   | 'Template'
   | 'DistributionList'
   | 'Record'
+  | 'Role'
+  | 'PullJob'
+  | 'Group'
   | 'Form';
 
 export type AppAbility = Ability<[Actions, Subjects]>;
@@ -260,11 +265,11 @@ export class SafeAuthService {
     const { can, rules } = new AbilityBuilder(AppAbility);
     const permissions: Permission[] = get(user, 'permissions', []);
 
-    console.log(permissions);
-
     const globalPermissions = permissions
       .filter((x) => x.global)
       .map((x) => x.type);
+
+    console.log(globalPermissions);
 
     // === Application ===
     if (globalPermissions.includes('can_see_applications')) {
@@ -304,13 +309,46 @@ export class SafeAuthService {
       can('create', 'Form');
     }
     if (globalPermissions.includes('can_manage_forms')) {
-      can(['create', 'read', 'update', 'delete'], ['Form', 'Record']);
+      can(['create', 'read', 'update', 'delete', 'manage'], ['Form', 'Record']);
       can('manage', 'Record');
     }
 
     // === Resource ===
     if (globalPermissions.includes('can_read_resources')) {
       can('read', ['Resource', 'Record']);
+    }
+    if (globalPermissions.includes('can_create_resources')) {
+      can('create', 'Resource');
+    }
+    if (globalPermissions.includes('can_manage_resources')) {
+      can(
+        ['create', 'read', 'update', 'delete', 'manage'],
+        ['Resource', 'Record']
+      );
+      can('manage', 'Record');
+    }
+
+    // === Role ===
+    if (globalPermissions.includes('can_see_roles')) {
+      can(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
+    }
+
+    // === Group ===
+    if (globalPermissions.includes('can_see_groups')) {
+      can(['create', 'read', 'update', 'delete'], 'Group');
+    }
+
+    // === User ===
+    if (globalPermissions.includes('can_see_users')) {
+      can(['create', 'read', 'update', 'delete'], 'User');
+    }
+
+    // === API Configuration / Pull Job ===
+    if (globalPermissions.includes('can_manage_api_configurations')) {
+      can(
+        ['create', 'read', 'update', 'delete'],
+        ['ApiConfiguration', 'PullJob', 'ReferenceData']
+      );
     }
 
     console.log(rules);

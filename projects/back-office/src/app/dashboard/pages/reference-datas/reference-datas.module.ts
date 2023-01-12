@@ -24,6 +24,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
+import { AbilityModule } from '@casl/angular';
 
 /**
  * List of reference data page module
@@ -50,6 +51,7 @@ import { AddReferenceDataComponent } from './add-reference-data/add-reference-da
     SafeSkeletonTableModule,
     SafeDateModule,
     SafeModalModule,
+    AbilityModule,
   ],
   exports: [ReferenceDatasComponent],
 })

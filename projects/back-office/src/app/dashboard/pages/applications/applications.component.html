@@ -7,70 +7,11 @@
   ></app-filter>
 
   <!-- NEW APPLICATIONS -->
-  <div class="flex flex-col gap-2">
-    <div>
-      <h4>Resource</h4>
-      <div class="flex gap-1">
-        <safe-button [disabled]="!('read' | able: 'Resource')"
-          >read</safe-button
-        >
-        <safe-button [disabled]="!('create' | able: 'Resource')"
-          >create</safe-button
-        >
-        <safe-button [disabled]="!('update' | able: 'Resource')"
-          >update</safe-button
-        >
-        <safe-button [disabled]="!('delete' | able: 'Resource')"
-          >delete</safe-button
-        >
-        <safe-button [disabled]="!('manage' | able: 'Resource')"
-          >manage</safe-button
-        >
-      </div>
-    </div>
-    <div>
-      <h4>Form</h4>
-      <div class="flex gap-1">
-        <safe-button [disabled]="!('read' | able: 'Form')">read</safe-button>
-        <safe-button [disabled]="!('create' | able: 'Form')"
-          >create</safe-button
-        >
-        <safe-button [disabled]="!('update' | able: 'Form')"
-          >update</safe-button
-        >
-        <safe-button [disabled]="!('delete' | able: 'Form')"
-          >delete</safe-button
-        >
-        <safe-button [disabled]="!('manage' | able: 'Form')"
-          >manage</safe-button
-        >
-      </div>
-    </div>
-    <div>
-      <h4>Application</h4>
-      <div class="flex gap-1">
-        <safe-button [disabled]="!('read' | able: 'Application')">read</safe-button>
-        <safe-button [disabled]="!('create' | able: 'Application')"
-          >create</safe-button
-        >
-        <safe-button [disabled]="!('update' | able: 'Application')"
-          >update</safe-button
-        >
-        <safe-button [disabled]="!('delete' | able: 'Application')"
-          >delete</safe-button
-        >
-        <safe-button [disabled]="!('manage' | able: 'Application')"
-          >manage</safe-button
-        >
-      </div>
-    </div>
-  </div>
-
   <h2>{{ 'pages.applications.recent' | translate }}</h2>
   <safe-applications-summary
     class="block mb-14"
     [loading]="loading"
-    [canCreate]="canAdd"
+    [canCreate]="'create' | able: 'Application'"
     (add)="onAdd()"
     [applications]="newApplications"
     (openApplication)="onOpenApplication($event)"
