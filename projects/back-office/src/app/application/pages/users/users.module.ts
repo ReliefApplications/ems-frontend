@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsersRoutingModule } from './users-routing.module';
 import { UsersComponent } from './users.component';
-import { SafeUsersModule } from '@safe/builder';
+import { SafeApplicationUsersModule } from '@safe/builder';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 /**
@@ -14,7 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CommonModule,
     UsersRoutingModule,
     MatProgressSpinnerModule,
-    SafeUsersModule,
+    SafeApplicationUsersModule,
   ],
   exports: [UsersComponent],
 })

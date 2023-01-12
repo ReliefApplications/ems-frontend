@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../../models/user.model';
+import { SafeApplicationService } from '../application/application.service';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import {
   AddUsersMutationResponse,
@@ -16,20 +17,25 @@ import {
   GetApplicationUserQueryResponse,
 } from './graphql/queries';
 
+type PageInfo = {
+  endCursor: string;
+  hasNextPage: boolean;
+  totalCount: number;
+};
+
 /** Initial page info */
 const INIT_PAGE_INFO = {
   users: {
     endCursor: '',
     hasNextPage: true,
+    totalCount: 0,
   },
   autoAssignedUsers: {
     endCursor: '',
     hasNextPage: true,
+    totalCount: 0,
   },
 };
-
-/** Default number of users to fetch */
-const DEFAULT_FIRST = 1;
 
 /** Service that handles users inside an application */
 @Injectable({
@@ -57,7 +63,7 @@ export class SafeApplicationUsersService {
    *
    * @returns the page info for the manual users
    */
-  public getManualPageInfo(): { endCursor: string; hasNextPage: boolean } {
+  public getManualPageInfo(): PageInfo {
     return this.pageInfo.users;
   }
 
@@ -66,18 +72,26 @@ export class SafeApplicationUsersService {
    *
    * @returns the page info for the auto-assigned users
    */
-  public getAutoPageInfo(): { endCursor: string; hasNextPage: boolean } {
+  public getAutoPageInfo(): PageInfo {
     return this.pageInfo.autoAssignedUsers;
   }
 
-  /** Gets next page of manual users */
-  public getMoreManualUsers(): void {
-    this.getNextUsersPage('users');
+  /**
+   * Gets next page of manual users
+   *
+   * @param first number of users to get
+   */
+  public async getMoreManualUsers(first: number): Promise<void> {
+    await this.getNextUsersPage('users', first);
   }
 
-  /** Gets next page of auto users */
-  public getMoreAutoUsers(): void {
-    this.getNextUsersPage('autoAssignedUsers');
+  /**
+   * Gets next page of auto users
+   *
+   * @param first number of users to get
+   */
+  public async getMoreAutoUsers(first: number): Promise<void> {
+    await this.getNextUsersPage('autoAssignedUsers', first);
   }
 
   /**
@@ -86,36 +100,14 @@ export class SafeApplicationUsersService {
    * @param apollo Apollo client
    * @param snackBar Snack bar service
    * @param translate Translation service
+   * @param appService Shared application service
    */
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private appService: SafeApplicationService
   ) {}
-
-  /** Clears all users and page info */
-  public clearUsers(): void {
-    this.users.next([]);
-    this.autoAssignedUsers.next([]);
-    this.pageInfo = INIT_PAGE_INFO;
-    this.application = null;
-  }
-
-  /**
-   * Initializes the service with the application id
-   *
-   * @param application application id
-   */
-  public init(application: string): void {
-    this.application = application;
-    this.getMoreManualUsers();
-    this.getMoreAutoUsers();
-
-    // TEST FOR GETTING SECOND PAGE
-    setTimeout(() => {
-      this.getMoreManualUsers();
-    }, 2000);
-  }
 
   /**
    * Fetches the next page of users for the current application
@@ -125,58 +117,71 @@ export class SafeApplicationUsersService {
    */
   private async getNextUsersPage(
     type: 'users' | 'autoAssignedUsers',
-    first?: number
+    first: number
   ): Promise<void> {
-    if (!this.application) {
-      return;
-    }
+    this.appService.application$.subscribe(async (app) => {
+      // if no app id, do nothing
+      if (!app || !app.id) return;
 
-    // if there is no next page, do nothing
-    const pageInfo = this.pageInfo[type];
-    if (!pageInfo.hasNextPage) {
-      return;
-    }
+      // if there is no next page, do nothing
+      const switchedApp = app?.id !== this.application;
+      const pageInfo = switchedApp ? INIT_PAGE_INFO[type] : this.pageInfo[type];
+      if (!pageInfo.hasNextPage) {
+        return;
+      }
 
-    first = first || DEFAULT_FIRST;
+      const res = await this.apollo
+        .query<GetApplicationUserQueryResponse>({
+          query:
+            type === 'users'
+              ? GET_APPLICATION_USERS
+              : GET_APPLICATION_AUTO_USERS,
+          variables: {
+            id: app.id,
+            afterCursor: pageInfo.endCursor || undefined,
+            first,
+          },
+        })
+        .toPromise();
 
-    const res = await this.apollo
-      .query<GetApplicationUserQueryResponse>({
-        query:
-          type === 'users' ? GET_APPLICATION_USERS : GET_APPLICATION_AUTO_USERS,
-        variables: {
-          id: this.application,
-          afterCursor: pageInfo.endCursor || undefined,
-          first,
-        },
-      })
-      .toPromise();
+      if (res.data) {
+        const users =
+          res.data.application[type]?.edges?.map((x) => x.node) || [];
+        const newPageInfo = res.data.application[type]?.pageInfo;
+        this.pageInfo[type] = {
+          endCursor: newPageInfo?.endCursor || '',
+          hasNextPage: newPageInfo?.hasNextPage || false,
+          totalCount: res.data.application[type]?.totalCount || 0,
+        };
+        const currentUsers = switchedApp ? [] : this[type].getValue();
 
-    if (res.data) {
-      const users = res.data.application[type]?.edges?.map((x) => x.node) || [];
-      const newPageInfo = res.data.application[type]?.pageInfo;
-      this.pageInfo[type] = {
-        endCursor: newPageInfo?.endCursor || '',
-        hasNextPage: newPageInfo?.hasNextPage || false,
-      };
-      const currentUsers = this.users.getValue();
+        this[type].next([...currentUsers, ...users]);
+      }
 
-      this[type].next([...currentUsers, ...users]);
-    }
+      if (switchedApp) {
+        this.application = app.id;
+        const otherType = type === 'users' ? 'autoAssignedUsers' : 'users';
+
+        // reset other type
+        this[otherType].next([]);
+        this.pageInfo[otherType] = INIT_PAGE_INFO[otherType];
+      }
+    });
   }
 
   /**
    * Deletes users of the opened application. Users are only removed from the application, but are still active.
    *
-   * @param application application id
    * @param ids user ids to remove
    */
-  public async removeUsers(application: string, ids: any[]): Promise<void> {
+  public async removeUsers(ids: any[]): Promise<void> {
+    if (!this.application) return;
     const res = await this.apollo
       .mutate<DeleteUsersFromApplicationMutationResponse>({
         mutation: DELETE_USERS_FROM_APPLICATION,
         variables: {
           ids,
-          application,
+          application: this.application,
         },
       })
       .toPromise();
@@ -185,6 +190,7 @@ export class SafeApplicationUsersService {
       const deletedUsers = res.data.deleteUsersFromApplication.map((x) => x.id);
       const users = this.users.getValue();
       this.users.next(users.filter((x) => !deletedUsers.includes(x.id)));
+      this.pageInfo.users.totalCount -= deletedUsers.length;
 
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectDeleted', {
@@ -211,16 +217,16 @@ export class SafeApplicationUsersService {
   /**
    * Invites an user to the application.
    *
-   * @param application application id
    * @param users users to be added to application (GraphQL UserInputType)
    */
-  async addUser(application: string, users: any): Promise<void> {
+  async addUsers(users: any): Promise<void> {
+    if (!this.application) return;
     const res = await this.apollo
       .mutate<AddUsersMutationResponse>({
         mutation: ADD_USERS,
         variables: {
           users,
-          application,
+          application: this.application,
         },
       })
       .toPromise();
@@ -234,6 +240,7 @@ export class SafeApplicationUsersService {
             .toLowerCase(),
         })
       );
+      this.pageInfo.users.totalCount += res.data?.addUsers.length || 0;
       this.users.next(this.users.getValue().concat(res.data?.addUsers || []));
     } else {
       this.snackBar.openSnackBar(

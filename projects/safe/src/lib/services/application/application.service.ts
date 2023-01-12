@@ -70,7 +70,6 @@ import { SafeAuthService } from '../auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Template } from '../../models/template.model';
 import { DistributionList } from '../../models/distribution-list.model';
-import { SafeApplicationUsersService } from '../application-users/application-users.service';
 
 /**
  * Since the users from an application are paginated,
@@ -155,7 +154,6 @@ export class SafeApplicationService {
    * @param authService Shared authentication service
    * @param router Angular router
    * @param translate Angular translate service
-   * @param appUsersService Shared application users service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -163,8 +161,7 @@ export class SafeApplicationService {
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     private router: Router,
-    private translate: TranslateService,
-    private appUsersService: SafeApplicationUsersService
+    private translate: TranslateService
   ) {
     this.environment = environment;
   }
@@ -186,8 +183,6 @@ export class SafeApplicationService {
       })
       .subscribe((res) => {
         this.application.next(res.data.application);
-        if (res.data.application.id)
-          this.appUsersService.init(res.data.application.id);
         const application = this.application.getValue();
         if (res.data.application.locked) {
           if (!application?.lockedByUser) {
@@ -242,7 +237,6 @@ export class SafeApplicationService {
   leaveApplication(): void {
     const application = this.application.getValue();
     this.application.next(null);
-    this.appUsersService.clearUsers();
     this.applicationSubscription?.unsubscribe();
     this.notificationSubscription?.unsubscribe();
     this.lockSubscription?.unsubscribe();
@@ -717,34 +711,6 @@ export class SafeApplicationService {
           };
           this.application.next(newApplication);
         });
-    }
-  }
-
-  /**
-   * Deletes users of the opened application. Users are only removed from the application, but are still active.
-   *
-   * @param ids user ids to remove
-   * @param resolved status of the request
-   */
-  deleteUsersFromApplication(ids: any[], resolved: any): void {
-    const application = this.application.getValue();
-
-    if (application?.id && this.isUnlocked) {
-      this.appUsersService.removeUsers(application.id, ids).then(() => {
-        resolved();
-      });
-    }
-  }
-
-  /**
-   * Invites an user to the application.
-   *
-   * @param users new users to be added (GraphQL UserInputType)
-   */
-  inviteUsers(users: any): void {
-    const application = this.application.getValue();
-    if (application?.id && this.isUnlocked) {
-      this.appUsersService.addUser(application.id, users);
     }
   }
 

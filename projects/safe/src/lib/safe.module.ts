@@ -15,7 +15,8 @@ import { SafeSchedulerModule } from './components/widgets/scheduler/scheduler.mo
 import { SafeSchedulerSettingsModule } from './components/widgets/scheduler-settings/scheduler-settings.module';
 import { SafeWidgetModule } from './components/widget/widget.module';
 import { SafeWidgetGridModule } from './components/widget-grid/widget-grid.module';
-import { SafeUsersModule } from './components/users/users.module';
+import { SafeUsersModule } from './components/users/users/users.module';
+import { SafeApplicationUsersModule } from './components/users/application-users/application-users.module';
 import { SafeRolesModule } from './components/roles/roles.module';
 import { SafeConvertModalModule } from './components/convert-modal/convert-modal.module';
 import { SafeRecordHistoryModule } from './components/record-history/record-history.module';
@@ -70,6 +71,7 @@ import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscrib
     SafeWidgetGridModule,
     SafeStatusModalModule,
     SafeUsersModule,
+    SafeApplicationUsersModule,
     SafeRolesModule,
     SafeConvertModalModule,
     SafeRecordHistoryModule,

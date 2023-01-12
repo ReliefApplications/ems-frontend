@@ -16,6 +16,9 @@ export const GET_APPLICATION_USERS = gql`
               id
               title
             }
+            positionAttributes {
+              value
+            }
             oid
           }
           cursor
@@ -24,6 +27,7 @@ export const GET_APPLICATION_USERS = gql`
           endCursor
           hasNextPage
         }
+        totalCount
       }
     }
   }
@@ -45,6 +49,9 @@ export const GET_APPLICATION_AUTO_USERS = gql`
               title
             }
             oid
+            positionAttributes {
+              value
+            }
           }
           cursor
         }
@@ -52,6 +59,7 @@ export const GET_APPLICATION_AUTO_USERS = gql`
           endCursor
           hasNextPage
         }
+        totalCount
       }
     }
   }

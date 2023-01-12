@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeUsersComponent } from './users.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -17,13 +16,16 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
-import { SafeButtonModule } from '../ui/button/button.module';
+import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
+import { SafeInviteUsersModule } from '../components/invite-users/invite-users.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
+import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
+import { MatTabsModule } from '@angular/material/tabs';
+import { SafeUsersTableModule } from '../components/users-table/users-table.module';
+import { SafeUsersComponent } from './users.component';
 
-/** Module for components related to users */
+/** Module for components related to backoffice users */
 @NgModule({
   declarations: [SafeUsersComponent],
   imports: [
@@ -50,6 +52,8 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     SafeInviteUsersModule,
     TranslateModule,
     SafeSkeletonTableModule,
+    MatTabsModule,
+    SafeUsersTableModule,
   ],
   exports: [SafeUsersComponent],
 })

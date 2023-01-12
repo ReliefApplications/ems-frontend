@@ -8,24 +8,24 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
-import { User, Role } from '../../models/user.model';
+import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
+import { User, Role } from '../../../models/user.model';
 import {
   DELETE_USERS,
   DeleteUsersMutationResponse,
   AddUsersMutationResponse,
   ADD_USERS,
-} from './graphql/mutations';
+} from '../graphql/mutations';
 import { MatSort } from '@angular/material/sort';
-import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
-import { SafeConfirmService } from '../../services/confirm/confirm.service';
+import { PositionAttributeCategory } from '../../../models/position-attribute-category.model';
+import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { SelectionModel } from '@angular/cdk/collections';
-import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
-import { SafeAuthService } from '../../services/auth/auth.service';
-import { SafeDownloadService } from '../../services/download/download.service';
-import { Application } from '../../models/application.model';
+import { SafeInviteUsersComponent } from '../components/invite-users/invite-users.component';
+import { SafeAuthService } from '../../../services/auth/auth.service';
+import { SafeDownloadService } from '../../../services/download/download.service';
+import { Application } from '../../../models/application.model';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeApplicationService } from '../../services/application/application.service';
+import { SafeApplicationService } from '../../../services/application/application.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
 /** User columns to display for the main user administration page */
@@ -42,9 +42,7 @@ const APPLICATION_COLUMNS = [
   'actions',
 ];
 
-/**
- * A component to display the list of users
- */
+/** Backoffice users */
 @Component({
   selector: 'safe-users',
   templateUrl: './users.component.html',
@@ -233,52 +231,46 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
         const ids = users.map((u) => u.id);
         this.loading = true;
         this.selection.clear();
-        if (this.applicationService) {
-          this.applicationService.deleteUsersFromApplication(
-            ids,
-            () => (this.loading = false)
-          );
-        } else {
-          this.apollo
-            .mutate<DeleteUsersMutationResponse>({
-              mutation: DELETE_USERS,
-              variables: { ids },
-            })
-            .subscribe((res) => {
-              this.loading = false;
-              if (res.data?.deleteUsers) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
+
+        this.apollo
+          .mutate<DeleteUsersMutationResponse>({
+            mutation: DELETE_USERS,
+            variables: { ids },
+          })
+          .subscribe((res) => {
+            this.loading = false;
+            if (res.data?.deleteUsers) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate
+                    .instant(
+                      res.data.deleteUsers > 1
+                        ? 'common.user.few'
+                        : 'common.user.one'
+                    )
+                    .toLowerCase(),
+                })
+              );
+              this.users.data = this.users.data.filter(
+                (u) => !ids.includes(u.id)
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
                     value: this.translate
                       .instant(
-                        res.data.deleteUsers > 1
-                          ? 'common.user.few'
-                          : 'common.user.one'
+                        ids.length > 1 ? 'common.user.few' : 'common.user.one'
                       )
                       .toLowerCase(),
-                  })
-                );
-                this.users.data = this.users.data.filter(
-                  (u) => !ids.includes(u.id)
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: this.translate
-                        .instant(
-                          ids.length > 1 ? 'common.user.few' : 'common.user.one'
-                        )
-                        .toLowerCase(),
-                      error: '',
-                    }
-                  ),
-                  { error: true }
-                );
-              }
-            });
-        }
+                    error: '',
+                  }
+                ),
+                { error: true }
+              );
+            }
+          });
       }
     });
   }
