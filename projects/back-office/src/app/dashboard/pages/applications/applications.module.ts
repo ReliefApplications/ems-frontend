@@ -31,6 +31,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { AbilityModule } from '@casl/angular';
 /**
  * Applications page module.
  */
@@ -65,6 +66,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeGraphQLSelectModule,
     SafeModalModule,
     SafeDividerModule,
+    AbilityModule,
   ],
   exports: [ApplicationsComponent],
 })

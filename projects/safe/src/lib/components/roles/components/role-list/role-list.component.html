@@ -19,6 +19,7 @@
   <!-- Actions -->
   <div class="flex items-center">
     <safe-button
+      *ngIf="'create' | able: 'Role'"
       icon="add"
       category="secondary"
       variant="primary"

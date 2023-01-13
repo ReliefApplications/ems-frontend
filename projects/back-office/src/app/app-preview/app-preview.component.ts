@@ -1,16 +1,55 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AbilityBuilder } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
 import {
+  AppAbility,
   Application,
   ContentType,
-  Permissions,
   SafeApplicationService,
   SafeUnsubscribeComponent,
 } from '@safe/builder';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { PreviewService } from '../services/preview.service';
+
+/**
+ * Creates a ability object the app preview
+ * given the application and the role to preview with
+ *
+ * @param app The application being previewed
+ * @param role The role to preview with
+ * @returns The ability object
+ */
+const getAbilityForAppPreview = (app: Application, role: string) => {
+  const { can, rules } = new AbilityBuilder(AppAbility);
+  const permissions =
+    app.roles?.find((x) => x.id === role)?.permissions?.map((p) => p.type) ||
+    [];
+
+  console.log(permissions);
+  // === Role ===
+  if (permissions.includes('can_see_roles')) {
+    can(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
+  }
+
+  // === User ===
+  if (permissions.includes('can_see_users')) {
+    can(['create', 'read', 'update', 'delete'], 'User');
+  }
+
+  // === Template ===
+  if (permissions.includes('can_manage_templates')) {
+    can(['create', 'read', 'update', 'delete', 'manage'], 'Template');
+  }
+
+  // === Distribution list ===
+  if (permissions.includes('can_manage_distribution_lists')) {
+    can(['create', 'read', 'update', 'delete', 'manage'], 'DistributionList');
+  }
+
+  return new AppAbility(rules);
+};
 
 /**
  * Main component of Application preview capacity.
@@ -77,56 +116,35 @@ export class AppPreviewComponent
       .subscribe((application: Application | null) => {
         if (application) {
           this.title = application.name + ' (Preview)';
-          const role = application.roles?.find((x) =>
-            this.role ? x.id === this.role : true
-          );
-          const adminNavItems = [];
-          if (role) {
-            if (
-              role.permissions?.some(
-                (x) => x.type === Permissions.canSeeUsers && !x.global
-              )
-            ) {
-              adminNavItems.push({
-                name: this.translate.instant('common.user.few'),
-                path: './settings/users',
-                icon: 'supervisor_account',
-              });
-            }
-            if (
-              role.permissions?.some(
-                (x) => x.type === Permissions.canSeeRoles && !x.global
-              )
-            ) {
-              adminNavItems.push({
-                name: this.translate.instant('common.role.few'),
-                path: './settings/roles',
-                icon: 'admin_panel_settings',
-              });
-            }
-            if (
-              role.permissions?.some(
-                (x) => x.type === Permissions.canManageTemplates && !x.global
-              )
-            ) {
-              adminNavItems.push({
-                name: this.translate.instant('common.template.few'),
-                path: './settings/templates',
-                icon: 'description',
-              });
-            }
-            if (
-              role.permissions?.some(
-                (x) =>
-                  x.type === Permissions.canManageDistributionLists && !x.global
-              )
-            ) {
-              adminNavItems.push({
-                name: this.translate.instant('common.distributionList.few'),
-                path: './settings/distribution-lists',
-                icon: 'mail',
-              });
-            }
+          const ability = getAbilityForAppPreview(application, this.role);
+          const adminNavItems: any[] = [];
+          if (ability.can('read', 'User')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.user.few'),
+              path: './settings/users',
+              icon: 'supervisor_account',
+            });
+          }
+          if (ability.can('read', 'Role')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.role.few'),
+              path: './settings/roles',
+              icon: 'admin_panel_settings',
+            });
+          }
+          if (ability.can('manage', 'Template')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.template.few'),
+              path: './settings/templates',
+              icon: 'description',
+            });
+          }
+          if (ability.can('manage', 'DistributionList')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.distributionList.few'),
+              path: './settings/distribution-lists',
+              icon: 'mail',
+            });
           }
           this.navGroups = [
             {
