@@ -12,6 +12,9 @@ import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { AddUsersMutationResponse, ADD_USERS } from './graphql/mutations';
 
+/**
+ * Application users component.
+ */
 @Component({
   selector: 'safe-application-users',
   templateUrl: './application-users.component.html',
@@ -26,6 +29,15 @@ export class SafeApplicationUsersComponent
   refetch$: Subject<boolean> = new Subject<boolean>();
   @ViewChild(UserListComponent) userList?: UserListComponent;
 
+  /**
+   * Application users component.
+   *
+   * @param dialog Material dialog
+   * @param applicationService Shared application service
+   * @param apollo Apollo service
+   * @param translate Translate service
+   * @param snackBar Shared snackbar service
+   */
   constructor(
     private dialog: MatDialog,
     private applicationService: SafeApplicationService,

@@ -9,6 +9,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeInviteUsersModule } from '../../components/users/components/invite-users/invite-users.module';
 
+/**
+ * Application users view module.
+ */
 @NgModule({
   declarations: [SafeApplicationUsersComponent],
   imports: [

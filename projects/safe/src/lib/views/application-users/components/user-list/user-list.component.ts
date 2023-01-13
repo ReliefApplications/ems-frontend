@@ -18,6 +18,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
 
+/**
+ * Users list component.
+ */
 @Component({
   selector: 'safe-user-list',
   templateUrl: './user-list.component.html',
@@ -62,6 +65,16 @@ export class UserListComponent
 
   selection = new SelectionModel<User>(true, []);
 
+  /**
+   * Users list component
+   *
+   * @param apollo Apollo service
+   * @param applicationService Shared application service
+   * @param translate Translate service
+   * @param confirmService Shared confirm service
+   * @param router Angular router
+   * @param route Angular activated route
+   */
   constructor(
     private apollo: Apollo,
     private applicationService: SafeApplicationService,

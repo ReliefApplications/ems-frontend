@@ -11,6 +11,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { SafeButtonModule } from '../../../../components/ui/button/button.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
+/**
+ * Users list module.
+ */
 @NgModule({
   declarations: [UserListComponent],
   imports: [
