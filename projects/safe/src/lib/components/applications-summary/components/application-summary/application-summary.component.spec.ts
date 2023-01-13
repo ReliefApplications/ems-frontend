@@ -35,7 +35,6 @@ describe('SafeApplicationSummaryComponent', () => {
     component.application = {
       name: 'Dummy Application',
       createdAt: new Date(),
-      usersCount: 250,
       status: undefined,
     };
     fixture.detectChanges();

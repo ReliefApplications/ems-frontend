@@ -1,4 +1,3 @@
-<h2>{{ 'common.user.few' | translate }}</h2>
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
@@ -30,8 +29,15 @@
       [columns]="['common.name', 'models.user.username']"
     >
     </safe-skeleton-table>
+    <safe-empty
+      class="py-3 px-0 bg-white"
+      *ngIf="empty"
+      [title]="'components.role.summary.users.empty' | translate"
+    >
+    </safe-empty>
   </div>
   <mat-paginator
+    *ngIf="!empty"
     [disabled]="loading || updating"
     [pageIndex]="pageInfo.pageIndex"
     [pageSize]="pageInfo.pageSize"

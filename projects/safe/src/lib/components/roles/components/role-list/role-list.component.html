@@ -33,10 +33,10 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" mat-table [dataSource]="roles" matSort>
+    <table *ngIf="!loading" mat-table [dataSource]="roles">
       <ng-container matColumnDef="title">
         <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+          <span class="headerTitle">
             {{ 'common.title' | translate }}
           </span>
         </th>
@@ -45,11 +45,13 @@
 
       <ng-container matColumnDef="usersCount">
         <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+          <span class="headerTitle">
             {{ 'common.user.few' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
+        <td mat-cell *matCellDef="let element">
+          {{ element.users?.totalCount }}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="actions" [stickyEnd]="true">

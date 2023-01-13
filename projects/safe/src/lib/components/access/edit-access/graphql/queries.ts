@@ -13,7 +13,6 @@ export const GET_ROLES = gql`
         id
         type
       }
-      usersCount
       channels {
         id
         title

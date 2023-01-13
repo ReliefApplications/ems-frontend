@@ -408,6 +408,11 @@
 				"placeholder": {
 					"description": "******"
 				}
+			},
+			"users": {
+				"auto": "******",
+				"empty": "******",
+				"manual": "******"
 			}
 		},
 		"applications": {
@@ -794,7 +799,12 @@
 				"noForms": "******",
 				"noSteps": "******",
 				"removeFilter": "******",
-				"title": "******"
+				"title": "******",
+				"users": {
+					"auto": "******",
+					"empty": "******",
+					"manual": "******"
+				}
 			},
 			"tooltip": {
 				"allowFieldAccessibility": "****** {{field}}",
