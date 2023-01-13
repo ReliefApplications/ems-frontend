@@ -184,50 +184,6 @@ export interface AddRoleToUsersMutationResponse {
   addRoleToUsers: User[];
 }
 
-// === EDIT USER ===
-
-/** Graphql request for editing roles of a user by its id */
-export const EDIT_USER = gql`
-  mutation editUser(
-    $id: ID!
-    $roles: [ID]!
-    $application: ID
-    $positionAttributes: [PositionAttributeInputType]
-  ) {
-    editUser(
-      id: $id
-      roles: $roles
-      application: $application
-      positionAttributes: $positionAttributes
-    ) {
-      id
-      username
-      name
-      roles {
-        id
-        title
-        application {
-          id
-        }
-      }
-      positionAttributes {
-        value
-        category {
-          id
-          title
-        }
-      }
-      oid
-    }
-  }
-`;
-
-/** Model for EditUserMutationResponse object */
-export interface EditUserMutationResponse {
-  loading: boolean;
-  editUser: User;
-}
-
 // === DELETE USER FROM APPLICATION ===
 
 /** Graphql request for removing multiple users from an application  */
@@ -248,7 +204,6 @@ export const DELETE_USERS_FROM_APPLICATION = gql`
 
 /** Model for DeleteUsersFromApplicationMutationResponse object */
 export interface DeleteUsersFromApplicationMutationResponse {
-  loading: boolean;
   deleteUsersFromApplication: User[];
 }
 

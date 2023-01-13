@@ -408,6 +408,11 @@
 				"placeholder": {
 					"description": "Veuillez entrer une description pour l'application."
 				}
+			},
+			"users": {
+				"auto": "Attribution automatique",
+				"empty": "Aucun utilisateur détecté",
+				"manual": "Attribution manuelle"
 			}
 		},
 		"applications": {
@@ -794,7 +799,12 @@
 				"noForms": "Aucun formulaire détecté",
 				"noSteps": "Aucune étape détectée",
 				"removeFilter": "Supprimer le filtre",
-				"title": "Résumé"
+				"title": "Résumé",
+				"users": {
+					"auto": "Attribution automatique",
+					"empty": "Aucun utilisateur détecté",
+					"manual": "Attribution manuelle"
+				}
 			},
 			"tooltip": {
 				"allowFieldAccessibility": "Autoriser ce rôle à voir le champ {{field}}",

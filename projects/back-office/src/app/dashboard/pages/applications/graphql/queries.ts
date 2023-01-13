@@ -42,7 +42,9 @@ export const GET_APPLICATIONS = gql`
           canSee
           canUpdate
           canDelete
-          usersCount
+          users {
+            totalCount
+          }
         }
         cursor
       }

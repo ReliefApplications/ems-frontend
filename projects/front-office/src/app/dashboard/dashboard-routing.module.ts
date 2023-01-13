@@ -129,8 +129,8 @@ export const routes = [
                   {
                     path: '',
                     loadChildren: () =>
-                      import('./pages/users/users.module').then(
-                        (m) => m.UsersModule
+                      import('@safe/module').then(
+                        (m) => m.SafeApplicationUsersViewModule
                       ),
                     // canActivate: [SafePermissionGuard]
                   },

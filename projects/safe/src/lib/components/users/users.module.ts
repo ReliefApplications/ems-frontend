@@ -11,7 +11,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
-import { MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
@@ -39,7 +38,6 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     MatIconModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatSortModule,
     MatChipsModule,
     MatRippleModule,
     MatCheckboxModule,

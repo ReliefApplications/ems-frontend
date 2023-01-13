@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { UsersComponent } from './users.component';
+import { SafeApplicationUsersComponent } from './application-users.component';
 
 /** List of routes of application users module */
 const routes: Routes = [
   {
     path: '',
-    component: UsersComponent,
+    component: SafeApplicationUsersComponent,
   },
 ];
 
@@ -17,4 +17,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class UsersRoutingModule {}
+export class SafeApplicationUsersRoutingModule {}

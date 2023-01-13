@@ -39,7 +39,9 @@ export const GET_APPLICATION_BY_ID = gql`
           id
           type
         }
-        usersCount
+        users {
+          totalCount
+        }
         channels {
           id
           title
@@ -59,23 +61,6 @@ export const GET_APPLICATION_BY_ID = gql`
         permissions {
           type
         }
-      }
-      users {
-        id
-        username
-        name
-        roles {
-          id
-          title
-        }
-        positionAttributes {
-          value
-          category {
-            id
-            title
-          }
-        }
-        oid
       }
       permissions {
         canSee {
