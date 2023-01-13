@@ -1,7 +1,15 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, UrlTree } from '@angular/router';
+import { Inject, Injectable } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+  UrlTree,
+} from '@angular/router';
+import { subject } from '@casl/ability';
 import { get } from 'lodash';
 import { Observable } from 'rxjs';
+import { SafeApplicationService } from '../services/application/application.service';
 import { AppAbility } from '../services/auth/auth.service';
 
 /**
@@ -15,9 +23,17 @@ export class SafePermissionGuard implements CanActivate {
   /**
    * Guard to prevent unauthorized users to see pages
    *
+   * @param environment environment
+   * @param router Angular router
    * @param ability user ability
+   * @param appService application service
    */
-  constructor(private ability: AppAbility) {}
+  constructor(
+    @Inject('environment') private environment: any,
+    private router: Router,
+    private ability: AppAbility,
+    private appService: SafeApplicationService
+  ) {}
 
   /**
    * Executed anytime a route is called, in order to check user permissions.
@@ -26,20 +42,57 @@ export class SafePermissionGuard implements CanActivate {
    * GraphQL should prevent that issue.
    *
    * @param next activated route snapshot
+   * @param state router state snapshot
    * @returns A boolean indicating if the user has permission
    */
   canActivate(
-    next: ActivatedRouteSnapshot
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
   ):
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
     const permission = get(next, 'data.permission', null);
-    if (permission && permission.action && permission.subject) {
-      return this.ability.can(permission.action, permission.subject);
-    } else {
-      return true;
+
+    // If permission is not defined in data object, allow access
+    if (!permission || !permission.action || !permission.subject) return true;
+
+    const hasGlobalPermission = this.ability.can(
+      permission.action,
+      permission.subject
+    );
+
+    // If the user has global permission, allow access
+    if (hasGlobalPermission) return true;
+
+    // Check if the user is in an application
+    const appId =
+      this.environment.module === 'frontoffice'
+        ? state.url.split('/')[1]
+        : null;
+
+    // If the user is navigating in an application, returns
+    // a promise that will resolve when the app is loaded (and the ability extended)
+    if (appId) {
+      this.appService.loadApplication(appId);
+      return new Promise((resolve) => {
+        const sub = this.appService.application$.subscribe((app) => {
+          if (!app?.id) return;
+          sub.unsubscribe();
+          const hasPermission = this.ability.can(
+            permission.action,
+            subject(permission.subject, {
+              application: app.id,
+            })
+          );
+          resolve(hasPermission ? true : this.router.parseUrl('/'));
+        });
+      });
     }
+
+    // If not in app, and no global permission, deny access
+    // and redirect to the root route
+    return this.router.parseUrl('/');
   }
 }

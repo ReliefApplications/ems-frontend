@@ -12,8 +12,14 @@ import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { filter, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { Ability, AbilityBuilder, AbilityClass } from '@casl/ability';
+import {
+  Ability,
+  AbilityBuilder,
+  AbilityClass,
+  ForcedSubject,
+} from '@casl/ability';
 import { get } from 'lodash';
+import { Application } from '../../models/application.model';
 
 /** Defining the interface for the account object. */
 export interface Account {
@@ -42,7 +48,12 @@ type Subjects =
   | 'Group'
   | 'Form';
 
-export type AppAbility = Ability<[Actions, Subjects]>;
+export type AppAbility = Ability<
+  [Actions, Subjects | ForcedSubject<Subjects>],
+  { application: string }
+>;
+
+/** Application AppAbility */
 export const AppAbility = Ability as AbilityClass<AppAbility>;
 
 /**
@@ -86,7 +97,7 @@ export class SafeAuthService {
    *
    * @param environment Environment file where front and back office urls are specified
    * @param apollo Apollo client
-   * @param oauthService OAuth authentification service
+   * @param oauthService OAuth authentication service
    * @param router Angular Router service
    * @param ability CASL ability
    */
@@ -95,7 +106,7 @@ export class SafeAuthService {
     private apollo: Apollo,
     private oauthService: OAuthService,
     private router: Router,
-    private ability: Ability
+    private ability: AppAbility
   ) {
     this.environment = environment;
     this.oauthService.events.subscribe(() => {
@@ -261,15 +272,15 @@ export class SafeAuthService {
    *
    * @param user active user
    */
-  private updateAbility(user: any) {
+  private updateAbility(user: User | null) {
+    if (!user) return;
+
     const { can, rules } = new AbilityBuilder(AppAbility);
     const permissions: Permission[] = get(user, 'permissions', []);
 
     const globalPermissions = permissions
       .filter((x) => x.global)
       .map((x) => x.type);
-
-    console.log(globalPermissions);
 
     // === Application ===
     if (globalPermissions.includes('can_see_applications')) {
@@ -351,7 +362,71 @@ export class SafeAuthService {
       );
     }
 
-    console.log(rules);
+    this.ability.update(rules);
+  }
+
+  /**
+   * Extend user ability on application
+   *
+   * @param app Application to extend ability on
+   */
+  public extendAbilityForApplication(app: Application) {
+    if (!app?.id) return;
+    const { can, cannot, rules } = new AbilityBuilder(AppAbility);
+
+    // Copy existing rules
+    rules.push(...this.ability.rules);
+
+    // Get user app permissions
+    const appRoles = app.userRoles || [];
+    const appPermissions = new Set<string>();
+    appRoles.forEach((role) => {
+      const rolePermissions = role.permissions?.map((x) => x.type) || [];
+      rolePermissions.forEach((x) => {
+        if (typeof x === 'string') appPermissions.add(x);
+      });
+    });
+
+    // === Role ===
+    if (this.ability.cannot('read', 'Role'))
+      cannot(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
+    if (appPermissions.has('can_see_roles')) {
+      can(['create', 'read', 'update', 'delete'], ['Role', 'Channel'], {
+        application: app.id,
+      });
+    }
+
+    // === User ===
+    if (this.ability.cannot('read', 'User'))
+      cannot(['create', 'read', 'update', 'delete'], ['User', 'Channel']);
+    if (appPermissions.has('can_see_users')) {
+      can(['create', 'read', 'update', 'delete'], 'User', {
+        application: app.id,
+      });
+    }
+
+    // === Template ===
+    cannot(['create', 'read', 'update', 'delete', 'manage'], 'Template');
+    if (appPermissions.has('can_manage_templates')) {
+      can(['create', 'read', 'update', 'delete', 'manage'], 'Template', {
+        application: app.id,
+      });
+    }
+
+    // === Distribution list ===
+    cannot(
+      ['create', 'read', 'update', 'delete', 'manage'],
+      'DistributionList'
+    );
+    if (appPermissions.has('can_manage_distribution_lists')) {
+      can(
+        ['create', 'read', 'update', 'delete', 'manage'],
+        'DistributionList',
+        {
+          application: app.id,
+        }
+      );
+    }
 
     this.ability.update(rules);
   }

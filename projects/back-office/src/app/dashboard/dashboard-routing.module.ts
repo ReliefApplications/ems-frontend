@@ -309,7 +309,12 @@ export const routes = [
               breadcrumb: {
                 key: 'common.user.few',
               },
+              permission: {
+                action: 'read',
+                subject: 'User',
+              },
             },
+            canActivate: [SafePermissionGuard],
           },
           {
             path: 'roles',
@@ -340,7 +345,12 @@ export const routes = [
               breadcrumb: {
                 key: 'common.role.few',
               },
+              permission: {
+                action: 'read',
+                subject: 'Role',
+              },
             },
+            canActivate: [SafePermissionGuard],
           },
           {
             path: 'apiconfigurations',
@@ -371,7 +381,12 @@ export const routes = [
               breadcrumb: {
                 key: 'common.apiConfiguration.few',
               },
+              permission: {
+                action: 'read',
+                subject: 'ApiConfiguration',
+              },
             },
+            canActivate: [SafePermissionGuard],
           },
           {
             path: 'pulljobs',
@@ -379,7 +394,13 @@ export const routes = [
               import('./pages/pull-jobs/pull-jobs.module').then(
                 (m) => m.PullJobsModule
               ),
-            // canActivate: [SafePermissionGuard]
+            data: {
+              permission: {
+                action: 'read',
+                subject: 'PullJob',
+              },
+            },
+            canActivate: [SafePermissionGuard],
           },
           {
             path: '**',

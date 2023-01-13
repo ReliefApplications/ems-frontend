@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
@@ -121,8 +122,12 @@ export class DashboardComponent
           this.title = application.name || '';
           this.appID = application.id || '';
           this.adminNavItems = [];
-          // TODO : complete with application rules
-          if (this.ability.can('read', 'User')) {
+          if (
+            this.ability.can(
+              'read',
+              subject('User', { application: application.id })
+            )
+          ) {
             // if can see users globally / can manage apps / can see users in app
             this.adminNavItems.push({
               name: this.translate.instant('common.user.few'),
@@ -130,7 +135,12 @@ export class DashboardComponent
               icon: 'supervisor_account',
             });
           }
-          if (this.ability.can('read', 'Role')) {
+          if (
+            this.ability.can(
+              'read',
+              subject('Role', { application: application.id })
+            )
+          ) {
             // if can see roles globally / can manage apps / can see roles in app
             this.adminNavItems.push({
               name: this.translate.instant('common.role.few'),
@@ -138,7 +148,12 @@ export class DashboardComponent
               icon: 'admin_panel_settings',
             });
           }
-          if (this.ability.can('manage', 'Template')) {
+          if (
+            this.ability.can(
+              'manage',
+              subject('Template', { application: application.id })
+            )
+          ) {
             // if can manage apps / can manage templates in app
             this.adminNavItems.push({
               name: this.translate.instant('common.template.few'),
@@ -146,7 +161,12 @@ export class DashboardComponent
               icon: 'description',
             });
           }
-          if (this.ability.can('manage', 'DistributionList')) {
+          if (
+            this.ability.can(
+              'manage',
+              subject('DistributionList', { application: application.id })
+            )
+          ) {
             // if can manage apps / can manage distribution lists in app
             this.adminNavItems.push({
               name: this.translate.instant('common.distributionList.few'),
