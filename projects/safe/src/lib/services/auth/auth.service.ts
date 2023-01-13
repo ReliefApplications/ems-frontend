@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Injectable, Inject } from '@angular/core';
-import { User } from '../../models/user.model';
+import { Permission, User } from '../../models/user.model';
 import { GetProfileQueryResponse, GET_PROFILE } from './graphql/queries';
 import {
   BehaviorSubject,
@@ -12,12 +12,49 @@ import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { filter, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import {
+  Ability,
+  AbilityBuilder,
+  AbilityClass,
+  ForcedSubject,
+} from '@casl/ability';
+import { get } from 'lodash';
+import { Application } from '../../models/application.model';
 
 /** Defining the interface for the account object. */
 export interface Account {
   name: string;
   username: string;
 }
+
+type Actions = 'create' | 'read' | 'update' | 'delete' | 'manage';
+
+type Subjects =
+  | 'ApiConfiguration'
+  | 'ReferenceData'
+  | 'Application'
+  | 'Channel'
+  | 'Dashboard'
+  | 'Page'
+  | 'Step'
+  | 'Workflow'
+  | 'Resource'
+  | 'User'
+  | 'Template'
+  | 'DistributionList'
+  | 'Record'
+  | 'Role'
+  | 'PullJob'
+  | 'Group'
+  | 'Form';
+
+export type AppAbility = Ability<
+  [Actions, Subjects | ForcedSubject<Subjects>],
+  { application: string }
+>;
+
+/** Application AppAbility */
+export const AppAbility = Ability as AbilityClass<AppAbility>;
 
 /**
  * Shared authentication service.
@@ -60,14 +97,16 @@ export class SafeAuthService {
    *
    * @param environment Environment file where front and back office urls are specified
    * @param apollo Apollo client
-   * @param oauthService OAuth authentification service
+   * @param oauthService OAuth authentication service
    * @param router Angular Router service
+   * @param ability CASL ability
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     private oauthService: OAuthService,
-    private router: Router
+    private router: Router,
+    private ability: AppAbility
   ) {
     this.environment = environment;
     this.oauthService.events.subscribe(() => {
@@ -96,6 +135,7 @@ export class SafeAuthService {
         localStorage.removeItem('redirectPath');
       });
     this.oauthService.setupAutomaticSilentRefresh();
+    this.user$.subscribe((user) => this.updateAbility(user));
   }
 
   /**
@@ -225,5 +265,175 @@ export class SafeAuthService {
    */
   public getAuthToken(): string | null {
     return localStorage.getItem('idtoken');
+  }
+
+  /**
+   * Update user ability, based on its permissions
+   *
+   * @param user active user
+   */
+  private updateAbility(user: User | null) {
+    if (!user) return;
+
+    const { can, rules } = new AbilityBuilder(AppAbility);
+    const permissions: Permission[] = get(user, 'permissions', []);
+
+    const globalPermissions = permissions
+      .filter((x) => x.global)
+      .map((x) => x.type);
+
+    // === Application ===
+    if (globalPermissions.includes('can_see_applications')) {
+      can('read', [
+        'Application',
+        'Channel',
+        'Dashboard',
+        'Page',
+        'Step',
+        'Workflow',
+      ]);
+    }
+    if (globalPermissions.includes('can_create_applications')) {
+      can('create', 'Application');
+    }
+    if (globalPermissions.includes('can_manage_applications')) {
+      can(
+        ['read', 'create', 'update', 'delete', 'manage'],
+        [
+          'Application',
+          'Dashboard',
+          'Channel',
+          'Page',
+          'Step',
+          'Workflow',
+          'Template',
+          'DistributionList',
+        ]
+      );
+    }
+
+    // === Form ===
+    if (globalPermissions.includes('can_see_forms')) {
+      can('read', ['Form', 'Record']);
+    }
+    if (globalPermissions.includes('can_create_forms')) {
+      can('create', 'Form');
+    }
+    if (globalPermissions.includes('can_manage_forms')) {
+      can(['create', 'read', 'update', 'delete', 'manage'], ['Form', 'Record']);
+      can('manage', 'Record');
+    }
+
+    // === Resource ===
+    if (globalPermissions.includes('can_read_resources')) {
+      can('read', ['Resource', 'Record']);
+    }
+    if (globalPermissions.includes('can_create_resources')) {
+      can('create', 'Resource');
+    }
+    if (globalPermissions.includes('can_manage_resources')) {
+      can(
+        ['create', 'read', 'update', 'delete', 'manage'],
+        ['Resource', 'Record']
+      );
+      can('manage', 'Record');
+    }
+
+    // === Role ===
+    if (globalPermissions.includes('can_see_roles')) {
+      can(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
+    }
+
+    // === Group ===
+    if (globalPermissions.includes('can_see_groups')) {
+      can(['create', 'read', 'update', 'delete'], 'Group');
+    }
+
+    // === User ===
+    if (globalPermissions.includes('can_see_users')) {
+      can(['create', 'read', 'update', 'delete'], 'User');
+    }
+
+    // === API Configuration / Pull Job ===
+    if (globalPermissions.includes('can_manage_api_configurations')) {
+      can(
+        ['create', 'read', 'update', 'delete'],
+        ['ApiConfiguration', 'PullJob', 'ReferenceData']
+      );
+    }
+
+    this.ability.update(rules);
+  }
+
+  /**
+   * Extend user ability on application
+   *
+   * @param app Application to extend ability on
+   */
+  public extendAbilityForApplication(app: Application) {
+    if (!app?.id) return;
+    const { can, rules } = new AbilityBuilder(AppAbility);
+
+    // Copy existing rules
+    rules.push(...this.ability.rules);
+
+    // Get user app permissions
+    const appRoles = app.userRoles || [];
+    const appPermissions = new Set<string>();
+    appRoles.forEach((role) => {
+      const rolePermissions = role.permissions?.map((x) => x.type) || [];
+      rolePermissions.forEach((x) => {
+        if (typeof x === 'string') appPermissions.add(x);
+      });
+    });
+
+    // === Role ===
+    // if (this.ability.cannot('read', 'Role'))
+    //   cannot(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
+    if (appPermissions.has('can_see_roles')) {
+      can(['create', 'read', 'update', 'delete'], ['Role', 'Channel'], {
+        application: app.id,
+      });
+    }
+
+    // === User ===
+    // if (this.ability.cannot('read', 'User'))
+    //   cannot(['create', 'read', 'update', 'delete'], ['User', 'Channel']);
+    if (appPermissions.has('can_see_users')) {
+      can(['create', 'read', 'update', 'delete'], 'User', {
+        application: app.id,
+      });
+    }
+
+    // === Template ===
+    // cannot(['create', 'read', 'update', 'delete', 'manage'], 'Template');
+    if (
+      appPermissions.has('can_manage_templates') ||
+      this.ability.can('manage', 'Application')
+    ) {
+      can(['create', 'read', 'update', 'delete', 'manage'], 'Template', {
+        application: app.id,
+      });
+    }
+
+    // === Distribution list ===
+    // cannot(
+    //   ['create', 'read', 'update', 'delete', 'manage'],
+    //   'DistributionList'
+    // );
+    if (
+      appPermissions.has('can_manage_distribution_lists') ||
+      this.ability.can('manage', 'Application')
+    ) {
+      can(
+        ['create', 'read', 'update', 'delete', 'manage'],
+        'DistributionList',
+        {
+          application: app.id,
+        }
+      );
+    }
+
+    this.ability.update(rules);
   }
 }

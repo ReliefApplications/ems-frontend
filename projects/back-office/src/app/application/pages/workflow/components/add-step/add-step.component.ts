@@ -6,7 +6,6 @@ import {
   ContentType,
   CONTENT_TYPES,
   Form,
-  Permissions,
   SafeAuthService,
   SafeSnackBarService,
   SafeUnsubscribeComponent,
@@ -18,7 +17,6 @@ import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from '../../graphql/queries';
 import { AddFormModalComponent } from '../../../../../components/add-form-modal/add-form-modal.component';
 import { MatSelect } from '@angular/material/select';
-import { takeUntil } from 'rxjs/operators';
 
 /** Default items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -52,9 +50,6 @@ export class AddStepComponent
   // === REACTIVE FORM ===
   public stepForm: FormGroup = new FormGroup({});
   public stage = 1;
-
-  // === PERMISSIONS ===
-  canCreateForm = false;
 
   /**
    * Add step page component
@@ -108,11 +103,6 @@ export class AddStepComponent
         contentControl.updateValueAndValidity();
       }
       this.onNext();
-    });
-    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.canCreateForm = this.authService.userHasClaim(
-        Permissions.canManageForms
-      );
     });
   }
 

@@ -17,7 +17,7 @@ export interface Application {
   pages?: Page[];
   roles?: Role[];
   users?: UserConnection;
-  autoAssignedUsers?: UserConnection;
+  userRoles?: Role[];
   status?: status;
   settings?: any;
   permissions?: any;

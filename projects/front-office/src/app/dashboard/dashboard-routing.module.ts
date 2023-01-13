@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { SafePermissionGuard } from '@safe/builder';
 import { AccessGuard } from '../guards/access.guard';
 import { DashboardComponent } from './dashboard.component';
 
@@ -66,7 +67,13 @@ export const routes = [
                   import('@safe/builder').then(
                     (m) => m.SafeApplicationTemplatesModule
                   ),
-                // canActivate: [WhoPermissionGuard]
+                canActivate: [SafePermissionGuard],
+                data: {
+                  permission: {
+                    action: 'manage',
+                    subject: 'Template',
+                  },
+                },
               },
               {
                 path: 'distribution-lists',
@@ -74,7 +81,13 @@ export const routes = [
                   import('@safe/builder').then(
                     (m) => m.SafeApplicationDistributionListsModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                canActivate: [SafePermissionGuard],
+                data: {
+                  permission: {
+                    action: 'manage',
+                    subject: 'DistributionList',
+                  },
+                },
               },
               {
                 path: 'roles',
@@ -101,9 +114,14 @@ export const routes = [
                     // canActivate: [SafePermissionGuard]
                   },
                 ],
+                canActivate: [SafePermissionGuard],
                 data: {
                   breadcrumb: {
                     key: 'common.role.few',
+                  },
+                  permission: {
+                    action: 'read',
+                    subject: 'Role',
                   },
                 },
               },
@@ -132,9 +150,14 @@ export const routes = [
                     // canActivate: [SafePermissionGuard]
                   },
                 ],
+                canActivate: [SafePermissionGuard],
                 data: {
                   breadcrumb: {
                     key: 'common.user.few',
+                  },
+                  permission: {
+                    action: 'read',
+                    subject: 'User',
                   },
                 },
               },

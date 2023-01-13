@@ -52,6 +52,13 @@ export const GET_APPLICATION_BY_ID = gql`
           name
         }
       }
+      userRoles {
+        id
+        title
+        permissions {
+          type
+        }
+      }
       permissions {
         canSee {
           id

@@ -182,6 +182,9 @@ export class SafeApplicationService {
         },
       })
       .subscribe((res) => {
+        // extend user abilities for application
+        if (res.data.application)
+          this.authService.extendAbilityForApplication(res.data.application);
         this.application.next(res.data.application);
         const application = this.application.getValue();
         if (res.data.application.locked) {

@@ -23,7 +23,7 @@
       category="secondary"
       variant="primary"
       (click)="onAdd()"
-      *ngIf="canAdd"
+      *ngIf="'create' | able: 'ReferenceData'"
     >
       {{ 'models.referenceData.add' | translate }}
     </safe-button>
