@@ -18,4 +18,4 @@ import { SafeTemplatesModule } from '../../components/templates/templates.module
   ],
   exports: [SafeApplicationTemplatesComponent],
 })
-export class SafeApplicationTemplatesModule {}
+export class SafeApplicationTemplatesViewModule {}

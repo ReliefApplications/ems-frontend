@@ -96,14 +96,14 @@ const routes: Routes = [
             path: 'templates',
             loadChildren: () =>
               import('@safe/builder').then(
-                (m) => m.SafeApplicationTemplatesModule
+                (m) => m.SafeApplicationTemplatesViewModule
               ),
           },
           {
             path: 'distribution-lists',
             loadChildren: () =>
               import('@safe/builder').then(
-                (m) => m.SafeApplicationDistributionListsModule
+                (m) => m.SafeApplicationDistributionListsViewModule
               ),
             // canActivate: [SafePermissionGuard]
           },

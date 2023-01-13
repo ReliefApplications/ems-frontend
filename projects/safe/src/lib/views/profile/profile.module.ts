@@ -10,6 +10,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
 import { SafeButtonModule } from '../../components/ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeProfileRoutingModule } from './profile-routing.module';
 
 /**
  * Shared profile page module.
@@ -18,6 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
   declarations: [SafeProfileComponent],
   imports: [
     CommonModule,
+    SafeProfileRoutingModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -31,4 +33,4 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
   exports: [SafeProfileComponent],
 })
-export class SafeProfileModule {}
+export class SafeProfileViewModule {}

@@ -54,9 +54,7 @@ export const routes = [
           {
             path: 'profile',
             loadChildren: () =>
-              import('./pages/profile/profile.module').then(
-                (m) => m.ProfileModule
-              ),
+              import('@safe/builder').then((m) => m.SafeProfileViewModule),
           },
           {
             path: 'settings',
@@ -65,7 +63,7 @@ export const routes = [
                 path: 'templates',
                 loadChildren: () =>
                   import('@safe/builder').then(
-                    (m) => m.SafeApplicationTemplatesModule
+                    (m) => m.SafeApplicationTemplatesViewModule
                   ),
                 canActivate: [SafePermissionGuard],
                 data: {
@@ -79,7 +77,7 @@ export const routes = [
                 path: 'distribution-lists',
                 loadChildren: () =>
                   import('@safe/builder').then(
-                    (m) => m.SafeApplicationDistributionListsModule
+                    (m) => m.SafeApplicationDistributionListsViewModule
                   ),
                 canActivate: [SafePermissionGuard],
                 data: {

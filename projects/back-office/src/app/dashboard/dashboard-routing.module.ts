@@ -22,7 +22,7 @@ export const routes = [
       {
         path: 'profile',
         loadChildren: () =>
-          import('./pages/profile/profile.module').then((m) => m.ProfileModule),
+          import('@safe/builder').then((m) => m.SafeProfileViewModule),
       },
       {
         path: 'referencedata',

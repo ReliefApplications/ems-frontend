@@ -107,10 +107,8 @@ export * from './lib/components/ui/aggregation-builder/public-api';
 export * from './lib/components/ui/tagbox/public-api';
 export * from './lib/components/ui/icon/public-api';
 
-// === PAGES ===
-export * from './lib/pages/profile/public-api';
-export * from './lib/pages/application-templates/public-api';
-export * from './lib/pages/application-distribution-lists/public-api';
+// === VIEWS ===
+export * from './lib/views/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';

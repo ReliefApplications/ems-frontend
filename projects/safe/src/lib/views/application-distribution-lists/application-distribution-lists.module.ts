@@ -18,4 +18,4 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   ],
   exports: [SafeApplicationDistributionListsComponent],
 })
-export class SafeApplicationDistributionListsModule {}
+export class SafeApplicationDistributionListsViewModule {}
