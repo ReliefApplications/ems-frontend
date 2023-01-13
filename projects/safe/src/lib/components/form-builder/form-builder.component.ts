@@ -477,6 +477,19 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           )
         );
       }
+
+      // Error if the user selected Display As Grid without adding an available field.
+      if (element.displayAsGrid && !element.gridFieldsSettings) {
+        throw new Error(
+          this.translate.instant(
+            'components.formBuilder.errors.missingGridField',
+            {
+              question: element.name,
+              page: page.name,
+            }
+          )
+        );
+      }
     }
     // Check that at least an application is selected in the properties of users and owner question
     if (['users', 'owner'].includes(element.getType())) {
