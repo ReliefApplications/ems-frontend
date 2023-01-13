@@ -372,7 +372,7 @@ export class SafeAuthService {
    */
   public extendAbilityForApplication(app: Application) {
     if (!app?.id) return;
-    const { can, cannot, rules } = new AbilityBuilder(AppAbility);
+    const { can, rules } = new AbilityBuilder(AppAbility);
 
     // Copy existing rules
     rules.push(...this.ability.rules);
@@ -388,8 +388,8 @@ export class SafeAuthService {
     });
 
     // === Role ===
-    if (this.ability.cannot('read', 'Role'))
-      cannot(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
+    // if (this.ability.cannot('read', 'Role'))
+    //   cannot(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
     if (appPermissions.has('can_see_roles')) {
       can(['create', 'read', 'update', 'delete'], ['Role', 'Channel'], {
         application: app.id,
@@ -397,8 +397,8 @@ export class SafeAuthService {
     }
 
     // === User ===
-    if (this.ability.cannot('read', 'User'))
-      cannot(['create', 'read', 'update', 'delete'], ['User', 'Channel']);
+    // if (this.ability.cannot('read', 'User'))
+    //   cannot(['create', 'read', 'update', 'delete'], ['User', 'Channel']);
     if (appPermissions.has('can_see_users')) {
       can(['create', 'read', 'update', 'delete'], 'User', {
         application: app.id,
@@ -406,19 +406,25 @@ export class SafeAuthService {
     }
 
     // === Template ===
-    cannot(['create', 'read', 'update', 'delete', 'manage'], 'Template');
-    if (appPermissions.has('can_manage_templates')) {
+    // cannot(['create', 'read', 'update', 'delete', 'manage'], 'Template');
+    if (
+      appPermissions.has('can_manage_templates') ||
+      this.ability.can('manage', 'Application')
+    ) {
       can(['create', 'read', 'update', 'delete', 'manage'], 'Template', {
         application: app.id,
       });
     }
 
     // === Distribution list ===
-    cannot(
-      ['create', 'read', 'update', 'delete', 'manage'],
-      'DistributionList'
-    );
-    if (appPermissions.has('can_manage_distribution_lists')) {
+    // cannot(
+    //   ['create', 'read', 'update', 'delete', 'manage'],
+    //   'DistributionList'
+    // );
+    if (
+      appPermissions.has('can_manage_distribution_lists') ||
+      this.ability.can('manage', 'Application')
+    ) {
       can(
         ['create', 'read', 'update', 'delete', 'manage'],
         'DistributionList',
