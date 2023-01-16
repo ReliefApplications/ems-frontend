@@ -1,92 +1,7 @@
-<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
-  <!-- Filters -->
-  <div class="flex flex-col gap-4">
-    <!-- Default filter -->
-    <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
-      <!-- Search text filter -->
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <mat-icon matPrefix>search</mat-icon>
-        <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
-        <input
-          matInput
-          [ngModel]="searchText"
-          (keyup)="applyFilter('', $event)"
-          type="search"
-        />
-      </mat-form-field>
-      <!-- Toggle advanced filters -->
-      <safe-button
-        class="max-sm:!w-auto"
-        icon="filter_list"
-        category="tertiary"
-        variant="primary"
-        (click)="showFilters = !showFilters"
-      >
-        {{
-          showFilters
-            ? ('common.filter.hide' | translate)
-            : ('common.filter.show' | translate)
-        }}
-      </safe-button>
-    </div>
-    <!-- Advanced filters -->
-    <div
-      class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
-      *ngIf="showFilters"
-    >
-      <!-- Title filter -->
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <mat-label>{{ 'common.title' | translate }}</mat-label>
-        <mat-select
-          [ngModel]="roleFilter"
-          (selectionChange)="applyFilter('role', $event)"
-        >
-          <mat-option>-</mat-option>
-          <mat-option [value]="role.title" *ngFor="let role of roles">
-            {{ role.title }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <!-- Clear filters -->
-      <safe-button
-        class="max-sm:!w-auto"
-        variant="danger"
-        (click)="clearAllFilters()"
-        >{{ 'common.filter.clear' | translate }}</safe-button
-      >
-    </div>
-  </div>
-  <!-- Actions -->
-  <div class="flex gap-2 items-center">
-    <safe-button
-      icon="file_download"
-      category="secondary"
-      variant="primary"
-      [matMenuTriggerFor]="menu"
-    >
-      {{
-        'common.exportObject'
-          | translate: { name: 'common.user.few' | translate }
-      }}
-    </safe-button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onExport('csv')">.csv</button>
-      <button mat-menu-item (click)="onExport('xlsx')">.xlsx</button>
-    </mat-menu>
-    <safe-button
-      icon="send"
-      category="secondary"
-      variant="primary"
-      (click)="onInvite()"
-    >
-      {{ 'components.users.invite.confirm' | translate }}
-    </safe-button>
-  </div>
-</div>
 <!-- Actions when selected items -->
 <div
-  class="flex gap-2 items-center mb-2 justify-end"
   *ngIf="selection.selected.length > 0"
+  class="flex gap-2 items-center mb-2 justify-end"
 >
   <safe-button
     icon="delete"
@@ -103,9 +18,9 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" mat-table [dataSource]="users">
+    <table *ngIf="!loading" mat-table [dataSource]="users" matSort>
       <!-- Checkbox Column -->
-      <ng-container matColumnDef="select">
+      <ng-container *ngIf="!autoAssigned" matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef>
           <mat-checkbox
             (change)="$event ? masterToggle() : null"
@@ -127,7 +42,7 @@
       </ng-container>
       <ng-container matColumnDef="username">
         <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle">
+          <span class="headerTitle" mat-sort-header>
             {{ 'models.user.username' | translate }}
           </span>
         </th>
@@ -136,7 +51,7 @@
 
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle">
+          <span class="headerTitle" mat-sort-header>
             {{ 'common.name' | translate }}
           </span>
         </th>
@@ -145,7 +60,7 @@
 
       <ng-container matColumnDef="roles">
         <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle">
+          <span class="headerTitle" mat-sort-header>
             {{ 'common.role.few' | translate }}
           </span>
         </th>
@@ -154,9 +69,22 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="attributes">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header>
+            {{ 'common.positionAttribute.few' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span *ngFor="let attribute of element.positionAttributes">
+            {{ attribute.value }},
+          </span>
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="oid">
         <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle">
+          <span class="headerTitle" mat-sort-header>
             {{ 'common.id' | translate }}
           </span>
         </th>
@@ -164,7 +92,7 @@
       </ng-container>
 
       <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef></th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
         <td mat-cell *matCellDef="let element">
           <safe-button
             [isIcon]="true"
@@ -174,7 +102,7 @@
           >
           </safe-button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="onDelete([element])">
+            <button mat-menu-item>
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>
@@ -202,5 +130,21 @@
       [checkbox]="true"
     >
     </safe-skeleton-table>
+    <safe-empty
+      class="py-3 px-0 bg-white"
+      *ngIf="empty"
+      [title]="'components.application.users.empty' | translate"
+    >
+    </safe-empty>
+    <mat-paginator
+      *ngIf="!empty"
+      [disabled]="loading || updating"
+      [pageIndex]="pageInfo.pageIndex"
+      [pageSize]="pageInfo.pageSize"
+      [pageSizeOptions]="[10, 25, 50]"
+      [length]="pageInfo.length"
+      (page)="onPage($event)"
+    >
+    </mat-paginator>
   </div>
 </div>
