@@ -12,6 +12,5 @@ export const DELETE_FORM = gql`
 
 /** Delete form gql mutation response interface */
 export interface DeleteFormMutationResponse {
-  loading: boolean;
   deleteForm: Form;
 }

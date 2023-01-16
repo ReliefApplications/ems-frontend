@@ -26,6 +26,5 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
 
 /** Get reference data query response interface */
 export interface GetReferenceDataByIdQueryResponse {
-  loading: boolean;
   referenceData: ReferenceData;
 }

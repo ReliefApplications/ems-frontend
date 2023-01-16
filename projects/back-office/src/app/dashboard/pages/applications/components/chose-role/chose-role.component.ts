@@ -52,7 +52,7 @@ export class ChoseRoleComponent implements OnInit {
     });
 
     this.rolesQuery.valueChanges.subscribe((res) => {
-      this.loading = res.data.loading;
+      this.loading = res.loading;
     });
     this.roleForm = this.formBuilder.group({
       role: [null, Validators.required],

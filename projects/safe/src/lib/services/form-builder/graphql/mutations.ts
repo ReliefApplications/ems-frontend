@@ -24,6 +24,5 @@ export const EDIT_RECORD = gql`
 
 /** Model for EditRecordMutationResponse object */
 export interface EditRecordMutationResponse {
-  loading: boolean;
   editRecord: Record;
 }

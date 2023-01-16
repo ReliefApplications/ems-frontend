@@ -19,7 +19,6 @@ export const ADD_FORM = gql`
 
 /** Add form gql mutation response interface */
 export interface AddFormMutationResponse {
-  loading: boolean;
   addForm: Form;
 }
 
@@ -35,6 +34,5 @@ export const DELETE_RESOURCE = gql`
 
 /** Delete resource gql mutation response interface */
 export interface DeleteResourceMutationResponse {
-  loading: boolean;
   deletedResource: Resource;
 }

@@ -44,7 +44,6 @@ export const GET_PULL_JOBS = gql`
 
 /** Model for GetPullJobsQueryResponse object */
 export interface GetPullJobsQueryResponse {
-  loading: boolean;
   pullJobs: {
     edges: {
       node: PullJob;
@@ -87,7 +86,6 @@ export const GET_ROUTING_KEYS = gql`
 
 /** Model for GetRoutingKeysQueryResponse object */
 export interface GetRoutingKeysQueryResponse {
-  loading: boolean;
   applications: {
     edges: {
       node: Application;
@@ -124,7 +122,6 @@ export const GET_FORM_NAMES = gql`
 
 /** Model for GetFormsQueryResposne object */
 export interface GetFormsQueryResponse {
-  loading: boolean;
   forms: {
     edges: {
       node: Form;
@@ -176,7 +173,6 @@ export const GET_SHORT_FORM_BY_ID = gql`
 
 /** Model for getFormByIdQueryResponse object */
 export interface GetFormByIdQueryResponse {
-  loading: boolean;
   form: Form;
 }
 
@@ -226,7 +222,6 @@ export const GET_API_CONFIGURATIONS = gql`
 
 /** Model for GetApiConfigurationQueryResponse object */
 export interface GetApiConfigurationsQueryResponse {
-  loading: boolean;
   apiConfigurations: {
     edges: {
       node: ApiConfiguration;

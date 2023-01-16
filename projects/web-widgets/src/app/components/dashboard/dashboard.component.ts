@@ -45,14 +45,16 @@ export class DashboardComponent implements OnInit, OnChanges {
           id: this.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data.dashboard) {
-          this.dashboard = res.data.dashboard;
-          this.tiles = res.data.dashboard.structure
-            ? res.data.dashboard.structure
-            : [];
-          this.loading = res.loading;
-        }
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data.dashboard) {
+            this.dashboard = data.dashboard;
+            this.tiles = data.dashboard.structure
+              ? data.dashboard.structure
+              : [];
+            this.loading = loading;
+          }
+        },
       });
   }
 

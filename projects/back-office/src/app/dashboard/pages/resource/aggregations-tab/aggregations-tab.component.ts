@@ -156,7 +156,6 @@ export class AggregationsTabComponent implements OnInit {
               totalCount: fetchMoreResult.resource.aggregations.totalCount,
             },
           },
-          loading: fetchMoreResult.loading,
         };
       },
     });
