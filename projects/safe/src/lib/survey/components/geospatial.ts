@@ -1,13 +1,14 @@
 import { QuestionText } from 'survey-angular';
-// Leaflet
-declare let L: any;
+import { SafeGeospatialMapComponent } from '../../components/geospatial-map/geospatial-map.component';
+import { DomService } from '../../services/dom/dom.service';
 
 /**
  * Inits the geospatial component.
  *
  * @param Survey Survey library.
+ * @param domService DOM service.
  */
-export const init = (Survey: any): void => {
+export const init = (Survey: any, domService: DomService): void => {
   const component = {
     name: 'geospatial',
     title: 'Geospatial',
@@ -21,81 +22,19 @@ export const init = (Survey: any): void => {
       const element = el.getElementsByTagName('input')[0].parentElement;
       if (element) element.style.display = 'none';
 
-      // creates the map container
-      const div = document.createElement('div');
-      div.style.height = '500px';
-      el.appendChild(div);
-
-      // creates layer
-      const layer = L.tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        }
+      // render the SafeGeospatialMapComponent
+      const map = domService.appendComponentToBody(
+        SafeGeospatialMapComponent,
+        el
       );
+      const instance: SafeGeospatialMapComponent = map.instance;
 
-      // creates map, adds it to the container
-      // and created layer to it
-      const map = L.map(div, {
-        center: [0, 0],
-        zoom: 2,
-        pmIgnore: false,
-      }).addLayer(layer);
+      // inits the map with the value of the question
+      if (question.value) instance.data = question.value;
 
-      const getMapFeatures = () => ({
-        type: 'FeatureCollection',
-        features: map.pm.getGeomanLayers().map((l: any) => {
-          const json = l.toGeoJSON();
-          if (l instanceof L.Circle) {
-            json.properties.radius = l.getRadius();
-          }
-          return json;
-        }),
-      });
-
-      // init layers from question value
-      if (question.value) {
-        L.geoJSON(question.value, {
-          // Circles are not supported by geojson
-          // We abstract them as markers with a radius property
-          pointToLayer: (feature: any, latlng: any) => {
-            if (feature.properties.radius) {
-              return new L.Circle(latlng, feature.properties.radius);
-            } else {
-              return new L.Marker(latlng);
-            }
-          },
-        })
-          .addTo(map)
-          .eachLayer((l: any) => {
-            l.on('pm:change', () => {
-              question.value = getMapFeatures();
-            });
-          });
-      }
-
-      // add geoman tools
-      map.pm.addControls({
-        position: 'topright',
-        drawText: false,
-        drawCircleMarker: false,
-      });
-
-      // updates question value on adding new shape
-      map.on('pm:create', (l: any) => {
-        question.value = getMapFeatures();
-        console.log(l);
-
-        // subscribe to changes on the created layers
-        l.layer.on('pm:change', () => {
-          question.value = getMapFeatures();
-        });
-      });
-
-      // updates question value on removing shapes
-      map.on('pm:remove', () => {
-        question.value = getMapFeatures();
+      // updates the question value when the map changes
+      instance.mapChange.subscribe((res) => {
+        question.value = res;
       });
     },
   };

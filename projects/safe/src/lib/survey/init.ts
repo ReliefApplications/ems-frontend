@@ -55,7 +55,7 @@ export const initCustomSurvey = (
   ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
   OwnerComponent.init(Survey, domService, apollo);
   UsersComponent.init(Survey, domService, apollo);
-  GeospatialComponent.init(Survey);
+  GeospatialComponent.init(Survey, domService);
   // load global properties
   ReferenceDataProperties.init(Survey, domService, referenceDataService);
   TooltipProperty.init(Survey);
