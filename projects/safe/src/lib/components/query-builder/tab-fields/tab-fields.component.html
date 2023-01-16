@@ -1,15 +1,19 @@
+<!-- General info about field selection -->
 <safe-alert class="mb-4">
   <safe-icon icon="info"></safe-icon>
   {{ 'components.queryBuilder.hint.fields' | translate }}
 </safe-alert>
+<!-- Field selection -->
 <div
   cdkDropListGroup
-  class="flex overflow-auto mb-10"
+  class="flex overflow-auto mb-10 gap-6"
   [ngClass]="{ hidden: fieldForm }"
 >
-  <div class="field-container" *ngIf="!fieldForm">
+  <!-- Available fields -->
+  <div class="flex-1 min-w-[400px]" *ngIf="!fieldForm">
     <h2>{{ 'components.queryBuilder.fields.available' | translate }}</h2>
 
+    <!-- Search through fields -->
     <mat-form-field appearance="outline" class="!w-full">
       <mat-label>{{
         'components.queryBuilder.fields.search' | translate
@@ -23,7 +27,8 @@
       ></safe-button>
     </mat-form-field>
 
-    <div class="field-list-wrapper">
+    <!-- List of fields -->
+    <div class="overflow-auto max-h-[400px]">
       <div
         cdkDropList
         [cdkDropListData]="availableFields"
@@ -50,9 +55,11 @@
     </div>
   </div>
 
-  <div class="field-container" *ngIf="!fieldForm">
+  <!-- Selected fields -->
+  <div class="flex-1 min-w-[400px]" *ngIf="!fieldForm">
     <h2>{{ 'components.queryBuilder.fields.selected' | translate }}</h2>
 
+    <!-- Search through fields -->
     <mat-form-field appearance="outline" class="!w-full">
       <mat-label>{{
         'components.queryBuilder.fields.search' | translate
@@ -66,7 +73,8 @@
       ></safe-button>
     </mat-form-field>
 
-    <div class="field-list-wrapper">
+    <!-- List of fields -->
+    <div class="overflow-auto max-h-[400px]">
       <div
         cdkDropList
         [cdkDropListData]="selectedFields"
@@ -105,7 +113,7 @@
               >
               </safe-button>
             </div>
-            <div *ngIf="field.type">
+            <div *ngIf="field.type" class="flex items-center">
               <span
                 class="text-gray-500"
                 *ngIf="field.type.kind !== 'SCALAR'"
@@ -130,7 +138,8 @@
     </div>
   </div>
 
-  <div class="field-container" *ngIf="fieldForm">
+  <!-- Edited field -->
+  <div class="flex-1" *ngIf="fieldForm">
     <ng-container *ngIf="fieldForm.value.kind === 'SCALAR'">
       <form
         [formGroup]="fieldForm"

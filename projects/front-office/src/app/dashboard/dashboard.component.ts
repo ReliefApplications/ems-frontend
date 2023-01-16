@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
@@ -9,9 +10,9 @@ import {
   SafeSnackBarService,
   SafeApplicationService,
   Permission,
-  Permissions,
   ContentType,
   SafeUnsubscribeComponent,
+  AppAbility,
 } from '@safe/builder';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
@@ -56,6 +57,7 @@ export class DashboardComponent
    * @param snackBar Shared snackbar service
    * @param router Angular router
    * @param translate Angular translate service
+   * @param ability user ability
    */
   constructor(
     private authService: SafeAuthService,
@@ -63,7 +65,8 @@ export class DashboardComponent
     public route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private ability: AppAbility
   ) {
     super();
   }
@@ -120,17 +123,12 @@ export class DashboardComponent
           this.appID = application.id || '';
           this.adminNavItems = [];
           if (
-            this.permissions.some(
-              (x) =>
-                (x.type === Permissions.canSeeUsers &&
-                  this.roles.some(
-                    (y) =>
-                      y.application?.id === application.id &&
-                      y.permissions?.some((perm) => perm.id === x.id)
-                  )) ||
-                (x.type === Permissions.canManageApplications && x.global)
+            this.ability.can(
+              'read',
+              subject('User', { application: application.id })
             )
           ) {
+            // if can see users globally / can manage apps / can see users in app
             this.adminNavItems.push({
               name: this.translate.instant('common.user.few'),
               path: `./${this.appID}/settings/users`,
@@ -138,17 +136,12 @@ export class DashboardComponent
             });
           }
           if (
-            this.permissions.some(
-              (x) =>
-                (x.type === Permissions.canSeeRoles &&
-                  this.roles.some(
-                    (y) =>
-                      y.application?.id === application.id &&
-                      y.permissions?.some((perm) => perm.id === x.id)
-                  )) ||
-                (x.type === Permissions.canManageApplications && x.global)
+            this.ability.can(
+              'read',
+              subject('Role', { application: application.id })
             )
           ) {
+            // if can see roles globally / can manage apps / can see roles in app
             this.adminNavItems.push({
               name: this.translate.instant('common.role.few'),
               path: `./${this.appID}/settings/roles`,
@@ -156,17 +149,12 @@ export class DashboardComponent
             });
           }
           if (
-            this.permissions.some(
-              (x) =>
-                (x.type === Permissions.canManageTemplates &&
-                  this.roles.some(
-                    (y) =>
-                      y.application?.id === application.id &&
-                      y.permissions?.some((perm) => perm.id === x.id)
-                  )) ||
-                (x.type === Permissions.canManageApplications && x.global)
+            this.ability.can(
+              'manage',
+              subject('Template', { application: application.id })
             )
           ) {
+            // if can manage apps / can manage templates in app
             this.adminNavItems.push({
               name: this.translate.instant('common.template.few'),
               path: `./${this.appID}/settings/templates`,
@@ -174,17 +162,12 @@ export class DashboardComponent
             });
           }
           if (
-            this.permissions.some(
-              (x) =>
-                (x.type === Permissions.canManageDistributionLists &&
-                  this.roles.some(
-                    (y) =>
-                      y.application?.id === application.id &&
-                      y.permissions?.some((perm) => perm.id === x.id)
-                  )) ||
-                (x.type === Permissions.canManageApplications && x.global)
+            this.ability.can(
+              'manage',
+              subject('DistributionList', { application: application.id })
             )
           ) {
+            // if can manage apps / can manage distribution lists in app
             this.adminNavItems.push({
               name: this.translate.instant('common.distributionList.few'),
               path: `./${this.appID}/settings/distribution-lists`,
@@ -223,24 +206,24 @@ export class DashboardComponent
                 icon: 'mail',
               });
             }
-            if (
-              this.permissions.some(
-                (x) =>
-                  (x.type === Permissions.canManageCustomNotifications &&
-                    this.roles.some(
-                      (y) =>
-                        y.application?.id === application.id &&
-                        y.permissions?.some((perm) => perm.id === x.id)
-                    )) ||
-                  (x.type === Permissions.canManageApplications && x.global)
-              )
-            ) {
-              this.adminNavItems.push({
-                name: this.translate.instant('common.customNotification.few'),
-                path: `./${this.appID}/settings/notifications`,
-                icon: 'mail',
-              });
-            }
+            // if (
+            //   this.permissions.some(
+            //     (x) =>
+            //       (x.type === Permissions.canManageCustomNotifications &&
+            //         this.roles.some(
+            //           (y) =>
+            //             y.application?.id === application.id &&
+            //             y.permissions?.some((perm) => perm.id === x.id)
+            //         )) ||
+            //       (x.type === Permissions.canManageApplications && x.global)
+            //   )
+            // ) {
+            //   this.adminNavItems.push({
+            //     name: this.translate.instant('common.customNotification.few'),
+            //     path: `./${this.appID}/settings/notifications`,
+            //     icon: 'mail',
+            //   });
+            // }
             this.navGroups = [
               {
                 name: 'Pages',

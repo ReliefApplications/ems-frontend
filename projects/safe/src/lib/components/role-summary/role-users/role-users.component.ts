@@ -22,6 +22,7 @@ export class RoleUsersComponent
   implements OnInit
 {
   @Input() role!: Role;
+  @Input() autoAssigned = false;
   public loading = true;
   public updating = false;
 
@@ -38,6 +39,11 @@ export class RoleUsersComponent
     endCursor: '',
   };
 
+  /** @returns empty state of the table */
+  get empty(): boolean {
+    return !this.loading && this.users.data.length === 0;
+  }
+
   /**
    * Users component for role summary
    *
@@ -53,6 +59,7 @@ export class RoleUsersComponent
       variables: {
         id: this.role.id,
         first: DEFAULT_PAGE_SIZE,
+        automated: this.autoAssigned,
       },
     });
     this.usersQuery.valueChanges

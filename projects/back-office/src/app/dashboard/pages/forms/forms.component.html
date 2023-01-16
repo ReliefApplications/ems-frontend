@@ -8,7 +8,7 @@
       category="secondary"
       variant="primary"
       (click)="onAdd()"
-      *ngIf="canAdd"
+      *ngIf="'create' | able: 'Form'"
     >
       {{ 'models.form.create' | translate }}
     </safe-button>

@@ -2,7 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { User, Role } from '../../models/user.model';
+import { Role } from '../../models/user.model';
 import { Page, ContentType } from '../../models/page.model';
 import { Application } from '../../models/application.model';
 import { Channel } from '../../models/channel.model';
@@ -12,16 +12,12 @@ import {
   ADD_PAGE,
   AddRoleMutationResponse,
   ADD_ROLE,
-  AddRoleToUsersMutationResponse,
-  ADD_ROLE_TO_USERS,
   DeletePageMutationResponse,
   DELETE_PAGE,
   DeleteRoleMutationResponse,
   DELETE_ROLE,
   EditApplicationMutationResponse,
   EDIT_APPLICATION,
-  EditUserMutationResponse,
-  EDIT_USER,
   EditRoleMutationResponse,
   EDIT_ROLE,
   AddChannelMutationResponse,
@@ -76,6 +72,7 @@ import { SafeAuthService } from '../auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Template } from '../../models/template.model';
 import { DistributionList } from '../../models/distribution-list.model';
+import { SafeDownloadService } from '../download/download.service';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -151,6 +148,7 @@ export class SafeApplicationService {
    * @param authService Shared authentication service
    * @param router Angular router
    * @param translate Angular translate service
+   * @param downloadService Shared download service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -158,7 +156,8 @@ export class SafeApplicationService {
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private downloadService: SafeDownloadService
   ) {
     this.environment = environment;
   }
@@ -179,6 +178,9 @@ export class SafeApplicationService {
         },
       })
       .subscribe((res) => {
+        // extend user abilities for application
+        if (res.data.application)
+          this.authService.extendAbilityForApplication(res.data.application);
         this.application.next(res.data.application);
         const application = this.application.getValue();
         if (res.data.application.locked) {
@@ -744,13 +746,6 @@ export class SafeApplicationService {
                   .toLowerCase(),
               })
             );
-            const newApplication = {
-              ...application,
-              users: application.users?.filter(
-                (u) => !deletedUsers.includes(u.id)
-              ),
-            };
-            this.application.next(newApplication);
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotDeleted', {
@@ -770,106 +765,21 @@ export class SafeApplicationService {
   }
 
   /**
-   * Invites an user to the application.
+   * Download application users
    *
-   * @param user new user
+   * @param type export type
    */
-  inviteUser(user: any): void {
+  downloadUsers(type: 'csv' | 'xlsx'): void {
     const application = this.application.getValue();
-    if (application && this.isUnlocked) {
-      this.apollo
-        .mutate<AddRoleToUsersMutationResponse>({
-          mutation: ADD_ROLE_TO_USERS,
-          variables: {
-            usernames: user.email,
-            role: user.role,
-            ...(user.positionAttributes && {
-              positionAttributes: user.positionAttributes.filter(
-                (x: any) => x.value
-              ),
-            }),
-          },
-        })
-        .subscribe((res: any) => {
-          if (res.data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectInvited', {
-                name: this.translate
-                  .instant(
-                    res.data?.addUsers.length
-                      ? 'common.user.few'
-                      : 'common.user.one'
-                  )
-                  .toLowerCase(),
-              })
-            );
-            const newApplication = {
-              ...application,
-              users: application.users?.concat(res.data.addRoleToUsers),
-            };
-            this.application.next(newApplication);
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotInvited', {
-                name: this.translate
-                  .instant(
-                    res.data?.addUsers.length
-                      ? 'common.user.few'
-                      : 'common.user.one'
-                  )
-                  .toLowerCase(),
-              }),
-              { error: true }
-            );
-          }
-        });
-    }
-  }
-
-  /**
-   * Edits an user that has access to the application.
-   *
-   * @param user user to edit
-   * @param value new value
-   */
-  editUser(user: User, value: any): void {
-    const application = this.application.getValue();
-    if (application && this.isUnlocked) {
-      this.apollo
-        .mutate<EditUserMutationResponse>({
-          mutation: EDIT_USER,
-          variables: {
-            id: user.id,
-            roles: value.roles,
-            application: application.id,
-            ...(value.positionAttributes && {
-              positionAttributes: value.positionAttributes,
-            }),
-          },
-        })
-        .subscribe((res) => {
-          if (res.data) {
-            const newUser = res.data.editUser;
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.role.few').toLowerCase(),
-                value: user.username,
-              })
-            );
-            const index = application?.users?.indexOf(user);
-            if (application?.users && index) {
-              const newApplication: Application = {
-                ...application,
-                users:
-                  application.users?.map((x) =>
-                    String(x.id) === String(user.id) ? newUser || null : x
-                  ) || [],
-              };
-              this.application.next(newApplication);
-            }
-            this.authService.getProfile();
-          }
-        });
+    if (application) {
+      const fileName = `users_${application?.name}.${type}`;
+      const path = `download/application/${application?.id}/users`;
+      const queryString = new URLSearchParams({ type }).toString();
+      this.downloadService.getFile(
+        `${path}?${queryString}`,
+        `text/${type};charset=utf-8;`,
+        fileName
+      );
     }
   }
 

@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatTableModule } from '@angular/material/table';
 import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { SafeEmptyModule } from '../../ui/empty/empty.module';
 
 /**
  * Users component of role summary
@@ -17,6 +18,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatTableModule,
     SafeSkeletonTableModule,
     MatPaginatorModule,
+    SafeEmptyModule,
   ],
   exports: [RoleUsersComponent],
 })

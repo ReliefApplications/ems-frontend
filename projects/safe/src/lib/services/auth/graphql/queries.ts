@@ -33,9 +33,6 @@ export const GET_PROFILE = gql`
           value
         }
         name
-        role {
-          title
-        }
       }
       oid
       favoriteApp

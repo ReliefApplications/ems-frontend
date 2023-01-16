@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
+import { SafePermissionGuard } from '@safe/builder';
 
 /**
  * Divide the dashboard module into three modules:
@@ -21,7 +22,7 @@ export const routes = [
       {
         path: 'profile',
         loadChildren: () =>
-          import('./pages/profile/profile.module').then((m) => m.ProfileModule),
+          import('@safe/builder').then((m) => m.SafeProfileViewModule),
       },
       {
         path: 'referencedata',
@@ -143,7 +144,12 @@ export const routes = [
           breadcrumb: {
             key: 'common.form.few',
           },
+          permission: {
+            action: 'read',
+            subject: 'Form',
+          },
         },
+        canActivate: [SafePermissionGuard],
       },
       {
         path: 'resources',
@@ -245,7 +251,12 @@ export const routes = [
           breadcrumb: {
             key: 'common.resource.few',
           },
+          permission: {
+            action: 'read',
+            subject: 'Resource',
+          },
         },
+        canActivate: [SafePermissionGuard],
       },
       {
         path: 'applications',
@@ -298,7 +309,12 @@ export const routes = [
               breadcrumb: {
                 key: 'common.user.few',
               },
+              permission: {
+                action: 'read',
+                subject: 'User',
+              },
             },
+            canActivate: [SafePermissionGuard],
           },
           {
             path: 'roles',
@@ -329,7 +345,12 @@ export const routes = [
               breadcrumb: {
                 key: 'common.role.few',
               },
+              permission: {
+                action: 'read',
+                subject: 'Role',
+              },
             },
+            canActivate: [SafePermissionGuard],
           },
           {
             path: 'apiconfigurations',
@@ -360,7 +381,12 @@ export const routes = [
               breadcrumb: {
                 key: 'common.apiConfiguration.few',
               },
+              permission: {
+                action: 'read',
+                subject: 'ApiConfiguration',
+              },
             },
+            canActivate: [SafePermissionGuard],
           },
           {
             path: 'pulljobs',
@@ -368,7 +394,13 @@ export const routes = [
               import('./pages/pull-jobs/pull-jobs.module').then(
                 (m) => m.PullJobsModule
               ),
-            // canActivate: [SafePermissionGuard]
+            data: {
+              permission: {
+                action: 'read',
+                subject: 'PullJob',
+              },
+            },
+            canActivate: [SafePermissionGuard],
           },
           {
             path: '**',
