@@ -16,6 +16,7 @@ import * as ResourceComponent from './components/resource';
 import * as ResourcesComponent from './components/resources';
 import * as OwnerComponent from './components/owner';
 import * as UsersComponent from './components/users';
+import * as GeospatialComponent from './components/geospatial';
 import * as TextWidget from './widgets/text-widget';
 import * as CommentWidget from './widgets/comment-widget';
 import * as OtherProperties from './global-properties/others';
@@ -54,6 +55,7 @@ export const initCustomSurvey = (
   ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
   OwnerComponent.init(Survey, domService, apollo);
   UsersComponent.init(Survey, domService, apollo);
+  GeospatialComponent.init(Survey);
   // load global properties
   ReferenceDataProperties.init(Survey, domService, referenceDataService);
   TooltipProperty.init(Survey);
