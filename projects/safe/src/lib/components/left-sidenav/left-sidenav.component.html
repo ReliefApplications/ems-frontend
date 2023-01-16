@@ -1,8 +1,5 @@
 <mat-nav-list>
-  <ng-container
-    *ngFor="let group of filteredNavGroups; let i = index"
-    class="h-full"
-  >
+  <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
     <div mat-subheader class="sidenav-header">
       {{ group.name }}
       <safe-button
@@ -106,9 +103,6 @@
         </safe-button>
       </div>
     </ng-container>
-    <safe-divider
-      class="m-0"
-      *ngIf="i < filteredNavGroups.length - 1"
-    ></safe-divider>
+    <safe-divider class="m-0" *ngIf="i < navGroups.length - 1"></safe-divider>
   </ng-container>
 </mat-nav-list>

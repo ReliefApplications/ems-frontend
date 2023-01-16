@@ -28,6 +28,7 @@ import {
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { AbilityModule } from '@casl/angular';
 
 /** Forms page module */
 @NgModule({
@@ -56,6 +57,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
+    AbilityModule,
   ],
   exports: [FormsComponent],
 })

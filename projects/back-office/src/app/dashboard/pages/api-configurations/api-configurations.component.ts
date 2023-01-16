@@ -5,8 +5,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ApiConfiguration,
-  PermissionsManagement,
-  PermissionType,
   SafeAuthService,
   SafeConfirmService,
   SafeSnackBarService,
@@ -48,9 +46,6 @@ export class ApiConfigurationsComponent
   displayedColumns = ['name', 'status', 'authType', 'actions'];
   dataSource = new MatTableDataSource<ApiConfiguration>([]);
   public cachedApiConfigurations: ApiConfiguration[] = [];
-
-  // === PERMISSIONS ===
-  canAdd = false;
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -117,15 +112,6 @@ export class ApiConfigurationsComponent
         this.loading = res.loading;
         this.filterPredicate();
       });
-
-    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.canAdd = this.authService.userHasClaim(
-        PermissionsManagement.getRightFromPath(
-          this.router.url,
-          PermissionType.create
-        )
-      );
-    });
   }
 
   /**

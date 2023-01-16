@@ -5,6 +5,8 @@ import {
   LEGEND_ORIENTATIONS,
   TITLE_POSITIONS,
 } from '../constants';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Display tab of the chart settings modal.
@@ -14,7 +16,10 @@ import {
   templateUrl: './tab-display.component.html',
   styleUrls: ['./tab-display.component.scss'],
 })
-export class TabDisplayComponent implements OnInit {
+export class TabDisplayComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() formGroup!: FormGroup;
   @Input() type: any;
 
@@ -31,10 +36,19 @@ export class TabDisplayComponent implements OnInit {
     return this.formGroup.get('chart') as FormGroup;
   }
 
+  /**
+   * Constructor of the display tab of the chart settings modal.
+   */
+  constructor() {
+    super();
+  }
+
   ngOnInit(): void {
     const sizeControl = this.chartForm.get('title.size');
     sizeControl?.setValue(sizeControl.value);
-    sizeControl?.valueChanges.subscribe(() => this.onToggleStyle(''));
+    sizeControl?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.onToggleStyle(''));
   }
 
   /**

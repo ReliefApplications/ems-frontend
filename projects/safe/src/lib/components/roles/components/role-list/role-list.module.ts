@@ -14,6 +14,7 @@ import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 import { SafeRoleListComponent } from './role-list.component';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { AbilityModule } from '@casl/angular';
 
 /**
  * BackOfficeRolesModule manages modules and components
@@ -37,6 +38,7 @@ import { SafeDividerModule } from '../../../ui/divider/divider.module';
     SafeButtonModule,
     TranslateModule,
     SafeSkeletonTableModule,
+    AbilityModule,
   ],
   exports: [SafeRoleListComponent],
 })
