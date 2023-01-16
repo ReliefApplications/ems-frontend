@@ -14,6 +14,7 @@ import { createFilterGroup } from '../../../query-builder/query-builder-forms';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { SafeRestService } from '../../../../services/rest/rest.service';
+import { firstValueFrom } from 'rxjs';
 
 type AccessPermissions = {
   access: Access;
@@ -137,7 +138,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
       .map((x: any) => ({ ...x }));
 
     const userAttributes: { value: string; text: string }[] =
-      await this.restService.get('/permissions/attributes').toPromise();
+      await firstValueFrom(this.restService.get('/permissions/attributes'));
 
     const options = this.filterFields.map((x) => ({
       value: x.name,

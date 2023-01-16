@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SafeEmailPreviewComponent } from '../../components/email-preview/email-preview.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../../utils/prettify';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeRestService } from '../rest/rest.service';
 
@@ -108,7 +108,7 @@ export class SafeEmailService {
     );
     let fileFolderId = '';
     if (files && files.length > 0) {
-      const response = await this.sendFiles(files).toPromise();
+      const response = await firstValueFrom(this.sendFiles(files));
       if (response.id) {
         fileFolderId = response.id;
       }

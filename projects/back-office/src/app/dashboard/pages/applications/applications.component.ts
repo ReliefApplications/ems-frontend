@@ -4,8 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
   Application,
-  PermissionsManagement,
-  PermissionType,
   SafeAuthService,
   SafeConfirmService,
   SafeSnackBarService,
@@ -73,9 +71,6 @@ export class ApplicationsComponent
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
-
-  // === PERMISSIONS ===
-  canAdd = false;
 
   /**
    * Applications page component
@@ -146,21 +141,6 @@ export class ApplicationsComponent
           .map((x) => x.node)
           .slice(0, 5);
       });
-    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.canAdd =
-        this.authService.userHasClaim(
-          PermissionsManagement.getRightFromPath(
-            this.router.url,
-            PermissionType.create
-          )
-        ) ||
-        this.authService.userHasClaim(
-          PermissionsManagement.getRightFromPath(
-            this.router.url,
-            PermissionType.manage
-          )
-        );
-    });
   }
 
   /**

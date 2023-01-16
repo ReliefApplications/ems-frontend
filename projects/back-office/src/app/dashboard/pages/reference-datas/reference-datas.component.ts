@@ -4,8 +4,6 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
-  PermissionsManagement,
-  PermissionType,
   ReferenceData,
   SafeAuthService,
   SafeConfirmService,
@@ -54,9 +52,6 @@ export class ReferenceDatasComponent
   ];
   dataSource = new MatTableDataSource<ReferenceData>([]);
   public cachedReferenceDatas: ReferenceData[] = [];
-
-  // === PERMISSIONS ===
-  canAdd = false;
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -121,15 +116,6 @@ export class ReferenceDatasComponent
         this.loading = res.loading;
         this.filterPredicate();
       });
-
-    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.canAdd = this.authService.userHasClaim(
-        PermissionsManagement.getRightFromPath(
-          this.router.url,
-          PermissionType.create
-        )
-      );
-    });
   }
 
   /**

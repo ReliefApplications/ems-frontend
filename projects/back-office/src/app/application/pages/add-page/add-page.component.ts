@@ -6,7 +6,6 @@ import {
   ContentType,
   CONTENT_TYPES,
   Form,
-  Permissions,
   SafeApplicationService,
   SafeAuthService,
   SafeSnackBarService,
@@ -18,7 +17,6 @@ import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import { MatSelect } from '@angular/material/select';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
 
 /**
  * Number of items per page.
@@ -54,9 +52,6 @@ export class AddPageComponent
   // === REACTIVE FORM ===
   public pageForm: FormGroup = new FormGroup({});
   public step = 1;
-
-  // === PERMISSIONS ===
-  canCreateForm = false;
 
   /**
    * Add page component
@@ -111,11 +106,6 @@ export class AddPageComponent
         contentControl.updateValueAndValidity();
       }
       this.onNext();
-    });
-    this.authService.user.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.canCreateForm = this.authService.userHasClaim(
-        Permissions.canCreateForms
-      );
     });
   }
 

@@ -67,8 +67,8 @@ const routes: Routes = [
               {
                 path: '',
                 loadChildren: () =>
-                  import('./pages/users/users.module').then(
-                    (m) => m.UsersModule
+                  import('@safe/builder').then(
+                    (m) => m.SafeApplicationUsersViewModule
                   ),
                 // canActivate: [SafePermissionGuard]
               },
@@ -96,14 +96,14 @@ const routes: Routes = [
             path: 'templates',
             loadChildren: () =>
               import('@safe/builder').then(
-                (m) => m.SafeApplicationTemplatesModule
+                (m) => m.SafeApplicationTemplatesViewModule
               ),
           },
           {
             path: 'distribution-lists',
             loadChildren: () =>
               import('@safe/builder').then(
-                (m) => m.SafeApplicationDistributionListsModule
+                (m) => m.SafeApplicationDistributionListsViewModule
               ),
             // canActivate: [SafePermissionGuard]
           },
@@ -111,7 +111,7 @@ const routes: Routes = [
             path: 'notifications',
             loadChildren: () =>
               import('@safe/builder').then(
-                (m) => m.SafeApplicationNotificationsModule
+                (m) => m.SafeApplicationNotificationsViewModule
               ),
             // canActivate: [SafePermissionGuard]
           },

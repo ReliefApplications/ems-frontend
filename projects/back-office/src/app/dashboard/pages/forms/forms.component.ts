@@ -5,8 +5,6 @@ import { Router } from '@angular/router';
 import {
   SafeSnackBarService,
   SafeAuthService,
-  PermissionsManagement,
-  PermissionType,
   SafeConfirmService,
   Form,
   SafeUnsubscribeComponent,
@@ -22,7 +20,6 @@ import { AddFormModalComponent } from '../../../components/add-form-modal/add-fo
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
 
 /** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -50,9 +47,6 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
   ];
   public forms = new MatTableDataSource<Form>([]);
   public cachedForms: Form[] = [];
-
-  // === PERMISSIONS ===
-  canAdd = false;
 
   // === FILTERING ===
   public filter: any;
@@ -110,15 +104,6 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
       this.loading = res.loading;
       this.updating = res.loading;
-    });
-
-    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.canAdd = this.authService.userHasClaim(
-        PermissionsManagement.getRightFromPath(
-          this.router.url,
-          PermissionType.create
-        )
-      );
     });
   }
 
