@@ -128,7 +128,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             } else {
               this.canCreateRecords = true;
             }
-            this.loading = res.data.loading;
+            this.loading = res.loading;
           });
       } else {
         this.querySubscription = this.apollo
@@ -173,7 +173,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             } else {
               this.canCreateRecords = true;
             }
-            this.loading = res.data.loading;
+            this.loading = res.loading;
           });
       }
     });

@@ -16,7 +16,6 @@ export const GET_ROLES_FROM_APPLICATIONS = gql`
 
 /** Model for GetRolesFromApplicationsQueryResponse object */
 export interface GetRolesFromApplicationsQueryResponse {
-  loading: boolean;
   rolesFromApplications: Role[];
 }
 
@@ -80,7 +79,6 @@ export const GET_RESOURCE_BY_ID = gql`
 
 /** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceByIdQueryResponse {
-  loading: boolean;
   resource: Resource;
 }
 
@@ -100,6 +98,5 @@ export const GET_USERS = gql`
 
 /** Model for GetUsersQueryResponse object */
 export interface GetUsersQueryResponse {
-  loading: boolean;
   users: User[];
 }

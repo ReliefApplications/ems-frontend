@@ -148,7 +148,6 @@ export class LayoutsTabComponent implements OnInit {
               totalCount: fetchMoreResult.resource.layouts.totalCount,
             },
           },
-          loading: fetchMoreResult.loading,
         };
       },
     });

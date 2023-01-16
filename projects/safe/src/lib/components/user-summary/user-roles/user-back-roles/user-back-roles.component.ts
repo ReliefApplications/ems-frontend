@@ -60,7 +60,7 @@ export class UserBackRolesComponent implements OnInit {
           if (res.data) {
             this.roles = res.data.roles;
           }
-          this.loading = res.loading;
+          this.loading = false;
         },
         (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });

@@ -108,7 +108,7 @@ export class SafeReferenceDataDropdownComponent
           this.selectedReferenceData = null;
         }
         this.pageInfo = res.data.referenceDatas.pageInfo;
-        this.loading = res.loading;
+        this.loading = false;
       });
   }
 

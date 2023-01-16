@@ -40,6 +40,5 @@ export const EDIT_DASHBOARD = gql`
 
 /** Model for EditiDashboardMutationResponse object */
 export interface EditDashboardMutationResponse {
-  loading: boolean;
   editDashboard: Dashboard;
 }

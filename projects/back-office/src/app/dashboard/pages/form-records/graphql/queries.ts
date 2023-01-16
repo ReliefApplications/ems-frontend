@@ -34,7 +34,6 @@ export const GET_RECORD_DETAILS = gql`
 
 /** Model for GetRecordDetailsQueryResponse object */
 export interface GetRecordDetailsQueryResponse {
-  loading: boolean;
   record: Record;
 }
 
@@ -80,7 +79,6 @@ export const GET_FORM_RECORDS = gql`
 
 /** Model for GetFormRecordsQueryResponse */
 export interface GetFormRecordsQueryResponse {
-  loading: boolean;
   form: {
     records: {
       edges: {
@@ -122,6 +120,5 @@ export const GET_FORM_BY_ID = gql`
 
 /** Model for getFormByIdQueryResponse object */
 export interface GetFormByIdQueryResponse {
-  loading: boolean;
   form: Form;
 }

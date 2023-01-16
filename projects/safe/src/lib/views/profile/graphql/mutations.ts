@@ -27,6 +27,5 @@ export const EDIT_USER_PROFILE = gql`
 
 /** Model for EditUserProfileMutationResponse object */
 export interface EditUserProfileMutationResponse {
-  loading: boolean;
   editUserProfile: User;
 }

@@ -27,7 +27,6 @@ export const GET_ROLE = gql`
 
 /** Interface of Get role query */
 export interface GetRoleQueryResponse {
-  loading: boolean;
   role: Role;
 }
 
@@ -44,7 +43,6 @@ export const GET_PERMISSIONS = gql`
 
 /** Model for GetPermissionsQueryResponse object */
 export interface GetPermissionsQueryResponse {
-  loading: boolean;
   permissions: Permission[];
 }
 
@@ -64,7 +62,6 @@ export const GET_CHANNELS = gql`
 
 /** Model for GetChannelsQueryResponse object */
 export interface GetChannelsQueryResponse {
-  loading: boolean;
   channels: Channel[];
 }
 
@@ -153,7 +150,6 @@ export const GET_RESOURCES = gql`
 
 /** Interface of Get Resources Query response */
 export interface GetResourcesQueryResponse {
-  loading: boolean;
   resources: {
     edges: {
       node: Resource;
