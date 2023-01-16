@@ -174,6 +174,19 @@ export class DashboardComponent
               icon: 'mail',
             });
           }
+          if (
+            this.ability.can(
+              'manage',
+              subject('CustomNotification', { application: application.id })
+            )
+          ) {
+            // if can manage apps / can manage distribution lists in app
+            this.adminNavItems.push({
+              name: this.translate.instant('common.customNotification.few'),
+              path: './settings/notifications',
+              icon: 'schedule_send',
+            });
+          }
           this.navGroups = [
             {
               name: 'Pages',

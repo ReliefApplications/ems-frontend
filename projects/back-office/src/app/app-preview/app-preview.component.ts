@@ -48,6 +48,11 @@ const getAbilityForAppPreview = (app: Application, role: string) => {
     can(['create', 'read', 'update', 'delete', 'manage'], 'DistributionList');
   }
 
+  // === Custom notifications===
+  if (permissions.includes('can_manage_custom_notifications')) {
+    can(['create', 'read', 'update', 'delete', 'manage'], 'CustomNotification');
+  }
+
   return new AppAbility(rules);
 };
 
@@ -145,19 +150,13 @@ export class AppPreviewComponent
               path: './settings/distribution-lists',
               icon: 'mail',
             });
-            // if (
-            //   role.permissions?.some(
-            //     (x) =>
-            //       x.type === Permissions.canManageCustomNotifications &&
-            //       !x.global
-            //   )
-            // ) {
-            //   adminNavItems.push({
-            //     name: this.translate.instant('common.distributionList.few'),
-            //     path: './settings/notifications',
-            //     icon: 'schedule_send',
-            //   });
-            // }
+          }
+          if (ability.can('manage', 'CustomNotification')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.customNotification.few'),
+              path: './settings/notifications',
+              icon: 'schedule_send',
+            });
           }
           this.navGroups = [
             {
