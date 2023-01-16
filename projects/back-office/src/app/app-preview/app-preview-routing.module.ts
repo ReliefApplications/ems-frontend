@@ -111,7 +111,7 @@ const routes: Routes = [
             path: 'notifications',
             loadChildren: () =>
               import('@safe/builder').then(
-                (m) => m.SafeApplicationNotificationsModule
+                (m) => m.SafeApplicationNotificationsViewModule
               ),
             // canActivate: [SafePermissionGuard]
           },
