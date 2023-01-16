@@ -15,7 +15,6 @@ export const GET_USER = gql`
 
 /** GraphQL interface of get user by id query */
 export interface GetUserQueryResponse {
-  loading: boolean;
   user: User;
 }
 
@@ -40,7 +39,6 @@ export const GET_APPLICATIONS = gql`
 
 /** Interface of Get Applications query */
 export interface GetApplicationsQueryResponse {
-  loading: boolean;
   applications: {
     edges: {
       node: Application;

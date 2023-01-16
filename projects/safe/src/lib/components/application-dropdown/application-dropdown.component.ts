@@ -126,7 +126,7 @@ export class SafeApplicationDropdownComponent
           );
         }
         this.pageInfo = res.data.applications.pageInfo;
-        this.loading = res.loading;
+        this.loading = false;
       });
   }
 

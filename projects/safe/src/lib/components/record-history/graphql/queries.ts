@@ -19,7 +19,6 @@ export const GET_RECORD_BY_ID_FOR_HISTORY = gql`
 
 /** Model for GetRecordByIdQueryResponse object */
 export interface GetRecordByIdQueryResponse {
-  loading: boolean;
   record: Record;
 }
 
@@ -47,6 +46,5 @@ export const GET_RECORD_HISTORY_BY_ID = gql`
 
 /** Get record history query response interface */
 export interface GetRecordHistoryByIdResponse {
-  loading: boolean;
   recordHistory: RecordHistory;
 }

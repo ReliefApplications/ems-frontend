@@ -133,7 +133,7 @@ export class SafeRoleListComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         this.roles.data = res.data.roles;
-        this.loading = res.loading;
+        this.loading = false;
       });
   }
 

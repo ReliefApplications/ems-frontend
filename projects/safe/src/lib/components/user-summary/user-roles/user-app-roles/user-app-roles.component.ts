@@ -134,7 +134,7 @@ export class UserAppRolesComponent
               .map((x) => x.id),
             { emitEvent: false }
           );
-          this.loading = res.loading;
+          this.loading = false;
         },
         (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });

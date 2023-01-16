@@ -100,7 +100,7 @@ export class SafeGroupListComponent
       .subscribe((res) => {
         this.groups.data = res.data.groups;
         // this.manualCreation = res.data.groups.manualCreation;
-        this.loading = res.loading;
+        this.loading = false;
       });
   }
 
@@ -178,7 +178,7 @@ export class SafeGroupListComponent
       .subscribe(
         (res) => {
           if (res.data) this.groups.data = res.data.fetchGroups || [];
-          this.loadingFetch = res.loading;
+          this.loadingFetch = false;
           snackBarRef.instance.data = {
             message: this.translate.instant(
               'common.notifications.groups.ready'

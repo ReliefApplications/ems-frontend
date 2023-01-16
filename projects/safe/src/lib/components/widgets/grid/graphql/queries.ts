@@ -31,7 +31,6 @@ export const GET_RECORD_BY_ID = gql`
 
 /** Model for GetRecordByIdQueryResponse object */
 export interface GetRecordByIdQueryResponse {
-  loading: boolean;
   record: Record;
 }
 
@@ -80,7 +79,6 @@ export const GET_RECORD_DETAILS = gql`
 
 /** Model for GetRecordDetailsQueryResponse object */
 export interface GetRecordDetailsQueryResponse {
-  loading: boolean;
   record: Record;
 }
 

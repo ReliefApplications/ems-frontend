@@ -30,7 +30,6 @@ export const GET_RECORD_BY_ID = gql`
 
 /** Model for GetRecordByIdQueryResponse object */
 export interface GetRecordByIdQueryResponse {
-  loading: boolean;
   record: Record;
 }
 
@@ -74,7 +73,6 @@ export const GET_RESOURCE_RECORDS = gql`
 `;
 /** Modelf for GetResouceRecordsQueryResponse object */
 export interface GetResourceRecordsQueryResponse {
-  loading: boolean;
   resource: {
     records: {
       edges: {

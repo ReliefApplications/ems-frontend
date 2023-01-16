@@ -178,7 +178,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
               )
               .map((x) => x.id as string);
           }
-          this.loading = res.loading;
+          this.loading = false;
         },
         (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });

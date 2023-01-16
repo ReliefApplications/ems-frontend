@@ -30,7 +30,6 @@ export const GET_FORM_BY_ID = gql`
 
 /** Model for GetFormByIdQueryResponse object */
 export interface GetFormByIdQueryResponse {
-  loading: boolean;
   form: Form;
 }
 
@@ -69,6 +68,5 @@ export const GET_RECORD_BY_ID = gql`
 
 /** Model for GetRecordByIdQueryResponse object */
 export interface GetRecordByIdQueryResponse {
-  loading: boolean;
   record: Record;
 }

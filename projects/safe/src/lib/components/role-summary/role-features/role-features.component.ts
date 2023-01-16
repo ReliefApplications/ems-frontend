@@ -126,7 +126,7 @@ export class RoleFeaturesComponent implements OnInit {
               }
             }
           }
-          this.loading = res.loading;
+          this.loading = false;
         },
         (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
