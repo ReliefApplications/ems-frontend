@@ -39,6 +39,8 @@ export default {
  * @returns template
  */
 const TEMPLATE: Story<SafeDividerComponent> = (args) => ({
+  template:
+    '<div><div class="h-4"></div><safe-divider [text]="text" [position]="position"></safe-divider><div class="h-4"></div></div>',
   props: {
     ...args,
   },
