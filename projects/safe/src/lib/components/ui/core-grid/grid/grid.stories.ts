@@ -3,12 +3,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SafeGridComponent } from './grid.component';
 import { SafeGridModule } from './grid.module';
 import { HttpClientModule } from '@angular/common/http';
+import { StorybookTranslateModule } from '../../../storybook-translate/storybook-translate-module';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 export default {
   component: SafeGridComponent,
   decorators: [
     moduleMetadata({
-      imports: [SafeGridModule, HttpClientModule, BrowserAnimationsModule],
+      imports: [SafeGridModule, HttpClientModule, BrowserAnimationsModule, StorybookTranslateModule, MatSnackBarModule],
       providers: [
         {
           provide: 'environment',

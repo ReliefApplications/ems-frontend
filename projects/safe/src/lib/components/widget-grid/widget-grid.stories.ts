@@ -9,7 +9,12 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [BrowserAnimationsModule, SafeWidgetGridModule],
-      providers: [],
+      providers: [
+        {
+          provide: 'environment',
+          useValue: {},
+        },
+      ],
     }),
   ],
   title: 'Dashboard/Widget Grid',
